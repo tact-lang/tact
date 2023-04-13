@@ -209,32 +209,32 @@ Line 12, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-21 1`] = `
-"<unknown>:13:3: Bounce receive function can only accept struct args or Slice
-Line 13, col 3:
-  12 |   
-> 13 |   bounced(src: Int) {
+"<unknown>:17:3: Generic bounce receive function can only accept Slice
+Line 17, col 3:
+  16 |   
+> 17 |   bounced(src: Int) {
          ^~~~~~~~~~~~~~~~~~~
-  14 |     
+  18 |     
 "
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-22 1`] = `
-"<unknown>:20:3: Bounce receive function for A already exists
-Line 20, col 3:
-  19 |   
-> 20 |   bounced(msg: bounced<A>) {
+"<unknown>:24:3: Bounce receive function for A already exists
+Line 24, col 3:
+  23 |   
+> 24 |   bounced(msg: bounced<A>) {
          ^~~~~~~~~~~~~~~~~~~~~~~~~~
-  21 |   }
+  25 |   }
 "
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-23 1`] = `
-"<unknown>:20:3: Bounce receive function for Slice already exists
-Line 20, col 3:
-  19 |   
-> 20 |   bounced(msg: Slice) {
+"<unknown>:24:3: Bounce receive function for Slice already exists
+Line 24, col 3:
+  23 |   
+> 24 |   bounced(msg: Slice) {
          ^~~~~~~~~~~~~~~~~~~~~
-  21 |   }
+  25 |   }
 "
 `;
 
@@ -263,6 +263,7 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
     "kind": "trait",
     "name": "BaseTrait",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -287,6 +288,7 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -311,6 +313,7 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
     "kind": "primitive",
     "name": "Int",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -347,6 +350,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "kind": "trait",
     "name": "BaseTrait",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -371,6 +375,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -395,6 +400,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "kind": "primitive",
     "name": "Int",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -528,6 +534,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "kind": "struct",
     "name": "Struct1",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": "Struct1{a:int257,b:bool}",
     "tlb": "_ a:int257 b:bool = Struct1",
@@ -609,6 +616,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "kind": "struct",
     "name": "Struct2",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": "Struct2{a:Struct1{a:int257,b:bool}}",
     "tlb": "_ a:Struct1{a:int257,b:bool} = Struct2",
@@ -645,6 +653,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
     "kind": "trait",
     "name": "BaseTrait",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -669,6 +678,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -693,6 +703,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
     "kind": "primitive",
     "name": "Int",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -908,6 +919,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
     "kind": "trait",
     "name": "BaseTrait",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -932,6 +944,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1180,6 +1193,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
     "kind": "contract",
     "name": "HelloWorld",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1207,6 +1221,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         "kind": "trait",
         "name": "BaseTrait",
         "origin": "user",
+        "partialFieldCount": 0,
         "receivers": [],
         "signature": null,
         "tlb": null,
@@ -1234,6 +1249,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
     "kind": "primitive",
     "name": "Int",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1270,6 +1286,7 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
     "kind": "trait",
     "name": "BaseTrait",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1294,6 +1311,7 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1318,6 +1336,7 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
     "kind": "primitive",
     "name": "Int",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1417,6 +1436,7 @@ exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
     "kind": "trait",
     "name": "BaseTrait",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1441,6 +1461,7 @@ exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1524,6 +1545,7 @@ mutates extends native inc(self: Int): Int;,
     "kind": "primitive",
     "name": "Int",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1560,6 +1582,7 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
     "kind": "trait",
     "name": "BaseTrait",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1584,6 +1607,7 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1688,6 +1712,7 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
     "kind": "primitive",
     "name": "Int",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1724,6 +1749,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "kind": "trait",
     "name": "BaseTrait",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1748,6 +1774,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1772,6 +1799,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "kind": "primitive",
     "name": "Int",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -2154,6 +2182,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "kind": "contract",
     "name": "Main",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -2181,6 +2210,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
         "kind": "trait",
         "name": "BaseTrait",
         "origin": "user",
+        "partialFieldCount": 0,
         "receivers": [],
         "signature": null,
         "tlb": null,
@@ -2266,6 +2296,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "kind": "struct",
     "name": "Point",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": "Point{p:int257}",
     "tlb": "_ p:int257 = Point",
@@ -2284,13 +2315,13 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
       "fields": [
         {
           "as": "uint32",
-          "id": 4,
+          "id": 5,
           "init": null,
           "kind": "def_field",
           "name": "a",
           "ref": a: Int as uint32;,
           "type": {
-            "id": 3,
+            "id": 4,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2298,7 +2329,7 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
           },
         },
       ],
-      "id": 5,
+      "id": 6,
       "kind": "def_struct",
       "message": true,
       "name": "A",
@@ -2324,13 +2355,13 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
         "as": "uint32",
         "ast": {
           "as": "uint32",
-          "id": 4,
+          "id": 5,
           "init": null,
           "kind": "def_field",
           "name": "a",
           "ref": a: Int as uint32;,
           "type": {
-            "id": 3,
+            "id": 4,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2355,11 +2386,42 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
     "kind": "struct",
     "name": "A",
     "origin": "user",
+    "partialFieldCount": 1,
     "receivers": [],
     "signature": "A{a:uint32}",
     "tlb": "a#df4e8909 a:uint32 = A",
     "traits": [],
     "uid": 22757,
+  },
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 3,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
   },
   "Int": {
     "ast": {
@@ -2379,6 +2441,7 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
     "kind": "primitive",
     "name": "Int",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -2403,6 +2466,7 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
     "kind": "primitive",
     "name": "Slice",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -2415,25 +2479,25 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
       "declarations": [
         {
           "args": [],
-          "id": 6,
+          "id": 7,
           "kind": "def_init_function",
           "ref": init() {},
           "statements": [],
         },
         {
-          "id": 9,
+          "id": 10,
           "kind": "def_receive",
           "ref": receive(src: A) {
     
   },
           "selector": {
             "arg": {
-              "id": 8,
+              "id": 9,
               "kind": "def_argument",
               "name": "src",
               "ref": src: A,
               "type": {
-                "id": 7,
+                "id": 8,
                 "kind": "type_ref_simple",
                 "name": "A",
                 "optional": false,
@@ -2445,19 +2509,19 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
           "statements": [],
         },
         {
-          "id": 12,
+          "id": 13,
           "kind": "def_receive",
           "ref": bounced(src: Slice) {
     
   },
           "selector": {
             "arg": {
-              "id": 11,
+              "id": 12,
               "kind": "def_argument",
               "name": "src",
               "ref": src: Slice,
               "type": {
-                "id": 10,
+                "id": 11,
                 "kind": "type_ref_simple",
                 "name": "Slice",
                 "optional": false,
@@ -2469,7 +2533,7 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
           "statements": [],
         },
       ],
-      "id": 13,
+      "id": 14,
       "kind": "def_contract",
       "name": "Test",
       "origin": "user",
@@ -2494,7 +2558,7 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
       "args": [],
       "ast": {
         "args": [],
-        "id": 6,
+        "id": 7,
         "kind": "def_init_function",
         "ref": init() {},
         "statements": [],
@@ -2504,22 +2568,23 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
     "kind": "contract",
     "name": "Test",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [
       {
         "ast": {
-          "id": 9,
+          "id": 10,
           "kind": "def_receive",
           "ref": receive(src: A) {
     
   },
           "selector": {
             "arg": {
-              "id": 8,
+              "id": 9,
               "kind": "def_argument",
               "name": "src",
               "ref": src: A,
               "type": {
-                "id": 7,
+                "id": 8,
                 "kind": "type_ref_simple",
                 "name": "A",
                 "optional": false,
@@ -2538,19 +2603,19 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
       },
       {
         "ast": {
-          "id": 12,
+          "id": 13,
           "kind": "def_receive",
           "ref": bounced(src: Slice) {
     
   },
           "selector": {
             "arg": {
-              "id": 11,
+              "id": 12,
               "kind": "def_argument",
               "name": "src",
               "ref": src: Slice,
               "type": {
-                "id": 10,
+                "id": 11,
                 "kind": "type_ref_simple",
                 "name": "Slice",
                 "optional": false,
@@ -2562,16 +2627,50 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
           "statements": [],
         },
         "selector": {
-          "isGeneric": true,
           "kind": "internal-bounce",
           "name": "src",
-          "type": "Slice",
+          "type": {
+            "kind": "ref",
+            "name": "Slice",
+            "optional": false,
+          },
         },
       },
     ],
     "signature": null,
     "tlb": null,
-    "traits": [],
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 3,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait {
+    
+},
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
     "uid": 44104,
   },
 }
@@ -2586,13 +2685,13 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
       "fields": [
         {
           "as": "uint32",
-          "id": 4,
+          "id": 5,
           "init": null,
           "kind": "def_field",
           "name": "a",
           "ref": a: Int as uint32;,
           "type": {
-            "id": 3,
+            "id": 4,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2601,13 +2700,13 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
         },
         {
           "as": null,
-          "id": 6,
+          "id": 7,
           "init": null,
           "kind": "def_field",
           "name": "b",
           "ref": b: Bool;,
           "type": {
-            "id": 5,
+            "id": 6,
             "kind": "type_ref_simple",
             "name": "Bool",
             "optional": false,
@@ -2616,13 +2715,13 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
         },
         {
           "as": "uint256",
-          "id": 8,
+          "id": 9,
           "init": null,
           "kind": "def_field",
           "name": "c",
           "ref": c: Int as uint256;,
           "type": {
-            "id": 7,
+            "id": 8,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2630,7 +2729,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           },
         },
       ],
-      "id": 9,
+      "id": 10,
       "kind": "def_struct",
       "message": true,
       "name": "A",
@@ -2658,13 +2757,13 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
         "as": "uint32",
         "ast": {
           "as": "uint32",
-          "id": 4,
+          "id": 5,
           "init": null,
           "kind": "def_field",
           "name": "a",
           "ref": a: Int as uint32;,
           "type": {
-            "id": 3,
+            "id": 4,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2693,13 +2792,13 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
         "as": null,
         "ast": {
           "as": null,
-          "id": 6,
+          "id": 7,
           "init": null,
           "kind": "def_field",
           "name": "b",
           "ref": b: Bool;,
           "type": {
-            "id": 5,
+            "id": 6,
             "kind": "type_ref_simple",
             "name": "Bool",
             "optional": false,
@@ -2729,13 +2828,13 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
         "as": "uint256",
         "ast": {
           "as": "uint256",
-          "id": 8,
+          "id": 9,
           "init": null,
           "kind": "def_field",
           "name": "c",
           "ref": c: Int as uint256;,
           "type": {
-            "id": 7,
+            "id": 8,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2760,11 +2859,42 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
     "kind": "struct",
     "name": "A",
     "origin": "user",
+    "partialFieldCount": 2,
     "receivers": [],
     "signature": "A{a:uint32,b:bool,c:uint256}",
     "tlb": "a#844de186 a:uint32 b:bool c:uint256 = A",
     "traits": [],
     "uid": 22757,
+  },
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 3,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
   },
   "Bool": {
     "ast": {
@@ -2784,6 +2914,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -2808,6 +2939,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
     "kind": "primitive",
     "name": "Int",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -2820,25 +2952,25 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
       "declarations": [
         {
           "args": [],
-          "id": 10,
+          "id": 11,
           "kind": "def_init_function",
           "ref": init() {},
           "statements": [],
         },
         {
-          "id": 13,
+          "id": 14,
           "kind": "def_receive",
           "ref": receive(src: A) {
     
   },
           "selector": {
             "arg": {
-              "id": 12,
+              "id": 13,
               "kind": "def_argument",
               "name": "src",
               "ref": src: A,
               "type": {
-                "id": 11,
+                "id": 12,
                 "kind": "type_ref_simple",
                 "name": "A",
                 "optional": false,
@@ -2850,23 +2982,22 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "statements": [],
         },
         {
-          "id": 20,
+          "id": 21,
           "kind": "def_receive",
           "ref": bounced(src: bounced<A>) {
     let x: Int = src.c;
   },
           "selector": {
             "arg": {
-              "id": 15,
+              "id": 16,
               "kind": "def_argument",
               "name": "src",
               "ref": src: bounced<A>,
               "type": {
-                "id": 14,
-                "kind": "type_ref_simple",
+                "id": 15,
+                "kind": "type_ref_bounced",
                 "name": "A",
-                "optional": false,
-                "ref": A,
+                "ref": bounced<A>,
               },
             },
             "kind": "bounce",
@@ -2874,23 +3005,23 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 18,
+                "id": 19,
                 "kind": "op_field",
                 "name": "c",
                 "ref": src.c,
                 "src": {
-                  "id": 17,
+                  "id": 18,
                   "kind": "id",
                   "ref": src,
                   "value": "src",
                 },
               },
-              "id": 19,
+              "id": 20,
               "kind": "statement_let",
               "name": "x",
               "ref": let x: Int = src.c;,
               "type": {
-                "id": 16,
+                "id": 17,
                 "kind": "type_ref_simple",
                 "name": "Int",
                 "optional": false,
@@ -2900,7 +3031,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           ],
         },
       ],
-      "id": 21,
+      "id": 22,
       "kind": "def_contract",
       "name": "Test",
       "origin": "user",
@@ -2925,7 +3056,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
       "args": [],
       "ast": {
         "args": [],
-        "id": 10,
+        "id": 11,
         "kind": "def_init_function",
         "ref": init() {},
         "statements": [],
@@ -2935,22 +3066,23 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
     "kind": "contract",
     "name": "Test",
     "origin": "user",
+    "partialFieldCount": 0,
     "receivers": [
       {
         "ast": {
-          "id": 13,
+          "id": 14,
           "kind": "def_receive",
           "ref": receive(src: A) {
     
   },
           "selector": {
             "arg": {
-              "id": 12,
+              "id": 13,
               "kind": "def_argument",
               "name": "src",
               "ref": src: A,
               "type": {
-                "id": 11,
+                "id": 12,
                 "kind": "type_ref_simple",
                 "name": "A",
                 "optional": false,
@@ -2969,23 +3101,22 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
       },
       {
         "ast": {
-          "id": 20,
+          "id": 21,
           "kind": "def_receive",
           "ref": bounced(src: bounced<A>) {
     let x: Int = src.c;
   },
           "selector": {
             "arg": {
-              "id": 15,
+              "id": 16,
               "kind": "def_argument",
               "name": "src",
               "ref": src: bounced<A>,
               "type": {
-                "id": 14,
-                "kind": "type_ref_simple",
+                "id": 15,
+                "kind": "type_ref_bounced",
                 "name": "A",
-                "optional": false,
-                "ref": A,
+                "ref": bounced<A>,
               },
             },
             "kind": "bounce",
@@ -2993,23 +3124,23 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 18,
+                "id": 19,
                 "kind": "op_field",
                 "name": "c",
                 "ref": src.c,
                 "src": {
-                  "id": 17,
+                  "id": 18,
                   "kind": "id",
                   "ref": src,
                   "value": "src",
                 },
               },
-              "id": 19,
+              "id": 20,
               "kind": "statement_let",
               "name": "x",
               "ref": let x: Int = src.c;,
               "type": {
-                "id": 16,
+                "id": 17,
                 "kind": "type_ref_simple",
                 "name": "Int",
                 "optional": false,
@@ -3019,16 +3150,50 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           ],
         },
         "selector": {
-          "isGeneric": false,
           "kind": "internal-bounce",
           "name": "src",
-          "type": "A",
+          "type": {
+            "kind": "ref_bounced",
+            "name": "A",
+            "optional": false,
+          },
         },
       },
     ],
     "signature": null,
     "tlb": null,
-    "traits": [],
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 3,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait {
+    
+},
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
     "uid": 44104,
   },
 }
