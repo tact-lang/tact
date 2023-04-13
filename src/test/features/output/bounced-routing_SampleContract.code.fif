@@ -9,6 +9,7 @@ PROGRAM{
   DECLPROC $EntrySecond$_load
   DECLPROC $First$_store
   DECLPROC $First$_store_cell
+  DECLPROC $First$_load
   DECLPROC $First$_load_bounced
   DECLPROC $MyStruct$_store
   DECLPROC $MyStruct$_load
@@ -30,6 +31,7 @@ PROGRAM{
   DECLPROC %$SampleContract$_internal_empty
   DECLPROC $SampleContract$_internal_binary_EntryFirst
   DECLPROC $SampleContract$_internal_binary_EntrySecond
+  DECLPROC $SampleContract$_internal_binary_First
   DECLPROC $SampleContract$_internal_binary_Second
   DECLPROC $SampleContract$_internal_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4
   DECLPROC $SampleContract$_receive_binary_bounce_Slice
@@ -119,6 +121,19 @@ PROGRAM{
     4 -ROLL
     $First$_store INLINECALLDICT
     ENDC
+  }>
+  $First$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    3200290616 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    32 LDU
+    LDGRAMS
+    1 LDI
+    __tact_load_address INLINECALLDICT
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
   }>
   $First$_load_bounced PROCINLINE:<{
     32 LDU
@@ -410,6 +425,9 @@ PROGRAM{
     $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
     $global_send INLINECALLDICT
   }>
+  $SampleContract$_internal_binary_First PROCINLINE:<{
+    4 BLKDROP
+  }>
   $SampleContract$_internal_binary_Second PROCINLINE:<{
     7 BLKDROP
   }>
@@ -426,7 +444,9 @@ PROGRAM{
     B{b5ee9c72410101010014000024496e20626f756e6365206f66206669727374a88de4c0} B>boc <s PUSHSLICE
     STRDUMP
     DROP
+    TUCK
     ADD
+    NIP
     -2 ADDCONST
   }>
   $SampleContract$_receive_binary_bounce_Second PROCINLINE:<{
@@ -450,7 +470,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5668466234554c6b6e717846566b6157725447676b383762624b4c67364a7a3969344b6d367854753467556b} PUSHSLICE
+    x{697066733a2f2f516d527153435637676a66726147625469384e4479784d3142474b5159446f737373745841457a325a4c51445a75} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -533,6 +553,16 @@ PROGRAM{
       $EntrySecond$_load INLINECALLDICT
       1 2 BLKDROP2
       $SampleContract$_internal_binary_EntrySecond INLINECALLDICT
+      TRUE
+    }>
+    DUP
+    3200290616 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      $First$_load INLINECALLDICT
+      1 4 BLKDROP2
+      $SampleContract$_internal_binary_First INLINECALLDICT
       TRUE
     }>
     DUP

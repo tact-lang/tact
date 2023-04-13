@@ -49,6 +49,7 @@ function resolveStructNew(exp: ASTOpNew, sctx: StatementContext, ctx: CompilerCo
 
     // Get type
     let tp = getType(ctx, exp.type);
+    
     if (tp.kind !== 'struct') {
         throwError(`Invalid type "${exp.type}" for construction`, exp.ref);
     }

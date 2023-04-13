@@ -92,7 +92,11 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
         };
     }
     if (src.kind === 'type_ref_bounced') {
-        throw Error("Unimplemented");
+        let t = getType(ctx, src.name);
+        return {
+            kind: 'ref_bounced',
+            name: t.name,
+        };
     }
     throw Error('Invalid type ref');
 }
