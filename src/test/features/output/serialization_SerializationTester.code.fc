@@ -170,11 +170,6 @@ _ lazy_deployment_completed() method_id {
 
 ((int, int, int, int, int, int, int, int, int), int) $SerializationTester$_contract_router_internal((int, int, int, int, int, int, int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
-    if (msg_bounced) {
-        ;; Skip 0xFFFFFFFF
-        in_msg~skip_bits(32);
-    }
-    
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
@@ -183,6 +178,9 @@ _ lazy_deployment_completed() method_id {
     
     ;; Handle bounced messages
     if (msg_bounced) {
+        ;; Skip 0xFFFFFFFF
+        in_msg~skip_bits(32);
+        op = in_msg.preload_uint(32);
         return (self, true);
     }
     

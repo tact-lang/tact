@@ -314,12 +314,6 @@ PROGRAM{
     SENDRAWMSG
   }>
   ?fun_2 PROCREF:<{
-    s1 PUSH
-    <{
-      32 PUSHINT
-      SDSKIPFIRST
-    }> PUSHCONT
-    IF
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -543,8 +537,7 @@ PROGRAM{
       IFELSE
       s0 s2 XCHG
       -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
+    }> IFJMPREF
     s1 PUSH
     1718153138 PUSHINT
     EQUAL
@@ -593,7 +586,8 @@ PROGRAM{
       NULL
       ?fun_4 INLINECALLDICT
       -1 PUSHINT
-    }> IFJMPREF
+    }> PUSHCONT
+    IFJMP
     s0 POP
     0 PUSHINT
   }>

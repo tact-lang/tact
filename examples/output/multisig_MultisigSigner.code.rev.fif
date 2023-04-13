@@ -364,12 +364,6 @@ PROGRAM{
   ?fun_3 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
-    s1 PUSH
-    <{
-      32 PUSHINT
-      SDSKIPFIRST
-    }> PUSHCONT
-    IF
     0 PUSHINT
     s1 PUSH
     SBITS

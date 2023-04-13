@@ -131,6 +131,9 @@ function resolveBinaryOp(exp: ASTOpBinary, sctx: StatementContext, ctx: Compiler
                     throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                 }
             } else {
+                if (l.kind === 'bounced' || r.kind === 'bounced') {
+                    throwError("Bounced types are not supported in binary operators", exp.ref);
+                }
                 if (l.kind !== 'ref' || r.kind !== 'ref') {
                     throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                 }
@@ -195,7 +198,8 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
 
     // Find target type and check for type
     let src = getExpType(ctx, exp.src);
-    if (src === null || src.kind !== 'ref' || src.optional) {
+    
+    if (!(src !== null && ((src.kind === 'bounced') || (src.kind === 'ref') && !src.optional))) {
         throwError(`Invalid type "${printTypeRef(src)}" for field access`, exp.ref);
     }
 
@@ -339,6 +343,10 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
         }
         let resolved = abf.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
         return registerExpType(ctx, exp, resolved);
+    }
+
+    if (src.kind === 'bounced') {
+        throwError(`Cannot call function on bounced value`, exp.ref);
     }
 
     throwError(`Invalid type "${printTypeRef(src)}" for function call`, exp.ref);

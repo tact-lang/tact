@@ -4,7 +4,7 @@ import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTReceive, A
 export type TypeOrigin = 'stdlib' | 'user';
 
 export type TypeDescription = {
-    kind: 'struct' | 'primitive' | 'contract' | 'trait' | 'partial_struct';
+    kind: 'struct' | 'primitive' | 'contract' | 'trait';
     origin: TypeOrigin;
     name: string;
     uid: number;
@@ -12,6 +12,7 @@ export type TypeDescription = {
     tlb: string | null;
     signature: string | null;
     fields: FieldDescription[];
+    partialFields: FieldDescription[]; // A partial representation of the struct, for bounced purposes
     traits: TypeDescription[];
     functions: Map<string, FunctionDescription>;
     receivers: ReceiverDescription[];
@@ -30,6 +31,9 @@ export type TypeRef = {
     kind: 'map',
     key: string,
     value: string
+} | {
+    kind: 'bounced',
+    name: string
 } | {
     kind: 'void'
 } | {
@@ -102,8 +106,7 @@ export type ReceiverSelector = {
 } | {
     kind: 'internal-bounce',
     name: string,
-    type: string,
-    isGeneric: boolean
+    type: TypeRef,
 } | {
     kind: 'external-binary',
     type: string,
@@ -136,6 +139,8 @@ export function printTypeRef(src: TypeRef): string {
         return src.name + (src.optional ? '?' : '');
     } else if (src.kind === 'map') {
         return `map[${src.key}]${src.value}`;
+    } else if (src.kind === 'bounced') {
+        return `bounced<${src.name}>`;
     } else if (src.kind === 'void') {
         return '<void>';
     } else if (src.kind === 'null') {
@@ -154,6 +159,9 @@ export function typeRefEquals(a: TypeRef, b: TypeRef) {
     }
     if (a.kind === 'map' && b.kind === 'map') {
         return a.key === b.key && a.value === b.value;
+    }
+    if (a.kind === 'bounced' && b.kind === 'bounced') {
+        return a.name === b.name;
     }
     if (a.kind === 'null' && b.kind === 'null') {
         return true;

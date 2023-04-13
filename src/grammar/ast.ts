@@ -110,7 +110,14 @@ export type ASTTypeRefMap = {
     ref: ASTRef
 }
 
-export type ASTTypeRef = ASTTypeRefSimple | ASTTypeRefMap;
+export type ASTTypeRefBounced = {
+    kind: 'type_ref_bounced',
+    id: number,
+    name: string,
+    ref: ASTRef
+}
+
+export type ASTTypeRef = ASTTypeRefSimple | ASTTypeRefMap | ASTTypeRefBounced;
 
 //
 // Expressions

@@ -19,6 +19,10 @@ export function isAssignable(src: TypeRef, to: TypeRef): boolean {
         return (src.key === to.key && src.value === to.value);
     }
 
+    if (src.kind === 'bounced' || to.kind === 'bounced') {
+        throw Error("Unimplemented");
+    }
+
     // Allow assigning null to map
     if (src.kind === 'null' && to.kind === 'map') {
         return true;

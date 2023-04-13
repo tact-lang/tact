@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: External
-BOC Size: 915 bytes
+BOC Size: 908 bytes
 
 # Types
 Total Types: 6

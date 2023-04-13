@@ -973,11 +973,6 @@ PROGRAM{
     SWAP
   }>
   $MathTester$_contract_router_internal PROCREF:<{
-    OVER
-    IF:<{
-      32 PUSHINT
-      SDSKIPFIRST
-    }>
     0 PUSHINT
     OVER
     SBITS

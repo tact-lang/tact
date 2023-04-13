@@ -8,9 +8,9 @@ PROGRAM{
   DECLPROC $Entry$_load
   DECLPROC $First$_store
   DECLPROC $First$_store_cell
+  DECLPROC $First$_load_bounced
   DECLPROC $MyStruct$_load
   DECLPROC $Second$_load
-  DECLPROC $First$_load_bounced
   DECLPROC $SampleContract$_store
   DECLPROC $SampleContract$_load
   DECLPROC $SampleContract$_contract_init
@@ -101,6 +101,17 @@ PROGRAM{
     $First$_store INLINECALLDICT
     ENDC
   }>
+  $First$_load_bounced PROCINLINE:<{
+    32 LDU
+    SWAP
+    3200290616 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    32 LDU
+    LDGRAMS
+    1 LDI
+    3 -ROLL
+  }>
   $MyStruct$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
@@ -130,17 +141,6 @@ PROGRAM{
     s1 s5 XCHG
     s1 s4 XCHG
     s3 s3 s0 XCHG3
-  }>
-  $First$_load_bounced PROCINLINE:<{
-    32 LDU
-    SWAP
-    3200290616 PUSHINT
-    EQUAL
-    129 THROWIFNOT
-    32 LDU
-    LDGRAMS
-    1 LDI
-    3 -ROLL
   }>
   $SampleContract$_store PROCINLINE:<{
     SWAP
@@ -364,11 +364,6 @@ PROGRAM{
   $SampleContract$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
-    OVER
-    IF:<{
-      32 PUSHINT
-      SDSKIPFIRST
-    }>
     0 PUSHINT
     OVER
     SBITS
@@ -380,7 +375,11 @@ PROGRAM{
     }>
     s0 s2 XCHG
     IFJMP:<{
-      SWAP
+      NIP
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      32 PLDU
       3200290616 PUSHINT
       EQUAL
       IFJMP:<{

@@ -17,6 +17,9 @@ export function resolveFuncFlatTypes(descriptor: TypeRef | TypeDescription | str
     if (descriptor.kind === 'map') {
         return ['cell'];
     }
+    if (descriptor.kind === 'bounced') {
+        throw Error("Unimplemented");
+    }
     if (descriptor.kind === 'void') {
         throw Error('Void type is not allowed in function arguments');
     }

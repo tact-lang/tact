@@ -195,12 +195,6 @@ PROGRAM{
   ?fun_2 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
-    s1 PUSH
-    <{
-      32 PUSHINT
-      SDSKIPFIRST
-    }> PUSHCONT
-    IF
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -214,6 +208,8 @@ PROGRAM{
     s0 s2 XCHG
     <{
       s1 POP
+      32 PUSHINT
+      SDSKIPFIRST
       s0 POP
       -1 PUSHINT
     }> PUSHCONT

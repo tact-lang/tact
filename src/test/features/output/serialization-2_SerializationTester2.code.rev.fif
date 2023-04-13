@@ -123,12 +123,6 @@ PROGRAM{
     1 9 BLKSWAP
   }>
   ?fun_1 PROCREF:<{
-    s1 PUSH
-    <{
-      32 PUSHINT
-      SDSKIPFIRST
-    }> PUSHCONT
-    IF
     0 PUSHINT
     s1 PUSH
     SBITS

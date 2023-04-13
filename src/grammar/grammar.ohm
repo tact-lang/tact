@@ -24,6 +24,7 @@ Tact {
     Type = typeLiteral "?" --optional
          | typeLiteral --required
          | "map" "<" typeLiteral "," typeLiteral ">" --map
+         | "bounced" "<" typeLiteral ">" --bounced
     Field = id ":" Type ";" --default
           | id ":" Type "=" Expression ";" --defaultWithInit
           | id ":" Type as id ";" --withSerialization
@@ -67,13 +68,11 @@ Tact {
     Function = FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
              | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
     FunctionArg = id ":" Type
-    BouncedFunctionArg = id ":" "bounced<" Type ">"
     
     ReceiveFunction = "receive" "(" FunctionArg ")" "{" Statement* "}" --simple
                     | "receive" "(" ")" "{" Statement* "}" --empty
                     | "receive" "(" stringLiteral ")" "{" Statement* "}" --comment
-                    | "bounced" "(" FunctionArg ")" "{" Statement* "}" --bouncedSlice
-                    | "bounced" "(" BouncedFunctionArg ")" "{" Statement* "}" --bouncedSimple
+                    | "bounced" "(" FunctionArg ")" "{" Statement* "}" --bounced
                     | "external" "(" FunctionArg ")" "{" Statement* "}" --externalSimple
                     | "external" "(" stringLiteral ")" "{" Statement* "}" --externalComment
                     | "external" "(" ")" "{" Statement* "}" --externalEmpty

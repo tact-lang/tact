@@ -27,6 +27,7 @@ import { consoleLogger } from '../src/logger';
 
     // Compile test contracts
     for (let p of [{ path: path.resolve(__dirname, '..', 'src', 'test', 'contracts') }]) {
+        if (!p.path.includes("bounced")) continue
         let recs = fs.readdirSync(p.path);
         for (let r of recs) {
             if (!r.endsWith('.tact')) {

@@ -243,8 +243,6 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
 export function writeBouncedParser(name: string, forceInline: boolean, allocation: StorageAllocation, origin: TypeOrigin, ctx: WriterContext) {
     let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
-    name = fromBounced(name); // For func syntax purposes, remove %%BOUNCED%%
-
     ctx.fun(ops.readerBounced(name, ctx), () => {
         ctx.signature(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) ${ops.readerBounced(name, ctx)}(slice sc_0)`);
         if (forceInline || isSmall) {

@@ -238,12 +238,6 @@ PROGRAM{
     SENDRAWMSG
   }>
   ?fun_2 PROCREF:<{
-    s1 PUSH
-    <{
-      32 PUSHINT
-      SDSKIPFIRST
-    }> PUSHCONT
-    IF
     0 PUSHINT
     s1 PUSH
     SBITS

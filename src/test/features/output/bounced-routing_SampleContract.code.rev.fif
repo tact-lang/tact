@@ -227,12 +227,6 @@ PROGRAM{
   ?fun_2 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
-    s1 PUSH
-    <{
-      32 PUSHINT
-      SDSKIPFIRST
-    }> PUSHCONT
-    IF
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -245,7 +239,11 @@ PROGRAM{
     IF
     s0 s2 XCHG
     <{
-      s0 s1 XCHG
+      s1 POP
+      32 PUSHINT
+      SDSKIPFIRST
+      s0 PUSH
+      32 PLDU
       3200290616 PUSHINT
       EQUAL
       <{

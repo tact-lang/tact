@@ -1,5 +1,5 @@
 import { CompilerContext, createContextStore } from "../context";
-import { getAllTypes, getType } from "../types/resolveDescriptors";
+import { getAllTypes, getType, toBounced } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { topologicalSort } from "../utils/utils";
 import { StorageAllocation } from "./StorageAllocation";
@@ -23,8 +23,8 @@ export function getAllocations(ctx: CompilerContext) {
 }
 
 export function getSortedTypes(ctx: CompilerContext) {
-    let types = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'struct' || v.kind === 'contract' || v.kind === 'partial_struct');
-    let structs = types.filter(t => t.kind === 'struct' || t.kind === 'partial_struct');
+    let types = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'struct' || v.kind === 'contract');
+    let structs = types.filter(t => t.kind === 'struct');
     let refs = (src: TypeDescription) => {
         let res: TypeDescription[] = []
         let t = new Set<string>();
@@ -92,7 +92,52 @@ export function resolveAllocations(ctx: CompilerContext) {
                 refs: root.size.refs + reserveRefs
             }
         };
+        
         ctx = store.set(ctx, s.name, allocation);
+    }
+    
+    // TODO NOT SURE ABOUT THIS
+    for (let s of types) {
+
+        // Reserve bits
+        let reserveBits = 0;
+        let header: { value: number, bits: number } | null = null;
+        if (s.header !== null) {
+            reserveBits += 32; // Header size
+            header = { value: s.header, bits: 32 };
+        }
+
+        // Reserver refs
+        let reserveRefs = 0;
+        if (s.kind === 'contract') {
+            reserveRefs += 1; // Internal state
+        }
+
+        // Convert fields
+        let ops: AllocationOperation[] = [];
+        for (let f of s.partialFields) {
+            ops.push({
+                name: f.name,
+                type: f.abi.type,
+                op: getAllocationOperationFromField(f.abi.type, (name) => getAllocation(ctx, name)!.size)
+            });
+        }
+
+        // Perform allocation
+        let root = allocate({ ops, reserved: { bits: reserveBits, refs: reserveRefs } });
+
+        // Store allocation
+        let allocation: StorageAllocation = {
+            ops,
+            root,
+            header,
+            size: {
+                bits: root.size.bits + reserveBits,
+                refs: root.size.refs + reserveRefs
+            }
+        };
+        
+        ctx = store.set(ctx, toBounced(s.name), allocation);
     }
 
     // Generate init allocations

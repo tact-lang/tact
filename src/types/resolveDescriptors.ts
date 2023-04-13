@@ -8,6 +8,7 @@ import { resolveConstantValue } from "./resolveConstantValue";
 import { resolveABIType } from "./resolveABITypeRef";
 import { Address, Cell } from "ton-core";
 import { enabledExternals } from "../config/features";
+import { Type } from "js-yaml";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -40,6 +41,14 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
             value: v
         };
     }
+    if (src.kind === 'type_ref_bounced') {
+        throw Error("Unimplemented");
+        // return {
+        //     kind: 'bounced',
+        //     name: src.name
+        //     // TODO resolve here the partial type?
+        // }
+    }
     throw Error('Invalid type ref');
 }
 
@@ -57,6 +66,9 @@ export function resolveTypeRefUnsafe(src: ASTTypeRef): TypeRef {
             key: src.key,
             value: src.value
         };
+    }
+    if (src.kind === 'type_ref_bounced') {
+        throw Error("Unimplemented");
     }
     throw Error('Invalid type ref');
 }
@@ -84,6 +96,9 @@ function buildTypeRef(src: ASTTypeRef, types: { [key: string]: TypeDescription }
             key: src.key,
             value: src.value
         };
+    }
+    if (src.kind === 'type_ref_bounced') {
+        throw Error("Unimplemented");
     }
 
     throw Error('Unknown type ref');
@@ -133,6 +148,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ast: a,
                 interfaces: [],
                 constants: [],
+                partialFields: []
             };
         } else if (a.kind === 'def_contract') {
             types[a.name] = {
@@ -152,6 +168,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ast: a,
                 interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
                 constants: [],
+                partialFields: []
             };
         } else if (a.kind === 'def_struct') {
             types[a.name] = {
@@ -171,6 +188,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ast: a,
                 interfaces: [],
                 constants: [],
+                partialFields: []
             };
         } else if (a.kind === 'def_trait') {
             types[a.name] = {
@@ -190,6 +208,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ast: a,
                 interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
                 constants: [],
+                partialFields: []
             };
         }
     }
@@ -595,15 +614,17 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     } else if (d.selector.kind === 'bounce') {
                         const arg = d.selector.arg;
 
-                        if (arg.type.kind !== 'type_ref_simple') {
-                            throwError('Bounce receive function can only accept message', d.ref);
-                        }
-                        if (arg.type.optional) {
-                            throwError('Bounce receive function cannot have optional argument', d.ref);
+                        // TODO improve error checking
+                        if (!(arg.type.kind === 'type_ref_simple' || arg.type.kind === "type_ref_bounced")) {
+                            throwError('Bounce receive function can only accept either Slice or bounced<T> types', d.ref);
                         }
 
                         let t = types[arg.type.name];
-                        const isGeneric = t.kind === 'primitive' && t.name === 'Slice';
+                        const isGeneric = arg.type.kind === "type_ref_simple" && t.kind === 'primitive' && t.name === 'Slice';
+
+                        if (arg.type.kind === 'type_ref_simple' && arg.type.optional) {
+                            throwError('Bounce receive function cannot have optional argument', d.ref);
+                        }
 
                         // Check type
                         if (!isGeneric) {
@@ -619,13 +640,20 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         }
 
                         // Check for duplicate
-                        const n = arg.type.name;
-                        if (s.receivers.find((v) => v.selector.kind === 'internal-bounce' && v.selector.type === n)) {
+
+                        const typeRef: TypeRef = {
+                            kind: isGeneric ? 'ref' : 'bounced', 
+                            name: arg.type.name,
+                            optional: arg.type.kind === 'type_ref_simple' ? arg.type.optional : false,
+                        };
+
+                        if (s.receivers.find((v) => v.selector.kind === 'internal-bounce' && typeRefEquals(typeRef, v.selector.type))) {
                             throwError(`Bounce receive function for ${arg.type.name} already exists`, d.ref);
                         }
                         
+                        // TODO not happy about this b/c ideally we'd use resolveTypeRef, but it's not available yet at this point
                         s.receivers.push({
-                            selector: { kind: 'internal-bounce', name: arg.name, type: arg.type.name, isGeneric },
+                            selector: { kind: 'internal-bounce', name: arg.name, type: typeRef },
                             ast: d
                         });
                     } else {
@@ -955,6 +983,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     //
+    // Populate partial serialization info
+    //
+    for (let t in types) {
+        types[t].partialFields = resolvePartialFields(ctx, types[t])
+    }
+
+    //
     // Register types and functions in context
     //
 
@@ -1019,76 +1054,109 @@ export function getAllStaticConstants(ctx: CompilerContext) {
     return staticConstantsStore.all(ctx);
 }
 
-export function resolvePartialStructs(ctx: CompilerContext) {
-    let ast = getRawAST(ctx);
-    const types = getAllTypes(ctx);
-    const typesWithBounceFunction: { [key: string]: boolean} = {}
+export function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
+    if (type.kind !== 'struct') return [];
 
-    for (const a of ast.types) {
-        if (a.kind === 'def_contract' || a.kind === 'def_trait') {
-            store.get(ctx, a.name)?.receivers.forEach((r) => {
-                if (r.selector.kind === 'internal-bounce' && !r.selector.isGeneric) {
-                    typesWithBounceFunction[r.selector.type] = true;
-                }
-            });
+    const partialFields = [];
+
+    let remainingBits = 224;
+
+    for (const f of type.fields) {
+        // dicts are unsupported
+        if (f.abi.type.kind !== "simple") break;
+
+        let fieldBits = f.abi.type.optional ? 1 : 0;
+        if (Number.isInteger(f.abi.type.format)) {
+            fieldBits += f.abi.type.format as number;
+        } else if (f.abi.type.format === "coins") {
+            fieldBits += 124;
+        } else if (f.abi.type.type === "address") {
+            fieldBits += 267;
+        } else if (f.abi.type.type === "bool") {
+            fieldBits += 1;
+        } else {
+            // Unsupported - all others (slice, builder, nested structs, maps)
+            break;
+        }
+
+        if (remainingBits - fieldBits >= 0) {
+            remainingBits -= fieldBits;
+            partialFields.push(f);
+        } else {
+            break;
         }
     }
 
-    for (let a of ast.types) {
-        if (a.kind === "def_struct" && a.message && typesWithBounceFunction[a.name]) {
-            let remainingBits = 224;
-            
-            const originalType = store.get(ctx, a.name)!;
-            const newTypeName = toBounced(originalType.name);
-
-            const newType: TypeDescription = {
-                kind: 'partial_struct',
-                origin: originalType.origin,
-                name: newTypeName,
-                uid: uidForName(newTypeName, getAllTypes(ctx)),
-                header: originalType.header,
-                tlb: null,
-                signature: null,
-                fields: [],
-                traits: [],
-                functions: new Map(),
-                receivers: [],
-                dependsOn: originalType.dependsOn,
-                init: null,
-                ast: a,
-                interfaces: [],
-                constants: [],
-            };
-
-            for (const f of originalType.fields) {
-                // dicts are unsupported
-                if (f.abi.type.kind !== "simple") break;
-
-                let fieldBits = f.abi.type.optional ? 1 : 0;
-                if (Number.isInteger(f.abi.type.format)) {
-                    fieldBits += f.abi.type.format as number;
-                } else if (f.abi.type.format === "coins") {
-                    fieldBits += 124;
-                } else if (f.abi.type.type === "address") {
-                    fieldBits += 267;
-                } else if (f.abi.type.type === "bool") {
-                    fieldBits += 1;
-                } else {
-                    // Unsupported - all others (slice, builder, nested structs, maps)
-                    break;
-                }
-
-                if (remainingBits - fieldBits >= 0) {
-                   remainingBits -= fieldBits;
-                   newType.fields.push(f);
-                } else {
-                    break;
-                }
-            }
-
-            ctx = store.set(ctx, newTypeName, newType);
-        }
-    }
+    return partialFields;
     
-    return ctx;
+    // let ast = getRawAST(ctx);
+    // const typesWithBounceFunction: { [key: string]: boolean} = {}
+
+    // for (const a of ast.types) {
+    //     if (a.kind === 'def_contract' || a.kind === 'def_trait') {
+    //         store.get(ctx, a.name)?.receivers.forEach((r) => {
+    //             if (r.selector.kind === 'internal-bounce' && !r.selector.isGeneric) {
+    //                 typesWithBounceFunction[r.selector.type] = true;
+    //             }
+    //         });
+    //     }
+    // }
+
+    // for (let a of ast.types) {
+    //     if (a.kind === "def_struct" && a.message && typesWithBounceFunction[a.name]) {
+    //         let remainingBits = 224;
+            
+    //         const originalType = store.get(ctx, a.name)!;
+    //         const newTypeName = toBounced(originalType.name);
+
+    //         const newType: TypeDescription = {
+    //             kind: 'partial_struct',
+    //             origin: originalType.origin,
+    //             name: newTypeName,
+    //             uid: uidForName(newTypeName, getAllTypes(ctx)),
+    //             header: originalType.header,
+    //             tlb: null,
+    //             signature: null,
+    //             fields: [],
+    //             traits: [],
+    //             functions: new Map(),
+    //             receivers: [],
+    //             dependsOn: originalType.dependsOn,
+    //             init: null,
+    //             ast: a,
+    //             interfaces: [],
+    //             constants: [],
+    //         };
+
+    //         for (const f of originalType.fields) {
+    //             // dicts are unsupported
+    //             if (f.abi.type.kind !== "simple") break;
+
+    //             let fieldBits = f.abi.type.optional ? 1 : 0;
+    //             if (Number.isInteger(f.abi.type.format)) {
+    //                 fieldBits += f.abi.type.format as number;
+    //             } else if (f.abi.type.format === "coins") {
+    //                 fieldBits += 124;
+    //             } else if (f.abi.type.type === "address") {
+    //                 fieldBits += 267;
+    //             } else if (f.abi.type.type === "bool") {
+    //                 fieldBits += 1;
+    //             } else {
+    //                 // Unsupported - all others (slice, builder, nested structs, maps)
+    //                 break;
+    //             }
+
+    //             if (remainingBits - fieldBits >= 0) {
+    //                remainingBits -= fieldBits;
+    //                newType.fields.push(f);
+    //             } else {
+    //                 break;
+    //             }
+    //         }
+
+    //         // ctx = store.set(ctx, newTypeName, newType);
+    //     }
+    // }
+    
+    // return ctx;
 }

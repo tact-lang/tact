@@ -347,11 +347,6 @@ PROGRAM{
   $B$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
-    OVER
-    IF:<{
-      32 PUSHINT
-      SDSKIPFIRST
-    }>
     0 PUSHINT
     OVER
     SBITS

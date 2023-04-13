@@ -227,12 +227,6 @@ PROGRAM{
   ?fun_1 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
-    s1 PUSH
-    <{
-      32 PUSHINT
-      SDSKIPFIRST
-    }> PUSHCONT
-    IF
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -298,12 +292,10 @@ PROGRAM{
       ?fun_3 INLINECALLDICT
       s0 POP
       -1 PUSHINT
-    }> IFJMPREF
+    }> PUSHCONT
+    IFJMP
     s0 s1 XCHG
     0 EQINT
-    <{
-      s0 POP
-    }> PUSHCONT
     <{
       HASHSU
       68942673587165287250091431766268285359585855031594722650534428464957340454221 PUSHINT
@@ -316,7 +308,11 @@ PROGRAM{
         RETFALSE
       }> PUSHCONT
       IFJMP
-    }> IFREFELSE
+    }> PUSHCONT
+    <{
+      s0 POP
+    }> PUSHCONT
+    IFELSE
     0 PUSHINT
   }>
   recv_internal PROC:<{

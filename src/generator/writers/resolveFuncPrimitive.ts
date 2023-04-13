@@ -15,6 +15,9 @@ export function resolveFuncPrimitive(descriptor: TypeRef | TypeDescription | str
     if (descriptor.kind === 'map') {
         return true;
     }
+    if (descriptor.kind === 'bounced') {
+        throw Error("Unimplemented");
+    }
     if (descriptor.kind === 'void') {
         return true;
     }

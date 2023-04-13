@@ -439,11 +439,6 @@ PROGRAM{
   $Wallet$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
-    OVER
-    IF:<{
-      32 PUSHINT
-      SDSKIPFIRST
-    }>
     0 PUSHINT
     OVER
     SBITS
@@ -456,6 +451,8 @@ PROGRAM{
     s0 s2 XCHG
     IFJMP:<{
       NIP
+      32 PUSHINT
+      SDSKIPFIRST
       $Wallet$_receive_binary_bounce_Slice INLINECALLDICT
       TRUE
     }>

@@ -28,7 +28,7 @@ describe('feature-strings', () => {
             amountToAdd: 10n,
             toAddress: contract2.address
         });
-        console.log(await system.run());
+        await system.run()
 
         expect(await contract.getAmount()).toBe(98n);
     });

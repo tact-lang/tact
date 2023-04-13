@@ -1,6 +1,6 @@
 import { CompilerContext } from "../context";
 import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
-import { getAllStaticFunctions, getAllTypes } from "../types/resolveDescriptors";
+import { getAllStaticFunctions, getAllTypes, toBounced } from "../types/resolveDescriptors";
 import { WriterContext, WrittenFunction } from "./Writer";
 import { writeBouncedParser, writeOptionalParser, writeOptionalSerializer, writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
@@ -135,7 +135,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     for (let t of types) {
 
         let ffs: WrittenFunction[] = [];
-        if (t.kind === 'struct' || t.kind === 'contract' || t.kind == 'trait' || t.kind === 'partial_struct') {
+        if (t.kind === 'struct' || t.kind === 'contract' || t.kind == 'trait') {
             const typeFunctions = tryExtractModule(functions, 'type:' + t.name, imported);
             if (typeFunctions) {
                 imported.push('type:' + t.name);
@@ -269,14 +269,12 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
     for (let t of sortedTypes) {
         if (t.kind === 'contract' || t.kind === 'struct') {
             let allocation = getAllocation(ctx, t.name);
+            let allocationBounced = getAllocation(ctx, toBounced(t.name));
             writeSerializer(t.name, t.kind === 'contract', allocation, t.origin, wctx);
             writeOptionalSerializer(t.name, t.origin, wctx);
             writeParser(t.name, t.kind === 'contract', allocation, t.origin, wctx);
             writeOptionalParser(t.name, t.origin, wctx);
-        }
-        if (t.kind === 'partial_struct') {
-            let allocation = getAllocation(ctx, t.name);
-            writeBouncedParser(t.name, false, allocation, t.origin, wctx);
+            writeBouncedParser(t.name, t.kind === 'contract', allocationBounced, t.origin, wctx);
         }
     }
 

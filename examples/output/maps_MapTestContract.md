@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MapTestContract
-BOC Size: 1793 bytes
+BOC Size: 1786 bytes
 
 # Types
 Total Types: 12

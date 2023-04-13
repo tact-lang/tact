@@ -63,6 +63,7 @@ contract SampleContract {
         // only the first 224 bits are populated into a partial First struct
         let y: Bool = msg.myBool3;
         self.a = self.a + msg.amount - 2;
+        // let z: Address = msg.anAddress;
     }
 
     // This will be supported in a future commit, and will throw if the string does not fit within a bounced message

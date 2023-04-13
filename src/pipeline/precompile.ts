@@ -1,5 +1,5 @@
 import { CompilerContext } from "../context";
-import { resolveDescriptors, getAllTypes, resolvePartialStructs } from '../types/resolveDescriptors';
+import { resolveDescriptors } from '../types/resolveDescriptors';
 import { resolveAllocations } from "../storage/resolveAllocation";
 import { openContext } from "../grammar/store";
 import { resolveStatements } from "../types/resolveStatements";
@@ -23,9 +23,6 @@ export function precompile(ctx: CompilerContext, project: VirtualFileSystem, std
 
     // This creates TLB-style type definitions
     ctx = resolveSignatures(ctx);
-
-    // Add partial structs for bounced receivers
-    ctx = resolvePartialStructs(ctx);
 
     // This creates allocations for all defined types
     ctx = resolveAllocations(ctx);
