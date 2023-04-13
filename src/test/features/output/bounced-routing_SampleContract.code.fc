@@ -47,6 +47,13 @@
     return (($self'a), ());
 }
 
+(((int)), ()) $SampleContract$_internal_binary_First((int) $self, (int, int, int, slice) $msg) impure inline {
+    var ($self'a) = $self;
+    var ($msg'amount, $msg'myCoins, $msg'myBool3, $msg'anAddress) = $msg;
+    var ($x'amount, $x'myCoins, $x'myBool3, $x'anAddress) = ($msg'amount, $msg'myCoins, $msg'myBool3, $msg'anAddress);
+    return (($self'a), ());
+}
+
 (((int)), ()) $SampleContract$_internal_binary_Second((int) $self, (int, int, int, slice, int, (int), (int)) $msg) impure inline {
     var ($self'a) = $self;
     var ($msg'amount_bigger, $msg'myBool, $msg'thisDoesNotFit, $msg'myAddress, $msg'myBool2, ($msg'myStruct'amount), ($msg'myStruct2'amount)) = $msg;
@@ -71,6 +78,7 @@
     __tact_debug_str(__gen_slice_string_243957683affad975f13b5d1da712eeeb40eaaafd138959df55425441c233292());
     int $y = $msg'myBool3;
     $self'a = (($self'a + $msg'amount) - 2);
+    (int, int, int) $z = ($msg'amount, $msg'myCoins, $msg'myBool3);
     return (($self'a), ());
 }
 
@@ -103,7 +111,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmVhFb4ULknqxFVkaWrTGgk87bbKLg6Jz9i4Km6xTu4gUk";
+    return "ipfs://QmRqSCV7gjfraGbTi8NDyxM1BGKQYDossstXAEz2ZLQDZu";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -169,6 +177,13 @@ _ lazy_deployment_completed() method_id {
     if (op == 4282440720) {
         var msg = in_msg~$EntrySecond$_load();
         self~$SampleContract$_internal_binary_EntrySecond(msg);
+        return (self, true);
+    }
+    
+    ;; Receive First message
+    if (op == 3200290616) {
+        var msg = in_msg~$First$_load();
+        self~$SampleContract$_internal_binary_First(msg);
         return (self, true);
     }
     

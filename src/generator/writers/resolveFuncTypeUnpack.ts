@@ -6,12 +6,12 @@ export function resolveFuncTypeUnpack(descriptor: TypeRef | TypeDescription | st
 
     // String
     if (typeof descriptor === 'string') {
-        return resolveFuncTypeUnpack(getType(ctx.ctx, descriptor), name, ctx);
+        return resolveFuncTypeUnpack(getType(ctx.ctx, descriptor), name, ctx, false, usePartialFields);
     }
 
     // TypeRef
     if (descriptor.kind === 'ref') {
-        return resolveFuncTypeUnpack(getType(ctx.ctx, descriptor.name), name, ctx, descriptor.optional);
+        return resolveFuncTypeUnpack(getType(ctx.ctx, descriptor.name), name, ctx, descriptor.optional, usePartialFields);
     }
     if (descriptor.kind === 'map') {
         return name;

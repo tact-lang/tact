@@ -6,12 +6,12 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, 
 
     // String
     if (typeof descriptor === 'string') {
-        return resolveFuncType(getType(ctx.ctx, descriptor), ctx, false);
+        return resolveFuncType(getType(ctx.ctx, descriptor), ctx, false, usePartialFields);
     }
 
     // TypeRef
     if (descriptor.kind === 'ref') {
-        return resolveFuncType(getType(ctx.ctx, descriptor.name), ctx, descriptor.optional);
+        return resolveFuncType(getType(ctx.ctx, descriptor.name), ctx, descriptor.optional, usePartialFields);
     }
     if (descriptor.kind === 'map') {
         return 'cell';

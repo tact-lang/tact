@@ -57,6 +57,15 @@ cell $First$_store_cell((int, int, int, slice) v) inline {
     return $First$_store(begin_cell(), v).end_cell();
 }
 
+(slice, ((int, int, int, slice))) $First$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3200290616);
+    var v'amount = sc_0~load_uint(32);
+    var v'myCoins = sc_0~load_coins();
+    var v'myBool3 = sc_0~load_int(1);
+    var v'anAddress = sc_0~__tact_load_address();
+    return (sc_0, (v'amount, v'myCoins, v'myBool3, v'anAddress));
+}
+
 (slice, ((int, int, int))) $First$_load_bounced(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 3200290616);
     var v'amount = sc_0~load_uint(32);

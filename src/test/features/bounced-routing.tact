@@ -62,6 +62,11 @@ contract SampleContract {
         });
     }
     
+    receive(msg: First) {
+        // do something with the Second struct
+        let x: First = msg;
+    }
+
     receive(msg: Second) {
         // do something with the Second struct
     }
@@ -80,6 +85,7 @@ contract SampleContract {
         let y: Bool = msg.myBool3;
         self.a = self.a + msg.amount - 2;
         // let z: Address = msg.anAddress; This would throw
+        let z: bounced<First> = msg;
     }
     
     bounced(msg: bounced<Second>) {

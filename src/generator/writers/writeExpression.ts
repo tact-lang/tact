@@ -160,7 +160,10 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         }
 
         if (t.kind === 'ref_bounced') {
-            throw Error('Unimplemented');
+            let tt = getType(ctx.ctx, t.name);
+            if (tt.kind === 'struct') {
+                return resolveFuncTypeUnpack(t, id(f.value), ctx, false, true);
+            }
         }
 
         // Handle constant

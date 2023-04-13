@@ -324,7 +324,7 @@ export function createABITypeRefFromTypeRef(src: TypeRef, ref: ASTRef): ABITypeR
     }
 
     if (src.kind === 'ref_bounced') {
-        throw Error("Unimplemented");
+        throw Error("Unexpected bounced reference");
     }
 
     throw Error(`Unsupported type`);
