@@ -374,6 +374,8 @@ PROGRAM{
   $Beacon$_contract_router_internal PROCREF:<{
     SWAP
     IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
       $Beacon$_receive_bounce INLINECALLDICT
       TRUE
     }>

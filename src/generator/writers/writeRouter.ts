@@ -27,7 +27,7 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
 
                     // Remove prefix
                     ctx.append(`;; Skip 0xFFFFFFFF`);
-                    ctx.append(`in_msg.skip_bits(32);`);
+                    ctx.append(`in_msg~skip_bits(32);`);
                     ctx.append();
 
                     // Process

@@ -877,6 +877,8 @@ PROGRAM{
   $JettonDefaultWallet$_contract_router_internal PROCREF:<{
     SWAP
     IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
       $JettonDefaultWallet$_receive_bounce INLINECALLDICT
       TRUE
     }>

@@ -441,6 +441,8 @@ PROGRAM{
     SAMEALTSAVE
     SWAP
     IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
       $Wallet$_receive_bounce INLINECALLDICT
       TRUE
     }>
