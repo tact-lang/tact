@@ -52,6 +52,9 @@ builder $Treasure$_store(builder build_0, (slice) v) inline;
 ;; $Treasure$_load
 (slice, ((slice))) $Treasure$_load(slice sc_0) inline;
 
+;; $StateInit$_not_null
+((cell, cell)) $StateInit$_not_null(tuple v) inline;
+
 ;; $Treasure$init$_load
 (slice, ((slice))) $Treasure$init$_load(slice sc_0) inline;
 
@@ -76,11 +79,11 @@ builder $Treasure$_store(builder build_0, (slice) v) inline;
 ;; $Treasure$_fun_doWithdraw
 ((slice), ()) $Treasure$_fun_doWithdraw((slice) $self, int $amount, int $mode) impure inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
 
 ;; $Treasure$_fun_forward
-((slice), ()) $Treasure$_fun_forward((slice) $self, slice $to, cell $body) impure inline_ref;
+((slice), ()) $Treasure$_fun_forward((slice) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
 ;; $Treasure$_fun_reply
 ((slice), ()) $Treasure$_fun_reply((slice) $self, cell $body) impure inline;

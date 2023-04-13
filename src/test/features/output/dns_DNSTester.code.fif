@@ -9,6 +9,7 @@ PROGRAM{
   DECLPROC $Deploy$_load
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
+  DECLPROC $StateInit$_not_null
   DECLPROC $DNSResolveResult$_to_external
   DECLPROC $DNSTester$_contract_init
   DECLPROC $DNSTester$_contract_load
@@ -23,9 +24,9 @@ PROGRAM{
   DECLPROC $DNSTester$_fun_dnsExtractTopDomain
   DECLPROC $DNSResolveResult$_constructor_prefix_record
   DECLPROC $DNSTester$_fun_doResolveDNS
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $DNSTester$_fun_forward
-  DECLPROC $DNSTester$_fun_reply
+  DECLPROC $DNSTester$_fun_notify
   DECLPROC $DNSTester$_fun_dnsresolve
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC dns_string_to_internal
@@ -107,6 +108,12 @@ PROGRAM{
     SWAP
     $DeployOk$_store INLINECALLDICT
     ENDC
+  }>
+  $StateInit$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
   }>
   $DNSResolveResult$_to_external PROCINLINE:<{
   }>
@@ -300,23 +307,35 @@ PROGRAM{
     ENDC
     $DNSResolveResult$_constructor_prefix_record INLINECALLDICT
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
+  $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
   $DNSTester$_fun_forward PROCREF:<{
-    TRUE
-    s0 s2 XCHG
+    PUSHNULL
+    PUSHNULL
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      2DROP
+      $StateInit$_not_null INLINECALLDICT
+      SWAP
+    }>ELSE<{
+      s2 POP
+    }>
+    s2 s4 XCHG
     0 PUSHINT
-    ROT
+    s0 s3 XCHG
+    s0 s4 XCHG
     66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    s2 s3 XCHG2
+    $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $DNSTester$_fun_reply PROCINLINE:<{
+  $DNSTester$_fun_notify PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     SWAP
+    FALSE
+    PUSHNULL
     $DNSTester$_fun_forward INLINECALLDICT
   }>
   $DNSTester$_fun_dnsresolve PROCREF:<{
@@ -671,7 +690,7 @@ PROGRAM{
   $DNSTester$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $DNSTester$_fun_reply INLINECALLDICT
+    $DNSTester$_fun_notify INLINECALLDICT
   }>
   %stringToInternal PROC:<{
     $DNSTester$_contract_load INLINECALLDICT

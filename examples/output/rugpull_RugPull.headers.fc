@@ -55,6 +55,9 @@ builder $RugPull$_store(builder build_0, (slice, int, int, int, int, int, int, i
 ;; $RugPull$_load
 (slice, ((slice, int, int, int, int, int, int, int, int, cell))) $RugPull$_load(slice sc_0) inline;
 
+;; $StateInit$_not_null
+((cell, cell)) $StateInit$_not_null(tuple v) inline;
+
 ;; $RugParams$_to_external
 (int, int, int) $RugParams$_to_external(((int, int, int)) v) inline;
 
@@ -85,11 +88,11 @@ builder $RugPull$_store(builder build_0, (slice, int, int, int, int, int, int, i
 ;; $RugPull$_fun_params
 ((slice, int, int, int, int, int, int, int, int, cell), (int, int, int)) $RugPull$_fun_params((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
 
 ;; $RugPull$_fun_forward
-((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_fun_forward((slice, int, int, int, int, int, int, int, int, cell) $self, slice $to, cell $body) impure inline_ref;
+((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_fun_forward((slice, int, int, int, int, int, int, int, int, cell) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
 ;; $RugPull$_fun_reply
 ((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_fun_reply((slice, int, int, int, int, int, int, int, int, cell) $self, cell $body) impure inline;

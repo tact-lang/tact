@@ -82,7 +82,6 @@ _ lazy_deployment_completed() method_id {
 ;;
 
 ((slice, slice, int), int) $Beacon$_contract_router_internal((slice, slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
-    
     ;; Handle bounced messages
     if (msg_bounced) {
         ;; Skip 0xFFFFFFFF
@@ -104,6 +103,7 @@ _ lazy_deployment_completed() method_id {
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    
     
     ;; Receive CanPayout message
     if (op == 3289991647) {

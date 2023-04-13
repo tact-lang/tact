@@ -49,6 +49,9 @@ builder $External$_store(builder build_0, (slice, int) v) inline;
 ;; $External$_load
 (slice, ((slice, int))) $External$_load(slice sc_0) inline;
 
+;; $StateInit$_not_null
+((cell, cell)) $StateInit$_not_null(tuple v) inline;
+
 ;; $External$init$_load
 (slice, ((slice))) $External$init$_load(slice sc_0) inline;
 
@@ -64,14 +67,14 @@ builder $External$_store(builder build_0, (slice, int) v) inline;
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
 
 ;; $External$_fun_forward
-((slice, int), ()) $External$_fun_forward((slice, int) $self, slice $to, cell $body) impure inline_ref;
+((slice, int), ()) $External$_fun_forward((slice, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
-;; $External$_fun_reply
-((slice, int), ()) $External$_fun_reply((slice, int) $self, cell $body) impure inline;
+;; $External$_fun_notify
+((slice, int), ()) $External$_fun_notify((slice, int) $self, cell $body) impure inline;
 
 ;; $External$_fun_owner
 ((slice, int), slice) $External$_fun_owner((slice, int) $self) impure inline_ref;

@@ -79,6 +79,8 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
+forall X0, X1 -> (X0, X1) __tact_tuple_destroy_2(tuple v) asm "2 UNTUPLE";
+
 slice $global_contractAddress((cell, cell) $s) impure inline {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
@@ -173,24 +175,32 @@ slice $String$_fun_fromBase64(slice $self) impure inline {
     return $Slice$_fun_fromBase64(__tact_str_to_slice($self));
 }
 
-((slice, int), ()) $Payouts$_fun_forward((slice, int) $self, slice $to, cell $body) impure inline_ref {
+((slice, int), ()) $Payouts$_fun_forward((slice, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref {
     var (($self'owner, $self'publicKey)) = $self;
+    var ($init) = $init;
+    cell $code = null();
+    cell $data = null();
+    if ((~ null?($init))) {
+        var ($init2'code, $init2'data) = $StateInit$_not_null($init);
+        $code = $init2'code;
+        $data = $init2'data;
+    }
     if ((0 > 0)) {
         var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
         int $balance = __tact_my_balance();
         int $balanceBeforeMessage = ($balance - $ctx'value);
         if (($balanceBeforeMessage < 0)) {
             raw_reserve(0, 0);
-            $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, $to, 0, (128 + 2), $body));
+            $global_send($SendParameters$_constructor_bounce_to_value_mode_body_code_data($bounce, $to, 0, (128 + 2), $body, $code, $data));
             return (($self'owner, $self'publicKey), ());
         }
     }
-    $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, $to, 0, (64 + 2), $body));
+    $global_send($SendParameters$_constructor_bounce_to_value_mode_body_code_data($bounce, $to, 0, (64 + 2), $body, $code, $data));
     return (($self'owner, $self'publicKey), ());
 }
 
 ((slice, int), ()) $Payouts$_fun_reply((slice, int) $self, cell $body) impure inline {
     var (($self'owner, $self'publicKey)) = $self;
-    ($self'owner, $self'publicKey)~$Payouts$_fun_forward(__tact_context_get_sender(), $body);
+    ($self'owner, $self'publicKey)~$Payouts$_fun_forward(__tact_context_get_sender(), $body, true, null());
     return (($self'owner, $self'publicKey), ());
 }

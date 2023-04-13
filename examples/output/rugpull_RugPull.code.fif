@@ -15,6 +15,7 @@ PROGRAM{
   DECLPROC $ChangeOwnerOk$_store_cell
   DECLPROC $RugPull$_store
   DECLPROC $RugPull$_load
+  DECLPROC $StateInit$_not_null
   DECLPROC $RugParams$_to_external
   DECLPROC $RugPull$init$_load
   DECLPROC $RugPull$_contract_init
@@ -25,7 +26,7 @@ PROGRAM{
   DECLPROC $RugPull$_fun_sendPayout
   DECLPROC $RugParams$_constructor_investment_returns_fee
   DECLPROC $RugPull$_fun_params
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $RugPull$_fun_forward
   DECLPROC $RugPull$_fun_reply
   DECLPROC $RugPull$_fun_requireOwner
@@ -208,6 +209,12 @@ PROGRAM{
     s7 s10 XCHG
     s7 s9 XCHG
     s7 s8 XCHG
+  }>
+  $StateInit$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
   }>
   $RugParams$_to_external PROCINLINE:<{
   }>
@@ -392,23 +399,35 @@ PROGRAM{
     s8 s7 s6 PUSH3
     $RugParams$_constructor_investment_returns_fee INLINECALLDICT
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
+  $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
   $RugPull$_fun_forward PROCREF:<{
-    TRUE
-    s0 s2 XCHG
+    PUSHNULL
+    PUSHNULL
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      2DROP
+      $StateInit$_not_null INLINECALLDICT
+      SWAP
+    }>ELSE<{
+      s2 POP
+    }>
+    s2 s4 XCHG
     0 PUSHINT
-    ROT
+    s0 s3 XCHG
+    s0 s4 XCHG
     66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    s2 s3 XCHG2
+    $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
   $RugPull$_fun_reply PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     SWAP
+    TRUE
+    PUSHNULL
     $RugPull$_fun_forward INLINECALLDICT
   }>
   $RugPull$_fun_requireOwner PROCREF:<{

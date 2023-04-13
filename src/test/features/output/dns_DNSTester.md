@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: DNSTester
-BOC Size: 1258 bytes
+BOC Size: 1278 bytes
 
 # Types
 Total Types: 7

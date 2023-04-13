@@ -27,6 +27,7 @@ PROGRAM{
   DECLPROC $DeployOk$_store_cell
   DECLPROC $Maps$_store
   DECLPROC $Maps$_load
+  DECLPROC $StateInit$_not_null
   DECLPROC $Maps$init$_load
   DECLPROC $Maps$_contract_init
   DECLPROC $Maps$_contract_load
@@ -35,9 +36,9 @@ PROGRAM{
   DECLPROC $Maps$_fun_oneItem
   DECLPROC $Maps$_fun_itemCheck
   DECLPROC $Maps$_fun_allItems
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $Maps$_fun_forward
-  DECLPROC $Maps$_fun_reply
+  DECLPROC $Maps$_fun_notify
   DECLPROC $TokenInfo$_constructor_ticker_decimals
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $Maps$_internal_text_2db851a56a7d13c238a59783d8ff80cf1858df1504309cbd940f1daa4f32dec5
@@ -336,6 +337,12 @@ PROGRAM{
     s6 s8 XCHG
     s6 s7 XCHG
   }>
+  $StateInit$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
+  }>
   $Maps$init$_load PROCINLINE:<{
     LDDICT
     SWAP
@@ -514,23 +521,35 @@ PROGRAM{
   $Maps$_fun_allItems PROCREF:<{
     s3 PUSH
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
+  $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
   $Maps$_fun_forward PROCREF:<{
-    TRUE
-    s0 s2 XCHG
+    PUSHNULL
+    PUSHNULL
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      2DROP
+      $StateInit$_not_null INLINECALLDICT
+      SWAP
+    }>ELSE<{
+      s2 POP
+    }>
+    s2 s4 XCHG
     0 PUSHINT
-    ROT
+    s0 s3 XCHG
+    s0 s4 XCHG
     66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    s2 s3 XCHG2
+    $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $Maps$_fun_reply PROCINLINE:<{
+  $Maps$_fun_notify PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     SWAP
+    FALSE
+    PUSHNULL
     $Maps$_fun_forward INLINECALLDICT
   }>
   $TokenInfo$_constructor_ticker_decimals PROCINLINE:<{
@@ -664,7 +683,7 @@ PROGRAM{
   $Maps$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $Maps$_fun_reply INLINECALLDICT
+    $Maps$_fun_notify INLINECALLDICT
   }>
   %oneItem PROC:<{
     $Maps$_contract_load INLINECALLDICT

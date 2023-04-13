@@ -285,7 +285,6 @@ _ lazy_deployment_completed() method_id {
 ;;
 
 ((cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_contract_router_internal((cell, cell, cell, cell, cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
-    
     ;; Handle bounced messages
     if (msg_bounced) {
         ;; Skip 0xFFFFFFFF
@@ -304,6 +303,7 @@ _ lazy_deployment_completed() method_id {
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    
     
     ;; Receive SetIntMap1 message
     if (op == 1510253336) {

@@ -13,12 +13,13 @@ PROGRAM{
   DECLPROC $CanPayoutResponse$_store_cell
   DECLPROC $Beacon$_store
   DECLPROC $Beacon$_load
+  DECLPROC $StateInit$_not_null
   DECLPROC $Beacon$init$_load
   DECLPROC $Beacon$_contract_init
   DECLPROC $Beacon$_contract_load
   DECLPROC $Beacon$_contract_store
   DECLPROC $global_send
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $Beacon$_fun_forward
   DECLPROC $Beacon$_fun_reply
   DECLPROC $Beacon$_fun_owner
@@ -124,6 +125,12 @@ PROGRAM{
     SWAP
     1 LDI
     3 -ROLL
+  }>
+  $StateInit$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
   }>
   $Beacon$init$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
@@ -272,23 +279,35 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
+  $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
   $Beacon$_fun_forward PROCREF:<{
-    TRUE
-    s0 s2 XCHG
+    PUSHNULL
+    PUSHNULL
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      2DROP
+      $StateInit$_not_null INLINECALLDICT
+      SWAP
+    }>ELSE<{
+      s2 POP
+    }>
+    s2 s4 XCHG
     0 PUSHINT
-    ROT
+    s0 s3 XCHG
+    s0 s4 XCHG
     66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    s2 s3 XCHG2
+    $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
   $Beacon$_fun_reply PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     SWAP
+    TRUE
+    PUSHNULL
     $Beacon$_fun_forward INLINECALLDICT
   }>
   $Beacon$_fun_owner PROCREF:<{

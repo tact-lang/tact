@@ -12,6 +12,7 @@ PROGRAM{
   DECLPROC $DeployOk$_store_cell
   DECLPROC $A$_store
   DECLPROC $A$_load
+  DECLPROC $StateInit$_not_null
   DECLPROC $S$_to_external
   DECLPROC $A$init$_load
   DECLPROC $A$_contract_init
@@ -21,9 +22,9 @@ PROGRAM{
   DECLPROC $Int$_fun_inc
   DECLPROC $S$_constructor_v3_v2_v1
   DECLPROC $A$_fun_create
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $A$_fun_forward
-  DECLPROC $A$_fun_reply
+  DECLPROC $A$_fun_notify
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $A$_internal_binary_Deploy
   96687 DECLMETHOD %create
@@ -107,6 +108,12 @@ PROGRAM{
   }>
   $A$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
+  }>
+  $StateInit$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
   }>
   $S$_to_external PROCINLINE:<{
   }>
@@ -268,23 +275,35 @@ PROGRAM{
     NIP
     $S$_constructor_v3_v2_v1 INLINECALLDICT
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
+  $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
   $A$_fun_forward PROCREF:<{
-    TRUE
-    s0 s2 XCHG
+    PUSHNULL
+    PUSHNULL
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      2DROP
+      $StateInit$_not_null INLINECALLDICT
+      SWAP
+    }>ELSE<{
+      s2 POP
+    }>
+    s2 s4 XCHG
     0 PUSHINT
-    ROT
+    s0 s3 XCHG
+    s0 s4 XCHG
     66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    s2 s3 XCHG2
+    $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $A$_fun_reply PROCINLINE:<{
+  $A$_fun_notify PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     SWAP
+    FALSE
+    PUSHNULL
     $A$_fun_forward INLINECALLDICT
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
@@ -292,7 +311,7 @@ PROGRAM{
   $A$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $A$_fun_reply INLINECALLDICT
+    $A$_fun_notify INLINECALLDICT
   }>
   %create PROC:<{
     $A$_contract_load INLINECALLDICT

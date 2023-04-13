@@ -5,13 +5,13 @@ PROGRAM{
   DECLPROC lazy_deployment_completed;
   DECLPROC get_abi_ipfs;
   DECLPROC ?fun_ref_1b0a58ac40eae895;
-  DECLPROC ?fun_ref_3320c4413fc9206b;
+  DECLPROC ?fun_ref_3ab3a2f2480353ec;
   DECLPROC ?fun_ref_44086a5ce86162fe;
-  DECLPROC ?fun_ref_457ed784de722f7b;
   DECLPROC ?fun_ref_50a2a88ce95e1f87;
   DECLPROC ?fun_ref_7d7b7a07ccd0560c;
   DECLPROC ?fun_ref_909922a714a696d2;
   DECLPROC ?fun_ref_b93b9862cda1783c;
+  DECLPROC ?fun_ref_e31d986f279fa0fb;
   DECLPROC ?fun_ref_f0da61d556b8b726;
   recv_internal PROC:<{
     s0 s1 XCHG
@@ -46,7 +46,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_50a2a88ce95e1f87 INLINECALLDICT
     SWAP2
-    ?fun_ref_3320c4413fc9206b INLINECALLDICT
+    ?fun_ref_3ab3a2f2480353ec INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -207,7 +207,7 @@ PROGRAM{
     NULL
     ?fun_ref_b93b9862cda1783c INLINECALLDICT
   }>
-  ?fun_ref_3320c4413fc9206b PROCREF:<{
+  ?fun_ref_3ab3a2f2480353ec PROCREF:<{
     2 SAVE
     SAMEALTSAVE
     s0 s1 XCHG
@@ -415,7 +415,9 @@ PROGRAM{
       s1 s2 XCHG
       2 GETGLOBVAR
       s0 s1 XCHG
-      ?fun_ref_457ed784de722f7b INLINECALLDICT
+      -1 PUSHINT
+      NULL
+      ?fun_ref_e31d986f279fa0fb INLINECALLDICT
       -1 PUSHINT
     }> IFJMPREF
     0 EQINT
@@ -440,17 +442,6 @@ PROGRAM{
   }>
   ?fun_ref_44086a5ce86162fe PROCREF:<{
     s1 PUSH
-  }>
-  ?fun_ref_457ed784de722f7b PROCREF:<{
-    -1 PUSHINT
-    s0 s2 XCHG
-    0 PUSHINT
-    ROT
-    66 PUSHINT
-    s0 s1 XCHG
-    NULL
-    NULL
-    ?fun_ref_b93b9862cda1783c INLINECALLDICT
   }>
   ?fun_ref_50a2a88ce95e1f87 PROCREF:<{
     c4 PUSH
@@ -797,6 +788,32 @@ PROGRAM{
     ENDC
     s0 s1 XCHG
     SENDRAWMSG
+  }>
+  ?fun_ref_e31d986f279fa0fb PROCREF:<{
+    NULL
+    NULL
+    s2 PUSH
+    ISNULL
+    NOT
+    <{
+      DROP2
+      s0 PUSH
+      ISNULL
+      128 THROWIF
+      2 UNTUPLE
+      s0 s1 XCHG
+    }> PUSHCONT
+    <{
+      s2 POP
+    }> PUSHCONT
+    IFELSE
+    s2 s4 XCHG
+    0 PUSHINT
+    s0 s3 XCHG
+    s0 s4 XCHG
+    66 PUSHINT
+    s2 s3 XCHG2
+    ?fun_ref_b93b9862cda1783c INLINECALLDICT
   }>
   ?fun_ref_f0da61d556b8b726 PROCREF:<{
     s0 s2 XCHG

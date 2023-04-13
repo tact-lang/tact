@@ -22,6 +22,7 @@ PROGRAM{
   DECLPROC $Deploy$_load
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
+  DECLPROC $StateInit$_not_null
   DECLPROC $MathTester$_contract_init
   DECLPROC $MathTester$_contract_load
   DECLPROC $MathTester$_contract_store
@@ -61,9 +62,9 @@ PROGRAM{
   DECLPROC $MathTester$_fun_isNotNull2
   DECLPROC $MathTester$_fun_isNull3
   DECLPROC $MathTester$_fun_isNotNull3
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $MathTester$_fun_forward
-  DECLPROC $MathTester$_fun_reply
+  DECLPROC $MathTester$_fun_notify
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $MathTester$_internal_binary_Deploy
   83863 DECLMETHOD %add
@@ -374,6 +375,12 @@ PROGRAM{
     $DeployOk$_store INLINECALLDICT
     ENDC
   }>
+  $StateInit$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
+  }>
   $MathTester$_contract_init PROCREF:<{
     PUSHNULL
   }>
@@ -631,23 +638,35 @@ PROGRAM{
     ISNULL
     NOT
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
+  $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
   $MathTester$_fun_forward PROCREF:<{
-    TRUE
-    s0 s2 XCHG
+    PUSHNULL
+    PUSHNULL
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      2DROP
+      $StateInit$_not_null INLINECALLDICT
+      SWAP
+    }>ELSE<{
+      s2 POP
+    }>
+    s2 s4 XCHG
     0 PUSHINT
-    ROT
+    s0 s3 XCHG
+    s0 s4 XCHG
     66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    s2 s3 XCHG2
+    $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $MathTester$_fun_reply PROCINLINE:<{
+  $MathTester$_fun_notify PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     SWAP
+    FALSE
+    PUSHNULL
     $MathTester$_fun_forward INLINECALLDICT
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
@@ -655,7 +674,7 @@ PROGRAM{
   $MathTester$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $MathTester$_fun_reply INLINECALLDICT
+    $MathTester$_fun_notify INLINECALLDICT
   }>
   %add PROC:<{
     $MathTester$_contract_load INLINECALLDICT
