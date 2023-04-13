@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Debug
-BOC Size: 876 bytes
+BOC Size: 877 bytes
 
 # Types
 Total Types: 5

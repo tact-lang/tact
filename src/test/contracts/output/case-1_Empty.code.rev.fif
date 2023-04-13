@@ -32,15 +32,17 @@ PROGRAM{
     ?fun_1 INLINECALLDICT
   }>
   ?fun_2 PROCREF:<{
+    s0 s1 XCHG
+    <{
+      s0 POP
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
     s0 PUSH
     SBITS
     s1 POP
     31 GTINT
     s0 POP
-    <{
-      -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
     0 PUSHINT
   }>
   recv_internal PROC:<{

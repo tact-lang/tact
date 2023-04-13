@@ -65,12 +65,7 @@ _ lazy_deployment_completed() method_id {
 
 (tuple, int) $SampleContract2$_contract_router_internal(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
-    ;; Parse incoming message
     int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
     ;; Handle bounced messages
     if (msg_bounced) {
         ;; Skip 0xFFFFFFFF
@@ -78,6 +73,11 @@ _ lazy_deployment_completed() method_id {
         op = in_msg.preload_uint(32);
         return (self, true);
     }
+    ;; Parse incoming message
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {

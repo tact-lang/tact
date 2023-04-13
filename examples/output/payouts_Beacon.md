@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Beacon
-BOC Size: 966 bytes
+BOC Size: 967 bytes
 
 # Types
 Total Types: 6

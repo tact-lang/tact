@@ -315,21 +315,22 @@ PROGRAM{
   }>
   ?fun_2 PROCREF:<{
     0 PUSHINT
-    s1 PUSH
-    SBITS
-    31 GTINT
-    <{
-      s0 POP
-      s0 PUSH
-      32 PLDU
-    }> PUSHCONT
-    IF
     s0 s2 XCHG
     <{
       DROP2
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
+    s0 PUSH
+    SBITS
+    31 GTINT
+    <{
+      s1 POP
+      s0 PUSH
+      32 PLDU
+      s0 s1 XCHG
+    }> PUSHCONT
+    IF
     s1 PUSH
     537284411 PUSHINT
     EQUAL
@@ -537,7 +538,8 @@ PROGRAM{
       IFELSE
       s0 s2 XCHG
       -1 PUSHINT
-    }> IFJMPREF
+    }> PUSHCONT
+    IFJMP
     s1 PUSH
     1718153138 PUSHINT
     EQUAL
@@ -586,8 +588,7 @@ PROGRAM{
       NULL
       ?fun_4 INLINECALLDICT
       -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
+    }> IFJMPREF
     s0 POP
     0 PUSHINT
   }>

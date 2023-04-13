@@ -325,18 +325,19 @@ PROGRAM{
   }>
   $SerializationTester$_contract_router_internal PROCREF:<{
     0 PUSHINT
-    OVER
-    SBITS
-    31 GTINT
-    IF:<{
-      DROP
-      DUP
-      32 PLDU
-    }>
     s0 s2 XCHG
     IFJMP:<{
       2DROP
       TRUE
+    }>
+    DUP
+    SBITS
+    31 GTINT
+    IF:<{
+      NIP
+      DUP
+      32 PLDU
+      SWAP
     }>
     OVER
     0 EQINT

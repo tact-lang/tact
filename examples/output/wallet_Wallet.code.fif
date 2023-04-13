@@ -440,14 +440,6 @@ PROGRAM{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
-    OVER
-    SBITS
-    31 GTINT
-    IF:<{
-      DROP
-      DUP
-      32 PLDU
-    }>
     s0 s2 XCHG
     IFJMP:<{
       NIP
@@ -455,6 +447,15 @@ PROGRAM{
       SDSKIPFIRST
       $Wallet$_receive_binary_bounce_Slice INLINECALLDICT
       TRUE
+    }>
+    DUP
+    SBITS
+    31 GTINT
+    IF:<{
+      NIP
+      DUP
+      32 PLDU
+      SWAP
     }>
     OVER
     123 EQINT

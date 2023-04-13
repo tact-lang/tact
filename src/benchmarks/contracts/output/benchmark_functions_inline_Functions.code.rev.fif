@@ -34,21 +34,22 @@ PROGRAM{
   }>
   ?fun_2 PROCREF:<{
     0 PUSHINT
-    s1 PUSH
-    SBITS
-    31 GTINT
-    <{
-      s0 POP
-      s0 PUSH
-      32 PLDU
-    }> PUSHCONT
-    IF
     s0 s2 XCHG
     <{
       DROP2
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
+    s0 PUSH
+    SBITS
+    31 GTINT
+    <{
+      s1 POP
+      s0 PUSH
+      32 PLDU
+      s0 s1 XCHG
+    }> PUSHCONT
+    IF
     s1 PUSH
     831841332 PUSHINT
     EQUAL
