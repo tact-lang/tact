@@ -310,7 +310,6 @@ contract JettonDefaultWallet {
     }
 
     bounced(msg: Slice) {
-        msg.skipBits(32); // 0xFFFFFFFF  // Parse bounced message
         let op: Int = msg.loadUint(32);
         let queryId: Int = msg.loadUint(64);
         let jettonAmount: Int = msg.loadCoins();
