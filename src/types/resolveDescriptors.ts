@@ -628,9 +628,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         }
 
                         // Check for duplicate
-
                         const typeRef: TypeRef = {
-                            kind: isGeneric ? 'ref' : 'bounced', 
+                            kind: isGeneric ? 'ref' : 'ref_bounced', 
                             name: arg.type.name,
                             optional: arg.type.kind === 'type_ref_simple' ? arg.type.optional : false,
                         };

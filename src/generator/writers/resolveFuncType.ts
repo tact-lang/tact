@@ -16,7 +16,7 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, 
     if (descriptor.kind === 'map') {
         return 'cell';
     }
-    if (descriptor.kind === 'bounced') {
+    if (descriptor.kind === 'ref_bounced') {
         return resolveFuncType(getType(ctx.ctx, descriptor.name), ctx, false, true);
     }
     if (descriptor.kind === 'void') {

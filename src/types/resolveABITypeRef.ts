@@ -245,7 +245,7 @@ export function createABITypeRefFromTypeRef(src: TypeRef): ABITypeRef {
         return { kind: 'dict', key, keyFormat, value, valueFormat };
     }
 
-    if (src.kind === 'bounced') {
+    if (src.kind === 'ref_bounced') {
         throw Error("Unimplemented");
     }
 

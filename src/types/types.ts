@@ -32,7 +32,7 @@ export type TypeRef = {
     key: string,
     value: string
 } | {
-    kind: 'bounced',
+    kind: 'ref_bounced',
     name: string
 } | {
     kind: 'void'
@@ -139,7 +139,7 @@ export function printTypeRef(src: TypeRef): string {
         return src.name + (src.optional ? '?' : '');
     } else if (src.kind === 'map') {
         return `map[${src.key}]${src.value}`;
-    } else if (src.kind === 'bounced') {
+    } else if (src.kind === 'ref_bounced') {
         return `bounced<${src.name}>`;
     } else if (src.kind === 'void') {
         return '<void>';
@@ -160,7 +160,7 @@ export function typeRefEquals(a: TypeRef, b: TypeRef) {
     if (a.kind === 'map' && b.kind === 'map') {
         return a.key === b.key && a.value === b.value;
     }
-    if (a.kind === 'bounced' && b.kind === 'bounced') {
+    if (a.kind === 'ref_bounced' && b.kind === 'ref_bounced') {
         return a.name === b.name;
     }
     if (a.kind === 'null' && b.kind === 'null') {

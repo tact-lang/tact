@@ -16,7 +16,7 @@ export function resolveFuncTypeUnpack(descriptor: TypeRef | TypeDescription | st
     if (descriptor.kind === 'map') {
         return name;
     }
-    if (descriptor.kind === 'bounced') {
+    if (descriptor.kind === 'ref_bounced') {
         return resolveFuncTypeUnpack(getType(ctx.ctx, descriptor.name), name, ctx, false, true);
     }
     if (descriptor.kind === 'void') {
