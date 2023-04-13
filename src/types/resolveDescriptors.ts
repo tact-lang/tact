@@ -667,30 +667,30 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         });
                     } else if (d.selector.kind === 'bounce') {
                         const arg = d.selector.arg;
+                        let isGeneric = false;
 
-                        // TODO improve error checking
-                        if (!(arg.type.kind === 'type_ref_simple' || arg.type.kind === "type_ref_bounced")) {
-                            throwError('Bounce receive function can only accept either Slice or bounced<T> types', d.ref);
-                        }
+                        if (arg.type.kind === "type_ref_simple") {
+                            if (arg.type.optional) {
+                                throwError('Bounce receive function cannot have optional argument', d.ref);
+                            }
+                            if (arg.type.name !== "Slice") {
+                                throwError('Generic bounce receive function can only accept Slice', d.ref);
+                            }
 
-                        let t = types[arg.type.name];
-                        const isGeneric = arg.type.kind === "type_ref_simple" && t.kind === 'primitive' && t.name === 'Slice';
-
-                        if (arg.type.kind === 'type_ref_simple' && arg.type.optional) {
-                            throwError('Bounce receive function cannot have optional argument', d.ref);
-                        }
-
-                        // Check type
-                        if (!isGeneric) {
+                            isGeneric = true;
+                        } else if (arg.type.kind === "type_ref_bounced") {
+                            let t = types[arg.type.name];
                             if (t.kind !== 'struct') {
-                                throwError('Bounce receive function can only accept struct args or Slice', d.ref);
+                                throwError('Bounce receive function can only accept bounced<T> struct types', d.ref);
                             }
                             if (t.ast.kind !== 'def_struct') {
-                                throwError('Bounce receive function can only accept struct args or Slice', d.ref);
+                                throwError('Bounce receive function can only accept bounced<T> struct types', d.ref);
                             }
                             if (!t.ast.message) {
                                 throwError('Bounce receive function can only accept struct message args', d.ref);
                             }
+                        } else {
+                            throwError('Bounce receive function can only accept bounced<T> struct args or Slice', d.ref);
                         }
 
                         // Check for duplicate
@@ -704,7 +704,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             throwError(`Bounce receive function for ${arg.type.name} already exists`, d.ref);
                         }
                         
-                        // TODO not happy about this b/c ideally we'd use resolveTypeRef, but it's not available yet at this point
+                        // resolveTypeRef isn't available at this point so we construct the typeref synthetically
                         s.receivers.push({
                             selector: { kind: 'internal-bounce', name: arg.name, type: typeRef },
                             ast: d
