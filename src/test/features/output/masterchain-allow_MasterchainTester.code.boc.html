@@ -43,7 +43,7 @@
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_1037bc20fd152f5c;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_12c7412c3c44d083;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_3c99f607c2c0535d;</span>
-            <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_5e3c3accec27cd65;</span>
+            <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_7b5e5f9943d82ceb;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_c0ca23818e24f3c9;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_d70fb1f1f09059ac;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_f38b7270fbc3f695;</span>
@@ -81,7 +81,7 @@
             <span class="line-covered"><span class="gas">29</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">2 SETGLOBVAR</span></span>
             <span class="line-covered"><span class="gas">126</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">?fun_ref_f38b7270fbc3f695 INLINECALLDICT</span></span>
             <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">ROTREV</span></span>
-            <span class="line-covered"><span class="gas">126</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">?fun_ref_5e3c3accec27cd65 INLINECALLDICT</span></span>
+            <span class="line-covered"><span class="gas">126</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">?fun_ref_7b5e5f9943d82ceb INLINECALLDICT</span></span>
             <span class="line-covered"><span class="gas">34</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">130 THROWIFNOT</span></span>
             <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">s0 POP</span></span>
             <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">NEWC</span></span>
@@ -219,9 +219,15 @@
             <span class="line-covered"><span class="gas">18</span><span class="count">x4</span><span class="padding">....</span><span class="opcode">DROP2</span></span>
             <span class="line-covered"><span class="gas">18</span><span class="count">x4</span><span class="padding">....</span><span class="opcode">-1 PUSHINT</span></span>
             <span class="line-covered"><span class="gas"></span><span class="count">x4</span><span class="padding">..</span><span class="opcode">}></span></span>
-            <span class="line-covered"><span class="gas"></span><span class="count">x9</span><span class="padding">..</span><span class="opcode">?fun_ref_5e3c3accec27cd65 PROCREF:<{</span></span>
+            <span class="line-covered"><span class="gas"></span><span class="count">x9</span><span class="padding">..</span><span class="opcode">?fun_ref_7b5e5f9943d82ceb PROCREF:<{</span></span>
             <span class="line-covered"><span class="gas">26</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">2 SAVE</span></span>
             <span class="line-covered"><span class="gas">26</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">SAMEALTSAVE</span></span>
+            <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">s0 s1 XCHG</span></span>
+            <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode"><{</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">......</span><span class="opcode">s0 POP</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">......</span><span class="opcode">-1 PUSHINT</span></span>
+            <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">}> PUSHCONT</span></span>
+            <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">IFJMP</span></span>
             <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">0 PUSHINT</span></span>
             <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">s1 PUSH</span></span>
             <span class="line-covered"><span class="gas">26</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">SBITS</span></span>
@@ -232,17 +238,11 @@
             <span class="line-covered"><span class="gas">34</span><span class="count">x9</span><span class="padding">......</span><span class="opcode">32 PLDU</span></span>
             <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">}> PUSHCONT</span></span>
             <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">IF</span></span>
-            <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">s0 s2 XCHG</span></span>
-            <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode"><{</span></span>
-            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">......</span><span class="opcode">DROP2</span></span>
-            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">......</span><span class="opcode">-1 PUSHINT</span></span>
-            <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">}> PUSHCONT</span></span>
-            <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">IFJMP</span></span>
-            <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">s1 PUSH</span></span>
+            <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">s0 PUSH</span></span>
             <span class="line-covered"><span class="gas">23</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">3679600542 PUSHINT</span></span>
             <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">EQUAL</span></span>
             <span class="line-covered"><span class="gas">26</span><span class="count">x9</span><span class="padding">....</span><span class="opcode"><{</span></span>
-            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">......</span><span class="opcode">s1 POP</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">......</span><span class="opcode">s0 POP</span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">......</span><span class="opcode">32 LDU</span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">......</span><span class="opcode">s0 s1 XCHG</span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">......</span><span class="opcode">3679600542 PUSHINT</span></span>
@@ -298,7 +298,6 @@
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">......</span><span class="opcode">DROP2</span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">......</span><span class="opcode">-1 PUSHINT</span></span>
             <span class="line-covered"><span class="gas">26</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">}> IFJMPREF</span></span>
-            <span class="line-covered"><span class="gas">18</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">s0 s1 XCHG</span></span>
             <span class="line-covered"><span class="gas">26</span><span class="count">x9</span><span class="padding">....</span><span class="opcode">0 EQINT</span></span>
             <span class="line-covered"><span class="gas">26</span><span class="count">x9</span><span class="padding">....</span><span class="opcode"><{</span></span>
             <span class="line-covered"><span class="gas">526</span><span class="count">x9</span><span class="padding">......</span><span class="opcode">HASHSU</span></span>
