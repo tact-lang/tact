@@ -8,7 +8,7 @@ PROGRAM{
   DECLPROC get_abi_ipfs;
   DECLPROC ?fun_ref_0d1a805e0fc5efb2;
   DECLPROC ?fun_ref_10c319ce0484d846;
-  DECLPROC ?fun_ref_424f4e05ba7c56d0;
+  DECLPROC ?fun_ref_24e49a921269dc27;
   DECLPROC ?fun_ref_7ca9042b0b911c4c;
   DECLPROC ?fun_ref_b2a3baab4bcc4202;
   DECLPROC ?fun_ref_b93b9862cda1783c;
@@ -49,7 +49,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_7ca9042b0b911c4c INLINECALLDICT
     2 8 BLKSWAP
-    ?fun_ref_424f4e05ba7c56d0 INLINECALLDICT
+    ?fun_ref_24e49a921269dc27 INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -133,17 +133,11 @@ PROGRAM{
   ?fun_ref_10c319ce0484d846 PROCREF:<{
     s3 PUSH
   }>
-  ?fun_ref_424f4e05ba7c56d0 PROCREF:<{
+  ?fun_ref_24e49a921269dc27 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
     s0 s1 XCHG
     <{
-      32 PUSHINT
-      SDSKIPFIRST
-      s0 PUSH
-      SBITS
-      s1 POP
-      31 GTINT
       s0 POP
       -1 PUSHINT
     }> PUSHCONT

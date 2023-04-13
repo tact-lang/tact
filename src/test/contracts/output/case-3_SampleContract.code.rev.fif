@@ -7,7 +7,7 @@ PROGRAM{
   DECLPROC ?fun_ref_0d6d4365c4f47cf4;
   DECLPROC ?fun_ref_10c319ce0484d846;
   DECLPROC ?fun_ref_ba5d6372b48554a7;
-  DECLPROC ?fun_ref_febb65ddae39aa2a;
+  DECLPROC ?fun_ref_d31b4aed7a42e751;
   recv_internal PROC:<{
     s0 s1 XCHG
     CTOS
@@ -41,7 +41,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_ba5d6372b48554a7 INLINECALLDICT
     2 4 BLKSWAP
-    ?fun_ref_febb65ddae39aa2a INLINECALLDICT
+    ?fun_ref_d31b4aed7a42e751 INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -131,15 +131,9 @@ PROGRAM{
     137 THROWIFNOT
     ?fun_ref_0d6d4365c4f47cf4 INLINECALLDICT
   }>
-  ?fun_ref_febb65ddae39aa2a PROCREF:<{
+  ?fun_ref_d31b4aed7a42e751 PROCREF:<{
     s0 s1 XCHG
     <{
-      32 PUSHINT
-      SDSKIPFIRST
-      s0 PUSH
-      SBITS
-      s1 POP
-      31 GTINT
       s0 POP
       -1 PUSHINT
     }> PUSHCONT

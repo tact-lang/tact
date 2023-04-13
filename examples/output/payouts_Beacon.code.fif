@@ -376,11 +376,6 @@ PROGRAM{
     IFJMP:<{
       32 PUSHINT
       SDSKIPFIRST
-      DUP
-      SBITS
-      31 GTINT
-      IF:<{
-      }>
       $Beacon$_receive_binary_bounce_Slice INLINECALLDICT
       TRUE
     }>

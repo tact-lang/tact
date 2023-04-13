@@ -4,9 +4,9 @@ PROGRAM{
   DECLPROC lazy_deployment_completed;
   DECLPROC get_abi_ipfs;
   DECLPROC ?fun_ref_320ae1effb6175d4;
-  DECLPROC ?fun_ref_88e80309a3fb0d98;
   DECLPROC ?fun_ref_a05e0042bce184fb;
   DECLPROC ?fun_ref_c0ca23818e24f3c9;
+  DECLPROC ?fun_ref_c9df47d090b30bb8;
   recv_internal PROC:<{
     s0 s1 XCHG
     CTOS
@@ -40,7 +40,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_a05e0042bce184fb INLINECALLDICT
     ROTREV
-    ?fun_ref_88e80309a3fb0d98 INLINECALLDICT
+    ?fun_ref_c9df47d090b30bb8 INLINECALLDICT
     130 THROWIFNOT
     s0 POP
     NEWC
@@ -113,15 +113,31 @@ PROGRAM{
     s1 s4 XCHG
     s3 s3 s0 XCHG3
   }>
-  ?fun_ref_88e80309a3fb0d98 PROCREF:<{
+  ?fun_ref_a05e0042bce184fb PROCREF:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    3 SETGLOBVAR
+    1 LDI
+    s0 POP
+    <{
+      NULL
+    }> PUSHCONT
+    IFJMP
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    ?fun_ref_c0ca23818e24f3c9 INLINECALLDICT
+  }>
+  ?fun_ref_c0ca23818e24f3c9 PROCREF:<{
+    NULL
+  }>
+  ?fun_ref_c9df47d090b30bb8 PROCREF:<{
     s0 s1 XCHG
     <{
-      32 PUSHINT
-      SDSKIPFIRST
-      s0 PUSH
-      SBITS
-      s1 POP
-      31 GTINT
       s0 POP
       -1 PUSHINT
     }> PUSHCONT
@@ -185,7 +201,8 @@ PROGRAM{
       s0 POP
       144 THROW
       -1 PUSHINT
-    }> IFJMPREF
+    }> PUSHCONT
+    IFJMP
     391585480 PUSHINT
     EQUAL
     <{
@@ -201,27 +218,5 @@ PROGRAM{
     IFJMP
     s0 POP
     0 PUSHINT
-  }>
-  ?fun_ref_a05e0042bce184fb PROCREF:<{
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    3 SETGLOBVAR
-    1 LDI
-    s0 POP
-    <{
-      NULL
-    }> PUSHCONT
-    IFJMP
-    MYADDR
-    11 PLDU
-    10 PUSHPOW2
-    EQUAL
-    137 THROWIFNOT
-    ?fun_ref_c0ca23818e24f3c9 INLINECALLDICT
-  }>
-  ?fun_ref_c0ca23818e24f3c9 PROCREF:<{
-    NULL
   }>
 }END>c

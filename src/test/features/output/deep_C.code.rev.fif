@@ -5,7 +5,7 @@ PROGRAM{
   DECLPROC get_abi_ipfs;
   DECLPROC ?fun_ref_17240c1f9f33f0fd;
   DECLPROC ?fun_ref_b93b9862cda1783c;
-  DECLPROC ?fun_ref_cc95d90807a0cbb5;
+  DECLPROC ?fun_ref_b95799f0a9207f78;
   DECLPROC ?fun_ref_ed0c6f0c0e19c38a;
   recv_internal PROC:<{
     s0 s1 XCHG
@@ -40,7 +40,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_ed0c6f0c0e19c38a INLINECALLDICT
     ROTREV
-    ?fun_ref_cc95d90807a0cbb5 INLINECALLDICT
+    ?fun_ref_b95799f0a9207f78 INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -275,17 +275,11 @@ PROGRAM{
     s0 s1 XCHG
     SENDRAWMSG
   }>
-  ?fun_ref_cc95d90807a0cbb5 PROCREF:<{
+  ?fun_ref_b95799f0a9207f78 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
     s0 s1 XCHG
     <{
-      32 PUSHINT
-      SDSKIPFIRST
-      s0 PUSH
-      SBITS
-      s1 POP
-      31 GTINT
       s0 POP
       -1 PUSHINT
     }> PUSHCONT

@@ -12,9 +12,9 @@ PROGRAM{
   DECLPROC ?fun_ref_10c319ce0484d846;
   DECLPROC ?fun_ref_40d98146a47dbe3b;
   DECLPROC ?fun_ref_44086a5ce86162fe;
-  DECLPROC ?fun_ref_4b36da311139d657;
   DECLPROC ?fun_ref_6326faa87beffd08;
   DECLPROC ?fun_ref_8ec2d4d7ce8a5f35;
+  DECLPROC ?fun_ref_ab12284a9e78249c;
   DECLPROC ?fun_ref_b2f99ae1a1dd4dfb;
   DECLPROC ?fun_ref_b347d9c3ebd197d4;
   DECLPROC ?fun_ref_c2e1128b75fe83a2;
@@ -52,7 +52,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_f639e21752b5cdda INLINECALLDICT
     2 6 BLKSWAP
-    ?fun_ref_4b36da311139d657 INLINECALLDICT
+    ?fun_ref_ab12284a9e78249c INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -151,15 +151,44 @@ PROGRAM{
   ?fun_ref_44086a5ce86162fe PROCREF:<{
     s1 PUSH
   }>
-  ?fun_ref_4b36da311139d657 PROCREF:<{
+  ?fun_ref_6326faa87beffd08 PROCREF:<{
+    s5 PUSH
+  }>
+  ?fun_ref_8ec2d4d7ce8a5f35 PROCREF:<{
+    32 LDU
+    s0 s1 XCHG
+    2217298645 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    1 LDI
+    LDREF
+    LDREF
+    s0 s1 XCHG
+    CTOS
+    NEWC
+    s0 s2 XCHG
+    LDREF
+    s0 s1 XCHG
+    CTOS
+    s1 s3 XCHG
+    STSLICER
+    s0 s2 XCHG
+    LDREF
+    s0 s1 XCHG
+    CTOS
+    LDREF
+    s0 POP
+    CTOS
+    s1 s6 XCHG
+    s1 s5 XCHG
+    s1 s4 XCHG
+    s1 s3 XCHG
+  }>
+  ?fun_ref_ab12284a9e78249c PROCREF:<{
     s0 s1 XCHG
     <{
-      32 PUSHINT
-      SDSKIPFIRST
-      s0 PUSH
-      SBITS
-      s1 POP
-      31 GTINT
       s0 POP
       -1 PUSHINT
     }> PUSHCONT
@@ -196,41 +225,6 @@ PROGRAM{
     IFJMP
     s0 POP
     0 PUSHINT
-  }>
-  ?fun_ref_6326faa87beffd08 PROCREF:<{
-    s5 PUSH
-  }>
-  ?fun_ref_8ec2d4d7ce8a5f35 PROCREF:<{
-    32 LDU
-    s0 s1 XCHG
-    2217298645 PUSHINT
-    EQUAL
-    129 THROWIFNOT
-    257 PUSHINT
-    LDIX
-    1 LDI
-    LDREF
-    LDREF
-    s0 s1 XCHG
-    CTOS
-    NEWC
-    s0 s2 XCHG
-    LDREF
-    s0 s1 XCHG
-    CTOS
-    s1 s3 XCHG
-    STSLICER
-    s0 s2 XCHG
-    LDREF
-    s0 s1 XCHG
-    CTOS
-    LDREF
-    s0 POP
-    CTOS
-    s1 s6 XCHG
-    s1 s5 XCHG
-    s1 s4 XCHG
-    s1 s3 XCHG
   }>
   ?fun_ref_b2f99ae1a1dd4dfb PROCREF:<{
     s2 PUSH

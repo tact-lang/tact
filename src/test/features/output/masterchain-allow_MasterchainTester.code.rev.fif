@@ -10,7 +10,7 @@ PROGRAM{
   DECLPROC ?fun_ref_1037bc20fd152f5c;
   DECLPROC ?fun_ref_12c7412c3c44d083;
   DECLPROC ?fun_ref_3c99f607c2c0535d;
-  DECLPROC ?fun_ref_bbc00564ab677453;
+  DECLPROC ?fun_ref_7b5e5f9943d82ceb;
   DECLPROC ?fun_ref_c0ca23818e24f3c9;
   DECLPROC ?fun_ref_d70fb1f1f09059ac;
   DECLPROC ?fun_ref_f38b7270fbc3f695;
@@ -48,7 +48,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_f38b7270fbc3f695 INLINECALLDICT
     ROTREV
-    ?fun_ref_bbc00564ab677453 INLINECALLDICT
+    ?fun_ref_7b5e5f9943d82ceb INLINECALLDICT
     130 THROWIFNOT
     s0 POP
     NEWC
@@ -186,17 +186,11 @@ PROGRAM{
     DROP2
     -1 PUSHINT
   }>
-  ?fun_ref_bbc00564ab677453 PROCREF:<{
+  ?fun_ref_7b5e5f9943d82ceb PROCREF:<{
     2 SAVE
     SAMEALTSAVE
     s0 s1 XCHG
     <{
-      32 PUSHINT
-      SDSKIPFIRST
-      s0 PUSH
-      SBITS
-      s1 POP
-      31 GTINT
       s0 POP
       -1 PUSHINT
     }> PUSHCONT

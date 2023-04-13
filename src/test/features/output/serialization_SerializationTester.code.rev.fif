@@ -20,10 +20,10 @@ PROGRAM{
   DECLPROC ?fun_ref_627092810dc2e084;
   DECLPROC ?fun_ref_6326faa87beffd08;
   DECLPROC ?fun_ref_750b5e2df7ffc4f5;
-  DECLPROC ?fun_ref_9b1d9410e28f6eb0;
   DECLPROC ?fun_ref_b2f99ae1a1dd4dfb;
   DECLPROC ?fun_ref_b347d9c3ebd197d4;
   DECLPROC ?fun_ref_bfee01af6d6b5db1;
+  DECLPROC ?fun_ref_d64238920ad08f80;
   DECLPROC ?fun_ref_febca6c4d71293f1;
   recv_internal PROC:<{
     s0 s1 XCHG
@@ -58,7 +58,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_2005ab60a835a763 INLINECALLDICT
     2 9 BLKSWAP
-    ?fun_ref_9b1d9410e28f6eb0 INLINECALLDICT
+    ?fun_ref_d64238920ad08f80 INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -264,15 +264,50 @@ PROGRAM{
   ?fun_ref_750b5e2df7ffc4f5 PROCREF:<{
     s6 PUSH
   }>
-  ?fun_ref_9b1d9410e28f6eb0 PROCREF:<{
+  ?fun_ref_b2f99ae1a1dd4dfb PROCREF:<{
+    s2 PUSH
+  }>
+  ?fun_ref_b347d9c3ebd197d4 PROCREF:<{
+    s4 PUSH
+  }>
+  ?fun_ref_bfee01af6d6b5db1 PROCREF:<{
+    32 LDU
+    s0 s1 XCHG
+    849061239 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    s0 s1 XCHG
+    CTOS
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    s0 POP
+    CTOS
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    s0 POP
+    s6 s9 XCHG
+    s6 s8 XCHG
+    s6 s7 XCHG
+  }>
+  ?fun_ref_d64238920ad08f80 PROCREF:<{
     s0 s1 XCHG
     <{
-      32 PUSHINT
-      SDSKIPFIRST
-      s0 PUSH
-      SBITS
-      s1 POP
-      31 GTINT
       s0 POP
       -1 PUSHINT
     }> PUSHCONT
@@ -318,47 +353,6 @@ PROGRAM{
     IFJMP
     s0 POP
     0 PUSHINT
-  }>
-  ?fun_ref_b2f99ae1a1dd4dfb PROCREF:<{
-    s2 PUSH
-  }>
-  ?fun_ref_b347d9c3ebd197d4 PROCREF:<{
-    s4 PUSH
-  }>
-  ?fun_ref_bfee01af6d6b5db1 PROCREF:<{
-    32 LDU
-    s0 s1 XCHG
-    849061239 PUSHINT
-    EQUAL
-    129 THROWIFNOT
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    LDREF
-    s0 s1 XCHG
-    CTOS
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    LDREF
-    s0 POP
-    CTOS
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    s0 POP
-    s6 s9 XCHG
-    s6 s8 XCHG
-    s6 s7 XCHG
   }>
   ?fun_ref_febca6c4d71293f1 PROCREF:<{
     s8 PUSH

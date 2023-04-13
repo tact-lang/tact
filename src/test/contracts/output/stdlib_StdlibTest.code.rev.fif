@@ -7,11 +7,11 @@ PROGRAM{
   DECLPROC lazy_deployment_completed;
   DECLPROC get_abi_ipfs;
   DECLPROC ?fun_ref_36266a5855831da9;
+  DECLPROC ?fun_ref_364de9562794919e;
   DECLPROC ?fun_ref_492a234961f0a3f5;
   DECLPROC ?fun_ref_644ef5250652bdfa;
   DECLPROC ?fun_ref_88418691d5a3eaa0;
   DECLPROC ?fun_ref_951f0c320ee84da9;
-  DECLPROC ?fun_ref_e9c76f91e13ee258;
   recv_internal PROC:<{
     s0 s1 XCHG
     CTOS
@@ -45,7 +45,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_36266a5855831da9 INLINECALLDICT
     ROTREV
-    ?fun_ref_e9c76f91e13ee258 INLINECALLDICT
+    ?fun_ref_364de9562794919e INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -117,27 +117,9 @@ PROGRAM{
     137 THROWIFNOT
     ?fun_ref_644ef5250652bdfa INLINECALLDICT
   }>
-  ?fun_ref_492a234961f0a3f5 PROCREF:<{
-    SBITS
-  }>
-  ?fun_ref_644ef5250652bdfa PROCREF:<{
-    0 PUSHINT
-  }>
-  ?fun_ref_88418691d5a3eaa0 PROCREF:<{
-    SREFS
-  }>
-  ?fun_ref_951f0c320ee84da9 PROCREF:<{
-    SEMPTY
-  }>
-  ?fun_ref_e9c76f91e13ee258 PROCREF:<{
+  ?fun_ref_364de9562794919e PROCREF:<{
     s0 s1 XCHG
     <{
-      32 PUSHINT
-      SDSKIPFIRST
-      s0 PUSH
-      SBITS
-      s1 POP
-      31 GTINT
       s0 POP
       -1 PUSHINT
     }> PUSHCONT
@@ -162,5 +144,17 @@ PROGRAM{
     }> PUSHCONT
     IFJMP
     0 PUSHINT
+  }>
+  ?fun_ref_492a234961f0a3f5 PROCREF:<{
+    SBITS
+  }>
+  ?fun_ref_644ef5250652bdfa PROCREF:<{
+    0 PUSHINT
+  }>
+  ?fun_ref_88418691d5a3eaa0 PROCREF:<{
+    SREFS
+  }>
+  ?fun_ref_951f0c320ee84da9 PROCREF:<{
+    SEMPTY
   }>
 }END>c

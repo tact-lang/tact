@@ -25,15 +25,6 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                 ctx.append(`;; Skip 0xFFFFFFFF`);
                 ctx.append(`in_msg~skip_bits(32);`);
 
-                ctx.append();
-                ctx.append(`;; Parse op`);
-                ctx.append(`int op = 0;`);
-                ctx.append(`if (slice_bits(in_msg) >= 32) {`);
-                ctx.inIndent(() => {
-                    ctx.append(`op = in_msg.preload_uint(32);`);
-                });
-                ctx.append(`}`);
-
                 const nonGenericReceivers = type.receivers.filter(r => {
                     if (r.selector.kind !== "internal-bounce" || r.selector.type.kind !== 'ref_bounced') return false;
                     const allocation = getType(ctx.ctx, r.selector.type.name);
@@ -45,6 +36,17 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                     const allocation = getType(ctx.ctx, r.selector.type.name);
                     return allocation.origin === "stdlib" && allocation.name === "Slice";
                 });
+
+                if (nonGenericReceivers.length > 0) {
+                    ctx.append();
+                    ctx.append(`;; Parse op`);
+                    ctx.append(`int op = 0;`);
+                    ctx.append(`if (slice_bits(in_msg) >= 32) {`);
+                    ctx.inIndent(() => {
+                        ctx.append(`op = in_msg.preload_uint(32);`);
+                    });
+                    ctx.append(`}`);
+                }
                 
                 for (const r of nonGenericReceivers) {
                     const selector = r.selector;

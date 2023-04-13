@@ -288,7 +288,7 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
             writeOptionalSerializer(t.name, t.origin, wctx);
             writeParser(t.name, t.kind === 'contract', allocation, t.origin, wctx);
             writeOptionalParser(t.name, t.origin, wctx);
-            writeBouncedParser(t.name, t.kind === 'contract', allocationBounced, t.origin, wctx); // TODO partial allocation
+            writeBouncedParser(t.name, t.kind === 'contract', allocationBounced, t.origin, wctx);
         }
     }
 

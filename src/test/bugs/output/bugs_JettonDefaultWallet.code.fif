@@ -879,11 +879,6 @@ PROGRAM{
     IFJMP:<{
       32 PUSHINT
       SDSKIPFIRST
-      DUP
-      SBITS
-      31 GTINT
-      IF:<{
-      }>
       $JettonDefaultWallet$_receive_binary_bounce_Slice INLINECALLDICT
       TRUE
     }>

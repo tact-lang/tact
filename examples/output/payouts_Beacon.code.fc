@@ -87,12 +87,6 @@ _ lazy_deployment_completed() method_id {
         ;; Skip 0xFFFFFFFF
         in_msg~skip_bits(32);
         
-        ;; Parse op
-        int op = 0;
-        if (slice_bits(in_msg) >= 32) {
-            op = in_msg.preload_uint(32);
-        }
-        
         ;; Bounced handler for [object Object] message (Generic)
         self~$Beacon$_receive_binary_bounce_Slice(in_msg);
         return (self, true);
