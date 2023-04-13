@@ -1,0 +1,130 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "optionals_Opt2.headers.fc";
+#include "optionals_Opt2.stdlib.fc";
+#include "optionals_Opt2.storage.fc";
+
+;;
+;; Contract Opt2 functions
+;;
+
+((cell, cell)) $Opt2$_contract_init() impure inline_ref {
+    var ((($self'stateInit'code, $self'stateInit'data))) = (null());
+    ($self'stateInit'code, $self'stateInit'data) = $Opt3$_init_child(__tact_context_sys, $Struct2$_as_optional($Struct2$_constructor_v(1)));
+    return (($self'stateInit'code, $self'stateInit'data));
+}
+
+(tuple) $global_sample3(tuple $src) impure inline_ref {
+    var ($src) = $src;
+    return $OptStruct$_constructor_s($src);
+}
+
+(tuple) $global_sample4((int) $src) impure inline_ref {
+    var (($src'v)) = $src;
+    return $OptStruct$_constructor_s($Struct2$_as_optional(($src'v)));
+}
+
+(((cell, cell)), ()) $Opt2$_fun_sample(((cell, cell)) $self, tuple $src) impure inline_ref {
+    var ((($self'stateInit'code, $self'stateInit'data))) = $self;
+    var ($src) = $src;
+    return ((($self'stateInit'code, $self'stateInit'data)), ());
+}
+
+(((cell, cell)), ()) $Opt2$_fun_sample2(((cell, cell)) $self, (int) $src) impure inline_ref {
+    var ((($self'stateInit'code, $self'stateInit'data))) = $self;
+    var (($src'v)) = $src;
+    return ((($self'stateInit'code, $self'stateInit'data)), ());
+}
+
+;;
+;; Receivers of a Contract Opt2
+;;
+
+(((cell, cell)), ()) $Opt2$_internal_text_b1ca4612e051af84e43ede13a404d52d88e1da5852309143c4f99941663f36f5(((cell, cell)) $self) impure inline {
+    var (($self'stateInit'code, $self'stateInit'data)) = $self;
+    (($self'stateInit'code, $self'stateInit'data))~$Opt2$_fun_sample($Struct2$_as_optional($Struct2$_constructor_v(1)));
+    (($self'stateInit'code, $self'stateInit'data))~$Opt2$_fun_sample(null());
+    (($self'stateInit'code, $self'stateInit'data))~$Opt2$_fun_sample2($Struct2$_tensor_cast($Struct2$_constructor_v(1)));
+    $global_sample3($Struct2$_as_optional($Struct2$_constructor_v(1)));
+    $global_sample3(null());
+    $global_sample4($Struct2$_constructor_v(1));
+    return ((($self'stateInit'code, $self'stateInit'data)), ());
+}
+
+;;
+;; Get methods of a Contract Opt2
+;;
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.debug.v0"H >> 128,
+        "org.ton.chain.any.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() method_id {
+    return "ipfs://QmYVWb9pPZhWrttebW3vo2BcQaeRk1T64DKomRKjTXjiJF";
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Opt2
+;;
+
+(((cell, cell)), int) $Opt2$_contract_router_internal(((cell, cell)) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Test" message
+        if (text_op == 0xb1ca4612e051af84e43ede13a404d52d88e1da5852309143c4f99941663f36f5) {
+            self~$Opt2$_internal_text_b1ca4612e051af84e43ede13a404d52d88e1da5852309143c4f99941663f36f5();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $Opt2$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$Opt2$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $Opt2$_contract_store(self);
+}

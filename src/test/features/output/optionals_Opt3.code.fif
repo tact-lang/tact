@@ -1,0 +1,145 @@
+PROGRAM{
+  DECLPROC __tact_verify_address
+  DECLPROC $Struct2$_load
+  DECLPROC $Struct2$_as_optional
+  DECLPROC $Opt3$init$_load
+  DECLPROC $Opt3$_contract_init
+  DECLPROC $Opt3$_contract_load
+  DECLPROC $Opt3$_contract_store
+  113617 DECLMETHOD supported_interfaces
+  121275 DECLMETHOD get_abi_ipfs
+  115390 DECLMETHOD lazy_deployment_completed
+  DECLPROC $Opt3$_contract_router_internal
+  DECLPROC recv_internal
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sender
+  DECLGLOBVAR __tact_context_sys
+  DECLGLOBVAR __tact_randomized
+  __tact_verify_address PROCINLINE:<{
+    DUP
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    DUP
+    11 PLDU
+    DUP
+    10 PUSHPOW2
+    EQUAL
+    SWAP
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+  }>
+  $Struct2$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    2971230874 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  $Struct2$_as_optional PROCINLINE:<{
+    1 TUPLE
+  }>
+  $Opt3$init$_load PROCINLINE:<{
+    1 LDI
+    SWAP
+    IF:<{
+      $Struct2$_load INLINECALLDICT
+      $Struct2$_as_optional INLINECALLDICT
+    }>ELSE<{
+      PUSHNULL
+    }>
+  }>
+  $Opt3$_contract_init PROCREF:<{
+    DROP
+    PUSHNULL
+  }>
+  $Opt3$_contract_load PROCREF:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    1 LDI
+    SWAP
+    IFJMP:<{
+      DROP
+      PUSHNULL
+    }>
+    $Opt3$init$_load INLINECALLDICT
+    SWAP
+    ENDS
+    $Opt3$_contract_init INLINECALLDICT
+  }>
+  $Opt3$_contract_store PROCINLINE:<{
+    DROP
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    TRUE
+    SWAP
+    1 STI
+    ENDC
+    c4 POP
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    36993126140238121407019133875791708966 PUSHINT
+    289074767680806556846472852687671582181 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d636353766439645343617562584d5439654a3864616f4e4b437a446832474a5369345256386846414d42376b} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $Opt3$_contract_router_internal PROCREF:<{
+    SWAP
+    IFJMP:<{
+      DROP
+      TRUE
+    }>
+    DUP
+    SBITS
+    NIP
+    31 GTINT
+    IF:<{
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    NEGATE
+    SWAP
+    LDMSGADDR
+    SWAP
+    __tact_verify_address INLINECALLDICT
+    s0 s4 s2 PUXCPU
+    s0 s3 XCHG
+    4 TUPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    __tact_context_sender SETGLOB
+    $Opt3$_contract_load INLINECALLDICT
+    -ROT
+    $Opt3$_contract_router_internal INLINECALLDICT
+    130 THROWIFNOT
+    $Opt3$_contract_store INLINECALLDICT
+  }>
+}END>c

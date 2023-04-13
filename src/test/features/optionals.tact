@@ -1,4 +1,4 @@
-
+import "./optionals-2.tact";
 struct SomeGenericStruct {
     value1: Int;
     value2: Int;
