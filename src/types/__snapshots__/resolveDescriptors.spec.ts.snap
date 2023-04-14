@@ -238,6 +238,16 @@ Line 24, col 3:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for case-24 1`] = `
+"<unknown>:15:3: bounced<A> is a runtime only type and can't be used as field
+Line 15, col 3:
+  14 | contract Test {
+> 15 |   src: bounced<A>;
+         ^~~~~~~~~~~~~~~~
+  16 |   init() {}
+"
+`;
+
 exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
 {
   "BaseTrait": {

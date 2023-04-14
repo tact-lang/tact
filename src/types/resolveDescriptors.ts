@@ -129,7 +129,10 @@ function buildTypeRef(src: ASTTypeRef, types: { [key: string]: TypeDescription }
         };
     }
     if (src.kind === 'type_ref_bounced') {
-        throw Error("Unimplemented");
+        return {
+            kind: 'ref_bounced',
+            name: src.name,
+        };
     }
 
     throw Error('Unknown type ref');
@@ -253,7 +256,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check if field is runtime type
         if (isRuntimeType(tr)) {
-            throwError(printTypeRef(tr) + ' is a runtime only type and can\t be used as field', src.ref);
+            throwError(printTypeRef(tr) + ' is a runtime only type and can\'t be used as field', src.ref);
         }
 
         // Resolve default value
@@ -305,7 +308,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Struct
         if (a.kind === 'def_struct') {
             for (const f of a.fields) {
-                
+
                 if (types[a.name].fields.find((v) => v.name === f.name)) {
                     throwError(`Field ${f.name} already exists`, f.ref);
                 }
@@ -721,7 +724,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         } else {
                             throwError('Bounce receive function can only accept bounced<T> struct args or Slice', d.ref);
                         }
-                        
+
                         if (isGeneric) {
                             if (s.receivers.find((v) => v.selector.kind === 'internal-bounce')) {
                                 throwError(`Generic bounce receive function already exists`, d.ref);
@@ -730,11 +733,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             s.receivers.push({
                                 selector: { kind: 'internal-bounce', name: arg.name },
                                 ast: d
-                            }); 
+                            });
                         } else {
                             // resolveTypeRef isn't available at this point so we construct the typeref synthetically
                             const typeRef: TypeRef = {
-                                kind: isGeneric ? 'ref' : 'ref_bounced', 
+                                kind: isGeneric ? 'ref' : 'ref_bounced',
                                 name: arg.type.name,
                                 optional: arg.type.kind === 'type_ref_simple' ? arg.type.optional : false,
                             };
@@ -1192,7 +1195,7 @@ export function resolvePartialFields(ctx: CompilerContext, type: TypeDescription
         if (f.abi.type.kind !== "simple") break;
 
         let fieldBits = f.abi.type.optional ? 1 : 0;
-        
+
         // TODO handle fixed-bytes
         if (Number.isInteger(f.abi.type.format)) {
             fieldBits += f.abi.type.format as number;
