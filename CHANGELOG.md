@@ -9,9 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 - Support for bounced receivers for message structs
 
-## Changed
-- Bounced handler now skips first 32 bits (0xFFFFFFFF) automatically
-
 ## [1.1.0-beta.24] - 2023-04-13
 
 ## Changed

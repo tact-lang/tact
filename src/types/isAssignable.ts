@@ -19,6 +19,7 @@ export function isAssignable(src: TypeRef, to: TypeRef): boolean {
         return (src.key === to.key && src.value === to.value && src.keyAs === to.keyAs && src.valueAs === to.valueAs);
     }
 
+    // Bounced types
     if (src.kind === 'ref_bounced' && to.kind === 'ref_bounced') {
         return src.name === to.name;
     }
