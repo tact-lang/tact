@@ -314,6 +314,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
                 types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
             }
+            if (a.fields.length === 0 && !a.message) {
+                throwError(`Struct ${a.name} must have at least one field`, a.ref);
+            }
         }
 
         // Trait
@@ -793,19 +796,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (t.kind === 'contract') {
             if (!t.init) {
                 throwError('Contract ' + t.name + ' does not have init method', t.ast.ref);
-            }
-        }
-    }
-
-    //
-    // Check for structs to have at least one field
-    //
-
-    for (let k in types) {
-        let t = types[k];
-        if (t.kind === 'struct') {
-            if (t.fields.length === 0) {
-                throwError('Struct' + ' ' + t.name + ' does not have any fields', t.ast.ref);
             }
         }
     }

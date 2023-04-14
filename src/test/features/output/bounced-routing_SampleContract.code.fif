@@ -17,6 +17,7 @@ PROGRAM{
   DECLPROC $Second$_store_cell
   DECLPROC $Second$_load
   DECLPROC $Second$_load_bounced
+  DECLPROC $Large$_load_bounced
   DECLPROC $SmallBounce$_load
   DECLPROC $SampleContract$_store
   DECLPROC $SampleContract$_load
@@ -39,6 +40,7 @@ PROGRAM{
   DECLPROC $SampleContract$_receive_binary_bounce_First
   DECLPROC $SampleContract$_receive_binary_bounce_Second
   DECLPROC $SampleContract$_receive_binary_bounce_SmallBounce
+  DECLPROC $SampleContract$_receive_binary_bounce_Large
   101100 DECLMETHOD %amount
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
@@ -220,6 +222,14 @@ PROGRAM{
     64 LDU
     1 LDI
     -ROT
+  }>
+  $Large$_load_bounced PROCINLINE:<{
+    32 LDU
+    SWAP
+    618480963 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    PUSHNULL
   }>
   $SmallBounce$_load PROCINLINE:<{
     32 LDU
@@ -478,6 +488,12 @@ PROGRAM{
     ADD
     -4 ADDCONST
   }>
+  $SampleContract$_receive_binary_bounce_Large PROCINLINE:<{
+    DROP
+    B{b5ee9c7241010101001b000032496e20626f756e6365206f66206c6172676520626f756e6365b9a85106} B>boc <s PUSHSLICE
+    STRDUMP
+    DROP
+  }>
   %amount PROC:<{
     $SampleContract$_contract_load INLINECALLDICT
     $SampleContract$_fun_amount INLINECALLDICT
@@ -491,7 +507,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5246585074674c726f6542666a33563646314d324e35755a34726570734b5874535675646b41566d566d7269} PUSHSLICE
+    x{697066733a2f2f516d62794b646d556e3931484d6e467a62706e645643396e684d33466b56545236624b666e526674764857374e62} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -535,12 +551,22 @@ PROGRAM{
         $SampleContract$_receive_binary_bounce_Second INLINECALLDICT
         TRUE
       }>
+      DUP
       3235833558 PUSHINT
       EQUAL
       IFJMP:<{
+        DROP
         $SmallBounce$_load INLINECALLDICT
         1 2 BLKDROP2
         $SampleContract$_receive_binary_bounce_SmallBounce INLINECALLDICT
+        TRUE
+      }>
+      618480963 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $Large$_load_bounced INLINECALLDICT
+        NIP
+        $SampleContract$_receive_binary_bounce_Large INLINECALLDICT
         TRUE
       }>
       $SampleContract$_receive_bounce INLINECALLDICT

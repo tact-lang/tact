@@ -149,7 +149,7 @@ Line 12, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-15 1`] = `
-"<unknown>:12:1: Struct Main does not have any fields
+"<unknown>:12:1: Struct Main must have at least one field
 Line 12, col 1:
   11 | 
 > 12 | struct Main {
@@ -159,7 +159,7 @@ Line 12, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-16 1`] = `
-"<unknown>:16:1: Struct Main does not have any fields
+"<unknown>:16:1: Struct Main must have at least one field
 Line 16, col 1:
   15 | 
 > 16 | struct Main {

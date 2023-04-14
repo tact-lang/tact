@@ -25,6 +25,11 @@ message Second {
     myStruct2: MyStruct;
 }
 
+message Large {
+    address: Address;
+    value: Int as coins;
+}
+
 message SmallBounce {
     amount: Int as uint32;
     myBool3: Bool;
@@ -103,6 +108,10 @@ contract SampleContract {
     bounced(msg: SmallBounce) {
         dump("In bounce of small bounce");
         self.a = self.a + msg.amount - 4;
+    }
+
+    bounced(msg: bounced<Large>) {
+        dump("In bounce of large bounce");
     }
 
     // This will be supported in a future commit, and will throw if the string does not fit within a bounced message

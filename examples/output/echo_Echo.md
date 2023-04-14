@@ -1,9 +1,9 @@
 # TACT Compilation Report
 Contract: Echo
-BOC Size: 783 bytes
+BOC Size: 835 bytes
 
 # Types
-Total Types: 3
+Total Types: 4
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -16,6 +16,10 @@ Signature: `Context{bounced:bool,sender:address,value:int257,raw:^slice}`
 ## SendParameters
 TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters`
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
+
+## EchoMessage
+TLB: `echo_message#7ba20dc1  = EchoMessage`
+Signature: `EchoMessage{}`
 
 # Get Methods
 Total Get Methods: 1

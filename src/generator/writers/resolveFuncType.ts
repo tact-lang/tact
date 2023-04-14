@@ -45,10 +45,10 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, 
             throw Error('Unknown primitive type: ' + descriptor.name);
         }
     } else if (descriptor.kind === 'struct') {
-        if (optional || descriptor.fields.length === 0) {
+        const fieldsToUse = usePartialFields ? descriptor.fields.slice(0, descriptor.partialFieldCount) : descriptor.fields;
+        if (optional || fieldsToUse.length === 0) {
             return 'tuple';
         } else {
-            const fieldsToUse = usePartialFields ? descriptor.fields.slice(0, descriptor.partialFieldCount) : descriptor.fields;
             return '(' + fieldsToUse.map((v) => resolveFuncType(v.type, ctx, false, usePartialFields)).join(', ') + ')';
         }
     } else if (descriptor.kind === 'contract') {

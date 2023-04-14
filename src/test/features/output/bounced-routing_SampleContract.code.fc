@@ -99,6 +99,13 @@
     return (($self'a), ());
 }
 
+(((int)), ()) $SampleContract$_receive_binary_bounce_Large((int) $self, tuple $msg) impure inline {
+    var ($self'a) = $self;
+    var $msg = $msg;
+    __tact_debug_str(__gen_slice_string_072acac8f7f333d9554b76e61e6f7a869815335882336469afd2cfdcdb31e988());
+    return (($self'a), ());
+}
+
 ;;
 ;; Get methods of a Contract SampleContract
 ;;
@@ -120,7 +127,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmRFXPtgLroeBfj3V6F1M2N5uZ4repsKXtSVudkAVmVmri";
+    return "ipfs://QmbyKdmUn91HMnFzbpndVC9nhM3FkVTR6bKfnRftvHW7Nb";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -162,6 +169,13 @@ _ lazy_deployment_completed() method_id {
         if (op == 3235833558) {
             var msg = in_msg~$SmallBounce$_load();
             self~$SampleContract$_receive_binary_bounce_SmallBounce(msg);
+            return (self, true);
+        }
+        
+        ;; Bounced handler for Large message
+        if (op == 618480963) {
+            var msg = in_msg~$Large$_load_bounced();
+            self~$SampleContract$_receive_binary_bounce_Large(msg);
             return (self, true);
         }
         

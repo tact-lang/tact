@@ -12,6 +12,9 @@ PROGRAM{
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_end_slice
   DECLPROC __tact_string_builder_append
+  DECLPROC $EchoMessage$_store
+  DECLPROC $EchoMessage$_store_cell
+  DECLPROC $EchoMessage$_load
   DECLPROC $StateInit$_not_null
   DECLPROC $Echo$init$_load
   DECLPROC $Echo$_contract_init
@@ -24,6 +27,7 @@ PROGRAM{
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $Echo$_fun_forward
   DECLPROC $Echo$_fun_reply
+  DECLPROC $Echo$_internal_binary_EchoMessage
   DECLPROC $Echo$_internal_any_text
   DECLPROC $Echo$_internal_any
   115554 DECLMETHOD %hello
@@ -180,6 +184,26 @@ PROGRAM{
       }>
     }>
     3 BLKDROP
+  }>
+  $EchoMessage$_store PROCINLINE:<{
+    DROP
+    2074217921 PUSHINT
+    SWAP
+    32 STU
+  }>
+  $EchoMessage$_store_cell PROCINLINE:<{
+    NEWC
+    SWAP
+    $EchoMessage$_store INLINECALLDICT
+    ENDC
+  }>
+  $EchoMessage$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    2074217921 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    PUSHNULL
   }>
   $StateInit$_not_null PROCINLINE:<{
     DUP
@@ -383,6 +407,10 @@ PROGRAM{
     PUSHNULL
     $Echo$_fun_forward INLINECALLDICT
   }>
+  $Echo$_internal_binary_EchoMessage PROCINLINE:<{
+    $EchoMessage$_store_cell INLINECALLDICT
+    $Echo$_fun_reply INLINECALLDICT
+  }>
   $Echo$_internal_any_text PROCINLINE:<{
     $String$_fun_asComment INLINECALLDICT
     $Echo$_fun_reply INLINECALLDICT
@@ -404,7 +432,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d65786546787a63323552363667567732596a396f6966386f47643569764b6958416331506b6e5846574e546d} PUSHSLICE
+    x{697066733a2f2f516d586132505a524d4b4a7a33413974474464414e42576f4b4141656979687256453443527a326169746b6a317a} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -428,6 +456,16 @@ PROGRAM{
       DROP
       DUP
       32 PLDU
+    }>
+    DUP
+    2074217921 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      $EchoMessage$_load INLINECALLDICT
+      NIP
+      $Echo$_internal_binary_EchoMessage INLINECALLDICT
+      TRUE
     }>
     0 EQINT
     IF:<{

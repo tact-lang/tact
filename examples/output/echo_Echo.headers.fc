@@ -46,6 +46,15 @@ slice __tact_string_builder_end_slice(tuple builders) inline;
 ;; __tact_string_builder_append
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref;
 
+;; $EchoMessage$_store
+builder $EchoMessage$_store(builder build_0, tuple v) inline;
+
+;; $EchoMessage$_store_cell
+cell $EchoMessage$_store_cell(tuple v) inline;
+
+;; $EchoMessage$_load
+(slice, (tuple)) $EchoMessage$_load(slice sc_0) inline;
+
 ;; $StateInit$_not_null
 ((cell, cell)) $StateInit$_not_null(tuple v) inline;
 

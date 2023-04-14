@@ -413,6 +413,53 @@ function dictValueParserSecond(): DictionaryValue<Second> {
     }
 }
 
+export type Large = {
+    $$type: 'Large';
+    address: Address;
+    value: bigint;
+}
+
+export function storeLarge(src: Large) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(618480963, 32);
+        b_0.storeAddress(src.address);
+        b_0.storeCoins(src.value);
+    };
+}
+
+export function loadLarge(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 618480963) { throw Error('Invalid prefix'); }
+    let _address = sc_0.loadAddress();
+    let _value = sc_0.loadCoins();
+    return { $$type: 'Large' as const, address: _address, value: _value };
+}
+
+function loadTupleLarge(source: TupleReader) {
+    let _address = source.readAddress();
+    let _value = source.readBigNumber();
+    return { $$type: 'Large' as const, address: _address, value: _value };
+}
+
+function storeTupleLarge(source: Large) {
+    let builder = new TupleBuilder();
+    builder.writeAddress(source.address);
+    builder.writeNumber(source.value);
+    return builder.build();
+}
+
+function dictValueParserLarge(): DictionaryValue<Large> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeLarge(src)).endCell());
+        },
+        parse: (src) => {
+            return loadLarge(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type SmallBounce = {
     $$type: 'SmallBounce';
     amount: bigint;
@@ -511,8 +558,8 @@ function initSampleContract2_init_args(src: SampleContract2_init_args) {
 }
 
 async function SampleContract2_init() {
-    const __code = Cell.fromBase64('te6ccgECDQEAAiwAART/APSkE/S88sgLAQIBYgIDApLQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zzy4IIwyPhDAcx/AcoAye1UBAUCAVgJCgE07UTQ1AH4Y9IAMJFt4Pgo1wsKgwm68uCJ2zwGAfYBkjB/4HAh10nCH5UwINcLH94gwAAi10nBIbCSW3/gIIIQvsCPOLqOUjDTHwGCEL7Ajzi68uCB0x/6ANIA+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiBRDMGwUXwSL9Cb3VuY2luZyBGaXJzdCGP4UMPLAkH8HAAJtAVrgghAXVx7Iuo6g2zxsF18HjQQQm91bmNpbmcgU2Vjb25kIYP4UMPLAkX/gMHAIAJjTHwGCEBdXHsi68uCB0z/SANP/+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAHSAIEBAdcAAQHUAdCBAQHXAAExFxYVFEMwALm7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnAb1J3vlUWW8cdT094FWcMmgnCdl05as07LczoOlm2UZuikgCAUgLDAARsK+7UTQ0gABgAHWybuNDVpcGZzOi8vUW1YemNjZW51Y1dIanliYmtSUkZvMVRkMUNzeHptYlIzc2tQNjhSdHdaOVl0ZoIA==');
-    const __system = Cell.fromBase64('te6cckECDwEAAjYAAQHAAQEFocltAgEU/wD0pBP0vPLICwMCAWIJBAIBWAgFAgFIBwYAdbJu40NWlwZnM6Ly9RbVh6Y2NlbnVjV0hqeWJia1JSRm8xVGQxQ3N4em1iUjNza1A2OFJ0d1o5WXRmggABGwr7tRNDSAAGAAubu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcBvUne+VRZbxx1PT3gVZwyaCcJ2XTlqzTstzOg6WbZRm6KSAKS0AHQ0wMBcbCjAfpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IhUUFMDbwT4YQL4Yts8Wds88uCCMMj4QwHMfwHKAMntVA0KAfYBkjB/4HAh10nCH5UwINcLH94gwAAi10nBIbCSW3/gIIIQvsCPOLqOUjDTHwGCEL7Ajzi68uCB0x/6ANIA+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiBRDMGwUXwSL9Cb3VuY2luZyBGaXJzdCGP4UMPLAkH8LAVrgghAXVx7Iuo6g2zxsF18HjQQQm91bmNpbmcgU2Vjb25kIYP4UMPLAkX/gMHAMAJjTHwGCEBdXHsi68uCB0z/SANP/+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAHSAIEBAdcAAQHUAdCBAQHXAAExFxYVFEMwATTtRNDUAfhj0gAwkW3g+CjXCwqDCbry4InbPA4AAm2E2Ev6');
+    const __code = Cell.fromBase64('te6ccgECDQEAAiwAART/APSkE/S88sgLAQIBYgIDApLQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zzy4IIwyPhDAcx/AcoAye1UBAUCAVgJCgE07UTQ1AH4Y9IAMJFt4Pgo1wsKgwm68uCJ2zwGAfYBkjB/4HAh10nCH5UwINcLH94gwAAi10nBIbCSW3/gIIIQvsCPOLqOUjDTHwGCEL7Ajzi68uCB0x/6ANIA+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiBRDMGwUXwSL9Cb3VuY2luZyBGaXJzdCGP4UMPLAkH8HAAJtAVrgghAXVx7Iuo6g2zxsF18HjQQQm91bmNpbmcgU2Vjb25kIYP4UMPLAkX/gMHAIAJjTHwGCEBdXHsi68uCB0z/SANP/+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAHSAIEBAdcAAQHUAdCBAQHXAAExFxYVFEMwALm7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnAb1J3vlUWW8cdT094FWcMmgnCdl05as07LczoOlm2UZuikgCAUgLDAARsK+7UTQ0gABgAHWybuNDVpcGZzOi8vUW1VcmtWNUNBd3J2QUV1dGVzTlV2NXdIdWdLZnZETXkzWWR5bkpNRGJOajNDU4IA==');
+    const __system = Cell.fromBase64('te6cckECDwEAAjYAAQHAAQEFocltAgEU/wD0pBP0vPLICwMCAWIJBAIBWAgFAgFIBwYAdbJu40NWlwZnM6Ly9RbVVya1Y1Q0F3cnZBRXV0ZXNOVXY1d0h1Z0tmdkRNeTNZZHluSk1EYk5qM0NTggABGwr7tRNDSAAGAAubu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcBvUne+VRZbxx1PT3gVZwyaCcJ2XTlqzTstzOg6WbZRm6KSAKS0AHQ0wMBcbCjAfpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IhUUFMDbwT4YQL4Yts8Wds88uCCMMj4QwHMfwHKAMntVA0KAfYBkjB/4HAh10nCH5UwINcLH94gwAAi10nBIbCSW3/gIIIQvsCPOLqOUjDTHwGCEL7Ajzi68uCB0x/6ANIA+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiBRDMGwUXwSL9Cb3VuY2luZyBGaXJzdCGP4UMPLAkH8LAVrgghAXVx7Iuo6g2zxsF18HjQQQm91bmNpbmcgU2Vjb25kIYP4UMPLAkX/gMHAMAJjTHwGCEBdXHsi68uCB0z/SANP/+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAHSAIEBAdcAAQHUAdCBAQHXAAExFxYVFEMwATTtRNDUAfhj0gAwkW3g+CjXCwqDCbry4InbPA4AAm36K0P5');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);

@@ -23,6 +23,26 @@
 }
 
 ;;
+;; Type: EchoMessage
+;; Header: 0x7ba20dc1
+;; TLB: echo_message#7ba20dc1  = EchoMessage
+;;
+
+builder $EchoMessage$_store(builder build_0, tuple v) inline {
+    build_0 = store_uint(build_0, 2074217921, 32);
+    return build_0;
+}
+
+cell $EchoMessage$_store_cell(tuple v) inline {
+    return $EchoMessage$_store(begin_cell(), v).end_cell();
+}
+
+(slice, (tuple)) $EchoMessage$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2074217921);
+    return (sc_0, null());
+}
+
+;;
 ;; Type: Echo
 ;;
 

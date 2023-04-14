@@ -1,9 +1,9 @@
 # TACT Compilation Report
 Contract: SampleContract
-BOC Size: 1363 bytes
+BOC Size: 1424 bytes
 
 # Types
-Total Types: 9
+Total Types: 10
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -32,6 +32,10 @@ Signature: `First{amount:uint32,myCoins:coins,myBool3:bool,anAddress:address}`
 ## Second
 TLB: `second#17571ec8 amount_bigger:uint64 myBool:bool thisDoesNotFit:uint256 myAddress:address myBool2:bool myStruct:MyStruct{amount:int257} myStruct2:MyStruct{amount:int257} = Second`
 Signature: `Second{amount_bigger:uint64,myBool:bool,thisDoesNotFit:uint256,myAddress:address,myBool2:bool,myStruct:MyStruct{amount:int257},myStruct2:MyStruct{amount:int257}}`
+
+## Large
+TLB: `large#24dd4543 address:address value:coins = Large`
+Signature: `Large{address:address,value:coins}`
 
 ## SmallBounce
 TLB: `small_bounce#c0dee6d6 amount:uint32 myBool3:bool = SmallBounce`

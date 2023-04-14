@@ -27,10 +27,10 @@ export function resolveFuncTypeUnpack(descriptor: TypeRef | TypeDescription | st
     if (descriptor.kind === 'primitive') {
         return name;
     } else if (descriptor.kind === 'struct') {
-        if (optional || descriptor.fields.length === 0) {
+        const fieldsToUse = usePartialFields ? descriptor.fields.slice(0, descriptor.partialFieldCount) : descriptor.fields;
+        if (optional || fieldsToUse.length === 0) {
             return name;
         } else {
-            const fieldsToUse = usePartialFields ? descriptor.fields.slice(0, descriptor.partialFieldCount) : descriptor.fields;
             return '(' + fieldsToUse.map((v) => resolveFuncTypeUnpack(v.type, name + `'` + v.name, ctx, false, usePartialFields)).join(', ') + ')';
         }
     } else if (descriptor.kind === 'contract') {

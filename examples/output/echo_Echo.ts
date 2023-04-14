@@ -187,6 +187,43 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
     }
 }
 
+export type EchoMessage = {
+    $$type: 'EchoMessage';
+}
+
+export function storeEchoMessage(src: EchoMessage) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(2074217921, 32);
+    };
+}
+
+export function loadEchoMessage(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2074217921) { throw Error('Invalid prefix'); }
+    return { $$type: 'EchoMessage' as const };
+}
+
+function loadTupleEchoMessage(source: TupleReader) {
+    return { $$type: 'EchoMessage' as const };
+}
+
+function storeTupleEchoMessage(source: EchoMessage) {
+    let builder = new TupleBuilder();
+    return builder.build();
+}
+
+function dictValueParserEchoMessage(): DictionaryValue<EchoMessage> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeEchoMessage(src)).endCell());
+        },
+        parse: (src) => {
+            return loadEchoMessage(src.loadRef().beginParse());
+        }
+    }
+}
+
  type Echo_init_args = {
     $$type: 'Echo_init_args';
     a: bigint;
@@ -200,8 +237,8 @@ function initEcho_init_args(src: Echo_init_args) {
 }
 
 async function Echo_init(a: bigint) {
-    const __code = Cell.fromBase64('te6ccgECEwEAAwMAART/APSkE/S88sgLAQIBYgIDApLQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zzy4IIwyPhDAcx/AcoAye1UDwQCAVgJCgOA7aLt+wGSMH/gcCHXScIflTAg1wsf3sAAjxgg10nCH48QgCDXIds8+EIBf23bPH/bMeDeyAHPFsn4QgF/bds8fwUGBgFCyHAByx9vAAFvjG1vjAHbPG8iAcmTIW6zlgFvIlnMyegxEgE6bW0ibrOZWyBu8tCAbyIBkTLiECRwAwSAQlAj2zwHAcrIcQHKAVAHAcoAcAHKAlAFINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8WUAP6AnABymgjbrORf5MkbrPilzMzAXABygDjDSFus5x/AcoAASBu8tCAAcyVMXABygDiyQH7AAgAmH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMwAlbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcJ2XTlqzTstzOg6WbZRm6KSAIBSAsMAgJxDQ4AdbJu40NWlwZnM6Ly9RbWV4ZUZ4emMyNVI2NmdWdzJZajlvaWY4b0dkNWl2S2lYQWMxUGtuWEZXTlRtggAA+i+7UTQ0gABgIPoYts8Ads8MYPEAFG7UTQ1AH4Y9IAAZIwbeD4KNcLCoMJuvLgiYEBAdcAAQHR2zwRAlLIbwABb4xtb4yLdIZWxsbywgjbPAHbPG8iAcmTIW6zlgFvIlnMyegx0BISAAQwbQC6INdKIddJlyDCACLCALGOSgNvIoB/Is8xqwKhBasCUVW2CCDCAJwgqgIV1xhQM88WQBTeWW8CU0GhwgCZyAFvAlBEoaoCjhIxM8IAmdQw0CDXSiHXSZJwIOLi6F8D');
-    const __system = Cell.fromBase64('te6cckECFQEAAw0AAQHAAQEFoB5RAgEU/wD0pBP0vPLICwMCAWIMBAIBWAsFAgFIBwYAdbJu40NWlwZnM6Ly9RbWV4ZUZ4emMyNVI2NmdWdzJZajlvaWY4b0dkNWl2S2lYQWMxUGtuWEZXTlRtggAgJxCggCD6GLbPAHbPDGEwkCUshvAAFvjG1vjIt0hlbGxvLCCNs8Ads8byIByZMhbrOWAW8iWczJ6DHQEhIAD6L7tRNDSAAGAJW7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnCdl05as07LczoOlm2UZuikgCktAB0NMDAXGwowH6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIVFBTA28E+GEC+GLbPFnbPPLggjDI+EMBzH8BygDJ7VQTDQOA7aLt+wGSMH/gcCHXScIflTAg1wsf3sAAjxgg10nCH48QgCDXIds8+EIBf23bPH/bMeDeyAHPFsn4QgF/bds8fxEODgE6bW0ibrOZWyBu8tCAbyIBkTLiECRwAwSAQlAj2zwPAcrIcQHKAVAHAcoAcAHKAlAFINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8WUAP6AnABymgjbrORf5MkbrPilzMzAXABygDjDSFus5x/AcoAASBu8tCAAcyVMXABygDiyQH7ABAAmH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMwBQshwAcsfbwABb4xtb4wB2zxvIgHJkyFus5YBbyJZzMnoMRIAuiDXSiHXSZcgwgAiwgCxjkoDbyKAfyLPMasCoQWrAlFVtgggwgCcIKoCFdcYUDPPFkAU3llvAlNBocIAmcgBbwJQRKGqAo4SMTPCAJnUMNAg10oh10mScCDi4uhfAwFG7UTQ1AH4Y9IAAZIwbeD4KNcLCoMJuvLgiYEBAdcAAQHR2zwUAAQwbaZnP2Y=');
+    const __code = Cell.fromBase64('te6ccgECFAEAAzcAART/APSkE/S88sgLAQIBYgIDApLQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zzy4IIwyPhDAcx/AcoAye1UEAQCAVgKCwTG7aLt+wGSMH/gcCHXScIflTAg1wsf3iCCEHuiDcG6jqUw0x8BghB7og3BuvLggW0xyAEwghB7og3BAcsfyfhCAX9t2zx/4MAAjxgg10nCH48QgCDXIds8+EIBf23bPH/bMeDeBwUHBgFCyHAByx9vAAFvjG1vjAHbPG8iAcmTIW6zlgFvIlnMyegxEwEayAHPFsn4QgF/bds8fwcBOm1tIm6zmVsgbvLQgG8iAZEy4hAkcAMEgEJQI9s8CAHKyHEBygFQBwHKAHABygJQBSDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFlAD+gJwAcpoI26zkX+TJG6z4pczMwFwAcoA4w0hbrOcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAJAJh/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMAJW7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnCdl05as07LczoOlm2UZuikgCAUgMDQICcQ4PAHWybuNDVpcGZzOi8vUW1YYTJQWlJNS0p6M0E5dEdEZEFOQldvS0FBZWl5aHJWRTRDUnoyYWl0a2oxeoIAAPovu1E0NIAAYCD6GLbPAHbPDGEBEBRu1E0NQB+GPSAAGSMG3g+CjXCwqDCbry4ImBAQHXAAEB0ds8EgJSyG8AAW+MbW+Mi3SGVsbG8sII2zwB2zxvIgHJkyFus5YBbyJZzMnoMdATEwAEMG0AuiDXSiHXSZcgwgAiwgCxjkoDbyKAfyLPMasCoQWrAlFVtgggwgCcIKoCFdcYUDPPFkAU3llvAlNBocIAmcgBbwJQRKGqAo4SMTPCAJnUMNAg10oh10mScCDi4uhfAw==');
+    const __system = Cell.fromBase64('te6cckECFgEAA0EAAQHAAQEFoB5RAgEU/wD0pBP0vPLICwMCAWIMBAIBWAsFAgFIBwYAdbJu40NWlwZnM6Ly9RbVhhMlBaUk1LSnozQTl0R0RkQU5CV29LQUFlaXloclZFNENSejJhaXRrajF6ggAgJxCggCD6GLbPAHbPDGFAkCUshvAAFvjG1vjIt0hlbGxvLCCNs8Ads8byIByZMhbrOWAW8iWczJ6DHQEBAAD6L7tRNDSAAGAJW7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnCdl05as07LczoOlm2UZuikgCktAB0NMDAXGwowH6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIVFBTA28E+GEC+GLbPFnbPPLggjDI+EMBzH8BygDJ7VQUDQTG7aLt+wGSMH/gcCHXScIflTAg1wsf3iCCEHuiDcG6jqUw0x8BghB7og3BuvLggW0xyAEwghB7og3BAcsfyfhCAX9t2zx/4MAAjxgg10nCH48QgCDXIds8+EIBf23bPH/bMeDeEQ8RDgEayAHPFsn4QgF/bds8fxEBQshwAcsfbwABb4xtb4wB2zxvIgHJkyFus5YBbyJZzMnoMRAAuiDXSiHXSZcgwgAiwgCxjkoDbyKAfyLPMasCoQWrAlFVtgggwgCcIKoCFdcYUDPPFkAU3llvAlNBocIAmcgBbwJQRKGqAo4SMTPCAJnUMNAg10oh10mScCDi4uhfAwE6bW0ibrOZWyBu8tCAbyIBkTLiECRwAwSAQlAj2zwSAcrIcQHKAVAHAcoAcAHKAlAFINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8WUAP6AnABymgjbrORf5MkbrPilzMzAXABygDjDSFus5x/AcoAASBu8tCAAcyVMXABygDiyQH7ABMAmH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMwBRu1E0NQB+GPSAAGSMG3g+CjXCwqDCbry4ImBAQHXAAEB0ds8FQAEMG3ar3HB');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -264,9 +301,12 @@ export class Echo implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: string | Slice) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: EchoMessage | string | Slice) {
         
         let body: Cell | null = null;
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'EchoMessage') {
+            body = beginCell().store(storeEchoMessage(message)).endCell();
+        }
         if (typeof message === 'string') {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }

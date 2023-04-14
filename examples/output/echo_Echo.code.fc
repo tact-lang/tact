@@ -28,6 +28,13 @@ tuple $Echo$_contract_init(int $a) impure inline_ref {
 ;; Receivers of a Contract Echo
 ;;
 
+((tuple), ()) $Echo$_internal_binary_EchoMessage(tuple $self, tuple $msg) impure inline {
+    var $self = $self;
+    var $msg = $msg;
+    $self~$Echo$_fun_reply($EchoMessage$_store_cell($msg));
+    return ($self, ());
+}
+
 (tuple, ()) $Echo$_internal_any_text(tuple $self, slice $msg) impure inline {
     var $self = $self;
     $self~$Echo$_fun_reply($String$_fun_asComment($msg));
@@ -61,7 +68,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmexeFxzc25R66gVw2Yj9oif8oGd5ivKiXAc1PknXFWNTm";
+    return "ipfs://QmXa2PZRMKJz3A9tGDdANBWoKAAeiyhrVE4CRz2aitkj1z";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -84,6 +91,13 @@ _ lazy_deployment_completed() method_id {
         op = in_msg.preload_uint(32);
     }
     
+    
+    ;; Receive EchoMessage message
+    if (op == 2074217921) {
+        var msg = in_msg~$EchoMessage$_load();
+        self~$Echo$_internal_binary_EchoMessage(msg);
+        return (self, true);
+    }
     
     ;; Text Receivers
     if (op == 0) {

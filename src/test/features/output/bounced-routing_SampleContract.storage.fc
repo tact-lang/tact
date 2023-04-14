@@ -148,6 +148,17 @@ cell $Second$_store_cell((int, int, int, slice, int, (int), (int)) v) inline {
 }
 
 ;;
+;; Type: Large
+;; Header: 0x24dd4543
+;; TLB: large#24dd4543 address:address value:coins = Large
+;;
+
+(slice, (tuple)) $Large$_load_bounced(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 618480963);
+    return (sc_0, null());
+}
+
+;;
 ;; Type: SmallBounce
 ;; Header: 0xc0dee6d6
 ;; TLB: small_bounce#c0dee6d6 amount:uint32 myBool3:bool = SmallBounce

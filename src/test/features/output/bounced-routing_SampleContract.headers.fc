@@ -61,6 +61,9 @@ cell $Second$_store_cell((int, int, int, slice, int, (int), (int)) v) inline;
 ;; $Second$_load_bounced
 (slice, ((int, int))) $Second$_load_bounced(slice sc_0) inline;
 
+;; $Large$_load_bounced
+(slice, (tuple)) $Large$_load_bounced(slice sc_0) inline;
+
 ;; $SmallBounce$_load
 (slice, ((int, int))) $SmallBounce$_load(slice sc_0) inline;
 

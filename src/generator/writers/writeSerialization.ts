@@ -235,7 +235,11 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
             writeCellParser(allocation.root, 0, ctx);
 
             // Compile tuple
-            ctx.append(`return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(', ')}));`);
+            if (allocation.ops.length === 0) {
+                ctx.append(`return (sc_0, null());`);
+            } else {
+                ctx.append(`return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(', ')}));`);
+            }
         });
     });
 }
@@ -260,7 +264,11 @@ export function writeBouncedParser(name: string, forceInline: boolean, allocatio
             writeCellParser(allocation.root, 0, ctx);
 
             // Compile tuple
-            ctx.append(`return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(', ')}));`);
+            if (allocation.ops.length === 0) {
+                ctx.append(`return (sc_0, null());`);
+            } else {
+                ctx.append(`return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(', ')}));`);
+            }
         });
     });
 }
