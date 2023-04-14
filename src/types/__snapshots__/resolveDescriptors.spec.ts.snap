@@ -209,7 +209,7 @@ Line 12, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-21 1`] = `
-"<unknown>:17:3: Generic bounce receive function can only accept Slice
+"<unknown>:17:3: Bounce receive function can only accept bounced message, message or Slice
 Line 17, col 3:
   16 |   
 > 17 |   bounced(src: Int) {
@@ -229,7 +229,7 @@ Line 24, col 3:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-23 1`] = `
-"<unknown>:24:3: Generic bounce receive function already exists
+"<unknown>:24:3: Fallback bounce receive function already exists
 Line 24, col 3:
   23 |   
 > 24 |   bounced(msg: Slice) {
@@ -2634,7 +2634,7 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
           "statements": [],
         },
         "selector": {
-          "kind": "internal-bounce",
+          "kind": "bounce-fallback",
           "name": "src",
         },
       },
@@ -3152,13 +3152,10 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           ],
         },
         "selector": {
-          "kind": "internal-bounce-struct",
+          "bounced": true,
+          "kind": "bounce-binary",
           "name": "src",
-          "type": {
-            "kind": "ref_bounced",
-            "name": "A",
-            "optional": false,
-          },
+          "type": "A",
         },
       },
     ],

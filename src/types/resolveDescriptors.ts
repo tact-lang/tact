@@ -758,8 +758,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             if (!t.ast.message) {
                                 throwError('Bounce receive function can only accept bounced message, message or Slice', d.ref);
                             }
-                            if (s.receivers.find((v) => v.selector.kind === 'bounce-binary' && v.selector.name === t.name)) {
-                                throwError(`Bounce receive function for ${arg.type.name} already exists`, d.ref);
+                            if (s.receivers.find((v) => v.selector.kind === 'bounce-binary' && v.selector.type === t.name)) {
+                                throwError(`Bounce receive function for ${t.name} already exists`, d.ref);
                             }
                             if (t.fields.length === t.partialFieldCount) {
                                 throwError('This message is small enough for bounce receiver, you need to remove bounced modifier.', d.ref);

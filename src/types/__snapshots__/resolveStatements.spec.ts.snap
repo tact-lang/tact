@@ -241,7 +241,7 @@ Line 15, col 9:
 `;
 
 exports[`resolveStatements should fail statements for case-24 1`] = `
-"<unknown>:23:18: Type "A" does not have a field named "c"
+"<unknown>:23:18: Type bounced<"A"> does not have a field named "c"
 Line 23, col 18:
   22 |     let y: Bool = src.b;
 > 23 |     let z: Int = src.c;
