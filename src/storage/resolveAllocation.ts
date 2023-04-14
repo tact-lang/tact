@@ -1,5 +1,5 @@
 import { CompilerContext, createContextStore } from "../context";
-import { getAllTypes, getType } from "../types/resolveDescriptors";
+import { getAllTypes, getType, toBounced } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { topologicalSort } from "../utils/utils";
 import { StorageAllocation } from "./StorageAllocation";
@@ -71,16 +71,22 @@ export function resolveAllocations(ctx: CompilerContext) {
 
         // Convert fields
         let ops: AllocationOperation[] = [];
-        for (let f of s.fields) {
-            ops.push({
+        let partialOps: AllocationOperation[] = [];
+        for (let [i, f] of s.fields.entries()) {
+            const op = {
                 name: f.name,
                 type: f.abi.type,
                 op: getAllocationOperationFromField(f.abi.type, (name) => getAllocation(ctx, name)!.size)
-            });
+            };
+            ops.push(op);
+            if (i < s.partialFieldCount) {
+                partialOps.push(op);
+            }
         }
 
         // Perform allocation
         let root = allocate({ ops, reserved: { bits: reserveBits, refs: reserveRefs } });
+        let partialRoot = allocate({ ops: partialOps, reserved: { bits: reserveBits, refs: reserveRefs } });
 
         // Store allocation
         let allocation: StorageAllocation = {
@@ -92,9 +98,21 @@ export function resolveAllocations(ctx: CompilerContext) {
                 refs: root.size.refs + reserveRefs
             }
         };
+        
+        let partialAllocation: StorageAllocation = {
+            ops: partialOps,
+            root: partialRoot,
+            header,
+            size: {
+                bits: root.size.bits + reserveBits,
+                refs: root.size.refs + reserveRefs
+            }
+        };
+        
         ctx = store.set(ctx, s.name, allocation);
+        ctx = store.set(ctx, toBounced(s.name), partialAllocation);
     }
-
+    
     // Generate init allocations
     for (let s of types) {
         if (s.kind === 'contract' && s.init) {

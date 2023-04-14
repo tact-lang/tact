@@ -1,0 +1,12 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+;; String "In generic bounce"
+slice __gen_slice_string_e00443a4d0500a8f08cfafd55e0ef63f7446ab298ff5fa2e86e8c14fb1c93308() asm "B{b5ee9c72410101010013000022496e2067656e6572696320626f756e63659b8e2ac3} B>boc <s PUSHSLICE";
+
+;; String "In bounce of first"
+slice __gen_slice_string_243957683affad975f13b5d1da712eeeb40eaaafd138959df55425441c233292() asm "B{b5ee9c72410101010014000024496e20626f756e6365206f66206669727374a88de4c0} B>boc <s PUSHSLICE";
+
+;; String "In bounce of second"
+slice __gen_slice_string_5060db2d197fc52630815539c065a7d8c266f871c8b16b933b89d4fe90a72fae() asm "B{b5ee9c72410101010015000026496e20626f756e6365206f66207365636f6e64fc665418} B>boc <s PUSHSLICE";

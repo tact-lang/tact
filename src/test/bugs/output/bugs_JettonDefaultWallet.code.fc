@@ -144,8 +144,9 @@ _ lazy_deployment_completed() method_id {
         ;; Skip 0xFFFFFFFF
         in_msg~skip_bits(32);
         
-        self~$JettonDefaultWallet$_receive_bounce(in_msg);
         
+        ;; Bounced handler for JettonDefaultWallet message (Generic)
+        self~$JettonDefaultWallet$_receive_bounce(in_msg);
         return (self, true);
     }
     

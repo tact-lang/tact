@@ -1,6 +1,6 @@
 import { beginCell } from "ton-core";
-import { getType } from "../../types/resolveDescriptors";
-import { ReceiverDescription, TypeDescription } from "../../types/types";
+import { getType, resolveTypeRef, toBounced } from "../../types/resolveDescriptors";
+import { ReceiverDescription, ReceiverSelector, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { id } from "./id";
 import { ops } from "./ops";
@@ -22,29 +22,80 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
             ctx.append(`;; Handle bounced messages`);
             ctx.append(`if (msg_bounced) {`);
             ctx.inIndent(() => {
-                let bouncedHandler = type.receivers.find(f => f.selector.kind === 'internal-bounce');
-                if (bouncedHandler) {
 
-                    // Remove prefix
+                const nonGenericReceivers = type.receivers.filter(r => {
+                    if (r.selector.kind !== "internal-bounce-struct" || r.selector.type.kind !== 'ref_bounced') return false;
+                    const allocation = getType(ctx.ctx, r.selector.type.name);
+                    return !(allocation.origin === "stdlib" && allocation.name === "Slice");
+                });
+                
+                const genericReceiver = type.receivers.find(r => {
+                    return r.selector.kind === "internal-bounce";
+                });
+
+                if (genericReceiver || nonGenericReceivers.length > 0) {
                     ctx.append(`;; Skip 0xFFFFFFFF`);
                     ctx.append(`in_msg~skip_bits(32);`);
                     ctx.append();
+                }
 
-                    // Process
-                    ctx.append(`self~${ops.receiveBounce(type.name)}(in_msg);`);
+                if (nonGenericReceivers.length > 0) {
+                    ctx.append(`;; Parse op`);
+                    ctx.append(`int op = 0;`);
+                    ctx.append(`if (slice_bits(in_msg) >= 32) {`);
+                    ctx.inIndent(() => {
+                        ctx.append(`op = in_msg.preload_uint(32);`);
+                    });
+                    ctx.append(`}`);
+                }
+                
+                for (const r of nonGenericReceivers) {
+                    const selector = r.selector;
+                    if (selector.kind !== "internal-bounce-struct" || selector.type.kind !== 'ref_bounced') throw Error('Invalid selector type: ' + selector.kind);
+
+                    let allocation = getType(ctx.ctx, selector.type.name);
+                    
+                    if (!allocation.header) {
+                        throw Error('Invalid allocation: ' + selector.type.name);
+                    }
+
                     ctx.append();
+                    ctx.append(`;; Bounced handler for ${selector.type.name} message`);
+                    ctx.append(`if (op == ${allocation.header}) {`);
+                    ctx.inIndent(() => {
+                        if (selector.kind !== "internal-bounce-struct" || selector.type.kind !== 'ref_bounced') throw Error('Invalid selector type: ' + selector.kind);
+                        // Read message
+                        ctx.append(`var msg = in_msg~${ops.readerBounced(selector.type.name, ctx)}();`);
+
+                        // Execute function
+                        ctx.append(`self~${ops.receiveTypeBounce(type.name, selector.type.name)}(msg);`);
+
+                        // Exit
+                        ctx.append('return (self, true);');
+                    })
+                    ctx.append(`}`);
+                }
+
+                if (genericReceiver) {
+                    const selector = genericReceiver.selector;
+                    if (selector.kind !== "internal-bounce") throw Error('Invalid selector type: ' + selector.kind);
+
+                    ctx.append();
+                    ctx.append(`;; Bounced handler for ${type.name} message (Generic)`);
+
+                    // Execute function
+                    ctx.append(`self~${ops.receiveGenericBounce(type.name)}(in_msg);`);
 
                     // Exit
                     ctx.append('return (self, true);');
                 } else {
-
-                    // Exit
                     ctx.append(`return (self, true);`);
                 }
+                
             });
             ctx.append(`}`);
         }
-
+        
         // Parse incoming message
         ctx.append();
         ctx.append(`;; Parse incoming message`);
@@ -288,9 +339,35 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
 
     // Bounced
     if (selector.kind === 'internal-bounce') {
-        ctx.append(`(${selfType}, ()) ${ops.receiveBounce(self.name)}(${selfType} ${id('self')}, slice ${id(selector.name)}) impure inline {`);
+        ctx.append(`(${selfType}, ()) ${ops.receiveGenericBounce(self.name)}(${selfType} ${id('self')}, slice ${id(selector.name)}) impure inline {`);
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
+
+            for (let s of f.ast.statements) {
+                writeStatement(s, selfRes, null, ctx);
+            }
+
+            if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                ctx.append(`return (${selfRes}, ());`);
+            }
+        });
+        ctx.append(`}`);
+        ctx.append();
+        return;
+    }
+    
+    if (selector.kind === 'internal-bounce-struct') {
+        if (selector.type.kind !== 'ref_bounced') {
+            throw Error("Bounced selector type must be of bounced type");
+        }
+        let args = [
+            selfType + ' ' + id('self'),
+            resolveFuncType(selector.type, ctx) + ' ' + id(selector.name)
+        ];
+        ctx.append(`((${selfType}), ()) ${ops.receiveTypeBounce(self.name, selector.type.name)}(${args.join(', ')}) impure inline {`);
+        ctx.inIndent(() => {
+            ctx.append(selfUnpack);
+            ctx.append(`var ${resolveFuncTypeUnpack(selector.type, id(selector.name), ctx)} = ${id(selector.name)};`);
 
             for (let s of f.ast.statements) {
                 writeStatement(s, selfRes, null, ctx);

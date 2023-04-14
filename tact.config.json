@@ -173,6 +173,14 @@
       }
     },
     {
+      "name": "bounced-routing",
+      "path": "./src/test/features/bounced-routing.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
       "name": "debug",
       "path": "./src/test/features/debug.tact",
       "output": "./src/test/features/output",

@@ -323,5 +323,9 @@ export function createABITypeRefFromTypeRef(src: TypeRef, ref: ASTRef): ABITypeR
         return { kind: 'dict', key, keyFormat, value, valueFormat };
     }
 
+    if (src.kind === 'ref_bounced') {
+        throw Error("Unexpected bounced reference");
+    }
+
     throw Error(`Unsupported type`);
 }

@@ -86,8 +86,9 @@ _ lazy_deployment_completed() method_id {
         ;; Skip 0xFFFFFFFF
         in_msg~skip_bits(32);
         
-        self~$Beacon$_receive_bounce(in_msg);
         
+        ;; Bounced handler for Beacon message (Generic)
+        self~$Beacon$_receive_bounce(in_msg);
         return (self, true);
     }
     

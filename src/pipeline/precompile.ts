@@ -1,5 +1,5 @@
 import { CompilerContext } from "../context";
-import { resolveDescriptors } from "../types/resolveDescriptors";
+import { resolveDescriptors } from '../types/resolveDescriptors';
 import { resolveAllocations } from "../storage/resolveAllocation";
 import { openContext } from "../grammar/store";
 import { resolveStatements } from "../types/resolveStatements";
