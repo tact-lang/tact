@@ -44,7 +44,7 @@ export const ops = {
     receiveText: (type: string, kind: 'internal' | 'external', hash: string) => `$${type}$_${kind}_text_${hash}`,
     receiveAny: (type: string, kind: 'internal' | 'external') => `$${type}$_${kind}_any`,
     receiveTypeBounce: (type: string, msg: string) => `$${type}$_receive_binary_bounce_${msg}`,
-    receiveGenericBounce: (type: string) => `$${type}$_receive_bounce`,
+    receiveBounceAny: (type: string) => `$${type}$_receive_bounce`,
 
     // Functions
     extension: (type: string, name: string) => `$${type}$_fun_${name}`,

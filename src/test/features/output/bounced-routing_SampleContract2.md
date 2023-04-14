@@ -3,7 +3,7 @@ Contract: SampleContract2
 BOC Size: 568 bytes
 
 # Types
-Total Types: 8
+Total Types: 9
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -32,6 +32,10 @@ Signature: `First{amount:uint32,myCoins:coins,myBool3:bool,anAddress:address}`
 ## Second
 TLB: `second#17571ec8 amount_bigger:uint64 myBool:bool thisDoesNotFit:uint256 myAddress:address myBool2:bool myStruct:MyStruct{amount:int257} myStruct2:MyStruct{amount:int257} = Second`
 Signature: `Second{amount_bigger:uint64,myBool:bool,thisDoesNotFit:uint256,myAddress:address,myBool2:bool,myStruct:MyStruct{amount:int257},myStruct2:MyStruct{amount:int257}}`
+
+## SmallBounce
+TLB: `small_bounce#c0dee6d6 amount:uint32 myBool3:bool = SmallBounce`
+Signature: `SmallBounce{amount:uint32,myBool3:bool}`
 
 ## MyStruct
 TLB: `_ amount:int257 = MyStruct`

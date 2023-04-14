@@ -91,6 +91,14 @@
     return (($self'a), ());
 }
 
+(((int)), ()) $SampleContract$_receive_binary_bounce_SmallBounce((int) $self, (int, int) $msg) impure inline {
+    var ($self'a) = $self;
+    var ($msg'amount, $msg'myBool3) = $msg;
+    __tact_debug_str(__gen_slice_string_f115c865d815c88dfb8375de4bb989003f2730d837bf69e92fac8747a1cdcb3f());
+    $self'a = (($self'a + $msg'amount) - 4);
+    return (($self'a), ());
+}
+
 ;;
 ;; Get methods of a Contract SampleContract
 ;;
@@ -112,7 +120,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmRqSCV7gjfraGbTi8NDyxM1BGKQYDossstXAEz2ZLQDZu";
+    return "ipfs://QmRFXPtgLroeBfj3V6F1M2N5uZ4repsKXtSVudkAVmVmri";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -126,6 +134,7 @@ _ lazy_deployment_completed() method_id {
 ((int), int) $SampleContract$_contract_router_internal((int) self, int msg_bounced, slice in_msg) impure inline_ref {
     ;; Handle bounced messages
     if (msg_bounced) {
+        
         ;; Skip 0xFFFFFFFF
         in_msg~skip_bits(32);
         
@@ -149,8 +158,16 @@ _ lazy_deployment_completed() method_id {
             return (self, true);
         }
         
-        ;; Bounced handler for SampleContract message (Generic)
+        ;; Bounced handler for SmallBounce message
+        if (op == 3235833558) {
+            var msg = in_msg~$SmallBounce$_load();
+            self~$SampleContract$_receive_binary_bounce_SmallBounce(msg);
+            return (self, true);
+        }
+        
+        ;; Fallback bounce receiver
         self~$SampleContract$_receive_bounce(in_msg);
+        
         return (self, true);
     }
     

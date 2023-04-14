@@ -353,10 +353,10 @@ export function resolveStatements(ctx: CompilerContext) {
                 sctx = addVariable(f.selector.name, { kind: 'ref', name: 'String', optional: false }, sctx);
             } else if (f.selector.kind === 'internal-fallback' || f.selector.kind === 'external-fallback') {
                 sctx = addVariable(f.selector.name, { kind: 'ref', name: 'Slice', optional: false }, sctx);
-            } else if (f.selector.kind === 'internal-bounce') {
+            } else if (f.selector.kind === 'bounce-fallback') {
                 sctx = addVariable(f.selector.name, { kind: 'ref', name: 'Slice', optional: false }, sctx);
-            } else if (f.selector.kind === 'internal-bounce-struct') {
-                sctx = addVariable(f.selector.name, f.selector.type, sctx);
+            } else if (f.selector.kind === 'bounce-binary') {
+                sctx = addVariable(f.selector.name, f.selector.bounced ? { kind: 'ref_bounced', name: f.selector.type } : { kind: 'ref', name: f.selector.type, optional: false }, sctx);
             } else {
                 throw Error('Unknown selector');
             }

@@ -10,3 +10,6 @@ slice __gen_slice_string_243957683affad975f13b5d1da712eeeb40eaaafd138959df554254
 
 ;; String "In bounce of second"
 slice __gen_slice_string_5060db2d197fc52630815539c065a7d8c266f871c8b16b933b89d4fe90a72fae() asm "B{b5ee9c72410101010015000026496e20626f756e6365206f66207365636f6e64fc665418} B>boc <s PUSHSLICE";
+
+;; String "In bounce of small bounce"
+slice __gen_slice_string_f115c865d815c88dfb8375de4bb989003f2730d837bf69e92fac8747a1cdcb3f() asm "B{b5ee9c7241010101001b000032496e20626f756e6365206f6620736d616c6c20626f756e636520771682} B>boc <s PUSHSLICE";

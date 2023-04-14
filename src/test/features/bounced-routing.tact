@@ -25,6 +25,11 @@ message Second {
     myStruct2: MyStruct;
 }
 
+message SmallBounce {
+    amount: Int as uint32;
+    myBool3: Bool;
+}
+
 struct MyStruct {
     amount: Int;
 }
@@ -86,13 +91,18 @@ contract SampleContract {
         // only the first 224 bits are populated into a partial First struct
         let y: Bool = msg.myBool3;
         self.a = self.a + msg.amount - 2;
-        // let z: Address = msg.anAddress; This would throw
+        // let z: Address = msg.anAddress; // This would throw
         let z: bounced<First> = msg;
     }
     
     bounced(msg: bounced<Second>) {
         dump("In bounce of second");
         self.a = self.a + msg.amount_bigger - 4;
+    }
+
+    bounced(msg: SmallBounce) {
+        dump("In bounce of small bounce");
+        self.a = self.a + msg.amount - 4;
     }
 
     // This will be supported in a future commit, and will throw if the string does not fit within a bounced message

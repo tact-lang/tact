@@ -112,12 +112,13 @@ export type ReceiverSelector = {
     kind: 'internal-fallback',
     name: string
 } | {
-    kind: 'internal-bounce',
+    kind: 'bounce-fallback',
     name: string,
 } | {
-    kind: 'internal-bounce-struct',
+    kind: 'bounce-binary',
     name: string,
-    type: TypeRef,
+    type: string,
+    bounced: boolean,
 } | {
     kind: 'external-binary',
     type: string,

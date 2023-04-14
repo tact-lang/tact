@@ -347,6 +347,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     //
+    // Populate partial serialization info
+    //
+
+    for (let t in types) {
+        types[t].partialFieldCount = resolvePartialFields(ctx, types[t])
+    }
+
+    //
     // Resolve contract functions
     //
 
@@ -699,17 +707,46 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         });
                     } else if (d.selector.kind === 'bounce') {
                         const arg = d.selector.arg;
-                        let isGeneric = false;
 
+                        // If argument is a direct reference
                         if (arg.type.kind === "type_ref_simple") {
+
                             if (arg.type.optional) {
                                 throwError('Bounce receive function cannot have optional argument', d.ref);
                             }
-                            if (arg.type.name !== "Slice") {
-                                throwError('Generic bounce receive function can only accept Slice', d.ref);
+
+                            if (arg.type.name === "Slice") {
+
+                                if (s.receivers.find((v) => v.selector.kind === 'bounce-fallback')) {
+                                    throwError(`Fallback bounce receive function already exists`, d.ref);
+                                }
+
+                                s.receivers.push({
+                                    selector: { kind: 'bounce-fallback', name: arg.name },
+                                    ast: d
+                                });
+                            } else {
+                                let type = types[arg.type.name];
+                                if (type.ast.kind !== 'def_struct' || !type.ast.message) {
+                                    throwError('Bounce receive function can only accept bounced message, message or Slice', d.ref);
+                                }
+                                if (type.fields.length !== type.partialFieldCount) {
+                                    throwError('This message is too big for bounce receiver, you need to wrap it to a bounced<' + arg.type.name + '>.', d.ref);
+                                }
+                                if (s.receivers.find((v) => v.selector.kind === 'bounce-binary' && v.selector.name === type.name)) {
+                                    throwError(`Bounce receive function for ${arg.type.name} already exists`, d.ref);
+                                }
+                                s.receivers.push({
+                                    selector: {
+                                        kind: 'bounce-binary',
+                                        name: arg.name,
+                                        type: arg.type.name,
+                                        bounced: false
+                                    },
+                                    ast: d
+                                });
                             }
 
-                            isGeneric = true;
                         } else if (arg.type.kind === "type_ref_bounced") {
                             let t = types[arg.type.name];
                             if (t.kind !== 'struct') {
@@ -719,37 +756,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 throwError('Bounce receive function can only accept bounced<T> struct types', d.ref);
                             }
                             if (!t.ast.message) {
-                                throwError('Bounce receive function can only accept struct message args', d.ref);
+                                throwError('Bounce receive function can only accept bounced message, message or Slice', d.ref);
                             }
-                        } else {
-                            throwError('Bounce receive function can only accept bounced<T> struct args or Slice', d.ref);
-                        }
-
-                        if (isGeneric) {
-                            if (s.receivers.find((v) => v.selector.kind === 'internal-bounce')) {
-                                throwError(`Generic bounce receive function already exists`, d.ref);
-                            }
-
-                            s.receivers.push({
-                                selector: { kind: 'internal-bounce', name: arg.name },
-                                ast: d
-                            });
-                        } else {
-                            // resolveTypeRef isn't available at this point so we construct the typeref synthetically
-                            const typeRef: TypeRef = {
-                                kind: isGeneric ? 'ref' : 'ref_bounced',
-                                name: arg.type.name,
-                                optional: arg.type.kind === 'type_ref_simple' ? arg.type.optional : false,
-                            };
-
-                            if (s.receivers.find((v) => v.selector.kind === 'internal-bounce-struct' && typeRefEquals(typeRef, v.selector.type))) {
+                            if (s.receivers.find((v) => v.selector.kind === 'bounce-binary' && v.selector.name === t.name)) {
                                 throwError(`Bounce receive function for ${arg.type.name} already exists`, d.ref);
                             }
-
+                            if (t.fields.length === t.partialFieldCount) {
+                                throwError('This message is small enough for bounce receiver, you need to remove bounced modifier.', d.ref);
+                            }
                             s.receivers.push({
-                                selector: { kind: 'internal-bounce-struct', name: arg.name, type: typeRef },
+                                selector: {
+                                    kind: 'bounce-binary',
+                                    name: arg.name,
+                                    type: arg.type.name,
+                                    bounced: true
+                                },
                                 ast: d
                             });
+                        } else {
+                            throwError('Bounce receive function can only accept bounced<T> struct args or Slice', d.ref);
                         }
                     } else {
                         throwError('Invalid receive function selector', d.ref);
@@ -950,11 +975,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (a.kind === 'internal-binary' && b.kind === 'internal-binary') {
                         return a.type === b.type;
                     }
-                    if (a.kind === 'internal-bounce' && b.kind === 'internal-bounce') {
+                    if (a.kind === 'bounce-fallback' && b.kind === 'bounce-fallback') {
                         return true; // Could be only one
                     }
-                    if (a.kind === 'internal-bounce-struct' && b.kind === 'internal-bounce-struct') {
-                        return typeRefEquals(a.type, b.type);
+                    if (a.kind === 'bounce-binary' && b.kind === 'bounce-binary') {
+                        return a.type === b.type;
                     }
                     if (a.kind === 'internal-empty' && b.kind === 'internal-empty') {
                         return true;
@@ -1109,13 +1134,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
             throwError(`Static function ${a.name} already exists`, a.ref);
         }
         staticConstants[a.name] = buildConstantDescription(a);
-    }
-
-    //
-    // Populate partial serialization info
-    //
-    for (let t in types) {
-        types[t].partialFieldCount = resolvePartialFields(ctx, types[t])
     }
 
     //

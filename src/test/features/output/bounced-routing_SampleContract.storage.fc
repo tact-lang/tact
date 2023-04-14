@@ -148,6 +148,19 @@ cell $Second$_store_cell((int, int, int, slice, int, (int), (int)) v) inline {
 }
 
 ;;
+;; Type: SmallBounce
+;; Header: 0xc0dee6d6
+;; TLB: small_bounce#c0dee6d6 amount:uint32 myBool3:bool = SmallBounce
+;;
+
+(slice, ((int, int))) $SmallBounce$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3235833558);
+    var v'amount = sc_0~load_uint(32);
+    var v'myBool3 = sc_0~load_int(1);
+    return (sc_0, (v'amount, v'myBool3));
+}
+
+;;
 ;; Type: SampleContract
 ;;
 

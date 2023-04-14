@@ -49,7 +49,7 @@ function resolveStructNew(exp: ASTOpNew, sctx: StatementContext, ctx: CompilerCo
 
     // Get type
     let tp = getType(ctx, exp.type);
-    
+
     if (tp.kind !== 'struct') {
         throwError(`Invalid type "${exp.type}" for construction`, exp.ref);
     }
@@ -196,7 +196,7 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
 
     // Find target type and check for type
     let src = getExpType(ctx, exp.src);
-    
+
     if (src === null || ((src.kind !== 'ref' || src.optional) && (src.kind !== 'ref_bounced'))) {
         throwError(`Invalid type "${printTypeRef(src)}" for field access`, exp.ref);
     }
@@ -210,7 +210,7 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
 
     // Find field
     let fields: FieldDescription[];
-    
+
     let srcT = getType(ctx, src.name);
 
     fields = srcT.fields;
@@ -221,7 +221,11 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
     const field = fields.find((v) => v.name === exp.name);
     const cst = srcT.constants.find((v) => v.name === exp.name);
     if (!field && !cst) {
-        throwError(`Type "${src.name}" does not have a field named "${exp.name}"`, exp.ref);
+        if (src.kind === 'ref_bounced') {
+            throwError(`Type bounced<"${src.name}"> does not have a field named "${exp.name}"`, exp.ref);
+        } else {
+            throwError(`Type "${src.name}" does not have a field named "${exp.name}"`, exp.ref);
+        }
     }
 
     // Register result type
