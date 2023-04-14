@@ -1,6 +1,6 @@
 # TACT Compilation Report
-Contract: ContractWithOptionals
-BOC Size: 1758 bytes
+Contract: Opt3
+BOC Size: 352 bytes
 
 # Types
 Total Types: 8
@@ -38,45 +38,7 @@ TLB: `update#1554fcfd a:Maybe int257 b:Maybe bool c:Maybe ^cell d:Maybe address 
 Signature: `Update{a:Maybe int257,b:Maybe bool,c:Maybe ^cell,d:Maybe address,e:Maybe SomeGenericStruct{value1:int257,value2:int257,value3:int257,value4:int257,value5:int257},f:Maybe StructWithOptionals{a:Maybe int257,b:Maybe bool,c:Maybe ^cell,d:Maybe address,e:Maybe SomeGenericStruct{value1:int257,value2:int257,value3:int257,value4:int257,value5:int257}}}`
 
 # Get Methods
-Total Get Methods: 19
-
-## isNotNullA
-
-## isNotNullB
-
-## isNotNullC
-
-## isNotNullD
-
-## isNotNullE
-
-## isNotNullF
-
-## nullA
-
-## nullB
-
-## nullC
-
-## nullD
-
-## nullE
-
-## nullF
-
-## notNullA
-
-## notNullB
-
-## notNullC
-
-## notNullD
-
-## notNullE
-
-## notNullF
-
-## testVariables
+Total Get Methods: 0
 
 # Error Codes
 2: Stack undeflow

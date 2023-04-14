@@ -488,44 +488,30 @@ function dictValueParserUpdate(): DictionaryValue<Update> {
     }
 }
 
- type ContractWithOptionals_init_args = {
-    $$type: 'ContractWithOptionals_init_args';
-    a: bigint | null;
-    b: boolean | null;
-    c: Cell | null;
-    d: Address | null;
-    e: SomeGenericStruct | null;
-    f: StructWithOptionals | null;
+ type Opt3_init_args = {
+    $$type: 'Opt3_init_args';
+    arg: Struct2 | null;
 }
 
-function initContractWithOptionals_init_args(src: ContractWithOptionals_init_args) {
+function initOpt3_init_args(src: Opt3_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        if (src.a !== null && src.a !== undefined) { b_0.storeBit(true).storeInt(src.a, 257); } else { b_0.storeBit(false); }
-        if (src.b !== null && src.b !== undefined) { b_0.storeBit(true).storeBit(src.b); } else { b_0.storeBit(false); }
-        if (src.c !== null && src.c !== undefined) { b_0.storeBit(true).storeRef(src.c); } else { b_0.storeBit(false); }
-        b_0.storeAddress(src.d);
-        let b_1 = new Builder();
-        if (src.e !== null && src.e !== undefined) { b_1.storeBit(true); b_1.store(storeSomeGenericStruct(src.e)); } else { b_1.storeBit(false); }
-        let b_2 = new Builder();
-        if (src.f !== null && src.f !== undefined) { b_2.storeBit(true); b_2.store(storeStructWithOptionals(src.f)); } else { b_2.storeBit(false); }
-        b_1.storeRef(b_2.endCell());
-        b_0.storeRef(b_1.endCell());
+        if (src.arg !== null && src.arg !== undefined) { b_0.storeBit(true); b_0.store(storeStruct2(src.arg)); } else { b_0.storeBit(false); }
     };
 }
 
-async function ContractWithOptionals_init(a: bigint | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null) {
-    const __code = Cell.fromBase64('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');
-    const __system = Cell.fromBase64('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');
+async function Opt3_init(arg: Struct2 | null) {
+    const __code = Cell.fromBase64('te6ccgECCwEAAVQAART/APSkE/S88sgLAQIBYgIDApDQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggwm6AYEE/7qx8uCIVFBTA28E+GEC+GLbPFnbPPLggjDI+EMBzH8BygDJ7VQEBQIBWAcIAV7tRNDUAfhj0gABkjBt4NIAAY4V0x8BghCxGWKauvLggYEBAdcAAW8BkW3iAdHbPAYAGgGSMH/gINdJMcIfMHAABDBtALm7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnAb1J3vlUWW8cdT094FWcMmgnDZecZujDm8J6y2oTE1uN3lgCAUgJCgARsK+7UTQ0gABgAHWybuNDVpcGZzOi8vUW1jY1N2ZDlkU0NhdWJYTVQ5ZUo4ZGFvTktDekRoMkdKU2k0UlY4aEZBTUI3a4IA==');
+    const __system = Cell.fromBase64('te6cckECDQEAAV4AAQHAAQEFoUGvAgEU/wD0pBP0vPLICwMCAWIJBAIBWAgFAgFIBwYAdbJu40NWlwZnM6Ly9RbWNjU3ZkOWRTQ2F1YlhNVDllSjhkYW9OS0N6RGgyR0pTaTRSVjhoRkFNQjdrggABGwr7tRNDSAAGAAubu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcBvUne+VRZbxx1PT3gVZwyaCcNl5xm6MObwnrLahMTW43eWAKQ0AHQ0wMBcbCjAfpAASDXSYEBC7ry4Igg1wsKIIMJugGBBP+6sfLgiFRQUwNvBPhhAvhi2zxZ2zzy4IIwyPhDAcx/AcoAye1UCwoAGgGSMH/gINdJMcIfMHABXu1E0NQB+GPSAAGSMG3g0gABjhXTHwGCELEZYpq68uCBgQEB1wABbwGRbeIB0ds8DAAEMG29noAU');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
-    initContractWithOptionals_init_args({ $$type: 'ContractWithOptionals_init_args', a, b, c, d, e, f })(builder);
+    initOpt3_init_args({ $$type: 'Opt3_init_args', arg })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };
 }
 
-const ContractWithOptionals_errors: { [key: number]: { message: string } } = {
+const Opt3_errors: { [key: number]: { message: string } } = {
     2: { message: `Stack undeflow` },
     3: { message: `Stack overflow` },
     4: { message: `Integer overflow` },
@@ -552,181 +538,31 @@ const ContractWithOptionals_errors: { [key: number]: { message: string } } = {
     137: { message: `Masterchain support is not enabled for this contract` },
 }
 
-export class ContractWithOptionals implements Contract {
+export class Opt3 implements Contract {
     
-    static async init(a: bigint | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null) {
-        return await ContractWithOptionals_init(a, b, c, d, e, f);
+    static async init(arg: Struct2 | null) {
+        return await Opt3_init(arg);
     }
     
-    static async fromInit(a: bigint | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null) {
-        const init = await ContractWithOptionals_init(a, b, c, d, e, f);
+    static async fromInit(arg: Struct2 | null) {
+        const init = await Opt3_init(arg);
         const address = contractAddress(0, init);
-        return new ContractWithOptionals(address, init);
+        return new Opt3(address, init);
     }
     
     static fromAddress(address: Address) {
-        return new ContractWithOptionals(address);
+        return new Opt3(address);
     }
     
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: ContractWithOptionals_errors
+        errors: Opt3_errors
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
-    }
-    
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: null | Update) {
-        
-        let body: Cell | null = null;
-        if (message === null) {
-            body = new Cell();
-        }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Update') {
-            body = beginCell().store(storeUpdate(message)).endCell();
-        }
-        if (body === null) { throw new Error('Invalid message type'); }
-        
-        await provider.internal(via, { ...args, body: body });
-        
-    }
-    
-    async getIsNotNullA(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('isNotNullA', builder.build())).stack;
-        let result = source.readBoolean();
-        return result;
-    }
-    
-    async getIsNotNullB(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('isNotNullB', builder.build())).stack;
-        let result = source.readBoolean();
-        return result;
-    }
-    
-    async getIsNotNullC(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('isNotNullC', builder.build())).stack;
-        let result = source.readBoolean();
-        return result;
-    }
-    
-    async getIsNotNullD(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('isNotNullD', builder.build())).stack;
-        let result = source.readBoolean();
-        return result;
-    }
-    
-    async getIsNotNullE(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('isNotNullE', builder.build())).stack;
-        let result = source.readBoolean();
-        return result;
-    }
-    
-    async getIsNotNullF(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('isNotNullF', builder.build())).stack;
-        let result = source.readBoolean();
-        return result;
-    }
-    
-    async getNullA(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('nullA', builder.build())).stack;
-        let result = source.readBigNumberOpt();
-        return result;
-    }
-    
-    async getNullB(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('nullB', builder.build())).stack;
-        let result = source.readBooleanOpt();
-        return result;
-    }
-    
-    async getNullC(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('nullC', builder.build())).stack;
-        let result = source.readCellOpt();
-        return result;
-    }
-    
-    async getNullD(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('nullD', builder.build())).stack;
-        let result = source.readAddressOpt();
-        return result;
-    }
-    
-    async getNullE(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('nullE', builder.build())).stack;
-        const result_p = source.readTupleOpt();
-        const result = result_p ? loadTupleSomeGenericStruct(result_p) : null;
-        return result;
-    }
-    
-    async getNullF(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('nullF', builder.build())).stack;
-        const result_p = source.readTupleOpt();
-        const result = result_p ? loadTupleStructWithOptionals(result_p) : null;
-        return result;
-    }
-    
-    async getNotNullA(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('notNullA', builder.build())).stack;
-        let result = source.readBigNumber();
-        return result;
-    }
-    
-    async getNotNullB(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('notNullB', builder.build())).stack;
-        let result = source.readBoolean();
-        return result;
-    }
-    
-    async getNotNullC(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('notNullC', builder.build())).stack;
-        let result = source.readCell();
-        return result;
-    }
-    
-    async getNotNullD(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('notNullD', builder.build())).stack;
-        let result = source.readAddress();
-        return result;
-    }
-    
-    async getNotNullE(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('notNullE', builder.build())).stack;
-        const result = loadTupleSomeGenericStruct(source);
-        return result;
-    }
-    
-    async getNotNullF(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('notNullF', builder.build())).stack;
-        const result = loadTupleStructWithOptionals(source);
-        return result;
-    }
-    
-    async getTestVariables(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('testVariables', builder.build())).stack;
-        const result = loadTupleSomeGenericStruct(source);
-        return result;
     }
     
 }

@@ -13,6 +13,7 @@ import { Address, Cell } from "ton-core";
 import { writeAddress, writeCell, writeString } from "./writeConstant";
 import { ops } from "./ops";
 import { tryExpressionIntrinsics } from "../intrinsics/tryExpressionIntrinsics";
+import { writeCastedExpression } from "./writeFunction";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -457,7 +458,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         } else {
             ctx.used(n);
         }
-        return n + '(' + f.args.map((a) => writeExpression(a, ctx)).join(', ') + ')';
+        return n + '(' + f.args.map((a, i) => writeCastedExpression(a, sf.args[i].type, ctx)).join(', ') + ')';
     }
 
     //
@@ -472,7 +473,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         ctx.used(id);
 
         // Write an expression
-        let expressions = f.args.map((v) => writeExpression(v.exp, ctx), ctx);
+        let expressions = f.args.map((v) => writeCastedExpression(v.exp, src.fields.find((v2) => v2.name === v.name)!.type, ctx), ctx);
         return `${id}(${expressions.join(', ')})`;
     }
 
@@ -518,22 +519,29 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
                 }
             }
 
-            // Render
+            // Render arguments
+            let renderedArguments = f.args.map((a, i) => writeCastedExpression(a, ff.args[i].type, ctx));
+
+            // Hack to replace a single struct argument to a tensor wrapper since otherwise 
+            // func would convert (int) type to just int and break mutating functions
             if (ff.isMutating) {
-                let s = writeExpression(f.src, ctx);
                 if (f.args.length === 1) {
                     let t = getExpType(ctx.ctx, f.args[0]);
                     if (t.kind === 'ref') {
                         let tt = getType(ctx.ctx, t.name);
-                        if (tt.kind === 'contract' || tt.kind === 'struct') {
-                            return `${s}~${name}(${ops.typeTensorCast(tt.name, ctx)}(${writeExpression(f.args[0], ctx)}))`;
+                        if ((tt.kind === 'contract' || tt.kind === 'struct') && (ff.args[0].type.kind === 'ref') && (!ff.args[0].type.optional)) {
+                            renderedArguments = [`${ops.typeTensorCast(tt.name, ctx)}(${renderedArguments[0]})`];
                         }
                     }
                 }
-                return `${s}~${name}(${[...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
+            }
+
+            // Render
+            let s = writeExpression(f.src, ctx);
+            if (ff.isMutating) {
+                return `${s}~${name}(${renderedArguments.join(', ')})`;
             } else {
-                let s = writeExpression(f.src, ctx);
-                return `${name}(${[s, ...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
+                return `${name}(${[s, ...renderedArguments].join(', ')})`;
             }
         }
 
@@ -558,7 +566,8 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     //
 
     if (f.kind === 'init_of') {
-        return `${ops.contractInitChild(f.name, ctx)}(${['__tact_context_sys', ...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
+        let type = getType(ctx.ctx, f.name);
+        return `${ops.contractInitChild(f.name, ctx)}(${['__tact_context_sys', ...f.args.map((a, i) => writeCastedExpression(a, type.init!.args[i].type, ctx))].join(', ')})`;
     }
 
     //

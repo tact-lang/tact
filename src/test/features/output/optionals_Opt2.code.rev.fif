@@ -1,0 +1,220 @@
+PROGRAM{
+  DECLPROC recv_internal;
+  DECLPROC supported_interfaces;
+  DECLPROC lazy_deployment_completed;
+  DECLPROC get_abi_ipfs;
+  DECLPROC ?fun_ref_554772b4aae59ccf;
+  DECLPROC ?fun_ref_692fda53369ed802;
+  DECLPROC ?fun_ref_a0eacc9676d4e13d;
+  DECLPROC ?fun_ref_bc0f7ff2672522e8;
+  DECLPROC ?fun_ref_c2fcb182f1814c3f;
+  DECLPROC ?fun_ref_cf24b18cf8fe8b89;
+  DECLPROC ?fun_ref_ee6e8b26e5656e82;
+  recv_internal PROC:<{
+    s0 s1 XCHG
+    CTOS
+    4 LDU
+    s0 s1 XCHG
+    1 PUSHINT
+    AND
+    -1 MULCONST
+    s0 s1 XCHG
+    LDMSGADDR
+    s0 s1 XCHG
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    s0 PUSH
+    11 PLDU
+    s0 PUSH
+    10 PUSHPOW2
+    EQUAL
+    s0 s1 XCHG
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    s0 s6 s4 PUXCPU
+    s0 s3 XCHG
+    4 TUPLE
+    1 SETGLOBVAR
+    s0 s2 XCHG
+    2 SETGLOBVAR
+    ?fun_ref_cf24b18cf8fe8b89 INLINECALLDICT
+    SWAP2
+    ?fun_ref_bc0f7ff2672522e8 INLINECALLDICT
+    130 THROWIFNOT
+    NEWC
+    3 GETGLOBVAR
+    s0 s1 XCHG
+    STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
+    ROTREV
+    s0 s2 XCHG
+    STREF
+    STREF
+    ENDC
+    c4 POP
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    36993126140238121407019133875791708966 PUSHINT
+    289074767680806556846472852687671582181 PUSHINT
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    s0 s1 XCHG
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733A2F2F516D595657623970505A685772747465625733766F324263516165526B31543634444B6F6D524B6A54586A694A4682_} PUSHSLICE
+  }>
+  ?fun_ref_554772b4aae59ccf PROCREF:<{
+    s0 s1 XCHG
+    CTOS
+    LDDICT
+    s0 POP
+    NULL
+    s0 s1 XCHG
+    41175 PUSHINT
+    s0 s1 XCHG
+    16 PUSHINT
+    DICTUGETREF
+    NULLSWAPIFNOT
+    135 THROWIFNOT
+    s0 s1 XCHG
+    41175 PUSHINT
+    s2 PUSH
+    s0 s2 XCHG
+    16 PUSHINT
+    DICTUSETREF
+    NEWC
+    s0 s1 XCHG
+    NEWC
+    STDICT
+    ENDC
+    s0 s1 XCHG
+    STREF
+    0 PUSHINT
+    s0 s1 XCHG
+    1 STI
+    ROT
+    s0 PUSH
+    ISNULL
+    NOT
+    <{
+      -1 PUSHINT
+      ROT
+      1 STI
+      s0 s1 XCHG
+      s0 PUSH
+      ISNULL
+      128 THROWIF
+      1 UNTUPLE
+      2971230874 PUSHINT
+      ROT
+      32 STU
+      257 PUSHINT
+      STIX
+    }> PUSHCONT
+    <{
+      s0 POP
+      0 PUSHINT
+      s0 s1 XCHG
+      1 STI
+    }> PUSHCONT
+    IFELSE
+    ENDC
+  }>
+  ?fun_ref_692fda53369ed802 PROCREF:<{
+    1 PUSHINT
+    1 TUPLE
+    ?fun_ref_a0eacc9676d4e13d INLINECALLDICT
+    NULL
+    ?fun_ref_a0eacc9676d4e13d INLINECALLDICT
+    1 PUSHINT
+    ?fun_ref_a0eacc9676d4e13d INLINECALLDICT
+    1 PUSHINT
+    1 TUPLE
+    s0 POP
+    NULL
+    s0 POP
+    1 PUSHINT
+    ?fun_ref_ee6e8b26e5656e82 INLINECALLDICT
+    s0 POP
+  }>
+  ?fun_ref_a0eacc9676d4e13d PROCREF:<{
+    s0 POP
+  }>
+  ?fun_ref_bc0f7ff2672522e8 PROCREF:<{
+    2 SAVE
+    SAMEALTSAVE
+    s0 s1 XCHG
+    <{
+      s0 POP
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
+    0 PUSHINT
+    s1 PUSH
+    SBITS
+    31 GTINT
+    <{
+      s0 POP
+      s0 PUSH
+      32 PLDU
+    }> PUSHCONT
+    IF
+    0 EQINT
+    <{
+      HASHSU
+      80416760937470256574205143064822765317873105370604638581169614883119666509557 PUSHINT
+      EQUAL
+      <{
+        ?fun_ref_692fda53369ed802 INLINECALLDICT
+        -1 PUSHINT
+        RETFALSE
+      }> PUSHCONT
+      IFJMP
+    }> PUSHCONT
+    <{
+      s0 POP
+    }> PUSHCONT
+    IFELSE
+    0 PUSHINT
+  }>
+  ?fun_ref_c2fcb182f1814c3f PROCREF:<{
+    3 GETGLOBVAR
+    1 PUSHINT
+    1 TUPLE
+    ?fun_ref_554772b4aae59ccf INLINECALLDICT
+  }>
+  ?fun_ref_cf24b18cf8fe8b89 PROCREF:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    3 SETGLOBVAR
+    1 LDI
+    s0 s1 XCHG
+    <{
+      LDREF
+      LDREF
+      ROTREV
+      1 2 BLKDROP2
+    }> PUSHCONT
+    IFJMP
+    s0 POP
+    ?fun_ref_c2fcb182f1814c3f INLINECALLDICT
+  }>
+  ?fun_ref_ee6e8b26e5656e82 PROCREF:<{
+    1 TUPLE
+  }>
+}END>c

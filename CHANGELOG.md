@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 - Bounced handler now skips first 32 bits (0xFFFFFFFF) automatically
+
+## [1.1.0-beta.24] - 2023-04-13
+
+## Changed
+- Bounced messages now skipped first 32 bits before passing it to receivers
+
+## Fixed
+- Passing optional structs as arguments
+
 ## [1.1.0-beta.23] - 2023-04-13
 
 ## Changed
