@@ -25,8 +25,7 @@
   ],
   "main": "./dist/main.js",
   "bin": {
-    "tact": "./bin/tact",
-    "tact-bindings": "./bin/tact-bindings"
+    "tact": "./bin/tact"
   },
   "dependencies": {
     "@ipld/dag-pb": "2.1.18",
