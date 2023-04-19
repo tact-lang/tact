@@ -84,6 +84,7 @@ export async function build(args: {
         let pathCodeFif = project.resolve(config.output, config.name + '_' + contract + ".code.fif");
         let pathCodeFifDec = project.resolve(config.output, config.name + '_' + contract + ".code.rev.fif");
         let codeFc: { path: string, content: string }[];
+        let codeEntrypoint: string;
 
         // Compiling contract to func
         logger.log('   > ' + contract + ': tact compiler');
@@ -97,6 +98,7 @@ export async function build(args: {
             project.writeFile(pathAbi, res.output.abi);
             abi = res.output.abi;
             codeFc = res.output.files.map((v) => ({ path: project.resolve(config.output, v.name), content: v.code }));
+            codeEntrypoint = res.output.entrypoint;
         } catch (e) {
             logger.error('Tact compilation failed');
             logger.error(errorToString(e));
@@ -113,6 +115,11 @@ export async function build(args: {
             let stdlibExPath = stdlib.resolve('stdlib_ex.fc');
             let stdlibExCode = stdlib.readFile(stdlibExPath).toString();
             let c = await funcCompile({
+                entries: [
+                    stdlibPath,
+                    stdlibExPath,
+                    project.resolve(config.output, codeEntrypoint)
+                ],
                 sources: [{
                     path: stdlibPath,
                     content: stdlibCode

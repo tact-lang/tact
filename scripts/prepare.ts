@@ -68,6 +68,10 @@ import { __DANGER__disableVersionNumber } from '../src/pipeline/version';
                 let stdlib = fs.readFileSync(stdlibPath, 'utf-8');
                 let code = fs.readFileSync(p.path + r, 'utf-8');
                 c = await funcCompile({
+                    entries: [
+                        stdlibPath,
+                        p.path + r
+                    ],
                     sources: [{
                         path: stdlibPath,
                         content: stdlib

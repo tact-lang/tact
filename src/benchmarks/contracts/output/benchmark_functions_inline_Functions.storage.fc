@@ -1,7 +1,3 @@
-#pragma version =0.4.3;
-#pragma allow-post-modification;
-#pragma compute-asm-ltr;
-
 ;;
 ;; Type: Add
 ;; Header: 0x3194e434

@@ -1,7 +1,3 @@
-#pragma version =0.4.3;
-#pragma allow-post-modification;
-#pragma compute-asm-ltr;
-
 ;; String "Hello world"
 slice __gen_slice_string_fddd37b8318ce351584ce13d887b2bdfd89a245250fa3ccc433cc820d90bcae1() asm "B{b5ee9c7241010101000d00001648656c6c6f20776f726c64ae013d34} B>boc <s PUSHSLICE";
 

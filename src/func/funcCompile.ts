@@ -47,10 +47,10 @@ type CompileResult = {
     warnings: string
 };
 
-export async function funcCompile(args: { sources: { path: string, content: string }[], logger: TactLogger }): Promise<FuncCompilationResult> {
+export async function funcCompile(args: { entries: string[], sources: { path: string, content: string }[], logger: TactLogger }): Promise<FuncCompilationResult> {
 
     // Parameters
-    let files: string[] = args.sources.map((v) => v.path);
+    let files: string[] = args.entries;
     let configStr = JSON.stringify({
         sources: files,
         optLevel: 2 // compileConfig.optLevel || 2

@@ -8,8 +8,9 @@ describe('funcCompile', () => {
     it('should compile small contract', async () => {
         let source = fs.readFileSync(path.resolve(__dirname, '__testdata__', 'small.fc'), 'utf8');
         let res = await funcCompile({
+            entries: ['/stdlib.fc', '/small.fc'],
             sources: [{
-                path: '/stdlib.fc', 
+                path: '/stdlib.fc',
                 content: Buffer.from(files['stdlib.fc']!, 'base64').toString()
             }, { path: '/small.fc', content: source }], logger: consoleLogger
         });

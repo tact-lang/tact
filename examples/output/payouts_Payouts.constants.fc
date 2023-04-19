@@ -1,7 +1,3 @@
-#pragma version =0.4.3;
-#pragma allow-post-modification;
-#pragma compute-asm-ltr;
-
 ;; Comment "Success"
 cell __gen_cell_comment_37e90db9d1f7725dc0128ee6bad2035fb50479e09a488a29257bed01a23050a0() asm "B{b5ee9c7241010101000d00001600000000537563636573738a3a2a2a} B>boc PUSHREF";
 
