@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## ⚡️ Breaking changes
+- `reply` is now a method of `Contract` instead of global context and changed it's behaviour if storage reserve is non-zero in contract.
+- Logical expressions are now calculated differently: `&&` now does not execute right expression if left is `false` and `||` does not execute right expression if left is `true`. Before it was executed in any case. This change is made in attempt to reduce unexpected behaviour.
+- `OwnableTransferable` is now sends response to the sender.
+- `overwrites` was renamed to `override`
+- `Deployable` trait now sends non-bounceable notifications instead of bounceable ones.
+
+## Features
+
+- `Address` to `Address` maps
+- Ability to define key and value serializations for maps
+- `sha256` hashing
+- `forward` and `notify` functions that can be used to send messages to other contracts using remaining value of incoming message
+- `virtual` and `abstract` constants that can be shared between traits
+- `storageReserve` constant in every contract that can be used to reserve some storage space by any trait
+- `abstract` functions that can be implemented in contracts
+- `FactoryDeployable` trait for deploying from factory contract
+- `@stdlib/dns` for easier DNS resolution
+- Opt-in `external` message support
+- Typed `bounce` receiver and `bounce<T>` type modifier
+- `commit` for committing state changes
+- `inline` modifier for functions for inlining them into the caller
+- Ability to define empty messages (but not structs)
+- Some string-related operations are now computed at compile time if possible
+
+## Fixed
+- Signature of `preloadBits` function
+- Fixed `readForwardFee` function
+
 ## [1.1.0-beta.28] - 2023-04-19
 
 ## Fixed
