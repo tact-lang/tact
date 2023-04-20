@@ -33,8 +33,10 @@ patterns:
   - include: "#import"
   - include: "#struct"
   - include: "#contract-or-trait"
+  - include: "#annotation"
   - include: "#fun-declaration"
   - include: "#const-declaration"
+  - include: "#statements"
 
 repository:
   import:
@@ -245,6 +247,26 @@ repository:
       - include: "#comments"
       - include: "#block-declaration"
       - include: "#expressions"
+
+  # Annotations
+  annotation:
+    name: meta.annotation.tact
+    begin: "(@)([\\w_]+)(\\()"
+    beginCaptures:
+        "1": { "name": "keyword.control.annotation.tact" }
+        "2": { "name": "keyword.control.annotation.tact" }
+        "3": { "name": "punctuation.definition.annotation.tact" }
+    end: \)
+    endCaptures:
+        "0": { "name": "punctuation.definition.annotation.tact" }
+    patterns:
+      - include: "#annotation-argument"
+
+  annotation-argument:
+    patterns:
+      - match: "[\\w_]+"
+        captures:
+          "0": { "name": "entity.name.function.tact" }
 
   # Expressions
   expressions:

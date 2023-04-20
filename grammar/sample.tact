@@ -1,5 +1,8 @@
 import "@stdlib/ownable" /* Some Comment */;
 
+@name(current_time)
+native fun now(): Int;
+
 virtual const GlobalConst1: Int = 1000;
 
 fun b() {
