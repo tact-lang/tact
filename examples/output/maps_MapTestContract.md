@@ -1,9 +1,9 @@
 # TACT Compilation Report
 Contract: MapTestContract
-BOC Size: 1787 bytes
+BOC Size: 1783 bytes
 
 # Types
-Total Types: 12
+Total Types: 13
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -52,6 +52,10 @@ Signature: `SetAddrMap4{key:address,value:Maybe SomeStruct{value:int257}}`
 ## SomeStruct
 TLB: `_ value:int257 = SomeStruct`
 Signature: `SomeStruct{value:int257}`
+
+## SomeStruct2
+TLB: `_ value:int257 intMap1:dict<uint8, uint8> = SomeStruct2`
+Signature: `SomeStruct2{value:int257,intMap1:dict<uint8, uint8>}`
 
 # Get Methods
 Total Get Methods: 16

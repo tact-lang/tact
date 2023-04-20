@@ -622,7 +622,11 @@ let map: Serializer<MapSerializerDescr> = {
         // Resolve key type
         let keyT: string;
         if (v.key.kind === 'int' || v.key.kind === 'uint') {
-            keyT = `bigint`;
+            if (v.key.bits <= 32) {
+                keyT = `number`;
+            } else {
+                keyT = `bigint`;
+            }
         } else if (v.key.kind === 'address') {
             keyT = `Address`;
         } else {
@@ -632,7 +636,11 @@ let map: Serializer<MapSerializerDescr> = {
         // Resolve value type
         let valueT: string;
         if (v.value.kind === 'int' || v.value.kind === 'uint') {
-            valueT = `bigint`;
+            if (v.value.bits <= 32) {
+                valueT = `number`;
+            } else {
+                valueT = `bigint`;
+            }
         } else if (v.value.kind === 'boolean') {
             valueT = `boolean`;
         } else if (v.value.kind === 'address') {

@@ -22,7 +22,7 @@
 
 ((cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap1Value((cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref {
     var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
-    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), __tact_dict_get_int_int($self'intMap1, 257, $key, 257));
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), __tact_dict_get_uint_uint($self'intMap1, 8, $key, 8));
 }
 
 ((cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap2((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref {
@@ -102,7 +102,7 @@
 (((cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_internal_binary_SetIntMap1((cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, int) $msg) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4) = $self;
     var ($msg'key, $msg'value) = $msg;
-    $self'intMap1~__tact_dict_set_int_int(257, $msg'key, $msg'value, 257);
+    $self'intMap1~__tact_dict_set_uint_uint(8, $msg'key, $msg'value, 8);
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
 }
 
@@ -273,7 +273,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmZAifwCkFtj4YVf9SuEjoVfvTmPHqL7WHGK3Hxi7bhx1T";
+    return "ipfs://QmThE6fdo73ZRvgDpAcFMUUmKHwqb1QBWM6K5KpCs4P6r4";
 }
 
 _ lazy_deployment_completed() method_id {

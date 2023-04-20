@@ -42,9 +42,24 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
                     type: r.selector.type
                 }
             });
+        } else if (r.selector.kind === 'external-binary') {
+            receivers.push({
+                receiver: 'external',
+                message: {
+                    kind: 'typed',
+                    type: r.selector.type
+                }
+            });
         } else if (r.selector.kind === 'internal-empty') {
             receivers.push({
                 receiver: 'internal',
+                message: {
+                    kind: 'empty'
+                }
+            });
+        } else if (r.selector.kind === 'external-empty') {
+            receivers.push({
+                receiver: 'external',
                 message: {
                     kind: 'empty'
                 }
@@ -57,6 +72,14 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
                     text: r.selector.comment
                 }
             });
+        } else if (r.selector.kind === 'external-comment') {
+            receivers.push({
+                receiver: 'external',
+                message: {
+                    kind: 'text',
+                    text: r.selector.comment
+                }
+            });
         } else if (r.selector.kind === 'internal-comment-fallback') {
             receivers.push({
                 receiver: 'internal',
@@ -64,9 +87,23 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
                     kind: 'text'
                 }
             });
+        } else if (r.selector.kind === 'external-comment-fallback') {
+            receivers.push({
+                receiver: 'external',
+                message: {
+                    kind: 'text'
+                }
+            });
         } else if (r.selector.kind === 'internal-fallback') {
             receivers.push({
                 receiver: 'internal',
+                message: {
+                    kind: 'any'
+                }
+            });
+        } else if (r.selector.kind === 'external-fallback') {
+            receivers.push({
+                receiver: 'external',
                 message: {
                     kind: 'any'
                 }

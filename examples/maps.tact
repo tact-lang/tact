@@ -42,6 +42,11 @@ struct SomeStruct {
     value: Int;
 }
 
+struct SomeStruct2 {
+    value: Int;
+    intMap1: map<Int as uint8, Int as uint8>;
+}
+
 contract MapTestContract {
     init() {
         // Nothing to do
@@ -50,7 +55,7 @@ contract MapTestContract {
     // Int Maps
     //
 
-    intMap1: map<Int, Int>;
+    intMap1: map<Int as uint8, Int as uint8>;
     intMap2: map<Int, Bool>;
     intMap3: map<Int, Cell>;
     intMap4: map<Int, SomeStruct>;
@@ -71,7 +76,7 @@ contract MapTestContract {
         self.intMap4.set(msg.key, msg.value);
     }
 
-    get fun intMap1(): map<Int, Int> {
+    get fun intMap1(): map<Int as uint8, Int as uint8> {
         return self.intMap1;
     }
 

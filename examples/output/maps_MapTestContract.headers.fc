@@ -15,6 +15,12 @@ slice __tact_verify_address(slice address) inline;
 ;; __tact_dict_get_int_int
 int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline;
 
+;; __tact_dict_set_uint_uint
+(cell, ()) __tact_dict_set_uint_uint(cell d, int kl, int k, int v, int vl) inline;
+
+;; __tact_dict_get_uint_uint
+int __tact_dict_get_uint_uint(cell d, int kl, int k, int vl) inline;
+
 ;; __tact_dict_set_int_cell
 (cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline;
 

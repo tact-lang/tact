@@ -196,8 +196,8 @@ export function writeTypescript(abi: ContractABI, init?: {
         w.append('}')
         w.append();
 
-        // Receivers
-        if (abi.receivers && abi.receivers.length > 0) {
+        // Internal receivers
+        if (abi.receivers && abi.receivers.filter((v) => v.receiver === 'internal').length > 0) {
 
             // Types
             let receivers: string[] = [];
@@ -271,6 +271,86 @@ export function writeTypescript(abi: ContractABI, init?: {
 
                 // Send message
                 w.append(`await provider.internal(via, { ...args, body: body });`);
+                w.append();
+            });
+            w.append(`}`);
+            w.append();
+        }
+
+        if (abi.receivers && abi.receivers.filter((v) => v.receiver === 'external').length > 0) {
+
+            // Types
+            let receivers: string[] = [];
+            for (const r of abi.receivers) {
+                if (r.receiver !== 'external') {
+                    continue;
+                }
+                if (r.message.kind === 'empty') {
+                    receivers.push(`null`);
+                } else if (r.message.kind === 'typed') {
+                    receivers.push(`${r.message.type}`);
+                } else if (r.message.kind === 'text') {
+                    if (r.message.text !== null && r.message.text !== undefined) {
+                        receivers.push(`'${r.message.text}'`);
+                    } else {
+                        receivers.push(`string`);
+                    }
+                } else if (r.message.kind === 'any') {
+                    receivers.push(`Slice`);
+                }
+            }
+
+            // Receiver function
+            w.append(`async sendExternal(provider: ContractProvider, message: ${receivers.join(' | ')}) {`);
+            w.inIndent(() => {
+                w.append();
+
+                // Parse message
+                w.append(`let body: Cell | null = null;`);
+                for (const r of abi.receivers!) {
+                    if (r.receiver !== 'external') {
+                        continue;
+                    }
+                    const msg = r.message;
+                    if (msg.kind === 'typed') {
+                        w.append(`if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === '${msg.type}') {`);
+                        w.inIndent(() => {
+                            w.append(`body = beginCell().store(store${msg.type}(message)).endCell();`);
+                        });
+                        w.append(`}`);
+                    } else if (msg.kind === 'empty') {
+                        w.append(`if (message === null) {`);
+                        w.inIndent(() => {
+                            w.append(`body = new Cell();`);
+                        });
+                        w.append(`}`);
+                    } else if (msg.kind === 'text') {
+                        if ((msg.text === null || msg.text === undefined)) {
+                            w.append(`if (typeof message === 'string') {`);
+                            w.inIndent(() => {
+                                w.append(`body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`);
+                            });
+                            w.append(`}`);
+                        } else {
+                            w.append(`if (message === '${msg.text}') {`);
+                            w.inIndent(() => {
+                                w.append(`body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`);
+                            });
+                            w.append(`}`);
+                        }
+                    } else if (msg.kind === 'any') {
+                        w.append(`if (message && typeof message === 'object' && message instanceof Slice) {`);
+                        w.inIndent(() => {
+                            w.append(`body = message.asCell();`);
+                        });
+                        w.append(`}`);
+                    }
+                }
+                w.append(`if (body === null) { throw new Error('Invalid message type'); }`);
+                w.append();
+
+                // Send message
+                w.append(`await provider.external(body);`);
                 w.append();
             });
             w.append(`}`);

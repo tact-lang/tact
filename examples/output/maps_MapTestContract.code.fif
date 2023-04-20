@@ -3,6 +3,8 @@ PROGRAM{
   DECLPROC __tact_load_address
   DECLPROC __tact_dict_set_int_int
   DECLPROC __tact_dict_get_int_int
+  DECLPROC __tact_dict_set_uint_uint
+  DECLPROC __tact_dict_get_uint_uint
   DECLPROC __tact_dict_set_int_cell
   DECLPROC __tact_dict_get_int_cell
   DECLPROC __tact_dict_set_slice_int
@@ -125,6 +127,35 @@ PROGRAM{
     IF:<{
       SWAP
       LDIX
+      DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
+    }>
+  }>
+  __tact_dict_set_uint_uint PROCINLINE:<{
+    OVER
+    ISNULL
+    IF:<{
+      2DROP
+      -ROT
+      DICTUDEL
+      DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STUX
+      s1 s3 s3 XCHG3
+      DICTUSETB
+    }>
+  }>
+  __tact_dict_get_uint_uint PROCINLINE:<{
+    s1 s3 s3 XCHG3
+    DICTUGET
+    NULLSWAPIFNOT
+    IF:<{
+      SWAP
+      LDUX
       DROP
     }>ELSE<{
       2DROP
@@ -516,10 +547,10 @@ PROGRAM{
     s7 PUSH
   }>
   $MapTestContract$_fun_intMap1Value PROCREF:<{
-    257 PUSHINT
+    8 PUSHINT
     s0 s9 PUSH2
     s3 s3 XCHG2
-    __tact_dict_get_int_int INLINECALLDICT
+    __tact_dict_get_uint_uint INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap2 PROCREF:<{
     s6 PUSH
@@ -590,11 +621,11 @@ PROGRAM{
     $SomeStruct$_load_opt INLINECALLDICT
   }>
   $MapTestContract$_internal_binary_SetIntMap1 PROCINLINE:<{
-    257 PUSHINT
+    8 PUSHINT
     DUP
     s4 s11 XCHG
     s3 s3 s0 XCHG3
-    __tact_dict_set_int_int INLINECALLDICT
+    __tact_dict_set_uint_uint INLINECALLDICT
     s0 s7 XCHG
   }>
   $MapTestContract$_internal_binary_SetIntMap2 PROCINLINE:<{
@@ -752,7 +783,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5a41696677436b46746a34595666395375456a6f566676546d5048714c375748474b33487869376268783154} PUSHSLICE
+    x{697066733a2f2f516d5468453666646f37335a52766744704163464d55556d4b48777162315142574d364b354b7043733450367234} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
