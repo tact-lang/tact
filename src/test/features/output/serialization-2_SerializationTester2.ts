@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -402,6 +405,30 @@ const SerializationTester2_errors: { [key: number]: { message: string } } = {
     137: { message: `Masterchain support is not enabled for this contract` },
 }
 
+const SerializationTester2_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"Vars","header":null,"fields":[{"name":"a","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"b","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"c","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"d","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"e","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+    {"name":"Both","header":null,"fields":[{"name":"a","type":{"kind":"simple","type":"Vars","optional":false}},{"name":"b","type":{"kind":"simple","type":"Vars","optional":false}}]},
+    {"name":"Update","header":2732768933,"fields":[{"name":"a","type":{"kind":"simple","type":"Vars","optional":false}},{"name":"b","type":{"kind":"simple","type":"Vars","optional":false}}]},
+]
+
+const SerializationTester2_getters: ABIGetter[] = [
+    {"name":"getA","arguments":[],"returnType":{"kind":"simple","type":"Vars","optional":false}},
+    {"name":"getAopt","arguments":[],"returnType":{"kind":"simple","type":"Vars","optional":true}},
+    {"name":"getB","arguments":[],"returnType":{"kind":"simple","type":"Vars","optional":false}},
+    {"name":"getBopt","arguments":[],"returnType":{"kind":"simple","type":"Vars","optional":true}},
+    {"name":"getBoth","arguments":[],"returnType":{"kind":"simple","type":"Both","optional":false}},
+    {"name":"getBothOpt","arguments":[],"returnType":{"kind":"simple","type":"Both","optional":true}},
+    {"name":"process","arguments":[{"name":"src","type":{"kind":"simple","type":"Vars","optional":false}},{"name":"both","type":{"kind":"simple","type":"Both","optional":false}},{"name":"both2","type":{"kind":"simple","type":"Both","optional":true}}],"returnType":{"kind":"simple","type":"Vars","optional":false}},
+]
+
+const SerializationTester2_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"empty"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"Update"}},
+]
+
 export class SerializationTester2 implements Contract {
     
     static async init(a: Vars, b: Vars) {
@@ -421,7 +448,10 @@ export class SerializationTester2 implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: SerializationTester2_errors
+        types:  SerializationTester2_types,
+        getters: SerializationTester2_getters,
+        receivers: SerializationTester2_receivers,
+        errors: SerializationTester2_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

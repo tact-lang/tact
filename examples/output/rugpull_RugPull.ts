@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -392,6 +395,29 @@ const RugPull_errors: { [key: number]: { message: string } } = {
     53296: { message: `Contract not stopped` },
 }
 
+const RugPull_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"ChangeOwner","header":2174598809,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"newOwner","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"ChangeOwnerOk","header":846932810,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"newOwner","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"RugParams","header":null,"fields":[{"name":"investment","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"returns","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"fee","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+]
+
+const RugPull_getters: ABIGetter[] = [
+    {"name":"params","arguments":[],"returnType":{"kind":"simple","type":"RugParams","optional":false}},
+    {"name":"owner","arguments":[],"returnType":{"kind":"simple","type":"address","optional":false}},
+    {"name":"stopped","arguments":[],"returnType":{"kind":"simple","type":"bool","optional":false}},
+]
+
+const RugPull_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"empty"}},
+    {"receiver":"internal","message":{"kind":"text","text":"withdraw"}},
+    {"receiver":"internal","message":{"kind":"text","text":"rugpull"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"ChangeOwner"}},
+    {"receiver":"internal","message":{"kind":"text","text":"Stop"}},
+]
+
 export class RugPull implements Contract {
     
     static async init(owner: Address, investment: bigint, returns: bigint, fee: bigint) {
@@ -411,7 +437,10 @@ export class RugPull implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: RugPull_errors
+        types:  RugPull_types,
+        getters: RugPull_getters,
+        receivers: RugPull_receivers,
+        errors: RugPull_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

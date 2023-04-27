@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -282,6 +285,25 @@ const MasterchainTester_errors: { [key: number]: { message: string } } = {
     137: { message: `Masterchain support is not enabled for this contract` },
 }
 
+const MasterchainTester_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"TestMessage","header":3679600542,"fields":[{"name":"address","type":{"kind":"simple","type":"address","optional":false}},{"name":"address2","type":{"kind":"simple","type":"address","optional":true}}]},
+]
+
+const MasterchainTester_getters: ABIGetter[] = [
+    {"name":"createAddress","arguments":[{"name":"chain","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"hash","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"address","optional":false}},
+    {"name":"parseAddress","arguments":[{"name":"src","type":{"kind":"simple","type":"slice","optional":false}}],"returnType":{"kind":"simple","type":"address","optional":false}},
+    {"name":"serializeAddress","arguments":[{"name":"src","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"handleStruct","arguments":[{"name":"src","type":{"kind":"simple","type":"TestMessage","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+]
+
+const MasterchainTester_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"text","text":"Deploy"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"TestMessage"}},
+]
+
 export class MasterchainTester implements Contract {
     
     static async init() {
@@ -301,7 +323,10 @@ export class MasterchainTester implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: MasterchainTester_errors
+        types:  MasterchainTester_types,
+        getters: MasterchainTester_getters,
+        receivers: MasterchainTester_receivers,
+        errors: MasterchainTester_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

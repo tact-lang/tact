@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -288,6 +291,23 @@ const Wallet_errors: { [key: number]: { message: string } } = {
     48401: { message: `Invalid signature` },
 }
 
+const Wallet_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"TransferMessage","header":3548477446,"fields":[{"name":"signature","type":{"kind":"simple","type":"fixed-bytes","optional":false,"format":64}},{"name":"transfer","type":{"kind":"simple","type":"slice","optional":false,"format":"remainder"}}]},
+]
+
+const Wallet_getters: ABIGetter[] = [
+    {"name":"publicKey","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"walletId","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"seqno","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+]
+
+const Wallet_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"typed","type":"TransferMessage"}},
+]
+
 export class Wallet implements Contract {
     
     static async init(key: bigint, walletId: bigint) {
@@ -307,7 +327,10 @@ export class Wallet implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: Wallet_errors
+        types:  Wallet_types,
+        getters: Wallet_getters,
+        receivers: Wallet_receivers,
+        errors: Wallet_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

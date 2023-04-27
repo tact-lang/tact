@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -392,6 +395,27 @@ const MultisigContract_errors: { [key: number]: { message: string } } = {
     48401: { message: `Invalid signature` },
 }
 
+const MultisigContract_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"Operation","header":null,"fields":[{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"target","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"Execute","header":520967536,"fields":[{"name":"operation","type":{"kind":"simple","type":"Operation","optional":false}},{"name":"signature1","type":{"kind":"simple","type":"slice","optional":false}},{"name":"signature2","type":{"kind":"simple","type":"slice","optional":false}},{"name":"signature3","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"Executed","header":2652032952,"fields":[{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
+]
+
+const MultisigContract_getters: ABIGetter[] = [
+    {"name":"key1","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"key2","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"key3","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"seqno","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+]
+
+const MultisigContract_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"text","text":"Deploy"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"Execute"}},
+]
+
 export class MultisigContract implements Contract {
     
     static async init(key1: bigint, key2: bigint, key3: bigint) {
@@ -411,7 +435,10 @@ export class MultisigContract implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: MultisigContract_errors
+        types:  MultisigContract_types,
+        getters: MultisigContract_getters,
+        receivers: MultisigContract_receivers,
+        errors: MultisigContract_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

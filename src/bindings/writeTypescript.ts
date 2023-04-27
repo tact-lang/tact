@@ -51,6 +51,9 @@ export function writeTypescript(abi: ContractABI, init?: {
             Sender, 
             Contract, 
             ContractABI, 
+            ABIType,
+            ABIGetter,
+            ABIReceiver,
             TupleBuilder,
             DictionaryValue
         } from 'ton-core';
@@ -150,6 +153,42 @@ export function writeTypescript(abi: ContractABI, init?: {
     w.append(`}`);
     w.append();
 
+    // Types
+    w.append(`const ${abi.name}_types: ABIType[] = [`);
+    w.inIndent(() => {
+        if (abi.types) {
+            for (let t of abi.types) {
+                w.append(JSON.stringify(t) + ',');
+            }
+        }
+    })
+    w.append(`]`);
+    w.append();
+
+    // Getters
+    w.append(`const ${abi.name}_getters: ABIGetter[] = [`);
+    w.inIndent(() => {
+        if (abi.getters) {
+            for (let t of abi.getters) {
+                w.append(JSON.stringify(t) + ',');
+            }
+        }
+    })
+    w.append(`]`);
+    w.append();
+
+    // Receivers
+    w.append(`const ${abi.name}_receivers: ABIReceiver[] = [`);
+    w.inIndent(() => {
+        if (abi.receivers) {
+            for (let t of abi.receivers) {
+                w.append(JSON.stringify(t) + ',');
+            }
+        }
+    })
+    w.append(`]`);
+    w.append();
+
     // Wrapper
     w.append(`export class ${abi.name} implements Contract {`);
     w.inIndent(() => {
@@ -184,7 +223,10 @@ export function writeTypescript(abi: ContractABI, init?: {
         w.append(`readonly init?: { code: Cell, data: Cell };`);
         w.append(`readonly abi: ContractABI = {`);
         w.inIndent(() => {
-            w.append(`errors: ${abi.name}_errors`)
+            w.append(`types:  ${abi.name}_types,`);
+            w.append(`getters: ${abi.name}_getters,`)
+            w.append(`receivers: ${abi.name}_receivers,`)
+            w.append(`errors: ${abi.name}_errors,`)
         });
         w.append(`};`);
         w.append();

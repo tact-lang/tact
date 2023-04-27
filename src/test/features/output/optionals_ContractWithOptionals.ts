@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -552,6 +555,44 @@ const ContractWithOptionals_errors: { [key: number]: { message: string } } = {
     137: { message: `Masterchain support is not enabled for this contract` },
 }
 
+const ContractWithOptionals_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"Struct2","header":2971230874,"fields":[{"name":"v","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+    {"name":"OptStruct","header":null,"fields":[{"name":"s","type":{"kind":"simple","type":"Struct2","optional":true}}]},
+    {"name":"SomeGenericStruct","header":null,"fields":[{"name":"value1","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value2","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value3","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value4","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value5","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+    {"name":"StructWithOptionals","header":null,"fields":[{"name":"a","type":{"kind":"simple","type":"int","optional":true,"format":257}},{"name":"b","type":{"kind":"simple","type":"bool","optional":true}},{"name":"c","type":{"kind":"simple","type":"cell","optional":true}},{"name":"d","type":{"kind":"simple","type":"address","optional":true}},{"name":"e","type":{"kind":"simple","type":"SomeGenericStruct","optional":true}}]},
+    {"name":"Update","header":357891325,"fields":[{"name":"a","type":{"kind":"simple","type":"int","optional":true,"format":257}},{"name":"b","type":{"kind":"simple","type":"bool","optional":true}},{"name":"c","type":{"kind":"simple","type":"cell","optional":true}},{"name":"d","type":{"kind":"simple","type":"address","optional":true}},{"name":"e","type":{"kind":"simple","type":"SomeGenericStruct","optional":true}},{"name":"f","type":{"kind":"simple","type":"StructWithOptionals","optional":true}}]},
+]
+
+const ContractWithOptionals_getters: ABIGetter[] = [
+    {"name":"isNotNullA","arguments":[],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"isNotNullB","arguments":[],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"isNotNullC","arguments":[],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"isNotNullD","arguments":[],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"isNotNullE","arguments":[],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"isNotNullF","arguments":[],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"nullA","arguments":[],"returnType":{"kind":"simple","type":"int","optional":true,"format":257}},
+    {"name":"nullB","arguments":[],"returnType":{"kind":"simple","type":"bool","optional":true}},
+    {"name":"nullC","arguments":[],"returnType":{"kind":"simple","type":"cell","optional":true}},
+    {"name":"nullD","arguments":[],"returnType":{"kind":"simple","type":"address","optional":true}},
+    {"name":"nullE","arguments":[],"returnType":{"kind":"simple","type":"SomeGenericStruct","optional":true}},
+    {"name":"nullF","arguments":[],"returnType":{"kind":"simple","type":"StructWithOptionals","optional":true}},
+    {"name":"notNullA","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"notNullB","arguments":[],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"notNullC","arguments":[],"returnType":{"kind":"simple","type":"cell","optional":false}},
+    {"name":"notNullD","arguments":[],"returnType":{"kind":"simple","type":"address","optional":false}},
+    {"name":"notNullE","arguments":[],"returnType":{"kind":"simple","type":"SomeGenericStruct","optional":false}},
+    {"name":"notNullF","arguments":[],"returnType":{"kind":"simple","type":"StructWithOptionals","optional":false}},
+    {"name":"testVariables","arguments":[],"returnType":{"kind":"simple","type":"SomeGenericStruct","optional":false}},
+]
+
+const ContractWithOptionals_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"empty"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"Update"}},
+]
+
 export class ContractWithOptionals implements Contract {
     
     static async init(a: bigint | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null) {
@@ -571,7 +612,10 @@ export class ContractWithOptionals implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: ContractWithOptionals_errors
+        types:  ContractWithOptionals_types,
+        getters: ContractWithOptionals_getters,
+        receivers: ContractWithOptionals_receivers,
+        errors: ContractWithOptionals_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

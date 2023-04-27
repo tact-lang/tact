@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -235,6 +238,22 @@ const StdlibTest_errors: { [key: number]: { message: string } } = {
     137: { message: `Masterchain support is not enabled for this contract` },
 }
 
+const StdlibTest_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+]
+
+const StdlibTest_getters: ABIGetter[] = [
+    {"name":"sliceEmpty","arguments":[{"name":"sc","type":{"kind":"simple","type":"slice","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"sliceBits","arguments":[{"name":"sc","type":{"kind":"simple","type":"slice","optional":false}}],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"sliceRefs","arguments":[{"name":"sc","type":{"kind":"simple","type":"slice","optional":false}}],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+]
+
+const StdlibTest_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"empty"}},
+]
+
 export class StdlibTest implements Contract {
     
     static async init() {
@@ -254,7 +273,10 @@ export class StdlibTest implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: StdlibTest_errors
+        types:  StdlibTest_types,
+        getters: StdlibTest_getters,
+        receivers: StdlibTest_receivers,
+        errors: StdlibTest_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

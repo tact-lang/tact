@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -585,6 +588,33 @@ const IncrementContract_errors: { [key: number]: { message: string } } = {
     52777: { message: `Empty counter` },
 }
 
+const IncrementContract_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"Deploy","header":2490013878,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
+    {"name":"DeployOk","header":2952335191,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
+    {"name":"FactoryDeploy","header":1829761339,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"cashback","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"Increment","header":537284411,"fields":[{"name":"key","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+    {"name":"Toggle","header":1081595080,"fields":[{"name":"key","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+    {"name":"Persist","header":3801943978,"fields":[{"name":"key","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"content","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"Reset","header":1718153138,"fields":[{"name":"key","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+    {"name":"Something","header":null,"fields":[{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+]
+
+const IncrementContract_getters: ABIGetter[] = [
+    {"name":"counters","arguments":[],"returnType":{"kind":"dict","key":"int","value":"int"}},
+    {"name":"counters2","arguments":[],"returnType":{"kind":"dict","key":"address","value":"int"}},
+]
+
+const IncrementContract_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"typed","type":"Increment"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"Toggle"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"Persist"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"Reset"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"Deploy"}},
+]
+
 export class IncrementContract implements Contract {
     
     static async init() {
@@ -604,7 +634,10 @@ export class IncrementContract implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: IncrementContract_errors
+        types:  IncrementContract_types,
+        getters: IncrementContract_getters,
+        receivers: IncrementContract_receivers,
+        errors: IncrementContract_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

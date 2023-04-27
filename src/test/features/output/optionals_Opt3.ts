@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -538,6 +541,23 @@ const Opt3_errors: { [key: number]: { message: string } } = {
     137: { message: `Masterchain support is not enabled for this contract` },
 }
 
+const Opt3_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"Struct2","header":2971230874,"fields":[{"name":"v","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+    {"name":"OptStruct","header":null,"fields":[{"name":"s","type":{"kind":"simple","type":"Struct2","optional":true}}]},
+    {"name":"SomeGenericStruct","header":null,"fields":[{"name":"value1","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value2","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value3","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value4","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value5","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+    {"name":"StructWithOptionals","header":null,"fields":[{"name":"a","type":{"kind":"simple","type":"int","optional":true,"format":257}},{"name":"b","type":{"kind":"simple","type":"bool","optional":true}},{"name":"c","type":{"kind":"simple","type":"cell","optional":true}},{"name":"d","type":{"kind":"simple","type":"address","optional":true}},{"name":"e","type":{"kind":"simple","type":"SomeGenericStruct","optional":true}}]},
+    {"name":"Update","header":357891325,"fields":[{"name":"a","type":{"kind":"simple","type":"int","optional":true,"format":257}},{"name":"b","type":{"kind":"simple","type":"bool","optional":true}},{"name":"c","type":{"kind":"simple","type":"cell","optional":true}},{"name":"d","type":{"kind":"simple","type":"address","optional":true}},{"name":"e","type":{"kind":"simple","type":"SomeGenericStruct","optional":true}},{"name":"f","type":{"kind":"simple","type":"StructWithOptionals","optional":true}}]},
+]
+
+const Opt3_getters: ABIGetter[] = [
+]
+
+const Opt3_receivers: ABIReceiver[] = [
+]
+
 export class Opt3 implements Contract {
     
     static async init(arg: Struct2 | null) {
@@ -557,7 +577,10 @@ export class Opt3 implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: Opt3_errors
+        types:  Opt3_types,
+        getters: Opt3_getters,
+        receivers: Opt3_receivers,
+        errors: Opt3_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

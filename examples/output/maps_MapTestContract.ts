@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -706,6 +709,52 @@ const MapTestContract_errors: { [key: number]: { message: string } } = {
     137: { message: `Masterchain support is not enabled for this contract` },
 }
 
+const MapTestContract_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"SetIntMap1","header":1510253336,"fields":[{"name":"key","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value","type":{"kind":"simple","type":"int","optional":true,"format":257}}]},
+    {"name":"SetIntMap2","header":1629867766,"fields":[{"name":"key","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value","type":{"kind":"simple","type":"bool","optional":true}}]},
+    {"name":"SetIntMap3","header":3613954633,"fields":[{"name":"key","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"SetIntMap4","header":383013829,"fields":[{"name":"key","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"value","type":{"kind":"simple","type":"SomeStruct","optional":true}}]},
+    {"name":"SetAddrMap1","header":1749966413,"fields":[{"name":"key","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":true,"format":257}}]},
+    {"name":"SetAddrMap2","header":624157584,"fields":[{"name":"key","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"bool","optional":true}}]},
+    {"name":"SetAddrMap3","header":4276365062,"fields":[{"name":"key","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"SetAddrMap4","header":1683777913,"fields":[{"name":"key","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"SomeStruct","optional":true}}]},
+    {"name":"SomeStruct","header":null,"fields":[{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+    {"name":"SomeStruct2","header":null,"fields":[{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"intMap1","type":{"kind":"dict","key":"uint","keyFormat":8,"value":"uint","valueFormat":8}}]},
+]
+
+const MapTestContract_getters: ABIGetter[] = [
+    {"name":"intMap1","arguments":[],"returnType":{"kind":"dict","key":"uint","keyFormat":8,"value":"uint","valueFormat":8}},
+    {"name":"intMap1Value","arguments":[{"name":"key","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"int","optional":true,"format":257}},
+    {"name":"intMap2","arguments":[],"returnType":{"kind":"dict","key":"int","value":"bool"}},
+    {"name":"intMap2Value","arguments":[{"name":"key","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":true}},
+    {"name":"intMap3","arguments":[],"returnType":{"kind":"dict","key":"int","value":"cell","valueFormat":"ref"}},
+    {"name":"intMap3Value","arguments":[{"name":"key","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"cell","optional":true}},
+    {"name":"intMap4","arguments":[],"returnType":{"kind":"dict","key":"int","value":"SomeStruct","valueFormat":"ref"}},
+    {"name":"intMap4Value","arguments":[{"name":"key","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"SomeStruct","optional":true}},
+    {"name":"addrMap1","arguments":[],"returnType":{"kind":"dict","key":"address","value":"int"}},
+    {"name":"addrMap1Value","arguments":[{"name":"key","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"int","optional":true,"format":257}},
+    {"name":"addrMap2","arguments":[],"returnType":{"kind":"dict","key":"address","value":"bool"}},
+    {"name":"addrMap2Value","arguments":[{"name":"key","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":true}},
+    {"name":"addrMap3","arguments":[],"returnType":{"kind":"dict","key":"address","value":"cell","valueFormat":"ref"}},
+    {"name":"addrMap3Value","arguments":[{"name":"key","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"cell","optional":true}},
+    {"name":"addrMap4","arguments":[],"returnType":{"kind":"dict","key":"address","value":"SomeStruct","valueFormat":"ref"}},
+    {"name":"addrMap4Value","arguments":[{"name":"key","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"SomeStruct","optional":true}},
+]
+
+const MapTestContract_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"typed","type":"SetIntMap1"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"SetIntMap2"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"SetIntMap3"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"SetIntMap4"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"SetAddrMap1"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"SetAddrMap2"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"SetAddrMap3"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"SetAddrMap4"}},
+]
+
 export class MapTestContract implements Contract {
     
     static async init() {
@@ -725,7 +774,10 @@ export class MapTestContract implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: MapTestContract_errors
+        types:  MapTestContract_types,
+        getters: MapTestContract_getters,
+        receivers: MapTestContract_receivers,
+        errors: MapTestContract_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

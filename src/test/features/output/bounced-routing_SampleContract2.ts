@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -595,6 +598,28 @@ const SampleContract2_errors: { [key: number]: { message: string } } = {
     137: { message: `Masterchain support is not enabled for this contract` },
 }
 
+const SampleContract2_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"EntryFirst","header":2757457064,"fields":[{"name":"amountToAdd","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"toAddress","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"EntrySecond","header":4282440720,"fields":[{"name":"amountToAdd","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"toAddress","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"First","header":3200290616,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"myCoins","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"myBool3","type":{"kind":"simple","type":"bool","optional":false}},{"name":"anAddress","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"Second","header":391585480,"fields":[{"name":"amount_bigger","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"myBool","type":{"kind":"simple","type":"bool","optional":false}},{"name":"thisDoesNotFit","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"myAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"myBool2","type":{"kind":"simple","type":"bool","optional":false}},{"name":"myStruct","type":{"kind":"simple","type":"MyStruct","optional":false}},{"name":"myStruct2","type":{"kind":"simple","type":"MyStruct","optional":false}}]},
+    {"name":"Large","header":618480963,"fields":[{"name":"address","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"SmallBounce","header":3235833558,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":32}},{"name":"myBool3","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"MyStruct","header":null,"fields":[{"name":"amount","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+]
+
+const SampleContract2_getters: ABIGetter[] = [
+]
+
+const SampleContract2_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"empty"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"First"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"Second"}},
+]
+
 export class SampleContract2 implements Contract {
     
     static async init() {
@@ -614,7 +639,10 @@ export class SampleContract2 implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: SampleContract2_errors
+        types:  SampleContract2_types,
+        getters: SampleContract2_getters,
+        receivers: SampleContract2_receivers,
+        errors: SampleContract2_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

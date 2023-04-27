@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -320,6 +323,22 @@ const Functions_errors: { [key: number]: { message: string } } = {
     55789: { message: `Value must be greater than 0` },
 }
 
+const Functions_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"Add","header":831841332,"fields":[{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+    {"name":"Sub","header":2640337643,"fields":[{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+]
+
+const Functions_getters: ABIGetter[] = [
+]
+
+const Functions_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"typed","type":"Add"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"Sub"}},
+]
+
 export class Functions implements Contract {
     
     static async init() {
@@ -339,7 +358,10 @@ export class Functions implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: Functions_errors
+        types:  Functions_types,
+        getters: Functions_getters,
+        receivers: Functions_receivers,
+        errors: Functions_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

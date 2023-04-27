@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -431,6 +434,26 @@ const Payouts_errors: { [key: number]: { message: string } } = {
     62972: { message: `Invalid balance` },
 }
 
+const Payouts_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"ChangeOwner","header":2174598809,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"newOwner","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"ChangeOwnerOk","header":846932810,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"newOwner","type":{"kind":"simple","type":"address","optional":false}}]},
+    {"name":"CanPayout","header":3289991647,"fields":[{"name":"amount","type":{"kind":"simple","type":"int","optional":false,"format":257}}]},
+    {"name":"CanPayoutResponse","header":4293607646,"fields":[{"name":"amount","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"address","type":{"kind":"simple","type":"address","optional":false}},{"name":"ok","type":{"kind":"simple","type":"bool","optional":false}}]},
+]
+
+const Payouts_getters: ABIGetter[] = [
+    {"name":"owner","arguments":[],"returnType":{"kind":"simple","type":"address","optional":false}},
+]
+
+const Payouts_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"text"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"CanPayoutResponse"}},
+    {"receiver":"internal","message":{"kind":"typed","type":"ChangeOwner"}},
+]
+
 export class Payouts implements Contract {
     
     static async init(owner: Address, publicKey: bigint) {
@@ -450,7 +473,10 @@ export class Payouts implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: Payouts_errors
+        types:  Payouts_types,
+        getters: Payouts_getters,
+        receivers: Payouts_receivers,
+        errors: Payouts_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {

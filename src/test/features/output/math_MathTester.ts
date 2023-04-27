@@ -13,6 +13,9 @@ import {
     Sender, 
     Contract, 
     ContractABI, 
+    ABIType,
+    ABIGetter,
+    ABIReceiver,
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
@@ -366,6 +369,57 @@ const MathTester_errors: { [key: number]: { message: string } } = {
     137: { message: `Masterchain support is not enabled for this contract` },
 }
 
+const MathTester_types: ABIType[] = [
+    {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
+    {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
+    {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
+    {"name":"Deploy","header":2490013878,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
+    {"name":"DeployOk","header":2952335191,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
+    {"name":"FactoryDeploy","header":1829761339,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"cashback","type":{"kind":"simple","type":"address","optional":false}}]},
+]
+
+const MathTester_getters: ABIGetter[] = [
+    {"name":"add","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"b","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"compare1","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"b","type":{"kind":"simple","type":"int","optional":true,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare2","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"b","type":{"kind":"simple","type":"int","optional":true,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare3","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":true,"format":257}},{"name":"b","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare4","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":true,"format":257}},{"name":"b","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare5","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":true,"format":257}},{"name":"b","type":{"kind":"simple","type":"int","optional":true,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare6","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":true,"format":257}},{"name":"b","type":{"kind":"simple","type":"int","optional":true,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare7","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"b","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare8","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"b","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare9","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"b","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare10","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"b","type":{"kind":"simple","type":"int","optional":false,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare11","arguments":[{"name":"a","type":{"kind":"simple","type":"address","optional":false}},{"name":"b","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare12","arguments":[{"name":"a","type":{"kind":"simple","type":"address","optional":false}},{"name":"b","type":{"kind":"simple","type":"address","optional":true}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare13","arguments":[{"name":"a","type":{"kind":"simple","type":"address","optional":true}},{"name":"b","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare14","arguments":[{"name":"a","type":{"kind":"simple","type":"address","optional":true}},{"name":"b","type":{"kind":"simple","type":"address","optional":true}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare15","arguments":[{"name":"a","type":{"kind":"simple","type":"address","optional":false}},{"name":"b","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare16","arguments":[{"name":"a","type":{"kind":"simple","type":"address","optional":false}},{"name":"b","type":{"kind":"simple","type":"address","optional":true}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare17","arguments":[{"name":"a","type":{"kind":"simple","type":"address","optional":true}},{"name":"b","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare18","arguments":[{"name":"a","type":{"kind":"simple","type":"address","optional":true}},{"name":"b","type":{"kind":"simple","type":"address","optional":true}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare19","arguments":[{"name":"a","type":{"kind":"simple","type":"cell","optional":false}},{"name":"b","type":{"kind":"simple","type":"cell","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare20","arguments":[{"name":"a","type":{"kind":"simple","type":"cell","optional":false}},{"name":"b","type":{"kind":"simple","type":"cell","optional":true}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare21","arguments":[{"name":"a","type":{"kind":"simple","type":"cell","optional":true}},{"name":"b","type":{"kind":"simple","type":"cell","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare22","arguments":[{"name":"a","type":{"kind":"simple","type":"cell","optional":true}},{"name":"b","type":{"kind":"simple","type":"cell","optional":true}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare23","arguments":[{"name":"a","type":{"kind":"simple","type":"cell","optional":false}},{"name":"b","type":{"kind":"simple","type":"cell","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare24","arguments":[{"name":"a","type":{"kind":"simple","type":"cell","optional":false}},{"name":"b","type":{"kind":"simple","type":"cell","optional":true}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare25","arguments":[{"name":"a","type":{"kind":"simple","type":"cell","optional":true}},{"name":"b","type":{"kind":"simple","type":"cell","optional":false}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare26","arguments":[{"name":"a","type":{"kind":"simple","type":"cell","optional":true}},{"name":"b","type":{"kind":"simple","type":"cell","optional":true}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare27","arguments":[{"name":"a","type":{"kind":"dict","key":"int","value":"int"}},{"name":"b","type":{"kind":"dict","key":"int","value":"int"}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"compare28","arguments":[{"name":"a","type":{"kind":"dict","key":"int","value":"int"}},{"name":"b","type":{"kind":"dict","key":"int","value":"int"}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"isNull1","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":true,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"isNotNull1","arguments":[{"name":"a","type":{"kind":"simple","type":"int","optional":true,"format":257}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"isNull2","arguments":[{"name":"address","type":{"kind":"simple","type":"address","optional":true}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"isNotNull2","arguments":[{"name":"address","type":{"kind":"simple","type":"address","optional":true}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"isNull3","arguments":[{"name":"cell","type":{"kind":"simple","type":"cell","optional":true}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+    {"name":"isNotNull3","arguments":[{"name":"cell","type":{"kind":"simple","type":"cell","optional":true}}],"returnType":{"kind":"simple","type":"bool","optional":false}},
+]
+
+const MathTester_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"typed","type":"Deploy"}},
+]
+
 export class MathTester implements Contract {
     
     static async init() {
@@ -385,7 +439,10 @@ export class MathTester implements Contract {
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: MathTester_errors
+        types:  MathTester_types,
+        getters: MathTester_getters,
+        receivers: MathTester_receivers,
+        errors: MathTester_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
