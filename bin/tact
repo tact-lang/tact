@@ -8,7 +8,7 @@ const args = arg({
     '--project': String
 });
 if (!args['--config']) {
-    console.log('USAGE: tact --config <config_path> [--project <project_name]');
+    console.log('USAGE: tact --config <config_path> [--project <project_name>]');
     return;
 }
 
