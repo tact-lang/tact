@@ -661,7 +661,10 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     ExpressionStaticCall(arg0, arg1, arg2, arg3) {
         return createNode({ kind: 'op_static_call', name: arg0.sourceString, args: arg2.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
     },
-    ExpressionNew(arg0, arg1, arg2, arg3) {
+    ExpressionNew_noTrailing(arg0, arg1, arg2, arg3) {
+        return createNode({ kind: 'op_new', type: arg0.sourceString, args: arg2.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
+    },
+    ExpressionNew_withTrailing(arg0, arg1, arg2, arg3, arg4) {
         return createNode({ kind: 'op_new', type: arg0.sourceString, args: arg2.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
     },
     NewParameter(arg0, arg1, arg2) {

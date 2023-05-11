@@ -1993,28 +1993,15 @@ exports[`grammar should parse case-17 1`] = `
             "ref": Int,
           },
         },
-      ],
-      "id": 3,
-      "kind": "def_struct",
-      "message": false,
-      "name": "A",
-      "origin": "user",
-      "prefix": null,
-      "ref": struct A {
-    x: Int;
-},
-    },
-    {
-      "fields": [
         {
           "as": null,
-          "id": 5,
+          "id": 4,
           "init": null,
           "kind": "def_field",
-          "name": "x",
-          "ref": x: Int;,
+          "name": "y",
+          "ref": y: Int;,
           "type": {
-            "id": 4,
+            "id": 3,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2022,7 +2009,151 @@ exports[`grammar should parse case-17 1`] = `
           },
         },
       ],
-      "id": 6,
+      "id": 5,
+      "kind": "def_struct",
+      "message": false,
+      "name": "A",
+      "origin": "user",
+      "prefix": null,
+      "ref": struct A {
+    x: Int;
+    y: Int;
+},
+    },
+    {
+      "attributes": [],
+      "id": 10,
+      "kind": "def_constant",
+      "name": "a",
+      "ref": const a: A = new { x: 1 };,
+      "type": {
+        "id": 6,
+        "kind": "type_ref_simple",
+        "name": "A",
+        "optional": false,
+        "ref": A,
+      },
+      "value": {
+        "args": [
+          {
+            "exp": {
+              "id": 7,
+              "kind": "number",
+              "ref": 1,
+              "value": 1n,
+            },
+            "id": 8,
+            "kind": "new_parameter",
+            "name": "x",
+            "ref": x: 1,
+          },
+        ],
+        "id": 9,
+        "kind": "op_new",
+        "ref": new { x: 1 },
+        "type": "new",
+      },
+    },
+    {
+      "args": [],
+      "attributes": [],
+      "id": 18,
+      "kind": "def_function",
+      "name": "getA",
+      "origin": "user",
+      "ref": fun getA(): A {
+    return A{
+        x: 1,
+	y: 2,
+    };
+},
+      "return": {
+        "id": 11,
+        "kind": "type_ref_simple",
+        "name": "A",
+        "optional": false,
+        "ref": A,
+      },
+      "statements": [
+        {
+          "expression": {
+            "args": [
+              {
+                "exp": {
+                  "id": 12,
+                  "kind": "number",
+                  "ref": 1,
+                  "value": 1n,
+                },
+                "id": 13,
+                "kind": "new_parameter",
+                "name": "x",
+                "ref": x: 1,
+              },
+              {
+                "exp": {
+                  "id": 14,
+                  "kind": "number",
+                  "ref": 2,
+                  "value": 2n,
+                },
+                "id": 15,
+                "kind": "new_parameter",
+                "name": "y",
+                "ref": y: 2,
+              },
+            ],
+            "id": 16,
+            "kind": "op_new",
+            "ref": A{
+        x: 1,
+	y: 2,
+    },
+            "type": "A",
+          },
+          "id": 17,
+          "kind": "statement_return",
+          "ref": return A{
+        x: 1,
+	y: 2,
+    };,
+        },
+      ],
+    },
+    {
+      "fields": [
+        {
+          "as": null,
+          "id": 20,
+          "init": null,
+          "kind": "def_field",
+          "name": "x",
+          "ref": x: Int;,
+          "type": {
+            "id": 19,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "as": null,
+          "id": 22,
+          "init": null,
+          "kind": "def_field",
+          "name": "y",
+          "ref": y: Int;,
+          "type": {
+            "id": 21,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "id": 23,
       "kind": "def_struct",
       "message": true,
       "name": "B",
@@ -2030,10 +2161,120 @@ exports[`grammar should parse case-17 1`] = `
       "prefix": null,
       "ref": message B {
     x: Int;
+    y: Int;
 },
     },
+    {
+      "attributes": [],
+      "id": 30,
+      "kind": "def_constant",
+      "name": "b",
+      "ref": const b: B = new {
+    x: 2,
+    y: 3,
+};,
+      "type": {
+        "id": 24,
+        "kind": "type_ref_simple",
+        "name": "B",
+        "optional": false,
+        "ref": B,
+      },
+      "value": {
+        "args": [
+          {
+            "exp": {
+              "id": 25,
+              "kind": "number",
+              "ref": 2,
+              "value": 2n,
+            },
+            "id": 26,
+            "kind": "new_parameter",
+            "name": "x",
+            "ref": x: 2,
+          },
+          {
+            "exp": {
+              "id": 27,
+              "kind": "number",
+              "ref": 3,
+              "value": 3n,
+            },
+            "id": 28,
+            "kind": "new_parameter",
+            "name": "y",
+            "ref": y: 3,
+          },
+        ],
+        "id": 29,
+        "kind": "op_new",
+        "ref": new {
+    x: 2,
+    y: 3,
+},
+        "type": "new",
+      },
+    },
+    {
+      "args": [],
+      "attributes": [],
+      "id": 38,
+      "kind": "def_function",
+      "name": "getB",
+      "origin": "user",
+      "ref": fun getB(): B {
+    return B{ x: 1, y: 2, };
+},
+      "return": {
+        "id": 31,
+        "kind": "type_ref_simple",
+        "name": "B",
+        "optional": false,
+        "ref": B,
+      },
+      "statements": [
+        {
+          "expression": {
+            "args": [
+              {
+                "exp": {
+                  "id": 32,
+                  "kind": "number",
+                  "ref": 1,
+                  "value": 1n,
+                },
+                "id": 33,
+                "kind": "new_parameter",
+                "name": "x",
+                "ref": x: 1,
+              },
+              {
+                "exp": {
+                  "id": 34,
+                  "kind": "number",
+                  "ref": 2,
+                  "value": 2n,
+                },
+                "id": 35,
+                "kind": "new_parameter",
+                "name": "y",
+                "ref": y: 2,
+              },
+            ],
+            "id": 36,
+            "kind": "op_new",
+            "ref": B{ x: 1, y: 2, },
+            "type": "B",
+          },
+          "id": 37,
+          "kind": "statement_return",
+          "ref": return B{ x: 1, y: 2, };,
+        },
+      ],
+    },
   ],
-  "id": 7,
+  "id": 39,
   "kind": "program",
 }
 `;
