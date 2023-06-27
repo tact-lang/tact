@@ -33,6 +33,7 @@
         <pre>
                         <span class="line"><span class="count"></span><span class="gas"></span><span class="padding"></span>PROGRAM{</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC recv_internal;</span>
+            <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_105790;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC supported_interfaces;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC lazy_deployment_completed;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_115554;</span>
@@ -40,6 +41,7 @@
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_7b0b7ac68163f545;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_8e0b7601d5773f02;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_a2813468f47d741c;</span>
+            <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_a919648a283a4b4d;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_b93b9862cda1783c;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_dca7aba6e712f2dd;</span>
             <span class="line"><span class="count"></span><span class="gas"></span><span class="padding">..</span>DECLPROC ?fun_ref_e31d986f279fa0fb;</span>
@@ -91,6 +93,12 @@
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">ENDC</span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">c4 POP</span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">..</span><span class="opcode">}></span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">..</span><span class="opcode">?fun_105790 PROC:<{</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">?fun_ref_fbd3661091469c71 INLINECALLDICT</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">s0 s1 XCHG</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">?fun_ref_a919648a283a4b4d INLINECALLDICT</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">s1 POP</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">..</span><span class="opcode">}></span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">..</span><span class="opcode">supported_interfaces PROC:<{</span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">123515602279859691144772641439386770278 PUSHINT</span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">209801025412363888721030803524359905849 PUSHINT</span></span>
@@ -110,7 +118,7 @@
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">s1 POP</span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">..</span><span class="opcode">}></span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">..</span><span class="opcode">get_abi_ipfs PROC:<{</span></span>
-            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">x{697066733A2F2F516D586132505A524D4B4A7A33413974474464414E42576F4B4141656979687256453443527A326169746B6A317A82_} PUSHSLICE</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">x{697066733A2F2F516D6548637A5A6A5A754E4564556F6B78333239477543534E6F79655A354D3339436A5A48626A6858436A776B5382_} PUSHSLICE</span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">..</span><span class="opcode">}></span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">..</span><span class="opcode">?fun_ref_7b0b7ac68163f545 PROCREF:<{</span></span>
             <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">NEWC</span></span>
@@ -292,6 +300,11 @@
             <span class="line-covered"><span class="gas">18</span><span class="count">x12</span><span class="padding">....</span><span class="opcode">WHILE</span></span>
             <span class="line-covered"><span class="gas">26</span><span class="count">x12</span><span class="padding">....</span><span class="opcode">3 BLKDROP</span></span>
             <span class="line-covered"><span class="gas"></span><span class="count">x12</span><span class="padding">..</span><span class="opcode">}></span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">..</span><span class="opcode">?fun_ref_a919648a283a4b4d PROCREF:<{</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">10 LSHIFT</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">32 PUSHINT</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">....</span><span class="opcode">AND</span></span>
+            <span class="line-uncovered"><span class="gas"></span><span class="count"></span><span class="padding">..</span><span class="opcode">}></span></span>
             <span class="line-covered"><span class="gas"></span><span class="count">x71</span><span class="padding">..</span><span class="opcode">?fun_ref_b93b9862cda1783c PROCREF:<{</span></span>
             <span class="line-covered"><span class="gas">18</span><span class="count">x71</span><span class="padding">....</span><span class="opcode">NEWC</span></span>
             <span class="line-covered"><span class="gas">18</span><span class="count">x71</span><span class="padding">....</span><span class="opcode">1 PUSHINT</span></span>
