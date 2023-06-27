@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Echo
-BOC Size: 835 bytes
+BOC Size: 860 bytes
 
 # Types
 Total Types: 4
@@ -22,9 +22,12 @@ TLB: `echo_message#7ba20dc1  = EchoMessage`
 Signature: `EchoMessage{}`
 
 # Get Methods
-Total Get Methods: 1
+Total Get Methods: 2
 
 ## hello
+Argument: src
+
+## hello2
 Argument: src
 
 # Error Codes

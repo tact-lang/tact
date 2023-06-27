@@ -28,6 +28,14 @@ PROGRAM{
   DECLPROC $MathTester$_contract_store
   DECLPROC $global_send
   DECLPROC $MathTester$_fun_add
+  DECLPROC $MathTester$_fun_sub
+  DECLPROC $MathTester$_fun_mul
+  DECLPROC $MathTester$_fun_div
+  DECLPROC $MathTester$_fun_mod
+  DECLPROC $MathTester$_fun_shr
+  DECLPROC $MathTester$_fun_shl
+  DECLPROC $MathTester$_fun_and
+  DECLPROC $MathTester$_fun_or
   DECLPROC $MathTester$_fun_compare1
   DECLPROC $MathTester$_fun_compare2
   DECLPROC $MathTester$_fun_compare3
@@ -68,6 +76,14 @@ PROGRAM{
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $MathTester$_internal_binary_Deploy
   83863 DECLMETHOD %add
+  80400 DECLMETHOD %sub
+  99260 DECLMETHOD %mul
+  125000 DECLMETHOD %div
+  126476 DECLMETHOD %mod
+  89358 DECLMETHOD %shr
+  110321 DECLMETHOD %shl
+  108636 DECLMETHOD %and
+  83393 DECLMETHOD %or
   80704 DECLMETHOD %compare1
   68387 DECLMETHOD %compare2
   72450 DECLMETHOD %compare3
@@ -519,6 +535,30 @@ PROGRAM{
   $MathTester$_fun_add PROCREF:<{
     ADD
   }>
+  $MathTester$_fun_sub PROCREF:<{
+    SUB
+  }>
+  $MathTester$_fun_mul PROCREF:<{
+    MUL
+  }>
+  $MathTester$_fun_div PROCREF:<{
+    DIV
+  }>
+  $MathTester$_fun_mod PROCREF:<{
+    MOD
+  }>
+  $MathTester$_fun_shr PROCREF:<{
+    RSHIFT
+  }>
+  $MathTester$_fun_shl PROCREF:<{
+    LSHIFT
+  }>
+  $MathTester$_fun_and PROCREF:<{
+    AND
+  }>
+  $MathTester$_fun_or PROCREF:<{
+    OR
+  }>
   $MathTester$_fun_compare1 PROCREF:<{
     SWAP
     __tact_int_eq_nullable_one INLINECALLDICT
@@ -680,6 +720,54 @@ PROGRAM{
     $MathTester$_contract_load INLINECALLDICT
     -ROT
     $MathTester$_fun_add INLINECALLDICT
+    NIP
+  }>
+  %sub PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_sub INLINECALLDICT
+    NIP
+  }>
+  %mul PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_mul INLINECALLDICT
+    NIP
+  }>
+  %div PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_div INLINECALLDICT
+    NIP
+  }>
+  %mod PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_mod INLINECALLDICT
+    NIP
+  }>
+  %shr PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_shr INLINECALLDICT
+    NIP
+  }>
+  %shl PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_shl INLINECALLDICT
+    NIP
+  }>
+  %and PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_and INLINECALLDICT
+    NIP
+  }>
+  %or PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_or INLINECALLDICT
     NIP
   }>
   %compare1 PROC:<{
@@ -998,7 +1086,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d6452473346374457317234714c6a70554e64554b394e6e6756376e31787a345246567438436d573155686464} PUSHSLICE
+    x{697066733a2f2f516d514571415837596f73704d3343774259647431666b454444716e6a79733546744a48785765615a636d4d4136} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

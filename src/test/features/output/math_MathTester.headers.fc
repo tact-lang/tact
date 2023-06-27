@@ -90,6 +90,30 @@ tuple $MathTester$_contract_load() impure inline_ref;
 ;; $MathTester$_fun_add
 (tuple, int) $MathTester$_fun_add(tuple $self, int $a, int $b) impure inline_ref;
 
+;; $MathTester$_fun_sub
+(tuple, int) $MathTester$_fun_sub(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_mul
+(tuple, int) $MathTester$_fun_mul(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_div
+(tuple, int) $MathTester$_fun_div(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_mod
+(tuple, int) $MathTester$_fun_mod(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_shr
+(tuple, int) $MathTester$_fun_shr(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_shl
+(tuple, int) $MathTester$_fun_shl(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_and
+(tuple, int) $MathTester$_fun_and(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_or
+(tuple, int) $MathTester$_fun_or(tuple $self, int $a, int $b) impure inline_ref;
+
 ;; $MathTester$_fun_compare1
 (tuple, int) $MathTester$_fun_compare1(tuple $self, int $a, int $b) impure inline_ref;
 

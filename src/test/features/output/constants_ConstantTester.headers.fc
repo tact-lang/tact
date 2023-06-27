@@ -30,5 +30,14 @@ tuple $ConstantTester$_contract_load() impure inline_ref;
 ;; $ConstantTester$_fun_something5
 (tuple, slice) $ConstantTester$_fun_something5(tuple $self) impure inline_ref;
 
+;; $ConstantTester$_fun_something6
+(tuple, int) $ConstantTester$_fun_something6(tuple $self) impure inline_ref;
+
+;; $ConstantTester$_fun_something7
+(tuple, int) $ConstantTester$_fun_something7(tuple $self) impure inline_ref;
+
+;; $ConstantTester$_fun_something8
+(tuple, int) $ConstantTester$_fun_something8(tuple $self) impure inline_ref;
+
 ;; $ConstantTester$_fun_globalConst
 (tuple, int) $ConstantTester$_fun_globalConst(tuple $self) impure inline_ref;

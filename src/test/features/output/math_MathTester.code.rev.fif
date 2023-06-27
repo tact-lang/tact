@@ -3,11 +3,14 @@ PROGRAM{
   DECLPROC ?fun_68387;
   DECLPROC ?fun_72450;
   DECLPROC ?fun_75056;
+  DECLPROC ?fun_80400;
   DECLPROC ?fun_80704;
+  DECLPROC ?fun_83393;
   DECLPROC ?fun_83863;
   DECLPROC ?fun_84903;
   DECLPROC ?fun_88966;
   DECLPROC ?fun_89158;
+  DECLPROC ?fun_89358;
   DECLPROC ?fun_90178;
   DECLPROC ?fun_93157;
   DECLPROC ?fun_93221;
@@ -15,6 +18,7 @@ PROGRAM{
   DECLPROC ?fun_97220;
   DECLPROC ?fun_97284;
   DECLPROC ?fun_98700;
+  DECLPROC ?fun_99260;
   DECLPROC ?fun_99450;
   DECLPROC ?fun_99590;
   DECLPROC ?fun_102829;
@@ -22,7 +26,9 @@ PROGRAM{
   DECLPROC ?fun_103719;
   DECLPROC ?fun_106958;
   DECLPROC ?fun_107576;
+  DECLPROC ?fun_108636;
   DECLPROC ?fun_109161;
+  DECLPROC ?fun_110321;
   DECLPROC ?fun_111087;
   DECLPROC ?fun_111641;
   DECLPROC ?fun_111973;
@@ -36,17 +42,24 @@ PROGRAM{
   DECLPROC get_abi_ipfs;
   DECLPROC ?fun_123210;
   DECLPROC ?fun_124092;
+  DECLPROC ?fun_125000;
+  DECLPROC ?fun_126476;
   DECLPROC ?fun_127339;
   DECLPROC ?fun_128157;
   DECLPROC ?fun_ref_0bddee3e66194d71;
+  DECLPROC ?fun_ref_1665824c3631042e;
+  DECLPROC ?fun_ref_1a5aedf76777daf0;
   DECLPROC ?fun_ref_1dd4b06caa854cc5;
+  DECLPROC ?fun_ref_1e8474cb72f85f98;
   DECLPROC ?fun_ref_251a304e2f13da63;
   DECLPROC ?fun_ref_2de3f30de2cef910;
   DECLPROC ?fun_ref_2e8105a0f1ba34b1;
   DECLPROC ?fun_ref_2f14994fd76434ab;
   DECLPROC ?fun_ref_39d09f18c03b037a;
+  DECLPROC ?fun_ref_3df1ed9c149f3ddc;
   DECLPROC ?fun_ref_4473d19174b70b6c;
   DECLPROC ?fun_ref_45e06f8a133863ea;
+  DECLPROC ?fun_ref_49c7034f83091de6;
   DECLPROC ?fun_ref_5026e72acd3f4702;
   DECLPROC ?fun_ref_52ebac4ebc285034;
   DECLPROC ?fun_ref_5c56423ce8e9ee73;
@@ -57,8 +70,10 @@ PROGRAM{
   DECLPROC ?fun_ref_943f0cebd640e361;
   DECLPROC ?fun_ref_9a0c5e8798cc0509;
   DECLPROC ?fun_ref_a05e0042bce184fb;
+  DECLPROC ?fun_ref_acf9c214ccee2d81;
   DECLPROC ?fun_ref_ad657d0473ebdc2c;
   DECLPROC ?fun_ref_b35400841b15fc2d;
+  DECLPROC ?fun_ref_b4fde213ffa24781;
   DECLPROC ?fun_ref_b78be06772ce3abe;
   DECLPROC ?fun_ref_b93b9862cda1783c;
   DECLPROC ?fun_ref_bf9d36be65618269;
@@ -71,6 +86,7 @@ PROGRAM{
   DECLPROC ?fun_ref_dbbd90e91bdad5c0;
   DECLPROC ?fun_ref_e31d986f279fa0fb;
   DECLPROC ?fun_ref_ebb984d6b6cfd144;
+  DECLPROC ?fun_ref_edec8407367eca46;
   DECLPROC ?fun_ref_ff17a983a407f70d;
   recv_internal PROC:<{
     s0 s1 XCHG
@@ -136,10 +152,22 @@ PROGRAM{
     ?fun_ref_81da9ce5747a9d33 INLINECALLDICT
     s1 POP
   }>
+  ?fun_80400 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ROTREV
+    ?fun_ref_edec8407367eca46 INLINECALLDICT
+    s1 POP
+  }>
   ?fun_80704 PROC:<{
     ?fun_ref_a05e0042bce184fb INLINECALLDICT
     ROTREV
     ?fun_ref_d078cffef374dca6 INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_83393 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ROTREV
+    ?fun_ref_3df1ed9c149f3ddc INLINECALLDICT
     s1 POP
   }>
   ?fun_83863 PROC:<{
@@ -164,6 +192,12 @@ PROGRAM{
     ?fun_ref_a05e0042bce184fb INLINECALLDICT
     s0 s1 XCHG
     ?fun_ref_0bddee3e66194d71 INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_89358 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ROTREV
+    ?fun_ref_49c7034f83091de6 INLINECALLDICT
     s1 POP
   }>
   ?fun_90178 PROC:<{
@@ -318,6 +352,12 @@ PROGRAM{
     ?fun_ref_c4dfd32efb676592 INLINECALLDICT
     s1 POP
   }>
+  ?fun_99260 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ROTREV
+    ?fun_ref_1e8474cb72f85f98 INLINECALLDICT
+    s1 POP
+  }>
   ?fun_99450 PROC:<{
     ?fun_ref_a05e0042bce184fb INLINECALLDICT
     ROTREV
@@ -452,10 +492,22 @@ PROGRAM{
     ?fun_ref_39d09f18c03b037a INLINECALLDICT
     s1 POP
   }>
+  ?fun_108636 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ROTREV
+    ?fun_ref_acf9c214ccee2d81 INLINECALLDICT
+    s1 POP
+  }>
   ?fun_109161 PROC:<{
     ?fun_ref_a05e0042bce184fb INLINECALLDICT
     ROTREV
     ?fun_ref_8b1b2058f0ba717f INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_110321 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ROTREV
+    ?fun_ref_1665824c3631042e INLINECALLDICT
     s1 POP
   }>
   ?fun_111087 PROC:<{
@@ -646,7 +698,7 @@ PROGRAM{
     s1 POP
   }>
   get_abi_ipfs PROC:<{
-    x{697066733A2F2F516D6452473346374457317234714C6A70554E64554B394E6E6756376E31787A345246567438436D57315568646482_} PUSHSLICE
+    x{697066733A2F2F516D514571415837596F73704D3343774259647431666B454444716E6A79733546744A48785765615A636D4D413682_} PUSHSLICE
   }>
   ?fun_123210 PROC:<{
     s0 s1 XCHG
@@ -690,6 +742,18 @@ PROGRAM{
     ?fun_ref_5c56423ce8e9ee73 INLINECALLDICT
     s1 POP
   }>
+  ?fun_125000 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ROTREV
+    ?fun_ref_1a5aedf76777daf0 INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_126476 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ROTREV
+    ?fun_ref_b4fde213ffa24781 INLINECALLDICT
+    s1 POP
+  }>
   ?fun_127339 PROC:<{
     ?fun_ref_a05e0042bce184fb INLINECALLDICT
     ROTREV
@@ -705,6 +769,12 @@ PROGRAM{
   ?fun_ref_0bddee3e66194d71 PROCREF:<{
     ISNULL
     NOT
+  }>
+  ?fun_ref_1665824c3631042e PROCREF:<{
+    LSHIFTX
+  }>
+  ?fun_ref_1a5aedf76777daf0 PROCREF:<{
+    false 0 false 1 0 DIV
   }>
   ?fun_ref_1dd4b06caa854cc5 PROCREF:<{
     s0 s1 XCHG
@@ -751,6 +821,9 @@ PROGRAM{
     IFJMP
     s0 POP
     0 PUSHINT
+  }>
+  ?fun_ref_1e8474cb72f85f98 PROCREF:<{
+    MUL
   }>
   ?fun_ref_251a304e2f13da63 PROCREF:<{
     s1 PUSH
@@ -825,6 +898,9 @@ PROGRAM{
     }> PUSHCONT
     IFELSE
   }>
+  ?fun_ref_3df1ed9c149f3ddc PROCREF:<{
+    OR
+  }>
   ?fun_ref_4473d19174b70b6c PROCREF:<{
     LEQ
   }>
@@ -855,6 +931,9 @@ PROGRAM{
       IFELSE
     }> PUSHCONT
     IFELSE
+  }>
+  ?fun_ref_49c7034f83091de6 PROCREF:<{
+    RSHIFTX
   }>
   ?fun_ref_5026e72acd3f4702 PROCREF:<{
     LESS
@@ -1038,6 +1117,9 @@ PROGRAM{
     137 THROWIFNOT
     ?fun_ref_c0ca23818e24f3c9 INLINECALLDICT
   }>
+  ?fun_ref_acf9c214ccee2d81 PROCREF:<{
+    AND
+  }>
   ?fun_ref_ad657d0473ebdc2c PROCREF:<{
     s0 s1 XCHG
     s1 PUSH
@@ -1064,6 +1146,9 @@ PROGRAM{
       NEQ
     }> PUSHCONT
     IFELSE
+  }>
+  ?fun_ref_b4fde213ffa24781 PROCREF:<{
+    false 0 false 2 0 DIV
   }>
   ?fun_ref_b78be06772ce3abe PROCREF:<{
     s0 s1 XCHG
@@ -1319,6 +1404,9 @@ PROGRAM{
     s0 s1 XCHG
     HASHCU
     EQUAL
+  }>
+  ?fun_ref_edec8407367eca46 PROCREF:<{
+    SUB
   }>
   ?fun_ref_ff17a983a407f70d PROCREF:<{
     s1 PUSH

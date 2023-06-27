@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: ConstantTester
-BOC Size: 471 bytes
+BOC Size: 530 bytes
 
 # Types
 Total Types: 3
@@ -18,7 +18,7 @@ TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Ma
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
 
 # Get Methods
-Total Get Methods: 6
+Total Get Methods: 9
 
 ## something1
 
@@ -29,6 +29,12 @@ Total Get Methods: 6
 ## something4
 
 ## something5
+
+## something6
+
+## something7
+
+## something8
 
 ## globalConst
 

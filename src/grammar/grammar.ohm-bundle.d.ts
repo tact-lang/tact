@@ -105,9 +105,11 @@ export interface TactActionDict<T> extends ActionDict<T> {
   ExpressionCompare_lt?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionCompare_lte?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionCompare?: (this: NonterminalNode, arg0: NonterminalNode) => T;
-  ExpressionShift_shr?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
-  ExpressionShift_shl?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
-  ExpressionShift?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionBinary_shr?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionBinary_shl?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionBinary_bin_and?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionBinary_bin_or?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionBinary?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionAdd_add?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionAdd_sub?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionAdd?: (this: NonterminalNode, arg0: NonterminalNode) => T;

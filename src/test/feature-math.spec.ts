@@ -25,6 +25,10 @@ describe('feature-math', () => {
         // Tests
         expect(await contract.getAdd(1n, 2n)).toBe(3n);
         expect(await contract.getAdd(1n, -2n)).toBe(-1n);
+        expect(await contract.getSub(1n, 2n)).toBe(-1n);
+        expect(await contract.getSub(1n, -2n)).toBe(3n);
+        expect(await contract.getMul(2n, 2n)).toBe(4n);
+        expect(await contract.getDiv(2n, 2n)).toBe(1n);
 
         // Basic Compare
         expect(await contract.getCompare1(1n, 2n)).toBe(false);

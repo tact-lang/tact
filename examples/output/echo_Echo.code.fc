@@ -24,6 +24,11 @@ tuple $Echo$_contract_init(int $a) impure inline_ref {
     return ($self, __tact_string_builder_end_slice($builder));
 }
 
+(tuple, int) $Echo$_fun_hello2(tuple $self, int $src) impure inline_ref {
+    var ($self) = $self;
+    return ($self, (($src << 10) & 32));
+}
+
 ;;
 ;; Receivers of a Contract Echo
 ;;
@@ -58,6 +63,13 @@ _ %hello(slice $$src) method_id(115554) {
     return res;
 }
 
+_ %hello2(int $$src) method_id(105790) {
+    int $src = $$src;
+    var self = $Echo$_contract_load();
+    var res = self~$Echo$_fun_hello2($src);
+    return res;
+}
+
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
@@ -68,7 +80,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmXa2PZRMKJz3A9tGDdANBWoKAAeiyhrVE4CRz2aitkj1z";
+    return "ipfs://QmeHczZjZuNEdUokx329GuCSNoyeZ5M39CjZHbjhXCjwkS";
 }
 
 _ lazy_deployment_completed() method_id {

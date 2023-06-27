@@ -78,6 +78,9 @@ cell $String$_fun_asComment(slice $self) impure inline_ref;
 ;; $Echo$_fun_hello
 (tuple, slice) $Echo$_fun_hello(tuple $self, slice $src) impure inline_ref;
 
+;; $Echo$_fun_hello2
+(tuple, int) $Echo$_fun_hello2(tuple $self, int $src) impure inline_ref;
+
 ;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
 

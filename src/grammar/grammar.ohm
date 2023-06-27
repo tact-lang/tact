@@ -119,15 +119,17 @@ Tact {
                  | ExpressionAnd
     ExpressionAnd = ExpressionAnd "&&" ExpressionCompare --and
                   | ExpressionCompare
-    ExpressionCompare = ExpressionCompare "!=" ExpressionShift --not
-                      | ExpressionCompare "==" ExpressionShift --eq
-                      | ExpressionCompare ">" ExpressionShift --gt
-                      | ExpressionCompare ">=" ExpressionShift --gte
-                      | ExpressionCompare "<" ExpressionShift --lt
-                      | ExpressionCompare "<=" ExpressionShift --lte
-                      | ExpressionShift
-    ExpressionShift = ExpressionShift ">>" ExpressionAdd --shr
-                    | ExpressionShift "<<" ExpressionAdd --shl
+    ExpressionCompare = ExpressionCompare "!=" ExpressionBinary --not
+                      | ExpressionCompare "==" ExpressionBinary --eq
+                      | ExpressionCompare ">" ExpressionBinary --gt
+                      | ExpressionCompare ">=" ExpressionBinary --gte
+                      | ExpressionCompare "<" ExpressionBinary --lt
+                      | ExpressionCompare "<=" ExpressionBinary --lte
+                      | ExpressionBinary
+    ExpressionBinary = ExpressionBinary ">>" ExpressionAdd --shr
+                    | ExpressionBinary "<<" ExpressionAdd --shl
+                    | ExpressionBinary "&" ExpressionAdd --bin_and
+                    | ExpressionBinary "|" ExpressionAdd --bin_or
                     | ExpressionAdd
     ExpressionAdd = ExpressionAdd "+" ~"+" ExpressionMul --add
                   | ExpressionAdd "-" ~"-" ExpressionMul --sub

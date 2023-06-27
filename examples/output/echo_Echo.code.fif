@@ -24,6 +24,7 @@ PROGRAM{
   DECLPROC $Slice$_fun_asCell
   DECLPROC $String$_fun_asComment
   DECLPROC $Echo$_fun_hello
+  DECLPROC $Echo$_fun_hello2
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $Echo$_fun_forward
   DECLPROC $Echo$_fun_reply
@@ -31,6 +32,7 @@ PROGRAM{
   DECLPROC $Echo$_internal_any_text
   DECLPROC $Echo$_internal_any
   115554 DECLMETHOD %hello
+  105790 DECLMETHOD %hello2
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
@@ -376,6 +378,11 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
+  $Echo$_fun_hello2 PROCREF:<{
+    10 LSHIFT#
+    32 PUSHINT
+    AND
+  }>
   $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
   $Echo$_fun_forward PROCREF:<{
@@ -425,6 +432,12 @@ PROGRAM{
     $Echo$_fun_hello INLINECALLDICT
     NIP
   }>
+  %hello2 PROC:<{
+    $Echo$_contract_load INLINECALLDICT
+    SWAP
+    $Echo$_fun_hello2 INLINECALLDICT
+    NIP
+  }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
@@ -432,7 +445,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d586132505a524d4b4a7a33413974474464414e42576f4b4141656979687256453443527a326169746b6a317a} PUSHSLICE
+    x{697066733a2f2f516d6548637a5a6a5a754e4564556f6b78333239477543534e6f79655a354d3339436a5a48626a6858436a776b53} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

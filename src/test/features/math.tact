@@ -9,6 +9,38 @@ contract MathTester with Deployable {
         return a + b;
     }
 
+    get fun sub(a: Int, b: Int): Int {
+        return a - b;
+    }
+
+    get fun mul(a: Int, b: Int): Int {
+        return a * b;
+    }
+
+    get fun div(a: Int, b: Int): Int {
+        return a / b;
+    }
+
+    get fun mod(a: Int, b: Int): Int {
+        return a % b;
+    }
+
+    get fun shr(a: Int, b: Int): Int {
+        return a >> b;
+    }
+
+    get fun shl(a: Int, b: Int): Int {
+        return a << b;
+    }
+
+    get fun and(a: Int, b: Int): Int {
+        return a & b;
+    }
+
+    get fun or(a: Int, b: Int): Int {
+        return a | b;
+    }
+
     //
     // Int Compare
     //

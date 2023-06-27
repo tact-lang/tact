@@ -8,12 +8,18 @@ PROGRAM{
   DECLPROC $ConstantTester$_fun_something3
   DECLPROC $ConstantTester$_fun_something4
   DECLPROC $ConstantTester$_fun_something5
+  DECLPROC $ConstantTester$_fun_something6
+  DECLPROC $ConstantTester$_fun_something7
+  DECLPROC $ConstantTester$_fun_something8
   DECLPROC $ConstantTester$_fun_globalConst
   121234 DECLMETHOD %something1
   125425 DECLMETHOD %something2
   129488 DECLMETHOD %something3
   100663 DECLMETHOD %something4
   104726 DECLMETHOD %something5
+  108917 DECLMETHOD %something6
+  112980 DECLMETHOD %something7
+  84155 DECLMETHOD %something8
   116577 DECLMETHOD %globalConst
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
@@ -74,7 +80,7 @@ PROGRAM{
     c4 POP
   }>
   $ConstantTester$_fun_something1 PROCREF:<{
-    10 PUSHINT
+    11 PUSHINT
   }>
   $ConstantTester$_fun_something2 PROCREF:<{
     PUSHNULL
@@ -87,6 +93,15 @@ PROGRAM{
   }>
   $ConstantTester$_fun_something5 PROCREF:<{
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
+  }>
+  $ConstantTester$_fun_something6 PROCREF:<{
+    10 PUSHINT
+  }>
+  $ConstantTester$_fun_something7 PROCREF:<{
+    5 PUSHINT
+  }>
+  $ConstantTester$_fun_something8 PROCREF:<{
+    4 PUSHINT
   }>
   $ConstantTester$_fun_globalConst PROCREF:<{
     100 PUSHINT
@@ -116,6 +131,21 @@ PROGRAM{
     $ConstantTester$_fun_something5 INLINECALLDICT
     NIP
   }>
+  %something6 PROC:<{
+    $ConstantTester$_contract_load INLINECALLDICT
+    $ConstantTester$_fun_something6 INLINECALLDICT
+    NIP
+  }>
+  %something7 PROC:<{
+    $ConstantTester$_contract_load INLINECALLDICT
+    $ConstantTester$_fun_something7 INLINECALLDICT
+    NIP
+  }>
+  %something8 PROC:<{
+    $ConstantTester$_contract_load INLINECALLDICT
+    $ConstantTester$_fun_something8 INLINECALLDICT
+    NIP
+  }>
   %globalConst PROC:<{
     $ConstantTester$_contract_load INLINECALLDICT
     $ConstantTester$_fun_globalConst INLINECALLDICT
@@ -129,7 +159,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d646674447557376b676555556a436167627761424159394a696a6270616a354c347147714d52533143447652} PUSHSLICE
+    x{697066733a2f2f516d63726e35776f547a41673563486576344c436a7467354c667771377a686b453141417233464c6d626b383533} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

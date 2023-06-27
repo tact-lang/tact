@@ -201,8 +201,8 @@ function initConstantTester_init_args(src: ConstantTester_init_args) {
 }
 
 async function ConstantTester_init() {
-    const __code = Cell.fromBase64('te6ccgECHAEAAcsAART/APSkE/S88sgLAQIBYgIDApLQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zzy4IIwyPhDAcx/AcoAye1UGQQCAVgFBgAaAZIwf+Ag10kxwh8wcAIBIAcIAgEgDQ4CASAJCgC5t3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwTgN6k73yqLLeOOp6e8CrOGTQThOy6ctWadluZ0HSzbKM3RSQAg+yTfbPNs8MYBkLAg+yRbbPNs8MYBkMAA6CGGort9AAAByLxIZWxsbyB3b3JsZCGAIBIA8QAgEgFxgCAUgREgIDmmgUFQAQqr7tRNDSAAECDqth2zzbPDEZEwAEgGQCDay2zzbPDGAZFgBzruNDVpcGZzOi8vUW1kZnREdVc3a2dlVVVqQ2FnYndhQkFZOUppamJwYWo1TDRxR3FNUlMxQ0R2UoIAACegIPsnx2zzbPDGAZGwIPsnQ2zzbPDGAZGgE07UTQ1AH4Y9IAMJFt4Pgo1wsKgwm68uCJ2zwbAA6CGByjXw4AAAJt');
-    const __system = Cell.fromBase64('te6cckECHgEAAdUAAQHAAQEFoPkDAgEU/wD0pBP0vPLICwMCAWIaBAIBWBMFAgEgCgYCASAJBwIPsnQ2zzbPDGAcCAAOghgco18OAAIPsnx2zzbPDGAcHQIBIA8LAgOaaA0MAHOu40NWlwZnM6Ly9RbWRmdER1VzdrZ2VVVWpDYWdid2FCQVk5SmlqYnBhajVMNHFHcU1SUzFDRHZSggAg2sts82zwxgHA4AAnoCAUgSEAIOq2HbPNs8MRwRAASAZAAQqr7tRNDSAAECASAVFAC5t3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwTgN6k73yqLLeOOp6e8CrOGTQThOy6ctWadluZ0HSzbKM3RSQAgEgGBYCD7JFts82zwxgHBcAHIvEhlbGxvIHdvcmxkIYAg+yTfbPNs8MYBwZAA6CGGort9AAApLQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zzy4IIwyPhDAcx/AcoAye1UHBsAGgGSMH/gINdJMcIfMHABNO1E0NQB+GPSADCRbeD4KNcLCoMJuvLgids8HQACbWpdcvw=');
+    const __code = Cell.fromBase64('te6ccgECJQEAAgYAART/APSkE/S88sgLAQIBYgIDApLQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zzy4IIwyPhDAcx/AcoAye1UIgQCASAFBgAaAZIwf+Ag10kxwh8wcAIPvkXe2ebZ4YwiBwIBIAgJAAJ0AgEgCgsCASAWFwIBIAwNAgEgEBECD7JN9s82zwxgIg4CD7JFts82zwxgIg8ADoIYaiu30AAAHIvEhlbGxvIHdvcmxkIYAg+yXXbPNs8MYCISAgFqExQAAnoCDaaptnm2eGMiFQC3p6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcE4DepO98qiy3jjqenvAqzhk0E4TsunLVmnZbmdB0s2yjN0UkAAnUCASAYGQIBICAhAgFIGhsCA5poHR4AEKq+7UTQ0gABAg6rYds82zwxIhwABIBkAg2sts82zwxgIh8Ac67jQ1aXBmczovL1FtY3JuNXdvVHpBZzVjSGV2NExDanRnNUxmd3E3emhrRTFBQXIzRkxtYms4NTOCAABIALAg+yfHbPNs8MYCIkAg+ydDbPNs8MYCIjATTtRNDUAfhj0gAwkW3g+CjXCwqDCbry4InbPCQADoIYHKNfDgAAAm0=');
+    const __system = Cell.fromBase64('te6cckECJwEAAhAAAQHAAQEFoPkDAgEU/wD0pBP0vPLICwMCAWIjBAIBICEFAgEgFAYCASALBwIBIAoIAg+ydDbPNs8MYCUJAA6CGByjXw4AAg+yfHbPNs8MYCUmAgEgEAwCA5poDg0Ac67jQ1aXBmczovL1FtY3JuNXdvVHpBZzVjSGV2NExDanRnNUxmd3E3emhrRTFBQXIzRkxtYms4NTOCACDay2zzbPDGAlDwAEgAsCAUgTEQIOq2HbPNs8MSUSAASAZAAQqr7tRNDSAAECASAcFQIBIBoWAgFqGBcAt6ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHBOA3qTvfKost446np7wKs4ZNBOE7Lpy1Zp2W5nQdLNsozdFJAg2mqbZ5tnhjJRkAAnUCD7Jdds82zwxgJRsAAnoCASAfHQIPskW2zzbPDGAlHgAci8SGVsbG8gd29ybGQhgCD7JN9s82zwxgJSAADoIYaiu30AACD75F3tnm2eGMJSIAAnQCktAB0NMDAXGwowH6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIVFBTA28E+GEC+GLbPFnbPPLggjDI+EMBzH8BygDJ7VQlJAAaAZIwf+Ag10kxwh8wcAE07UTQ1AH4Y9IAMJFt4Pgo1wsKgwm68uCJ2zwmAAJtGJ7XKA==');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -250,6 +250,9 @@ const ConstantTester_getters: ABIGetter[] = [
     {"name":"something3","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"something4","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"something5","arguments":[],"returnType":{"kind":"simple","type":"string","optional":false}},
+    {"name":"something6","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"something7","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"something8","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"globalConst","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
 ]
 
@@ -318,6 +321,27 @@ export class ConstantTester implements Contract {
         let builder = new TupleBuilder();
         let source = (await provider.get('something5', builder.build())).stack;
         let result = source.readString();
+        return result;
+    }
+    
+    async getSomething6(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('something6', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getSomething7(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('something7', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getSomething8(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('something8', builder.build())).stack;
+        let result = source.readBigNumber();
         return result;
     }
     

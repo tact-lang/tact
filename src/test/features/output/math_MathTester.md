@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MathTester
-BOC Size: 2180 bytes
+BOC Size: 2339 bytes
 
 # Types
 Total Types: 6
@@ -30,9 +30,41 @@ TLB: `factory_deploy#6d0ff13b queryId:uint64 cashback:address = FactoryDeploy`
 Signature: `FactoryDeploy{queryId:uint64,cashback:address}`
 
 # Get Methods
-Total Get Methods: 35
+Total Get Methods: 43
 
 ## add
+Argument: a
+Argument: b
+
+## sub
+Argument: a
+Argument: b
+
+## mul
+Argument: a
+Argument: b
+
+## div
+Argument: a
+Argument: b
+
+## mod
+Argument: a
+Argument: b
+
+## shr
+Argument: a
+Argument: b
+
+## shl
+Argument: a
+Argument: b
+
+## and
+Argument: a
+Argument: b
+
+## or
 Argument: a
 Argument: b
 

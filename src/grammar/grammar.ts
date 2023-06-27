@@ -627,11 +627,17 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     ExpressionAnd_and(arg0, arg1, arg2) {
         return createNode({ kind: 'op_binary', op: '&&', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
     },
-    ExpressionShift_shr(arg0, arg1, arg2) {
+    ExpressionBinary_shr(arg0, arg1, arg2) {
         return createNode({ kind: 'op_binary', op: '>>', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
     },
-    ExpressionShift_shl(arg0, arg1, arg2) {
+    ExpressionBinary_shl(arg0, arg1, arg2) {
         return createNode({ kind: 'op_binary', op: '<<', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+    },
+    ExpressionBinary_bin_and(arg0, arg1, arg2) {
+        return createNode({ kind: 'op_binary', op: '&', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+    },
+    ExpressionBinary_bin_or(arg0, arg1, arg2) {
+        return createNode({ kind: 'op_binary', op: '|', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
     },
 
     // Unary

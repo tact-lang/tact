@@ -24,4 +24,8 @@ contract Echo {
         builder.append(src);
         return builder.toString();
     }
+
+    get fun hello2(src: Int): Int {
+        return src << 10 & 32;
+    }
 }

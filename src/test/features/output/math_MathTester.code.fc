@@ -20,6 +20,46 @@ tuple $MathTester$_contract_init() impure inline_ref {
     return ($self, ($a + $b));
 }
 
+(tuple, int) $MathTester$_fun_sub(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a - $b));
+}
+
+(tuple, int) $MathTester$_fun_mul(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a * $b));
+}
+
+(tuple, int) $MathTester$_fun_div(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a / $b));
+}
+
+(tuple, int) $MathTester$_fun_mod(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a % $b));
+}
+
+(tuple, int) $MathTester$_fun_shr(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a >> $b));
+}
+
+(tuple, int) $MathTester$_fun_shl(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a << $b));
+}
+
+(tuple, int) $MathTester$_fun_and(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a & $b));
+}
+
+(tuple, int) $MathTester$_fun_or(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a | $b));
+}
+
 (tuple, int) $MathTester$_fun_compare1(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
     return ($self, __tact_int_eq_nullable_one($b, $a));
@@ -210,6 +250,70 @@ _ %add(int $$a, int $$b) method_id(83863) {
     int $b = $$b;
     var self = $MathTester$_contract_load();
     var res = self~$MathTester$_fun_add($a, $b);
+    return res;
+}
+
+_ %sub(int $$a, int $$b) method_id(80400) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_sub($a, $b);
+    return res;
+}
+
+_ %mul(int $$a, int $$b) method_id(99260) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_mul($a, $b);
+    return res;
+}
+
+_ %div(int $$a, int $$b) method_id(125000) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_div($a, $b);
+    return res;
+}
+
+_ %mod(int $$a, int $$b) method_id(126476) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_mod($a, $b);
+    return res;
+}
+
+_ %shr(int $$a, int $$b) method_id(89358) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_shr($a, $b);
+    return res;
+}
+
+_ %shl(int $$a, int $$b) method_id(110321) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_shl($a, $b);
+    return res;
+}
+
+_ %and(int $$a, int $$b) method_id(108636) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_and($a, $b);
+    return res;
+}
+
+_ %or(int $$a, int $$b) method_id(83393) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_or($a, $b);
     return res;
 }
 
@@ -490,7 +594,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmdRG3F7DW1r4qLjpUNdUK9NngV7n1xz4RFVt8CmW1Uhdd";
+    return "ipfs://QmQEqAX7YospM3CwBYdt1fkEDDqnjys5FtJHxWeaZcmMA6";
 }
 
 _ lazy_deployment_completed() method_id {
