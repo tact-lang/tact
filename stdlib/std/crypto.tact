@@ -8,4 +8,4 @@ extends native hash(self: Slice): Int;
 native checkSignature(hash: Int, signature: Slice, public_key: Int): Bool;
 
 @name(check_data_signature)
-native checkDataSignature(hash: Slice, signature: Slice, public_key: Slice): Bool;
+native checkDataSignature(data: Slice, signature: Slice, public_key: Int): Bool;
