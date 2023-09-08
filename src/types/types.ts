@@ -1,4 +1,4 @@
-import { ABIField, Address, Cell } from "ton-core";
+import { ABIField, Address, Cell } from "@ton/core";
 import { ASTConstant, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTReceive, ASTRef, ASTStatement, ASTType } from "../grammar/ast";
 
 export type TypeOrigin = 'stdlib' | 'user';

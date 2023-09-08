@@ -1,6 +1,6 @@
-import { ABIField, beginCell } from "ton-core";
+import { ABIField, beginCell } from "@ton/core";
 import * as cs from 'change-case';
-import { sha256_sync } from "ton-crypto";
+import { sha256_sync } from "@ton/crypto";
 
 function createTypeFormat(type: string, format: string | number | boolean | null) {
     if (type === 'int') {

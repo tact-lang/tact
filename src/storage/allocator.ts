@@ -1,4 +1,4 @@
-import { ABITypeRef } from "ton-core";
+import { ABITypeRef } from "@ton/core";
 import { AllocationCell, AllocationOperation, AllocationOperationType } from "./operation";
 
 const ALLOCATOR_RESERVE_BIT = 1;

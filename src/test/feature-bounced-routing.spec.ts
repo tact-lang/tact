@@ -1,4 +1,4 @@
-import { beginCell, toNano } from 'ton-core';
+import { beginCell, toNano } from '@ton/core';
 import { ContractSystem } from '@tact-lang/emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { SampleContract2 } from './features/output/bounced-routing_SampleContract2';

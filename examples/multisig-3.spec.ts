@@ -1,4 +1,4 @@
-import { toNano } from "ton-core";
+import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { MultisigContract } from "./output/multisig-3_MultisigContract";
 

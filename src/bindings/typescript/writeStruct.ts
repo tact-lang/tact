@@ -1,4 +1,4 @@
-import { ABIType, ABITypeRef } from "ton-core";
+import { ABIType, ABITypeRef } from "@ton/core";
 import { serializers } from "./serializers";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { Writer } from "../../utils/Writer";

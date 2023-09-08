@@ -9,7 +9,7 @@ import { GlobalFunctions } from "../../abi/global";
 import { id } from "./id";
 import { StructFunctions } from "../../abi/struct";
 import { resolveFuncType } from "./resolveFuncType";
-import { Address, Cell } from "ton-core";
+import { Address, Cell } from "@ton/core";
 import { writeAddress, writeCell, writeString } from "./writeConstant";
 import { ops } from "./ops";
 import { tryExpressionIntrinsics } from "../intrinsics/tryExpressionIntrinsics";

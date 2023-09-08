@@ -823,35 +823,63 @@
   dependencies:
     defer-to-connect "^2.0.1"
 
-"@tact-lang/coverage@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@tact-lang/coverage/-/coverage-0.0.5.tgz#8da0d25f2a48638712fe746bfd05491d14773afa"
-  integrity sha512-1vWP2DyXDTMFrThdX+oYCHus+7FpAYTF2Jx0zEfHMJi0g6QL/4zCOkouEBFrvueOtsOiTQKGR+IFgUcNzXjnFw==
+"@tact-lang/coverage@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@tact-lang/coverage/-/coverage-0.0.8.tgz#45e3e149fde407818b3f89036375afa55f7cd86c"
+  integrity sha512-e9S7gaPajCTj9z88yIEvMVVy+fHCHMpzFnj/jri33tO1HkpbE48jls8ZiAYuvDJVSbJ5hYItEklLw5hKC6jwqw==
   dependencies:
-    "@tact-lang/opcode" "^0.0.12"
+    "@tact-lang/opcode" "^0.0.14"
     glob "^9.3.2"
     prando "^6.0.1"
     teslabot "^1.5.0"
     zod "^3.20.2"
 
-"@tact-lang/emulator@^3.4.1":
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/@tact-lang/emulator/-/emulator-3.4.1.tgz#974fef4859ef8977dcbaa665c05f296410791ef6"
-  integrity sha512-+elgvFUCmjqBPWTFcxiyWQM+CxP+r8nqcd59HxJ2YkboiarC3IkjTcXkXAKIP9gMFfNRrbYjF1w/iC+5Mylgew==
+"@tact-lang/emulator@^4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@tact-lang/emulator/-/emulator-4.2.3.tgz#a08216fb545b1d3e2da4cf47d6b4cc2293fd8b5b"
+  integrity sha512-uZF5cQUReToHNntiZjxP/Fc2kSO5lpO+rctuq/vFuGtpY/vdXVeT9pt8MpDgrWu6sR9emxjMDJUkRyEI0F4ROA==
   dependencies:
     prando "^6.0.1"
     teslabot "^1.5.0"
     zod "^3.20.2"
 
-"@tact-lang/opcode@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@tact-lang/opcode/-/opcode-0.0.12.tgz#a186dc6ffaac91da39bdbf55dc28bd330be7a26b"
-  integrity sha512-iSLoENXb5KlD15d2XaH8omhSZFlmoF/uRMpblggnlt9WLxogCDNkMODyNS1EijhkhzBlAzXZIByFvWTLZda3bQ==
+"@tact-lang/opcode@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@tact-lang/opcode/-/opcode-0.0.14.tgz#52a9cb65bd43b8975481ecac26a3a59b377d1cf2"
+  integrity sha512-8FKHK2jwvViRBReO2t40DCkHAP9KPTRWZof4kdsAUJFlyeWIC8SsRQSl9QkZxF+48WvjDduKNqN5Ltb80paufA==
 
-"@tact-lang/opcode@^0.0.13":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@tact-lang/opcode/-/opcode-0.0.13.tgz#a168df5269809be7903f663fc216f0b9486a291a"
-  integrity sha512-4FGp1p3ahVrXr2QbyD2FqmnvXTMYapTlRJSPhj4O1L2yIq7dp0CkFL9EdKOCUfyirT0X5en78PHLfj0CuQGD7A==
+"@tact-lang/ton-abi@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@tact-lang/ton-abi/-/ton-abi-0.0.3.tgz#68aa8ecf8e14d91f37252773395753e4c623798e"
+  integrity sha512-n3ecmlwJiRI+4YKodc2/I3OsI14kYuxjPgFSWdNfr+GRMSZ76OvDIzq8Qr8k8iA3mSE+1RIplpluNnO9HCtgXg==
+
+"@tact-lang/ton-jest@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@tact-lang/ton-jest/-/ton-jest-0.0.4.tgz#c87604669ed0c6b4ba1a2e6f06616e267f7fc8ca"
+  integrity sha512-FWjfiNvhMlE44ZLLL7tgmHbrszMTPMttmYiaTekf1vwFXV3uAOawM8xM9NldYaCVs9eh8840PjgISdMMUTCSCw==
+
+"@ton/core@0.49.2":
+  version "0.49.2"
+  resolved "https://registry.yarnpkg.com/@ton/core/-/core-0.49.2.tgz#bb5f714f727cb98768d53bfb76b87133858e6bda"
+  integrity sha512-jzW7ZGNkkkv131uvgX/4JgHBdtEnanT8i1fnZ6NOL7lxXjlVIKTuAfr1J2wJQAGHn0wLrbceAHix3jKX+4F5CA==
+  dependencies:
+    symbol.inspect "1.0.1"
+
+"@ton/crypto-primitives@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@ton/crypto-primitives/-/crypto-primitives-2.0.0.tgz#446256146d64fcec6e3f21d9f40b5148640329cc"
+  integrity sha512-wttiNClmGbI6Dfy/8oyNnsIV0b/qYkCJz4Gn4eP62lJZzMtVQ94Ko7nikDX1EfYHkLI1xpOitWpW+8ZuG6XtDg==
+  dependencies:
+    jssha "3.2.0"
+
+"@ton/crypto@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@ton/crypto/-/crypto-3.2.0.tgz#8fcb36cc93eafd05249c847d1f4ad39cf2565e46"
+  integrity sha512-50RkwReEuV2FkxSZ8ht/x9+n0ZGtwRKGsJ0ay4I/HFhkYVG/awIIBQeH0W4j8d5lADdO5h01UtX8PJ8AjiejjA==
+  dependencies:
+    "@ton/crypto-primitives" "2.0.0"
+    jssha "3.2.0"
+    tweetnacl "1.0.3"
 
 "@tootallnate/once@1":
   version "1.1.2"
@@ -4568,34 +4596,6 @@ ton-compiler@^2.3.0:
   dependencies:
     arg "^5.0.1"
     tmp "^0.2.1"
-
-ton-core@>=0.49.0:
-  version "0.49.0"
-  resolved "https://registry.yarnpkg.com/ton-core/-/ton-core-0.49.0.tgz#69d338daa72e33b36aea4fb02cb0c7b3bf2c668b"
-  integrity sha512-t3fhs9rb7JfOccSU966bLSHq5G4PYippaXpQJGZPvUwoNVdlM3/nUwz6S6cr/hsGbthRBzApl4FhJsDlx9r4vA==
-  dependencies:
-    symbol.inspect "1.0.1"
-
-ton-crypto-primitives@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ton-crypto-primitives/-/ton-crypto-primitives-2.0.0.tgz#e85cd68c0d523f6bdf3f306201a76e51b7e9312e"
-  integrity sha512-K+qKjpS0h9sPW6oExcpxnzuQ7nEgHEiDKwIqE/jWD25o8iFGe3FWj1gKxFNbKE9wwYKc5IV8FwrU+raF0KO5nQ==
-  dependencies:
-    jssha "3.2.0"
-
-ton-crypto@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ton-crypto/-/ton-crypto-3.2.0.tgz#cf8cd5410d8f04b04b359f80415b11efb312c60e"
-  integrity sha512-fltdBNQ45gARMuGMEOjPZWPJ5eSql8p3CA0Dj7tPv5lhU5ziT8SxXLAzDraR9HJ8YpjBHLVvYyhMLRiEwxgtMQ==
-  dependencies:
-    jssha "3.2.0"
-    ton-crypto-primitives "2.0.0"
-    tweetnacl "1.0.3"
-
-ton-jest@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/ton-jest/-/ton-jest-0.0.3.tgz#87b905ff32f7b6a007fe0595bc830c12d761441c"
-  integrity sha512-9ngWRCsd2CZHeybmV0mASLnKnZOWGAfRyoFgHAyOoI3IIC3T9VgHT8BemZLdEQxoizwQgVybCoVtXwCZ9MM0pw==
 
 tr46@~0.0.3:
   version "0.0.3"

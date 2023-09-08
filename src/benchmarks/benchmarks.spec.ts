@@ -1,4 +1,4 @@
-import { toNano } from "ton-core";
+import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { Functions } from './contracts/output/benchmark_functions_Functions';
 import { Functions as FunctionsInline } from './contracts/output/benchmark_functions_inline_Functions';
