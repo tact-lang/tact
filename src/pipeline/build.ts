@@ -20,6 +20,19 @@ import { compile } from './compile';
 import { precompile } from "./precompile";
 import { getCompilerVersion } from './version';
 
+// ts-ignore is used on purpose here (instead of installing @types/node or similar)
+// because the whole package must not depend on any node code
+// however, this function is required to fix compilation on windows
+function posixNormalize(path: string): string {
+    // @ts-ignore
+    if (typeof global === 'object' && typeof global.process === 'object' && typeof global.process.versions === 'object' && global.process.versions.node) {
+        // @ts-ignore
+        const pathModule = require('node:path');
+        return path.split(pathModule.sep).join(pathModule.posix.sep);
+    }
+    return path;
+}
+
 export async function build(args: {
     config: ConfigProject,
     project: VirtualFileSystem,
@@ -97,7 +110,7 @@ export async function build(args: {
             }
             project.writeFile(pathAbi, res.output.abi);
             abi = res.output.abi;
-            codeFc = res.output.files.map((v) => ({ path: project.resolve(config.output, v.name), content: v.code }));
+            codeFc = res.output.files.map((v) => ({ path: posixNormalize(project.resolve(config.output, v.name)), content: v.code }));
             codeEntrypoint = res.output.entrypoint;
         } catch (e) {
             logger.error('Tact compilation failed');
@@ -118,7 +131,7 @@ export async function build(args: {
                 entries: [
                     stdlibPath,
                     stdlibExPath,
-                    project.resolve(config.output, codeEntrypoint)
+                    posixNormalize(project.resolve(config.output, codeEntrypoint))
                 ],
                 sources: [{
                     path: stdlibPath,
