@@ -1,16 +1,22 @@
-# TACT language compiler
+# Tact Language Compiler
 
-A next-gen smart contract language for TON.
+<img src="https://raw.githubusercontent.com/tact-lang/tact-docs/main/public/banner.jpeg">
 
-* [Documentation](https://docs.tact-lang.org)
+A next-gen smart contract language for TON focused on efficiency and simplicity.
+
 * [Changelog](/CHANGELOG.md)
 * [Roadmap](/ROADMAP.md)
 * [Examples](/examples/)
 
+## Key Resources
 
-# Communities
-* [Tact group](https://t.me/tactlang)
-* [Forum](https://forums.tact-lang.org/)
+* [Tact By Example](https://tact-by-example.org/01-hello-world)
+* [Tact Documentation](https://docs.tact-lang.org)
+* [Awesome Tact](https://github.com/tact-lang/awesome-tact)
+
+## Community
+
+* [Tact Discussion Group](https://t.me/tactlang)
 
 ## Getting started
 
