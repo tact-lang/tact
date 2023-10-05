@@ -469,7 +469,7 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
         let v = sctx.vars[exp.value];
         if (!v) {
             if (!hasStaticConstant(ctx, exp.value)) {
-                throwError('Unabe to resolve id ' + exp.value, exp.ref);
+                throwError('Unable to resolve id ' + exp.value, exp.ref);
             } else {
                 let cc = getStaticConstant(ctx, exp.value);
                 return registerExpType(ctx, exp, cc.type);
