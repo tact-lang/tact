@@ -274,7 +274,9 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             || (lt.name !== 'Int' && lt.name !== 'Bool')
             || (rt.name !== 'Int' && rt.name !== 'Bool')
         ) {
-            throw Error('Invalid types for binary operation'); // Should be unreachable
+            let file = f.ref.file;
+            let line, column = f.ref.interval.getLineAndColumn();
+            throw Error(`(Internal Compiler Error) Invalid types for binary operation: ${file}:${line}:${column}`); // Should be unreachable
         }
 
         // Case for ints equality
