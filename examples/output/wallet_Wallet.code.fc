@@ -133,72 +133,72 @@ _ lazy_deployment_completed() method_id {
 ((int, int, int), int) $Wallet$_contract_router_internal((int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     ;; Handle bounced messages
     if (msg_bounced) {
-        
+
         ;; Skip 0xFFFFFFFF
         in_msg~skip_bits(32);
-        
+
         ;; Fallback bounce receiver
         self~$Wallet$_receive_bounce(in_msg);
-        
+
         return (self, true);
     }
-    
+
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
-    
-    
+
+
     ;; Receive TransferMessage message
     if (op == 123) {
         var msg = in_msg~$TransferMessage$_load();
         self~$Wallet$_internal_binary_TransferMessage(msg);
         return (self, true);
     }
-    
+
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
         self~%$Wallet$_internal_empty();
         return (self, true);
     }
-    
+
     ;; Text Receivers
     if (op == 0) {
         var text_op = slice_hash(in_msg);
-        
+
         ;; Receive "Deploy" message
         if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
             self~$Wallet$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
             return (self, true);
         }
-        
+
         ;; Receive "notify" message
         if (text_op == 0x0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2) {
             self~$Wallet$_internal_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2();
             return (self, true);
         }
-        
-        ;; Receive "Слава Україні" message
+
+        ;; Receive "你好ж" message
         if (text_op == 0x269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439) {
             self~$Wallet$_internal_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439();
             return (self, true);
         }
-        
+
         ;; Receive "duplicate" message
         if (text_op == 0x9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9) {
             self~$Wallet$_internal_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9();
             return (self, true);
         }
     }
-    
+
     ;; Receiver fallback
     self~$Wallet$_internal_any(in_msg);
     return (self, true);
 }
 
 () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
+
     ;; Context
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
@@ -206,16 +206,16 @@ _ lazy_deployment_completed() method_id {
     slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     __tact_context_sender = msg_sender_addr;
-    
+
     ;; Load contract data
     var self = $Wallet$_contract_load();
-    
+
     ;; Handle operation
     int handled = self~$Wallet$_contract_router_internal(msg_bounced, in_msg);
-    
+
     ;; Throw if not handled
     throw_unless(130, handled);
-    
+
     ;; Persist state
     $Wallet$_contract_store(self);
 }

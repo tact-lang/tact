@@ -12,11 +12,11 @@ message(123) TransferMessage {
 }
 
 contract Wallet {
-    
+
     seqno: Int as uint32 = 0;
     key: Int as uint256;
     walletId: Int as uint64;
-    
+
     init(key: Int, walletId: Int) {
         self.key = key;
         self.walletId = walletId;
@@ -24,7 +24,7 @@ contract Wallet {
 
     receive("Deploy") {
         // Do nothing
-    } 
+    }
 
     receive(msg: TransferMessage) {
 
@@ -52,7 +52,7 @@ contract Wallet {
         self.seqno = self.seqno + 1;
     }
 
-    receive("Слава Україні") {
+    receive("你好ж") {
         self.seqno = self.seqno + 1;
     }
 
@@ -63,7 +63,7 @@ contract Wallet {
 
     bounced(msg: Slice) {
         // TODO: Handle
-    } 
+    }
 
     get fun publicKey(): Int {
         return self.key;

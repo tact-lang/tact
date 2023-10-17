@@ -1,18 +1,18 @@
-import { 
+import {
     Cell,
-    Slice, 
-    Address, 
-    Builder, 
-    beginCell, 
-    ComputeError, 
-    TupleItem, 
-    TupleReader, 
-    Dictionary, 
-    contractAddress, 
-    ContractProvider, 
-    Sender, 
-    Contract, 
-    ContractABI, 
+    Slice,
+    Address,
+    Builder,
+    beginCell,
+    ComputeError,
+    TupleItem,
+    TupleReader,
+    Dictionary,
+    contractAddress,
+    ContractProvider,
+    Sender,
+    Contract,
+    ContractABI,
     ABIType,
     ABIGetter,
     ABIReceiver,
@@ -371,27 +371,27 @@ const Wallet_receivers: ABIReceiver[] = [
     {"receiver":"internal","message":{"kind":"any"}},
     {"receiver":"internal","message":{"kind":"empty"}},
     {"receiver":"internal","message":{"kind":"text","text":"notify"}},
-    {"receiver":"internal","message":{"kind":"text","text":"Слава Україні"}},
+    {"receiver":"internal","message":{"kind":"text","text":"你好ж"}},
     {"receiver":"internal","message":{"kind":"text","text":"duplicate"}},
 ]
 
 export class Wallet implements Contract {
-    
+
     static async init(key: bigint, walletId: bigint) {
         return await Wallet_init(key, walletId);
     }
-    
+
     static async fromInit(key: bigint, walletId: bigint) {
         const init = await Wallet_init(key, walletId);
         const address = contractAddress(0, init);
         return new Wallet(address, init);
     }
-    
+
     static fromAddress(address: Address) {
         return new Wallet(address);
     }
-    
-    readonly address: Address; 
+
+    readonly address: Address;
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
         types:  Wallet_types,
@@ -399,14 +399,14 @@ export class Wallet implements Contract {
         receivers: Wallet_receivers,
         errors: Wallet_errors,
     };
-    
+
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
     }
-    
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: 'Deploy' | TransferMessage | Slice | null | 'notify' | 'Слава Україні' | 'duplicate') {
-        
+
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: 'Deploy' | TransferMessage | Slice | null | 'notify' | '你好ж' | 'duplicate') {
+
         let body: Cell | null = null;
         if (message === 'Deploy') {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
@@ -423,37 +423,37 @@ export class Wallet implements Contract {
         if (message === 'notify') {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
-        if (message === 'Слава Україні') {
+        if (message === '你好ж') {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
         if (message === 'duplicate') {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
         if (body === null) { throw new Error('Invalid message type'); }
-        
+
         await provider.internal(via, { ...args, body: body });
-        
+
     }
-    
+
     async getPublicKey(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('publicKey', builder.build())).stack;
         let result = source.readBigNumber();
         return result;
     }
-    
+
     async getWalletId(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('walletId', builder.build())).stack;
         let result = source.readBigNumber();
         return result;
     }
-    
+
     async getSeqno(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('seqno', builder.build())).stack;
         let result = source.readBigNumber();
         return result;
     }
-    
+
 }
