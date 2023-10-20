@@ -161,6 +161,10 @@ describe('feature-map', () => {
                 expect((await contract.getIntMap9_4Value(k))).toBe(valueSmallAbs);
                 expect((await contract.getIntMap9_5Value(k))).toBe(valueSmallAbs);
                 expect((await contract.getIntMap9_6Value(k))).toBe(valueSmallAbs);
+                expect((await contract.getIntMap10Value(keySmall, valueInt))).toBe(valueInt * 7n);
+                expect((await contract.getIntMap11Value(keySmallAbs, valueInt))).toBe(valueInt * 6n);
+                expect((await contract.getIntMap12Value(k, valueSmall))).toBe(valueSmall * 7n);
+                expect((await contract.getIntMap13Value(k, valueSmallAbs))).toBe(valueSmallAbs * 7n);
                 expect((await contract.getAddrMap1Value(addr))).toBe(valueInt);
                 expect((await contract.getAddrMap2Value(addr))!).toBe(valueBool);
                 expect((await contract.getAddrMap3Value(addr))!.equals(valueCell)).toBe(true);

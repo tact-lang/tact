@@ -25,6 +25,10 @@ slice __tact_verify_address(slice address) inline {
     }
 }
 
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
+
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
 ((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
