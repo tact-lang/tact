@@ -1,18 +1,18 @@
-import {
+import { 
     Cell,
-    Slice,
-    Address,
-    Builder,
-    beginCell,
-    ComputeError,
-    TupleItem,
-    TupleReader,
-    Dictionary,
-    contractAddress,
-    ContractProvider,
-    Sender,
-    Contract,
-    ContractABI,
+    Slice, 
+    Address, 
+    Builder, 
+    beginCell, 
+    ComputeError, 
+    TupleItem, 
+    TupleReader, 
+    Dictionary, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    Contract, 
+    ContractABI, 
     ABIType,
     ABIGetter,
     ABIReceiver,
@@ -312,8 +312,8 @@ function initWallet_init_args(src: Wallet_init_args) {
 }
 
 async function Wallet_init(key: bigint, walletId: bigint) {
-    const __code = Cell.fromBase64('te6ccgECGQEAA84AART/APSkE/S88sgLAQIBYgIDAqbQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxVEts88uCCyPhDAcx/AcoAVSBQI8sfy//LP8ntVBYEAgEgCgsC9u2i7fsBloAg1yEwf+BwIddJwh+VMCDXCx/eIMB7jsIw0x8BwHvy4IHUAdAB0x/TB/pAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB+gDSAAGR1JJtAeJVQBBWbBbgIMAAItdJwSGwlVsCpAJ/4MAA4wAwAqQCfwUGAchUdDJTQ8hVQFBFyx8SywcBINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8WAfoCIW6zlX8BygDMlHAyygDiyfkAggC9EVF5+RAW8vSBRPZRSLoU8vQGpEMWAn9ERG1t2zx/BwH8IPkBIILwhdKIOEwAQ0WLAoA8siBZ9ogDxVPDZWNENGRo2slh8ka6lFt/2zHgIILwDiNXJhCLVwDQNp3XFn9q/7gGp+BAWTdd0OD7JJcecrK6l1sCpAJ/2zHgIILwJpRo/U2g9eBxV0ZzYkLroPrZ0o2vx3M76p58ZEiIlDm6CQHKyHEBygFQBwHKAHABygJQBSDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFlAD+gJwAcpoI26zkX+TJG6z4pczMwFwAcoA4w0hbrOcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAIAJh/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMAGSXWwKkAn/bMeCC8Jyg8YVRdOMuj9N431am5PbEDk38tgkOSYEvex4mIUv5upQwf9sx4AIBagwNAgEgEBECEbMl9s82zxsMYBYOAhGwfjbPNs8bDGAWDwACIgACIQCVu70YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4JwnZdOWrNOy3M6DpZtlGbopIAgFIEhMCAWIUFQB1sm7jQ1aXBmczovL1FtUWhOUzFuQ05FRzRRSHRYMkxZN1RxdlU3WjExRXVQOEJXZ2dlZ0dqcGtGYkOCACD6SVtnm2eNhjFhcAD6V92omhpAADAWLtRNDUAfhj0gABmtMf0//TP1UgbBPg+CjXCwqDCbry4ImBAQHXAIEBAdcAWQLRAds8GAACIAAEcFk=');
-    const __system = Cell.fromBase64('te6cckECGwEAA9gAAQHAAQEFoHL9AgEU/wD0pBP0vPLICwMCAWISBAIBIA0FAgEgDAYCAUgIBwB1sm7jQ1aXBmczovL1FtUWhOUzFuQ05FRzRRSHRYMkxZN1RxdlU3WjExRXVQOEJXZ2dlZ0dqcGtGYkOCACAWIKCQAPpX3aiaGkAAMCD6SVtnm2eNhjGQsAAiAAlbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcJ2XTlqzTstzOg6WbZRm6KSAIBahAOAhGwfjbPNs8bDGAZDwACIQIRsyX2zzbPGwxgGREAAiICptAB0NMDAXGwowH6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIVFBTA28E+GEC+GLbPFUS2zzy4ILI+EMBzH8BygBVIFAjyx/L/8s/ye1UGRMC9u2i7fsBloAg1yEwf+BwIddJwh+VMCDXCx/eIMB7jsIw0x8BwHvy4IHUAdAB0x/TB/pAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB+gDSAAGR1JJtAeJVQBBWbBbgIMAAItdJwSGwlVsCpAJ/4MAA4wAwAqQCfxYUAfwg+QEggvCF0og4TABDRYsCgDyyIFn2iAPFU8NlY0Q0ZGjayWHyRrqUW3/bMeAggvAOI1cmEItXANA2ndcWf2r/uAan4EBZN13Q4Psklx5ysrqXWwKkAn/bMeAggvAmlGj9TaD14HFXRnNiQuug+tnSja/HczvqnnxkSIiUOboVAGSXWwKkAn/bMeCC8Jyg8YVRdOMuj9N431am5PbEDk38tgkOSYEvex4mIUv5upQwf9sx4AHIVHQyU0PIVUBQRcsfEssHASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFgH6AiFus5V/AcoAzJRwMsoA4sn5AIIAvRFRefkQFvL0gUT2UUi6FPL0BqRDFgJ/RERtbds8fxcByshxAcoBUAcBygBwAcoCUAUg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxZQA/oCcAHKaCNus5F/kyRus+KXMzMBcAHKAOMNIW6znH8BygABIG7y0IABzJUxcAHKAOLJAfsAGACYfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzAFi7UTQ1AH4Y9IAAZrTH9P/0z9VIGwT4Pgo1wsKgwm68uCJgQEB1wCBAQHXAFkC0QHbPBoABHBZU2OUlw==');
+    const __code = Cell.fromBase64('te6ccgECGQEAA84AART/APSkE/S88sgLAQIBYgIDAqbQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxVEts88uCCyPhDAcx/AcoAVSBQI8sfy//LP8ntVBYEAgEgCgsC9u2i7fsBloAg1yEwf+BwIddJwh+VMCDXCx/eIMB7jsIw0x8BwHvy4IHUAdAB0x/TB/pAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB+gDSAAGR1JJtAeJVQBBWbBbgIMAAItdJwSGwlVsCpAJ/4MAA4wAwAqQCfwUGAchUdDJTQ8hVQFBFyx8SywcBINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8WAfoCIW6zlX8BygDMlHAyygDiyfkAggC9EVF5+RAW8vSBRPZRSLoU8vQGpEMWAn9ERG1t2zx/BwH8IPkBIILwhdKIOEwAQ0WLAoA8siBZ9ogDxVPDZWNENGRo2slh8ka6lFt/2zHgIILwDiNXJhCLVwDQNp3XFn9q/7gGp+BAWTdd0OD7JJcecrK6l1sCpAJ/2zHgIILwdEPESJgvW47fKy0DSzFvltxqfCq3lZikM0jBUtTK3Sa6CQHKyHEBygFQBwHKAHABygJQBSDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFlAD+gJwAcpoI26zkX+TJG6z4pczMwFwAcoA4w0hbrOcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAIAJh/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMAGSXWwKkAn/bMeCC8Jyg8YVRdOMuj9N431am5PbEDk38tgkOSYEvex4mIUv5upQwf9sx4AIBagwNAgEgEBECEbMl9s82zxsMYBYOAhGwfjbPNs8bDGAWDwACIgACIQCVu70YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4JwnZdOWrNOy3M6DpZtlGbopIAgFIEhMCAWIUFQB1sm7jQ1aXBmczovL1FtZlRyZ0FGenROV2NVWEFzdHc4ekNwVzNpdldwYmpZckEzV3pWdzJiOUcxUXWCACD6SVtnm2eNhjFhcAD6V92omhpAADAWLtRNDUAfhj0gABmtMf0//TP1UgbBPg+CjXCwqDCbry4ImBAQHXAIEBAdcAWQLRAds8GAACIAAEcFk=');
+    const __system = Cell.fromBase64('te6cckECGwEAA9gAAQHAAQEFoHL9AgEU/wD0pBP0vPLICwMCAWISBAIBIA0FAgEgDAYCAUgIBwB1sm7jQ1aXBmczovL1FtZlRyZ0FGenROV2NVWEFzdHc4ekNwVzNpdldwYmpZckEzV3pWdzJiOUcxUXWCACAWIKCQAPpX3aiaGkAAMCD6SVtnm2eNhjGQsAAiAAlbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcJ2XTlqzTstzOg6WbZRm6KSAIBahAOAhGwfjbPNs8bDGAZDwACIQIRsyX2zzbPGwxgGREAAiICptAB0NMDAXGwowH6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIVFBTA28E+GEC+GLbPFUS2zzy4ILI+EMBzH8BygBVIFAjyx/L/8s/ye1UGRMC9u2i7fsBloAg1yEwf+BwIddJwh+VMCDXCx/eIMB7jsIw0x8BwHvy4IHUAdAB0x/TB/pAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB+gDSAAGR1JJtAeJVQBBWbBbgIMAAItdJwSGwlVsCpAJ/4MAA4wAwAqQCfxYUAfwg+QEggvCF0og4TABDRYsCgDyyIFn2iAPFU8NlY0Q0ZGjayWHyRrqUW3/bMeAggvAOI1cmEItXANA2ndcWf2r/uAan4EBZN13Q4Psklx5ysrqXWwKkAn/bMeAggvB0Q8RImC9bjt8rLQNLMW+W3Gp8KreVmKQzSMFS1MrdJroVAGSXWwKkAn/bMeCC8Jyg8YVRdOMuj9N431am5PbEDk38tgkOSYEvex4mIUv5upQwf9sx4AHIVHQyU0PIVUBQRcsfEssHASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFgH6AiFus5V/AcoAzJRwMsoA4sn5AIIAvRFRefkQFvL0gUT2UUi6FPL0BqRDFgJ/RERtbds8fxcByshxAcoBUAcBygBwAcoCUAUg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxZQA/oCcAHKaCNus5F/kyRus+KXMzMBcAHKAOMNIW6znH8BygABIG7y0IABzJUxcAHKAOLJAfsAGACYfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzAFi7UTQ1AH4Y9IAAZrTH9P/0z9VIGwT4Pgo1wsKgwm68uCJgQEB1wCBAQHXAFkC0QHbPBoABHBZM5b2GQ==');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -376,22 +376,22 @@ const Wallet_receivers: ABIReceiver[] = [
 ]
 
 export class Wallet implements Contract {
-
+    
     static async init(key: bigint, walletId: bigint) {
         return await Wallet_init(key, walletId);
     }
-
+    
     static async fromInit(key: bigint, walletId: bigint) {
         const init = await Wallet_init(key, walletId);
         const address = contractAddress(0, init);
         return new Wallet(address, init);
     }
-
+    
     static fromAddress(address: Address) {
         return new Wallet(address);
     }
-
-    readonly address: Address;
+    
+    readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
         types:  Wallet_types,
@@ -399,14 +399,14 @@ export class Wallet implements Contract {
         receivers: Wallet_receivers,
         errors: Wallet_errors,
     };
-
+    
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
     }
-
+    
     async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: 'Deploy' | TransferMessage | Slice | null | 'notify' | '你好ж' | 'duplicate') {
-
+        
         let body: Cell | null = null;
         if (message === 'Deploy') {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
@@ -430,30 +430,30 @@ export class Wallet implements Contract {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
         if (body === null) { throw new Error('Invalid message type'); }
-
+        
         await provider.internal(via, { ...args, body: body });
-
+        
     }
-
+    
     async getPublicKey(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('publicKey', builder.build())).stack;
         let result = source.readBigNumber();
         return result;
     }
-
+    
     async getWalletId(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('walletId', builder.build())).stack;
         let result = source.readBigNumber();
         return result;
     }
-
+    
     async getSeqno(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('seqno', builder.build())).stack;
         let result = source.readBigNumber();
         return result;
     }
-
+    
 }

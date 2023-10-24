@@ -325,6 +325,107 @@
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6), __tact_dict_get_int_uint($self'intMap9_6, 257, $key, 256));
 }
 
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap10Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key, int $value) impure inline_ref {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6)) = $self;
+    cell $map1 = null();
+    cell $map2 = null();
+    cell $map3 = null();
+    cell $map4 = null();
+    cell $map5 = null();
+    cell $map6 = null();
+    cell $map7 = null();
+    $map1~__tact_dict_set_int_int(8, $key, $value, 257);
+    $map2~__tact_dict_set_int_int(16, $key, $value, 257);
+    $map3~__tact_dict_set_int_int(32, $key, $value, 257);
+    $map4~__tact_dict_set_int_int(64, $key, $value, 257);
+    $map5~__tact_dict_set_int_int(128, $key, $value, 257);
+    $map6~__tact_dict_set_int_int(256, $key, $value, 257);
+    $map7~__tact_dict_set_int_int(257, $key, $value, 257);
+    int $value1 = __tact_not_null(__tact_dict_get_int_int($map1, 8, $key, 257));
+    int $value2 = __tact_not_null(__tact_dict_get_int_int($map2, 16, $key, 257));
+    int $value3 = __tact_not_null(__tact_dict_get_int_int($map3, 32, $key, 257));
+    int $value4 = __tact_not_null(__tact_dict_get_int_int($map4, 64, $key, 257));
+    int $value5 = __tact_not_null(__tact_dict_get_int_int($map5, 128, $key, 257));
+    int $value6 = __tact_not_null(__tact_dict_get_int_int($map6, 256, $key, 257));
+    int $value7 = __tact_not_null(__tact_dict_get_int_int($map7, 257, $key, 257));
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6), (((((($value1 + $value2) + $value3) + $value4) + $value5) + $value6) + $value7));
+}
+
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap11Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key, int $value) impure inline_ref {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6)) = $self;
+    cell $map1 = null();
+    cell $map2 = null();
+    cell $map3 = null();
+    cell $map4 = null();
+    cell $map5 = null();
+    cell $map6 = null();
+    $map1~__tact_dict_set_uint_int(8, $key, $value, 257);
+    $map2~__tact_dict_set_uint_int(16, $key, $value, 257);
+    $map3~__tact_dict_set_uint_int(32, $key, $value, 257);
+    $map4~__tact_dict_set_uint_int(64, $key, $value, 257);
+    $map5~__tact_dict_set_uint_int(128, $key, $value, 257);
+    $map6~__tact_dict_set_uint_int(256, $key, $value, 257);
+    int $value1 = __tact_not_null(__tact_dict_get_uint_int($map1, 8, $key, 257));
+    int $value2 = __tact_not_null(__tact_dict_get_uint_int($map2, 16, $key, 257));
+    int $value3 = __tact_not_null(__tact_dict_get_uint_int($map3, 32, $key, 257));
+    int $value4 = __tact_not_null(__tact_dict_get_uint_int($map4, 64, $key, 257));
+    int $value5 = __tact_not_null(__tact_dict_get_uint_int($map5, 128, $key, 257));
+    int $value6 = __tact_not_null(__tact_dict_get_uint_int($map6, 256, $key, 257));
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6), ((((($value1 + $value2) + $value3) + $value4) + $value5) + $value6));
+}
+
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap12Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key, int $value) impure inline_ref {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6)) = $self;
+    cell $map1 = null();
+    cell $map2 = null();
+    cell $map3 = null();
+    cell $map4 = null();
+    cell $map5 = null();
+    cell $map6 = null();
+    cell $map7 = null();
+    $map1~__tact_dict_set_int_int(257, $key, $value, 8);
+    $map2~__tact_dict_set_int_int(257, $key, $value, 16);
+    $map3~__tact_dict_set_int_int(257, $key, $value, 32);
+    $map4~__tact_dict_set_int_int(257, $key, $value, 64);
+    $map5~__tact_dict_set_int_int(257, $key, $value, 128);
+    $map6~__tact_dict_set_int_int(257, $key, $value, 256);
+    $map7~__tact_dict_set_int_int(257, $key, $value, 257);
+    int $value1 = __tact_not_null(__tact_dict_get_int_int($map1, 257, $key, 8));
+    int $value2 = __tact_not_null(__tact_dict_get_int_int($map2, 257, $key, 16));
+    int $value3 = __tact_not_null(__tact_dict_get_int_int($map3, 257, $key, 32));
+    int $value4 = __tact_not_null(__tact_dict_get_int_int($map4, 257, $key, 64));
+    int $value5 = __tact_not_null(__tact_dict_get_int_int($map5, 257, $key, 128));
+    int $value6 = __tact_not_null(__tact_dict_get_int_int($map6, 257, $key, 256));
+    int $value7 = __tact_not_null(__tact_dict_get_int_int($map7, 257, $key, 257));
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6), (((((($value1 + $value2) + $value3) + $value4) + $value5) + $value6) + $value7));
+}
+
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap13Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key, int $value) impure inline_ref {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6)) = $self;
+    cell $map1 = null();
+    cell $map2 = null();
+    cell $map3 = null();
+    cell $map4 = null();
+    cell $map5 = null();
+    cell $map6 = null();
+    cell $map7 = null();
+    $map1~__tact_dict_set_int_uint(257, $key, $value, 8);
+    $map2~__tact_dict_set_int_uint(257, $key, $value, 16);
+    $map3~__tact_dict_set_int_uint(257, $key, $value, 32);
+    $map4~__tact_dict_set_int_uint(257, $key, $value, 64);
+    $map5~__tact_dict_set_int_uint(257, $key, $value, 128);
+    $map6~__tact_dict_set_int_uint(257, $key, $value, 256);
+    $map7~__tact_dict_set_int_int(257, $key, $value, 257);
+    int $value1 = __tact_not_null(__tact_dict_get_int_uint($map1, 257, $key, 8));
+    int $value2 = __tact_not_null(__tact_dict_get_int_uint($map2, 257, $key, 16));
+    int $value3 = __tact_not_null(__tact_dict_get_int_uint($map3, 257, $key, 32));
+    int $value4 = __tact_not_null(__tact_dict_get_int_uint($map4, 257, $key, 64));
+    int $value5 = __tact_not_null(__tact_dict_get_int_uint($map5, 257, $key, 128));
+    int $value6 = __tact_not_null(__tact_dict_get_int_uint($map6, 257, $key, 256));
+    int $value7 = __tact_not_null(__tact_dict_get_int_int($map7, 257, $key, 257));
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6), (((((($value1 + $value2) + $value3) + $value4) + $value5) + $value6) + $value7));
+}
+
 ((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap1((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6)) = $self;
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6), $self'addrMap1);
@@ -1086,6 +1187,38 @@ _ %intMap9_6Value(int $$key) method_id(111609) {
     return res;
 }
 
+_ %intMap10Value(int $$key, int $$value) method_id(79133) {
+    int $key = $$key;
+    int $value = $$value;
+    var self = $MapTestContract$_contract_load();
+    var res = self~$MapTestContract$_fun_intMap10Value($key, $value);
+    return res;
+}
+
+_ %intMap11Value(int $$key, int $$value) method_id(94397) {
+    int $key = $$key;
+    int $value = $$value;
+    var self = $MapTestContract$_contract_load();
+    var res = self~$MapTestContract$_fun_intMap11Value($key, $value);
+    return res;
+}
+
+_ %intMap12Value(int $$key, int $$value) method_id(114269) {
+    int $key = $$key;
+    int $value = $$value;
+    var self = $MapTestContract$_contract_load();
+    var res = self~$MapTestContract$_fun_intMap12Value($key, $value);
+    return res;
+}
+
+_ %intMap13Value(int $$key, int $$value) method_id(130045) {
+    int $key = $$key;
+    int $value = $$value;
+    var self = $MapTestContract$_contract_load();
+    var res = self~$MapTestContract$_fun_intMap13Value($key, $value);
+    return res;
+}
+
 _ %addrMap1() method_id(93537) {
     var self = $MapTestContract$_contract_load();
     var res = self~$MapTestContract$_fun_addrMap1();
@@ -1336,7 +1469,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmebpMKmoDeNnV7wbuE1hLkiBjKBu1YBNtnzFHjSqDrN4z";
+    return "ipfs://Qma3aYbp2TAnwXPJW1WgvDg4bq74TLH5NamtKr2BoevhAn";
 }
 
 _ lazy_deployment_completed() method_id {

@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MapTestContract
-BOC Size: 19345 bytes
+BOC Size: 21823 bytes
 
 # Types
 Total Types: 20
@@ -86,7 +86,7 @@ TLB: `_ value:int257 = SomeStruct`
 Signature: `SomeStruct{value:int257}`
 
 # Get Methods
-Total Get Methods: 99
+Total Get Methods: 103
 
 ## intMap1
 
@@ -242,6 +242,22 @@ Argument: key
 
 ## intMap9_6Value
 Argument: key
+
+## intMap10Value
+Argument: key
+Argument: value
+
+## intMap11Value
+Argument: key
+Argument: value
+
+## intMap12Value
+Argument: key
+Argument: value
+
+## intMap13Value
+Argument: key
+Argument: value
 
 ## addrMap1
 

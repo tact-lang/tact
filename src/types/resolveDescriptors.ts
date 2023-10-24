@@ -39,8 +39,9 @@ function verifyMapType(key: string, keyAs: string | null, value: string, valueAs
             ].includes(keyAs)) {
                 throwError('Invalid key type for map', ref);
             }
+        } else {
+            throwError('Invalid key type for map', ref);
         }
-        throwError('Invalid key type for map', ref);
     }
 
     // valueAs
@@ -64,8 +65,9 @@ function verifyMapType(key: string, keyAs: string | null, value: string, valueAs
             ].includes(valueAs)) {
                 throwError('Invalid value type for map', ref);
             }
+        } else {
+            throwError('Invalid value type for map', ref);
         }
-        throwError('Invalid value type for map', ref);
     }
 }
 

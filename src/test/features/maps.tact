@@ -438,6 +438,119 @@ contract MapTestContract {
     }
 
     //
+    // Int as Key inside the code (not storage)
+    //
+
+    get fun intMap10Value(key: Int, value: Int): Int {
+        let map1: map<Int as int8, Int> = emptyMap();
+        let map2: map<Int as int16, Int> = emptyMap();
+        let map3: map<Int as int32, Int> = emptyMap();
+        let map4: map<Int as int64, Int> = emptyMap();
+        let map5: map<Int as int128, Int> = emptyMap();
+        let map6: map<Int as int256, Int> = emptyMap();
+        let map7: map<Int as int257, Int> = emptyMap();
+
+        map1.set(key, value);
+        map2.set(key, value);
+        map3.set(key, value);
+        map4.set(key, value);
+        map5.set(key, value);
+        map6.set(key, value);
+        map7.set(key, value);
+
+        let value1: Int = map1.get(key)!!;
+        let value2: Int = map2.get(key)!!;
+        let value3: Int = map3.get(key)!!;
+        let value4: Int = map4.get(key)!!;
+        let value5: Int = map5.get(key)!!;
+        let value6: Int = map6.get(key)!!;
+        let value7: Int = map7.get(key)!!;
+
+        return value1 + value2 + value3 + value4 + value5 + value6 + value7;
+    }
+    
+    get fun intMap11Value(key: Int, value: Int): Int {
+        let map1: map<Int as uint8, Int> = emptyMap();
+        let map2: map<Int as uint16, Int> = emptyMap();
+        let map3: map<Int as uint32, Int> = emptyMap();
+        let map4: map<Int as uint64, Int> = emptyMap();
+        let map5: map<Int as uint128, Int> = emptyMap();
+        let map6: map<Int as uint256, Int> = emptyMap();
+
+        map1.set(key, value);
+        map2.set(key, value);
+        map3.set(key, value);
+        map4.set(key, value);
+        map5.set(key, value);
+        map6.set(key, value);
+
+        let value1: Int = map1.get(key)!!;
+        let value2: Int = map2.get(key)!!;
+        let value3: Int = map3.get(key)!!;
+        let value4: Int = map4.get(key)!!;
+        let value5: Int = map5.get(key)!!;
+        let value6: Int = map6.get(key)!!;
+
+        return value1 + value2 + value3 + value4 + value5 + value6;
+    }
+
+    get fun intMap12Value(key: Int, value: Int): Int {
+        let map1: map<Int, Int as int8> = emptyMap();
+        let map2: map<Int, Int as int16> = emptyMap();
+        let map3: map<Int, Int as int32> = emptyMap();
+        let map4: map<Int, Int as int64> = emptyMap();
+        let map5: map<Int, Int as int128> = emptyMap();
+        let map6: map<Int, Int as int256> = emptyMap();
+        let map7: map<Int, Int as int257> = emptyMap();
+
+        map1.set(key, value);
+        map2.set(key, value);
+        map3.set(key, value);
+        map4.set(key, value);
+        map5.set(key, value);
+        map6.set(key, value);
+        map7.set(key, value);
+
+        let value1: Int = map1.get(key)!!;
+        let value2: Int = map2.get(key)!!;
+        let value3: Int = map3.get(key)!!;
+        let value4: Int = map4.get(key)!!;
+        let value5: Int = map5.get(key)!!;
+        let value6: Int = map6.get(key)!!;
+        let value7: Int = map7.get(key)!!;
+
+        return value1 + value2 + value3 + value4 + value5 + value6 + value7;
+    }
+
+    get fun intMap13Value(key: Int, value: Int): Int {
+        let map1: map<Int, Int as uint8> = emptyMap();
+        let map2: map<Int, Int as uint16> = emptyMap();
+        let map3: map<Int, Int as uint32> = emptyMap();
+        let map4: map<Int, Int as uint64> = emptyMap();
+        let map5: map<Int, Int as uint128> = emptyMap();
+        let map6: map<Int, Int as uint256> = emptyMap();
+        let map7: map<Int, Int as coins> = emptyMap();
+
+        map1.set(key, value);
+        map2.set(key, value);
+        map3.set(key, value);
+        map4.set(key, value);
+        map5.set(key, value);
+        map6.set(key, value);
+        map7.set(key, value);
+
+        let value1: Int = map1.get(key)!!;
+        let value2: Int = map2.get(key)!!;
+        let value3: Int = map3.get(key)!!;
+        let value4: Int = map4.get(key)!!;
+        let value5: Int = map5.get(key)!!;
+        let value6: Int = map6.get(key)!!;
+        let value7: Int = map7.get(key)!!;
+        
+        return value1 + value2 + value3 + value4 + value5 + value6 + value7;
+    }
+
+    //
     // Address Keys
     //
 
