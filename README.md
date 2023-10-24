@@ -10,7 +10,7 @@ A next-gen smart contract language for TON focused on efficiency and simplicity.
 
 ## Key Resources
 
-* [Tact By Example](https://tact-by-example.org/01-hello-world)
+* [Tact By Example](https://tact-by-example.org/00-hello-world)
 * [Tact Documentation](https://docs.tact-lang.org)
 * [Awesome Tact](https://github.com/tact-lang/awesome-tact)
 
