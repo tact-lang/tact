@@ -251,7 +251,7 @@ repository:
   # Annotations
   annotation:
     name: meta.annotation.tact
-    begin: "(@)([\\w_]+)(\\()"
+    begin: "(@)([\\w_]+)(\\())"
     beginCaptures:
         "1": { "name": "keyword.control.annotation.tact" }
         "2": { "name": "keyword.control.annotation.tact" }
