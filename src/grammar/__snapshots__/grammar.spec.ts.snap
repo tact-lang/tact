@@ -48,10 +48,10 @@ Line 2, col 9:
 `;
 
 exports[`grammar should fail case-5 1`] = `
-"<unknown>:1:8: Variable name cannot start with "__gen"
+"<unknown>:1:8: Syntax error: expected "A".."Z" 
 Line 1, col 8:
 > 1 | struct __genA {
-             ^~~~~~
+             ^
   2 |     a: Int;
 "
 `;
@@ -91,6 +91,15 @@ Line 2, col 11:
 > 2 |     fun b(__tact: Int) {
                 ^~~~~~
   3 |         
+"
+`;
+
+exports[`grammar should fail case-10 1`] = `
+"<unknown>:1:8: Syntax error: expected "A".."Z" 
+Line 1, col 8:
+> 1 | struct lowercaseIdforType {
+             ^
+  2 |     a: Int;
 "
 `;
 

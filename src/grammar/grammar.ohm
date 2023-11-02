@@ -38,8 +38,8 @@ Tact {
              | ConstantAttribute* ~fun const id ":" Type ";"                --withEmpty
 
     // Struct
-    Struct = "struct" id "{" StructBody* "}" --originary
-           | "message" id "{" StructBody* "}" --message
+    Struct = "struct" typeLiteral "{" StructBody* "}" --originary
+           | "message" typeLiteral "{" StructBody* "}" --message
            | "message" "(" integerLiteral ")" id "{" StructBody* "}" --messageWithId
     StructBody = Field
 
