@@ -1,0 +1,3 @@
+struct lowercaseIdforType {
+    a: Int;
+}
