@@ -103,6 +103,15 @@ Line 1, col 8:
 "
 `;
 
+exports[`grammar should fail case-11 1`] = `
+"<unknown>:1:14: Syntax error: expected "A".."Z" 
+Line 1, col 14:
+> 1 | message(123) foo {
+                   ^
+  2 |     signature: Slice;
+"
+`;
+
 exports[`grammar should parse case-0 1`] = `
 {
   "entries": [
