@@ -8,10 +8,10 @@ import { resolveSignatures } from '../types/resolveSignatures';
 import { resolveImports } from '../imports/resolveImports';
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 
-export function precompile(ctx: CompilerContext, project: VirtualFileSystem, stdlib: VirtualFileSystem, entrypoint: string) {
+export function precompile(ctx: CompilerContext, project: VirtualFileSystem, stdlib: VirtualFileSystem, npm: VirtualFileSystem, entrypoint: string) {
 
     // Load all sources
-    let imported = resolveImports({ entrypoint, project, stdlib });
+    let imported = resolveImports({ entrypoint, project, stdlib, npm });
 
     // Perform initial compiler steps
     ctx = openContext(ctx, imported.tact, imported.func);

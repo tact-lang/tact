@@ -1,4 +1,6 @@
 import { crc16 } from "./crc16";
+import fs from 'fs';
+import path from 'path';
 
 export function topologicalSort<T>(src: T[], references: (src: T) => T[]) {
     let result: T[] = [];
@@ -37,4 +39,12 @@ export function deepFreeze<T>(obj: T) {
 
 export function getMethodId(name: string) {
     return (crc16(name) & 0xffff) | 0x10000;
+}
+
+export function getRootDir() {
+    let currentDir = __dirname;
+    while (!fs.existsSync(path.join(currentDir, 'node_modules'))) {
+        currentDir = path.join(currentDir, '..');
+    }
+    return currentDir;
 }

@@ -1,3 +1,5 @@
 node_modules
+!**/__testdata/node_modules
 coverage
 dist
+.idea

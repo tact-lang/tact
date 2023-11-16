@@ -4,6 +4,7 @@ import { Config, parseConfig } from "./config/parseConfig";
 import { createNodeFileSystem } from './vfs/createNodeFileSystem';
 import { build } from './pipeline/build';
 import { consoleLogger } from './logger';
+import {getRootDir} from "./utils/utils";
 
 export async function run(args: { configPath: string, projectNames?: string[] }) {
 
@@ -47,9 +48,10 @@ export async function run(args: { configPath: string, projectNames?: string[] })
     let success = true;
     let project = createNodeFileSystem(rootPath, false);
     let stdlib = createNodeFileSystem(path.resolve(__dirname, '..', 'stdlib'), false); // Improves developer experience
+    let npm = createNodeFileSystem(path.resolve(getRootDir(), "node_modules"));
     for (let config of projects) {
         console.log('💼 Compiling project ' + config.name + '...');
-        let built = await build({ config, project, stdlib, logger: consoleLogger });
+        let built = await build({ config, project, stdlib, npm, logger: consoleLogger });
         success = success && built;
     }
     return success;

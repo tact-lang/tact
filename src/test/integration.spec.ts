@@ -18,11 +18,13 @@ describe('integration', () => {
             let ctx = new CompilerContext({ shared: {} });
             let project = createNodeFileSystem(__dirname + "/contracts/");
             let stdlib = createVirtualFileSystem('@stdlib', files);
-            ctx = precompile(ctx, project, stdlib, r.name + '.tact');
+            let npm = createNodeFileSystem(__dirname + "/node_modules/");
+            ctx = precompile(ctx, project, stdlib, npm, r.name + '.tact');
             let contract = getContracts(ctx)[0];
             let res = await compile(ctx, contract, r.name + '_' + contract);
             for (let f of res.output.files) {
-                expect(f.code).toEqual(fs.readFileSync(__dirname + "/contracts/output/" + f.name, 'utf8'));
+                expect(f.code).toEqual(fs.readFileSync(__dirname + "/contracts/output/" + f.name, 'utf8')
+                    .replace(/\r\n/g, "\n"));
             }
         });
     }
