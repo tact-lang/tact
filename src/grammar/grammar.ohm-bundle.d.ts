@@ -83,6 +83,12 @@ export interface TactActionDict<T> extends ActionDict<T> {
   StatementReturn?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   StatementExpression?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
   StatementAssign?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
+  StatementAugmentedAssign?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  StatementAugmentedAssignAdd?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
+  StatementAugmentedAssignSub?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
+  StatementAugmentedAssignMul?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
+  StatementAugmentedAssignDiv?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
+  StatementAugmentedAssignRem?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
   StatementCondition_simple?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
   StatementCondition_withElse?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode, arg5: NonterminalNode, arg6: TerminalNode, arg7: IterationNode, arg8: TerminalNode) => T;
   StatementCondition_withElseIf?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode, arg5: NonterminalNode, arg6: NonterminalNode) => T;

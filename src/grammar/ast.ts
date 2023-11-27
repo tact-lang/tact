@@ -374,6 +374,15 @@ export type ASTSTatementAssign = {
     ref: ASTRef
 }
 
+export type ASTSTatementAugmentedAssign = {
+    kind: 'statement_augmentedassign',
+    id: number,
+    op: '+' | '-' | '*' | '/' | '%',
+    path: ASTLvalueRef[],
+    expression: ASTExpression,
+    ref: ASTRef
+}
+
 export type ASTCondition = {
     kind: 'statement_condition',
     id: number,
@@ -413,9 +422,9 @@ export type ASTStatementRepeat = {
 // Unions
 //
 
-export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementExpression | ASTSTatementAssign | ASTCondition | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
+export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementExpression | ASTSTatementAssign | ASTSTatementAugmentedAssign | ASTCondition | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull | ASTLvalueRef | ASTInitOf | ASTString;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef | ASTString | ASTTrait | ASTProgramImport | ASTFunction | ASTNativeFunction | ASTInitOf | ASTString | ASTConstant;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTSTatementAugmentedAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef | ASTString | ASTTrait | ASTProgramImport | ASTFunction | ASTNativeFunction | ASTInitOf | ASTString | ASTConstant;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract | ASTTrait;
 
 type DistributiveOmit<T, K extends keyof any> = T extends any
@@ -547,6 +556,12 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         traverse(node.expression, callback);
     }
     if (node.kind === 'statement_assign') {
+        for (let e of node.path) {
+            traverse(e, callback);
+        }
+        traverse(node.expression, callback);
+    }
+    if (node.kind === 'statement_augmentedassign') {
         for (let e of node.path) {
             traverse(e, callback);
         }

@@ -468,6 +468,51 @@ semantics.addOperation<ASTNode>('resolve_statement', {
             ref: createRef(this)
         })
     },
+    StatementAugmentedAssignAdd(arg0, arg1, arg2, arg3) {
+        return createNode({
+            kind: 'statement_augmentedassign',
+            path: arg0.resolve_lvalue(),
+            op: '+',
+            expression: arg2.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
+    StatementAugmentedAssignSub(arg0, arg1, arg2, arg3) {
+        return createNode({
+            kind: 'statement_augmentedassign',
+            path: arg0.resolve_lvalue(),
+            op: '-',
+            expression: arg2.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
+    StatementAugmentedAssignMul(arg0, arg1, arg2, arg3) {
+        return createNode({
+            kind: 'statement_augmentedassign',
+            path: arg0.resolve_lvalue(),
+            op: '*',
+            expression: arg2.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
+    StatementAugmentedAssignDiv(arg0, arg1, arg2, arg3) {
+        return createNode({
+            kind: 'statement_augmentedassign',
+            path: arg0.resolve_lvalue(),
+            op: '/',
+            expression: arg2.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
+    StatementAugmentedAssignRem(arg0, arg1, arg2, arg3) {
+        return createNode({
+            kind: 'statement_augmentedassign',
+            path: arg0.resolve_lvalue(),
+            op: '%',
+            expression: arg2.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
     StatementCondition_simple(arg0, arg1, arg2, arg3, arg4) {
         return createNode({
             kind: 'statement_condition',
