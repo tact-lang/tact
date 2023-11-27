@@ -114,6 +114,21 @@ tuple $MathTester$_contract_load() impure inline_ref;
 ;; $MathTester$_fun_or
 (tuple, int) $MathTester$_fun_or(tuple $self, int $a, int $b) impure inline_ref;
 
+;; $MathTester$_fun_addAug
+(tuple, int) $MathTester$_fun_addAug(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_subAug
+(tuple, int) $MathTester$_fun_subAug(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_mulAug
+(tuple, int) $MathTester$_fun_mulAug(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_divAug
+(tuple, int) $MathTester$_fun_divAug(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_modAug
+(tuple, int) $MathTester$_fun_modAug(tuple $self, int $a, int $b) impure inline_ref;
+
 ;; $MathTester$_fun_compare1
 (tuple, int) $MathTester$_fun_compare1(tuple $self, int $a, int $b) impure inline_ref;
 
