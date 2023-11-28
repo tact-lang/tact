@@ -170,8 +170,8 @@ files['std/contract.tact'] =
 files['std/crypto.tact'] =
     'QG5hbWUoY2VsbF9oYXNoKQpleHRlbmRzIG5hdGl2ZSBoYXNoKHNlbGY6IENlbGwpOiBJbnQ7CgpAbmFtZShzbGljZV9oYXNoKQpleHRlbmRzIG5hdGl2ZSBoYXNoKHNl' +
     'bGY6IFNsaWNlKTogSW50OwoKQG5hbWUoY2hlY2tfc2lnbmF0dXJlKQpuYXRpdmUgY2hlY2tTaWduYXR1cmUoaGFzaDogSW50LCBzaWduYXR1cmU6IFNsaWNlLCBwdWJs' +
-    'aWNfa2V5OiBJbnQpOiBCb29sOwoKQG5hbWUoY2hlY2tfZGF0YV9zaWduYXR1cmUpCm5hdGl2ZSBjaGVja0RhdGFTaWduYXR1cmUoaGFzaDogU2xpY2UsIHNpZ25hdHVy' +
-    'ZTogU2xpY2UsIHB1YmxpY19rZXk6IFNsaWNlKTogQm9vbDs=';
+    'aWNfa2V5OiBJbnQpOiBCb29sOwoKQG5hbWUoY2hlY2tfZGF0YV9zaWduYXR1cmUpCm5hdGl2ZSBjaGVja0RhdGFTaWduYXR1cmUoZGF0YTogU2xpY2UsIHNpZ25hdHVy' +
+    'ZTogU2xpY2UsIHB1YmxpY19rZXk6IEludCk6IEJvb2w7Cg==';
 files['std/debug.tact'] =
     'QG5hbWUodGhyb3cpCm5hdGl2ZSBuYXRpdmVUaHJvdyhjb2RlOiBJbnQpOwoKQG5hbWUodGhyb3dfd2hlbikKbmF0aXZlIG5hdGl2ZVRocm93V2hlbihjb2RlOiBJbnQs' +
     'IGNvbmRpdGlvbjogQm9vbCk7CgpAbmFtZSh0aHJvdykKbmF0aXZlIHRocm93KGNvZGU6IEludCk7CgpAbmFtZSh0aHJvd191bmxlc3MpCm5hdGl2ZSBuYXRpdmVUaHJv' +
