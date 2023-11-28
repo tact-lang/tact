@@ -6,6 +6,10 @@ exports[`feature-send should bounce on unknown message 1`] = `
     "$seq": 1,
     "events": [
       {
+        "$type": "storage-charged",
+        "amount": "0.000000005",
+      },
+      {
         "$type": "received",
         "message": {
           "body": {
@@ -16,7 +20,7 @@ exports[`feature-send should bounce on unknown message 1`] = `
           "from": "@treasure(treasure)",
           "to": "kQAtYS6QVmMwOK0owmHMToN6uyLer1UqtPhbWkQ1wsHdJ-dM",
           "type": "internal",
-          "value": 10000000000n,
+          "value": "10",
         },
       },
       {
@@ -35,7 +39,7 @@ exports[`feature-send should bounce on unknown message 1`] = `
           "from": "kQAtYS6QVmMwOK0owmHMToN6uyLer1UqtPhbWkQ1wsHdJ-dM",
           "to": "@treasure(treasure)",
           "type": "internal",
-          "value": 9996013000n,
+          "value": "9.996013",
         },
       },
     ],
@@ -55,14 +59,17 @@ exports[`feature-send should send reply correctly 1`] = `
         "$type": "received",
         "message": {
           "body": {
-            "cell": "x{946A98B60000000000000000}",
-            "type": "cell",
+            "type": "known",
+            "value": {
+              "$$type": "Deploy",
+              "queryId": 0n,
+            },
           },
           "bounce": true,
           "from": "@treasure(treasure)",
           "to": "kQAtYS6QVmMwOK0owmHMToN6uyLer1UqtPhbWkQ1wsHdJ-dM",
           "type": "internal",
-          "value": 10000000000n,
+          "value": "10",
         },
       },
       {
@@ -93,6 +100,10 @@ exports[`feature-send should send reply correctly 2`] = `
     "$seq": 1,
     "events": [
       {
+        "$type": "storage-charged",
+        "amount": "0.000000005",
+      },
+      {
         "$type": "received",
         "message": {
           "body": {
@@ -103,7 +114,7 @@ exports[`feature-send should send reply correctly 2`] = `
           "from": "@treasure(treasure)",
           "to": "kQAtYS6QVmMwOK0owmHMToN6uyLer1UqtPhbWkQ1wsHdJ-dM",
           "type": "internal",
-          "value": 10000000000n,
+          "value": "10",
         },
       },
       {
@@ -122,7 +133,7 @@ exports[`feature-send should send reply correctly 2`] = `
             "from": "kQAtYS6QVmMwOK0owmHMToN6uyLer1UqtPhbWkQ1wsHdJ-dM",
             "to": "@treasure(treasure)",
             "type": "internal",
-            "value": 9990889000n,
+            "value": "9.990889",
           },
         ],
       },
