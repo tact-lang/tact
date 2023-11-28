@@ -125,7 +125,9 @@ Tact {
            | id --single
 
     // Expressions
-    Expression = ExpressionOr
+    Expression = ExpressionTernaryCondition
+    ExpressionTernaryCondition = ExpressionOr "?" ExpressionOr ":" ExpressionOr --ternary
+                               | ExpressionOr
     ExpressionOr = ExpressionOr "||" ExpressionAnd --or
                  | ExpressionAnd
     ExpressionAnd = ExpressionAnd "&&" ExpressionCompare --and

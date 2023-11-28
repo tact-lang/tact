@@ -81,6 +81,13 @@ export function cloneNode<T extends ASTNode>(src: T): T {
             ...src,
             args: src.args.map(cloneNode),
         });
+    } else if (src.kind === 'op_ternary') {
+        return cloneASTNode({
+            ...src,
+            condition: cloneNode(src.condition),
+            trueExpression: cloneNode(src.trueExpression),
+            falseExpression: cloneNode(src.falseExpression),
+        });
     } else if (src.kind === 'statement_return') {
         return cloneASTNode({
             ...src,

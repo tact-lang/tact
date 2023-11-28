@@ -721,6 +721,9 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     ExpressionInitOf(arg0, arg1, arg2, arg3, arg4) {
         return createNode({ kind: 'init_of', name: arg1.sourceString, args: arg3.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
     },
+    ExpressionTernaryCondition_ternary(arg0, arg1, arg2, arg3, arg4) {
+        return createNode({ kind: 'op_ternary', condition: arg0.resolve_expression(), trueExpression: arg2.resolve_expression(), falseExpression: arg4.resolve_expression(), ref: createRef(this) });
+    },
 });
 
 function throwMatchError(matchResult: MatchResult, path: string): never {

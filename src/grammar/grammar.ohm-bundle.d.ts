@@ -100,6 +100,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   LValue_single?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   LValue?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Expression?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionTernaryCondition_ternary?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode) => T;
+  ExpressionTernaryCondition?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionOr_or?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionOr?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionAnd_and?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
