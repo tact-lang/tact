@@ -167,6 +167,22 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.asm(`asm(index dict key_len) "DICTDEL"`);
     });
 
+    ctx.fun("__tact_dict_delete_int", () => {
+        ctx.signature(
+            `(cell, int) __tact_dict_delete_int(cell dict, int key_len, int index)`,
+        );
+        ctx.context("stdlib");
+        ctx.asm(`asm(index dict key_len) "DICTIDEL"`);
+    });
+
+    ctx.fun("__tact_dict_delete_uint", () => {
+        ctx.signature(
+            `(cell, int) __tact_dict_delete_uint(cell dict, int key_len, int index)`,
+        );
+        ctx.context("stdlib");
+        ctx.asm(`asm(index dict key_len) "DICTUDEL"`);
+    });
+
     ctx.fun("__tact_dict_set_ref", () => {
         ctx.signature(
             `((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value)`,
