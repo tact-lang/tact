@@ -184,10 +184,13 @@ Tact {
     // Integer Literal
     // hexDigit defined in Ohm's built-in rules (otherwise: hexDigit = "0".."9" | "a".."f" | "A".."F")
     // digit defined in Ohm's built-in rules (otherwise: digit = "0".."9")
-    integerLiteral = integerLiteralHex | integerLiteralDec // Order is important
+    integerLiteral = integerLiteralHex | integerLiteralBin | integerLiteralDec // Order is important
     integerLiteralDec = digit+
     integerLiteralHex = "0x" hexDigit+
                       | "0X" hexDigit+
+    integerLiteralBin = "0b" binDigit+
+                      | "0B" binDigit+
+    binDigit = "0" | "1"
 
     // Letters
     letterAsciiLC = "a".."z"

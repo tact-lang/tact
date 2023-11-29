@@ -143,6 +143,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   integerLiteral?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   integerLiteralDec?: (this: NonterminalNode, arg0: IterationNode) => T;
   integerLiteralHex?: (this: NonterminalNode, arg0: TerminalNode, arg1: IterationNode) => T;
+  integerLiteralBin?: (this: NonterminalNode, arg0: TerminalNode, arg1: IterationNode) => T;
+  binDigit?: (this: NonterminalNode, arg0: TerminalNode) => T;
   letterAsciiLC?: (this: NonterminalNode, arg0: TerminalNode) => T;
   letterAsciiUC?: (this: NonterminalNode, arg0: TerminalNode) => T;
   letterAscii?: (this: NonterminalNode, arg0: NonterminalNode) => T;
