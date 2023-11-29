@@ -14,24 +14,12 @@ import { packageCode } from '../packaging/packageCode';
 import { createABITypeRefFromTypeRef } from '../types/resolveABITypeRef';
 import { getContracts, getType } from '../types/resolveDescriptors';
 import { errorToString } from '../utils/errorToString';
+import { posixNormalize } from '../utils/filePath';
 import { createVirtualFileSystem } from '../vfs/createVirtualFileSystem';
 import { VirtualFileSystem } from '../vfs/VirtualFileSystem';
 import { compile } from './compile';
 import { precompile } from "./precompile";
 import { getCompilerVersion } from './version';
-
-// ts-ignore is used on purpose here (instead of installing @types/node or similar)
-// because the whole package must not depend on any node code
-// however, this function is required to fix compilation on windows
-function posixNormalize(path: string): string {
-    // @ts-ignore
-    if (typeof global === 'object' && typeof global.process === 'object' && typeof global.process.versions === 'object' && global.process.versions.node) {
-        // @ts-ignore
-        const pathModule = require('node:path');
-        return path.split(pathModule.sep).join(pathModule.posix.sep);
-    }
-    return path;
-}
 
 export async function build(args: {
     config: ConfigProject,
