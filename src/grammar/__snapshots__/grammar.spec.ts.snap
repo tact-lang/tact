@@ -112,6 +112,26 @@ Line 1, col 14:
 "
 `;
 
+exports[`grammar should fail case-12 1`] = `
+"<unknown>:2:14: Syntax error: expected "1" or "0" 
+Line 2, col 14:
+  1 | fun test_fun(): Int {
+> 2 |     return 0b_00101010;
+                   ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-13 1`] = `
+"<unknown>:2:15: Syntax error: expected ";" 
+Line 2, col 15:
+  1 | fun test_fun(): Int {
+> 2 |     return 0b123;
+                    ^
+  3 | }
+"
+`;
+
 exports[`grammar should parse case-0 1`] = `
 {
   "entries": [
