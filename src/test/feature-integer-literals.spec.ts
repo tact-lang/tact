@@ -18,11 +18,14 @@ describe('feature-integer-literals', () => {
         // Check methods
         expect(await contract.getDecLiteral1()).toEqual(123n);
         expect(await contract.getDecLiteral2()).toEqual(-123n);
+        expect(await contract.getDecLiteral3()).toEqual(1012300000n)
 
         expect(await contract.getHexLiteral1()).toEqual(0x123n);
         expect(await contract.getHexLiteral2()).toEqual(-0x123n);
+        expect(await contract.getHexLiteral3()).toEqual(0x1012300000n);
 
         expect(await contract.getBinLiteral1()).toEqual(0b101010n);
         expect(await contract.getBinLiteral2()).toEqual(-0b101010n);
+        expect(await contract.getBinLiteral3()).toEqual(0b1010100000n);
     });
 });

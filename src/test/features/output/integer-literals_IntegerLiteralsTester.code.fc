@@ -25,6 +25,11 @@ tuple $IntegerLiteralsTester$_contract_init() impure inline_ref {
     return ($self, (- 123));
 }
 
+(tuple, int) $IntegerLiteralsTester$_fun_decLiteral3(tuple $self) impure inline_ref {
+    var ($self) = $self;
+    return ($self, 1012300000);
+}
+
 (tuple, int) $IntegerLiteralsTester$_fun_hexLiteral1(tuple $self) impure inline_ref {
     var ($self) = $self;
     return ($self, 291);
@@ -35,6 +40,11 @@ tuple $IntegerLiteralsTester$_contract_init() impure inline_ref {
     return ($self, (- 291));
 }
 
+(tuple, int) $IntegerLiteralsTester$_fun_hexLiteral3(tuple $self) impure inline_ref {
+    var ($self) = $self;
+    return ($self, 69024612352);
+}
+
 (tuple, int) $IntegerLiteralsTester$_fun_binLiteral1(tuple $self) impure inline_ref {
     var ($self) = $self;
     return ($self, 42);
@@ -43,6 +53,11 @@ tuple $IntegerLiteralsTester$_contract_init() impure inline_ref {
 (tuple, int) $IntegerLiteralsTester$_fun_binLiteral2(tuple $self) impure inline_ref {
     var ($self) = $self;
     return ($self, (- 42));
+}
+
+(tuple, int) $IntegerLiteralsTester$_fun_binLiteral3(tuple $self) impure inline_ref {
+    var ($self) = $self;
+    return ($self, 672);
 }
 
 ;;
@@ -70,6 +85,12 @@ _ %decLiteral2() method_id(114425) {
     return res;
 }
 
+_ %decLiteral3() method_id(110296) {
+    var self = $IntegerLiteralsTester$_contract_load();
+    var res = self~$IntegerLiteralsTester$_fun_decLiteral3();
+    return res;
+}
+
 _ %hexLiteral1() method_id(76310) {
     var self = $IntegerLiteralsTester$_contract_load();
     var res = self~$IntegerLiteralsTester$_fun_hexLiteral1();
@@ -79,6 +100,12 @@ _ %hexLiteral1() method_id(76310) {
 _ %hexLiteral2() method_id(72309) {
     var self = $IntegerLiteralsTester$_contract_load();
     var res = self~$IntegerLiteralsTester$_fun_hexLiteral2();
+    return res;
+}
+
+_ %hexLiteral3() method_id(68180) {
+    var self = $IntegerLiteralsTester$_contract_load();
+    var res = self~$IntegerLiteralsTester$_fun_hexLiteral3();
     return res;
 }
 
@@ -94,6 +121,12 @@ _ %binLiteral2() method_id(128576) {
     return res;
 }
 
+_ %binLiteral3() method_id(124513) {
+    var self = $IntegerLiteralsTester$_contract_load();
+    var res = self~$IntegerLiteralsTester$_fun_binLiteral3();
+    return res;
+}
+
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
@@ -105,7 +138,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmVmyo6powuj49BDo3NwkUwouAXS9zFRRcZ6drqt3LUcot";
+    return "ipfs://QmTVJohQATrpjwL6CWMTknc5g3GMfbPLjwd28io5hPjK1m";
 }
 
 _ lazy_deployment_completed() method_id {

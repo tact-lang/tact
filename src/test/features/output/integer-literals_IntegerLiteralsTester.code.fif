@@ -5,17 +5,23 @@ PROGRAM{
   DECLPROC $IntegerLiteralsTester$_contract_store
   DECLPROC $IntegerLiteralsTester$_fun_decLiteral1
   DECLPROC $IntegerLiteralsTester$_fun_decLiteral2
+  DECLPROC $IntegerLiteralsTester$_fun_decLiteral3
   DECLPROC $IntegerLiteralsTester$_fun_hexLiteral1
   DECLPROC $IntegerLiteralsTester$_fun_hexLiteral2
+  DECLPROC $IntegerLiteralsTester$_fun_hexLiteral3
   DECLPROC $IntegerLiteralsTester$_fun_binLiteral1
   DECLPROC $IntegerLiteralsTester$_fun_binLiteral2
+  DECLPROC $IntegerLiteralsTester$_fun_binLiteral3
   DECLPROC %$IntegerLiteralsTester$_internal_empty
   102042 DECLMETHOD %decLiteral1
   114425 DECLMETHOD %decLiteral2
+  110296 DECLMETHOD %decLiteral3
   76310 DECLMETHOD %hexLiteral1
   72309 DECLMETHOD %hexLiteral2
+  68180 DECLMETHOD %hexLiteral3
   116259 DECLMETHOD %binLiteral1
   128576 DECLMETHOD %binLiteral2
+  124513 DECLMETHOD %binLiteral3
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
@@ -80,17 +86,26 @@ PROGRAM{
   $IntegerLiteralsTester$_fun_decLiteral2 PROCREF:<{
     -123 PUSHINT
   }>
+  $IntegerLiteralsTester$_fun_decLiteral3 PROCREF:<{
+    1012300000 PUSHINT
+  }>
   $IntegerLiteralsTester$_fun_hexLiteral1 PROCREF:<{
     291 PUSHINT
   }>
   $IntegerLiteralsTester$_fun_hexLiteral2 PROCREF:<{
     -291 PUSHINT
   }>
+  $IntegerLiteralsTester$_fun_hexLiteral3 PROCREF:<{
+    69024612352 PUSHINT
+  }>
   $IntegerLiteralsTester$_fun_binLiteral1 PROCREF:<{
     42 PUSHINT
   }>
   $IntegerLiteralsTester$_fun_binLiteral2 PROCREF:<{
     -42 PUSHINT
+  }>
+  $IntegerLiteralsTester$_fun_binLiteral3 PROCREF:<{
+    672 PUSHINT
   }>
   %$IntegerLiteralsTester$_internal_empty PROCINLINE:<{
   }>
@@ -104,6 +119,11 @@ PROGRAM{
     $IntegerLiteralsTester$_fun_decLiteral2 INLINECALLDICT
     NIP
   }>
+  %decLiteral3 PROC:<{
+    $IntegerLiteralsTester$_contract_load INLINECALLDICT
+    $IntegerLiteralsTester$_fun_decLiteral3 INLINECALLDICT
+    NIP
+  }>
   %hexLiteral1 PROC:<{
     $IntegerLiteralsTester$_contract_load INLINECALLDICT
     $IntegerLiteralsTester$_fun_hexLiteral1 INLINECALLDICT
@@ -112,6 +132,11 @@ PROGRAM{
   %hexLiteral2 PROC:<{
     $IntegerLiteralsTester$_contract_load INLINECALLDICT
     $IntegerLiteralsTester$_fun_hexLiteral2 INLINECALLDICT
+    NIP
+  }>
+  %hexLiteral3 PROC:<{
+    $IntegerLiteralsTester$_contract_load INLINECALLDICT
+    $IntegerLiteralsTester$_fun_hexLiteral3 INLINECALLDICT
     NIP
   }>
   %binLiteral1 PROC:<{
@@ -124,6 +149,11 @@ PROGRAM{
     $IntegerLiteralsTester$_fun_binLiteral2 INLINECALLDICT
     NIP
   }>
+  %binLiteral3 PROC:<{
+    $IntegerLiteralsTester$_contract_load INLINECALLDICT
+    $IntegerLiteralsTester$_fun_binLiteral3 INLINECALLDICT
+    NIP
+  }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
@@ -132,7 +162,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d566d796f36706f77756a343942446f334e776b55776f75415853397a465252635a3664727174334c55636f74} PUSHSLICE
+    x{697066733a2f2f516d54564a6f6851415472706a774c3643574d546b6e63356733474d6662504c6a77643238696f3568506a4b316d} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
