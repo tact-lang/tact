@@ -201,8 +201,8 @@ function initIntegerLiteralsTester_init_args(src: IntegerLiteralsTester_init_arg
 }
 
 async function IntegerLiteralsTester_init() {
-    const __code = Cell.fromBase64('te6ccgECJgEAAhUAART/APSkE/S88sgLAQIBYgIDApLQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zzy4IIwyPhDAcx/AcoAye1UIwQCASAFBgA8AZIwf+BwIddJwh+VMCDXCx/ewAAB10nBIbCRf+BwAgFIBwgCASAODwIBIAkKAg+1Qttnm2eGMCMNAg+ylTbPNs8MYCMLAg+ynXbPNs8MYCMMAA6CGBASMAAAAAaB/t0ABoEBIwIBIBARAgEgGRoCD7XTW2ebZ4YwIxICASATFAAEgHsCD7O2Ns82zwxgIxUCAVgWFwAMghA8VnjgALir0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4JwG9Sd75VFlvHHU9PeBVnDJoJwnZdOWrNOy3M6DpZtlGbopAIOqvnbPNs8MSMYAASAhQIBIBscAgEgICECAUgdHgB1sm7jQ1aXBmczovL1FtVFZKb2hRQVRycGp3TDZDV01Ua25jNWczR01mYlBMandkMjhpbzVoUGpLMW2CAAEKq+7UTQ0gABAg6qI9s82zwxIx8ABIAqAg+xmHbPNs8MYCMiAg+xkDbPNs8MYCMkAAaBAqABNO1E0NQB+GPSADCRbeD4KNcLCoMJuvLgids8JQAEgNYAAm0=');
-    const __system = Cell.fromBase64('te6cckECKAEAAh8AAQHAAQEFobyzAgEU/wD0pBP0vPLICwMCAWIkBAIBIBwFAgEgEgYCASAMBwIBIAoIAg+xkDbPNs8MYCYJAASA1gIPsZh2zzbPDGAmCwAGgQKgAgEgDg0AdbJu40NWlwZnM6Ly9RbVRWSm9oUUFUcnBqd0w2Q1dNVGtuYzVnM0dNZmJQTGp3ZDI4aW81aFBqSzFtggAgFIEQ8CDqoj2zzbPDEmEAAEgCoAEKq+7UTQ0gABAgEgGhMCASAYFAIBWBcVAg6q+ds82zwxJhYABICFALir0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4JwG9Sd75VFlvHHU9PeBVnDJoJwnZdOWrNOy3M6DpZtlGbopAIPs7Y2zzbPDGAmGQAMghA8VnjgAg+101tnm2eGMCYbAASAewIBSB8dAg+1Qttnm2eGMCYeAAaBASMCASAiIAIPsp12zzbPDGAmIQAGgf7dAg+ylTbPNs8MYCYjAA6CGBASMAAAApLQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zzy4IIwyPhDAcx/AcoAye1UJiUAPAGSMH/gcCHXScIflTAg1wsf3sAAAddJwSGwkX/gcAE07UTQ1AH4Y9IAMJFt4Pgo1wsKgwm68uCJ2zwnAAJtwEbooQ==');
+    const __code = Cell.fromBase64('te6ccgECLwEAAlMAART/APSkE/S88sgLAQIBYgIDApLQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zzy4IIwyPhDAcx/AcoAye1ULAQCASAFBgA8AZIwf+BwIddJwh+VMCDXCx/ewAAB10nBIbCRf+BwAgFIBwgCASAODwIBIAkKAg+1Qttnm2eGMCwNAg+ylTbPNs8MYCwLAg+ynXbPNs8MYCwMAA6CGBASMAAAAAaB/t0ABoEBIwIBIBARAgEgGRoCD7XTW2ebZ4YwLBICASATFAAEgHsCD7O2Ns82zwxgLBUCAVgWFwAMghA8VnjgALir0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4JwG9Sd75VFlvHHU9PeBVnDJoJwnZdOWrNOy3M6DpZtlGbopAIOqvnbPNs8MSwYAASAhQIBIBscAgEgIyQCAUgdHgB1sm7jQ1aXBmczovL1FtTnNNNmRUZUZuWHJtWjQzTEdxcVBVU28yR0N4eWQydWg2QXUyWXg0aHZyd1SCAAEKq+7UTQ0gABAgEgHyACDaYJtnm2eGMsIQINpEe2ebZ4YywiAASAUwAEgCoCAWYlJgIBZikqAg2mjbZ5tnhjLCcCDaTDtnm2eGMsKAAMghAIKYAAAAaBAqACDabPtnm2eGMsKwINpIG2ebZ4YywtAASArQE07UTQ1AH4Y9IAMJFt4Pgo1wsKgwm68uCJ2zwuAASA1gACbQ==');
+    const __system = Cell.fromBase64('te6cckECMQEAAl0AAQHAAQEFobyzAgEU/wD0pBP0vPLICwMCAWItBAIBICUFAgEgGwYCASASBwIBIA0IAgFmCwkCDaSBtnm2eGMvCgAEgNYCDabPtnm2eGMvDAAEgK0CAWYQDgINpMO2ebZ4Yy8PAAaBAqACDaaNtnm2eGMvEQAMghAIKYAAAgEgFBMAdbJu40NWlwZnM6Ly9RbU5zTTZkVGVGblhybVo0M0xHcXFQVVNvMkdDeHlkMnVoNkF1Mll4NGh2cndUggAgFIGhUCASAYFgINpEe2ebZ4Yy8XAASAKgINpgm2ebZ4Yy8ZAASAUwAQqr7tRNDSAAECASAjHAIBICEdAgFYIB4CDqr52zzbPDEvHwAEgIUAuKvRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnAb1J3vlUWW8cdT094FWcMmgnCdl05as07LczoOlm2UZuikAg+ztjbPNs8MYC8iAAyCEDxWeOACD7XTW2ebZ4YwLyQABIB7AgFIKCYCD7VC22ebZ4YwLycABoEBIwIBICspAg+ynXbPNs8MYC8qAAaB/t0CD7KVNs82zwxgLywADoIYEBIwAAACktAB0NMDAXGwowH6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIVFBTA28E+GEC+GLbPFnbPPLggjDI+EMBzH8BygDJ7VQvLgA8AZIwf+BwIddJwh+VMCDXCx/ewAAB10nBIbCRf+BwATTtRNDUAfhj0gAwkW3g+CjXCwqDCbry4InbPDAAAm3lCWAT');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -254,6 +254,9 @@ const IntegerLiteralsTester_getters: ABIGetter[] = [
     {"name":"binLiteral1","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"binLiteral2","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
     {"name":"binLiteral3","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"octLiteral1","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"octLiteral2","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+    {"name":"octLiteral3","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
 ]
 
 const IntegerLiteralsTester_receivers: ABIReceiver[] = [
@@ -361,6 +364,27 @@ export class IntegerLiteralsTester implements Contract {
     async getBinLiteral3(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('binLiteral3', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getOctLiteral1(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('octLiteral1', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getOctLiteral2(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('octLiteral2', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getOctLiteral3(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('octLiteral3', builder.build())).stack;
         let result = source.readBigNumber();
         return result;
     }

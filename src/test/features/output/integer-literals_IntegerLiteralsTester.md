@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: IntegerLiteralsTester
-BOC Size: 545 bytes
+BOC Size: 607 bytes
 
 # Types
 Total Types: 3
@@ -18,7 +18,7 @@ TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Ma
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
 
 # Get Methods
-Total Get Methods: 9
+Total Get Methods: 12
 
 ## decLiteral1
 
@@ -37,6 +37,12 @@ Total Get Methods: 9
 ## binLiteral2
 
 ## binLiteral3
+
+## octLiteral1
+
+## octLiteral2
+
+## octLiteral3
 
 # Error Codes
 2: Stack undeflow

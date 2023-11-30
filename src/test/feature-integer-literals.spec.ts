@@ -27,5 +27,9 @@ describe('feature-integer-literals', () => {
         expect(await contract.getBinLiteral1()).toEqual(0b101010n);
         expect(await contract.getBinLiteral2()).toEqual(-0b101010n);
         expect(await contract.getBinLiteral3()).toEqual(0b1010100000n);
+
+        expect(await contract.getOctLiteral1()).toEqual(0o123n);
+        expect(await contract.getOctLiteral2()).toEqual(-0o123n);
+        expect(await contract.getOctLiteral3()).toEqual(0o1012300000n);
     });
 });

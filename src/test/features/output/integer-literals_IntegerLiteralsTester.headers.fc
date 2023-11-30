@@ -41,3 +41,12 @@ tuple $IntegerLiteralsTester$_contract_load() impure inline_ref;
 
 ;; $IntegerLiteralsTester$_fun_binLiteral3
 (tuple, int) $IntegerLiteralsTester$_fun_binLiteral3(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_octLiteral1
+(tuple, int) $IntegerLiteralsTester$_fun_octLiteral1(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_octLiteral2
+(tuple, int) $IntegerLiteralsTester$_fun_octLiteral2(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_octLiteral3
+(tuple, int) $IntegerLiteralsTester$_fun_octLiteral3(tuple $self) impure inline_ref;

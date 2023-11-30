@@ -12,6 +12,9 @@ PROGRAM{
   DECLPROC $IntegerLiteralsTester$_fun_binLiteral1
   DECLPROC $IntegerLiteralsTester$_fun_binLiteral2
   DECLPROC $IntegerLiteralsTester$_fun_binLiteral3
+  DECLPROC $IntegerLiteralsTester$_fun_octLiteral1
+  DECLPROC $IntegerLiteralsTester$_fun_octLiteral2
+  DECLPROC $IntegerLiteralsTester$_fun_octLiteral3
   DECLPROC %$IntegerLiteralsTester$_internal_empty
   102042 DECLMETHOD %decLiteral1
   114425 DECLMETHOD %decLiteral2
@@ -22,6 +25,9 @@ PROGRAM{
   116259 DECLMETHOD %binLiteral1
   128576 DECLMETHOD %binLiteral2
   124513 DECLMETHOD %binLiteral3
+  115972 DECLMETHOD %octLiteral1
+  128359 DECLMETHOD %octLiteral2
+  124230 DECLMETHOD %octLiteral3
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
@@ -107,6 +113,15 @@ PROGRAM{
   $IntegerLiteralsTester$_fun_binLiteral3 PROCREF:<{
     672 PUSHINT
   }>
+  $IntegerLiteralsTester$_fun_octLiteral1 PROCREF:<{
+    83 PUSHINT
+  }>
+  $IntegerLiteralsTester$_fun_octLiteral2 PROCREF:<{
+    -83 PUSHINT
+  }>
+  $IntegerLiteralsTester$_fun_octLiteral3 PROCREF:<{
+    136937472 PUSHINT
+  }>
   %$IntegerLiteralsTester$_internal_empty PROCINLINE:<{
   }>
   %decLiteral1 PROC:<{
@@ -154,6 +169,21 @@ PROGRAM{
     $IntegerLiteralsTester$_fun_binLiteral3 INLINECALLDICT
     NIP
   }>
+  %octLiteral1 PROC:<{
+    $IntegerLiteralsTester$_contract_load INLINECALLDICT
+    $IntegerLiteralsTester$_fun_octLiteral1 INLINECALLDICT
+    NIP
+  }>
+  %octLiteral2 PROC:<{
+    $IntegerLiteralsTester$_contract_load INLINECALLDICT
+    $IntegerLiteralsTester$_fun_octLiteral2 INLINECALLDICT
+    NIP
+  }>
+  %octLiteral3 PROC:<{
+    $IntegerLiteralsTester$_contract_load INLINECALLDICT
+    $IntegerLiteralsTester$_fun_octLiteral3 INLINECALLDICT
+    NIP
+  }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
@@ -162,7 +192,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d54564a6f6851415472706a774c3643574d546b6e63356733474d6662504c6a77643238696f3568506a4b316d} PUSHSLICE
+    x{697066733a2f2f516d4e734d36645465466e58726d5a34334c4771715055536f324743787964327568364175325978346876727754} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

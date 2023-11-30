@@ -8,9 +8,12 @@ PROGRAM{
   DECLPROC supported_interfaces;
   DECLPROC ?fun_114425;
   DECLPROC lazy_deployment_completed;
+  DECLPROC ?fun_115972;
   DECLPROC ?fun_116259;
   DECLPROC get_abi_ipfs;
+  DECLPROC ?fun_124230;
   DECLPROC ?fun_124513;
+  DECLPROC ?fun_128359;
   DECLPROC ?fun_128576;
   DECLPROC ?fun_ref_026cdd3ff17e82bb;
   DECLPROC ?fun_ref_26dd4850c2973b9d;
@@ -21,9 +24,12 @@ PROGRAM{
   DECLPROC ?fun_ref_553f7869b01170d9;
   DECLPROC ?fun_ref_5bdfe841fa412a76;
   DECLPROC ?fun_ref_684a8c99db9474e5;
+  DECLPROC ?fun_ref_7366f20a31928e43;
   DECLPROC ?fun_ref_7a4cfefa28b39727;
   DECLPROC ?fun_ref_a05e0042bce184fb;
+  DECLPROC ?fun_ref_b5b9e67d57f2dcce;
   DECLPROC ?fun_ref_c0ca23818e24f3c9;
+  DECLPROC ?fun_ref_f0101fa3fb0bc1f5;
   recv_internal PROC:<{
     s0 s1 XCHG
     CTOS
@@ -113,17 +119,32 @@ PROGRAM{
     1 LDI
     s0 s1 XCHG
   }>
+  ?fun_115972 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_7366f20a31928e43 INLINECALLDICT
+    s1 POP
+  }>
   ?fun_116259 PROC:<{
     ?fun_ref_a05e0042bce184fb INLINECALLDICT
     ?fun_ref_026cdd3ff17e82bb INLINECALLDICT
     s1 POP
   }>
   get_abi_ipfs PROC:<{
-    x{697066733A2F2F516D54564A6F6851415472706A774C3643574D546B6E63356733474D6662504C6A77643238696F3568506A4B316D82_} PUSHSLICE
+    x{697066733A2F2F516D4E734D36645465466E58726D5A34334C4771715055536F32474378796432756836417532597834687672775482_} PUSHSLICE
+  }>
+  ?fun_124230 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_b5b9e67d57f2dcce INLINECALLDICT
+    s1 POP
   }>
   ?fun_124513 PROC:<{
     ?fun_ref_a05e0042bce184fb INLINECALLDICT
     ?fun_ref_5bdfe841fa412a76 INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_128359 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_f0101fa3fb0bc1f5 INLINECALLDICT
     s1 POP
   }>
   ?fun_128576 PROC:<{
@@ -183,6 +204,9 @@ PROGRAM{
   ?fun_ref_684a8c99db9474e5 PROCREF:<{
     69024612352 PUSHINT
   }>
+  ?fun_ref_7366f20a31928e43 PROCREF:<{
+    83 PUSHINT
+  }>
   ?fun_ref_7a4cfefa28b39727 PROCREF:<{
     291 PUSHINT
   }>
@@ -205,7 +229,13 @@ PROGRAM{
     137 THROWIFNOT
     ?fun_ref_c0ca23818e24f3c9 INLINECALLDICT
   }>
+  ?fun_ref_b5b9e67d57f2dcce PROCREF:<{
+    136937472 PUSHINT
+  }>
   ?fun_ref_c0ca23818e24f3c9 PROCREF:<{
     NULL
+  }>
+  ?fun_ref_f0101fa3fb0bc1f5 PROCREF:<{
+    -83 PUSHINT
   }>
 }END>c
