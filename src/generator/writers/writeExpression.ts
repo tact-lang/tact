@@ -261,6 +261,30 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             return `__tact_cell_${op}(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)})`;
         }
 
+        // Case for slices equality
+        if (
+            lt.kind === 'ref' &&
+            rt.kind === 'ref' &&
+            lt.name === 'Slice' &&
+            rt.name === 'Slice'
+        ) {
+            let op = f.op === '==' ? 'eq' : 'neq';
+            if (lt.optional && rt.optional) {
+                ctx.used(`__tact_slice_${op}_nullable`);
+                return `__tact_slice_${op}_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`;
+            }
+            if (lt.optional && !rt.optional) {
+                ctx.used(`__tact_slice_${op}_nullable_one`);
+                return `__tact_slice_${op}_nullable_one(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`;
+            }
+            if (!lt.optional && rt.optional) {
+                ctx.used(`__tact_slice_${op}_nullable_one`);
+                return `__tact_slice_${op}_nullable_one(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)})`;
+            }
+            ctx.used(`__tact_slice_${op}`);
+            return `__tact_slice_${op}(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)})`;
+        }
+
         // Case for maps eqality
         if (lt.kind === 'map' && rt.kind === 'map') {
             let op = f.op === '==' ? 'eq' : 'neq';

@@ -1070,6 +1070,94 @@ return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nu
   },
   {
     "code": {
+      "code": "return (a.slice_hash() ==  b.slice_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_eq",
+    "signature": "int __tact_slice_eq(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "return (a.slice_hash() !=  b.slice_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_neq",
+    "signature": "int __tact_slice_neq(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (false) : (a.slice_hash() == b.slice_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_eq_nullable_one",
+    "signature": "int __tact_slice_eq_nullable_one(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (true) : (a.slice_hash() != b.slice_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_neq_nullable_one",
+    "signature": "int __tact_slice_neq_nullable_one(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.slice_hash() == b.slice_hash() ) : ( false ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_eq_nullable",
+    "signature": "int __tact_slice_eq_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.slice_hash() != b.slice_hash() ) : ( true ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_neq_nullable",
+    "signature": "int __tact_slice_neq_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
       "code": "return udict_set_ref(dict, 16, id, code);",
       "kind": "generic",
     },
@@ -4805,6 +4893,94 @@ return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nu
   },
   {
     "code": {
+      "code": "return (a.slice_hash() ==  b.slice_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_eq",
+    "signature": "int __tact_slice_eq(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "return (a.slice_hash() !=  b.slice_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_neq",
+    "signature": "int __tact_slice_neq(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (false) : (a.slice_hash() == b.slice_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_eq_nullable_one",
+    "signature": "int __tact_slice_eq_nullable_one(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (true) : (a.slice_hash() != b.slice_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_neq_nullable_one",
+    "signature": "int __tact_slice_neq_nullable_one(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.slice_hash() == b.slice_hash() ) : ( false ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_eq_nullable",
+    "signature": "int __tact_slice_eq_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.slice_hash() != b.slice_hash() ) : ( true ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_neq_nullable",
+    "signature": "int __tact_slice_neq_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
       "code": "return udict_set_ref(dict, 16, id, code);",
       "kind": "generic",
     },
@@ -8537,6 +8713,94 @@ return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nu
     },
     "name": "__tact_cell_neq_nullable",
     "signature": "int __tact_cell_neq_nullable(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "return (a.slice_hash() ==  b.slice_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_eq",
+    "signature": "int __tact_slice_eq(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "return (a.slice_hash() !=  b.slice_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_neq",
+    "signature": "int __tact_slice_neq(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (false) : (a.slice_hash() == b.slice_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_eq_nullable_one",
+    "signature": "int __tact_slice_eq_nullable_one(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (true) : (a.slice_hash() != b.slice_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_neq_nullable_one",
+    "signature": "int __tact_slice_neq_nullable_one(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.slice_hash() == b.slice_hash() ) : ( false ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_eq_nullable",
+    "signature": "int __tact_slice_eq_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.slice_hash() != b.slice_hash() ) : ( true ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_neq_nullable",
+    "signature": "int __tact_slice_neq_nullable(slice a, slice b)",
   },
   {
     "code": {
