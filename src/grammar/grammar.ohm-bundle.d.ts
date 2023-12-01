@@ -90,6 +90,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   StatementWhile?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
   StatementRepeat?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
   StatementUntil?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: IterationNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: TerminalNode, arg6: NonterminalNode, arg7: TerminalNode, arg8: TerminalNode) => T;
+  StatementFor_map?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: TerminalNode, arg6: NonterminalNode, arg7: TerminalNode, arg8: TerminalNode, arg9: IterationNode, arg10: TerminalNode) => T;
+  StatementFor?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   LValue_more?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   LValue_single?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   LValue?: (this: NonterminalNode, arg0: NonterminalNode) => T;
@@ -164,6 +166,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   repeat?: (this: NonterminalNode, arg0: TerminalNode) => T;
   do?: (this: NonterminalNode, arg0: TerminalNode) => T;
   until?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  for?: (this: NonterminalNode, arg0: TerminalNode) => T;
   as?: (this: NonterminalNode, arg0: TerminalNode) => T;
   mutates?: (this: NonterminalNode, arg0: TerminalNode) => T;
   extends?: (this: NonterminalNode, arg0: TerminalNode) => T;
