@@ -193,6 +193,16 @@ export function writeStatement(
         });
         ctx.append(`}`);
         return;
+    } else if (f.kind === 'statement_for_map') {
+        // ;; iterate keys from small to big
+        // (int key, slice val, int flag) = d.udict_get_min?(256);
+        // while (flag) {
+        //     ;; do something with pair key->val
+            
+        //     (key, val, flag) = d.udict_get_next?(256, key);
+        // }
+
+        // TODO: implement
     }
 
     throw Error("Unknown statement kind");

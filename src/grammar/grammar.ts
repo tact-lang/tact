@@ -851,6 +851,18 @@ semantics.addOperation<ASTNode>("resolve_statement", {
             ref: createRef(this),
         });
     },
+    StatementFor_map(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) {
+        checkVariableName(arg2.sourceString, createRef(arg2));
+        checkVariableName(arg4.sourceString, createRef(arg4));
+        return createNode({
+            kind: 'statement_for_map',
+            keyName: arg2.sourceString,
+            valueName: arg4.sourceString,
+            mapName: arg6.sourceString,
+            statements: arg9.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
 });
 
 // LValue

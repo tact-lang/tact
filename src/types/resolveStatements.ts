@@ -402,6 +402,35 @@ function processStatements(
             for (const r of removed) {
                 initialCtx = removeRequiredVariable(r, initialCtx);
             }
+        } else if (s.kind === "statement_for_map") {
+            // Check if map is valid
+            const mapVariable = sctx.vars[s.mapName];
+            if (!mapVariable || mapVariable.kind !== "map") {
+                throwError(`Variable ${s.mapName} is not a map`, s.ref);
+            }
+
+            // Add key and value to statement context
+            if (sctx.vars[s.keyName]) {
+                throwError(`Variable already exists: ${s.keyName}`, s.ref);
+            }
+            sctx = addVariable(
+                s.keyName,
+                { kind: "ref", name: mapVariable.key, optional: false },
+                sctx,
+            );
+            if (sctx.vars[s.valueName]) {
+                throwError(`Variable already exists: ${s.valueName}`, s.ref);
+            }
+            sctx = addVariable(
+                s.valueName,
+                { kind: "ref", name: mapVariable.value, optional: false },
+                sctx,
+            );
+
+            // Process inner statements
+            let r = processStatements(s.statements, sctx, ctx);
+            ctx = r.ctx;
+            sctx = r.sctx;
         } else {
             throw Error("Unknown statement");
         }

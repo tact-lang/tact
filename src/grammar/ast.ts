@@ -490,6 +490,16 @@ export type ASTStatementTryCatch = {
     ref: ASTRef;
 };
 
+export type ASTStatementForMap = {
+    kind: "statement_for_map";
+    id: number;
+    keyName: string;
+    valueName: string;
+    mapName: string;
+    statements: ASTStatement[];
+    ref: ASTRef;
+};
+
 //
 // Unions
 //
@@ -505,7 +515,8 @@ export type ASTStatement =
     | ASTStatementUntil
     | ASTStatementRepeat
     | ASTStatementTry
-    | ASTStatementTryCatch;
+    | ASTStatementTryCatch
+    | ASTStatementForMap;
 export type ASTNode =
     | ASTExpression
     | ASTStruct
@@ -534,6 +545,7 @@ export type ASTNode =
     | ASTStatementRepeat
     | ASTStatementTry
     | ASTStatementTryCatch
+    | ASTStatementForMap
     | ASTReceive
     | ASTLvalueRef
     | ASTString
@@ -758,6 +770,11 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
             traverse(e, callback);
         }
         for (const e of node.catchStatements) {
+            traverse(e, callback);
+        }
+    }
+    if (node.kind === "statement_for_map") {
+        for (let e of node.statements) {
             traverse(e, callback);
         }
     }
