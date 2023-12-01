@@ -1,4 +1,4 @@
-import { Address, Cell, toNano } from "ton-core";
+import { Address, Cell, toNano } from "@ton/core";
 import { enabledDebug, enabledMaterchain } from "../config/features";
 import { writeAddress, writeCell } from "../generator/writers/writeConstant";
 import { writeExpression } from "../generator/writers/writeExpression";
@@ -6,7 +6,7 @@ import { throwError } from "../grammar/ast";
 import { resolveConstantValue } from "../types/resolveConstantValue";
 import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
-import { sha256_sync } from "ton-crypto";
+import { sha256_sync } from "@ton/crypto";
 import { getType } from "../types/resolveDescriptors";
 import { ops } from "../generator/writers/ops";
 

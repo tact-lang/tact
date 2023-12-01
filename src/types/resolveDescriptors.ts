@@ -6,7 +6,7 @@ import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
 import { resolveConstantValue } from "./resolveConstantValue";
 import { resolveABIType } from "./resolveABITypeRef";
-import { Address, Cell } from "ton-core";
+import { Address, Cell } from "@ton/core";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 

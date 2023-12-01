@@ -19,7 +19,7 @@ exports[`bugs should deploy contract correctly 1`] = `
           "from": "kQDsxraH9C2q62rBFOR2qqOFjjomtfdWo64TkbdMhFTJiLsN",
           "to": "kQBGSDIgoUMAjGBNBXjsdBRlfPtqK5rKgQOD5N7yKFfIXeuh",
           "type": "internal",
-          "value": 9958850000n,
+          "value": "9.95885",
         },
       },
       {
@@ -31,14 +31,17 @@ exports[`bugs should deploy contract correctly 1`] = `
         "messages": [
           {
             "body": {
-              "cell": "x{D53276DB0000000000000000}",
-              "type": "cell",
+              "type": "known",
+              "value": {
+                "$$type": "TokenExcesses",
+                "queryId": 0n,
+              },
             },
             "bounce": false,
             "from": "kQBGSDIgoUMAjGBNBXjsdBRlfPtqK5rKgQOD5N7yKFfIXeuh",
             "to": "@treasure(treasure)",
             "type": "internal",
-            "value": 9914852826n,
+            "value": "9.914852826",
           },
         ],
       },

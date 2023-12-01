@@ -1,9 +1,9 @@
-import { Address, Cell, toNano } from "ton-core";
+import { Address, Cell, toNano } from "@ton/core";
 import { enabledMaterchain } from "../config/features";
 import { CompilerContext } from "../context";
 import { ASTExpression, throwError } from "../grammar/ast";
 import { printTypeRef, TypeRef } from "./types";
-import { sha256_sync } from "ton-crypto";
+import { sha256_sync } from "@ton/crypto";
 
 function reduceInt(ast: ASTExpression): bigint {
     if (ast.kind === 'number') {

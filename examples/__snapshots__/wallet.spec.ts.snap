@@ -19,7 +19,7 @@ exports[`wallet should deploy 1`] = `
           "from": "@treasure(treasure)",
           "to": "kQCjmMHzL6dRv6HCrACYpCe1qJbXqGp_P1ObgRO1orr1RW5j",
           "type": "internal",
-          "value": 10000000000n,
+          "value": "10",
         },
       },
       {
@@ -32,6 +32,10 @@ exports[`wallet should deploy 1`] = `
     "$seq": 1,
     "events": [
       {
+        "$type": "storage-charged",
+        "amount": "0.000000006",
+      },
+      {
         "$type": "received",
         "message": {
           "body": {
@@ -43,7 +47,7 @@ exports[`wallet should deploy 1`] = `
           "from": "@treasure(treasure)",
           "to": "kQCjmMHzL6dRv6HCrACYpCe1qJbXqGp_P1ObgRO1orr1RW5j",
           "type": "internal",
-          "value": 1000000000n,
+          "value": "1",
         },
       },
       {
@@ -61,7 +65,7 @@ exports[`wallet should deploy 1`] = `
             "from": "kQCjmMHzL6dRv6HCrACYpCe1qJbXqGp_P1ObgRO1orr1RW5j",
             "to": "@treasure(treasure)",
             "type": "internal",
-            "value": 10000000000n,
+            "value": "10",
           },
         ],
       },
@@ -76,6 +80,10 @@ exports[`wallet should deploy 2`] = `
     "$seq": 2,
     "events": [
       {
+        "$type": "storage-charged",
+        "amount": "0.000000006",
+      },
+      {
         "$type": "received",
         "message": {
           "body": {
@@ -86,7 +94,7 @@ exports[`wallet should deploy 2`] = `
           "from": "@treasure(treasure)",
           "to": "kQCjmMHzL6dRv6HCrACYpCe1qJbXqGp_P1ObgRO1orr1RW5j",
           "type": "internal",
-          "value": 1000000000n,
+          "value": "1",
         },
       },
       {
@@ -104,6 +112,10 @@ exports[`wallet should deploy 3`] = `
     "$seq": 3,
     "events": [
       {
+        "$type": "storage-charged",
+        "amount": "0.000000006",
+      },
+      {
         "$type": "received",
         "message": {
           "body": {
@@ -113,7 +125,7 @@ exports[`wallet should deploy 3`] = `
           "from": "@treasure(treasure)",
           "to": "kQCjmMHzL6dRv6HCrACYpCe1qJbXqGp_P1ObgRO1orr1RW5j",
           "type": "internal",
-          "value": 1000000000n,
+          "value": "1",
         },
       },
       {

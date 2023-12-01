@@ -19,7 +19,7 @@ exports[`feature-masterchain should deploy to the workchain 1`] = `
           "from": "@treasure(treasure)",
           "to": "kQCH5BskP3iUdwhhHq1e-02uGZl1K1v7Nv0FofkQsgMIa7bk",
           "type": "internal",
-          "value": 10000000000n,
+          "value": "10",
         },
       },
       {
@@ -50,7 +50,7 @@ exports[`feature-masterchain should deploy to the workchain from masterchain whe
           "from": "@treasure(treasure)",
           "to": "kQB62cwgU28lN8tGqr00-iU4DNXBpiVr4ZnPJ1Z32NbD9xqj",
           "type": "internal",
-          "value": 10000000000n,
+          "value": "10",
         },
       },
       {
@@ -81,7 +81,7 @@ exports[`feature-masterchain should deploy to the workchain when masterchain ena
           "from": "@treasure(treasure)",
           "to": "kQB62cwgU28lN8tGqr00-iU4DNXBpiVr4ZnPJ1Z32NbD9xqj",
           "type": "internal",
-          "value": 10000000000n,
+          "value": "10",
         },
       },
       {
@@ -112,7 +112,7 @@ exports[`feature-masterchain should not deploy to the workchain from masterchain
           "from": "@treasure(treasure)",
           "to": "kQCH5BskP3iUdwhhHq1e-02uGZl1K1v7Nv0FofkQsgMIa7bk",
           "type": "internal",
-          "value": 10000000000n,
+          "value": "10",
         },
       },
       {
@@ -131,7 +131,7 @@ exports[`feature-masterchain should not deploy to the workchain from masterchain
           "from": "kQCH5BskP3iUdwhhHq1e-02uGZl1K1v7Nv0FofkQsgMIa7bk",
           "to": "@treasure(treasure)",
           "type": "internal",
-          "value": 9989000000n,
+          "value": "9.989",
         },
       },
     ],

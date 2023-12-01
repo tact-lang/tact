@@ -1,4 +1,4 @@
-import { ABITypeRef } from "ton-core";
+import { ABITypeRef } from "@ton/core";
 import { Writer } from "../../utils/Writer";
 
 const primitiveTypes = ['int', 'uint', 'address', 'bool', 'string', 'cell', 'slice', 'builder', 'fixed-bytes'];

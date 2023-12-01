@@ -5,7 +5,7 @@ import { WriterContext, WrittenFunction } from "./Writer";
 import { writeBouncedParser, writeOptionalParser, writeOptionalSerializer, writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
-import { ContractABI } from "ton-core";
+import { ContractABI } from "@ton/core";
 import { writeFunction } from "./writers/writeFunction";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
 import { getRawAST } from "../grammar/store";

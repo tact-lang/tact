@@ -6,6 +6,10 @@ exports[`feature-instrinsics should return correct instinsic results 1`] = `
     "$seq": 1,
     "events": [
       {
+        "$type": "storage-charged",
+        "amount": "0.00000001",
+      },
+      {
         "$type": "received",
         "message": {
           "body": {
@@ -16,7 +20,7 @@ exports[`feature-instrinsics should return correct instinsic results 1`] = `
           "from": "@treasure(treasure)",
           "to": "@contract",
           "type": "internal",
-          "value": 1000000000n,
+          "value": "1",
         },
       },
       {

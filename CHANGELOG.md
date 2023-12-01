@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Continuous integration to run Tact tests on Linux, macOS and Windows: PR [#96](https://github.com/tact-lang/tact/pull/96)
 
+### Changed
+- Migration to `@ton` NPM packages: PR [#89](https://github.com/tact-lang/tact/pull/89)
+
 ### Fixed
 - Struct and message identifiers need to be capitalized: PRs [#81](https://github.com/tact-lang/tact/pull/81) and [#83](https://github.com/tact-lang/tact/pull/83)
 - Fixed the signature of the `checkDataSignature` function in `stdlib/std/crypto.tact`: PR [#50](https://github.com/tact-lang/tact/pull/50)

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { decompileAll } from '@tact-lang/opcode';
 import { run } from '../src/node';
-import { Cell } from 'ton-core';
+import { Cell } from '@ton/core';
 import { build } from '../src/pipeline/build';
 import { FuncCompilationResult, funcCompile } from '../src/func/funcCompile';
 import path from 'path';

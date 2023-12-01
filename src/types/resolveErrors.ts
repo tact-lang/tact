@@ -1,4 +1,4 @@
-import { sha256_sync } from "ton-crypto";
+import { sha256_sync } from "@ton/crypto";
 import { CompilerContext, createContextStore } from "../context";
 import { ASTNode, traverse } from "../grammar/ast";
 import { resolveConstantValue } from "./resolveConstantValue";

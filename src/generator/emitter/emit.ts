@@ -1,4 +1,4 @@
-import { Maybe } from "ton-core/dist/utils/maybe";
+import { Maybe } from "@ton/core/dist/utils/maybe";
 import { trimIndent } from "../../utils/text"
 import { WrittenFunction } from "../Writer";
 import { createPadded } from "./createPadded";

@@ -1,6 +1,6 @@
 import * as changeCase from 'change-case';
 import { Writer } from "../utils/Writer";
-import { ABIArgument, ABIType, ContractABI } from "ton-core";
+import { ABIArgument, ABIType, ContractABI } from "@ton/core";
 import { writeArgumentToStack, writeDictParser, writeGetParser, writeInitSerializer, writeParser, writeSerializer, writeStruct, writeTupleParser, writeTupleSerializer } from "./typescript/writeStruct";
 import { AllocationCell } from "../storage/operation";
 import { topologicalSort } from "../utils/utils";
@@ -56,7 +56,7 @@ export function writeTypescript(abi: ContractABI, init?: {
             ABIReceiver,
             TupleBuilder,
             DictionaryValue
-        } from 'ton-core';
+        } from '@ton/core';
     `);
     w.append();
 
