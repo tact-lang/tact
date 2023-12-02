@@ -99,6 +99,11 @@ export function cloneNode<T extends ASTNode>(src: T): T {
             condition: cloneNode(src.condition),
             statements: src.statements.map(cloneNode),
         });
+    } else if (src.kind === 'statement_for_map') {
+        return cloneASTNode({
+            ...src,
+            statements: src.statements.map(cloneNode),
+        });
     } else if (src.kind === 'def_function') {
         return cloneASTNode({
             ...src,
