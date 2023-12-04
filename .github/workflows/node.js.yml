@@ -8,7 +8,6 @@ on:
 
 jobs:
   test:
-
     strategy:
       fail-fast: false
       matrix:
@@ -18,12 +17,15 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Checkout repository
       uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
+
     - name: Build and Test Tact compiler
       run: |
         yarn install
@@ -31,6 +33,7 @@ jobs:
         yarn build
         yarn gen
         yarn coverage
+
     - name: Test with Tact Template
       run: |
         git clone https://github.com/tact-lang/tact-template.git
