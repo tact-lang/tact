@@ -24,11 +24,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-    - run: yarn install
-    - run: yarn clean
-    - run: yarn build
-    - run: yarn gen
-    - run: yarn coverage
+    - name: Build and Test
+      - run: yarn install
+      - run: yarn clean
+      - run: yarn build
+      - run: yarn gen
+      - run: yarn coverage
     - name: Test with Tact Template
-    - run: git clone https://github.com/tact-lang/tact-template.git
-    - run: cd tact-template && yarn install && yarn build && yarn test
+      - run: git clone https://github.com/tact-lang/tact-template.git
+      - run: cd tact-template && yarn install && yarn build && yarn test
