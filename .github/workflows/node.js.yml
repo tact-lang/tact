@@ -29,3 +29,6 @@ jobs:
     - run: yarn build
     - run: yarn gen
     - run: yarn coverage
+    - name: Test with Tact Template
+    - run: git clone https://github.com/tact-lang/tact-template.git
+    - run: cd tact-template && yarn install && yarn build && yarn test
