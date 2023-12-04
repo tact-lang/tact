@@ -35,7 +35,16 @@ jobs:
         yarn gen
         yarn coverage
 
+    - name: Link Tact compiler
+      run: |
+        yarn link
+
     - name: Test with Tact Template
       run: |
         git clone https://github.com/tact-lang/tact-template.git
-        cd tact-template && yarn install && yarn build && yarn test
+        cd tact-template
+        yarn install
+        yarn link @tact-lang/compiler
+        yarn build
+        yarn test
+        yarn tact --version
