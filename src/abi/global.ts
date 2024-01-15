@@ -23,6 +23,9 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             if (args[0].name !== 'String') {
                 throwError('ton() expects single string argument', ref);
             }
+            if(!isNaN(parseFloat(args[0].name))) {
+                throwError('ton() expects a valid number', ref);
+            }
             return { kind: 'ref', name: 'Int', optional: false };
         },
         generate: (ctx, args, resolved, ref) => {
