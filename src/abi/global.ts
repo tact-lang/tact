@@ -23,16 +23,14 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             if (args[0].name !== 'String') {
                 throwError('ton() expects single string argument', ref);
             }
-            if(!isNaN(parseFloat(args[0].name))) {
-                throwError('ton() expects a valid number', ref);
-            }
             return { kind: 'ref', name: 'Int', optional: false };
         },
         generate: (ctx, args, resolved, ref) => {
             if (resolved.length !== 1) {
                 throwError('ton() expects single string argument', ref);
             }
-            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
+            let rawResolved = resolved[0].replace(/_|\,/g, '');
+            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, rawResolved, ctx.ctx) as string;
             return toNano(str).toString(10);
         }
     },
