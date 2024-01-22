@@ -11,6 +11,7 @@ import { glob } from 'glob';
 import { verify } from '../src/verify';
 import { consoleLogger } from '../src/logger';
 import { __DANGER__disableVersionNumber } from '../src/pipeline/version';
+import {getRootDir} from "../src/utils/utils";
 
 // Read cases
 (async () => {
@@ -43,10 +44,12 @@ import { __DANGER__disableVersionNumber } from '../src/pipeline/version';
                 output: './output/',
             };
             let stdlib = '@stdlib';
-            let project = createNodeFileSystem(p.path, false);
+            let npm = createNodeFileSystem(path.resolve(getRootDir(), "node_modules"));
+            let project =  createNodeFileSystem(p.path, false);
             await build({
                 config,
                 stdlib,
+                npm,
                 project
             });
         }

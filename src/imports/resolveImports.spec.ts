@@ -6,9 +6,11 @@ describe('resolveImports', () => {
     it('should resolve imports', () => {
         let project = createNodeFileSystem(path.resolve(__dirname, '__testdata', 'project'));
         let stdlib = createNodeFileSystem(path.resolve(__dirname, '__testdata', 'stdlib'));
+        let npm = createNodeFileSystem(path.resolve(__dirname, '__testdata', 'node_modules'));
         let resolved = resolveImports({
             project,
             stdlib,
+            npm,
             entrypoint: './main.tact'
         });
         expect(resolved).toMatchObject({
@@ -24,8 +26,16 @@ describe('resolveImports', () => {
                     "path": path.resolve(__dirname, '__testdata', 'stdlib', 'stdlib.tact'),
                 },
                 {
-                    "code": "",
+                    "code": "import \"@npm/@dynasty/npm_imported\";",
                     "path": path.resolve(__dirname, '__testdata', 'project', 'imported.tact'),
+                },
+                {
+                    "code": "import \"@npm/hitasp/another_npm_imported\";",
+                    "path": path.resolve(__dirname, '__testdata', 'node_modules', '@dynasty', 'npm_imported.tact'),
+                },
+                {
+                    "code": "",
+                    "path": path.resolve(__dirname, '__testdata', 'node_modules', 'hitasp', 'another_npm_imported.tact'),
                 },
                 {
                     "code": "import \"./imported\";",

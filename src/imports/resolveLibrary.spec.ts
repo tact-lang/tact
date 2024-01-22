@@ -1,8 +1,12 @@
 import { createVirtualFileSystem } from '../vfs/createVirtualFileSystem';
+import { createNodeFileSystem } from '../vfs/createNodeFileSystem';
 import { resolveLibrary } from './resolveLibrary';
+import path from "path";
 
 describe('resolveLibrary', () => {
     it('should resolve imports', () => {
+        const npm = createNodeFileSystem(path.resolve(__dirname, '__testdata', 'node_modules'));
+
         const project = createVirtualFileSystem('/project', {
             ['main.tact']: '',
             ['import.tact']: '',
@@ -18,7 +22,8 @@ describe('resolveLibrary', () => {
             path: '/project/main.tact',
             name: '@stdlib/config',
             project,
-            stdlib
+            stdlib,
+            npm
         });
         if (!resolved.ok) {
             throw Error('Unable to resolve library');
@@ -27,12 +32,28 @@ describe('resolveLibrary', () => {
         expect(resolved.source).toBe('stdlib');
         expect(resolved.kind).toBe('tact');
 
+        // Resolve npm import
+        resolved = resolveLibrary({
+            path: '/project/main.tact',
+            name: '@npm/@dynasty/npm_imported',
+            project,
+            stdlib,
+            npm
+        });
+        if (!resolved.ok) {
+            throw Error('Unable to resolve library');
+        }
+        expect(resolved.path).toBe(path.resolve(__dirname, '__testdata', 'node_modules', '@dynasty', 'npm_imported.tact'));
+        expect(resolved.source).toBe('npm');
+        expect(resolved.kind).toBe('tact');
+
         // Resolve import func file
         resolved = resolveLibrary({
             path: '/project/main.tact',
             name: './main.fc',
             project,
-            stdlib
+            stdlib,
+            npm
         });
         if (!resolved.ok) {
             throw Error('Unable to resolve library');
@@ -46,7 +67,8 @@ describe('resolveLibrary', () => {
             path: '/project/main.tact',
             name: './import',
             project,
-            stdlib
+            stdlib,
+            npm
         });
         if (!resolved.ok) {
             throw Error('Unable to resolve library');
@@ -60,7 +82,8 @@ describe('resolveLibrary', () => {
             path: '/project/main.tact',
             name: './import.tact',
             project,
-            stdlib
+            stdlib,
+            npm
         });
         if (!resolved.ok) {
             throw Error('Unable to resolve library');
@@ -74,7 +97,8 @@ describe('resolveLibrary', () => {
             path: '@stdlib/libs/import.tact',
             name: './config/import',
             project,
-            stdlib
+            stdlib,
+            npm
         });
         if (!resolved.ok) {
             throw Error('Unable to resolve library');

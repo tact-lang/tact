@@ -5,14 +5,15 @@ export type ResolveLibraryArgs = {
     path: string,
     name: string,
     project: VirtualFileSystem,
-    stdlib: VirtualFileSystem
+    stdlib: VirtualFileSystem,
+    npm: VirtualFileSystem
 };
 
 export type ResolveLibraryResult = {
     ok: true,
     path: string;
     kind: 'func' | 'tact';
-    source: 'project' | 'stdlib';
+    source: 'project' | 'stdlib' | 'npm';
 } | {
     ok: false
 }
@@ -36,12 +37,29 @@ export function resolveLibrary(args: ResolveLibraryArgs): ResolveLibraryResult {
         }
     }
 
+    if (args.name.startsWith('@npm/')) {
+        let libraryName = args.name.substring('@npm/'.length);
+        let libraryPath = parseImportPath('./' + libraryName + '.tact');
+        if (!libraryPath) {
+            return { ok: false };
+        }
+        let tactFile = args.npm.resolve(...libraryPath);
+        if (args.npm.exists(tactFile)) {
+            return { ok: true, path: tactFile, source: 'npm', kind: 'tact' };
+        } else {
+            return { ok: false };
+        }
+    }
+
     // Resolve vfs
     let vfs: VirtualFileSystem;
-    let source: 'project' | 'stdlib';
+    let source: 'project' | 'stdlib' | 'npm';
     if (args.path.startsWith(args.stdlib.root)) { // NOTE: stdlib checked first to avoid hijacking stdlib imports
         vfs = args.stdlib;
         source = 'stdlib';
+    } else if (args.path.startsWith(args.npm.root)) {
+        vfs = args.npm;
+        source = 'npm';
     } else if (args.path.startsWith(args.project.root)) {
         vfs = args.project;
         source = 'project';

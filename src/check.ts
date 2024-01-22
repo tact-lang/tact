@@ -3,6 +3,9 @@ import { CompilerContext } from "./context";
 import files from "./imports/stdlib";
 import { createVirtualFileSystem, TactSourceError, VirtualFileSystem } from "./main";
 import { precompile } from "./pipeline/precompile";
+import {createNodeFileSystem} from "./vfs/createNodeFileSystem";
+import path from "path";
+import {getRootDir} from "./utils/utils";
 
 export type CheckResultItem = {
     type: 'error' | 'warning';
@@ -26,6 +29,8 @@ export function check(args: { project: VirtualFileSystem, entrypoint: string }):
 
     // Create context
     let stdlib = createVirtualFileSystem('@stdlib/', files);
+
+    let npm = createNodeFileSystem(path.resolve(getRootDir(), "node_modules"));
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
     ctx = featureEnable(ctx, 'debug'); // Enable debug flag (does not affect type checking in practice)
     ctx = featureEnable(ctx, 'masterchain'); // Enable masterchain flag to avoid masterchain-specific errors
@@ -34,7 +39,7 @@ export function check(args: { project: VirtualFileSystem, entrypoint: string }):
     // Execute check
     let items: CheckResultItem[] = [];
     try {
-        precompile(ctx, args.project, stdlib, args.entrypoint);
+        precompile(ctx, args.project, stdlib, npm, args.entrypoint);
     } catch (e) {
         if (e instanceof TactSourceError) {
             items.push({

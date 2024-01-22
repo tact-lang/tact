@@ -17,6 +17,7 @@ import { errorToString } from '../utils/errorToString';
 import { posixNormalize } from '../utils/filePath';
 import { createVirtualFileSystem } from '../vfs/createVirtualFileSystem';
 import { VirtualFileSystem } from '../vfs/VirtualFileSystem';
+import { createNodeFileSystem } from '../vfs/createNodeFileSystem';
 import { compile } from './compile';
 import { precompile } from "./precompile";
 import { getCompilerVersion } from './version';
@@ -25,11 +26,13 @@ export async function build(args: {
     config: ConfigProject,
     project: VirtualFileSystem,
     stdlib: string | VirtualFileSystem,
+    npm: string | VirtualFileSystem,
     logger?: TactLogger | null | undefined
 }) {
 
     const { config, project } = args;
     const stdlib = (typeof args.stdlib === 'string') ? createVirtualFileSystem(args.stdlib, files) : args.stdlib;
+    const npm = (typeof args.npm === 'string') ? createNodeFileSystem(args.npm) : args.npm;
     const logger: TactLogger = args.logger || consoleLogger;
 
     // Configure context
@@ -59,7 +62,7 @@ export async function build(args: {
 
     // Precompile
     try {
-        ctx = precompile(ctx, project, stdlib, config.path);
+        ctx = precompile(ctx, project, stdlib, npm, config.path);
     } catch (e) {
         logger.error('Tact compilation failed');
         logger.error(errorToString(e));

@@ -3,7 +3,7 @@ import { TypeOrigin } from '../types/types';
 import { VirtualFileSystem } from '../vfs/VirtualFileSystem';
 import { resolveLibrary } from './resolveLibrary';
 
-export function resolveImports(args: { entrypoint: string, project: VirtualFileSystem, stdlib: VirtualFileSystem }) {
+export function resolveImports(args: { entrypoint: string, project: VirtualFileSystem, stdlib: VirtualFileSystem, npm: VirtualFileSystem }) {
 
     //
     // Load stdlib and entrypoint
@@ -35,7 +35,8 @@ export function resolveImports(args: { entrypoint: string, project: VirtualFileS
                 path: path,
                 name: i,
                 project: args.project,
-                stdlib: args.stdlib
+                stdlib: args.stdlib,
+                npm: args.npm
             });
             if (!resolved.ok) {
                 throw new Error(`Could not resolve import ${i} in ${path}`);
@@ -53,7 +54,7 @@ export function resolveImports(args: { entrypoint: string, project: VirtualFileS
             }
 
             // Load code
-            let vfs = resolved.source === 'project' ? args.project : args.stdlib;
+            let vfs = resolved.source === 'project' ? args.project : resolved.source === 'stdlib' ? args.stdlib : args.npm;
             let code: string = vfs.readFile(resolved.path).toString();
 
             // Add to imports
