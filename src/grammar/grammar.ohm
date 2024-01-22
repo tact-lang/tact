@@ -92,6 +92,7 @@ Tact {
               | StatementReturn
               | StatementExpression
               | StatementAssign
+              | StatementAugmentedAssign
               | StatementCondition
               | StatementWhile
               | StatementRepeat
@@ -102,6 +103,16 @@ Tact {
                     | return ";" --withoutExpression    
     StatementExpression = Expression ";"
     StatementAssign = LValue "=" Expression ";"
+    StatementAugmentedAssign = StatementAugmentedAssignAdd
+                             | StatementAugmentedAssignSub
+                             | StatementAugmentedAssignMul
+                             | StatementAugmentedAssignDiv
+                             | StatementAugmentedAssignRem
+    StatementAugmentedAssignAdd = LValue "+=" Expression ";"
+    StatementAugmentedAssignSub = LValue "-=" Expression ";"
+    StatementAugmentedAssignMul = LValue "*=" Expression ";"
+    StatementAugmentedAssignDiv = LValue "/=" Expression ";"
+    StatementAugmentedAssignRem = LValue "%=" Expression ";"
     StatementCondition = if Expression "{" Statement* "}" ~else --simple
                        | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse
                        | if Expression "{" Statement* "}" else StatementCondition --withElseIf

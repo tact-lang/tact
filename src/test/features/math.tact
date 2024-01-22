@@ -42,6 +42,35 @@ contract MathTester with Deployable {
     }
 
     //
+    // Augmented assignment
+    //
+
+    get fun addAug(a: Int, b: Int): Int {
+        a += b;
+        return a;
+    }
+
+    get fun subAug(a: Int, b: Int): Int {
+        a -= b;
+        return a;
+    }
+
+    get fun mulAug(a: Int, b: Int): Int {
+        a *= b;
+        return a;
+    }
+
+    get fun divAug(a: Int, b: Int): Int {
+        a /= b;
+        return a;
+    }
+
+    get fun modAug(a: Int, b: Int): Int {
+        a %= b;
+        return a;
+    }
+
+    //
     // Int Compare
     //
 

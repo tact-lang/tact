@@ -97,6 +97,11 @@ export function writeStatement(f: ASTStatement, self: string | null, returns: Ty
 
         ctx.append(`${path} = ${writeCastedExpression(f.expression, t, ctx)};`);
         return;
+    } else if (f.kind === 'statement_augmentedassign') {
+        let path = f.path.map((v, i) => (i === 0) ? id(v.name) : v.name).join(`'`);
+        let t = getExpType(ctx.ctx, f.path[f.path.length - 1]);
+        ctx.append(`${path} = ${cast(t, t, `${path} ${f.op} ${writeExpression(f.expression, ctx)}`, ctx)};`);
+        return;
     } else if (f.kind === 'statement_condition') {
         writeCondition(f, self, false, returns, ctx);
         return;
