@@ -1,1 +1,1 @@
-import "./imported";
+import "./imported"; import "./subfolder/import_from_parent";

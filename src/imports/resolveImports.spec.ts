@@ -28,7 +28,15 @@ describe('resolveImports', () => {
                     "path": path.resolve(__dirname, '__testdata', 'project', 'imported.tact'),
                 },
                 {
-                    "code": "import \"./imported\";",
+                    "code": "import \"../imported_from_subfolder\";",
+                    "path": path.resolve(__dirname, '__testdata', 'project', 'subfolder', 'import_from_parent.tact'),
+                },
+                {
+                    "code": "",
+                    "path": path.resolve(__dirname, '__testdata', 'project', 'imported_from_subfolder.tact'),
+                },
+                {
+                    "code": "import \"./imported\"; import \"./subfolder/import_from_parent\";",
                     "path": path.resolve(__dirname, '__testdata', 'project', 'main.tact'),
                 },
             ],
