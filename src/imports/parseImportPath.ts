@@ -8,5 +8,5 @@ export function parseImportPath(src: string) {
     if (src.endsWith('/')) {
         return null;
     }
-    return normalize(src).split(path.sep);
+    return normalize(src).split('/');
 }
