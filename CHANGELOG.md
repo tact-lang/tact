@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Augmented assignment operators (`+=`, `-=`, `*=`, `/=` and `%=`): PR [#87](https://github.com/tact-lang/tact/pull/87)
+
+### Fixed
+- Relative imports from parent directories: PR [#125](https://github.com/tact-lang/tact/pull/125)
+
 ## [1.1.5] - 2023-12-01
 
 ### Added
