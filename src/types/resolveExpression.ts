@@ -135,7 +135,7 @@ function resolveBinaryOp(exp: ASTOpBinary, sctx: StatementContext, ctx: Compiler
                 if (l.kind !== 'ref' || r.kind !== 'ref') {
                     throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                 }
-                if (r.name !== r.name) {
+                if (l.name !== r.name) {
                     throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                 }
                 if (r.name !== 'Int' && r.name !== 'Bool' && r.name !== 'Address' && r.name !== 'Cell') {

@@ -250,6 +250,16 @@ Line 23, col 18:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-25 1`] = `
+"<unknown>:5:12: Incompatible types "Int" and "Bool" for binary operator "=="
+Line 5, col 12:
+  4 | fun foo(x: Int): Bool {
+> 5 |     return x == true;
+                 ^~~~~~~~~
+  6 | }
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
