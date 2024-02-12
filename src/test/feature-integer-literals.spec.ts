@@ -1,4 +1,4 @@
-import { toNano } from 'ton-core';
+import { toNano } from '@ton/core';
 import { ContractSystem } from '@tact-lang/emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { IntegerLiteralsTester } from './features/output/integer-literals_IntegerLiteralsTester';
@@ -18,7 +18,7 @@ describe('feature-integer-literals', () => {
         // Check methods
         expect(await contract.getDecLiteral1()).toEqual(123n);
         expect(await contract.getDecLiteral2()).toEqual(-123n);
-        expect(await contract.getDecLiteral3()).toEqual(1012300000n)
+        expect(await contract.getDecLiteral3()).toEqual(1012300000n);
 
         expect(await contract.getHexLiteral1()).toEqual(0x123n);
         expect(await contract.getHexLiteral2()).toEqual(-0x123n);
