@@ -3380,3 +3380,439 @@ exports[`grammar should parse case-27 1`] = `
   "kind": "program",
 }
 `;
+
+exports[`grammar should parse case-28 1`] = `
+{
+  "entries": [
+    {
+      "args": [],
+      "attributes": [],
+      "id": 66,
+      "kind": "def_function",
+      "name": "test_fun",
+      "origin": "user",
+      "ref": fun test_fun(): Int {
+    let a: Int = 123;
+    let b: Int = -123;
+    let c: Int = 1_0123_00__000;
+    let d: Int = 0x123;
+    let e: Int = -0x123;
+    let f: Int = 0x1_0123_00__000;
+    let g: Int = 0b101010;
+    let h: Int = -0b101010;
+    let i: Int = 0b1_0101_00__000;
+    let j: Int = 0o123;
+    let k: Int = -0o123;
+    let l: Int = 0o1_0123_00__000;
+    return a + b + c + d + e + f + g + h + i + j + k + l;
+},
+      "return": {
+        "id": 1,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 3,
+            "kind": "number",
+            "ref": 123,
+            "value": 123n,
+          },
+          "id": 4,
+          "kind": "statement_let",
+          "name": "a",
+          "ref": let a: Int = 123;,
+          "type": {
+            "id": 2,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 7,
+            "kind": "op_unary",
+            "op": "-",
+            "ref": -123,
+            "right": {
+              "id": 6,
+              "kind": "number",
+              "ref": 123,
+              "value": 123n,
+            },
+          },
+          "id": 8,
+          "kind": "statement_let",
+          "name": "b",
+          "ref": let b: Int = -123;,
+          "type": {
+            "id": 5,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 10,
+            "kind": "number",
+            "ref": 1_0123_00__000,
+            "value": 1012300000n,
+          },
+          "id": 11,
+          "kind": "statement_let",
+          "name": "c",
+          "ref": let c: Int = 1_0123_00__000;,
+          "type": {
+            "id": 9,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 13,
+            "kind": "number",
+            "ref": 0x123,
+            "value": 291n,
+          },
+          "id": 14,
+          "kind": "statement_let",
+          "name": "d",
+          "ref": let d: Int = 0x123;,
+          "type": {
+            "id": 12,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 17,
+            "kind": "op_unary",
+            "op": "-",
+            "ref": -0x123,
+            "right": {
+              "id": 16,
+              "kind": "number",
+              "ref": 0x123,
+              "value": 291n,
+            },
+          },
+          "id": 18,
+          "kind": "statement_let",
+          "name": "e",
+          "ref": let e: Int = -0x123;,
+          "type": {
+            "id": 15,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 20,
+            "kind": "number",
+            "ref": 0x1_0123_00__000,
+            "value": 69024612352n,
+          },
+          "id": 21,
+          "kind": "statement_let",
+          "name": "f",
+          "ref": let f: Int = 0x1_0123_00__000;,
+          "type": {
+            "id": 19,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 23,
+            "kind": "number",
+            "ref": 0b101010,
+            "value": 42n,
+          },
+          "id": 24,
+          "kind": "statement_let",
+          "name": "g",
+          "ref": let g: Int = 0b101010;,
+          "type": {
+            "id": 22,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 27,
+            "kind": "op_unary",
+            "op": "-",
+            "ref": -0b101010,
+            "right": {
+              "id": 26,
+              "kind": "number",
+              "ref": 0b101010,
+              "value": 42n,
+            },
+          },
+          "id": 28,
+          "kind": "statement_let",
+          "name": "h",
+          "ref": let h: Int = -0b101010;,
+          "type": {
+            "id": 25,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 30,
+            "kind": "number",
+            "ref": 0b1_0101_00__000,
+            "value": 672n,
+          },
+          "id": 31,
+          "kind": "statement_let",
+          "name": "i",
+          "ref": let i: Int = 0b1_0101_00__000;,
+          "type": {
+            "id": 29,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 33,
+            "kind": "number",
+            "ref": 0o123,
+            "value": 83n,
+          },
+          "id": 34,
+          "kind": "statement_let",
+          "name": "j",
+          "ref": let j: Int = 0o123;,
+          "type": {
+            "id": 32,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 37,
+            "kind": "op_unary",
+            "op": "-",
+            "ref": -0o123,
+            "right": {
+              "id": 36,
+              "kind": "number",
+              "ref": 0o123,
+              "value": 83n,
+            },
+          },
+          "id": 38,
+          "kind": "statement_let",
+          "name": "k",
+          "ref": let k: Int = -0o123;,
+          "type": {
+            "id": 35,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 40,
+            "kind": "number",
+            "ref": 0o1_0123_00__000,
+            "value": 136937472n,
+          },
+          "id": 41,
+          "kind": "statement_let",
+          "name": "l",
+          "ref": let l: Int = 0o1_0123_00__000;,
+          "type": {
+            "id": 39,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 64,
+            "kind": "op_binary",
+            "left": {
+              "id": 62,
+              "kind": "op_binary",
+              "left": {
+                "id": 60,
+                "kind": "op_binary",
+                "left": {
+                  "id": 58,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 56,
+                    "kind": "op_binary",
+                    "left": {
+                      "id": 54,
+                      "kind": "op_binary",
+                      "left": {
+                        "id": 52,
+                        "kind": "op_binary",
+                        "left": {
+                          "id": 50,
+                          "kind": "op_binary",
+                          "left": {
+                            "id": 48,
+                            "kind": "op_binary",
+                            "left": {
+                              "id": 46,
+                              "kind": "op_binary",
+                              "left": {
+                                "id": 44,
+                                "kind": "op_binary",
+                                "left": {
+                                  "id": 42,
+                                  "kind": "id",
+                                  "ref": a,
+                                  "value": "a",
+                                },
+                                "op": "+",
+                                "ref": a + b,
+                                "right": {
+                                  "id": 43,
+                                  "kind": "id",
+                                  "ref": b,
+                                  "value": "b",
+                                },
+                              },
+                              "op": "+",
+                              "ref": a + b + c,
+                              "right": {
+                                "id": 45,
+                                "kind": "id",
+                                "ref": c,
+                                "value": "c",
+                              },
+                            },
+                            "op": "+",
+                            "ref": a + b + c + d,
+                            "right": {
+                              "id": 47,
+                              "kind": "id",
+                              "ref": d,
+                              "value": "d",
+                            },
+                          },
+                          "op": "+",
+                          "ref": a + b + c + d + e,
+                          "right": {
+                            "id": 49,
+                            "kind": "id",
+                            "ref": e,
+                            "value": "e",
+                          },
+                        },
+                        "op": "+",
+                        "ref": a + b + c + d + e + f,
+                        "right": {
+                          "id": 51,
+                          "kind": "id",
+                          "ref": f,
+                          "value": "f",
+                        },
+                      },
+                      "op": "+",
+                      "ref": a + b + c + d + e + f + g,
+                      "right": {
+                        "id": 53,
+                        "kind": "id",
+                        "ref": g,
+                        "value": "g",
+                      },
+                    },
+                    "op": "+",
+                    "ref": a + b + c + d + e + f + g + h,
+                    "right": {
+                      "id": 55,
+                      "kind": "id",
+                      "ref": h,
+                      "value": "h",
+                    },
+                  },
+                  "op": "+",
+                  "ref": a + b + c + d + e + f + g + h + i,
+                  "right": {
+                    "id": 57,
+                    "kind": "id",
+                    "ref": i,
+                    "value": "i",
+                  },
+                },
+                "op": "+",
+                "ref": a + b + c + d + e + f + g + h + i + j,
+                "right": {
+                  "id": 59,
+                  "kind": "id",
+                  "ref": j,
+                  "value": "j",
+                },
+              },
+              "op": "+",
+              "ref": a + b + c + d + e + f + g + h + i + j + k,
+              "right": {
+                "id": 61,
+                "kind": "id",
+                "ref": k,
+                "value": "k",
+              },
+            },
+            "op": "+",
+            "ref": a + b + c + d + e + f + g + h + i + j + k + l,
+            "right": {
+              "id": 63,
+              "kind": "id",
+              "ref": l,
+              "value": "l",
+            },
+          },
+          "id": 65,
+          "kind": "statement_return",
+          "ref": return a + b + c + d + e + f + g + h + i + j + k + l;,
+        },
+      ],
+    },
+  ],
+  "id": 67,
+  "kind": "program",
+}
+`;
