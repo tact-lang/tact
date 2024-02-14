@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Augmented assignment operators (`+=`, `-=`, `*=`, `/=` and `%=`): PR [#87](https://github.com/tact-lang/tact/pull/87)
+- Binary and octal literals with underscores as numerical separators: PR [#99](https://github.com/tact-lang/tact/pull/99)
+
+### Changed
+- Decimal and hexadecimal literals now allow underscores as numerical separators: PR [#99](https://github.com/tact-lang/tact/pull/99)
 
 ### Fixed
 - Relative imports from parent directories: PR [#125](https://github.com/tact-lang/tact/pull/125)

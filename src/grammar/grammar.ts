@@ -592,7 +592,7 @@ semantics.addOperation<ASTNode>('resolve_expression', {
 
     // Literals
     integerLiteral(n) {
-        return createNode({ kind: 'number', value: BigInt(n.sourceString), ref: createRef(this) }); // Parses dec-based integer and hex-based integers
+        return createNode({ kind: 'number', value: BigInt(n.sourceString.replaceAll('_', '')), ref: createRef(this) }); // Parses dec, hex, and bin numbers
     },
     boolLiteral(arg0) {
         return createNode({ kind: 'boolean', value: arg0.sourceString === 'true', ref: createRef(this) });
