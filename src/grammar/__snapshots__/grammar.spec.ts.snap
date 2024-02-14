@@ -132,6 +132,56 @@ Line 2, col 15:
 "
 `;
 
+exports[`grammar should fail case-14 1`] = `
+"<unknown>:2:16: Syntax error: expected a digit 
+Line 2, col 16:
+  1 | fun test_fun(): Int {
+> 2 |     return 123_;
+                     ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-15 1`] = `
+"<unknown>:2:18: Syntax error: expected a hexadecimal digit 
+Line 2, col 18:
+  1 | fun test_fun(): Int {
+> 2 |     return 0x123_;
+                       ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-16 1`] = `
+"<unknown>:2:13: Syntax error: expected ";" 
+Line 2, col 13:
+  1 | fun test_fun(): Int {
+> 2 |     return 0_123;
+                  ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-17 1`] = `
+"<unknown>:2:20: Syntax error: expected a digit 
+Line 2, col 20:
+  1 | fun test_fun(): Int {
+> 2 |     return 123_123__123;
+                         ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-18 1`] = `
+"<unknown>:2:15: Syntax error: expected ";" 
+Line 2, col 15:
+  1 | fun test_fun(): Int {
+> 2 |     return 012_3;
+                    ^
+  3 | }
+"
+`;
+
 exports[`grammar should parse case-0 1`] = `
 {
   "entries": [
@@ -3394,16 +3444,16 @@ exports[`grammar should parse case-28 1`] = `
       "ref": fun test_fun(): Int {
     let a: Int = 123;
     let b: Int = -123;
-    let c: Int = 1_0123_00__000;
+    let c: Int = 1_0123_00_000;
     let d: Int = 0x123;
     let e: Int = -0x123;
-    let f: Int = 0x1_0123_00__000;
+    let f: Int = 0x1_0123_00_000;
     let g: Int = 0b101010;
     let h: Int = -0b101010;
-    let i: Int = 0b1_0101_00__000;
+    let i: Int = 0b1_0101_00_000;
     let j: Int = 0o123;
     let k: Int = -0o123;
-    let l: Int = 0o1_0123_00__000;
+    let l: Int = 0o1_0123_00_000;
     return a + b + c + d + e + f + g + h + i + j + k + l;
 },
       "return": {
@@ -3462,13 +3512,13 @@ exports[`grammar should parse case-28 1`] = `
           "expression": {
             "id": 10,
             "kind": "number",
-            "ref": 1_0123_00__000,
+            "ref": 1_0123_00_000,
             "value": 1012300000n,
           },
           "id": 11,
           "kind": "statement_let",
           "name": "c",
-          "ref": let c: Int = 1_0123_00__000;,
+          "ref": let c: Int = 1_0123_00_000;,
           "type": {
             "id": 9,
             "kind": "type_ref_simple",
@@ -3525,13 +3575,13 @@ exports[`grammar should parse case-28 1`] = `
           "expression": {
             "id": 20,
             "kind": "number",
-            "ref": 0x1_0123_00__000,
+            "ref": 0x1_0123_00_000,
             "value": 69024612352n,
           },
           "id": 21,
           "kind": "statement_let",
           "name": "f",
-          "ref": let f: Int = 0x1_0123_00__000;,
+          "ref": let f: Int = 0x1_0123_00_000;,
           "type": {
             "id": 19,
             "kind": "type_ref_simple",
@@ -3588,13 +3638,13 @@ exports[`grammar should parse case-28 1`] = `
           "expression": {
             "id": 30,
             "kind": "number",
-            "ref": 0b1_0101_00__000,
+            "ref": 0b1_0101_00_000,
             "value": 672n,
           },
           "id": 31,
           "kind": "statement_let",
           "name": "i",
-          "ref": let i: Int = 0b1_0101_00__000;,
+          "ref": let i: Int = 0b1_0101_00_000;,
           "type": {
             "id": 29,
             "kind": "type_ref_simple",
@@ -3651,13 +3701,13 @@ exports[`grammar should parse case-28 1`] = `
           "expression": {
             "id": 40,
             "kind": "number",
-            "ref": 0o1_0123_00__000,
+            "ref": 0o1_0123_00_000,
             "value": 136937472n,
           },
           "id": 41,
           "kind": "statement_let",
           "name": "l",
-          "ref": let l: Int = 0o1_0123_00__000;,
+          "ref": let l: Int = 0o1_0123_00_000;,
           "type": {
             "id": 39,
             "kind": "type_ref_simple",
