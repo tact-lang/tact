@@ -581,7 +581,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     //
 
     if (f.kind === 'conditional') {
-        return `(${writeExpression(f.condition, ctx)} ? ${writeExpression(f.trueExpression, ctx)} : ${writeExpression(f.falseExpression, ctx)})`;
+        return `(${writeExpression(f.condition, ctx)} ? ${writeExpression(f.thenBranch, ctx)} : ${writeExpression(f.elseBranch, ctx)})`;
     }
 
     //

@@ -724,7 +724,7 @@ semantics.addOperation<ASTNode>('resolve_expression', {
 
     // Ternary conditional
     ExpressionConditional_ternary(arg0, arg1, arg2, arg3, arg4) {
-        return createNode({ kind: 'conditional', condition: arg0.resolve_expression(), trueExpression: arg2.resolve_expression(), falseExpression: arg4.resolve_expression(), ref: createRef(this) });
+        return createNode({ kind: 'conditional', condition: arg0.resolve_expression(), thenBranch: arg2.resolve_expression(), elseBranch: arg4.resolve_expression(), ref: createRef(this) });
     },
 });
 

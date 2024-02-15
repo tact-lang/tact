@@ -395,7 +395,7 @@ export function resolveInitOf(ast: ASTInitOf, sctx: StatementContext, ctx: Compi
     return registerExpType(ctx, ast, { kind: 'ref', name: 'StateInit', optional: false });
 }
 
-export function resolveTernary(ast: ASTConditional, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
+export function resolveConditional(ast: ASTConditional, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
     // Resolve condition
     ctx = resolveExpression(ast.condition, sctx, ctx);
     let conditionType = getExpType(ctx, ast.condition);
@@ -403,17 +403,17 @@ export function resolveTernary(ast: ASTConditional, sctx: StatementContext, ctx:
         throwError(`Invalid type "${printTypeRef(conditionType)}" for ternary condition`, ast.condition.ref);
     }
 
-    // Resolve true and false branches
-    ctx = resolveExpression(ast.trueExpression, sctx, ctx);
-    ctx = resolveExpression(ast.falseExpression, sctx, ctx);
-    let trueType = getExpType(ctx, ast.trueExpression);
-    let falseType = getExpType(ctx, ast.falseExpression);
-    if (!typeRefEquals(trueType, falseType)) {
-        throwError(`Invalid types "${printTypeRef(trueType)}" and "${printTypeRef(falseType)}" for ternary branches`, ast.falseExpression.ref);
+    // Resolve then and else branches
+    ctx = resolveExpression(ast.thenBranch, sctx, ctx);
+    ctx = resolveExpression(ast.elseBranch, sctx, ctx);
+    let thenType = getExpType(ctx, ast.thenBranch);
+    let elseType = getExpType(ctx, ast.elseBranch);
+    if (!typeRefEquals(thenType, elseType)) {
+        throwError(`Non-matching types "${printTypeRef(thenType)}" and "${printTypeRef(elseType)}" for ternary branches`, ast.elseBranch.ref);
     }
 
     // Register result
-    return registerExpType(ctx, ast, trueType);
+    return registerExpType(ctx, ast, thenType);
 }
 
 export function resolveLValueRef(path: ASTLvalueRef[], sctx: StatementContext, ctx: CompilerContext): CompilerContext {
@@ -521,7 +521,7 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
     }
 
     if (exp.kind === 'conditional') {
-        return resolveTernary(exp, sctx, ctx);
+        return resolveConditional(exp, sctx, ctx);
     }
 
     throw Error('Unknown expression'); // Unreachable

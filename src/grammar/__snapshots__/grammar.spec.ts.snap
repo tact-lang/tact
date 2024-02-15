@@ -3923,7 +3923,7 @@ exports[`grammar should parse case-29 1`] = `
                 "value": 123n,
               },
             },
-            "falseExpression": {
+            "elseBranch": {
               "id": 9,
               "kind": "number",
               "ref": 2,
@@ -3932,7 +3932,7 @@ exports[`grammar should parse case-29 1`] = `
             "id": 10,
             "kind": "conditional",
             "ref": a == 123 ? 1 : 2,
-            "trueExpression": {
+            "thenBranch": {
               "id": 8,
               "kind": "number",
               "ref": 1,
@@ -4025,7 +4025,7 @@ exports[`grammar should parse case-30 1`] = `
                 "value": 123n,
               },
             },
-            "falseExpression": {
+            "elseBranch": {
               "id": 8,
               "kind": "number",
               "ref": 2,
@@ -4034,7 +4034,7 @@ exports[`grammar should parse case-30 1`] = `
             "id": 9,
             "kind": "conditional",
             "ref": a == 123 ? 1 : 2,
-            "trueExpression": {
+            "thenBranch": {
               "id": 7,
               "kind": "number",
               "ref": 1,
@@ -4132,7 +4132,7 @@ exports[`grammar should parse case-31 1`] = `
                 },
               },
             },
-            "falseExpression": {
+            "elseBranch": {
               "id": 16,
               "kind": "op_binary",
               "left": {
@@ -4153,7 +4153,7 @@ exports[`grammar should parse case-31 1`] = `
             "id": 17,
             "kind": "conditional",
             "ref": a == 123 || a == 456 ? a + 1 : a + 2,
-            "trueExpression": {
+            "thenBranch": {
               "id": 13,
               "kind": "op_binary",
               "left": {
@@ -4263,7 +4263,7 @@ exports[`grammar should parse case-32 1`] = `
                 },
               },
             },
-            "falseExpression": {
+            "elseBranch": {
               "id": 21,
               "kind": "op_binary",
               "left": {
@@ -4284,7 +4284,7 @@ exports[`grammar should parse case-32 1`] = `
             "id": 22,
             "kind": "conditional",
             "ref": a == 123 || a == 456 ? (a == 10 ? a : a * 2) : a + 2,
-            "trueExpression": {
+            "thenBranch": {
               "condition": {
                 "id": 13,
                 "kind": "op_binary",
@@ -4303,7 +4303,7 @@ exports[`grammar should parse case-32 1`] = `
                   "value": 10n,
                 },
               },
-              "falseExpression": {
+              "elseBranch": {
                 "id": 17,
                 "kind": "op_binary",
                 "left": {
@@ -4324,7 +4324,7 @@ exports[`grammar should parse case-32 1`] = `
               "id": 18,
               "kind": "conditional",
               "ref": a == 10 ? a : a * 2,
-              "trueExpression": {
+              "thenBranch": {
                 "id": 14,
                 "kind": "id",
                 "ref": a,

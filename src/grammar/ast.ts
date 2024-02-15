@@ -195,8 +195,8 @@ export type ASTConditional = {
     kind: 'conditional'
     id: number,
     condition: ASTExpression,
-    trueExpression: ASTExpression,
-    falseExpression: ASTExpression,
+    thenBranch: ASTExpression,
+    elseBranch: ASTExpression,
     ref: ASTRef
 }
 
@@ -639,7 +639,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     }
     if (node.kind === 'conditional') {
         traverse(node.condition, callback);
-        traverse(node.trueExpression, callback);
-        traverse(node.falseExpression, callback);
+        traverse(node.thenBranch, callback);
+        traverse(node.elseBranch, callback);
     }
 }
