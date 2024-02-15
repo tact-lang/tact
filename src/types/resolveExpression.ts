@@ -1,4 +1,4 @@
-import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError, cloneASTNode } from '../grammar/ast';
+import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError, cloneASTNode, ASTConditional } from '../grammar/ast';
 import { CompilerContext, createContextStore } from "../context";
 import { getStaticConstant, getStaticFunction, getType, hasStaticConstant, hasStaticFunction } from "./resolveDescriptors";
 import { FieldDescription, printTypeRef, TypeRef, typeRefEquals } from "./types";
@@ -395,6 +395,27 @@ export function resolveInitOf(ast: ASTInitOf, sctx: StatementContext, ctx: Compi
     return registerExpType(ctx, ast, { kind: 'ref', name: 'StateInit', optional: false });
 }
 
+export function resolveConditional(ast: ASTConditional, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
+    // Resolve condition
+    ctx = resolveExpression(ast.condition, sctx, ctx);
+    let conditionType = getExpType(ctx, ast.condition);
+    if (conditionType.kind !== 'ref' || conditionType.optional || conditionType.name !== 'Bool') {
+        throwError(`Invalid type "${printTypeRef(conditionType)}" for ternary condition`, ast.condition.ref);
+    }
+
+    // Resolve then and else branches
+    ctx = resolveExpression(ast.thenBranch, sctx, ctx);
+    ctx = resolveExpression(ast.elseBranch, sctx, ctx);
+    let thenType = getExpType(ctx, ast.thenBranch);
+    let elseType = getExpType(ctx, ast.elseBranch);
+    if (!typeRefEquals(thenType, elseType)) {
+        throwError(`Non-matching types "${printTypeRef(thenType)}" and "${printTypeRef(elseType)}" for ternary branches`, ast.elseBranch.ref);
+    }
+
+    // Register result
+    return registerExpType(ctx, ast, thenType);
+}
+
 export function resolveLValueRef(path: ASTLvalueRef[], sctx: StatementContext, ctx: CompilerContext): CompilerContext {
     let paths: ASTLvalueRef[] = path;
     let t = sctx.vars[paths[0].name];
@@ -497,6 +518,10 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
 
     if (exp.kind === 'init_of') {
         return resolveInitOf(exp, sctx, ctx);
+    }
+
+    if (exp.kind === 'conditional') {
+        return resolveConditional(exp, sctx, ctx);
     }
 
     throw Error('Unknown expression'); // Unreachable

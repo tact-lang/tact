@@ -230,6 +230,14 @@
       }
     },
     {
+        "name": "ternary",
+        "path": "./src/test/features/ternary.tact",
+        "output": "./src/test/features/output",
+        "options": {
+          "debug": true
+        }
+      },
+    {
       "name": "benchmark_functions",
       "path": "./src/benchmarks/contracts/functions.tact",
       "output": "./src/benchmarks/contracts/output"
