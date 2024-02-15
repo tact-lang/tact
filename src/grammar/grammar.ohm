@@ -126,7 +126,7 @@ Tact {
 
     // Expressions
     Expression = ExpressionConditional
-    ExpressionConditional = ExpressionOr "?" ExpressionOr ":" ExpressionOr --ternary
+    ExpressionConditional = ExpressionOr "?" ExpressionOr ":" ExpressionConditional --ternary
                           | ExpressionOr
     ExpressionOr = ExpressionOr "||" ExpressionAnd --or
                  | ExpressionAnd
