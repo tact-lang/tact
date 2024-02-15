@@ -3930,7 +3930,7 @@ exports[`grammar should parse case-29 1`] = `
               "value": 2n,
             },
             "id": 10,
-            "kind": "op_ternary",
+            "kind": "conditional",
             "ref": a == 123 ? 1 : 2,
             "trueExpression": {
               "id": 8,
@@ -4032,7 +4032,7 @@ exports[`grammar should parse case-30 1`] = `
               "value": 2n,
             },
             "id": 9,
-            "kind": "op_ternary",
+            "kind": "conditional",
             "ref": a == 123 ? 1 : 2,
             "trueExpression": {
               "id": 7,
@@ -4151,7 +4151,7 @@ exports[`grammar should parse case-31 1`] = `
               },
             },
             "id": 17,
-            "kind": "op_ternary",
+            "kind": "conditional",
             "ref": a == 123 || a == 456 ? a + 1 : a + 2,
             "trueExpression": {
               "id": 13,
@@ -4282,7 +4282,7 @@ exports[`grammar should parse case-32 1`] = `
               },
             },
             "id": 22,
-            "kind": "op_ternary",
+            "kind": "conditional",
             "ref": a == 123 || a == 456 ? (a == 10 ? a : a * 2) : a + 2,
             "trueExpression": {
               "condition": {
@@ -4322,7 +4322,7 @@ exports[`grammar should parse case-32 1`] = `
                 },
               },
               "id": 18,
-              "kind": "op_ternary",
+              "kind": "conditional",
               "ref": a == 10 ? a : a * 2,
               "trueExpression": {
                 "id": 14,

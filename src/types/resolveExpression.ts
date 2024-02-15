@@ -1,4 +1,4 @@
-import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError, cloneASTNode, ASTTernaryCondition } from '../grammar/ast';
+import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError, cloneASTNode, ASTConditional } from '../grammar/ast';
 import { CompilerContext, createContextStore } from "../context";
 import { getStaticConstant, getStaticFunction, getType, hasStaticConstant, hasStaticFunction } from "./resolveDescriptors";
 import { FieldDescription, printTypeRef, TypeRef, typeRefEquals } from "./types";
@@ -395,7 +395,7 @@ export function resolveInitOf(ast: ASTInitOf, sctx: StatementContext, ctx: Compi
     return registerExpType(ctx, ast, { kind: 'ref', name: 'StateInit', optional: false });
 }
 
-export function resolveTernary(ast: ASTTernaryCondition, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
+export function resolveTernary(ast: ASTConditional, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
     // Resolve condition
     ctx = resolveExpression(ast.condition, sctx, ctx);
     let conditionType = getExpType(ctx, ast.condition);
@@ -520,7 +520,7 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
         return resolveInitOf(exp, sctx, ctx);
     }
 
-    if (exp.kind === 'op_ternary') {
+    if (exp.kind === 'conditional') {
         return resolveTernary(exp, sctx, ctx);
     }
 

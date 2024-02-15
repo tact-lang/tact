@@ -191,8 +191,8 @@ export type ASTInitOf = {
     ref: ASTRef
 }
 
-export type ASTTernaryCondition = {
-    kind: 'op_ternary'
+export type ASTConditional = {
+    kind: 'conditional'
     id: number,
     condition: ASTExpression,
     trueExpression: ASTExpression,
@@ -433,7 +433,7 @@ export type ASTStatementRepeat = {
 
 export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementExpression | ASTSTatementAssign | ASTSTatementAugmentedAssign | ASTCondition | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
 export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTSTatementAugmentedAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef | ASTString | ASTTrait | ASTProgramImport | ASTFunction | ASTNativeFunction | ASTInitOf | ASTString | ASTConstant;
-export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull | ASTLvalueRef | ASTInitOf | ASTString | ASTTernaryCondition;
+export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull | ASTLvalueRef | ASTInitOf | ASTString | ASTConditional;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract | ASTTrait;
 
 type DistributiveOmit<T, K extends keyof any> = T extends any
@@ -637,7 +637,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     if (node.kind === 'new_parameter') {
         traverse(node.exp, callback);
     }
-    if (node.kind === 'op_ternary') {
+    if (node.kind === 'conditional') {
         traverse(node.condition, callback);
         traverse(node.trueExpression, callback);
         traverse(node.falseExpression, callback);
