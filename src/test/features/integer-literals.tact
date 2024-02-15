@@ -17,7 +17,7 @@ contract IntegerLiteralsTester {
     }
 
     get fun decLiteral3(): Int {
-        return 1_0123_00__000;
+        return 1_0123_00_000;
     }
 
     get fun hexLiteral1(): Int {
@@ -29,7 +29,7 @@ contract IntegerLiteralsTester {
     }
 
     get fun hexLiteral3(): Int {
-        return 0x1_0123_00__000;
+        return 0x1_0123_00_000;
     }
 
     get fun binLiteral1(): Int {
@@ -41,7 +41,7 @@ contract IntegerLiteralsTester {
     }
 
     get fun binLiteral3(): Int {
-        return 0b1_0101_00__000;
+        return 0b1_0101_00_000;
     }
 
     get fun octLiteral1(): Int {
@@ -53,6 +53,6 @@ contract IntegerLiteralsTester {
     }
 
     get fun octLiteral3(): Int {
-        return 0o1_0123_00__000;
+        return 0o1_0123_00_000;
     }
 }
