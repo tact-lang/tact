@@ -1,0 +1,12 @@
+global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
+global cell __tact_context_sys;
+global int __tact_randomized;
+
+slice __tact_verify_address(slice address) inline {
+    throw_unless(136, address.slice_bits() == 267);
+    var h = address.preload_uint(11);
+    throw_if(137, h == 1279);
+    throw_unless(136, h == 1024);
+    return address;
+}

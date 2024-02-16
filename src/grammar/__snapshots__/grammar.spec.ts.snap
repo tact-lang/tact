@@ -112,6 +112,76 @@ Line 1, col 14:
 "
 `;
 
+exports[`grammar should fail case-12 1`] = `
+"<unknown>:2:14: Syntax error: expected "1" or "0" 
+Line 2, col 14:
+  1 | fun test_fun(): Int {
+> 2 |     return 0b_00101010;
+                   ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-13 1`] = `
+"<unknown>:2:15: Syntax error: expected ";" 
+Line 2, col 15:
+  1 | fun test_fun(): Int {
+> 2 |     return 0b123;
+                    ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-14 1`] = `
+"<unknown>:2:16: Syntax error: expected a digit 
+Line 2, col 16:
+  1 | fun test_fun(): Int {
+> 2 |     return 123_;
+                     ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-15 1`] = `
+"<unknown>:2:18: Syntax error: expected a hexadecimal digit 
+Line 2, col 18:
+  1 | fun test_fun(): Int {
+> 2 |     return 0x123_;
+                       ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-16 1`] = `
+"<unknown>:2:13: Syntax error: expected ";" 
+Line 2, col 13:
+  1 | fun test_fun(): Int {
+> 2 |     return 0_123;
+                  ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-17 1`] = `
+"<unknown>:2:20: Syntax error: expected a digit 
+Line 2, col 20:
+  1 | fun test_fun(): Int {
+> 2 |     return 123_123__123;
+                         ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-18 1`] = `
+"<unknown>:2:15: Syntax error: expected ";" 
+Line 2, col 15:
+  1 | fun test_fun(): Int {
+> 2 |     return 012_3;
+                    ^
+  3 | }
+"
+`;
+
 exports[`grammar should parse case-0 1`] = `
 {
   "entries": [
@@ -3357,6 +3427,919 @@ exports[`grammar should parse case-27 1`] = `
     },
   ],
   "id": 69,
+  "kind": "program",
+}
+`;
+
+exports[`grammar should parse case-28 1`] = `
+{
+  "entries": [
+    {
+      "args": [],
+      "attributes": [],
+      "id": 66,
+      "kind": "def_function",
+      "name": "test_fun",
+      "origin": "user",
+      "ref": fun test_fun(): Int {
+    let a: Int = 123;
+    let b: Int = -123;
+    let c: Int = 1_0123_00_000;
+    let d: Int = 0x123;
+    let e: Int = -0x123;
+    let f: Int = 0x1_0123_00_000;
+    let g: Int = 0b101010;
+    let h: Int = -0b101010;
+    let i: Int = 0b1_0101_00_000;
+    let j: Int = 0o123;
+    let k: Int = -0o123;
+    let l: Int = 0o1_0123_00_000;
+    return a + b + c + d + e + f + g + h + i + j + k + l;
+},
+      "return": {
+        "id": 1,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 3,
+            "kind": "number",
+            "ref": 123,
+            "value": 123n,
+          },
+          "id": 4,
+          "kind": "statement_let",
+          "name": "a",
+          "ref": let a: Int = 123;,
+          "type": {
+            "id": 2,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 7,
+            "kind": "op_unary",
+            "op": "-",
+            "ref": -123,
+            "right": {
+              "id": 6,
+              "kind": "number",
+              "ref": 123,
+              "value": 123n,
+            },
+          },
+          "id": 8,
+          "kind": "statement_let",
+          "name": "b",
+          "ref": let b: Int = -123;,
+          "type": {
+            "id": 5,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 10,
+            "kind": "number",
+            "ref": 1_0123_00_000,
+            "value": 1012300000n,
+          },
+          "id": 11,
+          "kind": "statement_let",
+          "name": "c",
+          "ref": let c: Int = 1_0123_00_000;,
+          "type": {
+            "id": 9,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 13,
+            "kind": "number",
+            "ref": 0x123,
+            "value": 291n,
+          },
+          "id": 14,
+          "kind": "statement_let",
+          "name": "d",
+          "ref": let d: Int = 0x123;,
+          "type": {
+            "id": 12,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 17,
+            "kind": "op_unary",
+            "op": "-",
+            "ref": -0x123,
+            "right": {
+              "id": 16,
+              "kind": "number",
+              "ref": 0x123,
+              "value": 291n,
+            },
+          },
+          "id": 18,
+          "kind": "statement_let",
+          "name": "e",
+          "ref": let e: Int = -0x123;,
+          "type": {
+            "id": 15,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 20,
+            "kind": "number",
+            "ref": 0x1_0123_00_000,
+            "value": 69024612352n,
+          },
+          "id": 21,
+          "kind": "statement_let",
+          "name": "f",
+          "ref": let f: Int = 0x1_0123_00_000;,
+          "type": {
+            "id": 19,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 23,
+            "kind": "number",
+            "ref": 0b101010,
+            "value": 42n,
+          },
+          "id": 24,
+          "kind": "statement_let",
+          "name": "g",
+          "ref": let g: Int = 0b101010;,
+          "type": {
+            "id": 22,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 27,
+            "kind": "op_unary",
+            "op": "-",
+            "ref": -0b101010,
+            "right": {
+              "id": 26,
+              "kind": "number",
+              "ref": 0b101010,
+              "value": 42n,
+            },
+          },
+          "id": 28,
+          "kind": "statement_let",
+          "name": "h",
+          "ref": let h: Int = -0b101010;,
+          "type": {
+            "id": 25,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 30,
+            "kind": "number",
+            "ref": 0b1_0101_00_000,
+            "value": 672n,
+          },
+          "id": 31,
+          "kind": "statement_let",
+          "name": "i",
+          "ref": let i: Int = 0b1_0101_00_000;,
+          "type": {
+            "id": 29,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 33,
+            "kind": "number",
+            "ref": 0o123,
+            "value": 83n,
+          },
+          "id": 34,
+          "kind": "statement_let",
+          "name": "j",
+          "ref": let j: Int = 0o123;,
+          "type": {
+            "id": 32,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 37,
+            "kind": "op_unary",
+            "op": "-",
+            "ref": -0o123,
+            "right": {
+              "id": 36,
+              "kind": "number",
+              "ref": 0o123,
+              "value": 83n,
+            },
+          },
+          "id": 38,
+          "kind": "statement_let",
+          "name": "k",
+          "ref": let k: Int = -0o123;,
+          "type": {
+            "id": 35,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 40,
+            "kind": "number",
+            "ref": 0o1_0123_00_000,
+            "value": 136937472n,
+          },
+          "id": 41,
+          "kind": "statement_let",
+          "name": "l",
+          "ref": let l: Int = 0o1_0123_00_000;,
+          "type": {
+            "id": 39,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 64,
+            "kind": "op_binary",
+            "left": {
+              "id": 62,
+              "kind": "op_binary",
+              "left": {
+                "id": 60,
+                "kind": "op_binary",
+                "left": {
+                  "id": 58,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 56,
+                    "kind": "op_binary",
+                    "left": {
+                      "id": 54,
+                      "kind": "op_binary",
+                      "left": {
+                        "id": 52,
+                        "kind": "op_binary",
+                        "left": {
+                          "id": 50,
+                          "kind": "op_binary",
+                          "left": {
+                            "id": 48,
+                            "kind": "op_binary",
+                            "left": {
+                              "id": 46,
+                              "kind": "op_binary",
+                              "left": {
+                                "id": 44,
+                                "kind": "op_binary",
+                                "left": {
+                                  "id": 42,
+                                  "kind": "id",
+                                  "ref": a,
+                                  "value": "a",
+                                },
+                                "op": "+",
+                                "ref": a + b,
+                                "right": {
+                                  "id": 43,
+                                  "kind": "id",
+                                  "ref": b,
+                                  "value": "b",
+                                },
+                              },
+                              "op": "+",
+                              "ref": a + b + c,
+                              "right": {
+                                "id": 45,
+                                "kind": "id",
+                                "ref": c,
+                                "value": "c",
+                              },
+                            },
+                            "op": "+",
+                            "ref": a + b + c + d,
+                            "right": {
+                              "id": 47,
+                              "kind": "id",
+                              "ref": d,
+                              "value": "d",
+                            },
+                          },
+                          "op": "+",
+                          "ref": a + b + c + d + e,
+                          "right": {
+                            "id": 49,
+                            "kind": "id",
+                            "ref": e,
+                            "value": "e",
+                          },
+                        },
+                        "op": "+",
+                        "ref": a + b + c + d + e + f,
+                        "right": {
+                          "id": 51,
+                          "kind": "id",
+                          "ref": f,
+                          "value": "f",
+                        },
+                      },
+                      "op": "+",
+                      "ref": a + b + c + d + e + f + g,
+                      "right": {
+                        "id": 53,
+                        "kind": "id",
+                        "ref": g,
+                        "value": "g",
+                      },
+                    },
+                    "op": "+",
+                    "ref": a + b + c + d + e + f + g + h,
+                    "right": {
+                      "id": 55,
+                      "kind": "id",
+                      "ref": h,
+                      "value": "h",
+                    },
+                  },
+                  "op": "+",
+                  "ref": a + b + c + d + e + f + g + h + i,
+                  "right": {
+                    "id": 57,
+                    "kind": "id",
+                    "ref": i,
+                    "value": "i",
+                  },
+                },
+                "op": "+",
+                "ref": a + b + c + d + e + f + g + h + i + j,
+                "right": {
+                  "id": 59,
+                  "kind": "id",
+                  "ref": j,
+                  "value": "j",
+                },
+              },
+              "op": "+",
+              "ref": a + b + c + d + e + f + g + h + i + j + k,
+              "right": {
+                "id": 61,
+                "kind": "id",
+                "ref": k,
+                "value": "k",
+              },
+            },
+            "op": "+",
+            "ref": a + b + c + d + e + f + g + h + i + j + k + l,
+            "right": {
+              "id": 63,
+              "kind": "id",
+              "ref": l,
+              "value": "l",
+            },
+          },
+          "id": 65,
+          "kind": "statement_return",
+          "ref": return a + b + c + d + e + f + g + h + i + j + k + l;,
+        },
+      ],
+    },
+  ],
+  "id": 67,
+  "kind": "program",
+}
+`;
+
+exports[`grammar should parse case-29 1`] = `
+{
+  "entries": [
+    {
+      "args": [
+        {
+          "id": 3,
+          "kind": "def_argument",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 2,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 14,
+      "kind": "def_function",
+      "name": "testFunc",
+      "origin": "user",
+      "ref": fun testFunc(a: Int): Int {
+    let b: Int = a == 123 ? 1 : 2;
+    return b;
+},
+      "return": {
+        "id": 1,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "condition": {
+              "id": 7,
+              "kind": "op_binary",
+              "left": {
+                "id": 5,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "op": "==",
+              "ref": a == 123,
+              "right": {
+                "id": 6,
+                "kind": "number",
+                "ref": 123,
+                "value": 123n,
+              },
+            },
+            "elseBranch": {
+              "id": 9,
+              "kind": "number",
+              "ref": 2,
+              "value": 2n,
+            },
+            "id": 10,
+            "kind": "conditional",
+            "ref": a == 123 ? 1 : 2,
+            "thenBranch": {
+              "id": 8,
+              "kind": "number",
+              "ref": 1,
+              "value": 1n,
+            },
+          },
+          "id": 11,
+          "kind": "statement_let",
+          "name": "b",
+          "ref": let b: Int = a == 123 ? 1 : 2;,
+          "type": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 12,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
+          "id": 13,
+          "kind": "statement_return",
+          "ref": return b;,
+        },
+      ],
+    },
+  ],
+  "id": 15,
+  "kind": "program",
+}
+`;
+
+exports[`grammar should parse case-30 1`] = `
+{
+  "entries": [
+    {
+      "args": [
+        {
+          "id": 3,
+          "kind": "def_argument",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 2,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 11,
+      "kind": "def_function",
+      "name": "testFunc",
+      "origin": "user",
+      "ref": fun testFunc(a: Int): Int {
+    return a == 123 ? 1 : 2;
+},
+      "return": {
+        "id": 1,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "condition": {
+              "id": 6,
+              "kind": "op_binary",
+              "left": {
+                "id": 4,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "op": "==",
+              "ref": a == 123,
+              "right": {
+                "id": 5,
+                "kind": "number",
+                "ref": 123,
+                "value": 123n,
+              },
+            },
+            "elseBranch": {
+              "id": 8,
+              "kind": "number",
+              "ref": 2,
+              "value": 2n,
+            },
+            "id": 9,
+            "kind": "conditional",
+            "ref": a == 123 ? 1 : 2,
+            "thenBranch": {
+              "id": 7,
+              "kind": "number",
+              "ref": 1,
+              "value": 1n,
+            },
+          },
+          "id": 10,
+          "kind": "statement_return",
+          "ref": return a == 123 ? 1 : 2;,
+        },
+      ],
+    },
+  ],
+  "id": 12,
+  "kind": "program",
+}
+`;
+
+exports[`grammar should parse case-31 1`] = `
+{
+  "entries": [
+    {
+      "args": [
+        {
+          "id": 3,
+          "kind": "def_argument",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 2,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 19,
+      "kind": "def_function",
+      "name": "testFunc",
+      "origin": "user",
+      "ref": fun testFunc(a: Int): Int {
+    return a == 123 || a == 456 ? a + 1 : a + 2;
+},
+      "return": {
+        "id": 1,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "condition": {
+              "id": 10,
+              "kind": "op_binary",
+              "left": {
+                "id": 6,
+                "kind": "op_binary",
+                "left": {
+                  "id": 4,
+                  "kind": "id",
+                  "ref": a,
+                  "value": "a",
+                },
+                "op": "==",
+                "ref": a == 123,
+                "right": {
+                  "id": 5,
+                  "kind": "number",
+                  "ref": 123,
+                  "value": 123n,
+                },
+              },
+              "op": "||",
+              "ref": a == 123 || a == 456,
+              "right": {
+                "id": 9,
+                "kind": "op_binary",
+                "left": {
+                  "id": 7,
+                  "kind": "id",
+                  "ref": a,
+                  "value": "a",
+                },
+                "op": "==",
+                "ref": a == 456,
+                "right": {
+                  "id": 8,
+                  "kind": "number",
+                  "ref": 456,
+                  "value": 456n,
+                },
+              },
+            },
+            "elseBranch": {
+              "id": 16,
+              "kind": "op_binary",
+              "left": {
+                "id": 14,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "op": "+",
+              "ref": a + 2,
+              "right": {
+                "id": 15,
+                "kind": "number",
+                "ref": 2,
+                "value": 2n,
+              },
+            },
+            "id": 17,
+            "kind": "conditional",
+            "ref": a == 123 || a == 456 ? a + 1 : a + 2,
+            "thenBranch": {
+              "id": 13,
+              "kind": "op_binary",
+              "left": {
+                "id": 11,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "op": "+",
+              "ref": a + 1,
+              "right": {
+                "id": 12,
+                "kind": "number",
+                "ref": 1,
+                "value": 1n,
+              },
+            },
+          },
+          "id": 18,
+          "kind": "statement_return",
+          "ref": return a == 123 || a == 456 ? a + 1 : a + 2;,
+        },
+      ],
+    },
+  ],
+  "id": 20,
+  "kind": "program",
+}
+`;
+
+exports[`grammar should parse case-32 1`] = `
+{
+  "entries": [
+    {
+      "args": [
+        {
+          "id": 3,
+          "kind": "def_argument",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 2,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 24,
+      "kind": "def_function",
+      "name": "testFunc",
+      "origin": "user",
+      "ref": fun testFunc(a: Int): Int {
+    return a == 123 || a == 456 ? (a == 10 ? a : a * 2) : a + 2;
+},
+      "return": {
+        "id": 1,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "condition": {
+              "id": 10,
+              "kind": "op_binary",
+              "left": {
+                "id": 6,
+                "kind": "op_binary",
+                "left": {
+                  "id": 4,
+                  "kind": "id",
+                  "ref": a,
+                  "value": "a",
+                },
+                "op": "==",
+                "ref": a == 123,
+                "right": {
+                  "id": 5,
+                  "kind": "number",
+                  "ref": 123,
+                  "value": 123n,
+                },
+              },
+              "op": "||",
+              "ref": a == 123 || a == 456,
+              "right": {
+                "id": 9,
+                "kind": "op_binary",
+                "left": {
+                  "id": 7,
+                  "kind": "id",
+                  "ref": a,
+                  "value": "a",
+                },
+                "op": "==",
+                "ref": a == 456,
+                "right": {
+                  "id": 8,
+                  "kind": "number",
+                  "ref": 456,
+                  "value": 456n,
+                },
+              },
+            },
+            "elseBranch": {
+              "id": 21,
+              "kind": "op_binary",
+              "left": {
+                "id": 19,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "op": "+",
+              "ref": a + 2,
+              "right": {
+                "id": 20,
+                "kind": "number",
+                "ref": 2,
+                "value": 2n,
+              },
+            },
+            "id": 22,
+            "kind": "conditional",
+            "ref": a == 123 || a == 456 ? (a == 10 ? a : a * 2) : a + 2,
+            "thenBranch": {
+              "condition": {
+                "id": 13,
+                "kind": "op_binary",
+                "left": {
+                  "id": 11,
+                  "kind": "id",
+                  "ref": a,
+                  "value": "a",
+                },
+                "op": "==",
+                "ref": a == 10,
+                "right": {
+                  "id": 12,
+                  "kind": "number",
+                  "ref": 10,
+                  "value": 10n,
+                },
+              },
+              "elseBranch": {
+                "id": 17,
+                "kind": "op_binary",
+                "left": {
+                  "id": 15,
+                  "kind": "id",
+                  "ref": a,
+                  "value": "a",
+                },
+                "op": "*",
+                "ref": a * 2,
+                "right": {
+                  "id": 16,
+                  "kind": "number",
+                  "ref": 2,
+                  "value": 2n,
+                },
+              },
+              "id": 18,
+              "kind": "conditional",
+              "ref": a == 10 ? a : a * 2,
+              "thenBranch": {
+                "id": 14,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+            },
+          },
+          "id": 23,
+          "kind": "statement_return",
+          "ref": return a == 123 || a == 456 ? (a == 10 ? a : a * 2) : a + 2;,
+        },
+      ],
+    },
+  ],
+  "id": 25,
   "kind": "program",
 }
 `;

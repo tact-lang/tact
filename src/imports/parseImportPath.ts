@@ -1,11 +1,12 @@
+import path from "path";
 import normalize from "path-normalize";
 
 export function parseImportPath(src: string) {
-    if (!src.startsWith('./')) {
+    if (!(src.startsWith('./') || src.startsWith('../'))) {
         return null;
     }
     if (src.endsWith('/')) {
         return null;
     }
-    return normalize(src.slice(2)).split('/');
+    return normalize(src).split('/');
 }

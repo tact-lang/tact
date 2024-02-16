@@ -100,6 +100,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   LValue_single?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   LValue?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Expression?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionConditional_ternary?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode) => T;
+  ExpressionConditional?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionOr_or?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionOr?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionAnd_and?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
@@ -141,8 +143,15 @@ export interface TactActionDict<T> extends ActionDict<T> {
   typeLiteral?: (this: NonterminalNode, arg0: NonterminalNode, arg1: IterationNode) => T;
   typeLiteralPart?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
   integerLiteral?: (this: NonterminalNode, arg0: NonterminalNode) => T;
-  integerLiteralDec?: (this: NonterminalNode, arg0: IterationNode) => T;
-  integerLiteralHex?: (this: NonterminalNode, arg0: TerminalNode, arg1: IterationNode) => T;
+  integerLiteralDec_nonZeroIntegerLiteralDec?: (this: NonterminalNode, arg0: NonterminalNode, arg1: IterationNode, arg2: IterationNode) => T;
+  integerLiteralDec_integerLiteralWithLeadingZero?: (this: NonterminalNode, arg0: TerminalNode, arg1: IterationNode) => T;
+  integerLiteralDec?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  integerLiteralHex?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode, arg2: IterationNode, arg3: IterationNode) => T;
+  integerLiteralBin?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode, arg2: IterationNode, arg3: IterationNode) => T;
+  integerLiteralOct?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode, arg2: IterationNode, arg3: IterationNode) => T;
+  binDigit?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  octDigit?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  nonZeroDigit?: (this: NonterminalNode, arg0: TerminalNode) => T;
   letterAsciiLC?: (this: NonterminalNode, arg0: TerminalNode) => T;
   letterAsciiUC?: (this: NonterminalNode, arg0: TerminalNode) => T;
   letterAscii?: (this: NonterminalNode, arg0: NonterminalNode) => T;

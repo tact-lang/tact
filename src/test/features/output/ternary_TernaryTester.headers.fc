@@ -1,0 +1,28 @@
+;;
+;; Header files for TernaryTester
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_verify_address
+slice __tact_verify_address(slice address) inline;
+
+;; $TernaryTester$_contract_init
+tuple $TernaryTester$_contract_init() impure inline_ref;
+
+;; $TernaryTester$_contract_load
+tuple $TernaryTester$_contract_load() impure inline_ref;
+
+;; $TernaryTester$_contract_store
+() $TernaryTester$_contract_store(tuple v) impure inline;
+
+;; $TernaryTester$_fun_test1
+(tuple, int) $TernaryTester$_fun_test1(tuple $self, int $a) impure inline_ref;
+
+;; $TernaryTester$_fun_test2
+(tuple, int) $TernaryTester$_fun_test2(tuple $self, int $a) impure inline_ref;
+
+;; $TernaryTester$_fun_test3
+(tuple, int) $TernaryTester$_fun_test3(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $TernaryTester$_fun_test4
+(tuple, int) $TernaryTester$_fun_test4(tuple $self, int $a, int $b) impure inline_ref;
