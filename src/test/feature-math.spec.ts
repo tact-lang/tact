@@ -17,6 +17,16 @@ describe('feature-math', () => {
         let addressB = randomAddress('b');
         let cellA = beginCell().storeUint(0, 32).endCell();
         let cellB = beginCell().storeUint(1, 32).endCell();
+        let sliceA = beginCell()
+            .storeBit(0)
+            .storeRef(beginCell().storeBit(1).endCell())
+            .endCell();
+        let sliceB = beginCell()
+            .storeBit(1)
+            .storeRef(beginCell().storeBit(1).endCell())
+            .endCell();
+        let stringA = "foo";
+        let stringB = "bar";
         let dictA = Dictionary.empty<bigint, bigint>().set(0n, 0n);
         let dictB = Dictionary.empty<bigint, bigint>().set(0n, 2n);
         await contract.send(treasure, { value: toNano('10') }, { $$type: 'Deploy', queryId: 0n });
@@ -221,6 +231,102 @@ describe('feature-math', () => {
         expect(await contract.getCompare26(cellA, null)).toBe(true);
         expect(await contract.getCompare26(null, null)).toBe(false);
         expect(await contract.getCompare26(null, null)).toBe(false);
+
+        // Slice equals
+        expect(await contract.getCompare29(sliceA, sliceB)).toBe(false);
+        expect(await contract.getCompare29(sliceB, sliceA)).toBe(false);
+        expect(await contract.getCompare29(sliceA, sliceA)).toBe(true);
+        expect(await contract.getCompare30(sliceA, sliceB)).toBe(false);
+        expect(await contract.getCompare30(sliceB, sliceA)).toBe(false);
+        expect(await contract.getCompare30(sliceA, sliceA)).toBe(true);
+        expect(await contract.getCompare30(sliceB, null)).toBe(false);
+        expect(await contract.getCompare30(sliceA, null)).toBe(false);
+        expect(await contract.getCompare31(sliceA, sliceB)).toBe(false);
+        expect(await contract.getCompare31(sliceB, sliceA)).toBe(false);
+        expect(await contract.getCompare31(sliceA, sliceA)).toBe(true);
+        expect(await contract.getCompare31(null, sliceB)).toBe(false);
+        expect(await contract.getCompare31(null, sliceA)).toBe(false);
+        expect(await contract.getCompare32(sliceA, sliceB)).toBe(false);
+        expect(await contract.getCompare32(sliceB, sliceA)).toBe(false);
+        expect(await contract.getCompare32(sliceA, sliceA)).toBe(true);
+        expect(await contract.getCompare32(null, sliceB)).toBe(false);
+        expect(await contract.getCompare32(null, sliceA)).toBe(false);
+        expect(await contract.getCompare32(sliceB, null)).toBe(false);
+        expect(await contract.getCompare32(sliceA, null)).toBe(false);
+        expect(await contract.getCompare32(null, null)).toBe(true);
+        expect(await contract.getCompare32(null, null)).toBe(true);
+
+        // Slice not equals
+        expect(await contract.getCompare33(sliceA, sliceB)).toBe(true);
+        expect(await contract.getCompare33(sliceB, sliceA)).toBe(true);
+        expect(await contract.getCompare33(sliceA, sliceA)).toBe(false);
+        expect(await contract.getCompare34(sliceA, sliceB)).toBe(true);
+        expect(await contract.getCompare34(sliceB, sliceA)).toBe(true);
+        expect(await contract.getCompare34(sliceA, sliceA)).toBe(false);
+        expect(await contract.getCompare34(sliceB, null)).toBe(true);
+        expect(await contract.getCompare34(sliceA, null)).toBe(true);
+        expect(await contract.getCompare35(sliceA, sliceB)).toBe(true);
+        expect(await contract.getCompare35(sliceB, sliceA)).toBe(true);
+        expect(await contract.getCompare35(sliceA, sliceA)).toBe(false);
+        expect(await contract.getCompare35(null, sliceB)).toBe(true);
+        expect(await contract.getCompare35(null, sliceA)).toBe(true);
+        expect(await contract.getCompare36(sliceA, sliceB)).toBe(true);
+        expect(await contract.getCompare36(sliceB, sliceA)).toBe(true);
+        expect(await contract.getCompare36(sliceA, sliceA)).toBe(false);
+        expect(await contract.getCompare36(null, sliceB)).toBe(true);
+        expect(await contract.getCompare36(null, sliceA)).toBe(true);
+        expect(await contract.getCompare36(sliceB, null)).toBe(true);
+        expect(await contract.getCompare36(sliceA, null)).toBe(true);
+        expect(await contract.getCompare36(null, null)).toBe(false);
+        expect(await contract.getCompare36(null, null)).toBe(false);
+
+        // string equals
+        expect(await contract.getCompare37(stringA, stringB)).toBe(false);
+        expect(await contract.getCompare37(stringB, stringA)).toBe(false);
+        expect(await contract.getCompare37(stringA, stringA)).toBe(true);
+        expect(await contract.getCompare38(stringA, stringB)).toBe(false);
+        expect(await contract.getCompare38(stringB, stringA)).toBe(false);
+        expect(await contract.getCompare38(stringA, stringA)).toBe(true);
+        expect(await contract.getCompare38(stringB, null)).toBe(false);
+        expect(await contract.getCompare38(stringA, null)).toBe(false);
+        expect(await contract.getCompare39(stringA, stringB)).toBe(false);
+        expect(await contract.getCompare39(stringB, stringA)).toBe(false);
+        expect(await contract.getCompare39(stringA, stringA)).toBe(true);
+        expect(await contract.getCompare39(null, stringB)).toBe(false);
+        expect(await contract.getCompare39(null, stringA)).toBe(false);
+        expect(await contract.getCompare40(stringA, stringB)).toBe(false);
+        expect(await contract.getCompare40(stringB, stringA)).toBe(false);
+        expect(await contract.getCompare40(stringA, stringA)).toBe(true);
+        expect(await contract.getCompare40(null, stringB)).toBe(false);
+        expect(await contract.getCompare40(null, stringA)).toBe(false);
+        expect(await contract.getCompare40(stringB, null)).toBe(false);
+        expect(await contract.getCompare40(stringA, null)).toBe(false);
+        expect(await contract.getCompare40(null, null)).toBe(true);
+        expect(await contract.getCompare40(null, null)).toBe(true);
+
+        // string not equals
+        expect(await contract.getCompare41(stringA, stringB)).toBe(true);
+        expect(await contract.getCompare41(stringB, stringA)).toBe(true);
+        expect(await contract.getCompare41(stringA, stringA)).toBe(false);
+        expect(await contract.getCompare42(stringA, stringB)).toBe(true);
+        expect(await contract.getCompare42(stringB, stringA)).toBe(true);
+        expect(await contract.getCompare42(stringA, stringA)).toBe(false);
+        expect(await contract.getCompare42(stringB, null)).toBe(true);
+        expect(await contract.getCompare42(stringA, null)).toBe(true);
+        expect(await contract.getCompare43(stringA, stringB)).toBe(true);
+        expect(await contract.getCompare43(stringB, stringA)).toBe(true);
+        expect(await contract.getCompare43(stringA, stringA)).toBe(false);
+        expect(await contract.getCompare43(null, stringB)).toBe(true);
+        expect(await contract.getCompare43(null, stringA)).toBe(true);
+        expect(await contract.getCompare44(stringA, stringB)).toBe(true);
+        expect(await contract.getCompare44(stringB, stringA)).toBe(true);
+        expect(await contract.getCompare44(stringA, stringA)).toBe(false);
+        expect(await contract.getCompare44(null, stringB)).toBe(true);
+        expect(await contract.getCompare44(null, stringA)).toBe(true);
+        expect(await contract.getCompare44(stringB, null)).toBe(true);
+        expect(await contract.getCompare44(stringA, null)).toBe(true);
+        expect(await contract.getCompare44(null, null)).toBe(false);
+        expect(await contract.getCompare44(null, null)).toBe(false);
 
         // Test maps
         expect(await contract.getCompare27(dictA, dictB)).toBe(false);

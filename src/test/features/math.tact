@@ -197,6 +197,78 @@ contract MathTester with Deployable {
     }
 
     //
+    // Slice compare
+    //
+
+    get fun compare29(a: Slice, b: Slice): Bool {
+        return a == b;
+    }
+
+    get fun compare30(a: Slice, b: Slice?): Bool {
+        return a == b;
+    }
+
+    get fun compare31(a: Slice?, b: Slice): Bool {
+        return a == b;
+    }
+
+    get fun compare32(a: Slice?, b: Slice?): Bool {
+        return a == b;
+    }
+
+    get fun compare33(a: Slice, b: Slice): Bool {
+        return a != b;
+    }
+
+    get fun compare34(a: Slice, b: Slice?): Bool {
+        return a != b;
+    }
+
+    get fun compare35(a: Slice?, b: Slice): Bool {
+        return a != b;
+    }
+
+    get fun compare36(a: Slice?, b: Slice?): Bool {
+        return a != b;
+    }
+
+    //
+    // String compare
+    //
+
+    get fun compare37(a: String, b: String): Bool {
+        return a == b;
+    }
+
+    get fun compare38(a: String, b: String?): Bool {
+        return a == b;
+    }
+
+    get fun compare39(a: String?, b: String): Bool {
+        return a == b;
+    }
+
+    get fun compare40(a: String?, b: String?): Bool {
+        return a == b;
+    }
+
+    get fun compare41(a: String, b: String): Bool {
+        return a != b;
+    }
+
+    get fun compare42(a: String, b: String?): Bool {
+        return a != b;
+    }
+
+    get fun compare43(a: String?, b: String): Bool {
+        return a != b;
+    }
+
+    get fun compare44(a: String?, b: String?): Bool {
+        return a != b;
+    }
+
+    //
     // IsNull/IsNotNull
     //
 
