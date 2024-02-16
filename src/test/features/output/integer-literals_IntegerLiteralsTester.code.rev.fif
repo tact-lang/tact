@@ -1,0 +1,241 @@
+PROGRAM{
+  DECLPROC recv_internal;
+  DECLPROC ?fun_68180;
+  DECLPROC ?fun_72309;
+  DECLPROC ?fun_76310;
+  DECLPROC ?fun_102042;
+  DECLPROC ?fun_110296;
+  DECLPROC supported_interfaces;
+  DECLPROC ?fun_114425;
+  DECLPROC lazy_deployment_completed;
+  DECLPROC ?fun_115972;
+  DECLPROC ?fun_116259;
+  DECLPROC get_abi_ipfs;
+  DECLPROC ?fun_124230;
+  DECLPROC ?fun_124513;
+  DECLPROC ?fun_128359;
+  DECLPROC ?fun_128576;
+  DECLPROC ?fun_ref_026cdd3ff17e82bb;
+  DECLPROC ?fun_ref_26dd4850c2973b9d;
+  DECLPROC ?fun_ref_32a8f017ec2ceafb;
+  DECLPROC ?fun_ref_364de9562794919e;
+  DECLPROC ?fun_ref_4065f3bb1951fe13;
+  DECLPROC ?fun_ref_4ed57fb2f9d4e6ca;
+  DECLPROC ?fun_ref_553f7869b01170d9;
+  DECLPROC ?fun_ref_5bdfe841fa412a76;
+  DECLPROC ?fun_ref_684a8c99db9474e5;
+  DECLPROC ?fun_ref_7366f20a31928e43;
+  DECLPROC ?fun_ref_7a4cfefa28b39727;
+  DECLPROC ?fun_ref_a05e0042bce184fb;
+  DECLPROC ?fun_ref_b5b9e67d57f2dcce;
+  DECLPROC ?fun_ref_c0ca23818e24f3c9;
+  DECLPROC ?fun_ref_f0101fa3fb0bc1f5;
+  recv_internal PROC:<{
+    s0 s1 XCHG
+    CTOS
+    4 LDU
+    s0 s1 XCHG
+    1 PUSHINT
+    AND
+    -1 MULCONST
+    s0 s1 XCHG
+    LDMSGADDR
+    s0 s1 XCHG
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    s0 PUSH
+    11 PLDU
+    s0 PUSH
+    1279 PUSHINT
+    EQUAL
+    137 THROWIF
+    10 PUSHPOW2
+    EQUAL
+    136 THROWIFNOT
+    s0 s6 s4 PUXCPU
+    s0 s3 XCHG
+    4 TUPLE
+    1 SETGLOBVAR
+    s0 s2 XCHG
+    2 SETGLOBVAR
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ROTREV
+    ?fun_ref_364de9562794919e INLINECALLDICT
+    130 THROWIFNOT
+    s0 POP
+    NEWC
+    3 GETGLOBVAR
+    s0 s1 XCHG
+    STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
+    ENDC
+    c4 POP
+  }>
+  ?fun_68180 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_684a8c99db9474e5 INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_72309 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_26dd4850c2973b9d INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_76310 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_7a4cfefa28b39727 INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_102042 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_553f7869b01170d9 INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_110296 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_4ed57fb2f9d4e6ca INLINECALLDICT
+    s1 POP
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    36993126140238121407019133875791708966 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  ?fun_114425 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_32a8f017ec2ceafb INLINECALLDICT
+    s1 POP
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    s0 s1 XCHG
+  }>
+  ?fun_115972 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_7366f20a31928e43 INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_116259 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_026cdd3ff17e82bb INLINECALLDICT
+    s1 POP
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733A2F2F516D4E734D36645465466E58726D5A34334C4771715055536F32474378796432756836417532597834687672775482_} PUSHSLICE
+  }>
+  ?fun_124230 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_b5b9e67d57f2dcce INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_124513 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_5bdfe841fa412a76 INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_128359 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_f0101fa3fb0bc1f5 INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_128576 PROC:<{
+    ?fun_ref_a05e0042bce184fb INLINECALLDICT
+    ?fun_ref_4065f3bb1951fe13 INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_ref_026cdd3ff17e82bb PROCREF:<{
+    42 PUSHINT
+  }>
+  ?fun_ref_26dd4850c2973b9d PROCREF:<{
+    -291 PUSHINT
+  }>
+  ?fun_ref_32a8f017ec2ceafb PROCREF:<{
+    -123 PUSHINT
+  }>
+  ?fun_ref_364de9562794919e PROCREF:<{
+    s0 s1 XCHG
+    <{
+      s0 POP
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
+    0 PUSHINT
+    s1 PUSH
+    SBITS
+    31 GTINT
+    <{
+      s0 POP
+      s0 PUSH
+      32 PLDU
+    }> PUSHCONT
+    IF
+    0 EQINT
+    s0 s1 XCHG
+    SBITS
+    33 LESSINT
+    AND
+    <{
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
+    0 PUSHINT
+  }>
+  ?fun_ref_4065f3bb1951fe13 PROCREF:<{
+    -42 PUSHINT
+  }>
+  ?fun_ref_4ed57fb2f9d4e6ca PROCREF:<{
+    1012300000 PUSHINT
+  }>
+  ?fun_ref_553f7869b01170d9 PROCREF:<{
+    123 PUSHINT
+  }>
+  ?fun_ref_5bdfe841fa412a76 PROCREF:<{
+    672 PUSHINT
+  }>
+  ?fun_ref_684a8c99db9474e5 PROCREF:<{
+    69024612352 PUSHINT
+  }>
+  ?fun_ref_7366f20a31928e43 PROCREF:<{
+    83 PUSHINT
+  }>
+  ?fun_ref_7a4cfefa28b39727 PROCREF:<{
+    291 PUSHINT
+  }>
+  ?fun_ref_a05e0042bce184fb PROCREF:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    3 SETGLOBVAR
+    1 LDI
+    s0 POP
+    <{
+      NULL
+    }> PUSHCONT
+    IFJMP
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    ?fun_ref_c0ca23818e24f3c9 INLINECALLDICT
+  }>
+  ?fun_ref_b5b9e67d57f2dcce PROCREF:<{
+    136937472 PUSHINT
+  }>
+  ?fun_ref_c0ca23818e24f3c9 PROCREF:<{
+    NULL
+  }>
+  ?fun_ref_f0101fa3fb0bc1f5 PROCREF:<{
+    -83 PUSHINT
+  }>
+}END>c

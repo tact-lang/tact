@@ -19,6 +19,12 @@ export function cloneNode<T extends ASTNode>(src: T): T {
             path: src.path.map(cloneNode),
             expression: cloneNode(src.expression),
         });
+    } else if (src.kind === 'statement_augmentedassign') {
+        return cloneASTNode({
+            ...src,
+            path: src.path.map(cloneNode),
+            expression: cloneNode(src.expression),
+        });
     } else if (src.kind === 'statement_let') {
         return cloneASTNode({
             ...src,
@@ -74,6 +80,13 @@ export function cloneNode<T extends ASTNode>(src: T): T {
         return cloneASTNode({
             ...src,
             args: src.args.map(cloneNode),
+        });
+    } else if (src.kind === 'conditional') {
+        return cloneASTNode({
+            ...src,
+            condition: cloneNode(src.condition),
+            thenBranch: cloneNode(src.thenBranch),
+            elseBranch: cloneNode(src.elseBranch),
         });
     } else if (src.kind === 'statement_return') {
         return cloneASTNode({

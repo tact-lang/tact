@@ -169,6 +169,29 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
                 }
             }
 
+        } else if (s.kind == 'statement_augmentedassign') {
+                
+            // Process lvalue
+            ctx = resolveLValueRef(s.path, sctx, ctx);
+
+            // Process expression
+            ctx = resolveExpression(s.expression, sctx, ctx);
+
+            // Check type
+            let expressionType = getExpType(ctx, s.expression);
+            let tailType = getExpType(ctx, s.path[s.path.length - 1]);
+            if (!isAssignable(expressionType, tailType)) {
+                throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(tailType)}`, s.ref);
+            }
+
+            // Mark as assigned
+            if (s.path.length === 2 && s.path[0].name === 'self') {
+                const field = s.path[1].name;
+                if (sctx.requiredFields.findIndex((v) => v === field) >= 0) {
+                    sctx = removeRequiredVariable(field, sctx);
+                }
+            }
+
         } else if (s.kind === 'statement_expression') {
 
             // Process expression

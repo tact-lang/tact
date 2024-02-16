@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Augmented assignment operators (`+=`, `-=`, `*=`, `/=` and `%=`): PR [#87](https://github.com/tact-lang/tact/pull/87)
+- Binary and octal literals with underscores as numerical separators: PR [#99](https://github.com/tact-lang/tact/pull/99)
+- Ternary conditional operator (`condition ? then : else`): PR [#97](https://github.com/tact-lang/tact/pull/97)
+- The `--version` command-line flag for the Tact executable: PR [#137](https://github.com/tact-lang/tact/pull/137)
+
+### Changed
+- Decimal and hexadecimal literals now allow underscores as numerical separators: PR [#99](https://github.com/tact-lang/tact/pull/99)
+
+### Fixed
+- Relative imports from parent directories: PR [#125](https://github.com/tact-lang/tact/pull/125)
+
 ## [1.1.5] - 2023-12-01
 
 ### Added
@@ -29,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - bitwise and and or operations
-- staticaly compile expressions with bitwise operations if possible
+- statically compile expressions with bitwise operations if possible
 
 ## [1.1.2] - 2023-04-27
 
@@ -45,8 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2023-04-19
 
 ### ⚡️ Breaking changes
-- `reply` is now a method of `Contract` instead of global context and changed it's behaviour if storage reserve is non-zero in contract.
-- Logical expressions are now calculated differently: `&&` now does not execute right expression if left is `false` and `||` does not execute right expression if left is `true`. Before it was executed in any case. This change is made in attempt to reduce unexpected behaviour.
+- `reply` is now a method of `Contract` instead of global context and changed it's behavior if storage reserve is non-zero in contract.
+- Logical expressions are now calculated differently: `&&` now does not execute right expression if left is `false` and `||` does not execute right expression if left is `true`. Before it was executed in any case. This change is made in attempt to reduce unexpected behavior.
 - `OwnableTransferable` is now sends response to the sender.
 - `overwrites` was renamed to `override`
 - `Deployable` trait now sends non-bounceable notifications instead of bounceable ones.
@@ -229,7 +241,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `emit` function to emit events
 
 ### Fixed
-- Fixed possible inconsistent behaviour when calling mutating get methods from inside of the contract
+- Fixed possible inconsistent behavior when calling mutating get methods from inside of the contract
 - Fixed regression of order of functions in generated files
 
 ## [1.1.0-beta.2] - 2023-03-22
@@ -280,7 +292,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Contracts now can be deployed only to the basic workchain unless `masterchain` set `true`
-- Checking field initialisation in init function
+- Checking field initialization in init function
 
 ## [1.0.0-rc.9] - 2023-03-01
 
@@ -542,7 +554,7 @@ Fixing missing NPM release
 - `String` literals and variables
 - `Int.toString()` and `Int.toFloatString()`
 - `StringBuilder` for gas-efficient string building
-- Global compile-time `ton` function that conversts string to Int during compile time.
+- Global compile-time `ton` function that converts string to Int during compile time.
 - `checkDataSignature` similar to func `check_data_signature`
 - `String.asComment` for conversion text to a comment payload
 - `Resumable` trait, allows to resume contract operations once it was stopped

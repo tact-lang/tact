@@ -60,6 +60,36 @@ tuple $MathTester$_contract_init() impure inline_ref {
     return ($self, ($a | $b));
 }
 
+(tuple, int) $MathTester$_fun_addAug(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    $a = $a + $b;
+    return ($self, $a);
+}
+
+(tuple, int) $MathTester$_fun_subAug(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    $a = $a - $b;
+    return ($self, $a);
+}
+
+(tuple, int) $MathTester$_fun_mulAug(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    $a = $a * $b;
+    return ($self, $a);
+}
+
+(tuple, int) $MathTester$_fun_divAug(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    $a = $a / $b;
+    return ($self, $a);
+}
+
+(tuple, int) $MathTester$_fun_modAug(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    $a = $a % $b;
+    return ($self, $a);
+}
+
 (tuple, int) $MathTester$_fun_compare1(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
     return ($self, __tact_int_eq_nullable_one($b, $a));
@@ -314,6 +344,46 @@ _ %or(int $$a, int $$b) method_id(83393) {
     int $b = $$b;
     var self = $MathTester$_contract_load();
     var res = self~$MathTester$_fun_or($a, $b);
+    return res;
+}
+
+_ %addAug(int $$a, int $$b) method_id(120881) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_addAug($a, $b);
+    return res;
+}
+
+_ %subAug(int $$a, int $$b) method_id(114791) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_subAug($a, $b);
+    return res;
+}
+
+_ %mulAug(int $$a, int $$b) method_id(129050) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_mulAug($a, $b);
+    return res;
+}
+
+_ %divAug(int $$a, int $$b) method_id(85125) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_divAug($a, $b);
+    return res;
+}
+
+_ %modAug(int $$a, int $$b) method_id(81709) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_modAug($a, $b);
     return res;
 }
 
@@ -594,7 +664,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmQEqAX7YospM3CwBYdt1fkEDDqnjys5FtJHxWeaZcmMA6";
+    return "ipfs://QmavmjWAsXUiS6LRjoUL1VZENKLNHo9rWT4Ab3RSx4E5Rr";
 }
 
 _ lazy_deployment_completed() method_id {

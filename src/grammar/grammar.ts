@@ -468,6 +468,51 @@ semantics.addOperation<ASTNode>('resolve_statement', {
             ref: createRef(this)
         })
     },
+    StatementAugmentedAssignAdd(arg0, arg1, arg2, arg3) {
+        return createNode({
+            kind: 'statement_augmentedassign',
+            path: arg0.resolve_lvalue(),
+            op: '+',
+            expression: arg2.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
+    StatementAugmentedAssignSub(arg0, arg1, arg2, arg3) {
+        return createNode({
+            kind: 'statement_augmentedassign',
+            path: arg0.resolve_lvalue(),
+            op: '-',
+            expression: arg2.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
+    StatementAugmentedAssignMul(arg0, arg1, arg2, arg3) {
+        return createNode({
+            kind: 'statement_augmentedassign',
+            path: arg0.resolve_lvalue(),
+            op: '*',
+            expression: arg2.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
+    StatementAugmentedAssignDiv(arg0, arg1, arg2, arg3) {
+        return createNode({
+            kind: 'statement_augmentedassign',
+            path: arg0.resolve_lvalue(),
+            op: '/',
+            expression: arg2.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
+    StatementAugmentedAssignRem(arg0, arg1, arg2, arg3) {
+        return createNode({
+            kind: 'statement_augmentedassign',
+            path: arg0.resolve_lvalue(),
+            op: '%',
+            expression: arg2.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
     StatementCondition_simple(arg0, arg1, arg2, arg3, arg4) {
         return createNode({
             kind: 'statement_condition',
@@ -547,7 +592,7 @@ semantics.addOperation<ASTNode>('resolve_expression', {
 
     // Literals
     integerLiteral(n) {
-        return createNode({ kind: 'number', value: BigInt(n.sourceString), ref: createRef(this) }); // Parses dec-based integer and hex-based integers
+        return createNode({ kind: 'number', value: BigInt(n.sourceString.replaceAll('_', '')), ref: createRef(this) }); // Parses dec, hex, and bin numbers
     },
     boolLiteral(arg0) {
         return createNode({ kind: 'boolean', value: arg0.sourceString === 'true', ref: createRef(this) });
@@ -675,6 +720,11 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     },
     ExpressionInitOf(arg0, arg1, arg2, arg3, arg4) {
         return createNode({ kind: 'init_of', name: arg1.sourceString, args: arg3.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
+    },
+
+    // Ternary conditional
+    ExpressionConditional_ternary(arg0, arg1, arg2, arg3, arg4) {
+        return createNode({ kind: 'conditional', condition: arg0.resolve_expression(), thenBranch: arg2.resolve_expression(), elseBranch: arg4.resolve_expression(), ref: createRef(this) });
     },
 });
 

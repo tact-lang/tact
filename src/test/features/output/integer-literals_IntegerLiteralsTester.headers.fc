@@ -1,0 +1,52 @@
+;;
+;; Header files for IntegerLiteralsTester
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_verify_address
+slice __tact_verify_address(slice address) inline;
+
+;; $IntegerLiteralsTester$_contract_init
+tuple $IntegerLiteralsTester$_contract_init() impure inline_ref;
+
+;; $IntegerLiteralsTester$_contract_load
+tuple $IntegerLiteralsTester$_contract_load() impure inline_ref;
+
+;; $IntegerLiteralsTester$_contract_store
+() $IntegerLiteralsTester$_contract_store(tuple v) impure inline;
+
+;; $IntegerLiteralsTester$_fun_decLiteral1
+(tuple, int) $IntegerLiteralsTester$_fun_decLiteral1(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_decLiteral2
+(tuple, int) $IntegerLiteralsTester$_fun_decLiteral2(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_decLiteral3
+(tuple, int) $IntegerLiteralsTester$_fun_decLiteral3(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_hexLiteral1
+(tuple, int) $IntegerLiteralsTester$_fun_hexLiteral1(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_hexLiteral2
+(tuple, int) $IntegerLiteralsTester$_fun_hexLiteral2(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_hexLiteral3
+(tuple, int) $IntegerLiteralsTester$_fun_hexLiteral3(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_binLiteral1
+(tuple, int) $IntegerLiteralsTester$_fun_binLiteral1(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_binLiteral2
+(tuple, int) $IntegerLiteralsTester$_fun_binLiteral2(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_binLiteral3
+(tuple, int) $IntegerLiteralsTester$_fun_binLiteral3(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_octLiteral1
+(tuple, int) $IntegerLiteralsTester$_fun_octLiteral1(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_octLiteral2
+(tuple, int) $IntegerLiteralsTester$_fun_octLiteral2(tuple $self) impure inline_ref;
+
+;; $IntegerLiteralsTester$_fun_octLiteral3
+(tuple, int) $IntegerLiteralsTester$_fun_octLiteral3(tuple $self) impure inline_ref;
