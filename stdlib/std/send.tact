@@ -6,6 +6,7 @@ const SendRemainingValue: Int = 64;
 const SendIgnoreErrors: Int = 2;
 const SendPayGasSeparately: Int = 1;
 const SendDestroyIfZero: Int = 32;
+const SendBounceIfActionFail: Int = 16;
 
 struct SendParameters {
     bounce: Bool = true;
