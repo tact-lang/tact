@@ -36,6 +36,11 @@ PROGRAM{
   DECLPROC $MathTester$_fun_shl
   DECLPROC $MathTester$_fun_and
   DECLPROC $MathTester$_fun_or
+  DECLPROC $MathTester$_fun_addAug
+  DECLPROC $MathTester$_fun_subAug
+  DECLPROC $MathTester$_fun_mulAug
+  DECLPROC $MathTester$_fun_divAug
+  DECLPROC $MathTester$_fun_modAug
   DECLPROC $MathTester$_fun_compare1
   DECLPROC $MathTester$_fun_compare2
   DECLPROC $MathTester$_fun_compare3
@@ -84,6 +89,11 @@ PROGRAM{
   110321 DECLMETHOD %shl
   108636 DECLMETHOD %and
   83393 DECLMETHOD %or
+  120881 DECLMETHOD %addAug
+  114791 DECLMETHOD %subAug
+  129050 DECLMETHOD %mulAug
+  85125 DECLMETHOD %divAug
+  81709 DECLMETHOD %modAug
   80704 DECLMETHOD %compare1
   68387 DECLMETHOD %compare2
   72450 DECLMETHOD %compare3
@@ -559,6 +569,21 @@ PROGRAM{
   $MathTester$_fun_or PROCREF:<{
     OR
   }>
+  $MathTester$_fun_addAug PROCREF:<{
+    ADD
+  }>
+  $MathTester$_fun_subAug PROCREF:<{
+    SUB
+  }>
+  $MathTester$_fun_mulAug PROCREF:<{
+    MUL
+  }>
+  $MathTester$_fun_divAug PROCREF:<{
+    DIV
+  }>
+  $MathTester$_fun_modAug PROCREF:<{
+    MOD
+  }>
   $MathTester$_fun_compare1 PROCREF:<{
     SWAP
     __tact_int_eq_nullable_one INLINECALLDICT
@@ -768,6 +793,36 @@ PROGRAM{
     $MathTester$_contract_load INLINECALLDICT
     -ROT
     $MathTester$_fun_or INLINECALLDICT
+    NIP
+  }>
+  %addAug PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_addAug INLINECALLDICT
+    NIP
+  }>
+  %subAug PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_subAug INLINECALLDICT
+    NIP
+  }>
+  %mulAug PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_mulAug INLINECALLDICT
+    NIP
+  }>
+  %divAug PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_divAug INLINECALLDICT
+    NIP
+  }>
+  %modAug PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_modAug INLINECALLDICT
     NIP
   }>
   %compare1 PROC:<{
@@ -1086,7 +1141,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d514571415837596f73704d3343774259647431666b454444716e6a79733546744a48785765615a636d4d4136} PUSHSLICE
+    x{697066733a2f2f516d61766d6a57417358556953364c526a6f554c31565a454e4b4c4e486f39725754344162335253783445355272} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

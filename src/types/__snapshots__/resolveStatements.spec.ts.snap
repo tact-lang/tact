@@ -250,6 +250,56 @@ Line 23, col 18:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-25 1`] = `
+"<unknown>:5:12: Incompatible types "Int" and "Bool" for binary operator "=="
+Line 5, col 12:
+  4 | fun foo(x: Int): Bool {
+> 5 |     return x == true;
+                 ^~~~~~~~~
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for case-26 1`] = `
+"<unknown>:5:24: Non-matching types "Int" and "Bool" for ternary branches
+Line 5, col 24:
+  4 | fun sample(): Int {
+> 5 |     return (true ? 1 : false) ? 2 : 3;
+                             ^~~~~
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for case-27 1`] = `
+"<unknown>:5:43: Non-matching types "Bool" and "Int" for ternary branches
+Line 5, col 43:
+  4 | fun sample(): Int {
+> 5 |     return (true ? true : false) ? true : 3;
+                                                ^
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for case-28 1`] = `
+"<unknown>:5:5: Type mismatch: Bool is not assignable to Int
+Line 5, col 5:
+  4 | fun sample(): Int {
+> 5 |     return (true ? true : false) ? true : false;
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for case-29 1`] = `
+"<unknown>:5:39: Non-matching types "Bool" and "Int" for ternary branches
+Line 5, col 39:
+  4 | fun sample(): Int {
+> 5 |     return true ? 1 : (false ? true : 2);
+                                            ^
+  6 | }
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [

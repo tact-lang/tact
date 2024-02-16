@@ -1,4 +1,4 @@
-import { Address, beginCell, toNano } from 'ton-core';
+import { Address, beginCell, toNano } from '@ton/core';
 import { ContractSystem } from '@tact-lang/emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { MasterchainTester } from './features/output/masterchain_MasterchainTester';

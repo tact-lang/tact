@@ -9,7 +9,7 @@ import { GlobalFunctions } from "../../abi/global";
 import { id } from "./id";
 import { StructFunctions } from "../../abi/struct";
 import { resolveFuncType } from "./resolveFuncType";
-import { Address, Cell } from "ton-core";
+import { Address, Cell } from "@ton/core";
 import { writeAddress, writeCell, writeString } from "./writeConstant";
 import { ops } from "./ops";
 import { tryExpressionIntrinsics } from "../intrinsics/tryExpressionIntrinsics";
@@ -622,6 +622,14 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     if (f.kind === 'init_of') {
         let type = getType(ctx.ctx, f.name);
         return `${ops.contractInitChild(f.name, ctx)}(${['__tact_context_sys', ...f.args.map((a, i) => writeCastedExpression(a, type.init!.args[i].type, ctx))].join(', ')})`;
+    }
+
+    //
+    // Ternary operator
+    //
+
+    if (f.kind === 'conditional') {
+        return `(${writeExpression(f.condition, ctx)} ? ${writeExpression(f.thenBranch, ctx)} : ${writeExpression(f.elseBranch, ctx)})`;
     }
 
     //

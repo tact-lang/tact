@@ -2,8 +2,8 @@ import { randomAddress } from './utils/randomAddress';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { MapTestContract, SomeStruct } from './features/output/maps_MapTestContract';
 import { ContractSystem } from '@tact-lang/emulator';
-import { beginCell, toNano } from 'ton-core';
-import { ComputeError } from 'ton-core';
+import { beginCell, toNano } from '@ton/core';
+import { ComputeError } from '@ton/core';
 
 function strEq(a: SomeStruct | null, b: SomeStruct | null) {
     if (a === null || b === null) {

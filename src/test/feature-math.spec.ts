@@ -1,4 +1,4 @@
-import { beginCell, Dictionary, toNano } from 'ton-core';
+import { beginCell, Dictionary, toNano } from '@ton/core';
 import { ContractSystem, randomAddress } from '@tact-lang/emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { MathTester } from './features/output/math_MathTester';
@@ -29,6 +29,16 @@ describe('feature-math', () => {
         expect(await contract.getSub(1n, -2n)).toBe(3n);
         expect(await contract.getMul(2n, 2n)).toBe(4n);
         expect(await contract.getDiv(2n, 2n)).toBe(1n);
+
+        // Augmented Assign
+        expect(await contract.getAddAug(1n, 2n)).toBe(3n);
+        expect(await contract.getAddAug(1n, -2n)).toBe(-1n);
+        expect(await contract.getSubAug(1n, 2n)).toBe(-1n);
+        expect(await contract.getSubAug(1n, -2n)).toBe(3n);
+        expect(await contract.getMulAug(2n, 2n)).toBe(4n);
+        expect(await contract.getDivAug(2n, 2n)).toBe(1n);
+        expect(await contract.getModAug(2n, 2n)).toBe(0n);
+        expect(await contract.getModAug(3n, 2n)).toBe(1n);
 
         // Basic Compare
         expect(await contract.getCompare1(1n, 2n)).toBe(false);

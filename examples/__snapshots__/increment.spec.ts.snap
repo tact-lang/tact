@@ -12,14 +12,17 @@ exports[`increment should deploy 1`] = `
         "$type": "received",
         "message": {
           "body": {
-            "cell": "x{946A98B60000000000000000}",
-            "type": "cell",
+            "type": "known",
+            "value": {
+              "$$type": "Deploy",
+              "queryId": 0n,
+            },
           },
           "bounce": true,
           "from": "@treasure(treasure)",
           "to": "kQDeI5IisUF0tSvWxNDeA-Og-_S1nAT8ZdqTvOZ30HeNgzC1",
           "type": "internal",
-          "value": 10000000000n,
+          "value": "10",
         },
       },
       {
@@ -31,14 +34,17 @@ exports[`increment should deploy 1`] = `
         "messages": [
           {
             "body": {
-              "cell": "x{AFF90F570000000000000000}",
-              "type": "cell",
+              "type": "known",
+              "value": {
+                "$$type": "DeployOk",
+                "queryId": 0n,
+              },
             },
             "bounce": false,
             "from": "kQDeI5IisUF0tSvWxNDeA-Og-_S1nAT8ZdqTvOZ30HeNgzC1",
             "to": "@treasure(treasure)",
             "type": "internal",
-            "value": 9990313000n,
+            "value": "9.990313",
           },
         ],
       },
@@ -56,14 +62,18 @@ exports[`increment should deploy 2`] = `
         "$type": "received",
         "message": {
           "body": {
-            "cell": "x{20064F3B00000000000000000000000000000000000000000000000000000000000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFECC2_}",
-            "type": "cell",
+            "type": "known",
+            "value": {
+              "$$type": "Increment",
+              "key": 0n,
+              "value": -1232n,
+            },
           },
           "bounce": true,
           "from": "@treasure(treasure)",
           "to": "kQDeI5IisUF0tSvWxNDeA-Og-_S1nAT8ZdqTvOZ30HeNgzC1",
           "type": "internal",
-          "value": 10000000000n,
+          "value": "10",
         },
       },
       {

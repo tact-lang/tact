@@ -5,8 +5,15 @@ const arg = require('arg');
 // Resolve arguments
 const args = arg({
     '--config': String,
-    '--project': String
+    '--project': String,
+    '--version': Boolean
 });
+
+if (args['--version']) {
+    console.log('1.1.5');
+    return;
+}
+
 if (!args['--config']) {
     console.log('USAGE: tact --config <config_path> [--project <project_name]');
     return;

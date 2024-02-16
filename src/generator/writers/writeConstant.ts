@@ -1,4 +1,4 @@
-import { Address, beginCell, Cell } from "ton-core";
+import { Address, beginCell, Cell } from "@ton/core";
 import { WriterContext } from "../Writer";
 
 export function writeString(str: string, ctx: WriterContext) {

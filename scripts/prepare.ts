@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { decompileAll } from '@tact-lang/opcode';
 import { run } from '../src/node';
-import { Cell } from 'ton-core';
+import { Cell } from '@ton/core';
 import { build } from '../src/pipeline/build';
 import { FuncCompilationResult, funcCompile } from '../src/func/funcCompile';
 import path from 'path';
@@ -19,13 +19,17 @@ import { __DANGER__disableVersionNumber } from '../src/pipeline/version';
     __DANGER__disableVersionNumber();
 
     // Compile projects
-    await run({ configPath: __dirname + '/../tact.config.json' });
+    if (!await run({ configPath: __dirname + '/../tact.config.json' })) {
+        console.error('Tact projects compilation failed');
+        process.exit(1);
+    }
 
     // Verify projects
     for (let pkgPath of glob.sync(path.normalize(path.resolve(__dirname, '..', 'examples', 'output', '*.pkg')))) {
         let res = await verify({ pkg: fs.readFileSync(pkgPath, 'utf-8') });
         if (!res.ok) {
-            console.warn('Failed to verify ' + pkgPath + ': ' + res.error);
+            console.error('Failed to verify ' + pkgPath + ': ' + res.error);
+            process.exit(1);
         }
     }
 
@@ -82,18 +86,18 @@ import { __DANGER__disableVersionNumber } from '../src/pipeline/version';
                     logger: consoleLogger
                 });
                 if (!c.ok) {
-                    console.warn(c.log);
-                    continue;
+                    console.error(c.log);
+                    process.exit(1);
                 }
             } catch (e) {
-                console.warn(e);
-                console.warn('Failed');
-                continue;
+                console.error(e);
+                console.error('Failed');
+                process.exit(1);
             }
             fs.writeFileSync(p.path + r + ".fift", c.fift!);
             fs.writeFileSync(p.path + r + ".cell", c.output!);
 
-            // Cell -> Fift decpmpiler
+            // Cell -> Fift decompiler
             let source = decompileAll({ src: c.output! });
             fs.writeFileSync(p.path + r + ".rev.fift", source);
         }

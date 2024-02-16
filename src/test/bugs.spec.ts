@@ -1,4 +1,4 @@
-import { beginCell, toNano } from 'ton-core';
+import { beginCell, toNano } from '@ton/core';
 import { ContractSystem, Verbosity } from '@tact-lang/emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { SampleJetton } from './bugs/output/bugs_SampleJetton';

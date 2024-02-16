@@ -1,4 +1,4 @@
-import { beginCell, Cell, Dictionary } from 'ton-core';
+import { beginCell, Cell, Dictionary } from '@ton/core';
 import { decompileAll } from '@tact-lang/opcode';
 import { writeTypescript } from '../bindings/writeTypescript';
 import { featureEnable } from '../config/features';
