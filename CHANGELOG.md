@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Decimal and hexadecimal literals now allow underscores as numerical separators: PR [#99](https://github.com/tact-lang/tact/pull/99)
+- The equality and non-equality operators (`==` and `!=`) now support slices and strings by comparing the hashes of the left-hand and right-hand sides : PR [#105](https://github.com/tact-lang/tact/pull/105)
 
 ### Fixed
 - Relative imports from parent directories: PR [#125](https://github.com/tact-lang/tact/pull/125)
