@@ -30,6 +30,7 @@ jobs:
     - run: yarn gen
     - run: yarn coverage
     - name: Compare Tact version from CLI flag `--version` against package.json
+      if: runner.os != 'Windows'
       run: |
         if [ "$(./bin/tact --version)" != "$(jq -r '.version' < package.json)" ];
         then false
