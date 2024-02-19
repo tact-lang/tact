@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Relative imports from parent directories: PR [#125](https://github.com/tact-lang/tact/pull/125)
+- The typechecker failed to identify different types when using the `==` and `!=` operators: PR [#127](https://github.com/tact-lang/tact/pull/127)
 
 ## [1.1.5] - 2023-12-01
 
