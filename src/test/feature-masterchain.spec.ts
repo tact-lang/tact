@@ -63,7 +63,7 @@ describe('feature-masterchain', () => {
         await contract.getCreateAddress(0n, 0n);
     });
 
-    it('should not create address for the materchain', async () => {
+    it('should not create address for the masterchain', async () => {
         const system = await ContractSystem.create();
         const treasure = system.treasure('treasure');
         const contract = system.open(await MasterchainTester.fromInit());

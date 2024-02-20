@@ -1,5 +1,5 @@
 import { contractErrors } from "../../abi/errors";
-import { enabledInline, enabledMaterchain } from "../../config/features";
+import { enabledInline, enabledMasterchain } from "../../config/features";
 import { InitDescription, TypeDescription, TypeOrigin } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { fn, id, initId } from "./id";
@@ -42,7 +42,7 @@ export function writeStorageOps(type: TypeDescription, origin: TypeOrigin, ctx: 
             ctx.inIndent(() => {
 
                 // Allow only workchain deployments
-                if (!enabledMaterchain(ctx.ctx)) {
+                if (!enabledMasterchain(ctx.ctx)) {
                     ctx.write(`;; Allow only workchain deployments`);
                     ctx.write(`throw_unless(${contractErrors.masterchainNotEnabled.id}, my_address().preload_uint(11) == 1024);`);
                 }

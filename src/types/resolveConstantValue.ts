@@ -1,5 +1,5 @@
 import { Address, Cell, toNano } from "@ton/core";
-import { enabledMaterchain } from "../config/features";
+import { enabledMasterchain } from "../config/features";
 import { CompilerContext } from "../context";
 import { ASTExpression, throwError } from "../grammar/ast";
 import { printTypeRef, TypeRef } from "./types";
@@ -96,7 +96,7 @@ function reduceAddress(ast: ASTExpression, ctx: CompilerContext): Address {
                 if (address.workChain !== 0 && address.workChain !== -1) {
                     throwError(`Address ${str} invalid address`, ast.ref);
                 }
-                if (!enabledMaterchain(ctx)) {
+                if (!enabledMasterchain(ctx)) {
                     if (address.workChain !== 0) {
                         throwError(`Address ${str} from masterchain are not enabled for this contract`, ast.ref);
                     }

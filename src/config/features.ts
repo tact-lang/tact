@@ -10,7 +10,7 @@ export function enabledDebug(ctx: CompilerContext) {
     return featureEnabled(ctx, 'debug');
 }
 
-export function enabledMaterchain(ctx: CompilerContext) {
+export function enabledMasterchain(ctx: CompilerContext) {
     return featureEnabled(ctx, 'masterchain');
 }
 

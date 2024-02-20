@@ -1,4 +1,4 @@
-import { enabledDebug, enabledMaterchain } from "../config/features";
+import { enabledDebug, enabledMasterchain } from "../config/features";
 import { CompilerContext } from "../context";
 import { TypeDescription } from "./types";
 
@@ -9,7 +9,7 @@ export function getSupportedIntefaces(type: TypeDescription, ctx: CompilerContex
     if (enabledDebug(ctx)) {
         interfaces.push('org.ton.debug.v0');
     }
-    if (!enabledMaterchain(ctx)) {
+    if (!enabledMasterchain(ctx)) {
         interfaces.push('org.ton.chain.workchain.v0');
     } else {
         interfaces.push('org.ton.chain.any.v0');

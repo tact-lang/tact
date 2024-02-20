@@ -1,5 +1,5 @@
 import { contractErrors } from "../../abi/errors";
-import { enabledMaterchain } from "../../config/features";
+import { enabledMasterchain } from "../../config/features";
 import { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext) {
@@ -28,7 +28,7 @@ export function writeStdlib(ctx: WriterContext) {
                 var h = address.preload_uint(11);
             `);
 
-            if (enabledMaterchain(ctx.ctx)) {
+            if (enabledMasterchain(ctx.ctx)) {
                 ctx.write(`
                     throw_unless(${contractErrors.invalidAddress.id}, (h == 1024) | (h == 1279));
                 `);
