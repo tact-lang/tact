@@ -1,0 +1,7 @@
+node_modules/
+dist/
+converage/
+**/output/
+src/func/funcfiftlib.js
+src/grammar/grammar.ohm*.ts
+src/grammar/grammar.ohm*.js
