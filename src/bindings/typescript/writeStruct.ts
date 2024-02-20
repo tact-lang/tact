@@ -7,10 +7,10 @@ export function writeStruct(name: string, fields: { name: string, type: ABITypeR
     w.append(`${exp ? 'export ' : ' '}type ${name} = {`);
     w.inIndent(() => {
         w.append(`$$type: '${name}';`);
-        outer: for (let f of fields) {
+        outer: for (const f of fields) {
 
-            for (let s of serializers) {
-                let v = s.abiMatcher(f.type);
+            for (const s of serializers) {
+                const v = s.abiMatcher(f.type);
                 if (v) {
                     w.append(`${f.name}: ${s.tsType(v)};`);
                     continue outer;
@@ -39,7 +39,7 @@ export function writeParser(s: ABIType, allocation: AllocationCell, w: Writer) {
 }
 
 function writeParserCell(gen: number, offset: number, src: AllocationCell, s: ABIType, w: Writer) {
-    for (let f of src.ops) {
+    for (const f of src.ops) {
         writeParserField(gen, offset++, s, w);
     }
     if (src.next) {
@@ -49,10 +49,10 @@ function writeParserCell(gen: number, offset: number, src: AllocationCell, s: AB
 }
 
 function writeParserField(gen: number, offset: number, s: ABIType, w: Writer) {
-    let name = '_' + s.fields[offset].name;
-    let type = s.fields[offset].type;
-    for (let s of serializers) {
-        let v = s.abiMatcher(type);
+    const name = '_' + s.fields[offset].name;
+    const type = s.fields[offset].type;
+    for (const s of serializers) {
+        const v = s.abiMatcher(type);
         if (v) {
             s.tsLoad(v, `sc_${gen}`, name, w);
             return;
@@ -93,7 +93,7 @@ export function writeInitSerializer(name: string, allocation: AllocationCell, w:
 }
 
 function writeSerializerCell(gen: number, src: AllocationCell, w: Writer) {
-    for (let f of src.ops) {
+    for (const f of src.ops) {
         writeSerializerField(gen, f, w);
     }
     if (src.next) {
@@ -104,10 +104,10 @@ function writeSerializerCell(gen: number, src: AllocationCell, w: Writer) {
 }
 
 function writeSerializerField(gen: number, s: AllocationOperation, w: Writer) {
-    let name = 'src.' + s.name;
-    let type = s.type;
-    for (let s of serializers) {
-        let v = s.abiMatcher(type);
+    const name = 'src.' + s.name;
+    const type = s.type;
+    for (const s of serializers) {
+        const v = s.abiMatcher(type);
         if (v) {
             s.tsStore(v, `b_${gen}`, name, w);
             return;
@@ -119,7 +119,7 @@ function writeSerializerField(gen: number, s: AllocationOperation, w: Writer) {
 export function writeTupleParser(s: ABIType, w: Writer) {
     w.append(`function loadTuple${s.name}(source: TupleReader) {`);
     w.inIndent(() => {
-        for (let f of s.fields) {
+        for (const f of s.fields) {
             writeTupleFieldParser('_' + f.name, f.type, w);
         }
         w.append(`return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ': _' + v.name)].join(', ')} };`);
@@ -133,8 +133,8 @@ export function writeGetParser(name: string, type: ABITypeRef, w: Writer) {
 }
 
 function writeTupleFieldParser(name: string, type: ABITypeRef, w: Writer, fromGet = false) {
-    for (let s of serializers) {
-        let v = s.abiMatcher(type);
+    for (const s of serializers) {
+        const v = s.abiMatcher(type);
         if (v) {
             s.tsLoadTuple(v, `source`, name, w, fromGet);
             return;
@@ -147,7 +147,7 @@ export function writeTupleSerializer(s: ABIType, w: Writer) {
     w.append(`function storeTuple${s.name}(source: ${s.name}) {`);
     w.inIndent(() => {
         w.append(`let builder = new TupleBuilder();`);
-        for (let f of s.fields) {
+        for (const f of s.fields) {
             writeVariableToStack(`source.${f.name}`, f.type, w);
         }
         w.append(`return builder.build();`);
@@ -161,8 +161,8 @@ export function writeArgumentToStack(name: string, ref: ABITypeRef, w: Writer) {
 }
 
 function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
-    for (let s of serializers) {
-        let v = s.abiMatcher(type);
+    for (const s of serializers) {
+        const v = s.abiMatcher(type);
         if (v) {
             s.tsStoreTuple(v, `builder`, name, w);
             return;

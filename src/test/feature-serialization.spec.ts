@@ -14,7 +14,7 @@ describe('feature-serialization', () => {
     // Simple case
     //
     {
-        let cases: { a: bigint, b: bigint, c: bigint, d: bigint, e: bigint, f: bigint, g: bigint, h: bigint, i: bigint }[] = [];
+        const cases: { a: bigint, b: bigint, c: bigint, d: bigint, e: bigint, f: bigint, g: bigint, h: bigint, i: bigint }[] = [];
         cases.push({
             a: 1n,
             b: 2n,
@@ -30,12 +30,12 @@ describe('feature-serialization', () => {
         for (let i = 0; i < cases.length; i++) {
 
             it('should handle case #' + i, async () => {
-                let cs = cases[i];
+                const cs = cases[i];
 
                 // Init contract
-                let system = await ContractSystem.create();
-                let treasure = system.treasure('treasure');
-                let contract = system.open(await SerializationTester.fromInit(cs.a, cs.b, cs.c, cs.d, cs.e, cs.f, cs.g, cs.h, cs.i));
+                const system = await ContractSystem.create();
+                const treasure = system.treasure('treasure');
+                const contract = system.open(await SerializationTester.fromInit(cs.a, cs.b, cs.c, cs.d, cs.e, cs.f, cs.g, cs.h, cs.i));
                 await contract.send(treasure, { value: toNano('10') }, null);
                 await system.run();
 
@@ -57,7 +57,7 @@ describe('feature-serialization', () => {
     // Cases with references
     //
     {
-        let cases: { a: { $$type: 'Vars', a: bigint, b: bigint, c: bigint, d: bigint, e: bigint }, b: { $$type: 'Vars', a: bigint, b: bigint, c: bigint, d: bigint, e: bigint } }[] = [];
+        const cases: { a: { $$type: 'Vars', a: bigint, b: bigint, c: bigint, d: bigint, e: bigint }, b: { $$type: 'Vars', a: bigint, b: bigint, c: bigint, d: bigint, e: bigint } }[] = [];
         cases.push({
             a: {
                 $$type: 'Vars',
@@ -79,21 +79,21 @@ describe('feature-serialization', () => {
 
         for (let i = 0; i < cases.length; i++) {
             it('should handle case-2 #' + i, async () => {
-                let cs = cases[i];
+                const cs = cases[i];
 
                 // Init contract
-                let system = await ContractSystem.create();
-                let treasure = system.treasure('treasure');
-                let contract = system.open(await SerializationTester2.fromInit(cs.a, cs.b));
+                const system = await ContractSystem.create();
+                const treasure = system.treasure('treasure');
+                const contract = system.open(await SerializationTester2.fromInit(cs.a, cs.b));
                 await contract.send(treasure, { value: toNano('10') }, null);
                 await system.run();
 
                 // Checl values
-                let a = await contract.getGetA();
-                let aOpt = await contract.getGetAopt();
-                let b = await contract.getGetB();
-                let bOpt = await contract.getGetBopt();
-                let both = await contract.getGetBoth();
+                const a = await contract.getGetA();
+                const aOpt = await contract.getGetAopt();
+                const b = await contract.getGetB();
+                const bOpt = await contract.getGetBopt();
+                const both = await contract.getGetBoth();
                 expect(aOpt).toMatchObject(a);
                 expect(bOpt).toMatchObject(b);
                 expect(a.a).toBe(cs.a.a);

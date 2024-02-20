@@ -8,10 +8,10 @@ import { GlobalFunctions } from "../abi/global";
 import { isAssignable } from "./isAssignable";
 import { StructFunctions } from "../abi/struct";
 
-let store = createContextStore<{ ast: ASTExpression, description: TypeRef }>();
+const store = createContextStore<{ ast: ASTExpression, description: TypeRef }>();
 
 export function getExpType(ctx: CompilerContext, exp: ASTExpression) {
-    let t = store.get(ctx, exp.id);
+    const t = store.get(ctx, exp.id);
     if (!t) {
         throw Error('Expression ' + exp.id + ' not found');
     }
@@ -19,7 +19,7 @@ export function getExpType(ctx: CompilerContext, exp: ASTExpression) {
 }
 
 function registerExpType(ctx: CompilerContext, exp: ASTExpression, description: TypeRef): CompilerContext {
-    let ex = store.get(ctx, exp.id);
+    const ex = store.get(ctx, exp.id);
     if (ex) {
         if (typeRefEquals(ex.description, description)) {
             return ctx;
@@ -48,15 +48,15 @@ function resolveStringLiteral(exp: ASTString, sctx: StatementContext, ctx: Compi
 function resolveStructNew(exp: ASTOpNew, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
 
     // Get type
-    let tp = getType(ctx, exp.type);
+    const tp = getType(ctx, exp.type);
 
     if (tp.kind !== 'struct') {
         throwError(`Invalid type "${exp.type}" for construction`, exp.ref);
     }
 
     // Process fields
-    let processed = new Set<string>();
-    for (let e of exp.args) {
+    const processed = new Set<string>();
+    for (const e of exp.args) {
 
         // Check duplicates
         if (processed.has(e.name)) {
@@ -65,7 +65,7 @@ function resolveStructNew(exp: ASTOpNew, sctx: StatementContext, ctx: CompilerCo
         processed.add(e.name);
 
         // Check existing
-        let f = tp.fields.find((v) => v.name === e.name);
+        const f = tp.fields.find((v) => v.name === e.name);
         if (!f) {
             throwError(`Unknown fields "${e.name}" in type ${tp.name}`, e.ref);
         }
@@ -74,14 +74,14 @@ function resolveStructNew(exp: ASTOpNew, sctx: StatementContext, ctx: CompilerCo
         ctx = resolveExpression(e.exp, sctx, ctx);
 
         // Check expression type
-        let expressionType = getExpType(ctx, e.exp);
+        const expressionType = getExpType(ctx, e.exp);
         if (!isAssignable(expressionType, f.type)) {
             throwError(`Invalid type "${printTypeRef(expressionType)}" for fields "${e.name}" with type ${printTypeRef(f.type)} in type ${tp.name}`, e.ref);
         }
     }
 
     // Check missing fields
-    for (let f of tp.fields) {
+    for (const f of tp.fields) {
         if (f.default === undefined && !processed.has(f.name)) {
             throwError(`Missing fields "${f.name}" in type ${tp.name}`, exp.ref);
         }
@@ -96,8 +96,8 @@ function resolveBinaryOp(exp: ASTOpBinary, sctx: StatementContext, ctx: Compiler
     // Resolve left and right expressions
     ctx = resolveExpression(exp.left, sctx, ctx);
     ctx = resolveExpression(exp.right, sctx, ctx);
-    let le = getExpType(ctx, exp.left);
-    let re = getExpType(ctx, exp.right);
+    const le = getExpType(ctx, exp.left);
+    const re = getExpType(ctx, exp.right);
 
     // Check operands
     let resolved: TypeRef;
@@ -121,8 +121,8 @@ function resolveBinaryOp(exp: ASTOpBinary, sctx: StatementContext, ctx: Compiler
 
         // Check if types are compatible
         if (le.kind !== 'null' && re.kind !== 'null') {
-            let l = le;
-            let r = re;
+            const l = le;
+            const r = re;
 
             if (l.kind === 'map' && r.kind === 'map') {
                 if (l.key !== r.key || l.value !== r.value || l.keyAs !== r.keyAs || l.valueAs !== r.valueAs) {
@@ -195,7 +195,7 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
     ctx = resolveExpression(exp.src, sctx, ctx);
 
     // Find target type and check for type
-    let src = getExpType(ctx, exp.src);
+    const src = getExpType(ctx, exp.src);
 
     if (src === null || ((src.kind !== 'ref' || src.optional) && (src.kind !== 'ref_bounced'))) {
         throwError(`Invalid type "${printTypeRef(src)}" for field access`, exp.ref);
@@ -211,7 +211,7 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
     // Find field
     let fields: FieldDescription[];
 
-    let srcT = getType(ctx, src.name);
+    const srcT = getType(ctx, src.name);
 
     fields = srcT.fields;
     if (src.kind === 'ref_bounced') {
@@ -240,15 +240,15 @@ function resolveStaticCall(exp: ASTOpCallStatic, sctx: StatementContext, ctx: Co
 
     // Check if abi global function
     if (GlobalFunctions[exp.name]) {
-        let f = GlobalFunctions[exp.name];
+        const f = GlobalFunctions[exp.name];
 
         // Resolve arguments
-        for (let e of exp.args) {
+        for (const e of exp.args) {
             ctx = resolveExpression(e, sctx, ctx);
         }
 
         // Resolve return type
-        let resolved = f.resolve(ctx, exp.args.map((v) => getExpType(ctx, v)), exp.ref);
+        const resolved = f.resolve(ctx, exp.args.map((v) => getExpType(ctx, v)), exp.ref);
 
         // Register return type
         return registerExpType(ctx, exp, resolved);
@@ -260,10 +260,10 @@ function resolveStaticCall(exp: ASTOpCallStatic, sctx: StatementContext, ctx: Co
     }
 
     // Get static function
-    let f = getStaticFunction(ctx, exp.name);
+    const f = getStaticFunction(ctx, exp.name);
 
     // Resolve call arguments
-    for (let e of exp.args) {
+    for (const e of exp.args) {
         ctx = resolveExpression(e, sctx, ctx);
     }
 
@@ -272,9 +272,9 @@ function resolveStaticCall(exp: ASTOpCallStatic, sctx: StatementContext, ctx: Co
         throwError(`Function "${exp.name}" expects ${f.args.length} arguments, got ${exp.args.length}`, exp.ref);
     }
     for (let i = 0; i < f.args.length; i++) {
-        let a = f.args[i];
-        let e = exp.args[i];
-        let t = getExpType(ctx, e);
+        const a = f.args[i];
+        const e = exp.args[i];
+        const t = getExpType(ctx, e);
         if (!isAssignable(t, a.type)) {
             throwError(`Invalid type "${printTypeRef(t)}" for argument "${a.name}"`, e.ref);
         }
@@ -295,12 +295,12 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
     }
 
     // Resolve args
-    for (let e of exp.args) {
+    for (const e of exp.args) {
         ctx = resolveExpression(e, sctx, ctx);
     }
 
     // Resolve return value
-    let src = getExpType(ctx, exp.src);
+    const src = getExpType(ctx, exp.src);
     if (src === null) {
         throwError(`Invalid type "${printTypeRef(src)}" for function call`, exp.ref);
     }
@@ -313,18 +313,18 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
         }
 
         // Register return type
-        let srcT = getType(ctx, src.name);
+        const srcT = getType(ctx, src.name);
 
         // Check struct ABI
         if (srcT.kind === 'struct') {
-            let abi = StructFunctions[exp.name];
+            const abi = StructFunctions[exp.name];
             if (abi) {
-                let resolved = abi.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
+                const resolved = abi.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
                 return registerExpType(ctx, exp, resolved);
             }
         }
 
-        let f = srcT.functions.get(exp.name)!;
+        const f = srcT.functions.get(exp.name)!;
         if (!f) {
             throwError(`Type "${src.name}" does not have a function named "${exp.name}"`, exp.ref);
         }
@@ -334,9 +334,9 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
             throwError(`Function "${exp.name}" expects ${f.args.length} arguments, got ${exp.args.length}`, exp.ref);
         }
         for (let i = 0; i < f.args.length; i++) {
-            let a = f.args[i];
-            let e = exp.args[i];
-            let t = getExpType(ctx, e);
+            const a = f.args[i];
+            const e = exp.args[i];
+            const t = getExpType(ctx, e);
             if (!isAssignable(t, a.type)) {
                 throwError(`Invalid type "${printTypeRef(t)}" for argument "${a.name}"`, e.ref);
             }
@@ -347,11 +347,11 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
 
     // Handle map
     if (src.kind === 'map') {
-        let abf = MapFunctions[exp.name];
+        const abf = MapFunctions[exp.name];
         if (!abf) {
             throwError(`Map function "${exp.name}" not found`, exp.ref);
         }
-        let resolved = abf.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
+        const resolved = abf.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
         return registerExpType(ctx, exp, resolved);
     }
 
@@ -365,7 +365,7 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
 export function resolveInitOf(ast: ASTInitOf, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
 
     // Resolve type
-    let type = getType(ctx, ast.name);
+    const type = getType(ctx, ast.name);
     if (type.kind !== 'contract') {
         throwError(`Type "${ast.name}" is not a contract`, ast.ref);
     }
@@ -374,7 +374,7 @@ export function resolveInitOf(ast: ASTInitOf, sctx: StatementContext, ctx: Compi
     }
 
     // Resolve args
-    for (let e of ast.args) {
+    for (const e of ast.args) {
         ctx = resolveExpression(e, sctx, ctx);
     }
 
@@ -383,9 +383,9 @@ export function resolveInitOf(ast: ASTInitOf, sctx: StatementContext, ctx: Compi
         throwError(`Init function of "${type.name}" expects ${type.init.args.length} arguments, got ${ast.args.length}`, ast.ref);
     }
     for (let i = 0; i < type.init.args.length; i++) {
-        let a = type.init.args[i];
-        let e = ast.args[i];
-        let t = getExpType(ctx, e);
+        const a = type.init.args[i];
+        const e = ast.args[i];
+        const t = getExpType(ctx, e);
         if (!isAssignable(t, a.type)) {
             throwError(`Invalid type "${printTypeRef(t)}" for argument "${a.name}"`, e.ref);
         }
@@ -398,7 +398,7 @@ export function resolveInitOf(ast: ASTInitOf, sctx: StatementContext, ctx: Compi
 export function resolveConditional(ast: ASTConditional, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
     // Resolve condition
     ctx = resolveExpression(ast.condition, sctx, ctx);
-    let conditionType = getExpType(ctx, ast.condition);
+    const conditionType = getExpType(ctx, ast.condition);
     if (conditionType.kind !== 'ref' || conditionType.optional || conditionType.name !== 'Bool') {
         throwError(`Invalid type "${printTypeRef(conditionType)}" for ternary condition`, ast.condition.ref);
     }
@@ -406,8 +406,8 @@ export function resolveConditional(ast: ASTConditional, sctx: StatementContext, 
     // Resolve then and else branches
     ctx = resolveExpression(ast.thenBranch, sctx, ctx);
     ctx = resolveExpression(ast.elseBranch, sctx, ctx);
-    let thenType = getExpType(ctx, ast.thenBranch);
-    let elseType = getExpType(ctx, ast.elseBranch);
+    const thenType = getExpType(ctx, ast.thenBranch);
+    const elseType = getExpType(ctx, ast.elseBranch);
     if (!typeRefEquals(thenType, elseType)) {
         throwError(`Non-matching types "${printTypeRef(thenType)}" and "${printTypeRef(elseType)}" for ternary branches`, ast.elseBranch.ref);
     }
@@ -417,7 +417,7 @@ export function resolveConditional(ast: ASTConditional, sctx: StatementContext, 
 }
 
 export function resolveLValueRef(path: ASTLvalueRef[], sctx: StatementContext, ctx: CompilerContext): CompilerContext {
-    let paths: ASTLvalueRef[] = path;
+    const paths: ASTLvalueRef[] = path;
     let t = sctx.vars[paths[0].name];
     if (!t) {
         throwError(`Variable "${paths[0].name}" not found`, paths[0].ref);
@@ -429,8 +429,8 @@ export function resolveLValueRef(path: ASTLvalueRef[], sctx: StatementContext, c
         if (t.kind !== 'ref' || t.optional) {
             throwError(`Invalid type "${printTypeRef(t)}" for field access`, path[i].ref);
         }
-        let srcT = getType(ctx, t.name);
-        let ex = srcT.fields.find((v) => v.name === paths[i].name);
+        const srcT = getType(ctx, t.name);
+        const ex = srcT.fields.find((v) => v.name === paths[i].name);
         if (!ex) {
             throwError('Field ' + paths[i].name + ' not found in type ' + srcT.name, path[i].ref);
         }
@@ -487,12 +487,12 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
     if (exp.kind === 'id') {
 
         // Find variable
-        let v = sctx.vars[exp.value];
+        const v = sctx.vars[exp.value];
         if (!v) {
             if (!hasStaticConstant(ctx, exp.value)) {
                 throwError('Unable to resolve id ' + exp.value, exp.ref);
             } else {
-                let cc = getStaticConstant(ctx, exp.value);
+                const cc = getStaticConstant(ctx, exp.value);
                 return registerExpType(ctx, exp, cc.type);
             }
         }
@@ -528,9 +528,9 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
 }
 
 export function getAllExpressionTypes(ctx: CompilerContext) {
-    let res: [string, string][] = [];
-    let a = store.all(ctx);
-    for (let e in a) {
+    const res: [string, string][] = [];
+    const a = store.all(ctx);
+    for (const e in a) {
         res.push([a[e].ast.ref.contents, printTypeRef(a[e].description)]);
     }
     return res;

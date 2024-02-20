@@ -15,13 +15,13 @@ import { resolveFuncTupledType } from "./resolveFuncTupledType";
 import { ops } from "./ops";
 
 export function writeCastedExpression(expression: ASTExpression, to: TypeRef, ctx: WriterContext) {
-    let expr = getExpType(ctx.ctx, expression);
+    const expr = getExpType(ctx.ctx, expression);
     return cast(expr, to, writeExpression(expression, ctx), ctx); // Cast for nullable
 }
 
 export function unwrapExternal(targetName: string, sourceName: string, type: TypeRef, ctx: WriterContext) {
     if (type.kind === 'ref') {
-        let t = getType(ctx.ctx, type.name);
+        const t = getType(ctx.ctx, type.name);
         if (t.kind === 'struct') {
             if (type.optional) {
                 ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = ${ops.typeFromOptTuple(t.name, ctx)}(${sourceName});`);
@@ -46,7 +46,7 @@ export function writeStatement(f: ASTStatement, self: string | null, returns: Ty
         if (f.expression) {
 
             // Format expression
-            let result = writeCastedExpression(f.expression, returns!, ctx);
+            const result = writeCastedExpression(f.expression, returns!, ctx);
 
             // Return
             if (self) {
@@ -65,9 +65,9 @@ export function writeStatement(f: ASTStatement, self: string | null, returns: Ty
     } else if (f.kind === 'statement_let') {
 
         // Contract/struct case
-        let t = resolveTypeRef(ctx.ctx, f.type);
+        const t = resolveTypeRef(ctx.ctx, f.type);
         if (t.kind === 'ref') {
-            let tt = getType(ctx.ctx, t.name);
+            const tt = getType(ctx.ctx, t.name);
             if (tt.kind === 'contract' || tt.kind === 'struct') {
                 if (t.optional) {
                     ctx.append(`tuple ${id(f.name)} = ${writeCastedExpression(f.expression, t, ctx)};`);
@@ -83,12 +83,12 @@ export function writeStatement(f: ASTStatement, self: string | null, returns: Ty
     } else if (f.kind === 'statement_assign') {
 
         // Prepare lvalue
-        let path = f.path.map((v, i) => (i === 0) ? id(v.name) : v.name).join(`'`);
+        const path = f.path.map((v, i) => (i === 0) ? id(v.name) : v.name).join(`'`);
 
         // Contract/struct case
-        let t = getExpType(ctx.ctx, f.path[f.path.length - 1]);
+        const t = getExpType(ctx.ctx, f.path[f.path.length - 1]);
         if (t.kind === 'ref') {
-            let tt = getType(ctx.ctx, t.name);
+            const tt = getType(ctx.ctx, t.name);
             if (tt.kind === 'contract' || tt.kind === 'struct') {
                 ctx.append(`${resolveFuncTypeUnpack(t, `${path}`, ctx)} = ${writeCastedExpression(f.expression, t, ctx)};`);
                 return;
@@ -98,21 +98,21 @@ export function writeStatement(f: ASTStatement, self: string | null, returns: Ty
         ctx.append(`${path} = ${writeCastedExpression(f.expression, t, ctx)};`);
         return;
     } else if (f.kind === 'statement_augmentedassign') {
-        let path = f.path.map((v, i) => (i === 0) ? id(v.name) : v.name).join(`'`);
-        let t = getExpType(ctx.ctx, f.path[f.path.length - 1]);
+        const path = f.path.map((v, i) => (i === 0) ? id(v.name) : v.name).join(`'`);
+        const t = getExpType(ctx.ctx, f.path[f.path.length - 1]);
         ctx.append(`${path} = ${cast(t, t, `${path} ${f.op} ${writeExpression(f.expression, ctx)}`, ctx)};`);
         return;
     } else if (f.kind === 'statement_condition') {
         writeCondition(f, self, false, returns, ctx);
         return;
     } else if (f.kind === 'statement_expression') {
-        let exp = writeExpression(f.expression, ctx);
+        const exp = writeExpression(f.expression, ctx);
         ctx.append(`${exp};`);
         return;
     } else if (f.kind === 'statement_while') {
         ctx.append(`while (${writeExpression(f.condition, ctx)}) {`);
         ctx.inIndent(() => {
-            for (let s of f.statements) {
+            for (const s of f.statements) {
                 writeStatement(s, self, returns, ctx);
             }
         });
@@ -121,7 +121,7 @@ export function writeStatement(f: ASTStatement, self: string | null, returns: Ty
     } else if (f.kind === 'statement_until') {
         ctx.append(`do {`);
         ctx.inIndent(() => {
-            for (let s of f.statements) {
+            for (const s of f.statements) {
                 writeStatement(s, self, returns, ctx);
             }
         });
@@ -130,7 +130,7 @@ export function writeStatement(f: ASTStatement, self: string | null, returns: Ty
     } else if (f.kind === 'statement_repeat') {
         ctx.append(`repeat (${writeExpression(f.condition, ctx)}) {`);
         ctx.inIndent(() => {
-            for (let s of f.statements) {
+            for (const s of f.statements) {
                 writeStatement(s, self, returns, ctx);
             }
         });
@@ -144,14 +144,14 @@ export function writeStatement(f: ASTStatement, self: string | null, returns: Ty
 function writeCondition(f: ASTCondition, self: string | null, elseif: boolean, returns: TypeRef | null, ctx: WriterContext) {
     ctx.append(`${(elseif ? '} else' : '')}if (${writeExpression(f.expression, ctx)}) {`);
     ctx.inIndent(() => {
-        for (let s of f.trueStatements) {
+        for (const s of f.trueStatements) {
             writeStatement(s, self, returns, ctx);
         }
     });
     if (f.falseStatements && f.falseStatements.length > 0) {
         ctx.append(`} else {`);
         ctx.inIndent(() => {
-            for (let s of f.falseStatements!) {
+            for (const s of f.falseStatements!) {
                 writeStatement(s, self, returns, ctx);
             }
         });
@@ -172,7 +172,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     const fd = f.ast;
 
     // Resolve self
-    let self = f.self ? getType(ctx.ctx, f.self) : null;
+    const self = f.self ? getType(ctx.ctx, f.self) : null;
 
     // Write function header
     let returns: string = resolveFuncType(f.returns, ctx);
@@ -187,12 +187,12 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     }
 
     // Resolve function descriptor
-    let name = self ? ops.extension(self.name, f.name) : ops.global(f.name);
-    let args: string[] = [];
+    const name = self ? ops.extension(self.name, f.name) : ops.global(f.name);
+    const args: string[] = [];
     if (self) {
         args.push(resolveFuncType(self, ctx) + ' ' + id('self'));
     }
-    for (let a of f.args) {
+    for (const a of f.args) {
         args.push(resolveFuncType(a.type, ctx) + ' ' + id(a.name));
     }
 
@@ -211,14 +211,14 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             if (self) {
                 ctx.append(`var (${resolveFuncTypeUnpack(self, id('self'), ctx)}) = ${id('self')};`);
             }
-            for (let a of fd.args) {
+            for (const a of fd.args) {
                 if (!resolveFuncPrimitive(resolveTypeRef(ctx.ctx, a.type), ctx)) {
                     ctx.append(`var (${resolveFuncTypeUnpack(resolveTypeRef(ctx.ctx, a.type), id(a.name), ctx)}) = ${id(a.name)};`);
                 }
             }
 
             // Process statements
-            for (let s of fd.statements!) {
+            for (const s of fd.statements!) {
                 writeStatement(s, returnsStr, f.returns, ctx);
             }
 
@@ -243,7 +243,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
     ctx.inIndent(() => {
 
         // Unpack arguments
-        for (let arg of f.args) {
+        for (const arg of f.args) {
             unwrapExternal(id(arg.name), id('$' + arg.name), arg.type, ctx);
         }
 
@@ -255,7 +255,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 
         // Pack if needed
         if (f.returns.kind === 'ref') {
-            let t = getType(ctx.ctx, f.returns.name);
+            const t = getType(ctx.ctx, f.returns.name);
             if (t.kind === 'struct') {
                 if (f.returns.optional) {
                     ctx.append(`return ${ops.typeToOptExternal(t.name, ctx)}(res);`);

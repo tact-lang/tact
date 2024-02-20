@@ -10,10 +10,10 @@ describe('feature-send', () => {
     it('should send reply correctly', async () => {
 
         // Init
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await SendTester.fromInit());
-        let tracker = system.track(contract.address);
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await SendTester.fromInit());
+        const tracker = system.track(contract.address);
         await contract.send(treasure, { value: toNano('10') }, { $$type: 'Deploy', queryId: 0n });
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();
@@ -25,14 +25,14 @@ describe('feature-send', () => {
     it('should bounce on unknown message', async () => {
 
         // Init
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await SendTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await SendTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, { $$type: 'Deploy', queryId: 0n });
         await system.run();
 
         // Test
-        let tracker = system.track(contract);
+        const tracker = system.track(contract);
         await system.provider(contract).internal(treasure, { value: toNano('10'), body: 'Unknown string' });
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();

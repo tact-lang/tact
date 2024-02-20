@@ -25,7 +25,7 @@ export type ConfigProject = z.infer<typeof projectSchema>;
 export type Options = z.infer<typeof optionsSchema>;
 
 export function parseConfig(src: string) {
-    let parsed = JSON.parse(src);
+    const parsed = JSON.parse(src);
     return configSchema.parse(parsed);
 }
 

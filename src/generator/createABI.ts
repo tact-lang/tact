@@ -8,10 +8,10 @@ import { getAllErrors } from "../types/resolveErrors";
 
 export function createABI(ctx: CompilerContext, name: string): ContractABI {
 
-    let allTypes = Object.values(getAllTypes(ctx));
+    const allTypes = Object.values(getAllTypes(ctx));
 
     // Contract
-    let contract = allTypes.find((v) => v.name === name)!;
+    const contract = allTypes.find((v) => v.name === name)!;
     if (!contract) {
         throw Error(`Contract ${name} not found`);
     }
@@ -20,8 +20,8 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     }
 
     // Structs
-    let types: ABIType[] = [];
-    for (let t of allTypes) {
+    const types: ABIType[] = [];
+    for (const t of allTypes) {
         if (t.kind === 'struct') {
             types.push({
                 name: t.name,
@@ -32,8 +32,8 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     }
 
     // // Receivers
-    let receivers: ABIReceiver[] = [];
-    for (let r of Object.values(contract.receivers)) {
+    const receivers: ABIReceiver[] = [];
+    for (const r of Object.values(contract.receivers)) {
         if (r.selector.kind === 'internal-binary') {
             receivers.push({
                 receiver: 'internal',
@@ -112,8 +112,8 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     }
 
     // Getters
-    let getters: ABIGetter[] = [];
-    for (let f of contract.functions.values()) {
+    const getters: ABIGetter[] = [];
+    for (const f of contract.functions.values()) {
         if (f.isGetter) {
             getters.push({
                 name: f.name,
@@ -124,7 +124,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     }
 
     // Errors
-    let errors: { [key: string]: { message: string } } = {};
+    const errors: { [key: string]: { message: string } } = {};
     errors['2'] = { message: 'Stack undeflow' };
     errors['3'] = { message: 'Stack overflow' };
     errors['4'] = { message: 'Integer overflow' };
@@ -139,16 +139,16 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     errors['34'] = { message: 'Action is invalid or not supported' };
     errors['37'] = { message: 'Not enough TON' };
     errors['38'] = { message: 'Not enough extra-currencies' };
-    for (let e of Object.values(contractErrors)) {
+    for (const e of Object.values(contractErrors)) {
         errors[e.id] = { message: e.message };
     }
-    let codeErrors = getAllErrors(ctx);
-    for (let c of codeErrors) {
+    const codeErrors = getAllErrors(ctx);
+    for (const c of codeErrors) {
         errors[c.id + ''] = { message: c.value };
     }
 
     // Interfaces
-    let interfaces = ['org.ton.introspection.v0', ...getSupportedIntefaces(contract, ctx)];
+    const interfaces = ['org.ton.introspection.v0', ...getSupportedIntefaces(contract, ctx)];
 
     return {
         name: contract.name,

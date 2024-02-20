@@ -52,21 +52,21 @@ describe('writeSerialization', () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    for (let s of ['A', 'B', 'C']) {
+    for (const s of ['A', 'B', 'C']) {
         it('should write serializer for ' + s, () => {
             let ctx = openContext(new CompilerContext(), [{ code, path: '<unknown>', origin: 'user' }], []);
             ctx = resolveDescriptors(ctx);
             ctx = resolveAllocations(ctx);
-            let wctx = new WriterContext(ctx, s);
+            const wctx = new WriterContext(ctx, s);
             writeStdlib(wctx);
             writeSerializer(getType(ctx, s).name, false, getAllocation(ctx, s), 'user', wctx);
-            for (let t of Object.values(getAllTypes(ctx))) {
+            for (const t of Object.values(getAllTypes(ctx))) {
                 if (t.kind === 'contract' || t.kind === 'struct') {
                     writeAccessors(t, 'user', wctx);
                 }
             }
             writeParser(getType(ctx, s).name, false, getAllocation(ctx, s), 'user', wctx);
-            let extracted = wctx.extract(true);
+            const extracted = wctx.extract(true);
             expect(extracted).toMatchSnapshot();
         });
     }

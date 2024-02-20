@@ -152,7 +152,7 @@ export function getAllocationOperationFromField(src: ABITypeRef, structLoader: (
         }
 
         // Struct types
-        let size = structLoader(src.type);
+        const size = structLoader(src.type);
         if (src.format === 'ref') {
             return { kind: 'struct', type: src.type, ref: true, optional: src.optional ? src.optional : false, size };
         } else if (src.format !== undefined && src.format !== null) {
@@ -175,13 +175,13 @@ export function getAllocationOperationFromField(src: ABITypeRef, structLoader: (
 
 function allocateSegment(ops: AllocationOperation[], bits: number, refs: number): AllocationCell {
 
-    let fields: AllocationOperation[] = [];
+    const fields: AllocationOperation[] = [];
     let next: AllocationCell | null = null;
-    let used: { bits: number, refs: number } = { bits: 0, refs: 0 };
+    const used: { bits: number, refs: number } = { bits: 0, refs: 0 };
 
     for (let i = 0; i < ops.length; i++) {
-        let op = ops[i];
-        let size = getOperationSize(op.op);
+        const op = ops[i];
+        const size = getOperationSize(op.op);
 
         // Check if we can fit this operation
         if (size.bits > bits || size.refs > refs) {

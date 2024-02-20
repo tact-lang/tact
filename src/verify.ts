@@ -21,7 +21,7 @@ export async function verify(args: { pkg: string, logger?: TactLogger | null | u
     // Loading package
     let unpacked: PackageFileFormat;
     try {
-        let data = JSON.parse(args.pkg);
+        const data = JSON.parse(args.pkg);
         unpacked = fileFormat.parse(data);
     } catch (e) {
         return { ok: false, error: 'invalid-package-format' };
@@ -39,15 +39,15 @@ export async function verify(args: { pkg: string, logger?: TactLogger | null | u
     if (!unpacked.compiler.parameters) {
         return { ok: false, error: 'invalid-package-format' }
     }
-    let params = JSON.parse(unpacked.compiler.parameters);
+    const params = JSON.parse(unpacked.compiler.parameters);
     if (typeof params.entrypoint !== 'string') {
         return { ok: false, error: 'invalid-package-format' }
     }
-    let options: Options = params.options || {};
-    let entrypoint: string = params.entrypoint;
+    const options: Options = params.options || {};
+    const entrypoint: string = params.entrypoint;
 
     // Create config
-    let config: Config = {
+    const config: Config = {
         projects: [{
             name: 'verifier',
             path: normalize('./contract/' + entrypoint),
@@ -57,25 +57,25 @@ export async function verify(args: { pkg: string, logger?: TactLogger | null | u
     }
 
     // Build
-    let files: { [key: string]: string } = {}
-    for (let s in unpacked.sources) {
+    const files: { [key: string]: string } = {}
+    for (const s in unpacked.sources) {
         files['contract/' + s] = unpacked.sources[s];
     }
 
-    let result = await run({ config, files, logger });
+    const result = await run({ config, files, logger });
     if (!result) {
         return { ok: false, error: 'compilation-failed' };
     }
 
     // Read output
-    let compiledCell = files['output/verifier_' + unpacked.name + '.code.boc'];
+    const compiledCell = files['output/verifier_' + unpacked.name + '.code.boc'];
     if (!compiledCell) {
         return { ok: false, error: 'verification-failed' };
     }
 
     // Check output
-    let a = Cell.fromBase64(compiledCell);
-    let b = Cell.fromBase64(unpacked.code);
+    const a = Cell.fromBase64(compiledCell);
+    const b = Cell.fromBase64(unpacked.code);
     if (!a.equals(b)) {
         return { ok: false, error: 'verification-failed' };
     }

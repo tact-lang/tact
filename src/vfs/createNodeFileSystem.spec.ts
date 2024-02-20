@@ -5,16 +5,16 @@ import { createNodeFileSystem } from './createNodeFileSystem';
 
 describe('createNodeFileSystem', () => {
     it('should open file system', () => {
-        let vfs = createNodeFileSystem(path.resolve(__dirname, './__testdata/'));
+        const vfs = createNodeFileSystem(path.resolve(__dirname, './__testdata/'));
         expect(vfs.root).toBe(path.normalize(__dirname + '/__testdata/'));
     });
 
     it('should write and read files', () => {
-        let vfs = createNodeFileSystem(path.resolve(__dirname, './__testdata'), false);
+        const vfs = createNodeFileSystem(path.resolve(__dirname, './__testdata'), false);
 
         // Create a single file
-        let filename = 'tmp-' + Math.random() + '.txt';
-        let realPath = vfs.resolve(filename);
+        const filename = 'tmp-' + Math.random() + '.txt';
+        const realPath = vfs.resolve(filename);
         try {
             expect(vfs.exists(realPath)).toBe(false);
             vfs.writeFile(realPath, 'Hello world');
@@ -26,10 +26,10 @@ describe('createNodeFileSystem', () => {
         }
 
         // Automatically create directories
-        let dir = 'dir-' + Math.random();
-        let fileName2 = dir + '/' + Math.random() + '.txt';
-        let realPath2 = vfs.resolve(fileName2);
-        let realPaathDir2 = vfs.resolve(dir);
+        const dir = 'dir-' + Math.random();
+        const fileName2 = dir + '/' + Math.random() + '.txt';
+        const realPath2 = vfs.resolve(fileName2);
+        const realPaathDir2 = vfs.resolve(dir);
         try {
             expect(vfs.exists(realPath2)).toBe(false);
             vfs.writeFile(realPath2, 'Hello world');

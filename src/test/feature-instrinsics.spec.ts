@@ -9,9 +9,9 @@ describe('feature-instrinsics', () => {
         __DANGER_resetNodeId();
     });
     it('should return correct instinsic results', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await IntrinsicsTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await IntrinsicsTester.fromInit());
         system.name(contract, 'contract');
         await contract.send(treasure, { value: toNano('10') }, 'Deploy');
         await system.run();
@@ -32,12 +32,12 @@ describe('feature-instrinsics', () => {
         expect((await contract.getGetComment()).equals(beginCell().storeUint(0, 32).storeStringTail('Hello world').endCell())).toBe(true);
 
         // Compile-time send/emit optimizations
-        let tracker = system.track(contract);
+        const tracker = system.track(contract);
         await contract.send(treasure, { value: toNano(1) }, 'emit_1');
         await system.run();
 
         // Check that the contract emitted the correct message
-        let tracked = tracker.collect();
+        const tracked = tracker.collect();
         expect(tracked).toMatchSnapshot();
 
         // Check sha256

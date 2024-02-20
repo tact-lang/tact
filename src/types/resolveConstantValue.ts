@@ -9,8 +9,8 @@ function reduceInt(ast: ASTExpression): bigint {
     if (ast.kind === 'number') {
         return ast.value;
     } else if (ast.kind === 'op_binary') {
-        let l = reduceInt(ast.left);
-        let r = reduceInt(ast.right);
+        const l = reduceInt(ast.left);
+        const r = reduceInt(ast.right);
         if (ast.op === '+') {
             return l + r;
         } else if (ast.op === '-') {
@@ -49,7 +49,7 @@ function reduceInt(ast: ASTExpression): bigint {
         }
         if (ast.name === 'sha256') {
             if (ast.args.length === 1 && ast.args[0].kind === 'string') {
-                let str = reduceString(ast.args[0]);
+                const str = reduceString(ast.args[0]);
                 if (Buffer.from(str).length <= 128) {
                     return BigInt('0x' + sha256_sync(str).toString('hex'));
                 }
@@ -92,7 +92,7 @@ function reduceAddress(ast: ASTExpression, ctx: CompilerContext): Address {
         if (ast.name === 'address') {
             if (ast.args.length === 1) {
                 const str = reduceString(ast.args[0]);
-                let address = Address.parse(str);
+                const address = Address.parse(str);
                 if (address.workChain !== 0 && address.workChain !== -1) {
                     throwError(`Address ${str} invalid address`, ast.ref);
                 }

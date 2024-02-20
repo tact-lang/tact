@@ -6,8 +6,8 @@ export function resolveFuncTypeFromAbi(fields: ABITypeRef[], ctx: WriterContext)
     if (fields.length === 0) {
         return 'tuple';
     }
-    let res: string[] = [];
-    for (let f of fields) {
+    const res: string[] = [];
+    for (const f of fields) {
         if (f.kind === 'dict') {
             res.push('cell');
         } else if (f.kind === 'simple') {
@@ -26,14 +26,14 @@ export function resolveFuncTypeFromAbi(fields: ABITypeRef[], ctx: WriterContext)
             } else if (f.type === 'string') {
                 res.push('slice');
             } else {
-                let t = getType(ctx.ctx, f.type);
+                const t = getType(ctx.ctx, f.type);
                 if (t.kind !== 'struct') {
                     throw Error('Unsupported type: ' + t.kind);
                 }
                 if (f.optional || t.fields.length === 0) {
                     res.push('tuple');
                 } else {
-                    let loaded = t.fields.map((v) => v.abi.type);
+                    const loaded = t.fields.map((v) => v.abi.type);
                     res.push(resolveFuncTypeFromAbi(loaded, ctx));
                 }
             }

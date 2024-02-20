@@ -4,9 +4,9 @@ import path from 'path';
 
 describe('resolveImports', () => {
     it('should resolve imports', () => {
-        let project = createNodeFileSystem(path.resolve(__dirname, '__testdata', 'project'));
-        let stdlib = createNodeFileSystem(path.resolve(__dirname, '__testdata', 'stdlib'));
-        let resolved = resolveImports({
+        const project = createNodeFileSystem(path.resolve(__dirname, '__testdata', 'project'));
+        const stdlib = createNodeFileSystem(path.resolve(__dirname, '__testdata', 'stdlib'));
+        const resolved = resolveImports({
             project,
             stdlib,
             entrypoint: './main.tact'

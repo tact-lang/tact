@@ -50,8 +50,8 @@ type CompileResult = {
 export async function funcCompile(args: { entries: string[], sources: { path: string, content: string }[], logger: TactLogger }): Promise<FuncCompilationResult> {
 
     // Parameters
-    let files: string[] = args.entries;
-    let configStr = JSON.stringify({
+    const files: string[] = args.entries;
+    const configStr = JSON.stringify({
         sources: files,
         optLevel: 2 // compileConfig.optLevel || 2
     });
@@ -69,14 +69,14 @@ export async function funcCompile(args: { entries: string[], sources: { path: st
     };
 
     // Create module
-    let logs: string[] = []
-    let mod = await CompilerModule({ wasmBinary: WasmBinary, printErr: (e: any) => { logs.push(e); } });
+    const logs: string[] = []
+    const mod = await CompilerModule({ wasmBinary: WasmBinary, printErr: (e: any) => { logs.push(e); } });
 
     // Execute
     try {
 
         // Write config
-        let configPointer = trackPointer(writeToCString(mod, configStr));
+        const configPointer = trackPointer(writeToCString(mod, configStr));
 
         // FS emulation callback
         const callbackPtr = trackFunctionPointer(mod.addFunction((_kind: any, _data: any, contents: any, error: any) => {
@@ -86,7 +86,7 @@ export async function funcCompile(args: { entries: string[], sources: { path: st
                 allocatedPointers.push(writeToCStringPtr(mod, data, contents));
             } else if (kind === 'source') {
                 try {
-                    let fl = args.sources.find((v) => v.path === data);
+                    const fl = args.sources.find((v) => v.path === data);
                     if (!fl) {
                         throw Error('File not found: ' + data)
                     }
@@ -101,11 +101,11 @@ export async function funcCompile(args: { entries: string[], sources: { path: st
         }, 'viiii'));
 
         // Execute
-        let resultPointer = trackPointer(mod._func_compile(configPointer, callbackPtr));
-        let retJson = readFromCString(mod, resultPointer);
-        let result = JSON.parse(retJson) as CompileResult;
+        const resultPointer = trackPointer(mod._func_compile(configPointer, callbackPtr));
+        const retJson = readFromCString(mod, resultPointer);
+        const result = JSON.parse(retJson) as CompileResult;
 
-        let msg = logs.join('\n');
+        const msg = logs.join('\n');
 
         if (result.status === 'error') {
             return {
@@ -128,10 +128,10 @@ export async function funcCompile(args: { entries: string[], sources: { path: st
         args.logger.error(errorToString(e));
         throw Error('Unexpected compiler response');
     } finally {
-        for (let i of allocatedFunctions) {
+        for (const i of allocatedFunctions) {
             mod.removeFunction(i);
         }
-        for (let i of allocatedPointers) {
+        for (const i of allocatedPointers) {
             mod._free(i);
         }
     }

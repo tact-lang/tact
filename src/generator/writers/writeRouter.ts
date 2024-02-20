@@ -52,7 +52,7 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                 for (const r of bounceReceivers) {
                     const selector = r.selector;
                     if (selector.kind !== "bounce-binary") throw Error('Invalid selector type: ' + selector.kind); // Should not happen
-                    let allocation = getType(ctx.ctx, selector.type);
+                    const allocation = getType(ctx.ctx, selector.type);
                     if (!allocation) throw Error('Invalid allocation: ' + selector.type); // Should not happen
 
                     ctx.append(`;; Bounced handler for ${selector.type} message`);
@@ -107,7 +107,7 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
 
             // Generic receiver
             if (selector.kind === (internal ? 'internal-binary' : 'external-binary')) {
-                let allocation = getType(ctx.ctx, selector.type);
+                const allocation = getType(ctx.ctx, selector.type);
                 if (!allocation.header) {
                     throw Error('Invalid allocation: ' + selector.type);
                 }
@@ -145,18 +145,18 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
         }
 
         // Text resolvers
-        let hasComments = !!type.receivers.find((v) => internal ? (v.selector.kind === 'internal-comment' || v.selector.kind === 'internal-comment-fallback') : (v.selector.kind === 'external-comment' || v.selector.kind === 'external-comment-fallback'));
+        const hasComments = !!type.receivers.find((v) => internal ? (v.selector.kind === 'internal-comment' || v.selector.kind === 'internal-comment-fallback') : (v.selector.kind === 'external-comment' || v.selector.kind === 'external-comment-fallback'));
         if (hasComments) {
             ctx.append();
             ctx.append(`;; Text Receivers`);
             ctx.append(`if (op == 0) {`);
             ctx.inIndent(() => {
-                if (!!type.receivers.find((v) => v.selector.kind === (internal ? 'internal-comment' : 'external-comment'))) {
+                if (type.receivers.find((v) => v.selector.kind === (internal ? 'internal-comment' : 'external-comment'))) {
                     ctx.append(`var text_op = slice_hash(in_msg);`);
                     for (const r of type.receivers) {
                         const selector = r.selector;
                         if (selector.kind === (internal ? 'internal-comment' : 'external-comment')) {
-                            let hash = beginCell()
+                            const hash = beginCell()
                                 .storeUint(0, 32)
                                 .storeBuffer(Buffer.from(selector.comment, 'utf8'))
                                 .endCell()
@@ -179,7 +179,7 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                 }
 
                 // Comment fallback resolver
-                let fallback = type.receivers.find((v) => v.selector.kind === (internal ? 'internal-comment-fallback' : 'external-comment-fallback'));
+                const fallback = type.receivers.find((v) => v.selector.kind === (internal ? 'internal-comment-fallback' : 'external-comment-fallback'));
                 if (fallback) {
 
                     ctx.append(`if (slice_bits(in_msg) >= 32) {`);
@@ -199,7 +199,7 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
         }
 
         // Fallback
-        let fallbackReceiver = type.receivers.find((v) => v.selector.kind === (internal ? 'internal-fallback' : 'external-fallback'));
+        const fallbackReceiver = type.receivers.find((v) => v.selector.kind === (internal ? 'internal-fallback' : 'external-fallback'));
         if (fallbackReceiver) {
 
             ctx.append();
@@ -220,13 +220,13 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
 
 export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: WriterContext) {
     const selector = f.selector;
-    let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
-    let selfType = resolveFuncType(self, ctx);
-    let selfUnpack = `var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`;
+    const selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
+    const selfType = resolveFuncType(self, ctx);
+    const selfUnpack = `var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`;
 
     // Binary receiver
     if (selector.kind === 'internal-binary' || selector.kind === 'external-binary') {
-        let args = [
+        const args = [
             selfType + ' ' + id('self'),
             resolveFuncType(selector.type, ctx) + ' ' + id(selector.name)
         ];
@@ -235,7 +235,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
             ctx.append(selfUnpack);
             ctx.append(`var ${resolveFuncTypeUnpack(selector.type, id(selector.name), ctx)} = ${id(selector.name)};`);
 
-            for (let s of f.ast.statements) {
+            for (const s of f.ast.statements) {
                 writeStatement(s, selfRes, null, ctx);
             }
 
@@ -254,7 +254,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
 
-            for (let s of f.ast.statements) {
+            for (const s of f.ast.statements) {
                 writeStatement(s, selfRes, null, ctx);
             }
 
@@ -269,7 +269,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
 
     // Comment receiver
     if (selector.kind === 'internal-comment' || selector.kind === 'external-comment') {
-        let hash = beginCell()
+        const hash = beginCell()
             .storeUint(0, 32)
             .storeBuffer(Buffer.from(selector.comment, 'utf8'))
             .endCell()
@@ -279,7 +279,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
 
-            for (let s of f.ast.statements) {
+            for (const s of f.ast.statements) {
                 writeStatement(s, selfRes, null, ctx);
             }
 
@@ -299,7 +299,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
 
-            for (let s of f.ast.statements) {
+            for (const s of f.ast.statements) {
                 writeStatement(s, selfRes, null, ctx);
             }
 
@@ -318,7 +318,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
 
-            for (let s of f.ast.statements) {
+            for (const s of f.ast.statements) {
                 writeStatement(s, selfRes, null, ctx);
             }
 
@@ -337,7 +337,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
 
-            for (let s of f.ast.statements) {
+            for (const s of f.ast.statements) {
                 writeStatement(s, selfRes, null, ctx);
             }
 
@@ -351,7 +351,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     }
 
     if (selector.kind === 'bounce-binary') {
-        let args = [
+        const args = [
             selfType + ' ' + id('self'),
             resolveFuncType(selector.type, ctx, false, selector.bounced) + ' ' + id(selector.name)
         ];
@@ -360,7 +360,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
             ctx.append(selfUnpack);
             ctx.append(`var ${resolveFuncTypeUnpack(selector.type, id(selector.name), ctx, false, selector.bounced)} = ${id(selector.name)};`);
 
-            for (let s of f.ast.statements) {
+            for (const s of f.ast.statements) {
                 writeStatement(s, selfRes, null, ctx);
             }
 

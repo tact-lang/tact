@@ -108,7 +108,7 @@ describe('features', () => {
         __DANGER_resetNodeId();
     });
 
-    let eV = {
+    const eV = {
         $$type: 'SomeGenericStruct' as const,
         value1: 1n,
         value2: 2n,
@@ -116,7 +116,7 @@ describe('features', () => {
         value4: 4n,
         value5: 5n
     };
-    let ev2: StructWithOptionals = {
+    const ev2: StructWithOptionals = {
         $$type: 'StructWithOptionals' as const,
         a: 1n,
         b: true,
@@ -124,7 +124,7 @@ describe('features', () => {
         d: randomAddress(0, 'address1'),
         e: eV,
     };
-    let ev3: StructWithOptionals = {
+    const ev3: StructWithOptionals = {
         $$type: 'StructWithOptionals' as const,
         a: 1n,
         b: true,
@@ -132,7 +132,7 @@ describe('features', () => {
         d: null,
         e: null,
     };
-    let cases: { a: bigint | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null }[] = [];
+    const cases: { a: bigint | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null }[] = [];
     cases.push({ a: null, b: null, c: null, d: null, e: null, f: null });
     cases.push({ a: 10n, b: true, c: null, d: randomAddress(0, 'address1'), e: eV, f: ev2 });
     cases.push({ a: -10n, b: false, c: null, d: randomAddress(-1, 'address2'), e: null, f: ev2 });
@@ -141,12 +141,12 @@ describe('features', () => {
     for (let i = 0; i < cases.length; i++) {
 
         it('should handle case #' + i, async () => {
-            let cs = cases[i];
+            const cs = cases[i];
 
             // Init contract
-            let system = await ContractSystem.create();
-            let treasure = system.treasure('treasure');
-            let contract = system.open(await ContractWithOptionals.fromInit(cs.a, cs.b, cs.c, cs.d, cs.e, cs.f));
+            const system = await ContractSystem.create();
+            const treasure = system.treasure('treasure');
+            const contract = system.open(await ContractWithOptionals.fromInit(cs.a, cs.b, cs.c, cs.d, cs.e, cs.f));
             await contract.send(treasure, { value: toNano('10') }, null);
             await system.run();
 

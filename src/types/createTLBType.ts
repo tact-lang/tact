@@ -79,8 +79,8 @@ function createTLBField(src: ABIField) {
         if (src.type.format !== null && src.type.format !== undefined) {
             throw Error('Unsupported map format ' + src.type.format);
         }
-        let key = createTypeFormat(src.type.key, src.type.keyFormat ? src.type.keyFormat : null);
-        let value = createTypeFormat(src.type.value, src.type.valueFormat ? src.type.valueFormat : null);
+        const key = createTypeFormat(src.type.key, src.type.keyFormat ? src.type.keyFormat : null);
+        const value = createTypeFormat(src.type.value, src.type.valueFormat ? src.type.valueFormat : null);
         return src.name + ':dict<' + key + ', ' + value + '>';
     }
 
@@ -88,14 +88,14 @@ function createTLBField(src: ABIField) {
 }
 
 export function createTLBType(name: string, args: ABIField[], kind: 'struct' | 'message', knownHeader: number | null): { tlb: string, header: number | null } {
-    let fields = args.map(createTLBField).join(' ');
+    const fields = args.map(createTLBField).join(' ');
     if (kind === 'struct') {
         return { tlb: '_ ' + fields + ' = ' + name, header: null };
     } else {
-        let base = cs.snakeCase(name) + ' ' + fields + ' = ' + name;
-        let op = knownHeader !== null ? knownHeader : beginCell().storeBuffer(sha256_sync(base)).endCell().beginParse().loadUint(32);
-        let opText = beginCell().storeUint(op, 32).endCell().beginParse().loadBuffer(4).toString('hex');
-        let res = cs.snakeCase(name) + '#' + opText + ' ' + fields + ' = ' + name;
+        const base = cs.snakeCase(name) + ' ' + fields + ' = ' + name;
+        const op = knownHeader !== null ? knownHeader : beginCell().storeBuffer(sha256_sync(base)).endCell().beginParse().loadUint(32);
+        const opText = beginCell().storeUint(op, 32).endCell().beginParse().loadBuffer(4).toString('hex');
+        const res = cs.snakeCase(name) + '#' + opText + ' ' + fields + ' = ' + name;
         return { tlb: res, header: op };
     }
 }

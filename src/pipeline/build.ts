@@ -34,7 +34,7 @@ export async function build(args: {
 
     // Configure context
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
-    let cfg: string = JSON.stringify({
+    const cfg: string = JSON.stringify({
         entrypoint: config.path,
         options: (config.options || {})
     });
@@ -68,7 +68,7 @@ export async function build(args: {
 
     // Compile contracts
     let ok = true;
-    let built: {
+    const built: {
         [key: string]: {
             codeBoc: Buffer,
             // codeFunc: string,
@@ -77,13 +77,13 @@ export async function build(args: {
             abi: string
         }
     } = {};
-    for (let contract of getContracts(ctx)) {
-        let pathAbi = project.resolve(config.output, config.name + '_' + contract + ".abi");
+    for (const contract of getContracts(ctx)) {
+        const pathAbi = project.resolve(config.output, config.name + '_' + contract + ".abi");
 
 
-        let pathCodeBoc = project.resolve(config.output, config.name + '_' + contract + ".code.boc");
-        let pathCodeFif = project.resolve(config.output, config.name + '_' + contract + ".code.fif");
-        let pathCodeFifDec = project.resolve(config.output, config.name + '_' + contract + ".code.rev.fif");
+        const pathCodeBoc = project.resolve(config.output, config.name + '_' + contract + ".code.boc");
+        const pathCodeFif = project.resolve(config.output, config.name + '_' + contract + ".code.fif");
+        const pathCodeFifDec = project.resolve(config.output, config.name + '_' + contract + ".code.rev.fif");
         let codeFc: { path: string, content: string }[];
         let codeEntrypoint: string;
 
@@ -91,9 +91,9 @@ export async function build(args: {
         logger.log('   > ' + contract + ': tact compiler');
         let abi: string;
         try {
-            let res = await compile(ctx, contract, config.name + '_' + contract);
-            for (let files of res.output.files) {
-                let ffc = project.resolve(config.output, files.name);
+            const res = await compile(ctx, contract, config.name + '_' + contract);
+            for (const files of res.output.files) {
+                const ffc = project.resolve(config.output, files.name);
                 project.writeFile(ffc, files.code);
             }
             project.writeFile(pathAbi, res.output.abi);
@@ -111,11 +111,11 @@ export async function build(args: {
         logger.log('   > ' + contract + ': func compiler');
         let codeBoc: Buffer;
         try {
-            let stdlibPath = stdlib.resolve('stdlib.fc');
-            let stdlibCode = stdlib.readFile(stdlibPath).toString();
-            let stdlibExPath = stdlib.resolve('stdlib_ex.fc');
-            let stdlibExCode = stdlib.readFile(stdlibExPath).toString();
-            let c = await funcCompile({
+            const stdlibPath = stdlib.resolve('stdlib.fc');
+            const stdlibCode = stdlib.readFile(stdlibPath).toString();
+            const stdlibExPath = stdlib.resolve('stdlib_ex.fc');
+            const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
+            const c = await funcCompile({
                 entries: [
                     stdlibPath,
                     stdlibExPath,
@@ -176,11 +176,11 @@ export async function build(args: {
 
     // Package
     logger.log('   > Packaging');
-    let contracts = getContracts(ctx);
-    let packages: PackageFileFormat[] = [];
-    for (let contract of contracts) {
+    const contracts = getContracts(ctx);
+    const packages: PackageFileFormat[] = [];
+    for (const contract of contracts) {
         logger.log('   > ' + contract);
-        let artifacts = built[contract];
+        const artifacts = built[contract];
         if (!artifacts) {
             logger.error('   > ' + contract + ': no artifacts found');
             return false;
@@ -190,8 +190,8 @@ export async function build(args: {
         const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
         const ct = getType(ctx, contract);
         depends.set(ct.uid, Cell.fromBoc(built[ct.name].codeBoc)[0]); // Mine
-        for (let c of ct.dependsOn) {
-            let cd = built[c.name];
+        for (const c of ct.dependsOn) {
+            const cd = built[c.name];
             if (!cd) {
                 logger.error('   > ' + cd + ': no artifacts found');
                 return false;
@@ -201,16 +201,16 @@ export async function build(args: {
         const systemCell = beginCell().storeDict(depends).endCell();
 
         // Collect sources
-        let sources: { [key: string]: string } = {};
-        let rawAst = getRawAST(ctx);
-        for (let source of [...rawAst.funcSources, ...rawAst.sources]) {
+        const sources: { [key: string]: string } = {};
+        const rawAst = getRawAST(ctx);
+        for (const source of [...rawAst.funcSources, ...rawAst.sources]) {
             if (source.path.startsWith(project.root) && !source.path.startsWith(stdlib.root)) {
                 sources[source.path.slice(project.root.length)] = Buffer.from(source.code).toString('base64');
             }
         }
 
         // Package
-        let pkg: PackageFileFormat = {
+        const pkg: PackageFileFormat = {
             name: contract,
             abi: artifacts.abi,
             code: artifacts.codeBoc.toString('base64'),
@@ -233,22 +233,22 @@ export async function build(args: {
                 parameters: cfg
             }
         };
-        let pkgData = packageCode(pkg);
-        let pathPkg = project.resolve(config.output, config.name + '_' + contract + ".pkg");
+        const pkgData = packageCode(pkg);
+        const pathPkg = project.resolve(config.output, config.name + '_' + contract + ".pkg");
         project.writeFile(pathPkg, pkgData);
         packages.push(pkg);
     }
 
     // Bindings
     logger.log('   > Bindings');
-    for (let pkg of packages) {
+    for (const pkg of packages) {
         logger.log('   > ' + pkg.name);
         if (pkg.init.deployment.kind !== 'system-cell') {
             logger.error('   > ' + pkg.name + ': unsupported deployment kind ' + pkg.init.deployment.kind);
             return false;
         }
         try {
-            let bindingsServer = writeTypescript(JSON.parse(pkg.abi), {
+            const bindingsServer = writeTypescript(JSON.parse(pkg.abi), {
                 code: pkg.code,
                 prefix: pkg.init.prefix,
                 system: pkg.init.deployment.system,
@@ -264,11 +264,11 @@ export async function build(args: {
 
     // Reports
     logger.log('   > Reports');
-    for (let pkg of packages) {
+    for (const pkg of packages) {
         logger.log('   > ' + pkg.name);
         try {
-            let report = writeReport(ctx, pkg);
-            let pathBindings = project.resolve(config.output, config.name + '_' + pkg.name + ".md");
+            const report = writeReport(ctx, pkg);
+            const pathBindings = project.resolve(config.output, config.name + '_' + pkg.name + ".md");
             project.writeFile(pathBindings, report);
         } catch (e) {
             logger.error('Report generation crashed');

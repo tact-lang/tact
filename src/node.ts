@@ -8,8 +8,8 @@ import { consoleLogger } from './logger';
 export async function run(args: { configPath: string, projectNames?: string[] }) {
 
     // Load config
-    let resolvedPath = path.resolve(args.configPath);
-    let rootPath = path.dirname(resolvedPath);
+    const resolvedPath = path.resolve(args.configPath);
+    const rootPath = path.dirname(resolvedPath);
     let config: Config;
     if (!fs.existsSync(resolvedPath)) {
         console.warn('Unable to find config file at ' + resolvedPath);
@@ -28,7 +28,7 @@ export async function run(args: { configPath: string, projectNames?: string[] })
     if (args.projectNames && args.projectNames.length > 0) {
 
         // Check that all proejct names are valid
-        for (let pp of args.projectNames) {
+        for (const pp of args.projectNames) {
             if (!projects.find((v) => v.name === pp)) {
                 console.warn('Unable to find project ' + pp);
                 return false;
@@ -45,11 +45,11 @@ export async function run(args: { configPath: string, projectNames?: string[] })
 
     // Compile 
     let success = true;
-    let project = createNodeFileSystem(rootPath, false);
-    let stdlib = createNodeFileSystem(path.resolve(__dirname, '..', 'stdlib'), false); // Improves developer experience
-    for (let config of projects) {
+    const project = createNodeFileSystem(rootPath, false);
+    const stdlib = createNodeFileSystem(path.resolve(__dirname, '..', 'stdlib'), false); // Improves developer experience
+    for (const config of projects) {
         console.log('💼 Compiling project ' + config.name + '...');
-        let built = await build({ config, project, stdlib, logger: consoleLogger });
+        const built = await build({ config, project, stdlib, logger: consoleLogger });
         success = success && built;
     }
     return success;

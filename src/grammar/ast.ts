@@ -9,7 +9,7 @@ export class ASTRef {
             throw Error('Cannot merge 0 refs');
         }
         let r = refs[0].#interval;
-        let file = refs[0].#file;
+        const file = refs[0].#file;
         for (let i = 1; i < refs.length; i++) {
             r = r.coverageWith(r, refs[i].#interval);
         }
@@ -455,7 +455,7 @@ let currentFile: string | null = null;
 
 export function inFile<T>(path: string, callback: () => T) {
     currentFile = path;
-    let r = callback();
+    const r = callback();
     currentFile = null;
     return r;
 }
@@ -470,7 +470,7 @@ export function createRef(s: RawNode, ...extra: RawNode[]): ASTRef {
 
 export function throwError(message: string, ref: ASTRef): never {
     if (ref.file) {
-        let lc = (ref.interval as any).getLineAndColumn() as { lineNum: number, colNum: number };
+        const lc = (ref.interval as any).getLineAndColumn() as { lineNum: number, colNum: number };
         throw new TactSyntaxError(ref.file + ':' + lc.lineNum + ':' + lc.colNum + ': ' + message + '\n' + ref.interval.getLineAndColumnMessage(), ref);
     } else {
         throw new TactSyntaxError(message + ref.interval.getLineAndColumnMessage(), ref);
@@ -485,22 +485,22 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     //
 
     if (node.kind === 'program') {
-        for (let e of node.entries) {
+        for (const e of node.entries) {
             traverse(e, callback);
         }
     }
     if (node.kind === 'def_contract') {
-        for (let e of node.declarations) {
+        for (const e of node.declarations) {
             traverse(e, callback);
         }
     }
     if (node.kind === 'def_struct') {
-        for (let e of node.fields) {
+        for (const e of node.fields) {
             traverse(e, callback);
         }
     }
     if (node.kind === 'def_trait') {
-        for (let e of node.declarations) {
+        for (const e of node.declarations) {
             traverse(e, callback);
         }
     }
@@ -510,30 +510,30 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     //
 
     if (node.kind === 'def_function') {
-        for (let e of node.args) {
+        for (const e of node.args) {
             traverse(e, callback);
         }
         if (node.statements) {
-            for (let e of node.statements) {
+            for (const e of node.statements) {
                 traverse(e, callback);
             }
         }
     }
     if (node.kind === 'def_init_function') {
-        for (let e of node.args) {
+        for (const e of node.args) {
             traverse(e, callback);
         }
-        for (let e of node.statements) {
+        for (const e of node.statements) {
             traverse(e, callback);
         }
     }
     if (node.kind === 'def_receive') {
-        for (let e of node.statements) {
+        for (const e of node.statements) {
             traverse(e, callback);
         }
     }
     if (node.kind === 'def_native_function') {
-        for (let e of node.args) {
+        for (const e of node.args) {
             traverse(e, callback);
         }
     }
@@ -565,24 +565,24 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         traverse(node.expression, callback);
     }
     if (node.kind === 'statement_assign') {
-        for (let e of node.path) {
+        for (const e of node.path) {
             traverse(e, callback);
         }
         traverse(node.expression, callback);
     }
     if (node.kind === 'statement_augmentedassign') {
-        for (let e of node.path) {
+        for (const e of node.path) {
             traverse(e, callback);
         }
         traverse(node.expression, callback);
     }
     if (node.kind === 'statement_condition') {
         traverse(node.expression, callback);
-        for (let e of node.trueStatements) {
+        for (const e of node.trueStatements) {
             traverse(e, callback);
         }
         if (node.falseStatements) {
-            for (let e of node.falseStatements) {
+            for (const e of node.falseStatements) {
                 traverse(e, callback);
             }
         }
@@ -592,19 +592,19 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     }
     if (node.kind === 'statement_while') {
         traverse(node.condition, callback);
-        for (let e of node.statements) {
+        for (const e of node.statements) {
             traverse(e, callback);
         }
     }
     if (node.kind === 'statement_until') {
         traverse(node.condition, callback);
-        for (let e of node.statements) {
+        for (const e of node.statements) {
             traverse(e, callback);
         }
     }
     if (node.kind === 'statement_repeat') {
         traverse(node.condition, callback);
-        for (let e of node.statements) {
+        for (const e of node.statements) {
             traverse(e, callback);
         }
     }
@@ -620,17 +620,17 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     }
     if (node.kind === 'op_call') {
         traverse(node.src, callback);
-        for (let e of node.args) {
+        for (const e of node.args) {
             traverse(e, callback);
         }
     }
     if (node.kind === 'op_static_call') {
-        for (let e of node.args) {
+        for (const e of node.args) {
             traverse(e, callback);
         }
     }
     if (node.kind === 'op_new') {
-        for (let e of node.args) {
+        for (const e of node.args) {
             traverse(e, callback);
         }
     }

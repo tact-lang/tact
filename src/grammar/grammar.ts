@@ -25,7 +25,7 @@ semantics.addOperation<ASTNode>('resolve_program', {
 // Resolve program items
 semantics.addOperation<ASTNode>('resolve_program_item', {
     ProgramImport(arg0, arg1, arg2) {
-        let pp = arg1.resolve_expression() as ASTString;
+        const pp = arg1.resolve_expression() as ASTString;
         if (pp.value.indexOf('\\') >= 0) {
             throwError('Import path can\'t contain "\\"', createRef(arg1));
         }
@@ -218,7 +218,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     Field_defaultWithInit(arg0, arg1, arg2, arg3, arg4, arg5) {
-        let tr = (arg2.resolve_expression() as ASTTypeRef);
+        const tr = (arg2.resolve_expression() as ASTTypeRef);
         return createNode({
             kind: 'def_field',
             name: arg0.sourceString,
@@ -239,7 +239,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     Field_withSerializationAndInit(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
-        let tr = (arg2.resolve_expression() as ASTTypeRef);
+        const tr = (arg2.resolve_expression() as ASTTypeRef);
         return createNode({
             kind: 'def_field',
             name: arg0.sourceString,
@@ -283,7 +283,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     Function_withType(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) {
-        let attributes = arg0.children.map((v: any) => v.resolve_attributes()) as ASTFunctionAttribute[];
+        const attributes = arg0.children.map((v: any) => v.resolve_attributes()) as ASTFunctionAttribute[];
         checkVariableName(arg2.sourceString, createRef(arg2));
         checkFunctionAttributes(false, attributes, createRef(this));
         return createNode({
@@ -298,7 +298,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     Function_withVoid(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
-        let attributes = arg0.children.map((v: any) => v.resolve_attributes()) as ASTFunctionAttribute[];
+        const attributes = arg0.children.map((v: any) => v.resolve_attributes()) as ASTFunctionAttribute[];
         checkVariableName(arg2.sourceString, createRef(arg2));
         checkFunctionAttributes(false, attributes, createRef(this));
         return createNode({
@@ -313,7 +313,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     Function_abstractVoid(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
-        let attributes = arg0.children.map((v: any) => v.resolve_attributes()) as ASTFunctionAttribute[];
+        const attributes = arg0.children.map((v: any) => v.resolve_attributes()) as ASTFunctionAttribute[];
         checkVariableName(arg2.sourceString, createRef(arg2));
         checkFunctionAttributes(true, attributes, createRef(this));
         return createNode({
@@ -328,7 +328,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     Function_abstractType(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
-        let attributes = arg0.children.map((v: any) => v.resolve_attributes()) as ASTFunctionAttribute[];
+        const attributes = arg0.children.map((v: any) => v.resolve_attributes()) as ASTFunctionAttribute[];
         checkVariableName(arg2.sourceString, createRef(arg2));
         checkFunctionAttributes(true, attributes, createRef(this));
         return createNode({
@@ -729,16 +729,16 @@ semantics.addOperation<ASTNode>('resolve_expression', {
 });
 
 function throwMatchError(matchResult: MatchResult, path: string): never {
-    let interval = (matchResult as any).getInterval();
-    let lc = interval.getLineAndColumn() as { lineNum: number, colNum: number };
-    let msg = interval.getLineAndColumnMessage();
-    let message = path + ':' + lc.lineNum + ':' + lc.colNum + ': Syntax error: expected ' + (matchResult as any).getExpectedText() + ' \n' + msg;
+    const interval = (matchResult as any).getInterval();
+    const lc = interval.getLineAndColumn() as { lineNum: number, colNum: number };
+    const msg = interval.getLineAndColumnMessage();
+    const message = path + ':' + lc.lineNum + ':' + lc.colNum + ': Syntax error: expected ' + (matchResult as any).getExpectedText() + ' \n' + msg;
     throw new TactSyntaxError(message, new ASTRef(interval, path));
 }
 
 export function parse(src: string, path: string, origin: TypeOrigin): ASTProgram {
     return inFile(path, () => {
-        let matchResult = rawGrammar.match(src);
+        const matchResult = rawGrammar.match(src);
         if (matchResult.failed()) {
             throwMatchError(matchResult, path);
         }
@@ -752,10 +752,10 @@ export function parse(src: string, path: string, origin: TypeOrigin): ASTProgram
 }
 
 export function parseImports(src: string, path: string, origin: TypeOrigin): string[] {
-    let r = parse(src, path, origin);
-    let imports: string[] = [];
+    const r = parse(src, path, origin);
+    const imports: string[] = [];
     let hasExpression = false;
-    for (let e of r.entries) {
+    for (const e of r.entries) {
         if (e.kind === 'program_import') {
             if (hasExpression) {
                 throwError('Import must be at the top of the file', e.ref);

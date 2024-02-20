@@ -11,7 +11,7 @@ import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 export function precompile(ctx: CompilerContext, project: VirtualFileSystem, stdlib: VirtualFileSystem, entrypoint: string) {
 
     // Load all sources
-    let imported = resolveImports({ entrypoint, project, stdlib });
+    const imported = resolveImports({ entrypoint, project, stdlib });
 
     // Perform initial compiler steps
     ctx = openContext(ctx, imported.tact, imported.func);

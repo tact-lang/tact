@@ -3,7 +3,7 @@ import { CompilerContext } from "../context";
 import { TypeDescription } from "./types";
 
 export function getSupportedIntefaces(type: TypeDescription, ctx: CompilerContext) {
-    let interfaces: string[] = [];
+    const interfaces: string[] = [];
     interfaces.push('org.ton.abi.ipfs.v0');
     interfaces.push('org.ton.deploy.lazy.v0');
     if (enabledDebug(ctx)) {

@@ -10,25 +10,25 @@ describe('feature-math', () => {
     it('should perform basic math operations correctly', async () => {
 
         // Init
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await MathTester.fromInit());
-        let addressA = randomAddress('a');
-        let addressB = randomAddress('b');
-        let cellA = beginCell().storeUint(0, 32).endCell();
-        let cellB = beginCell().storeUint(1, 32).endCell();
-        let sliceA = beginCell()
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await MathTester.fromInit());
+        const addressA = randomAddress('a');
+        const addressB = randomAddress('b');
+        const cellA = beginCell().storeUint(0, 32).endCell();
+        const cellB = beginCell().storeUint(1, 32).endCell();
+        const sliceA = beginCell()
             .storeBit(0)
             .storeRef(beginCell().storeBit(1).endCell())
             .endCell();
-        let sliceB = beginCell()
+        const sliceB = beginCell()
             .storeBit(1)
             .storeRef(beginCell().storeBit(1).endCell())
             .endCell();
-        let stringA = "foo";
-        let stringB = "bar";
-        let dictA = Dictionary.empty<bigint, bigint>().set(0n, 0n);
-        let dictB = Dictionary.empty<bigint, bigint>().set(0n, 2n);
+        const stringA = "foo";
+        const stringB = "bar";
+        const dictA = Dictionary.empty<bigint, bigint>().set(0n, 0n);
+        const dictB = Dictionary.empty<bigint, bigint>().set(0n, 2n);
         await contract.send(treasure, { value: toNano('10') }, { $$type: 'Deploy', queryId: 0n });
         await system.run();
 

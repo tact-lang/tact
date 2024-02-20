@@ -12,7 +12,7 @@ export function createVirtualFileSystem(root: string, fs: { [key: string]: strin
             if (!filePath.startsWith(normalizedRoot)) {
                 throw new Error(`Path '${filePath}' is outside of the root directory '${normalizedRoot}'`);
             }
-            let name = filePath.slice(normalizedRoot.length);
+            const name = filePath.slice(normalizedRoot.length);
             return typeof fs[name] === 'string';
         },
         resolve(...filePath) {
@@ -22,8 +22,8 @@ export function createVirtualFileSystem(root: string, fs: { [key: string]: strin
             if (!filePath.startsWith(normalizedRoot)) {
                 throw new Error(`Path '${filePath}' is outside of the root directory '${normalizedRoot}'`);
             }
-            let name = filePath.slice(normalizedRoot.length);
-            let content = fs[name];
+            const name = filePath.slice(normalizedRoot.length);
+            const content = fs[name];
             if (typeof content !== 'string') {
                 throw Error(`File ${name} not found at ${filePath}`);
             } else {
@@ -37,7 +37,7 @@ export function createVirtualFileSystem(root: string, fs: { [key: string]: strin
             if (!filePath.startsWith(normalizedRoot)) {
                 throw new Error(`Path '${filePath}' is outside of the root directory '${normalizedRoot}'`);
             }
-            let name = filePath.slice(normalizedRoot.length);
+            const name = filePath.slice(normalizedRoot.length);
             fs[name] = typeof content === 'string' ? Buffer.from(content).toString('base64') : content.toString('base64');
         }
     }

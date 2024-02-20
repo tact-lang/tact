@@ -19,13 +19,13 @@ export class CompilerContext {
 }
 
 export function createContextStore<T>() {
-    let symbol = Symbol();
+    const symbol = Symbol();
     return {
         get(ctx: CompilerContext, key: string | number) {
             if (!ctx.shared[symbol]) {
                 return null;
             }
-            let m = ctx.shared[symbol] as { [key: string | number]: T };
+            const m = ctx.shared[symbol] as { [key: string | number]: T };
             if (m[key]) {
                 return m[key];
             } else {
@@ -36,7 +36,7 @@ export function createContextStore<T>() {
             if (!ctx.shared[symbol]) {
                 return {} as { [key: string | number]: T };
             }
-            let m = ctx.shared[symbol] as { [key: string | number]: T };
+            const m = ctx.shared[symbol] as { [key: string | number]: T };
             return m;
         },
         set(ctx: CompilerContext, key: string | number, v: T) {

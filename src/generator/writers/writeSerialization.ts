@@ -15,7 +15,7 @@ const SMALL_STRUCT_MAX_FIELDS = 5;
 //
 
 export function writeSerializer(name: string, forceInline: boolean, allocation: StorageAllocation, origin: TypeOrigin, ctx: WriterContext) {
-    let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
+    const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     // Write to builder
     ctx.fun(ops.writer(name, ctx), () => {
@@ -66,7 +66,7 @@ export function writeOptionalSerializer(name: string, origin: TypeOrigin, ctx: W
 function writeSerializerCell(cell: AllocationCell, gen: number, ctx: WriterContext) {
 
     // Write fields
-    for (let f of cell.ops) {
+    for (const f of cell.ops) {
         writeSerializerField(f, gen, ctx);
     }
 
@@ -202,7 +202,7 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
         if (op.optional) {
             ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).${ops.writer(op.type, ctx)}(${ops.typeNotNull(op.type, ctx)}(${fieldName})) : build_${gen}.store_int(false, 1);`);
         } else {
-            let ff = getType(ctx.ctx, op.type).fields.map((f) => f.abi);
+            const ff = getType(ctx.ctx, op.type).fields.map((f) => f.abi);
             ctx.append(`build_${gen} = ${ops.writer(op.type, ctx)}(build_${gen}, ${resolveFuncTypeFromAbiUnpack(fieldName, ff, ctx)});`);
         }
         return;
@@ -216,7 +216,7 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
 //
 
 export function writeParser(name: string, forceInline: boolean, allocation: StorageAllocation, origin: TypeOrigin, ctx: WriterContext) {
-    let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
+    const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     ctx.fun(ops.reader(name, ctx), () => {
         ctx.signature(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) ${ops.reader(name, ctx)}(slice sc_0)`);
@@ -245,7 +245,7 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
 }
 
 export function writeBouncedParser(name: string, forceInline: boolean, allocation: StorageAllocation, origin: TypeOrigin, ctx: WriterContext) {
-    let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
+    const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     ctx.fun(ops.readerBounced(name, ctx), () => {
         ctx.signature(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) ${ops.readerBounced(name, ctx)}(slice sc_0)`);
@@ -293,7 +293,7 @@ export function writeOptionalParser(name: string, origin: TypeOrigin, ctx: Write
 function writeCellParser(cell: AllocationCell, gen: number, ctx: WriterContext): number {
 
     // Write current fields
-    for (let f of cell.ops) {
+    for (const f of cell.ops) {
         writeFieldParser(f, gen, ctx);
     }
 

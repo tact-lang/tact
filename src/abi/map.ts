@@ -13,7 +13,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
             if (args.length !== 3) {
                 throwError('set expects two arguments', ref); // Should not happen
             }
-            let self = args[0];
+            const self = args[0];
             if (!self || self.kind !== 'map') {
                 throwError('set expects a map as self argument', ref); // Should not happen
             }
@@ -48,13 +48,13 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
             if (args.length !== 3) {
                 throwError('set expects two arguments', ref); // Ignore self argument
             }
-            let self = args[0];
+            const self = args[0];
             if (!self || self.kind !== 'map') {
                 throwError('set expects a map as self argument', ref); // Should not happen
             }
 
             // Render expressions
-            let resolved = exprs.map((v) => writeExpression(v, ctx));
+            const resolved = exprs.map((v) => writeExpression(v, ctx));
 
             // Handle Int key
             if (self.key === 'Int') {
@@ -87,7 +87,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                     ctx.used(`__tact_dict_set_${kind}_slice`);
                     return `${resolved[0]}~__tact_dict_set_${kind}_slice(${bits}, ${resolved[1]}, ${resolved[2]})`;
                 } else {
-                    let t = getType(ctx.ctx, self.value);
+                    const t = getType(ctx.ctx, self.value);
                     if (t.kind === 'contract') {
                         throwError(`Contract can't be value of a map`, ref);
                     }
@@ -130,7 +130,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                     ctx.used(`__tact_dict_set_slice_slice`);
                     return `${resolved[0]}~__tact_dict_set_slice_slice(267, ${resolved[1]}, ${resolved[2]})`;
                 } else {
-                    let t = getType(ctx.ctx, self.value);
+                    const t = getType(ctx.ctx, self.value);
                     if (t.kind === 'contract') {
                         throwError(`Contract can't be value of a map`, ref);
                     }
@@ -161,7 +161,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
             if (args.length !== 2) {
                 throwError('set expects one argument', ref); // Ignore self argument
             }
-            let self = args[0];
+            const self = args[0];
             if (!self || self.kind !== 'map') {
                 throwError('set expects a map as self argument', ref); // Should not happen
             }
@@ -181,13 +181,13 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
             if (args.length !== 2) {
                 throwError('set expects one argument', ref); // Ignore self argument
             }
-            let self = args[0];
+            const self = args[0];
             if (!self || self.kind !== 'map') {
                 throwError('set expects a map as self argument', ref); // Should not happen
             }
 
             // Render expressions
-            let resolved = exprs.map((v) => writeExpression(v, ctx));
+            const resolved = exprs.map((v) => writeExpression(v, ctx));
 
             // Handle Int key
             if (self.key === 'Int') {
@@ -220,7 +220,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                     ctx.used(`__tact_dict_get_${kind}_slice`);
                     return `__tact_dict_get_${kind}_slice(${resolved[0]}, ${bits}, ${resolved[1]})`;
                 } else {
-                    let t = getType(ctx.ctx, self.value);
+                    const t = getType(ctx.ctx, self.value);
                     if (t.kind === 'contract') {
                         throwError(`Contract can't be value of a map`, ref);
                     }
@@ -259,7 +259,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                     ctx.used(`__tact_dict_get_slice_slice`);
                     return `__tact_dict_get_slice_slice(${resolved[0]}, 267, ${resolved[1]})`;
                 } else {
-                    let t = getType(ctx.ctx, self.value);
+                    const t = getType(ctx.ctx, self.value);
                     if (t.kind === 'contract') {
                         throwError(`Contract can't be value of a map`, ref);
                     }
@@ -286,7 +286,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
             if (args.length !== 1) {
                 throwError('asCell expects one argument', ref); // Ignore self argument
             }
-            let self = args[0];
+            const self = args[0];
             if (!self || self.kind !== 'map') {
                 throwError('asCell expects a map as self argument', ref); // Should not happen
             }
@@ -297,7 +297,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
             if (args.length !== 1) {
                 throwError('asCell expects one argument', ref); // Ignore self argument
             }
-            let self = args[0];
+            const self = args[0];
             if (!self || self.kind !== 'map') {
                 throwError('asCell expects a map as self argument', ref); // Should not happen
             }

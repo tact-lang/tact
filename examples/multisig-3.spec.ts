@@ -6,13 +6,13 @@ describe('muiltisig-3', () => {
     it('should deploy', async () => {
 
         // Init contract
-        let key1 = 1n;
-        let key2 = 1n;
-        let key3 = 1n;
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await MultisigContract.fromInit(key1, key2, key3));
-        let tracker = system.track(contract.address);
+        const key1 = 1n;
+        const key2 = 1n;
+        const key3 = 1n;
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await MultisigContract.fromInit(key1, key2, key3));
+        const tracker = system.track(contract.address);
         await contract.send(treasure, { value: toNano('10') }, 'Deploy');
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();

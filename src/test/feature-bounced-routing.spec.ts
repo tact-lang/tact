@@ -11,10 +11,10 @@ describe('feature-strings', () => {
     it('should bounce based on type router', async () => {
 
         // Init
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await SampleContract.fromInit());
-        let contract2 = system.open(await SampleContract2.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await SampleContract.fromInit());
+        const contract2 = system.open(await SampleContract2.fromInit());
 
         // Deploy
         await contract.send(treasure, { value: toNano('10') }, null);

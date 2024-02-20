@@ -53,7 +53,7 @@ describe('resolveFuncType', () => {
     it('should process primitive types', () => {
         let ctx = openContext(new CompilerContext(), [{ code: primitiveCode, path: '<unknown>', origin: 'user' }], []);
         ctx = resolveDescriptors(ctx);
-        let wctx = new WriterContext(ctx, 'Contract1');
+        const wctx = new WriterContext(ctx, 'Contract1');
         expect(resolveFuncType({ kind: 'ref', name: 'Int', optional: false }, wctx)).toBe('int');
         expect(resolveFuncType({ kind: 'ref', name: 'Bool', optional: false }, wctx)).toBe('int');
         expect(resolveFuncType({ kind: 'ref', name: 'Cell', optional: false }, wctx)).toBe('cell');
@@ -69,7 +69,7 @@ describe('resolveFuncType', () => {
     it('should process contract and struct types', () => {
         let ctx = openContext(new CompilerContext(), [{ code: primitiveCode, path: '<unknown>', origin: 'user' }], []);
         ctx = resolveDescriptors(ctx);
-        let wctx = new WriterContext(ctx, 'Contract1');
+        const wctx = new WriterContext(ctx, 'Contract1');
         expect(resolveFuncType({ kind: 'ref', name: 'Struct1', optional: false }, wctx)).toBe('(int, int)');
         expect(resolveFuncType({ kind: 'ref', name: 'Struct2', optional: false }, wctx)).toBe('(int)');
         expect(resolveFuncType({ kind: 'ref', name: 'Contract1', optional: false }, wctx)).toBe('(int, int)');

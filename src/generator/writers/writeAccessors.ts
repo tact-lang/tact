@@ -12,7 +12,7 @@ import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: WriterContext) {
 
     // Getters
-    for (let f of type.fields) {
+    for (const f of type.fields) {
         ctx.fun(ops.typeField(type.name, f.name, ctx), () => {
             ctx.signature(`_ ${ops.typeField(type.name, f.name, ctx)}(${resolveFuncType(type, ctx)} v)`);
             ctx.flag('inline');
@@ -38,10 +38,10 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         ctx.context('type:' + type.name);
         ctx.body(() => {
             ctx.append(`throw_if(${contractErrors.null.id}, null?(v));`)
-            let flatPack = resolveFuncFlatPack(type, 'vvv', ctx);
-            let flatTypes = resolveFuncFlatTypes(type, ctx);
+            const flatPack = resolveFuncFlatPack(type, 'vvv', ctx);
+            const flatTypes = resolveFuncFlatTypes(type, ctx);
             if (flatPack.length !== flatTypes.length) throw Error('Flat pack and flat types length mismatch');
-            let pairs = flatPack.map((v, i) => `${flatTypes[i]} ${v}`);
+            const pairs = flatPack.map((v, i) => `${flatTypes[i]} ${v}`);
             ctx.used(`__tact_tuple_destroy_${flatPack.length}`);
             ctx.append(`var (${pairs.join(', ')}) = __tact_tuple_destroy_${flatPack.length}(v);`);
             ctx.append(`return ${resolveFuncTypeUnpack(type, 'vvv', ctx)};`);
@@ -55,7 +55,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         ctx.context('type:' + type.name);
         ctx.body(() => {
             ctx.append(`var ${resolveFuncTypeUnpack(type, 'v', ctx)} = v;`);
-            let flatPack = resolveFuncFlatPack(type, 'v', ctx);
+            const flatPack = resolveFuncFlatPack(type, 'v', ctx);
             ctx.used(`__tact_tuple_create_${flatPack.length}`);
             ctx.append(`return __tact_tuple_create_${flatPack.length}(${flatPack.join(', ')});`);
         });
@@ -71,10 +71,10 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         ctx.context('type:' + type.name);
         ctx.body(() => {
             ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v;`);
-            let vars: string[] = [];
-            for (let f of type.fields) {
+            const vars: string[] = [];
+            for (const f of type.fields) {
                 if (f.type.kind === 'ref') {
-                    let t = getType(ctx.ctx, f.type.name);
+                    const t = getType(ctx.ctx, f.type.name);
                     if (t.kind === 'struct') {
                         if (f.type.optional) {
                             vars.push(`${ops.typeToOptTuple(f.type.name, ctx)}(v'${f.name})`);
@@ -107,11 +107,11 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         ctx.context('type:' + type.name);
         ctx.body(() => {
             // Resolve vars
-            let vars: string[] = [];
-            let out: string[] = [];
-            for (let f of type.fields) {
+            const vars: string[] = [];
+            const out: string[] = [];
+            for (const f of type.fields) {
                 if (f.type.kind === 'ref') {
-                    let t = getType(ctx.ctx, f.type.name);
+                    const t = getType(ctx.ctx, f.type.name);
                     if (t.kind === 'struct') {
                         vars.push(`tuple v'${f.name}`);
                         if (f.type.optional) {
@@ -160,10 +160,10 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         ctx.context('type:' + type.name);
         ctx.body(() => {
             ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v; `);
-            let vars: string[] = [];
-            for (let f of type.fields) {
+            const vars: string[] = [];
+            for (const f of type.fields) {
                 if (f.type.kind === 'ref') {
-                    let t = getType(ctx.ctx, f.type.name);
+                    const t = getType(ctx.ctx, f.type.name);
                     if (t.kind === 'struct') {
                         if (f.type.optional) {
                             vars.push(`${ops.typeToOptTuple(f.type.name, ctx)}(v'${f.name})`);

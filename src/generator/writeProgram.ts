@@ -21,8 +21,8 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     // Load ABI (required for generator)
     //
 
-    let abi = JSON.stringify(abiSrc);
-    let abiLink = await calculateIPFSlink(Buffer.from(abi));
+    const abi = JSON.stringify(abiSrc);
+    const abiLink = await calculateIPFSlink(Buffer.from(abi));
 
     //
     // Render contract
@@ -50,7 +50,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     headers.push(`;;`);
     headers.push(``);
     // const sortedHeaders = [...functions].sort((a, b) => a.name.localeCompare(b.name));
-    for (let f of functions) {
+    for (const f of functions) {
         if (f.code.kind === 'generic' && f.signature) {
             headers.push(`;; ${f.name}`);
             let sig = f.signature;
@@ -87,7 +87,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
         imported.push('stdlib');
     }
 
-    let stdlib = emit({
+    const stdlib = emit({
         header: stdlibHeader,
         functions: stdlibFunctions
     });
@@ -101,7 +101,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     // native
     //
 
-    let nativeSources = getRawAST(ctx).funcSources;
+    const nativeSources = getRawAST(ctx).funcSources;
     if (nativeSources.length > 0) {
         imported.push('native');
         files.push({
@@ -127,11 +127,11 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     // storage
     //
 
-    let emitedTypes: string[] = [];
-    let types = getSortedTypes(ctx);
-    for (let t of types) {
+    const emitedTypes: string[] = [];
+    const types = getSortedTypes(ctx);
+    for (const t of types) {
 
-        let ffs: WrittenFunction[] = [];
+        const ffs: WrittenFunction[] = [];
         if (t.kind === 'struct' || t.kind === 'contract' || t.kind == 'trait') {
             const typeFunctions = tryExtractModule(functions, 'type:' + t.name, imported);
             if (typeFunctions) {
@@ -148,7 +148,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
         }
         if (ffs.length > 0) {
 
-            let header: string[] = [];
+            const header: string[] = [];
             header.push(';;');
             header.push(`;; Type: ${t.name}`);
             if (t.header !== null) {
@@ -191,7 +191,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     header.push('#pragma allow-post-modification;');
     header.push('#pragma compute-asm-ltr;');
     header.push('');
-    for (let i of files.map((v) => `#include "${v.name}";`)) {
+    for (const i of files.map((v) => `#include "${v.name}";`)) {
         header.push(i);
     }
     header.push('');
@@ -218,13 +218,13 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
 function tryExtractModule(functions: WrittenFunction[], context: string | null, imported: string[]): WrittenFunction[] | null {
 
     // Put to map
-    let maps = new Map<string, WrittenFunction>();
-    for (let f of functions) {
+    const maps = new Map<string, WrittenFunction>();
+    for (const f of functions) {
         maps.set(f.name, f);
     }
 
     // Extract functions of a context
-    let ctxFunctions: WrittenFunction[] = functions
+    const ctxFunctions: WrittenFunction[] = functions
         .filter((v) => v.code.kind !== 'skip')
         .filter((v) => {
             if (context) {
@@ -271,11 +271,11 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
     writeStdlib(wctx);
 
     // Serializators
-    let sortedTypes = getSortedTypes(ctx);
-    for (let t of sortedTypes) {
+    const sortedTypes = getSortedTypes(ctx);
+    for (const t of sortedTypes) {
         if (t.kind === 'contract' || t.kind === 'struct') {
-            let allocation = getAllocation(ctx, t.name);
-            let allocationBounced = getAllocation(ctx, toBounced(t.name));
+            const allocation = getAllocation(ctx, t.name);
+            const allocationBounced = getAllocation(ctx, toBounced(t.name));
             writeSerializer(t.name, t.kind === 'contract', allocation, t.origin, wctx);
             writeOptionalSerializer(t.name, t.origin, wctx);
             writeParser(t.name, t.kind === 'contract', allocation, t.origin, wctx);
@@ -285,46 +285,46 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
     }
 
     // Accessors
-    for (let t of allTypes) {
+    for (const t of allTypes) {
         if (t.kind === 'contract' || t.kind === 'struct') {
             writeAccessors(t, t.origin, wctx);
         }
     }
 
     // Init serializers
-    for (let t of sortedTypes) {
+    for (const t of sortedTypes) {
         if (t.kind === 'contract' && t.init) {
-            let allocation = getAllocation(ctx, initId(t.name));
+            const allocation = getAllocation(ctx, initId(t.name));
             writeSerializer(initId(t.name), true, allocation, t.origin, wctx);
             writeParser(initId(t.name), false, allocation, t.origin, wctx);
         }
     }
 
     // Storage Functions
-    for (let t of sortedTypes) {
+    for (const t of sortedTypes) {
         if (t.kind === 'contract') {
             writeStorageOps(t, t.origin, wctx);
         }
     }
 
     // Static functions
-    let sf = getAllStaticFunctions(ctx);
-    for (let k in sf) {
-        let f = sf[k];
+    const sf = getAllStaticFunctions(ctx);
+    for (const k in sf) {
+        const f = sf[k];
         writeFunction(f, wctx);
     }
 
     // Extensions
-    for (let c of allTypes) {
+    for (const c of allTypes) {
         if (c.kind !== 'contract' && c.kind !== 'trait') { // We are rendering contract functions separately
-            for (let f of c.functions.values()) {
+            for (const f of c.functions.values()) {
                 writeFunction(f, wctx);
             }
         }
     }
 
     // Contract functions
-    for (let c of contracts) {
+    for (const c of contracts) {
 
         // Init
         if (c.init) {
@@ -332,7 +332,7 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
         }
 
         // Functions
-        for (let f of c.functions.values()) {
+        for (const f of c.functions.values()) {
             writeFunction(f, wctx);
         }
     }

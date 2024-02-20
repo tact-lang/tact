@@ -11,12 +11,12 @@ describe('bugs', () => {
     it('should deploy contract correctly', async () => {
 
         // Init
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await SampleJetton.fromInit(treasure.address, beginCell().endCell(), toNano('100')));
-        let target = system.open(await JettonDefaultWallet.fromInit(contract.address, treasure.address));
-        let logger = system.log(target.address);
-        let tracker = system.track(target.address);
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await SampleJetton.fromInit(treasure.address, beginCell().endCell(), toNano('100')));
+        const target = system.open(await JettonDefaultWallet.fromInit(contract.address, treasure.address));
+        const logger = system.log(target.address);
+        const tracker = system.track(target.address);
         await contract.send(treasure, { value: toNano('10') }, { $$type: 'Mint', receiver: treasure.address, amount: toNano('10') });
         await system.run();
 

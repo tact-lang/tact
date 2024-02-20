@@ -3,7 +3,7 @@ import { MemoryBlockstore } from 'blockstore-core/memory';
 
 export async function calculateIPFSlink(data: Buffer) {
     const blockstore = new MemoryBlockstore();
-    let cid = await new Promise<string>((resolve, reject) => {
+    const cid = await new Promise<string>((resolve, reject) => {
         (async () => {
             try {
                 for await (const entry of importer({ content: data }, blockstore)) {

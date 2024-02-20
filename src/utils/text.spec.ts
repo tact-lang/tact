@@ -7,7 +7,7 @@ describe('text', () => {
         expect(isBlank('a')).toBe(false);
     });
     it('should trim indent', () => {
-        let res = trimIndent(`
+        const res = trimIndent(`
             hello world
             123123 123123
                12312312

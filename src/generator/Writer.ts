@@ -54,7 +54,7 @@ export class WriterContext {
     }
 
     clone() {
-        let res = new WriterContext(this.ctx, this.#name);
+        const res = new WriterContext(this.ctx, this.#name);
         res.#functions = new Map(this.#functions);
         res.#nextId = this.#nextId;
         // res.#headers = [...this.#headers];
@@ -69,14 +69,14 @@ export class WriterContext {
     extract(debug: boolean = false) {
 
         // Check dependencies
-        let missing = new Map<string, string[]>();
-        for (let f of this.#functions.values()) {
-            for (let d of f.depends) {
+        const missing = new Map<string, string[]>();
+        for (const f of this.#functions.values()) {
+            for (const d of f.depends) {
                 if (!this.#functions.has(d)) {
                     if (!missing.has(d)) {
                         missing.set(d, [f.name]);
                     } else {
-                        missing.set(d, [...missing.get(d)!!, f.name]);
+                        missing.set(d, [...missing.get(d)!, f.name]);
                     }
 
                 }
@@ -91,11 +91,11 @@ export class WriterContext {
 
         // Remove unused
         if (!debug) {
-            let used = new Set<string>();
-            let visit = (name: string) => {
+            const used = new Set<string>();
+            const visit = (name: string) => {
                 used.add(name);
-                let f = this.#functions.get(name)!!;
-                for (let d of f.depends) {
+                const f = this.#functions.get(name)!;
+                for (const d of f.depends) {
                     visit(d);
                 }
             }
@@ -104,7 +104,7 @@ export class WriterContext {
         }
 
         // Sort functions
-        let sorted = topologicalSort(all, (f) => Array.from(f.depends).map((v) => this.#functions.get(v)!!));
+        const sorted = topologicalSort(all, (f) => Array.from(f.depends).map((v) => this.#functions.get(v)!));
 
         return sorted;
     }
@@ -119,7 +119,7 @@ export class WriterContext {
             this.context('stdlib');
             this.#pendingCode = { kind: 'skip' };
         });
-    };
+    }
 
     fun(name: string, handler: () => void) {
 
@@ -138,15 +138,15 @@ export class WriterContext {
         // Nesting check
         //
 
-        if (!!this.#pendingName) {
-            let w = this.#pendingWriter;
-            let d = this.#pendingDepends;
-            let n = this.#pendingName;
-            let s = this.#pendingSignature;
-            let f = this.#pendingFlags;
-            let c = this.#pendingCode;
-            let cc = this.#pendingComment;
-            let cs = this.#pendingContext;
+        if (this.#pendingName) {
+            const w = this.#pendingWriter;
+            const d = this.#pendingDepends;
+            const n = this.#pendingName;
+            const s = this.#pendingSignature;
+            const f = this.#pendingFlags;
+            const c = this.#pendingCode;
+            const cc = this.#pendingComment;
+            const cs = this.#pendingContext;
             this.#pendingDepends = null;
             this.#pendingWriter = null;
             this.#pendingName = null;
@@ -178,12 +178,12 @@ export class WriterContext {
         this.#pendingComment = null;
         this.#pendingContext = null;
         handler();
-        let depends = this.#pendingDepends;
-        let signature = this.#pendingSignature!;
-        let flags = this.#pendingFlags;
-        let code = this.#pendingCode;
-        let comment = this.#pendingComment;
-        let context = this.#pendingContext;
+        const depends = this.#pendingDepends;
+        const signature = this.#pendingSignature!;
+        const flags = this.#pendingFlags;
+        const code = this.#pendingCode;
+        const comment = this.#pendingComment;
+        const context = this.#pendingContext;
         if (!signature && name !== '$main') {
             throw new Error(`Function ${name} signature not set`);
         }
@@ -228,7 +228,7 @@ export class WriterContext {
             kind: 'generic',
             code: this.#pendingWriter!.end()
         }
-    };
+    }
 
     main(handler: () => void) {
         this.fun('$main', () => {
@@ -236,7 +236,7 @@ export class WriterContext {
                 handler();
             });
         });
-    };
+    }
 
     signature(sig: string) {
         if (this.#pendingName) {
@@ -256,7 +256,7 @@ export class WriterContext {
 
     used(name: string) {
         if (this.#pendingName !== name) {
-            this.#pendingDepends!!.add(name);
+            this.#pendingDepends!.add(name);
         }
         return name;
     }

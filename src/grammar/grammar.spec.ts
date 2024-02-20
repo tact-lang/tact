@@ -13,13 +13,13 @@ describe('grammar', () => {
         __DANGER_resetNodeId();
     });
 
-    for (let r of loadCases(__dirname + "/test/")) {
+    for (const r of loadCases(__dirname + "/test/")) {
         it('should parse ' + r.name, () => {
             expect(parse(r.code, '<unknown>', 'user')).toMatchSnapshot();
         });
     }
 
-    for (let r of loadCases(__dirname + "/test-failed/")) {
+    for (const r of loadCases(__dirname + "/test-failed/")) {
         it('should fail ' + r.name, () => {
             expect(() => parse(r.code, '<unknown>', 'user')).toThrowErrorMatchingSnapshot();
         });

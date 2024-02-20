@@ -14,7 +14,7 @@ describe('resolveDescriptors', () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    for (let r of loadCases(__dirname + "/test/")) {
+    for (const r of loadCases(__dirname + "/test/")) {
         it('should resolve descriptors for ' + r.name, () => {
             let ctx = openContext(new CompilerContext(), [{ code: r.code, path: '<unknown>', origin: 'user' }], []);
             ctx = resolveDescriptors(ctx);
@@ -23,9 +23,9 @@ describe('resolveDescriptors', () => {
             expect(getAllStaticFunctions(ctx)).toMatchSnapshot();
         });
     }
-    for (let r of loadCases(__dirname + "/test-failed/")) {
+    for (const r of loadCases(__dirname + "/test-failed/")) {
         it('should fail descriptors for ' + r.name, () => {
-            let ctx = openContext(new CompilerContext(), [{ code: r.code, path: '<unknown>', origin: 'user' }], []);
+            const ctx = openContext(new CompilerContext(), [{ code: r.code, path: '<unknown>', origin: 'user' }], []);
             expect(() => resolveDescriptors(ctx)).toThrowErrorMatchingSnapshot();
         });
     }

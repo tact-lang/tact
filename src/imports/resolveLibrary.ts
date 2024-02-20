@@ -23,12 +23,12 @@ export function resolveLibrary(args: ResolveLibraryArgs): ResolveLibraryResult {
     // NOTE: We are handling stdlib resolving here, because we need to enforce the stdlib import before anything else
     //       to avoid hijacking the stdlib imports
     if (args.name.startsWith('@stdlib/')) {
-        let libraryName = args.name.substring('@stdlib/'.length);
-        let libraryPath = parseImportPath('./' + libraryName + '.tact');
+        const libraryName = args.name.substring('@stdlib/'.length);
+        const libraryPath = parseImportPath('./' + libraryName + '.tact');
         if (!libraryPath) {
             return { ok: false };
         }
-        let tactFile = args.stdlib.resolve('libs', ...libraryPath);
+        const tactFile = args.stdlib.resolve('libs', ...libraryPath);
         if (args.stdlib.exists(tactFile)) {
             return { ok: true, path: tactFile, source: 'stdlib', kind: 'tact' };
         } else {
@@ -48,21 +48,21 @@ export function resolveLibrary(args: ResolveLibraryArgs): ResolveLibraryResult {
     } else {
         return { ok: false };
     }
-    let workingDirectory = args.path.slice(vfs.root.length);
+    const workingDirectory = args.path.slice(vfs.root.length);
 
     // Resolving relative file
     let importName = args.name;
-    let kind: 'tact' | 'func' = importName.endsWith('.fc') ? 'func' : 'tact';
+    const kind: 'tact' | 'func' = importName.endsWith('.fc') ? 'func' : 'tact';
     if (!importName.endsWith('.tact') && !importName.endsWith('.fc')) {
         importName = importName + '.tact';
     }
 
     // Resolve import
-    let parsedImport = parseImportPath(importName);
+    const parsedImport = parseImportPath(importName);
     if (!parsedImport) {
         return { ok: false };
     }
-    let resolvedPath = vfs.resolve(workingDirectory, '..', ...parsedImport);
+    const resolvedPath = vfs.resolve(workingDirectory, '..', ...parsedImport);
     if (vfs.exists(resolvedPath)) {
         return { ok: true, path: resolvedPath, source, kind };
     }

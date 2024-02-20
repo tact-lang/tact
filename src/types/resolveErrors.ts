@@ -4,7 +4,7 @@ import { ASTNode, traverse } from "../grammar/ast";
 import { resolveConstantValue } from "./resolveConstantValue";
 import { getAllStaticConstants, getAllStaticFunctions, getAllTypes } from "./resolveDescriptors";
 
-let exceptions = createContextStore<{ value: string, id: number }>();
+const exceptions = createContextStore<{ value: string, id: number }>();
 
 function stringId(src: string): number {
     return sha256_sync(src).readUInt32BE(0);
@@ -20,9 +20,9 @@ function resolveStringsInAST(ast: ASTNode, ctx: CompilerContext) {
             if (node.args.length !== 2) {
                 return;
             }
-            let resolved = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, node.args[1], ctx) as string;
+            const resolved = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, node.args[1], ctx) as string;
             if (!exceptions.get(ctx, resolved)) {
-                let id = exceptionId(resolved);
+                const id = exceptionId(resolved);
                 if (Object.values(exceptions.all(ctx)).find((v) => v.id === id)) {
                     throw new Error(`Duplicate error id: ${resolved}`);
                 }
@@ -36,17 +36,17 @@ function resolveStringsInAST(ast: ASTNode, ctx: CompilerContext) {
 export function resolveErrors(ctx: CompilerContext) {
 
     // Process all static functions
-    for (let f of Object.values(getAllStaticFunctions(ctx))) {
+    for (const f of Object.values(getAllStaticFunctions(ctx))) {
         ctx = resolveStringsInAST(f.ast, ctx);
     }
 
     // Process all static constants
-    for (let f of Object.values(getAllStaticConstants(ctx))) {
+    for (const f of Object.values(getAllStaticConstants(ctx))) {
         ctx = resolveStringsInAST(f.ast, ctx);
     }
 
     // Process all types
-    for (let t of Object.values(getAllTypes(ctx))) {
+    for (const t of Object.values(getAllTypes(ctx))) {
 
         // Process fields
         for (const f of Object.values(t.fields)) {
@@ -69,7 +69,7 @@ export function resolveErrors(ctx: CompilerContext) {
         }
 
         // Process functions
-        for (let f of t.functions.values()) {
+        for (const f of t.functions.values()) {
             ctx = resolveStringsInAST(f.ast, ctx);
         }
     }
@@ -82,7 +82,7 @@ export function getAllErrors(ctx: CompilerContext) {
 }
 
 export function getErrorId(value: string, ctx: CompilerContext) {
-    let ex = exceptions.get(ctx, value);
+    const ex = exceptions.get(ctx, value);
     if (!ex) {
         throw new Error(`Error not found: ${value}`);
     }

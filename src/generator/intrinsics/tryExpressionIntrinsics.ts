@@ -8,7 +8,7 @@ export function tryExpressionIntrinsics(exp: ASTExpression, ctx: WriterContext):
 
     // Calls instrinsics
     if (exp.kind === 'op_call') {
-        let sourceType = getExpType(ctx.ctx, exp.src);
+        const sourceType = getExpType(ctx.ctx, exp.src);
         if (sourceType.kind === 'ref' && sourceType.name === 'String' && !sourceType.optional) {
 
             //
@@ -20,7 +20,7 @@ export function tryExpressionIntrinsics(exp: ASTExpression, ctx: WriterContext):
 
                 // Try to resolve constant value
                 try {
-                    let res = resolveConstantValue(sourceType, exp.src, ctx.ctx);
+                    const res = resolveConstantValue(sourceType, exp.src, ctx.ctx);
                     if (typeof res !== 'string') {
                         throw new Error('Expected string');
                     }
@@ -31,7 +31,7 @@ export function tryExpressionIntrinsics(exp: ASTExpression, ctx: WriterContext):
 
                 // Render if constant
                 if (constString !== null) {
-                    let id = writeComment(constString, ctx);
+                    const id = writeComment(constString, ctx);
                     ctx.used(id);
                     return `${id}()`;
                 }

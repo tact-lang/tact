@@ -14,7 +14,7 @@ type ASTStore = {
 const store = createContextStore<ASTStore>();
 
 export function getRawAST(ctx: CompilerContext) {
-    let r = store.get(ctx, 'types');
+    const r = store.get(ctx, 'types');
     if (!r) {
         throw Error('No AST found in context');
     }
@@ -25,12 +25,12 @@ export function openContext(ctx: CompilerContext,
     sources: { code: string, path: string, origin: TypeOrigin }[],
     funcSources: { code: string, path: string }[]
 ) {
-    let asts = sources.map(source => parse(source.code, source.path, source.origin));
-    let types: ASTType[] = [];
-    let functions: (ASTNativeFunction | ASTFunction)[] = [];
-    let constants: ASTConstant[] = [];
-    for (let a of asts) {
-        for (let e of a.entries) {
+    const asts = sources.map(source => parse(source.code, source.path, source.origin));
+    const types: ASTType[] = [];
+    const functions: (ASTNativeFunction | ASTFunction)[] = [];
+    const constants: ASTConstant[] = [];
+    for (const a of asts) {
+        for (const e of a.entries) {
             if (e.kind === 'def_struct' || e.kind === 'def_contract' || e.kind === 'def_trait' || e.kind === 'primitive') {
                 types.push(e);
             } else if (e.kind === 'def_function' || e.kind === 'def_native_function') {

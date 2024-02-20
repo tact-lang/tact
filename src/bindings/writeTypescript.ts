@@ -9,10 +9,10 @@ import { serializers } from './typescript/serializers';
 
 function writeArguments(args: ABIArgument[]) {
 
-    let res: string[] = [];
-    outer: for (let f of args) {
-        for (let s of serializers) {
-            let v = s.abiMatcher(f.type);
+    const res: string[] = [];
+    outer: for (const f of args) {
+        for (const s of serializers) {
+            const v = s.abiMatcher(f.type);
             if (v) {
                 res.push(`${f.name}: ${s.tsType(v)}`);
                 continue outer;
@@ -33,7 +33,7 @@ export function writeTypescript(abi: ContractABI, init?: {
         bits: number;
     } | undefined
 }) {
-    let w = new Writer();
+    const w = new Writer();
 
     w.write(`
         import { 
@@ -60,19 +60,19 @@ export function writeTypescript(abi: ContractABI, init?: {
     `);
     w.append();
 
-    let allocations: { [key: string]: { size: { bits: number, refs: number }, root: AllocationCell } } = {};
+    const allocations: { [key: string]: { size: { bits: number, refs: number }, root: AllocationCell } } = {};
 
     // Structs
     if (abi.types) {
 
         // Allocations
-        let refs = (src: ABIType) => {
-            let res: ABIType[] = []
-            let t = new Set<string>();
-            for (let f of src.fields) {
+        const refs = (src: ABIType) => {
+            const res: ABIType[] = []
+            const t = new Set<string>();
+            for (const f of src.fields) {
                 const r = f.type;
                 if (r.kind === 'simple') {
-                    let e = abi.types!.find((v) => v.name === r.type);
+                    const e = abi.types!.find((v) => v.name === r.type);
                     if (e) {
                         if (!t.has(r.type)) {
                             t.add(r.type);
@@ -83,19 +83,19 @@ export function writeTypescript(abi: ContractABI, init?: {
             }
             return res;
         }
-        let sortedTypes = topologicalSort(abi.types, refs);
-        for (let f of sortedTypes) {
-            let ops = f.fields.map((v) => ({
+        const sortedTypes = topologicalSort(abi.types, refs);
+        for (const f of sortedTypes) {
+            const ops = f.fields.map((v) => ({
                 name: v.name,
                 type: v.type,
                 op: getAllocationOperationFromField(v.type, (s) => allocations[s].size)
             }));
-            let headerBits = f.header ? 32 : 0;
-            let allocation = allocate({ reserved: { bits: headerBits, refs: 0 }, ops });
+            const headerBits = f.header ? 32 : 0;
+            const allocation = allocate({ reserved: { bits: headerBits, refs: 0 }, ops });
             allocations[f.name] = { size: { bits: allocation.size.bits + headerBits, refs: allocation.size.refs }, root: allocation };
         }
 
-        for (let s of abi.types) {
+        for (const s of abi.types) {
             writeStruct(s.name, s.fields, true, w);
             writeSerializer(s, allocations[s.name].root, w);
             writeParser(s, allocations[s.name].root, w);
@@ -110,7 +110,7 @@ export function writeTypescript(abi: ContractABI, init?: {
 
         // Write serializer
         const argTypeName = (abi.name || 'Contract') + '_init_args';
-        let ops = init.args.map((v) => ({
+        const ops = init.args.map((v) => ({
             name: v.name,
             type: v.type,
             op: getAllocationOperationFromField(v.type, (s) => allocations[s].size)
@@ -145,7 +145,7 @@ export function writeTypescript(abi: ContractABI, init?: {
     w.append(`const ${abi.name}_errors: { [key: number]: { message: string } } = {`);
     w.inIndent(() => {
         if (abi.errors) {
-            for (let k in abi.errors) {
+            for (const k in abi.errors) {
                 w.append(`${k}: { message: \`${abi.errors[parseInt(k, 10)].message}\` },`);
             }
         }
@@ -157,7 +157,7 @@ export function writeTypescript(abi: ContractABI, init?: {
     w.append(`const ${abi.name}_types: ABIType[] = [`);
     w.inIndent(() => {
         if (abi.types) {
-            for (let t of abi.types) {
+            for (const t of abi.types) {
                 w.append(JSON.stringify(t) + ',');
             }
         }
@@ -169,7 +169,7 @@ export function writeTypescript(abi: ContractABI, init?: {
     w.append(`const ${abi.name}_getters: ABIGetter[] = [`);
     w.inIndent(() => {
         if (abi.getters) {
-            for (let t of abi.getters) {
+            for (const t of abi.getters) {
                 w.append(JSON.stringify(t) + ',');
             }
         }
@@ -181,7 +181,7 @@ export function writeTypescript(abi: ContractABI, init?: {
     w.append(`const ${abi.name}_receivers: ABIReceiver[] = [`);
     w.inIndent(() => {
         if (abi.receivers) {
-            for (let t of abi.receivers) {
+            for (const t of abi.receivers) {
                 w.append(JSON.stringify(t) + ',');
             }
         }
@@ -242,7 +242,7 @@ export function writeTypescript(abi: ContractABI, init?: {
         if (abi.receivers && abi.receivers.filter((v) => v.receiver === 'internal').length > 0) {
 
             // Types
-            let receivers: string[] = [];
+            const receivers: string[] = [];
             for (const r of abi.receivers) {
                 if (r.receiver !== 'internal') {
                     continue;
@@ -322,7 +322,7 @@ export function writeTypescript(abi: ContractABI, init?: {
         if (abi.receivers && abi.receivers.filter((v) => v.receiver === 'external').length > 0) {
 
             // Types
-            let receivers: string[] = [];
+            const receivers: string[] = [];
             for (const r of abi.receivers) {
                 if (r.receiver !== 'external') {
                     continue;
@@ -401,12 +401,12 @@ export function writeTypescript(abi: ContractABI, init?: {
 
         // Getters
         if (abi.getters) {
-            for (let g of abi.getters) {
+            for (const g of abi.getters) {
                 w.append(`async get${changeCase.pascalCase(g.name)}(${['provider: ContractProvider', ...writeArguments(g.arguments ? g.arguments : [])].join(', ')}) {`);
                 w.inIndent(() => {
                     w.append(`let builder = new TupleBuilder();`);
                     if (g.arguments) {
-                        for (let a of g.arguments) {
+                        for (const a of g.arguments) {
                             writeArgumentToStack(a.name, a.type, w);
                         }
                     }

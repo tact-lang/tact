@@ -6,10 +6,10 @@ describe('increment', () => {
     it('should deploy', async () => {
 
         // Create wallet
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await IncrementContract.fromInit());
-        let tracker = system.track(contract.address);
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await IncrementContract.fromInit());
+        const tracker = system.track(contract.address);
         await contract.send(treasure, { value: toNano('10') }, { $$type: 'Deploy', queryId: 0n });
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();
@@ -20,8 +20,8 @@ describe('increment', () => {
         expect(tracker.collect()).toMatchSnapshot();
 
         // Get counters
-        let counters = await contract.getCounters();
-        let counters2 = await contract.getCounters2();
+        const counters = await contract.getCounters();
+        const counters2 = await contract.getCounters2();
 
         // let res = await executor.get('counters');
         // let dict = parseDict(res.stack.readCell().beginParse(), 257, (sc) => sc.readInt(257).toString(10));

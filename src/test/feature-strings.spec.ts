@@ -10,9 +10,9 @@ describe('feature-strings', () => {
     it('should implement strings correctly', async () => {
 
         // Init
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await StringsTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await StringsTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, null);
         await system.run();
 
@@ -31,19 +31,19 @@ describe('feature-strings', () => {
         expect((await contract.getStringWithNegativeNumber())).toEqual('Hello, your balance: -123');
         expect((await contract.getStringWithFloat())).toEqual('9.5');
 
-        let base = await contract.getBase64();
+        const base = await contract.getBase64();
         expect(base.beginParse().loadBuffer(base.bits.length / 8).toString()).toEqual('Many hands make light work.');
 
-        let b64cases = [
+        const b64cases = [
             'SGVsbG8gV29ybGQ=',
             'li7dzDacuo67Jg7mtqEm2TRuOMU=',
             'FKIhdgaG5LGKiEtF1vHy4f3y700zaD6QwDS3IrNVGzNp2rY+1LFWTK6D44AyiC1n8uWz1itkYMZF0/aKDK0Yjg==',
             'AA=='
         ];
-        for (let b of b64cases) {
-            let s = Buffer.from(b, 'base64');
-            let r = await contract.getProcessBase64(b);
-            let d = r.beginParse().loadBuffer(r.bits.length / 8);
+        for (const b of b64cases) {
+            const s = Buffer.from(b, 'base64');
+            const r = await contract.getProcessBase64(b);
+            const d = r.beginParse().loadBuffer(r.bits.length / 8);
             expect(d.toString('hex')).toEqual(s.toString('hex'));
         }
     });

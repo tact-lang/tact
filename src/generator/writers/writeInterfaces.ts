@@ -9,7 +9,7 @@ export function writeInterfaces(type: TypeDescription, ctx: WriterContext) {
         ctx.inIndent(() => {
 
             // Build interfaces list
-            let interfaces: string[] = [];
+            const interfaces: string[] = [];
             interfaces.push('org.ton.introspection.v0');
             interfaces.push(...getSupportedIntefaces(type, ctx.ctx));
 
