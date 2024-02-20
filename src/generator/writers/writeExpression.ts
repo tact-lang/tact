@@ -299,8 +299,8 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             || (rt.name !== 'Int' && rt.name !== 'Bool')
         ) {
             const file = f.ref.file;
-            let line, column = f.ref.interval.getLineAndColumn();
-            throw Error(`(Internal Compiler Error) Invalid types for binary operation: ${file}:${line}:${column}`); // Should be unreachable
+            const loc_info = f.ref.interval.getLineAndColumn();
+            throw Error(`(Internal Compiler Error) Invalid types for binary operation: ${file}:${loc_info.lineNum}:${loc_info.colNum}`); // Should be unreachable
         }
 
         // Case for ints equality
