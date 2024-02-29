@@ -31,26 +31,26 @@ export function writeParser(s: ABIType, allocation: AllocationCell, w: Writer) {
         if (s.header) {
             w.append(`if (sc_0.loadUint(32) !== ${s.header}) { throw Error('Invalid prefix'); }`);
         }
-        writeParserCell(0, 0, allocation, s, w);
+        writeParserCell(0, allocation, s, w);
         w.append(`return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ': _' + v.name)].join(', ')} };`);
     });
     w.append(`}`);
     w.append();
 }
 
-function writeParserCell(gen: number, offset: number, src: AllocationCell, s: ABIType, w: Writer) {
+function writeParserCell(gen: number, src: AllocationCell, s: ABIType, w: Writer) {
     for (const f of src.ops) {
-        writeParserField(gen, offset++, s, w);
+        writeParserField(gen, f, s, w);
     }
     if (src.next) {
         w.append(`let sc_${gen + 1} = sc_${gen}.loadRef().beginParse();`);
-        writeParserCell(gen + 1, offset, src.next, s, w);
+        writeParserCell(gen + 1, src.next, s, w);
     }
 }
 
-function writeParserField(gen: number, offset: number, s: ABIType, w: Writer) {
-    const name = '_' + s.fields[offset].name;
-    const type = s.fields[offset].type;
+function writeParserField(gen: number, field: AllocationOperation, s: ABIType, w: Writer) {
+    const name = '_' + field.name;
+    const type = field.type;
     for (const s of serializers) {
         const v = s.abiMatcher(type);
         if (v) {
