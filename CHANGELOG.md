@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Fixed
+
+## [1.2.0] - 2024-02-29
+
+### Added
 - Augmented assignment operators (`+=`, `-=`, `*=`, `/=` and `%=`): PR [#87](https://github.com/tact-lang/tact/pull/87)
 - Binary and octal literals with underscores as numerical separators: PR [#99](https://github.com/tact-lang/tact/pull/99)
 - Ternary conditional operator (`condition ? then : else`): PR [#97](https://github.com/tact-lang/tact/pull/97)
