@@ -19,10 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The equality and non-equality operators (`==` and `!=`) now support slices and strings by comparing the hashes of the left-hand and right-hand sides : PR [#105](https://github.com/tact-lang/tact/pull/105)
 - Continuous integration now tests the dev [tact-template](https://github.com/tact-lang/tact-template)'s version with the dev version of Tact: PR [#111](https://github.com/tact-lang/tact/pull/111)
 - Continuous integration now tests the latest [Blueprint](https://github.com/ton-org/blueprint)'s version with the dev version of Tact: PR [#152](https://github.com/tact-lang/tact/pull/152)
+- Continuous integration now checks there are no ESLint warnings: PR [#157](https://github.com/tact-lang/tact/pull/157)
 
 ### Fixed
 - Relative imports from parent directories: PR [#125](https://github.com/tact-lang/tact/pull/125)
 - The typechecker failed to identify different types when using the `==` and `!=` operators: PR [#127](https://github.com/tact-lang/tact/pull/127)
+- ESLint warnings for the whole Tact codebase: PR [#157](https://github.com/tact-lang/tact/pull/157)
 
 ## [1.1.5] - 2023-12-01
 
