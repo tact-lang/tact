@@ -10,7 +10,7 @@ describe('resolveStatements', () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    for (let r of loadCases(__dirname + "/stmts/")) {
+    for (const r of loadCases(__dirname + "/stmts/")) {
         it('should resolve statements for ' + r.name, () => {
             let ctx = openContext(new CompilerContext(), [{ code: r.code, path: '<unknown>', origin: 'user' }], []);
             ctx = resolveDescriptors(ctx);
@@ -18,7 +18,7 @@ describe('resolveStatements', () => {
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
         });
     }
-    for (let r of loadCases(__dirname + "/stmts-failed/")) {
+    for (const r of loadCases(__dirname + "/stmts-failed/")) {
         it('should fail statements for ' + r.name, () => {
             let ctx = openContext(new CompilerContext(), [{ code: r.code, path: '<unknown>', origin: 'user' }], []);
             ctx = resolveDescriptors(ctx);

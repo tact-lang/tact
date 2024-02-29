@@ -2,23 +2,28 @@ import { TactLogger } from "../logger";
 import { errorToString } from "../utils/errorToString";
 
 // Wasm Imports
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const CompilerModule = require('./funcfiftlib.js');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const FuncFiftLibWasm = require('./funcfiftlib.wasm.js').FuncFiftLibWasm;
 const WasmBinary = Buffer.from(FuncFiftLibWasm, 'base64');
 
 type Pointer = unknown;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const writeToCString = (mod: any, data: string): Pointer => {
     const len = mod.lengthBytesUTF8(data) + 1;
     const ptr = mod._malloc(len);
     mod.stringToUTF8(data, ptr, len);
     return ptr;
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const writeToCStringPtr = (mod: any, str: string, ptr: any) => {
     const allocated = writeToCString(mod, str);
     mod.setValue(ptr, allocated, '*');
     return allocated;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const readFromCString = (mod: any, pointer: Pointer): string => mod.UTF8ToString(pointer);
 
 export function cutFirstLine(src: string) {
@@ -50,8 +55,8 @@ type CompileResult = {
 export async function funcCompile(args: { entries: string[], sources: { path: string, content: string }[], logger: TactLogger }): Promise<FuncCompilationResult> {
 
     // Parameters
-    let files: string[] = args.entries;
-    let configStr = JSON.stringify({
+    const files: string[] = args.entries;
+    const configStr = JSON.stringify({
         sources: files,
         optLevel: 2 // compileConfig.optLevel || 2
     });
@@ -69,16 +74,18 @@ export async function funcCompile(args: { entries: string[], sources: { path: st
     };
 
     // Create module
-    let logs: string[] = []
-    let mod = await CompilerModule({ wasmBinary: WasmBinary, printErr: (e: any) => { logs.push(e); } });
+    const logs: string[] = []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mod = await CompilerModule({ wasmBinary: WasmBinary, printErr: (e: any) => { logs.push(e); } });
 
     // Execute
     try {
 
         // Write config
-        let configPointer = trackPointer(writeToCString(mod, configStr));
+        const configPointer = trackPointer(writeToCString(mod, configStr));
 
         // FS emulation callback
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const callbackPtr = trackFunctionPointer(mod.addFunction((_kind: any, _data: any, contents: any, error: any) => {
             const kind: string = readFromCString(mod, _kind);
             const data: string = readFromCString(mod, _data);
@@ -86,12 +93,13 @@ export async function funcCompile(args: { entries: string[], sources: { path: st
                 allocatedPointers.push(writeToCStringPtr(mod, data, contents));
             } else if (kind === 'source') {
                 try {
-                    let fl = args.sources.find((v) => v.path === data);
+                    const fl = args.sources.find((v) => v.path === data);
                     if (!fl) {
                         throw Error('File not found: ' + data)
                     }
                     allocatedPointers.push(writeToCStringPtr(mod, fl.content, contents));
                 } catch (err) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const e = err as any;
                     allocatedPointers.push(writeToCStringPtr(mod, 'message' in e ? e.message : e.toString(), error));
                 }
@@ -101,11 +109,11 @@ export async function funcCompile(args: { entries: string[], sources: { path: st
         }, 'viiii'));
 
         // Execute
-        let resultPointer = trackPointer(mod._func_compile(configPointer, callbackPtr));
-        let retJson = readFromCString(mod, resultPointer);
-        let result = JSON.parse(retJson) as CompileResult;
+        const resultPointer = trackPointer(mod._func_compile(configPointer, callbackPtr));
+        const retJson = readFromCString(mod, resultPointer);
+        const result = JSON.parse(retJson) as CompileResult;
 
-        let msg = logs.join('\n');
+        const msg = logs.join('\n');
 
         if (result.status === 'error') {
             return {
@@ -128,10 +136,10 @@ export async function funcCompile(args: { entries: string[], sources: { path: st
         args.logger.error(errorToString(e));
         throw Error('Unexpected compiler response');
     } finally {
-        for (let i of allocatedFunctions) {
+        for (const i of allocatedFunctions) {
             mod.removeFunction(i);
         }
-        for (let i of allocatedPointers) {
+        for (const i of allocatedPointers) {
             mod._free(i);
         }
     }

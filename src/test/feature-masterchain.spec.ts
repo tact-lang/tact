@@ -14,37 +14,37 @@ describe('feature-masterchain', () => {
     //
 
     it('should deploy to the workchain', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await MasterchainTester.fromInit());
-        let tracker = system.track(contract.address);
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await MasterchainTester.fromInit());
+        const tracker = system.track(contract.address);
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();
     });
     it('should deploy to the workchain when masterchain enabled', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await EnabledTester.fromInit());
-        let tracker = system.track(contract.address);
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await EnabledTester.fromInit());
+        const tracker = system.track(contract.address);
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();
     });
     it('should not deploy to the workchain from masterchain', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure', -1);
-        let contract = system.open(await MasterchainTester.fromInit());
-        let tracker = system.track(contract.address);
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure', -1);
+        const contract = system.open(await MasterchainTester.fromInit());
+        const tracker = system.track(contract.address);
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();
     });
     it('should deploy to the workchain from masterchain when masterchain enabled', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure', -1);
-        let contract = system.open(await EnabledTester.fromInit());
-        let tracker = system.track(contract.address);
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure', -1);
+        const contract = system.open(await EnabledTester.fromInit());
+        const tracker = system.track(contract.address);
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();
@@ -55,36 +55,36 @@ describe('feature-masterchain', () => {
     //
 
     it('should create address for the workchain', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await MasterchainTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await MasterchainTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
         await contract.getCreateAddress(0n, 0n);
     });
 
-    it('should not create address for the materchain', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await MasterchainTester.fromInit());
+    it('should not create address for the masterchain', async () => {
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await MasterchainTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
         await expect(contract.getCreateAddress(-1n, 0n)).rejects.toThrowError('Masterchain support is not enabled for this contract');
     });
 
     it('should create address for the masterchain when masterchain enabled', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await EnabledTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await EnabledTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
         await contract.getCreateAddress(-1n, 0n);
     });
 
     it('should not create address for invalid workchain', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await MasterchainTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await MasterchainTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
         await expect(contract.getCreateAddress(10n, 0n)).rejects.toThrowError('Invalid address');
@@ -95,42 +95,42 @@ describe('feature-masterchain', () => {
     //
 
     it('should load address for the workchain', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await MasterchainTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await MasterchainTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
-        let addr = new Address(0, Buffer.alloc(32, 0));
+        const addr = new Address(0, Buffer.alloc(32, 0));
         expect((await contract.getParseAddress(beginCell().storeAddress(addr).endCell())).equals(addr)).toBe(true);
     });
 
     it('should not load address for the masterchain', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await MasterchainTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await MasterchainTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
-        let addr = new Address(-1, Buffer.alloc(32, 0));
+        const addr = new Address(-1, Buffer.alloc(32, 0));
         expect(contract.getParseAddress(beginCell().storeAddress(addr).endCell())).rejects.toThrowError('Masterchain support is not enabled for this contract');
     });
 
     it('should load address for the workchain when masterchain enabled', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await EnabledTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await EnabledTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
-        let addr = new Address(0, Buffer.alloc(32, 0));
+        const addr = new Address(0, Buffer.alloc(32, 0));
         expect((await contract.getParseAddress(beginCell().storeAddress(addr).endCell())).equals(addr)).toBe(true);
     });
 
     it('should load address for the masterchain when masterchain enabled', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await EnabledTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await EnabledTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
-        let addr = new Address(-1, Buffer.alloc(32, 0));
+        const addr = new Address(-1, Buffer.alloc(32, 0));
         expect((await contract.getParseAddress(beginCell().storeAddress(addr).endCell())).equals(addr)).toBe(true);
     });
 
@@ -139,42 +139,42 @@ describe('feature-masterchain', () => {
     //
 
     it('should handle address in get argument for the workchain', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await MasterchainTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await MasterchainTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
-        let addr = new Address(0, Buffer.alloc(32, 0));
+        const addr = new Address(0, Buffer.alloc(32, 0));
         await contract.getSerializeAddress(addr);
     });
 
     it('should not handle address in get argument for the masterchain', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await MasterchainTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await MasterchainTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
-        let addr = new Address(-1, Buffer.alloc(32, 0));
+        const addr = new Address(-1, Buffer.alloc(32, 0));
         expect(contract.getSerializeAddress(addr)).rejects.toThrowError('Masterchain support is not enabled for this contract');
     });
 
     it('should handle address in get argument for the workchain when masterchain enabled', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await EnabledTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await EnabledTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
-        let addr = new Address(0, Buffer.alloc(32, 0));
+        const addr = new Address(0, Buffer.alloc(32, 0));
         await contract.getSerializeAddress(addr);
     });
 
     it('should handle address in get argument for the masterchain when masterchain enabled', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await EnabledTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await EnabledTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
-        let addr = new Address(-1, Buffer.alloc(32, 0));
+        const addr = new Address(-1, Buffer.alloc(32, 0));
         await contract.getSerializeAddress(addr);
     });
 
@@ -183,45 +183,45 @@ describe('feature-masterchain', () => {
     //
 
     it('should handle address in get argument struct for the workchain', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await MasterchainTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await MasterchainTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
-        let addr = new Address(0, Buffer.alloc(32, 0));
+        const addr = new Address(0, Buffer.alloc(32, 0));
         await contract.getHandleStruct({ $$type: 'TestMessage', address: addr, address2: null });
         await contract.getHandleStruct({ $$type: 'TestMessage', address: addr, address2: addr });
     });
 
     it('should not handle address in get argument struct for the masterchain', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await MasterchainTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await MasterchainTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
-        let addr = new Address(-1, Buffer.alloc(32, 0));
-        let addr2 = new Address(0, Buffer.alloc(32, 0));
+        const addr = new Address(-1, Buffer.alloc(32, 0));
+        const addr2 = new Address(0, Buffer.alloc(32, 0));
         expect(contract.getHandleStruct({ $$type: 'TestMessage', address: addr, address2: null })).rejects.toThrowError('Masterchain support is not enabled for this contract');
         expect(contract.getHandleStruct({ $$type: 'TestMessage', address: addr2, address2: addr })).rejects.toThrowError('Masterchain support is not enabled for this contract');
     });
 
     it('should handle address in get argument struct for the workchain when masterchain enabled', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await EnabledTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await EnabledTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
-        let addr = new Address(0, Buffer.alloc(32, 0));
+        const addr = new Address(0, Buffer.alloc(32, 0));
         await contract.getHandleStruct({ $$type: 'TestMessage', address: addr, address2: addr });
     });
 
     it('should handle address in get argument struct for the masterchain when masterchain enabled', async () => {
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await EnabledTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await EnabledTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, "Deploy");
         await system.run();
-        let addr = new Address(-1, Buffer.alloc(32, 0));
+        const addr = new Address(-1, Buffer.alloc(32, 0));
         await contract.getHandleStruct({ $$type: 'TestMessage', address: addr, address2: addr });
     });
 });

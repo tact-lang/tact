@@ -1,8 +1,8 @@
 import { ASTFunctionAttribute, ASTRef, throwError } from "./ast";
 
 export function checkFunctionAttributes(isAbstract: boolean, attrs: ASTFunctionAttribute[], ref: ASTRef) {
-    let k = new Set<string>();
-    for (let a of attrs) {
+    const k = new Set<string>();
+    for (const a of attrs) {
         if (k.has(a.type)) {
             throwError(`Duplicate function attribute ${a.type}`, a.ref);
         }

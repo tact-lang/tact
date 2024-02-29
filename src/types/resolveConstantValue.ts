@@ -1,5 +1,5 @@
 import { Address, Cell, toNano } from "@ton/core";
-import { enabledMaterchain } from "../config/features";
+import { enabledMasterchain } from "../config/features";
 import { CompilerContext } from "../context";
 import { ASTExpression, throwError } from "../grammar/ast";
 import { printTypeRef, TypeRef } from "./types";
@@ -9,8 +9,8 @@ function reduceInt(ast: ASTExpression): bigint {
     if (ast.kind === 'number') {
         return ast.value;
     } else if (ast.kind === 'op_binary') {
-        let l = reduceInt(ast.left);
-        let r = reduceInt(ast.right);
+        const l = reduceInt(ast.left);
+        const r = reduceInt(ast.right);
         if (ast.op === '+') {
             return l + r;
         } else if (ast.op === '-') {
@@ -49,7 +49,7 @@ function reduceInt(ast: ASTExpression): bigint {
         }
         if (ast.name === 'sha256') {
             if (ast.args.length === 1 && ast.args[0].kind === 'string') {
-                let str = reduceString(ast.args[0]);
+                const str = reduceString(ast.args[0]);
                 if (Buffer.from(str).length <= 128) {
                     return BigInt('0x' + sha256_sync(str).toString('hex'));
                 }
@@ -92,11 +92,11 @@ function reduceAddress(ast: ASTExpression, ctx: CompilerContext): Address {
         if (ast.name === 'address') {
             if (ast.args.length === 1) {
                 const str = reduceString(ast.args[0]);
-                let address = Address.parse(str);
+                const address = Address.parse(str);
                 if (address.workChain !== 0 && address.workChain !== -1) {
                     throwError(`Address ${str} invalid address`, ast.ref);
                 }
-                if (!enabledMaterchain(ctx)) {
+                if (!enabledMasterchain(ctx)) {
                     if (address.workChain !== 0) {
                         throwError(`Address ${str} from masterchain are not enabled for this contract`, ast.ref);
                     }
@@ -108,7 +108,7 @@ function reduceAddress(ast: ASTExpression, ctx: CompilerContext): Address {
     throwError('Cannot reduce expression to a constant Address', ast.ref);
 }
 
-function reduceCell(ast: ASTExpression, ctx: CompilerContext): Cell {
+function reduceCell(ast: ASTExpression): Cell {
     if (ast.kind === 'op_static_call') {
         if (ast.name === 'cell') {
             if (ast.args.length === 1) {
@@ -123,7 +123,7 @@ function reduceCell(ast: ASTExpression, ctx: CompilerContext): Cell {
             }
         }
     }
-    throwError('Cannot reduce expression to a constant Address', ast.ref);
+    throwError('Cannot reduce expression to a constant Cell', ast.ref);
 }
 
 export function resolveConstantValue(type: TypeRef, ast: ASTExpression | null, ctx: CompilerContext) {
@@ -164,7 +164,7 @@ export function resolveConstantValue(type: TypeRef, ast: ASTExpression | null, c
 
     // Handle Cell
     if (type.name === 'Cell') {
-        return reduceCell(ast, ctx);
+        return reduceCell(ast);
     }
 
     throwError(`Expected constant value, got ${printTypeRef(type)}`, ast.ref);

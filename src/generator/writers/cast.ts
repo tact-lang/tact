@@ -9,7 +9,7 @@ export function cast(from: TypeRef, to: TypeRef, expression: string, ctx: Writer
             throw Error('Impossible');
         }
         if (!from.optional && to.optional) {
-            let type = getType(ctx.ctx, from.name);
+            const type = getType(ctx.ctx, from.name);
             if (type.kind === 'struct') {
                 return `${ops.typeAsOptional(type.name, ctx)}(${expression})`;
             }

@@ -1,7 +1,6 @@
 import fs from 'fs';
 import { decompileAll } from '@tact-lang/opcode';
 import { run } from '../src/node';
-import { Cell } from '@ton/core';
 import { build } from '../src/pipeline/build';
 import { FuncCompilationResult, funcCompile } from '../src/func/funcCompile';
 import path from 'path';
@@ -25,8 +24,8 @@ import { __DANGER__disableVersionNumber } from '../src/pipeline/version';
     }
 
     // Verify projects
-    for (let pkgPath of glob.sync(path.normalize(path.resolve(__dirname, '..', 'examples', 'output', '*.pkg')))) {
-        let res = await verify({ pkg: fs.readFileSync(pkgPath, 'utf-8') });
+    for (const pkgPath of glob.sync(path.normalize(path.resolve(__dirname, '..', 'examples', 'output', '*.pkg')))) {
+        const res = await verify({ pkg: fs.readFileSync(pkgPath, 'utf-8') });
         if (!res.ok) {
             console.error('Failed to verify ' + pkgPath + ': ' + res.error);
             process.exit(1);
@@ -34,20 +33,20 @@ import { __DANGER__disableVersionNumber } from '../src/pipeline/version';
     }
 
     // Compile test contracts
-    for (let p of [{ path: path.resolve(__dirname, '..', 'src', 'test', 'contracts') }]) {
-        let recs = fs.readdirSync(p.path);
-        for (let r of recs) {
+    for (const p of [{ path: path.resolve(__dirname, '..', 'src', 'test', 'contracts') }]) {
+        const recs = fs.readdirSync(p.path);
+        for (const r of recs) {
             if (!r.endsWith('.tact')) {
                 continue;
             }
 
-            let config: ConfigProject = {
+            const config: ConfigProject = {
                 name: r.slice(0, r.length - '.tact'.length),
                 path: './' + r,
                 output: './output/',
             };
-            let stdlib = '@stdlib';
-            let project = createNodeFileSystem(p.path, false);
+            const stdlib = '@stdlib';
+            const project = createNodeFileSystem(p.path, false);
             await build({
                 config,
                 stdlib,
@@ -57,9 +56,9 @@ import { __DANGER__disableVersionNumber } from '../src/pipeline/version';
     }
 
     // Compile func files
-    for (let p of [{ path: __dirname + "/../func/" }]) {
-        let recs = fs.readdirSync(p.path);
-        for (let r of recs) {
+    for (const p of [{ path: __dirname + "/../func/" }]) {
+        const recs = fs.readdirSync(p.path);
+        for (const r of recs) {
             if (!r.endsWith('.fc')) {
                 continue;
             }
@@ -68,9 +67,9 @@ import { __DANGER__disableVersionNumber } from '../src/pipeline/version';
             console.log('Processing ' + p.path + r);
             let c: FuncCompilationResult;
             try {
-                let stdlibPath = path.resolve(__dirname, '..', 'stdlib', 'stdlib.fc');
-                let stdlib = fs.readFileSync(stdlibPath, 'utf-8');
-                let code = fs.readFileSync(p.path + r, 'utf-8');
+                const stdlibPath = path.resolve(__dirname, '..', 'stdlib', 'stdlib.fc');
+                const stdlib = fs.readFileSync(stdlibPath, 'utf-8');
+                const code = fs.readFileSync(p.path + r, 'utf-8');
                 c = await funcCompile({
                     entries: [
                         stdlibPath,
@@ -98,7 +97,7 @@ import { __DANGER__disableVersionNumber } from '../src/pipeline/version';
             fs.writeFileSync(p.path + r + ".cell", c.output!);
 
             // Cell -> Fift decompiler
-            let source = decompileAll({ src: c.output! });
+            const source = decompileAll({ src: c.output! });
             fs.writeFileSync(p.path + r + ".rev.fift", source);
         }
     }

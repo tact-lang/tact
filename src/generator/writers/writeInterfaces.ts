@@ -1,4 +1,4 @@
-import { getSupportedIntefaces } from "../../types/getSupportedInterfaces";
+import { getSupportedInterfaces } from "../../types/getSupportedInterfaces";
 import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 
@@ -9,9 +9,9 @@ export function writeInterfaces(type: TypeDescription, ctx: WriterContext) {
         ctx.inIndent(() => {
 
             // Build interfaces list
-            let interfaces: string[] = [];
+            const interfaces: string[] = [];
             interfaces.push('org.ton.introspection.v0');
-            interfaces.push(...getSupportedIntefaces(type, ctx.ctx));
+            interfaces.push(...getSupportedInterfaces(type, ctx.ctx));
 
             // Render interfaces
             for (let i = 0; i < interfaces.length; i++) {

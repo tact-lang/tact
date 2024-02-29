@@ -12,23 +12,23 @@ describe('feature-random', () => {
     it('should chain deep sequences correctly', async () => {
 
         // Init
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contractA = system.open(await A.fromInit());
-        let contractB = system.open(await B.fromInit(contractA.address));
-        let contractC = system.open(await C.fromInit(contractB.address));
-        let trackA = system.track(contractA.address);
-        let trackB = system.track(contractB.address);
-        let trackC = system.track(contractC.address);
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contractA = system.open(await A.fromInit());
+        const contractB = system.open(await B.fromInit(contractA.address));
+        const contractC = system.open(await C.fromInit(contractB.address));
+        const trackA = system.track(contractA.address);
+        const trackB = system.track(contractB.address);
+        const trackC = system.track(contractC.address);
         expect(trackA.address.toString({ testOnly: true })).toMatchSnapshot();
         expect(trackB.address.toString({ testOnly: true })).toMatchSnapshot();
         expect(trackC.address.toString({ testOnly: true })).toMatchSnapshot();
         await contractA.send(treasure, { value: toNano('10') }, "Message");
         await system.run();
-        let nextA = await contractA.getGetNext();
+        const nextA = await contractA.getGetNext();
         expect(nextA.code.equals(contractB.init!.code!)).toBe(true);
         expect(nextA.data.equals(contractB.init!.data!)).toBe(true);
-        let nextB = await contractB.getGetNext();
+        const nextB = await contractB.getGetNext();
         expect(nextB.code.equals(contractC.init!.code!)).toBe(true);
         expect(nextB.data.equals(contractC.init!.data!)).toBe(true);
 

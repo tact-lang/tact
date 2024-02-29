@@ -6,8 +6,8 @@ import files from '../imports/stdlib';
 
 describe('funcCompile', () => {
     it('should compile small contract', async () => {
-        let source = fs.readFileSync(path.resolve(__dirname, '__testdata__', 'small.fc'), 'utf8');
-        let res = await funcCompile({
+        const source = fs.readFileSync(path.resolve(__dirname, '__testdata__', 'small.fc'), 'utf8');
+        const res = await funcCompile({
             entries: ['/stdlib.fc', '/small.fc'],
             sources: [{
                 path: '/stdlib.fc',

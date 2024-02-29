@@ -7,12 +7,12 @@ describe('wallet', () => {
     it('should deploy', async () => {
 
         // Create wallet
-        let key = testKey('wallet-key');
-        let publicKey = beginCell().storeBuffer(key.publicKey).endCell().beginParse().loadUintBig(256);
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await Wallet.fromInit(publicKey, 0n));
-        let tracker = system.track(contract.address);
+        const key = testKey('wallet-key');
+        const publicKey = beginCell().storeBuffer(key.publicKey).endCell().beginParse().loadUintBig(256);
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await Wallet.fromInit(publicKey, 0n));
+        const tracker = system.track(contract.address);
         await contract.send(treasure, { value: toNano('10') }, 'Deploy');
         await system.run();
 
@@ -22,7 +22,7 @@ describe('wallet', () => {
         expect(await contract.getSeqno()).toBe(0n);
 
         // Send transfer and check seqno
-        let transfer: Transfer = {
+        const transfer: Transfer = {
             $$type: 'Transfer',
             seqno: 0n,
             mode: 1n,
@@ -30,7 +30,7 @@ describe('wallet', () => {
             to: treasure.address,
             body: null
         };
-        let signature = sign(beginCell().store(storeTransfer(transfer)).endCell().hash(), key.secretKey);
+        const signature = sign(beginCell().store(storeTransfer(transfer)).endCell().hash(), key.secretKey);
         await contract.send(treasure, { value: toNano(1) }, {
             $$type: 'TransferMessage',
             transfer,

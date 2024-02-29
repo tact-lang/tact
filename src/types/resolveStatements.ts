@@ -38,7 +38,7 @@ function removeRequiredVariable(name: string, src: StatementContext): StatementC
     if (!src.requiredFields.find((v) => v === name)) {
         throw Error('Variable is not required: ' + name); // Should happen earlier
     }
-    let filtered = src.requiredFields.filter((v) => v !== name);
+    const filtered = src.requiredFields.filter((v) => v !== name);
     return {
         ...src,
         requiredFields: filtered
@@ -66,28 +66,28 @@ function processCondition(condition: ASTCondition, sctx: StatementContext, ctx: 
 
     // Simple if
     if (condition.falseStatements === null && condition.elseif === null) {
-        let r = processStatements(condition.trueStatements, initialCtx, ctx);
+        const r = processStatements(condition.trueStatements, initialCtx, ctx);
         ctx = r.ctx;
         return { ctx, sctx: initialCtx };
     }
 
     // Simple if-else
-    let processedCtx: StatementContext[] = [];
+    const processedCtx: StatementContext[] = [];
 
     // Process true branch
-    let r = processStatements(condition.trueStatements, initialCtx, ctx);
+    const r = processStatements(condition.trueStatements, initialCtx, ctx);
     ctx = r.ctx;
     processedCtx.push(r.sctx);
 
     // Process else/elseif branch
     if (condition.falseStatements !== null && condition.elseif === null) {
         // if-else
-        let r = processStatements(condition.falseStatements, initialCtx, ctx);
+        const r = processStatements(condition.falseStatements, initialCtx, ctx);
         ctx = r.ctx;
         processedCtx.push(r.sctx);
     } else if (condition.falseStatements === null && condition.elseif !== null) {
         // if-else if
-        let r = processCondition(condition.elseif, initialCtx, ctx);
+        const r = processCondition(condition.elseif, initialCtx, ctx);
         ctx = r.ctx;
         processedCtx.push(r.sctx);
     } else {
@@ -95,10 +95,10 @@ function processCondition(condition: ASTCondition, sctx: StatementContext, ctx: 
     }
 
     // Merge statement contexts
-    let removed: string[] = [];
-    for (let f of initialCtx.requiredFields) {
+    const removed: string[] = [];
+    for (const f of initialCtx.requiredFields) {
         let found = false;
-        for (let c of processedCtx) {
+        for (const c of processedCtx) {
             if (c.requiredFields.find((v) => v === f)) {
                 found = true;
                 break;
@@ -108,7 +108,7 @@ function processCondition(condition: ASTCondition, sctx: StatementContext, ctx: 
             removed.push(f);
         }
     }
-    for (let r of removed) {
+    for (const r of removed) {
         initialCtx = removeRequiredVariable(r, initialCtx);
     }
 
@@ -120,7 +120,7 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
     // Process statements
 
     let exited = false;
-    for (let s of statements) {
+    for (const s of statements) {
 
         // Check for unreachable
         if (exited) {
@@ -134,8 +134,8 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             ctx = resolveExpression(s.expression, sctx, ctx);
 
             // Check type
-            let expressionType = getExpType(ctx, s.expression);
-            let variableType = resolveTypeRef(ctx, s.type);
+            const expressionType = getExpType(ctx, s.expression);
+            const variableType = resolveTypeRef(ctx, s.type);
             if (!isAssignable(expressionType, variableType)) {
                 throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(variableType)}`, s.ref);
             }
@@ -155,8 +155,8 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             ctx = resolveExpression(s.expression, sctx, ctx);
 
             // Check type
-            let expressionType = getExpType(ctx, s.expression);
-            let tailType = getExpType(ctx, s.path[s.path.length - 1]);
+            const expressionType = getExpType(ctx, s.expression);
+            const tailType = getExpType(ctx, s.path[s.path.length - 1]);
             if (!isAssignable(expressionType, tailType)) {
                 throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(tailType)}`, s.ref);
             }
@@ -178,8 +178,8 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             ctx = resolveExpression(s.expression, sctx, ctx);
 
             // Check type
-            let expressionType = getExpType(ctx, s.expression);
-            let tailType = getExpType(ctx, s.path[s.path.length - 1]);
+            const expressionType = getExpType(ctx, s.expression);
+            const tailType = getExpType(ctx, s.path[s.path.length - 1]);
             if (!isAssignable(expressionType, tailType)) {
                 throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(tailType)}`, s.ref);
             }
@@ -200,12 +200,12 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
         } else if (s.kind === 'statement_condition') {
 
             // Process condition (expression resolved inside)
-            let r = processCondition(s, sctx, ctx);
+            const r = processCondition(s, sctx, ctx);
             ctx = r.ctx;
             sctx = r.sctx;
 
             // Check type
-            let expressionType = getExpType(ctx, s.expression);
+            const expressionType = getExpType(ctx, s.expression);
             if (expressionType.kind !== 'ref' || expressionType.name !== 'Bool' || expressionType.optional) {
                 throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to Bool`, s.ref);
             }
@@ -218,7 +218,7 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
                 ctx = resolveExpression(s.expression, sctx, ctx);
 
                 // Check type
-                let expressionType = getExpType(ctx, s.expression);
+                const expressionType = getExpType(ctx, s.expression);
                 if (!isAssignable(expressionType, sctx.returns)) {
                     throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(sctx.returns)}`, s.ref);
                 }
@@ -246,13 +246,13 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             ctx = resolveExpression(s.condition, sctx, ctx);
 
             // Check type
-            let expressionType = getExpType(ctx, s.condition);
+            const expressionType = getExpType(ctx, s.condition);
             if (expressionType.kind !== 'ref' || expressionType.name !== 'Int' || expressionType.optional) {
                 throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to Int`, s.ref);
             }
 
             // Process inner statements
-            let r = processStatements(s.statements, sctx, ctx);
+            const r = processStatements(s.statements, sctx, ctx);
             ctx = r.ctx;
             sctx = r.sctx;
 
@@ -262,13 +262,13 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             ctx = resolveExpression(s.condition, sctx, ctx);
 
             // Check type
-            let expressionType = getExpType(ctx, s.condition);
+            const expressionType = getExpType(ctx, s.condition);
             if (expressionType.kind !== 'ref' || expressionType.name !== 'Bool' || expressionType.optional) {
                 throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to bool`, s.ref);
             }
 
             // Process inner statements
-            let r = processStatements(s.statements, sctx, ctx);
+            const r = processStatements(s.statements, sctx, ctx);
             ctx = r.ctx;
             sctx = r.sctx;
 
@@ -278,13 +278,13 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             ctx = resolveExpression(s.condition, sctx, ctx);
 
             // Check type
-            let expressionType = getExpType(ctx, s.condition);
+            const expressionType = getExpType(ctx, s.condition);
             if (expressionType.kind !== 'ref' || expressionType.name !== 'Bool' || expressionType.optional) {
                 throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to bool`, s.ref);
             }
 
             // Process inner statements
-            let r = processStatements(s.statements, sctx, ctx);
+            const r = processStatements(s.statements, sctx, ctx);
             ctx = r.ctx;
             sctx = r.sctx;
 
@@ -297,7 +297,7 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
 }
 
 function processFunctionBody(statements: ASTStatement[], sctx: StatementContext, ctx: CompilerContext) {
-    let res = processStatements(statements, sctx, ctx);
+    const res = processStatements(statements, sctx, ctx);
 
     // Check if all required variables are assigned
     if (res.sctx.requiredFields.length > 0) {
@@ -314,12 +314,12 @@ function processFunctionBody(statements: ASTStatement[], sctx: StatementContext,
 export function resolveStatements(ctx: CompilerContext) {
 
     // Process all static functions
-    for (let f of Object.values(getAllStaticFunctions(ctx))) {
+    for (const f of Object.values(getAllStaticFunctions(ctx))) {
         if (f.ast.kind === 'def_function') {
 
             // Build statement context
             let sctx = emptyContext(f.ast.ref, f.returns);
-            for (let p of f.args) {
+            for (const p of f.args) {
                 sctx = addVariable(p.name, p.type, sctx);
             }
 
@@ -331,7 +331,7 @@ export function resolveStatements(ctx: CompilerContext) {
     }
 
     // Process all types
-    for (let t of Object.values(getAllTypes(ctx))) {
+    for (const t of Object.values(getAllTypes(ctx))) {
 
         // Process init
         if (t.init) {
@@ -343,7 +343,7 @@ export function resolveStatements(ctx: CompilerContext) {
             sctx = addVariable('self', { kind: 'ref', name: t.name, optional: false }, sctx);
 
             // Required variables
-            for (let f of t.fields) {
+            for (const f of t.fields) {
                 if (f.default !== undefined) { // NOTE: undefined is important here
                     continue;
                 }
@@ -354,7 +354,7 @@ export function resolveStatements(ctx: CompilerContext) {
             }
 
             // Args
-            for (let p of t.init.args) {
+            for (const p of t.init.args) {
                 sctx = addVariable(p.name, p.type, sctx);
             }
 
@@ -389,13 +389,13 @@ export function resolveStatements(ctx: CompilerContext) {
         }
 
         // Process functions
-        for (let f of t.functions.values()) {
+        for (const f of t.functions.values()) {
             if (f.ast.kind !== 'def_native_function') {
 
                 // Build statement context
                 let sctx = emptyContext(f.ast.ref, f.returns);
                 sctx = addVariable('self', { kind: 'ref', name: t.name, optional: false }, sctx);
-                for (let a of f.args) {
+                for (const a of f.args) {
                     sctx = addVariable(a.name, a.type, sctx);
                 }
 

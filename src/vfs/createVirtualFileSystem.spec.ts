@@ -13,11 +13,11 @@ describe('createVirtualFileSystem', () => {
     });
 
     it('should read from virtual file system', () => {
-        let fs: { [key: string]: string } = {
+        const fs: { [key: string]: string } = {
             ['file.txt']: Buffer.from('Hello World').toString('base64'),
             ['empty.txt']: Buffer.from([]).toString('base64'),
         };
-        let vfs = createVirtualFileSystem('@stdlib', fs);
+        const vfs = createVirtualFileSystem('@stdlib', fs);
         let realPath = vfs.resolve('./', './', 'file.txt');
         expect(realPath).toBe('@stdlib/file.txt');
         expect(vfs.exists(realPath)).toBe(true);

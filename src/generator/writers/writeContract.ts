@@ -1,8 +1,8 @@
 import { contractErrors } from "../../abi/errors";
-import { enabledInline, enabledMaterchain } from "../../config/features";
+import { enabledInline, enabledMasterchain } from "../../config/features";
 import { InitDescription, TypeDescription, TypeOrigin } from "../../types/types";
 import { WriterContext } from "../Writer";
-import { fn, id, initId } from "./id";
+import { id, initId } from "./id";
 import { ops } from "./ops";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
@@ -42,7 +42,7 @@ export function writeStorageOps(type: TypeDescription, origin: TypeOrigin, ctx: 
             ctx.inIndent(() => {
 
                 // Allow only workchain deployments
-                if (!enabledMaterchain(ctx.ctx)) {
+                if (!enabledMasterchain(ctx.ctx)) {
                     ctx.write(`;; Allow only workchain deployments`);
                     ctx.write(`throw_unless(${contractErrors.masterchainNotEnabled.id}, my_address().preload_uint(11) == 1024);`);
                 }
@@ -96,14 +96,14 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
         ctx.flag('impure');
         ctx.body(() => {
             // Unpack args
-            for (let a of init.args) {
+            for (const a of init.args) {
                 if (!resolveFuncPrimitive(a.type, ctx)) {
                     ctx.append(`var (${resolveFuncTypeUnpack(a.type, id(a.name), ctx)}) = ${id(a.name)};`);
                 }
             }
 
             // Generate self initial tensor
-            let initValues: string[] = [];
+            const initValues: string[] = [];
             for (let i = 0; i < t.fields.length; i++) {
                 let init = 'null()';
                 if (t.fields[i].default !== undefined) {
@@ -118,8 +118,8 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             }
 
             // Generate statements
-            let returns = resolveFuncTypeUnpack(t, id('self'), ctx);
-            for (let s of init.ast.statements) {
+            const returns = resolveFuncTypeUnpack(t, id('self'), ctx);
+            for (const s of init.ast.statements) {
                 writeStatement(s, returns, null, ctx);
             }
 
@@ -150,7 +150,7 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             `);
 
             // Copy contracts code
-            for (let c of t.dependsOn) {
+            for (const c of t.dependsOn) {
                 ctx.append();
                 ctx.write(`
                 ;; Contract Code: ${c.name}
@@ -165,7 +165,7 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             ctx.append(`builder b = begin_cell();`);
             ctx.append(`b = b.store_ref(begin_cell().store_dict(contracts).end_cell());`);
             ctx.append(`b = b.store_int(false, 1);`);
-            let args = t.init!.args.length > 0 ? ['b', '(' + t.init!.args.map((a) => id(a.name)).join(', ') + ')'].join(', ') : 'b, null()';
+            const args = t.init!.args.length > 0 ? ['b', '(' + t.init!.args.map((a) => id(a.name)).join(', ') + ')'].join(', ') : 'b, null()';
             ctx.append(`b = ${ops.writer(initId(t.name), ctx)}(${args});`);
             ctx.append(`return (mine, b.end_cell());`);
         });
@@ -184,7 +184,7 @@ export function writeMainContract(type: TypeDescription, abiLink: string, ctx: W
         ctx.append(``);
 
         // Write receivers
-        for (let r of Object.values(type.receivers)) {
+        for (const r of Object.values(type.receivers)) {
             writeReceiver(type, r, ctx);
         }
 
@@ -195,7 +195,7 @@ export function writeMainContract(type: TypeDescription, abiLink: string, ctx: W
         ctx.append(``);
 
         // Getters
-        for (let f of type.functions.values()) {
+        for (const f of type.functions.values()) {
             if (f.isGetter) {
                 writeGetter(f, ctx)
             }

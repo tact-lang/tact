@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+**/output/
+./src/test/bugs/output/
+./src/test/features/output/
+src/func/funcfiftlib.js
+src/grammar/grammar.ohm*.ts
+src/grammar/grammar.ohm*.js
+jest.setup.js
+jest.teardown.js

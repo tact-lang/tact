@@ -1,5 +1,5 @@
 import { contractErrors } from "../../abi/errors";
-import { enabledMaterchain } from "../../config/features";
+import { enabledMasterchain } from "../../config/features";
 import { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext) {
@@ -28,7 +28,7 @@ export function writeStdlib(ctx: WriterContext) {
                 var h = address.preload_uint(11);
             `);
 
-            if (enabledMaterchain(ctx.ctx)) {
+            if (enabledMasterchain(ctx.ctx)) {
                 ctx.write(`
                     throw_unless(${contractErrors.invalidAddress.id}, (h == 1024) | (h == 1279));
                 `);
@@ -984,7 +984,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     for (let i = 1; i < 64; i++) {
         ctx.fun(`__tact_tuple_create_${i}`, () => {
-            let args: string[] = [];
+            const args: string[] = [];
             for (let j = 0; j < i; j++) {
                 args.push(`X${j}`);
             }
@@ -993,7 +993,7 @@ export function writeStdlib(ctx: WriterContext) {
             ctx.asm(`asm "${i} TUPLE"`);
         });
         ctx.fun(`__tact_tuple_destroy_${i}`, () => {
-            let args: string[] = [];
+            const args: string[] = [];
             for (let j = 0; j < i; j++) {
                 args.push(`X${j}`);
             }

@@ -14,7 +14,7 @@ export const StructFunctions: { [key: string]: AbiFunction } = {
             if (args[0].kind !== 'ref') {
                 throwError('toCell() is implemented only a struct type', ref);
             }
-            let tp = getType(ctx, args[0].name);
+            const tp = getType(ctx, args[0].name);
             if (tp.kind !== 'struct') {
                 throwError('toCell() is implemented only a struct type', ref);
             }

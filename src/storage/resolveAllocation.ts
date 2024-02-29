@@ -8,10 +8,10 @@ import { allocate, getAllocationOperationFromField } from "./allocator";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { initId } from "../generator/writers/id";
 
-let store = createContextStore<StorageAllocation>();
+const store = createContextStore<StorageAllocation>();
 
 export function getAllocation(ctx: CompilerContext, name: string) {
-    let t = store.get(ctx, name);
+    const t = store.get(ctx, name);
     if (!t) {
         throw Error('Allocation for ' + name + ' not found');
     }
@@ -23,15 +23,15 @@ export function getAllocations(ctx: CompilerContext) {
 }
 
 export function getSortedTypes(ctx: CompilerContext) {
-    let types = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'struct' || v.kind === 'contract');
+    const types = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'struct' || v.kind === 'contract');
     let structs = types.filter(t => t.kind === 'struct');
-    let refs = (src: TypeDescription) => {
-        let res: TypeDescription[] = []
-        let t = new Set<string>();
-        for (let f of src.fields) {
-            let r = f.type;
+    const refs = (src: TypeDescription) => {
+        const res: TypeDescription[] = []
+        const t = new Set<string>();
+        for (const f of src.fields) {
+            const r = f.type;
             if (r.kind === 'ref') {
-                let tp = getType(ctx, r.name);
+                const tp = getType(ctx, r.name);
                 if (tp.kind === 'struct') {
                     if (!t.has(tp.name)) {
                         t.add(r.name);
@@ -50,10 +50,10 @@ export function getSortedTypes(ctx: CompilerContext) {
 export function resolveAllocations(ctx: CompilerContext) {
 
     // Load topological order of structs and contracts
-    let types = getSortedTypes(ctx);
+    const types = getSortedTypes(ctx);
 
     // Generate allocations
-    for (let s of types) {
+    for (const s of types) {
 
         // Reserve bits
         let reserveBits = 0;
@@ -70,9 +70,9 @@ export function resolveAllocations(ctx: CompilerContext) {
         }
 
         // Convert fields
-        let ops: AllocationOperation[] = [];
-        let partialOps: AllocationOperation[] = [];
-        for (let [i, f] of s.fields.entries()) {
+        const ops: AllocationOperation[] = [];
+        const partialOps: AllocationOperation[] = [];
+        for (const [i, f] of s.fields.entries()) {
             const op = {
                 name: f.name,
                 type: f.abi.type,
@@ -85,11 +85,11 @@ export function resolveAllocations(ctx: CompilerContext) {
         }
 
         // Perform allocation
-        let root = allocate({ ops, reserved: { bits: reserveBits, refs: reserveRefs } });
-        let partialRoot = allocate({ ops: partialOps, reserved: { bits: reserveBits, refs: reserveRefs } });
+        const root = allocate({ ops, reserved: { bits: reserveBits, refs: reserveRefs } });
+        const partialRoot = allocate({ ops: partialOps, reserved: { bits: reserveBits, refs: reserveRefs } });
 
         // Store allocation
-        let allocation: StorageAllocation = {
+        const allocation: StorageAllocation = {
             ops,
             root,
             header,
@@ -99,7 +99,7 @@ export function resolveAllocations(ctx: CompilerContext) {
             }
         };
         
-        let partialAllocation: StorageAllocation = {
+        const partialAllocation: StorageAllocation = {
             ops: partialOps,
             root: partialRoot,
             header,
@@ -114,7 +114,7 @@ export function resolveAllocations(ctx: CompilerContext) {
     }
     
     // Generate init allocations
-    for (let s of types) {
+    for (const s of types) {
         if (s.kind === 'contract' && s.init) {
 
             // Reserve bits and refs
@@ -128,9 +128,9 @@ export function resolveAllocations(ctx: CompilerContext) {
             reserveRefs++;
 
             // Resolve opts
-            let ops: AllocationOperation[] = [];
-            for (let f of s.init.args) {
-                let abiType = createABITypeRefFromTypeRef(f.type, f.ref);
+            const ops: AllocationOperation[] = [];
+            for (const f of s.init.args) {
+                const abiType = createABITypeRefFromTypeRef(f.type, f.ref);
                 ops.push({
                     name: f.name,
                     type: abiType,
@@ -139,10 +139,10 @@ export function resolveAllocations(ctx: CompilerContext) {
             }
 
             // Perform allocation
-            let root = allocate({ ops, reserved: { bits: reserveBits, refs: reserveRefs } }); // Better allocation?
+            const root = allocate({ ops, reserved: { bits: reserveBits, refs: reserveRefs } }); // Better allocation?
 
             // Store allocation
-            let allocation: StorageAllocation = {
+            const allocation: StorageAllocation = {
                 ops,
                 root,
                 header: null,

@@ -1,4 +1,4 @@
-import { beginCell, toNano } from '@ton/core';
+import { toNano } from '@ton/core';
 import { ContractSystem } from '@tact-lang/emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { TernaryTester } from './features/output/ternary_TernaryTester';
@@ -10,9 +10,9 @@ describe('feature-ternary', () => {
     it('should implement ternary operator correctly', async () => {
 
         // Init
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await TernaryTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await TernaryTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, null);
         await system.run();
 

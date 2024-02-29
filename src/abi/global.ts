@@ -1,5 +1,5 @@
 import { Address, Cell, toNano } from "@ton/core";
-import { enabledDebug, enabledMaterchain } from "../config/features";
+import { enabledDebug, enabledMasterchain } from "../config/features";
 import { writeAddress, writeCell } from "../generator/writers/writeConstant";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
@@ -7,8 +7,6 @@ import { resolveConstantValue } from "../types/resolveConstantValue";
 import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
 import { sha256_sync } from "@ton/crypto";
-import { getType } from "../types/resolveDescriptors";
-import { ops } from "../generator/writers/ops";
 
 export const GlobalFunctions: { [key: string]: AbiFunction } = {
     ton: {
@@ -29,7 +27,7 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             if (resolved.length !== 1) {
                 throwError('ton() expects single string argument', ref);
             }
-            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
+            const str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
             return toNano(str).toString(10);
         }
     },
@@ -57,8 +55,8 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             if (resolved.length !== 2) {
                 throwError('pow() expects two integer arguments', ref);
             }
-            let a = resolveConstantValue({ kind: 'ref', name: 'Int', optional: false }, resolved[0], ctx.ctx) as bigint;
-            let b = resolveConstantValue({ kind: 'ref', name: 'Int', optional: false }, resolved[1], ctx.ctx) as bigint;
+            const a = resolveConstantValue({ kind: 'ref', name: 'Int', optional: false }, resolved[0], ctx.ctx) as bigint;
+            const b = resolveConstantValue({ kind: 'ref', name: 'Int', optional: false }, resolved[1], ctx.ctx) as bigint;
             return (a ** b).toString(10);
         }
     },
@@ -86,7 +84,7 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             if (resolved.length !== 2) {
                 throwError('require() expects two arguments', ref);
             }
-            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[1], ctx.ctx) as string;
+            const str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[1], ctx.ctx) as string;
             return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0], ctx)})`;
         }
     },
@@ -108,19 +106,19 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             if (resolved.length !== 1) {
                 throwError('address() expects one argument', ref);
             }
-            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
-            let address = Address.parse(str);
+            const str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
+            const address = Address.parse(str);
             if (address.workChain !== 0 && address.workChain !== -1) {
                 throwError(`Address ${str} invalid address`, ref);
             }
-            if (!enabledMaterchain(ctx.ctx)) {
+            if (!enabledMasterchain(ctx.ctx)) {
                 if (address.workChain !== 0) {
                     throwError(`Address ${str} from masterchain are not enabled for this contract`, ref);
                 }
             }
 
             // Generate address
-            let res = writeAddress(address, ctx);
+            const res = writeAddress(address, ctx);
             ctx.used(res);
             return res + '()';
         }
@@ -145,7 +143,7 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             }
 
             // Load cell data
-            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
+            const str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
             let c: Cell;
             try {
                 c = Cell.fromBase64(str);
@@ -154,7 +152,7 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             }
 
             // Generate address
-            let res = writeCell(c, ctx);
+            const res = writeCell(c, ctx);
             ctx.used(res);
             return `${res}()`;
         }
@@ -171,9 +169,9 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             if (!enabledDebug(ctx.ctx)) {
                 return `${ctx.used('__tact_nop')}()`;
             }
-            let arg = args[0];
+            const arg = args[0];
             if (arg.kind === 'map') {
-                let exp = writeExpression(resolved[0], ctx);
+                const exp = writeExpression(resolved[0], ctx);
                 return `${ctx.used(`__tact_debug`)}(${exp})`;
             } else if (arg.kind === 'null') {
                 return `${ctx.used(`__tact_debug_str`)}("null")`;
@@ -181,13 +179,13 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
                 return `${ctx.used(`__tact_debug_str`)}("void")`;
             } else if (arg.kind === 'ref') {
                 if (arg.name === 'Int' || arg.name === 'Builder' || arg.name === 'Slice' || arg.name === 'Cell' || arg.name === 'StringBuilder') {
-                    let exp = writeExpression(resolved[0], ctx);
+                    const exp = writeExpression(resolved[0], ctx);
                     return `${ctx.used(`__tact_debug_str`)}(${ctx.used(`__tact_int_to_string`)}(${exp}))`;
                 } else if (arg.name === 'Bool') {
-                    let exp = writeExpression(resolved[0], ctx);
+                    const exp = writeExpression(resolved[0], ctx);
                     return `${ctx.used(`__tact_debug_bool`)}(${exp})`;
                 } else if (arg.name === 'String') {
-                    let exp = writeExpression(resolved[0], ctx);
+                    const exp = writeExpression(resolved[0], ctx);
                     return `${ctx.used(`__tact_debug_str`)}(${exp})`;
                 }
                 throwError('dump() not supported for type: ' + arg.name, ref);
@@ -204,7 +202,7 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             }
             return { kind: 'null' };
         },
-        generate: (ctx, args, resolved, ref) => {
+        generate: (_ctx, _args, _resolved, _ref) => {
             return 'null()';
         }
     },
@@ -233,7 +231,7 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             // String case
             if (args[0].name === 'String') {
                 try {
-                    let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
+                    const str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
                     if (Buffer.from(str).length > 128) {
                         throwError('sha256 expects string argument with byte length <= 128', ref);
                     }
@@ -241,13 +239,13 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
                 } catch (e) {
                     // Not a constant
                 }
-                let exp = writeExpression(resolved[0], ctx);
+                const exp = writeExpression(resolved[0], ctx);
                 return `string_hash(${exp})`;
             }
 
             // Slice case
             if (args[0].name === 'Slice') {
-                let exp = writeExpression(resolved[0], ctx);
+                const exp = writeExpression(resolved[0], ctx);
                 return `string_hash(${exp})`;
             }
 

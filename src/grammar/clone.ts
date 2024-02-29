@@ -1,4 +1,4 @@
-import { ASTNode, cloneASTNode, createNode } from "./ast";
+import { ASTNode, cloneASTNode } from "./ast";
 
 export function cloneNode<T extends ASTNode>(src: T): T {
     if (src.kind === 'boolean') {

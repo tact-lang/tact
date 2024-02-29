@@ -35,8 +35,8 @@ export function trimIndent(src: string) {
     }
 
     // Find minimal indent
-    let indents = lines.filter((v) => !isBlank(v)).map((v) => indentWidth(v));
-    let minimal = indents.length > 0 ? Math.min(...indents) : 0;
+    const indents = lines.filter((v) => !isBlank(v)).map((v) => indentWidth(v));
+    const minimal = indents.length > 0 ? Math.min(...indents) : 0;
 
     // Trim indent
     return lines.map((v) => isBlank(v) ? '' : v.slice(minimal)).join('\n');

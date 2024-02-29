@@ -16,7 +16,7 @@ export function emit(args: {
 
     // Emit functions
     if (args.functions) {
-        for (let f of args.functions) {
+        for (const f of args.functions) {
             if (f.name === '$main') {
                 continue;
             } else {
@@ -24,7 +24,7 @@ export function emit(args: {
                     res += '\n\n';
                 }
                 if (f.comment) {
-                    for (let s of f.comment.split('\n')) {
+                    for (const s of f.comment.split('\n')) {
                         res += `;; ${s}\n`;
                     }
                 }
@@ -54,7 +54,7 @@ export function emit(args: {
         }
 
         // Emit main
-        let m = args.functions.find((v) => v.name === '$main');
+        const m = args.functions.find((v) => v.name === '$main');
         if (m) {
             if (m.code.kind !== 'generic') {
                 throw new Error(`Main function should have generic body`);

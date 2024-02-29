@@ -1,5 +1,5 @@
 import * as changeCase from 'change-case';
-import { ABIField, beginCell } from "@ton/core";
+import { ABIField } from "@ton/core";
 import { CompilerContext } from "../context";
 import { idToHex } from '../utils/idToHex';
 import { newMessageId } from "../utils/newMessageId";
@@ -7,8 +7,8 @@ import { getAllTypes, getType } from "./resolveDescriptors";
 
 export function resolveSignatures(ctx: CompilerContext) {
 
-    let types = getAllTypes(ctx);
-    let signatures = new Map<string, { signature: string, tlb: string, id: number | null }>();
+    const types = getAllTypes(ctx);
+    const signatures = new Map<string, { signature: string, tlb: string, id: number | null }>();
     function createTypeFormat(type: string, format: string | number | boolean | null) {
         if (type === 'int') {
             if (typeof format === 'number') {
@@ -78,11 +78,11 @@ export function resolveSignatures(ctx: CompilerContext) {
         }
 
         // Struct types
-        let t = getType(ctx, type);
+        const t = getType(ctx, type);
         if (t.kind !== 'struct') {
             throw Error('Unsupported type ' + type);
         }
-        let s = createTupeSignature(type);
+        const s = createTupeSignature(type);
         if (format === 'ref') {
             return `^${s.signature}`;
         } else if (format !== null) {
@@ -105,8 +105,8 @@ export function resolveSignatures(ctx: CompilerContext) {
             if (src.type.format !== null && src.type.format !== undefined) {
                 throw Error('Unsupported map format ' + src.type.format);
             }
-            let key = createTypeFormat(src.type.key, src.type.keyFormat ? src.type.keyFormat : null);
-            let value = createTypeFormat(src.type.value, src.type.valueFormat ? src.type.valueFormat : null);
+            const key = createTypeFormat(src.type.key, src.type.keyFormat ? src.type.keyFormat : null);
+            const value = createTypeFormat(src.type.value, src.type.valueFormat ? src.type.valueFormat : null);
             return src.name + ':dict<' + key + ', ' + value + '>';
         }
 
@@ -117,14 +117,14 @@ export function resolveSignatures(ctx: CompilerContext) {
         if (signatures.has(name)) {
             return signatures.get(name)!
         }
-        let t = getType(ctx, name);
+        const t = getType(ctx, name);
         if (t.kind !== 'struct') {
             throw Error('Unsupported type ' + name);
         }
-        let fields = t.fields.map((v) => createTLBField(v.abi));
+        const fields = t.fields.map((v) => createTLBField(v.abi));
 
         // Calculate signature and method id
-        let signature = name + '{' + fields.join(',') + '}';
+        const signature = name + '{' + fields.join(',') + '}';
         let id: number | null = null;
         if (t.ast.kind === 'def_struct' && t.ast.message) {
             if (t.ast.prefix !== null) {
@@ -135,17 +135,17 @@ export function resolveSignatures(ctx: CompilerContext) {
         }
 
         // Calculate TLB
-        let tlbHeader = (id !== null ? changeCase.snakeCase(name) + '#' + idToHex(id) : '_');
-        let tlb = tlbHeader + ' ' + fields.join(' ') + ' = ' + name;
+        const tlbHeader = (id !== null ? changeCase.snakeCase(name) + '#' + idToHex(id) : '_');
+        const tlb = tlbHeader + ' ' + fields.join(' ') + ' = ' + name;
 
         signatures.set(name, { signature, id, tlb });
         return { signature, id, tlb };
     }
 
-    for (let k in types) {
-        let t = types[k];
+    for (const k in types) {
+        const t = types[k];
         if (t.kind === 'struct') {
-            let r = createTupeSignature(t.name);
+            const r = createTupeSignature(t.name);
             t.tlb = r.tlb;
             t.signature = r.signature;
             t.header = r.id;

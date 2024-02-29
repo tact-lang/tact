@@ -9,9 +9,9 @@ describe('feature-integer-literals', () => {
     });
     it('should implement integer literals correctly', async () => {
         // Init
-        let system = await ContractSystem.create();
-        let treasure = system.treasure('treasure');
-        let contract = system.open(await IntegerLiteralsTester.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure('treasure');
+        const contract = system.open(await IntegerLiteralsTester.fromInit());
         await contract.send(treasure, { value: toNano('10') }, null);
         await system.run();
 

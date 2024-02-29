@@ -2,7 +2,7 @@ import { WriterContext } from "../Writer";
 
 
 function used(name: string, ctx: WriterContext) {
-    let c = ctx.currentContext();
+    const c = ctx.currentContext();
     if (c) {
         ctx.used(name);
     }

@@ -16,7 +16,7 @@ export type Serializer<T> = {
     abiMatcher: (src: ABITypeRef) => T | null,
 };
 
-let intSerializer: Serializer<{ bits: number, optional: boolean }> = {
+const intSerializer: Serializer<{ bits: number, optional: boolean }> = {
     tsType(v) {
         if (v.optional) {
             return 'bigint | null';
@@ -62,7 +62,7 @@ let intSerializer: Serializer<{ bits: number, optional: boolean }> = {
     }
 };
 
-let uintSerializer: Serializer<{ bits: number, optional: boolean }> = {
+const uintSerializer: Serializer<{ bits: number, optional: boolean }> = {
     tsType(v) {
         if (v.optional) {
             return 'bigint | null';
@@ -108,7 +108,7 @@ let uintSerializer: Serializer<{ bits: number, optional: boolean }> = {
     }
 };
 
-let coinsSerializer: Serializer<{ optional: boolean }> = {
+const coinsSerializer: Serializer<{ optional: boolean }> = {
     tsType(v) {
         if (v.optional) {
             return 'bigint | null';
@@ -152,7 +152,7 @@ let coinsSerializer: Serializer<{ optional: boolean }> = {
     }
 };
 
-let boolSerializer: Serializer<{ optional: boolean }> = {
+const boolSerializer: Serializer<{ optional: boolean }> = {
     tsType(v) {
         if (v.optional) {
             return 'boolean | null';
@@ -196,7 +196,7 @@ let boolSerializer: Serializer<{ optional: boolean }> = {
     }
 };
 
-let addressSerializer: Serializer<{ optional: boolean }> = {
+const addressSerializer: Serializer<{ optional: boolean }> = {
     tsType(v) {
         if (v.optional) {
             return 'Address | null';
@@ -236,7 +236,7 @@ let addressSerializer: Serializer<{ optional: boolean }> = {
     }
 };
 
-let cellSerializer: Serializer<{ kind: 'cell' | 'slice' | 'builder', optional: boolean }> = {
+const cellSerializer: Serializer<{ kind: 'cell' | 'slice' | 'builder', optional: boolean }> = {
     tsType(v) {
         if (v.optional) {
             return 'Cell | null';
@@ -286,8 +286,8 @@ let cellSerializer: Serializer<{ kind: 'cell' | 'slice' | 'builder', optional: b
     }
 }
 
-let remainderSerializer: Serializer<{ kind: 'cell' | 'slice' | 'builder' }> = {
-    tsType(v) {
+const remainderSerializer: Serializer<{ kind: 'cell' | 'slice' | 'builder' }> = {
+    tsType(_v) {
         return 'Cell';
     },
     tsLoad(v, slice, field, w) {
@@ -320,7 +320,7 @@ let remainderSerializer: Serializer<{ kind: 'cell' | 'slice' | 'builder' }> = {
     }
 }
 
-let fixedBytesSerializer: Serializer<{ bytes: number, optional: boolean }> = {
+const fixedBytesSerializer: Serializer<{ bytes: number, optional: boolean }> = {
     tsType(v) {
         if (v.optional) {
             return 'Buffer | null';
@@ -364,7 +364,7 @@ let fixedBytesSerializer: Serializer<{ bytes: number, optional: boolean }> = {
     }
 };
 
-let stringSerializer: Serializer<{ optional: boolean }> = {
+const stringSerializer: Serializer<{ optional: boolean }> = {
     tsType(v) {
         if (v.optional) {
             return 'string | null';
@@ -408,7 +408,7 @@ let stringSerializer: Serializer<{ optional: boolean }> = {
     }
 }
 
-let guard: Serializer<{}> = {
+const guard: Serializer<unknown> = {
     abiMatcher(src) {
         if (src.kind === 'simple') {
             if (primitiveTypes.includes(src.type)) {
@@ -417,24 +417,24 @@ let guard: Serializer<{}> = {
         }
         return null;
     },
-    tsType(v) {
+    tsType(_v) {
         throw Error('Unreachable');
     },
-    tsLoad(v, slice, field, w) {
+    tsLoad(_v, _slice, _field, _w) {
         throw Error('Unreachable');
     },
-    tsLoadTuple(v, reader, field, w) {
+    tsLoadTuple(_v, _reader, _field, _w) {
         throw Error('Unreachable');
     },
-    tsStore(v, builder, field, w) {
+    tsStore(_v, _builder, _field, _w) {
         throw Error('Unreachable');
     },
-    tsStoreTuple(v, to, field, w) {
+    tsStoreTuple(_v, _to, _field, _w) {
         throw Error('Unreachable');
     }
 }
 
-let struct: Serializer<{ name: string, optional: boolean }> = {
+const struct: Serializer<{ name: string, optional: boolean }> = {
     abiMatcher(src) {
         if (src.kind === 'simple') {
             if (src.format !== null && src.format !== undefined) {
@@ -545,7 +545,7 @@ function getValueParser(src: MapSerializerDescrValue) {
     }
 }
 
-let map: Serializer<MapSerializerDescr> = {
+const map: Serializer<MapSerializerDescr> = {
     abiMatcher(src) {
         if (src.kind === 'dict') {
             if (src.format !== null && src.format !== undefined) {
@@ -669,6 +669,7 @@ let map: Serializer<MapSerializerDescr> = {
     },
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const serializers: Serializer<any>[] = [
 
     // Primitive types
@@ -682,7 +683,7 @@ export const serializers: Serializer<any>[] = [
     fixedBytesSerializer,
     stringSerializer,
 
-    // Guard to catch all primitve types that wasn't handled
+    // Guard to catch all primitive types that wasn't handled
     guard,
 
     // Structs as fallback

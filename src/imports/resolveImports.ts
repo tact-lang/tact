@@ -53,8 +53,8 @@ export function resolveImports(args: { entrypoint: string, project: VirtualFileS
             }
 
             // Load code
-            let vfs = resolved.source === 'project' ? args.project : args.stdlib;
-            let code: string = vfs.readFile(resolved.path).toString();
+            const vfs = resolved.source === 'project' ? args.project : args.stdlib;
+            const code: string = vfs.readFile(resolved.path).toString();
 
             // Add to imports
             if (resolved.kind === 'func') {
@@ -73,7 +73,7 @@ export function resolveImports(args: { entrypoint: string, project: VirtualFileS
     processImports(stdlibTact, stdlibTactPath, 'stdlib');
     processImports(code, codePath, 'user');
     while (pending.length > 0) {
-        let p = pending.shift()!;
+        const p = pending.shift()!;
         importedTact.push(p);
         processImports(p.code, p.path, p.origin);
     }

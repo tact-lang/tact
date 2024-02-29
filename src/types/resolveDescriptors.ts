@@ -10,9 +10,9 @@ import { Address, Cell } from "@ton/core";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 
-let store = createContextStore<TypeDescription>();
-let staticFunctionsStore = createContextStore<FunctionDescription>();
-let staticConstantsStore = createContextStore<ConstantDescription>();
+const store = createContextStore<TypeDescription>();
+const staticFunctionsStore = createContextStore<FunctionDescription>();
+const staticConstantsStore = createContextStore<ConstantDescription>();
 
 function verifyMapType(key: string, keyAs: string | null, value: string, valueAs: string | null, ref: ASTRef) {
     if (!keyAs && !valueAs) {
@@ -75,7 +75,7 @@ export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 
 export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     if (src.kind === 'type_ref_simple') {
-        let t = getType(ctx, src.name);
+        const t = getType(ctx, src.name);
         return {
             kind: 'ref',
             name: t.name,
@@ -83,8 +83,8 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
         };
     }
     if (src.kind === 'type_ref_map') {
-        let k = getType(ctx, src.key).name;
-        let v = getType(ctx, src.value).name;
+        const k = getType(ctx, src.key).name;
+        const v = getType(ctx, src.value).name;
         verifyMapType(k, src.keyAs, v, src.valueAs, src.ref);
         return {
             kind: 'map',
@@ -95,7 +95,7 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
         };
     }
     if (src.kind === 'type_ref_bounced') {
-        let t = getType(ctx, src.name);
+        const t = getType(ctx, src.name);
         return {
             kind: 'ref_bounced',
             name: t.name,
@@ -150,21 +150,21 @@ function uidForName(name: string, types: { [key: string]: TypeDescription }) {
 }
 
 export function resolveDescriptors(ctx: CompilerContext) {
-    let types: { [key: string]: TypeDescription } = {};
-    let staticFunctions: { [key: string]: FunctionDescription } = {};
-    let staticConstants: { [key: string]: ConstantDescription } = {};
-    let ast = getRawAST(ctx);
+    const types: { [key: string]: TypeDescription } = {};
+    const staticFunctions: { [key: string]: FunctionDescription } = {};
+    const staticConstants: { [key: string]: ConstantDescription } = {};
+    const ast = getRawAST(ctx);
 
     //
     // Register types
     //
 
-    for (let a of ast.types) {
+    for (const a of ast.types) {
         if (types[a.name]) {
             throwError(`Type ${a.name} already exists`, a.ref);
         }
 
-        let uid = uidForName(a.name, types);
+        const uid = uidForName(a.name, types);
 
         if (a.kind === 'primitive') {
             types[a.name] = {
@@ -254,7 +254,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function buildFieldDescription(src: ASTField, index: number): FieldDescription {
-        let tr = buildTypeRef(src.type, types);
+        const tr = buildTypeRef(src.type, types);
 
         // Check if field is runtime type
         if (isRuntimeType(tr)) {
@@ -268,18 +268,18 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
 
         // Resolve abi type
-        let type = resolveABIType(src);
+        const type = resolveABIType(src);
 
         return { name: src.name, type: tr, index, as: src.as, default: d, ref: src.ref, ast: src, abi: { name: src.name, type } };
     }
 
     function buildConstantDescription(src: ASTConstant): ConstantDescription {
-        let tr = buildTypeRef(src.type, types);
-        let d = resolveConstantValue(tr, src.value, ctx);
+        const tr = buildTypeRef(src.type, types);
+        const d = resolveConstantValue(tr, src.value, ctx);
         return { name: src.name, type: tr, value: d, ref: src.ref, ast: src };
     }
 
-    for (let a of ast.types) {
+    for (const a of ast.types) {
 
         // Contract
         if (a.kind === 'def_contract') {
@@ -300,7 +300,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         throwError(`Constant ${f.name} already exists`, f.ref);
                     }
                     if (f.attributes.find((v) => v.type !== 'overrides')) {
-                        throwError(`Constant can be only overriden`, f.ref);
+                        throwError(`Constant can be only overridden`, f.ref);
                     }
                     types[a.name].constants.push(buildConstantDescription(f));
                 }
@@ -340,7 +340,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         throwError(`Constant ${f.name} already exists`, f.ref);
                     }
                     if (f.attributes.find((v) => v.type === 'overrides')) {
-                        throwError(`Trait constant cannot be overriden`, f.ref);
+                        throwError(`Trait constant cannot be overridden`, f.ref);
                     }
                     // if (f.attributes.find((v) => v.type === 'abstract')) {
                     //     continue; // Do not materialize abstract constants
@@ -355,7 +355,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Populate partial serialization info
     //
 
-    for (let t in types) {
+    for (const t in types) {
         types[t].partialFieldCount = resolvePartialFields(ctx, types[t])
     }
 
@@ -375,7 +375,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Resolve args
         let args: FunctionArgument[] = [];
-        for (let r of a.args) {
+        for (const r of a.args) {
             args.push({
                 name: r.name,
                 type: buildTypeRef(r.type, types),
@@ -384,13 +384,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
 
         // Resolve flags
-        let isGetter = a.attributes.find(a => a.type === 'get');
-        let isMutating = a.attributes.find(a => a.type === 'mutates');
-        let isExtends = a.attributes.find(a => a.type === 'extends');
-        let isVirtual = a.attributes.find(a => a.type === 'virtual');
-        let isOverrides = a.attributes.find(a => a.type === 'overrides');
-        let isInline = a.attributes.find(a => a.type === 'inline');
-        let isAbstract = a.attributes.find(a => a.type === 'abstract');
+        const isGetter = a.attributes.find(a => a.type === 'get');
+        const isMutating = a.attributes.find(a => a.type === 'mutates');
+        const isExtends = a.attributes.find(a => a.type === 'extends');
+        const isVirtual = a.attributes.find(a => a.type === 'virtual');
+        const isOverrides = a.attributes.find(a => a.type === 'overrides');
+        const isInline = a.attributes.find(a => a.type === 'inline');
+        const isAbstract = a.attributes.find(a => a.type === 'abstract');
 
         // Check for native
         if (a.kind === 'def_native_function') {
@@ -439,7 +439,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check virtual
         if (isVirtual) {
-            let t = types[self!]!;
+            const t = types[self!]!;
             if (t.kind !== 'trait') {
                 throwError('Virtual functions must be defined within a trait', isVirtual.ref);
             }
@@ -447,7 +447,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check abstract
         if (isAbstract) {
-            let t = types[self!]!;
+            const t = types[self!]!;
             if (t.kind !== 'trait') {
                 throwError('Abstract functions must be defined within a trait', isAbstract.ref);
             }
@@ -455,7 +455,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check overrides
         if (isOverrides) {
-            let t = types[self!]!;
+            const t = types[self!]!;
             if (t.kind !== 'contract') {
                 throwError('Overrides functions must be defined within a contract', isOverrides.ref);
             }
@@ -506,9 +506,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
             throwError('Mutating functions must be extend functions', isMutating.ref);
         }
 
-        // Check argumen names
-        let exNames = new Set<string>();
-        for (let arg of args) {
+        // Check argument names
+        const exNames = new Set<string>();
+        for (const arg of args) {
             if (arg.name === 'self') {
                 throwError('Argument name "self" is reserved', arg.ref);
             }
@@ -520,13 +520,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check for runtime types in getters
         if (isGetter) {
-            for (let arg of args) {
+            for (const arg of args) {
                 if (isRuntimeType(arg.type)) {
-                    throwError(printTypeRef(arg.type) + ' is a runtime onlye type and can\'t be used as a getter argument', arg.ref);
+                    throwError(printTypeRef(arg.type) + ' is a runtime-only type and can\'t be used as a getter argument', arg.ref);
                 }
             }
             if (isRuntimeType(returns)) {
-                throwError(printTypeRef(returns) + ' is a runtime onlye type and can\'t be used as getter return type', a.ref);
+                throwError(printTypeRef(returns) + ' is a runtime-only type and can\'t be used as getter return type', a.ref);
             }
         }
 
@@ -548,8 +548,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     function resolveInitFunction(ast: ASTInitFunction): InitDescription {
-        let args: InitArgument[] = [];
-        for (let r of ast.args) {
+        const args: InitArgument[] = [];
+        for (const r of ast.args) {
             args.push({
                 name: r.name,
                 type: buildTypeRef(r.type, types),
@@ -559,9 +559,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
 
         // Check if runtime types are used
-        for (let a of args) {
+        for (const a of args) {
             if (isRuntimeType(a.type)) {
-                throwError(printTypeRef(a.type) + ' is a runtime onlye type and can\'t be used as a init function argument', a.ref);
+                throwError(printTypeRef(a.type) + ' is a runtime-only type and can\'t be used as a init function argument', a.ref);
             }
         }
 
@@ -576,7 +576,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             const s = types[a.name];
             for (const d of a.declarations) {
                 if (d.kind === 'def_function') {
-                    let f = resolveFunctionDescriptor(s.name, d, s.origin);
+                    const f = resolveFunctionDescriptor(s.name, d, s.origin);
                     if (f.self !== s.name) {
                         throw Error('Function self must be ' + s.name); // Impossible
                     }
@@ -611,7 +611,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         }
 
                         // Check resolved argument type
-                        let t = types[arg.type.name];
+                        const t = types[arg.type.name];
                         if (!t) {
                             throwError('Type ' + arg.type.name + ' not found', d.ref);
                         }
@@ -687,7 +687,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         if (d.selector.comment.value === '') {
                             throwError('To use empty comment receiver, just remove argument instead of passing empty string', d.ref);
                         }
-                        let c = d.selector.comment.value;
+                        const c = d.selector.comment.value;
                         if (s.receivers.find((v) => v.selector.kind === (internal ? 'internal-comment' : 'external-comment') && v.selector.comment === c)) {
                             throwError(`Receive function for "${c}" already exists`, d.ref);
                         }
@@ -731,7 +731,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     ast: d
                                 });
                             } else {
-                                let type = types[arg.type.name];
+                                const type = types[arg.type.name];
                                 if (type.ast.kind !== 'def_struct' || !type.ast.message) {
                                     throwError('Bounce receive function can only accept bounced message, message or Slice', d.ref);
                                 }
@@ -753,7 +753,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             }
 
                         } else if (arg.type.kind === "type_ref_bounced") {
-                            let t = types[arg.type.name];
+                            const t = types[arg.type.name];
                             if (t.kind !== 'struct') {
                                 throwError('Bounce receive function can only accept bounced<T> struct types', d.ref);
                             }
@@ -793,8 +793,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Check for missing init methods
     //
 
-    for (let k in types) {
-        let t = types[k];
+    for (const k in types) {
+        const t = types[k];
         if (t.kind === 'contract') {
             if (!t.init) {
                 throwError('Contract ' + t.name + ' does not have init method', t.ast.ref);
@@ -806,29 +806,30 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Flatten and resolve traits
     //
 
-    for (let k in types) {
-        let t = types[k];
+    for (const k in types) {
+        const t = types[k];
         if (t.ast.kind === 'def_trait' || t.ast.kind === 'def_contract') {
 
             // Flatten traits
-            let traits: TypeDescription[] = [];
-            let visited = new Set<string>();
+            const traits: TypeDescription[] = [];
+            const visited = new Set<string>();
             visited.add(t.name);
+            // eslint-disable-next-line no-inner-declarations
             function visit(name: string) {
                 if (visited.has(name)) {
                     return;
                 }
-                let tt = types[name];
+                const tt = types[name];
                 if (!tt) {
                     throwError('Trait ' + name + ' not found', t.ast.ref)
                 }
                 visited.add(name);
                 traits.push(tt);
                 if (tt.ast.kind === 'def_trait') {
-                    for (let s of tt.ast.traits) {
+                    for (const s of tt.ast.traits) {
                         visit(s.value);
                     }
-                    for (let f of tt.traits) {
+                    for (const f of tt.traits) {
                         visit(f.name);
                     }
                 } else {
@@ -836,7 +837,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
             }
             visit('BaseTrait');
-            for (let s of t.ast.traits) {
+            for (const s of t.ast.traits) {
                 visit(s.value);
             }
 
@@ -849,10 +850,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Verify trait fields
     //
 
-    for (let k in types) {
-        let t = types[k];
+    for (const k in types) {
+        const t = types[k];
 
-        for (let tr of t.traits) {
+        for (const tr of t.traits) {
 
             // Check that trait is valid
             if (!types[tr.name]) {
@@ -863,11 +864,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
 
             // Check that trait has all required fields
-            let ttr = types[tr.name];
-            for (let f of ttr.fields) {
+            const ttr = types[tr.name];
+            for (const f of ttr.fields) {
 
                 // Check if field exists
-                let ex = t.fields.find((v) => v.name === f.name);
+                const ex = t.fields.find((v) => v.name === f.name);
                 if (!ex) {
                     throwError(`Trait ${tr.name} requires field ${f.name}`, t.ast.ref);
                 }
@@ -885,11 +886,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function copyTraits(t: TypeDescription) {
-        for (let tr of t.traits) {
+        for (const tr of t.traits) {
 
             // Copy functions
-            for (let f of tr.functions.values()) {
-                let ex = t.functions.get(f.name);
+            for (const f of tr.functions.values()) {
+                const ex = t.functions.get(f.name);
                 if (!ex && f.isAbstract) {
                     throwError(`Trait ${tr.name} requires function ${f.name}`, t.ast.ref);
                 }
@@ -909,8 +910,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         throwError(`Overridden function ${f.name} should have same number of arguments`, ex.ast.ref);
                     }
                     for (let i = 0; i < f.args.length; i++) {
-                        let a = ex.args[i];
-                        let b = f.args[i];
+                        const a = ex.args[i];
+                        const b = f.args[i];
                         if (!typeRefEquals(a.type, b.type)) {
                             throwError(`Overridden function ${f.name} should have same argument types`, ex.ast.ref);
                         }
@@ -932,8 +933,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
 
             // Copy constants
-            for (let f of tr.constants) {
-                let ex = t.constants.find((v) => v.name === f.name);
+            for (const f of tr.constants) {
+                const ex = t.constants.find((v) => v.name === f.name);
                 if (!ex && f.ast.attributes.find((v) => v.type === 'abstract')) {
                     throwError(`Trait ${tr.name} requires constant ${f.name}`, t.ast.ref);
                 }
@@ -959,7 +960,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
 
             // Copy receivers
-            for (let f of tr.receivers) {
+            for (const f of tr.receivers) {
+                // eslint-disable-next-line no-inner-declarations
                 function sameReceiver(a: ReceiverSelector, b: ReceiverSelector) {
                     if (a.kind === 'internal-comment' && b.kind === 'internal-comment') {
                         return a.comment === b.comment;
@@ -993,8 +995,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 });
             }
 
-            // Copy intefaces
-            for (let i of tr.interfaces) {
+            // Copy interfaces
+            for (const i of tr.interfaces) {
                 if (!t.interfaces.find((v) => v === i)) {
                     t.interfaces.push(i);
                 }
@@ -1004,8 +1006,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     // Copy to non-traits to avoid duplicates
 
-    let processed = new Set<string>();
-    let processing = new Set<string>();
+    const processed = new Set<string>();
+    const processing = new Set<string>();
 
     function processType(name: string) {
 
@@ -1019,8 +1021,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
         processing.has(name);
 
         // Process dependencies first
-        let dependencies = Object.values(types).filter((v) => v.traits.find((v2) => v2.name === name));
-        for (let d of dependencies) {
+        const dependencies = Object.values(types).filter((v) => v.traits.find((v2) => v2.name === name));
+        for (const d of dependencies) {
             processType(d.name);
         }
 
@@ -1031,7 +1033,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         processed.add(name);
         processing.delete(name);
     }
-    for (let k in types) {
+    for (const k in types) {
         processType(k);
     }
 
@@ -1039,10 +1041,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Register dependencies
     //
 
-    for (let k in types) {
-        let t = types[k];
-        let dependsOn = new Set<string>();
-        let handler = (src: ASTNode) => {
+    for (const k in types) {
+        const t = types[k];
+        const dependsOn = new Set<string>();
+        const handler = (src: ASTNode) => {
             if (src.kind === 'init_of') {
                 if (!types[src.name]) {
                     throwError(`Type ${src.name} not found`, src.ref);
@@ -1052,15 +1054,15 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
 
         // Traverse functions
-        for (let f of t.functions.values()) {
+        for (const f of t.functions.values()) {
             traverse(f.ast, handler);
         }
-        for (let f of t.receivers) {
+        for (const f of t.receivers) {
             traverse(f.ast, handler);
         }
 
         // Add dependencies
-        for (let s of dependsOn) {
+        for (const s of dependsOn) {
             if (s !== k) {
                 t.dependsOn.push(types[s]!);
             }
@@ -1072,8 +1074,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function collectTransient(name: string, to: Set<string>) {
-        let t = types[name];
-        for (let d of t.dependsOn) {
+        const t = types[name];
+        for (const d of t.dependsOn) {
             if (to.has(d.name)) {
                 continue;
             }
@@ -1081,11 +1083,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
             collectTransient(d.name, to);
         }
     }
-    for (let k in types) {
-        let dependsOn = new Set<string>();
+    for (const k in types) {
+        const dependsOn = new Set<string>();
         dependsOn.add(k);
         collectTransient(k, dependsOn);
-        for (let s of dependsOn) {
+        for (const s of dependsOn) {
             if (s !== k && !types[k].dependsOn.find((v) => v.name === s)) {
                 types[k].dependsOn.push(types[s]!);
             }
@@ -1096,8 +1098,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Resolve static functions
     //
 
-    for (let a of ast.functions) {
-        let r = resolveFunctionDescriptor(null, a, a.origin);
+    for (const a of ast.functions) {
+        const r = resolveFunctionDescriptor(null, a, a.origin);
         if (r.self) {
             if (types[r.self].functions.has(r.name)) {
                 throwError(`Function ${r.name} already exists in type ${r.self}`, r.ast.ref);
@@ -1118,7 +1120,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Resolve static constants
     //
 
-    for (let a of ast.constants) {
+    for (const a of ast.constants) {
         if (staticConstants[a.name]) {
             throwError(`Static constant ${a.name} already exists`, a.ref);
         }
@@ -1132,13 +1134,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Register types and functions in context
     //
 
-    for (let t in types) {
+    for (const t in types) {
         ctx = store.set(ctx, t, types[t]);
     }
-    for (let t in staticFunctions) {
+    for (const t in staticFunctions) {
         ctx = staticFunctionsStore.set(ctx, t, staticFunctions[t]);
     }
-    for (let t in staticConstants) {
+    for (const t in staticConstants) {
         ctx = staticConstantsStore.set(ctx, t, staticConstants[t]);
     }
 
@@ -1146,7 +1148,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 }
 
 export function getType(ctx: CompilerContext, name: string): TypeDescription {
-    let r = store.get(ctx, name);
+    const r = store.get(ctx, name);
     if (!r) {
         throw Error('Type ' + name + ' not found');
     }
@@ -1162,7 +1164,7 @@ export function getContracts(ctx: CompilerContext) {
 }
 
 export function getStaticFunction(ctx: CompilerContext, name: string): FunctionDescription {
-    let r = staticFunctionsStore.get(ctx, name);
+    const r = staticFunctionsStore.get(ctx, name);
     if (!r) {
         throw Error('Static function ' + name + ' not found');
     }
@@ -1174,7 +1176,7 @@ export function hasStaticFunction(ctx: CompilerContext, name: string) {
 }
 
 export function getStaticConstant(ctx: CompilerContext, name: string): ConstantDescription {
-    let r = staticConstantsStore.get(ctx, name);
+    const r = staticConstantsStore.get(ctx, name);
     if (!r) {
         throw Error('Static constant ' + name + ' not found');
     }

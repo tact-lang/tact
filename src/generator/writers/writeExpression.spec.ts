@@ -72,7 +72,7 @@ describe('writeExpression', () => {
         let ctx = openContext(new CompilerContext(), [{ code: code, path: '<unknown>', origin: 'user' }], []);
         ctx = resolveDescriptors(ctx);
         ctx = resolveStatements(ctx);
-        let main = getStaticFunction(ctx, 'main');
+        const main = getStaticFunction(ctx, 'main');
         if (main.ast.kind !== 'def_function') {
             throw Error('Unexpected function kind');
         }
@@ -81,7 +81,7 @@ describe('writeExpression', () => {
             if (s.kind !== 'statement_let') {
                 throw Error('Unexpected statement kind');
             }
-            let wctx = new WriterContext(ctx, 'Contract1');
+            const wctx = new WriterContext(ctx, 'Contract1');
             wctx.fun('$main', () => {
                 wctx.body(() => {
                     expect(writeExpression(s.expression, wctx)).toBe(golden[i]);

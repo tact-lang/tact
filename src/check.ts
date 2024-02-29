@@ -25,14 +25,14 @@ export type CheckResult = {
 export function check(args: { project: VirtualFileSystem, entrypoint: string }): CheckResult {
 
     // Create context
-    let stdlib = createVirtualFileSystem('@stdlib/', files);
+    const stdlib = createVirtualFileSystem('@stdlib/', files);
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
     ctx = featureEnable(ctx, 'debug'); // Enable debug flag (does not affect type checking in practice)
     ctx = featureEnable(ctx, 'masterchain'); // Enable masterchain flag to avoid masterchain-specific errors
     ctx = featureEnable(ctx, 'external'); // Enable external messages flag to avoid external-specific errors
 
     // Execute check
-    let items: CheckResultItem[] = [];
+    const items: CheckResultItem[] = [];
     try {
         precompile(ctx, args.project, stdlib, args.entrypoint);
     } catch (e) {
@@ -53,10 +53,12 @@ export function check(args: { project: VirtualFileSystem, entrypoint: string }):
                 }
             });
         } else {
-            if (typeof (e as any).message === 'string') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const msg = (e as any).message;
+            if (typeof msg === 'string') {
                 items.push({
                     type: 'error',
-                    message: (e as any).message,
+                    message: msg,
                     location: {
                         file: args.entrypoint,
                         line: 0,

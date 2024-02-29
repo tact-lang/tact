@@ -4,18 +4,18 @@ import glob from 'glob';
 import { posixNormalize } from '../src/utils/filePath';
 
 // Pack func
-let wasmBase64 = fs.readFileSync(path.resolve(__dirname, '..', 'src', 'func', 'funcfiftlib.wasm')).toString('base64');
-let wasmBase64js = `module.exports = { FuncFiftLibWasm: '${wasmBase64}' };`;
+const wasmBase64 = fs.readFileSync(path.resolve(__dirname, '..', 'src', 'func', 'funcfiftlib.wasm')).toString('base64');
+const wasmBase64js = `module.exports = { FuncFiftLibWasm: '${wasmBase64}' };`;
 fs.writeFileSync(path.resolve(__dirname, '..', 'src', 'func', 'funcfiftlib.wasm.js'), wasmBase64js);
 
 // Pack stdlib
-let stdlibFiles = glob.sync(path.resolve(__dirname, '..', 'stdlib', '**', '*.@(tact|fc)'), {windowsPathsNoEscape: true});
+const stdlibFiles = glob.sync(path.resolve(__dirname, '..', 'stdlib', '**', '*.@(tact|fc)'), {windowsPathsNoEscape: true});
 const dirPrefixToRemove = posixNormalize(path.resolve(__dirname, '..', 'stdlib')) + '/';   // Remove also the leading slash
 let output: string = '';
-output = 'let files: { [key: string]: string } = {};\n';
-for (let f of stdlibFiles) {
+output = 'const files: { [key: string]: string } = {};\n';
+for (const f of stdlibFiles) {
     let code = fs.readFileSync(f).toString('base64');
-    let name = f.replace(dirPrefixToRemove, '');
+    const name = f.replace(dirPrefixToRemove, '');
     output += `files['${name}'] =\n`;
     let first = true;
     while (code.length > 0) {

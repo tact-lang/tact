@@ -15,8 +15,8 @@ export class Writer {
     }
 
     write(src: string) {
-        let lines = trimIndent(src).split('\n');
-        for (let l of lines) {
+        const lines = trimIndent(src).split('\n');
+        for (const l of lines) {
             this.append(l);
         }
     }
