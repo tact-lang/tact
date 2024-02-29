@@ -36,6 +36,10 @@ jobs:
         yarn gen
         yarn build
         yarn coverage
+    
+    - name: Check there are no errors reported by ESLint
+      run: |
+        yarn lint
 
     - name: Compare Tact version from CLI flag `--version` against package.json
       if: runner.os != 'Windows'
