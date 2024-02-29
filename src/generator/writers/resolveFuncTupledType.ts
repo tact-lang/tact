@@ -2,16 +2,16 @@ import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 
-export function resolveFuncTupledType(descriptor: TypeRef | TypeDescription | string, ctx: WriterContext, optional: boolean = false): string {
+export function resolveFuncTupledType(descriptor: TypeRef | TypeDescription | string, ctx: WriterContext): string {
 
     // String
     if (typeof descriptor === 'string') {
-        return resolveFuncTupledType(getType(ctx.ctx, descriptor), ctx, false);
+        return resolveFuncTupledType(getType(ctx.ctx, descriptor), ctx);
     }
 
     // TypeRef
     if (descriptor.kind === 'ref') {
-        return resolveFuncTupledType(getType(ctx.ctx, descriptor.name), ctx, descriptor.optional);
+        return resolveFuncTupledType(getType(ctx.ctx, descriptor.name), ctx);
     }
     if (descriptor.kind === 'map') {
         return 'cell';
