@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Relative imports from parent directories: PR [#125](https://github.com/tact-lang/tact/pull/125)
 - The typechecker failed to identify different types when using the `==` and `!=` operators: PR [#127](https://github.com/tact-lang/tact/pull/127)
 - ESLint warnings for the whole Tact codebase: PR [#157](https://github.com/tact-lang/tact/pull/157)
-- The versions of some vulnerable dependencies were bumped in `package.json` and `yarn.lock`: PR [#158](https://github.com/tact-lang/tact/pull/158)
+- The versions of some vulnerable dependencies were bumped in `package.json` and `yarn.lock`: PR [#158](https://github.com/tact-lang/tact/pull/158) and PR [#160](https://github.com/tact-lang/tact/pull/160)
 
 ## [1.1.5] - 2023-12-01
 
