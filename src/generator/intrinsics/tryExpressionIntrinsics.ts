@@ -2,7 +2,7 @@ import { ASTExpression } from "../../grammar/ast";
 import { resolveConstantValue } from "../../types/resolveConstantValue";
 import { getExpType } from "../../types/resolveExpression";
 import { WriterContext } from "../Writer";
-import { writeComment, writeString } from "../writers/writeConstant";
+import { writeComment } from "../writers/writeConstant";
 
 export function tryExpressionIntrinsics(exp: ASTExpression, ctx: WriterContext): string | null {
 

@@ -8,7 +8,7 @@ import { WriterContext } from "../Writer";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
-import { fn, id } from "./id";
+import { id } from "./id";
 import { writeExpression } from "./writeExpression";
 import { cast } from "./cast";
 import { resolveFuncTupledType } from "./resolveFuncTupledType";

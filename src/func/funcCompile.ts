@@ -2,23 +2,28 @@ import { TactLogger } from "../logger";
 import { errorToString } from "../utils/errorToString";
 
 // Wasm Imports
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const CompilerModule = require('./funcfiftlib.js');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const FuncFiftLibWasm = require('./funcfiftlib.wasm.js').FuncFiftLibWasm;
 const WasmBinary = Buffer.from(FuncFiftLibWasm, 'base64');
 
 type Pointer = unknown;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const writeToCString = (mod: any, data: string): Pointer => {
     const len = mod.lengthBytesUTF8(data) + 1;
     const ptr = mod._malloc(len);
     mod.stringToUTF8(data, ptr, len);
     return ptr;
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const writeToCStringPtr = (mod: any, str: string, ptr: any) => {
     const allocated = writeToCString(mod, str);
     mod.setValue(ptr, allocated, '*');
     return allocated;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const readFromCString = (mod: any, pointer: Pointer): string => mod.UTF8ToString(pointer);
 
 export function cutFirstLine(src: string) {
@@ -70,6 +75,7 @@ export async function funcCompile(args: { entries: string[], sources: { path: st
 
     // Create module
     const logs: string[] = []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mod = await CompilerModule({ wasmBinary: WasmBinary, printErr: (e: any) => { logs.push(e); } });
 
     // Execute
@@ -79,6 +85,7 @@ export async function funcCompile(args: { entries: string[], sources: { path: st
         const configPointer = trackPointer(writeToCString(mod, configStr));
 
         // FS emulation callback
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const callbackPtr = trackFunctionPointer(mod.addFunction((_kind: any, _data: any, contents: any, error: any) => {
             const kind: string = readFromCString(mod, _kind);
             const data: string = readFromCString(mod, _data);
@@ -92,6 +99,7 @@ export async function funcCompile(args: { entries: string[], sources: { path: st
                     }
                     allocatedPointers.push(writeToCStringPtr(mod, fl.content, contents));
                 } catch (err) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const e = err as any;
                     allocatedPointers.push(writeToCStringPtr(mod, 'message' in e ? e.message : e.toString(), error));
                 }

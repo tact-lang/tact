@@ -1,6 +1,6 @@
 import { beginCell } from "@ton/core";
-import { getType, resolveTypeRef, toBounced } from "../../types/resolveDescriptors";
-import { ReceiverDescription, ReceiverSelector, TypeDescription } from "../../types/types";
+import { getType } from "../../types/resolveDescriptors";
+import { ReceiverDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { id } from "./id";
 import { ops } from "./ops";

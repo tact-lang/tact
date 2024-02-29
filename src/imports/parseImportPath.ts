@@ -1,4 +1,3 @@
-import path from "path";
 import normalize from "path-normalize";
 
 export function parseImportPath(src: string) {

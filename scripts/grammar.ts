@@ -1,4 +1,4 @@
-import { getHighlighter, BUNDLED_LANGUAGES, BUNDLED_THEMES } from 'shiki';
+import { getHighlighter, BUNDLED_LANGUAGES, BUNDLED_THEMES, ILanguageRegistration } from 'shiki';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
@@ -23,6 +23,7 @@ import path from 'path';
         }
         return result;
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function transformGrammarRule(rule: any, propertyNames: string[], transformProperty: (ruleProperty: string) => string) {
         for (const propertyName of propertyNames) {
             const value = rule[propertyName];
@@ -38,6 +39,7 @@ import path from 'path';
             }
         }
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function transformGrammarRepository(grammar: any, propertyNames: string[], transformProperty: (ruleProperty: string) => string) {
         const repository = grammar.repository;
         for (const key in repository) {
@@ -45,6 +47,7 @@ import path from 'path';
         }
     }
     type VariableReplacer = [RegExp, string];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function processGrammar(src: any) {
         const variables = src.variables;
         delete src.variables;
@@ -82,7 +85,7 @@ import path from 'path';
                         grammar: grammarTact,
                         aliases: ['tact'],
                     }
-                ] as any,
+                ] as ILanguageRegistration[],
             });
 
             const theme = 'dark-plus'; // Most features

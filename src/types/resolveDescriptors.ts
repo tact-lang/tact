@@ -300,7 +300,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         throwError(`Constant ${f.name} already exists`, f.ref);
                     }
                     if (f.attributes.find((v) => v.type !== 'overrides')) {
-                        throwError(`Constant can be only overriden`, f.ref);
+                        throwError(`Constant can be only overridden`, f.ref);
                     }
                     types[a.name].constants.push(buildConstantDescription(f));
                 }
@@ -340,7 +340,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         throwError(`Constant ${f.name} already exists`, f.ref);
                     }
                     if (f.attributes.find((v) => v.type === 'overrides')) {
-                        throwError(`Trait constant cannot be overriden`, f.ref);
+                        throwError(`Trait constant cannot be overridden`, f.ref);
                     }
                     // if (f.attributes.find((v) => v.type === 'abstract')) {
                     //     continue; // Do not materialize abstract constants
@@ -506,7 +506,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             throwError('Mutating functions must be extend functions', isMutating.ref);
         }
 
-        // Check argumen names
+        // Check argument names
         const exNames = new Set<string>();
         for (const arg of args) {
             if (arg.name === 'self') {
@@ -522,11 +522,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (isGetter) {
             for (const arg of args) {
                 if (isRuntimeType(arg.type)) {
-                    throwError(printTypeRef(arg.type) + ' is a runtime onlye type and can\'t be used as a getter argument', arg.ref);
+                    throwError(printTypeRef(arg.type) + ' is a runtime-only type and can\'t be used as a getter argument', arg.ref);
                 }
             }
             if (isRuntimeType(returns)) {
-                throwError(printTypeRef(returns) + ' is a runtime onlye type and can\'t be used as getter return type', a.ref);
+                throwError(printTypeRef(returns) + ' is a runtime-only type and can\'t be used as getter return type', a.ref);
             }
         }
 
@@ -561,7 +561,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Check if runtime types are used
         for (const a of args) {
             if (isRuntimeType(a.type)) {
-                throwError(printTypeRef(a.type) + ' is a runtime onlye type and can\'t be used as a init function argument', a.ref);
+                throwError(printTypeRef(a.type) + ' is a runtime-only type and can\'t be used as a init function argument', a.ref);
             }
         }
 
@@ -814,6 +814,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             const traits: TypeDescription[] = [];
             const visited = new Set<string>();
             visited.add(t.name);
+            // eslint-disable-next-line no-inner-declarations
             function visit(name: string) {
                 if (visited.has(name)) {
                     return;
@@ -960,6 +961,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
             // Copy receivers
             for (const f of tr.receivers) {
+                // eslint-disable-next-line no-inner-declarations
                 function sameReceiver(a: ReceiverSelector, b: ReceiverSelector) {
                     if (a.kind === 'internal-comment' && b.kind === 'internal-comment') {
                         return a.comment === b.comment;
@@ -993,7 +995,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 });
             }
 
-            // Copy intefaces
+            // Copy interfaces
             for (const i of tr.interfaces) {
                 if (!t.interfaces.find((v) => v === i)) {
                     t.interfaces.push(i);

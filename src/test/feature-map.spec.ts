@@ -13,6 +13,7 @@ function strEq(a: SomeStruct | null, b: SomeStruct | null) {
 }
 
 describe('feature-map', () => {
+    /* eslint-disable */
     let globalCoverage: any;
     beforeAll(() => {
         globalCoverage = (globalThis as any).__ton_coverage__;
@@ -21,6 +22,7 @@ describe('feature-map', () => {
     afterAll(() => {
         (globalThis as any).__ton_coverage__ = globalCoverage;
     })
+    /* eslint-enable */
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

@@ -108,7 +108,7 @@ function reduceAddress(ast: ASTExpression, ctx: CompilerContext): Address {
     throwError('Cannot reduce expression to a constant Address', ast.ref);
 }
 
-function reduceCell(ast: ASTExpression, ctx: CompilerContext): Cell {
+function reduceCell(ast: ASTExpression): Cell {
     if (ast.kind === 'op_static_call') {
         if (ast.name === 'cell') {
             if (ast.args.length === 1) {
@@ -123,7 +123,7 @@ function reduceCell(ast: ASTExpression, ctx: CompilerContext): Cell {
             }
         }
     }
-    throwError('Cannot reduce expression to a constant Address', ast.ref);
+    throwError('Cannot reduce expression to a constant Cell', ast.ref);
 }
 
 export function resolveConstantValue(type: TypeRef, ast: ASTExpression | null, ctx: CompilerContext) {
@@ -164,7 +164,7 @@ export function resolveConstantValue(type: TypeRef, ast: ASTExpression | null, c
 
     // Handle Cell
     if (type.name === 'Cell') {
-        return reduceCell(ast, ctx);
+        return reduceCell(ast);
     }
 
     throwError(`Expected constant value, got ${printTypeRef(type)}`, ast.ref);

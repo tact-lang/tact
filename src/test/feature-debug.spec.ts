@@ -1,5 +1,5 @@
 import { toNano } from '@ton/core';
-import { ContractSystem, Verbosity } from '@tact-lang/emulator';
+import { ContractSystem } from '@tact-lang/emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { Debug } from './features/output/debug_Debug';
 

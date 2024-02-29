@@ -2,7 +2,6 @@ import { CompilerContext } from "../context";
 import { trimIndent } from "../utils/text";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";
-import { createPadded } from "./emitter/createPadded";
 
 type Flag = 'inline' | 'impure';
 

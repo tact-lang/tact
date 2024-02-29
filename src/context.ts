@@ -1,8 +1,8 @@
 export class CompilerContext {
 
-    readonly shared: { [key: symbol]: any } = {};
+    readonly shared: { [key: symbol]: object } = {};
 
-    constructor(args: { shared: { [key: symbol]: any } } = { shared: {} }) {
+    constructor(args: { shared: { [key: symbol]: object } } = { shared: {} }) {
         this.shared = args.shared;
         Object.freeze(this.shared);
         Object.freeze(this);

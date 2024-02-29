@@ -436,6 +436,7 @@ export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTCon
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull | ASTLvalueRef | ASTInitOf | ASTString | ASTConditional;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract | ASTTrait;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DistributiveOmit<T, K extends keyof any> = T extends any
     ? Omit<T, K>
     : never;
@@ -470,7 +471,7 @@ export function createRef(s: RawNode, ...extra: RawNode[]): ASTRef {
 
 export function throwError(message: string, ref: ASTRef): never {
     if (ref.file) {
-        const lc = (ref.interval as any).getLineAndColumn() as { lineNum: number, colNum: number };
+        const lc = ref.interval.getLineAndColumn() as { lineNum: number, colNum: number };
         throw new TactSyntaxError(ref.file + ':' + lc.lineNum + ':' + lc.colNum + ': ' + message + '\n' + ref.interval.getLineAndColumnMessage(), ref);
     } else {
         throw new TactSyntaxError(message + ref.interval.getLineAndColumnMessage(), ref);

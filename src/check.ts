@@ -53,10 +53,12 @@ export function check(args: { project: VirtualFileSystem, entrypoint: string }):
                 }
             });
         } else {
-            if (typeof (e as any).message === 'string') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const msg = (e as any).message;
+            if (typeof msg === 'string') {
                 items.push({
                     type: 'error',
-                    message: (e as any).message,
+                    message: msg,
                     location: {
                         file: args.entrypoint,
                         line: 0,

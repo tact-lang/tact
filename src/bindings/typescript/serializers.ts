@@ -287,7 +287,7 @@ const cellSerializer: Serializer<{ kind: 'cell' | 'slice' | 'builder', optional:
 }
 
 const remainderSerializer: Serializer<{ kind: 'cell' | 'slice' | 'builder' }> = {
-    tsType(v) {
+    tsType(_v) {
         return 'Cell';
     },
     tsLoad(v, slice, field, w) {
@@ -408,7 +408,7 @@ const stringSerializer: Serializer<{ optional: boolean }> = {
     }
 }
 
-const guard: Serializer<{}> = {
+const guard: Serializer<unknown> = {
     abiMatcher(src) {
         if (src.kind === 'simple') {
             if (primitiveTypes.includes(src.type)) {
@@ -417,19 +417,19 @@ const guard: Serializer<{}> = {
         }
         return null;
     },
-    tsType(v) {
+    tsType(_v) {
         throw Error('Unreachable');
     },
-    tsLoad(v, slice, field, w) {
+    tsLoad(_v, _slice, _field, _w) {
         throw Error('Unreachable');
     },
-    tsLoadTuple(v, reader, field, w) {
+    tsLoadTuple(_v, _reader, _field, _w) {
         throw Error('Unreachable');
     },
-    tsStore(v, builder, field, w) {
+    tsStore(_v, _builder, _field, _w) {
         throw Error('Unreachable');
     },
-    tsStoreTuple(v, to, field, w) {
+    tsStoreTuple(_v, _to, _field, _w) {
         throw Error('Unreachable');
     }
 }
@@ -669,6 +669,7 @@ const map: Serializer<MapSerializerDescr> = {
     },
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const serializers: Serializer<any>[] = [
 
     // Primitive types
@@ -682,7 +683,7 @@ export const serializers: Serializer<any>[] = [
     fixedBytesSerializer,
     stringSerializer,
 
-    // Guard to catch all primitve types that wasn't handled
+    // Guard to catch all primitive types that wasn't handled
     guard,
 
     // Structs as fallback

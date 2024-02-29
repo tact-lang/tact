@@ -1,4 +1,4 @@
-export function errorToString(src: any): string {
+export function errorToString(src: unknown): string {
     if (src instanceof Error) {
         return src.stack || src.message;
     } else {

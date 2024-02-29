@@ -1,4 +1,4 @@
-import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError, cloneASTNode, ASTConditional } from '../grammar/ast';
+import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError, ASTConditional } from '../grammar/ast';
 import { CompilerContext, createContextStore } from "../context";
 import { getStaticConstant, getStaticFunction, getType, hasStaticConstant, hasStaticFunction } from "./resolveDescriptors";
 import { FieldDescription, printTypeRef, TypeRef, typeRefEquals } from "./types";

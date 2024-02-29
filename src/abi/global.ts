@@ -7,8 +7,6 @@ import { resolveConstantValue } from "../types/resolveConstantValue";
 import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
 import { sha256_sync } from "@ton/crypto";
-import { getType } from "../types/resolveDescriptors";
-import { ops } from "../generator/writers/ops";
 
 export const GlobalFunctions: { [key: string]: AbiFunction } = {
     ton: {
@@ -204,7 +202,7 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             }
             return { kind: 'null' };
         },
-        generate: (ctx, args, resolved, ref) => {
+        generate: (_ctx, _args, _resolved, _ref) => {
             return 'null()';
         }
     },

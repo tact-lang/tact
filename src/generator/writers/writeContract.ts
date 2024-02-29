@@ -2,7 +2,7 @@ import { contractErrors } from "../../abi/errors";
 import { enabledInline, enabledMasterchain } from "../../config/features";
 import { InitDescription, TypeDescription, TypeOrigin } from "../../types/types";
 import { WriterContext } from "../Writer";
-import { fn, id, initId } from "./id";
+import { id, initId } from "./id";
 import { ops } from "./ops";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
