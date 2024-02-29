@@ -1,6 +1,6 @@
 node_modules/
 dist/
-converage/
+coverage/
 **/output/
 ./src/test/bugs/output/
 ./src/test/features/output/
