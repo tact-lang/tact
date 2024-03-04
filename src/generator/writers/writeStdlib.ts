@@ -1223,4 +1223,20 @@ export function writeStdlib(ctx: WriterContext) {
             `);
         });
     });
+
+    ctx.fun(`__tact_log2`, () => {
+        ctx.signature(`int __tact_log2(int num)`);
+        ctx.context('stdlib');
+        ctx.asm(`asm "UBITSIZE DEC"`);
+    });
+
+    ctx.fun(`__tact_log`, () => {
+        ctx.signature(`int __tact_log(int num, int base)`);
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                return __tact_log2(num) / __tact_log2(base);
+            `);
+        });
+    });
 }

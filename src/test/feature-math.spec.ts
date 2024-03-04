@@ -7,8 +7,7 @@ describe('feature-math', () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    it('should perform basic math operations correctly', async () => {
-
+    it('should perform math operations correctly', async () => {
         // Init
         const system = await ContractSystem.create();
         const treasure = system.treasure('treasure');
@@ -25,11 +24,15 @@ describe('feature-math', () => {
             .storeBit(1)
             .storeRef(beginCell().storeBit(1).endCell())
             .endCell();
-        const stringA = "foo";
-        const stringB = "bar";
+        const stringA = 'foo';
+        const stringB = 'bar';
         const dictA = Dictionary.empty<bigint, bigint>().set(0n, 0n);
         const dictB = Dictionary.empty<bigint, bigint>().set(0n, 2n);
-        await contract.send(treasure, { value: toNano('10') }, { $$type: 'Deploy', queryId: 0n });
+        await contract.send(
+            treasure,
+            { value: toNano('10') },
+            { $$type: 'Deploy', queryId: 0n }
+        );
         await system.run();
 
         // Tests
@@ -335,5 +338,23 @@ describe('feature-math', () => {
         expect(await contract.getCompare28(dictA, dictB)).toBe(true);
         expect(await contract.getCompare28(dictB, dictA)).toBe(true);
         expect(await contract.getCompare28(dictA, dictA)).toBe(false);
+
+        // Test advanced math operations
+        for (let num = 1n; num <= 100n; num++) {
+            expect(await contract.getLog2(num)).toBe(
+                BigInt(Math.floor(Math.log2(Number(num))))
+            );
+        }
+
+        for (let num = 1n; num <= 100n; num++) {
+            for (let base = 1n; base <= 10; base++) {
+                try {
+                    const a = Math.floor(Math.log(Number(num)));
+                    const b = Math.floor(Math.log(Number(base)));
+                    const c = BigInt(a / b);
+                    expect(await contract.getLog(num, base)).toBe(c);
+                } catch (e) {}
+            }
+        }
     });
 });
