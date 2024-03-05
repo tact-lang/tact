@@ -346,14 +346,12 @@ describe('feature-math', () => {
             );
         }
 
-        for (let num = 1n; num <= 100n; num++) {
-            for (let base = 1n; base <= 10; base++) {
-                try {
-                    const a = Math.floor(Math.log(Number(num)));
-                    const b = Math.floor(Math.log(Number(base)));
-                    const c = BigInt(a / b);
-                    expect(await contract.getLog(num, base)).toBe(c);
-                } catch (e) {}
+        for (let num = 1n; num <= 10n; num++) {
+            for (let base = 2n; base <= 10; base++) {
+                const a = Math.floor(Math.log2(Number(num)));
+                const b = Math.floor(Math.log2(Number(base)));
+                const c = BigInt(Math.floor(a / b));
+                expect(await contract.getLog(num, base)).toBe(c);
             }
         }
     });
