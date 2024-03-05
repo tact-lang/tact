@@ -173,6 +173,14 @@
       }
     },
     {
+      "name": "ownabletransferable",
+      "path": "./src/test/features/ownabletransferable.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
       "name": "deep",
       "path": "./src/test/features/deep-sequence.tact",
       "output": "./src/test/features/output",

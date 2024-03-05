@@ -1,0 +1,246 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`feature-ordering should deploy correctly 1`] = `
+[
+  {
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "test",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBGF0CUxwjQr65xgop8Bw8l5v1BfLn6Oey9WClezcq-HQ9z",
+          "type": "internal",
+          "value": "1",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 4870n,
+      },
+    ],
+  },
+]
+`;
+
+exports[`feature-ordering should renounce ownership correctly 1`] = `
+[
+  {
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "test",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBGF0CUxwjQr65xgop8Bw8l5v1BfLn6Oey9WClezcq-HQ9z",
+          "type": "internal",
+          "value": "1",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 4870n,
+      },
+    ],
+  },
+  {
+    "$seq": 1,
+    "events": [
+      {
+        "$type": "storage-charged",
+        "amount": "0.000000006",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "type": "known",
+            "value": {
+              "$$type": "ChangeOwner",
+              "newOwner": kQAq4dsn8XD1ot3Hg_-nHdRkM5P1PaOZAy-YLG4p3mkQ96xD,
+              "queryId": 0n,
+            },
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBGF0CUxwjQr65xgop8Bw8l5v1BfLn6Oey9WClezcq-HQ9z",
+          "type": "internal",
+          "value": "1",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 8799n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "type": "known",
+              "value": {
+                "$$type": "ChangeOwnerOk",
+                "newOwner": kQAq4dsn8XD1ot3Hg_-nHdRkM5P1PaOZAy-YLG4p3mkQ96xD,
+                "queryId": 0n,
+              },
+            },
+            "bounce": true,
+            "from": "kQBGF0CUxwjQr65xgop8Bw8l5v1BfLn6Oey9WClezcq-HQ9z",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "0.989738",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    "$seq": 2,
+    "events": [
+      {
+        "$type": "storage-charged",
+        "amount": "0.000000006",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "type": "known",
+            "value": {
+              "$$type": "RenounceOwnership",
+              "queryId": 0n,
+            },
+          },
+          "bounce": true,
+          "from": "@treasure(anotherTreasure)",
+          "to": "kQBGF0CUxwjQr65xgop8Bw8l5v1BfLn6Oey9WClezcq-HQ9z",
+          "type": "internal",
+          "value": "1",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 11048n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "type": "known",
+              "value": {
+                "$$type": "ChangeOwnerOk",
+                "newOwner": kQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHTW,
+                "queryId": 0n,
+              },
+            },
+            "bounce": true,
+            "from": "kQBGF0CUxwjQr65xgop8Bw8l5v1BfLn6Oey9WClezcq-HQ9z",
+            "to": "@treasure(anotherTreasure)",
+            "type": "internal",
+            "value": "0.987489",
+          },
+        ],
+      },
+    ],
+  },
+]
+`;
+
+exports[`feature-ordering should transfer ownership correctly 1`] = `
+[
+  {
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "test",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBGF0CUxwjQr65xgop8Bw8l5v1BfLn6Oey9WClezcq-HQ9z",
+          "type": "internal",
+          "value": "1",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 4870n,
+      },
+    ],
+  },
+  {
+    "$seq": 1,
+    "events": [
+      {
+        "$type": "storage-charged",
+        "amount": "0.000000006",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "type": "known",
+            "value": {
+              "$$type": "ChangeOwner",
+              "newOwner": kQAq4dsn8XD1ot3Hg_-nHdRkM5P1PaOZAy-YLG4p3mkQ96xD,
+              "queryId": 0n,
+            },
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBGF0CUxwjQr65xgop8Bw8l5v1BfLn6Oey9WClezcq-HQ9z",
+          "type": "internal",
+          "value": "1",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 8799n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "type": "known",
+              "value": {
+                "$$type": "ChangeOwnerOk",
+                "newOwner": kQAq4dsn8XD1ot3Hg_-nHdRkM5P1PaOZAy-YLG4p3mkQ96xD,
+                "queryId": 0n,
+              },
+            },
+            "bounce": true,
+            "from": "kQBGF0CUxwjQr65xgop8Bw8l5v1BfLn6Oey9WClezcq-HQ9z",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "0.989738",
+          },
+        ],
+      },
+    ],
+  },
+]
+`;
