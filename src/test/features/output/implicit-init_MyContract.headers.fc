@@ -1,0 +1,70 @@
+;;
+;; Header files for MyContract
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_verify_address
+slice __tact_verify_address(slice address) inline;
+
+;; __tact_store_address
+builder __tact_store_address(builder b, slice address) inline;
+
+;; __tact_my_balance
+int __tact_my_balance() inline;
+
+;; __tact_not_null
+forall X -> X __tact_not_null(X x) inline;
+
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
+
+;; __tact_context_get_sender
+slice __tact_context_get_sender() inline;
+
+;; __tact_store_bool
+builder __tact_store_bool(builder b, int v) inline;
+
+;; $Deploy$_load
+(slice, ((int))) $Deploy$_load(slice sc_0) inline;
+
+;; $DeployOk$_store
+builder $DeployOk$_store(builder build_0, (int) v) inline;
+
+;; $DeployOk$_store_cell
+cell $DeployOk$_store_cell((int) v) inline;
+
+;; $MyContract$_store
+builder $MyContract$_store(builder build_0, (int) v) inline;
+
+;; $MyContract$_load
+(slice, ((int))) $MyContract$_load(slice sc_0) inline;
+
+;; $StateInit$_not_null
+((cell, cell)) $StateInit$_not_null(tuple v) inline;
+
+;; $MyContract$_contract_init
+(int) $MyContract$_contract_init() impure inline_ref;
+
+;; $MyContract$_contract_load
+(int) $MyContract$_contract_load() impure inline_ref;
+
+;; $MyContract$_contract_store
+() $MyContract$_contract_store((int) v) impure inline;
+
+;; $global_send
+() $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
+
+;; $MyContract$_fun_getCounter
+((int), int) $MyContract$_fun_getCounter((int) $self) impure inline_ref;
+
+;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
+
+;; $MyContract$_fun_forward
+((int), ()) $MyContract$_fun_forward((int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
+
+;; $MyContract$_fun_notify
+((int), ()) $MyContract$_fun_notify((int) $self, cell $body) impure inline;
+
+;; $DeployOk$_constructor_queryId
+((int)) $DeployOk$_constructor_queryId(int queryId) inline;

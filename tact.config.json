@@ -230,13 +230,21 @@
       }
     },
     {
-        "name": "ternary",
-        "path": "./src/test/features/ternary.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
+      "name": "ternary",
+      "path": "./src/test/features/ternary.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "implicit-init",
+      "path": "./src/test/features/implicit-init.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
     {
       "name": "benchmark_functions",
       "path": "./src/benchmarks/contracts/functions.tact",

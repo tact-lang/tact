@@ -1,4 +1,4 @@
-import { ASTConstant, ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTRef, ASTTypeRef, throwError, traverse } from "../grammar/ast";
+import { ASTConstant, ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTRef, ASTTypeRef, createNode, throwError, traverse } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
 import { ConstantDescription, FieldDescription, FunctionArgument, FunctionDescription, InitArgument, InitDescription, printTypeRef, ReceiverSelector, TypeDescription, TypeOrigin, TypeRef, typeRefEquals } from "./types";
 import { getRawAST } from "../grammar/store";
@@ -797,7 +797,15 @@ export function resolveDescriptors(ctx: CompilerContext) {
         const t = types[k];
         if (t.kind === 'contract') {
             if (!t.init) {
-                throwError('Contract ' + t.name + ' does not have init method', t.ast.ref);
+                t.init = {
+                    args: [],
+                    ast: createNode({
+                        kind: 'def_init_function',
+                        args: [],
+                        statements: [],
+                        ref: t.ast.ref
+                    }) as ASTInitFunction
+                } 
             }
         }
     }
