@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The implicit empty init function is now present by default in the contract if not declared
+
 ### Fixed
 
 ## [1.2.0] - 2024-02-29
