@@ -25,7 +25,7 @@ trait BaseTrait {
             let balance: Int = myBalance();
             let balanceBeforeMessage: Int = balance - ctx.value;
             if (balanceBeforeMessage < self.storageReserve) {
-                nativeReserve(self.storageReserve, 0);
+                nativeReserve(self.storageReserve, ReserveExact);
                 send(SendParameters{bounce: bounce, to: to, value: 0, mode: SendRemainingBalance + SendIgnoreErrors, body: body, code: code, data: data });
                 return;
             }

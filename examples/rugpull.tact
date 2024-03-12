@@ -67,7 +67,7 @@ contract RugPull with OwnableTransferable, Stoppable {
     receive("withdraw") {
         self.requireOwner();
         if (!self.rugpulled) {
-            nativeReserve(self.balance, 0);
+            nativeReserve(self.balance, ReserveExact);
         }
         send(SendParameters{value: 0, to: self.owner, mode: SendRemainingBalance });
     }
