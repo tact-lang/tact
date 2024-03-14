@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Update `dump` function to handle addresses and allow `inline_ref` in `ctx.flag` method: PR [#175](https://github.com/tact-lang/tact/pull/175)
 
 ### Fixed
 
