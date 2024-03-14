@@ -3,7 +3,7 @@ import { trimIndent } from "../utils/text";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";
 
-type Flag = 'inline' | 'impure';
+type Flag = 'inline' | 'impure' | 'inline_ref';
 
 type Body = {
     kind: 'generic',
