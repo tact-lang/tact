@@ -208,6 +208,108 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
+    ctx.fun('__tact_preload_offset', () => {
+        ctx.signature(`(slice) __tact_preload_offset(slice s, int offset, int bits)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.asm(`asm "SDSUBSTR"`);
+    });
+
+    ctx.fun('__tact_crc16', () => {
+        ctx.signature(`(slice) __tact_crc16(slice data)`);
+        ctx.flag('inline_ref');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                slice new_data = begin_cell()
+                    .store_slice(data)
+                    .store_slice("0000"s)
+                .end_cell().begin_parse();
+                int reg = 0;
+                while (~ new_data.slice_data_empty?()) {
+                    int byte = new_data~load_uint(8);
+                    int mask = 0x80;
+                    while (mask > 0) {
+                        reg <<= 1;
+                        if (byte & mask) {
+                            reg += 1;
+                        }
+                        mask >>= 1;
+                        if (reg > 0xffff) {
+                            reg &= 0xffff;
+                            reg ^= 0x1021;
+                        }
+                    }
+                }
+                (int q, int r) = divmod(reg, 256);
+                return begin_cell()
+                    .store_uint(q, 8)
+                    .store_uint(r, 8)
+                .end_cell().begin_parse();
+            `);
+        });
+    });
+
+    ctx.fun('__tact_base64_encode', () => {
+        ctx.signature(`(slice) __tact_base64_encode(slice data)`);
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                slice chars = "4142434445464748494A4B4C4D4E4F505152535455565758595A6162636465666768696A6B6C6D6E6F707172737475767778797A303132333435363738392D5F"s;
+                builder res = begin_cell();
+            
+                while (data.slice_bits() >= 24) {
+                    (int bs1, int bs2, int bs3) = (data~load_uint(8), data~load_uint(8), data~load_uint(8));
+            
+                    int n = (bs1 << 16) | (bs2 << 8) | bs3;
+            
+                    res = res
+                        .store_slice(${ctx.used('__tact_preload_offset')}(chars, ((n >> 18) & 63) * 8, 8))
+                        .store_slice(${ctx.used('__tact_preload_offset')}(chars, ((n >> 12) & 63) * 8, 8))
+                        .store_slice(${ctx.used('__tact_preload_offset')}(chars, ((n >>  6) & 63) * 8, 8))
+                        .store_slice(${ctx.used('__tact_preload_offset')}(chars, ((n      ) & 63) * 8, 8));
+                }
+                
+                return res.end_cell().begin_parse();
+            `);
+        });
+    });
+
+    ctx.fun('__tact_address_to_userfriendly', () => {
+        ctx.signature(`(slice) __tact_address_to_userfriendly(slice address)`);
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                (int wc, int hash) = address.parse_std_addr();
+
+                slice user_friendly_address = begin_cell()
+                    .store_slice("11"s)
+                    .store_uint((wc + 0x100) % 0x100, 8)
+                    .store_uint(hash, 256)
+                .end_cell().begin_parse();
+            
+                slice checksum = ${ctx.used('__tact_crc16')}(user_friendly_address);
+                slice user_friendly_address_with_checksum = begin_cell()
+                    .store_slice(user_friendly_address)
+                    .store_slice(checksum)
+                .end_cell().begin_parse();
+            
+                return ${ctx.used('__tact_base64_encode')}(user_friendly_address_with_checksum);
+            `);
+        });
+    });
+
+    ctx.fun('__tact_debug_address', () => {
+        ctx.signature(`() __tact_debug_address(slice address)`);
+        ctx.flag('impure');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                ${ctx.used('__tact_debug_str')}(${ctx.used('__tact_address_to_userfriendly')}(address));
+            `);
+        });
+    });
+
     ctx.fun('__tact_context_get', () => {
         ctx.signature(`(int, slice, int, slice) __tact_context_get()`);
         ctx.flag('inline');
