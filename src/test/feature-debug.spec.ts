@@ -1,4 +1,4 @@
-import { toNano } from '@ton/core';
+import { Address, toNano } from '@ton/core';
 import { ContractSystem } from '@tact-lang/emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { Debug } from './features/output/debug_Debug';
@@ -36,6 +36,8 @@ true
 false
 null
 ${contract.address.toString({ bounceable: true })}
-EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N`);
+${Address.parseRaw(
+    '0:83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8'
+)}`);
     });
 });
