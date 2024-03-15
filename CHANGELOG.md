@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `RenounceOwnership` message was added to `OwnableTransferable`
+- The `RenounceOwnership` message and its corresponding receiver were added to the `OwnableTransferable` trait allowing to transfer ownership to nobody
 
 ### Fixed
 
