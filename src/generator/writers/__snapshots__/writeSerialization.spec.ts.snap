@@ -2986,7 +2986,15 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "return __tact_log2(num) / __tact_log2(base);",
+      "code": "if (num < base) {
+    return 0;
+}
+int result = 0;
+while (num >= base) {
+    num = num / base;
+    result += 1;
+}
+return result;",
       "kind": "generic",
     },
     "comment": null,
@@ -6833,7 +6841,15 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "return __tact_log2(num) / __tact_log2(base);",
+      "code": "if (num < base) {
+    return 0;
+}
+int result = 0;
+while (num >= base) {
+    num = num / base;
+    result += 1;
+}
+return result;",
       "kind": "generic",
     },
     "comment": null,
@@ -10680,7 +10696,15 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "return __tact_log2(num) / __tact_log2(base);",
+      "code": "if (num < base) {
+    return 0;
+}
+int result = 0;
+while (num >= base) {
+    num = num / base;
+    result += 1;
+}
+return result;",
       "kind": "generic",
     },
     "comment": null,

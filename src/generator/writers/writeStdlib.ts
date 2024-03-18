@@ -1235,7 +1235,15 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context('stdlib');
         ctx.body(() => {
             ctx.write(`
-                return __tact_log2(num) / __tact_log2(base);
+                if (num < base) {
+                    return 0;
+                }
+                int result = 0;
+                while (num >= base) {
+                    num = num / base;
+                    result += 1;
+                }
+                return result;
             `);
         });
     });

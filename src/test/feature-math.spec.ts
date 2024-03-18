@@ -348,10 +348,51 @@ describe('feature-math', () => {
 
         for (let num = 1n; num <= 10n; num++) {
             for (let base = 2n; base <= 10; base++) {
-                const a = Math.floor(Math.log2(Number(num)));
-                const b = Math.floor(Math.log2(Number(base)));
-                const c = BigInt(Math.floor(a / b));
-                expect(await contract.getLog(num, base)).toBe(c);
+                const logarithm = BigInt(
+                    Math.floor(Math.log2(Number(num)) / Math.log2(Number(base)))
+                );
+                expect(await contract.getLog(num, base)).toBe(logarithm);
+            }
+        }
+
+        expect(await contract.getLog2(0n)).toBe(-1n);
+        expect(await contract.getLog(0n, 2n)).toBe(0n);
+
+        const maxint = 2n ** 256n - 1n;
+
+        function bigIntLogBase(num: bigint, base: bigint) {
+            let result = 0n;
+            while (num >= base) {
+                num = num / base;
+                result += 1n;
+            }
+            return result;
+        }
+
+        for (let num = maxint - 100n; num <= maxint; num++) {
+            expect(await contract.getLog2(num)).toBe(255n);
+        }
+
+        for (let num = maxint - 10n; num <= maxint; num++) {
+            for (let base = 2n; base <= 10; base++) {
+                expect(await contract.getLog(num, base)).toBe(
+                    bigIntLogBase(num, base)
+                );
+            }
+        }
+
+        for (let num = maxint / 2n - 50n; num <= maxint / 2n; num++) {
+            expect(await contract.getLog2(num)).toBe(254n);
+        }
+        for (let num = maxint / 2n + 1n; num <= maxint / 2n + 50n; num++) {
+            expect(await contract.getLog2(num)).toBe(255n);
+        }
+
+        for (let num = maxint / 2n - 5n; num <= maxint / 2n + 5n; num++) {
+            for (let base = 2n; base <= 10; base++) {
+                expect(await contract.getLog(num, base)).toBe(
+                    bigIntLogBase(num, base)
+                );
             }
         }
     });
