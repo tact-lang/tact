@@ -2,6 +2,7 @@ import { toNano } from '@ton/core';
 import { ContractSystem } from '@tact-lang/emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { MyContract } from './features/output/implicit-init_MyContract';
+import { run } from '../node';
 
 describe('feature-send', () => {
     beforeEach(() => {
@@ -44,5 +45,13 @@ describe('feature-send', () => {
         await system.run();
         expect(await contract.getGetCounter()).toBe(2n);
         expect(tracker.collect()).toMatchSnapshot();
+    });
+
+    it('should not compile with uninitialized storage fields', async () => {
+        const result = await run({
+            configPath: __dirname + '/test-tact.config.json',
+            projectNames: ['implicit-init-2'],
+        });
+        expect(result).toBe(false);
     });
 });
