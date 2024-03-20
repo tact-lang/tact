@@ -76,14 +76,14 @@ contract SerializationTester2 {
     get fun getBoth():Both {
         return Both{
             a: self.a,
-            b: self.b
+            b: self.b,
         };
     }
 
     get fun getBothOpt():Both? {
         return Both{
             a: self.a,
-            b: self.b
+            b: self.b,
         };
     }
 

@@ -18,7 +18,9 @@ Tact {
     // Static function
     StaticFunction = Function
     NativeFunction = nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ")" ";" --withVoid
+                   | nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> "," ")" ";" --withVoidAndTrailingComma
                    | nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --withType
+                   | nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> "," ")" ":" Type ";" --withTypeAndTrailingComma
     
     // Field declarations
     Type = typeLiteral "?" --optional

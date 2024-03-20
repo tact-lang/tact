@@ -355,7 +355,33 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
+    NativeFunction_withTypeAndTrailingComma(_arg0, _arg1, arg2, _arg3, arg4, arg5, arg6, _arg7, arg8, _arg9, _arg10, arg11, _arg12, _arg13) {
+        checkVariableName(arg5.sourceString, createRef(arg5));
+        return createNode({
+            kind: 'def_native_function',
+            origin: ctx!.origin,
+            attributes: arg4.children.map((v) => v.resolve_attributes()),
+            name: arg6.sourceString,
+            nativeName: arg2.sourceString,
+            return: arg11.resolve_expression(),
+            args: arg8.asIteration().children.map((v) => v.resolve_declaration()),
+            ref: createRef(this)
+        })
+    },
     NativeFunction_withVoid(_arg0, _arg1, arg2, _arg3, arg4, arg5, arg6, _arg7, arg8, _arg9, _arg10) {
+        checkVariableName(arg5.sourceString, createRef(arg5));
+        return createNode({
+            kind: 'def_native_function',
+            origin: ctx!.origin,
+            attributes: arg4.children.map((v) => v.resolve_attributes()),
+            name: arg6.sourceString,
+            nativeName: arg2.sourceString,
+            return: null,
+            args: arg8.asIteration().children.map((v) => v.resolve_declaration()),
+            ref: createRef(this)
+        })
+    },
+    NativeFunction_withVoidAndTrailingComma(_arg0, _arg1, arg2, _arg3, arg4, arg5, arg6, _arg7, arg8, _arg9, _arg10, _arg11) {
         checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',

@@ -18,7 +18,9 @@ export interface TactActionDict<T> extends ActionDict<T> {
   Primitive?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
   StaticFunction?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   NativeFunction_withVoid?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: IterationNode, arg5: NonterminalNode, arg6: NonterminalNode, arg7: TerminalNode, arg8: NonterminalNode, arg9: TerminalNode, arg10: TerminalNode) => T;
+  NativeFunction_withVoidAndTrailingComma?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: IterationNode, arg5: NonterminalNode, arg6: NonterminalNode, arg7: TerminalNode, arg8: NonterminalNode, arg9: TerminalNode, arg10: TerminalNode, arg11: TerminalNode) => T;
   NativeFunction_withType?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: IterationNode, arg5: NonterminalNode, arg6: NonterminalNode, arg7: TerminalNode, arg8: NonterminalNode, arg9: TerminalNode, arg10: TerminalNode, arg11: NonterminalNode, arg12: TerminalNode) => T;
+  NativeFunction_withTypeAndTrailingComma?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: IterationNode, arg5: NonterminalNode, arg6: NonterminalNode, arg7: TerminalNode, arg8: NonterminalNode, arg9: TerminalNode, arg10: TerminalNode, arg11: TerminalNode, arg12: NonterminalNode, arg13: TerminalNode) => T;
   NativeFunction?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Type_optional?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
   Type_required?: (this: NonterminalNode, arg0: NonterminalNode) => T;
