@@ -1240,7 +1240,7 @@ export function writeStdlib(ctx: WriterContext) {
                 }
                 int result = 0;
                 while (num >= base) {
-                    num = num / base;
+                    num /= base;
                     result += 1;
                 }
                 return result;
