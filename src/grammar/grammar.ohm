@@ -17,10 +17,8 @@ Tact {
 
     // Static function
     StaticFunction = Function
-    NativeFunction = nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ")" ";" --withVoid
-                   | nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> "," ")" ";" --withVoidAndTrailingComma
-                   | nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --withType
-                   | nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> "," ")" ":" Type ";" --withTypeAndTrailingComma
+    NativeFunction = nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ","? ")" ";" --withVoid
+                   | nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ","? ")" ":" Type ";" --withType
     
     // Field declarations
     Type = typeLiteral "?" --optional
@@ -74,10 +72,10 @@ Tact {
                       | override  --override
                       | inline    --inline
                       | abstract  --abstract
-    Function = FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
-             | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
-             | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ";" --abstractVoid
-             | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --abstractType
+    Function = FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ","? ")" "{" Statement* "}" --withVoid
+             | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ","? ")" ":" Type "{" Statement* "}" --withType
+             | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ","? ")" ";" --abstractVoid
+             | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ","? ")" ":" Type ";" --abstractType
     FunctionArg = id ":" Type
     
     ReceiveFunction = "receive" "(" FunctionArg ")" "{" Statement* "}" --simple
@@ -176,8 +174,7 @@ Tact {
     ExpressionString = stringLiteral
     ExpressionField = ExpressionValue "." id ~"("
     ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ")"
-    ExpressionNew = id "{" ListOf<NewParameter, ","> "}"       --noTrailing
-                  | id "{" ListOf<NewParameter, ","> "," "}"   --withTrailing
+    ExpressionNew = id "{" ListOf<NewParameter, ","> ","? "}"
     NewParameter = id ":" Expression
     ExpressionStaticCall = id "(" ListOf<Expression, ","> ")"
     ExpressionInitOf = initOf id "(" ListOf<Expression, ","> ")"
