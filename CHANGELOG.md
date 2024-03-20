@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update the `dump` function to handle addresses: PR [#175](https://github.com/tact-lang/tact/pull/175)
+- Support for trailing comma: PR [#179](https://github.com/tact-lang/tact/pull/179)
 
 ### Fixed
 
