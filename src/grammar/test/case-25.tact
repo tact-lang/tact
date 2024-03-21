@@ -12,7 +12,9 @@ fun anotherFunction(
 fun oneMoreFunction(
     a: Int,
     b: Int,
-    c: Int,
     ): Int {
-    return c + ((a >> b) || (a << (32 - b)));
+    return anotherFunction(
+        a,
+        b,
+    );
 }
