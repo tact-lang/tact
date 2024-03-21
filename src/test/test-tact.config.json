@@ -1,0 +1,12 @@
+{
+    "projects": [
+      {
+        "name": "implicit-init-2",
+        "path": "./features/implicit-init-2.tact",
+        "output": "./features/output",
+        "options": {
+          "debug": true
+        }
+      }
+    ]
+  }
