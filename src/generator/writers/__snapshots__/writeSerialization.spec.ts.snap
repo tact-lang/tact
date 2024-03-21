@@ -3101,6 +3101,38 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
+      "code": "asm "UBITSIZE DEC"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_log2",
+    "signature": "int __tact_log2(int num)",
+  },
+  {
+    "code": {
+      "code": "if (num < base) {
+    return 0;
+}
+int result = 0;
+while (num >= base) {
+    num /= base;
+    result += 1;
+}
+return result;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_log",
+    "signature": "int __tact_log(int num, int base)",
+  },
+  {
+    "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
 build_0 = build_0.store_int(v'a, 257);
 build_0 = build_0.store_int(v'b, 257);
@@ -7051,6 +7083,38 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
+      "code": "asm "UBITSIZE DEC"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_log2",
+    "signature": "int __tact_log2(int num)",
+  },
+  {
+    "code": {
+      "code": "if (num < base) {
+    return 0;
+}
+int result = 0;
+while (num >= base) {
+    num /= base;
+    result += 1;
+}
+return result;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_log",
+    "signature": "int __tact_log(int num, int base)",
+  },
+  {
+    "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
 build_0 = build_0.store_int(v'a, 257);
 build_0 = build_0.store_int(v'b, 257);
@@ -10998,6 +11062,38 @@ return b.end_cell().begin_parse();",
     "flags": Set {},
     "name": "__tact_float_to_string",
     "signature": "slice __tact_float_to_string(int src, int digits)",
+  },
+  {
+    "code": {
+      "code": "asm "UBITSIZE DEC"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_log2",
+    "signature": "int __tact_log2(int num)",
+  },
+  {
+    "code": {
+      "code": "if (num < base) {
+    return 0;
+}
+int result = 0;
+while (num >= base) {
+    num /= base;
+    result += 1;
+}
+return result;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_log",
+    "signature": "int __tact_log(int num, int base)",
   },
   {
     "code": {

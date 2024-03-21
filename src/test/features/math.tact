@@ -295,4 +295,16 @@ contract MathTester with Deployable {
     get fun isNotNull3(cell: Cell?): Bool {
         return cell != null;
     }
+
+    //
+    // Advanced Math Operations
+    //
+
+    get fun log2(num: Int): Int {
+        return log2(num);
+    }
+
+    get fun log(num: Int, base: Int): Int {
+        return log(num, base);
+    }
 }
