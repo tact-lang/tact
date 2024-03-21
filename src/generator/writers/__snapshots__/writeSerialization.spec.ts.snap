@@ -2991,7 +2991,7 @@ return b.end_cell().begin_parse();",
 }
 int result = 0;
 while (num >= base) {
-    num = num / base;
+    num /= base;
     result += 1;
 }
 return result;",
@@ -6846,7 +6846,7 @@ return b.end_cell().begin_parse();",
 }
 int result = 0;
 while (num >= base) {
-    num = num / base;
+    num /= base;
     result += 1;
 }
 return result;",
@@ -10701,7 +10701,7 @@ return b.end_cell().begin_parse();",
 }
 int result = 0;
 while (num >= base) {
-    num = num / base;
+    num /= base;
     result += 1;
 }
 return result;",

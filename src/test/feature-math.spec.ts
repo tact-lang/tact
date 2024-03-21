@@ -360,23 +360,14 @@ describe('feature-math', () => {
 
         const maxint = 2n ** 256n - 1n;
 
-        function bigIntLogBase(num: bigint, base: bigint) {
-            let result = 0n;
-            while (num >= base) {
-                num = num / base;
-                result += 1n;
-            }
-            return result;
-        }
-
         for (let num = maxint - 100n; num <= maxint; num++) {
             expect(await contract.getLog2(num)).toBe(255n);
         }
 
         for (let num = maxint - 10n; num <= maxint; num++) {
-            for (let base = 2n; base <= 10; base++) {
-                expect(await contract.getLog(num, base)).toBe(
-                    bigIntLogBase(num, base)
+            for (let base = 2; base <= 10; base++) {
+                expect(await contract.getLog(num, BigInt(base))).toBe(
+                    BigInt(num.toString(base).length - 1)
                 );
             }
         }
@@ -389,9 +380,9 @@ describe('feature-math', () => {
         }
 
         for (let num = maxint / 2n - 5n; num <= maxint / 2n + 5n; num++) {
-            for (let base = 2n; base <= 10; base++) {
-                expect(await contract.getLog(num, base)).toBe(
-                    bigIntLogBase(num, base)
+            for (let base = 2; base <= 10; base++) {
+                expect(await contract.getLog(num, BigInt(base))).toBe(
+                    BigInt(num.toString(base).length - 1)
                 );
             }
         }
