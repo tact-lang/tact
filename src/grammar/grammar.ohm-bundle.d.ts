@@ -135,11 +135,11 @@ export interface TactActionDict<T> extends ActionDict<T> {
   ExpressionValue?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionString?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionField?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
-  ExpressionCall?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: TerminalNode) => T;
+  ExpressionCall?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
   ExpressionNew?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
   NewParameter?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
-  ExpressionStaticCall?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
-  ExpressionInitOf?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: NonterminalNode, arg4: TerminalNode) => T;
+  ExpressionStaticCall?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
+  ExpressionInitOf?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: NonterminalNode, arg4: IterationNode, arg5: TerminalNode) => T;
   typeLiteral?: (this: NonterminalNode, arg0: NonterminalNode, arg1: IterationNode) => T;
   typeLiteralPart?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
   integerLiteral?: (this: NonterminalNode, arg0: NonterminalNode) => T;

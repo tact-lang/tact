@@ -173,11 +173,11 @@ Tact {
                     | ExpressionString
     ExpressionString = stringLiteral
     ExpressionField = ExpressionValue "." id ~"("
-    ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ")"
+    ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ","? ")"
     ExpressionNew = id "{" ListOf<NewParameter, ","> ","? "}"
     NewParameter = id ":" Expression
-    ExpressionStaticCall = id "(" ListOf<Expression, ","> ")"
-    ExpressionInitOf = initOf id "(" ListOf<Expression, ","> ")"
+    ExpressionStaticCall = id "(" ListOf<Expression, ","> ","? ")"
+    ExpressionInitOf = initOf id "(" ListOf<Expression, ","> ","? ")"
 
     // Type Literal
     typeLiteral = letterAsciiUC typeLiteralPart*
