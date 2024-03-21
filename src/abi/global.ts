@@ -187,6 +187,9 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
                 } else if (arg.name === 'String') {
                     const exp = writeExpression(resolved[0], ctx);
                     return `${ctx.used(`__tact_debug_str`)}(${exp})`;
+                } else if (arg.name === 'Address') {
+                    const exp = writeExpression(resolved[0], ctx);
+                    return `${ctx.used(`__tact_debug_address`)}(${exp})`;
                 }
                 throwError('dump() not supported for type: ' + arg.name, ref);
             } else {
