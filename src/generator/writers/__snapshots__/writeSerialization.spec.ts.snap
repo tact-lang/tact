@@ -321,6 +321,133 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "asm "SDSUBSTR"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_preload_offset",
+    "signature": "(slice) __tact_preload_offset(slice s, int offset, int bits)",
+  },
+  {
+    "code": {
+      "code": "slice new_data = begin_cell()
+    .store_slice(data)
+    .store_slice("0000"s)
+.end_cell().begin_parse();
+int reg = 0;
+while (~ new_data.slice_data_empty?()) {
+    int byte = new_data~load_uint(8);
+    int mask = 0x80;
+    while (mask > 0) {
+        reg <<= 1;
+        if (byte & mask) {
+            reg += 1;
+        }
+        mask >>= 1;
+        if (reg > 0xffff) {
+            reg &= 0xffff;
+            reg ^= 0x1021;
+        }
+    }
+}
+(int q, int r) = divmod(reg, 256);
+return begin_cell()
+    .store_uint(q, 8)
+    .store_uint(r, 8)
+.end_cell().begin_parse();",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline_ref",
+    },
+    "name": "__tact_crc16",
+    "signature": "(slice) __tact_crc16(slice data)",
+  },
+  {
+    "code": {
+      "code": "slice chars = "4142434445464748494A4B4C4D4E4F505152535455565758595A6162636465666768696A6B6C6D6E6F707172737475767778797A303132333435363738392D5F"s;
+builder res = begin_cell();
+
+while (data.slice_bits() >= 24) {
+    (int bs1, int bs2, int bs3) = (data~load_uint(8), data~load_uint(8), data~load_uint(8));
+
+    int n = (bs1 << 16) | (bs2 << 8) | bs3;
+
+    res = res
+        .store_slice(__tact_preload_offset(chars, ((n >> 18) & 63) * 8, 8))
+        .store_slice(__tact_preload_offset(chars, ((n >> 12) & 63) * 8, 8))
+        .store_slice(__tact_preload_offset(chars, ((n >>  6) & 63) * 8, 8))
+        .store_slice(__tact_preload_offset(chars, ((n      ) & 63) * 8, 8));
+}
+
+return res.end_cell().begin_parse();",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_preload_offset",
+    },
+    "flags": Set {},
+    "name": "__tact_base64_encode",
+    "signature": "(slice) __tact_base64_encode(slice data)",
+  },
+  {
+    "code": {
+      "code": "(int wc, int hash) = address.parse_std_addr();
+
+slice user_friendly_address = begin_cell()
+    .store_slice("11"s)
+    .store_uint((wc + 0x100) % 0x100, 8)
+    .store_uint(hash, 256)
+.end_cell().begin_parse();
+
+slice checksum = __tact_crc16(user_friendly_address);
+slice user_friendly_address_with_checksum = begin_cell()
+    .store_slice(user_friendly_address)
+    .store_slice(checksum)
+.end_cell().begin_parse();
+
+return __tact_base64_encode(user_friendly_address_with_checksum);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_crc16",
+      "__tact_base64_encode",
+    },
+    "flags": Set {},
+    "name": "__tact_address_to_userfriendly",
+    "signature": "(slice) __tact_address_to_userfriendly(slice address)",
+  },
+  {
+    "code": {
+      "code": "__tact_debug_str(__tact_address_to_userfriendly(address));",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_debug_str",
+      "__tact_address_to_userfriendly",
+    },
+    "flags": Set {
+      "impure",
+    },
+    "name": "__tact_debug_address",
+    "signature": "() __tact_debug_address(slice address)",
+  },
+  {
+    "code": {
       "code": "return __tact_context;",
       "kind": "generic",
     },
@@ -2971,6 +3098,38 @@ return b.end_cell().begin_parse();",
     "flags": Set {},
     "name": "__tact_float_to_string",
     "signature": "slice __tact_float_to_string(int src, int digits)",
+  },
+  {
+    "code": {
+      "code": "asm "UBITSIZE DEC"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_log2",
+    "signature": "int __tact_log2(int num)",
+  },
+  {
+    "code": {
+      "code": "if (num < base) {
+    return 0;
+}
+int result = 0;
+while (num >= base) {
+    num /= base;
+    result += 1;
+}
+return result;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_log",
+    "signature": "int __tact_log(int num, int base)",
   },
   {
     "code": {
@@ -4144,6 +4303,133 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "asm "SDSUBSTR"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_preload_offset",
+    "signature": "(slice) __tact_preload_offset(slice s, int offset, int bits)",
+  },
+  {
+    "code": {
+      "code": "slice new_data = begin_cell()
+    .store_slice(data)
+    .store_slice("0000"s)
+.end_cell().begin_parse();
+int reg = 0;
+while (~ new_data.slice_data_empty?()) {
+    int byte = new_data~load_uint(8);
+    int mask = 0x80;
+    while (mask > 0) {
+        reg <<= 1;
+        if (byte & mask) {
+            reg += 1;
+        }
+        mask >>= 1;
+        if (reg > 0xffff) {
+            reg &= 0xffff;
+            reg ^= 0x1021;
+        }
+    }
+}
+(int q, int r) = divmod(reg, 256);
+return begin_cell()
+    .store_uint(q, 8)
+    .store_uint(r, 8)
+.end_cell().begin_parse();",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline_ref",
+    },
+    "name": "__tact_crc16",
+    "signature": "(slice) __tact_crc16(slice data)",
+  },
+  {
+    "code": {
+      "code": "slice chars = "4142434445464748494A4B4C4D4E4F505152535455565758595A6162636465666768696A6B6C6D6E6F707172737475767778797A303132333435363738392D5F"s;
+builder res = begin_cell();
+
+while (data.slice_bits() >= 24) {
+    (int bs1, int bs2, int bs3) = (data~load_uint(8), data~load_uint(8), data~load_uint(8));
+
+    int n = (bs1 << 16) | (bs2 << 8) | bs3;
+
+    res = res
+        .store_slice(__tact_preload_offset(chars, ((n >> 18) & 63) * 8, 8))
+        .store_slice(__tact_preload_offset(chars, ((n >> 12) & 63) * 8, 8))
+        .store_slice(__tact_preload_offset(chars, ((n >>  6) & 63) * 8, 8))
+        .store_slice(__tact_preload_offset(chars, ((n      ) & 63) * 8, 8));
+}
+
+return res.end_cell().begin_parse();",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_preload_offset",
+    },
+    "flags": Set {},
+    "name": "__tact_base64_encode",
+    "signature": "(slice) __tact_base64_encode(slice data)",
+  },
+  {
+    "code": {
+      "code": "(int wc, int hash) = address.parse_std_addr();
+
+slice user_friendly_address = begin_cell()
+    .store_slice("11"s)
+    .store_uint((wc + 0x100) % 0x100, 8)
+    .store_uint(hash, 256)
+.end_cell().begin_parse();
+
+slice checksum = __tact_crc16(user_friendly_address);
+slice user_friendly_address_with_checksum = begin_cell()
+    .store_slice(user_friendly_address)
+    .store_slice(checksum)
+.end_cell().begin_parse();
+
+return __tact_base64_encode(user_friendly_address_with_checksum);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_crc16",
+      "__tact_base64_encode",
+    },
+    "flags": Set {},
+    "name": "__tact_address_to_userfriendly",
+    "signature": "(slice) __tact_address_to_userfriendly(slice address)",
+  },
+  {
+    "code": {
+      "code": "__tact_debug_str(__tact_address_to_userfriendly(address));",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_debug_str",
+      "__tact_address_to_userfriendly",
+    },
+    "flags": Set {
+      "impure",
+    },
+    "name": "__tact_debug_address",
+    "signature": "() __tact_debug_address(slice address)",
+  },
+  {
+    "code": {
       "code": "return __tact_context;",
       "kind": "generic",
     },
@@ -6794,6 +7080,38 @@ return b.end_cell().begin_parse();",
     "flags": Set {},
     "name": "__tact_float_to_string",
     "signature": "slice __tact_float_to_string(int src, int digits)",
+  },
+  {
+    "code": {
+      "code": "asm "UBITSIZE DEC"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_log2",
+    "signature": "int __tact_log2(int num)",
+  },
+  {
+    "code": {
+      "code": "if (num < base) {
+    return 0;
+}
+int result = 0;
+while (num >= base) {
+    num /= base;
+    result += 1;
+}
+return result;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_log",
+    "signature": "int __tact_log(int num, int base)",
   },
   {
     "code": {
@@ -7967,6 +8285,133 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "asm "SDSUBSTR"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_preload_offset",
+    "signature": "(slice) __tact_preload_offset(slice s, int offset, int bits)",
+  },
+  {
+    "code": {
+      "code": "slice new_data = begin_cell()
+    .store_slice(data)
+    .store_slice("0000"s)
+.end_cell().begin_parse();
+int reg = 0;
+while (~ new_data.slice_data_empty?()) {
+    int byte = new_data~load_uint(8);
+    int mask = 0x80;
+    while (mask > 0) {
+        reg <<= 1;
+        if (byte & mask) {
+            reg += 1;
+        }
+        mask >>= 1;
+        if (reg > 0xffff) {
+            reg &= 0xffff;
+            reg ^= 0x1021;
+        }
+    }
+}
+(int q, int r) = divmod(reg, 256);
+return begin_cell()
+    .store_uint(q, 8)
+    .store_uint(r, 8)
+.end_cell().begin_parse();",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline_ref",
+    },
+    "name": "__tact_crc16",
+    "signature": "(slice) __tact_crc16(slice data)",
+  },
+  {
+    "code": {
+      "code": "slice chars = "4142434445464748494A4B4C4D4E4F505152535455565758595A6162636465666768696A6B6C6D6E6F707172737475767778797A303132333435363738392D5F"s;
+builder res = begin_cell();
+
+while (data.slice_bits() >= 24) {
+    (int bs1, int bs2, int bs3) = (data~load_uint(8), data~load_uint(8), data~load_uint(8));
+
+    int n = (bs1 << 16) | (bs2 << 8) | bs3;
+
+    res = res
+        .store_slice(__tact_preload_offset(chars, ((n >> 18) & 63) * 8, 8))
+        .store_slice(__tact_preload_offset(chars, ((n >> 12) & 63) * 8, 8))
+        .store_slice(__tact_preload_offset(chars, ((n >>  6) & 63) * 8, 8))
+        .store_slice(__tact_preload_offset(chars, ((n      ) & 63) * 8, 8));
+}
+
+return res.end_cell().begin_parse();",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_preload_offset",
+    },
+    "flags": Set {},
+    "name": "__tact_base64_encode",
+    "signature": "(slice) __tact_base64_encode(slice data)",
+  },
+  {
+    "code": {
+      "code": "(int wc, int hash) = address.parse_std_addr();
+
+slice user_friendly_address = begin_cell()
+    .store_slice("11"s)
+    .store_uint((wc + 0x100) % 0x100, 8)
+    .store_uint(hash, 256)
+.end_cell().begin_parse();
+
+slice checksum = __tact_crc16(user_friendly_address);
+slice user_friendly_address_with_checksum = begin_cell()
+    .store_slice(user_friendly_address)
+    .store_slice(checksum)
+.end_cell().begin_parse();
+
+return __tact_base64_encode(user_friendly_address_with_checksum);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_crc16",
+      "__tact_base64_encode",
+    },
+    "flags": Set {},
+    "name": "__tact_address_to_userfriendly",
+    "signature": "(slice) __tact_address_to_userfriendly(slice address)",
+  },
+  {
+    "code": {
+      "code": "__tact_debug_str(__tact_address_to_userfriendly(address));",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_debug_str",
+      "__tact_address_to_userfriendly",
+    },
+    "flags": Set {
+      "impure",
+    },
+    "name": "__tact_debug_address",
+    "signature": "() __tact_debug_address(slice address)",
+  },
+  {
+    "code": {
       "code": "return __tact_context;",
       "kind": "generic",
     },
@@ -10617,6 +11062,38 @@ return b.end_cell().begin_parse();",
     "flags": Set {},
     "name": "__tact_float_to_string",
     "signature": "slice __tact_float_to_string(int src, int digits)",
+  },
+  {
+    "code": {
+      "code": "asm "UBITSIZE DEC"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_log2",
+    "signature": "int __tact_log2(int num)",
+  },
+  {
+    "code": {
+      "code": "if (num < base) {
+    return 0;
+}
+int result = 0;
+while (num >= base) {
+    num /= base;
+    result += 1;
+}
+return result;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_log",
+    "signature": "int __tact_log(int num, int base)",
   },
   {
     "code": {

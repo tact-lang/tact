@@ -40,3 +40,9 @@ native abs(x: Int): Int;
 
 @name(now)
 native now(): Int;
+
+@name(__tact_log2)
+native log2(num: Int): Int;
+
+@name(__tact_log)
+native log(num: Int, base: Int): Int;
