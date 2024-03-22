@@ -3,11 +3,12 @@ import { TactLogger } from "./logger";
 import { build } from "./pipeline/build";
 import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
 
-export async function run(args: {
+type CompilationOptions = {
     config: Config,
     files: { [key: string]: string },
     logger?: TactLogger | null | undefined
-}) {
+}
+export async function run(args: CompilationOptions) {
 
     // Verify config
     const config = verifyConfig(args.config);
