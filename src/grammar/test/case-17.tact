@@ -23,5 +23,5 @@ const b: B = new {
 };
 
 fun getB(): B {
-    return B { x = 1, y = 5, };
+    return B { x: 1, y: 5, };
 }
