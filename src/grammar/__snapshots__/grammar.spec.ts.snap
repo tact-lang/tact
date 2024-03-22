@@ -182,6 +182,14 @@ Line 2, col 15:
 "
 `;
 
+exports[`grammar should fail case-19 1`] = `
+"<unknown>:1:14: Empty parameter list should not have a dangling comma.
+Line 1, col 14:
+> 1 | fun function(,) {}
+                   ^
+"
+`;
+
 exports[`grammar should parse case-0 1`] = `
 {
   "entries": [
@@ -2081,28 +2089,15 @@ exports[`grammar should parse case-17 1`] = `
             "ref": Int,
           },
         },
-      ],
-      "id": 3,
-      "kind": "def_struct",
-      "message": false,
-      "name": "A",
-      "origin": "user",
-      "prefix": null,
-      "ref": struct A {
-    x: Int;
-},
-    },
-    {
-      "fields": [
         {
           "as": null,
-          "id": 5,
+          "id": 4,
           "init": null,
           "kind": "def_field",
-          "name": "x",
-          "ref": x: Int;,
+          "name": "y",
+          "ref": y: Int;,
           "type": {
-            "id": 4,
+            "id": 3,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2110,7 +2105,151 @@ exports[`grammar should parse case-17 1`] = `
           },
         },
       ],
-      "id": 6,
+      "id": 5,
+      "kind": "def_struct",
+      "message": false,
+      "name": "A",
+      "origin": "user",
+      "prefix": null,
+      "ref": struct A {
+    x: Int;
+    y: Int;
+},
+    },
+    {
+      "attributes": [],
+      "id": 10,
+      "kind": "def_constant",
+      "name": "a",
+      "ref": const a: A = new { x: 1 };,
+      "type": {
+        "id": 6,
+        "kind": "type_ref_simple",
+        "name": "A",
+        "optional": false,
+        "ref": A,
+      },
+      "value": {
+        "args": [
+          {
+            "exp": {
+              "id": 7,
+              "kind": "number",
+              "ref": 1,
+              "value": 1n,
+            },
+            "id": 8,
+            "kind": "new_parameter",
+            "name": "x",
+            "ref": x: 1,
+          },
+        ],
+        "id": 9,
+        "kind": "op_new",
+        "ref": new { x: 1 },
+        "type": "new",
+      },
+    },
+    {
+      "args": [],
+      "attributes": [],
+      "id": 18,
+      "kind": "def_function",
+      "name": "getA",
+      "origin": "user",
+      "ref": fun getA(): A {
+    return A {
+        x: 1,
+        y: 2,
+    };
+},
+      "return": {
+        "id": 11,
+        "kind": "type_ref_simple",
+        "name": "A",
+        "optional": false,
+        "ref": A,
+      },
+      "statements": [
+        {
+          "expression": {
+            "args": [
+              {
+                "exp": {
+                  "id": 12,
+                  "kind": "number",
+                  "ref": 1,
+                  "value": 1n,
+                },
+                "id": 13,
+                "kind": "new_parameter",
+                "name": "x",
+                "ref": x: 1,
+              },
+              {
+                "exp": {
+                  "id": 14,
+                  "kind": "number",
+                  "ref": 2,
+                  "value": 2n,
+                },
+                "id": 15,
+                "kind": "new_parameter",
+                "name": "y",
+                "ref": y: 2,
+              },
+            ],
+            "id": 16,
+            "kind": "op_new",
+            "ref": A {
+        x: 1,
+        y: 2,
+    },
+            "type": "A",
+          },
+          "id": 17,
+          "kind": "statement_return",
+          "ref": return A {
+        x: 1,
+        y: 2,
+    };,
+        },
+      ],
+    },
+    {
+      "fields": [
+        {
+          "as": null,
+          "id": 20,
+          "init": null,
+          "kind": "def_field",
+          "name": "x",
+          "ref": x: Int;,
+          "type": {
+            "id": 19,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "as": null,
+          "id": 22,
+          "init": null,
+          "kind": "def_field",
+          "name": "y",
+          "ref": y: Int;,
+          "type": {
+            "id": 21,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "id": 23,
       "kind": "def_struct",
       "message": true,
       "name": "B",
@@ -2118,10 +2257,120 @@ exports[`grammar should parse case-17 1`] = `
       "prefix": null,
       "ref": message B {
     x: Int;
+    y: Int;
 },
     },
+    {
+      "attributes": [],
+      "id": 30,
+      "kind": "def_constant",
+      "name": "b",
+      "ref": const b: B = new {
+    x: 2,
+    y: 3,
+};,
+      "type": {
+        "id": 24,
+        "kind": "type_ref_simple",
+        "name": "B",
+        "optional": false,
+        "ref": B,
+      },
+      "value": {
+        "args": [
+          {
+            "exp": {
+              "id": 25,
+              "kind": "number",
+              "ref": 2,
+              "value": 2n,
+            },
+            "id": 26,
+            "kind": "new_parameter",
+            "name": "x",
+            "ref": x: 2,
+          },
+          {
+            "exp": {
+              "id": 27,
+              "kind": "number",
+              "ref": 3,
+              "value": 3n,
+            },
+            "id": 28,
+            "kind": "new_parameter",
+            "name": "y",
+            "ref": y: 3,
+          },
+        ],
+        "id": 29,
+        "kind": "op_new",
+        "ref": new {
+    x: 2,
+    y: 3,
+},
+        "type": "new",
+      },
+    },
+    {
+      "args": [],
+      "attributes": [],
+      "id": 38,
+      "kind": "def_function",
+      "name": "getB",
+      "origin": "user",
+      "ref": fun getB(): B {
+    return B { x: 1, y: 5, };
+},
+      "return": {
+        "id": 31,
+        "kind": "type_ref_simple",
+        "name": "B",
+        "optional": false,
+        "ref": B,
+      },
+      "statements": [
+        {
+          "expression": {
+            "args": [
+              {
+                "exp": {
+                  "id": 32,
+                  "kind": "number",
+                  "ref": 1,
+                  "value": 1n,
+                },
+                "id": 33,
+                "kind": "new_parameter",
+                "name": "x",
+                "ref": x: 1,
+              },
+              {
+                "exp": {
+                  "id": 34,
+                  "kind": "number",
+                  "ref": 5,
+                  "value": 5n,
+                },
+                "id": 35,
+                "kind": "new_parameter",
+                "name": "y",
+                "ref": y: 5,
+              },
+            ],
+            "id": 36,
+            "kind": "op_new",
+            "ref": B { x: 1, y: 5, },
+            "type": "B",
+          },
+          "id": 37,
+          "kind": "statement_return",
+          "ref": return B { x: 1, y: 5, };,
+        },
+      ],
+    },
   ],
-  "id": 7,
+  "id": 39,
   "kind": "program",
 }
 `;
@@ -2902,8 +3151,531 @@ exports[`grammar should parse case-25 1`] = `
         },
       ],
     },
+    {
+      "args": [
+        {
+          "id": 19,
+          "kind": "def_argument",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 18,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "id": 21,
+          "kind": "def_argument",
+          "name": "b",
+          "ref": b: Int,
+          "type": {
+            "id": 20,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 32,
+      "kind": "def_function",
+      "name": "anotherFunction",
+      "origin": "user",
+      "ref": fun anotherFunction(
+    a: Int,
+    b: Int,
+    ): Int {
+    return (a >> b) || (a << (32 - b));
+},
+      "return": {
+        "id": 17,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 30,
+            "kind": "op_binary",
+            "left": {
+              "id": 24,
+              "kind": "op_binary",
+              "left": {
+                "id": 22,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "op": ">>",
+              "ref": a >> b,
+              "right": {
+                "id": 23,
+                "kind": "id",
+                "ref": b,
+                "value": "b",
+              },
+            },
+            "op": "||",
+            "ref": (a >> b) || (a << (32 - b)),
+            "right": {
+              "id": 29,
+              "kind": "op_binary",
+              "left": {
+                "id": 25,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "op": "<<",
+              "ref": a << (32 - b),
+              "right": {
+                "id": 28,
+                "kind": "op_binary",
+                "left": {
+                  "id": 26,
+                  "kind": "number",
+                  "ref": 32,
+                  "value": 32n,
+                },
+                "op": "-",
+                "ref": 32 - b,
+                "right": {
+                  "id": 27,
+                  "kind": "id",
+                  "ref": b,
+                  "value": "b",
+                },
+              },
+            },
+          },
+          "id": 31,
+          "kind": "statement_return",
+          "ref": return (a >> b) || (a << (32 - b));,
+        },
+      ],
+    },
+    {
+      "args": [
+        {
+          "id": 34,
+          "kind": "def_argument",
+          "name": "self",
+          "ref": self: Int,
+          "type": {
+            "id": 33,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "id": 36,
+          "kind": "def_argument",
+          "name": "c",
+          "ref": c: Int,
+          "type": {
+            "id": 35,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "id": 38,
+          "kind": "def_argument",
+          "name": "d",
+          "ref": d: Int,
+          "type": {
+            "id": 37,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "attributes": [
+        {
+          "ref": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 45,
+      "kind": "def_function",
+      "name": "extension",
+      "origin": "user",
+      "ref": extends fun extension(self: Int, c: Int, d: Int) {
+    return self + c + d;
+},
+      "return": null,
+      "statements": [
+        {
+          "expression": {
+            "id": 43,
+            "kind": "op_binary",
+            "left": {
+              "id": 41,
+              "kind": "op_binary",
+              "left": {
+                "id": 39,
+                "kind": "id",
+                "ref": self,
+                "value": "self",
+              },
+              "op": "+",
+              "ref": self + c,
+              "right": {
+                "id": 40,
+                "kind": "id",
+                "ref": c,
+                "value": "c",
+              },
+            },
+            "op": "+",
+            "ref": self + c + d,
+            "right": {
+              "id": 42,
+              "kind": "id",
+              "ref": d,
+              "value": "d",
+            },
+          },
+          "id": 44,
+          "kind": "statement_return",
+          "ref": return self + c + d;,
+        },
+      ],
+    },
+    {
+      "args": [
+        {
+          "id": 47,
+          "kind": "def_argument",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 46,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "id": 49,
+          "kind": "def_argument",
+          "name": "b",
+          "ref": b: Int,
+          "type": {
+            "id": 48,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 61,
+      "kind": "def_function",
+      "name": "coverage",
+      "origin": "user",
+      "ref": fun coverage(a: Int, b: Int) {
+    let k: Int = a.extension(
+        b,
+        4,
+    );
+
+    let c: Int = anotherFunction(
+        a,
+        b,
+    );
+},
+      "return": null,
+      "statements": [
+        {
+          "expression": {
+            "args": [
+              {
+                "id": 52,
+                "kind": "id",
+                "ref": b,
+                "value": "b",
+              },
+              {
+                "id": 53,
+                "kind": "number",
+                "ref": 4,
+                "value": 4n,
+              },
+            ],
+            "id": 54,
+            "kind": "op_call",
+            "name": "extension",
+            "ref": a.extension(
+        b,
+        4,
+    ),
+            "src": {
+              "id": 51,
+              "kind": "id",
+              "ref": a,
+              "value": "a",
+            },
+          },
+          "id": 55,
+          "kind": "statement_let",
+          "name": "k",
+          "ref": let k: Int = a.extension(
+        b,
+        4,
+    );,
+          "type": {
+            "id": 50,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "args": [
+              {
+                "id": 57,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              {
+                "id": 58,
+                "kind": "id",
+                "ref": b,
+                "value": "b",
+              },
+            ],
+            "id": 59,
+            "kind": "op_static_call",
+            "name": "anotherFunction",
+            "ref": anotherFunction(
+        a,
+        b,
+    ),
+          },
+          "id": 60,
+          "kind": "statement_let",
+          "name": "c",
+          "ref": let c: Int = anotherFunction(
+        a,
+        b,
+    );,
+          "type": {
+            "id": 56,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+    },
+    {
+      "args": [
+        {
+          "id": 64,
+          "kind": "def_argument",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 63,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "id": 66,
+          "kind": "def_argument",
+          "name": "b",
+          "ref": b: Int,
+          "type": {
+            "id": 65,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 71,
+      "kind": "def_function",
+      "name": "oneMoreFunction",
+      "origin": "user",
+      "ref": fun oneMoreFunction(
+    a: Int,
+    b: Int,
+    ): Int {
+    return anotherFunction(
+        a,
+        b,
+    );
+},
+      "return": {
+        "id": 62,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "args": [
+              {
+                "id": 67,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              {
+                "id": 68,
+                "kind": "id",
+                "ref": b,
+                "value": "b",
+              },
+            ],
+            "id": 69,
+            "kind": "op_static_call",
+            "name": "anotherFunction",
+            "ref": anotherFunction(
+        a,
+        b,
+    ),
+          },
+          "id": 70,
+          "kind": "statement_return",
+          "ref": return anotherFunction(
+        a,
+        b,
+    );,
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "args": [
+            {
+              "id": 73,
+              "kind": "def_argument",
+              "name": "arg1",
+              "ref": arg1: Int,
+              "type": {
+                "id": 72,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+            {
+              "id": 75,
+              "kind": "def_argument",
+              "name": "arg2",
+              "ref": arg2: Int,
+              "type": {
+                "id": 74,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+          "id": 76,
+          "kind": "def_init_function",
+          "ref": init(arg1: Int, arg2: Int) {},
+          "statements": [],
+        },
+      ],
+      "id": 77,
+      "kind": "def_contract",
+      "name": "TestContract",
+      "origin": "user",
+      "ref": contract TestContract {
+    init(arg1: Int, arg2: Int) {}
+},
+      "traits": [],
+    },
+    {
+      "args": [],
+      "attributes": [],
+      "id": 83,
+      "kind": "def_function",
+      "name": "test",
+      "origin": "user",
+      "ref": fun test() {
+    let k: StateInit = initOf TestContract(
+        2,
+        3,
+    );
+},
+      "return": null,
+      "statements": [
+        {
+          "expression": {
+            "args": [
+              {
+                "id": 79,
+                "kind": "number",
+                "ref": 2,
+                "value": 2n,
+              },
+              {
+                "id": 80,
+                "kind": "number",
+                "ref": 3,
+                "value": 3n,
+              },
+            ],
+            "id": 81,
+            "kind": "init_of",
+            "name": "TestContract",
+            "ref": initOf TestContract(
+        2,
+        3,
+    ),
+          },
+          "id": 82,
+          "kind": "statement_let",
+          "name": "k",
+          "ref": let k: StateInit = initOf TestContract(
+        2,
+        3,
+    );,
+          "type": {
+            "id": 78,
+            "kind": "type_ref_simple",
+            "name": "StateInit",
+            "optional": false,
+            "ref": StateInit,
+          },
+        },
+      ],
+    },
   ],
-  "id": 17,
+  "id": 84,
   "kind": "program",
 }
 `;
