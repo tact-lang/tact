@@ -187,6 +187,35 @@ exports[`grammar should fail case-19 1`] = `
 Line 1, col 14:
 > 1 | fun function(,) {}
                    ^
+  2 | 
+"
+`;
+
+exports[`grammar should fail case-20 1`] = `
+"<unknown>:2:24: Empty parameter list should not have a dangling comma.
+Line 2, col 24:
+  1 | fun another() {
+> 2 |     return 42.toString(,);
+                             ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-21 1`] = `
+"<unknown>:1:14: Empty parameter list should not have a dangling comma.
+Line 1, col 14:
+> 1 | fun function(,) : Int {
+                   ^
+  2 |     return 42;
+"
+`;
+
+exports[`grammar should fail case-22 1`] = `
+"<unknown>:1:4: Syntax error: expected not an idPart 
+Line 1, col 4:
+> 1 | function a(): Int { 
+         ^
+  2 |     return 42;
 "
 `;
 
