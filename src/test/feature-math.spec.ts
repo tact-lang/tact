@@ -7,8 +7,7 @@ describe('feature-math', () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    it('should perform basic math operations correctly', async () => {
-
+    it('should perform math operations correctly', async () => {
         // Init
         const system = await ContractSystem.create();
         const treasure = system.treasure('treasure');
@@ -25,11 +24,15 @@ describe('feature-math', () => {
             .storeBit(1)
             .storeRef(beginCell().storeBit(1).endCell())
             .endCell();
-        const stringA = "foo";
-        const stringB = "bar";
+        const stringA = 'foo';
+        const stringB = 'bar';
         const dictA = Dictionary.empty<bigint, bigint>().set(0n, 0n);
         const dictB = Dictionary.empty<bigint, bigint>().set(0n, 2n);
-        await contract.send(treasure, { value: toNano('10') }, { $$type: 'Deploy', queryId: 0n });
+        await contract.send(
+            treasure,
+            { value: toNano('10') },
+            { $$type: 'Deploy', queryId: 0n }
+        );
         await system.run();
 
         // Tests
@@ -335,5 +338,53 @@ describe('feature-math', () => {
         expect(await contract.getCompare28(dictA, dictB)).toBe(true);
         expect(await contract.getCompare28(dictB, dictA)).toBe(true);
         expect(await contract.getCompare28(dictA, dictA)).toBe(false);
+
+        // Test advanced math operations
+        for (let num = 1n; num <= 100n; num++) {
+            expect(await contract.getLog2(num)).toBe(
+                BigInt(Math.floor(Math.log2(Number(num))))
+            );
+        }
+
+        for (let num = 1n; num <= 10n; num++) {
+            for (let base = 2n; base <= 10; base++) {
+                const logarithm = BigInt(
+                    Math.floor(Math.log2(Number(num)) / Math.log2(Number(base)))
+                );
+                expect(await contract.getLog(num, base)).toBe(logarithm);
+            }
+        }
+
+        expect(await contract.getLog2(0n)).toBe(-1n);
+        expect(await contract.getLog(0n, 2n)).toBe(0n);
+
+        const maxint = 2n ** 256n - 1n;
+
+        for (let num = maxint - 100n; num <= maxint; num++) {
+            expect(await contract.getLog2(num)).toBe(255n);
+        }
+
+        for (let num = maxint - 10n; num <= maxint; num++) {
+            for (let base = 2; base <= 10; base++) {
+                expect(await contract.getLog(num, BigInt(base))).toBe(
+                    BigInt(num.toString(base).length - 1)
+                );
+            }
+        }
+
+        for (let num = maxint / 2n - 50n; num <= maxint / 2n; num++) {
+            expect(await contract.getLog2(num)).toBe(254n);
+        }
+        for (let num = maxint / 2n + 1n; num <= maxint / 2n + 50n; num++) {
+            expect(await contract.getLog2(num)).toBe(255n);
+        }
+
+        for (let num = maxint / 2n - 5n; num <= maxint / 2n + 5n; num++) {
+            for (let base = 2; base <= 10; base++) {
+                expect(await contract.getLog(num, BigInt(base))).toBe(
+                    BigInt(num.toString(base).length - 1)
+                );
+            }
+        }
     });
 });

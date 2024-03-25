@@ -43,3 +43,18 @@ export function openContext(ctx: CompilerContext,
     ctx = store.set(ctx, 'types', { sources, funcSources, functions, constants, types });
     return ctx;
 }
+
+// Creates a mock context with the given AST elements needed for testing
+// purposes
+export function openMockContext(
+    ctx: CompilerContext,
+    types: ASTType[],
+    functions: (ASTNativeFunction|ASTFunction)[],
+    constants: ASTConstant[],
+) {
+  const sources: {code: string, path: string}[] = [];
+  const funcSources: {code: string, path: string}[] = [];
+  ctx = store.set(ctx, 'types',
+                  {sources, funcSources, functions, constants, types});
+  return ctx;
+}
