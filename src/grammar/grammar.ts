@@ -320,7 +320,11 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    Function_abstractVoid(arg0, _arg1, arg2, _arg3, arg4, _arg5, _arg6, _arg7) {
+    Function_abstractVoid(arg0, _arg1, arg2, _arg3, arg4, arg5, _arg6, _arg7) {
+        if (arg4.source.contents === '' && arg5.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg5));
+        }
+
         const attributes = arg0.children.map((v) => v.resolve_attributes()) as ASTFunctionAttribute[];
         checkVariableName(arg2.sourceString, createRef(arg2));
         checkFunctionAttributes(true, attributes, createRef(this));
@@ -335,7 +339,11 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    Function_abstractType(arg0, _arg1, arg2, _arg3, arg4, _arg5, _arg6, _arg7, arg8, _arg9) {
+    Function_abstractType(arg0, _arg1, arg2, _arg3, arg4, arg5, _arg6, _arg7, arg8, _arg9) {
+        if (arg4.source.contents === '' && arg5.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg5));
+        }
+
         const attributes = arg0.children.map((v) => v.resolve_attributes()) as ASTFunctionAttribute[];
         checkVariableName(arg2.sourceString, createRef(arg2));
         checkFunctionAttributes(true, attributes, createRef(this));

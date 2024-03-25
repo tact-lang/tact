@@ -221,11 +221,11 @@ Line 6, col 14:
 `;
 
 exports[`grammar should fail case-23 1`] = `
-"<unknown>:7:1: Abstract function doesn't have abstract modifier
-Line 7, col 1:
+"<unknown>:7:31: Empty parameter list should not have a dangling comma.
+Line 7, col 31:
   6 | 
-> 7 | fun testFuncAbstract(,);
-      ^~~~~~~~~~~~~~~~~~~~~~~~
+> 7 | abstract fun testFuncAbstract(,);
+                                    ^
   8 | 
 "
 `;
