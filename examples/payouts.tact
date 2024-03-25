@@ -29,7 +29,7 @@ contract Beacon with Ownable {
         require(ctx.sender == self.master, "Invalid sender");
 
         // Reserve funds
-        nativeReserve(ton("0.1"), 0);
+        nativeReserve(ton("0.1"), ReserveExact);
 
         // Send response
         if (self.completed) {

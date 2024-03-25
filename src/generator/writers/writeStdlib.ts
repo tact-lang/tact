@@ -1325,4 +1325,28 @@ export function writeStdlib(ctx: WriterContext) {
             `);
         });
     });
+
+    ctx.fun(`__tact_log2`, () => {
+        ctx.signature(`int __tact_log2(int num)`);
+        ctx.context('stdlib');
+        ctx.asm(`asm "UBITSIZE DEC"`);
+    });
+
+    ctx.fun(`__tact_log`, () => {
+        ctx.signature(`int __tact_log(int num, int base)`);
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                if (num < base) {
+                    return 0;
+                }
+                int result = 0;
+                while (num >= base) {
+                    num /= base;
+                    result += 1;
+                }
+                return result;
+            `);
+        });
+    });
 }
