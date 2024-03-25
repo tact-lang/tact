@@ -1,7 +1,7 @@
-function a(): Int { 
+fun a(): Int { 
     return 42;
 }
 
-fucntion b(): Int {
+fun b(): Int {
     return a(,);
 }
