@@ -221,12 +221,21 @@ Line 6, col 14:
 `;
 
 exports[`grammar should fail case-23 1`] = `
-"<unknown>:7:31: Empty parameter list should not have a dangling comma.
-Line 7, col 31:
-  6 | 
-> 7 | abstract fun testFuncAbstract(,);
+"<unknown>:2:23: Empty parameter list should not have a dangling comma.
+Line 2, col 23:
+  1 | @name(native_name_1)
+> 2 | native testNativeFunc(,);
+                            ^
+  3 | 
+"
+`;
+
+exports[`grammar should fail case-24 1`] = `
+"<unknown>:1:31: Empty parameter list should not have a dangling comma.
+Line 1, col 31:
+> 1 | abstract fun testFuncAbstract(,);
                                     ^
-  8 | 
+  2 | 
 "
 `;
 

@@ -345,8 +345,6 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         }
 
         const attributes = arg0.children.map((v) => v.resolve_attributes()) as ASTFunctionAttribute[];
-        checkVariableName(arg2.sourceString, createRef(arg2));
-        checkFunctionAttributes(true, attributes, createRef(this));
         return createNode({
             kind: 'def_function',
             origin: ctx!.origin,
@@ -358,7 +356,11 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    NativeFunction_withType(_arg0, _arg1, arg2, _arg3, arg4, arg5, arg6, _arg7, arg8, _arg9, _arg10, _arg11, arg12, _arg13) {
+    NativeFunction_withType(_arg0, _arg1, arg2, _arg3, arg4, arg5, arg6, _arg7, arg8, arg9, _arg10, _arg11, arg12, _arg13) {
+        if (arg8.source.contents === '' && arg9.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg9));
+        }
+        
         checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',
@@ -371,7 +373,11 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    NativeFunction_withVoid(_arg0, _arg1, arg2, _arg3, arg4, arg5, arg6, _arg7, arg8, _arg9, _arg10, _arg11) {
+    NativeFunction_withVoid(_arg0, _arg1, arg2, _arg3, arg4, arg5, arg6, _arg7, arg8, arg9, _arg10, _arg11) {
+        if (arg8.source.contents === '' && arg9.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg9));
+        }
+        
         checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',
