@@ -132,7 +132,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     //
 
     if (f.kind === 'string') {
-        const s = f.value.replace(/\\\\|\\\"|\\n|\\r|\\t|\\b|\\f/g, (match) => {
+        const s = f.value.replace(/\\\\|\\"|\\n|\\r|\\t|\\b|\\f/g, (match) => {
             switch (match) {
                 case '\\\\':
                     return '\\';
@@ -152,7 +152,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
                     return match;
             }
         });
-        let id = writeString(s, ctx);
+        const id = writeString(s, ctx);
         ctx.used(id);
         return `${id}()`;
     }
