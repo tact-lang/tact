@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/schema#",
+  "id": "https://raw.githubusercontent.com/vanishmax/tact/main/grammar/configSchema.json",
+  "title": "Tact configuration schema",
+  "description": "JSON Schema for Tact configuration file",
+  "type": "object",
+  "required": ["projects"],
+  "properties": {
+    "projects": {
+      "type": "array",
+      "description": "The list of all projects with compiler parameters",
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "output"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of a project. All generated files are prefixed with this name"
+          },
+          "path": {
+            "type": "string",
+            "description": "The path to the root Tact file"
+          },
+          "output": {
+            "type": "string",
+            "description": "The path to a directory where all generated files will be placed"
+          },
+          "options": {
+            "type": "object",
+            "description": "Additional project properties",
+            "properties": {
+              "debug": {
+                "type": "boolean",
+                "description": "Enables debug output of a contract. It is useful for debugging purposes. Enabling this contract would report that it was compiled in debug mode using the supported_interfaces method"
+              },
+              "masterchain": {
+                "type": "boolean",
+                "description": "Enables masterchain support in the contract"
+              },
+              "external": {
+                "type": "boolean",
+                "description": "Allows the contract to call external functions"
+              },
+              "experimental": {
+                "type": "object",
+                "description": "Experimental project properties. Might be removed in the future",
+                "properties": {
+                  "inline": {
+                    "type": "boolean",
+                    "description": "Enables inlining of all functions in contracts. Could reduce gas usage at the cost of a bigger contract"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
