@@ -17,6 +17,7 @@ const projectSchema = z.object({
 }).strict();
 
 const configSchema = z.object({
+    $schema: z.string().optional(),
     projects: z.array(projectSchema)
 }).strict();
 
