@@ -1,12 +1,13 @@
 {
-    "projects": [
-      {
-        "name": "implicit-init-2",
-        "path": "./features/implicit-init-2.tact",
-        "output": "./features/output",
-        "options": {
-          "debug": true
-        }
+  "$schema": "https://raw.githubusercontent.com/vanishmax/tact/main/grammar/configSchema.json",
+  "projects": [
+    {
+      "name": "implicit-init-2",
+      "path": "./features/implicit-init-2.tact",
+      "output": "./features/output",
+      "options": {
+        "debug": true
       }
-    ]
-  }
+    }
+  ]
+}
