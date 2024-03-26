@@ -162,8 +162,16 @@ export interface TactActionDict<T> extends ActionDict<T> {
   funcLetter?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
   funcId?: (this: NonterminalNode, arg0: NonterminalNode, arg1: IterationNode) => T;
   boolLiteral?: (this: NonterminalNode, arg0: TerminalNode) => T;
-  stringLiteralCharacter?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   stringLiteral?: (this: NonterminalNode, arg0: TerminalNode, arg1: IterationNode, arg2: TerminalNode) => T;
+  nonQuoteOrBackslashChar?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  escapeSequence_backslash?: (this: NonterminalNode, arg0: TerminalNode, arg1: TerminalNode) => T;
+  escapeSequence_doubleQuote?: (this: NonterminalNode, arg0: TerminalNode, arg1: TerminalNode) => T;
+  escapeSequence_newline?: (this: NonterminalNode, arg0: TerminalNode, arg1: TerminalNode) => T;
+  escapeSequence_carriageReturn?: (this: NonterminalNode, arg0: TerminalNode, arg1: TerminalNode) => T;
+  escapeSequence_tab?: (this: NonterminalNode, arg0: TerminalNode, arg1: TerminalNode) => T;
+  escapeSequence_backspace?: (this: NonterminalNode, arg0: TerminalNode, arg1: TerminalNode) => T;
+  escapeSequence_formFeed?: (this: NonterminalNode, arg0: TerminalNode, arg1: TerminalNode) => T;
+  escapeSequence?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   keyword?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   contract?: (this: NonterminalNode, arg0: TerminalNode) => T;
   let?: (this: NonterminalNode, arg0: TerminalNode) => T;

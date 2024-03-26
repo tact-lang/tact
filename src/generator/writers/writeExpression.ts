@@ -132,7 +132,27 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     //
 
     if (f.kind === 'string') {
-        const id = writeString(f.value, ctx);
+        const s = f.value.replace(/\\\\|\\\"|\\n|\\r|\\t|\\b|\\f/g, (match) => {
+            switch (match) {
+                case '\\\\':
+                    return '\\';
+                case '\\"':
+                    return '"';
+                case '\\n':
+                    return '\n';
+                case '\\r':
+                    return '\r';
+                case '\\t':
+                    return '\t';
+                case '\\b':
+                    return '\b';
+                case '\\f':
+                    return '\f';
+                default:
+                    return match;
+            }
+        });
+        let id = writeString(s, ctx);
         ctx.used(id);
         return `${id}()`;
     }

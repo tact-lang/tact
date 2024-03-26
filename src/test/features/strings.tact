@@ -1,5 +1,4 @@
 contract StringsTester {
-
     init() {
         
     }
@@ -60,7 +59,6 @@ contract StringsTester {
         return b.toString();
     }
 
-
     get fun stringWithLargeNumber(): String {
         let b: StringBuilder = beginString();
         b.append("Hello, your balance: ");
@@ -78,5 +76,17 @@ contract StringsTester {
 
     get fun processBase64(src: String): Slice {
         return src.fromBase64();
+    }
+
+    get fun stringWithEscapedChars1(): String {
+        return "test \n \n \\ \\\n \"string\"";
+    }
+
+    get fun stringWithEscapedChars2(): String {
+        return "test \n test \t test \r test \b test \f test \" test ' test \\ \\\\ \"_\" \"\" test";
+    }
+
+    get fun stringWithEscapedChars3(): String {
+        return "test \\n test \\t test \\r test \\b test \\f test \\\" test \\' test \\\\ \\\\\\\\ \\\"_\\\" \\\"\\\" test";
     }
 }
