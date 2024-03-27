@@ -7,5 +7,6 @@ If your PR doesn't close a particular issue, please, create the issue first and 
 
 * [ ] I have updated CHANGELOG.md
 * [ ] I have added unit tests to check possible regressions (if your PR introduces new error messages, each of those should have a distinct test case)
+* [ ] I have run all the tests locally and no test failure was reported
 * [ ] I did not introduce unrelated formatting/whitespace changes in the code base
 * [ ] I did not do unrelated and/or undiscussed refactorings
