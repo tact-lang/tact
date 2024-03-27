@@ -571,7 +571,15 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
 semantics.addOperation<ASTNode>("astOfStatement", {
     // TODO: process StatementBlock
 
-    StatementLet(_letKwd, id, _colon, type, _equals, expression, _semicolon) {
+    StatementLet_withType(
+        _letKwd,
+        id,
+        _colon,
+        type,
+        _equals,
+        expression,
+        _semicolon,
+    ) {
         checkVariableName(id.sourceString, createRef(id));
 
         return createNode({
@@ -579,6 +587,16 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             name: id.sourceString,
             type: type.astOfType(),
             expression: expression.astOfExpression(),
+            ref: createRef(this),
+        });
+    },
+    StatementLet_withoutType(_arg0, arg1, _arg2, arg3, _arg4) {
+        checkVariableName(arg1.sourceString, createRef(arg1));
+
+        return createNode({
+            kind: "statement_let_no_type",
+            name: arg1.sourceString,
+            expression: arg3.resolve_expression(),
             ref: createRef(this),
         });
     },
@@ -827,16 +845,6 @@ semantics.addOperation<ASTNode>("astOfType", {
             kind: "type_ref_simple",
             name: typeId.sourceString,
             optional: true,
-            ref: createRef(this),
-        });
-    },
-    StatementLet_withoutType(arg0, arg1, arg2, arg3, arg4) {
-        checkVariableName(arg1.sourceString, createRef(arg1));
-
-        return createNode({
-            kind: "statement_let_no_type",
-            name: arg1.sourceString,
-            expression: arg3.resolve_expression(),
             ref: createRef(this),
         });
     },
