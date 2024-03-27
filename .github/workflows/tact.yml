@@ -14,7 +14,7 @@ jobs:
       matrix:
         node-version: [18.x]
         os: [ubuntu-latest, windows-latest, macos-latest]
-    
+
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -36,10 +36,11 @@ jobs:
         yarn gen
         yarn build
         yarn coverage
-    
+
     - name: Check there are no errors reported by ESLint
       run: |
         yarn lint
+        yarn test:format
 
     - name: Compare Tact version from CLI flag `--version` against package.json
       if: runner.os != 'Windows'
@@ -61,7 +62,7 @@ jobs:
         yarn build
         yarn test
         yarn tact --version
-    
+
     - name: Test compatibility with Blueprint
       run: |
         yarn create ton -- test-project --type tact-counter --contractName Counter
