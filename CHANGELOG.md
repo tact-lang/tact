@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `log2` and `log` math functions in `@stdlib/math`: PR [#166](https://github.com/tact-lang/tact/pull/166)
 - Reserve mode constants in `@stdlib/reserve`, namely `ReserveExact`, `ReserveAllExcept`, `ReserveAtMost`, `ReserveAddOriginalBalance`, `ReserveInvertSign`, `ReserveBounceIfActionFail`: PR [#173](https://github.com/tact-lang/tact/pull/173)
+- JSON Schema for `tact.config.json`: PR [#194](https://github.com/tact-lang/tact/pull/194)
 
 ### Changed
 - Update the `dump` function to handle addresses: PR [#175](https://github.com/tact-lang/tact/pull/175)
