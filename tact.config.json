@@ -246,6 +246,14 @@
       }
     },
     {
+      "name": "local-type-inference",
+      "path": "./src/test/features/local-type-inference.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
       "name": "benchmark_functions",
       "path": "./src/benchmarks/contracts/functions.tact",
       "output": "./src/benchmarks/contracts/output"

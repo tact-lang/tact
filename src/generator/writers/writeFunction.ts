@@ -80,6 +80,25 @@ export function writeStatement(f: ASTStatement, self: string | null, returns: Ty
 
         ctx.append(`${resolveFuncType(t, ctx)} ${id(f.name)} = ${writeCastedExpression(f.expression, t, ctx)};`);
         return;
+    } else if (f.kind === 'statement_let_no_type') {
+
+        const varType = getExpType(ctx.ctx, f.expression);
+
+        // Contract/struct case
+        if (varType.kind === 'ref') {
+            const tt = getType(ctx.ctx, varType.name);
+            if (tt.kind === 'contract' || tt.kind === 'struct') {
+                if (varType.optional) {
+                    ctx.append(`tuple ${id(f.name)} = ${writeCastedExpression(f.expression, varType, ctx)};`);
+                } else {
+                    ctx.append(`var ${resolveFuncTypeUnpack(varType, id(f.name), ctx)} = ${writeCastedExpression(f.expression, varType, ctx)};`);
+                }
+                return;
+            }
+        }
+
+        ctx.append(`${resolveFuncType(varType, ctx)} ${id(f.name)} = ${writeCastedExpression(f.expression, varType, ctx)};`);
+        return;
     } else if (f.kind === 'statement_assign') {
 
         // Prepare lvalue
