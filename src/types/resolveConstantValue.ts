@@ -64,7 +64,7 @@ function reduceInt(ast: ASTExpression): bigint {
     return reduceIntImpl(ast)
   } catch (error) {
     if (error instanceof RangeError) {
-      throwError('Cannot evaluate expression due to integer overflow', ast.ref);
+      throwError('Cannot evaluate constant expression due to integer overflow', ast.ref);
     } else {
       throw error;
     }
