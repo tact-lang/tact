@@ -16,7 +16,8 @@
     "test": "jest",
     "coverage": "cross-env COVERAGE=true jest",
     "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1",
-    "lint": "yarn eslint ."
+    "lint": "yarn eslint .",
+    "lint:schema": "ajv validate -s grammar/configSchema.json -d tact.config.json"
   },
   "files": [
     "dist/**/*",
@@ -59,7 +60,7 @@
     "@types/qs": "^6.9.7",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
-    "ajv": "^8.12.0",
+    "ajv-cli": "^5.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
     "glob": "^8.1.0",

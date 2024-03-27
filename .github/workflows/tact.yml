@@ -40,6 +40,7 @@ jobs:
     - name: Check there are no errors reported by ESLint
       run: |
         yarn lint
+        yarn lint:schema
 
     - name: Compare Tact version from CLI flag `--version` against package.json
       if: runner.os != 'Windows'
