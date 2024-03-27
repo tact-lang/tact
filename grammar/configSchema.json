@@ -15,7 +15,7 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "The name of a project. All generated files are prefixed with this name"
+            "description": "Name of the project. All generated files are prefixed with it."
           },
           "path": {
             "type": "string",
