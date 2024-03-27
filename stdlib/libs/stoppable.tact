@@ -1,3 +1,5 @@
+import "./ownable";
+
 @interface("org.ton.stoppable")
 trait Stoppable with Ownable {
     
