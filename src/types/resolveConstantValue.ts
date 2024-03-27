@@ -5,7 +5,7 @@ import { ASTExpression, throwError } from "../grammar/ast";
 import { printTypeRef, TypeRef } from "./types";
 import { sha256_sync } from "@ton/crypto";
 
-function reduceInt(ast: ASTExpression): bigint {
+function reduceIntImpl(ast: ASTExpression): bigint {
     if (ast.kind === 'number') {
         return ast.value;
     } else if (ast.kind === 'op_binary') {
@@ -57,6 +57,18 @@ function reduceInt(ast: ASTExpression): bigint {
         }
     }
     throwError('Cannot reduce expression to a constant integer', ast.ref);
+}
+
+function reduceInt(ast: ASTExpression): bigint {
+  try {
+    return reduceIntImpl(ast)
+  } catch (error) {
+    if (error instanceof RangeError) {
+      throwError('Cannot evaluate expression due to integer overflow', ast.ref);
+    } else {
+      throw error;
+    }
+  }
 }
 
 function reduceBool(ast: ASTExpression): boolean {
