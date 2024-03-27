@@ -27,7 +27,7 @@
           },
           "options": {
             "type": "object",
-            "description": "Additional project properties",
+            "description": "Compilation options for the project.",
             "properties": {
               "debug": {
                 "type": "boolean",
