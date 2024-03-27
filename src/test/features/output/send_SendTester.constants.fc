@@ -1,8 +1,0 @@
-;; Comment "Deploy success"
-cell __gen_cell_comment_50b8812df4a733c5a2266eb68dec952c64d04a3174bae42566a1e191dbdb470c() asm "B{b5ee9c72410101010014000024000000004465706c6f7920737563636573736c569015} B>boc PUSHREF";
-
-;; Comment "World"
-cell __gen_cell_comment_95fbfd67c31e549b5d4386ed4a2beebc294be55acb3eddadaa7f9df86be36d42() asm "B{b5ee9c7241010101000b00001200000000576f726c64cf8219c9} B>boc PUSHREF";
-
-;; Comment "Something"
-cell __gen_cell_comment_ec65c74747db20896a39d874b0473dd5e61e08fc9f3516d56d58eaeea5031ea4() asm "B{b5ee9c7241010101000f00001a00000000536f6d657468696e6707ec49a0} B>boc PUSHREF";

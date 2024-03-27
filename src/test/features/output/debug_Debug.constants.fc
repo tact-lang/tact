@@ -1,2 +1,0 @@
-;; String "Hello world!"
-slice __gen_slice_string_be033138a8e284b3da1cee56e92447de2368f6431d64a3c6fe4db3183aeb9c36() asm "B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE";
