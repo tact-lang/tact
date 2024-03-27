@@ -47,7 +47,7 @@
                 "properties": {
                   "inline": {
                     "type": "boolean",
-                    "description": "Enables inlining of all functions in contracts. Could reduce gas usage at the cost of a bigger contract"
+                    "description": "False by default. If set to true, enables inlining of all functions in contracts. This can reduce gas usage at the cost of bigger contracts."
                   }
                 }
               }
