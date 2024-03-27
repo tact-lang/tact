@@ -40,6 +40,9 @@ jobs:
     - name: Check there are no errors reported by ESLint
       run: |
         yarn lint
+
+    - name: Check that tact.config.json adheres to the JSON schema
+      run: |
         yarn lint:schema
 
     - name: Compare Tact version from CLI flag `--version` against package.json
