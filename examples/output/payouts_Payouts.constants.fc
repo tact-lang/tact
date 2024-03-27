@@ -1,5 +1,0 @@
-;; Comment "Success"
-cell __gen_cell_comment_37e90db9d1f7725dc0128ee6bad2035fb50479e09a488a29257bed01a23050a0() asm "B{b5ee9c7241010101000d00001600000000537563636573738a3a2a2a} B>boc PUSHREF";
-
-;; Comment "Already paid"
-cell __gen_cell_comment_51a60a895442bd331fe75161305b2afbe04d33f1cd6cf8a1649e028f992eb33c() asm "B{b5ee9c7241010101001200002000000000416c72656164792070616964feced6d9} B>boc PUSHREF";

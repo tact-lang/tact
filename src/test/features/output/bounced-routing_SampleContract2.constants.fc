@@ -1,5 +1,0 @@
-;; String "Bouncing First!"
-slice __gen_slice_string_94c3f101bbe94a48f10dfe5c99449522d57da3d3f44d711da4395dcd9cf8c814() asm "B{b5ee9c7241010101001100001e426f756e63696e6720466972737421fbb0a49f} B>boc <s PUSHSLICE";
-
-;; String "Bouncing Second!"
-slice __gen_slice_string_b959dde8a8be0822e78951cc7690fb5182b435b11cc70c801cf2a2b3e9b1e40b() asm "B{b5ee9c72410101010012000020426f756e63696e67205365636f6e64214fa65a46} B>boc <s PUSHSLICE";
