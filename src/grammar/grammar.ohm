@@ -98,7 +98,8 @@ Tact {
               | StatementRepeat
               | StatementUntil
     StatementBlock = "{" Statement* "}"
-    StatementLet = let id ":" Type "=" Expression ";"
+    StatementLet = let id ":" Type "=" Expression ";" --withType
+                 | let id "=" Expression ";" --withoutType
     StatementReturn = return Expression ";" --withExpression
                     | return ";" --withoutExpression    
     StatementExpression = Expression ";"
