@@ -43,7 +43,7 @@
               },
               "experimental": {
                 "type": "object",
-                "description": "Experimental project properties. Might be removed in the future",
+                "description": "Experimental options that might be removed in the future. Use with caution!",
                 "properties": {
                   "inline": {
                     "type": "boolean",
