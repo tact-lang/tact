@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update the `dump` function to handle addresses: PR [#175](https://github.com/tact-lang/tact/pull/175)
 - The implicit empty `init` function is now present by default in the contract if not declared: PR [#167](https://github.com/tact-lang/tact/pull/167)
-- Improved `Bool` reduction in constant expressions: PR [#195](https://github.com/tact-lang/tact/pull/195)
+- Improved `Bool` reduction in constant expressions: PR [#197](https://github.com/tact-lang/tact/pull/197)
 
 ### Fixed
 
