@@ -830,6 +830,16 @@ semantics.addOperation<ASTNode>("astOfType", {
             ref: createRef(this),
         });
     },
+    StatementLet_withoutType(arg0, arg1, arg2, arg3, arg4) {
+        checkVariableName(arg1.sourceString, createRef(arg1));
+
+        return createNode({
+            kind: "statement_let_no_type",
+            name: arg1.sourceString,
+            expression: arg3.resolve_expression(),
+            ref: createRef(this),
+        });
+    },
     Type_regular(typeId) {
         return createNode({
             kind: "type_ref_simple",

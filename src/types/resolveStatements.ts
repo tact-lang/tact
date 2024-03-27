@@ -185,6 +185,18 @@ function processStatements(
                 throwError(`Variable "${s.name}" already exists`, s.ref);
             }
             sctx = addVariable(s.name, variableType, sctx);
+        } else if (s.kind === "statement_let_no_type") {
+            // Process expression
+            ctx = resolveExpression(s.expression, sctx, ctx);
+
+            // Check type
+            const expressionType = getExpType(ctx, s.expression);
+
+            // Add variable to statement context
+            if (sctx.vars[s.name]) {
+                throwError(`Variable already exists: ${s.name}`, s.ref);
+            }
+            sctx = addVariable(s.name, expressionType, sctx);
         } else if (s.kind === "statement_assign") {
             // Process lvalue
             ctx = resolveLValueRef(s.path, sctx, ctx);

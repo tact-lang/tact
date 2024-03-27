@@ -423,6 +423,14 @@ export type ASTStatementLet = {
     ref: ASTRef;
 };
 
+export type ASTStatementLetNoType = {
+    kind: "statement_let_no_type";
+    id: number;
+    name: string;
+    expression: ASTExpression;
+    ref: ASTRef;
+};
+
 export type ASTStatementReturn = {
     kind: "statement_return";
     id: number;
@@ -530,6 +538,7 @@ export type ASTStatementForEach = {
 
 export type ASTStatement =
     | ASTStatementLet
+    | ASTStatementLetNoType
     | ASTStatementReturn
     | ASTStatementExpression
     | ASTStatementAssign
@@ -550,6 +559,7 @@ export type ASTNode =
     | ASTFunction
     | ASTOpCall
     | ASTStatementLet
+    | ASTStatementLetNoType
     | ASTStatementReturn
     | ASTProgram
     | ASTPrimitive
@@ -730,6 +740,9 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
 
     if (node.kind === "statement_let") {
         traverse(node.type, callback);
+        traverse(node.expression, callback);
+    }
+    if (node.kind === "statement_let_no_type") {
         traverse(node.expression, callback);
     }
     if (node.kind === "statement_return") {
