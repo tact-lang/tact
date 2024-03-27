@@ -35,7 +35,7 @@
               },
               "masterchain": {
                 "type": "boolean",
-                "description": "Enables masterchain support in the contract"
+                "description": "False by default. If set to true, enables masterchain support.\n\nRead more about masterchain: https://docs.tact-lang.org/book/masterchain."
               },
               "external": {
                 "type": "boolean",
