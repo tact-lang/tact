@@ -23,7 +23,7 @@
           },
           "output": {
             "type": "string",
-            "description": "The path to a directory where all generated files will be placed"
+            "description": "Path to the directory where all generated files will be placed."
           },
           "options": {
             "type": "object",
