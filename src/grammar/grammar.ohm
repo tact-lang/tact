@@ -215,8 +215,6 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // String literal
-    // stringLiteralCharacter = ~("\"" | "\\" | lineTerminator) any
-    // stringLiteral = "\"" stringLiteralCharacter* "\""
     stringLiteral = "\"" (nonQuoteOrBackslashChar | escapeSequence)* "\""
     nonQuoteOrBackslashChar = ~("\"" | "\\") any
     escapeSequence = "\\" "\\" -- backslash
