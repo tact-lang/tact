@@ -1,10 +1,22 @@
 import { Address, Cell, Slice, toNano } from "@ton/core";
 import { enabledMasterchain } from "../config/features";
 import { CompilerContext } from "../context";
-import { ASTExpression, throwError } from "../grammar/ast";
+import { ASTExpression, ASTOpCallStatic, throwError } from "../grammar/ast";
 import { printTypeRef, TypeRef } from "./types";
 import { sha256_sync } from "@ton/crypto";
 import { getExpType } from "./resolveExpression";
+
+function isSlice(ast: ASTExpression): boolean {
+    return (ast.kind === 'op_static_call') && (ast.name === 'slice') && (ast.args.length === 1);
+}
+
+function isCell(ast: ASTExpression): boolean {
+    return (ast.kind === 'op_static_call') && (ast.name === 'cell') && (ast.args.length === 1);
+}
+
+function isAddress(ast: ASTExpression): boolean {
+    return (ast.kind === 'op_static_call') && (ast.name === 'address') && (ast.args.length === 1);
+}
 
 function reduceInt(ast: ASTExpression): bigint {
     if (ast.kind === 'number') {
@@ -103,7 +115,26 @@ function reduceBool(ast: ASTExpression, ctx: CompilerContext): boolean {
                 } else if (leftType.kind === 'null' && rightType.kind === 'null') {
                     return true;
                 }
+            } else if (ast.op === '!=') {
+                if (leftType.kind === 'ref' && rightType.kind === 'ref') {
+                    if (leftType.name === 'Address' && rightType.name === 'Address') {
+                        return !reduceAddress(ast.left, ctx).equals(reduceAddress(ast.right, ctx));
+                    } else if (leftType.name === 'Cell' && rightType.name === 'Cell') {
+                        return !reduceCell(ast.left).equals(reduceCell(ast.right));
+                    } else if (leftType.name === 'String' && rightType.name === 'String') {
+                        return reduceString(ast.left) !== reduceString(ast.right);
+                    } else if (leftType.name === 'Int' && rightType.name === 'Int') {
+                        return reduceInt(ast.left) !== reduceInt(ast.right);
+                    } else if (leftType.name === 'Bool' && rightType.name === 'Bool') {
+                        return reduceBool(ast.left, ctx) !== reduceBool(ast.right, ctx);
+                    } else if (leftType.name === 'Slice' && rightType.name === 'Slice') {
+                        return !reduceSlice(ast.left).asCell().equals(reduceSlice(ast.right).asCell());
+                    }
+                } else if (leftType.kind === 'null' && rightType.kind === 'null') {
+                    return false;
+                }
             }
+            return true;
         }
     }
 
@@ -118,58 +149,53 @@ function reduceString(ast: ASTExpression): string {
 }
 
 function reduceAddress(ast: ASTExpression, ctx: CompilerContext): Address {
-    if (ast.kind === 'op_static_call') {
-        if (ast.name === 'address') {
-            if (ast.args.length === 1) {
-                const str = reduceString(ast.args[0]);
-                const address = Address.parse(str);
-                if (address.workChain !== 0 && address.workChain !== -1) {
-                    throwError(`Address ${str} invalid address`, ast.ref);
-                }
-                if (!enabledMasterchain(ctx)) {
-                    if (address.workChain !== 0) {
-                        throwError(`Address ${str} from masterchain are not enabled for this contract`, ast.ref);
-                    }
-                }
-                return address;
+    if (isAddress(ast)) {
+        ast = ast as ASTOpCallStatic;
+        const str = reduceString(ast.args[0]);
+        const address = Address.parse(str);
+        if (address.workChain !== 0 && address.workChain !== -1) {
+            throwError(`Address ${str} invalid address`, ast.ref);
+        }
+        if (!enabledMasterchain(ctx)) {
+            if (address.workChain !== 0) {
+                throwError(
+                    `Address ${str} from masterchain are not enabled for this contract`,
+                    ast.ref
+                );
             }
         }
+        return address;
     }
     throwError('Cannot reduce expression to a constant Address', ast.ref);
 }
 
 function reduceCell(ast: ASTExpression): Cell {
-    if (ast.kind === 'op_static_call') {
-        if (ast.name === 'cell') {
-            if (ast.args.length === 1) {
-                const str = reduceString(ast.args[0]);
-                let c: Cell;
-                try {
-                    c = Cell.fromBase64(str);
-                } catch (e) {
-                    throwError(`Invalid cell ${str}`, ast.ref);
-                }
-                return c;
-            }
+    if (isCell(ast)) {
+        ast = ast as ASTOpCallStatic;
+        const str = reduceString(ast.args[0]);
+        let c: Cell;
+        try {
+            c = Cell.fromBase64(str);
+        } catch (e) {
+            throwError(`Invalid cell ${str}`, ast.ref);
         }
+        return c;
     }
+
     throwError('Cannot reduce expression to a constant Cell', ast.ref);
 }
 
 function reduceSlice(ast: ASTExpression): Slice {
-    if (ast.kind === 'op_static_call') {
-        if (ast.name === 'slice') {
-            if (ast.args.length === 1) {
-                const str = reduceString(ast.args[0]);
-                let c: Cell;
-                try {
-                    c = Cell.fromBase64(str);
-                } catch (e) {
-                    throwError(`Invalid cell ${str}`, ast.ref);
-                }
-                return c.asSlice();
-            }
+    if (isSlice(ast)) {
+        ast = ast as ASTOpCallStatic;
+        const str = reduceString(ast.args[0]);
+        let c: Cell;
+        try {
+            c = Cell.fromBase64(str);
+        } catch (e) {
+            throwError(`Invalid cell ${str}`, ast.ref);
         }
+        return c.asSlice();
     }
     throwError('Cannot reduce expression to a constant Slice', ast.ref);
 }
