@@ -19,7 +19,7 @@
           },
           "path": {
             "type": "string",
-            "description": "The path to the root Tact file"
+            "description": "Path to the project's Tact file. You can only specify one Tact file per project."
           },
           "output": {
             "type": "string",
