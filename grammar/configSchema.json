@@ -8,7 +8,7 @@
   "properties": {
     "projects": {
       "type": "array",
-      "description": "The list of all projects with compiler parameters",
+      "description": "List of Tact projects with respective compilation options. Each .tact file represents its own Tact project.",
       "items": {
         "type": "object",
         "required": ["name", "path", "output"],
