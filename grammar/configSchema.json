@@ -39,7 +39,7 @@
               },
               "external": {
                 "type": "boolean",
-                "description": "Allows the contract to call external functions"
+                "description": "False by default. If set to true, enables support of external message receivers.\n\nRead more about external message receivers: https://docs.tact-lang.org/book/external."
               },
               "experimental": {
                 "type": "object",
