@@ -13,7 +13,6 @@ describe('feature-local-type-inference', () => {
         const system = await ContractSystem.create();
         const treasure = system.treasure('treasure');
         const contract = system.open(await LocalTypeInferenceTester.fromInit());
-        const tracker = system.track(contract.address);
         await contract.send(treasure, { value: toNano('10') }, { $$type: 'Deploy', queryId: 0n });
         await system.run();
         

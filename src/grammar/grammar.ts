@@ -1,12 +1,11 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTConstantAttribute, ASTContractAttribute, ASTExpression, ASTFunctionAttribute, ASTNode, ASTProgram, ASTRef, ASTString, ASTTypeRef, createNode, createRef, inFile, throwError } from './ast';
+import { ASTConstantAttribute, ASTContractAttribute, ASTFunctionAttribute, ASTNode, ASTProgram, ASTRef, ASTString, ASTTypeRef, createNode, createRef, inFile, throwError } from './ast';
 import { checkVariableName } from './checkVariableName';
 import { TactSyntaxError } from './../errors';
 import { MatchResult } from 'ohm-js';
 import { TypeOrigin } from '../types/types';
 import { checkFunctionAttributes } from './checkFunctionAttributes';
 import { checkConstAttributes } from './checkConstAttributes';
-import { getExpType } from '../types/resolveExpression';
 
 let ctx: { origin: TypeOrigin } | null;
 
@@ -429,7 +428,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
 
 // Statements
 semantics.addOperation<ASTNode>('resolve_statement', {
-    StatementLet_withType(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+    StatementLet_withType(_arg0, arg1, _arg2, arg3, _arg4, arg5, _arg6) {
         checkVariableName(arg1.sourceString, createRef(arg1));
 
         return createNode({
@@ -440,7 +439,7 @@ semantics.addOperation<ASTNode>('resolve_statement', {
             ref: createRef(this)
         })
     },
-    StatementLet_withoutType(arg0, arg1, arg2, arg3, arg4) {
+    StatementLet_withoutType(_arg0, arg1, _arg2, arg3, _arg4) {
         checkVariableName(arg1.sourceString, createRef(arg1));
 
         return createNode({
