@@ -217,13 +217,16 @@ Tact {
     // String literal
     stringLiteral = "\"" (nonQuoteOrBackslashChar | escapeSequence)* "\""
     nonQuoteOrBackslashChar = ~("\"" | "\\") any
-    escapeSequence = "\\" "\\" -- backslash
-                   | "\\" "\"" -- doubleQuote
-                   | "\\" "n" -- newline
-                   | "\\" "r" -- carriageReturn
-                   | "\\" "t" -- tab
-                   | "\\" "b" -- backspace
-                   | "\\" "f" -- formFeed
+    escapeSequence = "\\\\" -- backslash
+                   | "\\\"" -- doubleQuote
+                   | "\\n" -- newline
+                   | "\\r" -- carriageReturn
+                   | "\\t" -- tab
+                   | "\\b" -- backspace
+                   | "\\f" -- formFeed
+                   | "\\u{" hexDigit hexDigit? hexDigit? hexDigit? hexDigit? hexDigit? "}" -- unicodeCodePoint
+                   | "\\u" hexDigit hexDigit hexDigit hexDigit -- unicodeEscape
+                   | "\\x" hexDigit hexDigit -- hexEscape
 
     // Keywords
     // NOTE Order is important

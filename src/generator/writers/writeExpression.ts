@@ -132,7 +132,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     //
 
     if (f.kind === 'string') {
-        const s = f.value.replace(/\\\\|\\"|\\n|\\r|\\t|\\b|\\f/g, (match) => {
+        const s = f.value.replace(/\\\\|\\"|\\n|\\r|\\t|\\b|\\f|\\u{([0-9A-Fa-f]+)}|\\u([0-9A-Fa-f]{4})|\\x([0-9A-Fa-f]{2})/g, (match, unicodeCodePoint, unicodeEscape, hexEscape) => {
             switch (match) {
                 case '\\\\':
                     return '\\';
@@ -149,6 +149,21 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
                 case '\\f':
                     return '\f';
                 default:
+                    // Handle Unicode code point escape
+                    if (unicodeCodePoint) {
+                        const codePoint = parseInt(unicodeCodePoint, 16);
+                        return String.fromCodePoint(codePoint);
+                    }
+                    // Handle Unicode escape
+                    if (unicodeEscape) {
+                        const codeUnit = parseInt(unicodeEscape, 16);
+                        return String.fromCharCode(codeUnit);
+                    }
+                    // Handle hex escape
+                    if (hexEscape) {
+                        const hexValue = parseInt(hexEscape, 16);
+                        return String.fromCharCode(hexValue);
+                    }
                     return match;
             }
         });

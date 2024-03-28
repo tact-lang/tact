@@ -87,6 +87,10 @@ contract StringsTester {
     }
 
     get fun stringWithEscapedChars3(): String {
-        return "test \\n test \\t test \\r test \\b test \\f test \\\" test \\' test \\\\ \\\\\\\\ \\\"_\\\" \\\"\\\" test";
+        return "test \\n test \\t test \\r test \\\\b\b test \\f test \\\" test \\' test \\\\ \\\\\\\\ \\\"_\\\" \\\"\\\" test";
+    }
+
+    get fun stringWithEscapedChars4(): String {
+        return "\u{2028}\u{2029} \u0044 \x41\x42\x43";
     }
 }
