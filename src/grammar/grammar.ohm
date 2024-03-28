@@ -215,8 +215,19 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // String literal
-    stringLiteralCharacter = ~("\"" | "\\" | lineTerminator) any
-    stringLiteral = "\"" stringLiteralCharacter* "\""
+    stringLiteral = "\"" (nonQuoteOrBackslashChar | escapeSequence)* "\""
+    nonQuoteOrBackslashChar = ~("\"" | "\\") any
+    escapeSequence = "\\\\" -- backslash
+                   | "\\\"" -- doubleQuote
+                   | "\\n" -- newline
+                   | "\\r" -- carriageReturn
+                   | "\\t" -- tab
+                   | "\\v" -- verticalTab
+                   | "\\b" -- backspace
+                   | "\\f" -- formFeed
+                   | "\\u{" hexDigit hexDigit? hexDigit? hexDigit? hexDigit? hexDigit? "}" -- unicodeCodePoint
+                   | "\\u" hexDigit hexDigit hexDigit hexDigit -- unicodeEscape
+                   | "\\x" hexDigit hexDigit -- hexEscape
 
     // Keywords
     // NOTE Order is important

@@ -146,7 +146,11 @@ export function writeTypescript(abi: ContractABI, init?: {
     w.inIndent(() => {
         if (abi.errors) {
             for (const k in abi.errors) {
-                w.append(`${k}: { message: \`${abi.errors[parseInt(k, 10)].message}\` },`);
+                w.append(
+                    `${k}: { message: \`${abi.errors[
+                        parseInt(k, 10)
+                    ].message.replaceAll('`', '\\`')}\` },`
+                );
             }
         }
     });
