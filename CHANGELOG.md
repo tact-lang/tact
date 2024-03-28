@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The implicit empty `init` function is now present by default in the contract if not declared: PR [#167](https://github.com/tact-lang/tact/pull/167)
 - `@stdlib/stoppable` now imports `@stdlib/ownable` so the programmer does not have to do it separately: PR [#193](https://github.com/tact-lang/tact/pull/193)
 
+- The `RenounceOwnership` message and its corresponding receiver were added to the `OwnableTransferable` trait allowing to transfer ownership to nobody
+
 ### Fixed
 
 ## [1.2.0] - 2024-02-29

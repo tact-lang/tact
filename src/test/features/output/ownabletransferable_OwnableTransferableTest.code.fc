@@ -1,0 +1,154 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "ownabletransferable_OwnableTransferableTest.headers.fc";
+#include "ownabletransferable_OwnableTransferableTest.stdlib.fc";
+#include "ownabletransferable_OwnableTransferableTest.storage.fc";
+
+;;
+;; Contract OwnableTransferableTest functions
+;;
+
+(slice) $OwnableTransferableTest$_contract_init(slice $owner) impure inline_ref {
+    var (($self'owner)) = (null());
+    $self'owner = $owner;
+    return ($self'owner);
+}
+
+((slice), ()) $OwnableTransferableTest$_fun_requireOwner((slice) $self) impure inline_ref {
+    var (($self'owner)) = $self;
+    throw_unless(132, ( __tact_slice_eq_bits($self'owner, __tact_context_get_sender()) ));
+    return (($self'owner), ());
+}
+
+((slice), slice) $OwnableTransferableTest$_fun_owner((slice) $self) impure inline_ref {
+    var (($self'owner)) = $self;
+    return (($self'owner), $self'owner);
+}
+
+;;
+;; Receivers of a Contract OwnableTransferableTest
+;;
+
+((slice), ()) $OwnableTransferableTest$_internal_text_f9b941877628a233a719e129140e93df1eeb5a65aeea5fbd16fb0b9af4004c94((slice) $self) impure inline {
+    var ($self'owner) = $self;
+    ($self'owner)~$OwnableTransferableTest$_fun_requireOwner();
+    return (($self'owner), ());
+}
+
+(((slice)), ()) $OwnableTransferableTest$_internal_binary_ChangeOwner((slice) $self, (int, slice) $msg) impure inline {
+    var ($self'owner) = $self;
+    var ($msg'queryId, $msg'newOwner) = $msg;
+    ($self'owner)~$OwnableTransferableTest$_fun_requireOwner();
+    $self'owner = $msg'newOwner;
+    ($self'owner)~$OwnableTransferableTest$_fun_reply($ChangeOwnerOk$_store_cell($ChangeOwnerOk$_constructor_queryId_newOwner($msg'queryId, $msg'newOwner)));
+    return (($self'owner), ());
+}
+
+(((slice)), ()) $OwnableTransferableTest$_internal_binary_RenounceOwnership((slice) $self, (int) $msg) impure inline {
+    var ($self'owner) = $self;
+    var ($msg'queryId) = $msg;
+    ($self'owner)~$OwnableTransferableTest$_fun_requireOwner();
+    $self'owner = __tact_create_address(0, 0);
+    ($self'owner)~$OwnableTransferableTest$_fun_reply($ChangeOwnerOk$_store_cell($ChangeOwnerOk$_constructor_queryId_newOwner($msg'queryId, __tact_create_address(0, 0))));
+    return (($self'owner), ());
+}
+
+;;
+;; Get methods of a Contract OwnableTransferableTest
+;;
+
+_ %owner() method_id(83229) {
+    var self = $OwnableTransferableTest$_contract_load();
+    var res = self~$OwnableTransferableTest$_fun_owner();
+    return res;
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.debug.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128,
+        "org.ton.ownable.transferable.v3"H >> 128,
+        "org.ton.ownable"H >> 128
+    );
+}
+
+_ get_abi_ipfs() method_id {
+    return "ipfs://QmPsKH7288xaWXMvJH8i8qoGjdt7jaVdeEuEKVtZEzXSp6";
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract OwnableTransferableTest
+;;
+
+((slice), int) $OwnableTransferableTest$_contract_router_internal((slice) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Receive ChangeOwner message
+    if (op == 2174598809) {
+        var msg = in_msg~$ChangeOwner$_load();
+        self~$OwnableTransferableTest$_internal_binary_ChangeOwner(msg);
+        return (self, true);
+    }
+    
+    ;; Receive RenounceOwnership message
+    if (op == 472825648) {
+        var msg = in_msg~$RenounceOwnership$_load();
+        self~$OwnableTransferableTest$_internal_binary_RenounceOwnership(msg);
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "test" message
+        if (text_op == 0xf9b941877628a233a719e129140e93df1eeb5a65aeea5fbd16fb0b9af4004c94) {
+            self~$OwnableTransferableTest$_internal_text_f9b941877628a233a719e129140e93df1eeb5a65aeea5fbd16fb0b9af4004c94();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $OwnableTransferableTest$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$OwnableTransferableTest$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $OwnableTransferableTest$_contract_store(self);
+}

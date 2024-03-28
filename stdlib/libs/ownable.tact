@@ -8,6 +8,10 @@ message ChangeOwnerOk {
     newOwner: Address;
 }
 
+message RenounceOwnership {
+    queryId: Int as uint64;
+}
+
 @interface("org.ton.ownable")
 trait Ownable {
     owner: Address;
@@ -21,7 +25,7 @@ trait Ownable {
     }
 }
 
-@interface("org.ton.ownable.transferable.v2")
+@interface("org.ton.ownable.transferable.v3")
 trait OwnableTransferable with Ownable {
 
     owner: Address;
@@ -35,6 +39,24 @@ trait OwnableTransferable with Ownable {
         self.owner = msg.newOwner;
 
         // Reply result
-        self.reply(ChangeOwnerOk{ queryId: msg.queryId, newOwner:msg.newOwner }.toCell());
+        self.reply(ChangeOwnerOk{
+            queryId: msg.queryId,
+            newOwner: msg.newOwner
+        }.toCell());
+    }
+
+    receive(msg: RenounceOwnership) {
+        
+        // Check if the sender is the owner
+        self.requireOwner();
+
+        // Update owner
+        self.owner = newAddress(0, 0);
+
+        // Reply result
+        self.reply(ChangeOwnerOk{
+            queryId: msg.queryId,
+            newOwner: newAddress(0, 0)
+        }.toCell());
     }
 }
