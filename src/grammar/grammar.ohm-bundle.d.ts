@@ -169,6 +169,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   escapeSequence_newline?: (this: NonterminalNode, arg0: TerminalNode) => T;
   escapeSequence_carriageReturn?: (this: NonterminalNode, arg0: TerminalNode) => T;
   escapeSequence_tab?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  escapeSequence_verticalTab?: (this: NonterminalNode, arg0: TerminalNode) => T;
   escapeSequence_backspace?: (this: NonterminalNode, arg0: TerminalNode) => T;
   escapeSequence_formFeed?: (this: NonterminalNode, arg0: TerminalNode) => T;
   escapeSequence_unicodeCodePoint?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode, arg2: IterationNode, arg3: IterationNode, arg4: IterationNode, arg5: IterationNode, arg6: IterationNode, arg7: TerminalNode) => T;

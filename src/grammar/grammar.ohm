@@ -222,6 +222,7 @@ Tact {
                    | "\\n" -- newline
                    | "\\r" -- carriageReturn
                    | "\\t" -- tab
+                   | "\\v" -- verticalTab
                    | "\\b" -- backspace
                    | "\\f" -- formFeed
                    | "\\u{" hexDigit hexDigit? hexDigit? hexDigit? hexDigit? hexDigit? "}" -- unicodeCodePoint

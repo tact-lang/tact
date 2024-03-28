@@ -87,7 +87,7 @@ contract StringsTester {
     }
 
     get fun stringWithEscapedChars3(): String {
-        return "test \\n test \\t test \\r test \\\\b\b test \\f test \\\" test \\' test \\\\ \\\\\\\\ \\\"_\\\" \\\"\\\" test";
+        return "test \\n test \\t test \\r test \\\\b\b test \\f test \\\" test \\' test \v \v \\\\ \\\\\\\\ \\\"_\\\" \\\"\\\" test";
     }
 
     get fun stringWithEscapedChars4(): String {

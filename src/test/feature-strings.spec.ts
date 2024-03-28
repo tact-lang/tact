@@ -54,7 +54,7 @@ describe('feature-strings', () => {
             "test \n test \t test \r test \b test \f test \" test ' test \\ \\\\ \"_\" \"\" test"
         );
         expect(await contract.getStringWithEscapedChars3()).toEqual(
-            "test \\n test \\t test \\r test \\\\b\b test \\f test \\\" test \\' test \\\\ \\\\\\\\ \\\"_\\\" \\\"\\\" test"
+            "test \\n test \\t test \\r test \\\\b\b test \\f test \\\" test \\' test \v \v \\\\ \\\\\\\\ \\\"_\\\" \\\"\\\" test"
         );
         expect(await contract.getStringWithEscapedChars4()).toEqual(
             "\u{2028}\u{2029} \u0044 \x41\x42\x43"
