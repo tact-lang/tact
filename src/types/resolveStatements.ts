@@ -46,7 +46,7 @@ function removeRequiredVariable(name: string, src: StatementContext): StatementC
 }
 
 function addVariable(name: string, ref: TypeRef, src: StatementContext): StatementContext {
-    if (src.vars.hasOwnProperty(name)) {
+    if (Object.prototype.hasOwnProperty.call(src.vars, name)) {
         throw Error('Variable already exists: ' + name); // Should happen earlier
     }
     return {
@@ -141,7 +141,7 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             }
 
             // Add variable to statement context
-            if (sctx.vars.hasOwnProperty(s.name)) {
+            if (Object.prototype.hasOwnProperty.call(sctx.vars, s.name)) {
                 throwError(`Variable already exists: ${s.name}`, s.ref);
             }
             sctx = addVariable(s.name, variableType, sctx);

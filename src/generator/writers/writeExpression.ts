@@ -471,7 +471,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     if (f.kind === 'op_static_call') {
 
         // Check global functions
-        if (GlobalFunctions.hasOwnProperty(f.name)) {
+        if (Object.prototype.hasOwnProperty.call(GlobalFunctions, f.name)) {
             return GlobalFunctions[f.name].generate(ctx,
                 f.args.map((v) => getExpType(ctx.ctx, v)),
                 f.args,
@@ -531,7 +531,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
             // Check struct ABI
             if (t.kind === 'struct') {
-                if (StructFunctions.hasOwnProperty(f.name)) {
+                if (Object.prototype.hasOwnProperty.call(StructFunctions, f.name)) {
                     const abi = StructFunctions[f.name];
                     return abi.generate(
                         ctx,
@@ -582,7 +582,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
         // Map types
         if (src.kind === 'map') {
-            if (!MapFunctions.hasOwnProperty(f.name)) {
+            if (!Object.prototype.hasOwnProperty.call(MapFunctions, f.name)) {
                 throwError(`Map function "${f.name}" not found`, f.ref);
             }
             const abf = MapFunctions[f.name];
