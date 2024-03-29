@@ -9,6 +9,6 @@ fun toString(): Int {
 
 contract SampleTactContract {
     init() {
-        toString(); // non-existent function
+        toString();
     }
 }
