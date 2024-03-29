@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reserve mode constants in `@stdlib/reserve`, namely `ReserveExact`, `ReserveAllExcept`, `ReserveAtMost`, `ReserveAddOriginalBalance`, `ReserveInvertSign`, `ReserveBounceIfActionFail`: PR [#173](https://github.com/tact-lang/tact/pull/173)
 - JSON Schema for `tact.config.json`: PR [#194](https://github.com/tact-lang/tact/pull/194)
 - Display an error for integer overflow at compile-time: PR [#200](https://github.com/tact-lang/tact/pull/200)
+- Try-Catch statements: PR [#212](https://github.com/tact-lang/tact/pull/212)
 - Non-modifying `StringBuilder`'s `concat` method for chained string concatenations: PR [#217](https://github.com/tact-lang/tact/pull/217)
 - `toString` extension function for `Address` type: PR [#224](https://github.com/tact-lang/tact/pull/224)
 - Bitwise XOR operation (`^`): PR [#238](https://github.com/tact-lang/tact/pull/238)
