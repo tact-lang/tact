@@ -1,6 +1,6 @@
-import "@stdlib/Deploy";
+contract TryCatchTester {
+    receive() {}
 
-contract TryCatchTester with Deployable {
     get fun testTryCatch1(): Int {
         try {
             throw(101);

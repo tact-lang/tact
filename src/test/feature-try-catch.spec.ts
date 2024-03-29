@@ -13,10 +13,7 @@ describe('feature-ternary', () => {
         const system = await ContractSystem.create();
         const treasure = system.treasure('treasure');
         const contract = system.open(await TryCatchTester.fromInit());
-        await contract.send(treasure, { value: toNano('10') }, {
-            $$type: 'Deploy',
-            queryId: 0n
-        });
+        await contract.send(treasure, { value: toNano('10') }, null);
         await system.run();
 
         // Check methods
