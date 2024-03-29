@@ -239,7 +239,7 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
 function resolveStaticCall(exp: ASTOpCallStatic, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
 
     // Check if abi global function
-    if (GlobalFunctions[exp.name]) {
+    if (GlobalFunctions.hasOwnProperty(exp.name)) {
         const f = GlobalFunctions[exp.name];
 
         // Resolve arguments
@@ -317,8 +317,8 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
 
         // Check struct ABI
         if (srcT.kind === 'struct') {
-            const abi = StructFunctions[exp.name];
-            if (abi) {
+            if (StructFunctions.hasOwnProperty(exp.name)) {
+                const abi = StructFunctions[exp.name];
                 const resolved = abi.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
                 return registerExpType(ctx, exp, resolved);
             }
@@ -347,10 +347,10 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
 
     // Handle map
     if (src.kind === 'map') {
-        const abf = MapFunctions[exp.name];
-        if (!abf) {
+        if (!MapFunctions.hasOwnProperty(exp.name)) {
             throwError(`Map function "${exp.name}" not found`, exp.ref);
         }
+        const abf = MapFunctions[exp.name];
         const resolved = abf.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
         return registerExpType(ctx, exp, resolved);
     }

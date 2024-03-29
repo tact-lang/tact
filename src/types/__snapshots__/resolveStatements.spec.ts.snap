@@ -300,6 +300,16 @@ Line 5, col 39:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-30 1`] = `
+"<unknown>:7:9: Static function "toString" does not exist
+Line 7, col 9:
+  6 |     init() {
+> 7 |         toString(); // non-existent function
+              ^~~~~~~~~~
+  8 |     }
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
@@ -809,6 +819,36 @@ exports[`resolveStatements should resolve statements for case-9 1`] = `
   [
     "src.b",
     "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-10 1`] = `
+[
+  [
+    "123",
+    "Int",
+  ],
+  [
+    "toString()",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-11 1`] = `
+[
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "toString",
+    "Int",
+  ],
+  [
+    "dump(toString)",
+    "<void>",
   ],
 ]
 `;

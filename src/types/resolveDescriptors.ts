@@ -160,7 +160,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const a of ast.types) {
-        if (types[a.name]) {
+        if (types.hasOwnProperty(a.name)) {
             throwError(`Type ${a.name} already exists`, a.ref);
         }
 
@@ -1114,10 +1114,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
             types[r.self].functions.set(r.name, r);
         } else {
-            if (staticFunctions[r.name]) {
+            if (staticFunctions.hasOwnProperty(r.name)) {
                 throwError(`Static function ${r.name} already exists`, r.ast.ref);
             }
-            if (staticConstants[r.name]) {
+            if (staticConstants.hasOwnProperty(r.name)) {
                 throwError(`Static constant ${r.name} already exists`, a.ref);
             }
             staticFunctions[r.name] = r;
@@ -1129,10 +1129,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const a of ast.constants) {
-        if (staticConstants[a.name]) {
+        if (staticConstants.hasOwnProperty(a.name)) {
             throwError(`Static constant ${a.name} already exists`, a.ref);
         }
-        if (staticFunctions[a.name]) {
+        if (staticFunctions.hasOwnProperty(a.name)) {
             throwError(`Static function ${a.name} already exists`, a.ref);
         }
         staticConstants[a.name] = buildConstantDescription(a);
