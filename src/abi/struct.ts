@@ -4,8 +4,8 @@ import { throwError } from "../grammar/ast";
 import { getType } from "../types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
 
-export const StructFunctions: { [key: string]: AbiFunction } = {
-    toCell: {
+export const StructFunctions: Map<string, AbiFunction> = new Map([
+    ['toCell', {
         name: 'toCell',
         resolve: (ctx, args, ref) => {
             if (args.length !== 1) {
@@ -29,5 +29,5 @@ export const StructFunctions: { [key: string]: AbiFunction } = {
             }
             return `${ops.writerCell(args[0].name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(', ')})`;
         }
-    }
-}
+    }]
+]);

@@ -8,8 +8,8 @@ import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
 import { sha256_sync } from "@ton/crypto";
 
-export const GlobalFunctions: { [key: string]: AbiFunction } = {
-    ton: {
+export const GlobalFunctions: Map<string, AbiFunction> = new Map([
+    ['ton', {
         name: 'ton',
         resolve: (ctx, args, ref) => {
             if (args.length !== 1) {
@@ -30,8 +30,8 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             const str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
             return toNano(str).toString(10);
         }
-    },
-    pow: {
+    }],
+    ['pow', {
         name: 'pow',
         resolve: (ctx, args, ref) => {
             if (args.length !== 2) {
@@ -59,8 +59,8 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             const b = resolveConstantValue({ kind: 'ref', name: 'Int', optional: false }, resolved[1], ctx.ctx) as bigint;
             return (a ** b).toString(10);
         }
-    },
-    require: {
+    }],
+    ['require', {
         name: 'require',
         resolve: (ctx, args, ref) => {
             if (args.length !== 2) {
@@ -87,8 +87,8 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             const str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[1], ctx.ctx) as string;
             return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0], ctx)})`;
         }
-    },
-    address: {
+    }],
+    ['address', {
         name: 'address',
         resolve: (ctx, args, ref) => {
             if (args.length !== 1) {
@@ -122,8 +122,8 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             ctx.used(res);
             return res + '()';
         }
-    },
-    cell: {
+    }],
+    ['cell', {
         name: 'cell',
         resolve: (ctx, args, ref) => {
             if (args.length !== 1) {
@@ -156,8 +156,8 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             ctx.used(res);
             return `${res}()`;
         }
-    },
-    dump: {
+    }],
+    ['dump', {
         name: 'dump',
         resolve: (ctx, args, ref) => {
             if (args.length !== 1) {
@@ -196,8 +196,8 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
                 throwError('dump() not supported for argument', ref);
             }
         }
-    },
-    emptyMap: {
+    }],
+    ['emptyMap', {
         name: 'emptyMap',
         resolve: (ctx, args, ref) => {
             if (args.length !== 0) {
@@ -208,8 +208,8 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
         generate: (_ctx, _args, _resolved, _ref) => {
             return 'null()';
         }
-    },
-    sha256: {
+    }],
+    ['sha256', {
         name: 'sha256',
         resolve: (ctx, args, ref) => {
             if (args.length !== 1) {
@@ -254,5 +254,5 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
 
             throwError('sha256 expects string or slice argument', ref);
         }
-    }
-}
+    }]
+])

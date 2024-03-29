@@ -239,8 +239,8 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
 function resolveStaticCall(exp: ASTOpCallStatic, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
 
     // Check if abi global function
-    if (Object.prototype.hasOwnProperty.call(GlobalFunctions, exp.name)) {
-        const f = GlobalFunctions[exp.name];
+    if (GlobalFunctions.has(exp.name)) {
+        const f = GlobalFunctions.get(exp.name)!;
 
         // Resolve arguments
         for (const e of exp.args) {
@@ -317,8 +317,8 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
 
         // Check struct ABI
         if (srcT.kind === 'struct') {
-            if (Object.prototype.hasOwnProperty.call(StructFunctions, exp.name)) {
-                const abi = StructFunctions[exp.name];
+            if (StructFunctions.has(exp.name)) {
+                const abi = StructFunctions.get(exp.name)!;
                 const resolved = abi.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
                 return registerExpType(ctx, exp, resolved);
             }
@@ -347,10 +347,10 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
 
     // Handle map
     if (src.kind === 'map') {
-        if (!Object.prototype.hasOwnProperty.call(MapFunctions, exp.name)) {
+        if (!MapFunctions.has(exp.name)) {
             throwError(`Map function "${exp.name}" not found`, exp.ref);
         }
-        const abf = MapFunctions[exp.name];
+        const abf = MapFunctions.get(exp.name)!;
         const resolved = abf.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
         return registerExpType(ctx, exp, resolved);
     }
