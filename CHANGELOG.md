@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@stdlib/stoppable` now imports `@stdlib/ownable` so the programmer does not have to do it separately: PR [#193](https://github.com/tact-lang/tact/pull/193)
 
 ### Fixed
-- Incorrect "already exists" errors when using names such as `toString` or `valueOf`: PR [#204](https://github.com/tact-lang/tact/pull/204)
+- Incorrect "already exists" errors when using names such as `toString` or `valueOf`: PR [#208](https://github.com/tact-lang/tact/pull/208)
 
 ## [1.2.0] - 2024-02-29
 
