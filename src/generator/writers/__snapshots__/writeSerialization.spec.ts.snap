@@ -2998,6 +2998,21 @@ return ((builders), ());",
   },
   {
     "code": {
+      "code": "builders~__tact_string_builder_append(sc);
+return builders;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_string_builder_append",
+    },
+    "flags": Set {},
+    "name": "__tact_string_builder_append_not_mut",
+    "signature": "(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)",
+  },
+  {
+    "code": {
       "code": "var b = begin_cell();
 if (src < 0) {
     b = b.store_uint(45, 8);
@@ -6980,6 +6995,21 @@ return ((builders), ());",
   },
   {
     "code": {
+      "code": "builders~__tact_string_builder_append(sc);
+return builders;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_string_builder_append",
+    },
+    "flags": Set {},
+    "name": "__tact_string_builder_append_not_mut",
+    "signature": "(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)",
+  },
+  {
+    "code": {
       "code": "var b = begin_cell();
 if (src < 0) {
     b = b.store_uint(45, 8);
@@ -10959,6 +10989,21 @@ return ((builders), ());",
     "flags": Set {},
     "name": "__tact_string_builder_append",
     "signature": "((tuple), ()) __tact_string_builder_append(tuple builders, slice sc)",
+  },
+  {
+    "code": {
+      "code": "builders~__tact_string_builder_append(sc);
+return builders;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_string_builder_append",
+    },
+    "flags": Set {},
+    "name": "__tact_string_builder_append_not_mut",
+    "signature": "(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)",
   },
   {
     "code": {
