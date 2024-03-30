@@ -19,11 +19,11 @@
           },
           "path": {
             "type": "string",
-            "description": "Path to the project's Tact file. You can only specify one Tact file per project."
+            "description": "Path to the project's Tact file. You can only specify one Tact file per project.\n\nIn Blueprint projects, `path` is superseded by the field `target` in `wrappers/ProjectName.compile.ts`."
           },
           "output": {
             "type": "string",
-            "description": "Path to the directory where all generated files will be placed."
+            "description": "Path to the directory where all generated files will be placed.\n\nIn Blueprint projects, `output` is unused and all generated files are always placed in `build/ProjectName/`."
           },
           "options": {
             "type": "object",
