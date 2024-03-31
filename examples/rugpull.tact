@@ -1,4 +1,3 @@
-import "@stdlib/ownable";
 import "@stdlib/stoppable";
 
 struct RugParams {
