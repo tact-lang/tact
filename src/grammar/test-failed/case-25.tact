@@ -1,0 +1,2 @@
+
+abstract fun testFuncAbstractWithType(,): Int;
