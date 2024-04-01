@@ -248,6 +248,16 @@ Line 15, col 3:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for case-25 1`] = `
+"<unknown>:8:21: Cannot evaluate constant expression due to integer overflow
+Line 8, col 21:
+  7 | 
+> 8 | const a: Int = 1 + (1 >> -1073741824);
+                          ^~~~~~~~~~~~~~~~
+  9 | 
+"
+`;
+
 exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
 {
   "BaseTrait": {

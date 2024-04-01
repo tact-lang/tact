@@ -10,10 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `log2` and `log` math functions in `@stdlib/math`: PR [#166](https://github.com/tact-lang/tact/pull/166)
 - Reserve mode constants in `@stdlib/reserve`, namely `ReserveExact`, `ReserveAllExcept`, `ReserveAtMost`, `ReserveAddOriginalBalance`, `ReserveInvertSign`, `ReserveBounceIfActionFail`: PR [#173](https://github.com/tact-lang/tact/pull/173)
+- JSON Schema for `tact.config.json`: PR [#194](https://github.com/tact-lang/tact/pull/194)
+- Display an error for integer overflow at compile-time: PR [#200](https://github.com/tact-lang/tact/pull/200)
+- Non-modifying `StringBuilder`'s `concat` method for chained string concatenations: PR [#217](https://github.com/tact-lang/tact/pull/217)
 
 ### Changed
 - Update the `dump` function to handle addresses: PR [#175](https://github.com/tact-lang/tact/pull/175)
 - The implicit empty `init` function is now present by default in the contract if not declared: PR [#167](https://github.com/tact-lang/tact/pull/167)
+- `@stdlib/stoppable` now imports `@stdlib/ownable` so the programmer does not have to do it separately: PR [#193](https://github.com/tact-lang/tact/pull/193)
 
 ### Fixed
 

@@ -432,7 +432,7 @@ export type ASTStatementRepeat = {
 //
 
 export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementExpression | ASTSTatementAssign | ASTSTatementAugmentedAssign | ASTCondition | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTSTatementAugmentedAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef | ASTString | ASTTrait | ASTProgramImport | ASTFunction | ASTNativeFunction | ASTInitOf | ASTString | ASTConstant;
+export type ASTNode = ASTExpression | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTSTatementAugmentedAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef | ASTString | ASTTrait | ASTProgramImport | ASTInitOf | ASTConstant;
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull | ASTLvalueRef | ASTInitOf | ASTString | ASTConditional;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract | ASTTrait;
 

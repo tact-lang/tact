@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "$id": "http://raw.githubusercontent.com/tact-lang/tact/main/grammar/configSchema.json",
+  "title": "Tact configuration schema",
+  "description": "JSON Schema for tact.config.json",
+  "type": "object",
+  "required": ["projects"],
+  "properties": {
+    "projects": {
+      "type": "array",
+      "description": "List of Tact projects with respective compilation options. Each .tact file represents its own Tact project.",
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "output"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the project. All generated files are prefixed with it."
+          },
+          "path": {
+            "type": "string",
+            "description": "Path to the project's Tact file. You can only specify one Tact file per project.\n\nIn Blueprint projects, `path` is superseded by the field `target` in `wrappers/ProjectName.compile.ts`."
+          },
+          "output": {
+            "type": "string",
+            "description": "Path to the directory where all generated files will be placed.\n\nIn Blueprint projects, `output` is unused and all generated files are always placed in `build/ProjectName/`."
+          },
+          "options": {
+            "type": "object",
+            "description": "Compilation options for the project.",
+            "properties": {
+              "debug": {
+                "type": "boolean",
+                "description": "False by default. If set to true, enables debug output of a contract and allows usage of `dump()` function, which is useful for debugging purposes. With this option enabled, the contract will report that it was compiled in debug mode using the supported_interfaces method.\n\nRead more on debugging Tact code: https://docs.tact-lang.org/book/debug."
+              },
+              "masterchain": {
+                "type": "boolean",
+                "description": "False by default. If set to true, enables masterchain support.\n\nRead more about masterchain: https://docs.tact-lang.org/book/masterchain."
+              },
+              "external": {
+                "type": "boolean",
+                "description": "False by default. If set to true, enables support of external message receivers.\n\nRead more about external message receivers: https://docs.tact-lang.org/book/external."
+              },
+              "experimental": {
+                "type": "object",
+                "description": "Experimental options that might be removed in the future. Use with caution!",
+                "properties": {
+                  "inline": {
+                    "type": "boolean",
+                    "description": "False by default. If set to true, enables inlining of all functions in contracts. This can reduce gas usage at the cost of bigger contracts."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
