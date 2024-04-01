@@ -26,6 +26,12 @@ contract StringsTester {
         return b.toCell();
     }
 
+    get fun dynamicStringCell2(): Cell {
+        let b: StringBuilder = beginString();
+        b = b.concat("Hello,").concat(" ").concat("World!");
+        return b.toCell();
+    }
+
     get fun dynamicCommentCell(): Cell {
         let b: StringBuilder = beginComment();
         b.append("Something something world!");
