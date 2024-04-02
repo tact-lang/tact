@@ -345,6 +345,8 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         }
 
         const attributes = arg0.children.map((v) => v.resolve_attributes()) as ASTFunctionAttribute[];
+        checkVariableName(arg2.sourceString, createRef(arg2));
+        checkFunctionAttributes(true, attributes, createRef(this));
         return createNode({
             kind: 'def_function',
             origin: ctx!.origin,
