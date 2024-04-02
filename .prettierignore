@@ -1,8 +1,8 @@
-dist
+./dist
 
 src/func/funcfiftlib.js
 src/func/funcfiftlib.wasm.js
 src/grammar/grammar.ohm-bundle.d.ts
 src/grammar/grammar.ohm-bundle.js
 src/imports/stdlib.ts
-grammar
+./grammar
