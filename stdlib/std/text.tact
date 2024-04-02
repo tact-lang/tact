@@ -92,3 +92,10 @@ extends fun fromBase64(self: Slice): Slice {
         return result.asSlice();
     }
 }
+
+//
+// Address conversion
+//
+
+@name(__tact_address_to_userfriendly)
+extends native toString(self: Address): String;
