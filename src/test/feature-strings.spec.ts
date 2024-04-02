@@ -47,5 +47,18 @@ describe('feature-strings', () => {
             const d = r.beginParse().loadBuffer(r.bits.length / 8);
             expect(d.toString('hex')).toEqual(s.toString('hex'));
         }
+
+        expect(await contract.getStringWithEscapedChars1()).toBe(
+            "test \n \n \\ \\\n \"string\""
+        );
+        expect(await contract.getStringWithEscapedChars2()).toEqual(
+            "test \n test \t test \r test \b test \f test \" test ' test \\ \\\\ \"_\" \"\" test"
+        );
+        expect(await contract.getStringWithEscapedChars3()).toEqual(
+            "test \\n test \\t test \\r test \\\\b\b test \\f test \\\" test \\' test \v \v \\\\ \\\\\\\\ \\\"_\\\" \\\"\\\" test"
+        );
+        expect(await contract.getStringWithEscapedChars4()).toEqual(
+            "\u{2028}\u{2029} \u0044 \x41\x42\x43"
+        );
     });
 });
