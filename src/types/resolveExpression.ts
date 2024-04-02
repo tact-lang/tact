@@ -418,7 +418,7 @@ export function resolveConditional(ast: ASTConditional, sctx: StatementContext, 
 
 export function resolveLValueRef(path: ASTLvalueRef[], sctx: StatementContext, ctx: CompilerContext): CompilerContext {
     const paths: ASTLvalueRef[] = path;
-    let t = sctx.vars[paths[0].name];
+    let t = sctx.vars.get(paths[0].name);
     if (!t) {
         throwError(`Variable "${paths[0].name}" not found`, paths[0].ref);
     }
@@ -487,7 +487,7 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
     if (exp.kind === 'id') {
 
         // Find variable
-        const v = sctx.vars[exp.value];
+        const v = sctx.vars.get(exp.value);
         if (!v) {
             if (!hasStaticConstant(ctx, exp.value)) {
                 throwError('Unable to resolve id ' + exp.value, exp.ref);

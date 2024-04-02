@@ -51,11 +51,8 @@ function addVariable(name: string, ref: TypeRef, src: StatementContext): Stateme
     }
     return {
         ...src,
-        vars: new Map({
-            ...src.vars,
-            [name]: ref
-        })
-    };
+        vars: new Map(src.vars).set(name, ref)
+    }
 }
 
 function processCondition(condition: ASTCondition, sctx: StatementContext, ctx: CompilerContext): { ctx: CompilerContext, sctx: StatementContext } {
