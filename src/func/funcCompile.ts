@@ -83,9 +83,9 @@ export async function funcCompile(args: {
 
     // Create module
     const logs: string[] = [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mod = await CompilerModule({
         wasmBinary: WasmBinary,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         printErr: (e: any) => {
             logs.push(e);
         },
@@ -97,9 +97,9 @@ export async function funcCompile(args: {
         const configPointer = trackPointer(writeToCString(mod, configStr));
 
         // FS emulation callback
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const callbackPtr = trackFunctionPointer(
             mod.addFunction(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (_kind: any, _data: any, contents: any, error: any) => {
                     const kind: string = readFromCString(mod, _kind);
                     const data: string = readFromCString(mod, _data);

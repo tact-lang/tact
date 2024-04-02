@@ -1135,7 +1135,6 @@ function throwMatchError(matchResult: MatchResult, path: string): never {
   const interval = matchResult.getInterval();
   const lc = interval.getLineAndColumn() as { lineNum: number; colNum: number };
   const msg = interval.getLineAndColumnMessage();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const message =
     path +
     ":" +
@@ -1143,6 +1142,7 @@ function throwMatchError(matchResult: MatchResult, path: string): never {
     ":" +
     lc.colNum +
     ": Syntax error: expected " +
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (matchResult as any).getExpectedText() +
     " \n" +
     msg;

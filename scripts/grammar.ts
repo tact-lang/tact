@@ -42,8 +42,8 @@ import path from "path";
         }
         return result;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function transformGrammarRule(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         rule: any,
         propertyNames: string[],
         transformProperty: (ruleProperty: string) => string,
@@ -62,8 +62,8 @@ import path from "path";
             }
         }
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function transformGrammarRepository(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         grammar: any,
         propertyNames: string[],
         transformProperty: (ruleProperty: string) => string,
