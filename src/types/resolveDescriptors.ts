@@ -104,9 +104,9 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     throw Error('Invalid type ref');
 }
 
-function buildTypeRef(src: ASTTypeRef, types: { [key: string]: TypeDescription }): TypeRef {
+function buildTypeRef(src: ASTTypeRef, types: Map<string, TypeDescription>): TypeRef {
     if (src.kind === 'type_ref_simple') {
-        if (!types[src.name]) {
+        if (!types.has(src.name)) {
             throwError('Type ' + src.name + ' not found', src.ref);
         }
         return {
@@ -116,10 +116,10 @@ function buildTypeRef(src: ASTTypeRef, types: { [key: string]: TypeDescription }
         };
     }
     if (src.kind === 'type_ref_map') {
-        if (!types[src.key]) {
+        if (!types.has(src.key)) {
             throwError('Type ' + src.key + ' not found', src.ref);
         }
-        if (!types[src.value]) {
+        if (!types.has(src.value)) {
             throwError('Type ' + src.value + ' not found', src.ref);
         }
         return {
@@ -140,19 +140,19 @@ function buildTypeRef(src: ASTTypeRef, types: { [key: string]: TypeDescription }
     throw Error('Unknown type ref');
 }
 
-function uidForName(name: string, types: { [key: string]: TypeDescription }) {
+function uidForName(name: string, types: Map<string, TypeDescription>) {
     // Resolve unique typeid from crc16
     let uid = crc16(name);
-    while (Object.values(types).find((v) => v.uid === uid)) {
+    while (Array.from(types.values()).find((v) => v.uid === uid)) {
         uid = (uid + 1) % 65536;
     }
     return uid;
 }
 
 export function resolveDescriptors(ctx: CompilerContext) {
-    const types: { [key: string]: TypeDescription } = {};
-    const staticFunctions: { [key: string]: FunctionDescription } = {};
-    const staticConstants: { [key: string]: ConstantDescription } = {};
+    const types: Map<string, TypeDescription> = new Map();
+    const staticFunctions: Map<string, FunctionDescription> = new Map();
+    const staticConstants: Map<string, ConstantDescription> = new Map();
     const ast = getRawAST(ctx);
 
     //
@@ -160,14 +160,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const a of ast.types) {
-        if (Object.prototype.hasOwnProperty.call(types, a.name)) {
+        if (types.has(a.name)) {
             throwError(`Type ${a.name} already exists`, a.ref);
         }
 
         const uid = uidForName(a.name, types);
 
         if (a.kind === 'primitive') {
-            types[a.name] = {
+            types.set(a.name, {
                 kind: 'primitive',
                 origin: a.origin,
                 name: a.name,
@@ -185,9 +185,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 interfaces: [],
                 constants: [],
                 partialFieldCount: 0
-            };
+            });
         } else if (a.kind === 'def_contract') {
-            types[a.name] = {
+            types.set(a.name, {
                 kind: 'contract',
                 origin: a.origin,
                 name: a.name,
@@ -205,9 +205,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
                 constants: [],
                 partialFieldCount: 0
-            };
+            });
         } else if (a.kind === 'def_struct') {
-            types[a.name] = {
+            types.set(a.name, {
                 kind: 'struct',
                 origin: a.origin,
                 name: a.name,
@@ -225,9 +225,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 interfaces: [],
                 constants: [],
                 partialFieldCount: 0
-            };
+            });
         } else if (a.kind === 'def_trait') {
-            types[a.name] = {
+            types.set(a.name, {
                 kind: 'trait',
                 origin: a.origin,
                 name: a.name,
@@ -245,7 +245,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
                 constants: [],
                 partialFieldCount: 0
-            };
+            });
         }
     }
 
@@ -285,24 +285,24 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (a.kind === 'def_contract') {
             for (const f of a.declarations) {
                 if (f.kind === 'def_field') {
-                    if (types[a.name].fields.find((v) => v.name === f.name)) {
+                    if (types.get(a.name)!.fields.find((v) => v.name === f.name)) {
                         throwError(`Field ${f.name} already exists`, f.ref);
                     }
-                    if (types[a.name].constants.find((v) => v.name === f.name)) {
+                    if (types.get(a.name)!.constants.find((v) => v.name === f.name)) {
                         throwError(`Constant ${f.name} already exists`, f.ref);
                     }
-                    types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
+                    types.get(a.name)!.fields.push(buildFieldDescription(f, types.get(a.name)!.fields.length));
                 } else if (f.kind === 'def_constant') {
-                    if (types[a.name].fields.find((v) => v.name === f.name)) {
+                    if (types.get(a.name)!.fields.find((v) => v.name === f.name)) {
                         throwError(`Field ${f.name} already exists`, f.ref);
                     }
-                    if (types[a.name].constants.find((v) => v.name === f.name)) {
+                    if (types.get(a.name)!.constants.find((v) => v.name === f.name)) {
                         throwError(`Constant ${f.name} already exists`, f.ref);
                     }
                     if (f.attributes.find((v) => v.type !== 'overrides')) {
                         throwError(`Constant can be only overridden`, f.ref);
                     }
-                    types[a.name].constants.push(buildConstantDescription(f));
+                    types.get(a.name)!.constants.push(buildConstantDescription(f));
                 }
             }
         }
@@ -311,10 +311,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (a.kind === 'def_struct') {
             for (const f of a.fields) {
 
-                if (types[a.name].fields.find((v) => v.name === f.name)) {
+                if (types.get(a.name)!.fields.find((v) => v.name === f.name)) {
                     throwError(`Field ${f.name} already exists`, f.ref);
                 }
-                types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
+                types.get(a.name)!.fields.push(buildFieldDescription(f, types.get(a.name)!.fields.length));
             }
             if (a.fields.length === 0 && !a.message) {
                 throwError(`Struct ${a.name} must have at least one field`, a.ref);
@@ -325,18 +325,18 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (a.kind === 'def_trait') {
             for (const f of a.declarations) {
                 if (f.kind === 'def_field') {
-                    if (types[a.name].fields.find((v) => v.name === f.name)) {
+                    if (types.get(a.name)!.fields.find((v) => v.name === f.name)) {
                         throwError(`Field ${f.name} already exists`, f.ref);
                     }
                     if (f.as) {
                         throwError(`Trait field cannot have serialization specifier`, f.ref);
                     }
-                    types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
+                    types.get(a.name)!.fields.push(buildFieldDescription(f, types.get(a.name)!.fields.length));
                 } else if (f.kind === 'def_constant') {
-                    if (types[a.name].fields.find((v) => v.name === f.name)) {
+                    if (types.get(a.name)!.fields.find((v) => v.name === f.name)) {
                         throwError(`Field ${f.name} already exists`, f.ref);
                     }
-                    if (types[a.name].constants.find((v) => v.name === f.name)) {
+                    if (types.get(a.name)!.constants.find((v) => v.name === f.name)) {
                         throwError(`Constant ${f.name} already exists`, f.ref);
                     }
                     if (f.attributes.find((v) => v.type === 'overrides')) {
@@ -345,7 +345,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     // if (f.attributes.find((v) => v.type === 'abstract')) {
                     //     continue; // Do not materialize abstract constants
                     // }
-                    types[a.name].constants.push(buildConstantDescription(f));
+                    types.get(a.name)!.constants.push(buildConstantDescription(f));
                 }
             }
         }
@@ -355,8 +355,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Populate partial serialization info
     //
 
-    for (const t in types) {
-        types[t].partialFieldCount = resolvePartialFields(ctx, types[t])
+    for (const t of types.values()) {
+        t.partialFieldCount = resolvePartialFields(ctx, t);
     }
 
     //
@@ -439,7 +439,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check virtual
         if (isVirtual) {
-            const t = types[self!]!;
+            const t = types.get(self!)!;
             if (t.kind !== 'trait') {
                 throwError('Virtual functions must be defined within a trait', isVirtual.ref);
             }
@@ -447,7 +447,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check abstract
         if (isAbstract) {
-            const t = types[self!]!;
+            const t = types.get(self!)!;
             if (t.kind !== 'trait') {
                 throwError('Abstract functions must be defined within a trait', isAbstract.ref);
             }
@@ -455,7 +455,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check overrides
         if (isOverrides) {
-            const t = types[self!]!;
+            const t = types.get(self!)!;
             if (t.kind !== 'contract') {
                 throwError('Overrides functions must be defined within a contract', isOverrides.ref);
             }
@@ -492,7 +492,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (args[0].type.optional) {
                 throwError('Extend functions must have a non-optional type as the first argument', args[0].ref);
             }
-            if (!types[args[0].type.name]) {
+            if (!types.has(args[0].type.name)) {
                 throwError('Type ' + args[0].type.name + ' not found', args[0].ref);
             }
 
@@ -573,7 +573,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const a of ast.types) {
         if (a.kind === 'def_contract' || a.kind === 'def_trait') {
-            const s = types[a.name];
+            const s = types.get(a.name)!;
             for (const d of a.declarations) {
                 if (d.kind === 'def_function') {
                     const f = resolveFunctionDescriptor(s.name, d, s.origin);
@@ -611,7 +611,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         }
 
                         // Check resolved argument type
-                        const t = types[arg.type.name];
+                        const t = types.get(arg.type.name);
                         if (!t) {
                             throwError('Type ' + arg.type.name + ' not found', d.ref);
                         }
@@ -731,7 +731,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     ast: d
                                 });
                             } else {
-                                const type = types[arg.type.name];
+                                const type = types.get(arg.type.name)!;
                                 if (type.ast.kind !== 'def_struct' || !type.ast.message) {
                                     throwError('Bounce receive function can only accept bounced message, message or Slice', d.ref);
                                 }
@@ -753,7 +753,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             }
 
                         } else if (arg.type.kind === "type_ref_bounced") {
-                            const t = types[arg.type.name];
+                            const t = types.get(arg.type.name)!;
                             if (t.kind !== 'struct') {
                                 throwError('Bounce receive function can only accept bounced<T> struct types', d.ref);
                             }
@@ -793,8 +793,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Check for missing init methods
     //
 
-    for (const k in types) {
-        const t = types[k];
+    for (const t of types.values()) {
         if (t.kind === 'contract') {
             if (!t.init) {
                 t.init = {
@@ -814,8 +813,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Flatten and resolve traits
     //
 
-    for (const k in types) {
-        const t = types[k];
+    for (const t of types.values()) {
         if (t.ast.kind === 'def_trait' || t.ast.kind === 'def_contract') {
 
             // Flatten traits
@@ -827,7 +825,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 if (visited.has(name)) {
                     return;
                 }
-                const tt = types[name];
+                const tt = types.get(name);
                 if (!tt) {
                     throwError('Trait ' + name + ' not found', t.ast.ref)
                 }
@@ -858,21 +856,19 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Verify trait fields
     //
 
-    for (const k in types) {
-        const t = types[k];
-
+    for (const t of types.values()) {
         for (const tr of t.traits) {
 
             // Check that trait is valid
-            if (!types[tr.name]) {
+            if (!types.has(tr.name)) {
                 throwError('Trait ' + tr.name + ' not found', t.ast.ref);
             }
-            if (types[tr.name].kind !== 'trait') {
+            if (types.get(tr.name)!.kind !== 'trait') {
                 throwError('Type ' + tr.name + ' is not a trait', t.ast.ref);
             }
 
             // Check that trait has all required fields
-            const ttr = types[tr.name];
+            const ttr = types.get(tr.name)!;
             for (const f of ttr.fields) {
 
                 // Check if field exists
@@ -1024,24 +1020,24 @@ export function resolveDescriptors(ctx: CompilerContext) {
             return;
         }
         if (processing.has(name)) {
-            throwError(`Circular dependency detected for type ${name}`, types[name].ast.ref);
+            throwError(`Circular dependency detected for type ${name}`, types.get(name)!.ast.ref);
         }
         processing.has(name);
 
         // Process dependencies first
-        const dependencies = Object.values(types).filter((v) => v.traits.find((v2) => v2.name === name));
+        const dependencies = Array.from(types.values()).filter((v) => v.traits.find((v2) => v2.name === name));
         for (const d of dependencies) {
             processType(d.name);
         }
 
         // Copy traits
-        copyTraits(types[name]);
+        copyTraits(types.get(name)!);
 
         // Mark as processed
         processed.add(name);
         processing.delete(name);
     }
-    for (const k in types) {
+    for (const k of types.keys()) {
         processType(k);
     }
 
@@ -1049,12 +1045,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Register dependencies
     //
 
-    for (const k in types) {
-        const t = types[k];
+    for (const [k, t] of types) {
         const dependsOn = new Set<string>();
         const handler = (src: ASTNode) => {
             if (src.kind === 'init_of') {
-                if (!types[src.name]) {
+                if (!types.has(src.name)) {
                     throwError(`Type ${src.name} not found`, src.ref);
                 }
                 dependsOn.add(src.name);
@@ -1072,7 +1067,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Add dependencies
         for (const s of dependsOn) {
             if (s !== k) {
-                t.dependsOn.push(types[s]!);
+                t.dependsOn.push(types.get(s)!);
             }
         }
     }
@@ -1082,7 +1077,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function collectTransient(name: string, to: Set<string>) {
-        const t = types[name];
+        const t = types.get(name)!;
         for (const d of t.dependsOn) {
             if (to.has(d.name)) {
                 continue;
@@ -1091,13 +1086,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
             collectTransient(d.name, to);
         }
     }
-    for (const k in types) {
+    for (const [k, t] of types) {
         const dependsOn = new Set<string>();
         dependsOn.add(k);
         collectTransient(k, dependsOn);
         for (const s of dependsOn) {
-            if (s !== k && !types[k].dependsOn.find((v) => v.name === s)) {
-                types[k].dependsOn.push(types[s]!);
+            if (s !== k && !types.get(k)!.dependsOn.find((v) => v.name === s)) {
+                types.get(k)!.dependsOn.push(types.get(s)!);
             }
         }
     }
@@ -1109,18 +1104,18 @@ export function resolveDescriptors(ctx: CompilerContext) {
     for (const a of ast.functions) {
         const r = resolveFunctionDescriptor(null, a, a.origin);
         if (r.self) {
-            if (types[r.self].functions.has(r.name)) {
+            if (types.get(r.self)!.functions.has(r.name)) {
                 throwError(`Function ${r.name} already exists in type ${r.self}`, r.ast.ref);
             }
-            types[r.self].functions.set(r.name, r);
+            types.get(r.self)!.functions.set(r.name, r);
         } else {
-            if (Object.prototype.hasOwnProperty.call(staticFunctions, r.name)) {
+            if (staticFunctions.has(r.name)) {
                 throwError(`Static function ${r.name} already exists`, r.ast.ref);
             }
-            if (Object.prototype.hasOwnProperty.call(staticConstants, r.name)) {
+            if (staticConstants.has(r.name)) {
                 throwError(`Static constant ${r.name} already exists`, a.ref);
             }
-            staticFunctions[r.name] = r;
+            staticFunctions.set(r.name, r);
         }
     }
 
@@ -1129,27 +1124,27 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const a of ast.constants) {
-        if (Object.prototype.hasOwnProperty.call(staticConstants, a.name)) {
+        if (staticConstants.has(a.name)) {
             throwError(`Static constant ${a.name} already exists`, a.ref);
         }
-        if (Object.prototype.hasOwnProperty.call(staticFunctions, a.name)) {
+        if (staticFunctions.has(a.name)) {
             throwError(`Static function ${a.name} already exists`, a.ref);
         }
-        staticConstants[a.name] = buildConstantDescription(a);
+        staticConstants.set(a.name, buildConstantDescription(a));
     }
 
     //
     // Register types and functions in context
     //
 
-    for (const t in types) {
-        ctx = store.set(ctx, t, types[t]);
+    for (const [k, t] of types) {
+        ctx = store.set(ctx, k, t);
     }
-    for (const t in staticFunctions) {
-        ctx = staticFunctionsStore.set(ctx, t, staticFunctions[t]);
+    for (const [k, t] of staticFunctions) {
+        ctx = staticFunctionsStore.set(ctx, k, t);
     }
-    for (const t in staticConstants) {
-        ctx = staticConstantsStore.set(ctx, t, staticConstants[t]);
+    for (const [k, t] of staticConstants) {
+        ctx = staticConstantsStore.set(ctx, k, t);
     }
 
     return ctx;
