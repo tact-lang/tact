@@ -282,7 +282,11 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    Function_withType(arg0, _arg1, arg2, _arg3, arg4, _arg5, _arg6, arg7, _arg8, arg9, _) {
+    Function_withType(arg0, _arg1, arg2, _arg3, arg4, arg5, _arg6, _arg7, arg8, _arg9, arg10, _arg11) {
+        if (arg4.source.contents === '' && arg5.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg5));
+        }
+
         const attributes = arg0.children.map((v) => v.resolve_attributes()) as ASTFunctionAttribute[];
         checkVariableName(arg2.sourceString, createRef(arg2));
         checkFunctionAttributes(false, attributes, createRef(this));
@@ -291,13 +295,17 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             origin: ctx!.origin,
             attributes,
             name: arg2.sourceString,
-            return: arg7.resolve_expression(),
+            return: arg8.resolve_expression(),
             args: arg4.asIteration().children.map((v) => v.resolve_declaration()),
-            statements: arg9.children.map((v) => v.resolve_statement()),
+            statements: arg10.children.map((v) => v.resolve_statement()),
             ref: createRef(this)
         })
     },
-    Function_withVoid(arg0, _arg1, arg2, _arg3, arg4, _arg5, _arg6, arg7, _) {
+    Function_withVoid(arg0, _arg1, arg2, _arg3, arg4, arg5, _arg6, _arg7, arg8, _arg9) {
+        if (arg4.source.contents === '' && arg5.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg5));
+        }
+
         const attributes = arg0.children.map((v) => v.resolve_attributes()) as ASTFunctionAttribute[];
         checkVariableName(arg2.sourceString, createRef(arg2));
         checkFunctionAttributes(false, attributes, createRef(this));
@@ -308,11 +316,15 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             name: arg2.sourceString,
             return: null,
             args: arg4.asIteration().children.map((v) => v.resolve_declaration()),
-            statements: arg7.children.map((v) => v.resolve_statement()),
+            statements: arg8.children.map((v) => v.resolve_statement()),
             ref: createRef(this)
         })
     },
-    Function_abstractVoid(arg0, _arg1, arg2, _arg3, arg4, _arg5, _arg6) {
+    Function_abstractVoid(arg0, _arg1, arg2, _arg3, arg4, arg5, _arg6, _arg7) {
+        if (arg4.source.contents === '' && arg5.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg5));
+        }
+
         const attributes = arg0.children.map((v) => v.resolve_attributes()) as ASTFunctionAttribute[];
         checkVariableName(arg2.sourceString, createRef(arg2));
         checkFunctionAttributes(true, attributes, createRef(this));
@@ -327,7 +339,11 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    Function_abstractType(arg0, _arg1, arg2, _arg3, arg4, _arg5, _arg6, arg7, _arg8) {
+    Function_abstractType(arg0, _arg1, arg2, _arg3, arg4, arg5, _arg6, _arg7, arg8, _arg9) {
+        if (arg4.source.contents === '' && arg5.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg5));
+        }
+
         const attributes = arg0.children.map((v) => v.resolve_attributes()) as ASTFunctionAttribute[];
         checkVariableName(arg2.sourceString, createRef(arg2));
         checkFunctionAttributes(true, attributes, createRef(this));
@@ -336,13 +352,17 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             origin: ctx!.origin,
             attributes,
             name: arg2.sourceString,
-            return: arg7.resolve_expression(),
+            return: arg8.resolve_expression(),
             args: arg4.asIteration().children.map((v) => v.resolve_declaration()),
             statements: null,
             ref: createRef(this)
         })
     },
-    NativeFunction_withType(_arg0, _arg1, arg2, _arg3, arg4, arg5, arg6, _arg7, arg8, _arg9, _arg10, arg11, _arg12) {
+    NativeFunction_withType(_arg0, _arg1, arg2, _arg3, arg4, arg5, arg6, _arg7, arg8, arg9, _arg10, _arg11, arg12, _arg13) {
+        if (arg8.source.contents === '' && arg9.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg9));
+        }
+        
         checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',
@@ -350,12 +370,16 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             attributes: arg4.children.map((v) => v.resolve_attributes()),
             name: arg6.sourceString,
             nativeName: arg2.sourceString,
-            return: arg11.resolve_expression(),
+            return: arg12.resolve_expression(),
             args: arg8.asIteration().children.map((v) => v.resolve_declaration()),
             ref: createRef(this)
         })
     },
-    NativeFunction_withVoid(_arg0, _arg1, arg2, _arg3, arg4, arg5, arg6, _arg7, arg8, _arg9, _arg10) {
+    NativeFunction_withVoid(_arg0, _arg1, arg2, _arg3, arg4, arg5, arg6, _arg7, arg8, arg9, _arg10, _arg11) {
+        if (arg8.source.contents === '' && arg9.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg9));
+        }
+        
         checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',
@@ -706,19 +730,35 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     ExpressionField(arg0, _arg1, arg2) {
         return createNode({ kind: 'op_field', src: arg0.resolve_expression(), name: arg2.sourceString, ref: createRef(this) });
     },
-    ExpressionCall(arg0, _arg1, arg2, _arg3, arg4, _arg5) {
+    ExpressionCall(arg0, _arg1, arg2, _arg3, arg4, arg5, _arg6) {
+        if (arg4.source.contents === '' && arg5.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg5));
+        }
+
         return createNode({ kind: 'op_call', src: arg0.resolve_expression(), name: arg2.sourceString, args: arg4.asIteration().children.map((v) => v.resolve_expression()), ref: createRef(this) });
     },
-    ExpressionStaticCall(arg0, _arg1, arg2, _arg3) {
+    ExpressionStaticCall(arg0, _arg1, arg2, arg3, _arg4) {
+        if (arg2.source.contents === '' && arg3.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg3));
+        }
+
         return createNode({ kind: 'op_static_call', name: arg0.sourceString, args: arg2.asIteration().children.map((v) => v.resolve_expression()), ref: createRef(this) });
     },
-    ExpressionNew(arg0, _arg1, arg2, _arg3) {
+    ExpressionNew(arg0, _arg1, arg2, arg3, _arg4) {
+        if (arg2.source.contents === '' && arg3.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg3));
+        }
+
         return createNode({ kind: 'op_new', type: arg0.sourceString, args: arg2.asIteration().children.map((v) => v.resolve_expression()), ref: createRef(this) });
     },
     NewParameter(arg0, _arg1, arg2) {
         return createNode({ kind: 'new_parameter', name: arg0.sourceString, exp: arg2.resolve_expression(), ref: createRef(this) });
     },
-    ExpressionInitOf(_arg0, arg1, _arg2, arg3, _arg4) {
+    ExpressionInitOf(_arg0, arg1, _arg2, arg3, arg4, _arg5) {
+        if (arg3.source.contents === '' && arg4.sourceString === ',') {
+            throwError('Empty parameter list should not have a dangling comma.', createRef(arg4));
+        }
+
         return createNode({ kind: 'init_of', name: arg1.sourceString, args: arg3.asIteration().children.map((v) => v.resolve_expression()), ref: createRef(this) });
     },
 
