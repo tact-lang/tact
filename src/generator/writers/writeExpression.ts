@@ -508,8 +508,8 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     if (f.kind === 'op_static_call') {
 
         // Check global functions
-        if (GlobalFunctions[f.name]) {
-            return GlobalFunctions[f.name].generate(ctx,
+        if (GlobalFunctions.has(f.name)) {
+            return GlobalFunctions.get(f.name)!.generate(ctx,
                 f.args.map((v) => getExpType(ctx.ctx, v)),
                 f.args,
                 f.ref);
@@ -568,9 +568,14 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
             // Check struct ABI
             if (t.kind === 'struct') {
-                const abi = StructFunctions[f.name];
-                if (abi) {
-                    return abi.generate(ctx, [src, ...f.args.map((v) => getExpType(ctx.ctx, v))], [f.src, ...f.args], f.ref);
+                if (StructFunctions.has(f.name)) {
+                    const abi = StructFunctions.get(f.name)!;
+                    return abi.generate(
+                        ctx,
+                        [src, ...f.args.map((v) => getExpType(ctx.ctx, v))],
+                        [f.src, ...f.args],
+                        f.ref
+                    );
                 }
             }
 
@@ -614,10 +619,10 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
         // Map types
         if (src.kind === 'map') {
-            const abf = MapFunctions[f.name];
-            if (!abf) {
+            if (!MapFunctions.has(f.name)) {
                 throwError(`Map function "${f.name}" not found`, f.ref);
             }
+            const abf = MapFunctions.get(f.name)!;
             return abf.generate(ctx, [src, ...f.args.map((v) => getExpType(ctx.ctx, v))], [f.src, ...f.args], f.ref);
         }
 

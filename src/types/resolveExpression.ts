@@ -239,8 +239,8 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
 function resolveStaticCall(exp: ASTOpCallStatic, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
 
     // Check if abi global function
-    if (GlobalFunctions[exp.name]) {
-        const f = GlobalFunctions[exp.name];
+    if (GlobalFunctions.has(exp.name)) {
+        const f = GlobalFunctions.get(exp.name)!;
 
         // Resolve arguments
         for (const e of exp.args) {
@@ -317,8 +317,8 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
 
         // Check struct ABI
         if (srcT.kind === 'struct') {
-            const abi = StructFunctions[exp.name];
-            if (abi) {
+            if (StructFunctions.has(exp.name)) {
+                const abi = StructFunctions.get(exp.name)!;
                 const resolved = abi.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
                 return registerExpType(ctx, exp, resolved);
             }
@@ -347,10 +347,10 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
 
     // Handle map
     if (src.kind === 'map') {
-        const abf = MapFunctions[exp.name];
-        if (!abf) {
+        if (!MapFunctions.has(exp.name)) {
             throwError(`Map function "${exp.name}" not found`, exp.ref);
         }
+        const abf = MapFunctions.get(exp.name)!;
         const resolved = abf.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
         return registerExpType(ctx, exp, resolved);
     }
@@ -418,7 +418,7 @@ export function resolveConditional(ast: ASTConditional, sctx: StatementContext, 
 
 export function resolveLValueRef(path: ASTLvalueRef[], sctx: StatementContext, ctx: CompilerContext): CompilerContext {
     const paths: ASTLvalueRef[] = path;
-    let t = sctx.vars[paths[0].name];
+    let t = sctx.vars.get(paths[0].name);
     if (!t) {
         throwError(`Variable "${paths[0].name}" not found`, paths[0].ref);
     }
@@ -487,7 +487,7 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
     if (exp.kind === 'id') {
 
         // Find variable
-        const v = sctx.vars[exp.value];
+        const v = sctx.vars.get(exp.value);
         if (!v) {
             if (!hasStaticConstant(ctx, exp.value)) {
                 throwError('Unable to resolve id ' + exp.value, exp.ref);
