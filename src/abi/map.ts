@@ -4,8 +4,8 @@ import { throwError } from "../grammar/ast";
 import { getType } from "../types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
 
-export const MapFunctions: { [key: string]: AbiFunction } = {
-    set: {
+export const MapFunctions: Map<string, AbiFunction> = new Map([
+    ['set', {
         name: 'set',
         resolve(ctx, args, ref) {
 
@@ -152,8 +152,8 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
 
             throwError(`set expects a map with Int keys`, ref);
         }
-    },
-    get: {
+    }],
+    ['get', {
         name: 'get',
         resolve(ctx, args, ref) {
 
@@ -277,8 +277,8 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
 
             throwError(`set expects a map with Int keys`, ref);
         }
-    },
-    asCell: {
+    }],
+    ['asCell', {
         name: 'asCell',
         resolve(ctx, args, ref) {
 
@@ -304,5 +304,5 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
 
             return writeExpression(exprs[0], ctx);
         }
-    }
-}
+    }]
+]);

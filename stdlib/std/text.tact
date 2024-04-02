@@ -17,6 +17,9 @@ native beginStringFromBuilder(b: Builder): StringBuilder;
 @name(__tact_string_builder_append)
 extends mutates native append(self: StringBuilder, s: String);
 
+@name(__tact_string_builder_append_not_mut)
+extends native concat(self: StringBuilder, s: String): StringBuilder;
+
 @name(__tact_string_builder_end)
 extends native toCell(self: StringBuilder): Cell;
 
@@ -89,3 +92,10 @@ extends fun fromBase64(self: Slice): Slice {
         return result.asSlice();
     }
 }
+
+//
+// Address conversion
+//
+
+@name(__tact_address_to_userfriendly)
+extends native toString(self: Address): String;

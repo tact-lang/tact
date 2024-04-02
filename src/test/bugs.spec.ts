@@ -19,6 +19,8 @@ describe('bugs', () => {
         await contract.send(treasure, { value: toNano('10') }, { $$type: 'Mint', receiver: treasure.address, amount: toNano('10') });
         await system.run();
 
+        expect(contract.abi.errors!['31733'].message).toStrictEqual('condition can`t be...')
+
         expect(tracker.collect()).toMatchSnapshot();
     });
 });

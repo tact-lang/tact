@@ -132,7 +132,44 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     //
 
     if (f.kind === 'string') {
-        const id = writeString(f.value, ctx);
+        const s = f.value.replace(/\\\\|\\"|\\n|\\r|\\t|\\v|\\b|\\f|\\u{([0-9A-Fa-f]+)}|\\u([0-9A-Fa-f]{4})|\\x([0-9A-Fa-f]{2})/g, (match, unicodeCodePoint, unicodeEscape, hexEscape) => {
+            switch (match) {
+                case '\\\\':
+                    return '\\';
+                case '\\"':
+                    return '"';
+                case '\\n':
+                    return '\n';
+                case '\\r':
+                    return '\r';
+                case '\\t':
+                    return '\t';
+                case '\\v':
+                    return '\v';
+                case '\\b':
+                    return '\b';
+                case '\\f':
+                    return '\f';
+                default:
+                    // Handle Unicode code point escape
+                    if (unicodeCodePoint) {
+                        const codePoint = parseInt(unicodeCodePoint, 16);
+                        return String.fromCodePoint(codePoint);
+                    }
+                    // Handle Unicode escape
+                    if (unicodeEscape) {
+                        const codeUnit = parseInt(unicodeEscape, 16);
+                        return String.fromCharCode(codeUnit);
+                    }
+                    // Handle hex escape
+                    if (hexEscape) {
+                        const hexValue = parseInt(hexEscape, 16);
+                        return String.fromCharCode(hexValue);
+                    }
+                    return match;
+            }
+        });
+        const id = writeString(s, ctx);
         ctx.used(id);
         return `${id}()`;
     }
@@ -471,8 +508,8 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     if (f.kind === 'op_static_call') {
 
         // Check global functions
-        if (GlobalFunctions[f.name]) {
-            return GlobalFunctions[f.name].generate(ctx,
+        if (GlobalFunctions.has(f.name)) {
+            return GlobalFunctions.get(f.name)!.generate(ctx,
                 f.args.map((v) => getExpType(ctx.ctx, v)),
                 f.args,
                 f.ref);
@@ -531,9 +568,14 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
             // Check struct ABI
             if (t.kind === 'struct') {
-                const abi = StructFunctions[f.name];
-                if (abi) {
-                    return abi.generate(ctx, [src, ...f.args.map((v) => getExpType(ctx.ctx, v))], [f.src, ...f.args], f.ref);
+                if (StructFunctions.has(f.name)) {
+                    const abi = StructFunctions.get(f.name)!;
+                    return abi.generate(
+                        ctx,
+                        [src, ...f.args.map((v) => getExpType(ctx.ctx, v))],
+                        [f.src, ...f.args],
+                        f.ref
+                    );
                 }
             }
 
@@ -577,10 +619,10 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
         // Map types
         if (src.kind === 'map') {
-            const abf = MapFunctions[f.name];
-            if (!abf) {
+            if (!MapFunctions.has(f.name)) {
                 throwError(`Map function "${f.name}" not found`, f.ref);
             }
+            const abf = MapFunctions.get(f.name)!;
             return abf.generate(ctx, [src, ...f.args.map((v) => getExpType(ctx.ctx, v))], [f.src, ...f.args], f.ref);
         }
 

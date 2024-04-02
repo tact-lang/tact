@@ -1,5 +1,4 @@
 contract StringsTester {
-
     init() {
         
     }
@@ -23,6 +22,12 @@ contract StringsTester {
     get fun dynamicStringCell(): Cell {
         let b: StringBuilder = beginString();
         b.append("Hello!");
+        return b.toCell();
+    }
+
+    get fun dynamicStringCell2(): Cell {
+        let b: StringBuilder = beginString();
+        b = b.concat("Hello,").concat(" ").concat("World!");
         return b.toCell();
     }
 
@@ -60,7 +65,6 @@ contract StringsTester {
         return b.toString();
     }
 
-
     get fun stringWithLargeNumber(): String {
         let b: StringBuilder = beginString();
         b.append("Hello, your balance: ");
@@ -78,5 +82,25 @@ contract StringsTester {
 
     get fun processBase64(src: String): Slice {
         return src.fromBase64();
+    }
+
+    get fun stringWithEscapedChars1(): String {
+        return "test \n \n \\ \\\n \"string\"";
+    }
+
+    get fun stringWithEscapedChars2(): String {
+        return "test \n test \t test \r test \b test \f test \" test ' test \\ \\\\ \"_\" \"\" test";
+    }
+
+    get fun stringWithEscapedChars3(): String {
+        return "test \\n test \\t test \\r test \\\\b\b test \\f test \\\" test \\' test \v \v \\\\ \\\\\\\\ \\\"_\\\" \\\"\\\" test";
+    }
+
+    get fun stringWithEscapedChars4(): String {
+        return "\u{2028}\u{2029} \u0044 \x41\x42\x43";
+    }
+
+    get fun stringWithAddress(): String {
+        return address("EQBKgXCNLPexWhs2L79kiARR1phGH1LwXxRbNsCFF9doc2lN").toString();
     }
 }

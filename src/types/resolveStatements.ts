@@ -8,7 +8,7 @@ import { printTypeRef, TypeRef } from "./types";
 export type StatementContext = {
     root: ASTRef,
     returns: TypeRef,
-    vars: { [name: string]: TypeRef };
+    vars: Map<string, TypeRef>;
     requiredFields: string[];
 };
 
@@ -16,7 +16,7 @@ function emptyContext(root: ASTRef, returns: TypeRef): StatementContext {
     return {
         root,
         returns,
-        vars: {},
+        vars: new Map(),
         requiredFields: []
     };
 }
@@ -46,16 +46,13 @@ function removeRequiredVariable(name: string, src: StatementContext): StatementC
 }
 
 function addVariable(name: string, ref: TypeRef, src: StatementContext): StatementContext {
-    if (src.vars[name]) {
+    if (src.vars.has(name)) {
         throw Error('Variable already exists: ' + name); // Should happen earlier
     }
     return {
         ...src,
-        vars: {
-            ...src.vars,
-            [name]: ref
-        }
-    };
+        vars: new Map(src.vars).set(name, ref)
+    }
 }
 
 function processCondition(condition: ASTCondition, sctx: StatementContext, ctx: CompilerContext): { ctx: CompilerContext, sctx: StatementContext } {
@@ -141,7 +138,7 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             }
 
             // Add variable to statement context
-            if (sctx.vars[s.name]) {
+            if (sctx.vars.has(s.name)) {
                 throwError(`Variable already exists: ${s.name}`, s.ref);
             }
             sctx = addVariable(s.name, variableType, sctx);

@@ -1227,6 +1227,17 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
+    ctx.fun(`__tact_string_builder_append_not_mut`, () => {
+        ctx.signature(`(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)`);
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                builders~${ctx.used('__tact_string_builder_append')}(sc);
+                return builders;
+            `);
+        });
+    });
+
     ctx.fun(`__tact_int_to_string`, () => {
         ctx.signature(`slice __tact_int_to_string(int src)`);
         ctx.context('stdlib');

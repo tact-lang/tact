@@ -22,6 +22,7 @@ describe('feature-strings', () => {
         const l = 'привет мир 👀 привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀';
         expect(await contract.getConstantStringUnicodeLong()).toBe(l);
         expect((await contract.getDynamicStringCell()).equals(beginCell().storeStringTail('Hello!').endCell())).toBe(true);
+        expect((await contract.getDynamicStringCell2()).equals(beginCell().storeStringTail('Hello, World!').endCell())).toBe(true);
         expect((await contract.getDynamicCommentCell()).equals(beginCell().storeUint(0, 32).storeStringTail('Something something world!').endCell())).toBe(true);
         const l2 = 'Hello!привет мир 👀 привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀';
         expect((await contract.getDynamicCommentCellLarge()).equals(beginCell().storeStringTail(l2).endCell())).toBe(true);
@@ -46,5 +47,20 @@ describe('feature-strings', () => {
             const d = r.beginParse().loadBuffer(r.bits.length / 8);
             expect(d.toString('hex')).toEqual(s.toString('hex'));
         }
+
+        expect(await contract.getStringWithEscapedChars1()).toBe(
+            "test \n \n \\ \\\n \"string\""
+        );
+        expect(await contract.getStringWithEscapedChars2()).toEqual(
+            "test \n test \t test \r test \b test \f test \" test ' test \\ \\\\ \"_\" \"\" test"
+        );
+        expect(await contract.getStringWithEscapedChars3()).toEqual(
+            "test \\n test \\t test \\r test \\\\b\b test \\f test \\\" test \\' test \v \v \\\\ \\\\\\\\ \\\"_\\\" \\\"\\\" test"
+        );
+        expect(await contract.getStringWithEscapedChars4()).toEqual(
+            "\u{2028}\u{2029} \u0044 \x41\x42\x43"
+        );
+
+        expect(await contract.getStringWithAddress()).toEqual('EQBKgXCNLPexWhs2L79kiARR1phGH1LwXxRbNsCFF9doc2lN');
     });
 });
