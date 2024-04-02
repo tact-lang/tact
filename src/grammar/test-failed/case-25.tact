@@ -1,2 +1,1 @@
-
 abstract fun testFuncAbstractWithType(,): Int;
