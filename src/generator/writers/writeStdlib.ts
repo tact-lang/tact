@@ -3,25 +3,24 @@ import { enabledMasterchain } from "../../config/features";
 import { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext) {
-
     //
     // stdlib extension functions
     //
 
-    ctx.skip('__tact_set');
-    ctx.skip('__tact_nop');
-    ctx.skip('__tact_str_to_slice');
-    ctx.skip('__tact_slice_to_str');
-    ctx.skip('__tact_address_to_slice');
+    ctx.skip("__tact_set");
+    ctx.skip("__tact_nop");
+    ctx.skip("__tact_str_to_slice");
+    ctx.skip("__tact_slice_to_str");
+    ctx.skip("__tact_address_to_slice");
 
     //
     // Addresses
     //
 
-    ctx.fun('__tact_verify_address', () => {
+    ctx.fun("__tact_verify_address", () => {
         ctx.signature(`slice __tact_verify_address(slice address)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 throw_unless(${contractErrors.invalidAddress.id}, address.slice_bits() == 267);
@@ -41,13 +40,13 @@ export function writeStdlib(ctx: WriterContext) {
             ctx.write(`
                 return address;
             `);
-        })
+        });
     });
 
-    ctx.fun('__tact_load_address', () => {
+    ctx.fun("__tact_load_address", () => {
         ctx.signature(`(slice, slice) __tact_load_address(slice cs)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 slice raw = cs~load_msg_addr();
@@ -56,10 +55,10 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_load_address_opt', () => {
+    ctx.fun("__tact_load_address_opt", () => {
         ctx.signature(`(slice, slice) __tact_load_address_opt(slice cs)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 slice raw = cs~load_msg_addr();
@@ -72,10 +71,10 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_store_address', () => {
+    ctx.fun("__tact_store_address", () => {
         ctx.signature(`builder __tact_store_address(builder b, slice address)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return b.store_slice(${ctx.used(`__tact_verify_address`)}(address));
@@ -83,10 +82,12 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_store_address_opt', () => {
-        ctx.signature(`builder __tact_store_address_opt(builder b, slice address)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_store_address_opt", () => {
+        ctx.signature(
+            `builder __tact_store_address_opt(builder b, slice address)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(address)) {
@@ -99,10 +100,10 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_create_address', () => {
+    ctx.fun("__tact_create_address", () => {
         ctx.signature(`slice __tact_create_address(int chain, int hash)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var b = begin_cell();
@@ -116,10 +117,12 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_compute_contract_address', () => {
-        ctx.signature(`slice __tact_compute_contract_address(int chain, cell code, cell data)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_compute_contract_address", () => {
+        ctx.signature(
+            `slice __tact_compute_contract_address(int chain, cell code, cell data)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var b = begin_cell();
@@ -136,8 +139,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_my_balance`, () => {
         ctx.signature(`int __tact_my_balance()`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return pair_first(get_balance());
@@ -145,80 +148,91 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_not_null', () => {
+    ctx.fun("__tact_not_null", () => {
         ctx.signature(`forall X -> X __tact_not_null(X x)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
-            ctx.write(`throw_if(${contractErrors.null.id}, null?(x)); return x;`);
+            ctx.write(
+                `throw_if(${contractErrors.null.id}, null?(x)); return x;`,
+            );
         });
-
     });
 
-    ctx.fun('__tact_dict_delete', () => {
-        ctx.signature(`(cell, int) __tact_dict_delete(cell dict, int key_len, slice index)`);
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_delete", () => {
+        ctx.signature(
+            `(cell, int) __tact_dict_delete(cell dict, int key_len, slice index)`,
+        );
+        ctx.context("stdlib");
         ctx.asm(`asm(index dict key_len) "DICTDEL"`);
     });
 
-    ctx.fun('__tact_dict_set_ref', () => {
-        ctx.signature(`((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value)`);
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_ref", () => {
+        ctx.signature(
+            `((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value)`,
+        );
+        ctx.context("stdlib");
         ctx.asm(`asm(value index dict key_len) "DICTSETREF"`);
     });
 
-    ctx.fun('__tact_dict_get', () => {
-        ctx.signature(`(slice, int) __tact_dict_get(cell dict, int key_len, slice index)`);
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_get", () => {
+        ctx.signature(
+            `(slice, int) __tact_dict_get(cell dict, int key_len, slice index)`,
+        );
+        ctx.context("stdlib");
         ctx.asm(`asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT"`);
     });
 
-    ctx.fun('__tact_dict_get_ref', () => {
-        ctx.signature(`(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index)`);
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_get_ref", () => {
+        ctx.signature(
+            `(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index)`,
+        );
+        ctx.context("stdlib");
         ctx.asm(`asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT"`);
     });
 
-    ctx.fun('__tact_debug', () => {
+    ctx.fun("__tact_debug", () => {
         ctx.signature(`forall X -> () __tact_debug(X value)`);
-        ctx.flag('impure');
-        ctx.context('stdlib');
+        ctx.flag("impure");
+        ctx.context("stdlib");
         ctx.asm(`asm "s0 DUMP" "DROP"`);
     });
 
-    ctx.fun('__tact_debug_str', () => {
+    ctx.fun("__tact_debug_str", () => {
         ctx.signature(`() __tact_debug_str(slice value)`);
-        ctx.flag('impure');
-        ctx.context('stdlib');
+        ctx.flag("impure");
+        ctx.context("stdlib");
         ctx.asm(`asm "STRDUMP" "DROP"`);
     });
 
-    ctx.fun('__tact_debug_bool', () => {
+    ctx.fun("__tact_debug_bool", () => {
         ctx.signature(`() __tact_debug_bool(int value)`);
-        ctx.flag('impure');
-        ctx.context('stdlib');
+        ctx.flag("impure");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (value) {
-                    ${ctx.used('__tact_debug_str')}("true");
+                    ${ctx.used("__tact_debug_str")}("true");
                 } else {
-                    ${ctx.used('__tact_debug_str')}("false");
+                    ${ctx.used("__tact_debug_str")}("false");
                 }
             `);
         });
     });
 
-    ctx.fun('__tact_preload_offset', () => {
-        ctx.signature(`(slice) __tact_preload_offset(slice s, int offset, int bits)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_preload_offset", () => {
+        ctx.signature(
+            `(slice) __tact_preload_offset(slice s, int offset, int bits)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.asm(`asm "SDSUBSTR"`);
     });
 
-    ctx.fun('__tact_crc16', () => {
+    ctx.fun("__tact_crc16", () => {
         ctx.signature(`(slice) __tact_crc16(slice data)`);
-        ctx.flag('inline_ref');
-        ctx.context('stdlib');
+        ctx.flag("inline_ref");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 slice new_data = begin_cell()
@@ -250,9 +264,9 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_base64_encode', () => {
+    ctx.fun("__tact_base64_encode", () => {
         ctx.signature(`(slice) __tact_base64_encode(slice data)`);
-        ctx.context('stdlib');
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 slice chars = "4142434445464748494A4B4C4D4E4F505152535455565758595A6162636465666768696A6B6C6D6E6F707172737475767778797A303132333435363738392D5F"s;
@@ -264,10 +278,10 @@ export function writeStdlib(ctx: WriterContext) {
                     int n = (bs1 << 16) | (bs2 << 8) | bs3;
             
                     res = res
-                        .store_slice(${ctx.used('__tact_preload_offset')}(chars, ((n >> 18) & 63) * 8, 8))
-                        .store_slice(${ctx.used('__tact_preload_offset')}(chars, ((n >> 12) & 63) * 8, 8))
-                        .store_slice(${ctx.used('__tact_preload_offset')}(chars, ((n >>  6) & 63) * 8, 8))
-                        .store_slice(${ctx.used('__tact_preload_offset')}(chars, ((n      ) & 63) * 8, 8));
+                        .store_slice(${ctx.used("__tact_preload_offset")}(chars, ((n >> 18) & 63) * 8, 8))
+                        .store_slice(${ctx.used("__tact_preload_offset")}(chars, ((n >> 12) & 63) * 8, 8))
+                        .store_slice(${ctx.used("__tact_preload_offset")}(chars, ((n >>  6) & 63) * 8, 8))
+                        .store_slice(${ctx.used("__tact_preload_offset")}(chars, ((n      ) & 63) * 8, 8));
                 }
                 
                 return res.end_cell().begin_parse();
@@ -275,9 +289,9 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_address_to_userfriendly', () => {
+    ctx.fun("__tact_address_to_userfriendly", () => {
         ctx.signature(`(slice) __tact_address_to_userfriendly(slice address)`);
-        ctx.context('stdlib');
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 (int wc, int hash) = address.parse_std_addr();
@@ -288,51 +302,51 @@ export function writeStdlib(ctx: WriterContext) {
                     .store_uint(hash, 256)
                 .end_cell().begin_parse();
             
-                slice checksum = ${ctx.used('__tact_crc16')}(user_friendly_address);
+                slice checksum = ${ctx.used("__tact_crc16")}(user_friendly_address);
                 slice user_friendly_address_with_checksum = begin_cell()
                     .store_slice(user_friendly_address)
                     .store_slice(checksum)
                 .end_cell().begin_parse();
             
-                return ${ctx.used('__tact_base64_encode')}(user_friendly_address_with_checksum);
+                return ${ctx.used("__tact_base64_encode")}(user_friendly_address_with_checksum);
             `);
         });
     });
 
-    ctx.fun('__tact_debug_address', () => {
+    ctx.fun("__tact_debug_address", () => {
         ctx.signature(`() __tact_debug_address(slice address)`);
-        ctx.flag('impure');
-        ctx.context('stdlib');
+        ctx.flag("impure");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                ${ctx.used('__tact_debug_str')}(${ctx.used('__tact_address_to_userfriendly')}(address));
+                ${ctx.used("__tact_debug_str")}(${ctx.used("__tact_address_to_userfriendly")}(address));
             `);
         });
     });
 
-    ctx.fun('__tact_context_get', () => {
+    ctx.fun("__tact_context_get", () => {
         ctx.signature(`(int, slice, int, slice) __tact_context_get()`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`return __tact_context;`);
         });
     });
 
-    ctx.fun('__tact_context_get_sender', () => {
+    ctx.fun("__tact_context_get_sender", () => {
         ctx.signature(`slice __tact_context_get_sender()`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`return __tact_context_sender;`);
         });
     });
 
-    ctx.fun('__tact_prepare_random', () => {
+    ctx.fun("__tact_prepare_random", () => {
         ctx.signature(`() __tact_prepare_random()`);
-        ctx.flag('impure');
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("impure");
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(__tact_randomized)) {
@@ -343,10 +357,10 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_store_bool', () => {
+    ctx.fun("__tact_store_bool", () => {
         ctx.signature(`builder __tact_store_bool(builder b, int v)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return b.store_int(v, 1);
@@ -354,15 +368,15 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_to_tuple', () => {
+    ctx.fun("__tact_to_tuple", () => {
         ctx.signature(`forall X -> tuple __tact_to_tuple(X x)`);
-        ctx.context('stdlib');
+        ctx.context("stdlib");
         ctx.asm(`asm "NOP"`);
     });
 
-    ctx.fun('__tact_from_tuple', () => {
+    ctx.fun("__tact_from_tuple", () => {
         ctx.signature(`forall X -> X __tact_from_tuple(tuple x)`);
-        ctx.context('stdlib');
+        ctx.context("stdlib");
         ctx.asm(`asm "NOP"`);
     });
 
@@ -370,10 +384,12 @@ export function writeStdlib(ctx: WriterContext) {
     // Dict Int -> Int
     //
 
-    ctx.fun('__tact_dict_set_int_int', () => {
-        ctx.signature(`(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_int_int", () => {
+        ctx.signature(
+            `(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -386,10 +402,12 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_dict_get_int_int', () => {
-        ctx.signature(`int __tact_dict_get_int_int(cell d, int kl, int k, int vl)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_get_int_int", () => {
+        ctx.signature(
+            `int __tact_dict_get_int_int(cell d, int kl, int k, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = idict_get?(d, kl, k);
@@ -406,10 +424,12 @@ export function writeStdlib(ctx: WriterContext) {
     // Dict Int -> Int
     //
 
-    ctx.fun('__tact_dict_set_int_uint', () => {
-        ctx.signature(`(cell, ()) __tact_dict_set_int_uint(cell d, int kl, int k, int v, int vl)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_int_uint", () => {
+        ctx.signature(
+            `(cell, ()) __tact_dict_set_int_uint(cell d, int kl, int k, int v, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -422,10 +442,12 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_dict_get_int_uint', () => {
-        ctx.signature(`int __tact_dict_get_int_uint(cell d, int kl, int k, int vl)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_get_int_uint", () => {
+        ctx.signature(
+            `int __tact_dict_get_int_uint(cell d, int kl, int k, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = idict_get?(d, kl, k);
@@ -442,10 +464,12 @@ export function writeStdlib(ctx: WriterContext) {
     // Dict Uint -> Int
     //
 
-    ctx.fun('__tact_dict_set_uint_int', () => {
-        ctx.signature(`(cell, ()) __tact_dict_set_uint_int(cell d, int kl, int k, int v, int vl)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_uint_int", () => {
+        ctx.signature(
+            `(cell, ()) __tact_dict_set_uint_int(cell d, int kl, int k, int v, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -458,10 +482,12 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_dict_get_uint_int', () => {
-        ctx.signature(`int __tact_dict_get_uint_int(cell d, int kl, int k, int vl)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_get_uint_int", () => {
+        ctx.signature(
+            `int __tact_dict_get_uint_int(cell d, int kl, int k, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = udict_get?(d, kl, k);
@@ -478,10 +504,12 @@ export function writeStdlib(ctx: WriterContext) {
     // Dict Uint -> Uint
     //
 
-    ctx.fun('__tact_dict_set_uint_uint', () => {
-        ctx.signature(`(cell, ()) __tact_dict_set_uint_uint(cell d, int kl, int k, int v, int vl)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_uint_uint", () => {
+        ctx.signature(
+            `(cell, ()) __tact_dict_set_uint_uint(cell d, int kl, int k, int v, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -494,10 +522,12 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_dict_get_uint_uint', () => {
-        ctx.signature(`int __tact_dict_get_uint_uint(cell d, int kl, int k, int vl)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_get_uint_uint", () => {
+        ctx.signature(
+            `int __tact_dict_get_uint_uint(cell d, int kl, int k, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = udict_get?(d, kl, k);
@@ -514,10 +544,12 @@ export function writeStdlib(ctx: WriterContext) {
     // Dict Int -> Cell
     //
 
-    ctx.fun('__tact_dict_set_int_cell', () => {
-        ctx.signature(`(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_int_cell", () => {
+        ctx.signature(
+            `(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -530,10 +562,10 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_dict_get_int_cell', () => {
+    ctx.fun("__tact_dict_get_int_cell", () => {
         ctx.signature(`cell __tact_dict_get_int_cell(cell d, int kl, int k)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = idict_get_ref?(d, kl, k);
@@ -546,15 +578,16 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-
     //
     // Dict Uint -> Cell
     //
 
-    ctx.fun('__tact_dict_set_uint_cell', () => {
-        ctx.signature(`(cell, ()) __tact_dict_set_uint_cell(cell d, int kl, int k, cell v)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_uint_cell", () => {
+        ctx.signature(
+            `(cell, ()) __tact_dict_set_uint_cell(cell d, int kl, int k, cell v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -567,10 +600,10 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_dict_get_uint_cell', () => {
+    ctx.fun("__tact_dict_get_uint_cell", () => {
         ctx.signature(`cell __tact_dict_get_uint_cell(cell d, int kl, int k)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = udict_get_ref?(d, kl, k);
@@ -587,10 +620,12 @@ export function writeStdlib(ctx: WriterContext) {
     // Dict Int -> Slice
     //
 
-    ctx.fun('__tact_dict_set_int_slice', () => {
-        ctx.signature(`(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_int_slice", () => {
+        ctx.signature(
+            `(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -603,10 +638,10 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_dict_get_int_slice', () => {
+    ctx.fun("__tact_dict_get_int_slice", () => {
         ctx.signature(`slice __tact_dict_get_int_slice(cell d, int kl, int k)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = idict_get?(d, kl, k);
@@ -623,10 +658,12 @@ export function writeStdlib(ctx: WriterContext) {
     // Dict Uint -> Slice
     //
 
-    ctx.fun('__tact_dict_set_uint_slice', () => {
-        ctx.signature(`(cell, ()) __tact_dict_set_uint_slice(cell d, int kl, int k, slice v)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_uint_slice", () => {
+        ctx.signature(
+            `(cell, ()) __tact_dict_set_uint_slice(cell d, int kl, int k, slice v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -639,10 +676,12 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_dict_get_uint_slice', () => {
-        ctx.signature(`slice __tact_dict_get_uint_slice(cell d, int kl, int k)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_get_uint_slice", () => {
+        ctx.signature(
+            `slice __tact_dict_get_uint_slice(cell d, int kl, int k)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = udict_get?(d, kl, k);
@@ -659,10 +698,12 @@ export function writeStdlib(ctx: WriterContext) {
     // Dict Slice -> Int
     //
 
-    ctx.fun('__tact_dict_set_slice_int', () => {
-        ctx.signature(`(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_slice_int", () => {
+        ctx.signature(
+            `(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -675,10 +716,12 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_dict_get_slice_int', () => {
-        ctx.signature(`int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_get_slice_int", () => {
+        ctx.signature(
+            `int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = ${ctx.used(`__tact_dict_get`)}(d, kl, k);
@@ -695,10 +738,12 @@ export function writeStdlib(ctx: WriterContext) {
     // Dict Slice -> UInt
     //
 
-    ctx.fun('__tact_dict_set_slice_uint', () => {
-        ctx.signature(`(cell, ()) __tact_dict_set_slice_uint(cell d, int kl, slice k, int v, int vl)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_slice_uint", () => {
+        ctx.signature(
+            `(cell, ()) __tact_dict_set_slice_uint(cell d, int kl, slice k, int v, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -711,10 +756,12 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun('__tact_dict_get_slice_uint', () => {
-        ctx.signature(`int __tact_dict_get_slice_uint(cell d, int kl, slice k, int vl)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_get_slice_uint", () => {
+        ctx.signature(
+            `int __tact_dict_get_slice_uint(cell d, int kl, slice k, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = ${ctx.used(`__tact_dict_get`)}(d, kl, k);
@@ -731,10 +778,12 @@ export function writeStdlib(ctx: WriterContext) {
     // Dict Slice -> Cell
     //
 
-    ctx.fun('__tact_dict_set_slice_cell', () => {
-        ctx.signature(`(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_slice_cell", () => {
+        ctx.signature(
+            `(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -748,9 +797,11 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_dict_get_slice_cell`, () => {
-        ctx.signature(`cell __tact_dict_get_slice_cell(cell d, int kl, slice k)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.signature(
+            `cell __tact_dict_get_slice_cell(cell d, int kl, slice k)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = ${ctx.used(`__tact_dict_get_ref`)}(d, kl, k);
@@ -767,10 +818,12 @@ export function writeStdlib(ctx: WriterContext) {
     // Dict Slice -> Slice
     //
 
-    ctx.fun('__tact_dict_set_slice_slice', () => {
-        ctx.signature(`(cell, ()) __tact_dict_set_slice_slice(cell d, int kl, slice k, slice v)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+    ctx.fun("__tact_dict_set_slice_slice", () => {
+        ctx.signature(
+            `(cell, ()) __tact_dict_set_slice_slice(cell d, int kl, slice k, slice v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -784,9 +837,11 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_dict_get_slice_slice`, () => {
-        ctx.signature(`slice __tact_dict_get_slice_slice(cell d, int kl, slice k)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.signature(
+            `slice __tact_dict_get_slice_slice(cell d, int kl, slice k)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = ${ctx.used(`__tact_dict_get`)}(d, kl, k);
@@ -801,40 +856,42 @@ export function writeStdlib(ctx: WriterContext) {
 
     //
     // Address
-    // 
+    //
 
     ctx.fun(`__tact_slice_eq_bits`, () => {
         ctx.signature(`int __tact_slice_eq_bits(slice a, slice b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return equal_slice_bits(a, b);
-            `)
+            `);
         });
     });
 
     ctx.fun(`__tact_slice_eq_bits_nullable_one`, () => {
-        ctx.signature(`int __tact_slice_eq_bits_nullable_one(slice a, slice b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.signature(
+            `int __tact_slice_eq_bits_nullable_one(slice a, slice b)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return (null?(a)) ? (false) : (equal_slice_bits(a, b));
-            `)
+            `);
         });
     });
 
     ctx.fun(`__tact_slice_eq_bits_nullable`, () => {
         ctx.signature(`int __tact_slice_eq_bits_nullable(slice a, slice b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var a_is_null = null?(a);
                 var b_is_null = null?(b);
                 return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );
-            `)
+            `);
         });
     });
 
@@ -844,8 +901,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_int_eq_nullable_one`, () => {
         ctx.signature(`int __tact_int_eq_nullable_one(int a, int b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return (null?(a)) ? (false) : (a == b);
@@ -855,8 +912,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_int_neq_nullable_one`, () => {
         ctx.signature(`int __tact_int_neq_nullable_one(int a, int b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return (null?(a)) ? (true) : (a != b);
@@ -866,8 +923,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_int_eq_nullable`, () => {
         ctx.signature(`int __tact_int_eq_nullable(int a, int b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var a_is_null = null?(a);
@@ -879,8 +936,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_int_neq_nullable`, () => {
         ctx.signature(`int __tact_int_neq_nullable(int a, int b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var a_is_null = null?(a);
@@ -892,12 +949,12 @@ export function writeStdlib(ctx: WriterContext) {
 
     //
     // Cell Eq
-    // 
+    //
 
     ctx.fun(`__tact_cell_eq`, () => {
         ctx.signature(`int __tact_cell_eq(cell a, cell b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return (a.cell_hash() ==  b.cell_hash());
@@ -907,8 +964,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_cell_neq`, () => {
         ctx.signature(`int __tact_cell_neq(cell a, cell b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return (a.cell_hash() !=  b.cell_hash());
@@ -918,8 +975,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_cell_eq_nullable_one`, () => {
         ctx.signature(`int __tact_cell_eq_nullable_one(cell a, cell b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return (null?(a)) ? (false) : (a.cell_hash() == b.cell_hash());
@@ -929,8 +986,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_cell_neq_nullable_one`, () => {
         ctx.signature(`int __tact_cell_neq_nullable_one(cell a, cell b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return (null?(a)) ? (true) : (a.cell_hash() != b.cell_hash());
@@ -940,8 +997,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_cell_eq_nullable`, () => {
         ctx.signature(`int __tact_cell_eq_nullable(cell a, cell b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var a_is_null = null?(a);
@@ -953,8 +1010,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_cell_neq_nullable`, () => {
         ctx.signature(`int __tact_cell_neq_nullable(cell a, cell b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var a_is_null = null?(a);
@@ -970,8 +1027,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_slice_eq`, () => {
         ctx.signature(`int __tact_slice_eq(slice a, slice b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return (a.slice_hash() ==  b.slice_hash());
@@ -981,8 +1038,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_slice_neq`, () => {
         ctx.signature(`int __tact_slice_neq(slice a, slice b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return (a.slice_hash() !=  b.slice_hash());
@@ -992,8 +1049,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_slice_eq_nullable_one`, () => {
         ctx.signature(`int __tact_slice_eq_nullable_one(slice a, slice b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return (null?(a)) ? (false) : (a.slice_hash() == b.slice_hash());
@@ -1003,8 +1060,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_slice_neq_nullable_one`, () => {
         ctx.signature(`int __tact_slice_neq_nullable_one(slice a, slice b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return (null?(a)) ? (true) : (a.slice_hash() != b.slice_hash());
@@ -1014,8 +1071,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_slice_eq_nullable`, () => {
         ctx.signature(`int __tact_slice_eq_nullable(slice a, slice b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var a_is_null = null?(a);
@@ -1027,8 +1084,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_slice_neq_nullable`, () => {
         ctx.signature(`int __tact_slice_neq_nullable(slice a, slice b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var a_is_null = null?(a);
@@ -1043,9 +1100,11 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun(`__tact_dict_set_code`, () => {
-        ctx.signature(`cell __tact_dict_set_code(cell dict, int id, cell code)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.signature(
+            `cell __tact_dict_set_code(cell dict, int id, cell code)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return udict_set_ref(dict, 16, id, code);
@@ -1055,8 +1114,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_dict_get_code`, () => {
         ctx.signature(`cell __tact_dict_get_code(cell dict, int id)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (data, ok) = udict_get_ref?(dict, 16, id);
@@ -1072,16 +1131,16 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_tuple_create_0`, () => {
         ctx.signature(`tuple __tact_tuple_create_0()`);
-        ctx.context('stdlib');
+        ctx.context("stdlib");
         ctx.asm(`asm "NIL"`);
     });
     ctx.fun(`__tact_tuple_destroy_0`, () => {
         ctx.signature(`() __tact_tuple_destroy_0()`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
-            ctx.append(`return ();`)
-        })
+            ctx.append(`return ();`);
+        });
     });
 
     for (let i = 1; i < 64; i++) {
@@ -1090,8 +1149,10 @@ export function writeStdlib(ctx: WriterContext) {
             for (let j = 0; j < i; j++) {
                 args.push(`X${j}`);
             }
-            ctx.signature(`forall ${args.join(', ')} -> tuple __tact_tuple_create_${i}((${args.join(', ')}) v)`);
-            ctx.context('stdlib');
+            ctx.signature(
+                `forall ${args.join(", ")} -> tuple __tact_tuple_create_${i}((${args.join(", ")}) v)`,
+            );
+            ctx.context("stdlib");
             ctx.asm(`asm "${i} TUPLE"`);
         });
         ctx.fun(`__tact_tuple_destroy_${i}`, () => {
@@ -1099,8 +1160,10 @@ export function writeStdlib(ctx: WriterContext) {
             for (let j = 0; j < i; j++) {
                 args.push(`X${j}`);
             }
-            ctx.signature(`forall ${args.join(', ')} -> (${args.join(', ')}) __tact_tuple_destroy_${i}(tuple v)`);
-            ctx.context('stdlib');
+            ctx.signature(
+                `forall ${args.join(", ")} -> (${args.join(", ")}) __tact_tuple_destroy_${i}(tuple v)`,
+            );
+            ctx.context("stdlib");
             ctx.asm(`asm "${i} UNTUPLE"`);
         });
     }
@@ -1111,42 +1174,41 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_string_builder_start_comment`, () => {
         ctx.signature(`tuple __tact_string_builder_start_comment()`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return ${ctx.used('__tact_string_builder_start')}(begin_cell().store_uint(0, 32));
+                return ${ctx.used("__tact_string_builder_start")}(begin_cell().store_uint(0, 32));
             `);
         });
     });
 
     ctx.fun(`__tact_string_builder_start_tail_string`, () => {
         ctx.signature(`tuple __tact_string_builder_start_tail_string()`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return ${ctx.used('__tact_string_builder_start')}(begin_cell().store_uint(0, 8));
+                return ${ctx.used("__tact_string_builder_start")}(begin_cell().store_uint(0, 8));
             `);
         });
     });
 
     ctx.fun(`__tact_string_builder_start_string`, () => {
         ctx.signature(`tuple __tact_string_builder_start_string()`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return ${ctx.used('__tact_string_builder_start')}(begin_cell());
+                return ${ctx.used("__tact_string_builder_start")}(begin_cell());
             `);
         });
-
     });
 
     ctx.fun(`__tact_string_builder_start`, () => {
         ctx.signature(`tuple __tact_string_builder_start(builder b)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 return tpush(tpush(empty_tuple(), b), null());
@@ -1156,8 +1218,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_string_builder_end`, () => {
         ctx.signature(`cell __tact_string_builder_end(tuple builders)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 (builder b, tuple tail) = uncons(builders);
@@ -1173,18 +1235,20 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_string_builder_end_slice`, () => {
         ctx.signature(`slice __tact_string_builder_end_slice(tuple builders)`);
-        ctx.flag('inline');
-        ctx.context('stdlib');
+        ctx.flag("inline");
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return ${ctx.used('__tact_string_builder_end')}(builders).begin_parse();
+                return ${ctx.used("__tact_string_builder_end")}(builders).begin_parse();
             `);
         });
     });
 
     ctx.fun(`__tact_string_builder_append`, () => {
-        ctx.signature(`((tuple), ()) __tact_string_builder_append(tuple builders, slice sc)`);
-        ctx.context('stdlib');
+        ctx.signature(
+            `((tuple), ()) __tact_string_builder_append(tuple builders, slice sc)`,
+        );
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 int sliceRefs = slice_refs(sc);
@@ -1228,11 +1292,13 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_string_builder_append_not_mut`, () => {
-        ctx.signature(`(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)`);
-        ctx.context('stdlib');
+        ctx.signature(
+            `(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)`,
+        );
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                builders~${ctx.used('__tact_string_builder_append')}(sc);
+                builders~${ctx.used("__tact_string_builder_append")}(sc);
                 return builders;
             `);
         });
@@ -1240,7 +1306,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_int_to_string`, () => {
         ctx.signature(`slice __tact_int_to_string(int src)`);
-        ctx.context('stdlib');
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var b = begin_cell();
@@ -1285,7 +1351,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_float_to_string`, () => {
         ctx.signature(`slice __tact_float_to_string(int src, int digits)`);
-        ctx.context('stdlib');
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 throw_if(${contractErrors.invalidArgument.id}, (digits <= 0) | (digits > 77));
@@ -1339,13 +1405,13 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_log2`, () => {
         ctx.signature(`int __tact_log2(int num)`);
-        ctx.context('stdlib');
+        ctx.context("stdlib");
         ctx.asm(`asm "UBITSIZE DEC"`);
     });
 
     ctx.fun(`__tact_log`, () => {
         ctx.signature(`int __tact_log(int num, int base)`);
-        ctx.context('stdlib');
+        ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (num < base) {

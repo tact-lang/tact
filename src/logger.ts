@@ -5,5 +5,5 @@ export type TactLogger = {
 
 export const consoleLogger: TactLogger = {
     log: console.log,
-    error: console.error
+    error: console.error,
 };

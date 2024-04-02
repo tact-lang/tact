@@ -1,0 +1,7 @@
+[*.{js,ts}]
+indent_style = space
+indent_size = 4
+
+[{package.json, *.yml, .eslintrc.cjs}]
+indent_style = space
+indent_size = 2

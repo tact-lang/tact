@@ -1,19 +1,19 @@
-import { beginCell, Dictionary, toNano } from '@ton/core';
-import { ContractSystem, randomAddress } from '@tact-lang/emulator';
-import { __DANGER_resetNodeId } from '../grammar/ast';
-import { MathTester } from './features/output/math_MathTester';
+import { beginCell, Dictionary, toNano } from "@ton/core";
+import { ContractSystem, randomAddress } from "@tact-lang/emulator";
+import { __DANGER_resetNodeId } from "../grammar/ast";
+import { MathTester } from "./features/output/math_MathTester";
 
-describe('feature-math', () => {
+describe("feature-math", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    it('should perform math operations correctly', async () => {
+    it("should perform math operations correctly", async () => {
         // Init
         const system = await ContractSystem.create();
-        const treasure = system.treasure('treasure');
+        const treasure = system.treasure("treasure");
         const contract = system.open(await MathTester.fromInit());
-        const addressA = randomAddress('a');
-        const addressB = randomAddress('b');
+        const addressA = randomAddress("a");
+        const addressB = randomAddress("b");
         const cellA = beginCell().storeUint(0, 32).endCell();
         const cellB = beginCell().storeUint(1, 32).endCell();
         const sliceA = beginCell()
@@ -24,14 +24,14 @@ describe('feature-math', () => {
             .storeBit(1)
             .storeRef(beginCell().storeBit(1).endCell())
             .endCell();
-        const stringA = 'foo';
-        const stringB = 'bar';
+        const stringA = "foo";
+        const stringB = "bar";
         const dictA = Dictionary.empty<bigint, bigint>().set(0n, 0n);
         const dictB = Dictionary.empty<bigint, bigint>().set(0n, 2n);
         await contract.send(
             treasure,
-            { value: toNano('10') },
-            { $$type: 'Deploy', queryId: 0n }
+            { value: toNano("10") },
+            { $$type: "Deploy", queryId: 0n },
         );
         await system.run();
 
@@ -342,14 +342,16 @@ describe('feature-math', () => {
         // Test advanced math operations
         for (let num = 1n; num <= 100n; num++) {
             expect(await contract.getLog2(num)).toBe(
-                BigInt(Math.floor(Math.log2(Number(num))))
+                BigInt(Math.floor(Math.log2(Number(num)))),
             );
         }
 
         for (let num = 1n; num <= 10n; num++) {
             for (let base = 2n; base <= 10; base++) {
                 const logarithm = BigInt(
-                    Math.floor(Math.log2(Number(num)) / Math.log2(Number(base)))
+                    Math.floor(
+                        Math.log2(Number(num)) / Math.log2(Number(base)),
+                    ),
                 );
                 expect(await contract.getLog(num, base)).toBe(logarithm);
             }
@@ -367,7 +369,7 @@ describe('feature-math', () => {
         for (let num = maxint - 10n; num <= maxint; num++) {
             for (let base = 2; base <= 10; base++) {
                 expect(await contract.getLog(num, BigInt(base))).toBe(
-                    BigInt(num.toString(base).length - 1)
+                    BigInt(num.toString(base).length - 1),
                 );
             }
         }
@@ -382,7 +384,7 @@ describe('feature-math', () => {
         for (let num = maxint / 2n - 5n; num <= maxint / 2n + 5n; num++) {
             for (let base = 2; base <= 10; base++) {
                 expect(await contract.getLog(num, BigInt(base))).toBe(
-                    BigInt(num.toString(base).length - 1)
+                    BigInt(num.toString(base).length - 1),
                 );
             }
         }

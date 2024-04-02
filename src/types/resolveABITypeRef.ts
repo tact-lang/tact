@@ -2,129 +2,177 @@ import { ABITypeRef } from "@ton/core";
 import { ASTField, ASTRef, throwError } from "../grammar/ast";
 import { TypeRef } from "./types";
 
-type FormatDef = { [key: string]: { type: string, format: string | number } };
+type FormatDef = { [key: string]: { type: string; format: string | number } };
 
 const intFormats: FormatDef = {
-    'int8': { type: 'int', format: 8 },
-    'int16': { type: 'int', format: 16 },
-    'int32': { type: 'int', format: 32 },
-    'int64': { type: 'int', format: 64 },
-    'int128': { type: 'int', format: 128 },
-    'int256': { type: 'int', format: 256 },
+    int8: { type: "int", format: 8 },
+    int16: { type: "int", format: 16 },
+    int32: { type: "int", format: 32 },
+    int64: { type: "int", format: 64 },
+    int128: { type: "int", format: 128 },
+    int256: { type: "int", format: 256 },
 
-    'uint8': { type: 'uint', format: 8 },
-    'uint16': { type: 'uint', format: 16 },
-    'uint32': { type: 'uint', format: 32 },
-    'uint64': { type: 'uint', format: 64 },
-    'uint128': { type: 'uint', format: 128 },
-    'uint256': { type: 'uint', format: 256 },
+    uint8: { type: "uint", format: 8 },
+    uint16: { type: "uint", format: 16 },
+    uint32: { type: "uint", format: 32 },
+    uint64: { type: "uint", format: 64 },
+    uint128: { type: "uint", format: 128 },
+    uint256: { type: "uint", format: 256 },
 
-    'int257': { type: 'int', format: 257 },
-    'coins': { type: 'uint', format: 'coins' }
+    int257: { type: "int", format: 257 },
+    coins: { type: "uint", format: "coins" },
 };
 
 const intMapFormats: FormatDef = {
-    'int8': { type: 'int', format: 8 },
-    'int16': { type: 'int', format: 16 },
-    'int32': { type: 'int', format: 32 },
-    'int64': { type: 'int', format: 64 },
-    'int128': { type: 'int', format: 128 },
-    'int256': { type: 'int', format: 256 },
+    int8: { type: "int", format: 8 },
+    int16: { type: "int", format: 16 },
+    int32: { type: "int", format: 32 },
+    int64: { type: "int", format: 64 },
+    int128: { type: "int", format: 128 },
+    int256: { type: "int", format: 256 },
 
-    'uint8': { type: 'uint', format: 8 },
-    'uint16': { type: 'uint', format: 16 },
-    'uint32': { type: 'uint', format: 32 },
-    'uint64': { type: 'uint', format: 64 },
-    'uint128': { type: 'uint', format: 128 },
-    'uint256': { type: 'uint', format: 256 },
+    uint8: { type: "uint", format: 8 },
+    uint16: { type: "uint", format: 16 },
+    uint32: { type: "uint", format: 32 },
+    uint64: { type: "uint", format: 64 },
+    uint128: { type: "uint", format: 128 },
+    uint256: { type: "uint", format: 256 },
 
-    'int257': { type: 'int', format: 257 }
+    int257: { type: "int", format: 257 },
 };
 
 const cellFormats: FormatDef = {
-    'remaining': { type: 'cell', format: 'remainder' }
-}
+    remaining: { type: "cell", format: "remainder" },
+};
 
 const sliceFormats: FormatDef = {
-    'remaining': { type: 'slice', format: 'remainder' },
-    'bytes32': { type: 'fixed-bytes', format: 32 },
-    'bytes64': { type: 'fixed-bytes', format: 64 }
-}
+    remaining: { type: "slice", format: "remainder" },
+    bytes32: { type: "fixed-bytes", format: 32 },
+    bytes64: { type: "fixed-bytes", format: 64 },
+};
 
 const builderFormats: FormatDef = {
-    'remaining': { type: 'builder', format: 'remainder' }
-}
+    remaining: { type: "builder", format: "remainder" },
+};
 
 export function resolveABIType(src: ASTField): ABITypeRef {
-    if (src.type.kind === 'type_ref_simple') {
-
+    if (src.type.kind === "type_ref_simple") {
         //
         // Primitive types
         //
 
-        if (src.type.name === 'Int') {
+        if (src.type.name === "Int") {
             if (src.as) {
                 const fmt = intFormats[src.as];
                 if (!fmt) {
                     throwError(`Unsupported format ${src.as}`, src.ref);
                 }
-                return { kind: 'simple', type: fmt.type, optional: src.type.optional, format: fmt.format };
+                return {
+                    kind: "simple",
+                    type: fmt.type,
+                    optional: src.type.optional,
+                    format: fmt.format,
+                };
             }
-            return { kind: 'simple', type: 'int', optional: src.type.optional, format: 257 }; // Default is maximumx size int
+            return {
+                kind: "simple",
+                type: "int",
+                optional: src.type.optional,
+                format: 257,
+            }; // Default is maximumx size int
         }
-        if (src.type.name === 'Bool') {
+        if (src.type.name === "Bool") {
             if (src.as) {
                 throwError(`Unsupported format ${src.as}`, src.ref);
             }
-            return { kind: 'simple', type: 'bool', optional: src.type.optional };
+            return {
+                kind: "simple",
+                type: "bool",
+                optional: src.type.optional,
+            };
         }
-        if (src.type.name === 'Cell') {
+        if (src.type.name === "Cell") {
             if (src.as) {
                 const fmt = cellFormats[src.as];
                 if (!fmt) {
                     throwError(`Unsupported format ${src.as}`, src.ref);
                 }
-                return { kind: 'simple', type: fmt.type, optional: src.type.optional, format: fmt.format };
+                return {
+                    kind: "simple",
+                    type: fmt.type,
+                    optional: src.type.optional,
+                    format: fmt.format,
+                };
             }
-            return { kind: 'simple', type: 'cell', optional: src.type.optional };
+            return {
+                kind: "simple",
+                type: "cell",
+                optional: src.type.optional,
+            };
         }
-        if (src.type.name === 'Slice') {
+        if (src.type.name === "Slice") {
             if (src.as) {
                 if (src.as) {
                     const fmt = sliceFormats[src.as];
                     if (!fmt) {
                         throwError(`Unsupported format ${src.as}`, src.ref);
                     }
-                    return { kind: 'simple', type: fmt.type, optional: src.type.optional, format: fmt.format };
+                    return {
+                        kind: "simple",
+                        type: fmt.type,
+                        optional: src.type.optional,
+                        format: fmt.format,
+                    };
                 }
             }
-            return { kind: 'simple', type: 'slice', optional: src.type.optional };
+            return {
+                kind: "simple",
+                type: "slice",
+                optional: src.type.optional,
+            };
         }
-        if (src.type.name === 'Builder') {
+        if (src.type.name === "Builder") {
             if (src.as) {
                 if (src.as) {
                     const fmt = builderFormats[src.as];
                     if (!fmt) {
                         throwError(`Unsupported format ${src.as}`, src.ref);
                     }
-                    return { kind: 'simple', type: fmt.type, optional: src.type.optional, format: fmt.format };
+                    return {
+                        kind: "simple",
+                        type: fmt.type,
+                        optional: src.type.optional,
+                        format: fmt.format,
+                    };
                 }
             }
-            return { kind: 'simple', type: 'builder', optional: src.type.optional };
+            return {
+                kind: "simple",
+                type: "builder",
+                optional: src.type.optional,
+            };
         }
-        if (src.type.name === 'Address') {
+        if (src.type.name === "Address") {
             if (src.as) {
                 throwError(`Unsupported format ${src.as}`, src.ref);
             }
-            return { kind: 'simple', type: 'address', optional: src.type.optional };
+            return {
+                kind: "simple",
+                type: "address",
+                optional: src.type.optional,
+            };
         }
-        if (src.type.name === 'String') {
+        if (src.type.name === "String") {
             if (src.as) {
                 throwError(`Unsupported format ${src.as}`, src.ref);
             }
-            return { kind: 'simple', type: 'string', optional: src.type.optional };
+            return {
+                kind: "simple",
+                type: "string",
+                optional: src.type.optional,
+            };
         }
-        if (src.type.name === 'StringBuilder') {
+        if (src.type.name === "StringBuilder") {
             throwError(`Unsupported type ${src.type.name}`, src.ref);
         }
 
@@ -133,145 +181,187 @@ export function resolveABIType(src: ASTField): ABITypeRef {
         //
 
         if (src.as) {
-            if (src.as === 'reference') {
-                return { kind: 'simple', type: src.type.name, optional: src.type.optional, format: 'ref' };
+            if (src.as === "reference") {
+                return {
+                    kind: "simple",
+                    type: src.type.name,
+                    optional: src.type.optional,
+                    format: "ref",
+                };
             } else {
                 throwError(`Unsupported format ${src.as}`, src.ref);
             }
         }
-        return { kind: 'simple', type: src.type.name, optional: src.type.optional };
+        return {
+            kind: "simple",
+            type: src.type.name,
+            optional: src.type.optional,
+        };
     }
 
     //
     // Map
     //
 
-    if (src.type.kind === 'type_ref_map') {
+    if (src.type.kind === "type_ref_map") {
         let key: string;
         let keyFormat: string | number | undefined = undefined;
         let value: string;
         let valueFormat: string | number | undefined = undefined;
 
         // Resolve key type
-        if (src.type.key === 'Int') {
-            key = 'int';
+        if (src.type.key === "Int") {
+            key = "int";
             if (src.type.keyAs) {
                 const format = intMapFormats[src.type.keyAs];
                 if (!format) {
-                    throwError(`Unsupported format ${src.type.keyAs} for map key`, src.ref);
+                    throwError(
+                        `Unsupported format ${src.type.keyAs} for map key`,
+                        src.ref,
+                    );
                 }
                 key = format.type;
                 keyFormat = format.format;
             }
-        } else if (src.type.key === 'Address') {
-            key = 'address';
+        } else if (src.type.key === "Address") {
+            key = "address";
             if (src.type.keyAs) {
-                throwError(`Unsupported format ${src.type.keyAs} for map key`, src.ref);
+                throwError(
+                    `Unsupported format ${src.type.keyAs} for map key`,
+                    src.ref,
+                );
             }
         } else {
             throwError(`Unsupported map key type ${src.type.key}`, src.ref);
         }
 
         // Resolve value type
-        if (src.type.value === 'Int') {
-            value = 'int';
+        if (src.type.value === "Int") {
+            value = "int";
             if (src.type.valueAs) {
                 const format = intMapFormats[src.type.valueAs];
                 if (!format) {
-                    throwError(`Unsupported format ${src.type.valueAs} for map value`, src.ref);
+                    throwError(
+                        `Unsupported format ${src.type.valueAs} for map value`,
+                        src.ref,
+                    );
                 }
                 value = format.type;
                 valueFormat = format.format;
             }
-        } else if (src.type.value === 'Bool') {
-            value = 'bool';
+        } else if (src.type.value === "Bool") {
+            value = "bool";
             if (src.type.valueAs) {
-                throwError(`Unsupported format ${src.type.valueAs} for map value`, src.ref);
+                throwError(
+                    `Unsupported format ${src.type.valueAs} for map value`,
+                    src.ref,
+                );
             }
-        } else if (src.type.value === 'Cell') {
-            value = 'cell';
-            valueFormat = 'ref';
-            if (src.type.valueAs && src.type.valueAs !== 'reference') {
-                throwError(`Unsupported format ${src.type.valueAs} for map value`, src.ref);
+        } else if (src.type.value === "Cell") {
+            value = "cell";
+            valueFormat = "ref";
+            if (src.type.valueAs && src.type.valueAs !== "reference") {
+                throwError(
+                    `Unsupported format ${src.type.valueAs} for map value`,
+                    src.ref,
+                );
             }
-        } else if (src.type.value === 'Slice') {
+        } else if (src.type.value === "Slice") {
             throwError(`Unsupported map value type ${src.type.value}`, src.ref);
-        } else if (src.type.value === 'Address') {
-            value = 'address';
+        } else if (src.type.value === "Address") {
+            value = "address";
             if (src.type.valueAs) {
-                throwError(`Unsupported format ${src.type.valueAs} for map value`, src.ref);
+                throwError(
+                    `Unsupported format ${src.type.valueAs} for map value`,
+                    src.ref,
+                );
             }
-        } else if (src.type.value === 'String') {
+        } else if (src.type.value === "String") {
             throwError(`Unsupported map value type ${src.type.value}`, src.ref);
-        } else if (src.type.value === 'StringBuilder' || src.type.value === 'Builder') {
+        } else if (
+            src.type.value === "StringBuilder" ||
+            src.type.value === "Builder"
+        ) {
             throwError(`Unsupported map value type ${src.type.value}`, src.ref);
         } else {
             value = src.type.value;
-            valueFormat = 'ref';
-            if (src.type.valueAs && src.type.valueAs !== 'reference') {
-                throwError(`Unsupported format ${src.type.valueAs} for map value`, src.ref);
+            valueFormat = "ref";
+            if (src.type.valueAs && src.type.valueAs !== "reference") {
+                throwError(
+                    `Unsupported format ${src.type.valueAs} for map value`,
+                    src.ref,
+                );
             }
         }
 
-        return { kind: 'dict', key, keyFormat, value, valueFormat };
+        return { kind: "dict", key, keyFormat, value, valueFormat };
     }
 
     throwError(`Unsupported type`, src.ref);
 }
 
-export function createABITypeRefFromTypeRef(src: TypeRef, ref: ASTRef): ABITypeRef {
-
-    if (src.kind === 'ref') {
-
+export function createABITypeRefFromTypeRef(
+    src: TypeRef,
+    ref: ASTRef,
+): ABITypeRef {
+    if (src.kind === "ref") {
         // Primitives
-        if (src.name === 'Int') {
-            return { kind: 'simple', type: 'int', optional: src.optional, format: 257 }; // Default is maximumx size int
+        if (src.name === "Int") {
+            return {
+                kind: "simple",
+                type: "int",
+                optional: src.optional,
+                format: 257,
+            }; // Default is maximumx size int
         }
-        if (src.name === 'Bool') {
-            return { kind: 'simple', type: 'bool', optional: src.optional };
+        if (src.name === "Bool") {
+            return { kind: "simple", type: "bool", optional: src.optional };
         }
-        if (src.name === 'Cell') {
-            return { kind: 'simple', type: 'cell', optional: src.optional };
+        if (src.name === "Cell") {
+            return { kind: "simple", type: "cell", optional: src.optional };
         }
-        if (src.name === 'Slice') {
-            return { kind: 'simple', type: 'slice', optional: src.optional };
+        if (src.name === "Slice") {
+            return { kind: "simple", type: "slice", optional: src.optional };
         }
-        if (src.name === 'Builder') {
-            return { kind: 'simple', type: 'builder', optional: src.optional };
+        if (src.name === "Builder") {
+            return { kind: "simple", type: "builder", optional: src.optional };
         }
-        if (src.name === 'Address') {
-            return { kind: 'simple', type: 'address', optional: src.optional };
+        if (src.name === "Address") {
+            return { kind: "simple", type: "address", optional: src.optional };
         }
-        if (src.name === 'String') {
-            return { kind: 'simple', type: 'string', optional: src.optional };
+        if (src.name === "String") {
+            return { kind: "simple", type: "string", optional: src.optional };
         }
-        if (src.name === 'StringBuilder') {
+        if (src.name === "StringBuilder") {
             throw Error(`Unsupported type ${src.name}`);
         }
 
         // Structs
-        return { kind: 'simple', type: src.name, optional: src.optional };
+        return { kind: "simple", type: src.name, optional: src.optional };
     }
 
-    if (src.kind === 'map') {
+    if (src.kind === "map") {
         let key: string;
         let keyFormat: string | number | undefined = undefined;
         let value: string;
         let valueFormat: string | number | undefined = undefined;
 
         // Resolve key type
-        if (src.key === 'Int') {
-            key = 'int';
+        if (src.key === "Int") {
+            key = "int";
             if (src.keyAs) {
                 const format = intMapFormats[src.keyAs];
                 if (!format) {
-                    throwError(`Unsupported format ${src.keyAs} for map key`, ref);
+                    throwError(
+                        `Unsupported format ${src.keyAs} for map key`,
+                        ref,
+                    );
                 }
                 key = format.type;
                 keyFormat = format.format;
             }
-        } else if (src.key === 'Address') {
-            key = 'address';
+        } else if (src.key === "Address") {
+            key = "address";
             if (src.keyAs) {
                 throwError(`Unsupported format ${src.keyAs} for map key`, ref);
             }
@@ -280,50 +370,65 @@ export function createABITypeRefFromTypeRef(src: TypeRef, ref: ASTRef): ABITypeR
         }
 
         // Resolve value type
-        if (src.value === 'Int') {
-            value = 'int';
+        if (src.value === "Int") {
+            value = "int";
             if (src.valueAs) {
                 const format = intMapFormats[src.valueAs];
                 if (!format) {
-                    throwError(`Unsupported format ${src.valueAs} for map value`, ref);
+                    throwError(
+                        `Unsupported format ${src.valueAs} for map value`,
+                        ref,
+                    );
                 }
                 value = format.type;
                 valueFormat = format.format;
             }
-        } else if (src.value === 'Bool') {
-            value = 'bool';
+        } else if (src.value === "Bool") {
+            value = "bool";
             if (src.valueAs) {
-                throwError(`Unsupported format ${src.valueAs} for map value`, ref);
+                throwError(
+                    `Unsupported format ${src.valueAs} for map value`,
+                    ref,
+                );
             }
-        } else if (src.value === 'Cell') {
-            value = 'cell';
-            valueFormat = 'ref';
-            if (src.valueAs && src.valueAs !== 'reference') {
-                throwError(`Unsupported format ${src.valueAs} for map value`, ref);
+        } else if (src.value === "Cell") {
+            value = "cell";
+            valueFormat = "ref";
+            if (src.valueAs && src.valueAs !== "reference") {
+                throwError(
+                    `Unsupported format ${src.valueAs} for map value`,
+                    ref,
+                );
             }
-        } else if (src.value === 'Slice') {
+        } else if (src.value === "Slice") {
             throw Error(`Unsupported map value type ${src.value}`);
-        } else if (src.value === 'Address') {
-            value = 'address';
+        } else if (src.value === "Address") {
+            value = "address";
             if (src.valueAs) {
-                throwError(`Unsupported format ${src.valueAs} for map value`, ref);
+                throwError(
+                    `Unsupported format ${src.valueAs} for map value`,
+                    ref,
+                );
             }
-        } else if (src.value === 'String') {
+        } else if (src.value === "String") {
             throw Error(`Unsupported map value type ${src.value}`);
-        } else if (src.value === 'StringBuilder' || src.value === 'Builder') {
+        } else if (src.value === "StringBuilder" || src.value === "Builder") {
             throw Error(`Unsupported map value type ${src.value}`);
         } else {
             value = src.value;
-            valueFormat = 'ref';
-            if (src.valueAs && src.valueAs !== 'reference') {
-                throwError(`Unsupported format ${src.valueAs} for map value`, ref);
+            valueFormat = "ref";
+            if (src.valueAs && src.valueAs !== "reference") {
+                throwError(
+                    `Unsupported format ${src.valueAs} for map value`,
+                    ref,
+                );
             }
         }
 
-        return { kind: 'dict', key, keyFormat, value, valueFormat };
+        return { kind: "dict", key, keyFormat, value, valueFormat };
     }
 
-    if (src.kind === 'ref_bounced') {
+    if (src.kind === "ref_bounced") {
         throw Error("Unexpected bounced reference");
     }
 

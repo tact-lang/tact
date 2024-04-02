@@ -4,4 +4,4 @@ export type VirtualFileSystem = {
     exists(path: string): boolean;
     readFile(path: string): Buffer;
     writeFile(path: string, content: Buffer | string): void;
-}
+};

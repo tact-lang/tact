@@ -2,18 +2,19 @@ import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { MultisigContract } from "./output/multisig-3_MultisigContract";
 
-describe('muiltisig-3', () => {
-    it('should deploy', async () => {
-
+describe("muiltisig-3", () => {
+    it("should deploy", async () => {
         // Init contract
         const key1 = 1n;
         const key2 = 1n;
         const key3 = 1n;
         const system = await ContractSystem.create();
-        const treasure = system.treasure('treasure');
-        const contract = system.open(await MultisigContract.fromInit(key1, key2, key3));
+        const treasure = system.treasure("treasure");
+        const contract = system.open(
+            await MultisigContract.fromInit(key1, key2, key3),
+        );
         const tracker = system.track(contract.address);
-        await contract.send(treasure, { value: toNano('10') }, 'Deploy');
+        await contract.send(treasure, { value: toNano("10") }, "Deploy");
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();
 

@@ -10,13 +10,13 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     w.write(`
         # TACT Compilation Report
         Contract: ${pkg.name}
-        BOC Size: ${Buffer.from(pkg.code, 'base64').length} bytes
+        BOC Size: ${Buffer.from(pkg.code, "base64").length} bytes
     `);
     w.append();
 
     // Types
     w.write(`# Types`);
-    w.write('Total Types: ' + abi.types!.length);
+    w.write("Total Types: " + abi.types!.length);
     w.append();
     for (const t of abi.types!) {
         const tt = getType(ctx, t.name);
@@ -28,7 +28,7 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
 
     // Get methods
     w.write(`# Get Methods`);
-    w.write('Total Get Methods: ' + abi.getters!.length);
+    w.write("Total Get Methods: " + abi.getters!.length);
     w.append();
     for (const t of abi.getters!) {
         w.write(`## ${t.name}`);

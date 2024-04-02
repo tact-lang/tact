@@ -3,10 +3,10 @@ import { errorToString } from "../utils/errorToString";
 
 // Wasm Imports
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const CompilerModule = require('./funcfiftlib.js');
+const CompilerModule = require("./funcfiftlib.js");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const FuncFiftLibWasm = require('./funcfiftlib.wasm.js').FuncFiftLibWasm;
-const WasmBinary = Buffer.from(FuncFiftLibWasm, 'base64');
+const FuncFiftLibWasm = require("./funcfiftlib.wasm.js").FuncFiftLibWasm;
+const WasmBinary = Buffer.from(FuncFiftLibWasm, "base64");
 
 type Pointer = unknown;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,46 +19,54 @@ const writeToCString = (mod: any, data: string): Pointer => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const writeToCStringPtr = (mod: any, str: string, ptr: any) => {
     const allocated = writeToCString(mod, str);
-    mod.setValue(ptr, allocated, '*');
+    mod.setValue(ptr, allocated, "*");
     return allocated;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const readFromCString = (mod: any, pointer: Pointer): string => mod.UTF8ToString(pointer);
+const readFromCString = (mod: any, pointer: Pointer): string =>
+    mod.UTF8ToString(pointer);
 
 export function cutFirstLine(src: string) {
-    return src.slice(src.indexOf('\n') + 1);
+    return src.slice(src.indexOf("\n") + 1);
 }
 
-export type FuncCompilationResult = {
-    ok: false,
-    log: string,
-    fift: string | null,
-    output: Buffer | null
-} | {
-    ok: true,
-    log: string,
-    fift: string,
-    output: Buffer
-}
+export type FuncCompilationResult =
+    | {
+          ok: false;
+          log: string;
+          fift: string | null;
+          output: Buffer | null;
+      }
+    | {
+          ok: true;
+          log: string;
+          fift: string;
+          output: Buffer;
+      };
 
-type CompileResult = {
-    status: "error",
-    message: string
-} | {
-    status: "ok",
-    codeBoc: string,
-    fiftCode: string,
-    warnings: string
-};
+type CompileResult =
+    | {
+          status: "error";
+          message: string;
+      }
+    | {
+          status: "ok";
+          codeBoc: string;
+          fiftCode: string;
+          warnings: string;
+      };
 
-export async function funcCompile(args: { entries: string[], sources: { path: string, content: string }[], logger: TactLogger }): Promise<FuncCompilationResult> {
-
+export async function funcCompile(args: {
+    entries: string[];
+    sources: { path: string; content: string }[];
+    logger: TactLogger;
+}): Promise<FuncCompilationResult> {
     // Parameters
     const files: string[] = args.entries;
     const configStr = JSON.stringify({
         sources: files,
-        optLevel: 2 // compileConfig.optLevel || 2
+        optLevel: 2, // compileConfig.optLevel || 2
     });
 
     // Pointer tracking
@@ -74,67 +82,106 @@ export async function funcCompile(args: { entries: string[], sources: { path: st
     };
 
     // Create module
-    const logs: string[] = []
+    const logs: string[] = [];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mod = await CompilerModule({ wasmBinary: WasmBinary, printErr: (e: any) => { logs.push(e); } });
+    const mod = await CompilerModule({
+        wasmBinary: WasmBinary,
+        printErr: (e: any) => {
+            logs.push(e);
+        },
+    });
 
     // Execute
     try {
-
         // Write config
         const configPointer = trackPointer(writeToCString(mod, configStr));
 
         // FS emulation callback
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const callbackPtr = trackFunctionPointer(mod.addFunction((_kind: any, _data: any, contents: any, error: any) => {
-            const kind: string = readFromCString(mod, _kind);
-            const data: string = readFromCString(mod, _data);
-            if (kind === 'realpath') {
-                allocatedPointers.push(writeToCStringPtr(mod, data, contents));
-            } else if (kind === 'source') {
-                try {
-                    const fl = args.sources.find((v) => v.path === data);
-                    if (!fl) {
-                        throw Error('File not found: ' + data)
+        const callbackPtr = trackFunctionPointer(
+            mod.addFunction(
+                (_kind: any, _data: any, contents: any, error: any) => {
+                    const kind: string = readFromCString(mod, _kind);
+                    const data: string = readFromCString(mod, _data);
+                    if (kind === "realpath") {
+                        allocatedPointers.push(
+                            writeToCStringPtr(mod, data, contents),
+                        );
+                    } else if (kind === "source") {
+                        try {
+                            const fl = args.sources.find(
+                                (v) => v.path === data,
+                            );
+                            if (!fl) {
+                                throw Error("File not found: " + data);
+                            }
+                            allocatedPointers.push(
+                                writeToCStringPtr(mod, fl.content, contents),
+                            );
+                        } catch (err) {
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            const e = err as any;
+                            allocatedPointers.push(
+                                writeToCStringPtr(
+                                    mod,
+                                    "message" in e ? e.message : e.toString(),
+                                    error,
+                                ),
+                            );
+                        }
+                    } else {
+                        allocatedPointers.push(
+                            writeToCStringPtr(
+                                mod,
+                                "Unknown callback kind " + kind,
+                                error,
+                            ),
+                        );
                     }
-                    allocatedPointers.push(writeToCStringPtr(mod, fl.content, contents));
-                } catch (err) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const e = err as any;
-                    allocatedPointers.push(writeToCStringPtr(mod, 'message' in e ? e.message : e.toString(), error));
-                }
-            } else {
-                allocatedPointers.push(writeToCStringPtr(mod, 'Unknown callback kind ' + kind, error));
-            }
-        }, 'viiii'));
+                },
+                "viiii",
+            ),
+        );
 
         // Execute
-        const resultPointer = trackPointer(mod._func_compile(configPointer, callbackPtr));
+        const resultPointer = trackPointer(
+            mod._func_compile(configPointer, callbackPtr),
+        );
         const retJson = readFromCString(mod, resultPointer);
         const result = JSON.parse(retJson) as CompileResult;
 
-        const msg = logs.join('\n');
+        const msg = logs.join("\n");
 
-        if (result.status === 'error') {
+        if (result.status === "error") {
             return {
                 ok: false,
-                log: logs.length > 0 ? msg : (result.message ? result.message : 'Unknown error'),
+                log:
+                    logs.length > 0
+                        ? msg
+                        : result.message
+                          ? result.message
+                          : "Unknown error",
                 fift: null,
-                output: null
+                output: null,
             };
-        } else if (result.status === 'ok') {
+        } else if (result.status === "ok") {
             return {
                 ok: true,
-                log: logs.length > 0 ? msg : (result.warnings ? result.warnings : ''),
-                fift: cutFirstLine(result.fiftCode.replaceAll('\\n', '\n')),
-                output: Buffer.from(result.codeBoc, 'base64')
+                log:
+                    logs.length > 0
+                        ? msg
+                        : result.warnings
+                          ? result.warnings
+                          : "",
+                fift: cutFirstLine(result.fiftCode.replaceAll("\\n", "\n")),
+                output: Buffer.from(result.codeBoc, "base64"),
             };
         } else {
-            throw Error('Unexpected compiler response');
+            throw Error("Unexpected compiler response");
         }
     } catch (e) {
         args.logger.error(errorToString(e));
-        throw Error('Unexpected compiler response');
+        throw Error("Unexpected compiler response");
     } finally {
         for (const i of allocatedFunctions) {
             mod.removeFunction(i);

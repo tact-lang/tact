@@ -3,19 +3,19 @@ import { CompilerContext, createContextStore } from "../context";
 const featureStore = createContextStore<boolean | null | string>();
 
 export function enabledInline(ctx: CompilerContext) {
-    return featureEnabled(ctx, 'inline');
+    return featureEnabled(ctx, "inline");
 }
 
 export function enabledDebug(ctx: CompilerContext) {
-    return featureEnabled(ctx, 'debug');
+    return featureEnabled(ctx, "debug");
 }
 
 export function enabledMasterchain(ctx: CompilerContext) {
-    return featureEnabled(ctx, 'masterchain');
+    return featureEnabled(ctx, "masterchain");
 }
 
 export function enabledExternals(ctx: CompilerContext) {
-    return featureEnabled(ctx, 'external');
+    return featureEnabled(ctx, "external");
 }
 
 export function featureEnabled(ctx: CompilerContext, key: string) {
@@ -23,5 +23,5 @@ export function featureEnabled(ctx: CompilerContext, key: string) {
 }
 
 export function featureEnable(ctx: CompilerContext, key: string) {
-    return featureStore.set(ctx, key, true)
+    return featureStore.set(ctx, key, true);
 }

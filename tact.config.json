@@ -150,13 +150,13 @@
       }
     },
     {
-        "name": "integer-literals",
-        "path": "./src/test/features/integer-literals.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
+      "name": "integer-literals",
+      "path": "./src/test/features/integer-literals.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
     {
       "name": "random",
       "path": "./src/test/features/random.tact",

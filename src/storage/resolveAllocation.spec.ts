@@ -1,15 +1,15 @@
-import fs from 'fs';
-import { __DANGER_resetNodeId } from '../grammar/ast';
-import { resolveDescriptors } from '../types/resolveDescriptors';
-import { getAllocations, resolveAllocations } from './resolveAllocation';
-import { openContext } from '../grammar/store';
-import { resolveStatements } from '../types/resolveStatements';
-import { CompilerContext } from '../context';
-import { resolveSignatures } from '../types/resolveSignatures';
-import path from 'path';
+import fs from "fs";
+import { __DANGER_resetNodeId } from "../grammar/ast";
+import { resolveDescriptors } from "../types/resolveDescriptors";
+import { getAllocations, resolveAllocations } from "./resolveAllocation";
+import { openContext } from "../grammar/store";
+import { resolveStatements } from "../types/resolveStatements";
+import { CompilerContext } from "../context";
+import { resolveSignatures } from "../types/resolveSignatures";
+import path from "path";
 
-const stdlibPath = path.resolve(__dirname, '../../stdlib/std/primitives.tact');
-const stdlib = fs.readFileSync(stdlibPath, 'utf-8');
+const stdlibPath = path.resolve(__dirname, "../../stdlib/std/primitives.tact");
+const stdlib = fs.readFileSync(stdlibPath, "utf-8");
 const src = `
 
 trait BaseTrait {
@@ -60,12 +60,19 @@ contract Sample {
 }
 `;
 
-describe('resolveAllocation', () => {
+describe("resolveAllocation", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    it('should write program', () => {
-        let ctx = openContext(new CompilerContext(), [{ code: stdlib, path: stdlibPath, origin: 'stdlib' }, { code: src, path: '<unknown>', origin: 'user' }], []);
+    it("should write program", () => {
+        let ctx = openContext(
+            new CompilerContext(),
+            [
+                { code: stdlib, path: stdlibPath, origin: "stdlib" },
+                { code: src, path: "<unknown>", origin: "user" },
+            ],
+            [],
+        );
         ctx = resolveDescriptors(ctx);
         ctx = resolveSignatures(ctx);
         ctx = resolveStatements(ctx);
