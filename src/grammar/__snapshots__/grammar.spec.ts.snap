@@ -238,19 +238,18 @@ Line 1, col 31:
 `;
 
 exports[`grammar should fail case-25 1`] = `
-"<unknown>:2:39: Empty parameter list should not have a dangling comma.
-Line 2, col 39:
-  1 | 
-> 2 | abstract fun testFuncAbstractWithType(,): Int;
+"<unknown>:1:39: Empty parameter list should not have a dangling comma.
+Line 1, col 39:
+> 1 | abstract fun testFuncAbstractWithType(,): Int;
                                             ^
 "
 `;
 
 exports[`grammar should fail case-26 1`] = `
-"<unknown>:3:31: Empty parameter list should not have a dangling comma.
-Line 3, col 31:
-  2 | @name(native_name_2)
-> 3 | native testNativeFuncWithType(,): Int;
+"<unknown>:2:31: Empty parameter list should not have a dangling comma.
+Line 2, col 31:
+  1 | @name(native_name_2)
+> 2 | native testNativeFuncWithType(,): Int;
                                     ^
 "
 `;
