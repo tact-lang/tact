@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update the `dump` function to handle addresses: PR [#175](https://github.com/tact-lang/tact/pull/175)
 - The implicit empty `init` function is now present by default in the contract if not declared: PR [#167](https://github.com/tact-lang/tact/pull/167)
 - `@stdlib/stoppable` now imports `@stdlib/ownable` so the programmer does not have to do it separately: PR [#193](https://github.com/tact-lang/tact/pull/193)
-- Support escape sequences for strings (`\\`, `\"`, `\n`, `\r`, `\t`, `\v`, `\b`, `\f`, `\u{ABC}`, `\uABCD`, `\xAB`): PR [#192](https://github.com/tact-lang/tact/pull/192)
+- Support escape sequences for strings (`\\`, `\"`, `\n`, `\r`, `\t`, `\v`, `\b`, `\f`, `\u{0}` through `\u{FFFFFF}`, `\u0000` through `\uFFFF`, `\x00` through `\xFF`): PR [#192](https://github.com/tact-lang/tact/pull/192)
 
 ### Fixed
 - Incorrect "already exists" errors when using names such as `toString` or `valueOf`: PR [#208](https://github.com/tact-lang/tact/pull/208)
