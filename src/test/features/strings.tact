@@ -99,4 +99,8 @@ contract StringsTester {
     get fun stringWithEscapedChars4(): String {
         return "\u{2028}\u{2029} \u0044 \x41\x42\x43";
     }
+
+    get fun stringWithAddress(): String {
+        return address("EQBKgXCNLPexWhs2L79kiARR1phGH1LwXxRbNsCFF9doc2lN").toString();
+    }
 }

@@ -60,5 +60,7 @@ describe('feature-strings', () => {
         expect(await contract.getStringWithEscapedChars4()).toEqual(
             "\u{2028}\u{2029} \u0044 \x41\x42\x43"
         );
+
+        expect(await contract.getStringWithAddress()).toEqual('EQBKgXCNLPexWhs2L79kiARR1phGH1LwXxRbNsCFF9doc2lN');
     });
 });
