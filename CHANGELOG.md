@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - JSON Schema for `tact.config.json`: PR [#194](https://github.com/tact-lang/tact/pull/194)
 - Display an error for integer overflow at compile-time: PR [#200](https://github.com/tact-lang/tact/pull/200)
 - Non-modifying `StringBuilder`'s `concat` method for chained string concatenations: PR [#217](https://github.com/tact-lang/tact/pull/217)
-- `toString` function for `Address` type: PR [#222](https://github.com/tact-lang/tact/pull/222)
+- `toString` function for `Address` type: PR [#224](https://github.com/tact-lang/tact/pull/224)
 
 ### Changed
 - Update the `dump` function to handle addresses: PR [#175](https://github.com/tact-lang/tact/pull/175)
