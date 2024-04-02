@@ -1086,7 +1086,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             collectTransient(d.name, to);
         }
     }
-    for (const [k, t] of types) {
+    for (const k of types.keys()) {
         const dependsOn = new Set<string>();
         dependsOn.add(k);
         collectTransient(k, dependsOn);
