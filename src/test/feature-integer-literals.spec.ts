@@ -1,18 +1,18 @@
-import { toNano } from '@ton/core';
-import { ContractSystem } from '@tact-lang/emulator';
-import { __DANGER_resetNodeId } from '../grammar/ast';
-import { IntegerLiteralsTester } from './features/output/integer-literals_IntegerLiteralsTester';
+import { toNano } from "@ton/core";
+import { ContractSystem } from "@tact-lang/emulator";
+import { __DANGER_resetNodeId } from "../grammar/ast";
+import { IntegerLiteralsTester } from "./features/output/integer-literals_IntegerLiteralsTester";
 
-describe('feature-integer-literals', () => {
+describe("feature-integer-literals", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    it('should implement integer literals correctly', async () => {
+    it("should implement integer literals correctly", async () => {
         // Init
         const system = await ContractSystem.create();
-        const treasure = system.treasure('treasure');
+        const treasure = system.treasure("treasure");
         const contract = system.open(await IntegerLiteralsTester.fromInit());
-        await contract.send(treasure, { value: toNano('10') }, null);
+        await contract.send(treasure, { value: toNano("10") }, null);
         await system.run();
 
         // Check methods

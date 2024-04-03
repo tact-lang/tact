@@ -1,22 +1,26 @@
 import { CompilerContext } from "../context";
-import { resolveDescriptors } from '../types/resolveDescriptors';
+import { resolveDescriptors } from "../types/resolveDescriptors";
 import { resolveAllocations } from "../storage/resolveAllocation";
 import { openContext } from "../grammar/store";
 import { resolveStatements } from "../types/resolveStatements";
 import { resolveErrors } from "../types/resolveErrors";
-import { resolveSignatures } from '../types/resolveSignatures';
-import { resolveImports } from '../imports/resolveImports';
+import { resolveSignatures } from "../types/resolveSignatures";
+import { resolveImports } from "../imports/resolveImports";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 
-export function precompile(ctx: CompilerContext, project: VirtualFileSystem, stdlib: VirtualFileSystem, entrypoint: string) {
-
+export function precompile(
+    ctx: CompilerContext,
+    project: VirtualFileSystem,
+    stdlib: VirtualFileSystem,
+    entrypoint: string,
+) {
     // Load all sources
     const imported = resolveImports({ entrypoint, project, stdlib });
 
     // Perform initial compiler steps
     ctx = openContext(ctx, imported.tact, imported.func);
 
-    // First load type descriptors and check that 
+    // First load type descriptors and check that
     //       they all have valid signatures
     ctx = resolveDescriptors(ctx);
 

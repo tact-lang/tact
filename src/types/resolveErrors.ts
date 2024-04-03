@@ -2,39 +2,48 @@ import { sha256_sync } from "@ton/crypto";
 import { CompilerContext, createContextStore } from "../context";
 import { ASTNode, traverse } from "../grammar/ast";
 import { resolveConstantValue } from "./resolveConstantValue";
-import { getAllStaticConstants, getAllStaticFunctions, getAllTypes } from "./resolveDescriptors";
+import {
+    getAllStaticConstants,
+    getAllStaticFunctions,
+    getAllTypes,
+} from "./resolveDescriptors";
 
-const exceptions = createContextStore<{ value: string, id: number }>();
+const exceptions = createContextStore<{ value: string; id: number }>();
 
 function stringId(src: string): number {
     return sha256_sync(src).readUInt32BE(0);
 }
 
 function exceptionId(src: string): number {
-    return stringId(src) % 63000 + 1000;
+    return (stringId(src) % 63000) + 1000;
 }
 
 function resolveStringsInAST(ast: ASTNode, ctx: CompilerContext) {
     traverse(ast, (node) => {
-        if (node.kind === 'op_static_call' && node.name === 'require') {
+        if (node.kind === "op_static_call" && node.name === "require") {
             if (node.args.length !== 2) {
                 return;
             }
-            const resolved = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, node.args[1], ctx) as string;
+            const resolved = resolveConstantValue(
+                { kind: "ref", name: "String", optional: false },
+                node.args[1],
+                ctx,
+            ) as string;
             if (!exceptions.get(ctx, resolved)) {
                 const id = exceptionId(resolved);
-                if (Object.values(exceptions.all(ctx)).find((v) => v.id === id)) {
+                if (
+                    Object.values(exceptions.all(ctx)).find((v) => v.id === id)
+                ) {
                     throw new Error(`Duplicate error id: ${resolved}`);
                 }
                 ctx = exceptions.set(ctx, resolved, { value: resolved, id });
             }
         }
-    })
+    });
     return ctx;
 }
 
 export function resolveErrors(ctx: CompilerContext) {
-
     // Process all static functions
     for (const f of Object.values(getAllStaticFunctions(ctx))) {
         ctx = resolveStringsInAST(f.ast, ctx);
@@ -47,7 +56,6 @@ export function resolveErrors(ctx: CompilerContext) {
 
     // Process all types
     for (const t of Object.values(getAllTypes(ctx))) {
-
         // Process fields
         for (const f of Object.values(t.fields)) {
             ctx = resolveStringsInAST(f.ast, ctx);

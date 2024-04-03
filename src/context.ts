@@ -1,5 +1,4 @@
 export class CompilerContext {
-
     readonly shared: { [key: symbol]: object } = {};
 
     constructor(args: { shared: { [key: symbol]: object } } = { shared: {} }) {
@@ -15,7 +14,7 @@ export class CompilerContext {
         }
         sh[key] = value;
         return new CompilerContext({ shared: { ...this.shared, [store]: sh } });
-    }
+    };
 }
 
 export function createContextStore<T>() {
@@ -41,6 +40,6 @@ export function createContextStore<T>() {
         },
         set(ctx: CompilerContext, key: string | number, v: T) {
             return ctx.addShared(symbol, key, v);
-        }
-    }
+        },
+    };
 }

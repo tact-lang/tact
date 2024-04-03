@@ -1,25 +1,34 @@
 import { z } from "zod";
 
-const optionsSchema = z.object({
-    debug: z.boolean().optional(),
-    masterchain: z.boolean().optional(),
-    external: z.boolean().optional(),
-    experimental: z.object({
-        inline: z.boolean().optional()
-    }).strict().optional()
-}).strict();
+const optionsSchema = z
+    .object({
+        debug: z.boolean().optional(),
+        masterchain: z.boolean().optional(),
+        external: z.boolean().optional(),
+        experimental: z
+            .object({
+                inline: z.boolean().optional(),
+            })
+            .strict()
+            .optional(),
+    })
+    .strict();
 
-const projectSchema = z.object({
-    name: z.string(),
-    path: z.string(),
-    output: z.string(),
-    options: optionsSchema.optional(),
-}).strict();
+const projectSchema = z
+    .object({
+        name: z.string(),
+        path: z.string(),
+        output: z.string(),
+        options: optionsSchema.optional(),
+    })
+    .strict();
 
-const configSchema = z.object({
-    $schema: z.string().optional(),
-    projects: z.array(projectSchema)
-}).strict();
+const configSchema = z
+    .object({
+        $schema: z.string().optional(),
+        projects: z.array(projectSchema),
+    })
+    .strict();
 
 export type Config = z.infer<typeof configSchema>;
 export type ConfigProject = z.infer<typeof projectSchema>;

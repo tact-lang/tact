@@ -2,9 +2,9 @@ name: Tact CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -14,63 +14,67 @@ jobs:
       matrix:
         node-version: [18.x]
         os: [ubuntu-latest, windows-latest, macos-latest]
-    
+
     runs-on: ${{ matrix.os }}
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
 
-    - name: Install dependencies
-      run: yarn install
+      - name: Install dependencies
+        run: yarn install
 
-    - name: Build and Test Tact compiler
-      run: |
-        yarn clean
-        yarn gen
-        yarn build
-        yarn coverage
-    
-    - name: Check there are no errors reported by ESLint
-      run: |
-        yarn lint
+      - name: Build and Test Tact compiler
+        run: |
+          yarn clean
+          yarn gen
+          yarn build
+          yarn coverage
 
-    - name: Check that tact.config.json adheres to the JSON schema
-      run: |
-        yarn lint:schema
+      - name: Check there are no errors reported by ESLint
+        run: |
+          yarn lint
 
-    - name: Compare Tact version from CLI flag `--version` against package.json
-      if: runner.os != 'Windows'
-      run: |
-        if [ "$(./bin/tact --version)" != "$(jq -r '.version' < package.json)" ];
-        then false
-        fi
+      - name: Check formatting with Prettier
+        run: |
+          yarn fmt:check
 
-    - name: Link Tact compiler
-      run: |
-        yarn link
+      - name: Check that tact.config.json adheres to the JSON schema
+        run: |
+          yarn lint:schema
 
-    - name: Test compatibility with tact-template
-      run: |
-        git clone https://github.com/tact-lang/tact-template.git
-        cd tact-template
-        yarn install
-        yarn link @tact-lang/compiler
-        yarn build
-        yarn test
-        yarn tact --version
-    
-    - name: Test compatibility with Blueprint
-      run: |
-        yarn create ton -- test-project --type tact-counter --contractName Counter
-        cd test-project
-        yarn link @tact-lang/compiler
-        yarn build
-        yarn test
-        yarn tact --version
+      - name: Compare Tact version from CLI flag `--version` against package.json
+        if: runner.os != 'Windows'
+        run: |
+          if [ "$(./bin/tact --version)" != "$(jq -r '.version' < package.json)" ];
+          then false
+          fi
+
+      - name: Link Tact compiler
+        run: |
+          yarn link
+
+      - name: Test compatibility with tact-template
+        run: |
+          git clone https://github.com/tact-lang/tact-template.git
+          cd tact-template
+          yarn install
+          yarn link @tact-lang/compiler
+          yarn build
+          yarn test
+          yarn tact --version
+
+      - name: Test compatibility with Blueprint
+        run: |
+          yarn create ton -- test-project --type tact-counter --contractName Counter
+          cd test-project
+          yarn link @tact-lang/compiler
+          yarn build
+          yarn test
+          yarn tact --version

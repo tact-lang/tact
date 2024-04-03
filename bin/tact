@@ -1,30 +1,35 @@
 #!/usr/bin/env node
-const main = require('../dist/node');
-const arg = require('arg');
+const main = require("../dist/node");
+const arg = require("arg");
 
 // Resolve arguments
 const args = arg({
-    '--config': String,
-    '--project': String,
-    '--version': Boolean
+  "--config": String,
+  "--project": String,
+  "--version": Boolean,
 });
 
-if (args['--version']) {
-    console.log('1.2.0');
-    return;
+if (args["--version"]) {
+  console.log("1.2.0");
+  return;
 }
 
-if (!args['--config']) {
-    console.log('USAGE: tact --config <config_path> [--project <project_name]');
-    return;
+if (!args["--config"]) {
+  console.log("USAGE: tact --config <config_path> [--project <project_name]");
+  return;
 }
 
 // Perform compilation
 (async () => {
-    try {
-        await main.run({ configPath: args['--config'], projectNames: args['--project'] ? args['--project'] : [] });
-    } catch (e) {
-        console.warn('Internal compiler error. Please, report it to https://github.com/tact-lang/tact/issues.');
-        console.log(e);
-    }
+  try {
+    await main.run({
+      configPath: args["--config"],
+      projectNames: args["--project"] ? args["--project"] : [],
+    });
+  } catch (e) {
+    console.warn(
+      "Internal compiler error. Please, report it to https://github.com/tact-lang/tact/issues.",
+    );
+    console.log(e);
+  }
 })();

@@ -1,12 +1,12 @@
-import { isBlank, trimIndent } from './text';
-describe('text', () => {
-    it('should detect blank lines', () => {
-        expect(isBlank('')).toBe(true);
-        expect(isBlank(' ')).toBe(true);
-        expect(isBlank('\t')).toBe(true);
-        expect(isBlank('a')).toBe(false);
+import { isBlank, trimIndent } from "./text";
+describe("text", () => {
+    it("should detect blank lines", () => {
+        expect(isBlank("")).toBe(true);
+        expect(isBlank(" ")).toBe(true);
+        expect(isBlank("\t")).toBe(true);
+        expect(isBlank("a")).toBe(false);
     });
-    it('should trim indent', () => {
+    it("should trim indent", () => {
         const res = trimIndent(`
             hello world
             123123 123123

@@ -3,12 +3,16 @@ import { serializers } from "./serializers";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { Writer } from "../../utils/Writer";
 
-export function writeStruct(name: string, fields: { name: string, type: ABITypeRef }[], exp: boolean, w: Writer) {
-    w.append(`${exp ? 'export ' : ' '}type ${name} = {`);
+export function writeStruct(
+    name: string,
+    fields: { name: string; type: ABITypeRef }[],
+    exp: boolean,
+    w: Writer,
+) {
+    w.append(`${exp ? "export " : " "}type ${name} = {`);
     w.inIndent(() => {
         w.append(`$$type: '${name}';`);
         outer: for (const f of fields) {
-
             for (const s of serializers) {
                 const v = s.abiMatcher(f.type);
                 if (v) {
@@ -17,7 +21,7 @@ export function writeStruct(name: string, fields: { name: string, type: ABITypeR
                 }
             }
 
-            throw Error('Unsupported type: ' + JSON.stringify(f.type));
+            throw Error("Unsupported type: " + JSON.stringify(f.type));
         }
     });
     w.append(`}`);
@@ -29,16 +33,25 @@ export function writeParser(s: ABIType, allocation: AllocationCell, w: Writer) {
     w.inIndent(() => {
         w.append(`let sc_0 = slice;`);
         if (s.header) {
-            w.append(`if (sc_0.loadUint(32) !== ${s.header}) { throw Error('Invalid prefix'); }`);
+            w.append(
+                `if (sc_0.loadUint(32) !== ${s.header}) { throw Error('Invalid prefix'); }`,
+            );
         }
         writeParserCell(0, allocation, s, w);
-        w.append(`return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ': _' + v.name)].join(', ')} };`);
+        w.append(
+            `return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ": _" + v.name)].join(", ")} };`,
+        );
     });
     w.append(`}`);
     w.append();
 }
 
-function writeParserCell(gen: number, src: AllocationCell, s: ABIType, w: Writer) {
+function writeParserCell(
+    gen: number,
+    src: AllocationCell,
+    s: ABIType,
+    w: Writer,
+) {
     for (const f of src.ops) {
         writeParserField(gen, f, s, w);
     }
@@ -48,8 +61,13 @@ function writeParserCell(gen: number, src: AllocationCell, s: ABIType, w: Writer
     }
 }
 
-function writeParserField(gen: number, field: AllocationOperation, s: ABIType, w: Writer) {
-    const name = '_' + field.name;
+function writeParserField(
+    gen: number,
+    field: AllocationOperation,
+    s: ABIType,
+    w: Writer,
+) {
+    const name = "_" + field.name;
     const type = field.type;
     for (const s of serializers) {
         const v = s.abiMatcher(type);
@@ -58,13 +76,17 @@ function writeParserField(gen: number, field: AllocationOperation, s: ABIType, w
             return;
         }
     }
-    throw Error('Unsupported type');
+    throw Error("Unsupported type");
 }
 
-export function writeSerializer(s: ABIType, allocation: AllocationCell, w: Writer) {
+export function writeSerializer(
+    s: ABIType,
+    allocation: AllocationCell,
+    w: Writer,
+) {
     w.append(`export function store${s.name}(src: ${s.name}) {`);
     w.inIndent(() => {
-        w.append(`return (builder: Builder) => {`)
+        w.append(`return (builder: Builder) => {`);
         w.inIndent(() => {
             w.append(`let b_0 = builder;`);
             if (s.header) {
@@ -78,10 +100,14 @@ export function writeSerializer(s: ABIType, allocation: AllocationCell, w: Write
     w.append();
 }
 
-export function writeInitSerializer(name: string, allocation: AllocationCell, w: Writer) {
+export function writeInitSerializer(
+    name: string,
+    allocation: AllocationCell,
+    w: Writer,
+) {
     w.append(`function init${name}(src: ${name}) {`);
     w.inIndent(() => {
-        w.append(`return (builder: Builder) => {`)
+        w.append(`return (builder: Builder) => {`);
         w.inIndent(() => {
             w.append(`let b_0 = builder;`);
             writeSerializerCell(0, allocation, w);
@@ -104,7 +130,7 @@ function writeSerializerCell(gen: number, src: AllocationCell, w: Writer) {
 }
 
 function writeSerializerField(gen: number, s: AllocationOperation, w: Writer) {
-    const name = 'src.' + s.name;
+    const name = "src." + s.name;
     const type = s.type;
     for (const s of serializers) {
         const v = s.abiMatcher(type);
@@ -113,16 +139,18 @@ function writeSerializerField(gen: number, s: AllocationOperation, w: Writer) {
             return;
         }
     }
-    throw Error('Unsupported field type: ' + JSON.stringify(type));
+    throw Error("Unsupported field type: " + JSON.stringify(type));
 }
 
 export function writeTupleParser(s: ABIType, w: Writer) {
     w.append(`function loadTuple${s.name}(source: TupleReader) {`);
     w.inIndent(() => {
         for (const f of s.fields) {
-            writeTupleFieldParser('_' + f.name, f.type, w);
+            writeTupleFieldParser("_" + f.name, f.type, w);
         }
-        w.append(`return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ': _' + v.name)].join(', ')} };`);
+        w.append(
+            `return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ": _" + v.name)].join(", ")} };`,
+        );
     });
     w.append(`}`);
     w.append();
@@ -132,7 +160,12 @@ export function writeGetParser(name: string, type: ABITypeRef, w: Writer) {
     writeTupleFieldParser(name, type, w, true);
 }
 
-function writeTupleFieldParser(name: string, type: ABITypeRef, w: Writer, fromGet = false) {
+function writeTupleFieldParser(
+    name: string,
+    type: ABITypeRef,
+    w: Writer,
+    fromGet = false,
+) {
     for (const s of serializers) {
         const v = s.abiMatcher(type);
         if (v) {
@@ -140,7 +173,7 @@ function writeTupleFieldParser(name: string, type: ABITypeRef, w: Writer, fromGe
             return;
         }
     }
-    throw Error('Unsupported field type: ' + JSON.stringify(type));
+    throw Error("Unsupported field type: " + JSON.stringify(type));
 }
 
 export function writeTupleSerializer(s: ABIType, w: Writer) {
@@ -168,7 +201,7 @@ function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
             return;
         }
     }
-    throw Error('Unsupported field type: ' + JSON.stringify(type));
+    throw Error("Unsupported field type: " + JSON.stringify(type));
 }
 
 export function writeDictParser(s: ABIType, w: Writer) {

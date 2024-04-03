@@ -1,20 +1,29 @@
-import { toNano } from '@ton/core';
-import { ContractSystem } from '@tact-lang/emulator';
-import { __DANGER_resetNodeId } from '../grammar/ast';
-import { SerializationTester2 } from './features/output/serialization-2_SerializationTester2';
-import { SerializationTester } from './features/output/serialization_SerializationTester';
+import { toNano } from "@ton/core";
+import { ContractSystem } from "@tact-lang/emulator";
+import { __DANGER_resetNodeId } from "../grammar/ast";
+import { SerializationTester2 } from "./features/output/serialization-2_SerializationTester2";
+import { SerializationTester } from "./features/output/serialization_SerializationTester";
 
-describe('feature-serialization', () => {
+describe("feature-serialization", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-
 
     //
     // Simple case
     //
     {
-        const cases: { a: bigint, b: bigint, c: bigint, d: bigint, e: bigint, f: bigint, g: bigint, h: bigint, i: bigint }[] = [];
+        const cases: {
+            a: bigint;
+            b: bigint;
+            c: bigint;
+            d: bigint;
+            e: bigint;
+            f: bigint;
+            g: bigint;
+            h: bigint;
+            i: bigint;
+        }[] = [];
         cases.push({
             a: 1n,
             b: 2n,
@@ -24,19 +33,30 @@ describe('feature-serialization', () => {
             f: 6n,
             g: 7n,
             h: 8n,
-            i: 9n
+            i: 9n,
         });
 
         for (let i = 0; i < cases.length; i++) {
-
-            it('should handle case #' + i, async () => {
+            it("should handle case #" + i, async () => {
                 const cs = cases[i];
 
                 // Init contract
                 const system = await ContractSystem.create();
-                const treasure = system.treasure('treasure');
-                const contract = system.open(await SerializationTester.fromInit(cs.a, cs.b, cs.c, cs.d, cs.e, cs.f, cs.g, cs.h, cs.i));
-                await contract.send(treasure, { value: toNano('10') }, null);
+                const treasure = system.treasure("treasure");
+                const contract = system.open(
+                    await SerializationTester.fromInit(
+                        cs.a,
+                        cs.b,
+                        cs.c,
+                        cs.d,
+                        cs.e,
+                        cs.f,
+                        cs.g,
+                        cs.h,
+                        cs.i,
+                    ),
+                );
+                await contract.send(treasure, { value: toNano("10") }, null);
                 await system.run();
 
                 // Check inputs
@@ -49,7 +69,7 @@ describe('feature-serialization', () => {
                 expect(await contract.getGetG()).toBe(cs.g);
                 expect(await contract.getGetH()).toBe(cs.h);
                 expect(await contract.getGetI()).toBe(cs.i);
-            })
+            });
         }
     }
 
@@ -57,35 +77,54 @@ describe('feature-serialization', () => {
     // Cases with references
     //
     {
-        const cases: { a: { $$type: 'Vars', a: bigint, b: bigint, c: bigint, d: bigint, e: bigint }, b: { $$type: 'Vars', a: bigint, b: bigint, c: bigint, d: bigint, e: bigint } }[] = [];
+        const cases: {
+            a: {
+                $$type: "Vars";
+                a: bigint;
+                b: bigint;
+                c: bigint;
+                d: bigint;
+                e: bigint;
+            };
+            b: {
+                $$type: "Vars";
+                a: bigint;
+                b: bigint;
+                c: bigint;
+                d: bigint;
+                e: bigint;
+            };
+        }[] = [];
         cases.push({
             a: {
-                $$type: 'Vars',
+                $$type: "Vars",
                 a: 1n,
                 b: 2n,
                 c: 3n,
                 d: 4n,
-                e: 5n
+                e: 5n,
             },
             b: {
-                $$type: 'Vars',
+                $$type: "Vars",
                 a: 6n,
                 b: 7n,
                 c: 8n,
                 d: 9n,
-                e: 10n
-            }
-        })
+                e: 10n,
+            },
+        });
 
         for (let i = 0; i < cases.length; i++) {
-            it('should handle case-2 #' + i, async () => {
+            it("should handle case-2 #" + i, async () => {
                 const cs = cases[i];
 
                 // Init contract
                 const system = await ContractSystem.create();
-                const treasure = system.treasure('treasure');
-                const contract = system.open(await SerializationTester2.fromInit(cs.a, cs.b));
-                await contract.send(treasure, { value: toNano('10') }, null);
+                const treasure = system.treasure("treasure");
+                const contract = system.open(
+                    await SerializationTester2.fromInit(cs.a, cs.b),
+                );
+                await contract.send(treasure, { value: toNano("10") }, null);
                 await system.run();
 
                 // Checl values

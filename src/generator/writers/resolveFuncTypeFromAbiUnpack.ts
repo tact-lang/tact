@@ -2,28 +2,36 @@ import { ABITypeRef } from "@ton/core";
 import { getType } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 
-export function resolveFuncTypeFromAbiUnpack(name: string, fields: { name: string, type: ABITypeRef }[], ctx: WriterContext): string {
+export function resolveFuncTypeFromAbiUnpack(
+    name: string,
+    fields: { name: string; type: ABITypeRef }[],
+    ctx: WriterContext,
+): string {
     if (fields.length === 0) {
         return `${name}`;
     }
     const res: string[] = [];
     for (const f of fields) {
-        if (f.type.kind === 'dict') {
+        if (f.type.kind === "dict") {
             res.push(`${name}'${f.name}`);
-        } else if (f.type.kind === 'simple') {
-            if (f.type.type === 'int' || f.type.type === 'uint' || f.type.type === 'bool') {
+        } else if (f.type.kind === "simple") {
+            if (
+                f.type.type === "int" ||
+                f.type.type === "uint" ||
+                f.type.type === "bool"
+            ) {
                 res.push(`${name}'${f.name}`);
-            } else if (f.type.type === 'cell') {
+            } else if (f.type.type === "cell") {
                 res.push(`${name}'${f.name}`);
-            } else if (f.type.type === 'slice') {
+            } else if (f.type.type === "slice") {
                 res.push(`${name}'${f.name}`);
-            } else if (f.type.type === 'builder') {
+            } else if (f.type.type === "builder") {
                 res.push(`${name}'${f.name}`);
-            } else if (f.type.type === 'address') {
+            } else if (f.type.type === "address") {
                 res.push(`${name}'${f.name}`);
-            } else if (f.type.type === 'fixed-bytes') {
+            } else if (f.type.type === "fixed-bytes") {
                 res.push(`${name}'${f.name}`);
-            } else if (f.type.type === 'string') {
+            } else if (f.type.type === "string") {
                 res.push(`${name}'${f.name}`);
             } else {
                 const t = getType(ctx.ctx, f.type.type);
@@ -31,12 +39,18 @@ export function resolveFuncTypeFromAbiUnpack(name: string, fields: { name: strin
                     res.push(`${name}'${f.name}`);
                 } else {
                     const loaded = t.fields.map((v) => v.abi);
-                    res.push(resolveFuncTypeFromAbiUnpack(`${name}'${f.name}`, loaded, ctx));
+                    res.push(
+                        resolveFuncTypeFromAbiUnpack(
+                            `${name}'${f.name}`,
+                            loaded,
+                            ctx,
+                        ),
+                    );
                 }
             }
         } else {
-            throw Error('Unsupported type');
+            throw Error("Unsupported type");
         }
     }
-    return `(${res.join(', ')})`;
+    return `(${res.join(", ")})`;
 }

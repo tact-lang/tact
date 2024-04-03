@@ -3,17 +3,20 @@ import { trimIndent } from "../utils/text";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";
 
-type Flag = 'inline' | 'impure' | 'inline_ref';
+type Flag = "inline" | "impure" | "inline_ref";
 
-type Body = {
-    kind: 'generic',
-    code: string
-} | {
-    kind: 'asm',
-    code: string
-} | {
-    kind: 'skip'
-}
+type Body =
+    | {
+          kind: "generic";
+          code: string;
+      }
+    | {
+          kind: "asm";
+          code: string;
+      }
+    | {
+          kind: "skip";
+      };
 
 export type WrittenFunction = {
     name: string;
@@ -26,7 +29,6 @@ export type WrittenFunction = {
 };
 
 export class WriterContext {
-
     readonly ctx: CompilerContext;
     #name: string;
     #functions: Map<string, WrittenFunction> = new Map();
@@ -66,7 +68,6 @@ export class WriterContext {
     //
 
     extract(debug: boolean = false) {
-
         // Check dependencies
         const missing = new Map<string, string[]>();
         for (const f of this.#functions.values()) {
@@ -77,12 +78,15 @@ export class WriterContext {
                     } else {
                         missing.set(d, [...missing.get(d)!, f.name]);
                     }
-
                 }
             }
         }
         if (missing.size > 0) {
-            throw new Error(`Functions ${Array.from(missing.keys()).map((v) => `"${v}"`).join(', ')} wasn't rendered`);
+            throw new Error(
+                `Functions ${Array.from(missing.keys())
+                    .map((v) => `"${v}"`)
+                    .join(", ")} wasn't rendered`,
+            );
         }
 
         // All functions
@@ -97,13 +101,15 @@ export class WriterContext {
                 for (const d of f.depends) {
                     visit(d);
                 }
-            }
-            visit('$main');
+            };
+            visit("$main");
             all = all.filter((v) => used.has(v.name));
         }
 
         // Sort functions
-        const sorted = topologicalSort(all, (f) => Array.from(f.depends).map((v) => this.#functions.get(v)!));
+        const sorted = topologicalSort(all, (f) =>
+            Array.from(f.depends).map((v) => this.#functions.get(v)!),
+        );
 
         return sorted;
     }
@@ -114,14 +120,13 @@ export class WriterContext {
 
     skip(name: string) {
         this.fun(name, () => {
-            this.signature('<unknown>');
-            this.context('stdlib');
-            this.#pendingCode = { kind: 'skip' };
+            this.signature("<unknown>");
+            this.context("stdlib");
+            this.#pendingCode = { kind: "skip" };
         });
     }
 
     fun(name: string, handler: () => void) {
-
         //
         // Duplicates check
         //
@@ -183,7 +188,7 @@ export class WriterContext {
         const code = this.#pendingCode;
         const comment = this.#pendingComment;
         const context = this.#pendingContext;
-        if (!signature && name !== '$main') {
+        if (!signature && name !== "$main") {
             throw new Error(`Function ${name} signature not set`);
         }
         if (!code) {
@@ -202,16 +207,16 @@ export class WriterContext {
             signature,
             flags,
             comment,
-            context
+            context,
         });
     }
 
     asm(code: string) {
         if (this.#pendingName) {
             this.#pendingCode = {
-                kind: 'asm',
-                code
-            }
+                kind: "asm",
+                code,
+            };
         } else {
             throw new Error(`ASM can be set only inside function`);
         }
@@ -224,13 +229,13 @@ export class WriterContext {
         this.#pendingWriter = new Writer();
         handler();
         this.#pendingCode = {
-            kind: 'generic',
-            code: this.#pendingWriter!.end()
-        }
+            kind: "generic",
+            code: this.#pendingWriter!.end(),
+        };
     }
 
     main(handler: () => void) {
-        this.fun('$main', () => {
+        this.fun("$main", () => {
             this.body(() => {
                 handler();
             });
@@ -288,11 +293,11 @@ export class WriterContext {
         this.#pendingWriter!.inIndent(handler);
     };
 
-    append(src: string = '') {
+    append(src: string = "") {
         this.#pendingWriter!.append(src);
     }
 
-    write(src: string = '') {
+    write(src: string = "") {
         this.#pendingWriter!.write(src);
     }
 

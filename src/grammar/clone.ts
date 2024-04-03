@@ -1,149 +1,150 @@
 import { ASTNode, cloneASTNode } from "./ast";
 
 export function cloneNode<T extends ASTNode>(src: T): T {
-    if (src.kind === 'boolean') {
+    if (src.kind === "boolean") {
         return cloneASTNode(src);
-    } else if (src.kind === 'id') {
+    } else if (src.kind === "id") {
         return cloneASTNode(src);
-    } else if (src.kind === 'null') {
+    } else if (src.kind === "null") {
         return cloneASTNode(src);
-    } else if (src.kind === 'number') {
+    } else if (src.kind === "number") {
         return cloneASTNode(src);
-    } else if (src.kind === 'string') {
+    } else if (src.kind === "string") {
         return cloneASTNode(src);
-    } else if (src.kind === 'lvalue_ref') {
+    } else if (src.kind === "lvalue_ref") {
         return cloneASTNode(src);
-    } else if (src.kind === 'statement_assign') {
+    } else if (src.kind === "statement_assign") {
         return cloneASTNode({
             ...src,
             path: src.path.map(cloneNode),
             expression: cloneNode(src.expression),
         });
-    } else if (src.kind === 'statement_augmentedassign') {
+    } else if (src.kind === "statement_augmentedassign") {
         return cloneASTNode({
             ...src,
             path: src.path.map(cloneNode),
             expression: cloneNode(src.expression),
         });
-    } else if (src.kind === 'statement_let') {
+    } else if (src.kind === "statement_let") {
         return cloneASTNode({
             ...src,
             type: cloneASTNode(src.type),
             expression: cloneNode(src.expression),
         });
-    } else if (src.kind === 'statement_condition') {
+    } else if (src.kind === "statement_condition") {
         return cloneASTNode({
             ...src,
             expression: cloneNode(src.expression),
             trueStatements: src.trueStatements.map(cloneNode),
-            falseStatements: src.falseStatements ? src.falseStatements.map(cloneNode) : null,
+            falseStatements: src.falseStatements
+                ? src.falseStatements.map(cloneNode)
+                : null,
             elseif: src.elseif ? cloneNode(src.elseif) : null,
         });
-    } else if (src.kind === 'new_parameter') {
+    } else if (src.kind === "new_parameter") {
         return cloneASTNode({
             ...src,
             exp: cloneNode(src.exp),
         });
-    } else if (src.kind === 'statement_expression') {
+    } else if (src.kind === "statement_expression") {
         return cloneASTNode({
             ...src,
             expression: cloneNode(src.expression),
         });
-    } else if (src.kind === 'op_binary') {
+    } else if (src.kind === "op_binary") {
         return cloneASTNode({
             ...src,
             left: cloneNode(src.left),
             right: cloneNode(src.right),
         });
-    } else if (src.kind === 'op_unary') {
+    } else if (src.kind === "op_unary") {
         return cloneASTNode({
             ...src,
             right: cloneNode(src.right),
         });
-    } else if (src.kind === 'op_new') {
+    } else if (src.kind === "op_new") {
         return cloneASTNode({
             ...src,
             args: src.args.map(cloneNode),
         });
-    } else if (src.kind === 'op_call') {
+    } else if (src.kind === "op_call") {
         return cloneASTNode({
             ...src,
             src: cloneNode(src.src),
             args: src.args.map(cloneNode),
         });
-    } else if (src.kind === 'op_field') {
+    } else if (src.kind === "op_field") {
         return cloneASTNode({
             ...src,
             src: cloneNode(src.src),
         });
-    } else if (src.kind === 'op_static_call') {
+    } else if (src.kind === "op_static_call") {
         return cloneASTNode({
             ...src,
             args: src.args.map(cloneNode),
         });
-    } else if (src.kind === 'conditional') {
+    } else if (src.kind === "conditional") {
         return cloneASTNode({
             ...src,
             condition: cloneNode(src.condition),
             thenBranch: cloneNode(src.thenBranch),
             elseBranch: cloneNode(src.elseBranch),
         });
-    } else if (src.kind === 'statement_return') {
+    } else if (src.kind === "statement_return") {
         return cloneASTNode({
             ...src,
             expression: src.expression ? cloneNode(src.expression) : null,
-
         });
-    } else if (src.kind === 'statement_repeat') {
+    } else if (src.kind === "statement_repeat") {
         return cloneASTNode({
             ...src,
             condition: cloneNode(src.condition),
             statements: src.statements.map(cloneNode),
         });
-    } else if (src.kind === 'statement_until') {
+    } else if (src.kind === "statement_until") {
         return cloneASTNode({
             ...src,
             condition: cloneNode(src.condition),
             statements: src.statements.map(cloneNode),
         });
-    } else if (src.kind === 'statement_while') {
+    } else if (src.kind === "statement_while") {
         return cloneASTNode({
             ...src,
             condition: cloneNode(src.condition),
             statements: src.statements.map(cloneNode),
         });
-    } else if (src.kind === 'def_function') {
+    } else if (src.kind === "def_function") {
         return cloneASTNode({
             ...src,
             statements: src.statements ? src.statements.map(cloneNode) : null,
-            args: src.args.map(cloneNode)
+            args: src.args.map(cloneNode),
         });
-    } else if (src.kind === 'def_native_function') {
-        return cloneASTNode({
-            ...src,
-            args: src.args.map(cloneNode)
-        });
-    } else if (src.kind === 'def_receive') {
-        return cloneASTNode({
-            ...src,
-            statements: src.statements.map(cloneNode),
-        });
-    } else if (src.kind === 'def_argument') {
-        return cloneASTNode({
-            ...src,
-            type: cloneASTNode(src.type),
-        });
-    } else if (src.kind === 'init_of') {
+    } else if (src.kind === "def_native_function") {
         return cloneASTNode({
             ...src,
             args: src.args.map(cloneNode),
         });
-    } else if (src.kind === 'def_constant') {
+    } else if (src.kind === "def_receive") {
+        return cloneASTNode({
+            ...src,
+            statements: src.statements.map(cloneNode),
+        });
+    } else if (src.kind === "def_argument") {
+        return cloneASTNode({
+            ...src,
+            type: cloneASTNode(src.type),
+        });
+    } else if (src.kind === "init_of") {
+        return cloneASTNode({
+            ...src,
+            args: src.args.map(cloneNode),
+        });
+    } else if (src.kind === "def_constant") {
         return cloneASTNode({
             ...src,
             value: src.value ? cloneNode(src.value) : src.value,
         });
     }
 
-    throw Error('Not implemented for ' + src.kind);
+    throw Error("Not implemented for " + src.kind);
 }

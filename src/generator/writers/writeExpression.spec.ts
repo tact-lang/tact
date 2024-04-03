@@ -1,5 +1,8 @@
 import { __DANGER_resetNodeId } from "../../grammar/ast";
-import { getStaticFunction, resolveDescriptors } from "../../types/resolveDescriptors";
+import {
+    getStaticFunction,
+    resolveDescriptors,
+} from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { writeExpression } from "./writeExpression";
 import { openContext } from "../../grammar/store";
@@ -45,49 +48,53 @@ fun main() {
 `;
 
 const golden: string[] = [
-    '1',
-    '2',
-    '($a + $b)',
-    '($a + ($b * $c))',
-    '($a + ($b / $c))',
-    'true',
-    'false',
-    '( (( (($a > 1)) ? (true) : (( (($b < 2)) ? (($c == 3)) : (false) )) )) ? (true) : ((~ ( (( (($d != 4)) ? (true) : (false) )) ? ((~ false)) : (false) ))) )',
-    '$global_f1($a)',
-    '$A$_constructor_a_b(1, 2)',
+    "1",
+    "2",
+    "($a + $b)",
+    "($a + ($b * $c))",
+    "($a + ($b / $c))",
+    "true",
+    "false",
+    "( (( (($a > 1)) ? (true) : (( (($b < 2)) ? (($c == 3)) : (false) )) )) ? (true) : ((~ ( (( (($d != 4)) ? (true) : (false) )) ? ((~ false)) : (false) ))) )",
+    "$global_f1($a)",
+    "$A$_constructor_a_b(1, 2)",
     `$j'a`,
-    '$A$_get_b($A$_constructor_a_b(1, 2))',
+    "$A$_get_b($A$_constructor_a_b(1, 2))",
     `((- $j'b) + $a)`,
     `(((- $j'b) + $a) + (+ $b))`,
-    'null()',
-    '(__tact_not_null($o) + 1)',
-    `$A$_store_cell(($j'a, $j'b))`
-]
+    "null()",
+    "(__tact_not_null($o) + 1)",
+    `$A$_store_cell(($j'a, $j'b))`,
+];
 
-describe('writeExpression', () => {
+describe("writeExpression", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    it('should write expression', () => {
-        let ctx = openContext(new CompilerContext(), [{ code: code, path: '<unknown>', origin: 'user' }], []);
+    it("should write expression", () => {
+        let ctx = openContext(
+            new CompilerContext(),
+            [{ code: code, path: "<unknown>", origin: "user" }],
+            [],
+        );
         ctx = resolveDescriptors(ctx);
         ctx = resolveStatements(ctx);
-        const main = getStaticFunction(ctx, 'main');
-        if (main.ast.kind !== 'def_function') {
-            throw Error('Unexpected function kind');
+        const main = getStaticFunction(ctx, "main");
+        if (main.ast.kind !== "def_function") {
+            throw Error("Unexpected function kind");
         }
         let i = 0;
         for (const s of main.ast.statements!) {
-            if (s.kind !== 'statement_let') {
-                throw Error('Unexpected statement kind');
+            if (s.kind !== "statement_let") {
+                throw Error("Unexpected statement kind");
             }
-            const wctx = new WriterContext(ctx, 'Contract1');
-            wctx.fun('$main', () => {
+            const wctx = new WriterContext(ctx, "Contract1");
+            wctx.fun("$main", () => {
                 wctx.body(() => {
                     expect(writeExpression(s.expression, wctx)).toBe(golden[i]);
                 });
             });
-            i++
+            i++;
         }
     });
 });

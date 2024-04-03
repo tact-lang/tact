@@ -1,4 +1,3 @@
-
 export function isBlank(src: string) {
     return src.trim().length === 0;
 }
@@ -13,11 +12,10 @@ export function indentWidth(src: string) {
 }
 
 export function trimIndent(src: string) {
-
     // Prase lines
-    let lines = src.split('\n');
+    let lines = src.split("\n");
     if (lines.length === 0) {
-        return '';
+        return "";
     }
     if (lines.length === 1) {
         return lines[0].trim();
@@ -31,7 +29,7 @@ export function trimIndent(src: string) {
         lines = lines.slice(0, lines.length - 1);
     }
     if (lines.length === 0) {
-        return '';
+        return "";
     }
 
     // Find minimal indent
@@ -39,5 +37,5 @@ export function trimIndent(src: string) {
     const minimal = indents.length > 0 ? Math.min(...indents) : 0;
 
     // Trim indent
-    return lines.map((v) => isBlank(v) ? '' : v.slice(minimal)).join('\n');
+    return lines.map((v) => (isBlank(v) ? "" : v.slice(minimal))).join("\n");
 }
