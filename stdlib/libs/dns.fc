@@ -1,3 +1,5 @@
+#include "../stdlib.fc";
+
 slice dns_string_to_internal(slice domain) inline_ref {
 
     ;; Special case for root domain
