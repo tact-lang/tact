@@ -81,6 +81,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   StatementReturn_withExpression?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
   StatementReturn_withoutExpression?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
   StatementReturn?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  StatementBreak?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
   StatementExpression?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
   StatementAssign?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
   StatementAugmentedAssign?: (this: NonterminalNode, arg0: NonterminalNode) => T;
@@ -181,6 +182,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   let?: (this: NonterminalNode, arg0: TerminalNode) => T;
   fun?: (this: NonterminalNode, arg0: TerminalNode) => T;
   return?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  break?: (this: NonterminalNode, arg0: TerminalNode) => T;
   extend?: (this: NonterminalNode, arg0: TerminalNode) => T;
   native?: (this: NonterminalNode, arg0: TerminalNode) => T;
   public?: (this: NonterminalNode, arg0: TerminalNode) => T;

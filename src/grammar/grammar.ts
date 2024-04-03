@@ -654,6 +654,12 @@ semantics.addOperation<ASTNode>("resolve_statement", {
             ref: createRef(this),
         });
     },
+    StatementBreak(_arg0, _arg1) {
+        return createNode({
+            kind: "statement_break",
+            ref: createRef(this),
+        });
+    },
     StatementExpression(arg0, _arg1) {
         return createNode({
             kind: "statement_expression",

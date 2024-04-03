@@ -473,6 +473,13 @@ export type ASTStatementRepeat = {
     ref: ASTRef;
 };
 
+export type ASTStatementBreak = {
+    kind: "statement_break";
+    id: number;
+    ref: ASTRef;
+};
+
+//
 //
 // Unions
 //
@@ -486,7 +493,8 @@ export type ASTStatement =
     | ASTCondition
     | ASTStatementWhile
     | ASTStatementUntil
-    | ASTStatementRepeat;
+    | ASTStatementRepeat
+    | ASTStatementBreak;
 export type ASTNode =
     | ASTExpression
     | ASTStruct
@@ -513,6 +521,7 @@ export type ASTNode =
     | ASTStatementWhile
     | ASTStatementUntil
     | ASTStatementRepeat
+    | ASTStatementBreak
     | ASTReceive
     | ASTLvalueRef
     | ASTString

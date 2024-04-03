@@ -83,6 +83,9 @@ export function writeStatement(
             }
         }
         return;
+    } else if (f.kind === "statement_break") {
+        ctx.append(`break ;`);
+        return;
     } else if (f.kind === "statement_let") {
         // Contract/struct case
         const t = resolveTypeRef(ctx.ctx, f.type);

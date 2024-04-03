@@ -97,10 +97,12 @@ Tact {
               | StatementWhile
               | StatementRepeat
               | StatementUntil
+              | StatementBreak
     StatementBlock = "{" Statement* "}"
     StatementLet = let id ":" Type "=" Expression ";"
     StatementReturn = return Expression ";" --withExpression
-                    | return ";" --withoutExpression    
+                    | return ";" --withoutExpression
+    StatementBreak = break ";"
     StatementExpression = Expression ";"
     StatementAssign = LValue "=" Expression ";"
     StatementAugmentedAssign = StatementAugmentedAssignAdd
@@ -234,6 +236,7 @@ Tact {
     keyword = fun 
             | let
             | return 
+            | break
             | extend 
             | native 
             | public 
@@ -260,6 +263,7 @@ Tact {
     let = "let" ~idPart
     fun = "fun" ~idPart
     return = "return" ~idPart
+    break = "break" ~idPart
     extend = "extend" ~idPart
     native = "native" ~idPart
     public = "public" ~idPart
