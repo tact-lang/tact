@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display an error for integer overflow at compile-time: PR [#200](https://github.com/tact-lang/tact/pull/200)
 - Non-modifying `StringBuilder`'s `concat` method for chained string concatenations: PR [#217](https://github.com/tact-lang/tact/pull/217)
 - `toString` extension function for `Address` type: PR [#224](https://github.com/tact-lang/tact/pull/224)
+- `^` XOR operation: PR [#238](https://github.com/tact-lang/tact/pull/238)
 
 ### Changed
 
