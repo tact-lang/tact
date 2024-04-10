@@ -121,10 +121,13 @@ function reduceAddress(ast: ASTExpression, ctx: CompilerContext): Address {
                 }
                 return address;
             }
-        } else if (ast.name === 'newAddress') {
+        } else if (ast.name === "newAddress") {
             if (ast.args.length === 2) {
                 const wc = reduceInt(ast.args[0]);
-                const addr = Buffer.from(reduceInt(ast.args[1]).toString(16), 'hex');
+                const addr = Buffer.from(
+                    reduceInt(ast.args[1]).toString(16),
+                    "hex",
+                );
                 if (!enabledMasterchain(ctx)) {
                     if (wc !== 0n) {
                         throwError(
