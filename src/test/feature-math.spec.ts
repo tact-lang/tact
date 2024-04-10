@@ -42,6 +42,12 @@ describe("feature-math", () => {
         expect(await contract.getSub(1n, -2n)).toBe(3n);
         expect(await contract.getMul(2n, 2n)).toBe(4n);
         expect(await contract.getDiv(2n, 2n)).toBe(1n);
+        expect(await contract.getMod(2n, 2n)).toBe(0n);
+        expect(await contract.getShr(4n, 1n)).toBe(2n);
+        expect(await contract.getShl(2n, 1n)).toBe(4n);
+        expect(await contract.getAnd(2n, 3n)).toBe(2n);
+        expect(await contract.getOr(2n, 3n)).toBe(3n);
+        expect(await contract.getXor(2n, 3n)).toBe(1n);
 
         // Augmented Assign
         expect(await contract.getAddAug(1n, 2n)).toBe(3n);

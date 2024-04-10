@@ -41,6 +41,10 @@ contract MathTester with Deployable {
         return a | b;
     }
 
+    get fun xor(a: Int, b: Int): Int {
+        return a ^ b;
+    }
+
     //
     // Augmented assignment
     //
