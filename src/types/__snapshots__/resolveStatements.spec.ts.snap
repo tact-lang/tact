@@ -320,6 +320,26 @@ Line 9, col 12:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-32 1`] = `
+"<unknown>:9:12: Unable to resolve id e
+Line 9, col 12:
+   8 |     }
+>  9 |     return e;
+                  ^
+  10 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for case-33 1`] = `
+"<unknown>:5:16: Unable to resolve id e
+Line 5, col 16:
+  4 |     try {
+> 5 |         return e;
+                     ^
+  6 |     } catch (e) {
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [

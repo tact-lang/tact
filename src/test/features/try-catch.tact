@@ -4,6 +4,7 @@ contract TryCatchTester {
     get fun testTryCatch1(): Int {
         try {
             throw(101);
+            return 42;
         }
         return 7;
     }
@@ -11,6 +12,7 @@ contract TryCatchTester {
     get fun testTryCatch2(): Int {
         try {
             throw(101);
+            return 42;
         } catch (e) {
             return e;
         }
