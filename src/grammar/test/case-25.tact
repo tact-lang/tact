@@ -36,7 +36,10 @@ fun oneMoreFunction(
 }
 
 contract TestContract {
-    init(arg1: Int, arg2: Int) {}
+    init(
+        arg1: Int,
+        arg2: Int,
+    ) {}
 }
 
 fun test() {
