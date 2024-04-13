@@ -45,8 +45,8 @@ Tact {
 
     // Contract
     Contract = ContractAttribute* contract id "{" ContractBody* "}" --simple
-             | ContractAttribute* contract id with ListOf<id,","> "{" ContractBody* "}" --withTraits
-    ContractInit = "init" "(" ListOf<FunctionArg,","> ")" "{" Statement* "}"
+             | ContractAttribute* contract id with NonemptyListOf<id,","> ","? "{" ContractBody* "}" --withTraits
+    ContractInit = "init" "(" ListOf<FunctionArg,","> ","? ")" "{" Statement* "}"
     ContractBody = Field
                  | ContractInit
                  | ReceiveFunction
@@ -55,7 +55,7 @@ Tact {
     
     // Trait
     Trait = ContractAttribute* trait id "{" TraitBody* "}" --originary
-          | ContractAttribute* trait id with ListOf<id,","> "{" TraitBody* "}" --withTraits
+          | ContractAttribute* trait id with NonemptyListOf<id,","> ","? "{" TraitBody* "}" --withTraits
     TraitBody = Field
               | ReceiveFunction
               | Function

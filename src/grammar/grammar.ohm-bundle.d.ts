@@ -43,12 +43,12 @@ export interface TactActionDict<T> extends ActionDict<T> {
   Struct?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   StructBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Contract_simple?: (this: NonterminalNode, arg0: IterationNode, arg1: NonterminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: IterationNode, arg5: TerminalNode) => T;
-  Contract_withTraits?: (this: NonterminalNode, arg0: IterationNode, arg1: NonterminalNode, arg2: NonterminalNode, arg3: NonterminalNode, arg4: NonterminalNode, arg5: TerminalNode, arg6: IterationNode, arg7: TerminalNode) => T;
+  Contract_withTraits?: (this: NonterminalNode, arg0: IterationNode, arg1: NonterminalNode, arg2: NonterminalNode, arg3: NonterminalNode, arg4: NonterminalNode, arg5: IterationNode, arg6: TerminalNode, arg7: IterationNode, arg8: TerminalNode) => T;
   Contract?: (this: NonterminalNode, arg0: NonterminalNode) => T;
-  ContractInit?: (this: NonterminalNode, arg0: TerminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
+  ContractInit?: (this: NonterminalNode, arg0: TerminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: IterationNode, arg4: TerminalNode, arg5: TerminalNode, arg6: IterationNode, arg7: TerminalNode) => T;
   ContractBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Trait_originary?: (this: NonterminalNode, arg0: IterationNode, arg1: NonterminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: IterationNode, arg5: TerminalNode) => T;
-  Trait_withTraits?: (this: NonterminalNode, arg0: IterationNode, arg1: NonterminalNode, arg2: NonterminalNode, arg3: NonterminalNode, arg4: NonterminalNode, arg5: TerminalNode, arg6: IterationNode, arg7: TerminalNode) => T;
+  Trait_withTraits?: (this: NonterminalNode, arg0: IterationNode, arg1: NonterminalNode, arg2: NonterminalNode, arg3: NonterminalNode, arg4: NonterminalNode, arg5: IterationNode, arg6: TerminalNode, arg7: IterationNode, arg8: TerminalNode) => T;
   Trait?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   TraitBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ContractAttribute_interface?: (this: NonterminalNode, arg0: TerminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
