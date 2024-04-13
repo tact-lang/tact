@@ -18,7 +18,8 @@
     "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1",
     "lint": "yarn eslint .",
     "lint:schema": "ajv validate -s grammar/configSchema.json -d tact.config.json",
-    "fmt:check": "yarn prettier --check ."
+    "fmt:check": "yarn prettier --check .",
+    "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint && yarn fmt:check"
   },
   "files": [
     "dist/**/*",
