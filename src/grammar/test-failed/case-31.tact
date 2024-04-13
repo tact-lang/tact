@@ -1,0 +1,1 @@
+trait Name with {}

@@ -113,18 +113,11 @@ semantics.addOperation<ASTNode>("resolve_program_item", {
         arg2,
         _arg3,
         arg4,
-        arg5,
+        _arg5,
         _arg6,
         arg7,
         _arg8,
     ) {
-        if (arg4.source.contents === "" && arg5.sourceString === ",") {
-            throwError(
-                "Empty inherited traits list should not have a dangling comma.",
-                createRef(arg5),
-            );
-        }
-
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: "def_contract",
@@ -154,14 +147,17 @@ semantics.addOperation<ASTNode>("resolve_program_item", {
             ref: createRef(this),
         });
     },
-    Trait_withTraits(arg0, _arg1, arg2, _arg3, arg4, arg5, _arg6, arg7, _arg8) {
-        if (arg4.source.contents === "" && arg5.sourceString === ",") {
-            throwError(
-                "Empty inherited traits list should not have a dangling comma.",
-                createRef(arg5),
-            );
-        }
-
+    Trait_withTraits(
+        arg0,
+        _arg1,
+        arg2,
+        _arg3,
+        arg4,
+        _arg5,
+        _arg6,
+        arg7,
+        _arg8,
+    ) {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: "def_trait",

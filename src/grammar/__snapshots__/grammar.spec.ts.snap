@@ -255,7 +255,7 @@ Line 2, col 31:
 `;
 
 exports[`grammar should fail case-27 1`] = `
-"<unknown>:1:19: Empty inherited traits list should not have a dangling comma.
+"<unknown>:1:19: Syntax error: expected "_", "A".."Z", or "a".."z" 
 Line 1, col 19:
 > 1 | contract Name with, {}
                         ^
@@ -264,7 +264,7 @@ Line 1, col 19:
 `;
 
 exports[`grammar should fail case-28 1`] = `
-"<unknown>:1:16: Empty inherited traits list should not have a dangling comma.
+"<unknown>:1:16: Syntax error: expected "_", "A".."Z", or "a".."z" 
 Line 1, col 16:
 > 1 | trait Name with, {}
                      ^
@@ -279,6 +279,24 @@ Line 2, col 10:
 > 2 |     init(,) {}
                ^
   3 | }
+"
+`;
+
+exports[`grammar should fail case-30 1`] = `
+"<unknown>:1:20: Syntax error: expected "_", "A".."Z", or "a".."z" 
+Line 1, col 20:
+> 1 | contract Name with {}
+                         ^
+  2 | 
+"
+`;
+
+exports[`grammar should fail case-31 1`] = `
+"<unknown>:1:17: Syntax error: expected "_", "A".."Z", or "a".."z" 
+Line 1, col 17:
+> 1 | trait Name with {}
+                      ^
+  2 | 
 "
 `;
 
