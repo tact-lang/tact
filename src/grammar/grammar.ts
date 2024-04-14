@@ -1110,7 +1110,7 @@ semantics.addOperation<ASTNode>("resolve_expression", {
     ExpressionBracket(_arg0, arg1, _arg2) {
         return arg1.resolve_expression();
     },
-    ExpressionUnarySuffix_notNull(arg0, _arg1) {
+    ExpressionUnboxNotNull(arg0, _arg1) {
         return createNode({
             kind: "op_unary",
             op: "!!",

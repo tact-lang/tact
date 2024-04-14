@@ -5266,3 +5266,79 @@ exports[`grammar should parse case-32 1`] = `
   "kind": "program",
 }
 `;
+
+exports[`grammar should parse case-33 1`] = `
+{
+  "entries": [
+    {
+      "args": [
+        {
+          "id": 3,
+          "kind": "def_argument",
+          "name": "m",
+          "ref": m: map<Int, Int>,
+          "type": {
+            "id": 2,
+            "key": "Int",
+            "keyAs": null,
+            "kind": "type_ref_map",
+            "ref": map<Int, Int>,
+            "value": "Int",
+            "valueAs": null,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 9,
+      "kind": "def_function",
+      "name": "testFunc",
+      "origin": "user",
+      "ref": fun testFunc(m: map<Int, Int>): Int {
+    return m.asCell()!!.hash();
+},
+      "return": {
+        "id": 1,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "args": [],
+            "id": 7,
+            "kind": "op_call",
+            "name": "hash",
+            "ref": m.asCell()!!.hash(),
+            "src": {
+              "id": 6,
+              "kind": "op_unary",
+              "op": "!!",
+              "ref": m.asCell()!!,
+              "right": {
+                "args": [],
+                "id": 5,
+                "kind": "op_call",
+                "name": "asCell",
+                "ref": m.asCell(),
+                "src": {
+                  "id": 4,
+                  "kind": "id",
+                  "ref": m,
+                  "value": "m",
+                },
+              },
+            },
+          },
+          "id": 8,
+          "kind": "statement_return",
+          "ref": return m.asCell()!!.hash();,
+        },
+      ],
+    },
+  ],
+  "id": 10,
+  "kind": "program",
+}
+`;
