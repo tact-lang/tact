@@ -151,16 +151,15 @@ Tact {
                   | ExpressionMul "/" ExpressionUnary --div
                   | ExpressionMul "%" ExpressionUnary --rem
                   | ExpressionUnary
-    ExpressionUnary = "-" ExpressionUnarySuffix --neg
-                    | "+" ExpressionUnarySuffix --add
-                    | "!" ExpressionUnarySuffix --not
-                    | ExpressionUnarySuffix
-    ExpressionUnarySuffix = ExpressionValue "!!" --notNull
-                          | ExpressionValue
+    ExpressionUnary = "-" ExpressionValue --neg
+                    | "+" ExpressionValue --add
+                    | "!" ExpressionValue --not
+                    | ExpressionValue
     ExpressionBracket = "(" Expression ")"
 
     // Order is important
-    ExpressionValue = ExpressionCall
+    ExpressionValue = ExpressionUnboxNotNull
+                    | ExpressionCall
                     | ExpressionField
                     | ExpressionStaticCall
                     | ExpressionBracket
@@ -171,6 +170,7 @@ Tact {
                     | null
                     | ExpressionInitOf
                     | ExpressionString
+    ExpressionUnboxNotNull = ExpressionValue "!!"
     ExpressionString = stringLiteral
     ExpressionField = ExpressionValue "." id ~"("
     ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ","? ")"

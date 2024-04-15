@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Incorrect "already exists" errors when using names such as `toString` or `valueOf`: PR [#208](https://github.com/tact-lang/tact/pull/208)
 - Escape backticks in error messages for generated TypeScript code: PR [#192](https://github.com/tact-lang/tact/pull/192)
 - Empty inherited trait lists after `with` keyword are now disallowed: PR [#246](https://github.com/tact-lang/tact/pull/246)
+- Allow chaining method calls with `!!`, for instance, `map.asCell()!!.hash()` is grammatically correct now: PR [#257](ttps://github.com/tact-lang/tact/pull/257)
 
 ## [1.2.0] - 2024-02-29
 
