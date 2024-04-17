@@ -128,6 +128,12 @@ function reduceAddress(ast: ASTExpression, ctx: CompilerContext): Address {
                     reduceInt(ast.args[1]).toString(16),
                     "hex",
                 );
+                if (wc !== 0n && wc !== -1n) {
+                    throwError(
+                        `Expected workchain to equal 0 or -1, received: ${wc}`,
+                        ast.ref,
+                    );
+                }
                 if (!enabledMasterchain(ctx)) {
                     if (wc !== 0n) {
                         throwError(
