@@ -30,6 +30,9 @@ describe("feature-constants", () => {
         expect((await contract.getSomething10()).toRawString()).toEqual(
             "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
         );
+        expect(await contract.getSomething11()).toEqual(88n);
+        expect(await contract.getSomething12()).toEqual(-90n);
+        expect(await contract.getSomething13()).toEqual(88n);
         expect(await contract.getGlobalConst()).toEqual(100n);
     });
 });

@@ -11,6 +11,9 @@ contract ConstantTester {
     const something8: Int = (2 + 4) & 4;
     const something9: Address = address("UQBKgXCNLPexWhs2L79kiARR1phGH1LwXxRbNsCFF9doczSI");
     const something10: Address = newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873);
+    const something11: Int = 123 ^ 35;
+    const something12: Int = -123 ^ 35;
+    const something13: Int = -123 ^ -35;
 
     init() {
         
@@ -58,6 +61,18 @@ contract ConstantTester {
 
     get fun something10(): Address {
         return self.something10;
+    }
+
+    get fun something11(): Int {
+        return self.something11;
+    }
+
+    get fun something12(): Int {
+        return self.something12;
+    }
+
+    get fun something13(): Int {
+        return self.something13;
     }
 
     get fun globalConst(): Int {
