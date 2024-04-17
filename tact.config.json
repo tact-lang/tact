@@ -231,6 +231,14 @@
       }
     },
     {
+      "name": "address",
+      "path": "./src/test/features/address.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
       "name": "ternary",
       "path": "./src/test/features/ternary.tact",
       "output": "./src/test/features/output",

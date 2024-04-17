@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update the `dump` function to handle addresses: PR [#175](https://github.com/tact-lang/tact/pull/175)
-- Support trailing commas for struct fields and function arguments: PR [#179](https://github.com/tact-lang/tact/pull/179)
+- Support trailing commas in all comma-separated lists (struct instantiations, `initOf` arguments, `init()` parameters, inherited traits via `with`, function arguments and parameters): PR [#179](https://github.com/tact-lang/tact/pull/179) and PR [#246](https://github.com/tact-lang/tact/pull/246)
 - The implicit empty `init` function is now present by default in the contract if not declared: PR [#167](https://github.com/tact-lang/tact/pull/167)
 - `@stdlib/stoppable` now imports `@stdlib/ownable` so the programmer does not have to do it separately: PR [#193](https://github.com/tact-lang/tact/pull/193)
 - Support escape sequences for strings (`\\`, `\"`, `\n`, `\r`, `\t`, `\v`, `\b`, `\f`, `\u{0}` through `\u{FFFFFF}`, `\u0000` through `\uFFFF`, `\x00` through `\xFF`): PR [#192](https://github.com/tact-lang/tact/pull/192)
@@ -29,6 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Incorrect "already exists" errors when using names such as `toString` or `valueOf`: PR [#208](https://github.com/tact-lang/tact/pull/208)
 - Escape backticks in error messages for generated TypeScript code: PR [#192](https://github.com/tact-lang/tact/pull/192)
+- Empty inherited trait lists after `with` keyword are now disallowed: PR [#246](https://github.com/tact-lang/tact/pull/246)
+- Allow chaining method calls with `!!`, for instance, `map.asCell()!!.hash()` is grammatically correct now: PR [#257](ttps://github.com/tact-lang/tact/pull/257)
 
 ## [1.2.0] - 2024-02-29
 

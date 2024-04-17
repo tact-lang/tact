@@ -2,3 +2,6 @@ node_modules
 coverage
 dist
 output/
+src/grammar/grammar.ohm-bundle.js
+src/grammar/grammar.ohm-bundle.d.ts
+

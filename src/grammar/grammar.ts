@@ -107,7 +107,17 @@ semantics.addOperation<ASTNode>("resolve_program_item", {
             ref: createRef(this),
         });
     },
-    Contract_withTraits(arg0, _arg1, arg2, _arg3, arg4, _arg5, arg6, _arg7) {
+    Contract_withTraits(
+        arg0,
+        _arg1,
+        arg2,
+        _arg3,
+        arg4,
+        _arg5,
+        _arg6,
+        arg7,
+        _arg8,
+    ) {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: "def_contract",
@@ -116,7 +126,7 @@ semantics.addOperation<ASTNode>("resolve_program_item", {
             attributes: arg0.children.map((v) =>
                 v.resolve_contract_attributes(),
             ),
-            declarations: arg6.children.map((v) => v.resolve_declaration()),
+            declarations: arg7.children.map((v) => v.resolve_declaration()),
             traits: arg4
                 .asIteration()
                 .children.map((v) => v.resolve_expression()),
@@ -137,7 +147,17 @@ semantics.addOperation<ASTNode>("resolve_program_item", {
             ref: createRef(this),
         });
     },
-    Trait_withTraits(arg0, _arg1, arg2, _arg3, arg4, _arg5, arg6, _arg7) {
+    Trait_withTraits(
+        arg0,
+        _arg1,
+        arg2,
+        _arg3,
+        arg4,
+        _arg5,
+        _arg6,
+        arg7,
+        _arg8,
+    ) {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: "def_trait",
@@ -146,7 +166,7 @@ semantics.addOperation<ASTNode>("resolve_program_item", {
             attributes: arg0.children.map((v) =>
                 v.resolve_contract_attributes(),
             ),
-            declarations: arg6.children.map((v) => v.resolve_declaration()),
+            declarations: arg7.children.map((v) => v.resolve_declaration()),
             traits: arg4
                 .asIteration()
                 .children.map((v) => v.resolve_expression()),
@@ -539,13 +559,20 @@ semantics.addOperation<ASTNode>("resolve_declaration", {
             ref: createRef(this),
         });
     },
-    ContractInit(_arg0, _arg1, arg2, _arg3, _arg4, arg5, _arg6) {
+    ContractInit(_arg0, _arg1, arg2, arg3, _arg4, _arg5, arg6, _arg7) {
+        if (arg2.source.contents === "" && arg3.sourceString === ",") {
+            throwError(
+                "Empty parameter list should not have a dangling comma.",
+                createRef(arg3),
+            );
+        }
+
         return createNode({
             kind: "def_init_function",
             args: arg2
                 .asIteration()
                 .children.map((v) => v.resolve_declaration()),
-            statements: arg5.children.map((v) => v.resolve_statement()),
+            statements: arg6.children.map((v) => v.resolve_statement()),
             ref: createRef(this),
         });
     },
@@ -1083,7 +1110,7 @@ semantics.addOperation<ASTNode>("resolve_expression", {
     ExpressionBracket(_arg0, arg1, _arg2) {
         return arg1.resolve_expression();
     },
-    ExpressionUnarySuffix_notNull(arg0, _arg1) {
+    ExpressionUnboxNotNull(arg0, _arg1) {
         return createNode({
             kind: "op_unary",
             op: "!!",

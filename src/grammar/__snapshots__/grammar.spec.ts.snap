@@ -254,6 +254,52 @@ Line 2, col 31:
 "
 `;
 
+exports[`grammar should fail case-27 1`] = `
+"<unknown>:1:19: Syntax error: expected "_", "A".."Z", or "a".."z" 
+Line 1, col 19:
+> 1 | contract Name with, {}
+                        ^
+  2 | 
+"
+`;
+
+exports[`grammar should fail case-28 1`] = `
+"<unknown>:1:16: Syntax error: expected "_", "A".."Z", or "a".."z" 
+Line 1, col 16:
+> 1 | trait Name with, {}
+                     ^
+  2 | 
+"
+`;
+
+exports[`grammar should fail case-29 1`] = `
+"<unknown>:2:10: Empty parameter list should not have a dangling comma.
+Line 2, col 10:
+  1 | contract Name {
+> 2 |     init(,) {}
+               ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail case-30 1`] = `
+"<unknown>:1:20: Syntax error: expected "_", "A".."Z", or "a".."z" 
+Line 1, col 20:
+> 1 | contract Name with {}
+                         ^
+  2 | 
+"
+`;
+
+exports[`grammar should fail case-31 1`] = `
+"<unknown>:1:17: Syntax error: expected "_", "A".."Z", or "a".."z" 
+Line 1, col 17:
+> 1 | trait Name with {}
+                      ^
+  2 | 
+"
+`;
+
 exports[`grammar should parse case-0 1`] = `
 {
   "entries": [
@@ -2727,8 +2773,8 @@ exports[`grammar should parse case-22 1`] = `
           "id": 3,
           "init": null,
           "kind": "def_field",
-          "name": "a",
-          "ref": a: Int;,
+          "name": "c",
+          "ref": c: Int;,
           "type": {
             "id": 2,
             "kind": "type_ref_simple",
@@ -2740,10 +2786,10 @@ exports[`grammar should parse case-22 1`] = `
       ],
       "id": 4,
       "kind": "def_trait",
-      "name": "SomeTrait",
+      "name": "OtherTrait",
       "origin": "user",
-      "ref": trait SomeTrait {
-    a: Int;
+      "ref": trait OtherTrait {
+    c: Int;
 },
       "traits": [],
     },
@@ -2755,8 +2801,8 @@ exports[`grammar should parse case-22 1`] = `
           "id": 6,
           "init": null,
           "kind": "def_field",
-          "name": "b",
-          "ref": b: Int;,
+          "name": "a",
+          "ref": a: Int;,
           "type": {
             "id": 5,
             "kind": "type_ref_simple",
@@ -2767,15 +2813,50 @@ exports[`grammar should parse case-22 1`] = `
         },
       ],
       "id": 8,
-      "kind": "def_contract",
-      "name": "Main",
+      "kind": "def_trait",
+      "name": "SomeTrait",
       "origin": "user",
-      "ref": contract Main with SomeTrait {
-    b: Int;
+      "ref": trait SomeTrait with OtherTrait, {
+    a: Int;
 },
       "traits": [
         {
           "id": 7,
+          "kind": "id",
+          "ref": OtherTrait,
+          "value": "OtherTrait",
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 10,
+          "init": null,
+          "kind": "def_field",
+          "name": "b",
+          "ref": b: Int;,
+          "type": {
+            "id": 9,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "id": 12,
+      "kind": "def_contract",
+      "name": "Main",
+      "origin": "user",
+      "ref": contract Main with SomeTrait, {
+    b: Int;
+},
+      "traits": [
+        {
+          "id": 11,
           "kind": "id",
           "ref": SomeTrait,
           "value": "SomeTrait",
@@ -2783,7 +2864,7 @@ exports[`grammar should parse case-22 1`] = `
       ],
     },
   ],
-  "id": 9,
+  "id": 13,
   "kind": "program",
 }
 `;
@@ -3669,7 +3750,10 @@ exports[`grammar should parse case-25 1`] = `
           ],
           "id": 76,
           "kind": "def_init_function",
-          "ref": init(arg1: Int, arg2: Int) {},
+          "ref": init(
+        arg1: Int,
+        arg2: Int,
+    ) {},
           "statements": [],
         },
       ],
@@ -3678,7 +3762,10 @@ exports[`grammar should parse case-25 1`] = `
       "name": "TestContract",
       "origin": "user",
       "ref": contract TestContract {
-    init(arg1: Int, arg2: Int) {}
+    init(
+        arg1: Int,
+        arg2: Int,
+    ) {}
 },
       "traits": [],
     },
@@ -5176,6 +5263,82 @@ exports[`grammar should parse case-32 1`] = `
     },
   ],
   "id": 25,
+  "kind": "program",
+}
+`;
+
+exports[`grammar should parse case-33 1`] = `
+{
+  "entries": [
+    {
+      "args": [
+        {
+          "id": 3,
+          "kind": "def_argument",
+          "name": "m",
+          "ref": m: map<Int, Int>,
+          "type": {
+            "id": 2,
+            "key": "Int",
+            "keyAs": null,
+            "kind": "type_ref_map",
+            "ref": map<Int, Int>,
+            "value": "Int",
+            "valueAs": null,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 9,
+      "kind": "def_function",
+      "name": "testFunc",
+      "origin": "user",
+      "ref": fun testFunc(m: map<Int, Int>): Int {
+    return m.asCell()!!.hash();
+},
+      "return": {
+        "id": 1,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "args": [],
+            "id": 7,
+            "kind": "op_call",
+            "name": "hash",
+            "ref": m.asCell()!!.hash(),
+            "src": {
+              "id": 6,
+              "kind": "op_unary",
+              "op": "!!",
+              "ref": m.asCell()!!,
+              "right": {
+                "args": [],
+                "id": 5,
+                "kind": "op_call",
+                "name": "asCell",
+                "ref": m.asCell(),
+                "src": {
+                  "id": 4,
+                  "kind": "id",
+                  "ref": m,
+                  "value": "m",
+                },
+              },
+            },
+          },
+          "id": 8,
+          "kind": "statement_return",
+          "ref": return m.asCell()!!.hash();,
+        },
+      ],
+    },
+  ],
+  "id": 10,
   "kind": "program",
 }
 `;
