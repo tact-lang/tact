@@ -239,6 +239,14 @@
       }
     },
     {
+      "name": "precendence",
+      "path": "./src/test/features/precendence.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
       "name": "ternary",
       "path": "./src/test/features/ternary.tact",
       "output": "./src/test/features/output",
