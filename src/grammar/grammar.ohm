@@ -126,35 +126,50 @@ Tact {
 
     // Expressions
     Expression = ExpressionConditional
+    
     ExpressionConditional = ExpressionOr "?" ExpressionOr ":" ExpressionConditional --ternary
                           | ExpressionOr
+    
     ExpressionOr = ExpressionOr "||" ExpressionAnd --or
                  | ExpressionAnd
-    ExpressionAnd = ExpressionAnd "&&" ExpressionCompare --and
-                  | ExpressionCompare
-    ExpressionCompare = ExpressionCompare "!=" ExpressionBinary --not
-                      | ExpressionCompare "==" ExpressionBinary --eq
-                      | ExpressionCompare ">" ExpressionBinary --gt
-                      | ExpressionCompare ">=" ExpressionBinary --gte
-                      | ExpressionCompare "<" ExpressionBinary --lt
-                      | ExpressionCompare "<=" ExpressionBinary --lte
-                      | ExpressionBinary
-    ExpressionBinary = ExpressionBinary ">>" ExpressionAdd --shr
-                    | ExpressionBinary "<<" ExpressionAdd --shl
-                    | ExpressionBinary "&" ExpressionAdd --bin_and
-                    | ExpressionBinary "|" ExpressionAdd --bin_or
-                    | ExpressionAdd
+    
+    ExpressionAnd = ExpressionAnd "&&" ExpressionBinaryOr --and
+                  | ExpressionBinaryOr
+    
+    ExpressionBinaryOr = ExpressionBinaryOr "|" ExpressionBinaryAnd --bin_or
+                       | ExpressionBinaryAnd
+    
+    ExpressionBinaryAnd = ExpressionBinaryAnd "&" ExpressionEquality --bin_and
+                        | ExpressionEquality
+    
+    ExpressionEquality = ExpressionEquality "!=" ExpressionCompare --not
+                       | ExpressionEquality "==" ExpressionCompare --eq
+                       | ExpressionCompare
+    
+    ExpressionCompare = ExpressionCompare ">" ExpressionBinaryShift --gt
+                      | ExpressionCompare ">=" ExpressionBinaryShift --gte
+                      | ExpressionCompare "<" ExpressionBinaryShift --lt
+                      | ExpressionCompare "<=" ExpressionBinaryShift --lte
+                      | ExpressionBinaryShift
+    
+    ExpressionBinaryShift = ExpressionBinaryShift "<<" ExpressionAdd --shl
+                          | ExpressionBinaryShift ">>" ExpressionAdd --shr
+                          | ExpressionAdd
+    
     ExpressionAdd = ExpressionAdd "+" ~"+" ExpressionMul --add
                   | ExpressionAdd "-" ~"-" ExpressionMul --sub
                   | ExpressionMul
+    
     ExpressionMul = ExpressionMul "*" ExpressionUnary --mul
                   | ExpressionMul "/" ExpressionUnary --div
                   | ExpressionMul "%" ExpressionUnary --rem
                   | ExpressionUnary
+    
     ExpressionUnary = "-" ExpressionValue --neg
                     | "+" ExpressionValue --add
                     | "!" ExpressionValue --not
                     | ExpressionValue
+    
     ExpressionBracket = "(" Expression ")"
 
     // Order is important

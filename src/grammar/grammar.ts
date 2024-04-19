@@ -973,7 +973,7 @@ semantics.addOperation<ASTNode>("resolve_expression", {
             ref: createRef(this),
         });
     },
-    ExpressionCompare_eq(arg0, _arg1, arg2) {
+    ExpressionEquality_eq(arg0, _arg1, arg2) {
         return createNode({
             kind: "op_binary",
             op: "==",
@@ -982,7 +982,7 @@ semantics.addOperation<ASTNode>("resolve_expression", {
             ref: createRef(this),
         });
     },
-    ExpressionCompare_not(arg0, _arg1, arg2) {
+    ExpressionEquality_not(arg0, _arg1, arg2) {
         return createNode({
             kind: "op_binary",
             op: "!=",
@@ -1045,7 +1045,7 @@ semantics.addOperation<ASTNode>("resolve_expression", {
             ref: createRef(this),
         });
     },
-    ExpressionBinary_shr(arg0, _arg1, arg2) {
+    ExpressionBinaryShift_shr(arg0, _arg1, arg2) {
         return createNode({
             kind: "op_binary",
             op: ">>",
@@ -1054,7 +1054,7 @@ semantics.addOperation<ASTNode>("resolve_expression", {
             ref: createRef(this),
         });
     },
-    ExpressionBinary_shl(arg0, _arg1, arg2) {
+    ExpressionBinaryShift_shl(arg0, _arg1, arg2) {
         return createNode({
             kind: "op_binary",
             op: "<<",
@@ -1063,7 +1063,7 @@ semantics.addOperation<ASTNode>("resolve_expression", {
             ref: createRef(this),
         });
     },
-    ExpressionBinary_bin_and(arg0, _arg1, arg2) {
+    ExpressionBinaryAnd_bin_and(arg0, _arg1, arg2) {
         return createNode({
             kind: "op_binary",
             op: "&",
@@ -1072,7 +1072,7 @@ semantics.addOperation<ASTNode>("resolve_expression", {
             ref: createRef(this),
         });
     },
-    ExpressionBinary_bin_or(arg0, _arg1, arg2) {
+    ExpressionBinaryOr_bin_or(arg0, _arg1, arg2) {
         return createNode({
             kind: "op_binary",
             op: "|",

@@ -307,4 +307,28 @@ contract MathTester with Deployable {
     get fun log(num: Int, base: Int): Int {
         return log(num, base);
     }
+
+    get fun precendence1(): Int {
+        return 5 & 6 | 1 << 5 + 11 * 3 % 12 >> 11;
+    }
+
+    get fun precendence2(): Int {
+        return 5 & 6 | 1 << (5 + 11) * 3 % 12 >> 11;
+    }
+
+    get fun precendence3(): Int {
+        return 5 & 6 | 1 << 5 + 11 * (3 % 12) >> 35;
+    }
+
+    get fun precendence4(): Int {
+        return 5 & 6 | 1 << 5 + (11 * 3) % 12 >> 11;
+    }
+
+    get fun precendence5(): Int {
+        return 5 | 6 & 8;
+    }
+
+    get fun precendence6(): Int {
+        return (5 | 6) & 8;
+    }
 }

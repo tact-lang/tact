@@ -388,5 +388,14 @@ describe("feature-math", () => {
                 );
             }
         }
+
+        // Test operation precendence
+
+        expect(await contract.getPrecendence1()).toBe(12n);
+        expect(await contract.getPrecendence2()).toBe(4n);
+        expect(await contract.getPrecendence3()).toBe(12n);
+        expect(await contract.getPrecendence4()).toBe(12n);
+        expect(await contract.getPrecendence5()).toBe(5n);
+        expect(await contract.getPrecendence6()).toBe(0n);
     });
 });
