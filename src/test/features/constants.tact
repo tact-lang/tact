@@ -14,6 +14,8 @@ contract ConstantTester {
     const something11: Int = 123 ^ 35;
     const something12: Int = -123 ^ 35;
     const something13: Int = -123 ^ -35;
+    const something14: Int = pow(3, 5);
+    const something15: Int = pow2(5);
 
     init() {
         
@@ -73,6 +75,14 @@ contract ConstantTester {
 
     get fun something13(): Int {
         return self.something13;
+    }
+
+    get fun something14(): Int {
+        return self.something14;
+    }
+
+    get fun something15(): Int {
+        return self.something15;
     }
 
     get fun globalConst(): Int {

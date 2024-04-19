@@ -312,6 +312,18 @@ contract MathTester with Deployable {
         return log(num, base);
     }
 
+    get fun pow(base: Int, exp: Int): Int {
+        return pow(base, exp);
+    }
+
+    get fun pow2(exp: Int): Int {
+        return pow2(exp);
+    }
+
+    //
+    // Precedence
+    //
+
     get fun precendence1(): Int {
         return 5 & 6 | 1 << 5 + 11 * 3 % 12 >> 11;
     }

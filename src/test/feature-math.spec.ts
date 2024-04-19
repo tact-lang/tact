@@ -398,6 +398,20 @@ describe("feature-math", () => {
             }
         }
 
+        expect(await contract.getPow(2n, 0n)).toBe(1n);
+        expect(await contract.getPow(2n, 1n)).toBe(2n);
+        expect(await contract.getPow(2n, 2n)).toBe(4n);
+        expect(await contract.getPow(2n, 3n)).toBe(8n);
+        expect(await contract.getPow(0n, 0n)).toBe(1n);
+        expect(await contract.getPow(0n, 1n)).toBe(0n);
+        expect(await contract.getPow(1n, 10n)).toBe(1n);
+        expect(await contract.getPow(10n, 2n)).toBe(100n);
+
+        expect(await contract.getPow2(0n)).toBe(1n);
+        expect(await contract.getPow2(1n)).toBe(2n);
+        expect(await contract.getPow2(2n)).toBe(4n);
+        expect(await contract.getPow2(3n)).toBe(8n);
+
         // Test operation precendence
 
         expect(await contract.getPrecendence1()).toBe(12n);
