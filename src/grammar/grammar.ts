@@ -1081,7 +1081,7 @@ semantics.addOperation<ASTNode>("resolve_expression", {
             ref: createRef(this),
         });
     },
-    ExpressionBinary_bin_xor(arg0, _arg1, arg2) {
+    ExpressionBinaryXor_bin_xor(arg0, _arg1, arg2) {
         return createNode({
             kind: "op_binary",
             op: "^",
