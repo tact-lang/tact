@@ -24,7 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@stdlib/stoppable` now imports `@stdlib/ownable` so the programmer does not have to do it separately: PR [#193](https://github.com/tact-lang/tact/pull/193)
 - Support escape sequences for strings (`\\`, `\"`, `\n`, `\r`, `\t`, `\v`, `\b`, `\f`, `\u{0}` through `\u{FFFFFF}`, `\u0000` through `\uFFFF`, `\x00` through `\xFF`): PR [#192](https://github.com/tact-lang/tact/pull/192)
 - `newAddress` function now evaluates to a constant value if possible: PR [#237](https://github.com/tact-lang/tact/pull/237)
-- Operation precendence now matches with JavaScript rules: PR [#265](https://github.com/tact-lang/tact/pull/265)
 
 ### Fixed
 
@@ -32,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Escape backticks in error messages for generated TypeScript code: PR [#192](https://github.com/tact-lang/tact/pull/192)
 - Empty inherited trait lists after `with` keyword are now disallowed: PR [#246](https://github.com/tact-lang/tact/pull/246)
 - Allow chaining method calls with `!!`, for instance, `map.asCell()!!.hash()` is grammatically correct now: PR [#257](ttps://github.com/tact-lang/tact/pull/257)
+- Operation precendence for bitwise operators, equality and comparisons now matches common languages, like JavaScript: PR [#265](https://github.com/tact-lang/tact/pull/265)
 
 ## [1.2.0] - 2024-02-29
 
