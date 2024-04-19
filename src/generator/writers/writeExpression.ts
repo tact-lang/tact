@@ -421,6 +421,8 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             op = "&";
         } else if (f.op === "|") {
             op = "|";
+        } else if (f.op === "^") {
+            op = "^";
         } else {
             throwError("Unknown binary operator: " + f.op, f.ref);
         }

@@ -187,7 +187,8 @@ function resolveBinaryOp(
         exp.op === ">>" ||
         exp.op === "<<" ||
         exp.op === "&" ||
-        exp.op === "|"
+        exp.op === "|" ||
+        exp.op === "^"
     ) {
         if (le.kind !== "ref" || le.optional || le.name !== "Int") {
             throwError(

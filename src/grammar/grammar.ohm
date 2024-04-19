@@ -136,7 +136,10 @@ Tact {
     ExpressionAnd = ExpressionAnd "&&" ExpressionBinaryOr --and
                   | ExpressionBinaryOr
     
-    ExpressionBinaryOr = ExpressionBinaryOr "|" ExpressionBinaryAnd --bin_or
+    ExpressionBinaryOr = ExpressionBinaryOr "|" ExpressionBinaryXor --bin_or
+                       | ExpressionBinaryXor
+    
+    ExpressionBinaryXor = ExpressionBinaryXor "^" ExpressionBinaryAnd --bin_xor
                        | ExpressionBinaryAnd
     
     ExpressionBinaryAnd = ExpressionBinaryAnd "&" ExpressionEquality --bin_and

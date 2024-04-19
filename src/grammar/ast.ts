@@ -144,7 +144,8 @@ export type ASTOpBinary = {
         | "<<"
         | ">>"
         | "&"
-        | "|";
+        | "|"
+        | "^";
     left: ASTExpression;
     right: ASTExpression;
     ref: ASTRef;
