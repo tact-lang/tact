@@ -775,4 +775,8 @@ contract MapTestContract {
     get fun mapAsCell(): Cell? {
         return self.addrMap7_6.asCell();
     }
+
+    get fun intMap1IsEmpty(): Bool {
+        return self.intMap1.isEmpty();
+    }
 }

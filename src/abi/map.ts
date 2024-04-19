@@ -354,4 +354,33 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
         },
     ],
+    [
+        "isEmpty",
+        {
+            name: "isEmpty",
+            resolve(ctx, args, ref) {
+                // Check arguments
+                if (args.length !== 1) {
+                    throwError("isEmpty expects one argument", ref); // Ignore self argument
+                }
+                const self = args[0];
+                if (!self || self.kind !== "map") {
+                    throwError("isEmpty expects a map as self argument", ref); // Should not happen
+                }
+
+                return { kind: "ref", name: "Bool", optional: false };
+            },
+            generate: (ctx, args, exprs, ref) => {
+                if (args.length !== 1) {
+                    throwError("isEmpty expects one argument", ref); // Ignore self argument
+                }
+                const self = args[0];
+                if (!self || self.kind !== "map") {
+                    throwError("isEmpty expects a map as self argument", ref); // Should not happen
+                }
+
+                return `null?(${writeExpression(exprs[0], ctx)})`;
+            },
+        },
+    ],
 ]);
