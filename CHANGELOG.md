@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `toString` extension function for `Address` type: PR [#224](https://github.com/tact-lang/tact/pull/224)
 - Bitwise XOR operation (`^`): PR [#238](https://github.com/tact-lang/tact/pull/238)
 - `isEmpty` method for `Map` type: PR [#266](https://github.com/tact-lang/tact/pull/266)
+- `pow2` function: PR [#267](https://github.com/tact-lang/tact/pull/267)
 
 ### Changed
 
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@stdlib/stoppable` now imports `@stdlib/ownable` so the programmer does not have to do it separately: PR [#193](https://github.com/tact-lang/tact/pull/193)
 - Support escape sequences for strings (`\\`, `\"`, `\n`, `\r`, `\t`, `\v`, `\b`, `\f`, `\u{0}` through `\u{FFFFFF}`, `\u0000` through `\uFFFF`, `\x00` through `\xFF`): PR [#192](https://github.com/tact-lang/tact/pull/192)
 - `newAddress` function now evaluates to a constant value if possible: PR [#237](https://github.com/tact-lang/tact/pull/237)
+- `pow` function is now in the standard library, allowing its use at runtime. If constant arguments are used, the result is evaluated at compile-time: PR [#267](https://github.com/tact-lang/tact/pull/267)
 
 ### Fixed
 
