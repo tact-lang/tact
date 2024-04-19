@@ -335,4 +335,28 @@ contract MathTester with Deployable {
     get fun precendence6(): Int {
         return (5 | 6) & 8;
     }
+
+    get fun precendence7(): Int {
+        return 5 ^ 6 | 7;
+    }
+
+    get fun precendence8(): Int {
+        return 5 ^ 6 & 7;
+    }
+
+    get fun precendence9(): Int {
+        return (5 ^ 6) | 7;
+    }
+
+    get fun precendence10(): Int {
+        return 5 ^ 6 | 7 & 8;
+    }
+
+    get fun precendence11(): Int {
+        return (5 ^ 6) | (7 & 8);
+    }
+
+    get fun precendence12(): Int {
+        return 5 ^ (6 | 7) & 8;
+    }
 }

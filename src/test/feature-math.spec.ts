@@ -406,5 +406,11 @@ describe("feature-math", () => {
         expect(await contract.getPrecendence4()).toBe(12n);
         expect(await contract.getPrecendence5()).toBe(5n);
         expect(await contract.getPrecendence6()).toBe(0n);
+        expect(await contract.getPrecendence7()).toBe(7n);
+        expect(await contract.getPrecendence8()).toBe(3n);
+        expect(await contract.getPrecendence9()).toBe(7n);
+        expect(await contract.getPrecendence10()).toBe(3n);
+        expect(await contract.getPrecendence11()).toBe(3n);
+        expect(await contract.getPrecendence12()).toBe(5n);
     });
 });
