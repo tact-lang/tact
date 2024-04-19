@@ -41,6 +41,7 @@ describe("feature-map", () => {
 
             // Initial state
             expect((await contract.getIntMap1()).size).toBe(0);
+            expect(await contract.getIntMap1IsEmpty()).toBe(true);
             expect((await contract.getIntMap2()).size).toBe(0);
             expect((await contract.getIntMap3()).size).toBe(0);
             expect((await contract.getIntMap4()).size).toBe(0);
@@ -518,6 +519,28 @@ describe("feature-map", () => {
                 expect(await contract.getAddrMap7_5Value(addr)).toBe(null);
                 expect(await contract.getAddrMap7_6Value(addr)).toBe(null);
             }
+
+            // Test isEmpty
+
+            expect(await contract.getIntMap1IsEmpty()).toBe(true);
+
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetIntMap1", key: 1n, value: 1n },
+            );
+            await system.run();
+
+            expect(await contract.getIntMap1IsEmpty()).toBe(false);
+
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetIntMap1", key: 1n, value: null },
+            );
+            await system.run();
+
+            expect(await contract.getIntMap1IsEmpty()).toBe(true);
         } catch (e) {
             if (e instanceof ComputeError) {
                 if (e.logs) {
