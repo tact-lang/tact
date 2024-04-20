@@ -31,24 +31,22 @@ describe("feature-debug", () => {
             res.indexOf("=== VM LOGS ===") - 2,
         );
 
-        const filePath = path.resolve(__dirname, "features", "debug.tact");
-
         expect(debugLogs)
-            .toStrictEqual(`[DEBUG] File ${filePath}, Line 10, Column 9
+            .toStrictEqual(`[DEBUG] File debug.tact, Line 10, Column 9
 stack(2 values) : 10000000000 () 
-[DEBUG] File ${filePath}, Line 11, Column 9
+[DEBUG] File debug.tact, Line 11, Column 9
 Hello world!
-[DEBUG] File ${filePath}, Line 12, Column 9
+[DEBUG] File debug.tact, Line 12, Column 9
 123
-[DEBUG] File ${filePath}, Line 13, Column 9
+[DEBUG] File debug.tact, Line 13, Column 9
 true
-[DEBUG] File ${filePath}, Line 14, Column 9
+[DEBUG] File debug.tact, Line 14, Column 9
 false
-[DEBUG] File ${filePath}, Line 15, Column 9
+[DEBUG] File debug.tact, Line 15, Column 9
 null
-[DEBUG] File ${filePath}, Line 16, Column 9
+[DEBUG] File debug.tact, Line 16, Column 9
 ${contract.address.toString({ bounceable: true })}
-[DEBUG] File ${filePath}, Line 17, Column 9
+[DEBUG] File debug.tact, Line 17, Column 9
 ${Address.parseRaw(
     "0:83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8",
 )}`);

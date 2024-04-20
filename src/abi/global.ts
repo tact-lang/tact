@@ -7,6 +7,7 @@ import { resolveConstantValue } from "../types/resolveConstantValue";
 import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
 import { sha256_sync } from "@ton/crypto";
+import path from "path";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
@@ -215,8 +216,11 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
                 const arg = args[0];
 
+                const filePath = ref.file
+                    ? path.basename(ref.file!)
+                    : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
-                const debugPrint = `[DEBUG] File ${ref.file}, Line ${lineCol.lineNum}, Column ${lineCol.colNum}`;
+                const debugPrint = `[DEBUG] File ${filePath}, Line ${lineCol.lineNum}, Column ${lineCol.colNum}`;
 
                 if (arg.kind === "map") {
                     const exp = writeExpression(resolved[0], ctx);
@@ -270,8 +274,11 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 if (!enabledDebug(ctx.ctx)) {
                     return `${ctx.used("__tact_nop")}()`;
                 }
+                const filePath = ref.file
+                    ? path.basename(ref.file!)
+                    : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
-                const debugPrint = `[DEBUG] File ${ref.file}, Line ${lineCol.lineNum}, Column ${lineCol.colNum}`;
+                const debugPrint = `[DEBUG] File ${filePath}, Line ${lineCol.lineNum}, Column ${lineCol.colNum}`;
                 return `${ctx.used(`__tact_debug_stack`)}("${debugPrint}")`;
             },
         },
