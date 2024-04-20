@@ -277,10 +277,14 @@ function processStatements(
             exited = true;
         } else if (s.kind === "statement_repeat") {
             // Process expression
-            ctx = resolveExpression(s.condition, sctx, ctx);
+            ctx = resolveExpression(s.iterations, sctx, ctx);
+
+            // Process statements
+            const r = processStatements(s.statements, sctx, ctx);
+            ctx = r.ctx;
 
             // Check type
-            const expressionType = getExpType(ctx, s.condition);
+            const expressionType = getExpType(ctx, s.iterations);
             if (
                 expressionType.kind !== "ref" ||
                 expressionType.name !== "Int" ||
@@ -291,15 +295,14 @@ function processStatements(
                     s.ref,
                 );
             }
-
-            // Process inner statements
-            const r = processStatements(s.statements, sctx, ctx);
-            ctx = r.ctx;
-            sctx = r.sctx;
         } else if (s.kind === "statement_until") {
             // Process expression
             ctx = resolveExpression(s.condition, sctx, ctx);
 
+            // Process statements
+            const r = processStatements(s.statements, sctx, ctx);
+            ctx = r.ctx;
+
             // Check type
             const expressionType = getExpType(ctx, s.condition);
             if (
@@ -312,15 +315,14 @@ function processStatements(
                     s.ref,
                 );
             }
-
-            // Process inner statements
-            const r = processStatements(s.statements, sctx, ctx);
-            ctx = r.ctx;
-            sctx = r.sctx;
         } else if (s.kind === "statement_while") {
             // Process expression
             ctx = resolveExpression(s.condition, sctx, ctx);
 
+            // Process statements
+            const r = processStatements(s.statements, sctx, ctx);
+            ctx = r.ctx;
+
             // Check type
             const expressionType = getExpType(ctx, s.condition);
             if (
@@ -333,11 +335,6 @@ function processStatements(
                     s.ref,
                 );
             }
-
-            // Process inner statements
-            const r = processStatements(s.statements, sctx, ctx);
-            ctx = r.ctx;
-            sctx = r.sctx;
         } else {
             throw Error("Unknown statement");
         }
