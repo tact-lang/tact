@@ -3148,7 +3148,8 @@ return result;",
   },
   {
     "code": {
-      "code": "int result = 1;
+      "code": "throw_unless(5, exp >= 0);
+int result = 1;
 repeat (exp) {
     result *= base;
 }
@@ -7173,7 +7174,8 @@ return result;",
   },
   {
     "code": {
-      "code": "int result = 1;
+      "code": "throw_unless(5, exp >= 0);
+int result = 1;
 repeat (exp) {
     result *= base;
 }
@@ -11198,7 +11200,8 @@ return result;",
   },
   {
     "code": {
-      "code": "int result = 1;
+      "code": "throw_unless(5, exp >= 0);
+int result = 1;
 repeat (exp) {
     result *= base;
 }
