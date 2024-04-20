@@ -1432,6 +1432,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
+                throw_unless(5, exp >= 0);
                 int result = 1;
                 repeat (exp) {
                     result *= base;

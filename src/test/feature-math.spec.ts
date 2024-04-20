@@ -412,6 +412,13 @@ describe("feature-math", () => {
         expect(await contract.getPow2(2n)).toBe(4n);
         expect(await contract.getPow2(3n)).toBe(8n);
 
+        await expect(contract.getPow(2n, -1n)).rejects.toThrow(
+            "Integer out of expected range",
+        );
+        await expect(contract.getPow2(-1n)).rejects.toThrow(
+            "Integer out of expected range",
+        );
+
         // Test operation precendence
 
         expect(await contract.getPrecendence1()).toBe(12n);
