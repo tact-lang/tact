@@ -192,29 +192,31 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun("__tact_debug", () => {
-        ctx.signature(`forall X -> () __tact_debug(X value)`);
+        ctx.signature(
+            `forall X -> () __tact_debug(X value, slice debug_print)`,
+        );
         ctx.flag("impure");
         ctx.context("stdlib");
-        ctx.asm(`asm "s0 DUMP" "DROP"`);
+        ctx.asm(`asm "STRDUMP" "DROP" "s0 DUMP" "DROP"`);
     });
 
     ctx.fun("__tact_debug_str", () => {
-        ctx.signature(`() __tact_debug_str(slice value)`);
+        ctx.signature(`() __tact_debug_str(slice value, slice debug_print)`);
         ctx.flag("impure");
         ctx.context("stdlib");
-        ctx.asm(`asm "STRDUMP" "DROP"`);
+        ctx.asm(`asm "STRDUMP" "DROP" "STRDUMP" "DROP"`);
     });
 
     ctx.fun("__tact_debug_bool", () => {
-        ctx.signature(`() __tact_debug_bool(int value)`);
+        ctx.signature(`() __tact_debug_bool(int value, slice debug_print)`);
         ctx.flag("impure");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 if (value) {
-                    ${ctx.used("__tact_debug_str")}("true");
+                    ${ctx.used("__tact_debug_str")}("true", debug_print);
                 } else {
-                    ${ctx.used("__tact_debug_str")}("false");
+                    ${ctx.used("__tact_debug_str")}("false", debug_print);
                 }
             `);
         });
@@ -314,14 +316,23 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun("__tact_debug_address", () => {
-        ctx.signature(`() __tact_debug_address(slice address)`);
+        ctx.signature(
+            `() __tact_debug_address(slice address, slice debug_print)`,
+        );
         ctx.flag("impure");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                ${ctx.used("__tact_debug_str")}(${ctx.used("__tact_address_to_userfriendly")}(address));
+                ${ctx.used("__tact_debug_str")}(${ctx.used("__tact_address_to_userfriendly")}(address), debug_print);
             `);
         });
+    });
+
+    ctx.fun("__tact_debug_stack", () => {
+        ctx.signature(`() __tact_debug_stack(slice debug_print)`);
+        ctx.flag("impure");
+        ctx.context("stdlib");
+        ctx.asm(`asm "STRDUMP" "DROP" "DUMPSTK"`);
     });
 
     ctx.fun("__tact_context_get", () => {

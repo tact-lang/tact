@@ -273,7 +273,7 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm "s0 DUMP" "DROP"",
+      "code": "asm "STRDUMP" "DROP" "s0 DUMP" "DROP"",
       "kind": "asm",
     },
     "comment": null,
@@ -283,11 +283,11 @@ return __tact_create_address(chain, hash);",
       "impure",
     },
     "name": "__tact_debug",
-    "signature": "forall X -> () __tact_debug(X value)",
+    "signature": "forall X -> () __tact_debug(X value, slice debug_print)",
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP"",
+      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP"",
       "kind": "asm",
     },
     "comment": null,
@@ -297,14 +297,14 @@ return __tact_create_address(chain, hash);",
       "impure",
     },
     "name": "__tact_debug_str",
-    "signature": "() __tact_debug_str(slice value)",
+    "signature": "() __tact_debug_str(slice value, slice debug_print)",
   },
   {
     "code": {
       "code": "if (value) {
-    __tact_debug_str("true");
+    __tact_debug_str("true", debug_print);
 } else {
-    __tact_debug_str("false");
+    __tact_debug_str("false", debug_print);
 }",
       "kind": "generic",
     },
@@ -317,7 +317,7 @@ return __tact_create_address(chain, hash);",
       "impure",
     },
     "name": "__tact_debug_bool",
-    "signature": "() __tact_debug_bool(int value)",
+    "signature": "() __tact_debug_bool(int value, slice debug_print)",
   },
   {
     "code": {
@@ -431,7 +431,7 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "__tact_debug_str(__tact_address_to_userfriendly(address));",
+      "code": "__tact_debug_str(__tact_address_to_userfriendly(address), debug_print);",
       "kind": "generic",
     },
     "comment": null,
@@ -444,7 +444,21 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
       "impure",
     },
     "name": "__tact_debug_address",
-    "signature": "() __tact_debug_address(slice address)",
+    "signature": "() __tact_debug_address(slice address, slice debug_print)",
+  },
+  {
+    "code": {
+      "code": "asm "STRDUMP" "DROP" "DUMPSTK"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "impure",
+    },
+    "name": "__tact_debug_stack",
+    "signature": "() __tact_debug_stack(slice debug_print)",
   },
   {
     "code": {
@@ -4270,7 +4284,7 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm "s0 DUMP" "DROP"",
+      "code": "asm "STRDUMP" "DROP" "s0 DUMP" "DROP"",
       "kind": "asm",
     },
     "comment": null,
@@ -4280,11 +4294,11 @@ return __tact_create_address(chain, hash);",
       "impure",
     },
     "name": "__tact_debug",
-    "signature": "forall X -> () __tact_debug(X value)",
+    "signature": "forall X -> () __tact_debug(X value, slice debug_print)",
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP"",
+      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP"",
       "kind": "asm",
     },
     "comment": null,
@@ -4294,14 +4308,14 @@ return __tact_create_address(chain, hash);",
       "impure",
     },
     "name": "__tact_debug_str",
-    "signature": "() __tact_debug_str(slice value)",
+    "signature": "() __tact_debug_str(slice value, slice debug_print)",
   },
   {
     "code": {
       "code": "if (value) {
-    __tact_debug_str("true");
+    __tact_debug_str("true", debug_print);
 } else {
-    __tact_debug_str("false");
+    __tact_debug_str("false", debug_print);
 }",
       "kind": "generic",
     },
@@ -4314,7 +4328,7 @@ return __tact_create_address(chain, hash);",
       "impure",
     },
     "name": "__tact_debug_bool",
-    "signature": "() __tact_debug_bool(int value)",
+    "signature": "() __tact_debug_bool(int value, slice debug_print)",
   },
   {
     "code": {
@@ -4428,7 +4442,7 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "__tact_debug_str(__tact_address_to_userfriendly(address));",
+      "code": "__tact_debug_str(__tact_address_to_userfriendly(address), debug_print);",
       "kind": "generic",
     },
     "comment": null,
@@ -4441,7 +4455,21 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
       "impure",
     },
     "name": "__tact_debug_address",
-    "signature": "() __tact_debug_address(slice address)",
+    "signature": "() __tact_debug_address(slice address, slice debug_print)",
+  },
+  {
+    "code": {
+      "code": "asm "STRDUMP" "DROP" "DUMPSTK"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "impure",
+    },
+    "name": "__tact_debug_stack",
+    "signature": "() __tact_debug_stack(slice debug_print)",
   },
   {
     "code": {
@@ -8267,7 +8295,7 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm "s0 DUMP" "DROP"",
+      "code": "asm "STRDUMP" "DROP" "s0 DUMP" "DROP"",
       "kind": "asm",
     },
     "comment": null,
@@ -8277,11 +8305,11 @@ return __tact_create_address(chain, hash);",
       "impure",
     },
     "name": "__tact_debug",
-    "signature": "forall X -> () __tact_debug(X value)",
+    "signature": "forall X -> () __tact_debug(X value, slice debug_print)",
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP"",
+      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP"",
       "kind": "asm",
     },
     "comment": null,
@@ -8291,14 +8319,14 @@ return __tact_create_address(chain, hash);",
       "impure",
     },
     "name": "__tact_debug_str",
-    "signature": "() __tact_debug_str(slice value)",
+    "signature": "() __tact_debug_str(slice value, slice debug_print)",
   },
   {
     "code": {
       "code": "if (value) {
-    __tact_debug_str("true");
+    __tact_debug_str("true", debug_print);
 } else {
-    __tact_debug_str("false");
+    __tact_debug_str("false", debug_print);
 }",
       "kind": "generic",
     },
@@ -8311,7 +8339,7 @@ return __tact_create_address(chain, hash);",
       "impure",
     },
     "name": "__tact_debug_bool",
-    "signature": "() __tact_debug_bool(int value)",
+    "signature": "() __tact_debug_bool(int value, slice debug_print)",
   },
   {
     "code": {
@@ -8425,7 +8453,7 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "__tact_debug_str(__tact_address_to_userfriendly(address));",
+      "code": "__tact_debug_str(__tact_address_to_userfriendly(address), debug_print);",
       "kind": "generic",
     },
     "comment": null,
@@ -8438,7 +8466,21 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
       "impure",
     },
     "name": "__tact_debug_address",
-    "signature": "() __tact_debug_address(slice address)",
+    "signature": "() __tact_debug_address(slice address, slice debug_print)",
+  },
+  {
+    "code": {
+      "code": "asm "STRDUMP" "DROP" "DUMPSTK"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "impure",
+    },
+    "name": "__tact_debug_stack",
+    "signature": "() __tact_debug_stack(slice debug_print)",
   },
   {
     "code": {
