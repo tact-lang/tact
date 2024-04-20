@@ -1953,13 +1953,13 @@ exports[`grammar should parse case-15 1`] = `
           ],
         },
         {
-          "condition": {
+          "id": 17,
+          "iterations": {
             "id": 11,
             "kind": "number",
             "ref": 10,
             "value": 10n,
           },
-          "id": 17,
           "kind": "statement_repeat",
           "ref": repeat(10) {
         i = i * 10;
