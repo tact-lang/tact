@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support escape sequences for strings (`\\`, `\"`, `\n`, `\r`, `\t`, `\v`, `\b`, `\f`, `\u{0}` through `\u{FFFFFF}`, `\u0000` through `\uFFFF`, `\x00` through `\xFF`): PR [#192](https://github.com/tact-lang/tact/pull/192)
 - `newAddress` function now evaluates to a constant value if possible: PR [#237](https://github.com/tact-lang/tact/pull/237)
 - Enables struct fields punning, i.e. `{foo, bar}` is syntactic sugar for `{ foo: foo, bar: bar }`: PR [#272](https://github.com/tact-lang/tact/pull/272)
+- The `dump()` and `dumpStack()` functions now print the file path, line number, and column number in addition to the data: PR [#271](https://github.com/tact-lang/tact/pull/271).
 - `pow` function is now in the standard library, allowing its use at runtime. If constant arguments are used, the result is evaluated at compile-time: PR [#267](https://github.com/tact-lang/tact/pull/267)
 
 ### Fixed
@@ -38,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow chaining method calls with `!!`, for instance, `map.asCell()!!.hash()` is grammatically correct now: PR [#257](ttps://github.com/tact-lang/tact/pull/257)
 - Operation precendence for bitwise operators, equality and comparisons now matches common languages, like JavaScript: PR [#265](https://github.com/tact-lang/tact/pull/265)
 - Incorrect variable scoping in `repeat`, `while` and `until` loops: PR [#269](https://github.com/tact-lang/tact/pull/269)
+- FunC compilation errors when trying to `dump()` such types as `Cell`, `Slice`, `Builder` and `StringBuilder`: PR [#271](https://github.com/tact-lang/tact/pull/271)
 
 ## [1.2.0] - 2024-02-29
 
