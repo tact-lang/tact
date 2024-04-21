@@ -31,7 +31,7 @@ describe("feature-debug", () => {
         );
 
         expect(debugLogs)
-            .toStrictEqual(`[DEBUG] File src/test/features/src/test/features/debug.tact:10:9
+            .toStrictEqual(`[DEBUG] File src/test/features/debug.tact:10:9
 stack(2 values) : 10000000000 () 
 [DEBUG] File src/test/features/debug.tact:11:9
 Hello world!
