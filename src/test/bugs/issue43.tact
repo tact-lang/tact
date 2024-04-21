@@ -260,7 +260,6 @@ contract JettonDefaultWallet {
 
         let msgValue: Int = self.msgValue(ctx.value);  // Get value for gas
         let fwdFee: Int = ctx.readForwardFee();
-        dump(fwdFee);
         msgValue = msgValue - msg.forward_ton_amount - fwdFee;
         // msgValue = msgValue - msg.forward_ton_amount - min(fwdFee, ton("0.01"));
         
