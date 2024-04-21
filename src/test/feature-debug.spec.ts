@@ -2,7 +2,6 @@ import { Address, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
 import { Debug } from "./features/output/debug_Debug";
-import { cwd } from "process";
 import path from "path";
 
 describe("feature-debug", () => {
