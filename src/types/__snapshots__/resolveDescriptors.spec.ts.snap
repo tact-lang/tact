@@ -259,12 +259,12 @@ Line 8, col 21:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-26 1`] = `
-"<unknown>:2:8: Type Int not found
-Line 2, col 8:
-  1 | struct A {
-> 2 |     x: Int;
-             ^~~
-  3 |     y: Int;
+"<unknown>:13:14: Expected constant value, got A
+Line 13, col 14:
+  12 | 
+> 13 | const D: A = A { x: a, b };
+                    ^~~~~~~~~~~~~
+  14 | 
 "
 `;
 

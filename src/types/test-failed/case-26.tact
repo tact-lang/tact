@@ -1,3 +1,7 @@
+primitive Int;
+trait BaseTrait {
+}
+
 struct A {
     x: Int;
     y: Int;
