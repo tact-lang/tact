@@ -469,7 +469,7 @@ export type ASTStatementUntil = {
 export type ASTStatementRepeat = {
     kind: "statement_repeat";
     id: number;
-    condition: ASTExpression;
+    iterations: ASTExpression;
     statements: ASTStatement[];
     ref: ASTRef;
 };
@@ -723,7 +723,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         }
     }
     if (node.kind === "statement_repeat") {
-        traverse(node.condition, callback);
+        traverse(node.iterations, callback);
         for (const e of node.statements) {
             traverse(e, callback);
         }
