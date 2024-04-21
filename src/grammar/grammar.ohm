@@ -194,7 +194,7 @@ Tact {
     ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ","? ")"
     ExpressionNew = id "{" ListOf<NewParameter, ","> ","? "}"
     NewParameter = id ":" Expression --full
-                 | Expression        --punned 
+                 | id                --punned 
     ExpressionStaticCall = id "(" ListOf<Expression, ","> ","? ")"
     ExpressionInitOf = initOf id "(" ListOf<Expression, ","> ","? ")"
 
