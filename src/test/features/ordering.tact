@@ -26,12 +26,6 @@ contract A with Deployable {
 
 contract B with Deployable {
 
-    owner: Address;
-
-    init(owner: Address) {
-        self.owner = owner;
-    }
-
     get fun create(v: Int): S {
         let v1: Int = v.inc();
         let v2: Int = v.inc();

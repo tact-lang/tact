@@ -32,7 +32,7 @@ describe("feature-ordering", () => {
         // Init
         const system = await ContractSystem.create();
         const treasure = system.treasure("treasure");
-        const contract = system.open(await B.fromInit(treasure.address));
+        const contract = system.open(await B.fromInit());
         await contract.send(
             treasure,
             { value: toNano("10") },
