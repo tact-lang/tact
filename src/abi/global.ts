@@ -236,10 +236,10 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     return `${ctx.used("__tact_nop")}()`;
                 }
                 const filePath = ref.file
-                    ? path.basename(ref.file!)
+                    ? path.relative(cwd(), ref.file!)
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
-                const debugPrint = `[DEBUG] File ${filePath}, Line ${lineCol.lineNum}, Column ${lineCol.colNum}`;
+                const debugPrint = `[DEBUG] File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}`;
                 return `${ctx.used(`__tact_debug_stack`)}("${debugPrint}")`;
             },
         },
