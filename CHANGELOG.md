@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Empty inherited trait lists after `with` keyword are now disallowed: PR [#246](https://github.com/tact-lang/tact/pull/246)
 - Allow chaining method calls with `!!`, for instance, `map.asCell()!!.hash()` is grammatically correct now: PR [#257](ttps://github.com/tact-lang/tact/pull/257)
 - Operation precendence for bitwise operators, equality and comparisons now matches common languages, like JavaScript: PR [#265](https://github.com/tact-lang/tact/pull/265)
+- Incorrect variable scoping in `repeat`, `while` and `until` loops: PR [#269](https://github.com/tact-lang/tact/pull/269)
 
 ## [1.2.0] - 2024-02-29
 

@@ -310,6 +310,16 @@ Line 7, col 9:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-31 1`] = `
+"<unknown>:9:12: Unable to resolve id c
+Line 9, col 12:
+   8 |     }
+>  9 |     return c;
+                  ^
+  10 | }
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
@@ -885,6 +895,84 @@ exports[`resolveStatements should resolve statements for case-12 1`] = `
   ],
   [
     "valueOf(1, 10)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-13 1`] = `
+[
+  [
+    "123",
+    "Int",
+  ],
+  [
+    "456",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a + b",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a + b",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-14 1`] = `
+[
+  [
+    "123",
+    "Int",
+  ],
+  [
+    "456",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a + b",
+    "Int",
+  ],
+  [
+    "b",
     "Int",
   ],
 ]
