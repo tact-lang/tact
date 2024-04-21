@@ -39,46 +39,6 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
         },
     ],
     [
-        "pow",
-        {
-            name: "pow",
-            resolve: (ctx, args, ref) => {
-                if (args.length !== 2) {
-                    throwError("pow() expects two integer arguments", ref);
-                }
-                if (args[0].kind !== "ref") {
-                    throwError("pow() expects two integer arguments", ref);
-                }
-                if (args[0].name !== "Int") {
-                    throwError("pow() expects two integer arguments", ref);
-                }
-                if (args[1].kind !== "ref") {
-                    throwError("pow() expects two integer arguments", ref);
-                }
-                if (args[1].name !== "Int") {
-                    throwError("pow() expects two integer arguments", ref);
-                }
-                return { kind: "ref", name: "Int", optional: false };
-            },
-            generate: (ctx, args, resolved, ref) => {
-                if (resolved.length !== 2) {
-                    throwError("pow() expects two integer arguments", ref);
-                }
-                const a = resolveConstantValue(
-                    { kind: "ref", name: "Int", optional: false },
-                    resolved[0],
-                    ctx.ctx,
-                ) as bigint;
-                const b = resolveConstantValue(
-                    { kind: "ref", name: "Int", optional: false },
-                    resolved[1],
-                    ctx.ctx,
-                ) as bigint;
-                return (a ** b).toString(10);
-            },
-        },
-    ],
-    [
         "require",
         {
             name: "require",
