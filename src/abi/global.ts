@@ -220,7 +220,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     ? path.basename(ref.file!)
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
-                const debugPrint = `[DEBUG] File ${filePath}, Line ${lineCol.lineNum}, Column ${lineCol.colNum}`;
+                const debugPrint = `[DEBUG] File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}`;
 
                 if (arg.kind === "map") {
                     const exp = writeExpression(resolved[0], ctx);
