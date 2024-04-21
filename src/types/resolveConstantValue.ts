@@ -49,6 +49,11 @@ function reduceIntImpl(ast: ASTExpression): bigint {
                 return reduceInt(ast.args[0]) ** reduceInt(ast.args[1]);
             }
         }
+        if (ast.name === "pow2") {
+            if (ast.args.length === 1) {
+                return 2n ** reduceInt(ast.args[0]);
+            }
+        }
         if (ast.name === "sha256") {
             if (ast.args.length === 1 && ast.args[0].kind === "string") {
                 const str = reduceString(ast.args[0]);
