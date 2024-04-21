@@ -176,7 +176,7 @@ files['std/crypto.tact'] =
 files['std/debug.tact'] =
     'QG5hbWUodGhyb3cpCm5hdGl2ZSBuYXRpdmVUaHJvdyhjb2RlOiBJbnQpOwoKQG5hbWUodGhyb3dfd2hlbikKbmF0aXZlIG5hdGl2ZVRocm93V2hlbihjb2RlOiBJbnQs' +
     'IGNvbmRpdGlvbjogQm9vbCk7CgpAbmFtZSh0aHJvdykKbmF0aXZlIHRocm93KGNvZGU6IEludCk7CgpAbmFtZSh0aHJvd191bmxlc3MpCm5hdGl2ZSBuYXRpdmVUaHJv' +
-    'd1VubGVzcyhjb2RlOiBJbnQsIGNvbmRpdGlvbjogQm9vbCk7CgpAbmFtZShkdW1wX3N0YWNrKQpuYXRpdmUgZHVtcFN0YWNrKCk7';
+    'd1VubGVzcyhjb2RlOiBJbnQsIGNvbmRpdGlvbjogQm9vbCk7';
 files['std/math.tact'] =
     'Ly8gUHJlcGFyZSByYW5kb20KCkBuYW1lKHJhbmRvbWl6ZSkKbmF0aXZlIG5hdGl2ZVJhbmRvbWl6ZSh4OiBJbnQpOwoKQG5hbWUocmFuZG9taXplX2x0KQpuYXRpdmUg' +
     'bmF0aXZlUmFuZG9taXplTHQoKTsKCkBuYW1lKF9fdGFjdF9wcmVwYXJlX3JhbmRvbSkKbmF0aXZlIG5hdGl2ZVByZXBhcmVSYW5kb20oKTsKCi8vIFJhbmRvbQoKQG5h' +
