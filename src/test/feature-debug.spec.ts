@@ -2,6 +2,8 @@ import { Address, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
 import { Debug } from "./features/output/debug_Debug";
+import { cwd } from "process";
+import path from "path";
 
 describe("feature-debug", () => {
     beforeEach(() => {
@@ -30,22 +32,23 @@ describe("feature-debug", () => {
             res.indexOf("=== VM LOGS ===") - 2,
         );
 
-        expect(debugLogs)
-            .toStrictEqual(`[DEBUG] File src/test/features/debug.tact:10:9
+        const filePath = path.normalize("src/test/features/debug.tact");
+
+        expect(debugLogs).toStrictEqual(`[DEBUG] File ${filePath}:10:9
 stack(2 values) : 10000000000 () 
-[DEBUG] File src/test/features/debug.tact:11:9
+[DEBUG] File ${filePath}:11:9
 Hello world!
-[DEBUG] File src/test/features/debug.tact:12:9
+[DEBUG] File ${filePath}:12:9
 123
-[DEBUG] File src/test/features/debug.tact:13:9
+[DEBUG] File ${filePath}:13:9
 true
-[DEBUG] File src/test/features/debug.tact:14:9
+[DEBUG] File ${filePath}:14:9
 false
-[DEBUG] File src/test/features/debug.tact:15:9
+[DEBUG] File ${filePath}:15:9
 null
-[DEBUG] File src/test/features/debug.tact:16:9
+[DEBUG] File ${filePath}:16:9
 ${contract.address.toString({ bounceable: true })}
-[DEBUG] File src/test/features/debug.tact:17:9
+[DEBUG] File ${filePath}:17:9
 ${Address.parseRaw(
     "0:83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8",
 )}`);
