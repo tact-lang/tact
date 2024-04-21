@@ -258,6 +258,16 @@ Line 8, col 21:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for case-26 1`] = `
+"<unknown>:2:8: Type Int not found
+Line 2, col 8:
+  1 | struct A {
+> 2 |     x: Int;
+             ^~~
+  3 |     y: Int;
+"
+`;
+
 exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
 {
   "BaseTrait": {
