@@ -30,22 +30,21 @@ describe("feature-debug", () => {
             res.indexOf("=== VM LOGS ===") - 2,
         );
 
-        expect(debugLogs)
-            .toStrictEqual(`[DEBUG] File debug.tact, Line 10, Column 9
+        expect(debugLogs).toStrictEqual(`[DEBUG] File debug.tact:10:9
 stack(2 values) : 10000000000 () 
-[DEBUG] File debug.tact, Line 11, Column 9
+[DEBUG] File debug.tact:11:9
 Hello world!
-[DEBUG] File debug.tact, Line 12, Column 9
+[DEBUG] File debug.tact:12:9
 123
-[DEBUG] File debug.tact, Line 13, Column 9
+[DEBUG] File debug.tact:13:9
 true
-[DEBUG] File debug.tact, Line 14, Column 9
+[DEBUG] File debug.tact:14:9
 false
-[DEBUG] File debug.tact, Line 15, Column 9
+[DEBUG] File debug.tact:15:9
 null
-[DEBUG] File debug.tact, Line 16, Column 9
+[DEBUG] File debug.tact:16:9
 ${contract.address.toString({ bounceable: true })}
-[DEBUG] File debug.tact, Line 17, Column 9
+[DEBUG] File debug.tact:17:9
 ${Address.parseRaw(
     "0:83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8",
 )}`);
