@@ -8,7 +8,6 @@ describe('feature-ternary', () => {
         __DANGER_resetNodeId();
     });
     it('should implement try-catch statements correctly', async () => {
-    
         // Init
         const system = await ContractSystem.create();
         const treasure = system.treasure('treasure');
@@ -20,5 +19,29 @@ describe('feature-ternary', () => {
         expect(await contract.getTestTryCatch1()).toEqual(7n);
         expect(await contract.getTestTryCatch2()).toEqual(101n);
         expect(await contract.getTestTryCatch3()).toEqual(4n);
+
+        // Check state rollbacks
+        const tracker = system.track(contract);
+
+        expect(await contract.getGetCounter()).toEqual(0n);
+        await contract.send(treasure, { value: toNano('10') }, 'increment');
+        await system.run();
+        expect(await contract.getGetCounter()).toEqual(1n);
+        await contract.send(
+            treasure,
+            { value: toNano('10') },
+            'incrementTryCatch'
+        );
+        await system.run();
+        expect(await contract.getGetCounter()).toEqual(1n);
+        await contract.send(
+            treasure,
+            { value: toNano('10') },
+            'tryCatchRegisters'
+        );
+        await system.run();
+        expect(await contract.getGetCounter()).toEqual(2n);
+
+        expect(tracker.collect()).toMatchSnapshot();
     });
 });
