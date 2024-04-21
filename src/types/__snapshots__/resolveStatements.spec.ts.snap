@@ -340,6 +340,16 @@ Line 5, col 16:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-34 1`] = `
+"<unknown>:6:5: Variable already exists: e
+Line 6, col 5:
+  5 |     let e: String = "qwe";
+> 6 |     try {
+          ^~~~~
+  7 |         return e;
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
