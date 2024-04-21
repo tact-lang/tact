@@ -7,7 +7,7 @@ exports[`feature-instrinsics should return correct instinsic results 1`] = `
     "events": [
       {
         "$type": "storage-charged",
-        "amount": "0.00000001",
+        "amount": "0.000000011",
       },
       {
         "$type": "received",

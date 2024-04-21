@@ -46,3 +46,9 @@ native log2(num: Int): Int;
 
 @name(__tact_log)
 native log(num: Int, base: Int): Int;
+
+@name(__tact_pow)
+native pow(base: Int, exp: Int): Int;
+
+@name(__tact_pow2)
+native pow2(exp: Int): Int;

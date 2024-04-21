@@ -14,6 +14,7 @@ describe("feature-constants", () => {
         const contract = system.open(await ConstantTester.fromInit());
         await contract.send(treasure, { value: toNano("10") }, null);
         await system.run();
+        expect(contract).toMatchSnapshot();
 
         // Check methods
         expect(await contract.getSomething1()).toEqual(11n);
@@ -33,6 +34,8 @@ describe("feature-constants", () => {
         expect(await contract.getSomething11()).toEqual(88n);
         expect(await contract.getSomething12()).toEqual(-90n);
         expect(await contract.getSomething13()).toEqual(88n);
+        expect(await contract.getSomething14()).toEqual(243n);
+        expect(await contract.getSomething15()).toEqual(32n);
         expect(await contract.getGlobalConst()).toEqual(100n);
     });
 });

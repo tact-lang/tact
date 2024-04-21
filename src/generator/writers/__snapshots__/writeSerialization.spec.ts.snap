@@ -3162,6 +3162,35 @@ return result;",
   },
   {
     "code": {
+      "code": "throw_unless(5, exp >= 0);
+int result = 1;
+repeat (exp) {
+    result *= base;
+}
+return result;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_pow",
+    "signature": "int __tact_pow(int base, int exp)",
+  },
+  {
+    "code": {
+      "code": "asm "POW2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_pow2",
+    "signature": "int __tact_pow2(int exp)",
+  },
+  {
+    "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
 build_0 = build_0.store_int(v'a, 257);
 build_0 = build_0.store_int(v'b, 257);
@@ -7173,6 +7202,35 @@ return result;",
   },
   {
     "code": {
+      "code": "throw_unless(5, exp >= 0);
+int result = 1;
+repeat (exp) {
+    result *= base;
+}
+return result;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_pow",
+    "signature": "int __tact_pow(int base, int exp)",
+  },
+  {
+    "code": {
+      "code": "asm "POW2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_pow2",
+    "signature": "int __tact_pow2(int exp)",
+  },
+  {
+    "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
 build_0 = build_0.store_int(v'a, 257);
 build_0 = build_0.store_int(v'b, 257);
@@ -11181,6 +11239,35 @@ return result;",
     "flags": Set {},
     "name": "__tact_log",
     "signature": "int __tact_log(int num, int base)",
+  },
+  {
+    "code": {
+      "code": "throw_unless(5, exp >= 0);
+int result = 1;
+repeat (exp) {
+    result *= base;
+}
+return result;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_pow",
+    "signature": "int __tact_pow(int base, int exp)",
+  },
+  {
+    "code": {
+      "code": "asm "POW2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_pow2",
+    "signature": "int __tact_pow2(int exp)",
   },
   {
     "code": {
