@@ -8,6 +8,7 @@ import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
 import { sha256_sync } from "@ton/crypto";
 import path from "path";
+import { cwd } from "process";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
@@ -177,7 +178,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 const arg = args[0];
 
                 const filePath = ref.file
-                    ? path.basename(ref.file!)
+                    ? path.relative(cwd(), ref.file!)
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
                 const debugPrint = `[DEBUG] File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}`;
