@@ -800,7 +800,7 @@ semantics.addOperation<ASTNode>("resolve_statement", {
     StatementRepeat(_arg0, _arg1, arg2, _arg3, _arg4, arg5, _arg6) {
         return createNode({
             kind: "statement_repeat",
-            condition: arg2.resolve_expression(),
+            iterations: arg2.resolve_expression(),
             statements: arg5.children.map((v) => v.resolve_statement()),
             ref: createRef(this),
         });

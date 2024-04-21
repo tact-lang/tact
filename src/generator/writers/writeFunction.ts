@@ -161,7 +161,7 @@ export function writeStatement(
         ctx.append(`} until (${writeExpression(f.condition, ctx)});`);
         return;
     } else if (f.kind === "statement_repeat") {
-        ctx.append(`repeat (${writeExpression(f.condition, ctx)}) {`);
+        ctx.append(`repeat (${writeExpression(f.iterations, ctx)}) {`);
         ctx.inIndent(() => {
             for (const s of f.statements) {
                 writeStatement(s, self, returns, ctx);
