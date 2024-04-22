@@ -321,12 +321,12 @@ Line 9, col 12:
 `;
 
 exports[`resolveStatements should fail statements for case-32 1`] = `
-"<unknown>:7:12: Unable to resolve id e
-Line 7, col 12:
-  6 |     }
-> 7 |     return e;
-                 ^
-  8 | }
+"<unknown>:9:12: Unable to resolve id e
+Line 9, col 12:
+   8 |     }
+>  9 |     return e;
+                  ^
+  10 | }
 "
 `;
 

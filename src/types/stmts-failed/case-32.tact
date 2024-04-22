@@ -1,3 +1,5 @@
+primitive Int;
+
 fun test() {
     try {
 
