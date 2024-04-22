@@ -10,7 +10,7 @@ contract A {
         send(SendParameters{
             value: 0, 
             to: address, 
-            mode: SendRemainingValue + SendIgnoreErrors, 
+            mode: SendRemainingValue | SendIgnoreErrors,
             bounce: true,
             code: init.code,
             data: init.data,
@@ -35,7 +35,7 @@ contract B {
         send(SendParameters{
             value: 0, 
             to: address, 
-            mode: SendRemainingValue + SendIgnoreErrors, 
+            mode: SendRemainingValue | SendIgnoreErrors,
             bounce: true,
             code: init.code,
             data: init.data,
@@ -60,7 +60,7 @@ contract C {
         send(SendParameters{
             value: 0, 
             to: address, 
-            mode: SendRemainingValue + SendIgnoreErrors, 
+            mode: SendRemainingValue | SendIgnoreErrors,
             bounce: true,
             code: init.code,
             data: init.data,
