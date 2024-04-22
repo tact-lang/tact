@@ -49,16 +49,20 @@ jobs:
         run: |
           yarn lint:schema
 
-      - name: Compare Tact version from CLI flag `--version` against package.json
-        if: runner.os != 'Windows'
-        run: |
-          if [ "$(./bin/tact --version)" != "$(jq -r '.version' < package.json)" ];
-          then false
-          fi
-
       - name: Link Tact compiler
         run: |
           yarn link
+
+      - name: Compare Tact version from CLI flag `--version` against package.json
+        if: runner.os != 'Windows'
+        run: |
+          if [ "$(yarn tact --version)" != "$(jq -r '.version' < package.json)" ];
+          then false
+          fi
+
+      - name: Tact CLI non-zero exit code
+        run: |
+          ! yarn tact --config test/tact-cli/tact.config.json
 
       - name: Test compatibility with tact-template
         run: |

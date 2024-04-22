@@ -1,0 +1,11 @@
+{
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/grammar/configSchema.json",
+  "projects": [
+    {
+      "name": "fail",
+      "path": "./fail.tact",
+      "output": "./output"
+    }
+  ]
+}
+
