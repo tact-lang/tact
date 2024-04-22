@@ -169,16 +169,16 @@ export function writeStatement(
         });
         ctx.append(`}`);
         return;
-    } else if (f.kind === 'statement_try') {
+    } else if (f.kind === "statement_try") {
         ctx.append(`try {`);
         ctx.inIndent(() => {
             for (const s of f.statements) {
                 writeStatement(s, self, returns, ctx);
             }
         });
-        ctx.append('} catch (_) { }');
+        ctx.append("} catch (_) { }");
         return;
-    } else if (f.kind === 'statement_try_catch') {
+    } else if (f.kind === "statement_try_catch") {
         ctx.append(`try {`);
         ctx.inIndent(() => {
             for (const s of f.statements) {

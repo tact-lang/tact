@@ -825,19 +825,31 @@ semantics.addOperation<ASTNode>("resolve_statement", {
     },
     StatementTry_simple(_arg0, _arg1, arg2, _arg3) {
         return createNode({
-            kind: 'statement_try',
+            kind: "statement_try",
             statements: arg2.children.map((v) => v.resolve_statement()),
-            ref: createRef(this)
-        })
+            ref: createRef(this),
+        });
     },
-    StatementTry_withCatch(_arg0, _arg1, arg2, _arg3, _arg4, _arg5, arg6, _arg7, _arg8, arg9, _arg10) {
+    StatementTry_withCatch(
+        _arg0,
+        _arg1,
+        arg2,
+        _arg3,
+        _arg4,
+        _arg5,
+        arg6,
+        _arg7,
+        _arg8,
+        arg9,
+        _arg10,
+    ) {
         return createNode({
-            kind: 'statement_try_catch',
+            kind: "statement_try_catch",
             statements: arg2.children.map((v) => v.resolve_statement()),
             catchName: arg6.sourceString,
             catchStatements: arg9.children.map((v) => v.resolve_statement()),
-            ref: createRef(this)
-        })
+            ref: createRef(this),
+        });
     },
 });
 

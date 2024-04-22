@@ -1,18 +1,18 @@
-import { toNano } from '@ton/core';
-import { ContractSystem } from '@tact-lang/emulator';
-import { __DANGER_resetNodeId } from '../grammar/ast';
-import { TryCatchTester } from './features/output/try-catch_TryCatchTester';
+import { toNano } from "@ton/core";
+import { ContractSystem } from "@tact-lang/emulator";
+import { __DANGER_resetNodeId } from "../grammar/ast";
+import { TryCatchTester } from "./features/output/try-catch_TryCatchTester";
 
-describe('feature-ternary', () => {
+describe("feature-ternary", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    it('should implement try-catch statements correctly', async () => {
+    it("should implement try-catch statements correctly", async () => {
         // Init
         const system = await ContractSystem.create();
-        const treasure = system.treasure('treasure');
+        const treasure = system.treasure("treasure");
         const contract = system.open(await TryCatchTester.fromInit());
-        await contract.send(treasure, { value: toNano('10') }, null);
+        await contract.send(treasure, { value: toNano("10") }, null);
         await system.run();
 
         // Check methods
@@ -24,20 +24,20 @@ describe('feature-ternary', () => {
         const tracker = system.track(contract);
 
         expect(await contract.getGetCounter()).toEqual(0n);
-        await contract.send(treasure, { value: toNano('10') }, 'increment');
+        await contract.send(treasure, { value: toNano("10") }, "increment");
         await system.run();
         expect(await contract.getGetCounter()).toEqual(1n);
         await contract.send(
             treasure,
-            { value: toNano('10') },
-            'incrementTryCatch'
+            { value: toNano("10") },
+            "incrementTryCatch",
         );
         await system.run();
         expect(await contract.getGetCounter()).toEqual(1n);
         await contract.send(
             treasure,
-            { value: toNano('10') },
-            'tryCatchRegisters'
+            { value: toNano("10") },
+            "tryCatchRegisters",
         );
         await system.run();
         expect(await contract.getGetCounter()).toEqual(2n);
