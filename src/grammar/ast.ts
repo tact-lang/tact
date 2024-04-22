@@ -474,6 +474,22 @@ export type ASTStatementRepeat = {
     ref: ASTRef;
 };
 
+export type ASTStatementTry = {
+    kind: "statement_try";
+    id: number;
+    statements: ASTStatement[];
+    ref: ASTRef;
+};
+
+export type ASTStatementTryCatch = {
+    kind: "statement_try_catch";
+    id: number;
+    statements: ASTStatement[];
+    catchName: string;
+    catchStatements: ASTStatement[];
+    ref: ASTRef;
+};
+
 //
 // Unions
 //
@@ -487,7 +503,9 @@ export type ASTStatement =
     | ASTCondition
     | ASTStatementWhile
     | ASTStatementUntil
-    | ASTStatementRepeat;
+    | ASTStatementRepeat
+    | ASTStatementTry
+    | ASTStatementTryCatch;
 export type ASTNode =
     | ASTExpression
     | ASTStruct
@@ -514,6 +532,8 @@ export type ASTNode =
     | ASTStatementWhile
     | ASTStatementUntil
     | ASTStatementRepeat
+    | ASTStatementTry
+    | ASTStatementTryCatch
     | ASTReceive
     | ASTLvalueRef
     | ASTString
@@ -725,6 +745,19 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     if (node.kind === "statement_repeat") {
         traverse(node.iterations, callback);
         for (const e of node.statements) {
+            traverse(e, callback);
+        }
+    }
+    if (node.kind === "statement_try") {
+        for (const e of node.statements) {
+            traverse(e, callback);
+        }
+    }
+    if (node.kind === "statement_try_catch") {
+        for (const e of node.statements) {
+            traverse(e, callback);
+        }
+        for (const e of node.catchStatements) {
             traverse(e, callback);
         }
     }

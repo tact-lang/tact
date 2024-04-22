@@ -335,6 +335,43 @@ function processStatements(
                     s.ref,
                 );
             }
+        } else if (s.kind === "statement_try") {
+            // Process inner statements
+            const r = processStatements(s.statements, sctx, ctx);
+            ctx = r.ctx;
+            sctx = r.sctx;
+        } else if (s.kind === "statement_try_catch") {
+            let initialCtx = sctx;
+
+            // Process inner statements
+            const r = processStatements(s.statements, sctx, ctx);
+            ctx = r.ctx;
+
+            // Process catchName variable for exit code
+            if (initialCtx.vars.has(s.catchName)) {
+                throwError(`Variable already exists: ${s.catchName}`, s.ref);
+            }
+            let catchCtx = addVariable(
+                s.catchName,
+                { kind: "ref", name: "Int", optional: false },
+                initialCtx,
+            );
+
+            // Process catch statements
+            const rCatch = processStatements(s.catchStatements, catchCtx, ctx);
+            ctx = rCatch.ctx;
+            catchCtx = rCatch.sctx;
+
+            // Merge statement contexts
+            const removed: string[] = [];
+            for (const f of initialCtx.requiredFields) {
+                if (!catchCtx.requiredFields.find((v) => v === f)) {
+                    removed.push(f);
+                }
+            }
+            for (const r of removed) {
+                initialCtx = removeRequiredVariable(r, initialCtx);
+            }
         } else {
             throw Error("Unknown statement");
         }

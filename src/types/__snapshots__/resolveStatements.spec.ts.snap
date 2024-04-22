@@ -320,6 +320,46 @@ Line 9, col 12:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-32 1`] = `
+"<unknown>:9:12: Unable to resolve id e
+Line 9, col 12:
+   8 |     }
+>  9 |     return e;
+                  ^
+  10 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for case-33 1`] = `
+"<unknown>:5:16: Unable to resolve id e
+Line 5, col 16:
+  4 |     try {
+> 5 |         return e;
+                     ^
+  6 |     } catch (e) {
+"
+`;
+
+exports[`resolveStatements should fail statements for case-34 1`] = `
+"<unknown>:6:5: Variable already exists: e
+Line 6, col 5:
+  5 |     let e: String = "qwe";
+> 6 |     try {
+          ^~~~~
+  7 |         return e;
+"
+`;
+
+exports[`resolveStatements should fail statements for case-35 1`] = `
+"<unknown>:8:9: Type mismatch: Int is not assignable to String
+Line 8, col 9:
+  7 |     } catch (e) {
+> 8 |         return e;
+              ^~~~~~~~~
+  9 |     }
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
