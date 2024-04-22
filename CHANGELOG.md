@@ -11,34 +11,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `log2` and `log` math functions in `@stdlib/math`: PR [#166](https://github.com/tact-lang/tact/pull/166)
 - Reserve mode constants in `@stdlib/reserve`, namely `ReserveExact`, `ReserveAllExcept`, `ReserveAtMost`, `ReserveAddOriginalBalance`, `ReserveInvertSign`, `ReserveBounceIfActionFail`: PR [#173](https://github.com/tact-lang/tact/pull/173)
+- Support for string escape sequences (`\\`, `\"`, `\n`, `\r`, `\t`, `\v`, `\b`, `\f`, `\u{0}` through `\u{FFFFFF}`, `\u0000` through `\uFFFF`, `\x00` through `\xFF`): PR [#192](https://github.com/tact-lang/tact/pull/192)
 - JSON Schema for `tact.config.json`: PR [#194](https://github.com/tact-lang/tact/pull/194)
-- Display an error for integer overflow at compile-time: PR [#200](https://github.com/tact-lang/tact/pull/200)
-- Non-modifying `StringBuilder`'s `concat` method for chained string concatenations: PR [#217](https://github.com/tact-lang/tact/pull/217)
-- `toString` extension function for `Address` type: PR [#224](https://github.com/tact-lang/tact/pull/224)
-- Bitwise XOR operation (`^`): PR [#238](https://github.com/tact-lang/tact/pull/238)
-- `isEmpty` method for `Map` type: PR [#266](https://github.com/tact-lang/tact/pull/266)
-- `pow2` function: PR [#267](https://github.com/tact-lang/tact/pull/267)
+- The ability to use `dump` function on the values of the `Address` type: PR [#175](https://github.com/tact-lang/tact/pull/175)
+- Non-modifying `StringBuilder`'s `concat` extension function for chained string concatenations: PR [#217](https://github.com/tact-lang/tact/pull/217)
+- The `toString` extension function for `Address` type: PR [#224](https://github.com/tact-lang/tact/pull/224)
+- The bitwise XOR operation (`^`): PR [#238](https://github.com/tact-lang/tact/pull/238)
+- The `isEmpty` extension function for the `Map` type: PR [#266](https://github.com/tact-lang/tact/pull/266)
+- The `pow2` power function of with base 2: PR [#267](https://github.com/tact-lang/tact/pull/267)
 
 ### Changed
 
-- Update the `dump` function to handle addresses: PR [#175](https://github.com/tact-lang/tact/pull/175)
-- Support trailing commas in all comma-separated lists (struct instantiations, `initOf` arguments, `init()` parameters, inherited traits via `with`, function arguments and parameters): PR [#179](https://github.com/tact-lang/tact/pull/179) and PR [#246](https://github.com/tact-lang/tact/pull/246)
 - The implicit empty `init` function is now present by default in the contract if not declared: PR [#167](https://github.com/tact-lang/tact/pull/167)
+- Support trailing commas in all comma-separated lists (struct instantiations, `initOf` arguments, `init()` parameters, inherited traits via `with`, function arguments and parameters): PR [#179](https://github.com/tact-lang/tact/pull/179) and PR [#246](https://github.com/tact-lang/tact/pull/246)
 - `@stdlib/stoppable` now imports `@stdlib/ownable` so the programmer does not have to do it separately: PR [#193](https://github.com/tact-lang/tact/pull/193)
-- Support escape sequences for strings (`\\`, `\"`, `\n`, `\r`, `\t`, `\v`, `\b`, `\f`, `\u{0}` through `\u{FFFFFF}`, `\u0000` through `\uFFFF`, `\x00` through `\xFF`): PR [#192](https://github.com/tact-lang/tact/pull/192)
-- `newAddress` function now evaluates to a constant value if possible: PR [#237](https://github.com/tact-lang/tact/pull/237)
-- The `dump()` and `dumpStack()` functions now print the file path, line number, and column number in addition to the data: PR [#271](https://github.com/tact-lang/tact/pull/271).
-- `pow` function is now in the standard library, allowing its use at runtime. If constant arguments are used, the result is evaluated at compile-time: PR [#267](https://github.com/tact-lang/tact/pull/267)
+- The `newAddress` function now evaluates to a constant value if possible: PR [#237](https://github.com/tact-lang/tact/pull/237)
+- The `pow` power function could only be used at compile-time, but now it is available in the standard library and can be called both at runtime and compile-time: PR [#267](https://github.com/tact-lang/tact/pull/267)
+- The `dump()` and `dumpStack()` functions now print the file path, line number, and column number in addition to the data: PR [#271](https://github.com/tact-lang/tact/pull/271)
 
 ### Fixed
 
-- Incorrect "already exists" errors when using names such as `toString` or `valueOf`: PR [#208](https://github.com/tact-lang/tact/pull/208)
 - Escape backticks in error messages for generated TypeScript code: PR [#192](https://github.com/tact-lang/tact/pull/192)
+- Integer overflows during compile-time constant evaluation are properly propagated as a compilation error: PR [#200](https://github.com/tact-lang/tact/pull/200)
+- Incorrect "already exists" errors when using the `toString` and `valueOf` identifiers: PR [#208](https://github.com/tact-lang/tact/pull/208)
 - Empty inherited trait lists after `with` keyword are now disallowed: PR [#246](https://github.com/tact-lang/tact/pull/246)
-- Allow chaining method calls with `!!`, for instance, `map.asCell()!!.hash()` is grammatically correct now: PR [#257](ttps://github.com/tact-lang/tact/pull/257)
-- Operation precendence for bitwise operators, equality and comparisons now matches common languages, like JavaScript: PR [#265](https://github.com/tact-lang/tact/pull/265)
-- Incorrect variable scoping in `repeat`, `while` and `until` loops: PR [#269](https://github.com/tact-lang/tact/pull/269)
-- FunC compilation errors when trying to `dump()` such types as `Cell`, `Slice`, `Builder` and `StringBuilder`: PR [#271](https://github.com/tact-lang/tact/pull/271)
+- Allow chaining method calls with `!!`, for instance, `map.asCell()!!.hash()` is grammatically correct now: PR [#257](https://github.com/tact-lang/tact/pull/257)
+- Precedence levels for bitwise operators, equality and comparisons now matches common languages, like JavaScript: PR [#265](https://github.com/tact-lang/tact/pull/265)
+- Incorrect variable scoping in the `repeat`, `while` and `until` loops: PR [#269](https://github.com/tact-lang/tact/pull/269)
+- FunC compilation errors when trying to `dump()` values of the `Cell`, `Slice`, `Builder` and `StringBuilder` types: PR [#271](https://github.com/tact-lang/tact/pull/271)
 
 ## [1.2.0] - 2024-02-29
 
