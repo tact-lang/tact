@@ -56,6 +56,11 @@ jobs:
           then false
           fi
 
+      - name: Tact CLI non-zero exit code
+        if: runner.os != 'Windows'
+        run: |
+          ! ./bin/tact --config test/tact-cli/tact.config.json
+
       - name: Link Tact compiler
         run: |
           yarn link

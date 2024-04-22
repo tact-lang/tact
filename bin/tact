@@ -22,14 +22,17 @@ if (!args["--config"]) {
 // Perform compilation
 (async () => {
   try {
-    await main.run({
+    const success = await main.run({
       configPath: args["--config"],
       projectNames: args["--project"] ? args["--project"] : [],
     });
+    // https://nodejs.org/docs/v20.12.1/api/process.html#exit-codes
+    if (!success) process.exit(30);
   } catch (e) {
     console.warn(
       "Internal compiler error. Please, report it to https://github.com/tact-lang/tact/issues.",
     );
     console.log(e);
+    process.exit(30);
   }
 })();

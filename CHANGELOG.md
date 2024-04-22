@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `toString` extension function for `Address` type: PR [#224](https://github.com/tact-lang/tact/pull/224)
 - The bitwise XOR operation (`^`): PR [#238](https://github.com/tact-lang/tact/pull/238)
 - The `isEmpty` extension function for the `Map` type: PR [#266](https://github.com/tact-lang/tact/pull/266)
-- The `pow2` power function of with base 2: PR [#267](https://github.com/tact-lang/tact/pull/267)
+- The `pow2` power function with base 2: PR [#267](https://github.com/tact-lang/tact/pull/267)
 
 ### Changed
 
@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `newAddress` function now evaluates to a constant value if possible: PR [#237](https://github.com/tact-lang/tact/pull/237)
 - The `pow` power function could only be used at compile-time, but now it is available in the standard library and can be called both at runtime and compile-time: PR [#267](https://github.com/tact-lang/tact/pull/267)
 - The `dump()` and `dumpStack()` functions now print the file path, line number, and column number in addition to the data: PR [#271](https://github.com/tact-lang/tact/pull/271)
+- Use `|` instead of `+` for send mode flags because the bitwise OR operation is idempotent and hence safer: PR [#274](https://github.com/tact-lang/tact/pull/274)
+- Bumped the versions of `@ton/core` and `ohm-js` to the most recent ones: PR [#276](https://github.com/tact-lang/tact/pull/276)
 
 ### Fixed
 
@@ -39,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Precedence levels for bitwise operators, equality and comparisons now matches common languages, like JavaScript: PR [#265](https://github.com/tact-lang/tact/pull/265)
 - Incorrect variable scoping in the `repeat`, `while` and `until` loops: PR [#269](https://github.com/tact-lang/tact/pull/269)
 - FunC compilation errors when trying to `dump()` values of the `Cell`, `Slice`, `Builder` and `StringBuilder` types: PR [#271](https://github.com/tact-lang/tact/pull/271)
+- Tact's CLI returns a non-zero exit code if compilation fails: PR [#278](https://github.com/tact-lang/tact/pull/278)
 
 ## [1.2.0] - 2024-02-29
 
