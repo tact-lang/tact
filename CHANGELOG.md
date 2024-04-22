@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Operation precendence for bitwise operators, equality and comparisons now matches common languages, like JavaScript: PR [#265](https://github.com/tact-lang/tact/pull/265)
 - Incorrect variable scoping in `repeat`, `while` and `until` loops: PR [#269](https://github.com/tact-lang/tact/pull/269)
 - FunC compilation errors when trying to `dump()` such types as `Cell`, `Slice`, `Builder` and `StringBuilder`: PR [#271](https://github.com/tact-lang/tact/pull/271)
+- Tact's CLI returns a non-zero exit code if compilation fails: PR [#278](https://github.com/tact-lang/tact/pull/278)
 
 ## [1.2.0] - 2024-02-29
 
