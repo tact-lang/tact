@@ -71,7 +71,7 @@ trait Jetton with Ownable {
                 to: msg.response_destination!!, 
                 value: 0,
                 bounce: false,
-                mode: SendRemainingValue + SendIgnoreErrors,
+                mode: SendRemainingValue | SendIgnoreErrors,
                 body: TokenExcesses{
                     queryId: msg.queryId
                 }.toCell()

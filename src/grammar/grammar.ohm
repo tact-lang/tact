@@ -97,6 +97,7 @@ Tact {
               | StatementWhile
               | StatementRepeat
               | StatementUntil
+              | StatementTry
     StatementBlock = "{" Statement* "}"
     StatementLet = let id ":" Type "=" Expression ";"
     StatementReturn = return Expression ";" --withExpression
@@ -119,6 +120,8 @@ Tact {
     StatementWhile = while "(" Expression ")" "{" Statement* "}"
     StatementRepeat = repeat "(" Expression ")" "{" Statement* "}"
     StatementUntil = do "{" Statement* "}" until "(" Expression ")" ";"
+    StatementTry = try "{" Statement* "}" ~catch --simple
+                 | try "{" Statement* "}" catch "(" id ")" "{" Statement* "}" --withCatch
 
     // L-value
     LValue = id "." LValue --more
@@ -263,6 +266,8 @@ Tact {
             | repeat 
             | do 
             | until 
+            | try
+            | catch
             | as  
             | mutates
             | extends
@@ -289,6 +294,8 @@ Tact {
     repeat = "repeat" ~idPart
     do = "do" ~idPart
     until = "until" ~idPart
+    try = "try" ~idPart
+    catch = "catch" ~idPart
     as = "as" ~idPart
     mutates = "mutates" ~idPart
     extends = "extends" ~idPart

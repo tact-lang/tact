@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`feature-ternary should implement try-catch statements correctly 1`] = `
+[
+  {
+    "$seq": 1,
+    "events": [
+      {
+        "$type": "storage-charged",
+        "amount": "0.000000007",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "increment",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQAZccETl-kyR0WEGf-7CT-k7zXmJGLmD8_jF9zsGay7wpHn",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 3929n,
+      },
+    ],
+  },
+  {
+    "$seq": 2,
+    "events": [
+      {
+        "$type": "storage-charged",
+        "amount": "0.000000007",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "incrementTryCatch",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQAZccETl-kyR0WEGf-7CT-k7zXmJGLmD8_jF9zsGay7wpHn",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 4507n,
+      },
+    ],
+  },
+  {
+    "$seq": 3,
+    "events": [
+      {
+        "$type": "storage-charged",
+        "amount": "0.000000007",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "tryCatchRegisters",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQAZccETl-kyR0WEGf-7CT-k7zXmJGLmD8_jF9zsGay7wpHn",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 12023n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "hello world 1",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQAZccETl-kyR0WEGf-7CT-k7zXmJGLmD8_jF9zsGay7wpHn",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "9.986741",
+          },
+        ],
+      },
+    ],
+  },
+]
+`;

@@ -222,6 +222,11 @@
       }
     },
     {
+      "name": "try-catch",
+      "path": "./src/test/features/try-catch.tact",
+      "output": "./src/test/features/output"
+    },
+    {
       "name": "masterchain-allow",
       "path": "./src/test/features/masterchain.tact",
       "output": "./src/test/features/output",
