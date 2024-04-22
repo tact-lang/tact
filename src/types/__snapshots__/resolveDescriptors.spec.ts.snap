@@ -258,16 +258,6 @@ Line 8, col 21:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for case-26 1`] = `
-"<unknown>:13:14: Expected constant value, got A
-Line 13, col 14:
-  12 | 
-> 13 | const D: A = A { x: a, b };
-                    ^~~~~~~~~~~~~
-  14 | 
-"
-`;
-
 exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
 {
   "BaseTrait": {

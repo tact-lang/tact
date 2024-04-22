@@ -320,6 +320,16 @@ Line 9, col 12:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-32 1`] = `
+"<unknown>:14:26: Unknown fields "b" in type A
+Line 14, col 26:
+  13 | fun function() {
+> 14 |     let D: A = A { x: a, b };
+                                ^
+  15 | }
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
