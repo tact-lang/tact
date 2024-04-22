@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reserve mode constants in `@stdlib/reserve`, namely `ReserveExact`, `ReserveAllExcept`, `ReserveAtMost`, `ReserveAddOriginalBalance`, `ReserveInvertSign`, `ReserveBounceIfActionFail`: PR [#173](https://github.com/tact-lang/tact/pull/173)
 - Support for string escape sequences (`\\`, `\"`, `\n`, `\r`, `\t`, `\v`, `\b`, `\f`, `\u{0}` through `\u{FFFFFF}`, `\u0000` through `\uFFFF`, `\x00` through `\xFF`): PR [#192](https://github.com/tact-lang/tact/pull/192)
 - JSON Schema for `tact.config.json`: PR [#194](https://github.com/tact-lang/tact/pull/194)
+- Struct fields punning, i.e. `{foo, bar}` is syntactic sugar for `{ foo: foo, bar: bar }`: PR [#272](https://github.com/tact-lang/tact/pull/272)
 - The ability to use `dump` function on the values of the `Address` type: PR [#175](https://github.com/tact-lang/tact/pull/175)
 - The non-modifying `StringBuilder`'s `concat` extension function for chained string concatenations: PR [#217](https://github.com/tact-lang/tact/pull/217)
 - The `toString` extension function for `Address` type: PR [#224](https://github.com/tact-lang/tact/pull/224)

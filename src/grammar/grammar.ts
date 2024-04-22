@@ -1217,11 +1217,19 @@ semantics.addOperation<ASTNode>("resolve_expression", {
             ref: createRef(this),
         });
     },
-    NewParameter(arg0, _arg1, arg2) {
+    NewParameter_full(arg0, _arg1, arg2) {
         return createNode({
             kind: "new_parameter",
             name: arg0.sourceString,
             exp: arg2.resolve_expression(),
+            ref: createRef(this),
+        });
+    },
+    NewParameter_punned(arg0) {
+        return createNode({
+            kind: "new_parameter",
+            name: arg0.sourceString,
+            exp: arg0.resolve_expression(),
             ref: createRef(this),
         });
     },
