@@ -350,6 +350,16 @@ Line 6, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-35 1`] = `
+"<unknown>:8:9: Type mismatch: Int is not assignable to String
+Line 8, col 9:
+  7 |     } catch (e) {
+> 8 |         return e;
+              ^~~~~~~~~
+  9 |     }
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
