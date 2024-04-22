@@ -55,7 +55,7 @@ contract MultisigSigner {
             send(SendParameters{
                 value: 0, 
                 to: self.master, 
-                mode: SendRemainingBalance + SendIgnoreErrors, 
+                mode: SendRemainingBalance | SendIgnoreErrors,
                 bounce: false, 
                 body: Signed{ request: self.request }.toCell()
             });
@@ -95,7 +95,7 @@ contract Multisig {
         send(SendParameters{
             value: 0, 
             to: opAddress, 
-            mode: SendRemainingValue + SendIgnoreErrors, 
+            mode: SendRemainingValue | SendIgnoreErrors,
             bounce: true,
             code: opInit.code,
             data: opInit.data
