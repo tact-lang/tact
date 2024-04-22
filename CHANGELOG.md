@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bitwise XOR operation (`^`): PR [#238](https://github.com/tact-lang/tact/pull/238)
 - `isEmpty` method for `Map` type: PR [#266](https://github.com/tact-lang/tact/pull/266)
 - `pow2` function: PR [#267](https://github.com/tact-lang/tact/pull/267)
-- Enables struct fields punning, i.e. `{foo, bar}` is syntactic sugar for `{ foo: foo, bar: bar }`: PR [#272](https://github.com/tact-lang/tact/pull/272)
+- Struct fields punning, i.e. `{foo, bar}` is syntactic sugar for `{ foo: foo, bar: bar }`: PR [#272](https://github.com/tact-lang/tact/pull/272)
 
 ### Changed
 
