@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `newAddress` function now evaluates to a constant value if possible: PR [#237](https://github.com/tact-lang/tact/pull/237)
 - The `dump()` and `dumpStack()` functions now print the file path, line number, and column number in addition to the data: PR [#271](https://github.com/tact-lang/tact/pull/271).
 - `pow` function is now in the standard library, allowing its use at runtime. If constant arguments are used, the result is evaluated at compile-time: PR [#267](https://github.com/tact-lang/tact/pull/267)
+- Bumped the versions of `@ton/core` and `ohm-js` to most recent ones: PR [#276](https://github.com/tact-lang/tact/pull/276)
 
 ### Fixed
 
