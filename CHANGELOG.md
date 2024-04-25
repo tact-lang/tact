@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `isEmpty` extension function for the `Map` type: PR [#266](https://github.com/tact-lang/tact/pull/266)
 - The `pow2` power function with base 2: PR [#267](https://github.com/tact-lang/tact/pull/267)
 - The `try` and `try-catch` statements: PR [#212](https://github.com/tact-lang/tact/pull/212)
+- The `del` method for the `Map` type: PR [#95](https://github.com/tact-lang/tact/pull/95)
 
 ### Changed
 
