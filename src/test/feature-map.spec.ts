@@ -894,6 +894,10 @@ describe("feature-map", () => {
                 expect((await contract.getAddrMap3()).size).toBe(1);
                 expect((await contract.getAddrMap4()).size).toBe(1);
 
+                // Check .del return value
+                expect(await contract.getIntMap1Del(k)).toBe(true);
+                expect(await contract.getIntMap1Del(k + 1n)).toBe(false);
+
                 // Clear keys
                 await contract.send(
                     treasure,

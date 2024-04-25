@@ -941,4 +941,8 @@ contract MapTestContract {
     get fun intMap1IsEmpty(): Bool {
         return self.intMap1.isEmpty();
     }
+
+    get fun intMap1Del(key: Int): Bool {
+        return self.intMap1.del(key);
+    }
 }

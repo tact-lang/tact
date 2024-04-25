@@ -353,8 +353,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
 
-                // Returns nothing
-                return { kind: "void" };
+                // Returns boolean
+                return { kind: "ref", name: "Bool", optional: false };
             },
             generate: (ctx, args, exprs, ref) => {
                 if (args.length !== 2) {
