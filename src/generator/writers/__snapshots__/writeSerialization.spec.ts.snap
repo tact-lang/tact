@@ -237,6 +237,30 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "asm(index dict key_len) "DICTIDEL"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_int",
+    "signature": "(cell, int) __tact_dict_delete_int(cell dict, int key_len, int index)",
+  },
+  {
+    "code": {
+      "code": "asm(index dict key_len) "DICTUDEL"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_uint",
+    "signature": "(cell, int) __tact_dict_delete_uint(cell dict, int key_len, int index)",
+  },
+  {
+    "code": {
       "code": "asm(value index dict key_len) "DICTSETREF"",
       "kind": "asm",
     },
@@ -4277,6 +4301,30 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "asm(index dict key_len) "DICTIDEL"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_int",
+    "signature": "(cell, int) __tact_dict_delete_int(cell dict, int key_len, int index)",
+  },
+  {
+    "code": {
+      "code": "asm(index dict key_len) "DICTUDEL"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_uint",
+    "signature": "(cell, int) __tact_dict_delete_uint(cell dict, int key_len, int index)",
+  },
+  {
+    "code": {
       "code": "asm(value index dict key_len) "DICTSETREF"",
       "kind": "asm",
     },
@@ -8314,6 +8362,30 @@ return __tact_create_address(chain, hash);",
     "flags": Set {},
     "name": "__tact_dict_delete",
     "signature": "(cell, int) __tact_dict_delete(cell dict, int key_len, slice index)",
+  },
+  {
+    "code": {
+      "code": "asm(index dict key_len) "DICTIDEL"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_int",
+    "signature": "(cell, int) __tact_dict_delete_int(cell dict, int key_len, int index)",
+  },
+  {
+    "code": {
+      "code": "asm(index dict key_len) "DICTUDEL"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_uint",
+    "signature": "(cell, int) __tact_dict_delete_uint(cell dict, int key_len, int index)",
   },
   {
     "code": {

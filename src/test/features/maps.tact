@@ -82,6 +82,70 @@ struct SomeStruct {
     value: Int;
 }
 
+message DelIntMap1 {
+    key: Int;
+}
+
+message DelIntMap2 {
+    key: Int;
+}
+
+message DelIntMap3 {
+    key: Int;
+}
+
+message DelIntMap4 {
+    key: Int;
+}
+
+message DelIntMap5 {
+    key: Int;
+}
+
+message DelIntMap6 {
+    key: Int;
+}
+
+message DelUIntMap7 {
+    key: Int;
+}
+
+message DelIntMap8 {
+    key: Int;
+}
+
+message DelUIntMap9 {
+    key: Int;
+}
+
+message DelAddrMap1 {
+    key: Address;
+}
+
+message DelAddrMap2 {
+    key: Address;
+}
+
+message DelAddrMap3 {
+    key: Address;
+}
+
+message DelAddrMap4 {
+    key: Address;
+}
+
+message DelAddrMap5 {
+    key: Address;
+}
+
+message DelAddrMap6 {
+    key: Address;
+}
+
+message DelAddrMap7 {
+    key: Address;
+}
+
 contract MapTestContract {
 
     init() {
@@ -187,6 +251,65 @@ contract MapTestContract {
         self.intMap9_4.set(msg.key, msg.value);
         self.intMap9_5.set(msg.key, msg.value);
         self.intMap9_6.set(msg.key, msg.value);
+    }
+
+    receive(msg: DelIntMap1) {
+        self.intMap1.del(msg.key);
+    }
+
+    receive(msg: DelIntMap2) {
+        self.intMap2.del(msg.key);
+    }
+
+    receive(msg: DelIntMap3) {
+        self.intMap3.del(msg.key);
+    }
+
+    receive(msg: DelIntMap4) {
+        self.intMap4.del(msg.key);
+    }
+
+    receive(msg: DelIntMap5) {
+        self.intMap5.del(msg.key);
+    }
+
+    receive(msg: DelIntMap6) {
+        self.intMap6_1.del(msg.key);
+        self.intMap6_2.del(msg.key);
+        self.intMap6_3.del(msg.key);
+        self.intMap6_4.del(msg.key);
+        self.intMap6_5.del(msg.key);
+        self.intMap6_6.del(msg.key);
+        self.intMap6_6.del(msg.key);
+        self.intMap6_7.del(msg.key);
+    }
+
+    receive(msg: DelUIntMap7) {
+        self.intMap7_1.del(msg.key);
+        self.intMap7_2.del(msg.key);
+        self.intMap7_3.del(msg.key);
+        self.intMap7_4.del(msg.key);
+        self.intMap7_5.del(msg.key);
+        self.intMap7_6.del(msg.key);
+    }
+
+    receive(msg: DelIntMap8) {
+        self.intMap8_1.del(msg.key);
+        self.intMap8_2.del(msg.key);
+        self.intMap8_3.del(msg.key);
+        self.intMap8_4.del(msg.key);
+        self.intMap8_5.del(msg.key);
+        self.intMap8_6.del(msg.key);
+        self.intMap8_7.del(msg.key);
+    }
+
+    receive(msg: DelUIntMap9) {
+        self.intMap9_1.del(msg.key);
+        self.intMap9_2.del(msg.key);
+        self.intMap9_3.del(msg.key);
+        self.intMap9_4.del(msg.key);
+        self.intMap9_5.del(msg.key);
+        self.intMap9_6.del(msg.key);
     }
 
     get fun intMap1(): map<Int, Int> {
@@ -614,6 +737,45 @@ contract MapTestContract {
         self.addrMap7_6.set(msg.key, msg.value);
     }
 
+    receive(msg: DelAddrMap1) {
+        self.addrMap1.del(msg.key);
+    }
+
+    receive(msg: DelAddrMap2) {
+        self.addrMap2.del(msg.key);
+    }
+
+    receive(msg: DelAddrMap3) {
+        self.addrMap3.del(msg.key);
+    }
+
+    receive(msg: DelAddrMap4) {
+        self.addrMap4.del(msg.key);
+    }
+
+    receive(msg: DelAddrMap5) {
+        self.addrMap5.del(msg.key);
+    }
+
+    receive(msg: DelAddrMap6) {
+        self.addrMap6_1.del(msg.key);
+        self.addrMap6_2.del(msg.key);
+        self.addrMap6_3.del(msg.key);
+        self.addrMap6_4.del(msg.key);
+        self.addrMap6_5.del(msg.key);
+        self.addrMap6_6.del(msg.key);
+        self.addrMap6_7.del(msg.key);
+    }
+
+    receive(msg: DelAddrMap7) {
+        self.addrMap7_1.del(msg.key);
+        self.addrMap7_2.del(msg.key);
+        self.addrMap7_3.del(msg.key);
+        self.addrMap7_4.del(msg.key);
+        self.addrMap7_5.del(msg.key);
+        self.addrMap7_6.del(msg.key);
+    }
+
     receive("reset") {
         self.addrMap1 = emptyMap();
         self.addrMap2 = emptyMap();
@@ -778,5 +940,9 @@ contract MapTestContract {
 
     get fun intMap1IsEmpty(): Bool {
         return self.intMap1.isEmpty();
+    }
+
+    get fun intMap1Del(key: Int): Bool {
+        return self.intMap1.del(key);
     }
 }

@@ -326,6 +326,73 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
         },
     ],
     [
+        "del",
+        {
+            name: "del",
+            resolve(ctx, args, ref) {
+                // Check arguments
+                if (args.length !== 2) {
+                    throwError("del expects one argument", ref); // Ignore self argument
+                }
+                const self = args[0];
+                if (!self || self.kind !== "map") {
+                    throwError("del expects a map as self argument", ref); // Should not happen
+                }
+
+                // Check key type
+                if (args[1].kind !== "ref" || args[1].optional) {
+                    throwError(
+                        "del expects a direct type as first argument",
+                        ref,
+                    );
+                }
+                if (args[1].name !== self.key) {
+                    throwError(
+                        `del expects a ${self.key} as first argument`,
+                        ref,
+                    );
+                }
+
+                // Returns boolean
+                return { kind: "ref", name: "Bool", optional: false };
+            },
+            generate: (ctx, args, exprs, ref) => {
+                if (args.length !== 2) {
+                    throwError("del expects one argument", ref); // Ignore self argument
+                }
+                const self = args[0];
+                if (!self || self.kind !== "map") {
+                    throwError("del expects a map as self argument", ref); // Should not happen
+                }
+
+                // Render expressions
+                const resolved = exprs.map((v) => writeExpression(v, ctx));
+
+                // Handle Int key
+                if (self.key === "Int") {
+                    let bits = 257;
+                    let kind = "int";
+                    if (self.keyAs && self.keyAs.startsWith("int")) {
+                        bits = parseInt(self.keyAs.slice(3), 10);
+                    } else if (self.keyAs && self.keyAs.startsWith("uint")) {
+                        bits = parseInt(self.keyAs.slice(4), 10);
+                        kind = "uint";
+                    }
+                    ctx.used(`__tact_dict_delete_${kind}`);
+                    return `${resolved[0]}~__tact_dict_delete_${kind}(${bits}, ${resolved[1]})`;
+                }
+
+                // Handle Address key
+                if (self.key === "Address") {
+                    ctx.used(`__tact_dict_delete`);
+                    return `${resolved[0]}~__tact_dict_delete(267, ${resolved[1]})`;
+                }
+
+                throwError(`del expects a map with Int keys`, ref);
+            },
+        },
+    ],
+    [
         "asCell",
         {
             name: "asCell",
