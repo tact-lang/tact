@@ -281,6 +281,7 @@ contract MapTestContract {
         self.intMap6_5.del(msg.key);
         self.intMap6_6.del(msg.key);
         self.intMap6_6.del(msg.key);
+        self.intMap6_7.del(msg.key);
     }
 
     receive(msg: DelUIntMap7) {
