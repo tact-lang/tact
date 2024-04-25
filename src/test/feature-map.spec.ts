@@ -555,9 +555,9 @@ describe("feature-map", () => {
         jest.setTimeout(2 * 60000);
         try {
             // Init contract
-            let system = await ContractSystem.create();
-            let treasure = system.treasure("treasure");
-            let contract = system.open(await MapTestContract.fromInit());
+            const system = await ContractSystem.create();
+            const treasure = system.treasure("treasure");
+            const contract = system.open(await MapTestContract.fromInit());
             await contract.send(treasure, { value: toNano("10") }, null);
             await system.run();
 
@@ -612,13 +612,13 @@ describe("feature-map", () => {
             expect((await contract.getAddrMap7_6()).size).toBe(0);
 
             // Keys for test
-            let keys: bigint[] = [];
+            const keys: bigint[] = [];
             keys.push(1n);
             keys.push(0n);
             keys.push(-1n);
             keys.push(10102312312312312312312n);
             keys.push(-10102312312312312312312n);
-            for (let k of keys) {
+            for (const k of keys) {
                 // Check keys to be empty
                 expect(await contract.getIntMap1Value(k)).toBeNull();
                 expect(await contract.getIntMap2Value(k)).toBeNull();
@@ -626,19 +626,19 @@ describe("feature-map", () => {
                 expect(await contract.getIntMap4Value(k)).toBeNull();
 
                 // Set keys
-                let valueInt = k * 10n;
-                let valueBool = k < 0n;
-                let addr = randomAddress(0, "addr-" + k.toString(10));
-                let valueCell = beginCell().storeUint(123123, 128).endCell();
-                let valueStruct: SomeStruct = {
+                const valueInt = k * 10n;
+                const valueBool = k < 0n;
+                const addr = randomAddress(0, "addr-" + k.toString(10));
+                const valueCell = beginCell().storeUint(123123, 128).endCell();
+                const valueStruct: SomeStruct = {
                     $$type: "SomeStruct",
                     value: 10012312n,
                 };
-                let valueAddr = randomAddress(0, "value-" + k.toString(10));
-                let keySmall = k % 100n;
-                let keySmallAbs = (k > 0 ? k : -k) % 100n;
-                let valueSmall = k % 100n;
-                let valueSmallAbs = (k > 0 ? k : -k) % 100n;
+                const valueAddr = randomAddress(0, "value-" + k.toString(10));
+                const keySmall = k % 100n;
+                const keySmallAbs = (k > 0 ? k : -k) % 100n;
+                const valueSmall = k % 100n;
+                const valueSmallAbs = (k > 0 ? k : -k) % 100n;
                 await contract.send(
                     treasure,
                     { value: toNano(1) },

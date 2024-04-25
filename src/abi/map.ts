@@ -334,7 +334,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 2) {
                     throwError("del expects one argument", ref); // Ignore self argument
                 }
-                let self = args[0];
+                const self = args[0];
                 if (!self || self.kind !== "map") {
                     throwError("del expects a map as self argument", ref); // Should not happen
                 }
@@ -360,13 +360,13 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 2) {
                     throwError("del expects one argument", ref); // Ignore self argument
                 }
-                let self = args[0];
+                const self = args[0];
                 if (!self || self.kind !== "map") {
                     throwError("del expects a map as self argument", ref); // Should not happen
                 }
 
                 // Render expressions
-                let resolved = exprs.map((v) => writeExpression(v, ctx));
+                const resolved = exprs.map((v) => writeExpression(v, ctx));
 
                 // Handle Int key
                 if (self.key === "Int") {
