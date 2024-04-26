@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `dump()` and `dumpStack()` functions now print the file path, line number, and column number in addition to the data: PR [#271](https://github.com/tact-lang/tact/pull/271)
 - Use `|` instead of `+` for send mode flags because the bitwise OR operation is idempotent and hence safer: PR [#274](https://github.com/tact-lang/tact/pull/274)
 - Bumped the versions of `@ton/core` and `ohm-js` to the most recent ones: PR [#276](https://github.com/tact-lang/tact/pull/276)
+- Generated `.pkg`-files always use POSIX file paths (even on Windows): PR [# 300](https://github.com/tact-lang/tact/pull/300)
 
 ### Fixed
 
