@@ -44,7 +44,6 @@ contract TryCatchTester {
         } catch (e) {
             return e;
         }
-        return 0;
     }
 
     get fun testTryCatch3(): Int {
