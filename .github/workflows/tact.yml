@@ -49,6 +49,11 @@ jobs:
         run: |
           yarn lint:schema
 
+      - name: Show an example .pkg file on Windows
+        if: runner.os == 'Windows'
+        run: |
+          type examples\output\echo_Echo.pkg
+
       - name: Compare Tact version from CLI flag `--version` against package.json
         if: runner.os != 'Windows'
         run: |
