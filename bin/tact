@@ -1,38 +1,33 @@
 #!/usr/bin/env node
+
 const main = require("../dist/node");
-const arg = require("arg");
+const meowModule = import("meow");
 
-// Resolve arguments
-const args = arg({
-  "--config": String,
-  "--project": String,
-  "--version": Boolean,
-});
+meowModule.then((meow) => {
+  const importMeta = { url: new URL("file://" + __dirname + __filename) };
+  const cli = meow.default(`
+	Usage
+	  $ tact <config_path>
 
-if (args["--version"]) {
-  console.log("1.2.0");
-  return;
-}
+	Options
+	  --project <project_name>, -r <project_name>  
+	  --version                                    Prints the current tact version
+    --help                                       Displays this text
 
-if (!args["--config"]) {
-  console.log("USAGE: tact --config <config_path> [--project <project_name]");
-  return;
-}
+	Examples
+	  $ tact --version
+	  1.2.0
+  `, { importMeta: importMeta, flags: { project: { shortFlag: "p", type: "string", isMultiple: true }, version: { shortFlag: "v", type: "boolean" }} });
 
-// Perform compilation
-(async () => {
-  try {
-    const success = await main.run({
-      configPath: args["--config"],
-      projectNames: args["--project"] ? args["--project"] : [],
-    });
-    // https://nodejs.org/docs/v20.12.1/api/process.html#exit-codes
-    if (!success) process.exit(30);
-  } catch (e) {
-    console.warn(
-      "Internal compiler error. Please, report it to https://github.com/tact-lang/tact/issues.",
-    );
-    console.log(e);
-    process.exit(30);
+  if (cli.flags.version) {
+    cli.showVersion();
+    return;
   }
-})();
+
+  if (!cli.input.at(0)) {
+    cli.showHelp();
+    return;
+  }
+  
+  return main.run({ configPath: cli.input.at(0), projectNames: cli.flags.project ?? [] })
+});
