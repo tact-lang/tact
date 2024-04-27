@@ -21,14 +21,15 @@
   ```
 - [ ] Update [tact-docs](https://github.com/tact-lang/tact-docs) with the most recent Tact features
 - [ ] Request or perform the plugins/parsers/tools updates and releases:
+  - [ ] <https://github.com/tact-lang/tree-sitter-tact>
+  - [ ] <https://github.com/tact-lang/tact.vim>
+  - [ ] <https://github.com/tact-lang/tact-template>
   - [ ] <https://github.com/tact-lang/tact-vscode>
   - [ ] A new release of [tact-vscode](https://marketplace.visualstudio.com/items?itemName=KonVik.tact-lang-vscode) on the Visual Studio Marketplace
-  - [ ] <https://github.com/tact-lang/tact.vim>
-  - [ ] <https://github.com/tact-lang/tree-sitter-tact>
-  - [ ] <https://github.com/ton-blockchain/intellij-ton>
-  - [ ] <https://github.com/tact-lang/tact-template>
-  - [ ] <https://github.com/ton-org/blueprint>
+  - [ ] <https://github.com/novusnota/prism-ton>
   - [ ] <https://github.com/nujan-io/nujan-ide>
+  - [ ] <https://github.com/ton-org/blueprint>
+  - [ ] <https://github.com/ton-blockchain/intellij-ton>
 - [ ] Write `vX.Y.Z` release notes explaining the newest changes with code examples and commit those to this repository
 - [ ] [TON Dev News](https://t.me/tondev_news) Telegram channel announcement
 - [ ] Accumulate TON dev chats feedback
