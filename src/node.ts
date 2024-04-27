@@ -8,6 +8,8 @@ import { consoleLogger } from "./logger";
 export async function run(args: {
     configPath: string;
     projectNames?: string[];
+    checkOnly?: boolean;
+    func?: boolean;
 }) {
     // Load config
     const resolvedPath = path.resolve(args.configPath);
@@ -28,7 +30,7 @@ export async function run(args: {
     // Resolve projects
     let projects = config.projects;
     if (args.projectNames && args.projectNames.length > 0) {
-        // Check that all proejct names are valid
+        // Check that all project names are valid
         for (const pp of args.projectNames) {
             if (!projects.find((v) => v.name === pp)) {
                 console.warn("Unable to find project " + pp);
@@ -58,6 +60,8 @@ export async function run(args: {
             project,
             stdlib,
             logger: consoleLogger,
+            checkOnly: args.checkOnly,
+            func: args.func,
         });
         success = success && built;
     }

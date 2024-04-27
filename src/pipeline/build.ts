@@ -26,6 +26,8 @@ export async function build(args: {
     project: VirtualFileSystem;
     stdlib: string | VirtualFileSystem;
     logger?: TactLogger | null | undefined;
+    checkOnly?: boolean;
+    func?: boolean;
 }) {
     const { config, project } = args;
     const stdlib =
@@ -66,6 +68,11 @@ export async function build(args: {
         logger.error("Tact compilation failed");
         logger.error(errorToString(e));
         return false;
+    }
+
+    if (args.checkOnly) {
+        logger.log("✔️ Type checking succeeded.");
+        return true;
     }
 
     // Compile contracts
@@ -124,6 +131,10 @@ export async function build(args: {
             logger.error("Tact compilation failed");
             logger.error(errorToString(e));
             ok = false;
+            continue;
+        }
+
+        if (args.func) {
             continue;
         }
 
@@ -196,6 +207,11 @@ export async function build(args: {
     if (!ok) {
         logger.log("💥 Compilation failed. Skipping packaging");
         return false;
+    }
+
+    if (args.func) {
+        logger.log("✔️ FunC code generation succeeded.");
+        return true;
     }
 
     // Package

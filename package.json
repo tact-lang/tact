@@ -36,7 +36,6 @@
     "@tact-lang/opcode": "^0.0.14",
     "@ton/core": "0.56.3",
     "@ton/crypto": "^3.2.0",
-    "arg": "^5.0.2",
     "blockstore-core": "1.0.5",
     "change-case": "^4.1.2",
     "ipfs-unixfs-importer": "9.0.10",
@@ -92,5 +91,6 @@
         "filename": "CHANGELOG.md"
       }
     }
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }
