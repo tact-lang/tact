@@ -7,16 +7,16 @@ meowModule.then((meow) => {
   const importMeta = { url: new URL("file://" + __dirname + __filename) };
   const cli = meow.default(`
 	Usage
-	  $ tact <config_path>
+    $ tact <config_path>
 
 	Options
-	  --project <project_name>, -r <project_name>  
-	  --version                                    Prints the current tact version
+    --project <project_name>, -r <project_name>  
+    --version                                    Prints the current tact version
     --help                                       Displays this text
 
 	Examples
-	  $ tact --version
-	  1.2.0
+    $ tact --version
+    1.2.0
   `, { importMeta: importMeta, flags: { project: { shortFlag: "p", type: "string", isMultiple: true }, version: { shortFlag: "v", type: "boolean" }} });
 
   if (cli.flags.version) {
