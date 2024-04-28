@@ -27,6 +27,9 @@ const configSchema = z
     .object({
         $schema: z.string().optional(),
         projects: z.array(projectSchema),
+        checkOnly: z.boolean().optional(),
+        func: z.boolean().optional(),
+        rootPath: z.string().optional(),
     })
     .strict();
 

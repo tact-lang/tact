@@ -53,18 +53,23 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           type examples\output\echo_Echo.pkg
+          
+      - name: Install the package locally
+        if: runner.os == 'Windows'
+        run: |
+          npm install -g ./
 
       - name: Compare Tact version from CLI flag `--version` against package.json
         if: runner.os != 'Windows'
         run: |
-          if [ "$(./bin/tact.mjs --version)" != "$(jq -r '.version' < package.json)" ];
+          if [ "$(tact --version)" != "$(jq -r '.version' < package.json)" ];
           then false
           fi
 
       - name: Tact CLI non-zero exit code
         if: runner.os != 'Windows'
         run: |
-          ! ./bin/tact.mjs --config test/tact-cli/tact.config.json
+          ! tact --config test/tact-cli/tact.config.json
 
       - name: Link Tact compiler
         run: |

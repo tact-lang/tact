@@ -5,25 +5,52 @@ import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 import { build } from "./pipeline/build";
 import { consoleLogger } from "./logger";
 
-export async function run(args: {
-    configPath: string;
-    projectNames?: string[];
-    checkOnly?: boolean;
-    func?: boolean;
-}) {
-    // Load config
-    const resolvedPath = path.resolve(args.configPath);
-    const rootPath = path.dirname(resolvedPath);
+async function configForSingleFile(fileName: string): Promise<Config> {
+    return {
+        projects: [{
+            name: "main",
+            path: fileName,
+            output: process.cwd(),
+        }],
+        rootPath: process.cwd(),
+    };    
+}
+
+async function loadConfig(fileName?: string, configPath?: string): Promise<Config | null> {
+    if (fileName)
+        return configForSingleFile(fileName);
+
+    if (!configPath)
+        return null;
+
     let config: Config;
+
+    // Load config
+    const resolvedPath = path.resolve(configPath);
+    const rootPath = path.dirname(resolvedPath);
     if (!fs.existsSync(resolvedPath)) {
         console.warn("Unable to find config file at " + resolvedPath);
-        return false;
+        return null;
     }
     try {
         config = parseConfig(fs.readFileSync(resolvedPath, "utf8"));
     } catch (e) {
         console.log(e);
         console.warn("Unable to parse config file at " + resolvedPath);
+        return null;
+    }
+    return {rootPath, ...config};
+}
+
+export async function run(args: {
+    fileName?: string;
+    configPath?: string;
+    projectNames?: string[];
+    checkOnly?: boolean;
+    func?: boolean;
+}) {
+    const config = await loadConfig(args.fileName, args.configPath);
+    if (!config) {
         return false;
     }
 
@@ -48,7 +75,7 @@ export async function run(args: {
 
     // Compile
     let success = true;
-    const project = createNodeFileSystem(rootPath, false);
+    const project = createNodeFileSystem(config.rootPath as string, false);
     const stdlib = createNodeFileSystem(
         path.resolve(__dirname, "..", "stdlib"),
         false,
