@@ -9,7 +9,7 @@ Usage
   $ tact --config <config_path>
 
 Options
-  --project <project_name>, -r <project_name>  
+  --project <project_name>, -p <project_name>  
   --version                                    Prints the current tact version
   --func                                       Outputs the intermediate FunC code.
   --check                                      Performs type checking and stops.
