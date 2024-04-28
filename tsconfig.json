@@ -63,6 +63,6 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "bin/tact.mjs"],
+  "include": ["src/**/*"],
   "exclude": ["**/**.spec.ts", "**/**.bind.ts", "src/test/features/output/**/*"]
 }
