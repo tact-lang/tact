@@ -39,7 +39,7 @@ export async function build(args: {
     // Configure context
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
     const cfg: string = JSON.stringify({
-        entrypoint: config.path,
+        entrypoint: posixNormalize(config.path),
         options: config.options || {},
     });
     if (config.options) {
@@ -251,9 +251,12 @@ export async function build(args: {
                 source.path.startsWith(project.root) &&
                 !source.path.startsWith(stdlib.root)
             ) {
-                sources[source.path.slice(project.root.length)] = Buffer.from(
-                    source.code,
-                ).toString("base64");
+                const source_path = posixNormalize(
+                    source.path.slice(project.root.length),
+                );
+                sources[source_path] = Buffer.from(source.code).toString(
+                    "base64",
+                );
             }
         }
 

@@ -219,7 +219,7 @@ export async function writeProgram(
 
     const remainingFunctions = tryExtractModule(functions, null, imported);
     const header: string[] = [];
-    header.push("#pragma version =0.4.3;");
+    header.push("#pragma version =0.4.4;");
     header.push("#pragma allow-post-modification;");
     header.push("#pragma compute-asm-ltr;");
     header.push("");

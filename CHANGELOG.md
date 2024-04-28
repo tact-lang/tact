@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `pow2` power function with base 2: PR [#267](https://github.com/tact-lang/tact/pull/267)
 - The `try` and `try-catch` statements: PR [#212](https://github.com/tact-lang/tact/pull/212)
 - The `--func` and `--check` flags: PR [#287](https://github.com/tact-lang/tact/pull/287)
+- The `del` method for the `Map` type: PR [#95](https://github.com/tact-lang/tact/pull/95)
 
 ### Changed
 
@@ -33,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `dump()` and `dumpStack()` functions now print the file path, line number, and column number in addition to the data: PR [#271](https://github.com/tact-lang/tact/pull/271)
 - Use `|` instead of `+` for send mode flags because the bitwise OR operation is idempotent and hence safer: PR [#274](https://github.com/tact-lang/tact/pull/274)
 - Bumped the versions of `@ton/core` and `ohm-js` to the most recent ones: PR [#276](https://github.com/tact-lang/tact/pull/276)
+- Generated `.pkg`-files always use POSIX file paths (even on Windows): PR [# 300](https://github.com/tact-lang/tact/pull/300)
 
 ### Fixed
 
@@ -46,6 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - FunC compilation errors when trying to `dump()` values of the `Cell`, `Slice`, `Builder` and `StringBuilder` types: PR [#271](https://github.com/tact-lang/tact/pull/271)
 - Tact's CLI returns a non-zero exit code if compilation fails: PR [#278](https://github.com/tact-lang/tact/pull/278)
 - Use the most recent version of the FunC standard library [`stdlib.fc`](https://github.com/ton-blockchain/ton/blob/4cfe1d1a96acf956e28e2bbc696a143489e23631/crypto/smartcont/stdlib.fc): PR [#283](https://github.com/tact-lang/tact/pull/283)
+- The WASM version of the FunC compiler has been updated to 0.4.4 and patched to work on larger contracts: PR [#297](https://github.com/tact-lang/tact/pull/297)
+- The `return`-statement reachability analysis: PR [#302](https://github.com/tact-lang/tact/pull/302)
 
 ## [1.2.0] - 2024-02-29
 

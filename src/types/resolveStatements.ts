@@ -74,7 +74,11 @@ function processCondition(
     condition: ASTCondition,
     sctx: StatementContext,
     ctx: CompilerContext,
-): { ctx: CompilerContext; sctx: StatementContext } {
+): {
+    ctx: CompilerContext;
+    sctx: StatementContext;
+    returnAlwaysReachable: boolean;
+} {
     // Process expression
     ctx = resolveExpression(condition.expression, sctx, ctx);
     let initialCtx = sctx;
@@ -83,16 +87,18 @@ function processCondition(
     if (condition.falseStatements === null && condition.elseif === null) {
         const r = processStatements(condition.trueStatements, initialCtx, ctx);
         ctx = r.ctx;
-        return { ctx, sctx: initialCtx };
+        return { ctx, sctx: initialCtx, returnAlwaysReachable: false };
     }
 
     // Simple if-else
     const processedCtx: StatementContext[] = [];
+    const returnAlwaysReachableInAllBranches: boolean[] = [];
 
     // Process true branch
     const r = processStatements(condition.trueStatements, initialCtx, ctx);
     ctx = r.ctx;
     processedCtx.push(r.sctx);
+    returnAlwaysReachableInAllBranches.push(r.returnAlwaysReachable);
 
     // Process else/elseif branch
     if (condition.falseStatements !== null && condition.elseif === null) {
@@ -100,6 +106,7 @@ function processCondition(
         const r = processStatements(condition.falseStatements, initialCtx, ctx);
         ctx = r.ctx;
         processedCtx.push(r.sctx);
+        returnAlwaysReachableInAllBranches.push(r.returnAlwaysReachable);
     } else if (
         condition.falseStatements === null &&
         condition.elseif !== null
@@ -108,6 +115,7 @@ function processCondition(
         const r = processCondition(condition.elseif, initialCtx, ctx);
         ctx = r.ctx;
         processedCtx.push(r.sctx);
+        returnAlwaysReachableInAllBranches.push(r.returnAlwaysReachable);
     } else {
         throw Error("Impossible");
     }
@@ -130,20 +138,30 @@ function processCondition(
         initialCtx = removeRequiredVariable(r, initialCtx);
     }
 
-    return { ctx, sctx: initialCtx };
+    return {
+        ctx,
+        sctx: initialCtx,
+        returnAlwaysReachable: returnAlwaysReachableInAllBranches.every(
+            (x) => x,
+        ),
+    };
 }
 
 function processStatements(
     statements: ASTStatement[],
     sctx: StatementContext,
     ctx: CompilerContext,
-): { ctx: CompilerContext; sctx: StatementContext } {
+): {
+    ctx: CompilerContext;
+    sctx: StatementContext;
+    returnAlwaysReachable: boolean;
+} {
     // Process statements
 
-    let exited = false;
+    let returnAlwaysReachable = false;
     for (const s of statements) {
         // Check for unreachable
-        if (exited) {
+        if (returnAlwaysReachable) {
             throwError("Unreachable statement", s.ref);
         }
 
@@ -223,6 +241,7 @@ function processStatements(
             const r = processCondition(s, sctx, ctx);
             ctx = r.ctx;
             sctx = r.sctx;
+            returnAlwaysReachable ||= r.returnAlwaysReachable;
 
             // Check type
             const expressionType = getExpType(ctx, s.expression);
@@ -273,8 +292,7 @@ function processStatements(
                 }
             }
 
-            // Mark as ended
-            exited = true;
+            returnAlwaysReachable = true;
         } else if (s.kind === "statement_repeat") {
             // Process expression
             ctx = resolveExpression(s.iterations, sctx, ctx);
@@ -302,6 +320,9 @@ function processStatements(
             // Process statements
             const r = processStatements(s.statements, sctx, ctx);
             ctx = r.ctx;
+            // XXX a do-until loop is a weird place to always return from a function
+            // so we might want to issue a warning here
+            returnAlwaysReachable ||= r.returnAlwaysReachable;
 
             // Check type
             const expressionType = getExpType(ctx, s.condition);
@@ -322,6 +343,9 @@ function processStatements(
             // Process statements
             const r = processStatements(s.statements, sctx, ctx);
             ctx = r.ctx;
+            // a while loop might be executed zero times, so
+            // even if its body always returns from a function
+            // we don't care
 
             // Check type
             const expressionType = getExpType(ctx, s.condition);
@@ -340,6 +364,8 @@ function processStatements(
             const r = processStatements(s.statements, sctx, ctx);
             ctx = r.ctx;
             sctx = r.sctx;
+            // try-statement might not return from the current function
+            // because the control flow can go to the empty catch block
         } else if (s.kind === "statement_try_catch") {
             let initialCtx = sctx;
 
@@ -361,6 +387,10 @@ function processStatements(
             const rCatch = processStatements(s.catchStatements, catchCtx, ctx);
             ctx = rCatch.ctx;
             catchCtx = rCatch.sctx;
+            // if both catch- and try- blocks always return from the current function
+            // we mark the whole try-catch statement as always returning
+            returnAlwaysReachable ||=
+                r.returnAlwaysReachable && rCatch.returnAlwaysReachable;
 
             // Merge statement contexts
             const removed: string[] = [];
@@ -377,15 +407,23 @@ function processStatements(
         }
     }
 
-    return { ctx, sctx };
+    return { ctx, sctx, returnAlwaysReachable };
 }
 
 function processFunctionBody(
     statements: ASTStatement[],
     sctx: StatementContext,
     ctx: CompilerContext,
-) {
+): CompilerContext {
     const res = processStatements(statements, sctx, ctx);
+
+    // Check if a non-void function always returns a value
+    if (sctx.returns.kind !== "void" && !res.returnAlwaysReachable) {
+        throwError(
+            `Function does not always return a result. Adding 'return' statement(s) should fix the issue.`,
+            res.sctx.root,
+        );
+    }
 
     // Check if all required variables are assigned
     if (res.sctx.requiredFields.length > 0) {

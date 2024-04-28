@@ -370,6 +370,106 @@ Line 14, col 26:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-37 1`] = `
+"<unknown>:6:5: Type mismatch: Bool is not assignable to <void>
+Line 6, col 5:
+  5 |     m.set(1, 2);
+> 6 |     return m.del(1);
+          ^~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for case-38 1`] = `
+"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 6, col 5:
+  5 | contract Foo {
+> 6 |     get fun noReturn(): Int {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |         // ERROR: no return statement
+"
+`;
+
+exports[`resolveStatements should fail statements for case-39 1`] = `
+"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 6, col 5:
+  5 | contract Foo {
+> 6 |     get fun noReturn(): Int {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |         let x: Int = 42;
+"
+`;
+
+exports[`resolveStatements should fail statements for case-40 1`] = `
+"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 6, col 5:
+  5 | contract Foo {
+> 6 |     get fun notAlwaysReachableReturn(b: Bool): Int {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |         if b {
+"
+`;
+
+exports[`resolveStatements should fail statements for case-41 1`] = `
+"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 4, col 1:
+  3 | 
+> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     if (b) {
+"
+`;
+
+exports[`resolveStatements should fail statements for case-42 1`] = `
+"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 4, col 1:
+  3 | 
+> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     try {
+"
+`;
+
+exports[`resolveStatements should fail statements for case-43 1`] = `
+"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 4, col 1:
+  3 | 
+> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     try {
+"
+`;
+
+exports[`resolveStatements should fail statements for case-44 1`] = `
+"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 4, col 1:
+  3 | 
+> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     while (b) {
+"
+`;
+
+exports[`resolveStatements should fail statements for case-45 1`] = `
+"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 4, col 1:
+  3 | 
+> 4 | fun notAlwaysReachableReturn(n: Int): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     repeat (n) {
+"
+`;
+
+exports[`resolveStatements should fail statements for case-46 1`] = `
+"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 4, col 1:
+  3 | 
+> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     do {
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
@@ -1023,6 +1123,205 @@ exports[`resolveStatements should resolve statements for case-14 1`] = `
   ],
   [
     "b",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-15 1`] = `
+[
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "m",
+    "map<Int, Int>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "m.set(1, 2)",
+    "<void>",
+  ],
+  [
+    "m",
+    "map<Int, Int>",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "m.del(3)",
+    "Bool",
+  ],
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "m",
+    "map<Int, Int as uint8>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "m.set(1, 2)",
+    "<void>",
+  ],
+  [
+    "m",
+    "map<Int, Int as uint8>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "m.del(1)",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-16 1`] = `[]`;
+
+exports[`resolveStatements should resolve statements for case-17 1`] = `
+[
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-18 1`] = `
+[
+  [
+    "b",
+    "Bool",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "c",
+    "Bool",
+  ],
+  [
+    "43",
+    "Int",
+  ],
+  [
+    "d",
+    "Bool",
+  ],
+  [
+    "44",
+    "Int",
+  ],
+  [
+    "45",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-19 1`] = `
+[
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "43",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-20 1`] = `
+[
+  [
+    "b",
+    "Bool",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "b",
+    "Bool",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "b ? 0 : 1",
+    "Int",
+  ],
+  [
+    "1 / (b ? 0 : 1)",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "43",
+    "Int",
+  ],
+  [
+    "b",
+    "Bool",
+  ],
+  [
+    "!b",
+    "Bool",
+  ],
+  [
+    "44",
     "Int",
   ],
 ]
