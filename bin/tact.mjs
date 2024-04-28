@@ -12,7 +12,7 @@ Options
   --project <project_name>, -p <project_name>  
   --version                                    Prints the current Tact version
   --func                                       Outputs the intermediate FunC code.
-  --check                                      Performs type checking and stops.
+  --check                                      Performs type checking and stops
   --help                                       Displays this text
 
 Examples
