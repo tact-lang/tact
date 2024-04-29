@@ -5,12 +5,18 @@ import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 import { build } from "./pipeline/build";
 import { consoleLogger } from "./logger";
 
+export class CliOptions {
+    public checkOnly: boolean = false;
+    public func: boolean = false;
+}
+
 async function configForSingleFile(fileName: string): Promise<Config> {
     return {
         projects: [{
             name: "main",
             path: fileName,
             output: process.cwd(),
+            options: { debug: true },
         }],
         rootPath: process.cwd(),
     };    
@@ -46,8 +52,7 @@ export async function run(args: {
     fileName?: string;
     configPath?: string;
     projectNames?: string[];
-    checkOnly?: boolean;
-    func?: boolean;
+    cliOptions?: CliOptions;
 }) {
     const config = await loadConfig(args.fileName, args.configPath);
     if (!config) {
@@ -82,13 +87,12 @@ export async function run(args: {
     ); // Improves developer experience
     for (const config of projects) {
         console.log("💼 Compiling project " + config.name + "...");
+        const configAndOptions = {...config, ...args.cliOptions};
         const built = await build({
-            config,
+            config: configAndOptions,
             project,
             stdlib,
             logger: consoleLogger,
-            checkOnly: args.checkOnly,
-            func: args.func,
         });
         success = success && built;
     }

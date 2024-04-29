@@ -29,7 +29,7 @@ Examples
     flags: {
       config: { shortFlags: "c", type: "string" },
       project: { shortFlag: "p", type: "string", isMultiple: true },
-      version: { shortflag: "v", type: "boolean" },
+      version: { shortFlag: "v", type: "boolean" },
       check: { type: "boolean" },
       func: { type: "boolean" },
     },
@@ -59,8 +59,10 @@ const success = await main.run({
   fileName: cli.input.at(0),
   configPath: cli.flags.config,
   projectNames: cli.flags.project ?? [],
-  checkOnly: cli.flags.check,
-  func: cli.flags.func,
+  cliOptions: {
+    checkOnly: cli.flags.check,
+    func: cli.flags.func,
+  },
 });
 
 process.exit(success ? 0 : 30);

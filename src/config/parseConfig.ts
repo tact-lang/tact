@@ -20,6 +20,8 @@ const projectSchema = z
         path: z.string(),
         output: z.string(),
         options: optionsSchema.optional(),
+        checkOnly: z.boolean().optional(),
+        func: z.boolean().optional(),
     })
     .strict();
 
@@ -27,8 +29,6 @@ const configSchema = z
     .object({
         $schema: z.string().optional(),
         projects: z.array(projectSchema),
-        checkOnly: z.boolean().optional(),
-        func: z.boolean().optional(),
         rootPath: z.string().optional(),
     })
     .strict();

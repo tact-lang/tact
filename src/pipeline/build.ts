@@ -26,8 +26,6 @@ export async function build(args: {
     project: VirtualFileSystem;
     stdlib: string | VirtualFileSystem;
     logger?: TactLogger | null | undefined;
-    checkOnly?: boolean;
-    func?: boolean;
 }) {
     const { config, project } = args;
     const stdlib =
@@ -70,7 +68,7 @@ export async function build(args: {
         return false;
     }
 
-    if (args.checkOnly) {
+    if (args.config.checkOnly) {
         logger.log("✔️ Type checking succeeded.");
         return true;
     }
@@ -134,7 +132,7 @@ export async function build(args: {
             continue;
         }
 
-        if (args.func) {
+        if (args.config.func) {
             continue;
         }
 
@@ -209,7 +207,7 @@ export async function build(args: {
         return false;
     }
 
-    if (args.func) {
+    if (args.config.func) {
         logger.log("✔️ FunC code generation succeeded.");
         return true;
     }
