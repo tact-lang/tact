@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import pkg from '../package.json' with { type: "json" };
+import pkg from "../package.json" with { type: "json" };
 import * as main from "../dist/node.js";
 import meow from "meow";
 
@@ -37,12 +37,12 @@ Examples
 );
 
 if (cli.input.length > 1) {
-  console.log('Only one contract can be specified at a time');
+  console.log("Only one contract can be specified at a time");
   cli.showHelp();
 }
 
 if (cli.input.length == 1 && cli.flags.config) {
-  console.log('Either --config or a single Tact contract can be specified');
+  console.log("Either --config or a single Tact contract can be specified");
   cli.showHelp();
 }
 

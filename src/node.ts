@@ -12,22 +12,25 @@ export class CliOptions {
 
 async function configForSingleFile(fileName: string): Promise<Config> {
     return {
-        projects: [{
-            name: "main",
-            path: fileName,
-            output: process.cwd(),
-            options: { debug: true },
-        }],
+        projects: [
+            {
+                name: "main",
+                path: fileName,
+                output: process.cwd(),
+                options: { debug: true },
+            },
+        ],
         rootPath: process.cwd(),
-    };    
+    };
 }
 
-async function loadConfig(fileName?: string, configPath?: string): Promise<Config | null> {
-    if (fileName)
-        return configForSingleFile(fileName);
+async function loadConfig(
+    fileName?: string,
+    configPath?: string,
+): Promise<Config | null> {
+    if (fileName) return configForSingleFile(fileName);
 
-    if (!configPath)
-        return null;
+    if (!configPath) return null;
 
     let config: Config;
 
@@ -45,7 +48,7 @@ async function loadConfig(fileName?: string, configPath?: string): Promise<Confi
         console.warn("Unable to parse config file at " + resolvedPath);
         return null;
     }
-    return {rootPath, ...config};
+    return { rootPath, ...config };
 }
 
 export async function run(args: {
@@ -87,7 +90,7 @@ export async function run(args: {
     ); // Improves developer experience
     for (const config of projects) {
         console.log("💼 Compiling project " + config.name + "...");
-        const configAndOptions = {...config, ...args.cliOptions};
+        const configAndOptions = { ...config, ...args.cliOptions };
         const built = await build({
             config: configAndOptions,
             project,

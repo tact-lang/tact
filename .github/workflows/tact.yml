@@ -53,7 +53,7 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           type examples\output\echo_Echo.pkg
-          
+
       - name: Install the package locally
         if: runner.os == 'Windows'
         run: |
