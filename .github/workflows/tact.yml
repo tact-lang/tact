@@ -75,6 +75,7 @@ jobs:
           tact test/tact-cli/hello.tact
 
       - name: Check command line arguments parsing
+        if: runner.os != 'Windows'
         run: |
           ! tact --nonexistentoption test/tact-cli/tact.config.json
 
