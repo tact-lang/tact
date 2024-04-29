@@ -13,6 +13,7 @@ import { writeExpression } from "./writeExpression";
 import { cast } from "./cast";
 import { resolveFuncTupledType } from "./resolveFuncTupledType";
 import { ops } from "./ops";
+import { freshIdentifier } from "./freshIdentifier";
 
 export function writeCastedExpression(
     expression: ASTExpression,
@@ -193,16 +194,22 @@ export function writeStatement(
         });
         ctx.append(`}`);
         return;
-    } else if (f.kind === 'statement_for_map') {
+    } else if (f.kind === "statement_foreach") {
         // ;; iterate keys from small to big
         // (int key, slice val, int flag) = d.udict_get_min?(256);
         // while (flag) {
         //     ;; do something with pair key->val
-            
         //     (key, val, flag) = d.udict_get_next?(256, key);
         // }
 
-        // TODO: implement
+        // how do I get the type of the key and value in map?
+        // TODO
+
+        // ctx.append(
+        //     `var (${resolveFuncType(f.keyName, ctx)}, ${resolveFuncType(f.valueName, ctx)}, ${resolveFuncType(freshIdentifier("flag"), ctx)}) = ${ctx.used("")};`,
+        // );
+
+        return;
     }
 
     throw Error("Unknown statement kind");

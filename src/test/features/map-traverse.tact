@@ -15,8 +15,8 @@ contract MapTraverseTestContract {
         m.set(4, 400);
 
         let sum: Int = 0;
-        for (k, v in m) {
-            sum = sum + v;
+        foreach (k: Int, v: Int in m) {
+            sum += v;
         }
 
         return sum;

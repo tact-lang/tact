@@ -98,7 +98,7 @@ Tact {
               | StatementRepeat
               | StatementUntil
               | StatementTry
-              | StatementFor
+              | StatementForEach
     StatementBlock = "{" Statement* "}"
     StatementLet = let id ":" Type "=" Expression ";"
     StatementReturn = return Expression ";" --withExpression
@@ -123,7 +123,7 @@ Tact {
     StatementUntil = do "{" Statement* "}" until "(" Expression ")" ";"
     StatementTry = try "{" Statement* "}" ~catch --simple
                  | try "{" Statement* "}" catch "(" id ")" "{" Statement* "}" --withCatch
-    StatementFor = for "(" id "," id "in" id ")" "{" Statement* "}" --map
+    StatementForEach = foreach "(" id ":" Type "," id ":" Type "in" id ")" "{" Statement* "}"
 
     // L-value
     LValue = id "." LValue --more
@@ -270,7 +270,7 @@ Tact {
             | until 
             | try
             | catch
-            | for
+            | foreach
             | as  
             | mutates
             | extends
@@ -299,7 +299,7 @@ Tact {
     until = "until" ~idPart
     try = "try" ~idPart
     catch = "catch" ~idPart
-    for = "for" ~idPart
+    foreach = "foreach" ~idPart
     as = "as" ~idPart
     mutates = "mutates" ~idPart
     extends = "extends" ~idPart

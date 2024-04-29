@@ -402,15 +402,35 @@ function processStatements(
             for (const r of removed) {
                 initialCtx = removeRequiredVariable(r, initialCtx);
             }
-        } else if (s.kind === "statement_for_map") {
+        } else if (s.kind === "statement_foreach") {
             // Check if map is valid
-            const mapVariable = sctx.vars[s.mapName];
+            const mapVariable = sctx.vars.get(s.map.value);
             if (!mapVariable || mapVariable.kind !== "map") {
-                throwError(`Variable ${s.mapName} is not a map`, s.ref);
+                throwError(`Variable ${s.map.value} is not a map`, s.ref);
+            }
+
+            // Check if key and value types match the map
+            if (s.keyType.kind !== "type_ref_simple") {
+                throwError(`Invalid key type`, s.ref);
+            }
+            if (s.keyType.name !== mapVariable.key) {
+                throwError(
+                    `Key type mismatch: ${mapVariable.key} is not assignable to ${s.keyType}`,
+                    s.ref,
+                );
+            }
+            if (s.valueType.kind !== "type_ref_simple") {
+                throwError(`Invalid value type`, s.ref);
+            }
+            if (s.valueType.name !== mapVariable.value) {
+                throwError(
+                    `Value type mismatch: ${mapVariable.value} is not assignable to ${s.valueType}`,
+                    s.ref,
+                );
             }
 
             // Add key and value to statement context
-            if (sctx.vars[s.keyName]) {
+            if (sctx.vars.has(s.keyName)) {
                 throwError(`Variable already exists: ${s.keyName}`, s.ref);
             }
             sctx = addVariable(
@@ -418,7 +438,7 @@ function processStatements(
                 { kind: "ref", name: mapVariable.key, optional: false },
                 sctx,
             );
-            if (sctx.vars[s.valueName]) {
+            if (sctx.vars.has(s.valueName)) {
                 throwError(`Variable already exists: ${s.valueName}`, s.ref);
             }
             sctx = addVariable(
