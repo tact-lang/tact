@@ -28,7 +28,10 @@ jobs:
           cache: "yarn"
 
       - name: Install dependencies
-        run: yarn install
+        
+        run: |
+          corepack enable
+          yarn install
 
       - name: Build and Test Tact compiler
         run: |
@@ -55,7 +58,6 @@ jobs:
           type examples\output\echo_Echo.pkg
 
       - name: Install the package locally
-        if: runner.os == 'Windows'
         run: |
           npm install -g ./
 
@@ -65,6 +67,16 @@ jobs:
           if [ "$(tact --version)" != "$(jq -r '.version' < package.json)" ];
           then false
           fi
+
+      - name: Check command line options
+        run: |
+          tact --check test/tact-cli/hello.tact
+          tact --func test/tact-cli/hello.tact
+          tact test/tact-cli/hello.tact
+
+      - name: Check command line arguments parsing
+        run: |
+          ! tact --nonexistentoption test/tact-cli/tact.config.json
 
       - name: Tact CLI non-zero exit code
         if: runner.os != 'Windows'
