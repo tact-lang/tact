@@ -28,7 +28,7 @@ jobs:
           cache: "yarn"
 
       - name: Install dependencies
-        
+
         run: |
           corepack enable
           yarn install
