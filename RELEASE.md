@@ -24,6 +24,7 @@
   - [ ] <https://github.com/tact-lang/tree-sitter-tact>
   - [ ] <https://github.com/tact-lang/tact.vim>
   - [ ] <https://github.com/tact-lang/tact-template>
+  - [ ] <https://github.com/tact-lang/tact-by-example>
   - [ ] <https://github.com/tact-lang/tact-vscode>
   - [ ] A new release of [tact-vscode](https://marketplace.visualstudio.com/items?itemName=KonVik.tact-lang-vscode) on the Visual Studio Marketplace
   - [ ] <https://github.com/novusnota/prism-ton>
