@@ -32,7 +32,7 @@ meowModule.then(
         importMeta: {
           url: new URL("file://" + __dirname + __filename).toString(),
         },
-        description: `Command-line utility wrapper for Tact compiler:\n${pkg.description}`,
+        description: `Command-line utility for the Tact compiler:\n${pkg.description}`,
         flags: {
           config: {
             shortFlag: "c",
