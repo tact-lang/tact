@@ -52,6 +52,14 @@
                 }
               }
             }
+          },
+          "checkOnly": {
+            "type": "boolean",
+            "description": "False by default. If set to true, only performs syntax and type checking, preventing further compilation. Mutually exclusive with `funcOnly`."
+          },
+          "funcOnly": {
+            "type": "boolean",
+            "description": "False by default. If set to true, only outputs intermediate FunC code, preventing further compilation. Mutually exclusive with `checkOnly`."
           }
         }
       }
