@@ -21,8 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `isEmpty` extension function for the `Map` type: PR [#266](https://github.com/tact-lang/tact/pull/266)
 - The `pow2` power function with base 2: PR [#267](https://github.com/tact-lang/tact/pull/267)
 - The `try` and `try-catch` statements: PR [#212](https://github.com/tact-lang/tact/pull/212)
-- The `--func` and `--check` command-line flags: PR [#287](https://github.com/tact-lang/tact/pull/287)
 - The `del` method for the `Map` type: PR [#95](https://github.com/tact-lang/tact/pull/95)
+- The `-h`/`--help`, `-v` (short for `--version`), `-p` (short for `--project`), `--func` (for only outputting FunC code) and `--check` (for only doing the syntax and type checking) command-line flags: PR [#287](https://github.com/tact-lang/tact/pull/287)
 
 ### Changed
 
@@ -35,6 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use `|` instead of `+` for send mode flags because the bitwise OR operation is idempotent and hence safer: PR [#274](https://github.com/tact-lang/tact/pull/274)
 - Bumped the versions of `@ton/core` and `ohm-js` to the most recent ones: PR [#276](https://github.com/tact-lang/tact/pull/276)
 - Generated `.pkg`-files always use POSIX file paths (even on Windows): PR [# 300](https://github.com/tact-lang/tact/pull/300)
+- The `-p`/`--project` flags now allow specifying more than one project name. Additionally, they also require a `--config` flag to be specified: PR [#287](https://github.com/tact-lang/tact/pull/287)
+- Command-line interface now allows compiling a single Tact file directly, without specifying a config: PR [#287](https://github.com/tact-lang/tact/pull/287)
 
 ### Fixed
 
@@ -50,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use the most recent version of the FunC standard library [`stdlib.fc`](https://github.com/ton-blockchain/ton/blob/4cfe1d1a96acf956e28e2bbc696a143489e23631/crypto/smartcont/stdlib.fc): PR [#283](https://github.com/tact-lang/tact/pull/283)
 - The WASM version of the FunC compiler has been updated to 0.4.4 and patched to work on larger contracts: PR [#297](https://github.com/tact-lang/tact/pull/297)
 - The `return`-statement reachability analysis: PR [#302](https://github.com/tact-lang/tact/pull/302)
+- The `-v`/`--version` flags now automatically source the version from `package.json`: PR [#287](https://github.com/tact-lang/tact/pull/287)
 
 ## [1.2.0] - 2024-02-29
 
