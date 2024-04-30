@@ -7,10 +7,16 @@ import { consoleLogger } from "./logger";
 
 export class CliOptions {
     public checkOnly: boolean = false;
-    public func: boolean = false;
+    public funcOnly: boolean = false;
 }
 
-async function configForSingleFile(fileName: string): Promise<Config> {
+type ConfigWithRootPath = Config & {
+    rootPath: string;
+};
+
+async function configForSingleFile(
+    fileName: string,
+): Promise<ConfigWithRootPath> {
     return {
         projects: [
             {
@@ -27,7 +33,7 @@ async function configForSingleFile(fileName: string): Promise<Config> {
 async function loadConfig(
     fileName?: string,
     configPath?: string,
-): Promise<Config | null> {
+): Promise<ConfigWithRootPath | null> {
     if (fileName) return configForSingleFile(fileName);
 
     if (!configPath) return null;
@@ -57,13 +63,13 @@ export async function run(args: {
     projectNames?: string[];
     cliOptions?: CliOptions;
 }) {
-    const config = await loadConfig(args.fileName, args.configPath);
-    if (!config) {
+    const configWithRootPath = await loadConfig(args.fileName, args.configPath);
+    if (!configWithRootPath) {
         return false;
     }
 
     // Resolve projects
-    let projects = config.projects;
+    let projects = configWithRootPath.projects;
     if (args.projectNames && args.projectNames.length > 0) {
         // Check that all project names are valid
         for (const pp of args.projectNames) {
@@ -83,7 +89,10 @@ export async function run(args: {
 
     // Compile
     let success = true;
-    const project = createNodeFileSystem(config.rootPath as string, false);
+    const project = createNodeFileSystem(
+        configWithRootPath.rootPath as string,
+        false,
+    );
     const stdlib = createNodeFileSystem(
         path.resolve(__dirname, "..", "stdlib"),
         false,

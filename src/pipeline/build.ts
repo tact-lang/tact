@@ -63,13 +63,24 @@ export async function build(args: {
     try {
         ctx = precompile(ctx, project, stdlib, config.path);
     } catch (e) {
-        logger.error("Tact compilation failed");
+        logger.error(
+            args.config.checkOnly || args.config.funcOnly
+                ? "Syntax and type checking failed"
+                : "Tact compilation failed",
+        );
         logger.error(errorToString(e));
         return false;
     }
 
+    if (args.config.checkOnly && args.config.funcOnly) {
+        logger.error(
+            "Checking is mutually exclusive with outputting only FunC code. Specify only one of those options in your tact.config.json!",
+        );
+        return false;
+    }
+
     if (args.config.checkOnly) {
-        logger.log("✔️ Type checking succeeded.");
+        logger.log("✔️ Syntax and type checking succeeded.");
         return true;
     }
 
@@ -132,7 +143,7 @@ export async function build(args: {
             continue;
         }
 
-        if (args.config.func) {
+        if (args.config.funcOnly) {
             continue;
         }
 
@@ -207,7 +218,7 @@ export async function build(args: {
         return false;
     }
 
-    if (args.config.func) {
+    if (args.config.funcOnly) {
         logger.log("✔️ FunC code generation succeeded.");
         return true;
     }

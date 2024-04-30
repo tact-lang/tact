@@ -14,25 +14,25 @@ meowModule.then(
       $ tact [...flags] (--config CONFIG | FILE)
 
     Flags
-      -c, --config CONFIG             Specify path to config file (tact.config.json)
-      -p, --project ...names          Build only the specified project(s) from the config file
-      --func                          Output intermediate FunC code and exit
-      --check                         Perform type checking and exit
-      -v, --version                   Print Tact compiler version and exit
-      -h, --help                      Display this text and exit
+      -c, --config CONFIG         Specify path to config file (tact.config.json)
+      -p, --project ...names      Build only the specified project name(s) from the config file
+      --func                      Output intermediate FunC code and exit
+      --check                     Perform syntax and type checking, then exit
+      -v, --version               Print Tact compiler version and exit
+      -h, --help                  Display this text and exit
 
     Examples
       $ tact --version
       ${pkg.version}
 
-    Learn more about Tact:            https://docs.tact-lang.org
-    Join Telegram group:              https://t.me/tactlang
-    Follow X/Twitter account:         https://twitter.com/tact_language`,
+    Learn more about Tact:        https://docs.tact-lang.org
+    Join Telegram group:          https://t.me/tactlang
+    Follow X/Twitter account:     https://twitter.com/tact_language`,
       {
         importMeta: {
           url: new URL("file://" + __dirname + __filename).toString(),
         },
-        description: "A command-line utility for accessing the Tact compiler",
+        description: `Command-line utility wrapper for Tact compiler:\n${pkg.description}`,
         flags: {
           config: {
             shortFlag: "c",
@@ -60,6 +60,14 @@ meowModule.then(
       },
     );
 
+    // Helper function to write less in following checks
+    const isEmptyConfigAndInput = () => {
+      if (cli.flags.config === undefined && cli.input.length === 0) {
+        return true;
+      }
+      return false;
+    };
+
     // Show help regardless of other flags
     if (cli.flags.help) {
       cli.showHelp(0);
@@ -71,15 +79,15 @@ meowModule.then(
     }
 
     // Disallow specifying both config or Tact source file at the same time
-    if (cli.flags.config?.length !== 0 && cli.input.length > 0) {
+    if (cli.flags.config !== undefined && cli.input.length > 0) {
       console.log(
         "Error: Both config and Tact file can't be simultaneously specified, pick one!",
       );
       cli.showHelp();
     }
 
-    // Disallow empty config files
-    if (cli.flags.config?.length === 0 && cli.input.length === 0) {
+    // Disallow empty config files when other inputs are empty
+    if (isEmptyConfigAndInput() && !cli.flags.func && !cli.flags.check) {
       console.log("Error: Config file wasn't specified!");
       cli.showHelp();
     }
@@ -87,6 +95,12 @@ meowModule.then(
     // Disallow specifying both --func and --check flags at the same time
     if (cli.flags.check && cli.flags.func) {
       console.log("Error: Flags --func and --check are mutually exclusive!");
+      cli.showHelp();
+    }
+
+    // Disallow running --func and --check flags without a config or a file specified
+    if (isEmptyConfigAndInput() && (cli.flags.check || cli.flags.func)) {
+      console.log("Error: Either config or Tact file have to be specified!");
       cli.showHelp();
     }
 
@@ -101,11 +115,10 @@ meowModule.then(
     // Show help when all flags and inputs are empty
     // Note, that version/help flags are already processed above and don't need to be mentioned here
     if (
-      cli.input.length === 0 &&
-      cli.flags.check === false &&
-      cli.flags.func === false &&
-      cli.flags.projects.length === 0 &&
-      cli.flags.config === undefined
+      isEmptyConfigAndInput() &&
+      !cli.flags.check &&
+      !cli.flags.func &&
+      cli.flags.projects.length === 0
     ) {
       cli.showHelp(0);
     }
@@ -117,7 +130,7 @@ meowModule.then(
         projectNames: cli.flags.projects ?? [],
         cliOptions: {
           checkOnly: cli.flags.check,
-          func: cli.flags.func,
+          funcOnly: cli.flags.func,
         },
       })
       .then((success) => {
