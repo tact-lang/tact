@@ -86,12 +86,6 @@ meowModule.then(
       cli.showHelp();
     }
 
-    // Disallow empty config files when other inputs are empty
-    if (isEmptyConfigAndInput() && !cli.flags.func && !cli.flags.check) {
-      console.log("Error: Config file wasn't specified!");
-      cli.showHelp();
-    }
-
     // Disallow specifying both --func and --check flags at the same time
     if (cli.flags.check && cli.flags.func) {
       console.log("Error: Flags --func and --check are mutually exclusive!");
