@@ -4,7 +4,7 @@
     {
       "name": "fail",
       "path": "./fail.tact",
-      "output": "./output",
+      "output": "./fail_output",
       "mode": "checkOnly"
     }
   ]

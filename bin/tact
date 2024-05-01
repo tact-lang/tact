@@ -117,15 +117,20 @@ meowModule.then(
       cli.showHelp(0);
     }
 
+    // Compilation mode
+    const mode = cli.flags.check
+      ? "checkOnly"
+      : cli.flags.func
+        ? "funcOnly"
+        : undefined;
+
+    // Main command
     main
       .run({
         fileName: cli.input.at(0),
         configPath: cli.flags.config,
         projectNames: cli.flags.projects ?? [],
-        cliOptions: {
-          checkOnly: cli.flags.check,
-          funcOnly: cli.flags.func,
-        },
+        singleFileOptions: { mode },
       })
       .then((success) => {
         // https://nodejs.org/docs/v20.12.1/api/process.html#exit-codes

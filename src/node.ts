@@ -1,19 +1,17 @@
 import path from "path";
 import fs from "fs";
-import { Config, parseConfig } from "./config/parseConfig";
+import { ConfigProject, Config, parseConfig } from "./config/parseConfig";
 import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 import { build } from "./pipeline/build";
 import { consoleLogger } from "./logger";
 
-export class CliOptions {
-    // The following options are mutually exclusive.
-    // That's checked in the CLI before passing their values here.
-    public checkOnly: boolean = false;
-    public funcOnly: boolean = false;
-}
+type SingleFileOptions = {
+    mode?: ConfigProject["mode"];
+};
 
 type ConfigWithRootPath = Config & {
     rootPath: string;
+    singleFile: boolean;
 };
 
 async function configForSingleFile(
@@ -22,13 +20,15 @@ async function configForSingleFile(
     return {
         projects: [
             {
-                name: "main",
+                name: path.basename(fileName, ".tact"),
                 path: fileName,
                 output: process.cwd(),
                 options: { debug: true },
+                mode: "full",
             },
         ],
         rootPath: process.cwd(),
+        singleFile: true,
     };
 }
 
@@ -56,14 +56,14 @@ async function loadConfig(
         console.warn("Unable to parse config file at " + resolvedPath);
         return null;
     }
-    return { rootPath, ...config };
+    return { singleFile: false, rootPath, ...config };
 }
 
 export async function run(args: {
     fileName?: string;
     configPath?: string;
     projectNames?: string[];
-    cliOptions?: CliOptions;
+    singleFileOptions?: SingleFileOptions;
 }) {
     const configWithRootPath = await loadConfig(args.fileName, args.configPath);
     if (!configWithRootPath) {
@@ -101,7 +101,12 @@ export async function run(args: {
     ); // Improves developer experience
     for (const config of projects) {
         console.log("💼 Compiling project " + config.name + "...");
-        const configAndOptions = { ...config, ...args.cliOptions };
+        let configAndOptions = { ...config };
+
+        if (configWithRootPath.singleFile) {
+            configAndOptions = { ...config, ...args.singleFileOptions };
+        }
+
         const built = await build({
             config: configAndOptions,
             project,
