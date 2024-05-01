@@ -52,7 +52,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use the most recent version of the FunC standard library [`stdlib.fc`](https://github.com/ton-blockchain/ton/blob/4cfe1d1a96acf956e28e2bbc696a143489e23631/crypto/smartcont/stdlib.fc): PR [#283](https://github.com/tact-lang/tact/pull/283)
 - The WASM version of the FunC compiler has been updated to 0.4.4 and patched to work on larger contracts: PR [#297](https://github.com/tact-lang/tact/pull/297)
 - The `return`-statement reachability analysis: PR [#302](https://github.com/tact-lang/tact/pull/302)
-- The `-v`/`--version` flags now automatically source the version from `package.json`: PR [#287](https://github.com/tact-lang/tact/pull/287)
 
 ## [1.2.0] - 2024-02-29
 
