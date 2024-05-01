@@ -70,19 +70,19 @@ jobs:
 
       - name: Check command line options
         run: |
-          tact --check test/tact-cli/hello.tact
-          tact --func test/tact-cli/hello.tact
-          tact test/tact-cli/hello.tact
+          tact --check test/tact-cli/success.tact
+          tact --func test/tact-cli/success.tact
+          tact test/tact-cli/success.tact
 
       - name: Check command line arguments parsing
         if: runner.os != 'Windows'
         run: |
-          ! tact --nonexistentoption test/tact-cli/tact.config.json
+          ! tact --nonexistentoption test/tact-cli/success.config.json
 
       - name: Tact CLI non-zero exit code
         if: runner.os != 'Windows'
         run: |
-          ! tact --config test/tact-cli/tact.config.json
+          ! tact --config test/tact-cli/fail.config.json
 
       - name: Link Tact compiler
         run: |
