@@ -6,6 +6,8 @@ import { build } from "./pipeline/build";
 import { consoleLogger } from "./logger";
 
 export class CliOptions {
+    // The following options are mutually exclusive.
+    // That's checked in the CLI before passing their values here.
     public checkOnly: boolean = false;
     public funcOnly: boolean = false;
 }
