@@ -816,7 +816,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                var (key, value, flag) = idict_get_next?(dict, key_len, pivot);
+                var (key, value, flag) = idict_get_next?(d, kl, pivot);
                 if (flag) {
                     return (key, value~load_ref(), flag);
                 } else {
@@ -890,7 +890,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                var (key, value, flag) = udict_get_next?(dict, key_len, pivot);
+                var (key, value, flag) = udict_get_next?(d, kl, pivot);
                 if (flag) {
                     return (key, value~load_ref(), flag);
                 } else {
@@ -964,7 +964,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                var (key, value, flag) = idict_get_next?(dict, key_len, pivot);
+                var (key, value, flag) = idict_get_next?(d, kl, pivot);
                 if (flag) {
                     return (key, value, flag);
                 } else {
@@ -1040,7 +1040,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                var (key, value, flag) = udict_get_next?(dict, key_len, pivot);
+                var (key, value, flag) = udict_get_next?(d, kl, pivot);
                 if (flag) {
                     return (key, value, flag);
                 } else {
