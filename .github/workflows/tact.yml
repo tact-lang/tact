@@ -61,32 +61,32 @@ jobs:
         run: |
           npm install -g ./
 
-      - name: CLI Test: Compare Tact version from CLI flag `--version` against package.json
+      - name: CLI Test | Compare Tact version from CLI flag `--version` against package.json
         if: runner.os != 'Windows'
         run: |
           if [ "$(tact --version)" != "$(jq -r '.version' < package.json)" ];
           then false
           fi
 
-      - name: CLI Test: Check single-contract compilation
+      - name: CLI Test | Check single-contract compilation
         run: |
           tact --check test/tact-cli/success.tact
           tact --func test/tact-cli/success.tact
           tact test/tact-cli/success.tact
 
-      - name: CLI Test: Check compilation via `--config`
+      - name: CLI Test | Check compilation via `--config`
         run: |
           # should output complete results
           tact --config test/tact-cli/success.config.json
           # should only run the syntax and type checking
           tact --config test/tact-cli/success.config.json --check
 
-      - name: CLI Test: Check parsing of a non-existing CLI flag
+      - name: CLI Test | Check parsing of a non-existing CLI flag
         if: runner.os != 'Windows'
         run: |
           ! tact --nonexistentoption test/tact-cli/success.config.json
 
-      - name: CLI Test: tact executable return non-zero exit code if compilation fails
+      - name: CLI Test | tact executable return non-zero exit code if compilation fails
         if: runner.os != 'Windows'
         run: |
           ! tact --config test/tact-cli/fail.config.json
