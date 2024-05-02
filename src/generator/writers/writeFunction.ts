@@ -373,7 +373,7 @@ export function writeStatement(
                     `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_cell`)}(${id(f.map.value)}, 267);`,
                 );
                 ctx.append(
-                    `var ${resolveFuncTypeUnpack(t.value, id(f.valueName), ctx)} = ${ops.readerOpt(t.value, ctx)}(${id(f.valueName)});`,
+                    `var ${resolveFuncTypeUnpack(t.value, id(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${id(f.valueName)}));`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -384,7 +384,7 @@ export function writeStatement(
                         `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_cell`)}(${id(f.map.value)}, 267, ${id(f.keyName)});`,
                     );
                     ctx.append(
-                        `${resolveFuncTypeUnpack(t.value, id(f.valueName), ctx)} = ${ops.readerOpt(t.value, ctx)}(${id(f.valueName)});`,
+                        `${resolveFuncTypeUnpack(t.value, id(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${id(f.valueName)}));`,
                     );
                 });
                 ctx.append(`}`);
