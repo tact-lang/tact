@@ -212,7 +212,7 @@ export function writeStdlib(ctx: WriterContext) {
             `(slice, slice, int) __tact_dict_min(cell dict, int key_len)`,
         );
         ctx.context("stdlib");
-        ctx.asm(`asm(dict key_len) "DICTMIN" "NULLSWAPIFNOT2"`);
+        ctx.asm(`asm(dict key_len -> 1 0 2) "DICTMIN" "NULLSWAPIFNOT2"`);
     });
 
     ctx.fun("__tact_dict_min_ref", () => {
@@ -220,7 +220,7 @@ export function writeStdlib(ctx: WriterContext) {
             `(slice, cell, int) __tact_dict_min_ref(cell dict, int key_len)`,
         );
         ctx.context("stdlib");
-        ctx.asm(`asm(dict key_len) "DICTMINREF" "NULLSWAPIFNOT2"`);
+        ctx.asm(`asm(dict key_len -> 1 0 2) "DICTMINREF" "NULLSWAPIFNOT2"`);
     });
 
     ctx.fun("__tact_dict_next", () => {
@@ -228,7 +228,9 @@ export function writeStdlib(ctx: WriterContext) {
             `(slice, slice, int) __tact_dict_next(cell dict, int key_len, slice pivot)`,
         );
         ctx.context("stdlib");
-        ctx.asm(`asm(index dict key_len) "DICTGETNEXT" "NULLSWAPIFNOT2"`);
+        ctx.asm(
+            `asm(pivot dict key_len -> 1 0 2) "DICTGETNEXT" "NULLSWAPIFNOT2"`,
+        );
     });
 
     ctx.fun("__tact_dict_next_ref", () => {
@@ -1092,7 +1094,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun("__tact_dict_min_slice_int", () => {
         ctx.signature(
-            `(slice, int, int) __tact_dict_min_slice_int(cell d, int kl)`,
+            `(slice, int, int) __tact_dict_min_slice_int(cell d, int kl, int vl)`,
         );
         ctx.flag("inline");
         ctx.context("stdlib");
@@ -1168,7 +1170,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun("__tact_dict_min_slice_uint", () => {
         ctx.signature(
-            `(slice, int, int) __tact_dict_min_slice_uint(cell d, int kl)`,
+            `(slice, int, int) __tact_dict_min_slice_uint(cell d, int kl, int vl)`,
         );
         ctx.flag("inline");
         ctx.context("stdlib");

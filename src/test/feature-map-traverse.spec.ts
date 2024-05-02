@@ -16,6 +16,13 @@ describe("feature-strings", () => {
         await system.run();
 
         // Check methods
-        expect(await contract.getTest1()).toEqual(1000n);
+        expect(await contract.getTestIntInt()).toEqual(1010n);
+        expect(await contract.getTestIntBool()).toEqual(12n);
+        expect(await contract.getTestIntCell()).toEqual(1010n);
+        expect(await contract.getTestIntAddress()).toEqual(28n);
+
+        expect(await contract.getTestAddressInt()).toEqual(1018n);
+
+        expect(await contract.getTestIntStruct()).toEqual(400n);
     });
 });

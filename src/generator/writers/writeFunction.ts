@@ -321,7 +321,7 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_${vkind}`)}(${id(f.map.value)}, 267, ${id(f.keyName)});`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_${vkind}`)}(${id(f.map.value)}, 267, ${id(f.keyName)}, ${vbits});`,
                     );
                 });
                 ctx.append(`}`);

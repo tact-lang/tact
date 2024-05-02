@@ -12,9 +12,6 @@ contract MapTraverseTestContract {
         // Nothing to do
     }
 
-    // possible map keys: Int, Address
-    // possible map values: Int, Bool, Cell, Address, Struct
-
     get fun test_int_int(): Int {
         let m: map<Int, Int> = emptyMap();
         m.set(1, 100);
@@ -22,12 +19,14 @@ contract MapTraverseTestContract {
         m.set(3, 300);
         m.set(4, 400);
 
-        let sum: Int = 0;
+        let sum1: Int = 0;
+        let sum2: Int = 0;
         foreach (k, v in m) {
-            sum += v;
+            sum1 += k;
+            sum2 += v;
         }
 
-        return sum;
+        return sum1 + sum2;
     }
 
     get fun test_int_bool(): Int {
@@ -37,14 +36,19 @@ contract MapTraverseTestContract {
         m.set(3, true);
         m.set(4, false);
 
-        let sum: Int = 0;
+        let sum11: Int = 0;
+        let sum12: Int = 0;
+        let sum21: Int = 0;
         foreach (k, v in m) {
             if (v) {
-                sum += k;
+                sum11 += k;
+                sum12 += 1;
+            } else {
+                sum21 += k;
             }
         }
 
-        return sum;
+        return sum11 + sum12 + sum21;
     }
 
     get fun test_int_cell(): Int {
@@ -54,13 +58,15 @@ contract MapTraverseTestContract {
         m.set(3, beginCell().storeUint(300, 16).endCell());
         m.set(4, beginCell().storeUint(400, 16).endCell());
 
-        let sum: Int = 0;
+        let sum1: Int = 0;
+        let sum2: Int = 0;
         foreach (k, v in m) {
             let s: Slice = v.beginParse();
-            sum += s.loadUint(16);
+            sum1 += k;
+            sum2 += s.loadUint(16);
         }
 
-        return sum;
+        return sum1 + sum2;
     }
 
     get fun test_int_address(): Int {
@@ -70,36 +76,58 @@ contract MapTraverseTestContract {
         m.set(3, newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76875));
         m.set(4, newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76876));
 
-        let sum: Int = 0;
+        let sum1: Int = 0;
+        let sum2: Int = 0;
         foreach (k, v in m) {
             let s: Slice = beginCell().storeAddress(v).endCell().beginParse();
             s.skipBits(264);
-            sum += s.loadUint(3);
+            sum1 += k;
+            sum2 += s.loadUint(3);
         }
 
-        return sum;
+        return sum1 + sum2;
     }
 
-    get fun test_int_struct(): Int? {
-        // let s: MyStruct = MyStruct{a: 100, b: true};
-        // let m: map<Int, MyStruct> = emptyMap();
-        // m.set(1, s);
-        // let s1: MyStruct = m.get(1)!!;
-        // return s1.a;
-
+    get fun test_int_struct(): Int {
         let m: map<Int, MyStruct> = emptyMap();
         m.set(1, MyStruct{a: 100, b: true});
         m.set(2, MyStruct{a: 200, b: false});
         m.set(3, MyStruct{a: 300, b: true});
         m.set(4, MyStruct{a: 400, b: false});
 
-        let sum: Int = 0;
+        let sum11: Int = 0;
+        let sum12: Int = 0;
+        let sum21: Int = 0;
+        let sum22: Int = 0;
         foreach (k, v in m) {
             if (v.b) {
-                sum += v.a;
+                sum11 += k;
+                sum12 += v.a;
+            } else {
+                sum21 += k;
+                sum22 += v.a;
             }
         }
 
-        return sum;
+        return sum11 + sum12 + sum21 + sum22;
+    }
+
+    get fun test_address_int(): Int {
+        let m: map<Address, Int> = emptyMap();
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873), 100);
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76874), 200);
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76875), 300);
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76876), 400);
+
+        let sum1: Int = 0;
+        let sum2: Int = 0;
+        foreach (k, v in m) {
+            let s: Slice = k.asSlice();
+            s.skipBits(264);
+            sum1 += s.loadUint(3);
+            sum2 += v;
+        }
+        
+        return sum1 + sum2;
     }
 }
