@@ -282,19 +282,16 @@ export function writeStatement(
                 ctx.append(
                     `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_cell`)}(${id(f.map.value)}, ${bits});`,
                 );
-                ctx.append(
-                    `var ${resolveFuncTypeUnpack(t.value, id(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${id(f.valueName)}));`,
-                );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
+                    ctx.append(
+                        `var ${resolveFuncTypeUnpack(t.value, id(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${id(f.valueName)}));`,
+                    );
                     for (const s of f.statements) {
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
                         `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_cell`)}(${id(f.map.value)}, ${bits}, ${id(f.keyName)});`,
-                    );
-                    ctx.append(
-                        `${resolveFuncTypeUnpack(t.value, id(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${id(f.valueName)}));`,
                     );
                 });
                 ctx.append(`}`);
@@ -372,19 +369,16 @@ export function writeStatement(
                 ctx.append(
                     `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_cell`)}(${id(f.map.value)}, 267);`,
                 );
-                ctx.append(
-                    `var ${resolveFuncTypeUnpack(t.value, id(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${id(f.valueName)}));`,
-                );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
+                    ctx.append(
+                        `var ${resolveFuncTypeUnpack(t.value, id(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${id(f.valueName)}));`,
+                    );
                     for (const s of f.statements) {
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
                         `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_cell`)}(${id(f.map.value)}, 267, ${id(f.keyName)});`,
-                    );
-                    ctx.append(
-                        `${resolveFuncTypeUnpack(t.value, id(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${id(f.valueName)}));`,
                     );
                 });
                 ctx.append(`}`);
