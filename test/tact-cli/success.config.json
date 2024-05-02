@@ -5,7 +5,7 @@
       "name": "success",
       "path": "./success.tact",
       "output": "./success_output",
-      "mode": "checkOnly"
+      "mode": "full"
     }
   ]
 }

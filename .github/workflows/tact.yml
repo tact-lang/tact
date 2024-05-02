@@ -74,6 +74,13 @@ jobs:
           tact --func test/tact-cli/success.tact
           tact test/tact-cli/success.tact
 
+      - name: CLI Test: Check compilation via `--config`
+        run: |
+          # should output complete results
+          tact --config test/tact-cli/success.config.json
+          # should only run the syntax and type checking
+          tact --config test/tact-cli/success.config.json --check
+
       - name: CLI Test: Check parsing of a non-existing CLI flag
         if: runner.os != 'Windows'
         run: |

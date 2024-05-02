@@ -5,7 +5,7 @@ import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 import { build } from "./pipeline/build";
 import { consoleLogger } from "./logger";
 
-type SingleFileOptions = {
+type AdditionalCliOptions = {
     mode?: ConfigProject["mode"];
 };
 
@@ -63,7 +63,7 @@ export async function run(args: {
     fileName?: string;
     configPath?: string;
     projectNames?: string[];
-    singleFileOptions?: SingleFileOptions;
+    additionalCliOptions?: AdditionalCliOptions;
 }) {
     const configWithRootPath = await loadConfig(args.fileName, args.configPath);
     if (!configWithRootPath) {
@@ -101,14 +101,16 @@ export async function run(args: {
     ); // Improves developer experience
     for (const config of projects) {
         console.log("💼 Compiling project " + config.name + "...");
-        let configAndOptions = { ...config };
+        let cliConfig = { ...config };
 
-        if (configWithRootPath.singleFile) {
-            configAndOptions = { ...config, ...args.singleFileOptions };
+        if (args.additionalCliOptions !== undefined
+            && args.additionalCliOptions.mode !== undefined
+        ) {
+            cliConfig = { ...config, ...args.additionalCliOptions };
         }
 
         const built = await build({
-            config: configAndOptions,
+            config: cliConfig,
             project,
             stdlib,
             logger: consoleLogger,
