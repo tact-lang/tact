@@ -103,8 +103,9 @@ export async function run(args: {
         console.log("💼 Compiling project " + config.name + "...");
         let cliConfig = { ...config };
 
-        if (args.additionalCliOptions !== undefined
-            && args.additionalCliOptions.mode !== undefined
+        if (
+            args.additionalCliOptions !== undefined &&
+            args.additionalCliOptions.mode !== undefined
         ) {
             cliConfig = { ...config, ...args.additionalCliOptions };
         }
