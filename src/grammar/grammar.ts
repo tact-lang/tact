@@ -860,24 +860,18 @@ semantics.addOperation<ASTNode>("resolve_statement", {
         _arg5,
         arg6,
         _arg7,
-        arg8,
-        _arg9,
-        arg10,
-        _arg11,
-        _arg12,
-        arg13,
-        _arg14,
+        _arg8,
+        arg9,
+        _arg10,
     ) {
         checkVariableName(arg2.sourceString, createRef(arg2));
-        checkVariableName(arg6.sourceString, createRef(arg6));
+        checkVariableName(arg4.sourceString, createRef(arg4));
         return createNode({
             kind: "statement_foreach",
             keyName: arg2.sourceString,
-            keyType: arg4.resolve_expression(),
-            valueName: arg6.sourceString,
-            valueType: arg8.resolve_expression(),
-            map: arg10.resolve_expression(),
-            statements: arg13.children.map((v) => v.resolve_statement()),
+            valueName: arg4.sourceString,
+            map: arg6.resolve_expression(),
+            statements: arg9.children.map((v) => v.resolve_statement()),
             ref: createRef(this),
         });
     },

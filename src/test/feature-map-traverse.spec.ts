@@ -16,6 +16,6 @@ describe("feature-strings", () => {
         await system.run();
 
         // Check methods
-        expect(await contract.getTest1()).toEqual(5n);
+        expect(await contract.getTest1()).toEqual(1000n);
     });
 });

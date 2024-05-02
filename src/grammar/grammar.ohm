@@ -123,7 +123,7 @@ Tact {
     StatementUntil = do "{" Statement* "}" until "(" Expression ")" ";"
     StatementTry = try "{" Statement* "}" ~catch --simple
                  | try "{" Statement* "}" catch "(" id ")" "{" Statement* "}" --withCatch
-    StatementForEach = foreach "(" id ":" Type "," id ":" Type "in" id ")" "{" Statement* "}"
+    StatementForEach = foreach "(" id "," id "in" id ")" "{" Statement* "}"
 
     // L-value
     LValue = id "." LValue --more

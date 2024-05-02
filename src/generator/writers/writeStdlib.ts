@@ -497,7 +497,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.body(() => {
             ctx.write(`
                 var (key, value, flag) = idict_get_min?(d, kl);
-                if (ok) {
+                if (flag) {
                     return (key, value~load_int(vl), flag);
                 } else {
                     return (null(), null(), flag);
@@ -508,14 +508,14 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun("__tact_dict_next_int_int", () => {
         ctx.signature(
-            `(int, int, int) __tact_dict_next_int_int(cell d, int kl, int pivot)`,
+            `(int, int, int) __tact_dict_next_int_int(cell d, int kl, int pivot, int vl)`,
         );
         ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (key, value, flag) = idict_get_next?(d, kl, pivot);
-                if (ok) {
+                if (flag) {
                     return (key, value~load_int(vl), flag);
                 } else {
                     return (null(), null(), flag);
@@ -573,7 +573,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.body(() => {
             ctx.write(`
                 var (key, value, flag) = idict_get_min?(d, kl);
-                if (ok) {
+                if (flag) {
                     return (key, value~load_uint(vl), flag);
                 } else {
                     return (null(), null(), flag);
@@ -584,14 +584,14 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun("__tact_dict_next_int_uint", () => {
         ctx.signature(
-            `(int, int, int) __tact_dict_next_int_uint(cell d, int kl, int pivot)`,
+            `(int, int, int) __tact_dict_next_int_uint(cell d, int kl, int pivot, int vl)`,
         );
         ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (key, value, flag) = idict_get_next?(d, kl, pivot);
-                if (ok) {
+                if (flag) {
                     return (key, value~load_uint(vl), flag);
                 } else {
                     return (null(), null(), flag);
@@ -649,7 +649,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.body(() => {
             ctx.write(`
                 var (key, value, flag) = udict_get_min?(d, kl);
-                if (ok) {
+                if (flag) {
                     return (key, value~load_int(vl), flag);
                 } else {
                     return (null(), null(), flag);
@@ -660,14 +660,14 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun("__tact_dict_next_uint_int", () => {
         ctx.signature(
-            `(int, int, int) __tact_dict_next_uint_int(cell d, int kl, int pivot)`,
+            `(int, int, int) __tact_dict_next_uint_int(cell d, int kl, int pivot, int vl)`,
         );
         ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (key, value, flag) = udict_get_next?(d, kl, pivot);
-                if (ok) {
+                if (flag) {
                     return (key, value~load_int(vl), flag);
                 } else {
                     return (null(), null(), flag);
@@ -725,7 +725,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.body(() => {
             ctx.write(`
                 var (key, value, flag) = udict_get_min?(d, kl);
-                if (ok) {
+                if (flag) {
                     return (key, value~load_uint(vl), flag);
                 } else {
                     return (null(), null(), flag);
@@ -736,14 +736,14 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun("__tact_dict_next_uint_uint", () => {
         ctx.signature(
-            `(int, int, int) __tact_dict_next_uint_uint(cell d, int kl, int pivot)`,
+            `(int, int, int) __tact_dict_next_uint_uint(cell d, int kl, int pivot, int vl)`,
         );
         ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
                 var (key, value, flag) = udict_get_next?(d, kl, pivot);
-                if (ok) {
+                if (flag) {
                     return (key, value~load_uint(vl), flag);
                 } else {
                     return (null(), null(), flag);
@@ -799,7 +799,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.body(() => {
             ctx.write(`
                 var (key, value, flag) = idict_get_min_ref?(d, kl);
-                if (ok) {
+                if (flag) {
                     return (key, value, flag);
                 } else {
                     return (null(), null(), flag);
@@ -873,7 +873,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.body(() => {
             ctx.write(`
                 var (key, value, flag) = udict_get_min_ref?(d, kl);
-                if (ok) {
+                if (flag) {
                     return (key, value, flag);
                 } else {
                     return (null(), null(), flag);
@@ -947,7 +947,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.body(() => {
             ctx.write(`
                 var (key, value, flag) = idict_get_min?(d, kl);
-                if (ok) {
+                if (flag) {
                     return (key, value, flag);
                 } else {
                     return (null(), null(), flag);
@@ -1023,7 +1023,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.body(() => {
             ctx.write(`
                 var (key, value, flag) = udict_get_min?(d, kl);
-                if (ok) {
+                if (flag) {
                     return (key, value, flag);
                 } else {
                     return (null(), null(), flag);
@@ -1110,7 +1110,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun("__tact_dict_next_slice_int", () => {
         ctx.signature(
-            `(slice, int, int) __tact_dict_next_slice_int(cell d, int kl, slice pivot)`,
+            `(slice, int, int) __tact_dict_next_slice_int(cell d, int kl, slice pivot, int vl)`,
         );
         ctx.flag("inline");
         ctx.context("stdlib");
@@ -1186,7 +1186,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun("__tact_dict_next_slice_uint", () => {
         ctx.signature(
-            `(slice, int, int) __tact_dict_next_slice_uint(cell d, int kl, slice pivot)`,
+            `(slice, int, int) __tact_dict_next_slice_uint(cell d, int kl, slice pivot, int vl)`,
         );
         ctx.flag("inline");
         ctx.context("stdlib");

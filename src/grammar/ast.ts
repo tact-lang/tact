@@ -494,9 +494,7 @@ export type ASTStatementForEach = {
     kind: "statement_foreach";
     id: number;
     keyName: string;
-    keyType: ASTTypeRefSimple;
     valueName: string;
-    valueType: ASTTypeRefSimple;
     map: ASTID;
     statements: ASTStatement[];
     ref: ASTRef;
