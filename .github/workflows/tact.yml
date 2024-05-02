@@ -28,7 +28,10 @@ jobs:
           cache: "yarn"
 
       - name: Install dependencies
-        run: yarn install
+
+        run: |
+          corepack enable
+          yarn install
 
       - name: Build and Test Tact compiler
         run: |
@@ -54,17 +57,39 @@ jobs:
         run: |
           type examples\output\echo_Echo.pkg
 
-      - name: Compare Tact version from CLI flag `--version` against package.json
+      - name: Install the package locally
+        run: |
+          npm install -g ./
+
+      - name: CLI Test: Compare Tact version from CLI flag `--version` against package.json
         if: runner.os != 'Windows'
         run: |
-          if [ "$(./bin/tact --version)" != "$(jq -r '.version' < package.json)" ];
+          if [ "$(tact --version)" != "$(jq -r '.version' < package.json)" ];
           then false
           fi
 
-      - name: Tact CLI non-zero exit code
+      - name: CLI Test: Check single-contract compilation
+        run: |
+          tact --check test/tact-cli/success.tact
+          tact --func test/tact-cli/success.tact
+          tact test/tact-cli/success.tact
+
+      - name: CLI Test: Check compilation via `--config`
+        run: |
+          # should output complete results
+          tact --config test/tact-cli/success.config.json
+          # should only run the syntax and type checking
+          tact --config test/tact-cli/success.config.json --check
+
+      - name: CLI Test: Check parsing of a non-existing CLI flag
         if: runner.os != 'Windows'
         run: |
-          ! ./bin/tact --config test/tact-cli/tact.config.json
+          ! tact --nonexistentoption test/tact-cli/success.config.json
+
+      - name: CLI Test: tact executable return non-zero exit code if compilation fails
+        if: runner.os != 'Windows'
+        run: |
+          ! tact --config test/tact-cli/fail.config.json
 
       - name: Link Tact compiler
         run: |

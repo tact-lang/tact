@@ -63,9 +63,18 @@ export async function build(args: {
     try {
         ctx = precompile(ctx, project, stdlib, config.path);
     } catch (e) {
-        logger.error("Tact compilation failed");
+        logger.error(
+            config.mode === "checkOnly" || config.mode === "funcOnly"
+                ? "Syntax and type checking failed"
+                : "Tact compilation failed",
+        );
         logger.error(errorToString(e));
         return false;
+    }
+
+    if (config.mode === "checkOnly") {
+        logger.log("✔️ Syntax and type checking succeeded.");
+        return true;
     }
 
     // Compile contracts
@@ -124,6 +133,10 @@ export async function build(args: {
             logger.error("Tact compilation failed");
             logger.error(errorToString(e));
             ok = false;
+            continue;
+        }
+
+        if (config.mode === "funcOnly") {
             continue;
         }
 
@@ -196,6 +209,11 @@ export async function build(args: {
     if (!ok) {
         logger.log("💥 Compilation failed. Skipping packaging");
         return false;
+    }
+
+    if (config.mode === "funcOnly") {
+        logger.log("✔️ FunC code generation succeeded.");
+        return true;
     }
 
     // Package

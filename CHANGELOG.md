@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `pow2` power function with base 2: PR [#267](https://github.com/tact-lang/tact/pull/267)
 - The `try` and `try-catch` statements: PR [#212](https://github.com/tact-lang/tact/pull/212)
 - The `del` method for the `Map` type: PR [#95](https://github.com/tact-lang/tact/pull/95)
+- The `-h`/`--help`, `-v` (short for `--version`), `-p` (short for `--project`), `--func` (for only outputting FunC code) and `--check` (for only doing the syntax and type checking) command-line flags: PR [#287](https://github.com/tact-lang/tact/pull/287)
+- The `mode` enum in project properties of `tact.config.json` for specifying compilation mode: `full` (default), `funcOnly` (only outputs FunC code and exits), or `checkOnly` (only does the syntax and type checking, then exits): PR [#287](https://github.com/tact-lang/tact/pull/287)
 
 ### Changed
 
@@ -34,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use `|` instead of `+` for send mode flags because the bitwise OR operation is idempotent and hence safer: PR [#274](https://github.com/tact-lang/tact/pull/274)
 - Bumped the versions of `@ton/core` and `ohm-js` to the most recent ones: PR [#276](https://github.com/tact-lang/tact/pull/276)
 - Generated `.pkg`-files always use POSIX file paths (even on Windows): PR [# 300](https://github.com/tact-lang/tact/pull/300)
+- The `-p`/`--project` flags now allow specifying more than one project name. Additionally, they also require a `--config` flag to be specified: PR [#287](https://github.com/tact-lang/tact/pull/287)
+- Command-line interface now allows compiling a single Tact file directly, without specifying a config: PR [#287](https://github.com/tact-lang/tact/pull/287)
 
 ### Fixed
 

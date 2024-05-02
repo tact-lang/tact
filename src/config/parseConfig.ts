@@ -20,6 +20,7 @@ const projectSchema = z
         path: z.string(),
         output: z.string(),
         options: optionsSchema.optional(),
+        mode: z.enum(["full", "checkOnly", "funcOnly"]).optional(),
     })
     .strict();
 
