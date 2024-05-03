@@ -36,7 +36,7 @@ describe("feature-map-traversal", () => {
         );
         await expect(
             contract.getTestMapModificationDuringTraversal2(),
-        ).rejects.toThrow("Exit code: -14");
+        ).rejects.toMatchObject(Error("Exit code: -14"));
 
         expect(await contract.getTestMapSize()).toEqual(4n);
     });
