@@ -433,7 +433,7 @@ function processStatements(
             );
 
             // Process inner statements
-            let r = processStatements(s.statements, foreachCtx, ctx);
+            const r = processStatements(s.statements, foreachCtx, ctx);
             ctx = r.ctx;
             foreachCtx = r.sctx;
 

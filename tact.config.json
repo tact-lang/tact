@@ -1,291 +1,291 @@
 {
-    "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/grammar/configSchema.json",
-    "projects": [
-      {
-        "name": "echo",
-        "path": "./examples/echo.tact",
-        "output": "./examples/output"
-      },
-      {
-        "name": "inheritance",
-        "path": "./examples/inheritance.tact",
-        "output": "./examples/output"
-      },
-      {
-        "name": "large",
-        "path": "./examples/large.tact",
-        "output": "./examples/output"
-      },
-      {
-        "name": "native",
-        "path": "./examples/native.tact",
-        "output": "./examples/output"
-      },
-      {
-        "name": "maps",
-        "path": "./examples/maps.tact",
-        "output": "./examples/output"
-      },
-      {
-        "name": "payouts",
-        "path": "./examples/payouts.tact",
-        "output": "./examples/output"
-      },
-      {
-        "name": "external",
-        "path": "./examples/external.tact",
-        "output": "./examples/output",
-        "options": {
-          "external": true
-        }
-      },
-      {
-        "name": "wallet",
-        "path": "./examples/wallet.tact",
-        "output": "./examples/output"
-      },
-      {
-        "name": "wallet-opt",
-        "path": "./examples/wallet-opt.tact",
-        "output": "./examples/output",
-        "options": {
-          "experimental": {
-            "inline": true
-          }
-        }
-      },
-      {
-        "name": "treasure",
-        "path": "./examples/treasure.tact",
-        "output": "./examples/output"
-      },
-      {
-        "name": "multisig",
-        "path": "./examples/multisig.tact",
-        "output": "./examples/output"
-      },
-      {
-        "name": "multisig-3",
-        "path": "./examples/multisig-3.tact",
-        "output": "./examples/output"
-      },
-      {
-        "name": "increment",
-        "path": "./examples/increment.tact",
-        "output": "./examples/output"
-      },
-      {
-        "name": "rugpull",
-        "path": "./examples/rugpull.tact",
-        "output": "./examples/output"
-      },
-      {
-        "name": "maps",
-        "path": "./src/test/features/maps.tact",
-        "output": "./src/test/features/output"
-      },
-      {
-        "name": "map-traverse",
-        "path": "./src/test/features/map-traverse.tact",
-        "output": "./src/test/features/output"
-      },
-      {
-        "name": "optionals",
-        "path": "./src/test/features/optionals.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true,
-          "masterchain": true
-        }
-      },
-      {
-        "name": "serialization",
-        "path": "./src/test/features/serialization.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "serialization-2",
-        "path": "./src/test/features/serialization-2.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "serialization-3",
-        "path": "./src/test/features/serialization-3.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "strings",
-        "path": "./src/test/features/strings.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "constants",
-        "path": "./src/test/features/constants.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "math",
-        "path": "./src/test/features/math.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "dns",
-        "path": "./src/test/features/dns.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "integer-literals",
-        "path": "./src/test/features/integer-literals.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "random",
-        "path": "./src/test/features/random.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "ordering",
-        "path": "./src/test/features/ordering.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "deep",
-        "path": "./src/test/features/deep-sequence.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "bounced-routing",
-        "path": "./src/test/features/bounced-routing.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "debug",
-        "path": "./src/test/features/debug.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "send",
-        "path": "./src/test/features/send.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "intrinsics",
-        "path": "./src/test/features/intrinsics.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "masterchain",
-        "path": "./src/test/features/masterchain.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "try-catch",
-        "path": "./src/test/features/try-catch.tact",
-        "output": "./src/test/features/output"
-      },
-      {
-        "name": "masterchain-allow",
-        "path": "./src/test/features/masterchain.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true,
-          "masterchain": true
-        }
-      },
-      {
-        "name": "address",
-        "path": "./src/test/features/address.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "ternary",
-        "path": "./src/test/features/ternary.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "implicit-init",
-        "path": "./src/test/features/implicit-init.tact",
-        "output": "./src/test/features/output",
-        "options": {
-          "debug": true
-        }
-      },
-      {
-        "name": "benchmark_functions",
-        "path": "./src/benchmarks/contracts/functions.tact",
-        "output": "./src/benchmarks/contracts/output"
-      },
-      {
-        "name": "benchmark_functions_inline",
-        "path": "./src/benchmarks/contracts/functions.tact",
-        "output": "./src/benchmarks/contracts/output",
-        "options": {
-          "experimental": {
-            "inline": true
-          }
-        }
-      },
-      {
-        "name": "bugs",
-        "path": "./src/test/bugs/bugs.tact",
-        "output": "./src/test/bugs/output",
-        "options": {
-          "debug": true
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/grammar/configSchema.json",
+  "projects": [
+    {
+      "name": "echo",
+      "path": "./examples/echo.tact",
+      "output": "./examples/output"
+    },
+    {
+      "name": "inheritance",
+      "path": "./examples/inheritance.tact",
+      "output": "./examples/output"
+    },
+    {
+      "name": "large",
+      "path": "./examples/large.tact",
+      "output": "./examples/output"
+    },
+    {
+      "name": "native",
+      "path": "./examples/native.tact",
+      "output": "./examples/output"
+    },
+    {
+      "name": "maps",
+      "path": "./examples/maps.tact",
+      "output": "./examples/output"
+    },
+    {
+      "name": "payouts",
+      "path": "./examples/payouts.tact",
+      "output": "./examples/output"
+    },
+    {
+      "name": "external",
+      "path": "./examples/external.tact",
+      "output": "./examples/output",
+      "options": {
+        "external": true
+      }
+    },
+    {
+      "name": "wallet",
+      "path": "./examples/wallet.tact",
+      "output": "./examples/output"
+    },
+    {
+      "name": "wallet-opt",
+      "path": "./examples/wallet-opt.tact",
+      "output": "./examples/output",
+      "options": {
+        "experimental": {
+          "inline": true
         }
       }
-    ]
-  }
+    },
+    {
+      "name": "treasure",
+      "path": "./examples/treasure.tact",
+      "output": "./examples/output"
+    },
+    {
+      "name": "multisig",
+      "path": "./examples/multisig.tact",
+      "output": "./examples/output"
+    },
+    {
+      "name": "multisig-3",
+      "path": "./examples/multisig-3.tact",
+      "output": "./examples/output"
+    },
+    {
+      "name": "increment",
+      "path": "./examples/increment.tact",
+      "output": "./examples/output"
+    },
+    {
+      "name": "rugpull",
+      "path": "./examples/rugpull.tact",
+      "output": "./examples/output"
+    },
+    {
+      "name": "maps",
+      "path": "./src/test/features/maps.tact",
+      "output": "./src/test/features/output"
+    },
+    {
+      "name": "map-traverse",
+      "path": "./src/test/features/map-traverse.tact",
+      "output": "./src/test/features/output"
+    },
+    {
+      "name": "optionals",
+      "path": "./src/test/features/optionals.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true,
+        "masterchain": true
+      }
+    },
+    {
+      "name": "serialization",
+      "path": "./src/test/features/serialization.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "serialization-2",
+      "path": "./src/test/features/serialization-2.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "serialization-3",
+      "path": "./src/test/features/serialization-3.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "strings",
+      "path": "./src/test/features/strings.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "constants",
+      "path": "./src/test/features/constants.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "math",
+      "path": "./src/test/features/math.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "dns",
+      "path": "./src/test/features/dns.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "integer-literals",
+      "path": "./src/test/features/integer-literals.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "random",
+      "path": "./src/test/features/random.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "ordering",
+      "path": "./src/test/features/ordering.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "deep",
+      "path": "./src/test/features/deep-sequence.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "bounced-routing",
+      "path": "./src/test/features/bounced-routing.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "debug",
+      "path": "./src/test/features/debug.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "send",
+      "path": "./src/test/features/send.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "intrinsics",
+      "path": "./src/test/features/intrinsics.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "masterchain",
+      "path": "./src/test/features/masterchain.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "try-catch",
+      "path": "./src/test/features/try-catch.tact",
+      "output": "./src/test/features/output"
+    },
+    {
+      "name": "masterchain-allow",
+      "path": "./src/test/features/masterchain.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true,
+        "masterchain": true
+      }
+    },
+    {
+      "name": "address",
+      "path": "./src/test/features/address.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "ternary",
+      "path": "./src/test/features/ternary.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "implicit-init",
+      "path": "./src/test/features/implicit-init.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "benchmark_functions",
+      "path": "./src/benchmarks/contracts/functions.tact",
+      "output": "./src/benchmarks/contracts/output"
+    },
+    {
+      "name": "benchmark_functions_inline",
+      "path": "./src/benchmarks/contracts/functions.tact",
+      "output": "./src/benchmarks/contracts/output",
+      "options": {
+        "experimental": {
+          "inline": true
+        }
+      }
+    },
+    {
+      "name": "bugs",
+      "path": "./src/test/bugs/bugs.tact",
+      "output": "./src/test/bugs/output",
+      "options": {
+        "debug": true
+      }
+    }
+  ]
+}

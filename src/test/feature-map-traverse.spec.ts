@@ -9,9 +9,9 @@ describe("feature-strings", () => {
     });
     it("should implement map traverse correctly", async () => {
         // Init
-        let system = await ContractSystem.create();
-        let treasure = system.treasure("treasure");
-        let contract = system.open(await MapTraverseTestContract.fromInit());
+        const system = await ContractSystem.create();
+        const treasure = system.treasure("treasure");
+        const contract = system.open(await MapTraverseTestContract.fromInit());
         await contract.send(treasure, { value: toNano("10") }, null);
         await system.run();
 

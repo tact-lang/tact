@@ -774,7 +774,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         }
     }
     if (node.kind === "statement_foreach") {
-        for (let e of node.statements) {
+        for (const e of node.statements) {
             traverse(e, callback);
         }
     }
