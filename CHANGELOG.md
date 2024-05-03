@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [1.3.0] - 2024-05-03
+
+### Added
+
 - `log2` and `log` math functions in `@stdlib/math`: PR [#166](https://github.com/tact-lang/tact/pull/166)
 - Reserve mode constants in `@stdlib/reserve`, namely `ReserveExact`, `ReserveAllExcept`, `ReserveAtMost`, `ReserveAddOriginalBalance`, `ReserveInvertSign`, `ReserveBounceIfActionFail`: PR [#173](https://github.com/tact-lang/tact/pull/173)
 - Support for string escape sequences (`\\`, `\"`, `\n`, `\r`, `\t`, `\v`, `\b`, `\f`, `\u{0}` through `\u{FFFFFF}`, `\u0000` through `\uFFFF`, `\x00` through `\xFF`): PR [#192](https://github.com/tact-lang/tact/pull/192)
