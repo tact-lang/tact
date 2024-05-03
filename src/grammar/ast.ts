@@ -490,6 +490,16 @@ export type ASTStatementTryCatch = {
     ref: ASTRef;
 };
 
+export type ASTStatementForEach = {
+    kind: "statement_foreach";
+    id: number;
+    keyName: string;
+    valueName: string;
+    map: ASTID;
+    statements: ASTStatement[];
+    ref: ASTRef;
+};
+
 //
 // Unions
 //
@@ -505,7 +515,8 @@ export type ASTStatement =
     | ASTStatementUntil
     | ASTStatementRepeat
     | ASTStatementTry
-    | ASTStatementTryCatch;
+    | ASTStatementTryCatch
+    | ASTStatementForEach;
 export type ASTNode =
     | ASTExpression
     | ASTStruct
@@ -534,6 +545,7 @@ export type ASTNode =
     | ASTStatementRepeat
     | ASTStatementTry
     | ASTStatementTryCatch
+    | ASTStatementForEach
     | ASTReceive
     | ASTLvalueRef
     | ASTString
@@ -758,6 +770,11 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
             traverse(e, callback);
         }
         for (const e of node.catchStatements) {
+            traverse(e, callback);
+        }
+    }
+    if (node.kind === "statement_foreach") {
+        for (const e of node.statements) {
             traverse(e, callback);
         }
     }

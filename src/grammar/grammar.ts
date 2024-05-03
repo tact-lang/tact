@@ -851,6 +851,30 @@ semantics.addOperation<ASTNode>("resolve_statement", {
             ref: createRef(this),
         });
     },
+    StatementForEach(
+        _arg0,
+        _arg1,
+        arg2,
+        _arg3,
+        arg4,
+        _arg5,
+        arg6,
+        _arg7,
+        _arg8,
+        arg9,
+        _arg10,
+    ) {
+        checkVariableName(arg2.sourceString, createRef(arg2));
+        checkVariableName(arg4.sourceString, createRef(arg4));
+        return createNode({
+            kind: "statement_foreach",
+            keyName: arg2.sourceString,
+            valueName: arg4.sourceString,
+            map: arg6.resolve_expression(),
+            statements: arg9.children.map((v) => v.resolve_statement()),
+            ref: createRef(this),
+        });
+    },
 });
 
 // LValue

@@ -85,6 +85,11 @@
       "output": "./src/test/features/output"
     },
     {
+      "name": "map-traverse",
+      "path": "./src/test/features/map-traverse.tact",
+      "output": "./src/test/features/output"
+    },
+    {
       "name": "optionals",
       "path": "./src/test/features/optionals.tact",
       "output": "./src/test/features/output",

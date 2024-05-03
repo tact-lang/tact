@@ -177,7 +177,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     }
                 }
 
-                throwError(`set expects a map with Int keys`, ref);
+                throwError(`set expects a map with Int or Address keys`, ref);
             },
         },
     ],

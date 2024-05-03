@@ -297,6 +297,61 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "asm(dict key_len -> 1 0 2) "DICTMIN" "NULLSWAPIFNOT2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_min",
+    "signature": "(slice, slice, int) __tact_dict_min(cell dict, int key_len)",
+  },
+  {
+    "code": {
+      "code": "asm(dict key_len -> 1 0 2) "DICTMINREF" "NULLSWAPIFNOT2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_min_ref",
+    "signature": "(slice, cell, int) __tact_dict_min_ref(cell dict, int key_len)",
+  },
+  {
+    "code": {
+      "code": "asm(pivot dict key_len -> 1 0 2) "DICTGETNEXT" "NULLSWAPIFNOT2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_next",
+    "signature": "(slice, slice, int) __tact_dict_next(cell dict, int key_len, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(dict, key_len, pivot);
+if (flag) {
+    return (key, value~load_ref(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {},
+    "name": "__tact_dict_next_ref",
+    "signature": "(slice, cell, int) __tact_dict_next_ref(cell dict, int key_len, slice pivot)",
+  },
+  {
+    "code": {
       "code": "asm "STRDUMP" "DROP" "s0 DUMP" "DROP"",
       "kind": "asm",
     },
@@ -608,6 +663,44 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_int",
+    "signature": "(int, int, int) __tact_dict_min_int_int(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_int",
+    "signature": "(int, int, int) __tact_dict_next_int_int(cell d, int kl, int pivot, int vl)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = idict_delete?(d, kl, k);
     return (r, ());
@@ -643,6 +736,44 @@ if (ok) {
     },
     "name": "__tact_dict_get_int_uint",
     "signature": "int __tact_dict_get_int_uint(cell d, int kl, int k, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_uint",
+    "signature": "(int, int, int) __tact_dict_min_int_uint(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_uint",
+    "signature": "(int, int, int) __tact_dict_next_int_uint(cell d, int kl, int pivot, int vl)",
   },
   {
     "code": {
@@ -684,6 +815,44 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_int",
+    "signature": "(int, int, int) __tact_dict_min_uint_int(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_int",
+    "signature": "(int, int, int) __tact_dict_next_uint_int(cell d, int kl, int pivot, int vl)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = udict_delete?(d, kl, k);
     return (r, ());
@@ -719,6 +888,44 @@ if (ok) {
     },
     "name": "__tact_dict_get_uint_uint",
     "signature": "int __tact_dict_get_uint_uint(cell d, int kl, int k, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_uint",
+    "signature": "(int, int, int) __tact_dict_min_uint_uint(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_uint",
+    "signature": "(int, int, int) __tact_dict_next_uint_uint(cell d, int kl, int pivot, int vl)",
   },
   {
     "code": {
@@ -760,6 +967,44 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = idict_get_min_ref?(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_cell",
+    "signature": "(int, cell, int) __tact_dict_min_int_cell(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_ref(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_cell",
+    "signature": "(int, cell, int) __tact_dict_next_int_cell(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = udict_delete?(d, kl, k);
     return (r, ());
@@ -795,6 +1040,44 @@ if (ok) {
     },
     "name": "__tact_dict_get_uint_cell",
     "signature": "cell __tact_dict_get_uint_cell(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min_ref?(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_cell",
+    "signature": "(int, cell, int) __tact_dict_min_uint_cell(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_ref(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_cell",
+    "signature": "(int, cell, int) __tact_dict_next_uint_cell(cell d, int kl, int pivot)",
   },
   {
     "code": {
@@ -836,6 +1119,44 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_slice",
+    "signature": "(int, slice, int) __tact_dict_min_int_slice(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_slice",
+    "signature": "(int, slice, int) __tact_dict_next_int_slice(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = udict_delete?(d, kl, k);
     return (r, ());
@@ -871,6 +1192,44 @@ if (ok) {
     },
     "name": "__tact_dict_get_uint_slice",
     "signature": "slice __tact_dict_get_uint_slice(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_slice",
+    "signature": "(int, slice, int) __tact_dict_min_uint_slice(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_slice",
+    "signature": "(int, slice, int) __tact_dict_next_uint_slice(cell d, int kl, int pivot)",
   },
   {
     "code": {
@@ -916,6 +1275,48 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_int",
+    "signature": "(slice, int, int) __tact_dict_min_slice_int(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_int",
+    "signature": "(slice, int, int) __tact_dict_next_slice_int(cell d, int kl, slice pivot, int vl)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = __tact_dict_delete(d, kl, k);
     return (r, ());
@@ -955,6 +1356,48 @@ if (ok) {
     },
     "name": "__tact_dict_get_slice_uint",
     "signature": "int __tact_dict_get_slice_uint(cell d, int kl, slice k, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_uint",
+    "signature": "(slice, int, int) __tact_dict_min_slice_uint(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_uint",
+    "signature": "(slice, int, int) __tact_dict_next_slice_uint(cell d, int kl, slice pivot, int vl)",
   },
   {
     "code": {
@@ -1001,6 +1444,48 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = __tact_dict_min_ref(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min_ref",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_cell",
+    "signature": "(slice, cell, int) __tact_dict_min_slice_cell(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_ref(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_cell",
+    "signature": "(slice, cell, int) __tact_dict_next_slice_cell(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = __tact_dict_delete(d, kl, k);
     return (r, ());
@@ -1040,6 +1525,43 @@ if (ok) {
     },
     "name": "__tact_dict_get_slice_slice",
     "signature": "slice __tact_dict_get_slice_slice(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_slice",
+    "signature": "(slice, slice, int) __tact_dict_min_slice_slice(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "return __tact_dict_next(d, kl, pivot);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_slice",
+    "signature": "(slice, slice, int) __tact_dict_next_slice_slice(cell d, int kl, slice pivot)",
   },
   {
     "code": {
@@ -4361,6 +4883,61 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "asm(dict key_len -> 1 0 2) "DICTMIN" "NULLSWAPIFNOT2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_min",
+    "signature": "(slice, slice, int) __tact_dict_min(cell dict, int key_len)",
+  },
+  {
+    "code": {
+      "code": "asm(dict key_len -> 1 0 2) "DICTMINREF" "NULLSWAPIFNOT2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_min_ref",
+    "signature": "(slice, cell, int) __tact_dict_min_ref(cell dict, int key_len)",
+  },
+  {
+    "code": {
+      "code": "asm(pivot dict key_len -> 1 0 2) "DICTGETNEXT" "NULLSWAPIFNOT2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_next",
+    "signature": "(slice, slice, int) __tact_dict_next(cell dict, int key_len, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(dict, key_len, pivot);
+if (flag) {
+    return (key, value~load_ref(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {},
+    "name": "__tact_dict_next_ref",
+    "signature": "(slice, cell, int) __tact_dict_next_ref(cell dict, int key_len, slice pivot)",
+  },
+  {
+    "code": {
       "code": "asm "STRDUMP" "DROP" "s0 DUMP" "DROP"",
       "kind": "asm",
     },
@@ -4672,6 +5249,44 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_int",
+    "signature": "(int, int, int) __tact_dict_min_int_int(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_int",
+    "signature": "(int, int, int) __tact_dict_next_int_int(cell d, int kl, int pivot, int vl)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = idict_delete?(d, kl, k);
     return (r, ());
@@ -4707,6 +5322,44 @@ if (ok) {
     },
     "name": "__tact_dict_get_int_uint",
     "signature": "int __tact_dict_get_int_uint(cell d, int kl, int k, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_uint",
+    "signature": "(int, int, int) __tact_dict_min_int_uint(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_uint",
+    "signature": "(int, int, int) __tact_dict_next_int_uint(cell d, int kl, int pivot, int vl)",
   },
   {
     "code": {
@@ -4748,6 +5401,44 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_int",
+    "signature": "(int, int, int) __tact_dict_min_uint_int(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_int",
+    "signature": "(int, int, int) __tact_dict_next_uint_int(cell d, int kl, int pivot, int vl)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = udict_delete?(d, kl, k);
     return (r, ());
@@ -4783,6 +5474,44 @@ if (ok) {
     },
     "name": "__tact_dict_get_uint_uint",
     "signature": "int __tact_dict_get_uint_uint(cell d, int kl, int k, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_uint",
+    "signature": "(int, int, int) __tact_dict_min_uint_uint(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_uint",
+    "signature": "(int, int, int) __tact_dict_next_uint_uint(cell d, int kl, int pivot, int vl)",
   },
   {
     "code": {
@@ -4824,6 +5553,44 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = idict_get_min_ref?(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_cell",
+    "signature": "(int, cell, int) __tact_dict_min_int_cell(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_ref(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_cell",
+    "signature": "(int, cell, int) __tact_dict_next_int_cell(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = udict_delete?(d, kl, k);
     return (r, ());
@@ -4859,6 +5626,44 @@ if (ok) {
     },
     "name": "__tact_dict_get_uint_cell",
     "signature": "cell __tact_dict_get_uint_cell(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min_ref?(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_cell",
+    "signature": "(int, cell, int) __tact_dict_min_uint_cell(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_ref(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_cell",
+    "signature": "(int, cell, int) __tact_dict_next_uint_cell(cell d, int kl, int pivot)",
   },
   {
     "code": {
@@ -4900,6 +5705,44 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_slice",
+    "signature": "(int, slice, int) __tact_dict_min_int_slice(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_slice",
+    "signature": "(int, slice, int) __tact_dict_next_int_slice(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = udict_delete?(d, kl, k);
     return (r, ());
@@ -4935,6 +5778,44 @@ if (ok) {
     },
     "name": "__tact_dict_get_uint_slice",
     "signature": "slice __tact_dict_get_uint_slice(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_slice",
+    "signature": "(int, slice, int) __tact_dict_min_uint_slice(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_slice",
+    "signature": "(int, slice, int) __tact_dict_next_uint_slice(cell d, int kl, int pivot)",
   },
   {
     "code": {
@@ -4980,6 +5861,48 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_int",
+    "signature": "(slice, int, int) __tact_dict_min_slice_int(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_int",
+    "signature": "(slice, int, int) __tact_dict_next_slice_int(cell d, int kl, slice pivot, int vl)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = __tact_dict_delete(d, kl, k);
     return (r, ());
@@ -5019,6 +5942,48 @@ if (ok) {
     },
     "name": "__tact_dict_get_slice_uint",
     "signature": "int __tact_dict_get_slice_uint(cell d, int kl, slice k, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_uint",
+    "signature": "(slice, int, int) __tact_dict_min_slice_uint(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_uint",
+    "signature": "(slice, int, int) __tact_dict_next_slice_uint(cell d, int kl, slice pivot, int vl)",
   },
   {
     "code": {
@@ -5065,6 +6030,48 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = __tact_dict_min_ref(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min_ref",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_cell",
+    "signature": "(slice, cell, int) __tact_dict_min_slice_cell(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_ref(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_cell",
+    "signature": "(slice, cell, int) __tact_dict_next_slice_cell(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = __tact_dict_delete(d, kl, k);
     return (r, ());
@@ -5104,6 +6111,43 @@ if (ok) {
     },
     "name": "__tact_dict_get_slice_slice",
     "signature": "slice __tact_dict_get_slice_slice(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_slice",
+    "signature": "(slice, slice, int) __tact_dict_min_slice_slice(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "return __tact_dict_next(d, kl, pivot);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_slice",
+    "signature": "(slice, slice, int) __tact_dict_next_slice_slice(cell d, int kl, slice pivot)",
   },
   {
     "code": {
@@ -8425,6 +9469,61 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "asm(dict key_len -> 1 0 2) "DICTMIN" "NULLSWAPIFNOT2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_min",
+    "signature": "(slice, slice, int) __tact_dict_min(cell dict, int key_len)",
+  },
+  {
+    "code": {
+      "code": "asm(dict key_len -> 1 0 2) "DICTMINREF" "NULLSWAPIFNOT2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_min_ref",
+    "signature": "(slice, cell, int) __tact_dict_min_ref(cell dict, int key_len)",
+  },
+  {
+    "code": {
+      "code": "asm(pivot dict key_len -> 1 0 2) "DICTGETNEXT" "NULLSWAPIFNOT2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_next",
+    "signature": "(slice, slice, int) __tact_dict_next(cell dict, int key_len, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(dict, key_len, pivot);
+if (flag) {
+    return (key, value~load_ref(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {},
+    "name": "__tact_dict_next_ref",
+    "signature": "(slice, cell, int) __tact_dict_next_ref(cell dict, int key_len, slice pivot)",
+  },
+  {
+    "code": {
       "code": "asm "STRDUMP" "DROP" "s0 DUMP" "DROP"",
       "kind": "asm",
     },
@@ -8736,6 +9835,44 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_int",
+    "signature": "(int, int, int) __tact_dict_min_int_int(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_int",
+    "signature": "(int, int, int) __tact_dict_next_int_int(cell d, int kl, int pivot, int vl)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = idict_delete?(d, kl, k);
     return (r, ());
@@ -8771,6 +9908,44 @@ if (ok) {
     },
     "name": "__tact_dict_get_int_uint",
     "signature": "int __tact_dict_get_int_uint(cell d, int kl, int k, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_uint",
+    "signature": "(int, int, int) __tact_dict_min_int_uint(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_uint",
+    "signature": "(int, int, int) __tact_dict_next_int_uint(cell d, int kl, int pivot, int vl)",
   },
   {
     "code": {
@@ -8812,6 +9987,44 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_int",
+    "signature": "(int, int, int) __tact_dict_min_uint_int(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_int",
+    "signature": "(int, int, int) __tact_dict_next_uint_int(cell d, int kl, int pivot, int vl)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = udict_delete?(d, kl, k);
     return (r, ());
@@ -8847,6 +10060,44 @@ if (ok) {
     },
     "name": "__tact_dict_get_uint_uint",
     "signature": "int __tact_dict_get_uint_uint(cell d, int kl, int k, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_uint",
+    "signature": "(int, int, int) __tact_dict_min_uint_uint(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_uint",
+    "signature": "(int, int, int) __tact_dict_next_uint_uint(cell d, int kl, int pivot, int vl)",
   },
   {
     "code": {
@@ -8888,6 +10139,44 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = idict_get_min_ref?(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_cell",
+    "signature": "(int, cell, int) __tact_dict_min_int_cell(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_ref(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_cell",
+    "signature": "(int, cell, int) __tact_dict_next_int_cell(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = udict_delete?(d, kl, k);
     return (r, ());
@@ -8923,6 +10212,44 @@ if (ok) {
     },
     "name": "__tact_dict_get_uint_cell",
     "signature": "cell __tact_dict_get_uint_cell(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min_ref?(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_cell",
+    "signature": "(int, cell, int) __tact_dict_min_uint_cell(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_ref(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_cell",
+    "signature": "(int, cell, int) __tact_dict_next_uint_cell(cell d, int kl, int pivot)",
   },
   {
     "code": {
@@ -8964,6 +10291,44 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_slice",
+    "signature": "(int, slice, int) __tact_dict_min_int_slice(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_slice",
+    "signature": "(int, slice, int) __tact_dict_next_int_slice(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = udict_delete?(d, kl, k);
     return (r, ());
@@ -8999,6 +10364,44 @@ if (ok) {
     },
     "name": "__tact_dict_get_uint_slice",
     "signature": "slice __tact_dict_get_uint_slice(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_slice",
+    "signature": "(int, slice, int) __tact_dict_min_uint_slice(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_slice",
+    "signature": "(int, slice, int) __tact_dict_next_uint_slice(cell d, int kl, int pivot)",
   },
   {
     "code": {
@@ -9044,6 +10447,48 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_int",
+    "signature": "(slice, int, int) __tact_dict_min_slice_int(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_int(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_int",
+    "signature": "(slice, int, int) __tact_dict_next_slice_int(cell d, int kl, slice pivot, int vl)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = __tact_dict_delete(d, kl, k);
     return (r, ());
@@ -9083,6 +10528,48 @@ if (ok) {
     },
     "name": "__tact_dict_get_slice_uint",
     "signature": "int __tact_dict_get_slice_uint(cell d, int kl, slice k, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_uint",
+    "signature": "(slice, int, int) __tact_dict_min_slice_uint(cell d, int kl, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_uint(vl), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_uint",
+    "signature": "(slice, int, int) __tact_dict_next_slice_uint(cell d, int kl, slice pivot, int vl)",
   },
   {
     "code": {
@@ -9129,6 +10616,48 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (key, value, flag) = __tact_dict_min_ref(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min_ref",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_cell",
+    "signature": "(slice, cell, int) __tact_dict_min_slice_cell(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_ref(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_cell",
+    "signature": "(slice, cell, int) __tact_dict_next_slice_cell(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
       "code": "if (null?(v)) {
     var (r, ok) = __tact_dict_delete(d, kl, k);
     return (r, ());
@@ -9168,6 +10697,43 @@ if (ok) {
     },
     "name": "__tact_dict_get_slice_slice",
     "signature": "slice __tact_dict_get_slice_slice(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value, flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_slice",
+    "signature": "(slice, slice, int) __tact_dict_min_slice_slice(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "return __tact_dict_next(d, kl, pivot);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_slice",
+    "signature": "(slice, slice, int) __tact_dict_next_slice_slice(cell d, int kl, slice pivot)",
   },
   {
     "code": {

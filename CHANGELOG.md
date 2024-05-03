@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `del` method for the `Map` type: PR [#95](https://github.com/tact-lang/tact/pull/95)
 - The `-h`/`--help`, `-v` (short for `--version`), `-p` (short for `--project`), `--func` (for only outputting FunC code) and `--check` (for only doing the syntax and type checking) command-line flags: PR [#287](https://github.com/tact-lang/tact/pull/287)
 - The `mode` enum in project properties of `tact.config.json` for specifying compilation mode: `full` (default), `funcOnly` (only outputs FunC code and exits), or `checkOnly` (only does the syntax and type checking, then exits): PR [#287](https://github.com/tact-lang/tact/pull/287)
+- The `foreach` loop for the `Map` type: PR [#106](https://github.com/tact-lang/tact/pull/106)
 
 ### Changed
 

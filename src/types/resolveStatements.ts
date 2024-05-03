@@ -402,6 +402,53 @@ function processStatements(
             for (const r of removed) {
                 initialCtx = removeRequiredVariable(r, initialCtx);
             }
+        } else if (s.kind === "statement_foreach") {
+            let initialCtx = sctx; // Preserve initial context to use later for merging
+
+            // Resolve map expression
+            ctx = resolveExpression(s.map, sctx, ctx);
+
+            // Check if map is valid
+            const mapVariable = sctx.vars.get(s.map.value);
+            if (!mapVariable || mapVariable.kind !== "map") {
+                throwError(`Variable ${s.map.value} is not a map`, s.ref);
+            }
+
+            // Add key and value to statement context
+            if (initialCtx.vars.has(s.keyName)) {
+                throwError(`Variable already exists: ${s.keyName}`, s.ref);
+            }
+            let foreachCtx = addVariable(
+                s.keyName,
+                { kind: "ref", name: mapVariable.key, optional: false },
+                initialCtx,
+            );
+            if (foreachCtx.vars.has(s.valueName)) {
+                throwError(`Variable already exists: ${s.valueName}`, s.ref);
+            }
+            foreachCtx = addVariable(
+                s.valueName,
+                { kind: "ref", name: mapVariable.value, optional: false },
+                foreachCtx,
+            );
+
+            // Process inner statements
+            const r = processStatements(s.statements, foreachCtx, ctx);
+            ctx = r.ctx;
+            foreachCtx = r.sctx;
+
+            // Merge statement contexts (similar to catch block merging)
+            const removed: string[] = [];
+            for (const f of initialCtx.requiredFields) {
+                if (!foreachCtx.requiredFields.find((v) => v === f)) {
+                    removed.push(f);
+                }
+            }
+            for (const r of removed) {
+                initialCtx = removeRequiredVariable(r, initialCtx);
+            }
+
+            sctx = initialCtx; // Re-assign the modified initial context back to sctx after merging
         } else {
             throw Error("Unknown statement");
         }
