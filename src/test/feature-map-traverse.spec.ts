@@ -3,11 +3,11 @@ import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
 import { MapTraverseTestContract } from "./features/output/map-traverse_MapTraverseTestContract";
 
-describe("feature-strings", () => {
+describe("feature-map-traversal", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    it("should implement map traverse correctly", async () => {
+    it("should implement map traversal correctly", async () => {
         // Init
         const system = await ContractSystem.create();
         const treasure = system.treasure("treasure");
@@ -30,5 +30,14 @@ describe("feature-strings", () => {
 
         expect(await contract.getTestEmptyMap()).toEqual(0n);
         expect(await contract.getTestNull()).toEqual(0n);
+
+        expect(await contract.getTestMapModificationDuringTraversal1()).toEqual(
+            808n,
+        );
+        await expect(
+            contract.getTestMapModificationDuringTraversal2(),
+        ).rejects.toThrow("Exit code: -14");
+
+        expect(await contract.getTestMapSize()).toEqual(4n);
     });
 });

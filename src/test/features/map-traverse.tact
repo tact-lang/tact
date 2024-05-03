@@ -226,7 +226,7 @@ contract MapTraverseTestContract {
         let m: map<Int, Int> = emptyMap();
         let sum: Int = 0;
         foreach (k, v in m) {
-            sum += k + v;
+            return 42;
         }
         return sum;
     }
@@ -235,8 +235,47 @@ contract MapTraverseTestContract {
         let m: map<Int, Int> = null;
         let sum: Int = 0;
         foreach (k, v in m) {
+            return 42;
+        }
+        return sum;
+    }
+
+    get fun test_map_modification_during_traversal1(): Int {
+        let m: map<Int, Int> = emptyMap();
+        m.set(1, 100);
+        m.set(2, 200);
+        m.set(3, 300);
+        m.set(4, 400);
+        let sum: Int = 0;
+        foreach (k, v in m) {
+            m.del(2);
             sum += k + v;
         }
         return sum;
+    }
+
+    // out of gas: always inserts a new key during traversal
+    get fun test_map_modification_during_traversal2() {
+        let m: map<Int, Int> = emptyMap();
+        m.set(1, 100);
+        let sum: Int = 0;
+        foreach (k, v in m) {
+            m.set(k + 1, v + 1);
+        }
+    }
+
+    // map size: we actually cannot express this as a user-defined function
+    // because we don't have bounded polymorphism in the language
+    get fun test_map_size(): Int {
+        let m: map<Int, Int> = emptyMap();
+        m.set(1, 100);
+        m.set(2, 200);
+        m.set(3, 300);
+        m.set(4, 400);
+        let size: Int = 0;
+        foreach (k, v in m) {
+            size += 1;
+        }
+        return size;
     }
 }
