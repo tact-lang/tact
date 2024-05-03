@@ -31,14 +31,17 @@
             "properties": {
               "debug": {
                 "type": "boolean",
+                "default": false,
                 "description": "False by default. If set to true, enables debug output of a contract and allows usage of `dump()` function, which is useful for debugging purposes. With this option enabled, the contract will report that it was compiled in debug mode using the supported_interfaces method.\n\nRead more on debugging Tact code: https://docs.tact-lang.org/book/debug."
               },
               "masterchain": {
                 "type": "boolean",
+                "default": false,
                 "description": "False by default. If set to true, enables masterchain support.\n\nRead more about masterchain: https://docs.tact-lang.org/book/masterchain."
               },
               "external": {
                 "type": "boolean",
+                "default": false,
                 "description": "False by default. If set to true, enables support of external message receivers.\n\nRead more about external message receivers: https://docs.tact-lang.org/book/external."
               },
               "experimental": {
@@ -47,11 +50,19 @@
                 "properties": {
                   "inline": {
                     "type": "boolean",
+                    "default": false,
                     "description": "False by default. If set to true, enables inlining of all functions in contracts. This can reduce gas usage at the cost of bigger contracts."
                   }
                 }
               }
             }
+          },
+          "mode": {
+            "type": "string",
+            "default": "full",
+            "enum": ["full", "checkOnly", "funcOnly"],
+            "title": "Compilation mode of the project.",
+            "description": "Set to `full` by default, which runs the whole pipeline of the compilation and emits FunC code, BoC and various utility files, including wrappers for TypeScript.\nIf set to `checkOnly`, only performs syntax and type checking, preventing further compilation.\nIf set to `funcOnly`, only outputs intermediate FunC code, preventing further compilation."
           }
         }
       }
