@@ -27,5 +27,8 @@ describe("feature-strings", () => {
         expect(await contract.getTestAddressCell()).toEqual(1018n);
         expect(await contract.getTestAddressAddress()).toEqual(26n);
         expect(await contract.getTestAddressStruct()).toEqual(1018n);
+
+        expect(await contract.getTestEmptyMap()).toEqual(0n);
+        expect(await contract.getTestNull()).toEqual(0n);
     });
 });

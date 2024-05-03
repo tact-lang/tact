@@ -221,4 +221,22 @@ contract MapTraverseTestContract {
 
         return sum11 + sum12 + sum21 + sum22;
     }
+
+    get fun test_empty_map(): Int {
+        let m: map<Int, Int> = emptyMap();
+        let sum: Int = 0;
+        foreach (k, v in m) {
+            sum += k + v;
+        }
+        return sum;
+    }
+
+    get fun test_null(): Int {
+        let m: map<Int, Int> = null;
+        let sum: Int = 0;
+        foreach (k, v in m) {
+            sum += k + v;
+        }
+        return sum;
+    }
 }
