@@ -124,7 +124,7 @@ export type ASTTypeRef = ASTTypeRefSimple | ASTTypeRefMap | ASTTypeRefBounced;
 // Expressions
 //
 
-export type ASTBinaryOperations =
+export type ASTBinaryOperation =
     | "+"
     | "-"
     | "*"
@@ -147,7 +147,7 @@ export type ASTBinaryOperations =
 export type ASTOpBinary = {
     kind: "op_binary";
     id: number;
-    op: ASTBinaryOperations;
+    op: ASTBinaryOperation;
     left: ASTExpression;
     right: ASTExpression;
     ref: ASTRef;
@@ -259,7 +259,7 @@ export type ASTStruct = {
     ref: ASTRef;
 };
 
-export type ASTTraitDeclarations =
+export type ASTTraitDeclaration =
     | ASTField
     | ASTFunction
     | ASTReceive
@@ -272,7 +272,7 @@ export type ASTTrait = {
     name: string;
     traits: ASTString[];
     attributes: ASTContractAttribute[];
-    declarations: ASTTraitDeclarations[];
+    declarations: ASTTraitDeclaration[];
     ref: ASTRef;
 };
 
@@ -307,7 +307,7 @@ export type ASTContractAttribute = {
     ref: ASTRef;
 };
 
-export type ASTContractDeclarations =
+export type ASTContractDeclaration =
     | ASTField
     | ASTFunction
     | ASTInitFunction
@@ -321,7 +321,7 @@ export type ASTContract = {
     name: string;
     traits: ASTString[];
     attributes: ASTContractAttribute[];
-    declarations: ASTContractDeclarations[];
+    declarations: ASTContractDeclaration[];
     ref: ASTRef;
 };
 
@@ -443,12 +443,12 @@ export type ASTSTatementAssign = {
     ref: ASTRef;
 };
 
-export type ASTAugmentedAssignOperations = "+" | "-" | "*" | "/" | "%";
+export type ASTAugmentedAssignOperation = "+" | "-" | "*" | "/" | "%";
 
 export type ASTSTatementAugmentedAssign = {
     kind: "statement_augmentedassign";
     id: number;
-    op: ASTAugmentedAssignOperations;
+    op: ASTAugmentedAssignOperation;
     path: ASTLvalueRef[];
     expression: ASTExpression;
     ref: ASTRef;
