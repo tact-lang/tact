@@ -153,12 +153,12 @@ export type ASTOpBinary = {
     ref: ASTRef;
 };
 
-export type ASTUnaryOperations = "+" | "-" | "!" | "!!";
+export type ASTUnaryOperation = "+" | "-" | "!" | "!!";
 
 export type ASTOpUnary = {
     kind: "op_unary";
     id: number;
-    op: ASTUnaryOperations;
+    op: ASTUnaryOperation;
     right: ASTExpression;
     ref: ASTRef;
 };
