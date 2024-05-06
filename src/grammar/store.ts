@@ -92,24 +92,3 @@ export function openContext(
     });
     return ctx;
 }
-
-/**
- * Creates a mock compiler context for testing, populated with predefined AST elements.
- */
-export function openMockContext(
-    ctx: CompilerContext,
-    types: ASTType[],
-    functions: (ASTNativeFunction | ASTFunction)[],
-    constants: ASTConstant[],
-) {
-    const sources: TactSource[] = [];
-    const funcSources: { code: string; path: string }[] = [];
-    ctx = store.set(ctx, "types", {
-        sources,
-        funcSources,
-        functions,
-        constants,
-        types,
-    });
-    return ctx;
-}
