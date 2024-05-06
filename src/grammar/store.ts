@@ -1,10 +1,24 @@
-import { ASTConstant, ASTFunction, ASTNativeFunction, ASTType } from "./ast";
+import {
+    ASTProgram,
+    ASTConstant,
+    ASTFunction,
+    ASTNativeFunction,
+    ASTType,
+} from "./ast";
 import { CompilerContext, createContextStore } from "../context";
 import { parse } from "./grammar";
 import { TypeOrigin } from "../types/types";
 
-type ASTStore = {
-    sources: { code: string; path: string }[];
+export type TactSource = { code: string; path: string; origin: TypeOrigin };
+
+/**
+ * Represents the storage for all AST-related data within the compiler context.
+ * @property functions AST entries representing top-level functions.
+ * @property constants AST entries representing top-level constant definitions.
+ * @property types AST entries representing structures, contracts, and traits.
+ */
+export type ASTStore = {
+    sources: TactSource[];
     funcSources: { code: string; path: string }[];
     functions: (ASTFunction | ASTNativeFunction)[];
     constants: ASTConstant[];
@@ -13,6 +27,12 @@ type ASTStore = {
 
 const store = createContextStore<ASTStore>();
 
+/**
+ * Retrieves the raw AST for the given context.
+ * @param ctx The compiler context from which the AST is retrieved.
+ * @throws Will throw an error if the AST is not found in the context.
+ * @returns The AST types associated with the context.
+ */
 export function getRawAST(ctx: CompilerContext) {
     const r = store.get(ctx, "types");
     if (!r) {
@@ -21,33 +41,45 @@ export function getRawAST(ctx: CompilerContext) {
     return r;
 }
 
-export function openContext(
-    ctx: CompilerContext,
-    sources: { code: string; path: string; origin: TypeOrigin }[],
-    funcSources: { code: string; path: string }[],
-) {
-    const asts = sources.map((source) =>
+/**
+ * Parses multiple Tact source files into AST programs.
+ */
+export function parsePrograms(sources: TactSource[]) {
+    return sources.map((source) =>
         parse(source.code, source.path, source.origin),
     );
+}
+
+/**
+ * Extends the compiler context by adding AST entries and source information from
+ * given sources and parsed programs.
+ * @returns The updated compiler context.
+ */
+export function openContext(
+    ctx: CompilerContext,
+    programs: ASTProgram[],
+    sources: TactSource[],
+    funcSources: { code: string; path: string }[],
+) {
     const types: ASTType[] = [];
     const functions: (ASTNativeFunction | ASTFunction)[] = [];
     const constants: ASTConstant[] = [];
-    for (const a of asts) {
-        for (const e of a.entries) {
+    for (const program of programs) {
+        for (const entry of program.entries) {
             if (
-                e.kind === "def_struct" ||
-                e.kind === "def_contract" ||
-                e.kind === "def_trait" ||
-                e.kind === "primitive"
+                entry.kind === "def_struct" ||
+                entry.kind === "def_contract" ||
+                entry.kind === "def_trait" ||
+                entry.kind === "primitive"
             ) {
-                types.push(e);
+                types.push(entry);
             } else if (
-                e.kind === "def_function" ||
-                e.kind === "def_native_function"
+                entry.kind === "def_function" ||
+                entry.kind === "def_native_function"
             ) {
-                functions.push(e);
-            } else if (e.kind === "def_constant") {
-                constants.push(e);
+                functions.push(entry);
+            } else if (entry.kind === "def_constant") {
+                constants.push(entry);
             }
         }
     }
@@ -61,15 +93,16 @@ export function openContext(
     return ctx;
 }
 
-// Creates a mock context with the given AST elements needed for testing
-// purposes
+/**
+ * Creates a mock compiler context for testing, populated with predefined AST elements.
+ */
 export function openMockContext(
     ctx: CompilerContext,
     types: ASTType[],
     functions: (ASTNativeFunction | ASTFunction)[],
     constants: ASTConstant[],
 ) {
-    const sources: { code: string; path: string }[] = [];
+    const sources: TactSource[] = [];
     const funcSources: { code: string; path: string }[] = [];
     ctx = store.set(ctx, "types", {
         sources,

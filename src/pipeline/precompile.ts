@@ -1,7 +1,7 @@
 import { CompilerContext } from "../context";
 import { resolveDescriptors } from "../types/resolveDescriptors";
 import { resolveAllocations } from "../storage/resolveAllocation";
-import { openContext } from "../grammar/store";
+import { openContext, parsePrograms } from "../grammar/store";
 import { resolveStatements } from "../types/resolveStatements";
 import { resolveErrors } from "../types/resolveErrors";
 import { resolveSignatures } from "../types/resolveSignatures";
@@ -17,8 +17,11 @@ export function precompile(
     // Load all sources
     const imported = resolveImports({ entrypoint, project, stdlib });
 
-    // Perform initial compiler steps
-    ctx = openContext(ctx, imported.tact, imported.func);
+    // Parse AST entries from Tact sources
+    const programs = parsePrograms(imported.tact);
+
+    // Add information about all the source code entries to the context
+    ctx = openContext(ctx, programs, imported.tact, imported.func);
 
     // First load type descriptors and check that
     //       they all have valid signatures
