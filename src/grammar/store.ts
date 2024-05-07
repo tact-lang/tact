@@ -44,7 +44,7 @@ export function getRawAST(ctx: CompilerContext) {
 /**
  * Parses multiple Tact source files into AST programs.
  */
-export function parsePrograms(sources: TactSource[]) {
+export function parsePrograms(sources: TactSource[]): ASTProgram[] {
     return sources.map((source) =>
         parse(source.code, source.path, source.origin),
     );
@@ -53,14 +53,16 @@ export function parsePrograms(sources: TactSource[]) {
 /**
  * Extends the compiler context by adding AST entries and source information from
  * given sources and parsed programs.
+ * @param parsedPrograms An optional array of previously parsed programs. If not defined, they will be parsed from `sources`.
  * @returns The updated compiler context.
  */
 export function openContext(
     ctx: CompilerContext,
-    programs: ASTProgram[],
     sources: TactSource[],
     funcSources: { code: string; path: string }[],
-) {
+    parsedPrograms?: ASTProgram[],
+): CompilerContext {
+    const programs = parsedPrograms ? parsedPrograms : parsePrograms(sources);
     const types: ASTType[] = [];
     const functions: (ASTNativeFunction | ASTFunction)[] = [];
     const constants: ASTConstant[] = [];

@@ -17,11 +17,8 @@ export function precompile(
     // Load all sources
     const imported = resolveImports({ entrypoint, project, stdlib });
 
-    // Parse AST entries from Tact sources
-    const programs = parsePrograms(imported.tact);
-
     // Add information about all the source code entries to the context
-    ctx = openContext(ctx, programs, imported.tact, imported.func);
+    ctx = openContext(ctx, imported.tact, imported.func);
 
     // First load type descriptors and check that
     //       they all have valid signatures
