@@ -124,37 +124,41 @@ export type ASTTypeRef = ASTTypeRefSimple | ASTTypeRefMap | ASTTypeRefBounced;
 // Expressions
 //
 
+export type ASTBinaryOperation =
+    | "+"
+    | "-"
+    | "*"
+    | "/"
+    | "!="
+    | ">"
+    | "<"
+    | ">="
+    | "<="
+    | "=="
+    | "&&"
+    | "||"
+    | "%"
+    | "<<"
+    | ">>"
+    | "&"
+    | "|"
+    | "^";
+
 export type ASTOpBinary = {
     kind: "op_binary";
     id: number;
-    op:
-        | "+"
-        | "-"
-        | "*"
-        | "/"
-        | "!="
-        | ">"
-        | "<"
-        | ">="
-        | "<="
-        | "=="
-        | "&&"
-        | "||"
-        | "%"
-        | "<<"
-        | ">>"
-        | "&"
-        | "|"
-        | "^";
+    op: ASTBinaryOperation;
     left: ASTExpression;
     right: ASTExpression;
     ref: ASTRef;
 };
 
+export type ASTUnaryOperation = "+" | "-" | "!" | "!!";
+
 export type ASTOpUnary = {
     kind: "op_unary";
     id: number;
-    op: "+" | "-" | "!" | "!!";
+    op: ASTUnaryOperation;
     right: ASTExpression;
     ref: ASTRef;
 };
@@ -221,19 +225,20 @@ export type ASTConditional = {
 // Program
 //
 
+export type ASTProgramEntry =
+    | ASTStruct
+    | ASTContract
+    | ASTPrimitive
+    | ASTFunction
+    | ASTNativeFunction
+    | ASTTrait
+    | ASTProgramImport
+    | ASTConstant;
+
 export type ASTProgram = {
     kind: "program";
     id: number;
-    entries: (
-        | ASTStruct
-        | ASTContract
-        | ASTPrimitive
-        | ASTFunction
-        | ASTNativeFunction
-        | ASTTrait
-        | ASTProgramImport
-        | ASTConstant
-    )[];
+    entries: ASTProgramEntry[];
 };
 
 export type ASTProgramImport = {
@@ -254,6 +259,12 @@ export type ASTStruct = {
     ref: ASTRef;
 };
 
+export type ASTTraitDeclaration =
+    | ASTField
+    | ASTFunction
+    | ASTReceive
+    | ASTConstant;
+
 export type ASTTrait = {
     kind: "def_trait";
     origin: TypeOrigin;
@@ -261,7 +272,7 @@ export type ASTTrait = {
     name: string;
     traits: ASTString[];
     attributes: ASTContractAttribute[];
-    declarations: (ASTField | ASTFunction | ASTReceive | ASTConstant)[];
+    declarations: ASTTraitDeclaration[];
     ref: ASTRef;
 };
 
@@ -296,6 +307,13 @@ export type ASTContractAttribute = {
     ref: ASTRef;
 };
 
+export type ASTContractDeclaration =
+    | ASTField
+    | ASTFunction
+    | ASTInitFunction
+    | ASTReceive
+    | ASTConstant;
+
 export type ASTContract = {
     kind: "def_contract";
     origin: TypeOrigin;
@@ -303,13 +321,7 @@ export type ASTContract = {
     name: string;
     traits: ASTString[];
     attributes: ASTContractAttribute[];
-    declarations: (
-        | ASTField
-        | ASTFunction
-        | ASTInitFunction
-        | ASTReceive
-        | ASTConstant
-    )[];
+    declarations: ASTContractDeclaration[];
     ref: ASTRef;
 };
 
@@ -431,10 +443,12 @@ export type ASTSTatementAssign = {
     ref: ASTRef;
 };
 
+export type ASTAugmentedAssignOperation = "+" | "-" | "*" | "/" | "%";
+
 export type ASTSTatementAugmentedAssign = {
     kind: "statement_augmentedassign";
     id: number;
-    op: "+" | "-" | "*" | "/" | "%";
+    op: ASTAugmentedAssignOperation;
     path: ASTLvalueRef[];
     expression: ASTExpression;
     ref: ASTRef;

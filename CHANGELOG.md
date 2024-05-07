@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Refactor AST types to simplify access to third-party tools: PR [#325](https://github.com/tact-lang/tact/pull/325)
+
 ### Fixed
 
 ## [1.3.0] - 2024-05-03
