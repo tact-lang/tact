@@ -29,7 +29,7 @@
           },
           "options": {
             "type": "object",
-            "description": "Compilation options for the project.\n\nIn Blueprint, they act as default unless modified in `wrappers/ContractName.compile.ts`",
+            "description": "Compilation options for the project.\n\nIn Blueprint, they act as default unless modified in `wrappers/ContractName.compile.ts`.",
             "properties": {
               "debug": {
                 "type": "boolean",
