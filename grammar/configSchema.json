@@ -15,19 +15,21 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Name of the project. All generated files are prefixed with it."
+            "description": "Name of the project. All generated files are prefixed with it.\n\nIn Blueprint, `name` refers to the name of the contract itself."
           },
           "path": {
             "type": "string",
-            "description": "Path to the project's Tact file. You can only specify one Tact file per project.\n\nIn Blueprint projects, `path` is superseded by the field `target` in `wrappers/ProjectName.compile.ts`."
+            "description": "Path to the project's Tact file. You can only specify one Tact file per project.\n\nIn Blueprint, `path` is superseded by the `target` field in `wrappers/ContractName.compile.ts`.",
+            "examples": ["./path/to/contract.tact"]
           },
           "output": {
             "type": "string",
-            "description": "Path to the directory where all generated files will be placed.\n\nIn Blueprint projects, `output` is unused and all generated files are always placed in `build/ProjectName/`."
+            "description": "Path to the directory where all generated files will be placed.\n\nIn Blueprint, `output` is not used and all generated files are always placed in `build/ProjectName/`.",
+            "examples": ["./path/to/output/directory"]
           },
           "options": {
             "type": "object",
-            "description": "Compilation options for the project.",
+            "description": "Compilation options for the project.\n\nIn Blueprint, they act as default unless modified in `wrappers/ContractName.compile.ts`",
             "properties": {
               "debug": {
                 "type": "boolean",
@@ -61,7 +63,7 @@
             "type": "string",
             "default": "full",
             "enum": ["full", "checkOnly", "funcOnly"],
-            "title": "Compilation mode of the project.",
+            "title": "Compilation mode of the project. In Blueprint, it's always set to `full` and cannot be overwritten.",
             "description": "Set to `full` by default, which runs the whole pipeline of the compilation and emits FunC code, BoC and various utility files, including wrappers for TypeScript.\nIf set to `checkOnly`, only performs syntax and type checking, preventing further compilation.\nIf set to `funcOnly`, only outputs intermediate FunC code, preventing further compilation."
           }
         }
