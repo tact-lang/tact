@@ -3,7 +3,7 @@ struct A {
     y: Int;
 }
 
-const a: A = new { x: 1 };
+const a: A = A { x: 1 };
 
 fun getA(): A {
     return A {
@@ -17,7 +17,7 @@ message B {
     y: Int;
 }
 
-const b: B = new {
+const b: B = B {
     x: 2,
     y: 3,
 };
