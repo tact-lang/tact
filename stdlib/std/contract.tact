@@ -19,3 +19,27 @@ native newAddress(chain: Int, hash: Int): Address;
 asm fun myAddress(): Address { MYADDR }
 
 asm fun myBalance(): Int { BALANCE FIRST }
+
+@name(gas_consumed)
+native gasConsumed(): Int;
+
+@name(get_compute_fee)
+native getComputeFee(workchain: Int, gas_used: Int): Int;
+
+@name(get_storage_fee)
+native getStorageFee(workchain: Int, seconds: Int, bits: Int, cells: Int): Int;
+
+@name(get_storage_fee)
+native getForwardFee(workchain: Int, bits: Int, cells: Int): Int;
+
+@name(get_simple_compute_fee)
+native getSimpleComputeFee(workchain: Int, gas_used: Int): Int;
+
+@name(get_simple_forward_fee)
+native getSimpleForwardFee(workchain: Int, bits: Int, cells: Int): Int;
+
+@name(get_original_fwd_fee)
+native getOriginalFwdFee(workchain: Int, fwd_fee: Int): Int;
+
+@name(my_storage_due)
+native myStorageDue(): Int;
