@@ -1,6 +1,9 @@
 @name(send_raw_message)
 native nativeSendMessage(cell: Cell, mode: Int);
 
+@name(send_message)
+native nativeSendMessageReturnForwardFee(cell: Cell, mode: Int): Int;
+
 const SendRemainingBalance: Int = 128;
 const SendRemainingValue: Int = 64;
 const SendIgnoreErrors: Int = 2;
@@ -18,7 +21,7 @@ struct SendParameters {
     data: Cell? = null;
 }
 
-fun send(params: SendParameters) {
+fun send(params: SendParameters): Int {
     let b: Builder = beginCell();
     b = b.storeInt(1, 2); // internal_message + ihd_disabled
     b = b.storeBool(params.bounce); // bounce
@@ -66,7 +69,7 @@ fun send(params: SendParameters) {
 
     // Send
     let c: Cell = b.endCell();
-    nativeSendMessage(c, params.mode);
+    return nativeSendMessageReturnForwardFee(c, params.mode);
 }
 
 inline fun emit(body: Cell) {
