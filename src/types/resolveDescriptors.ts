@@ -25,6 +25,7 @@ import {
     TypeOrigin,
     TypeRef,
     typeRefEquals,
+    VariableDescription,
 } from "./types";
 import { getRawAST } from "../grammar/store";
 import { cloneNode } from "../grammar/clone";
@@ -38,6 +39,7 @@ import { isRuntimeType } from "./isRuntimeType";
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
 const staticConstantsStore = createContextStore<ConstantDescription>();
+const variablesStore = createContextStore<VariableDescription>();
 
 function verifyMapType(
     key: string,
@@ -1558,12 +1560,15 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const [k, t] of types) {
         ctx = store.set(ctx, k, t);
+        //ctx = variablesStore.set(ctx, k, t);
     }
     for (const [k, t] of staticFunctions) {
         ctx = staticFunctionsStore.set(ctx, k, t);
+        ctx = variablesStore.set(ctx, k, t);
     }
     for (const [k, t] of staticConstants) {
         ctx = staticConstantsStore.set(ctx, k, t);
+        ctx = variablesStore.set(ctx, k, t);
     }
 
     return ctx;
@@ -1600,6 +1605,21 @@ export function getStaticFunction(
 
 export function hasStaticFunction(ctx: CompilerContext, name: string) {
     return !!staticFunctionsStore.get(ctx, name);
+}
+
+export function getVariable(
+    ctx: CompilerContext,
+    name: string,
+): VariableDescription {
+    const r = variablesStore.get(ctx, name);
+    if (!r) {
+        throw Error("Variable " + name + " not found");
+    }
+    return r;
+}
+
+export function hasVariable(ctx: CompilerContext, name: string) {
+    return !!variablesStore.get(ctx, name);
 }
 
 export function getStaticConstant(

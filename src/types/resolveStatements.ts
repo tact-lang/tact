@@ -4,6 +4,7 @@ import { isAssignable } from "./isAssignable";
 import {
     getAllStaticFunctions,
     getAllTypes,
+    hasVariable,
     resolveTypeRef,
 } from "./resolveDescriptors";
 import {
@@ -180,6 +181,9 @@ function processStatements(
                 );
             }
 
+            if (hasVariable(ctx, s.name)) {
+                throwError(`Variable already defined : ${s.name}`, s.ref);
+            }
             // Add variable to statement context
             if (sctx.vars.has(s.name)) {
                 throwError(`Variable already exists: ${s.name}`, s.ref);

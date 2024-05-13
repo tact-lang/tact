@@ -510,6 +510,16 @@ Line 8, col 12:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-51 1`] = `
+"<unknown>:4:5: Variable already defined : rec
+Line 4, col 5:
+  3 | fun rec(): Int {
+> 4 |     let rec: Int = 42;  // shadowing error
+          ^~~~~~~~~~~~~~~~~~
+  5 |     return rec;
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
@@ -1043,11 +1053,11 @@ exports[`resolveStatements should resolve statements for case-11 1`] = `
     "Int",
   ],
   [
-    "toString",
+    "number",
     "Int",
   ],
   [
-    "dump(toString)",
+    "dump(number)",
     "<void>",
   ],
 ]
