@@ -580,6 +580,26 @@ Line 7, col 9:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-underscore-name-access 1`] = `
+"<unknown>:6:16: Unable to resolve id _
+Line 6, col 16:
+  5 |     foreach (_, _ in m) {
+> 6 |         return _;
+                     ^
+  7 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-underscore-name-access2 1`] = `
+"<unknown>:7:14: Unable to resolve id _
+Line 7, col 14:
+  6 |     foreach (_, v in m) {
+> 7 |         x += _;
+                   ^
+  8 |     }
+"
+`;
+
 exports[`resolveStatements should resolve statements for contract-receiver-bounced 1`] = `
 [
   [
@@ -1598,6 +1618,48 @@ exports[`resolveStatements should resolve statements for var-scope-valueOf-fun 1
   ],
   [
     "valueOf(1, 10)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-underscore-name-in-foreach 1`] = `
+[
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "m",
+    "map<Int, Int>",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-underscore-name-in-foreach2 1`] = `
+[
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "m",
+    "map<Int, Int>",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "x",
     "Int",
   ],
 ]

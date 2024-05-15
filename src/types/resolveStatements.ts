@@ -64,6 +64,9 @@ function addVariable(
     if (src.vars.has(name)) {
         throw Error("Variable already exists: " + name); // Should happen earlier
     }
+    if (name == "_") {
+        throw Error("Variable name cannot be '_'");
+    }
     return {
         ...src,
         vars: new Map(src.vars).set(name, ref),
@@ -388,15 +391,22 @@ function processStatements(
             const r = processStatements(s.statements, sctx, ctx);
             ctx = r.ctx;
 
+            let catchCtx = sctx;
+
             // Process catchName variable for exit code
-            if (initialCtx.vars.has(s.catchName)) {
-                throwError(`Variable already exists: "${s.catchName}"`, s.ref);
+            if (s.catchName != "_") {
+                if (initialCtx.vars.has(s.catchName)) {
+                    throwError(
+                        `Variable already exists: "${s.catchName}"`,
+                        s.ref,
+                    );
+                }
+                catchCtx = addVariable(
+                    s.catchName,
+                    { kind: "ref", name: "Int", optional: false },
+                    initialCtx,
+                );
             }
-            let catchCtx = addVariable(
-                s.catchName,
-                { kind: "ref", name: "Int", optional: false },
-                initialCtx,
-            );
 
             // Process catch statements
             const rCatch = processStatements(s.catchStatements, catchCtx, ctx);
@@ -432,23 +442,35 @@ function processStatements(
                 );
             }
 
+            let foreachCtx = sctx;
+
             // Add key and value to statement context
-            if (initialCtx.vars.has(s.keyName)) {
-                throwError(`Variable already exists: "${s.keyName}"`, s.ref);
+            if (s.keyName != "_") {
+                if (initialCtx.vars.has(s.keyName)) {
+                    throwError(
+                        `Variable already exists: "${s.keyName}"`,
+                        s.ref,
+                    );
+                }
+                foreachCtx = addVariable(
+                    s.keyName,
+                    { kind: "ref", name: mapType.key, optional: false },
+                    initialCtx,
+                );
             }
-            let foreachCtx = addVariable(
-                s.keyName,
-                { kind: "ref", name: mapType.key, optional: false },
-                initialCtx,
-            );
-            if (foreachCtx.vars.has(s.valueName)) {
-                throwError(`Variable already exists: "${s.valueName}"`, s.ref);
+            if (s.valueName != "_") {
+                if (foreachCtx.vars.has(s.valueName)) {
+                    throwError(
+                        `Variable already exists: "${s.valueName}"`,
+                        s.ref,
+                    );
+                }
+                foreachCtx = addVariable(
+                    s.valueName,
+                    { kind: "ref", name: mapType.value, optional: false },
+                    foreachCtx,
+                );
             }
-            foreachCtx = addVariable(
-                s.valueName,
-                { kind: "ref", name: mapType.value, optional: false },
-                foreachCtx,
-            );
 
             // Process inner statements
             const r = processStatements(s.statements, foreachCtx, ctx);
