@@ -44,6 +44,10 @@ contract MathTester with Deployable {
     get fun xor(a: Int, b: Int): Int {
         return a ^ b;
     }
+    
+    get fun bitwise_not(a: Int): Int {
+        return ~a;
+    }
 
     //
     // Augmented assignment

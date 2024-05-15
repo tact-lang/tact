@@ -453,6 +453,10 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             return "(~ " + writeExpression(f.right, ctx) + ")";
         }
 
+        if (f.op === "~") {
+            return "(~ " + writeExpression(f.right, ctx) + ")";
+        }
+
         if (f.op === "-") {
             return "(- " + writeExpression(f.right, ctx) + ")";
         }
