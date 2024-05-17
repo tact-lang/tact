@@ -389,7 +389,7 @@ class PrettyPrinter {
         const stmtsFormatted = func.statements
             ? func.statements
                   .map((stmt) => this.ppASTStatement(stmt))
-                  .join(",\n" + this.indent())
+                  .join("\n" + this.indent())
             : "";
         const body = func.statements
             ? `{\n${this.indent()}${stmtsFormatted}`
