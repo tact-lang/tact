@@ -13,6 +13,10 @@ export function resolveFuncTypeFromAbi(
     for (const f of fields) {
         if (f.kind === "dict") {
             res.push("cell");
+        } else if (f.kind === "merkle") {
+            const t = getType(ctx.ctx, f.name);
+            const loaded = t.fields.map((v) => v.abi.type);
+            res.push("(int, " + resolveFuncTypeFromAbi(loaded, ctx) + ")");
         } else if (f.kind === "simple") {
             if (f.type === "int" || f.type === "uint" || f.type === "bool") {
                 res.push("int");

@@ -27,6 +27,11 @@ export const typeFormat = z.union([
             .optional()
             .nullable(),
     }),
+    z.object({
+        kind: z.literal("merkle"),
+        type: z.string(),
+        name: z.string(),
+    }),
 ]);
 
 export const initFormat = z.object({

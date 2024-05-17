@@ -297,6 +297,16 @@ export function resolveABIType(src: ASTField): ABITypeRef {
         return { kind: "dict", key, keyFormat, value, valueFormat };
     }
 
+    // Merkle Proof
+
+    if (src.type.kind === "type_ref_merkle_proof") {
+        return {
+            kind: "merkle",
+            type: "proof",
+            name: src.type.name,
+        };
+    }
+
     throwError(`Unsupported type`, src.ref);
 }
 
@@ -430,6 +440,14 @@ export function createABITypeRefFromTypeRef(
 
     if (src.kind === "ref_bounced") {
         throw Error("Unexpected bounced reference");
+    }
+
+    if (src.kind === "merkle_proof") {
+        return {
+            kind: "merkle",
+            type: "proof",
+            name: src.name,
+        };
     }
 
     throw Error(`Unsupported type`);

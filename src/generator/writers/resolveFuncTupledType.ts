@@ -25,6 +25,10 @@ export function resolveFuncTupledType(
         return "()";
     }
 
+    if (descriptor.kind === "merkle_proof") {
+        return "tuple";
+    }
+
     // TypeDescription
     if (descriptor.kind === "primitive") {
         if (descriptor.name === "Int") {

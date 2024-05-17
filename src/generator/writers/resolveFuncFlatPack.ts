@@ -32,6 +32,16 @@ export function resolveFuncFlatPack(
         throw Error("Void type is not allowed in function arguments: " + name);
     }
 
+    if (descriptor.kind === "merkle_proof") {
+        return [name + `'rootHash`].concat(
+            resolveFuncFlatPack(
+                getType(ctx.ctx, descriptor.name),
+                name + `'data`,
+                ctx,
+            ),
+        );
+    }
+
     // TypeDescription
     if (descriptor.kind === "primitive") {
         return [name];

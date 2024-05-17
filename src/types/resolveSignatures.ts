@@ -124,6 +124,13 @@ export function resolveSignatures(ctx: CompilerContext) {
             return src.name + ":dict<" + key + ", " + value + ">";
         }
 
+        if (src.type.kind === "merkle") {
+            if (src.type.type === "proof") {
+                return src.name + ":merkle_proof<" + src.type.name + ">";
+            }
+            throw Error("Unsupported merkle type " + src.type.type);
+        }
+
         throw Error("Unsupported ABI field");
     }
 

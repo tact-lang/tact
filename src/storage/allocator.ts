@@ -47,6 +47,8 @@ export function getOperationSize(src: AllocationOperationType): {
         }
     } else if (src.kind === "map") {
         return { bits: 1, refs: 1 };
+    } else if (src.kind === "merkle_proof") {
+        return { bits: 0, refs: 1 };
     } else if (src.kind === "struct") {
         if (src.ref) {
             if (src.optional) {
@@ -293,6 +295,14 @@ export function getAllocationOperationFromField(
             throw Error("Unsupported map format " + src.format);
         }
         return { kind: "map" };
+    }
+
+    // Merkle proof and update
+    if (src.kind === "merkle") {
+        if (src.type === "proof") {
+            return { kind: "merkle_proof", dataType: src.name };
+        }
+        throw Error("Unsupported merkle type " + src.type);
     }
 
     throw new Error("Unsupported operation");

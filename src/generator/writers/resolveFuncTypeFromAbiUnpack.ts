@@ -14,6 +14,12 @@ export function resolveFuncTypeFromAbiUnpack(
     for (const f of fields) {
         if (f.type.kind === "dict") {
             res.push(`${name}'${f.name}`);
+        } else if (f.type.kind === "merkle") {
+            const t = getType(ctx.ctx, f.type.name);
+            const loaded = t.fields.map((v) => v.abi);
+            res.push(
+                resolveFuncTypeFromAbiUnpack(`${name}'${f.name}`, loaded, ctx),
+            );
         } else if (f.type.kind === "simple") {
             if (
                 f.type.type === "int" ||
