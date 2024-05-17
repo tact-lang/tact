@@ -56,7 +56,9 @@ class PrettyPrinter {
     }
 
     private formatList<T>(list: T[], formatter: (item: T) => string): string {
-        return list.map(formatter).join(",\n" + this.indent());
+        return list
+            .map((item) => formatter.call(this, item))
+            .join(",\n" + this.indent());
     }
 
     ppASTPrimitive(primitive: ASTPrimitive): string {
@@ -206,9 +208,19 @@ class PrettyPrinter {
 
     ppASTProgram(program: ASTProgram): string {
         const entriesFormatted = program.entries
-            .map((entry) => this.ppProgramItem(entry))
-            .join("\n\n");
-        return entriesFormatted;
+            .map((entry, index, array) => {
+                const formattedEntry = this.ppProgramItem(entry);
+                const nextEntry = array[index + 1];
+                if (
+                    entry.kind === "def_constant" &&
+                    nextEntry?.kind === "def_constant"
+                ) {
+                    return formattedEntry;
+                }
+                return formattedEntry + "\n";
+            })
+            .join("\n");
+        return entriesFormatted.trim();
     }
 
     ppProgramItem(
@@ -316,8 +328,19 @@ class PrettyPrinter {
             .join(", ");
         this.increaseIndent();
         const bodyFormatted = contract.declarations
-            .map((dec) => this.ppContractBody(dec))
-            .join("\n\n");
+            .map((dec, index, array) => {
+                const formattedDec = this.ppContractBody(dec);
+                const nextDec = array[index + 1];
+                if (
+                    (dec.kind === "def_constant" &&
+                        nextDec?.kind === "def_constant") ||
+                    (dec.kind === "def_field" && nextDec?.kind === "def_field")
+                ) {
+                    return formattedDec;
+                }
+                return formattedDec + "\n";
+            })
+            .join("\n");
         this.decreaseIndent();
         const header = traitsFormatted
             ? `contract ${contract.name} with ${traitsFormatted}`
@@ -326,7 +349,7 @@ class PrettyPrinter {
             .map((attr) => `@interface("${attr.name.value}")`)
             .join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
-        return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}\n${this.indent()}}`;
+        return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted.trim()}\n${this.indent()}}`;
     }
 
     ppContractBody(
