@@ -3,6 +3,7 @@ import {
     ASTProgramImport,
     ASTNativeFunction,
     ASTProgram,
+    ASTLvalueRef,
     ASTTypeRefBounced,
     ASTTypeRefMap,
     ASTTypeRefSimple,
@@ -465,16 +466,23 @@ class PrettyPrinter {
         return `${this.indent()}${this.ppASTExpression(statement.expression)};`;
     }
 
+    ppASTLvalueRef(lvalues: ASTLvalueRef[]) {
+        return lvalues
+            .reduce((acc, lvalue) => {
+                acc.push(lvalue.name);
+                return acc;
+            }, [] as string[])
+            .join(".");
+    }
+
     ppASTStatementAssign(statement: ASTSTatementAssign): string {
-        // NOTE: Multiple lvalues are not supported
-        return `${this.indent()}${statement.path[0].name} = ${this.ppASTExpression(statement.expression)};`;
+        return `${this.indent()}${this.ppASTLvalueRef(statement.path)} = ${this.ppASTExpression(statement.expression)};`;
     }
 
     ppASTStatementAugmentedAssign(
         statement: ASTSTatementAugmentedAssign,
     ): string {
-        // NOTE: Multiple lvalues are not supported
-        return `${this.indent()}${statement.path[0].name} ${statement.op} ${this.ppASTExpression(statement.expression)};`;
+        return `${this.indent()}${this.ppASTLvalueRef(statement.path)} ${statement.op} ${this.ppASTExpression(statement.expression)};`;
     }
 
     ppASTCondition(statement: ASTCondition): string {
