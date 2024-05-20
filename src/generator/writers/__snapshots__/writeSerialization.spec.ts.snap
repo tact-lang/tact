@@ -3676,7 +3676,7 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "asm "UBITSIZE DEC"",
+      "code": "asm "DUP 5 THROWIFNOT UBITSIZE DEC"",
       "kind": "asm",
     },
     "comment": null,
@@ -3688,7 +3688,9 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "if (num < base) {
+      "code": "throw_unless(5, num > 0);
+throw_unless(5, base > 1);
+if (num < base) {
     return 0;
 }
 int result = 0;
@@ -8262,7 +8264,7 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "asm "UBITSIZE DEC"",
+      "code": "asm "DUP 5 THROWIFNOT UBITSIZE DEC"",
       "kind": "asm",
     },
     "comment": null,
@@ -8274,7 +8276,9 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "if (num < base) {
+      "code": "throw_unless(5, num > 0);
+throw_unless(5, base > 1);
+if (num < base) {
     return 0;
 }
 int result = 0;
@@ -12848,7 +12852,7 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "asm "UBITSIZE DEC"",
+      "code": "asm "DUP 5 THROWIFNOT UBITSIZE DEC"",
       "kind": "asm",
     },
     "comment": null,
@@ -12860,7 +12864,9 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "if (num < base) {
+      "code": "throw_unless(5, num > 0);
+throw_unless(5, base > 1);
+if (num < base) {
     return 0;
 }
 int result = 0;

@@ -366,8 +366,30 @@ describe("feature-math", () => {
             }
         }
 
-        expect(await contract.getLog2(0n)).toBe(-1n);
-        expect(await contract.getLog(0n, 2n)).toBe(0n);
+        for (let num = -3n; num <= 3n; num++) {
+            if (num <= 0n) {
+                await expect(contract.getLog2(num)).rejects.toThrow(
+                    "Integer out of expected range",
+                );
+            }
+        }
+
+        for (let num = -3n; num <= 3n; num++) {
+            for (let base = -3n; base <= 3n; base++) {
+                if (num <= 0n || base <= 1n) {
+                    await expect(contract.getLog(num, base)).rejects.toThrow(
+                        "Integer out of expected range",
+                    );
+                } else {
+                    const logarithm = BigInt(
+                        Math.floor(
+                            Math.log2(Number(num)) / Math.log2(Number(base)),
+                        ),
+                    );
+                    expect(await contract.getLog(num, base)).toBe(logarithm);
+                }
+            }
+        }
 
         const maxint = 2n ** 256n - 1n;
 
