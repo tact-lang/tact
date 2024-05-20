@@ -40,7 +40,7 @@ class PrettyPrinter {
      */
     constructor(
         private indentLevel: number = 0,
-        private readonly indentSpaces: number = 2,
+        private readonly indentSpaces: number = 4,
     ) {}
 
     private increaseIndent() {
@@ -58,7 +58,7 @@ class PrettyPrinter {
     private formatList<T>(list: T[], formatter: (item: T) => string): string {
         return list
             .map((item) => formatter.call(this, item))
-            .join(",\n" + this.indent());
+            .join(",\n");
     }
 
     ppASTPrimitive(primitive: ASTPrimitive): string {
@@ -160,7 +160,7 @@ class PrettyPrinter {
                 result = `${expr.name}(${expr.args.map((arg) => this.ppASTExpression(arg, currentPrecedence)).join(", ")})`;
                 break;
             case "op_new":
-                result = `${expr.type}{${expr.args.map(this.ppASTNewParameter).join(", ")}}`;
+                result = `${expr.type}{${expr.args.map((x) => this.ppASTNewParameter(x)).join(", ")}}`;
                 break;
             case "init_of":
                 result = `initOf ${expr.name}(${expr.args.map((arg) => this.ppASTExpression(arg, currentPrecedence)).join(", ")})`;
@@ -191,7 +191,7 @@ class PrettyPrinter {
         }
 
         // Set parens when needed
-        if (parentPrecedence > 0 && currentPrecedence > parentPrecedence) {
+        if (parentPrecedence > 0 && currentPrecedence < parentPrecedence) {
             result = `(${result})`;
         }
 
@@ -263,13 +263,13 @@ class PrettyPrinter {
     ppASTStruct(struct: ASTStruct): string {
         const typePrefix = struct.message ? "message" : "struct";
         const prefixFormatted =
-            struct.prefix !== null ? `(${struct.prefix})` : "";
+            struct.prefix !== null ? `(${struct.prefix}) ` : "";
         this.increaseIndent();
         const fieldsFormatted = struct.fields
             .map((field) => this.ppASTField(field))
             .join("\n");
         this.decreaseIndent();
-        return `${this.indent()}${typePrefix} ${prefixFormatted} ${struct.name} {\n${fieldsFormatted}\n}`;
+        return `${this.indent()}${typePrefix} ${prefixFormatted}${struct.name} {\n${fieldsFormatted}\n}`;
     }
 
     ppASTTrait(trait: ASTTrait): string {
@@ -340,7 +340,7 @@ class PrettyPrinter {
                 }
                 return formattedDec + "\n";
             })
-            .join("\n");
+            .join("\n").trimEnd();
         this.decreaseIndent();
         const header = traitsFormatted
             ? `contract ${contract.name} with ${traitsFormatted}`
@@ -349,7 +349,7 @@ class PrettyPrinter {
             .map((attr) => `@interface("${attr.name.value}")`)
             .join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
-        return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted.trim()}\n${this.indent()}}`;
+        return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}\n${this.indent()}}`;
     }
 
     ppContractBody(
@@ -389,10 +389,10 @@ class PrettyPrinter {
         const stmtsFormatted = func.statements
             ? func.statements
                   .map((stmt) => this.ppASTStatement(stmt))
-                  .join("\n" + this.indent())
+                  .join("\n")
             : "";
         const body = func.statements
-            ? `{\n${this.indent()}${stmtsFormatted}`
+            ? `{\n${stmtsFormatted}`
             : ";";
         this.decreaseIndent();
         return `${this.indent()}${attrsFormatted}fun ${func.name}(${argsFormatted})${returnType} ${body}\n${this.indent()}}`;
@@ -426,11 +426,16 @@ class PrettyPrinter {
         const argsFormatted = initFunc.args
             .map((arg) => `${arg.name}: ${this.ppASTTypeRef(arg.type)}`)
             .join(", ");
-        const stmtsFormatted = this.formatList(
-            initFunc.statements,
-            this.ppASTStatement,
-        );
-        return `init(${argsFormatted}) { ${stmtsFormatted} }`;
+
+        this.increaseIndent()
+        const stmtsFormatted = initFunc.statements
+            ? initFunc.statements
+                  .map((stmt) => this.ppASTStatement(stmt))
+                  .join("\n")
+            : "";
+        this.decreaseIndent()
+
+        return `${this.indent()}init(${argsFormatted}) {${stmtsFormatted == "" ? "" : "\n"}${stmtsFormatted}${stmtsFormatted == "" ? "" : ("\n" + this.indent())}}`;
     }
 
     //
