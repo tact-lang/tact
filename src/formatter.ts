@@ -340,7 +340,7 @@ class PrettyPrinter {
                 }
                 return formattedDec + "\n";
             })
-            .join("\n").trimEnd();
+            .join("\n");
         this.decreaseIndent();
         const header = traitsFormatted
             ? `contract ${contract.name} with ${traitsFormatted}`
@@ -349,7 +349,7 @@ class PrettyPrinter {
             .map((attr) => `@interface("${attr.name.value}")`)
             .join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
-        return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}\n${this.indent()}}`;
+        return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}${this.indent()}}`;
     }
 
     ppContractBody(
@@ -473,8 +473,9 @@ class PrettyPrinter {
 
     ppStatementBlock(stmts: ASTStatement[]): string {
         this.increaseIndent();
-        const result = `${this.indent()}{\n${this.formatList(stmts, this.ppASTStatement)}\n${this.indent()}}`;
-        this.decreaseIndent();
+        const stmntsFormatted = this.formatList(stmts, this.ppASTStatement)
+        this.decreaseIndent()
+        const result = `{\n${stmntsFormatted}\n${this.indent()}}`;
         return result;
     }
 
@@ -517,9 +518,9 @@ class PrettyPrinter {
         const condition = this.ppASTExpression(statement.expression);
         const trueBranch = this.ppStatementBlock(statement.trueStatements);
         const falseBranch = statement.falseStatements
-            ? `} else {\n${this.ppStatementBlock(statement.falseStatements)}\n}`
+            ? ` else ${this.ppStatementBlock(statement.falseStatements)}`
             : "";
-        return `${this.indent()}if (${condition}) {\n${trueBranch}\n} ${falseBranch}`;
+        return `${this.indent()}if (${condition}) ${trueBranch}${falseBranch}`;
     }
 
     ppASTStatementWhile(statement: ASTStatementWhile): string {
