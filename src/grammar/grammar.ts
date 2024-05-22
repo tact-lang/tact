@@ -741,6 +741,33 @@ semantics.addOperation<ASTNode>("resolve_statement", {
             ref: createRef(this),
         });
     },
+    StatementAugmentedAssignOr(arg0, _arg1, arg2, _arg3) {
+        return createNode({
+            kind: "statement_augmentedassign",
+            path: arg0.resolve_lvalue(),
+            op: "|",
+            expression: arg2.resolve_expression(),
+            ref: createRef(this),
+        });
+    },
+    StatementAugmentedAssignAnd(arg0, _arg1, arg2, _arg3) {
+        return createNode({
+            kind: "statement_augmentedassign",
+            path: arg0.resolve_lvalue(),
+            op: "&",
+            expression: arg2.resolve_expression(),
+            ref: createRef(this),
+        });
+    },
+    StatementAugmentedAssignXor(arg0, _arg1, arg2, _arg3) {
+        return createNode({
+            kind: "statement_augmentedassign",
+            path: arg0.resolve_lvalue(),
+            op: "^",
+            expression: arg2.resolve_expression(),
+            ref: createRef(this),
+        });
+    },
     StatementCondition_simple(_arg0, arg1, _arg2, arg3, _arg4) {
         return createNode({
             kind: "statement_condition",

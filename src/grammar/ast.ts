@@ -443,7 +443,15 @@ export type ASTSTatementAssign = {
     ref: ASTRef;
 };
 
-export type ASTAugmentedAssignOperation = "+" | "-" | "*" | "/" | "%";
+export type ASTAugmentedAssignOperation =
+    | "+"
+    | "-"
+    | "*"
+    | "/"
+    | "%"
+    | "|"
+    | "&"
+    | "^";
 
 export type ASTSTatementAugmentedAssign = {
     kind: "statement_augmentedassign";

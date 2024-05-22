@@ -19,7 +19,7 @@ Tact {
     StaticFunction = Function
     NativeFunction = nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ","? ")" ";" --withVoid
                    | nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ","? ")" ":" Type ";" --withType
-    
+
     // Field declarations
     Type = typeLiteral "?" --optional
          | typeLiteral --required
@@ -29,7 +29,7 @@ Tact {
           | id ":" Type "=" Expression ";" --defaultWithInit
           | id ":" Type as id ";" --withSerialization
           | id ":" Type as id "=" Expression ";" --withSerializationAndInit
-    
+
     // Constant
     ConstantAttribute = virtual    --virtual
                       | override   --override
@@ -52,7 +52,7 @@ Tact {
                  | ReceiveFunction
                  | Function
                  | Constant
-    
+
     // Trait
     Trait = ContractAttribute* trait id "{" TraitBody* "}" --originary
           | ContractAttribute* trait id with NonemptyListOf<id,","> ","? "{" TraitBody* "}" --withTraits
@@ -77,7 +77,7 @@ Tact {
              | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ","? ")" ";" --abstractVoid
              | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ","? ")" ":" Type ";" --abstractType
     FunctionArg = id ":" Type
-    
+
     ReceiveFunction = "receive" "(" FunctionArg ")" "{" Statement* "}" --simple
                     | "receive" "(" ")" "{" Statement* "}" --empty
                     | "receive" "(" stringLiteral ")" "{" Statement* "}" --comment
@@ -102,7 +102,7 @@ Tact {
     StatementBlock = "{" Statement* "}"
     StatementLet = let id ":" Type "=" Expression ";"
     StatementReturn = return Expression ";" --withExpression
-                    | return ";" --withoutExpression    
+                    | return ";" --withoutExpression
     StatementExpression = Expression ";"
     StatementAssign = LValue "=" Expression ";"
     StatementAugmentedAssign = StatementAugmentedAssignAdd
@@ -110,11 +110,17 @@ Tact {
                              | StatementAugmentedAssignMul
                              | StatementAugmentedAssignDiv
                              | StatementAugmentedAssignRem
+                             | StatementAugmentedAssignOr
+                             | StatementAugmentedAssignAnd
+                             | StatementAugmentedAssignXor
     StatementAugmentedAssignAdd = LValue "+=" Expression ";"
     StatementAugmentedAssignSub = LValue "-=" Expression ";"
     StatementAugmentedAssignMul = LValue "*=" Expression ";"
     StatementAugmentedAssignDiv = LValue "/=" Expression ";"
     StatementAugmentedAssignRem = LValue "%=" Expression ";"
+    StatementAugmentedAssignOr  = LValue "|=" Expression ";"
+    StatementAugmentedAssignAnd = LValue "&=" Expression ";"
+    StatementAugmentedAssignXor = LValue "^=" Expression ";"
     StatementCondition = if Expression "{" Statement* "}" ~else --simple
                        | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse
                        | if Expression "{" Statement* "}" else StatementCondition --withElseIf
@@ -131,53 +137,53 @@ Tact {
 
     // Expressions
     Expression = ExpressionConditional
-    
+
     ExpressionConditional = ExpressionOr "?" ExpressionOr ":" ExpressionConditional --ternary
                           | ExpressionOr
-    
+
     ExpressionOr = ExpressionOr "||" ExpressionAnd --or
                  | ExpressionAnd
-    
+
     ExpressionAnd = ExpressionAnd "&&" ExpressionBinaryOr --and
                   | ExpressionBinaryOr
-    
+
     ExpressionBinaryOr = ExpressionBinaryOr "|" ExpressionBinaryXor --bin_or
                        | ExpressionBinaryXor
-    
+
     ExpressionBinaryXor = ExpressionBinaryXor "^" ExpressionBinaryAnd --bin_xor
                        | ExpressionBinaryAnd
-    
+
     ExpressionBinaryAnd = ExpressionBinaryAnd "&" ExpressionEquality --bin_and
                         | ExpressionEquality
-    
+
     ExpressionEquality = ExpressionEquality "!=" ExpressionCompare --not
                        | ExpressionEquality "==" ExpressionCompare --eq
                        | ExpressionCompare
-    
+
     ExpressionCompare = ExpressionCompare ">" ExpressionBinaryShift --gt
                       | ExpressionCompare ">=" ExpressionBinaryShift --gte
                       | ExpressionCompare "<" ExpressionBinaryShift --lt
                       | ExpressionCompare "<=" ExpressionBinaryShift --lte
                       | ExpressionBinaryShift
-    
+
     ExpressionBinaryShift = ExpressionBinaryShift "<<" ExpressionAdd --shl
                           | ExpressionBinaryShift ">>" ExpressionAdd --shr
                           | ExpressionAdd
-    
+
     ExpressionAdd = ExpressionAdd "+" ~"+" ExpressionMul --add
                   | ExpressionAdd "-" ~"-" ExpressionMul --sub
                   | ExpressionMul
-    
+
     ExpressionMul = ExpressionMul "*" ExpressionUnary --mul
                   | ExpressionMul "/" ExpressionUnary --div
                   | ExpressionMul "%" ExpressionUnary --rem
                   | ExpressionUnary
-    
+
     ExpressionUnary = "-" ExpressionValue --neg
                     | "+" ExpressionValue --add
                     | "!" ExpressionValue --not
                     | ExpressionValue
-    
+
     ExpressionBracket = "(" Expression ")"
 
     // Order is important
@@ -199,7 +205,7 @@ Tact {
     ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ","? ")"
     ExpressionNew = id "{" ListOf<NewParameter, ","> ","? "}"
     NewParameter = id ":" Expression --full
-                 | id                --punned 
+                 | id                --punned
     ExpressionStaticCall = id "(" ListOf<Expression, ","> ","? ")"
     ExpressionInitOf = initOf id "(" ListOf<Expression, ","> ","? ")"
 
@@ -255,23 +261,23 @@ Tact {
 
     // Keywords
     // NOTE Order is important
-    keyword = fun 
+    keyword = fun
             | let
-            | return 
-            | extend 
-            | native 
-            | public 
-            | null 
-            | if 
-            | else 
-            | while 
-            | repeat 
-            | do 
-            | until 
+            | return
+            | extend
+            | native
+            | public
+            | null
+            | if
+            | else
+            | while
+            | repeat
+            | do
+            | until
             | try
             | catch
             | foreach
-            | as  
+            | as
             | mutates
             | extends
             | import

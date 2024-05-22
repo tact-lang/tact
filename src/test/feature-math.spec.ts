@@ -61,6 +61,15 @@ describe("feature-math", () => {
         expect(await contract.getDivAug(2n, 2n)).toBe(1n);
         expect(await contract.getModAug(2n, 2n)).toBe(0n);
         expect(await contract.getModAug(3n, 2n)).toBe(1n);
+        expect(await contract.getOrAug(2n, 1n)).toBe(3n);
+        expect(await contract.getOrAug(2n, 2n)).toBe(2n);
+        expect(await contract.getOrAug(5n, 3n)).toBe(7n);
+        expect(await contract.getAndAug(3n, 2n)).toBe(2n);
+        expect(await contract.getAndAug(5n, 6n)).toBe(4n);
+        expect(await contract.getAndAug(1n, 3n)).toBe(1n);
+        expect(await contract.getXorAug(1n, 2n)).toBe(3n);
+        expect(await contract.getXorAug(3n, 1n)).toBe(2n);
+        expect(await contract.getXorAug(2n, 0n)).toBe(2n);
 
         // Basic Compare
         expect(await contract.getCompare1(1n, 2n)).toBe(false);
