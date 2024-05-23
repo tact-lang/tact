@@ -48,5 +48,22 @@ export function tryExpressionIntrinsics(
         }
     }
 
+    try {
+        const t = getExpType(ctx.ctx, exp);
+        const r = resolveConstantValue(t, exp, ctx.ctx);
+
+        if (t.kind === "ref") {
+            if (t.name === "Int") {
+                if (typeof r !== "bigint") {
+                    throw new Error("Expected bigint");
+                }
+                return r.toString(10);
+            }
+            if (t.name === "Bool") {
+                return r ? "true" : "false";
+            }
+        }
+    } catch {}
+
     return null;
 }
