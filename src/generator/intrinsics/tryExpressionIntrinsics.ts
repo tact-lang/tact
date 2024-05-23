@@ -52,6 +52,12 @@ export function tryExpressionIntrinsics(
         const t = getExpType(ctx.ctx, exp);
         const r = resolveConstantValue(t, exp, ctx.ctx);
 
+        if (t.kind === "null") {
+            if (r !== null) {
+                throw new Error("Expected null");
+            }
+            return "null()";
+        }
         if (t.kind === "ref") {
             if (t.name === "Int") {
                 if (typeof r !== "bigint") {
@@ -60,6 +66,9 @@ export function tryExpressionIntrinsics(
                 return r.toString(10);
             }
             if (t.name === "Bool") {
+                if (typeof r !== "boolean") {
+                    throw new Error("Expected boolean");
+                }
                 return r ? "true" : "false";
             }
         }
