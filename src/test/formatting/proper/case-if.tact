@@ -7,11 +7,15 @@ fun checkIf(x: Int, y: Int): Int {
 }
 
 contract SampleContract {
-    x: Int;
+    x: Int as int32;
 
     init() {
         if (1 > 0) {
-            self.x = 1;
+            if (2 > 3) {
+                self.x = 1;
+            } else {
+                self.x = 2;
+            }
         } else {
             self.x = 0;
         }

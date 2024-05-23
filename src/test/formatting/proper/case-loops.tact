@@ -7,7 +7,7 @@ contract SampleContract {
             self.x = self.x - 1;
         }
         repeat (self.x) {
-            self.x = self.x + 1;
+            self.x += self.x;
         }
         do {
             self.x = self.x + 1;
