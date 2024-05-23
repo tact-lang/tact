@@ -13,6 +13,11 @@
       "name": "invalid-address",
       "path": "./features/invalid-address.tact",
       "output": "./features/output"
+    },
+    {
+      "name": "const-eval",
+      "path": "./features/const-eval.tact",
+      "output": "./features/output"
     }
   ]
 }

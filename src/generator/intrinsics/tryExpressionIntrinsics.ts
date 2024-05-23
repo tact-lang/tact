@@ -1,3 +1,4 @@
+import { TactSyntaxError } from "../../errors";
 import { ASTExpression } from "../../grammar/ast";
 import { resolveConstantValue } from "../../types/resolveConstantValue";
 import { getExpType } from "../../types/resolveExpression";
@@ -50,9 +51,9 @@ export function tryExpressionIntrinsics(
 
     try {
         const t = getExpType(ctx.ctx, exp);
-        const r = resolveConstantValue(t, exp, ctx.ctx);
 
         if (t.kind === "null") {
+            const r = resolveConstantValue(t, exp, ctx.ctx);
             if (r !== null) {
                 throw new Error("Expected null");
             }
@@ -60,19 +61,30 @@ export function tryExpressionIntrinsics(
         }
         if (t.kind === "ref") {
             if (t.name === "Int") {
+                const r = resolveConstantValue(t, exp, ctx.ctx);
                 if (typeof r !== "bigint") {
                     throw new Error("Expected bigint");
                 }
                 return r.toString(10);
             }
             if (t.name === "Bool") {
+                const r = resolveConstantValue(t, exp, ctx.ctx);
                 if (typeof r !== "boolean") {
                     throw new Error("Expected boolean");
                 }
                 return r ? "true" : "false";
             }
         }
-    } catch {}
+    } catch (e) {
+        if (e instanceof TactSyntaxError) {
+            if (
+                !e.message.includes("Cannot reduce expression to a constant") &&
+                !e.message.includes("Expected constant value")
+            ) {
+                throw e;
+            }
+        }
+    }
 
     return null;
 }

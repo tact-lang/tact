@@ -5,7 +5,7 @@ import { MyContract } from "./features/output/implicit-init_MyContract";
 import { run } from "../node";
 import { consoleLogger } from "../logger";
 
-describe("feature-send", () => {
+describe("feature-implicit-init", () => {
     beforeAll(() => {
         jest.spyOn(consoleLogger, "error").mockImplementation(() => {});
     });
