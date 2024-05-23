@@ -34,6 +34,7 @@ import { resolveABIType } from "./resolveABITypeRef";
 import { Address, Cell } from "@ton/core";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
+import { GlobalFunctions } from "../abi/global";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -1525,7 +1526,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
             types.get(r.self)!.functions.set(r.name, r);
         } else {
-            if (staticFunctions.has(r.name)) {
+            if (staticFunctions.has(r.name) || GlobalFunctions.has(r.name)) {
                 throwError(
                     `Static function ${r.name} already exists`,
                     r.ast.ref,
@@ -1546,7 +1547,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (staticConstants.has(a.name)) {
             throwError(`Static constant ${a.name} already exists`, a.ref);
         }
-        if (staticFunctions.has(a.name)) {
+        if (staticFunctions.has(a.name) || GlobalFunctions.has(a.name)) {
             throwError(`Static function ${a.name} already exists`, a.ref);
         }
         staticConstants.set(a.name, buildConstantDescription(a));

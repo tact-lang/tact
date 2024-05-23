@@ -258,6 +258,24 @@ Line 8, col 21:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for case-26 1`] = `
+"<unknown>:1:1: Static function ton already exists
+Line 1, col 1:
+> 1 | fun ton() {
+      ^~~~~~~~~~~
+  2 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-27 1`] = `
+"<unknown>:1:1: Static function dumpStack already exists
+Line 1, col 1:
+> 1 | fun dumpStack() {
+      ^~~~~~~~~~~~~~~~~
+  2 | 
+"
+`;
+
 exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
 {
   "BaseTrait": {
