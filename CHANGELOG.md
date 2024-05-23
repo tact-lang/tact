@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `log2` and `log` math functions were adjusted for consistency in error throwing: PR [#342](https://github.com/tact-lang/tact/pull/342)
+- Shadowing built-in static functions is now forbidden: PR [#351](https://github.com/tact-lang/tact/pull/351)
 
 ## [1.3.0] - 2024-05-03
 
