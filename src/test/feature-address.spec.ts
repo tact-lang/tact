@@ -47,7 +47,7 @@ describe("feature-address", () => {
             projectNames: ["invalid-address"],
         });
         expect((consoleLogger.error as jest.Mock).mock.lastCall[0]).toContain(
-            "Address FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N invalid address",
+            "FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N is not a valid address",
         );
         expect(result).toBe(false);
     });
