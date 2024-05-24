@@ -978,6 +978,13 @@ semantics.addOperation<ASTNode>("resolve_expression", {
             ref: createRef(this),
         });
     },
+    Type_merkleProof(_arg0, _arg1, arg2, _arg3, _arg4, _arg5) {
+        return createNode({
+            kind: "type_ref_merkle_proof",
+            name: arg2.sourceString,
+            ref: createRef(this),
+        });
+    },
 
     // Binary
     ExpressionAdd_add(arg0, _arg1, arg2) {

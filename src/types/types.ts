@@ -51,6 +51,10 @@ export type TypeRef =
           name: string;
       }
     | {
+          kind: "merkle_proof";
+          name: string;
+      }
+    | {
           kind: "void";
       }
     | {
@@ -186,6 +190,8 @@ export function printTypeRef(src: TypeRef): string {
         return "<null>";
     } else if (src.kind === "ref_bounced") {
         return `bounced<${src.name}>`;
+    } else if (src.kind === "merkle_proof") {
+        return `MerkleProof<${src.name}>`;
     } else {
         throw Error("Invalid type ref");
     }
@@ -202,6 +208,9 @@ export function typeRefEquals(a: TypeRef, b: TypeRef) {
         return a.key === b.key && a.value === b.value;
     }
     if (a.kind === "ref_bounced" && b.kind === "ref_bounced") {
+        return a.name === b.name;
+    }
+    if (a.kind === "merkle_proof" && b.kind === "merkle_proof") {
         return a.name === b.name;
     }
     if (a.kind === "null" && b.kind === "null") {

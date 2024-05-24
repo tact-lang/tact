@@ -46,6 +46,10 @@ export function resolveFuncTypeUnpack(
         throw Error("Void type is not allowed in function arguments: " + name);
     }
 
+    if (descriptor.kind === "merkle_proof") {
+        return `(${name}'rootHash, ${name}'data)`;
+    }
+
     // TypeDescription
     if (descriptor.kind === "primitive") {
         return name;

@@ -56,6 +56,10 @@ export type AllocationOperationType =
           kind: "map";
       }
     | {
+          kind: "merkle_proof";
+          dataType: string;
+      }
+    | {
           kind: "string";
           optional: boolean;
       }

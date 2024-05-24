@@ -25,6 +25,7 @@ Tact {
          | typeLiteral --required
          | "map" "<" typeLiteral (as id)? "," typeLiteral (as id)? ">" --map
          | "bounced" "<" typeLiteral ">" --bounced
+         | "merkleProof" "<" typeLiteral (as id)? ">" --merkleProof
     Field = id ":" Type ";" --default
           | id ":" Type "=" Expression ";" --defaultWithInit
           | id ":" Type as id ";" --withSerialization

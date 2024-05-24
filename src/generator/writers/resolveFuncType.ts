@@ -42,6 +42,19 @@ export function resolveFuncType(
         return "()";
     }
 
+    if (descriptor.kind === "merkle_proof") {
+        return (
+            "(int, " +
+            resolveFuncType(
+                getType(ctx.ctx, descriptor.name),
+                ctx,
+                false,
+                usePartialFields,
+            ) +
+            ")"
+        );
+    }
+
     // TypeDescription
     if (descriptor.kind === "primitive") {
         if (descriptor.name === "Int") {

@@ -31,6 +31,12 @@ export function resolveFuncFlatTypes(
         throw Error("Void type is not allowed in function arguments");
     }
 
+    if (descriptor.kind === "merkle_proof") {
+        return ["int"].concat(
+            resolveFuncFlatTypes(getType(ctx.ctx, descriptor.name), ctx),
+        );
+    }
+
     // TypeDescription
     if (descriptor.kind === "primitive") {
         return [resolveFuncType(descriptor, ctx)];

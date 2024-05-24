@@ -118,7 +118,18 @@ export type ASTTypeRefBounced = {
     ref: ASTRef;
 };
 
-export type ASTTypeRef = ASTTypeRefSimple | ASTTypeRefMap | ASTTypeRefBounced;
+export type ASTTypeRefMerkleProof = {
+    kind: "type_ref_merkle_proof";
+    id: number;
+    name: string;
+    ref: ASTRef;
+};
+
+export type ASTTypeRef =
+    | ASTTypeRefSimple
+    | ASTTypeRefMap
+    | ASTTypeRefBounced
+    | ASTTypeRefMerkleProof;
 
 //
 // Expressions

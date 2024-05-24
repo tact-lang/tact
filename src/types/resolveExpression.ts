@@ -361,9 +361,13 @@ function resolveField(
     // Find target type and check for type
     const src = getExpType(ctx, exp.src);
 
+    console.log(src);
+
     if (
         src === null ||
-        ((src.kind !== "ref" || src.optional) && src.kind !== "ref_bounced")
+        ((src.kind !== "ref" || src.optional) &&
+            src.kind !== "ref_bounced" &&
+            src.kind !== "merkle_proof")
     ) {
         throwError(
             `Invalid type "${printTypeRef(src)}" for field access`,
@@ -383,6 +387,24 @@ function resolveField(
     }
 
     // Find field
+
+    if (src.kind === "merkle_proof") {
+        if (exp.name === "rootHash") {
+            return registerExpType(ctx, exp, {
+                kind: "ref",
+                name: "Int",
+                optional: false,
+            });
+        }
+        if (exp.name === "data") {
+            return registerExpType(ctx, exp, {
+                kind: "ref",
+                name: src.name,
+                optional: false,
+            });
+        }
+    }
+
     let fields: FieldDescription[];
 
     const srcT = getType(ctx, src.name);

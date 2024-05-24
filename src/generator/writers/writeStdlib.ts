@@ -14,6 +14,38 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.skip("__tact_address_to_slice");
 
     //
+    // Extotic cell (libraries, merkle proofs, merkle updates)
+    //
+
+    ctx.fun("__tact_load_merkle_proof", () => {
+        ctx.signature(`(int, cell) __tact_load_merkle_proof(slice cs)`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                cell proof_cell = cs~load_ref();
+                (slice cs, int exotic?) = proof_cell.begin_parse_exotic();
+                throw_unless(42, exotic?);
+                throw_unless(43, cs~load_uint(8) == 3);
+                return (cs~load_uint(256), cs~load_ref());
+            `);
+        });
+    });
+
+    ctx.fun("__tact_store_merkle_proof", () => {
+        ctx.signature(
+            `builder __tact_store_merkle_proof(builder b, int rootHash, cell data)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return b.store_ref(begin_cell().store_uint(3, 8).store_uint(rootHash, 256).store_ref(data).end_cell_exotic());
+            `);
+        });
+    });
+
+    //
     // Addresses
     //
 

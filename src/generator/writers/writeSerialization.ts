@@ -292,6 +292,13 @@ function writeSerializerField(
         }
         return;
     }
+    if (op.kind === "merkle_proof") {
+        ctx.used(`__tact_store_merkle_proof`);
+        ctx.append(
+            `build_${gen} = __tact_store_merkle_proof(build_${gen}, ${fieldName});`,
+        );
+        return;
+    }
 
     throw Error("Unsupported field kind: " + op.kind);
 }
@@ -432,7 +439,8 @@ function writeFieldParser(
     ctx: WriterContext,
 ) {
     const op = f.op;
-    const varName = `var v'${f.name}`;
+    const name = `v'${f.name}`;
+    const varName = `var ${name}`;
 
     // Handle int
     if (op.kind === "int") {
@@ -588,6 +596,17 @@ function writeFieldParser(
                 );
             }
         }
+        return;
+    }
+    if (op.kind === "merkle_proof") {
+        console.log(varName);
+        ctx.used(`__tact_load_merkle_proof`);
+        ctx.append(
+            `var (${name}'rootHash, ${name}'data) = __tact_load_merkle_proof(sc_${gen});`,
+        );
+        ctx.append(
+            `${varName} = (${name}'rootHash, ${ops.reader(op.dataType, ctx)}(${name}'data.begin_parse()));`,
+        );
         return;
     }
 

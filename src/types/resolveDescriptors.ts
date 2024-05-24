@@ -137,6 +137,13 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
             name: t.name,
         };
     }
+    if (src.kind === "type_ref_merkle_proof") {
+        const t = getType(ctx, src.name);
+        return {
+            kind: "merkle_proof",
+            name: t.name,
+        };
+    }
     throw Error("Invalid type ref");
 }
 
@@ -172,6 +179,15 @@ function buildTypeRef(
     if (src.kind === "type_ref_bounced") {
         return {
             kind: "ref_bounced",
+            name: src.name,
+        };
+    }
+    if (src.kind === "type_ref_merkle_proof") {
+        if (!types.has(src.name)) {
+            throwError("Type " + src.name + " not found", src.ref);
+        }
+        return {
+            kind: "merkle_proof",
             name: src.name,
         };
     }

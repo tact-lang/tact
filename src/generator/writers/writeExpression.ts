@@ -483,13 +483,25 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         const src = getExpType(ctx.ctx, f.src);
         if (
             src === null ||
-            ((src.kind !== "ref" || src.optional) && src.kind !== "ref_bounced")
+            ((src.kind !== "ref" || src.optional) &&
+                src.kind !== "ref_bounced" &&
+                src.kind !== "merkle_proof")
         ) {
             throwError(
                 `Cannot access field of non-struct type: ${printTypeRef(src)}`,
                 f.ref,
             );
         }
+
+        if (src.kind === "merkle_proof") {
+            if (f.name === "rootHash") {
+                return `${writeExpression(f.src, ctx)}'rootHash`;
+            }
+            if (f.name === "data") {
+                return `${writeExpression(f.src, ctx)}'data`;
+            }
+        }
+
         const srcT = getType(ctx.ctx, src.name);
 
         // Resolve field
