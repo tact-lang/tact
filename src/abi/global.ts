@@ -104,7 +104,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 try {
                     address = Address.parse(str);
                 } catch {
-                    throwError(`Address ${str} invalid address`, ref);
+                    throwError(`${str} is not a valid address`, ref);
                 }
                 if (address.workChain !== 0 && address.workChain !== -1) {
                     throwError(`Address ${str} invalid address`, ref);
