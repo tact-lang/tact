@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `log2` and `log` math functions were adjusted for consistency in error throwing: PR [#342](https://github.com/tact-lang/tact/pull/342)
+- Shadowing built-in static functions is now forbidden: PR [#351](https://github.com/tact-lang/tact/pull/351)
 - Augmented assignment now throws compilation error for non-integer types: PR [#356](https://github.com/tact-lang/tact/pull/356)
 - Built-in function `address()` now handles parse errors correctly: PR [#357](https://github.com/tact-lang/tact/pull/357)
 
