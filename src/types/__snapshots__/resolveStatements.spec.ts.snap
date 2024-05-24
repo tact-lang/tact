@@ -510,6 +510,26 @@ Line 8, col 12:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-51 1`] = `
+"<unknown>:5:5: Type error: Augmented assignment is only allowed for Int type
+Line 5, col 5:
+  4 |     let a: Bool = false;
+> 5 |     a %= true;
+          ^~~~~~~~~~
+  6 |     return a;
+"
+`;
+
+exports[`resolveStatements should fail statements for case-52 1`] = `
+"<unknown>:5:5: Type error: Augmented assignment is only allowed for Int type
+Line 5, col 5:
+  4 |     let a: String = "foo";
+> 5 |     a %= "bar";
+          ^~~~~~~~~~~
+  6 |     return a;
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
@@ -1362,6 +1382,27 @@ exports[`resolveStatements should resolve statements for case-20 1`] = `
   ],
   [
     "44",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-21 1`] = `
+[
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "a",
     "Int",
   ],
 ]
