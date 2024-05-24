@@ -219,9 +219,17 @@ function processStatements(
             // Check type
             const expressionType = getExpType(ctx, s.expression);
             const tailType = getExpType(ctx, s.path[s.path.length - 1]);
-            if (!isAssignable(expressionType, tailType)) {
+            // Check if types are Int
+            if (
+                expressionType.kind !== "ref" ||
+                expressionType.name !== "Int" ||
+                expressionType.optional ||
+                tailType.kind !== "ref" ||
+                tailType.name !== "Int" ||
+                tailType.optional
+            ) {
                 throwError(
-                    `Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(tailType)}`,
+                    `Type error: Augmented assignment is only allowed for Int type`,
                     s.ref,
                 );
             }
