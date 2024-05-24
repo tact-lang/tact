@@ -1386,3 +1386,24 @@ exports[`resolveStatements should resolve statements for case-20 1`] = `
   ],
 ]
 `;
+
+exports[`resolveStatements should resolve statements for case-21 1`] = `
+[
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+]
+`;
