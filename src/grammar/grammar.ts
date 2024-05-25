@@ -1099,7 +1099,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
         return createNode({
             kind: "op_unary",
             op: "~",
-            right: arg1.resolve_expression(),
+            right: arg1.astOfExpression(),
             ref: createRef(this),
         });
     },

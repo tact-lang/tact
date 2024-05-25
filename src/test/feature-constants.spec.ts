@@ -51,6 +51,7 @@ describe("feature-constants", () => {
         expect(await contract.getMinInt1()).toEqual(
             -115792089237316195423570985008687907853269984665640564039457584007913129639936n,
         );
+        expect(await contract.getSomething20()).toEqual(-6n);
         expect(await contract.getGlobalConst()).toEqual(100n);
     });
 });

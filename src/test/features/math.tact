@@ -390,4 +390,20 @@ contract MathTester with Deployable {
     get fun precedence12(): Int {
         return 5 ^ (6 | 7) & 8;
     }
+
+    get fun bitwiseNot1(x: Int): Int {
+        return ~~x;
+    }
+
+    get fun bitwiseNot2(x: Int): Int {
+        return ~~~x;
+    }
+
+    get fun bitwiseNot3(x: Int): Int {
+        return ~-x;
+    }
+
+    get fun bitwiseNot4(x: Int): Int {
+        return -~x;
+    }
 }

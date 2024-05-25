@@ -467,5 +467,11 @@ describe("feature-math", () => {
         expect(await contract.getPrecedence10()).toBe(3n);
         expect(await contract.getPrecedence11()).toBe(3n);
         expect(await contract.getPrecedence12()).toBe(5n);
+
+        // Test multiple unary operations in a row
+        expect(await contract.getBitwiseNot1(5n)).toBe(5n);
+        expect(await contract.getBitwiseNot2(5n)).toBe(-6n);
+        expect(await contract.getBitwiseNot3(5n)).toBe(4n);
+        expect(await contract.getBitwiseNot4(5n)).toBe(6n);
     });
 });
