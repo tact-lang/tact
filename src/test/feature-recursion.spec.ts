@@ -22,5 +22,10 @@ describe("feature-recursion", () => {
         expect(await contract.getFib(1n)).toBe(1n);
         expect(await contract.getFib(2n)).toBe(1n);
         expect(await contract.getFib(3n)).toBe(2n);
+
+        expect(await contract.getFact(0n)).toBe(1n);
+        expect(await contract.getFact(1n)).toBe(1n);
+        expect(await contract.getFact(2n)).toBe(2n);
+        expect(await contract.getFact(3n)).toBe(6n);
     });
 });
