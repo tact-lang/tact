@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- GitHub actions updated to use NodeJS 20: PR [#360](https://github.com/tact-lang/tact/pull/360)
 - Refactor AST types to simplify access to third-party tools: PR [#325](https://github.com/tact-lang/tact/pull/325)
 - Refactor the compiler API used to access AST store: PR [#326](https://github.com/tact-lang/tact/pull/326)
 - Update JSON Schema to inform about usage in Blueprint: PR [#330](https://github.com/tact-lang/tact/pull/330)
