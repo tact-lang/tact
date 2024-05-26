@@ -24,10 +24,10 @@ describe("fail-const-eval", () => {
             configPath: __dirname + "/tact.config.json",
             projectNames: ["const-eval"],
         });
+        expect(result).toBe(false);
         expect((consoleLogger.error as jest.Mock).mock.lastCall[0]).toContain(
             "Cannot divide by zero",
         );
-        expect(result).toBe(false);
     });
 
     it("should not compile with invalid address", async () => {
@@ -35,9 +35,9 @@ describe("fail-const-eval", () => {
             configPath: __dirname + "/tact.config.json",
             projectNames: ["invalid-address"],
         });
+        expect(result).toBe(false);
         expect((consoleLogger.error as jest.Mock).mock.lastCall[0]).toContain(
             "FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N is not a valid address",
         );
-        expect(result).toBe(false);
     });
 });

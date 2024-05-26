@@ -24,9 +24,9 @@ describe("fail-implicit-init", () => {
             configPath: __dirname + "/tact.config.json",
             projectNames: ["implicit-init"],
         });
+        expect(result).toBe(false);
         expect((consoleLogger.error as jest.Mock).mock.lastCall[0]).toContain(
             "Field test_field is not set",
         );
-        expect(result).toBe(false);
     });
 });

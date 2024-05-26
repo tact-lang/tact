@@ -40,15 +40,4 @@ describe("feature-address", () => {
             "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
         );
     });
-
-    it("should not compile with uninitialized storage fields", async () => {
-        const result = await run({
-            configPath: __dirname + "/test-tact.config.json",
-            projectNames: ["invalid-address"],
-        });
-        expect((consoleLogger.error as jest.Mock).mock.lastCall[0]).toContain(
-            "FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N is not a valid address",
-        );
-        expect(result).toBe(false);
-    });
 });
