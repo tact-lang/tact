@@ -1,8 +1,8 @@
-import { __DANGER_resetNodeId } from "../grammar/ast";
-import { run } from "../node";
-import { consoleLogger } from "../logger";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { run } from "../../node";
+import { consoleLogger } from "../../logger";
 
-describe("feature-const-eval", () => {
+describe("fail-implicit-init", () => {
     beforeAll(() => {
         jest.spyOn(consoleLogger, "error").mockImplementation(() => {});
     });
@@ -19,13 +19,13 @@ describe("feature-const-eval", () => {
         (consoleLogger.error as jest.Mock).mockClear();
     });
 
-    it("should not compile with division by zero", async () => {
+    it("should not compile with uninitialized storage fields", async () => {
         const result = await run({
-            configPath: __dirname + "/test-tact.config.json",
-            projectNames: ["const-eval"],
+            configPath: __dirname + "/tact.config.json",
+            projectNames: ["implicit-init"],
         });
         expect((consoleLogger.error as jest.Mock).mock.lastCall[0]).toContain(
-            "Cannot divide by zero",
+            "Field test_field is not set",
         );
         expect(result).toBe(false);
     });
