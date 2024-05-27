@@ -173,7 +173,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
             };
         }
         if (src.type.name === "StringBuilder") {
-            throwError(`Unsupported type ${src.type.name}`, src.ref);
+            throwError(`Unsupported type "${src.type.name}"`, src.ref);
         }
 
         //
@@ -232,7 +232,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
                 );
             }
         } else {
-            throwError(`Unsupported map key type ${src.type.key}`, src.ref);
+            throwError(`Unsupported map key type "${src.type.key}"`, src.ref);
         }
 
         // Resolve value type
@@ -267,7 +267,10 @@ export function resolveABIType(src: ASTField): ABITypeRef {
                 );
             }
         } else if (src.type.value === "Slice") {
-            throwError(`Unsupported map value type ${src.type.value}`, src.ref);
+            throwError(
+                `Unsupported map value type "${src.type.value}"`,
+                src.ref,
+            );
         } else if (src.type.value === "Address") {
             value = "address";
             if (src.type.valueAs) {
@@ -277,12 +280,18 @@ export function resolveABIType(src: ASTField): ABITypeRef {
                 );
             }
         } else if (src.type.value === "String") {
-            throwError(`Unsupported map value type ${src.type.value}`, src.ref);
+            throwError(
+                `Unsupported map value type "${src.type.value}"`,
+                src.ref,
+            );
         } else if (
             src.type.value === "StringBuilder" ||
             src.type.value === "Builder"
         ) {
-            throwError(`Unsupported map value type ${src.type.value}`, src.ref);
+            throwError(
+                `Unsupported map value type "${src.type.value}"`,
+                src.ref,
+            );
         } else {
             value = src.type.value;
             valueFormat = "ref";
@@ -333,7 +342,7 @@ export function createABITypeRefFromTypeRef(
             return { kind: "simple", type: "string", optional: src.optional };
         }
         if (src.name === "StringBuilder") {
-            throw Error(`Unsupported type ${src.name}`);
+            throw Error(`Unsupported type "${src.name}"`);
         }
 
         // Structs
@@ -366,7 +375,7 @@ export function createABITypeRefFromTypeRef(
                 throwError(`Unsupported format ${src.keyAs} for map key`, ref);
             }
         } else {
-            throw Error(`Unsupported map key type ${src.key}`);
+            throw Error(`Unsupported map key type "${src.key}"`);
         }
 
         // Resolve value type
@@ -401,7 +410,7 @@ export function createABITypeRefFromTypeRef(
                 );
             }
         } else if (src.value === "Slice") {
-            throw Error(`Unsupported map value type ${src.value}`);
+            throw Error(`Unsupported map value type "${src.value}"`);
         } else if (src.value === "Address") {
             value = "address";
             if (src.valueAs) {
@@ -411,9 +420,9 @@ export function createABITypeRefFromTypeRef(
                 );
             }
         } else if (src.value === "String") {
-            throw Error(`Unsupported map value type ${src.value}`);
+            throw Error(`Unsupported map value type "${src.value}"`);
         } else if (src.value === "StringBuilder" || src.value === "Builder") {
-            throw Error(`Unsupported map value type ${src.value}`);
+            throw Error(`Unsupported map value type "${src.value}"`);
         } else {
             value = src.value;
             valueFormat = "ref";
