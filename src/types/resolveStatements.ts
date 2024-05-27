@@ -182,7 +182,7 @@ function processStatements(
 
             // Add variable to statement context
             if (sctx.vars.has(s.name)) {
-                throwError(`Variable already exists: "${s.name}"`, s.ref);
+                throwError(`Variable "${s.name}" already exists`, s.ref);
             }
             sctx = addVariable(s.name, variableType, sctx);
         } else if (s.kind === "statement_assign") {
