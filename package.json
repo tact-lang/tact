@@ -91,5 +91,6 @@
         "filename": "CHANGELOG.md"
       }
     }
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }
