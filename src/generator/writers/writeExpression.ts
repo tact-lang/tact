@@ -486,7 +486,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             ((src.kind !== "ref" || src.optional) && src.kind !== "ref_bounced")
         ) {
             throwError(
-                `Cannot access field of non-struct type: ${printTypeRef(src)}`,
+                `Cannot access field of non-struct type: "${printTypeRef(src)}"`,
                 f.ref,
             );
         }
@@ -609,7 +609,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         const src = getExpType(ctx.ctx, f.src);
         if (src === null) {
             throwError(
-                `Cannot call function of non - direct type: ${printTypeRef(src)} `,
+                `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
                 f.ref,
             );
         }
@@ -618,7 +618,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         if (src.kind === "ref") {
             if (src.optional) {
                 throwError(
-                    `Cannot call function of non - direct type: ${printTypeRef(src)} `,
+                    `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
                     f.ref,
                 );
             }
@@ -704,7 +704,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         }
 
         throwError(
-            `Cannot call function of non - direct type: ${printTypeRef(src)} `,
+            `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
             f.ref,
         );
     }

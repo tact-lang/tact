@@ -42,7 +42,7 @@ export function resolveImports(args: {
                 stdlib: args.stdlib,
             });
             if (!resolved.ok) {
-                throw new Error(`Could not resolve import ${i} in ${path}`);
+                throw new Error(`Could not resolve import "${i}" in ${path}`);
             }
 
             // Check if already imported

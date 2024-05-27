@@ -132,10 +132,10 @@ export class WriterContext {
         //
 
         if (this.#functions.has(name)) {
-            throw new Error(`Function ${name} already defined`); // Should not happen
+            throw new Error(`Function "${name}" already defined`); // Should not happen
         }
         if (this.#functionsRendering.has(name)) {
-            throw new Error(`Function ${name} already rendering`); // Should not happen
+            throw new Error(`Function "${name}" already rendering`); // Should not happen
         }
 
         //
@@ -189,10 +189,10 @@ export class WriterContext {
         const comment = this.#pendingComment;
         const context = this.#pendingContext;
         if (!signature && name !== "$main") {
-            throw new Error(`Function ${name} signature not set`);
+            throw new Error(`Function "${name}" signature not set`);
         }
         if (!code) {
-            throw new Error(`Function ${name} body not set`);
+            throw new Error(`Function "${name}" body not set`);
         }
         this.#pendingDepends = null;
         this.#pendingWriter = null;
@@ -319,7 +319,7 @@ export class WriterContext {
 
     markRendered(key: string) {
         if (this.#rendered.has(key)) {
-            throw new Error(`Key ${key} already rendered`);
+            throw new Error(`Key "${key}" already rendered`);
         }
         this.#rendered.add(key);
     }
