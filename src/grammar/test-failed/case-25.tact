@@ -1,1 +1,3 @@
-abstract fun testFuncAbstractWithType(,): Int;
+trait Test {
+    abstract fun testAbstractWithType(,): Int;
+}

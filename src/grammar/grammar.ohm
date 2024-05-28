@@ -1,90 +1,88 @@
 Tact {
 
-    // Starting point of the program
-    Program = ProgramItem*
-    ProgramItem = Struct
-                | Contract
-                | Primitive
-                | StaticFunction
-                | NativeFunction
-                | ProgramImport
-                | Trait
-                | Constant
-    ProgramImport = import stringLiteral ";"
+    Module = Import* ModuleItem*
+
+    ModuleItem = PrimitiveTypeDecl
+               | ModuleFunction
+               | NativeFunctionDecl
+               | ModuleConstant
+               | StructDecl
+               | Contract
+               | Trait
+
+    Import = import stringLiteral ";"
 
     // Built-in declarations
-    Primitive = "primitive" Type ";"
+    PrimitiveTypeDecl = primitive Type ";"
 
-    // Static function
-    StaticFunction = Function
-    NativeFunction = nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ","? ")" ";" --withVoid
-                   | nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ","? ")" ":" Type ";" --withType
-    
-    // Field declarations
-    Type = typeLiteral "?" --optional
-         | typeLiteral --required
-         | "map" "<" typeLiteral (as id)? "," typeLiteral (as id)? ">" --map
-         | "bounced" "<" typeLiteral ">" --bounced
-    Field = id ":" Type ";" --default
-          | id ":" Type "=" Expression ";" --defaultWithInit
-          | id ":" Type as id ";" --withSerialization
-          | id ":" Type as id "=" Expression ";" --withSerializationAndInit
-    
-    // Constant
+    ModuleFunction = FunctionDefinition
+
+    ModuleConstant = ConstantDefinition
+
+    NativeFunctionDecl = "@name" "(" funcId ")" FunctionAttribute* native id "(" ListOf<Parameter,","> ","? ")" (":" Type)? ";"
+
+    Type = typeId "?" --optional
+         | typeId --regular
+         | map "<" typeId (as id)? "," typeId (as id)? ">" --map
+         | "bounced" "<" typeId ">" --bounced
+
+    FieldDecl = id ":" Type (as id)? ("=" Expression)? ";"
+
     ConstantAttribute = virtual    --virtual
                       | override   --override
                       | abstract   --abstract
-    Constant = ConstantAttribute* ~fun const id ":" Type "=" Expression ";" --withValue
-             | ConstantAttribute* ~fun const id ":" Type ";"                --withEmpty
 
-    // Struct
-    Struct = "struct" typeLiteral "{" StructBody* "}" --originary
-           | "message" typeLiteral "{" StructBody* "}" --message
-           | "message" "(" integerLiteral ")" typeLiteral "{" StructBody* "}" --messageWithId
-    StructBody = Field
+    ConstantDefinition = ConstantAttribute* const id ":" Type "=" Expression ";"
 
-    // Contract
-    Contract = ContractAttribute* contract id "{" ContractBody* "}" --simple
-             | ContractAttribute* contract id with NonemptyListOf<id,","> ","? "{" ContractBody* "}" --withTraits
-    ContractInit = "init" "(" ListOf<FunctionArg,","> ","? ")" "{" Statement* "}"
-    ContractBody = Field
-                 | ContractInit
-                 | ReceiveFunction
-                 | Function
-                 | Constant
-    
-    // Trait
-    Trait = ContractAttribute* trait id "{" TraitBody* "}" --originary
-          | ContractAttribute* trait id with NonemptyListOf<id,","> ","? "{" TraitBody* "}" --withTraits
-    TraitBody = Field
-              | ReceiveFunction
-              | Function
-              | Constant
+    ConstantDeclaration = ConstantAttribute* const id ":" Type ";"
 
-    // Contract attributes
+    StructDecl = "struct" typeId "{" StructField* "}" --regular
+               | "message" ("(" integerLiteral ")")? typeId "{" StructField* "}" --message
+
+    StructField = FieldDecl
+
+    Contract = ContractAttribute* contract id (with NonemptyListOf<id,","> ","?)? "{" ContractItemDecl* "}"
+
+    ContractItemDecl = ContractInit
+                     | StorageVar
+                     | Receiver
+                     | FunctionDefinition
+                     | ConstantDefinition
+
+    Trait = ContractAttribute* trait id (with NonemptyListOf<id,","> ","?)? "{" TraitItemDecl* "}"
+
+    TraitItemDecl = StorageVar
+                  | Receiver
+                  | FunctionDeclaration
+                  | FunctionDefinition
+                  | ConstantDefinition
+                  | ConstantDeclaration
+
+    StorageVar = FieldDecl
+
+    ContractInit = "init" "(" ListOf<Parameter,","> ","? ")" "{" Statement* "}"
+
     ContractAttribute = "@interface" "(" stringLiteral ")" --interface
 
-    // Function
-    FunctionAttribute = "get"     --getter
+    FunctionAttribute = "get"     --getter      // 'get' cannot be a reserved word because there is the map '.get' method
                       | mutates   --mutates
                       | extends   --extends
                       | virtual   --virtual
                       | override  --override
                       | inline    --inline
                       | abstract  --abstract
-    Function = FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ","? ")" "{" Statement* "}" --withVoid
-             | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ","? ")" ":" Type "{" Statement* "}" --withType
-             | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ","? ")" ";" --abstractVoid
-             | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ","? ")" ":" Type ";" --abstractType
-    FunctionArg = id ":" Type
-    
-    ReceiveFunction = "receive" "(" FunctionArg ")" "{" Statement* "}" --simple
-                    | "receive" "(" ")" "{" Statement* "}" --empty
-                    | "receive" "(" stringLiteral ")" "{" Statement* "}" --comment
-                    | "bounced" "(" FunctionArg ")" "{" Statement* "}" --bounced
-                    | "external" "(" FunctionArg ")" "{" Statement* "}" --externalSimple
-                    | "external" "(" stringLiteral ")" "{" Statement* "}" --externalComment
-                    | "external" "(" ")" "{" Statement* "}" --externalEmpty
+
+    FunctionDefinition = FunctionAttribute* fun id "(" ListOf<Parameter,","> ","? ")" (":" Type)? "{" Statement* "}"
+
+    FunctionDeclaration = FunctionAttribute* fun id "(" ListOf<Parameter,","> ","? ")" (":" Type)? ";"
+
+    Parameter = id ":" Type
+
+    Receiver = receive "(" Parameter? ")" "{" Statement* "}" --regular
+             | receive "(" stringLiteral ")" "{" Statement* "}" --comment
+             | "bounced" "(" Parameter ")" "{" Statement* "}" --bounced            // cannot be a reserved word because there a 'bounced' field in stdlib's 'Context' structure
+             | external "(" Parameter? ")" "{" Statement* "}" --externalRegular
+             | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
 
     // Statements
     Statement = StatementLet
@@ -92,155 +90,181 @@ Tact {
               | StatementReturn
               | StatementExpression
               | StatementAssign
-              | StatementAugmentedAssign
               | StatementCondition
               | StatementWhile
               | StatementRepeat
               | StatementUntil
               | StatementTry
               | StatementForEach
+
     StatementBlock = "{" Statement* "}"
+
     StatementLet = let id ":" Type "=" Expression ";"
-    StatementReturn = return Expression ";" --withExpression
-                    | return ";" --withoutExpression    
+
+    StatementReturn = return Expression? ";"
+
     StatementExpression = Expression ";"
-    StatementAssign = LValue "=" Expression ";"
-    StatementAugmentedAssign = StatementAugmentedAssignAdd
-                             | StatementAugmentedAssignSub
-                             | StatementAugmentedAssignMul
-                             | StatementAugmentedAssignDiv
-                             | StatementAugmentedAssignRem
-    StatementAugmentedAssignAdd = LValue "+=" Expression ";"
-    StatementAugmentedAssignSub = LValue "-=" Expression ";"
-    StatementAugmentedAssignMul = LValue "*=" Expression ";"
-    StatementAugmentedAssignDiv = LValue "/=" Expression ";"
-    StatementAugmentedAssignRem = LValue "%=" Expression ";"
-    StatementCondition = if Expression "{" Statement* "}" ~else --simple
+
+    StatementAssign = LValue ("=" | "+=" | "-=" | "*=" | "/=" | "%=") Expression ";"
+
+    StatementCondition = if Expression "{" Statement* "}" ~else --noElse
                        | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse
                        | if Expression "{" Statement* "}" else StatementCondition --withElseIf
+
     StatementWhile = while "(" Expression ")" "{" Statement* "}"
+
     StatementRepeat = repeat "(" Expression ")" "{" Statement* "}"
+
     StatementUntil = do "{" Statement* "}" until "(" Expression ")" ";"
-    StatementTry = try "{" Statement* "}" ~catch --simple
+
+    // making the catch clause optional using Ohm's `?` does not make sense
+    // because Ohm will create _independent_ optional grammar nodes which
+    // results in lots of unwrapping with unreachable cases
+    StatementTry = try "{" Statement* "}" ~catch --noCatch
                  | try "{" Statement* "}" catch "(" id ")" "{" Statement* "}" --withCatch
+
     StatementForEach = foreach "(" id "," id "in" id ")" "{" Statement* "}"
 
-    // L-value
-    LValue = id "." LValue --more
-           | id --single
+    LValue = id "." LValue --fieldAccess
+           | id --variable
 
-    // Expressions
     Expression = ExpressionConditional
-    
+
     ExpressionConditional = ExpressionOr "?" ExpressionOr ":" ExpressionConditional --ternary
                           | ExpressionOr
-    
+
     ExpressionOr = ExpressionOr "||" ExpressionAnd --or
                  | ExpressionAnd
-    
-    ExpressionAnd = ExpressionAnd "&&" ExpressionBinaryOr --and
-                  | ExpressionBinaryOr
-    
-    ExpressionBinaryOr = ExpressionBinaryOr "|" ExpressionBinaryXor --bin_or
-                       | ExpressionBinaryXor
-    
-    ExpressionBinaryXor = ExpressionBinaryXor "^" ExpressionBinaryAnd --bin_xor
-                       | ExpressionBinaryAnd
-    
-    ExpressionBinaryAnd = ExpressionBinaryAnd "&" ExpressionEquality --bin_and
-                        | ExpressionEquality
-    
+
+    ExpressionAnd = ExpressionAnd "&&" ExpressionBitwiseOr --and
+                  | ExpressionBitwiseOr
+
+    ExpressionBitwiseOr = ExpressionBitwiseOr "|" ExpressionBitwiseXor --bitwiseOr
+                        | ExpressionBitwiseXor
+
+    ExpressionBitwiseXor = ExpressionBitwiseXor "^" ExpressionBitwiseAnd --bitwiseXor
+                         | ExpressionBitwiseAnd
+
+    ExpressionBitwiseAnd = ExpressionBitwiseAnd "&" ExpressionEquality --bitwiseAnd
+                         | ExpressionEquality
+
     ExpressionEquality = ExpressionEquality "!=" ExpressionCompare --not
                        | ExpressionEquality "==" ExpressionCompare --eq
                        | ExpressionCompare
-    
-    ExpressionCompare = ExpressionCompare ">" ExpressionBinaryShift --gt
-                      | ExpressionCompare ">=" ExpressionBinaryShift --gte
-                      | ExpressionCompare "<" ExpressionBinaryShift --lt
-                      | ExpressionCompare "<=" ExpressionBinaryShift --lte
-                      | ExpressionBinaryShift
-    
-    ExpressionBinaryShift = ExpressionBinaryShift "<<" ExpressionAdd --shl
-                          | ExpressionBinaryShift ">>" ExpressionAdd --shr
-                          | ExpressionAdd
-    
+
+    ExpressionCompare = ExpressionCompare ">" ExpressionBitwiseShift --gt
+                      | ExpressionCompare ">=" ExpressionBitwiseShift --gte
+                      | ExpressionCompare "<" ExpressionBitwiseShift --lt
+                      | ExpressionCompare "<=" ExpressionBitwiseShift --lte
+                      | ExpressionBitwiseShift
+
+    ExpressionBitwiseShift = ExpressionBitwiseShift "<<" ExpressionAdd --shl
+                           | ExpressionBitwiseShift ">>" ExpressionAdd --shr
+                           | ExpressionAdd
+
     ExpressionAdd = ExpressionAdd "+" ~"+" ExpressionMul --add
                   | ExpressionAdd "-" ~"-" ExpressionMul --sub
                   | ExpressionMul
-    
+
     ExpressionMul = ExpressionMul "*" ExpressionUnary --mul
                   | ExpressionMul "/" ExpressionUnary --div
                   | ExpressionMul "%" ExpressionUnary --rem
                   | ExpressionUnary
-    
-    ExpressionUnary = "-" ExpressionValue --neg
-                    | "+" ExpressionValue --add
-                    | "!" ExpressionValue --not
-                    | ExpressionValue
-    
-    ExpressionBracket = "(" Expression ")"
+
+    ExpressionUnary = "-" ExpressionUnary --minus
+                    | "+" ExpressionUnary --plus
+                    | "!" ExpressionUnary --not
+                    | ExpressionPrimary
 
     // Order is important
-    ExpressionValue = ExpressionUnboxNotNull
-                    | ExpressionCall
-                    | ExpressionField
-                    | ExpressionStaticCall
-                    | ExpressionBracket
-                    | ExpressionNew
-                    | integerLiteral
-                    | boolLiteral
-                    | id
-                    | null
-                    | ExpressionInitOf
-                    | ExpressionString
-    ExpressionUnboxNotNull = ExpressionValue "!!"
-    ExpressionString = stringLiteral
-    ExpressionField = ExpressionValue "." id ~"("
-    ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ","? ")"
-    ExpressionNew = id "{" ListOf<NewParameter, ","> ","? "}"
-    NewParameter = id ":" Expression --full
-                 | id                --punned 
+    ExpressionPrimary = ExpressionUnboxNotNull
+                      | ExpressionMethodCall
+                      | ExpressionFieldAccess
+                      | ExpressionStaticCall
+                      | ExpressionParens
+                      | ExpressionStructInstance
+                      | integerLiteral
+                      | boolLiteral
+                      | id
+                      | null
+                      | ExpressionInitOf
+                      | stringLiteral
+
+    ExpressionParens = "(" Expression ")"
+
+    ExpressionUnboxNotNull = ExpressionPrimary "!!"
+
+    ExpressionFieldAccess = ExpressionPrimary "." id ~"("
+
+    ExpressionMethodCall = ExpressionPrimary "." id "(" ListOf<Expression, ","> ","? ")"
+
+    ExpressionStructInstance = typeId "{" ListOf<StructFieldInitializer, ","> ","? "}"
+
     ExpressionStaticCall = id "(" ListOf<Expression, ","> ","? ")"
+
     ExpressionInitOf = initOf id "(" ListOf<Expression, ","> ","? ")"
 
-    // Type Literal
-    typeLiteral = letterAsciiUC typeLiteralPart*
-    typeLiteralPart = letterAscii | digit | "_"
+    StructFieldInitializer = id ":" Expression --full
+                           | id --punned   // shorthand for `id: id`
+
+    // Type identifiers
+    typeId = letterAsciiUC typeIdPart*
+
+    typeIdPart = letterAscii | digit | "_"
 
     // Integer Literal
     // hexDigit defined in Ohm's built-in rules (otherwise: hexDigit = "0".."9" | "a".."f" | "A".."F")
     // digit defined in Ohm's built-in rules (otherwise: digit = "0".."9")
-    integerLiteral = integerLiteralHex | integerLiteralBin | integerLiteralOct | integerLiteralDec // Order is important
+    // order is important
+    integerLiteral = integerLiteralHex
+                   | integerLiteralBin
+                   | integerLiteralOct
+                   | integerLiteralDec
+
     integerLiteralDec = nonZeroDigit ("_"? digit)*  --nonZeroIntegerLiteralDec
                       | "0" digit*                  --integerLiteralWithLeadingZero
+
     integerLiteralHex = ("0x" | "0X") hexDigit ("_"? hexDigit)*
+
     integerLiteralBin = ("0b" | "0B") binDigit ("_"? binDigit)*
+
     integerLiteralOct = ("0o" | "0O") octDigit ("_"? octDigit)*
+
     binDigit = "0" | "1"
+
     octDigit = "0".."7"
+
     nonZeroDigit = "1".."9"
 
     // Letters
     letterAsciiLC = "a".."z"
+
     letterAsciiUC = "A".."Z"
+
     letterAscii = letterAsciiLC | letterAsciiUC
+
     letterComment = letterAsciiLC | letterAsciiUC | digit | "_"
 
-    // ID Literal
+    // Tact identifiers
     idStart = letterAscii | "_"
+
     idPart = letterAscii | digit | "_"
+
     id = ~reservedWord #idStart #(idPart*)
 
-    // FunC id
+    // FunC identifiers
     funcLetter = letterAscii | "_" | "'" | "?" | "!" | "::" | "&"
+
     funcId = funcLetter #(funcLetter | digit)*
 
-    // Bool Literal
+    // Boolean literals
     boolLiteral = ("true" | "false") ~idPart
 
-    // String literal
+    // String literals
     stringLiteral = "\"" (nonQuoteOrBackslashChar | escapeSequence)* "\""
+
     nonQuoteOrBackslashChar = ~("\"" | "\\") any
+
     escapeSequence = "\\\\" -- backslash
                    | "\\\"" -- doubleQuote
                    | "\\n" -- newline
@@ -255,25 +279,29 @@ Tact {
 
     // Keywords
     // NOTE Order is important
-    keyword = fun 
+    keyword = fun
             | let
-            | return 
-            | extend 
-            | native 
-            | public 
-            | null 
-            | if 
-            | else 
-            | while 
-            | repeat 
-            | do 
-            | until 
+            | return
+            | receive
+            | extend
+            | native
+            | primitive
+            | public
+            | null
+            | if
+            | else
+            | while
+            | repeat
+            | do
+            | until
             | try
             | catch
             | foreach
-            | as  
+            | as
+            | map
             | mutates
             | extends
+            | external
             | import
             | with
             | trait
@@ -283,12 +311,16 @@ Tact {
             | virtual
             | inline
             | const
+
     contract = "contract" ~idPart
     let = "let" ~idPart
     fun = "fun" ~idPart
     return = "return" ~idPart
+    receive = "receive" ~idPart
     extend = "extend" ~idPart
+    external = "external" ~idPart
     native = "native" ~idPart
+    primitive = "primitive" ~idPart
     public = "public" ~idPart
     null = "null" ~idPart
     if = "if" ~idPart
@@ -301,6 +333,7 @@ Tact {
     catch = "catch" ~idPart
     foreach = "foreach" ~idPart
     as = "as" ~idPart
+    map = "map" ~idPart
     mutates = "mutates" ~idPart
     extends = "extends" ~idPart
     import = "import" ~idPart
@@ -313,16 +346,17 @@ Tact {
     const = "const" ~idPart
     abstract = "abstract" ~idPart
 
-    // Attributes
-    nameAttribute = "@name"
-
     // Reserved
     reservedWord = keyword
 
     // Comments
     space += comment | lineTerminator
+
     comment = multiLineComment | singleLineComment
+
     lineTerminator = "\n" | "\r" | "\u2028" | "\u2029"
+
     multiLineComment = "/*" (~"*/" any)* "*/"
+
     singleLineComment = "//" (~lineTerminator any)*
 }
