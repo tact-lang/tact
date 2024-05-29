@@ -106,31 +106,37 @@ class PrettyPrinter {
                         return 1;
                     case "&&":
                         return 2;
+                    case "|":
+                        return 3;
+                    case "^":
+                        return 4;
+                    case "&":
+                        return 5;
                     case "==":
                     case "!=":
-                        return 3;
+                        return 6;
                     case "<":
                     case ">":
                     case "<=":
                     case ">=":
-                        return 4;
+                        return 7;
                     case "+":
                     case "-":
-                        return 5;
+                        return 8;
                     case "*":
                     case "/":
                     case "%":
-                        return 6;
+                        return 9;
                     default:
-                        return 10;
+                        return 11;
                 }
             case "op_call":
             case "op_static_call":
                 return 0
             case "op_unary":
-                return 7;
-            default:
                 return 10;
+            default:
+                return 11;
         }
     }
 
@@ -443,7 +449,9 @@ class PrettyPrinter {
         const returnType = func.return
             ? `: ${this.ppASTTypeRef(func.return)}`
             : "";
-        return `${this.indent()}native fun ${func.name}(${argsFormatted})${returnType};`;
+        let attrs = func.attributes.map((attr) => attr.type).join(" ");
+        attrs = attrs ? attrs + " " : "";
+        return `${this.indent()}@name(${func.nativeName})\n${this.indent()}${attrs}native ${func.name}(${argsFormatted})${returnType};`;
     }
 
     ppASTInitFunction(initFunc: ASTInitFunction): string {
