@@ -29,4 +29,8 @@ contract SampleContract {
     get fun stake(): Int {
         return self.a;
     }
+
+    receive("increment") {
+        self.a -= 1; 
+    } 
 }
