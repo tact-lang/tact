@@ -1,0 +1,5 @@
+contract ReceiveTestContract {
+    external() {
+        acceptMessage();
+    }
+}
