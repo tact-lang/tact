@@ -130,6 +130,7 @@ class PrettyPrinter {
                     default:
                         return 11;
                 }
+            case "conditional":
             case "op_call":
             case "op_static_call":
                 return 0
