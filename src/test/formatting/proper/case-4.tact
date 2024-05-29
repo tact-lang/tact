@@ -1,12 +1,20 @@
+import "@stdlib/deploy";
+
 struct Source {
     a: Int;
     b: Int;
 }
 
+@name(store_uint)
+native storeUint(s: Builder, value: Int, bits: Int): Builder;
+
 fun isZero(x: Int, y: Int, z: Bool, m: Source): Bool {
     m.b = 10;
     return x + m.b > 0 && z;
 }
+
+const a: Int = 0;
+const s: String = "string";
 
 contract SampleContract {
     a: Int;
