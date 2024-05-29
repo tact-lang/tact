@@ -1,5 +1,15 @@
-trait Ownable {
+@interface("") trait B {
+}
+
+trait Ownable with B {
     owner: Address;
+    value: Int;
+
+    const someNum: Int = 2;
+
+    receive("message") {
+
+    }
 
     fun requireOwner() {
         nativeThrowUnless(132, context().sender == self.owner);
@@ -10,10 +20,12 @@ trait Ownable {
     }
 }
 
-contract Treasure with Ownable {
+@interface("a") contract Treasure with Ownable {
     owner: Address;
+    value: Int;
 
     init(owner: Address) {
         self.owner = owner;
+        self.value = 1;
     }
 }

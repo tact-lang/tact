@@ -1,5 +1,7 @@
 import "@stdlib/deploy";
 
+primitive NInt;
+
 struct Source {
     a: Int;
     b: Int;
@@ -15,12 +17,15 @@ fun isZero(x: Int, y: Int, z: Bool, m: Source): Bool {
 
 const a: Int = 0;
 const s: String = "string";
+const t: Bool = true;
+const f: Bool = false;
 
 contract SampleContract {
     a: Int;
     b: Int;
     c: Source;
     d: map<Int, Int>;
+    const e: Int = 42;
 
     init() {
         self.a = 0;
@@ -29,12 +34,17 @@ contract SampleContract {
     }
 
     fun addStake() {
+        let d: Int? = null;
         self.a = 10;
-        self.b = -20;
+        d = a > 0 ? self.a : 0;
+
+        let res: Bool = isZero(1, 2, false, self.c);
+        self.b = a;
         self.c = Source{a: 10, b: 20};
     }
 
     get fun stake(): Int {
+        self.addStake();
         return self.a;
     }
 
