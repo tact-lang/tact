@@ -31,6 +31,6 @@ contract SampleContract {
     }
 
     receive("increment") {
-        self.a -= 1; 
-    } 
+        self.a -= 1;
+    }
 }

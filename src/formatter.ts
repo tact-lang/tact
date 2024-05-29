@@ -409,17 +409,32 @@ class PrettyPrinter {
     }
 
     ppASTReceive(receive: ASTReceive): string {
-        const selector =
-            receive.selector.kind === "internal-simple"
-                ? `(${receive.selector.arg.name}: ${this.ppASTTypeRef(receive.selector.arg.type)})`
-                : "()";
-        this.increaseIndent();
+        const header = this.ppASTReceiveHeader(receive)
         const stmtsFormatted = this.ppStatementBlock(
             receive.statements,
         );
-        this.decreaseIndent();
-        return `${this.indent()}receive${selector} ${stmtsFormatted}`;
+        return `${this.indent()}${header} ${stmtsFormatted}`;
     }
+
+    ppASTReceiveHeader(receive: ASTReceive): string {
+        switch (receive.selector.kind) {
+            case "internal-simple":
+                return `receive(${receive.selector.arg.name}: ${this.ppASTTypeRef(receive.selector.arg.type)})`
+            case "internal-fallback":
+                return `receive()`
+            case "internal-comment":
+                return `receive("${receive.selector.comment.value}")`
+            case "bounce":
+                return `bounced(${receive.selector.arg.name}: ${this.ppASTTypeRef(receive.selector.arg.type)})`
+            case "external-simple":
+                return `external(${receive.selector.arg.name}: ${this.ppASTTypeRef(receive.selector.arg.type)})`
+            case "external-fallback":
+                return `external()`
+            case "external-comment":
+                return `external("${receive.selector.comment.value}")`
+        }
+    }
+
 
     ppASTNativeFunction(func: ASTNativeFunction): string {
         const argsFormatted = func.args
