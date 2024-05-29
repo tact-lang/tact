@@ -55,12 +55,6 @@ class PrettyPrinter {
         return " ".repeat(this.indentLevel * this.indentSpaces);
     }
 
-    private formatList<T>(list: T[], formatter: (item: T) => string): string {
-        return list
-            .map((item) => formatter.call(this, item))
-            .join(",\n");
-    }
-
     ppASTPrimitive(primitive: ASTPrimitive): string {
         return `${this.indent()}primitive ${primitive.name};`;
     }
@@ -130,6 +124,9 @@ class PrettyPrinter {
                     default:
                         return 10;
                 }
+            case "op_call":
+            case "op_static_call":
+                return 0
             case "op_unary":
                 return 7;
             default:
@@ -191,7 +188,7 @@ class PrettyPrinter {
         }
 
         // Set parens when needed
-        if (parentPrecedence > 0 && currentPrecedence < parentPrecedence) {
+        if (parentPrecedence > 0 && currentPrecedence > 0 && currentPrecedence < parentPrecedence) {
             result = `(${result})`;
         }
 
@@ -278,13 +275,26 @@ class PrettyPrinter {
             .map((attr) => `@${attr.type}("${attr.name.value}")`)
             .join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
+        this.increaseIndent();
         const bodyFormatted = trait.declarations
-            .map((declaration) => this.ppTraitBody(declaration))
-            .join(" ");
+            .map((dec, index, array) => {
+                const formattedDec = this.ppTraitBody(dec);
+                const nextDec = array[index + 1];
+                if (
+                    (dec.kind === "def_constant" &&
+                        nextDec?.kind === "def_constant") ||
+                    (dec.kind === "def_field" && nextDec?.kind === "def_field")
+                ) {
+                    return formattedDec;
+                }
+                return formattedDec + "\n";
+            })
+            .join("\n");
         const header = traitsFormatted
             ? `trait ${trait.name} with ${traitsFormatted}`
             : `trait ${trait.name}`;
-        return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}\n${this.indent()}}`;
+        this.decreaseIndent();
+        return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}${this.indent()}}`;
     }
 
     ppTraitBody(
@@ -404,12 +414,11 @@ class PrettyPrinter {
                 ? `(${receive.selector.arg.name}: ${this.ppASTTypeRef(receive.selector.arg.type)})`
                 : "()";
         this.increaseIndent();
-        const stmtsFormatted = this.formatList(
+        const stmtsFormatted = this.ppStatementBlock(
             receive.statements,
-            this.ppASTStatement,
         );
         this.decreaseIndent();
-        return `${this.indent()}receive ${selector} {\n${stmtsFormatted}\n}`;
+        return `${this.indent()}receive${selector} ${stmtsFormatted}`;
     }
 
     ppASTNativeFunction(func: ASTNativeFunction): string {
@@ -473,7 +482,9 @@ class PrettyPrinter {
 
     ppStatementBlock(stmts: ASTStatement[]): string {
         this.increaseIndent();
-        const stmntsFormatted = this.formatList(stmts, this.ppASTStatement)
+        const stmntsFormatted = stmts
+            .map((stmt) => this.ppASTStatement(stmt))
+            .join("\n")
         this.decreaseIndent()
         const result = `{\n${stmntsFormatted}\n${this.indent()}}`;
         return result;
@@ -497,10 +508,7 @@ class PrettyPrinter {
 
     ppASTLvalueRef(lvalues: ASTLvalueRef[]) {
         return lvalues
-            .reduce((acc, lvalue) => {
-                acc.push(lvalue.name);
-                return acc;
-            }, [] as string[])
+            .map((lvalue) =>lvalue.name)
             .join(".");
     }
 
@@ -511,7 +519,7 @@ class PrettyPrinter {
     ppASTStatementAugmentedAssign(
         statement: ASTSTatementAugmentedAssign,
     ): string {
-        return `${this.indent()}${this.ppASTLvalueRef(statement.path)} ${statement.op} ${this.ppASTExpression(statement.expression)};`;
+        return `${this.indent()}${this.ppASTLvalueRef(statement.path)} ${statement.op}= ${this.ppASTExpression(statement.expression)};`;
     }
 
     ppASTCondition(statement: ASTCondition): string {
