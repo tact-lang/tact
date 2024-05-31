@@ -25,6 +25,7 @@ contract SampleContract {
     b: Int;
     c: Source;
     d: map<Int, Int>;
+
     const e: Int = 42;
 
     init() {
@@ -37,7 +38,6 @@ contract SampleContract {
         let d: Int? = null;
         self.a = 10;
         d = a > 0 ? self.a : 0;
-
         let res: Bool = isZero(1, 2, false, self.c);
         self.b = a;
         self.c = Source{a: 10, b: 20};
