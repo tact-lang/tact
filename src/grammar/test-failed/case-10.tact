@@ -1,3 +1,3 @@
-struct lowercaseIdforType {
+struct lowercaseIdForType {
     a: Int;
 }

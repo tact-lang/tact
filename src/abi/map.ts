@@ -82,19 +82,19 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                         kind = "uint";
                     }
                     if (self.value === "Int") {
-                        let vbits = 257;
-                        let vkind = "int";
+                        let vBits = 257;
+                        let vKind = "int";
                         if (self.valueAs && self.valueAs.startsWith("int")) {
-                            vbits = parseInt(self.valueAs.slice(3), 10);
+                            vBits = parseInt(self.valueAs.slice(3), 10);
                         } else if (
                             self.valueAs &&
                             self.valueAs.startsWith("uint")
                         ) {
-                            vbits = parseInt(self.valueAs.slice(4), 10);
-                            vkind = "uint";
+                            vBits = parseInt(self.valueAs.slice(4), 10);
+                            vKind = "uint";
                         }
-                        ctx.used(`__tact_dict_set_${kind}_${vkind}`);
-                        return `${resolved[0]}~__tact_dict_set_${kind}_${vkind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vbits})`;
+                        ctx.used(`__tact_dict_set_${kind}_${vKind}`);
+                        return `${resolved[0]}~__tact_dict_set_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
                     } else if (self.value === "Bool") {
                         ctx.used(`__tact_dict_set_${kind}_int`);
                         return `${resolved[0]}~__tact_dict_set_${kind}_int(${bits}, ${resolved[1]}, ${resolved[2]}, 1)`;
@@ -131,19 +131,19 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 // Handle address key
                 if (self.key === "Address") {
                     if (self.value === "Int") {
-                        let vbits = 257;
-                        let vkind = "int";
+                        let vBits = 257;
+                        let vKind = "int";
                         if (self.valueAs && self.valueAs.startsWith("int")) {
-                            vbits = parseInt(self.valueAs.slice(3), 10);
+                            vBits = parseInt(self.valueAs.slice(3), 10);
                         } else if (
                             self.valueAs &&
                             self.valueAs.startsWith("uint")
                         ) {
-                            vbits = parseInt(self.valueAs.slice(4), 10);
-                            vkind = "uint";
+                            vBits = parseInt(self.valueAs.slice(4), 10);
+                            vKind = "uint";
                         }
-                        ctx.used(`__tact_dict_set_slice_${vkind}`);
-                        return `${resolved[0]}~__tact_dict_set_slice_${vkind}(267, ${resolved[1]}, ${resolved[2]}, ${vbits})`;
+                        ctx.used(`__tact_dict_set_slice_${vKind}`);
+                        return `${resolved[0]}~__tact_dict_set_slice_${vKind}(267, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
                     } else if (self.value === "Bool") {
                         ctx.used(`__tact_dict_set_slice_int`);
                         return `${resolved[0]}~__tact_dict_set_slice_int(267, ${resolved[1]}, ${resolved[2]}, 1)`;
@@ -234,19 +234,19 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                         kind = "uint";
                     }
                     if (self.value === "Int") {
-                        let vbits = 257;
-                        let vkind = "int";
+                        let vBits = 257;
+                        let vKind = "int";
                         if (self.valueAs && self.valueAs.startsWith("int")) {
-                            vbits = parseInt(self.valueAs.slice(3), 10);
+                            vBits = parseInt(self.valueAs.slice(3), 10);
                         } else if (
                             self.valueAs &&
                             self.valueAs.startsWith("uint")
                         ) {
-                            vbits = parseInt(self.valueAs.slice(4), 10);
-                            vkind = "uint";
+                            vBits = parseInt(self.valueAs.slice(4), 10);
+                            vKind = "uint";
                         }
-                        ctx.used(`__tact_dict_get_${kind}_${vkind}`);
-                        return `__tact_dict_get_${kind}_${vkind}(${resolved[0]}, ${bits}, ${resolved[1]}, ${vbits})`;
+                        ctx.used(`__tact_dict_get_${kind}_${vKind}`);
+                        return `__tact_dict_get_${kind}_${vKind}(${resolved[0]}, ${bits}, ${resolved[1]}, ${vBits})`;
                     } else if (self.value === "Bool") {
                         ctx.used(`__tact_dict_get_${kind}_int`);
                         return `__tact_dict_get_int_int(${resolved[0]}, ${bits}, ${resolved[1]}, 1)`;
@@ -279,19 +279,19 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 // Handle Address key
                 if (self.key === "Address") {
                     if (self.value === "Int") {
-                        let vbits = 257;
-                        let vkind = "int";
+                        let vBits = 257;
+                        let vKind = "int";
                         if (self.valueAs && self.valueAs.startsWith("int")) {
-                            vbits = parseInt(self.valueAs.slice(3), 10);
+                            vBits = parseInt(self.valueAs.slice(3), 10);
                         } else if (
                             self.valueAs &&
                             self.valueAs.startsWith("uint")
                         ) {
-                            vbits = parseInt(self.valueAs.slice(4), 10);
-                            vkind = "uint";
+                            vBits = parseInt(self.valueAs.slice(4), 10);
+                            vKind = "uint";
                         }
-                        ctx.used(`__tact_dict_get_slice_${vkind}`);
-                        return `__tact_dict_get_slice_${vkind}(${resolved[0]}, 267, ${resolved[1]}, ${vbits})`;
+                        ctx.used(`__tact_dict_get_slice_${vKind}`);
+                        return `__tact_dict_get_slice_${vKind}(${resolved[0]}, 267, ${resolved[1]}, ${vBits})`;
                     } else if (self.value === "Bool") {
                         ctx.used(`__tact_dict_get_slice_int`);
                         return `__tact_dict_get_slice_int(${resolved[0]}, 267, ${resolved[1]}, 1)`;

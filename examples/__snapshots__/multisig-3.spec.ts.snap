@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`muiltisig-3 should deploy 1`] = `
+exports[`multisig-3 should deploy 1`] = `
 [
   {
     "$seq": 0,

@@ -208,8 +208,8 @@ export function writeDictParser(s: ABIType, w: Writer) {
     w.write(`
         function dictValueParser${s.name}(): DictionaryValue<${s.name}> {
             return {
-                serialize: (src, buidler) => {
-                    buidler.storeRef(beginCell().store(store${s.name}(src)).endCell());
+                serialize: (src, builder) => {
+                    builder.storeRef(beginCell().store(store${s.name}(src)).endCell());
                 },
                 parse: (src) => {
                     return load${s.name}(src.loadRef().beginParse());

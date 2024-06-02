@@ -485,11 +485,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function resolveFunctionDescriptor(
-        sself: string | null,
+        optSelf: string | null,
         a: ASTFunction | ASTNativeFunction,
         origin: TypeOrigin,
     ): FunctionDescription {
-        let self = sself;
+        let self = optSelf;
 
         // Resolve return
         let returns: TypeRef = { kind: "void" };
@@ -523,7 +523,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
             if (self) {
                 throwError(
-                    "Native functions cannot be delated within a contract",
+                    "Native functions cannot be defined within a contract",
                     a.ref,
                 );
             }
@@ -726,7 +726,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             args,
             returns,
             ast: a,
-            isMutating: !!isMutating || !!sself /* && !isGetter */, // Mark all contract functions as mutating
+            isMutating: !!isMutating || !!optSelf /* && !isGetter */, // Mark all contract functions as mutating
             isGetter: !!isGetter,
             isVirtual: !!isVirtual,
             isOverrides: !!isOverrides,

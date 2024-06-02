@@ -4,11 +4,11 @@ import { __DANGER_resetNodeId } from "../grammar/ast";
 import { IntrinsicsTester } from "./features/output/intrinsics_IntrinsicsTester";
 import { sha256_sync } from "@ton/crypto";
 
-describe("feature-instrinsics", () => {
+describe("feature-intrinsics", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    it("should return correct instinsic results", async () => {
+    it("should return correct intrinsic results", async () => {
         const system = await ContractSystem.create();
         const treasure = system.treasure("treasure");
         const contract = system.open(await IntrinsicsTester.fromInit());
