@@ -1,10 +1,12 @@
 import rawGrammar from "./grammar.ohm-bundle";
 import {
+    ASTAugmentedAssignOperation,
     ASTConstantAttribute,
     ASTContractAttribute,
     ASTFunctionAttribute,
     ASTNode,
     ASTProgram,
+    ASTReceiveType,
     ASTRef,
     ASTString,
     ASTTypeRef,
@@ -15,1300 +17,1217 @@ import {
 } from "./ast";
 import { checkVariableName } from "./checkVariableName";
 import { TactSyntaxError } from "./../errors";
-import { MatchResult } from "ohm-js";
+import { Node, IterationNode, MatchResult } from "ohm-js";
 import { TypeOrigin } from "../types/types";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
 
 let ctx: { origin: TypeOrigin } | null;
 
-// Semantics
+// helper to unwrap optional grammar elements (marked with "?")
+// ohm-js represents those essentially as lists (IterationNodes)
+function unwrapOptNode<T>(
+    optional: IterationNode,
+    f: (n: Node) => T,
+): T | null {
+    const optNode = optional.children[0];
+    return optNode ? f(optNode) : null;
+}
+
 const semantics = rawGrammar.createSemantics();
 
-// Resolve program
-semantics.addOperation<ASTNode>("resolve_program", {
-    Program(arg0) {
+semantics.addOperation<ASTNode>("astOfModule", {
+    Module(imports, items) {
         return createNode({
             kind: "program",
-            entries: arg0.children.map((v) => v.resolve_program_item()),
+            entries: imports.children
+                .concat(items.children)
+                .map((item) => item.astOfModuleItem()),
         });
     },
 });
 
-// Resolve program items
-semantics.addOperation<ASTNode>("resolve_program_item", {
-    ProgramImport(_arg0, arg1, _arg2) {
-        const pp = arg1.resolve_expression() as ASTString;
-        if (pp.value.indexOf("\\") >= 0) {
-            throwError('Import path can\'t contain "\\"', createRef(arg1));
+semantics.addOperation<ASTNode>("astOfModuleItem", {
+    Import(_importKwd, path, _semicolon) {
+        const pathAST = path.astOfExpression() as ASTString;
+        if (pathAST.value.indexOf("\\") >= 0) {
+            throwError('Import path can\'t contain "\\"', createRef(path));
         }
         return createNode({
             kind: "program_import",
-            path: arg1.resolve_expression(),
+            path: pathAST,
             ref: createRef(this),
         });
     },
-    Primitive(_arg0, arg1, _arg2) {
-        checkVariableName(arg1.sourceString, createRef(arg1));
+    PrimitiveTypeDecl(_primitive_kwd, type, _semicolon) {
+        checkVariableName(type.sourceString, createRef(type));
         return createNode({
             kind: "primitive",
             origin: ctx!.origin,
-            name: arg1.sourceString,
+            name: type.sourceString,
             ref: createRef(this),
         });
     },
-    Struct_originary(_arg0, arg1, _arg2, arg3, _arg4) {
-        checkVariableName(arg1.sourceString, createRef(arg1));
+    NativeFunctionDecl(
+        _name,
+        _lparen1,
+        funcId,
+        _rparen1,
+        funAttributes,
+        _nativeKwd,
+        tactId,
+        _lparen2,
+        params,
+        optTrailingComma,
+        _rparen2,
+        _optColon,
+        optReturnType,
+        _semicolon,
+    ) {
+        if (
+            params.source.contents === "" &&
+            optTrailingComma.sourceString === ","
+        ) {
+            throwError(
+                "Empty parameter list should not have a dangling comma.",
+                createRef(optTrailingComma),
+            );
+        }
+        checkVariableName(tactId.sourceString, createRef(tactId));
+        return createNode({
+            kind: "def_native_function",
+            origin: ctx!.origin,
+            attributes: funAttributes.children.map((a) =>
+                a.astOfFunctionAttributes(),
+            ),
+            name: tactId.sourceString,
+            nativeName: funcId.sourceString,
+            return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
+            args: params
+                .asIteration()
+                .children.map((p) => p.astOfDeclaration()),
+            ref: createRef(this),
+        });
+    },
+    StructDecl_regular(_structKwd, typeId, _lbrace, fields, _rbrace) {
+        checkVariableName(typeId.sourceString, createRef(typeId));
         return createNode({
             kind: "def_struct",
             origin: ctx!.origin,
-            name: arg1.sourceString,
-            fields: arg3.children.map((v) => v.resolve_declaration()),
+            name: typeId.sourceString,
+            fields: fields.children.map((f) => f.astOfDeclaration()),
             prefix: null,
             message: false,
             ref: createRef(this),
         });
     },
-    Struct_message(_arg0, arg1, _arg2, arg3, _arg4) {
-        checkVariableName(arg1.sourceString, createRef(arg1));
+    StructDecl_message(
+        _messageKwd,
+        _optLparen,
+        optId,
+        _optRparen,
+        typeId,
+        _lbrace,
+        fields,
+        _rbrace,
+    ) {
+        checkVariableName(typeId.sourceString, createRef(typeId));
         return createNode({
             kind: "def_struct",
             origin: ctx!.origin,
-            name: arg1.sourceString,
-            fields: arg3.children.map((v) => v.resolve_declaration()),
-            prefix: null,
+            name: typeId.sourceString,
+            fields: fields.children.map((f) => f.astOfDeclaration()),
+            prefix: unwrapOptNode(optId, (id) => parseInt(id.sourceString)),
             message: true,
             ref: createRef(this),
         });
     },
-    Struct_messageWithId(_arg0, arg1, arg2, _arg3, arg4, _arg5, arg6, _arg7) {
-        checkVariableName(arg1.sourceString, createRef(arg1));
-        return createNode({
-            kind: "def_struct",
-            origin: ctx!.origin,
-            name: arg4.sourceString,
-            fields: arg6.children.map((v) => v.resolve_declaration()),
-            prefix: parseInt(arg2.sourceString),
-            message: true,
-            ref: createRef(this),
-        });
-    },
-    Contract_simple(arg0, _arg1, arg2, _arg3, arg4, _arg5) {
-        checkVariableName(arg2.sourceString, createRef(arg2));
+    Contract(
+        attributes,
+        _contractKwd,
+        contractId,
+        _optWithKwd,
+        optInheritedTraits,
+        _optTrailingComma,
+        _lbrace,
+        contractItems,
+        _rbrace,
+    ) {
+        checkVariableName(contractId.sourceString, createRef(contractId));
         return createNode({
             kind: "def_contract",
             origin: ctx!.origin,
-            name: arg2.sourceString,
-            attributes: arg0.children.map((v) =>
-                v.resolve_contract_attributes(),
+            name: contractId.sourceString,
+            attributes: attributes.children.map((ca) =>
+                ca.astOfContractAttributes(),
             ),
-            declarations: arg4.children.map((v) => v.resolve_declaration()),
-            traits: [],
+            declarations: contractItems.children.map((item) =>
+                item.astOfItem(),
+            ),
+            traits:
+                optInheritedTraits.children[0]
+                    ?.asIteration()
+                    .children.map((e) => e.astOfExpression()) ?? [],
             ref: createRef(this),
         });
     },
-    Contract_withTraits(
-        arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        arg4,
-        _arg5,
-        _arg6,
-        arg7,
-        _arg8,
+    Trait(
+        attributes,
+        _traitKwd,
+        traitId,
+        _optWithKwd,
+        optInheritedTraits,
+        _optTrailingComma,
+        _lbrace,
+        traitItems,
+        _rbrace,
     ) {
-        checkVariableName(arg2.sourceString, createRef(arg2));
-        return createNode({
-            kind: "def_contract",
-            origin: ctx!.origin,
-            name: arg2.sourceString,
-            attributes: arg0.children.map((v) =>
-                v.resolve_contract_attributes(),
-            ),
-            declarations: arg7.children.map((v) => v.resolve_declaration()),
-            traits: arg4
-                .asIteration()
-                .children.map((v) => v.resolve_expression()),
-            ref: createRef(this),
-        });
-    },
-    Trait_originary(arg0, _arg1, arg2, _arg3, arg4, _arg5) {
-        checkVariableName(arg2.sourceString, createRef(arg2));
+        checkVariableName(traitId.sourceString, createRef(traitId));
         return createNode({
             kind: "def_trait",
             origin: ctx!.origin,
-            name: arg2.sourceString,
-            attributes: arg0.children.map((v) =>
-                v.resolve_contract_attributes(),
+            name: traitId.sourceString,
+            attributes: attributes.children.map((ca) =>
+                ca.astOfContractAttributes(),
             ),
-            declarations: arg4.children.map((v) => v.resolve_declaration()),
-            traits: [],
+            declarations: traitItems.children.map((item) => item.astOfItem()),
+            traits:
+                optInheritedTraits.children[0]
+                    ?.asIteration()
+                    .children.map((e) => e.astOfExpression()) ?? [],
             ref: createRef(this),
         });
     },
-    Trait_withTraits(
-        arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        arg4,
-        _arg5,
-        _arg6,
-        arg7,
-        _arg8,
+    ModuleFunction(fun) {
+        return fun.astOfItem();
+    },
+    ModuleConstant(constant) {
+        return constant.astOfItem();
+    },
+});
+
+// top-level (module-level), contract or trait items:
+// constant declarations/definitions, functions, receivers,
+// getters, etc.
+semantics.addOperation<ASTNode>("astOfItem", {
+    ConstantDefinition(
+        constAttributes,
+        _constKwd,
+        constId,
+        _colon,
+        constType,
+        _equals,
+        initExpr,
+        _semicolon,
     ) {
-        checkVariableName(arg2.sourceString, createRef(arg2));
-        return createNode({
-            kind: "def_trait",
-            origin: ctx!.origin,
-            name: arg2.sourceString,
-            attributes: arg0.children.map((v) =>
-                v.resolve_contract_attributes(),
-            ),
-            declarations: arg7.children.map((v) => v.resolve_declaration()),
-            traits: arg4
-                .asIteration()
-                .children.map((v) => v.resolve_expression()),
-            ref: createRef(this),
-        });
-    },
-    StaticFunction(arg0) {
-        return arg0.resolve_declaration();
-    },
-    NativeFunction(arg0) {
-        return arg0.resolve_declaration();
-    },
-    Constant_withValue(arg0, _arg1, arg2, _arg3, arg4, _arg5, arg6, _arg7) {
-        const attributes = arg0.children.map((v) =>
-            v.resolve_const_attributes(),
+        const attributes = constAttributes.children.map((a) =>
+            a.astOfConstAttribute(),
         ) as ASTConstantAttribute[];
         checkConstAttributes(false, attributes, createRef(this));
         return createNode({
             kind: "def_constant",
-            name: arg2.sourceString,
-            type: arg4.resolve_expression(),
-            value: arg6.resolve_expression(),
+            name: constId.sourceString,
+            type: constType.astOfType(),
+            value: initExpr.astOfExpression(),
             attributes,
             ref: createRef(this),
         });
     },
-    Constant_withEmpty(arg0, _arg1, arg2, _arg3, arg4, _arg5) {
-        const attributes = arg0.children.map((v) =>
-            v.resolve_const_attributes(),
+    ConstantDeclaration(
+        constAttributes,
+        _constKwd,
+        constId,
+        _colon,
+        constType,
+        _semicolon,
+    ) {
+        const attributes = constAttributes.children.map((a) =>
+            a.astOfConstAttribute(),
         ) as ASTConstantAttribute[];
         checkConstAttributes(true, attributes, createRef(this));
         return createNode({
             kind: "def_constant",
-            name: arg2.sourceString,
-            type: arg4.resolve_expression(),
+            name: constId.sourceString,
+            type: constType.astOfType(),
             value: null,
             attributes,
             ref: createRef(this),
         });
     },
-});
-
-// Resolve attributes
-semantics.addOperation<ASTFunctionAttribute>("resolve_attributes", {
-    FunctionAttribute_getter(_arg0) {
-        return { type: "get", ref: createRef(this) };
+    StorageVar(fieldDecl) {
+        return fieldDecl.astOfDeclaration();
     },
-    FunctionAttribute_extends(_arg0) {
-        return { type: "extends", ref: createRef(this) };
-    },
-    FunctionAttribute_mutates(_arg0) {
-        return { type: "mutates", ref: createRef(this) };
-    },
-    FunctionAttribute_override(_arg0) {
-        return { type: "overrides", ref: createRef(this) };
-    },
-    FunctionAttribute_inline(_arg0) {
-        return { type: "inline", ref: createRef(this) };
-    },
-    FunctionAttribute_virtual(_arg0) {
-        return { type: "virtual", ref: createRef(this) };
-    },
-    FunctionAttribute_abstract(_arg0) {
-        return { type: "abstract", ref: createRef(this) };
-    },
-});
-
-// Resolve const attributes
-semantics.addOperation<ASTConstantAttribute>("resolve_const_attributes", {
-    ConstantAttribute_override(_arg0) {
-        return { type: "overrides", ref: createRef(this) };
-    },
-    ConstantAttribute_virtual(_arg0) {
-        return { type: "virtual", ref: createRef(this) };
-    },
-    ConstantAttribute_abstract(_arg0) {
-        return { type: "abstract", ref: createRef(this) };
-    },
-});
-
-// Resolve contract
-semantics.addOperation<ASTContractAttribute>("resolve_contract_attributes", {
-    ContractAttribute_interface(_arg0, _arg1, arg2, _arg3) {
-        return {
-            type: "interface",
-            name: arg2.resolve_expression(),
-            ref: createRef(this),
-        };
-    },
-});
-
-// Struct and class declarations
-semantics.addOperation<ASTNode>("resolve_declaration", {
-    Field_default(arg0, _arg1, arg2, _arg3) {
-        return createNode({
-            kind: "def_field",
-            name: arg0.sourceString,
-            type: arg2.resolve_expression(),
-            as: null,
-            init: null,
-            ref: createRef(this),
-        });
-    },
-    Field_defaultWithInit(arg0, _arg1, arg2, _arg3, arg4, _arg5) {
-        const tr = arg2.resolve_expression() as ASTTypeRef;
-        return createNode({
-            kind: "def_field",
-            name: arg0.sourceString,
-            type: tr,
-            as: null,
-            init: arg4.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    Field_withSerialization(arg0, _arg1, arg2, _arg3, arg4, _arg5) {
-        return createNode({
-            kind: "def_field",
-            name: arg0.sourceString,
-            type: arg2.resolve_expression(),
-            as: arg4.sourceString,
-            init: null,
-            ref: createRef(this),
-        });
-    },
-    Field_withSerializationAndInit(
-        arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        arg4,
-        _arg5,
-        arg6,
-        _arg7,
+    FunctionDefinition(
+        funAttributes,
+        _funKwd,
+        funId,
+        _lparen,
+        funParameters,
+        optTrailingComma,
+        _rparen,
+        _optColon,
+        optReturnType,
+        _lbrace,
+        funBody,
+        _rbrace,
     ) {
-        const tr = arg2.resolve_expression() as ASTTypeRef;
-        return createNode({
-            kind: "def_field",
-            name: arg0.sourceString,
-            type: tr,
-            as: arg4.sourceString,
-            init: arg6.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    Constant_withValue(arg0, _arg1, arg2, _arg3, arg4, _arg5, arg6, _arg7) {
-        const attributes = arg0.children.map((v) =>
-            v.resolve_const_attributes(),
-        ) as ASTConstantAttribute[];
-        checkConstAttributes(false, attributes, createRef(this));
-        return createNode({
-            kind: "def_constant",
-            name: arg2.sourceString,
-            type: arg4.resolve_expression(),
-            value: arg6.resolve_expression(),
-            attributes,
-            ref: createRef(this),
-        });
-    },
-    Constant_withEmpty(arg0, _arg1, arg2, _arg3, arg4, _) {
-        const attributes = arg0.children.map((v) =>
-            v.resolve_const_attributes(),
-        ) as ASTConstantAttribute[];
-        checkConstAttributes(true, attributes, createRef(this));
-        return createNode({
-            kind: "def_constant",
-            name: arg2.sourceString,
-            type: arg4.resolve_expression(),
-            value: null,
-            attributes,
-            ref: createRef(this),
-        });
-    },
-    FunctionArg(arg0, _arg1, arg2) {
-        checkVariableName(arg0.sourceString, createRef(arg0));
-        return createNode({
-            kind: "def_argument",
-            name: arg0.sourceString,
-            type: arg2.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    Function_withType(
-        arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        arg4,
-        arg5,
-        _arg6,
-        _arg7,
-        arg8,
-        _arg9,
-        arg10,
-        _arg11,
-    ) {
-        if (arg4.source.contents === "" && arg5.sourceString === ",") {
+        if (
+            funParameters.source.contents === "" &&
+            optTrailingComma.sourceString === ","
+        ) {
             throwError(
                 "Empty parameter list should not have a dangling comma.",
-                createRef(arg5),
+                createRef(optTrailingComma),
             );
         }
 
-        const attributes = arg0.children.map((v) =>
-            v.resolve_attributes(),
+        const attributes = funAttributes.children.map((a) =>
+            a.astOfFunctionAttributes(),
         ) as ASTFunctionAttribute[];
-        checkVariableName(arg2.sourceString, createRef(arg2));
+        checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(false, attributes, createRef(this));
         return createNode({
             kind: "def_function",
             origin: ctx!.origin,
             attributes,
-            name: arg2.sourceString,
-            return: arg8.resolve_expression(),
-            args: arg4
+            name: funId.sourceString,
+            return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
+            args: funParameters
                 .asIteration()
-                .children.map((v) => v.resolve_declaration()),
-            statements: arg10.children.map((v) => v.resolve_statement()),
+                .children.map((p) => p.astOfDeclaration()),
+            statements: funBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
     },
-    Function_withVoid(
-        arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        arg4,
-        arg5,
-        _arg6,
-        _arg7,
-        arg8,
-        _arg9,
+    FunctionDeclaration(
+        funAttributes,
+        _funKwd,
+        funId,
+        _lparen,
+        funParameters,
+        optTrailingComma,
+        _rparen,
+        _optColon,
+        optReturnType,
+        _semicolon,
     ) {
-        if (arg4.source.contents === "" && arg5.sourceString === ",") {
+        if (
+            funParameters.source.contents === "" &&
+            optTrailingComma.sourceString === ","
+        ) {
             throwError(
                 "Empty parameter list should not have a dangling comma.",
-                createRef(arg5),
+                createRef(optTrailingComma),
             );
         }
 
-        const attributes = arg0.children.map((v) =>
-            v.resolve_attributes(),
+        const attributes = funAttributes.children.map((a) =>
+            a.astOfFunctionAttributes(),
         ) as ASTFunctionAttribute[];
-        checkVariableName(arg2.sourceString, createRef(arg2));
-        checkFunctionAttributes(false, attributes, createRef(this));
-        return createNode({
-            kind: "def_function",
-            origin: ctx!.origin,
-            attributes,
-            name: arg2.sourceString,
-            return: null,
-            args: arg4
-                .asIteration()
-                .children.map((v) => v.resolve_declaration()),
-            statements: arg8.children.map((v) => v.resolve_statement()),
-            ref: createRef(this),
-        });
-    },
-    Function_abstractVoid(arg0, _arg1, arg2, _arg3, arg4, arg5, _arg6, _arg7) {
-        if (arg4.source.contents === "" && arg5.sourceString === ",") {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(arg5),
-            );
-        }
-
-        const attributes = arg0.children.map((v) =>
-            v.resolve_attributes(),
-        ) as ASTFunctionAttribute[];
-        checkVariableName(arg2.sourceString, createRef(arg2));
+        checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(true, attributes, createRef(this));
         return createNode({
             kind: "def_function",
             origin: ctx!.origin,
             attributes,
-            name: arg2.sourceString,
-            return: null,
-            args: arg4
+            name: funId.sourceString,
+            return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
+            args: funParameters
                 .asIteration()
-                .children.map((v) => v.resolve_declaration()),
+                .children.map((p) => p.astOfDeclaration()),
             statements: null,
             ref: createRef(this),
         });
     },
-    Function_abstractType(
-        arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        arg4,
-        arg5,
-        _arg6,
-        _arg7,
-        arg8,
-        _arg9,
+    ContractInit(
+        _initKwd,
+        _lparen,
+        initParameters,
+        optTrailingComma,
+        _rparen,
+        _lbrace,
+        initBody,
+        _rbrace,
     ) {
-        if (arg4.source.contents === "" && arg5.sourceString === ",") {
+        if (
+            initParameters.source.contents === "" &&
+            optTrailingComma.sourceString === ","
+        ) {
             throwError(
                 "Empty parameter list should not have a dangling comma.",
-                createRef(arg5),
-            );
-        }
-
-        const attributes = arg0.children.map((v) =>
-            v.resolve_attributes(),
-        ) as ASTFunctionAttribute[];
-        checkVariableName(arg2.sourceString, createRef(arg2));
-        checkFunctionAttributes(true, attributes, createRef(this));
-        return createNode({
-            kind: "def_function",
-            origin: ctx!.origin,
-            attributes,
-            name: arg2.sourceString,
-            return: arg8.resolve_expression(),
-            args: arg4
-                .asIteration()
-                .children.map((v) => v.resolve_declaration()),
-            statements: null,
-            ref: createRef(this),
-        });
-    },
-    NativeFunction_withType(
-        _arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        arg4,
-        arg5,
-        arg6,
-        _arg7,
-        arg8,
-        arg9,
-        _arg10,
-        _arg11,
-        arg12,
-        _arg13,
-    ) {
-        if (arg8.source.contents === "" && arg9.sourceString === ",") {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(arg9),
-            );
-        }
-
-        checkVariableName(arg5.sourceString, createRef(arg5));
-        return createNode({
-            kind: "def_native_function",
-            origin: ctx!.origin,
-            attributes: arg4.children.map((v) => v.resolve_attributes()),
-            name: arg6.sourceString,
-            nativeName: arg2.sourceString,
-            return: arg12.resolve_expression(),
-            args: arg8
-                .asIteration()
-                .children.map((v) => v.resolve_declaration()),
-            ref: createRef(this),
-        });
-    },
-    NativeFunction_withVoid(
-        _arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        arg4,
-        arg5,
-        arg6,
-        _arg7,
-        arg8,
-        arg9,
-        _arg10,
-        _arg11,
-    ) {
-        if (arg8.source.contents === "" && arg9.sourceString === ",") {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(arg9),
-            );
-        }
-
-        checkVariableName(arg5.sourceString, createRef(arg5));
-        return createNode({
-            kind: "def_native_function",
-            origin: ctx!.origin,
-            attributes: arg4.children.map((v) => v.resolve_attributes()),
-            name: arg6.sourceString,
-            nativeName: arg2.sourceString,
-            return: null,
-            args: arg8
-                .asIteration()
-                .children.map((v) => v.resolve_declaration()),
-            ref: createRef(this),
-        });
-    },
-    ContractInit(_arg0, _arg1, arg2, arg3, _arg4, _arg5, arg6, _arg7) {
-        if (arg2.source.contents === "" && arg3.sourceString === ",") {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(arg3),
+                createRef(optTrailingComma),
             );
         }
 
         return createNode({
             kind: "def_init_function",
-            args: arg2
+            args: initParameters
                 .asIteration()
-                .children.map((v) => v.resolve_declaration()),
-            statements: arg6.children.map((v) => v.resolve_statement()),
+                .children.map((p) => p.astOfDeclaration()),
+            statements: initBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
     },
-    ReceiveFunction_simple(_arg0, _arg1, arg2, _arg3, _arg4, arg5, _arg6) {
+    Receiver_regular(
+        _receiveKwd,
+        _lparen,
+        optParameter,
+        _rparen,
+        _lbrace,
+        receiverBody,
+        _rbrace,
+    ) {
+        const optParam = optParameter.children[0];
+        const selector: ASTReceiveType = optParam
+            ? {
+                  kind: "internal-simple",
+                  arg: optParam.astOfDeclaration(),
+              }
+            : { kind: "internal-fallback" };
         return createNode({
             kind: "def_receive",
-            selector: {
-                kind: "internal-simple",
-                arg: arg2.resolve_declaration(),
-            },
-            statements: arg5.children.map((v) => v.resolve_statement()),
+            selector,
+            statements: receiverBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
     },
-    ReceiveFunction_empty(_arg0, _arg1, _arg2, _arg3, arg4, _arg5) {
-        return createNode({
-            kind: "def_receive",
-            selector: { kind: "internal-fallback" },
-            statements: arg4.children.map((v) => v.resolve_statement()),
-            ref: createRef(this),
-        });
-    },
-    ReceiveFunction_comment(_arg0, _arg1, arg2, _arg3, _arg4, arg5, _arg6) {
-        return createNode({
-            kind: "def_receive",
-            selector: {
-                kind: "internal-comment",
-                comment: arg2.resolve_expression(),
-            },
-            statements: arg5.children.map((v) => v.resolve_statement()),
-            ref: createRef(this),
-        });
-    },
-    ReceiveFunction_bounced(_arg0, _arg1, arg2, _arg3, _arg4, arg5, _arg6) {
-        return createNode({
-            kind: "def_receive",
-            selector: { kind: "bounce", arg: arg2.resolve_declaration() },
-            statements: arg5.children.map((v) => v.resolve_statement()),
-            ref: createRef(this),
-        });
-    },
-    ReceiveFunction_externalSimple(
-        _arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        _arg4,
-        arg5,
-        _arg6,
+    Receiver_comment(
+        _receiveKwd,
+        _lparen,
+        comment,
+        _rparen,
+        _lbrace,
+        receiverBody,
+        _rbrace,
     ) {
         return createNode({
             kind: "def_receive",
             selector: {
-                kind: "external-simple",
-                arg: arg2.resolve_declaration(),
+                kind: "internal-comment",
+                comment: comment.astOfExpression(),
             },
-            statements: arg5.children.map((v) => v.resolve_statement()),
+            statements: receiverBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
     },
-    ReceiveFunction_externalComment(
-        _arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        _arg4,
-        arg5,
-        _arg6,
+    Receiver_bounced(
+        _bouncedKwd,
+        _lparen,
+        parameter,
+        _rparen,
+        _lbrace,
+        receiverBody,
+        _rbrace,
+    ) {
+        return createNode({
+            kind: "def_receive",
+            selector: { kind: "bounce", arg: parameter.astOfDeclaration() },
+            statements: receiverBody.children.map((s) => s.astOfStatement()),
+            ref: createRef(this),
+        });
+    },
+    Receiver_externalRegular(
+        _externalKwd,
+        _lparen,
+        optParameter,
+        _rparen,
+        _lbrace,
+        receiverBody,
+        _rbrace,
+    ) {
+        const optParam = optParameter.children[0];
+        const selector: ASTReceiveType = optParam
+            ? {
+                  kind: "external-simple",
+                  arg: optParam.astOfDeclaration(),
+              }
+            : { kind: "external-fallback" };
+        return createNode({
+            kind: "def_receive",
+            selector,
+            statements: receiverBody.children.map((s) => s.astOfStatement()),
+            ref: createRef(this),
+        });
+    },
+    Receiver_externalComment(
+        _externalKwd,
+        _lparen,
+        comment,
+        _rparen,
+        _lbrace,
+        receiverBody,
+        _rbrace,
     ) {
         return createNode({
             kind: "def_receive",
             selector: {
                 kind: "external-comment",
-                comment: arg2.resolve_expression(),
+                comment: comment.astOfExpression(),
             },
-            statements: arg5.children.map((v) => v.resolve_statement()),
+            statements: receiverBody.children.map((s) => s.astOfStatement()),
+            ref: createRef(this),
+        });
+    },
+});
+
+semantics.addOperation<ASTFunctionAttribute>("astOfFunctionAttributes", {
+    FunctionAttribute_getter(_) {
+        return { type: "get", ref: createRef(this) };
+    },
+    FunctionAttribute_extends(_) {
+        return { type: "extends", ref: createRef(this) };
+    },
+    FunctionAttribute_mutates(_) {
+        return { type: "mutates", ref: createRef(this) };
+    },
+    FunctionAttribute_override(_) {
+        return { type: "overrides", ref: createRef(this) };
+    },
+    FunctionAttribute_inline(_) {
+        return { type: "inline", ref: createRef(this) };
+    },
+    FunctionAttribute_virtual(_) {
+        return { type: "virtual", ref: createRef(this) };
+    },
+    FunctionAttribute_abstract(_) {
+        return { type: "abstract", ref: createRef(this) };
+    },
+});
+
+semantics.addOperation<ASTConstantAttribute>("astOfConstAttribute", {
+    ConstantAttribute_override(_) {
+        return { type: "overrides", ref: createRef(this) };
+    },
+    ConstantAttribute_virtual(_) {
+        return { type: "virtual", ref: createRef(this) };
+    },
+    ConstantAttribute_abstract(_) {
+        return { type: "abstract", ref: createRef(this) };
+    },
+});
+
+semantics.addOperation<ASTContractAttribute>("astOfContractAttributes", {
+    ContractAttribute_interface(_interface, _lparen, interfaceName, _rparen) {
+        return {
+            type: "interface",
+            name: interfaceName.astOfExpression(),
+            ref: createRef(this),
+        };
+    },
+});
+
+semantics.addOperation<ASTNode>("astOfDeclaration", {
+    FieldDecl(
+        id,
+        _colon,
+        type,
+        _optAs,
+        optStorageType,
+        _optEq,
+        optInitializer,
+        _semicolon,
+    ) {
+        return createNode({
+            kind: "def_field",
+            name: id.sourceString,
+            type: type.astOfType() as ASTTypeRef,
+            as: unwrapOptNode(optStorageType, (t) => t.sourceString),
+            init: unwrapOptNode(optInitializer, (e) => e.astOfExpression()),
+            ref: createRef(this),
+        });
+    },
+    Parameter(id, _colon, type) {
+        checkVariableName(id.sourceString, createRef(id));
+        return createNode({
+            kind: "def_argument",
+            name: id.sourceString,
+            type: type.astOfType(),
+            ref: createRef(this),
+        });
+    },
+    StructFieldInitializer_full(fieldId, _colon, initializer) {
+        return createNode({
+            kind: "new_parameter",
+            name: fieldId.sourceString,
+            exp: initializer.astOfExpression(),
+            ref: createRef(this),
+        });
+    },
+    StructFieldInitializer_punned(fieldId) {
+        return createNode({
+            kind: "new_parameter",
+            name: fieldId.sourceString,
+            exp: fieldId.astOfExpression(),
             ref: createRef(this),
         });
     },
 });
 
 // Statements
-semantics.addOperation<ASTNode>("resolve_statement", {
-    StatementLet(_arg0, arg1, _arg2, arg3, _arg4, arg5, _arg6) {
-        checkVariableName(arg1.sourceString, createRef(arg1));
+semantics.addOperation<ASTNode>("astOfStatement", {
+    // TODO: process StatementBlock
+
+    StatementLet(_letKwd, id, _colon, type, _equals, expression, _semicolon) {
+        checkVariableName(id.sourceString, createRef(id));
 
         return createNode({
             kind: "statement_let",
-            name: arg1.sourceString,
-            type: arg3.resolve_expression(),
-            expression: arg5.resolve_expression(),
+            name: id.sourceString,
+            type: type.astOfType(),
+            expression: expression.astOfExpression(),
             ref: createRef(this),
         });
     },
-    StatementReturn_withExpression(_arg0, arg1, _arg2) {
+    StatementReturn(_returnKwd, optExpression, _semicolon) {
         return createNode({
             kind: "statement_return",
-            expression: arg1.resolve_expression(),
+            expression: unwrapOptNode(optExpression, (e) =>
+                e.astOfExpression(),
+            ),
             ref: createRef(this),
         });
     },
-    StatementReturn_withoutExpression(_arg0, _arg1) {
-        return createNode({
-            kind: "statement_return",
-            expression: null,
-            ref: createRef(this),
-        });
-    },
-    StatementExpression(arg0, _arg1) {
+    StatementExpression(expression, _semicolon) {
         return createNode({
             kind: "statement_expression",
-            expression: arg0.resolve_expression(),
+            expression: expression.astOfExpression(),
             ref: createRef(this),
         });
     },
-    StatementAssign(arg0, _arg1, arg2, _arg3) {
-        return createNode({
-            kind: "statement_assign",
-            path: arg0.resolve_lvalue(),
-            expression: arg2.resolve_expression(),
-            ref: createRef(this),
-        });
+    StatementAssign(lvalue, operator, expression, _semicolon) {
+        if (operator.sourceString === "=") {
+            return createNode({
+                kind: "statement_assign",
+                path: lvalue.astOfLValue(),
+                expression: expression.astOfExpression(),
+                ref: createRef(this),
+            });
+        } else {
+            let op: ASTAugmentedAssignOperation;
+            switch (operator.sourceString) {
+                case "+=":
+                    op = "+";
+                    break;
+                case "-=":
+                    op = "-";
+                    break;
+                case "*=":
+                    op = "*";
+                    break;
+                case "/=":
+                    op = "/";
+                    break;
+                case "%=":
+                    op = "%";
+                    break;
+                default:
+                    throw "Internal compiler error: unreachable augmented assignment operator. Please report at https://github.com/tact-lang/tact/issues";
+            }
+            return createNode({
+                kind: "statement_augmentedassign",
+                path: lvalue.astOfLValue(),
+                op,
+                expression: expression.astOfExpression(),
+                ref: createRef(this),
+            });
+        }
     },
-    StatementAugmentedAssignAdd(arg0, _arg1, arg2, _arg3) {
-        return createNode({
-            kind: "statement_augmentedassign",
-            path: arg0.resolve_lvalue(),
-            op: "+",
-            expression: arg2.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    StatementAugmentedAssignSub(arg0, _arg1, arg2, _arg3) {
-        return createNode({
-            kind: "statement_augmentedassign",
-            path: arg0.resolve_lvalue(),
-            op: "-",
-            expression: arg2.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    StatementAugmentedAssignMul(arg0, _arg1, arg2, _arg3) {
-        return createNode({
-            kind: "statement_augmentedassign",
-            path: arg0.resolve_lvalue(),
-            op: "*",
-            expression: arg2.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    StatementAugmentedAssignDiv(arg0, _arg1, arg2, _arg3) {
-        return createNode({
-            kind: "statement_augmentedassign",
-            path: arg0.resolve_lvalue(),
-            op: "/",
-            expression: arg2.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    StatementAugmentedAssignRem(arg0, _arg1, arg2, _arg3) {
-        return createNode({
-            kind: "statement_augmentedassign",
-            path: arg0.resolve_lvalue(),
-            op: "%",
-            expression: arg2.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    StatementAugmentedAssignOr(arg0, _arg1, arg2, _arg3) {
-        return createNode({
-            kind: "statement_augmentedassign",
-            path: arg0.resolve_lvalue(),
-            op: "|",
-            expression: arg2.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    StatementAugmentedAssignAnd(arg0, _arg1, arg2, _arg3) {
-        return createNode({
-            kind: "statement_augmentedassign",
-            path: arg0.resolve_lvalue(),
-            op: "&",
-            expression: arg2.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    StatementAugmentedAssignXor(arg0, _arg1, arg2, _arg3) {
-        return createNode({
-            kind: "statement_augmentedassign",
-            path: arg0.resolve_lvalue(),
-            op: "^",
-            expression: arg2.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    StatementCondition_simple(_arg0, arg1, _arg2, arg3, _arg4) {
+    StatementCondition_noElse(_ifKwd, condition, _lbrace, thenBlock, _rbrace) {
         return createNode({
             kind: "statement_condition",
-            expression: arg1.resolve_expression(),
-            trueStatements: arg3.children.map((v) => v.resolve_statement()),
+            expression: condition.astOfExpression(),
+            trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
             falseStatements: null,
             elseif: null,
             ref: createRef(this),
         });
     },
     StatementCondition_withElse(
-        _arg0,
-        arg1,
-        _arg2,
-        arg3,
-        _arg4,
-        _arg5,
-        _arg6,
-        arg7,
-        _arg8,
+        _ifKwd,
+        condition,
+        _lbraceThen,
+        thenBlock,
+        _rbraceThen,
+        _elseKwd,
+        _lbraceElse,
+        elseBlock,
+        _rbraceElse,
     ) {
         return createNode({
             kind: "statement_condition",
-            expression: arg1.resolve_expression(),
-            trueStatements: arg3.children.map((v) => v.resolve_statement()),
-            falseStatements: arg7.children.map((v) => v.resolve_statement()),
+            expression: condition.astOfExpression(),
+            trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
+            falseStatements: elseBlock.children.map((s) => s.astOfStatement()),
             elseif: null,
             ref: createRef(this),
         });
     },
     StatementCondition_withElseIf(
-        _arg0,
-        arg1,
-        _arg2,
-        arg3,
-        _arg4,
-        _arg5,
-        arg6,
+        _ifKwd,
+        condition,
+        _lbraceThen,
+        thenBlock,
+        _rbraceThen,
+        _elseKwd,
+        elseifClause,
     ) {
         return createNode({
             kind: "statement_condition",
-            expression: arg1.resolve_expression(),
-            trueStatements: arg3.children.map((v) => v.resolve_statement()),
+            expression: condition.astOfExpression(),
+            trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
             falseStatements: null,
-            elseif: arg6.resolve_statement(),
+            elseif: elseifClause.astOfStatement(),
             ref: createRef(this),
         });
     },
-    StatementWhile(_arg0, _arg1, arg2, _arg3, _arg4, arg5, _arg6) {
+    StatementWhile(
+        _whileKwd,
+        _lparen,
+        condition,
+        _rparen,
+        _lbrace,
+        loopBody,
+        _rbrace,
+    ) {
         return createNode({
             kind: "statement_while",
-            condition: arg2.resolve_expression(),
-            statements: arg5.children.map((v) => v.resolve_statement()),
+            condition: condition.astOfExpression(),
+            statements: loopBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
     },
-    StatementRepeat(_arg0, _arg1, arg2, _arg3, _arg4, arg5, _arg6) {
+    StatementRepeat(
+        _repeatKwd,
+        _lparen,
+        iterations,
+        _rparen,
+        _lbrace,
+        loopBody,
+        _rbrace,
+    ) {
         return createNode({
             kind: "statement_repeat",
-            iterations: arg2.resolve_expression(),
-            statements: arg5.children.map((v) => v.resolve_statement()),
+            iterations: iterations.astOfExpression(),
+            statements: loopBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
     },
     StatementUntil(
-        _arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        _arg4,
-        _arg5,
-        arg6,
-        _arg7,
-        _arg8,
+        _doKwd,
+        _lbrace,
+        loopBody,
+        _rbrace,
+        _untilKwd,
+        _lparen,
+        condition,
+        _rparen,
+        _semicolon,
     ) {
         return createNode({
             kind: "statement_until",
-            condition: arg6.resolve_expression(),
-            statements: arg2.children.map((v) => v.resolve_statement()),
+            condition: condition.astOfExpression(),
+            statements: loopBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
     },
-    StatementTry_simple(_arg0, _arg1, arg2, _arg3) {
+    StatementTry_noCatch(_tryKwd, _lbraceTry, tryBlock, _rbraceTry) {
         return createNode({
             kind: "statement_try",
-            statements: arg2.children.map((v) => v.resolve_statement()),
+            statements: tryBlock.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
     },
     StatementTry_withCatch(
-        _arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        _arg4,
-        _arg5,
-        arg6,
-        _arg7,
-        _arg8,
-        arg9,
-        _arg10,
+        _tryKwd,
+        _lbraceTry,
+        tryBlock,
+        _rbraceTry,
+        _catchKwd,
+        _lparen,
+        exitCodeId,
+        _rparen,
+        _lbraceCatch,
+        catchBlock,
+        _rbraceCatch,
     ) {
         return createNode({
             kind: "statement_try_catch",
-            statements: arg2.children.map((v) => v.resolve_statement()),
-            catchName: arg6.sourceString,
-            catchStatements: arg9.children.map((v) => v.resolve_statement()),
+            statements: tryBlock.children.map((s) => s.astOfStatement()),
+            catchName: exitCodeId.sourceString,
+            catchStatements: catchBlock.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
     },
     StatementForEach(
-        _arg0,
-        _arg1,
-        arg2,
-        _arg3,
-        arg4,
-        _arg5,
-        arg6,
-        _arg7,
-        _arg8,
-        arg9,
-        _arg10,
+        _foreachKwd,
+        _lparen,
+        keyId,
+        _comma,
+        valueId,
+        _inKwd,
+        mapId,
+        _rparen,
+        _lbrace,
+        foreachBlock,
+        _rbrace,
     ) {
-        checkVariableName(arg2.sourceString, createRef(arg2));
-        checkVariableName(arg4.sourceString, createRef(arg4));
+        checkVariableName(keyId.sourceString, createRef(keyId));
+        checkVariableName(valueId.sourceString, createRef(valueId));
         return createNode({
             kind: "statement_foreach",
-            keyName: arg2.sourceString,
-            valueName: arg4.sourceString,
-            map: arg6.resolve_expression(),
-            statements: arg9.children.map((v) => v.resolve_statement()),
+            keyName: keyId.sourceString,
+            valueName: valueId.sourceString,
+            map: mapId.astOfExpression(),
+            statements: foreachBlock.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
     },
 });
 
 // LValue
-semantics.addOperation<ASTNode[]>("resolve_lvalue", {
-    LValue_single(arg0) {
+semantics.addOperation<ASTNode[]>("astOfLValue", {
+    LValue_variable(id) {
         return [
             createNode({
                 kind: "lvalue_ref",
-                name: arg0.sourceString,
+                name: id.sourceString,
                 ref: createRef(this),
             }),
         ];
     },
-    LValue_more(arg0, arg1, arg2) {
+    LValue_fieldAccess(id, dot, lvalue) {
         return [
             createNode({
                 kind: "lvalue_ref",
-                name: arg0.sourceString,
-                ref: createRef(arg0, arg1),
+                name: id.sourceString,
+                ref: createRef(id, dot),
             }),
-            ...arg2.resolve_lvalue(),
+            ...lvalue.astOfLValue(),
         ];
     },
 });
 
-// Expressions
-semantics.addOperation<ASTNode>("resolve_expression", {
-    // Literals
-    integerLiteral(n) {
-        return createNode({
-            kind: "number",
-            value: BigInt(n.sourceString.replaceAll("_", "")),
-            ref: createRef(this),
-        }); // Parses dec, hex, and bin numbers
-    },
-    boolLiteral(arg0) {
-        return createNode({
-            kind: "boolean",
-            value: arg0.sourceString === "true",
-            ref: createRef(this),
-        });
-    },
-    id(arg0, arg1) {
-        return createNode({
-            kind: "id",
-            value: arg0.sourceString + arg1.sourceString,
-            ref: createRef(this),
-        });
-    },
-    funcId(arg0, arg1) {
-        return createNode({
-            kind: "id",
-            value: arg0.sourceString + arg1.sourceString,
-            ref: createRef(this),
-        });
-    },
-    null(_arg0) {
-        return createNode({ kind: "null", ref: createRef(this) });
-    },
-    stringLiteral(_arg0, arg1, _arg2) {
-        return createNode({
-            kind: "string",
-            value: arg1.sourceString,
-            ref: createRef(this),
-        });
-    },
-
+semantics.addOperation<ASTNode>("astOfType", {
     // TypeRefs
-    Type_optional(arg0, _arg1) {
+    Type_optional(typeId, _questionMark) {
         return createNode({
             kind: "type_ref_simple",
-            name: arg0.sourceString,
+            name: typeId.sourceString,
             optional: true,
             ref: createRef(this),
         });
     },
-    Type_required(arg0) {
+    Type_regular(typeId) {
         return createNode({
             kind: "type_ref_simple",
-            name: arg0.sourceString,
+            name: typeId.sourceString,
             optional: false,
             ref: createRef(this),
         });
     },
-    Type_map(_arg0, _arg1, arg2, _arg3, arg4, _arg5, arg6, _arg7, arg8, _arg9) {
+    Type_map(
+        _mapKwd,
+        _langle,
+        keyTypeId,
+        _optAsKwdKey,
+        optKeyStorageType,
+        _comma,
+        valueTypeId,
+        _optAsKwdValue,
+        optValueStorageType,
+        _rangle,
+    ) {
         return createNode({
             kind: "type_ref_map",
-            key: arg2.sourceString,
-            keyAs:
-                arg4.numChildren === 1 ? arg4.children[0].sourceString : null,
-            value: arg6.sourceString,
-            valueAs:
-                arg8.numChildren === 1 ? arg8.children[0].sourceString : null,
+            key: keyTypeId.sourceString,
+            keyAs: unwrapOptNode(optKeyStorageType, (t) => t.sourceString),
+            value: valueTypeId.sourceString,
+            valueAs: unwrapOptNode(optValueStorageType, (t) => t.sourceString),
             ref: createRef(this),
         });
     },
-    Type_bounced(_arg0, _arg1, arg2, _arg3) {
+    Type_bounced(_bouncedKwd, _langle, typeId, _rangle) {
         return createNode({
             kind: "type_ref_bounced",
-            name: arg2.sourceString,
+            name: typeId.sourceString,
             ref: createRef(this),
         });
     },
+});
 
-    // Binary
-    ExpressionAdd_add(arg0, _arg1, arg2) {
+// Expressions
+semantics.addOperation<ASTNode>("astOfExpression", {
+    // Literals
+    integerLiteral(number) {
+        return createNode({
+            kind: "number",
+            value: BigInt(number.sourceString.replaceAll("_", "")),
+            ref: createRef(this),
+        }); // Parses dec, hex, and bin numbers
+    },
+    boolLiteral(boolValue) {
+        return createNode({
+            kind: "boolean",
+            value: boolValue.sourceString === "true",
+            ref: createRef(this),
+        });
+    },
+    id(firstTactIdCharacter, restOfTactId) {
+        return createNode({
+            kind: "id",
+            value:
+                firstTactIdCharacter.sourceString + restOfTactId.sourceString,
+            ref: createRef(this),
+        });
+    },
+    funcId(firstFuncIdCharacter, restOfFuncId) {
+        return createNode({
+            kind: "id",
+            value:
+                firstFuncIdCharacter.sourceString + restOfFuncId.sourceString,
+            ref: createRef(this),
+        });
+    },
+    null(_nullKwd) {
+        return createNode({ kind: "null", ref: createRef(this) });
+    },
+    stringLiteral(_startQuotationMark, string, _endQuotationMark) {
+        return createNode({
+            kind: "string",
+            value: string.sourceString,
+            ref: createRef(this),
+        });
+    },
+    ExpressionAdd_add(left, _plus, right) {
         return createNode({
             kind: "op_binary",
             op: "+",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionAdd_sub(arg0, _arg1, arg2) {
+    ExpressionAdd_sub(left, _minus, right) {
         return createNode({
             kind: "op_binary",
             op: "-",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionMul_div(arg0, _arg1, arg2) {
+    ExpressionMul_div(left, _slash, right) {
         return createNode({
             kind: "op_binary",
             op: "/",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionMul_mul(arg0, _arg1, arg2) {
+    ExpressionMul_mul(left, _star, right) {
         return createNode({
             kind: "op_binary",
             op: "*",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionMul_rem(arg0, _arg1, arg2) {
+    ExpressionMul_rem(left, _percent, right) {
         return createNode({
             kind: "op_binary",
             op: "%",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionEquality_eq(arg0, _arg1, arg2) {
+    ExpressionEquality_eq(left, _equalsEquals, right) {
         return createNode({
             kind: "op_binary",
             op: "==",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionEquality_not(arg0, _arg1, arg2) {
+    ExpressionEquality_not(left, _bangEquals, right) {
         return createNode({
             kind: "op_binary",
             op: "!=",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionCompare_gt(arg0, _arg1, arg2) {
+    ExpressionCompare_gt(left, _rangle, right) {
         return createNode({
             kind: "op_binary",
             op: ">",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionCompare_gte(arg0, _arg1, arg2) {
+    ExpressionCompare_gte(left, _rangleEquals, right) {
         return createNode({
             kind: "op_binary",
             op: ">=",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionCompare_lt(arg0, _arg1, arg2) {
+    ExpressionCompare_lt(left, _langle, right) {
         return createNode({
             kind: "op_binary",
             op: "<",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionCompare_lte(arg0, _arg1, arg2) {
+    ExpressionCompare_lte(left, _langleEquals, right) {
         return createNode({
             kind: "op_binary",
             op: "<=",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionOr_or(arg0, _arg1, arg2) {
+    ExpressionOr_or(left, _pipePipe, right) {
         return createNode({
             kind: "op_binary",
             op: "||",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionAnd_and(arg0, _arg1, arg2) {
+    ExpressionAnd_and(left, _ampersandAmpersand, right) {
         return createNode({
             kind: "op_binary",
             op: "&&",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionBinaryShift_shr(arg0, _arg1, arg2) {
+    ExpressionBitwiseShift_shr(left, _rangleRangle, right) {
         return createNode({
             kind: "op_binary",
             op: ">>",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionBinaryShift_shl(arg0, _arg1, arg2) {
+    ExpressionBitwiseShift_shl(left, _langleLangle, right) {
         return createNode({
             kind: "op_binary",
             op: "<<",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionBinaryAnd_bin_and(arg0, _arg1, arg2) {
+    ExpressionBitwiseAnd_bitwiseAnd(left, _ampersand, right) {
         return createNode({
             kind: "op_binary",
             op: "&",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionBinaryOr_bin_or(arg0, _arg1, arg2) {
+    ExpressionBitwiseOr_bitwiseOr(left, _pipe, right) {
         return createNode({
             kind: "op_binary",
             op: "|",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionBinaryXor_bin_xor(arg0, _arg1, arg2) {
+    ExpressionBitwiseXor_bitwiseXor(left, _caret, right) {
         return createNode({
             kind: "op_binary",
             op: "^",
-            left: arg0.resolve_expression(),
-            right: arg2.resolve_expression(),
+            left: left.astOfExpression(),
+            right: right.astOfExpression(),
             ref: createRef(this),
         });
     },
 
     // Unary
-    ExpressionUnary_add(_arg0, arg1) {
+    ExpressionUnary_plus(_plus, operand) {
         return createNode({
             kind: "op_unary",
             op: "+",
-            right: arg1.resolve_expression(),
+            right: operand.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionUnary_neg(_arg0, arg1) {
+    ExpressionUnary_minus(_minus, operand) {
         return createNode({
             kind: "op_unary",
             op: "-",
-            right: arg1.resolve_expression(),
+            right: operand.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionUnary_not(_arg0, arg1) {
+    ExpressionUnary_not(_bang, operand) {
         return createNode({
             kind: "op_unary",
             op: "!",
-            right: arg1.resolve_expression(),
+            right: operand.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionBracket(_arg0, arg1, _arg2) {
-        return arg1.resolve_expression();
+    ExpressionParens(_lparen, expression, _rparen) {
+        return expression.astOfExpression();
     },
-    ExpressionUnboxNotNull(arg0, _arg1) {
+    ExpressionUnboxNotNull(operand, _bangBang) {
         return createNode({
             kind: "op_unary",
             op: "!!",
-            right: arg0.resolve_expression(),
+            right: operand.astOfExpression(),
             ref: createRef(this),
         });
     },
 
-    // Access
-    ExpressionField(arg0, _arg1, arg2) {
+    ExpressionFieldAccess(source, _dot, fieldId) {
         return createNode({
             kind: "op_field",
-            src: arg0.resolve_expression(),
-            name: arg2.sourceString,
+            src: source.astOfExpression(),
+            name: fieldId.sourceString,
             ref: createRef(this),
         });
     },
-    ExpressionCall(arg0, _arg1, arg2, _arg3, arg4, arg5, _arg6) {
-        if (arg4.source.contents === "" && arg5.sourceString === ",") {
+    ExpressionMethodCall(
+        source,
+        _dot,
+        methodId,
+        _lparen,
+        methodArguments,
+        optTrailingComma,
+        _rparen,
+    ) {
+        if (
+            methodArguments.source.contents === "" &&
+            optTrailingComma.sourceString === ","
+        ) {
             throwError(
                 "Empty parameter list should not have a dangling comma.",
-                createRef(arg5),
+                createRef(optTrailingComma),
             );
         }
 
         return createNode({
             kind: "op_call",
-            src: arg0.resolve_expression(),
-            name: arg2.sourceString,
-            args: arg4
+            src: source.astOfExpression(),
+            name: methodId.sourceString,
+            args: methodArguments
                 .asIteration()
-                .children.map((v) => v.resolve_expression()),
+                .children.map((s) => s.astOfExpression()),
             ref: createRef(this),
         });
     },
-    ExpressionStaticCall(arg0, _arg1, arg2, arg3, _arg4) {
-        if (arg2.source.contents === "" && arg3.sourceString === ",") {
+    ExpressionStaticCall(
+        functionId,
+        _lparen,
+        functionArguments,
+        optTrailingComma,
+        _rparen,
+    ) {
+        if (
+            functionArguments.source.contents === "" &&
+            optTrailingComma.sourceString === ","
+        ) {
             throwError(
                 "Empty parameter list should not have a dangling comma.",
-                createRef(arg3),
+                createRef(optTrailingComma),
             );
         }
 
         return createNode({
             kind: "op_static_call",
-            name: arg0.sourceString,
-            args: arg2
+            name: functionId.sourceString,
+            args: functionArguments
                 .asIteration()
-                .children.map((v) => v.resolve_expression()),
+                .children.map((e) => e.astOfExpression()),
             ref: createRef(this),
         });
     },
-    ExpressionNew(arg0, _arg1, arg2, arg3, _arg4) {
-        if (arg2.source.contents === "" && arg3.sourceString === ",") {
+    ExpressionStructInstance(
+        typeId,
+        _lbrace,
+        structFields,
+        optTrailingComma,
+        _rbrace,
+    ) {
+        if (
+            structFields.source.contents === "" &&
+            optTrailingComma.sourceString === ","
+        ) {
             throwError(
                 "Empty parameter list should not have a dangling comma.",
-                createRef(arg3),
+                createRef(optTrailingComma),
             );
         }
 
         return createNode({
             kind: "op_new",
-            type: arg0.sourceString,
-            args: arg2
+            type: typeId.sourceString,
+            args: structFields
                 .asIteration()
-                .children.map((v) => v.resolve_expression()),
+                .children.map((d) => d.astOfDeclaration()),
             ref: createRef(this),
         });
     },
-    NewParameter_full(arg0, _arg1, arg2) {
-        return createNode({
-            kind: "new_parameter",
-            name: arg0.sourceString,
-            exp: arg2.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    NewParameter_punned(arg0) {
-        return createNode({
-            kind: "new_parameter",
-            name: arg0.sourceString,
-            exp: arg0.resolve_expression(),
-            ref: createRef(this),
-        });
-    },
-    ExpressionInitOf(_arg0, arg1, _arg2, arg3, arg4, _arg5) {
-        if (arg3.source.contents === "" && arg4.sourceString === ",") {
+    ExpressionInitOf(
+        _initOfKwd,
+        contractId,
+        _lparen,
+        initArguments,
+        optTrailingComma,
+        _rparen,
+    ) {
+        if (
+            initArguments.source.contents === "" &&
+            optTrailingComma.sourceString === ","
+        ) {
             throwError(
                 "Empty parameter list should not have a dangling comma.",
-                createRef(arg4),
+                createRef(optTrailingComma),
             );
         }
 
         return createNode({
             kind: "init_of",
-            name: arg1.sourceString,
-            args: arg3
+            name: contractId.sourceString,
+            args: initArguments
                 .asIteration()
-                .children.map((v) => v.resolve_expression()),
+                .children.map((a) => a.astOfExpression()),
             ref: createRef(this),
         });
     },
 
     // Ternary conditional
-    ExpressionConditional_ternary(arg0, _arg1, arg2, _arg3, arg4) {
+    ExpressionConditional_ternary(
+        condition,
+        _questionMark,
+        thenExpression,
+        _colon,
+        elseExpression,
+    ) {
         return createNode({
             kind: "conditional",
-            condition: arg0.resolve_expression(),
-            thenBranch: arg2.resolve_expression(),
-            elseBranch: arg4.resolve_expression(),
+            condition: condition.astOfExpression(),
+            thenBranch: thenExpression.astOfExpression(),
+            elseBranch: elseExpression.astOfExpression(),
             ref: createRef(this),
         });
     },
@@ -1347,7 +1266,7 @@ export function parse(
         }
         ctx = { origin };
         try {
-            return semantics(matchResult).resolve_program();
+            return semantics(matchResult).astOfModule();
         } finally {
             ctx = null;
         }
@@ -1359,18 +1278,8 @@ export function parseImports(
     path: string,
     origin: TypeOrigin,
 ): string[] {
-    const r = parse(src, path, origin);
-    const imports: string[] = [];
-    let hasExpression = false;
-    for (const e of r.entries) {
-        if (e.kind === "program_import") {
-            if (hasExpression) {
-                throwError("Import must be at the top of the file", e.ref);
-            }
-            imports.push(e.path.value);
-        } else {
-            hasExpression = true;
-        }
-    }
-    return imports;
+    const fullAst: ASTProgram = parse(src, path, origin);
+    return fullAst.entries.flatMap((item) =>
+        item.kind === "program_import" ? [item.path.value] : [],
+    );
 }

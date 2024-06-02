@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`grammar should fail case-0 1`] = `
-"<unknown>:1:1: Abstract function doesn't have abstract modifier
-Line 1, col 1:
+"<unknown>:1:20: Syntax error: expected "{" 
+Line 1, col 20:
 > 1 | fun testFunc(): Int;
-      ^~~~~~~~~~~~~~~~~~~~
+                         ^
 "
 `;
 
@@ -230,18 +230,22 @@ Line 2, col 23:
 `;
 
 exports[`grammar should fail case-24 1`] = `
-"<unknown>:1:31: Empty parameter list should not have a dangling comma.
-Line 1, col 31:
-> 1 | abstract fun testFuncAbstract(,);
+"<unknown>:2:31: Empty parameter list should not have a dangling comma.
+Line 2, col 31:
+  1 | trait Test {
+> 2 |     abstract fun testAbstract(,);
                                     ^
+  3 | }
 "
 `;
 
 exports[`grammar should fail case-25 1`] = `
-"<unknown>:1:39: Empty parameter list should not have a dangling comma.
-Line 1, col 39:
-> 1 | abstract fun testFuncAbstractWithType(,): Int;
+"<unknown>:2:39: Empty parameter list should not have a dangling comma.
+Line 2, col 39:
+  1 | trait Test {
+> 2 |     abstract fun testAbstractWithType(,): Int;
                                             ^
+  3 | }
 "
 `;
 
@@ -2231,7 +2235,7 @@ exports[`grammar should parse case-17 1`] = `
       "id": 10,
       "kind": "def_constant",
       "name": "a",
-      "ref": const a: A = new { x: 1 };,
+      "ref": const a: A = A { x: 1 };,
       "type": {
         "id": 6,
         "kind": "type_ref_simple",
@@ -2256,8 +2260,8 @@ exports[`grammar should parse case-17 1`] = `
         ],
         "id": 9,
         "kind": "op_new",
-        "ref": new { x: 1 },
-        "type": "new",
+        "ref": A { x: 1 },
+        "type": "A",
       },
     },
     {
@@ -2375,7 +2379,7 @@ exports[`grammar should parse case-17 1`] = `
       "id": 30,
       "kind": "def_constant",
       "name": "b",
-      "ref": const b: B = new {
+      "ref": const b: B = B {
     x: 2,
     y: 3,
 };,
@@ -2415,11 +2419,11 @@ exports[`grammar should parse case-17 1`] = `
         ],
         "id": 29,
         "kind": "op_new",
-        "ref": new {
+        "ref": B {
     x: 2,
     y: 3,
 },
-        "type": "new",
+        "type": "B",
       },
     },
     {

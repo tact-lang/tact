@@ -8,7 +8,7 @@ export function checkFunctionAttributes(
     const k = new Set<string>();
     for (const a of attrs) {
         if (k.has(a.type)) {
-            throwError(`Duplicate function attribute ${a.type}`, a.ref);
+            throwError(`Duplicate function attribute "${a.type}"`, a.ref);
         }
         k.add(a.type);
     }

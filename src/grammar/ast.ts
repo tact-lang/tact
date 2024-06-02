@@ -354,36 +354,38 @@ export type ASTFunction = {
     ref: ASTRef;
 };
 
+export type ASTReceiveType =
+    | {
+          kind: "internal-simple";
+          arg: ASTArgument;
+      }
+    | {
+          kind: "internal-fallback";
+      }
+    | {
+          kind: "internal-comment";
+          comment: ASTString;
+      }
+    | {
+          kind: "bounce";
+          arg: ASTArgument;
+      }
+    | {
+          kind: "external-simple";
+          arg: ASTArgument;
+      }
+    | {
+          kind: "external-fallback";
+      }
+    | {
+          kind: "external-comment";
+          comment: ASTString;
+      };
+
 export type ASTReceive = {
     kind: "def_receive";
     id: number;
-    selector:
-        | {
-              kind: "internal-simple";
-              arg: ASTArgument;
-          }
-        | {
-              kind: "internal-fallback";
-          }
-        | {
-              kind: "internal-comment";
-              comment: ASTString;
-          }
-        | {
-              kind: "bounce";
-              arg: ASTArgument;
-          }
-        | {
-              kind: "external-simple";
-              arg: ASTArgument;
-          }
-        | {
-              kind: "external-fallback";
-          }
-        | {
-              kind: "external-comment";
-              comment: ASTString;
-          };
+    selector: ASTReceiveType;
     statements: ASTStatement[];
     ref: ASTRef;
 };

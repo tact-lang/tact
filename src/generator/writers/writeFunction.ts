@@ -503,7 +503,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
     // Render tensors
     const self = f.self ? getType(ctx.ctx, f.self) : null;
     if (!self) {
-        throw new Error(`No self type for getter ${f.name}`); // Impossible
+        throw new Error(`No self type for getter "${f.name}"`); // Impossible
     }
     ctx.append(
         `_ %${f.name}(${f.args.map((v) => resolveFuncTupledType(v.type, ctx) + " " + id("$" + v.name)).join(", ")}) method_id(${getMethodId(f.name)}) {`,

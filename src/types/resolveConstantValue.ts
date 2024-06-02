@@ -185,7 +185,7 @@ export function resolveConstantValue(
 
     if (type.kind !== "ref") {
         throwError(
-            `Expected constant value, got ${printTypeRef(type)}`,
+            `Expected constant value, got "${printTypeRef(type)}"`,
             ast.ref,
         );
     }
@@ -222,5 +222,5 @@ export function resolveConstantValue(
         return reduceCell(ast);
     }
 
-    throwError(`Expected constant value, got ${printTypeRef(type)}`, ast.ref);
+    throwError(`Expected constant value, got "${printTypeRef(type)}"`, ast.ref);
 }

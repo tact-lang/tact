@@ -303,7 +303,7 @@ function writeAll(
     const contracts = allTypes.filter((v) => v.kind === "contract");
     const c = contracts.find((v) => v.name === name);
     if (!c) {
-        throw Error(`Contract ${name} not found`);
+        throw Error(`Contract "${name}" not found`);
     }
 
     // Stdlib
