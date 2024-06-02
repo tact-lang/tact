@@ -74,17 +74,17 @@ contract MathTester with Deployable {
         return a;
     }
 
-    get fun orAug(a: Int, b: Int): Int {
+    get fun bitwiseOrAug(a: Int, b: Int): Int {
         a |= b;
         return a;
     }
 
-    get fun andAug(a: Int, b: Int): Int {
+    get fun bitwiseAndAug(a: Int, b: Int): Int {
         a &= b;
         return a;
     }
 
-    get fun xorAug(a: Int, b: Int): Int {
+    get fun bitwiseXorAug(a: Int, b: Int): Int {
         a ^= b;
         return a;
     }
