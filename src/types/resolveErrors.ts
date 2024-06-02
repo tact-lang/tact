@@ -34,7 +34,7 @@ function resolveStringsInAST(ast: ASTNode, ctx: CompilerContext) {
                 if (
                     Object.values(exceptions.all(ctx)).find((v) => v.id === id)
                 ) {
-                    throw new Error(`Duplicate error id: ${resolved}`);
+                    throw new Error(`Duplicate error id: "${resolved}"`);
                 }
                 ctx = exceptions.set(ctx, resolved, { value: resolved, id });
             }

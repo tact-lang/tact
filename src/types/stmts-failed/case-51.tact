@@ -1,6 +1,7 @@
-primitive Int;
+primitive Bool;
 
-fun rec(): Int {
-    let rec: Int = 42;  // shadowing error
-    return rec;
+fun test(): Bool {
+    let a: Bool = false;
+    a %= true;
+    return a;
 }

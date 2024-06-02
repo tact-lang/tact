@@ -35,6 +35,7 @@ import { resolveABIType } from "./resolveABITypeRef";
 import { Address, Cell } from "@ton/core";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
+import { GlobalFunctions } from "../abi/global";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -201,7 +202,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const a of ast.types) {
         if (types.has(a.name)) {
-            throwError(`Type ${a.name} already exists`, a.ref);
+            throwError(`Type "${a.name}" already exists`, a.ref);
         }
 
         const uid = uidForName(a.name, types);
@@ -348,14 +349,17 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (
                         types.get(a.name)!.fields.find((v) => v.name === f.name)
                     ) {
-                        throwError(`Field ${f.name} already exists`, f.ref);
+                        throwError(`Field "${f.name}" already exists`, f.ref);
                     }
                     if (
                         types
                             .get(a.name)!
                             .constants.find((v) => v.name === f.name)
                     ) {
-                        throwError(`Constant ${f.name} already exists`, f.ref);
+                        throwError(
+                            `Constant "${f.name}" already exists`,
+                            f.ref,
+                        );
                     }
                     types
                         .get(a.name)!
@@ -369,14 +373,17 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (
                         types.get(a.name)!.fields.find((v) => v.name === f.name)
                     ) {
-                        throwError(`Field ${f.name} already exists`, f.ref);
+                        throwError(`Field "${f.name}" already exists`, f.ref);
                     }
                     if (
                         types
                             .get(a.name)!
                             .constants.find((v) => v.name === f.name)
                     ) {
-                        throwError(`Constant ${f.name} already exists`, f.ref);
+                        throwError(
+                            `Constant "${f.name}" already exists`,
+                            f.ref,
+                        );
                     }
                     if (f.attributes.find((v) => v.type !== "overrides")) {
                         throwError(`Constant can be only overridden`, f.ref);
@@ -392,7 +399,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (a.kind === "def_struct") {
             for (const f of a.fields) {
                 if (types.get(a.name)!.fields.find((v) => v.name === f.name)) {
-                    throwError(`Field ${f.name} already exists`, f.ref);
+                    throwError(`Field "${f.name}" already exists`, f.ref);
                 }
                 types
                     .get(a.name)!
@@ -405,7 +412,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
             if (a.fields.length === 0 && !a.message) {
                 throwError(
-                    `Struct ${a.name} must have at least one field`,
+                    `Struct "${a.name}" must have at least one field`,
                     a.ref,
                 );
             }
@@ -418,7 +425,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (
                         types.get(a.name)!.fields.find((v) => v.name === f.name)
                     ) {
-                        throwError(`Field ${f.name} already exists`, f.ref);
+                        throwError(`Field "${f.name}" already exists`, f.ref);
                     }
                     if (f.as) {
                         throwError(
@@ -438,14 +445,17 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (
                         types.get(a.name)!.fields.find((v) => v.name === f.name)
                     ) {
-                        throwError(`Field ${f.name} already exists`, f.ref);
+                        throwError(`Field "${f.name}" already exists`, f.ref);
                     }
                     if (
                         types
                             .get(a.name)!
                             .constants.find((v) => v.name === f.name)
                     ) {
-                        throwError(`Constant ${f.name} already exists`, f.ref);
+                        throwError(
+                            `Constant "${f.name}" already exists`,
+                            f.ref,
+                        );
                     }
                     if (f.attributes.find((v) => v.type === "overrides")) {
                         throwError(
@@ -766,7 +776,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     }
                     if (s.functions.has(f.name)) {
                         throwError(
-                            `Function ${f.name} already exists in type ${s.name}`,
+                            `Function "${f.name}" already exists in type "${s.name}"`,
                             s.ast.ref,
                         );
                     }
@@ -913,7 +923,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 )
                             ) {
                                 throwError(
-                                    `Receive function for ${arg.type.name} already exists`,
+                                    `Receive function for "${arg.type.name}" already exists`,
                                     d.ref,
                                 );
                             }
@@ -1056,7 +1066,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     )
                                 ) {
                                     throwError(
-                                        `Bounce receive function for ${arg.type.name} already exists`,
+                                        `Bounce receive function for "${arg.type.name}" already exists`,
                                         d.ref,
                                     );
                                 }
@@ -1098,7 +1108,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 )
                             ) {
                                 throwError(
-                                    `Bounce receive function for ${t.name} already exists`,
+                                    `Bounce receive function for "${t.name}" already exists`,
                                     d.ref,
                                 );
                             }
@@ -1214,7 +1224,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 const ex = t.fields.find((v) => v.name === f.name);
                 if (!ex) {
                     throwError(
-                        `Trait ${tr.name} requires field ${f.name}`,
+                        `Trait "${tr.name}" requires field "${f.name}"`,
                         t.ast.ref,
                     );
                 }
@@ -1222,7 +1232,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // Check type
                 if (!typeRefEquals(f.type, ex.type)) {
                     throwError(
-                        `Trait ${tr.name} requires field ${f.name} of type ${printTypeRef(f.type)}`,
+                        `Trait "${tr.name}" requires field "${f.name}" of type "${printTypeRef(f.type)}"`,
                         t.ast.ref,
                     );
                 }
@@ -1241,7 +1251,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 const ex = t.functions.get(f.name);
                 if (!ex && f.isAbstract) {
                     throwError(
-                        `Trait ${tr.name} requires function ${f.name}`,
+                        `Trait "${tr.name}" requires function "${f.name}"`,
                         t.ast.ref,
                     );
                 }
@@ -1250,25 +1260,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 if (ex && ex.isOverrides) {
                     if (f.isGetter) {
                         throwError(
-                            `Overridden function ${f.name} can not be a getter`,
+                            `Overridden function "${f.name}" can not be a getter`,
                             ex.ast.ref,
                         );
                     }
                     if (f.isMutating !== ex.isMutating) {
                         throwError(
-                            `Overridden function ${f.name} should have same mutability`,
+                            `Overridden function "${f.name}" should have same mutability`,
                             ex.ast.ref,
                         );
                     }
                     if (!typeRefEquals(f.returns, ex.returns)) {
                         throwError(
-                            `Overridden function ${f.name} should have same return type`,
+                            `Overridden function "${f.name}" should have same return type`,
                             ex.ast.ref,
                         );
                     }
                     if (f.args.length !== ex.args.length) {
                         throwError(
-                            `Overridden function ${f.name} should have same number of arguments`,
+                            `Overridden function "${f.name}" should have same number of arguments`,
                             ex.ast.ref,
                         );
                     }
@@ -1277,7 +1287,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         const b = f.args[i];
                         if (!typeRefEquals(a.type, b.type)) {
                             throwError(
-                                `Overridden function ${f.name} should have same argument types`,
+                                `Overridden function "${f.name}" should have same argument types`,
                                 ex.ast.ref,
                             );
                         }
@@ -1288,7 +1298,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // Check duplicates
                 if (ex) {
                     throwError(
-                        `Function ${f.name} already exist in ${t.name}`,
+                        `Function "${f.name}" already exist in "${t.name}"`,
                         t.ast.ref,
                     );
                 }
@@ -1309,7 +1319,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     f.ast.attributes.find((v) => v.type === "abstract")
                 ) {
                     throwError(
-                        `Trait ${tr.name} requires constant ${f.name}`,
+                        `Trait "${tr.name}" requires constant "${f.name}"`,
                         t.ast.ref,
                     );
                 }
@@ -1321,7 +1331,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ) {
                     if (!typeRefEquals(f.type, ex.type)) {
                         throwError(
-                            `Overridden constant ${f.name} should have same type`,
+                            `Overridden constant "${f.name}" should have same type`,
                             ex.ast.ref,
                         );
                     }
@@ -1331,7 +1341,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // Check duplicates
                 if (ex) {
                     throwError(
-                        `Constant ${f.name} already exist in ${t.name}`,
+                        `Constant "${f.name}" already exist in "${t.name}"`,
                         t.ast.ref,
                     );
                 }
@@ -1431,7 +1441,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
         if (processing.has(name)) {
             throwError(
-                `Circular dependency detected for type ${name}`,
+                `Circular dependency detected for type "${name}"`,
                 types.get(name)!.ast.ref,
             );
         }
@@ -1465,7 +1475,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         const handler = (src: ASTNode) => {
             if (src.kind === "init_of") {
                 if (!types.has(src.name)) {
-                    throwError(`Type ${src.name} not found`, src.ref);
+                    throwError(`Type "${src.name}" not found`, src.ref);
                 }
                 dependsOn.add(src.name);
             }
@@ -1521,20 +1531,20 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (r.self) {
             if (types.get(r.self)!.functions.has(r.name)) {
                 throwError(
-                    `Function ${r.name} already exists in type ${r.self}`,
+                    `Function "${r.name}" already exists in type "${r.self}"`,
                     r.ast.ref,
                 );
             }
             types.get(r.self)!.functions.set(r.name, r);
         } else {
-            if (staticFunctions.has(r.name)) {
+            if (staticFunctions.has(r.name) || GlobalFunctions.has(r.name)) {
                 throwError(
-                    `Static function ${r.name} already exists`,
+                    `Static function "${r.name}" already exists`,
                     r.ast.ref,
                 );
             }
             if (staticConstants.has(r.name)) {
-                throwError(`Static constant ${r.name} already exists`, a.ref);
+                throwError(`Static constant "${r.name}" already exists`, a.ref);
             }
             staticFunctions.set(r.name, r);
         }
@@ -1546,10 +1556,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const a of ast.constants) {
         if (staticConstants.has(a.name)) {
-            throwError(`Static constant ${a.name} already exists`, a.ref);
+            throwError(`Static constant "${a.name}" already exists`, a.ref);
         }
-        if (staticFunctions.has(a.name)) {
-            throwError(`Static function ${a.name} already exists`, a.ref);
+        if (staticFunctions.has(a.name) || GlobalFunctions.has(a.name)) {
+            throwError(`Static function "${a.name}" already exists`, a.ref);
         }
         staticConstants.set(a.name, buildConstantDescription(a));
     }

@@ -8,6 +8,11 @@
       "options": {
         "debug": true
       }
+    },
+    {
+      "name": "invalid-address",
+      "path": "./features/invalid-address.tact",
+      "output": "./features/output"
     }
   ]
 }

@@ -176,7 +176,7 @@ function processStatements(
             const variableType = resolveTypeRef(ctx, s.type);
             if (!isAssignable(expressionType, variableType)) {
                 throwError(
-                    `Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(variableType)}`,
+                    `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(variableType)}"`,
                     s.ref,
                 );
             }
@@ -186,7 +186,7 @@ function processStatements(
             }
             // Add variable to statement context
             if (sctx.vars.has(s.name)) {
-                throwError(`Variable already exists: ${s.name}`, s.ref);
+                throwError(`Variable "${s.name}" already exists`, s.ref);
             }
             sctx = addVariable(s.name, variableType, sctx);
         } else if (s.kind === "statement_assign") {
@@ -201,7 +201,7 @@ function processStatements(
             const tailType = getExpType(ctx, s.path[s.path.length - 1]);
             if (!isAssignable(expressionType, tailType)) {
                 throwError(
-                    `Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(tailType)}`,
+                    `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(tailType)}"`,
                     s.ref,
                 );
             }
@@ -223,9 +223,17 @@ function processStatements(
             // Check type
             const expressionType = getExpType(ctx, s.expression);
             const tailType = getExpType(ctx, s.path[s.path.length - 1]);
-            if (!isAssignable(expressionType, tailType)) {
+            // Check if types are Int
+            if (
+                expressionType.kind !== "ref" ||
+                expressionType.name !== "Int" ||
+                expressionType.optional ||
+                tailType.kind !== "ref" ||
+                tailType.name !== "Int" ||
+                tailType.optional
+            ) {
                 throwError(
-                    `Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(tailType)}`,
+                    `Type error: Augmented assignment is only allowed for Int type`,
                     s.ref,
                 );
             }
@@ -255,7 +263,7 @@ function processStatements(
                 expressionType.optional
             ) {
                 throwError(
-                    `Type mismatch: ${printTypeRef(expressionType)} is not assignable to Bool`,
+                    `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Bool"`,
                     s.ref,
                 );
             }
@@ -268,14 +276,14 @@ function processStatements(
                 const expressionType = getExpType(ctx, s.expression);
                 if (!isAssignable(expressionType, sctx.returns)) {
                     throwError(
-                        `Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(sctx.returns)}`,
+                        `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(sctx.returns)}"`,
                         s.ref,
                     );
                 }
             } else {
                 if (sctx.returns.kind !== "void") {
                     throwError(
-                        `Type mismatch: void is not assignable to ${printTypeRef(sctx.returns)}`,
+                        `Type mismatch: "void" is not assignable to "${printTypeRef(sctx.returns)}"`,
                         s.ref,
                     );
                 }
@@ -285,12 +293,12 @@ function processStatements(
             if (sctx.requiredFields.length > 0) {
                 if (sctx.requiredFields.length === 1) {
                     throwError(
-                        `Field ${sctx.requiredFields[0]} is not set`,
+                        `Field "${sctx.requiredFields[0]}" is not set`,
                         sctx.root,
                     );
                 } else {
                     throwError(
-                        `Fields ${sctx.requiredFields.join(", ")} are not set`,
+                        `Fields ${sctx.requiredFields.map((x) => '"' + x + '"').join(", ")} are not set`,
                         sctx.root,
                     );
                 }
@@ -313,7 +321,7 @@ function processStatements(
                 expressionType.optional
             ) {
                 throwError(
-                    `Type mismatch: ${printTypeRef(expressionType)} is not assignable to Int`,
+                    `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Int"`,
                     s.ref,
                 );
             }
@@ -336,7 +344,7 @@ function processStatements(
                 expressionType.optional
             ) {
                 throwError(
-                    `Type mismatch: ${printTypeRef(expressionType)} is not assignable to bool`,
+                    `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Bool"`,
                     s.ref,
                 );
             }
@@ -359,7 +367,7 @@ function processStatements(
                 expressionType.optional
             ) {
                 throwError(
-                    `Type mismatch: ${printTypeRef(expressionType)} is not assignable to bool`,
+                    `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Bool"`,
                     s.ref,
                 );
             }
@@ -379,7 +387,7 @@ function processStatements(
 
             // Process catchName variable for exit code
             if (initialCtx.vars.has(s.catchName)) {
-                throwError(`Variable already exists: ${s.catchName}`, s.ref);
+                throwError(`Variable already exists: "${s.catchName}"`, s.ref);
             }
             let catchCtx = addVariable(
                 s.catchName,
@@ -415,12 +423,12 @@ function processStatements(
             // Check if map is valid
             const mapVariable = sctx.vars.get(s.map.value);
             if (!mapVariable || mapVariable.kind !== "map") {
-                throwError(`Variable ${s.map.value} is not a map`, s.ref);
+                throwError(`Variable "${s.map.value}" is not a map`, s.ref);
             }
 
             // Add key and value to statement context
             if (initialCtx.vars.has(s.keyName)) {
-                throwError(`Variable already exists: ${s.keyName}`, s.ref);
+                throwError(`Variable already exists: "${s.keyName}"`, s.ref);
             }
             let foreachCtx = addVariable(
                 s.keyName,
@@ -428,7 +436,7 @@ function processStatements(
                 initialCtx,
             );
             if (foreachCtx.vars.has(s.valueName)) {
-                throwError(`Variable already exists: ${s.valueName}`, s.ref);
+                throwError(`Variable already exists: "${s.valueName}"`, s.ref);
             }
             foreachCtx = addVariable(
                 s.valueName,
@@ -480,12 +488,12 @@ function processFunctionBody(
     if (res.sctx.requiredFields.length > 0) {
         if (res.sctx.requiredFields.length === 1) {
             throwError(
-                `Field ${res.sctx.requiredFields[0]} is not set`,
+                `Field "${res.sctx.requiredFields[0]}" is not set`,
                 res.sctx.root,
             );
         } else {
             throwError(
-                `Fields ${res.sctx.requiredFields.join(", ")} are not set`,
+                `Fields ${res.sctx.requiredFields.map((x) => '"' + x + '"').join(", ")} are not set`,
                 res.sctx.root,
             );
         }

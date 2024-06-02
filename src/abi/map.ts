@@ -36,7 +36,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 }
                 if (args[1].name !== self.key) {
                     throwError(
-                        `set expects a ${self.key} as first argument`,
+                        `set expects a "${self.key}" as first argument`,
                         ref,
                     );
                 }
@@ -50,7 +50,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 }
                 if (args[2].kind !== "null" && args[2].name !== self.value) {
                     throwError(
-                        `set expects a ${self.value} as second argument`,
+                        `set expects a "${self.value}" as second argument`,
                         ref,
                     );
                 }
@@ -121,7 +121,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                             }
                         } else {
                             throwError(
-                                `${t.name} can't be value of a map`,
+                                `"${t.name}" can't be value of a map`,
                                 ref,
                             );
                         }
@@ -170,7 +170,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                             }
                         } else {
                             throwError(
-                                `${t.name} can't be value of a map`,
+                                `"${t.name}" can't be value of a map`,
                                 ref,
                             );
                         }
@@ -204,7 +204,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 }
                 if (args[1].name !== self.key) {
                     throwError(
-                        `set expects a ${self.key} as first argument`,
+                        `set expects a "${self.key}" as first argument`,
                         ref,
                     );
                 }
@@ -269,7 +269,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                             return `${ops.readerOpt(t.name, ctx)}(__tact_dict_get_${kind}_cell(${resolved[0]}, ${bits}, ${resolved[1]}))`;
                         } else {
                             throwError(
-                                `${t.name} can't be value of a map`,
+                                `"${t.name}" can't be value of a map`,
                                 ref,
                             );
                         }
@@ -314,7 +314,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                             return `${ops.readerOpt(t.name, ctx)}(__tact_dict_get_slice_cell(${resolved[0]}, 267, ${resolved[1]}))`;
                         } else {
                             throwError(
-                                `${t.name} can't be value of a map`,
+                                `"${t.name}" can't be value of a map`,
                                 ref,
                             );
                         }
@@ -348,7 +348,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 }
                 if (args[1].name !== self.key) {
                     throwError(
-                        `del expects a ${self.key} as first argument`,
+                        `del expects a "${self.key}" as first argument`,
                         ref,
                     );
                 }
