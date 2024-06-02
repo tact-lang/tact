@@ -105,7 +105,7 @@ Tact {
 
     StatementExpression = Expression ";"
 
-    StatementAssign = LValue ("=" | "+=" | "-=" | "*=" | "/=" | "%=") Expression ";"
+    StatementAssign = LValue ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "|=" | "&=" | "^=") Expression ";"
 
     StatementCondition = if Expression "{" Statement* "}" ~else --noElse
                        | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse

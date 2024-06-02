@@ -620,6 +620,15 @@ semantics.addOperation<ASTNode>("astOfStatement", {
                 case "%=":
                     op = "%";
                     break;
+                case "|=":
+                    op = "|";
+                    break;
+                case "&=":
+                    op = "&";
+                    break;
+                case "^=":
+                    op = "^";
+                    break;
                 default:
                     throw "Internal compiler error: unreachable augmented assignment operator. Please report at https://github.com/tact-lang/tact/issues";
             }
