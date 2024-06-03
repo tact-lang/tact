@@ -43,3 +43,26 @@ contract Opt3 {
         
     }
 }
+
+message OptAddr {
+    x: Int as uint8;
+    y: Address?;
+    z: Int as uint16;
+}
+
+contract Opt4 {
+    z: Int = 0;
+
+    init() {}
+
+    // deploy
+    receive() {}
+
+    receive(msg: OptAddr) {
+        self.z = msg.z;
+    }
+
+    get fun z(): Int {
+        return self.z;
+    }
+}
