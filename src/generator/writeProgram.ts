@@ -46,9 +46,9 @@ export async function writeProgram(
     // Render contract
     //
 
-    const wctx = new WriterContext(ctx, abiSrc.name!);
-    writeAll(ctx, wctx, abiSrc.name!, abiLink);
-    const functions = wctx.extract(debug);
+    const wCtx = new WriterContext(ctx, abiSrc.name!);
+    writeAll(ctx, wCtx, abiSrc.name!, abiLink);
+    const functions = wCtx.extract(debug);
 
     //
     // Emit files
@@ -151,7 +151,7 @@ export async function writeProgram(
     // storage
     //
 
-    const emitedTypes: string[] = [];
+    const emittedTypes: string[] = [];
     const types = getSortedTypes(ctx);
     for (const t of types) {
         const ffs: WrittenFunction[] = [];
@@ -189,7 +189,7 @@ export async function writeProgram(
             }
             header.push(";;");
 
-            emitedTypes.push(
+            emittedTypes.push(
                 emit({
                     functions: ffs,
                     header: header.join("\n"),
@@ -197,10 +197,10 @@ export async function writeProgram(
             );
         }
     }
-    if (emitedTypes.length > 0) {
+    if (emittedTypes.length > 0) {
         files.push({
             name: basename + ".storage.fc",
-            code: [...emitedTypes].join("\n\n"),
+            code: [...emittedTypes].join("\n\n"),
         });
     }
 
@@ -294,7 +294,7 @@ function tryExtractModule(
 
 function writeAll(
     ctx: CompilerContext,
-    wctx: WriterContext,
+    wCtx: WriterContext,
     name: string,
     abiLink: string,
 ) {
@@ -307,9 +307,9 @@ function writeAll(
     }
 
     // Stdlib
-    writeStdlib(wctx);
+    writeStdlib(wCtx);
 
-    // Serializators
+    // Serializers
     const sortedTypes = getSortedTypes(ctx);
     for (const t of sortedTypes) {
         if (t.kind === "contract" || t.kind === "struct") {
@@ -320,23 +320,23 @@ function writeAll(
                 t.kind === "contract",
                 allocation,
                 t.origin,
-                wctx,
+                wCtx,
             );
-            writeOptionalSerializer(t.name, t.origin, wctx);
+            writeOptionalSerializer(t.name, t.origin, wCtx);
             writeParser(
                 t.name,
                 t.kind === "contract",
                 allocation,
                 t.origin,
-                wctx,
+                wCtx,
             );
-            writeOptionalParser(t.name, t.origin, wctx);
+            writeOptionalParser(t.name, t.origin, wCtx);
             writeBouncedParser(
                 t.name,
                 t.kind === "contract",
                 allocationBounced,
                 t.origin,
-                wctx,
+                wCtx,
             );
         }
     }
@@ -344,7 +344,7 @@ function writeAll(
     // Accessors
     for (const t of allTypes) {
         if (t.kind === "contract" || t.kind === "struct") {
-            writeAccessors(t, t.origin, wctx);
+            writeAccessors(t, t.origin, wCtx);
         }
     }
 
@@ -352,15 +352,15 @@ function writeAll(
     for (const t of sortedTypes) {
         if (t.kind === "contract" && t.init) {
             const allocation = getAllocation(ctx, initId(t.name));
-            writeSerializer(initId(t.name), true, allocation, t.origin, wctx);
-            writeParser(initId(t.name), false, allocation, t.origin, wctx);
+            writeSerializer(initId(t.name), true, allocation, t.origin, wCtx);
+            writeParser(initId(t.name), false, allocation, t.origin, wCtx);
         }
     }
 
     // Storage Functions
     for (const t of sortedTypes) {
         if (t.kind === "contract") {
-            writeStorageOps(t, t.origin, wctx);
+            writeStorageOps(t, t.origin, wCtx);
         }
     }
 
@@ -368,7 +368,7 @@ function writeAll(
     const sf = getAllStaticFunctions(ctx);
     for (const k in sf) {
         const f = sf[k];
-        writeFunction(f, wctx);
+        writeFunction(f, wCtx);
     }
 
     // Extensions
@@ -376,7 +376,7 @@ function writeAll(
         if (c.kind !== "contract" && c.kind !== "trait") {
             // We are rendering contract functions separately
             for (const f of c.functions.values()) {
-                writeFunction(f, wctx);
+                writeFunction(f, wCtx);
             }
         }
     }
@@ -385,15 +385,15 @@ function writeAll(
     for (const c of contracts) {
         // Init
         if (c.init) {
-            writeInit(c, c.init, wctx);
+            writeInit(c, c.init, wCtx);
         }
 
         // Functions
         for (const f of c.functions.values()) {
-            writeFunction(f, wctx);
+            writeFunction(f, wCtx);
         }
     }
 
     // Write contract main
-    writeMainContract(c, abiLink, wctx);
+    writeMainContract(c, abiLink, wCtx);
 }

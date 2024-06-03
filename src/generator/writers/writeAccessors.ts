@@ -5,7 +5,7 @@ import { WriterContext } from "../Writer";
 import { ops } from "./ops";
 import { resolveFuncFlatPack } from "./resolveFuncFlatPack";
 import { resolveFuncFlatTypes } from "./resolveFuncFlatTypes";
-import { resolveFuncTupledType } from "./resolveFuncTupledType";
+import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 
@@ -80,7 +80,7 @@ export function writeAccessors(
     });
 
     //
-    // Convert to and from tupled representation
+    // Convert to and from tuple representation
     //
 
     ctx.fun(ops.typeToTuple(type.name, ctx), () => {
@@ -204,7 +204,7 @@ export function writeAccessors(
 
     ctx.fun(ops.typeToExternal(type.name, ctx), () => {
         ctx.signature(
-            `(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(", ")}) ${ops.typeToExternal(type.name, ctx)}((${resolveFuncType(type, ctx)}) v)`,
+            `(${type.fields.map((v) => resolveFuncTupleType(v.type, ctx)).join(", ")}) ${ops.typeToExternal(type.name, ctx)}((${resolveFuncType(type, ctx)}) v)`,
         );
         ctx.flag("inline");
         ctx.context("type:" + type.name);

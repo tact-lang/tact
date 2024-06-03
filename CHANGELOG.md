@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Tests for recursive functions: PR [#359](https://github.com/tact-lang/tact/pull/359)
 - API for AST traversal: PR [#368](https://github.com/tact-lang/tact/pull/368)
+- Spell checking for the whole code base: PR [#372](https://github.com/tact-lang/tact/pull/372)
 
 ### Changed
 
@@ -28,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Built-in function `address()` now handles parse errors correctly: PR [#357](https://github.com/tact-lang/tact/pull/357)
 - All identifiers in error messages are now quoted for consistency: PR [#363](https://github.com/tact-lang/tact/pull/363)
 - The grammar of the unary operators has been fixed, constant and function declarations are prohibited for contracts and at the top level of Tact modules: PR [#365](https://github.com/tact-lang/tact/pull/365)
+- Typos in ABI generation: : PR [#372](https://github.com/tact-lang/tact/pull/372)
 
 ## [1.3.0] - 2024-05-03
 

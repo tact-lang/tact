@@ -68,18 +68,18 @@ describe("writeSerialization", () => {
             );
             ctx = resolveDescriptors(ctx);
             ctx = resolveAllocations(ctx);
-            const wctx = new WriterContext(ctx, s);
-            writeStdlib(wctx);
+            const wCtx = new WriterContext(ctx, s);
+            writeStdlib(wCtx);
             writeSerializer(
                 getType(ctx, s).name,
                 false,
                 getAllocation(ctx, s),
                 "user",
-                wctx,
+                wCtx,
             );
             for (const t of Object.values(getAllTypes(ctx))) {
                 if (t.kind === "contract" || t.kind === "struct") {
-                    writeAccessors(t, "user", wctx);
+                    writeAccessors(t, "user", wCtx);
                 }
             }
             writeParser(
@@ -87,9 +87,9 @@ describe("writeSerialization", () => {
                 false,
                 getAllocation(ctx, s),
                 "user",
-                wctx,
+                wCtx,
             );
-            const extracted = wctx.extract(true);
+            const extracted = wCtx.extract(true);
             expect(extracted).toMatchSnapshot();
         });
     }

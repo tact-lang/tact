@@ -441,19 +441,19 @@ describe("feature-math", () => {
             "Integer out of expected range",
         );
 
-        // Test operation precendence
+        // Test operation precedence
 
-        expect(await contract.getPrecendence1()).toBe(12n);
-        expect(await contract.getPrecendence2()).toBe(4n);
-        expect(await contract.getPrecendence3()).toBe(12n);
-        expect(await contract.getPrecendence4()).toBe(12n);
-        expect(await contract.getPrecendence5()).toBe(5n);
-        expect(await contract.getPrecendence6()).toBe(0n);
-        expect(await contract.getPrecendence7()).toBe(7n);
-        expect(await contract.getPrecendence8()).toBe(3n);
-        expect(await contract.getPrecendence9()).toBe(7n);
-        expect(await contract.getPrecendence10()).toBe(3n);
-        expect(await contract.getPrecendence11()).toBe(3n);
-        expect(await contract.getPrecendence12()).toBe(5n);
+        expect(await contract.getPrecedence1()).toBe(12n);
+        expect(await contract.getPrecedence2()).toBe(4n);
+        expect(await contract.getPrecedence3()).toBe(12n);
+        expect(await contract.getPrecedence4()).toBe(12n);
+        expect(await contract.getPrecedence5()).toBe(5n);
+        expect(await contract.getPrecedence6()).toBe(0n);
+        expect(await contract.getPrecedence7()).toBe(7n);
+        expect(await contract.getPrecedence8()).toBe(3n);
+        expect(await contract.getPrecedence9()).toBe(7n);
+        expect(await contract.getPrecedence10()).toBe(3n);
+        expect(await contract.getPrecedence11()).toBe(3n);
+        expect(await contract.getPrecedence12()).toBe(5n);
     });
 });

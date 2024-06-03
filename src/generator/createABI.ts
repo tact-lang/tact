@@ -130,7 +130,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
 
     // Errors
     const errors: { [key: string]: { message: string } } = {};
-    errors["2"] = { message: "Stack undeflow" };
+    errors["2"] = { message: "Stack underflow" };
     errors["3"] = { message: "Stack overflow" };
     errors["4"] = { message: "Integer overflow" };
     errors["5"] = { message: "Integer out of expected range" };
