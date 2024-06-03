@@ -252,10 +252,10 @@ describe("features", () => {
 
         await contract.send(
             treasure,
-            { value: toNano(255) },
+            { value: toNano(1) },
             {
                 $$type: "OptAddr",
-                x: BigInt(1),
+                x: BigInt(255),
                 y: null,
                 z: BigInt(12345),
             },
