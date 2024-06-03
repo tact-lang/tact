@@ -59,7 +59,7 @@ Line 8, col 17:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-6 1`] = `
-"<unknown>:11:3: Field b already exists
+"<unknown>:11:3: Field "b" already exists
 Line 11, col 3:
   10 |   b: Int;
 > 11 |   b: Int;
@@ -69,7 +69,7 @@ Line 11, col 3:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-7 1`] = `
-"<unknown>:11:3: Field b already exists
+"<unknown>:11:3: Field "b" already exists
 Line 11, col 3:
   10 |   b: Int;
 > 11 |   b: Int;
@@ -119,7 +119,7 @@ Line 12, col 23:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-12 1`] = `
-"<unknown>:12:1: Type Main already exists
+"<unknown>:12:1: Type "Main" already exists
 Line 12, col 1:
   11 | 
 > 12 | struct Main {
@@ -129,7 +129,7 @@ Line 12, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-13 1`] = `
-"<unknown>:12:1: Type Main already exists
+"<unknown>:12:1: Type "Main" already exists
 Line 12, col 1:
   11 | 
 > 12 | struct Main {
@@ -139,7 +139,7 @@ Line 12, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-14 1`] = `
-"<unknown>:12:1: Type Main already exists
+"<unknown>:12:1: Type "Main" already exists
 Line 12, col 1:
   11 | 
 > 12 | contract Main {
@@ -149,7 +149,7 @@ Line 12, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-15 1`] = `
-"<unknown>:12:1: Struct Main must have at least one field
+"<unknown>:12:1: Struct "Main" must have at least one field
 Line 12, col 1:
   11 | 
 > 12 | struct Main {
@@ -159,7 +159,7 @@ Line 12, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-16 1`] = `
-"<unknown>:16:1: Struct Main must have at least one field
+"<unknown>:16:1: Struct "Main" must have at least one field
 Line 16, col 1:
   15 | 
 > 16 | struct Main {
@@ -169,7 +169,7 @@ Line 16, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-17 1`] = `
-"<unknown>:8:1: Function hello already exists in type Main
+"<unknown>:8:1: Function "hello" already exists in type "Main"
 Line 8, col 1:
   7 | 
 > 8 | contract Main {
@@ -199,7 +199,7 @@ Line 13, col 5:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-20 1`] = `
-"<unknown>:12:1: Function hello already exists in type Main
+"<unknown>:12:1: Function "hello" already exists in type "Main"
 Line 12, col 1:
   11 | 
 > 12 | extends fun hello(self: Main): Bool {
@@ -219,7 +219,7 @@ Line 17, col 3:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-22 1`] = `
-"<unknown>:24:3: Bounce receive function for A already exists
+"<unknown>:24:3: Bounce receive function for "A" already exists
 Line 24, col 3:
   23 |   
 > 24 |   bounced(msg: bounced<A>) {
@@ -255,6 +255,24 @@ Line 8, col 21:
 > 8 | const a: Int = 1 + (1 >> -1073741824);
                           ^~~~~~~~~~~~~~~~
   9 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-26 1`] = `
+"<unknown>:1:1: Static function "ton" already exists
+Line 1, col 1:
+> 1 | fun ton() {
+      ^~~~~~~~~~~
+  2 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-27 1`] = `
+"<unknown>:1:1: Static function "dumpStack" already exists
+Line 1, col 1:
+> 1 | fun dumpStack() {
+      ^~~~~~~~~~~~~~~~~
+  2 | 
 "
 `;
 

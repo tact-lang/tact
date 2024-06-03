@@ -17,7 +17,7 @@ export function precompile(
     // Load all sources
     const imported = resolveImports({ entrypoint, project, stdlib });
 
-    // Perform initial compiler steps
+    // Add information about all the source code entries to the context
     ctx = openContext(ctx, imported.tact, imported.func);
 
     // First load type descriptors and check that

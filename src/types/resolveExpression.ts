@@ -131,7 +131,10 @@ function resolveStructNew(
         // Check existing
         const f = tp.fields.find((v) => v.name === e.name);
         if (!f) {
-            throwError(`Unknown fields "${e.name}" in type ${tp.name}`, e.ref);
+            throwError(
+                `Unknown fields "${e.name}" in type "${tp.name}"`,
+                e.ref,
+            );
         }
 
         // Resolve expression
@@ -141,7 +144,7 @@ function resolveStructNew(
         const expressionType = getExpType(ctx, e.exp);
         if (!isAssignable(expressionType, f.type)) {
             throwError(
-                `Invalid type "${printTypeRef(expressionType)}" for fields "${e.name}" with type ${printTypeRef(f.type)} in type ${tp.name}`,
+                `Invalid type "${printTypeRef(expressionType)}" for fields "${e.name}" with type "${printTypeRef(f.type)}" in type "${tp.name}"`,
                 e.ref,
             );
         }
@@ -151,7 +154,7 @@ function resolveStructNew(
     for (const f of tp.fields) {
         if (f.default === undefined && !processed.has(f.name)) {
             throwError(
-                `Missing fields "${f.name}" in type ${tp.name}`,
+                `Missing fields "${f.name}" in type "${tp.name}"`,
                 exp.ref,
             );
         }

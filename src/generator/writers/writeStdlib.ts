@@ -1904,7 +1904,7 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun(`__tact_log2`, () => {
         ctx.signature(`int __tact_log2(int num)`);
         ctx.context("stdlib");
-        ctx.asm(`asm "UBITSIZE DEC"`);
+        ctx.asm(`asm "DUP 5 THROWIFNOT UBITSIZE DEC"`);
     });
 
     ctx.fun(`__tact_log`, () => {
@@ -1912,6 +1912,8 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
+                throw_unless(5, num > 0);
+                throw_unless(5, base > 1);
                 if (num < base) {
                     return 0;
                 }

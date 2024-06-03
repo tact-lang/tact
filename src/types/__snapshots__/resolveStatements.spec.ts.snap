@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`resolveStatements should fail statements for case-0 1`] = `
-"<unknown>:9:5: Type mismatch: Int is not assignable to Bool
+"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
 Line 9, col 5:
    8 | fun isZero(x: Int): Bool {
 >  9 |     return x;
@@ -11,7 +11,7 @@ Line 9, col 5:
 `;
 
 exports[`resolveStatements should fail statements for case-1 1`] = `
-"<unknown>:9:5: Type mismatch: Bool is not assignable to Int
+"<unknown>:9:5: Type mismatch: "Bool" is not assignable to "Int"
 Line 9, col 5:
    8 | fun isZero(x: Int): Bool {
 >  9 |     repeat(true) {
@@ -21,7 +21,7 @@ Line 9, col 5:
 `;
 
 exports[`resolveStatements should fail statements for case-2 1`] = `
-"<unknown>:9:5: Type mismatch: Int is not assignable to bool
+"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
 Line 9, col 5:
    8 | fun isZero(x: Int): Bool {
 >  9 |     while(x) {
@@ -31,7 +31,7 @@ Line 9, col 5:
 `;
 
 exports[`resolveStatements should fail statements for case-3 1`] = `
-"<unknown>:9:5: Type mismatch: Int is not assignable to bool
+"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
 Line 9, col 5:
    8 | fun isZero(x: Int): Bool {
 >  9 |     do {
@@ -41,7 +41,7 @@ Line 9, col 5:
 `;
 
 exports[`resolveStatements should fail statements for case-4 1`] = `
-"<unknown>:9:5: Type mismatch: Int is not assignable to Bool
+"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
 Line 9, col 5:
    8 | fun isZero(x: Int): Bool {
 >  9 |     if (x) {
@@ -51,7 +51,7 @@ Line 9, col 5:
 `;
 
 exports[`resolveStatements should fail statements for case-5 1`] = `
-"<unknown>:9:5: Type mismatch: String is not assignable to Int
+"<unknown>:9:5: Type mismatch: "String" is not assignable to "Int"
 Line 9, col 5:
    8 | fun isZero(x: Int): Bool {
 >  9 |     x = "hello world";
@@ -101,7 +101,7 @@ Line 20, col 27:
 `;
 
 exports[`resolveStatements should fail statements for case-10 1`] = `
-"<unknown>:10:5: Type mismatch: Int is not assignable to Bool
+"<unknown>:10:5: Type mismatch: "Int" is not assignable to "Bool"
 Line 10, col 5:
    9 |     let a: Int = 0;
 > 10 |     let b: Bool = 0;
@@ -111,7 +111,7 @@ Line 10, col 5:
 `;
 
 exports[`resolveStatements should fail statements for case-11 1`] = `
-"<unknown>:17:9: Invalid type "Bool" for fields "b" with type Int in type SomeStruct
+"<unknown>:17:9: Invalid type "Bool" for fields "b" with type "Int" in type "SomeStruct"
 Line 17, col 9:
   16 |         a: 1,
 > 17 |         b: false // Invalid type
@@ -131,7 +131,7 @@ Line 17, col 9:
 `;
 
 exports[`resolveStatements should fail statements for case-13 1`] = `
-"<unknown>:16:25: Missing fields "c" in type SomeStruct
+"<unknown>:16:25: Missing fields "c" in type "SomeStruct"
 Line 16, col 25:
   15 | fun main() {
 > 16 |     let a: SomeStruct = SomeStruct{
@@ -151,7 +151,7 @@ Line 26, col 25:
 `;
 
 exports[`resolveStatements should fail statements for case-15 1`] = `
-"<unknown>:10:5: Field value is not set
+"<unknown>:10:5: Field "value" is not set
 Line 10, col 5:
    9 |     value: Int;
 > 10 |     init() {
@@ -161,7 +161,7 @@ Line 10, col 5:
 `;
 
 exports[`resolveStatements should fail statements for case-16 1`] = `
-"<unknown>:10:5: Field value is not set
+"<unknown>:10:5: Field "value" is not set
 Line 10, col 5:
    9 |     value: Int;
 > 10 |     init(arg: Bool) {
@@ -171,7 +171,7 @@ Line 10, col 5:
 `;
 
 exports[`resolveStatements should fail statements for case-17 1`] = `
-"<unknown>:10:5: Field value is not set
+"<unknown>:10:5: Field "value" is not set
 Line 10, col 5:
    9 |     value: Int;
 > 10 |     init(arg: Bool) {
@@ -181,7 +181,7 @@ Line 10, col 5:
 `;
 
 exports[`resolveStatements should fail statements for case-18 1`] = `
-"<unknown>:10:5: Field value is not set
+"<unknown>:10:5: Field "value" is not set
 Line 10, col 5:
    9 |     value: Int;
 > 10 |     init(arg: Bool) {
@@ -281,7 +281,7 @@ Line 5, col 43:
 `;
 
 exports[`resolveStatements should fail statements for case-28 1`] = `
-"<unknown>:5:5: Type mismatch: Bool is not assignable to Int
+"<unknown>:5:5: Type mismatch: "Bool" is not assignable to "Int"
 Line 5, col 5:
   4 | fun sample(): Int {
 > 5 |     return (true ? true : false) ? true : false;
@@ -341,7 +341,7 @@ Line 5, col 16:
 `;
 
 exports[`resolveStatements should fail statements for case-34 1`] = `
-"<unknown>:6:5: Variable already exists: e
+"<unknown>:6:5: Variable already exists: "e"
 Line 6, col 5:
   5 |     let e: String = "qwe";
 > 6 |     try {
@@ -351,7 +351,7 @@ Line 6, col 5:
 `;
 
 exports[`resolveStatements should fail statements for case-35 1`] = `
-"<unknown>:8:9: Type mismatch: Int is not assignable to String
+"<unknown>:8:9: Type mismatch: "Int" is not assignable to "String"
 Line 8, col 9:
   7 |     } catch (e) {
 > 8 |         return e;
@@ -361,7 +361,7 @@ Line 8, col 9:
 `;
 
 exports[`resolveStatements should fail statements for case-36 1`] = `
-"<unknown>:14:26: Unknown fields "b" in type A
+"<unknown>:14:26: Unknown fields "b" in type "A"
 Line 14, col 26:
   13 | fun function() {
 > 14 |     let D: A = A { x: a, b };
@@ -371,7 +371,7 @@ Line 14, col 26:
 `;
 
 exports[`resolveStatements should fail statements for case-37 1`] = `
-"<unknown>:6:5: Type mismatch: Bool is not assignable to <void>
+"<unknown>:6:5: Type mismatch: "Bool" is not assignable to "<void>"
 Line 6, col 5:
   5 |     m.set(1, 2);
 > 6 |     return m.del(1);
@@ -471,7 +471,7 @@ Line 4, col 1:
 `;
 
 exports[`resolveStatements should fail statements for case-47 1`] = `
-"<unknown>:5:5: Variable already exists: k
+"<unknown>:5:5: Variable already exists: "k"
 Line 5, col 5:
   4 |     let m: map<Int, Int> = emptyMap();
 > 5 |     foreach (k, k in m) {
@@ -481,7 +481,7 @@ Line 5, col 5:
 `;
 
 exports[`resolveStatements should fail statements for case-48 1`] = `
-"<unknown>:5:5: Variable already exists: m
+"<unknown>:5:5: Variable already exists: "m"
 Line 5, col 5:
   4 |     let m: map<Int, Int> = emptyMap();
 > 5 |     foreach (k, m in m) {
@@ -507,6 +507,26 @@ Line 8, col 12:
 > 8 |     return x;
                  ^
   9 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for case-51 1`] = `
+"<unknown>:5:5: Type error: Augmented assignment is only allowed for Int type
+Line 5, col 5:
+  4 |     let a: Bool = false;
+> 5 |     a %= true;
+          ^~~~~~~~~~
+  6 |     return a;
+"
+`;
+
+exports[`resolveStatements should fail statements for case-52 1`] = `
+"<unknown>:5:5: Type error: Augmented assignment is only allowed for Int type
+Line 5, col 5:
+  4 |     let a: String = "foo";
+> 5 |     a %= "bar";
+          ^~~~~~~~~~~
+  6 |     return a;
 "
 `;
 
@@ -1362,6 +1382,27 @@ exports[`resolveStatements should resolve statements for case-20 1`] = `
   ],
   [
     "44",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-21 1`] = `
+[
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "a",
     "Int",
   ],
 ]

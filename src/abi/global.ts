@@ -100,7 +100,12 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     resolved[0],
                     ctx.ctx,
                 ) as string;
-                const address = Address.parse(str);
+                let address: Address;
+                try {
+                    address = Address.parse(str);
+                } catch {
+                    throwError(`${str} is not a valid address`, ref);
+                }
                 if (address.workChain !== 0 && address.workChain !== -1) {
                     throwError(`Address ${str} invalid address`, ref);
                 }

@@ -12,7 +12,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     // Contract
     const contract = allTypes.find((v) => v.name === name)!;
     if (!contract) {
-        throw Error(`Contract ${name} not found`);
+        throw Error(`Contract "${name}" not found`);
     }
     if (contract.kind !== "contract") {
         throw Error("Not a contract");
