@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Tests for recursive functions: PR [#359](https://github.com/tact-lang/tact/pull/359)
+- API for AST traversal: PR [#368](https://github.com/tact-lang/tact/pull/368)
 - Spell checking for the whole code base: PR [#372](https://github.com/tact-lang/tact/pull/372)
 
 ### Changed
