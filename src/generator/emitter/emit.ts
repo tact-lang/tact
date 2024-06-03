@@ -7,7 +7,7 @@ export function emit(args: {
     header?: Maybe<string>;
     functions?: Maybe<WrittenFunction[]>;
 }) {
-    // Emut header
+    // Emit header
     let res = "";
     if (args.header) {
         res = trimIndent(args.header);

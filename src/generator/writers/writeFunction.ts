@@ -11,7 +11,7 @@ import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { id } from "./id";
 import { writeExpression } from "./writeExpression";
 import { cast } from "./cast";
-import { resolveFuncTupledType } from "./resolveFuncTupledType";
+import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { ops } from "./ops";
 import { freshIdentifier } from "./freshIdentifier";
 
@@ -213,17 +213,17 @@ export function writeStatement(
                 kind = "uint";
             }
             if (t.value === "Int") {
-                let vbits = 257;
-                let vkind = "int";
+                let vBits = 257;
+                let vKind = "int";
                 if (t.valueAs && t.valueAs.startsWith("int")) {
-                    vbits = parseInt(t.valueAs.slice(3), 10);
+                    vBits = parseInt(t.valueAs.slice(3), 10);
                 } else if (t.valueAs && t.valueAs.startsWith("uint")) {
-                    vbits = parseInt(t.valueAs.slice(4), 10);
-                    vkind = "uint";
+                    vBits = parseInt(t.valueAs.slice(4), 10);
+                    vKind = "uint";
                 }
 
                 ctx.append(
-                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_${vkind}`)}(${id(f.map.value)}, ${bits}, ${vbits});`,
+                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_${vKind}`)}(${id(f.map.value)}, ${bits}, ${vBits});`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -231,7 +231,7 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_${vkind}`)}(${id(f.map.value)}, ${bits}, ${id(f.keyName)}, ${vbits});`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_${vKind}`)}(${id(f.map.value)}, ${bits}, ${id(f.keyName)}, ${vBits});`,
                     );
                 });
                 ctx.append(`}`);
@@ -301,16 +301,16 @@ export function writeStatement(
         // Handle address key
         if (t.key === "Address") {
             if (t.value === "Int") {
-                let vbits = 257;
-                let vkind = "int";
+                let vBits = 257;
+                let vKind = "int";
                 if (t.valueAs && t.valueAs.startsWith("int")) {
-                    vbits = parseInt(t.valueAs.slice(3), 10);
+                    vBits = parseInt(t.valueAs.slice(3), 10);
                 } else if (t.valueAs && t.valueAs.startsWith("uint")) {
-                    vbits = parseInt(t.valueAs.slice(4), 10);
-                    vkind = "uint";
+                    vBits = parseInt(t.valueAs.slice(4), 10);
+                    vKind = "uint";
                 }
                 ctx.append(
-                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_${vkind}`)}(${id(f.map.value)}, 267, ${vbits});`,
+                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_${vKind}`)}(${id(f.map.value)}, 267, ${vBits});`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -318,7 +318,7 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_${vkind}`)}(${id(f.map.value)}, 267, ${id(f.keyName)}, ${vbits});`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_${vKind}`)}(${id(f.map.value)}, 267, ${id(f.keyName)}, ${vBits});`,
                     );
                 });
                 ctx.append(`}`);
@@ -506,7 +506,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
         throw new Error(`No self type for getter "${f.name}"`); // Impossible
     }
     ctx.append(
-        `_ %${f.name}(${f.args.map((v) => resolveFuncTupledType(v.type, ctx) + " " + id("$" + v.name)).join(", ")}) method_id(${getMethodId(f.name)}) {`,
+        `_ %${f.name}(${f.args.map((v) => resolveFuncTupleType(v.type, ctx) + " " + id("$" + v.name)).join(", ")}) method_id(${getMethodId(f.name)}) {`,
     );
     ctx.inIndent(() => {
         // Unpack arguments
@@ -539,7 +539,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
             }
         }
 
-        // Return restult
+        // Return result
         ctx.append(`return res;`);
     });
     ctx.append(`}`);

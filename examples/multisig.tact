@@ -43,7 +43,7 @@ contract MultisigSigner {
         require(self.request.timeout > now(), "Timeout");
         require(!self.completed, "Completed");
 
-        // Load weitght
+        // Load weight
         let sender: Address = sender();
         let weight: Int = self.members.get(sender)!!;
         self.members.set(sender, null);

@@ -124,7 +124,7 @@ meowModule.then(
         ? "funcOnly"
         : undefined;
 
-    // TODO: all flags on the cli should take precendence over flags in the config
+    // TODO: all flags on the cli should take precedence over flags in the config
     // Make a nice model for it in the src/node.ts instead of the current mess
     // Consider making overwrites right here or something.
 

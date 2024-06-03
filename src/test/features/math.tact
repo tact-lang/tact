@@ -324,51 +324,51 @@ contract MathTester with Deployable {
     // Precedence
     //
 
-    get fun precendence1(): Int {
+    get fun precedence1(): Int {
         return 5 & 6 | 1 << 5 + 11 * 3 % 12 >> 11;
     }
 
-    get fun precendence2(): Int {
+    get fun precedence2(): Int {
         return 5 & 6 | 1 << (5 + 11) * 3 % 12 >> 11;
     }
 
-    get fun precendence3(): Int {
+    get fun precedence3(): Int {
         return 5 & 6 | 1 << 5 + 11 * (3 % 12) >> 35;
     }
 
-    get fun precendence4(): Int {
+    get fun precedence4(): Int {
         return 5 & 6 | 1 << 5 + (11 * 3) % 12 >> 11;
     }
 
-    get fun precendence5(): Int {
+    get fun precedence5(): Int {
         return 5 | 6 & 8;
     }
 
-    get fun precendence6(): Int {
+    get fun precedence6(): Int {
         return (5 | 6) & 8;
     }
 
-    get fun precendence7(): Int {
+    get fun precedence7(): Int {
         return 5 ^ 6 | 7;
     }
 
-    get fun precendence8(): Int {
+    get fun precedence8(): Int {
         return 5 ^ 6 & 7;
     }
 
-    get fun precendence9(): Int {
+    get fun precedence9(): Int {
         return (5 ^ 6) | 7;
     }
 
-    get fun precendence10(): Int {
+    get fun precedence10(): Int {
         return 5 ^ 6 | 7 & 8;
     }
 
-    get fun precendence11(): Int {
+    get fun precedence11(): Int {
         return (5 ^ 6) | (7 & 8);
     }
 
-    get fun precendence12(): Int {
+    get fun precedence12(): Int {
         return 5 ^ (6 | 7) & 8;
     }
 }

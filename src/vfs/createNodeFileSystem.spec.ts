@@ -34,7 +34,7 @@ describe("createNodeFileSystem", () => {
         const dir = "dir-" + Math.random();
         const fileName2 = dir + "/" + Math.random() + ".txt";
         const realPath2 = vfs.resolve(fileName2);
-        const realPaathDir2 = vfs.resolve(dir);
+        const realPathDir2 = vfs.resolve(dir);
         try {
             expect(vfs.exists(realPath2)).toBe(false);
             vfs.writeFile(realPath2, "Hello world");
@@ -44,7 +44,7 @@ describe("createNodeFileSystem", () => {
             );
             expect(fs.readFileSync(realPath2, "utf8")).toBe("Hello world");
         } finally {
-            rimraf.sync(realPaathDir2);
+            rimraf.sync(realPathDir2);
         }
     });
 });

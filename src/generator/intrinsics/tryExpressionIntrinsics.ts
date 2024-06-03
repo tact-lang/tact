@@ -8,7 +8,7 @@ export function tryExpressionIntrinsics(
     exp: ASTExpression,
     ctx: WriterContext,
 ): string | null {
-    // Calls instrinsics
+    // Calls intrinsics
     if (exp.kind === "op_call") {
         const sourceType = getExpType(ctx.ctx, exp.src);
         if (
