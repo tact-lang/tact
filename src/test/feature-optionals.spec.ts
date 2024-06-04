@@ -5,7 +5,7 @@ import {
     SomeGenericStruct,
     StructWithOptionals,
 } from "./features/output/optionals_ContractWithOptionals";
-import { OptAddr, Opt4 } from "./features/output/optionals_Opt4";
+import { Opt4 } from "./features/output/optionals_Opt4";
 import { Address, beginCell, Cell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 
