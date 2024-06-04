@@ -94,10 +94,11 @@ return (cs, __tact_verify_address(raw));",
   },
   {
     "code": {
-      "code": "slice raw = cs~load_msg_addr();
-if (raw.preload_uint(2) != 0) {
+      "code": "if (cs.preload_uint(2) != 0) {
+    slice raw = cs~load_msg_addr();
     return (cs, __tact_verify_address(raw));
 } else {
+    cs~skip_bits(2);
     return (cs, null());
 }",
       "kind": "generic",
@@ -4682,10 +4683,11 @@ return (cs, __tact_verify_address(raw));",
   },
   {
     "code": {
-      "code": "slice raw = cs~load_msg_addr();
-if (raw.preload_uint(2) != 0) {
+      "code": "if (cs.preload_uint(2) != 0) {
+    slice raw = cs~load_msg_addr();
     return (cs, __tact_verify_address(raw));
 } else {
+    cs~skip_bits(2);
     return (cs, null());
 }",
       "kind": "generic",
@@ -9270,10 +9272,11 @@ return (cs, __tact_verify_address(raw));",
   },
   {
     "code": {
-      "code": "slice raw = cs~load_msg_addr();
-if (raw.preload_uint(2) != 0) {
+      "code": "if (cs.preload_uint(2) != 0) {
+    slice raw = cs~load_msg_addr();
     return (cs, __tact_verify_address(raw));
 } else {
+    cs~skip_bits(2);
     return (cs, null());
 }",
       "kind": "generic",
