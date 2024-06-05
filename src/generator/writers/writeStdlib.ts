@@ -61,10 +61,11 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                slice raw = cs~load_msg_addr();
-                if (raw.preload_uint(2) != 0) {
+                if (cs.preload_uint(2) != 0) {
+                    slice raw = cs~load_msg_addr();
                     return (cs, ${ctx.used(`__tact_verify_address`)}(raw));
                 } else {
+                    cs~skip_bits(2);
                     return (cs, null());
                 }
             `);

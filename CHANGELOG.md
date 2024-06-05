@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All identifiers in error messages are now quoted for consistency: PR [#363](https://github.com/tact-lang/tact/pull/363)
 - The grammar of the unary operators has been fixed, constant and function declarations are prohibited for contracts and at the top level of Tact modules: PR [#365](https://github.com/tact-lang/tact/pull/365)
 - Typos in ABI generation: : PR [#372](https://github.com/tact-lang/tact/pull/372)
+- `__tact_load_address_opt` code generation: PR [#373](https://github.com/tact-lang/tact/pull/373)
 
 ## [1.3.0] - 2024-05-03
 
