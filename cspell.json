@@ -84,6 +84,7 @@
     "src/test/feature-strings.spec.ts",
     "src/test/features/intrinsics.tact",
     "src/test/features/strings.tact",
+    "src/test/compilation-fail/fail-const-eval.spec.ts",
     "stdlib/stdlib.fc"
   ]
 }
