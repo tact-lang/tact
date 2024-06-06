@@ -26,7 +26,7 @@ describe("fail-implicit-init", () => {
         });
         expect(result).toBe(false);
         expect((consoleLogger.error as jest.Mock).mock.lastCall[0]).toContain(
-            "Field test_field is not set",
+            'Field "test_field" is not set',
         );
     });
 });
