@@ -1,0 +1,20 @@
+{
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/grammar/configSchema.json",
+  "projects": [
+    {
+      "name": "implicit-init",
+      "path": "./contracts/implicit-init.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "invalid-address",
+      "path": "./contracts/invalid-address.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval",
+      "path": "./contracts/const-eval.tact",
+      "output": "./contracts/output"
+    }
+  ]
+}

@@ -39,7 +39,7 @@ contract RugPull with OwnableTransferable, Stoppable {
         // Must not be stopped stop
         self.requireNotStopped();
 
-        // Fowrad everything to owner if rugpulled
+        // Forward everything to owner if rugpulled
         if (self.rugpulled) {
             send(SendParameters{value: 0, to: self.owner, mode: SendRemainingBalance });
             return;

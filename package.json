@@ -19,6 +19,7 @@
     "lint": "yarn eslint .",
     "lint:schema": "ajv validate -s grammar/configSchema.json -d tact.config.json",
     "fmt:check": "yarn prettier --check .",
+    "spell": "cspell \"**\"",
     "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint && yarn fmt:check"
   },
   "files": [
@@ -65,6 +66,7 @@
     "@typescript-eslint/parser": "^7.0.2",
     "ajv-cli": "^5.0.0",
     "cross-env": "^7.0.3",
+    "cspell": "^8.8.3",
     "eslint": "^8.56.0",
     "glob": "^8.1.0",
     "jest": "^29.3.1",

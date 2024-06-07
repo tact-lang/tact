@@ -97,5 +97,5 @@ extends fun fromBase64(self: Slice): Slice {
 // Address conversion
 //
 
-@name(__tact_address_to_userfriendly)
+@name(__tact_address_to_user_friendly)
 extends native toString(self: Address): String;

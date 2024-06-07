@@ -94,10 +94,11 @@ return (cs, __tact_verify_address(raw));",
   },
   {
     "code": {
-      "code": "slice raw = cs~load_msg_addr();
-if (raw.preload_uint(2) != 0) {
+      "code": "if (cs.preload_uint(2) != 0) {
+    slice raw = cs~load_msg_addr();
     return (cs, __tact_verify_address(raw));
 } else {
+    cs~skip_bits(2);
     return (cs, null());
 }",
       "kind": "generic",
@@ -505,19 +506,19 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
       "__tact_base64_encode",
     },
     "flags": Set {},
-    "name": "__tact_address_to_userfriendly",
-    "signature": "(slice) __tact_address_to_userfriendly(slice address)",
+    "name": "__tact_address_to_user_friendly",
+    "signature": "(slice) __tact_address_to_user_friendly(slice address)",
   },
   {
     "code": {
-      "code": "__tact_debug_str(__tact_address_to_userfriendly(address), debug_print);",
+      "code": "__tact_debug_str(__tact_address_to_user_friendly(address), debug_print);",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
     "depends": Set {
       "__tact_debug_str",
-      "__tact_address_to_userfriendly",
+      "__tact_address_to_user_friendly",
     },
     "flags": Set {
       "impure",
@@ -4682,10 +4683,11 @@ return (cs, __tact_verify_address(raw));",
   },
   {
     "code": {
-      "code": "slice raw = cs~load_msg_addr();
-if (raw.preload_uint(2) != 0) {
+      "code": "if (cs.preload_uint(2) != 0) {
+    slice raw = cs~load_msg_addr();
     return (cs, __tact_verify_address(raw));
 } else {
+    cs~skip_bits(2);
     return (cs, null());
 }",
       "kind": "generic",
@@ -5093,19 +5095,19 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
       "__tact_base64_encode",
     },
     "flags": Set {},
-    "name": "__tact_address_to_userfriendly",
-    "signature": "(slice) __tact_address_to_userfriendly(slice address)",
+    "name": "__tact_address_to_user_friendly",
+    "signature": "(slice) __tact_address_to_user_friendly(slice address)",
   },
   {
     "code": {
-      "code": "__tact_debug_str(__tact_address_to_userfriendly(address), debug_print);",
+      "code": "__tact_debug_str(__tact_address_to_user_friendly(address), debug_print);",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
     "depends": Set {
       "__tact_debug_str",
-      "__tact_address_to_userfriendly",
+      "__tact_address_to_user_friendly",
     },
     "flags": Set {
       "impure",
@@ -9270,10 +9272,11 @@ return (cs, __tact_verify_address(raw));",
   },
   {
     "code": {
-      "code": "slice raw = cs~load_msg_addr();
-if (raw.preload_uint(2) != 0) {
+      "code": "if (cs.preload_uint(2) != 0) {
+    slice raw = cs~load_msg_addr();
     return (cs, __tact_verify_address(raw));
 } else {
+    cs~skip_bits(2);
     return (cs, null());
 }",
       "kind": "generic",
@@ -9681,19 +9684,19 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
       "__tact_base64_encode",
     },
     "flags": Set {},
-    "name": "__tact_address_to_userfriendly",
-    "signature": "(slice) __tact_address_to_userfriendly(slice address)",
+    "name": "__tact_address_to_user_friendly",
+    "signature": "(slice) __tact_address_to_user_friendly(slice address)",
   },
   {
     "code": {
-      "code": "__tact_debug_str(__tact_address_to_userfriendly(address), debug_print);",
+      "code": "__tact_debug_str(__tact_address_to_user_friendly(address), debug_print);",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
     "depends": Set {
       "__tact_debug_str",
-      "__tact_address_to_userfriendly",
+      "__tact_address_to_user_friendly",
     },
     "flags": Set {
       "impure",

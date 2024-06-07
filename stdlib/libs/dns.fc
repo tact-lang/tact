@@ -12,7 +12,7 @@ slice dns_string_to_internal(slice domain) inline_ref {
     builder current = begin_cell();
     int isCurrentEmpty = true;
     int isFirst = true;
-    int isHypen = false;
+    int isHyphen = false;
     slice cs = domain;
     int continue = true;
     do {
@@ -40,14 +40,14 @@ slice dns_string_to_internal(slice domain) inline_ref {
             if (~ valid_char | (isFirst & is_hyphen)) {
                 return null();
             }
-            isHypen = is_hyphen;
+            isHyphen = is_hyphen;
             if (is_dot) {
-                if (isFirst | isHypen) { ;; Empty or ends with hyphen
+                if (isFirst | isHyphen) { ;; Empty or ends with hyphen
                     return null();
                 }
                 segments = cons(current, segments);
                 current = begin_cell();
-                isHypen = false;
+                isHyphen = false;
                 isFirst = true;
                 isCurrentEmpty = true;
             } else {
@@ -58,7 +58,7 @@ slice dns_string_to_internal(slice domain) inline_ref {
         }
 
     } until (~ continue);
-    if (isHypen) { ;; ends with hyphen
+    if (isHyphen) { ;; ends with hyphen
         return null();
     }
     if (~ isCurrentEmpty) {
@@ -92,34 +92,34 @@ int dns_internal_verify(slice sc) inline_ref {
     int len = bits / 8;
     int counter = 0;
     int isFirst = true;
-    int isHypen = false;
+    int isHyphen = false;
     repeat(len) {
         int char = sc~load_uint(8);
         if (char == 0) {
             if (counter == 0) {
                 return false;
             }
-            if (isHypen) {
+            if (isHyphen) {
                 return false;
             }
             counter = 0;
-            isHypen = false;
+            isHyphen = false;
             isFirst = true;
         } else {
-            int charIsHypen = (char == 45);
-            int isValid = charIsHypen | ((char >= 48) & (char <= 57)) | ((char >= 97) & (char <= 122));
+            int charIsHyphen = (char == 45);
+            int isValid = charIsHyphen | ((char >= 48) & (char <= 57)) | ((char >= 97) & (char <= 122));
             if (~ isValid) {
                 return false;
             }
-            if (charIsHypen & isFirst)  {
+            if (charIsHyphen & isFirst)  {
                 return false;
             }
-            isHypen = charIsHypen;
+            isHyphen = charIsHyphen;
             isFirst = false;
             counter = counter + 1;
         }
     }
-    return counter == 0 & ~ isHypen;
+    return counter == 0 & ~ isHyphen;
 }
 
 slice dns_internal_normalize(slice src) inline_ref {

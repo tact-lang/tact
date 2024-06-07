@@ -41,7 +41,7 @@ ConstantTester {
         "message": "Masterchain support is not enabled for this contract",
       },
       "2": {
-        "message": "Stack undeflow",
+        "message": "Stack underflow",
       },
       "3": {
         "message": "Stack overflow",
@@ -227,6 +227,76 @@ ConstantTester {
       },
       {
         "arguments": [],
+        "name": "something16",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "something17",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "something18",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "something19",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "minInt1",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "minInt2",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "minInt3",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
         "name": "globalConst",
         "returnType": {
           "format": 257,
@@ -372,7 +442,7 @@ ConstantTester {
       },
     ],
   },
-  "address": kQCG5ZO3hYCRKTIcSHbxVD6aemP9eqeRqXiPLuTtmDjr2Wio,
+  "address": kQBLPCFB6hZTJVoIVoSLp-zwDPnb5aQG3LnI_S3IHwDre99T,
   "init": {
     "code": x{FF00F4A413F4BCF2C80B}
  x{62_}
@@ -381,26 +451,61 @@ ConstantTester {
     x{6D}
    x{0192307FE07021D749C21F953020D70B1FDEC00001D749C121B0917FE070}
   x{2_}
-   x{6A_}
-    x{B22EF6CF36CF0C6_}
-     x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-      x{6D}
-     x{74}
-    x{B226B6CF36CF0C6_}
-     x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-      x{6D}
-     x{8D086002540B846967BD8AD0D9B17DFB2440228EB4C230FA9782F8A2D9B60428BEBB439C}
+   x{5}
+    x{2_}
+     x{2_}
+      x{AFD96D9E6D9E18C_}
+       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+        x{6D}
+       x{85FF}
+      x{AC5DED9E6D9E18C_}
+       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+        x{6D}
+       x{74}
+     x{2_}
+      x{AFC9ED9E6D9E18C_}
+       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+        x{6D}
+       x{82F70000000000000000000000000000000000000000000000000000000000000001}
+      x{AC4D6D9E6D9E18C_}
+       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+        x{6D}
+       x{8D086002540B846967BD8AD0D9B17DFB2440228EB4C230FA9782F8A2D9B60428BEBB439C}
+    x{2_}
+     x{2_}
+      x{AFF86D9E6D9E18C_}
+       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+        x{6D}
+       x{85FF}
+      x{AF976D9E6D9E18C_}
+       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+        x{6D}
+       x{85FF}
+     x{B3C3F6CF36CF0C6_}
+      x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+       x{6D}
+      x{82F70000000000000000000000000000000000000000000000000000000000000001}
    x{2_}
     x{2_}
      x{2_}
-      x{B24DF6CF36CF0C6_}
-       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-        x{6D}
-       x{82186A2BB7D000}
-      x{B245B6CF36CF0C6_}
-       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-        x{6D}
-       x{8BC48656C6C6F20776F726C64218}
+      x{5}
+       x{A937DB3CDB3C31}
+        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+         x{6D}
+        x{82186A2BB7D000}
+       x{AAE0DB3CDB3C31}
+        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+         x{6D}
+        x{84FF}
+      x{5}
+       x{A916DB3CDB3C31}
+        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+         x{6D}
+        x{8BC48656C6C6F20776F726C64218}
+       x{AAC1DB3CDB3C31}
+        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+         x{6D}
+        x{85FF}
      x{2_}
       x{5}
        x{A975DB3CDB3C31}
@@ -441,7 +546,7 @@ ConstantTester {
          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
           x{6D}
          x{800B}
-        x{AEE3435697066733A2F2F516D625A38617576474E63656B454543537056507163476A37506868564C69697A724E384D364C515248526E6A5182_}
+        x{AEE3435697066733A2F2F516D5952584D7874336E78397331376A3874474D64315751526D574D6A556764756E75365536685A4C764758627182_}
        x{AA45DB3CDB3C31}
         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
          x{6D}
@@ -475,26 +580,61 @@ ConstantTester {
        x{6D}
       x{0192307FE07021D749C21F953020D70B1FDEC00001D749C121B0917FE070}
      x{2_}
-      x{6A_}
-       x{B22EF6CF36CF0C6_}
-        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-         x{6D}
-        x{74}
-       x{B226B6CF36CF0C6_}
-        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-         x{6D}
-        x{8D086002540B846967BD8AD0D9B17DFB2440228EB4C230FA9782F8A2D9B60428BEBB439C}
+      x{5}
+       x{2_}
+        x{2_}
+         x{AFD96D9E6D9E18C_}
+          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+           x{6D}
+          x{85FF}
+         x{AC5DED9E6D9E18C_}
+          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+           x{6D}
+          x{74}
+        x{2_}
+         x{AFC9ED9E6D9E18C_}
+          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+           x{6D}
+          x{82F70000000000000000000000000000000000000000000000000000000000000001}
+         x{AC4D6D9E6D9E18C_}
+          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+           x{6D}
+          x{8D086002540B846967BD8AD0D9B17DFB2440228EB4C230FA9782F8A2D9B60428BEBB439C}
+       x{2_}
+        x{2_}
+         x{AFF86D9E6D9E18C_}
+          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+           x{6D}
+          x{85FF}
+         x{AF976D9E6D9E18C_}
+          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+           x{6D}
+          x{85FF}
+        x{B3C3F6CF36CF0C6_}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{82F70000000000000000000000000000000000000000000000000000000000000001}
       x{2_}
        x{2_}
         x{2_}
-         x{B24DF6CF36CF0C6_}
-          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-           x{6D}
-          x{82186A2BB7D000}
-         x{B245B6CF36CF0C6_}
-          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-           x{6D}
-          x{8BC48656C6C6F20776F726C64218}
+         x{5}
+          x{A937DB3CDB3C31}
+           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+            x{6D}
+           x{82186A2BB7D000}
+          x{AAE0DB3CDB3C31}
+           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+            x{6D}
+           x{84FF}
+         x{5}
+          x{A916DB3CDB3C31}
+           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+            x{6D}
+           x{8BC48656C6C6F20776F726C64218}
+          x{AAC1DB3CDB3C31}
+           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+            x{6D}
+           x{85FF}
         x{2_}
          x{5}
           x{A975DB3CDB3C31}
@@ -535,7 +675,7 @@ ConstantTester {
             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
              x{6D}
             x{800B}
-           x{AEE3435697066733A2F2F516D625A38617576474E63656B454543537056507163476A37506868564C69697A724E384D364C515248526E6A5182_}
+           x{AEE3435697066733A2F2F516D5952584D7874336E78397331376A3874474D64315751526D574D6A556764756E75365536685A4C764758627182_}
           x{AA45DB3CDB3C31}
            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
             x{6D}

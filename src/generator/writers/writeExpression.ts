@@ -52,7 +52,7 @@ function writeStructConstructor(
     ctx: WriterContext,
 ) {
     // Check for duplicates
-    const name = ops.typeContsturctor(type.name, args, ctx);
+    const name = ops.typeConstructor(type.name, args, ctx);
     const renderKey = "$constructor$" + type.name + "$" + args.join(",");
     if (ctx.isRendered(renderKey)) {
         return name;
@@ -61,7 +61,8 @@ function writeStructConstructor(
 
     // Generate constructor
     ctx.fun(name, () => {
-        const sig = `(${resolveFuncType(type, ctx)}) ${name}(${args.map((v) => resolveFuncType(type.fields.find((v2) => v2.name === v)!.type, ctx) + " " + v).join(", ")})`;
+        const funcType = resolveFuncType(type, ctx);
+        const sig = `(${funcType}) ${name}(${args.map((v) => resolveFuncType(type.fields.find((v2) => v2.name === v)!.type, ctx) + " " + v).join(", ")})`;
         ctx.signature(sig);
         ctx.flag("inline");
         ctx.context("type:" + type.name);
@@ -80,7 +81,11 @@ function writeStructConstructor(
                 }
             }, ctx);
 
-            ctx.append(`return (${expressions.join(", ")});`);
+            if (expressions.length === 0 && funcType === "tuple") {
+                ctx.append(`return empty_tuple();`);
+            } else {
+                ctx.append(`return (${expressions.join(", ")});`);
+            }
         });
     });
     return name;
@@ -292,7 +297,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             return `( ${prefix}__tact_slice_eq_bits(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)}) )`;
         }
 
-        // Case for cells eqality
+        // Case for cells equality
         if (
             lt.kind === "ref" &&
             rt.kind === "ref" &&
@@ -340,7 +345,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             return `__tact_slice_${op}(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)})`;
         }
 
-        // Case for maps eqality
+        // Case for maps equality
         if (lt.kind === "map" && rt.kind === "map") {
             const op = f.op === "==" ? "eq" : "neq";
             ctx.used(`__tact_cell_${op}_nullable`);
