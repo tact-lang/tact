@@ -1,5 +1,11 @@
 import { enabledInline } from "../../config/features";
-import { ASTCondition, ASTExpression, ASTStatement } from "../../grammar/ast";
+import {
+    ASTCondition,
+    ASTExpression,
+    ASTFunction,
+    ASTNativeFunction,
+    ASTStatement,
+} from "../../grammar/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
 import { FunctionDescription, TypeRef } from "../../types/types";
@@ -422,10 +428,6 @@ function writeCondition(
 }
 
 export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
-    // Do not write native functions
-    if (f.ast.kind === "def_native_function") {
-        return;
-    }
     const fd = f.ast;
 
     // Resolve self
@@ -445,7 +447,6 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     }
 
     // Resolve function descriptor
-    const name = self ? ops.extension(self.name, f.name) : ops.global(f.name);
     const args: string[] = [];
     if (self) {
         args.push(resolveFuncType(self, ctx) + " " + id("self"));
@@ -453,6 +454,42 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     for (const a of f.args) {
         args.push(resolveFuncType(a.type, ctx) + " " + id(a.name));
     }
+
+    // Do not write native functions
+    if (f.ast.kind === "def_native_function") {
+        if (f.isMutating) {
+            // Write same function in non-mutating form
+            const nonMutName = ops.nonModifying(f.ast.nativeName);
+            ctx.fun(nonMutName, () => {
+                ctx.signature(
+                    `${returnsOriginal} ${nonMutName}(${args.join(", ")})`,
+                );
+                ctx.flag("impure");
+                if (enabledInline(ctx.ctx) || f.isInline) {
+                    ctx.flag("inline");
+                }
+                if (f.origin === "stdlib") {
+                    ctx.context("stdlib");
+                }
+                ctx.body(() => {
+                    ctx.append(
+                        `return ${id("self")}~${(f.ast as ASTNativeFunction).nativeName}(${fd.args
+                            .slice(1)
+                            .map((arg) => id(arg.name))
+                            .join(", ")});`,
+                    );
+                });
+            });
+        }
+        return;
+    }
+
+    if (fd.kind !== "def_function") {
+        // should never happen, just to satisfy typescript
+        throw new Error("Unknown function kind");
+    }
+
+    const name = self ? ops.extension(self.name, f.name) : ops.global(f.name);
 
     // Write function body
     ctx.fun(name, () => {

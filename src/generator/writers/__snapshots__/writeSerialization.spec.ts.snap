@@ -59,77 +59,6 @@ exports[`writeSerialization should write serializer for A 1`] = `
   },
   {
     "code": {
-      "code": "return cs.preload_ref();",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_ref$not_mut",
-    "signature": "(cell) load_ref$not_mut(slice cs)",
-  },
-  {
-    "code": {
-      "code": "return cs.preload_bits(l);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_bits$not_mut",
-    "signature": "(slice) load_slice$not_mut(slice cs, int l)",
-  },
-  {
-    "code": {
-      "code": "return cs.preload_int(l);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_int$not_mut",
-    "signature": "(int) load_int$not_mut(slice cs, int l)",
-  },
-  {
-    "code": {
-      "code": "return cs.preload_uint(l);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_uint$not_mut",
-    "signature": "(int) load_uint$not_mut(slice cs, int l)",
-  },
-  {
-    "code": {
-      "code": "int x = cs~load_coins();
-return x;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_coins$not_mut",
-    "signature": "(int) load_coins$not_mut(slice cs)",
-  },
-  {
-    "code": {
       "code": "throw_unless(136, address.slice_bits() == 267);
 var h = address.preload_uint(11);
 throw_if(137, h == 1279);
@@ -162,37 +91,6 @@ return (cs, __tact_verify_address(raw));",
     },
     "name": "__tact_load_address",
     "signature": "(slice, slice) __tact_load_address(slice cs)",
-  },
-  {
-    "code": {
-      "code": "slice x = cs~__tact_load_address();
-return x;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_load_address",
-    },
-    "flags": Set {
-      "impure",
-    },
-    "name": "__tact_load_address$not_mut",
-    "signature": "(slice) __tact_load_address$not_mut(slice cs)",
-  },
-  {
-    "code": {
-      "code": "return cs.skip_bits(n);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "skip_bits$not_mut",
-    "signature": "(slice) skip_bits$not_mut(slice cs, int n)",
   },
   {
     "code": {
@@ -4750,77 +4648,6 @@ exports[`writeSerialization should write serializer for B 1`] = `
   },
   {
     "code": {
-      "code": "return cs.preload_ref();",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_ref$not_mut",
-    "signature": "(cell) load_ref$not_mut(slice cs)",
-  },
-  {
-    "code": {
-      "code": "return cs.preload_bits(l);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_bits$not_mut",
-    "signature": "(slice) load_slice$not_mut(slice cs, int l)",
-  },
-  {
-    "code": {
-      "code": "return cs.preload_int(l);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_int$not_mut",
-    "signature": "(int) load_int$not_mut(slice cs, int l)",
-  },
-  {
-    "code": {
-      "code": "return cs.preload_uint(l);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_uint$not_mut",
-    "signature": "(int) load_uint$not_mut(slice cs, int l)",
-  },
-  {
-    "code": {
-      "code": "int x = cs~load_coins();
-return x;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_coins$not_mut",
-    "signature": "(int) load_coins$not_mut(slice cs)",
-  },
-  {
-    "code": {
       "code": "throw_unless(136, address.slice_bits() == 267);
 var h = address.preload_uint(11);
 throw_if(137, h == 1279);
@@ -4853,37 +4680,6 @@ return (cs, __tact_verify_address(raw));",
     },
     "name": "__tact_load_address",
     "signature": "(slice, slice) __tact_load_address(slice cs)",
-  },
-  {
-    "code": {
-      "code": "slice x = cs~__tact_load_address();
-return x;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_load_address",
-    },
-    "flags": Set {
-      "impure",
-    },
-    "name": "__tact_load_address$not_mut",
-    "signature": "(slice) __tact_load_address$not_mut(slice cs)",
-  },
-  {
-    "code": {
-      "code": "return cs.skip_bits(n);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "skip_bits$not_mut",
-    "signature": "(slice) skip_bits$not_mut(slice cs, int n)",
   },
   {
     "code": {
@@ -9441,77 +9237,6 @@ exports[`writeSerialization should write serializer for C 1`] = `
   },
   {
     "code": {
-      "code": "return cs.preload_ref();",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_ref$not_mut",
-    "signature": "(cell) load_ref$not_mut(slice cs)",
-  },
-  {
-    "code": {
-      "code": "return cs.preload_bits(l);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_bits$not_mut",
-    "signature": "(slice) load_slice$not_mut(slice cs, int l)",
-  },
-  {
-    "code": {
-      "code": "return cs.preload_int(l);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_int$not_mut",
-    "signature": "(int) load_int$not_mut(slice cs, int l)",
-  },
-  {
-    "code": {
-      "code": "return cs.preload_uint(l);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_uint$not_mut",
-    "signature": "(int) load_uint$not_mut(slice cs, int l)",
-  },
-  {
-    "code": {
-      "code": "int x = cs~load_coins();
-return x;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "load_coins$not_mut",
-    "signature": "(int) load_coins$not_mut(slice cs)",
-  },
-  {
-    "code": {
       "code": "throw_unless(136, address.slice_bits() == 267);
 var h = address.preload_uint(11);
 throw_if(137, h == 1279);
@@ -9544,37 +9269,6 @@ return (cs, __tact_verify_address(raw));",
     },
     "name": "__tact_load_address",
     "signature": "(slice, slice) __tact_load_address(slice cs)",
-  },
-  {
-    "code": {
-      "code": "slice x = cs~__tact_load_address();
-return x;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_load_address",
-    },
-    "flags": Set {
-      "impure",
-    },
-    "name": "__tact_load_address$not_mut",
-    "signature": "(slice) __tact_load_address$not_mut(slice cs)",
-  },
-  {
-    "code": {
-      "code": "return cs.skip_bits(n);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "impure",
-    },
-    "name": "skip_bits$not_mut",
-    "signature": "(slice) skip_bits$not_mut(slice cs, int n)",
   },
   {
     "code": {
