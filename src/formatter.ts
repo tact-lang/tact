@@ -12,10 +12,11 @@ import {
     ASTStatementRepeat,
     ASTStatementUntil,
     ASTStatementWhile,
+    ASTStatementForEach,
     ASTNewParameter,
     ASTCondition,
-    ASTSTatementAugmentedAssign,
-    ASTSTatementAssign,
+    ASTStatementAugmentedAssign,
+    ASTStatementAssign,
     ASTStatementExpression,
     ASTStatementReturn,
     ASTStatementLet,
@@ -486,10 +487,10 @@ class PrettyPrinter {
                     stmt as ASTStatementExpression,
                 );
             case "statement_assign":
-                return this.ppASTStatementAssign(stmt as ASTSTatementAssign);
+                return this.ppASTStatementAssign(stmt as ASTStatementAssign);
             case "statement_augmentedassign":
                 return this.ppASTStatementAugmentedAssign(
-                    stmt as ASTSTatementAugmentedAssign,
+                    stmt as ASTStatementAugmentedAssign,
                 );
             case "statement_condition":
                 return this.ppASTCondition(stmt as ASTCondition);
@@ -499,6 +500,8 @@ class PrettyPrinter {
                 return this.ppASTStatementUntil(stmt as ASTStatementUntil);
             case "statement_repeat":
                 return this.ppASTStatementRepeat(stmt as ASTStatementRepeat);
+            case "statement_foreach":
+                return this.ppASTStatementForEach(stmt as ASTStatementForEach);
             default:
                 return `Unknown Statement Type: ${stmt}`;
         }
@@ -536,12 +539,12 @@ class PrettyPrinter {
             .join(".");
     }
 
-    ppASTStatementAssign(statement: ASTSTatementAssign): string {
+    ppASTStatementAssign(statement: ASTStatementAssign): string {
         return `${this.indent()}${this.ppASTLvalueRef(statement.path)} = ${this.ppASTExpression(statement.expression)};`;
     }
 
     ppASTStatementAugmentedAssign(
-        statement: ASTSTatementAugmentedAssign,
+        statement: ASTStatementAugmentedAssign,
     ): string {
         return `${this.indent()}${this.ppASTLvalueRef(statement.path)} ${statement.op}= ${this.ppASTExpression(statement.expression)};`;
     }
@@ -571,6 +574,12 @@ class PrettyPrinter {
         const condition = this.ppASTExpression(statement.condition);
         const stmts = this.ppStatementBlock(statement.statements);
         return `${this.indent()}do ${stmts} until (${condition});`;
+    }
+
+    ppASTStatementForEach(statement: ASTStatementForEach): string {
+        const header = `foreach (${statement.keyName}, ${statement.valueName} in ${statement.map.value})`
+        const body = this.ppStatementBlock(statement.statements);
+        return `${header} ${body}`
     }
 }
 
