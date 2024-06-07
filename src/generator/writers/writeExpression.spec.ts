@@ -55,7 +55,7 @@ const golden: string[] = [
     "($a + ($b / $c))",
     "true",
     "false",
-    "( (( (($a > 1)) ? (true) : (( (($b < 2)) ? (($c == 3)) : (false) )) )) ? (true) : ((~ ( (( (($d != 4)) ? (true) : (false) )) ? ((~ false)) : (false) ))) )",
+    "( (( (($a > 1)) ? (true) : (( (($b < 2)) ? (($c == 3)) : (false) )) )) ? (true) : ((~ ( (( (($d != 4)) ? (true) : (false) )) ? (true) : (false) ))) )",
     "$global_f1($a)",
     "$A$_constructor_a_b(1, 2)",
     `$j'a`,

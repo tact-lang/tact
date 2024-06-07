@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`feature-send should deploy 1`] = `
+exports[`feature-implicit-init should deploy 1`] = `
 [
   {
     "$seq": 0,
@@ -53,7 +53,7 @@ exports[`feature-send should deploy 1`] = `
 ]
 `;
 
-exports[`feature-send should increment counter 1`] = `
+exports[`feature-implicit-init should increment counter 1`] = `
 [
   {
     "$seq": 1,

@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Typos in ABI generation: : PR [#372](https://github.com/tact-lang/tact/pull/372)
 - `__tact_load_address_opt` code generation: PR [#373](https://github.com/tact-lang/tact/pull/373)
 - Empty messages are now correctly converted into cells: PR [#380](https://github.com/tact-lang/tact/pull/380)
+- All integer and boolean expressions are now being attempted to be evaluated as constants. Additionally, compile-time errors are thrown for errors encountered during the evaluation of actual constants: PR [#352](https://github.com/tact-lang/tact/pull/352)
 
 ## [1.3.0] - 2024-05-03
 
