@@ -2,7 +2,6 @@ import { enabledInline } from "../../config/features";
 import {
     ASTCondition,
     ASTExpression,
-    ASTFunction,
     ASTNativeFunction,
     ASTStatement,
 } from "../../grammar/ast";
