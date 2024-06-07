@@ -76,6 +76,10 @@ export type ConstantDescription = {
     ast: ASTConstant;
 };
 
+export type VariableDescription = {
+    name: string;
+};
+
 export type FunctionArgument = {
     name: string;
     type: TypeRef;

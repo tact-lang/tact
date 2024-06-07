@@ -1063,11 +1063,11 @@ exports[`resolveStatements should resolve statements for case-11 1`] = `
     "Int",
   ],
   [
-    "toString",
+    "number",
     "Int",
   ],
   [
-    "dump(toString)",
+    "dump(number)",
     "<void>",
   ],
 ]
