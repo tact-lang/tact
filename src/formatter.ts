@@ -13,6 +13,8 @@ import {
     ASTStatementUntil,
     ASTStatementWhile,
     ASTStatementForEach,
+    ASTStatementTry,
+    ASTStatementTryCatch,
     ASTNewParameter,
     ASTCondition,
     ASTStatementAugmentedAssign,
@@ -502,6 +504,10 @@ class PrettyPrinter {
                 return this.ppASTStatementRepeat(stmt as ASTStatementRepeat);
             case "statement_foreach":
                 return this.ppASTStatementForEach(stmt as ASTStatementForEach);
+            case "statement_try":
+                return this.ppASTStatementTry(stmt as ASTStatementTry);
+            case "statement_try_catch":
+                return this.ppASTStatementTryCatch(stmt as ASTStatementTryCatch);
             default:
                 return `Unknown Statement Type: ${stmt}`;
         }
@@ -580,6 +586,17 @@ class PrettyPrinter {
         const header = `foreach (${statement.keyName}, ${statement.valueName} in ${statement.map.value})`
         const body = this.ppStatementBlock(statement.statements);
         return `${this.indent()}${header} ${body}`
+    }
+
+    ppASTStatementTry(statement: ASTStatementTry): string {
+        const body = this.ppStatementBlock(statement.statements);
+        return `${this.indent()}try ${body}`
+    }
+
+    ppASTStatementTryCatch(statement: ASTStatementTryCatch): string {
+        const tryBody = this.ppStatementBlock(statement.statements);
+        const catchBody = this.ppStatementBlock(statement.catchStatements)
+        return `${this.indent()}try ${tryBody} catch (${statement.catchName}) ${catchBody}`
     }
 }
 
