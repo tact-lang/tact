@@ -16,7 +16,7 @@ exports[`bugs should deploy issue211 correctly 1`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCa74zye-5gZex07oV-SPkjOoa2MW-uFzy5nwmVH3KKi8i1",
+          "to": "kQAOtHcanapEEsV6te9yBrhA-zKSOvCV0nAyQv6uSTwnekxO",
           "type": "internal",
           "value": "10",
         },

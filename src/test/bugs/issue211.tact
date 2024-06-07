@@ -28,4 +28,16 @@ contract Issue211 {
         let x: Int = 3;
         return x.multiply(2).multiply(4);
     }
+
+    get fun test5(): Int {
+        return "abc".asSlice().loadUint(8);
+    }
+
+    get fun test6() {
+        emptySlice().loadRef();
+    }
+
+    get fun test7(): Int {
+        return beginCell().storeInt(42, 7).asSlice().loadInt(7);
+    }
 }

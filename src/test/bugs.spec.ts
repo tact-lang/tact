@@ -59,5 +59,7 @@ describe("bugs", () => {
         expect(await contract.getTest2()).toBe(0n);
         expect(await contract.getTest3()).toBe(6n);
         expect(await contract.getTest4()).toBe(24n);
+        expect(await contract.getTest5()).toBe(97n);
+        expect(await contract.getTest7()).toBe(42n);
     });
 });
