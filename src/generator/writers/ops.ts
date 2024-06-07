@@ -73,6 +73,7 @@ export const ops = {
     // Functions
     extension: (type: string, name: string) => `$${type}$_fun_${name}`,
     global: (name: string) => `$global_${name}`,
+    nonModifying: (name: string) => `${name}$not_mut`,
 
     // Constants
     str: (id: string, ctx: WriterContext) => used(`__gen_str_${id}`, ctx),

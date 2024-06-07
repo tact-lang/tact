@@ -433,6 +433,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Write function header
     let returns: string = resolveFuncType(f.returns, ctx);
+    const returnsOriginal = returns;
     let returnsStr: string | null;
     if (self && f.isMutating) {
         if (f.returns.kind !== "void") {
@@ -497,6 +498,31 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             }
         });
     });
+
+    if (f.isMutating) {
+        // Write same function in non-mutating form
+        const nonMutName = ops.nonModifying(name);
+        ctx.fun(nonMutName, () => {
+            ctx.signature(
+                `${returnsOriginal} ${nonMutName}(${args.join(", ")})`,
+            );
+            ctx.flag("impure");
+            if (enabledInline(ctx.ctx) || f.isInline) {
+                ctx.flag("inline");
+            }
+            if (f.origin === "stdlib") {
+                ctx.context("stdlib");
+            }
+            ctx.body(() => {
+                ctx.append(
+                    `return ${id("self")}~${ctx.used(name)}(${fd.args
+                        .slice(1)
+                        .map((arg) => id(arg.name))
+                        .join(", ")});`,
+                );
+            });
+        });
+    }
 }
 
 export function writeGetter(f: FunctionDescription, ctx: WriterContext) {

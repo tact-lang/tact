@@ -1,6 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`bugs should deploy contract correctly 1`] = `
+exports[`bugs should deploy issue211 correctly 1`] = `
+[
+  {
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "type": "empty",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQB40lLNuhh7Wf0bgyyWP9IgFwDDNsV0m6i1PbcRYjJNXiwU",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 3049n,
+      },
+    ],
+  },
+]
+`;
+
+exports[`bugs should deploy sample jetton correctly 1`] = `
 [
   {
     "$seq": 0,

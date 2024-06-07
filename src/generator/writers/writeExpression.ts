@@ -684,7 +684,11 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             // Render
             const s = writeExpression(f.src, ctx);
             if (ff.isMutating) {
-                return `${s}~${name}(${renderedArguments.join(", ")})`;
+                if (f.src.kind === "id") {
+                    return `${s}~${name}(${renderedArguments.join(", ")})`;
+                } else {
+                    return `${ctx.used(ops.nonModifying(name))}(${[s, ...renderedArguments].join(", ")})`;
+                }
             } else {
                 return `${name}(${[s, ...renderedArguments].join(", ")})`;
             }

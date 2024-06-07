@@ -14,6 +14,89 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.skip("__tact_address_to_slice");
 
     //
+    // Non-modifying variants of the standard functions
+    //
+
+    ctx.fun("load_ref$not_mut", () => {
+        ctx.signature(`(cell) load_ref$not_mut(slice cs)`);
+        ctx.flag("impure");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return cs.preload_ref();
+            `);
+        });
+    });
+
+    ctx.fun("load_bits$not_mut", () => {
+        ctx.signature(`(slice) load_slice$not_mut(slice cs, int l)`);
+        ctx.flag("impure");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return cs.preload_bits(l);
+            `);
+        });
+    });
+
+    ctx.fun("load_int$not_mut", () => {
+        ctx.signature(`(int) load_int$not_mut(slice cs, int l)`);
+        ctx.flag("impure");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return cs.preload_int(l);
+            `);
+        });
+    });
+
+    ctx.fun("load_uint$not_mut", () => {
+        ctx.signature(`(int) load_uint$not_mut(slice cs, int l)`);
+        ctx.flag("impure");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return cs.preload_uint(l);
+            `);
+        });
+    });
+
+    ctx.fun("load_coins$not_mut", () => {
+        ctx.signature(`(int) load_coins$not_mut(slice cs)`);
+        ctx.flag("impure");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                int x = cs~load_coins();
+                return x;
+            `);
+        });
+    });
+
+    ctx.fun("__tact_load_address$not_mut", () => {
+        ctx.signature(`(slice) __tact_load_address$not_mut(slice cs)`);
+        ctx.flag("impure");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                slice x = cs~${ctx.used("__tact_load_address")}();
+                return x;
+            `);
+        });
+    });
+
+    ctx.fun("skip_bits$not_mut", () => {
+        ctx.signature(`(slice) skip_bits$not_mut(slice cs, int n)`);
+        ctx.flag("impure");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                return cs.skip_bits(n);
+            `);
+        });
+    });
+
+    //
     // Addresses
     //
 
