@@ -61,7 +61,8 @@ function writeStructConstructor(
 
     // Generate constructor
     ctx.fun(name, () => {
-        const sig = `(${resolveFuncType(type, ctx)}) ${name}(${args.map((v) => resolveFuncType(type.fields.find((v2) => v2.name === v)!.type, ctx) + " " + v).join(", ")})`;
+        const funcType = resolveFuncType(type, ctx);
+        const sig = `(${funcType}) ${name}(${args.map((v) => resolveFuncType(type.fields.find((v2) => v2.name === v)!.type, ctx) + " " + v).join(", ")})`;
         ctx.signature(sig);
         ctx.flag("inline");
         ctx.context("type:" + type.name);
@@ -80,7 +81,11 @@ function writeStructConstructor(
                 }
             }, ctx);
 
-            ctx.append(`return (${expressions.join(", ")});`);
+            if (expressions.length === 0 && funcType === "tuple") {
+                ctx.append(`return empty_tuple();`);
+            } else {
+                ctx.append(`return (${expressions.join(", ")});`);
+            }
         });
     });
     return name;
