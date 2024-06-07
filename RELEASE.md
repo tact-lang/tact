@@ -5,7 +5,6 @@
       (except for the current one, of course)
 - [ ] Bump Tact version in:
   - [ ] [`package.json`](./package.json) file
-  - [ ] [`bin/tact`](./bin/tact) file
   - [ ] [CHANGELOG.md](./CHANGELOG.md): `Unreleased` -> `vX.Y.Z`
 - [ ] Tag the new `vX.Y.Z` release in Git
   ```shell
