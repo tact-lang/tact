@@ -16,6 +16,10 @@ contract ConstantTester {
     const something13: Int = -123 ^ -35;
     const something14: Int = pow(3, 5);
     const something15: Int = pow2(5);
+    const something16: Int = -115792089237316195423570985008687907853269984665640564039457584007913129639936;
+    const something17: Int = 115792089237316195423570985008687907853269984665640564039457584007913129639935;
+    const something18: Int = -(pow2(255) - 1 + pow2(255));
+    const something19: Int = -(pow2(255) - 1 + pow2(255)) - 1;
 
     init() {
         
@@ -83,6 +87,34 @@ contract ConstantTester {
 
     get fun something15(): Int {
         return self.something15;
+    }
+
+    get fun something16(): Int {
+        return self.something16;
+    }
+
+    get fun something17(): Int {
+        return self.something17;
+    }
+
+    get fun something18(): Int {
+        return self.something18;
+    }
+
+    get fun something19(): Int {
+        return self.something19;
+    }
+
+    get fun minInt1(): Int {
+        return -115792089237316195423570985008687907853269984665640564039457584007913129639936;
+    }
+
+    get fun minInt2(): Int {
+        return -(pow2(255) - 1 + pow2(255));
+    }
+
+    get fun minInt3(): Int {
+        return -(pow2(255) - 1 + pow2(255)) - 1;
     }
 
     get fun globalConst(): Int {

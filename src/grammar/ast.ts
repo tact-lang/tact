@@ -55,7 +55,7 @@ export type ASTNumber = {
     ref: ASTRef;
 };
 
-export type ASTID = {
+export type ASTId = {
     kind: "id";
     id: number;
     value: string;
@@ -437,7 +437,7 @@ export type ASTStatementExpression = {
     ref: ASTRef;
 };
 
-export type ASTSTatementAssign = {
+export type ASTStatementAssign = {
     kind: "statement_assign";
     id: number;
     path: ASTLvalueRef[];
@@ -455,7 +455,7 @@ export type ASTAugmentedAssignOperation =
     | "&"
     | "^";
 
-export type ASTSTatementAugmentedAssign = {
+export type ASTStatementAugmentedAssign = {
     kind: "statement_augmentedassign";
     id: number;
     op: ASTAugmentedAssignOperation;
@@ -519,7 +519,7 @@ export type ASTStatementForEach = {
     id: number;
     keyName: string;
     valueName: string;
-    map: ASTID;
+    map: ASTId;
     statements: ASTStatement[];
     ref: ASTRef;
 };
@@ -532,8 +532,8 @@ export type ASTStatement =
     | ASTStatementLet
     | ASTStatementReturn
     | ASTStatementExpression
-    | ASTSTatementAssign
-    | ASTSTatementAugmentedAssign
+    | ASTStatementAssign
+    | ASTStatementAugmentedAssign
     | ASTCondition
     | ASTStatementWhile
     | ASTStatementUntil
@@ -556,8 +556,8 @@ export type ASTNode =
     | ASTOpCallStatic
     | ASTStatementExpression
     | ASTNativeFunction
-    | ASTSTatementAssign
-    | ASTSTatementAugmentedAssign
+    | ASTStatementAssign
+    | ASTStatementAugmentedAssign
     | ASTOpNew
     | ASTNewParameter
     | ASTTypeRef
@@ -582,7 +582,7 @@ export type ASTExpression =
     | ASTOpUnary
     | ASTOpField
     | ASTNumber
-    | ASTID
+    | ASTId
     | ASTBoolean
     | ASTOpCall
     | ASTOpCallStatic

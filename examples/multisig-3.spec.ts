@@ -2,7 +2,7 @@ import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { MultisigContract } from "./output/multisig-3_MultisigContract";
 
-describe("muiltisig-3", () => {
+describe("multisig-3", () => {
     it("should deploy", async () => {
         // Init contract
         const key1 = 1n;

@@ -61,10 +61,11 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                slice raw = cs~load_msg_addr();
-                if (raw.preload_uint(2) != 0) {
+                if (cs.preload_uint(2) != 0) {
+                    slice raw = cs~load_msg_addr();
                     return (cs, ${ctx.used(`__tact_verify_address`)}(raw));
                 } else {
+                    cs~skip_bits(2);
                     return (cs, null());
                 }
             `);
@@ -350,8 +351,8 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun("__tact_address_to_userfriendly", () => {
-        ctx.signature(`(slice) __tact_address_to_userfriendly(slice address)`);
+    ctx.fun("__tact_address_to_user_friendly", () => {
+        ctx.signature(`(slice) __tact_address_to_user_friendly(slice address)`);
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
@@ -382,7 +383,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                ${ctx.used("__tact_debug_str")}(${ctx.used("__tact_address_to_userfriendly")}(address), debug_print);
+                ${ctx.used("__tact_debug_str")}(${ctx.used("__tact_address_to_user_friendly")}(address), debug_print);
             `);
         });
     });

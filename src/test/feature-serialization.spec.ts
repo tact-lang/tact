@@ -127,11 +127,11 @@ describe("feature-serialization", () => {
                 await contract.send(treasure, { value: toNano("10") }, null);
                 await system.run();
 
-                // Checl values
+                // Check values
                 const a = await contract.getGetA();
-                const aOpt = await contract.getGetAopt();
+                const aOpt = await contract.getGetAOpt();
                 const b = await contract.getGetB();
-                const bOpt = await contract.getGetBopt();
+                const bOpt = await contract.getGetBOpt();
                 const both = await contract.getGetBoth();
                 expect(aOpt).toMatchObject(a);
                 expect(bOpt).toMatchObject(b);

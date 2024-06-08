@@ -15,7 +15,7 @@ extends fun readForwardFee(self: Context): Int {
     let sc: Slice = self.raw;
     sc.loadAddress(); // Skip destination
     sc.loadCoins(); // Skip value
-    sc.skipBits(1); // Skip extracurrency collection
+    sc.skipBits(1); // Skip extra currency collection
     sc.loadCoins(); // Skip ihr_fee
     return (sc.loadCoins() * 3) / 2;
 }

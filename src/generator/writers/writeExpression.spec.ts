@@ -55,7 +55,7 @@ const golden: string[] = [
     "($a + ($b / $c))",
     "true",
     "false",
-    "( (( (($a > 1)) ? (true) : (( (($b < 2)) ? (($c == 3)) : (false) )) )) ? (true) : ((~ ( (( (($d != 4)) ? (true) : (false) )) ? ((~ false)) : (false) ))) )",
+    "( (( (($a > 1)) ? (true) : (( (($b < 2)) ? (($c == 3)) : (false) )) )) ? (true) : ((~ ( (( (($d != 4)) ? (true) : (false) )) ? (true) : (false) ))) )",
     "$global_f1($a)",
     "$A$_constructor_a_b(1, 2)",
     `$j'a`,
@@ -88,10 +88,10 @@ describe("writeExpression", () => {
             if (s.kind !== "statement_let") {
                 throw Error("Unexpected statement kind");
             }
-            const wctx = new WriterContext(ctx, "Contract1");
-            wctx.fun("$main", () => {
-                wctx.body(() => {
-                    expect(writeExpression(s.expression, wctx)).toBe(golden[i]);
+            const wCtx = new WriterContext(ctx, "Contract1");
+            wCtx.fun("$main", () => {
+                wCtx.body(() => {
+                    expect(writeExpression(s.expression, wCtx)).toBe(golden[i]);
                 });
             });
             i++;

@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`feature-random should chain deep sequences correctly 1`] = `"kQBzQuBPhn7ZBGyfJon1nlzqk4L83mOm_Pq47fHucwcVCken"`;
+exports[`feature-random should chain deep sequences correctly 1`] = `"kQDrBeBEkP7QP4-M2-FUSzRoUQK_AxvhYOKkIGSEHqmmjUqW"`;
 
-exports[`feature-random should chain deep sequences correctly 2`] = `"kQB5HT5Y8C_DCfrEVd7hwFTQ1ZEgJaGrqzC0MKuC6kd2y78G"`;
+exports[`feature-random should chain deep sequences correctly 2`] = `"kQD4CriC3RmScKPAhCkviu-kHj1peUa71rGD7gERLfT6h7rP"`;
 
-exports[`feature-random should chain deep sequences correctly 3`] = `"kQDCMhBiphS6DwVjUGJSSZXnAKwuw2vzSQGTa404BA372O5w"`;
+exports[`feature-random should chain deep sequences correctly 3`] = `"kQBGt4TP7qlVmFk8HoqKcbfHRMJXPx9wiCGqz20U3RjpIZGF"`;
 
 exports[`feature-random should chain deep sequences correctly 4`] = `
 [
@@ -23,7 +23,7 @@ exports[`feature-random should chain deep sequences correctly 4`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQBzQuBPhn7ZBGyfJon1nlzqk4L83mOm_Pq47fHucwcVCken",
+          "to": "kQDrBeBEkP7QP4-M2-FUSzRoUQK_AxvhYOKkIGSEHqmmjUqW",
           "type": "internal",
           "value": "10",
         },
@@ -41,8 +41,8 @@ exports[`feature-random should chain deep sequences correctly 4`] = `
               "type": "text",
             },
             "bounce": true,
-            "from": "kQBzQuBPhn7ZBGyfJon1nlzqk4L83mOm_Pq47fHucwcVCken",
-            "to": "kQB5HT5Y8C_DCfrEVd7hwFTQ1ZEgJaGrqzC0MKuC6kd2y78G",
+            "from": "kQDrBeBEkP7QP4-M2-FUSzRoUQK_AxvhYOKkIGSEHqmmjUqW",
+            "to": "kQD4CriC3RmScKPAhCkviu-kHj1peUa71rGD7gERLfT6h7rP",
             "type": "internal",
             "value": "9.970524",
           },
@@ -69,8 +69,8 @@ exports[`feature-random should chain deep sequences correctly 5`] = `
             "type": "text",
           },
           "bounce": true,
-          "from": "kQBzQuBPhn7ZBGyfJon1nlzqk4L83mOm_Pq47fHucwcVCken",
-          "to": "kQB5HT5Y8C_DCfrEVd7hwFTQ1ZEgJaGrqzC0MKuC6kd2y78G",
+          "from": "kQDrBeBEkP7QP4-M2-FUSzRoUQK_AxvhYOKkIGSEHqmmjUqW",
+          "to": "kQD4CriC3RmScKPAhCkviu-kHj1peUa71rGD7gERLfT6h7rP",
           "type": "internal",
           "value": "9.970524",
         },
@@ -88,8 +88,8 @@ exports[`feature-random should chain deep sequences correctly 5`] = `
               "type": "text",
             },
             "bounce": true,
-            "from": "kQB5HT5Y8C_DCfrEVd7hwFTQ1ZEgJaGrqzC0MKuC6kd2y78G",
-            "to": "kQDCMhBiphS6DwVjUGJSSZXnAKwuw2vzSQGTa404BA372O5w",
+            "from": "kQD4CriC3RmScKPAhCkviu-kHj1peUa71rGD7gERLfT6h7rP",
+            "to": "kQBGt4TP7qlVmFk8HoqKcbfHRMJXPx9wiCGqz20U3RjpIZGF",
             "type": "internal",
             "value": "9.946637",
           },
@@ -116,8 +116,8 @@ exports[`feature-random should chain deep sequences correctly 6`] = `
             "type": "text",
           },
           "bounce": true,
-          "from": "kQB5HT5Y8C_DCfrEVd7hwFTQ1ZEgJaGrqzC0MKuC6kd2y78G",
-          "to": "kQDCMhBiphS6DwVjUGJSSZXnAKwuw2vzSQGTa404BA372O5w",
+          "from": "kQD4CriC3RmScKPAhCkviu-kHj1peUa71rGD7gERLfT6h7rP",
+          "to": "kQBGt4TP7qlVmFk8HoqKcbfHRMJXPx9wiCGqz20U3RjpIZGF",
           "type": "internal",
           "value": "9.946637",
         },
@@ -135,8 +135,8 @@ exports[`feature-random should chain deep sequences correctly 6`] = `
               "type": "text",
             },
             "bounce": true,
-            "from": "kQDCMhBiphS6DwVjUGJSSZXnAKwuw2vzSQGTa404BA372O5w",
-            "to": "kQDCMhBiphS6DwVjUGJSSZXnAKwuw2vzSQGTa404BA372O5w",
+            "from": "kQBGt4TP7qlVmFk8HoqKcbfHRMJXPx9wiCGqz20U3RjpIZGF",
+            "to": "kQBGt4TP7qlVmFk8HoqKcbfHRMJXPx9wiCGqz20U3RjpIZGF",
             "type": "internal",
             "value": "9.92301",
           },
@@ -155,8 +155,8 @@ exports[`feature-random should chain deep sequences correctly 6`] = `
             "type": "text",
           },
           "bounce": true,
-          "from": "kQDCMhBiphS6DwVjUGJSSZXnAKwuw2vzSQGTa404BA372O5w",
-          "to": "kQDCMhBiphS6DwVjUGJSSZXnAKwuw2vzSQGTa404BA372O5w",
+          "from": "kQBGt4TP7qlVmFk8HoqKcbfHRMJXPx9wiCGqz20U3RjpIZGF",
+          "to": "kQBGt4TP7qlVmFk8HoqKcbfHRMJXPx9wiCGqz20U3RjpIZGF",
           "type": "internal",
           "value": "9.92301",
         },

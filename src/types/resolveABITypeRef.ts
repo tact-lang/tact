@@ -79,7 +79,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
                 type: "int",
                 optional: src.type.optional,
                 format: 257,
-            }; // Default is maximumx size int
+            }; // Default is maximum size int
         }
         if (src.type.name === "Bool") {
             if (src.as) {
@@ -321,7 +321,7 @@ export function createABITypeRefFromTypeRef(
                 type: "int",
                 optional: src.optional,
                 format: 257,
-            }; // Default is maximumx size int
+            }; // Default is maximum size int
         }
         if (src.name === "Bool") {
             return { kind: "simple", type: "bool", optional: src.optional };

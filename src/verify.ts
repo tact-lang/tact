@@ -37,7 +37,7 @@ export async function verify(args: {
         return { ok: false, error: "invalid-package-format" };
     }
 
-    // Check compier and version
+    // Check compiler and version
     if (unpacked.compiler.name !== "tact") {
         return { ok: false, error: "invalid-compiler" };
     }

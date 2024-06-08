@@ -88,7 +88,7 @@ export function resolveSignatures(ctx: CompilerContext) {
         if (t.kind !== "struct") {
             throw Error("Unsupported type " + type);
         }
-        const s = createTupeSignature(type);
+        const s = createTupleSignature(type);
         if (format === "ref") {
             return `^${s.signature}`;
         } else if (format !== null) {
@@ -127,7 +127,7 @@ export function resolveSignatures(ctx: CompilerContext) {
         throw Error("Unsupported ABI field");
     }
 
-    function createTupeSignature(name: string): {
+    function createTupleSignature(name: string): {
         signature: string;
         tlb: string;
         id: number | null;
@@ -164,7 +164,7 @@ export function resolveSignatures(ctx: CompilerContext) {
     for (const k in types) {
         const t = types[k];
         if (t.kind === "struct") {
-            const r = createTupeSignature(t.name);
+            const r = createTupleSignature(t.name);
             t.tlb = r.tlb;
             t.signature = r.signature;
             t.header = r.id;

@@ -40,7 +40,7 @@ export const ops = {
         used(`$${type}$_to_external`, ctx),
     typeToOptExternal: (type: string, ctx: WriterContext) =>
         used(`$${type}$_to_opt_external`, ctx),
-    typeContsturctor: (type: string, fields: string[], ctx: WriterContext) =>
+    typeConstructor: (type: string, fields: string[], ctx: WriterContext) =>
         used(`$${type}$_constructor_${fields.join("_")}`, ctx),
 
     // Contract operations
@@ -73,6 +73,7 @@ export const ops = {
     // Functions
     extension: (type: string, name: string) => `$${type}$_fun_${name}`,
     global: (name: string) => `$global_${name}`,
+    nonModifying: (name: string) => `${name}$not_mut`,
 
     // Constants
     str: (id: string, ctx: WriterContext) => used(`__gen_str_${id}`, ctx),

@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`feature-instrinsics should return correct instinsic results 1`] = `
+exports[`feature-intrinsics should return correct intrinsic results 1`] = `
 [
   {
     "$seq": 1,
     "events": [
       {
         "$type": "storage-charged",
-        "amount": "0.000000011",
+        "amount": "0.00000001",
       },
       {
         "$type": "received",

@@ -9,25 +9,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Tests for recursive functions: PR [#359](https://github.com/tact-lang/tact/pull/359)
 - Augmented assignment bitwise operators `|=`, `&=`, `^=`: PR [#350](https://github.com/tact-lang/tact/pull/350)
 
 ### Changed
 
-- GitHub actions updated to use NodeJS 20: PR [#360](https://github.com/tact-lang/tact/pull/360)
+### Fixed
+
+## [1.3.1] - 2024-06-08
+
+### Added
+
+- Tests for recursive functions: PR [#359](https://github.com/tact-lang/tact/pull/359)
+- API for AST traversal: PR [#368](https://github.com/tact-lang/tact/pull/368)
+- Spell checking for the whole code base: PR [#372](https://github.com/tact-lang/tact/pull/372)
+
+### Changed
+
+- GitHub actions updated to use Node.js 20: PR [#360](https://github.com/tact-lang/tact/pull/360)
 - Refactor AST types to simplify access to third-party tools: PR [#325](https://github.com/tact-lang/tact/pull/325)
 - Refactor the compiler API used to access AST store: PR [#326](https://github.com/tact-lang/tact/pull/326)
 - Update JSON Schema to inform about usage in Blueprint: PR [#330](https://github.com/tact-lang/tact/pull/330)
+- All identifiers in error messages are now quoted for consistency: PR [#363](https://github.com/tact-lang/tact/pull/363)
 - The Tact grammar has been refactored for better readability: PR [#365](https://github.com/tact-lang/tact/pull/365)
 
 ### Fixed
 
-- `log2` and `log` math functions were adjusted for consistency in error throwing: PR [#342](https://github.com/tact-lang/tact/pull/342)
+- The `log2` and `log` math functions were adjusted for consistency in error throwing: PR [#342](https://github.com/tact-lang/tact/pull/342)
 - Shadowing built-in static functions is now forbidden: PR [#351](https://github.com/tact-lang/tact/pull/351)
 - Augmented assignment now throws compilation error for non-integer types: PR [#356](https://github.com/tact-lang/tact/pull/356)
 - Built-in function `address()` now handles parse errors correctly: PR [#357](https://github.com/tact-lang/tact/pull/357)
-- All identifiers in error messages are now quoted for consistency: PR [#363](https://github.com/tact-lang/tact/pull/363)
 - The grammar of the unary operators has been fixed, constant and function declarations are prohibited for contracts and at the top level of Tact modules: PR [#365](https://github.com/tact-lang/tact/pull/365)
+- Typos in ABI generation: PR [#372](https://github.com/tact-lang/tact/pull/372)
+- `__tact_load_address_opt` code generation: PR [#373](https://github.com/tact-lang/tact/pull/373)
+- Empty messages are now correctly converted into cells: PR [#380](https://github.com/tact-lang/tact/pull/380)
+- All integer and boolean expressions are now being attempted to be evaluated as constants. Additionally, compile-time errors are thrown for errors encountered during the evaluation of actual constants: PR [#352](https://github.com/tact-lang/tact/pull/352)
+- Chaining mutable extension functions now does not throw compilation errors: PR [#384](https://github.com/tact-lang/tact/pull/384)
 
 ## [1.3.0] - 2024-05-03
 

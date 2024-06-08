@@ -5,6 +5,7 @@ import {
     SomeGenericStruct,
     StructWithOptionals,
 } from "./features/output/optionals_ContractWithOptionals";
+import { Opt4 } from "./features/output/optionals_Opt4";
 import { Address, beginCell, Cell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 
@@ -242,4 +243,25 @@ describe("features", () => {
             expect(await contract.getIsNotNullF()).toBe(cs.f !== null);
         });
     }
+    it("Optional address should load correctly", async () => {
+        const system = await ContractSystem.create();
+        const treasure = system.treasure("treasure");
+        const contract = system.open(await Opt4.fromInit());
+        await contract.send(treasure, { value: toNano("10") }, null);
+        await system.run();
+
+        await contract.send(
+            treasure,
+            { value: toNano(1) },
+            {
+                $$type: "OptAddr",
+                x: BigInt(255),
+                y: null,
+                z: BigInt(12345),
+            },
+        );
+        await system.run();
+
+        expect(await contract.getZ()).toEqual(12345n);
+    });
 });

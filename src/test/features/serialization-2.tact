@@ -61,7 +61,7 @@ contract SerializationTester2 {
         return self.a;
     }
 
-    get fun getAopt(): Vars? {
+    get fun getAOpt(): Vars? {
         return self.a;
     }
 
@@ -69,7 +69,7 @@ contract SerializationTester2 {
         return self.b;
     }
 
-    get fun getBopt(): Vars? {
+    get fun getBOpt(): Vars? {
         return self.b;
     }
 
