@@ -519,7 +519,7 @@ export type ASTStatementForEach = {
     id: number;
     keyName: string;
     valueName: string;
-    map: ASTId;
+    map: ASTLvalueRef[];
     statements: ASTStatement[];
     ref: ASTRef;
 };

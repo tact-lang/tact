@@ -414,12 +414,15 @@ function processStatements(
             let initialCtx = sctx; // Preserve initial context to use later for merging
 
             // Resolve map expression
-            ctx = resolveExpression(s.map, sctx, ctx);
+            ctx = resolveLValueRef(s.map, sctx, ctx);
 
             // Check if map is valid
-            const mapVariable = sctx.vars.get(s.map.value);
-            if (!mapVariable || mapVariable.kind !== "map") {
-                throwError(`Variable "${s.map.value}" is not a map`, s.ref);
+            const mapType = getExpType(ctx, s.map[s.map.length - 1]);
+            if (mapType.kind !== "map") {
+                throwError(
+                    `LValue "${s.map.map((x) => x.name).join(".")}" is not a map`,
+                    s.ref,
+                );
             }
 
             // Add key and value to statement context
@@ -428,7 +431,7 @@ function processStatements(
             }
             let foreachCtx = addVariable(
                 s.keyName,
-                { kind: "ref", name: mapVariable.key, optional: false },
+                { kind: "ref", name: mapType.key, optional: false },
                 initialCtx,
             );
             if (foreachCtx.vars.has(s.valueName)) {
@@ -436,7 +439,7 @@ function processStatements(
             }
             foreachCtx = addVariable(
                 s.valueName,
-                { kind: "ref", name: mapVariable.value, optional: false },
+                { kind: "ref", name: mapType.value, optional: false },
                 foreachCtx,
             );
 

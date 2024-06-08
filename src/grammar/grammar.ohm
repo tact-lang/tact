@@ -123,7 +123,7 @@ Tact {
     StatementTry = try "{" Statement* "}" ~catch --noCatch
                  | try "{" Statement* "}" catch "(" id ")" "{" Statement* "}" --withCatch
 
-    StatementForEach = foreach "(" id "," id "in" id ")" "{" Statement* "}"
+    StatementForEach = foreach "(" id "," id "in" LValue ")" "{" Statement* "}"
 
     LValue = id "." LValue --fieldAccess
            | id --variable

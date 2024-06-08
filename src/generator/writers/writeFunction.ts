@@ -200,7 +200,12 @@ export function writeStatement(
         ctx.append(`}`);
         return;
     } else if (f.kind === "statement_foreach") {
-        const t = getExpType(ctx.ctx, f.map);
+        // Prepare lvalue
+        const path = f.map
+            .map((v, i) => (i === 0 ? id(v.name) : v.name))
+            .join(`'`);
+
+        const t = getExpType(ctx.ctx, f.map[f.map.length - 1]);
         if (t.kind !== "map") {
             throw Error("Unknown map type");
         }
@@ -228,7 +233,7 @@ export function writeStatement(
                 }
 
                 ctx.append(
-                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_${vKind}`)}(${id(f.map.value)}, ${bits}, ${vBits});`,
+                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_${vKind}`)}(${path}, ${bits}, ${vBits});`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -236,13 +241,13 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_${vKind}`)}(${id(f.map.value)}, ${bits}, ${id(f.keyName)}, ${vBits});`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_${vKind}`)}(${path}, ${bits}, ${id(f.keyName)}, ${vBits});`,
                     );
                 });
                 ctx.append(`}`);
             } else if (t.value === "Bool") {
                 ctx.append(
-                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_int`)}(${id(f.map.value)}, ${bits}, 1);`,
+                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_int`)}(${path}, ${bits}, 1);`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -250,13 +255,13 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_int`)}(${id(f.map.value)}, ${bits}, ${id(f.keyName)}, 1);`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_int`)}(${path}, ${bits}, ${id(f.keyName)}, 1);`,
                     );
                 });
                 ctx.append(`}`);
             } else if (t.value === "Cell") {
                 ctx.append(
-                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_cell`)}(${id(f.map.value)}, ${bits});`,
+                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_cell`)}(${path}, ${bits});`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -264,13 +269,13 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_cell`)}(${id(f.map.value)}, ${bits}, ${id(f.keyName)});`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_cell`)}(${path}, ${bits}, ${id(f.keyName)});`,
                     );
                 });
                 ctx.append(`}`);
             } else if (t.value === "Address") {
                 ctx.append(
-                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_slice`)}(${id(f.map.value)}, ${bits});`,
+                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_slice`)}(${path}, ${bits});`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -278,14 +283,14 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_slice`)}(${id(f.map.value)}, ${bits}, ${id(f.keyName)});`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_slice`)}(${path}, ${bits}, ${id(f.keyName)});`,
                     );
                 });
                 ctx.append(`}`);
             } else {
                 // value is struct
                 ctx.append(
-                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_cell`)}(${id(f.map.value)}, ${bits});`,
+                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_cell`)}(${path}, ${bits});`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -296,7 +301,7 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_cell`)}(${id(f.map.value)}, ${bits}, ${id(f.keyName)});`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_cell`)}(${path}, ${bits}, ${id(f.keyName)});`,
                     );
                 });
                 ctx.append(`}`);
@@ -315,7 +320,7 @@ export function writeStatement(
                     vKind = "uint";
                 }
                 ctx.append(
-                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_${vKind}`)}(${id(f.map.value)}, 267, ${vBits});`,
+                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_${vKind}`)}(${path}, 267, ${vBits});`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -323,13 +328,13 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_${vKind}`)}(${id(f.map.value)}, 267, ${id(f.keyName)}, ${vBits});`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_${vKind}`)}(${path}, 267, ${id(f.keyName)}, ${vBits});`,
                     );
                 });
                 ctx.append(`}`);
             } else if (t.value === "Bool") {
                 ctx.append(
-                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_int`)}(${id(f.map.value)}, 267, 1);`,
+                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_int`)}(${path}, 267, 1);`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -337,13 +342,13 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_int`)}(${id(f.map.value)}, 267, ${id(f.keyName)}, 1);`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_int`)}(${path}, 267, ${id(f.keyName)}, 1);`,
                     );
                 });
                 ctx.append(`}`);
             } else if (t.value === "Cell") {
                 ctx.append(
-                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_cell`)}(${id(f.map.value)}, 267);`,
+                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_cell`)}(${path}, 267);`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -351,13 +356,13 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_cell`)}(${id(f.map.value)}, 267, ${id(f.keyName)});`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_cell`)}(${path}, 267, ${id(f.keyName)});`,
                     );
                 });
                 ctx.append(`}`);
             } else if (t.value === "Address") {
                 ctx.append(
-                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_slice`)}(${id(f.map.value)}, 267);`,
+                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_slice`)}(${path}, 267);`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -365,14 +370,14 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_slice`)}(${id(f.map.value)}, 267, ${id(f.keyName)});`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_slice`)}(${path}, 267, ${id(f.keyName)});`,
                     );
                 });
                 ctx.append(`}`);
             } else {
                 // value is struct
                 ctx.append(
-                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_cell`)}(${id(f.map.value)}, 267);`,
+                    `var (${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_cell`)}(${path}, 267);`,
                 );
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
@@ -383,7 +388,7 @@ export function writeStatement(
                         writeStatement(s, self, returns, ctx);
                     }
                     ctx.append(
-                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_cell`)}(${id(f.map.value)}, 267, ${id(f.keyName)});`,
+                        `(${id(f.keyName)}, ${id(f.valueName)}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_cell`)}(${path}, 267, ${id(f.keyName)});`,
                     );
                 });
                 ctx.append(`}`);
