@@ -15,6 +15,11 @@
       "name": "const-eval",
       "path": "./contracts/const-eval.tact",
       "output": "./contracts/output"
+    },
+    {
+      "name": "issue349",
+      "path": "./contracts/issue349.tact",
+      "output": "./contracts/output"
     }
   ]
 }
