@@ -786,7 +786,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             kind: "statement_foreach",
             keyName: keyId.sourceString,
             valueName: valueId.sourceString,
-            map: mapId.astOfExpression(),
+            map: mapId.astOfLValue(),
             statements: foreachBlock.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });

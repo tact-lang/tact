@@ -3,9 +3,21 @@ struct MyStruct {
     b: Bool;
 }
 
+struct MyStructWithMap {
+    m: map<Int, Int>;
+}
+
 contract MapTraverseTestContract {
+    m: map<Int, Int>;
+    s: MyStructWithMap;
+
     init() {
-        // Nothing to do
+        self.m = emptyMap();
+        self.m.set(1, 100);
+        self.m.set(2, 200);
+        self.m.set(3, 300);
+
+        self.s = MyStructWithMap{m: self.m};
     }
 
     receive() {
@@ -277,5 +289,21 @@ contract MapTraverseTestContract {
             size += 1;
         }
         return size;
+    }
+
+    get fun test_map_as_field(): Int {
+        let sum: Int = 0;
+        foreach (k, v in self.m) {
+            sum += k + v;
+        }
+        return sum;
+    }
+
+    get fun test_map_as_struct_field(): Int {
+        let sum: Int = 0;
+        foreach (k, v in self.s.m) {
+            sum += k + v;
+        }
+        return sum;
     }
 }
