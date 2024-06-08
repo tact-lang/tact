@@ -10,13 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Augmented assignment bitwise operators `|=`, `&=`, `^=`: PR [#350](https://github.com/tact-lang/tact/pull/350)
+- Traversing maps from contract storage and structs is now allowed: PR [#389](https://github.com/tact-lang/tact/pull/389)
 
 ### Changed
 
 ### Fixed
 
 - Return type of `skipBits` now matches FunC and does not lead to compilation errors: PR [#388](https://github.com/tact-lang/tact/pull/388)
-- Traversing maps from contract storage and structs now does not throw compilation error: PR [#389](https://github.com/tact-lang/tact/pull/389)
 
 ## [1.3.1] - 2024-06-08
 
