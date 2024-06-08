@@ -5485,3 +5485,371 @@ exports[`grammar should parse case-34 1`] = `
   "kind": "program",
 }
 `;
+
+exports[`grammar should parse case-35 1`] = `
+{
+  "entries": [
+    {
+      "args": [],
+      "attributes": [],
+      "id": 52,
+      "kind": "def_function",
+      "name": "testFunc",
+      "origin": "user",
+      "ref": fun testFunc(): Int {
+    let a: Int = 1;
+    let b: Int = 2;
+    a |= b;
+    b |= a;
+    a |= 3;
+    a |= b | 4;
+    b &= 1;
+    a &= b;
+    b &= a;
+    a &= b & 1;
+    b ^= 2;
+    a ^= b;
+    b ^= a;
+    a ^= b ^ 2;
+    return a;
+},
+      "return": {
+        "id": 1,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 3,
+            "kind": "number",
+            "ref": 1,
+            "value": 1n,
+          },
+          "id": 4,
+          "kind": "statement_let",
+          "name": "a",
+          "ref": let a: Int = 1;,
+          "type": {
+            "id": 2,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 6,
+            "kind": "number",
+            "ref": 2,
+            "value": 2n,
+          },
+          "id": 7,
+          "kind": "statement_let",
+          "name": "b",
+          "ref": let b: Int = 2;,
+          "type": {
+            "id": 5,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "expression": {
+            "id": 9,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
+          "id": 10,
+          "kind": "statement_augmentedassign",
+          "op": "|",
+          "path": [
+            {
+              "id": 8,
+              "kind": "lvalue_ref",
+              "name": "a",
+              "ref": a,
+            },
+          ],
+          "ref": a |= b;,
+        },
+        {
+          "expression": {
+            "id": 12,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
+          "id": 13,
+          "kind": "statement_augmentedassign",
+          "op": "|",
+          "path": [
+            {
+              "id": 11,
+              "kind": "lvalue_ref",
+              "name": "b",
+              "ref": b,
+            },
+          ],
+          "ref": b |= a;,
+        },
+        {
+          "expression": {
+            "id": 15,
+            "kind": "number",
+            "ref": 3,
+            "value": 3n,
+          },
+          "id": 16,
+          "kind": "statement_augmentedassign",
+          "op": "|",
+          "path": [
+            {
+              "id": 14,
+              "kind": "lvalue_ref",
+              "name": "a",
+              "ref": a,
+            },
+          ],
+          "ref": a |= 3;,
+        },
+        {
+          "expression": {
+            "id": 20,
+            "kind": "op_binary",
+            "left": {
+              "id": 18,
+              "kind": "id",
+              "ref": b,
+              "value": "b",
+            },
+            "op": "|",
+            "ref": b | 4,
+            "right": {
+              "id": 19,
+              "kind": "number",
+              "ref": 4,
+              "value": 4n,
+            },
+          },
+          "id": 21,
+          "kind": "statement_augmentedassign",
+          "op": "|",
+          "path": [
+            {
+              "id": 17,
+              "kind": "lvalue_ref",
+              "name": "a",
+              "ref": a,
+            },
+          ],
+          "ref": a |= b | 4;,
+        },
+        {
+          "expression": {
+            "id": 23,
+            "kind": "number",
+            "ref": 1,
+            "value": 1n,
+          },
+          "id": 24,
+          "kind": "statement_augmentedassign",
+          "op": "&",
+          "path": [
+            {
+              "id": 22,
+              "kind": "lvalue_ref",
+              "name": "b",
+              "ref": b,
+            },
+          ],
+          "ref": b &= 1;,
+        },
+        {
+          "expression": {
+            "id": 26,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
+          "id": 27,
+          "kind": "statement_augmentedassign",
+          "op": "&",
+          "path": [
+            {
+              "id": 25,
+              "kind": "lvalue_ref",
+              "name": "a",
+              "ref": a,
+            },
+          ],
+          "ref": a &= b;,
+        },
+        {
+          "expression": {
+            "id": 29,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
+          "id": 30,
+          "kind": "statement_augmentedassign",
+          "op": "&",
+          "path": [
+            {
+              "id": 28,
+              "kind": "lvalue_ref",
+              "name": "b",
+              "ref": b,
+            },
+          ],
+          "ref": b &= a;,
+        },
+        {
+          "expression": {
+            "id": 34,
+            "kind": "op_binary",
+            "left": {
+              "id": 32,
+              "kind": "id",
+              "ref": b,
+              "value": "b",
+            },
+            "op": "&",
+            "ref": b & 1,
+            "right": {
+              "id": 33,
+              "kind": "number",
+              "ref": 1,
+              "value": 1n,
+            },
+          },
+          "id": 35,
+          "kind": "statement_augmentedassign",
+          "op": "&",
+          "path": [
+            {
+              "id": 31,
+              "kind": "lvalue_ref",
+              "name": "a",
+              "ref": a,
+            },
+          ],
+          "ref": a &= b & 1;,
+        },
+        {
+          "expression": {
+            "id": 37,
+            "kind": "number",
+            "ref": 2,
+            "value": 2n,
+          },
+          "id": 38,
+          "kind": "statement_augmentedassign",
+          "op": "^",
+          "path": [
+            {
+              "id": 36,
+              "kind": "lvalue_ref",
+              "name": "b",
+              "ref": b,
+            },
+          ],
+          "ref": b ^= 2;,
+        },
+        {
+          "expression": {
+            "id": 40,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
+          "id": 41,
+          "kind": "statement_augmentedassign",
+          "op": "^",
+          "path": [
+            {
+              "id": 39,
+              "kind": "lvalue_ref",
+              "name": "a",
+              "ref": a,
+            },
+          ],
+          "ref": a ^= b;,
+        },
+        {
+          "expression": {
+            "id": 43,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
+          "id": 44,
+          "kind": "statement_augmentedassign",
+          "op": "^",
+          "path": [
+            {
+              "id": 42,
+              "kind": "lvalue_ref",
+              "name": "b",
+              "ref": b,
+            },
+          ],
+          "ref": b ^= a;,
+        },
+        {
+          "expression": {
+            "id": 48,
+            "kind": "op_binary",
+            "left": {
+              "id": 46,
+              "kind": "id",
+              "ref": b,
+              "value": "b",
+            },
+            "op": "^",
+            "ref": b ^ 2,
+            "right": {
+              "id": 47,
+              "kind": "number",
+              "ref": 2,
+              "value": 2n,
+            },
+          },
+          "id": 49,
+          "kind": "statement_augmentedassign",
+          "op": "^",
+          "path": [
+            {
+              "id": 45,
+              "kind": "lvalue_ref",
+              "name": "a",
+              "ref": a,
+            },
+          ],
+          "ref": a ^= b ^ 2;,
+        },
+        {
+          "expression": {
+            "id": 50,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
+          "id": 51,
+          "kind": "statement_return",
+          "ref": return a;,
+        },
+      ],
+    },
+  ],
+  "id": 53,
+  "kind": "program",
+}
+`;

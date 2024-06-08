@@ -445,7 +445,15 @@ export type ASTStatementAssign = {
     ref: ASTRef;
 };
 
-export type ASTAugmentedAssignOperation = "+" | "-" | "*" | "/" | "%";
+export type ASTAugmentedAssignOperation =
+    | "+"
+    | "-"
+    | "*"
+    | "/"
+    | "%"
+    | "|"
+    | "&"
+    | "^";
 
 export type ASTStatementAugmentedAssign = {
     kind: "statement_augmentedassign";
