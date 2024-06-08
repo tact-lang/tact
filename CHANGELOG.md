@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Traversing maps from contract storage and structs now does not throw compilation error: PR [#389](https://github.com/tact-lang/tact/pull/389)
+
 ## [1.3.1] - 2024-06-08
 
 ### Added
