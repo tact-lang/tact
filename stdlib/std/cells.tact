@@ -73,7 +73,7 @@ extends mutates native loadCoins(self: Slice): Int;
 extends mutates native loadAddress(self: Slice): Address;
 
 @name(skip_bits)
-extends mutates native skipBits(self: Slice, l: Int): Slice;
+extends mutates native skipBits(self: Slice, l: Int);
 
 @name(end_parse)
 extends native endParse(self: Slice);
