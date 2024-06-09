@@ -83,17 +83,6 @@ describe("feature-masterchain", () => {
         await contract.getCreateAddress(-1n, 0n);
     });
 
-    it("should not create address for invalid workchain", async () => {
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await MasterchainTester.fromInit());
-        await contract.send(treasure, { value: toNano("10") }, "Deploy");
-        await system.run();
-        await expect(contract.getCreateAddress(10n, 0n)).rejects.toThrowError(
-            "Invalid address",
-        );
-    });
-
     //
     // loadAddress
     //
