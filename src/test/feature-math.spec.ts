@@ -51,6 +51,9 @@ describe("feature-math", () => {
         expect(await contract.getXor(2n, -3n)).toBe(-1n);
         expect(await contract.getXor(-2n, 3n)).toBe(-3n);
         expect(await contract.getXor(-2n, -3n)).toBe(3n);
+        expect(await contract.getBitwiseNot(2n)).toBe(-3n);
+        expect(await contract.getBitwiseNot(-2n)).toBe(1n);
+        expect(await contract.getBitwiseNot(6n)).toBe(-7n);
 
         // Augmented Assign
         expect(await contract.getAddAug(1n, 2n)).toBe(3n);
@@ -464,5 +467,11 @@ describe("feature-math", () => {
         expect(await contract.getPrecedence10()).toBe(3n);
         expect(await contract.getPrecedence11()).toBe(3n);
         expect(await contract.getPrecedence12()).toBe(5n);
+
+        // Test multiple unary operations in a row
+        expect(await contract.getBitwiseNot1(5n)).toBe(5n);
+        expect(await contract.getBitwiseNot2(5n)).toBe(-6n);
+        expect(await contract.getBitwiseNot3(5n)).toBe(4n);
+        expect(await contract.getBitwiseNot4(5n)).toBe(6n);
     });
 });

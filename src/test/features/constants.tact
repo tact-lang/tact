@@ -20,6 +20,7 @@ contract ConstantTester {
     const something17: Int = 115792089237316195423570985008687907853269984665640564039457584007913129639935;
     const something18: Int = -(pow2(255) - 1 + pow2(255));
     const something19: Int = -(pow2(255) - 1 + pow2(255)) - 1;
+    const something20: Int = ~5;
 
     init() {
         
@@ -103,6 +104,10 @@ contract ConstantTester {
 
     get fun something19(): Int {
         return self.something19;
+    }
+    
+    get fun something20(): Int {
+        return self.something20;
     }
 
     get fun minInt1(): Int {

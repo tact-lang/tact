@@ -37,6 +37,8 @@ function reduceIntImpl(ast: ASTExpression): bigint {
             return -reduceInt(ast.right);
         } else if (ast.op === "+") {
             return reduceInt(ast.right);
+        } else if (ast.op === "~") {
+            return ~reduceInt(ast.right);
         }
     } else if (ast.kind === "op_static_call") {
         if (ast.name === "ton") {

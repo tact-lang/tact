@@ -276,6 +276,24 @@ Line 1, col 1:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for case-28 1`] = `
+"<unknown>:4:18: Cannot reduce expression to a constant integer
+Line 4, col 18:
+  3 | 
+> 4 | const a: Int = ~ true;
+                       ^~~~
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-29 1`] = `
+"<unknown>:4:17: Cannot reduce expression to a constant boolean
+Line 4, col 17:
+  3 | 
+> 4 | const a: Bool = ~ true;
+                      ^~~~~~
+"
+`;
+
 exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
 {
   "BaseTrait": {

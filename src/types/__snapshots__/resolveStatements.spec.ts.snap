@@ -530,6 +530,16 @@ Line 5, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-53 1`] = `
+"<unknown>:5:12: Invalid type "Bool" for unary operator "~"
+Line 5, col 12:
+  4 | fun test(a: Bool): Int {
+> 5 |     return ~a;
+                 ^~
+  6 | }
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [

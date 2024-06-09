@@ -311,7 +311,7 @@ function resolveUnaryOp(
 
     // Check right type dependent on operator
     let resolvedType = getExpType(ctx, exp.right);
-    if (exp.op === "-" || exp.op === "+") {
+    if (exp.op === "-" || exp.op === "+" || exp.op === "~") {
         if (
             resolvedType.kind !== "ref" ||
             resolvedType.optional ||
