@@ -583,7 +583,7 @@ class PrettyPrinter {
     }
 
     ppASTStatementForEach(statement: ASTStatementForEach): string {
-        const header = `foreach (${statement.keyName}, ${statement.valueName} in ${statement.map.value})`
+        const header = `foreach (${statement.keyName}, ${statement.valueName} in ${this.ppASTLvalueRef(statement.map)})`;
         const body = this.ppStatementBlock(statement.statements);
         return `${this.indent()}${header} ${body}`
     }
