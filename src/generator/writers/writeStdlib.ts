@@ -34,7 +34,7 @@ export function writeStdlib(ctx: WriterContext) {
             } else {
                 ctx.write(`
                     throw_if(${contractErrors.masterchainNotEnabled.id}, h == 1279);
-                    throw_unless(${contractErrors.invalidAddress.id}, h == 1024);
+                    throw_unless(${contractErrors.invalidAddress.id}, h >> 8 == 4);
                 `);
             }
             ctx.write(`
