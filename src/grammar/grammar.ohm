@@ -174,7 +174,7 @@ Tact {
     ExpressionUnary = "-" ExpressionUnary --minus
                     | "+" ExpressionUnary --plus
                     | "!" ExpressionUnary --not
-                    | "~" ExpressionUnary --bitwise_not
+                    | "~" ExpressionUnary --bitwiseNot
                     | ExpressionPrimary
 
     // Order is important

@@ -1095,11 +1095,11 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             ref: createRef(this),
         });
     },
-    ExpressionUnary_bitwise_not(_arg0, arg1) {
+    ExpressionUnary_bitwiseNot(_tilda, operand) {
         return createNode({
             kind: "op_unary",
             op: "~",
-            right: arg1.astOfExpression(),
+            right: operand.astOfExpression(),
             ref: createRef(this),
         });
     },
