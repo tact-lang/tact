@@ -115,7 +115,9 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             kind: "def_struct",
             origin: ctx!.origin,
             name: typeId.sourceString,
-            fields: fields.children.map((f) => f.astOfDeclaration()),
+            fields: fields.children[0]
+                .asIteration()
+                .children.map((field, _semicolon) => field.astOfDeclaration()),
             prefix: null,
             message: false,
             ref: createRef(this),
@@ -136,7 +138,10 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             kind: "def_struct",
             origin: ctx!.origin,
             name: typeId.sourceString,
-            fields: fields.children.map((f) => f.astOfDeclaration()),
+            //            fields: fields.children.map((f) => f.astOfDeclaration()),
+            fields: fields.children[0]
+                .asIteration()
+                .children.map((field, _semicolon) => field.astOfDeclaration()),
             prefix: unwrapOptNode(optId, (id) => parseInt(id.sourceString)),
             message: true,
             ref: createRef(this),
@@ -254,7 +259,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             ref: createRef(this),
         });
     },
-    StorageVar(fieldDecl) {
+    StorageVar(fieldDecl, _semicolon) {
         return fieldDecl.astOfDeclaration();
     },
     FunctionDefinition(
@@ -525,7 +530,6 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
         optStorageType,
         _optEq,
         optInitializer,
-        _semicolon,
     ) {
         return createNode({
             kind: "def_field",

@@ -63,7 +63,7 @@ exports[`resolveDescriptors should fail descriptors for case-6 1`] = `
 Line 11, col 3:
   10 |   b: Int;
 > 11 |   b: Int;
-         ^~~~~~~
+         ^~~~~~
   12 | }
 "
 `;
@@ -73,7 +73,7 @@ exports[`resolveDescriptors should fail descriptors for case-7 1`] = `
 Line 11, col 3:
   10 |   b: Int;
 > 11 |   b: Int;
-         ^~~~~~~
+         ^~~~~~
   12 | }
 "
 `;
@@ -243,7 +243,7 @@ exports[`resolveDescriptors should fail descriptors for case-24 1`] = `
 Line 15, col 3:
   14 | contract Test {
 > 15 |   src: bounced<A>;
-         ^~~~~~~~~~~~~~~~
+         ^~~~~~~~~~~~~~~
   16 |   init() {}
 "
 `;
@@ -472,7 +472,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int;,
+          "ref": a: Int,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -487,7 +487,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "b",
-          "ref": b: Bool;,
+          "ref": b: Bool,
           "type": {
             "id": 6,
             "kind": "type_ref_simple",
@@ -528,7 +528,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int;,
+          "ref": a: Int,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -540,7 +540,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
         "default": undefined,
         "index": 0,
         "name": "a",
-        "ref": a: Int;,
+        "ref": a: Int,
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -563,7 +563,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "b",
-          "ref": b: Bool;,
+          "ref": b: Bool,
           "type": {
             "id": 6,
             "kind": "type_ref_simple",
@@ -575,7 +575,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
         "default": undefined,
         "index": 1,
         "name": "b",
-        "ref": b: Bool;,
+        "ref": b: Bool,
         "type": {
           "kind": "ref",
           "name": "Bool",
@@ -606,7 +606,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Struct1;,
+          "ref": a: Struct1,
           "type": {
             "id": 9,
             "kind": "type_ref_simple",
@@ -645,7 +645,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Struct1;,
+          "ref": a: Struct1,
           "type": {
             "id": 9,
             "kind": "type_ref_simple",
@@ -657,7 +657,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
         "default": undefined,
         "index": 0,
         "name": "a",
-        "ref": a: Struct1;,
+        "ref": a: Struct1,
         "type": {
           "kind": "ref",
           "name": "Struct1",
@@ -1015,7 +1015,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int;,
+          "ref": a: Int,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -1030,7 +1030,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "b",
-          "ref": b: Bool;,
+          "ref": b: Bool,
           "type": {
             "id": 6,
             "kind": "type_ref_simple",
@@ -1117,7 +1117,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int;,
+          "ref": a: Int,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -1129,7 +1129,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         "default": undefined,
         "index": 0,
         "name": "a",
-        "ref": a: Int;,
+        "ref": a: Int,
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -1152,7 +1152,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "b",
-          "ref": b: Bool;,
+          "ref": b: Bool,
           "type": {
             "id": 6,
             "kind": "type_ref_simple",
@@ -1164,7 +1164,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         "default": undefined,
         "index": 1,
         "name": "b",
-        "ref": b: Bool;,
+        "ref": b: Bool,
         "type": {
           "kind": "ref",
           "name": "Bool",
@@ -1869,7 +1869,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int;,
+          "ref": a: Int,
           "type": {
             "id": 7,
             "kind": "type_ref_simple",
@@ -2039,7 +2039,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int;,
+          "ref": a: Int,
           "type": {
             "id": 7,
             "kind": "type_ref_simple",
@@ -2051,7 +2051,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
         "default": undefined,
         "index": 0,
         "name": "a",
-        "ref": a: Int;,
+        "ref": a: Int,
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -2282,7 +2282,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "p",
-          "ref": p: Int;,
+          "ref": p: Int,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -2322,7 +2322,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "p",
-          "ref": p: Int;,
+          "ref": p: Int,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -2334,7 +2334,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
         "default": undefined,
         "index": 0,
         "name": "p",
-        "ref": p: Int;,
+        "ref": p: Int,
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -2372,7 +2372,7 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int as uint32;,
+          "ref": a: Int as uint32,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -2412,7 +2412,7 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int as uint32;,
+          "ref": a: Int as uint32,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -2424,7 +2424,7 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
         "default": undefined,
         "index": 0,
         "name": "a",
-        "ref": a: Int as uint32;,
+        "ref": a: Int as uint32,
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -2737,7 +2737,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int as uint32;,
+          "ref": a: Int as uint32,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -2752,7 +2752,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "b",
-          "ref": b: Bool;,
+          "ref": b: Bool,
           "type": {
             "id": 6,
             "kind": "type_ref_simple",
@@ -2767,7 +2767,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "c",
-          "ref": c: Int as uint256;,
+          "ref": c: Int as uint256,
           "type": {
             "id": 8,
             "kind": "type_ref_simple",
@@ -2809,7 +2809,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int as uint32;,
+          "ref": a: Int as uint32,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -2821,7 +2821,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
         "default": undefined,
         "index": 0,
         "name": "a",
-        "ref": a: Int as uint32;,
+        "ref": a: Int as uint32,
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -2844,7 +2844,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "b",
-          "ref": b: Bool;,
+          "ref": b: Bool,
           "type": {
             "id": 6,
             "kind": "type_ref_simple",
@@ -2856,7 +2856,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
         "default": undefined,
         "index": 1,
         "name": "b",
-        "ref": b: Bool;,
+        "ref": b: Bool,
         "type": {
           "kind": "ref",
           "name": "Bool",
@@ -2880,7 +2880,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "c",
-          "ref": c: Int as uint256;,
+          "ref": c: Int as uint256,
           "type": {
             "id": 8,
             "kind": "type_ref_simple",
@@ -2892,7 +2892,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
         "default": undefined,
         "index": 2,
         "name": "c",
-        "ref": c: Int as uint256;,
+        "ref": c: Int as uint256,
         "type": {
           "kind": "ref",
           "name": "Int",
