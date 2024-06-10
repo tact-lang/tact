@@ -3,7 +3,7 @@ import { TypeRef } from "./types";
 export function isAssignable(src: TypeRef, to: TypeRef): boolean {
     // If both are refs
     if (src.kind === "ref" && to.kind === "ref") {
-        // Can assign optional to non-optional
+        // Cannot assign optional to non-optional
         if (!to.optional && src.optional) {
             return false;
         }

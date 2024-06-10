@@ -663,15 +663,21 @@ export function resolveConditional(
     ctx = resolveExpression(ast.elseBranch, sctx, ctx);
     const thenType = getExpType(ctx, ast.thenBranch);
     const elseType = getExpType(ctx, ast.elseBranch);
-    if (!typeRefEquals(thenType, elseType)) {
-        throwError(
-            `Non-matching types "${printTypeRef(thenType)}" and "${printTypeRef(elseType)}" for ternary branches`,
-            ast.elseBranch.ref,
-        );
+
+    // This takes care of sub-typing for optionals and maps/null
+    if (isAssignable(thenType, elseType)) {
+        // the type of the else branch is the more general one
+        return registerExpType(ctx, ast, elseType);
+    }
+    if (isAssignable(elseType, thenType)) {
+        // the type of the then branch is the more general one
+        return registerExpType(ctx, ast, thenType);
     }
 
-    // Register result
-    return registerExpType(ctx, ast, thenType);
+    throwError(
+        `Non-matching types "${printTypeRef(thenType)}" and "${printTypeRef(elseType)}" for ternary branches`,
+        ast.elseBranch.ref,
+    );
 }
 
 export function resolveLValueRef(
