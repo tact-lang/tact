@@ -540,6 +540,16 @@ Line 5, col 12:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-54 1`] = `
+"<unknown>:6:5: Type mismatch: "Int?" is not assignable to "Int"
+Line 6, col 5:
+  5 |     let cond: Bool = true;
+> 6 |     return cond ? 42 : x;
+          ^~~~~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
@@ -1414,6 +1424,125 @@ exports[`resolveStatements should resolve statements for case-21 1`] = `
   [
     "a",
     "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-22 1`] = `
+[
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "cond",
+    "Bool",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "cond ? 42 : x",
+    "Int?",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "cond",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "cond ? x : 42",
+    "Int?",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "cond",
+    "Bool",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "m",
+    "map<Int, Int>",
+  ],
+  [
+    "cond ? null : m",
+    "map<Int, Int>",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "cond",
+    "Bool",
+  ],
+  [
+    "m",
+    "map<Int, Int>",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "cond ? m : null",
+    "map<Int, Int>",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "cond",
+    "Bool",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "Baz { b: 42 }",
+    "Baz",
+  ],
+  [
+    "Baz { b: 42 }.toCell()",
+    "Cell",
+  ],
+  [
+    "x",
+    "Cell?",
+  ],
+  [
+    "cond ? Baz { b: 42 }.toCell() : x",
+    "Cell?",
+  ],
+  [
+    "Bar {
+        a: cond ? Baz { b: 42 }.toCell() : x
+    }",
+    "Bar",
   ],
 ]
 `;
