@@ -85,9 +85,11 @@ Tact {
 
     Receiver = receive "(" Parameter? ")" "{" Statement* "}" --regular
              | receive "(" stringLiteral ")" "{" Statement* "}" --comment
+             | receive "(" id ")" "{" Statement* "}" --constComment
              | "bounced" "(" Parameter ")" "{" Statement* "}" --bounced            // cannot be a reserved word because there a 'bounced' field in stdlib's 'Context' structure
              | external "(" Parameter? ")" "{" Statement* "}" --externalRegular
              | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
+             | external "(" id ")" "{" Statement* "}" --constExternalComment
 
     Statement = StatementLet
               | StatementBlock

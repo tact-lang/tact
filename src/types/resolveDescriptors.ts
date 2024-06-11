@@ -2,6 +2,7 @@ import {
     ASTConstant,
     ASTField,
     ASTFunction,
+    ASTId,
     ASTInitFunction,
     ASTNativeFunction,
     ASTNode,
@@ -792,6 +793,26 @@ export function resolveDescriptors(ctx: CompilerContext) {
         };
     }
 
+    //
+    // Resolve static constants
+    //
+
+    for (const a of ast.constants) {
+        if (staticConstants.has(a.name)) {
+            throwSyntaxError(
+                `Static constant "${a.name}" already exists`,
+                a.ref,
+            );
+        }
+        if (staticFunctions.has(a.name) || GlobalFunctions.has(a.name)) {
+            throwSyntaxError(
+                `Static function "${a.name}" already exists`,
+                a.ref,
+            );
+        }
+        staticConstants.set(a.name, buildConstantDescription(a));
+    }
+
     for (const a of ast.types) {
         if (a.kind === "def_contract" || a.kind === "def_trait") {
             const s = types.get(a.name)!;
@@ -994,6 +1015,72 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         ) {
                             throwSyntaxError(
                                 `Receive function for "${c}" already exists`,
+                                d.ref,
+                            );
+                        }
+                        s.receivers.push({
+                            selector: {
+                                kind: internal
+                                    ? "internal-comment"
+                                    : "external-comment",
+                                comment: c,
+                            },
+                            ast: d,
+                        });
+                    } else if (
+                        d.selector.kind === "internal-const-comment" ||
+                        d.selector.kind === "external-const-comment"
+                    ) {
+                        const internal =
+                            d.selector.kind === "internal-const-comment";
+
+                        const commentId = d.selector.comment.value;
+                        const commentConstant =
+                            s.constants.find((v) => v.name === commentId) ??
+                            staticConstants.get(commentId);
+
+                        if (!commentConstant) {
+                            throwSyntaxError(
+                                `Constant "${commentId}" not found`,
+                                d.ref,
+                            );
+                        }
+
+                        if (commentConstant.type.kind !== "ref") {
+                            throwSyntaxError(
+                                `Constant "${commentId}" must be a reference type`,
+                                d.ref,
+                            );
+                        }
+
+                        if (commentConstant.type.name !== "String") {
+                            throwSyntaxError(
+                                `Constant "${commentId}" must be of type String`,
+                                d.ref,
+                            );
+                        }
+
+                        const c = commentConstant.value as string;
+
+                        if (c === "") {
+                            throwSyntaxError(
+                                "To use empty comment receiver, just remove argument instead of passing empty string",
+                                d.ref,
+                            );
+                        }
+
+                        if (
+                            s.receivers.find(
+                                (v) =>
+                                    v.selector.kind ===
+                                        (internal
+                                            ? "internal-comment"
+                                            : "external-comment") &&
+                                    v.selector.comment === c,
+                            )
+                        ) {
+                            throwSyntaxError(
+                                `Receive function for string "${c}" already exists`,
                                 d.ref,
                             );
                         }
@@ -1593,26 +1680,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
             staticFunctions.set(r.name, r);
         }
-    }
-
-    //
-    // Resolve static constants
-    //
-
-    for (const a of ast.constants) {
-        if (staticConstants.has(a.name)) {
-            throwSyntaxError(
-                `Static constant "${a.name}" already exists`,
-                a.ref,
-            );
-        }
-        if (staticFunctions.has(a.name) || GlobalFunctions.has(a.name)) {
-            throwSyntaxError(
-                `Static function "${a.name}" already exists`,
-                a.ref,
-            );
-        }
-        staticConstants.set(a.name, buildConstantDescription(a));
     }
 
     //

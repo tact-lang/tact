@@ -221,6 +221,11 @@
       }
     },
     {
+      "name": "const-string-receiver",
+      "path": "./src/test/e2e-emulated/contracts/const-string-receiver.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
       "name": "debug",
       "path": "./src/test/e2e-emulated/contracts/debug.tact",
       "output": "./src/test/e2e-emulated/contracts/output",

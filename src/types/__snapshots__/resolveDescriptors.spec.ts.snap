@@ -90,6 +90,36 @@ Line 12, col 23:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-receiver-const-string-duplicate 1`] = `
+"<unknown>:20:5: Receive function for string "string 1" already exists
+Line 20, col 5:
+  19 | 
+> 20 |     receive(string1) {
+           ^~~~~~~~~~~~~~~~~~
+  21 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-receiver-const-string-duplicate2 1`] = `
+"<unknown>:15:5: Receive function for "string 1" already exists
+Line 15, col 5:
+  14 | 
+> 15 |     receive("string 1") {
+           ^~~~~~~~~~~~~~~~~~~~~
+  16 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-receiver-const-string-duplicate3 1`] = `
+"<unknown>:20:5: Constant "string3" not found
+Line 20, col 5:
+  19 | 
+> 20 |     receive(string3) {
+           ^~~~~~~~~~~~~~~~~~
+  21 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-receiver-int 1`] = `
 "<unknown>:13:3: Receive function can only accept message, Slice or String
 Line 13, col 3:
