@@ -1,254 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolveDescriptors should fail descriptors for case-0 1`] = `
-"<unknown>:9:1: Native functions cannot be getters
-Line 9, col 1:
-  8 | @name(hello_world)
-> 9 | get native sample(a: Int): Int;
-      ^~~
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-1 1`] = `
-"<unknown>:9:1: Native functions cannot be getters
-Line 9, col 1:
-  8 | @name(hello_world)
-> 9 | get native sample(a: Int): Int;
-      ^~~
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-2 1`] = `
-"<unknown>:8:1: Getters must be defined within a contract
-Line 8, col 1:
-  7 | 
-> 8 | get fun sample(a: Int): Int {
-      ^~~
-  9 |     return 0;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-3 1`] = `
-"<unknown>:8:1: Getters must be defined within a contract
-Line 8, col 1:
-  7 | 
-> 8 | get fun sample(a: Int): Int {
-      ^~~
-  9 |     return 0;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-4 1`] = `
-"<unknown>:8:17: Extend function must have first argument named "self"
-Line 8, col 17:
-  7 | 
-> 8 | extends fun inc(a: Int): Int {
-                      ^~~~~~
-  9 |     return a + 1;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-5 1`] = `
-"<unknown>:8:17: Argument name "self" is reserved
-Line 8, col 17:
-  7 | 
-> 8 | fun inc(a: Int, self: Int): Int {
-                      ^~~~~~~~~
-  9 |     return a + 1 + self;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-6 1`] = `
-"<unknown>:11:3: Field "b" already exists
-Line 11, col 3:
-  10 |   b: Int;
-> 11 |   b: Int;
-         ^~~~~~
-  12 | }
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-7 1`] = `
-"<unknown>:11:3: Field "b" already exists
-Line 11, col 3:
-  10 |   b: Int;
-> 11 |   b: Int;
-         ^~~~~~
-  12 | }
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-8 1`] = `
-"<unknown>:13:3: Receive function cannot have optional argument
-Line 13, col 3:
-  12 | contract Pair {
-> 13 |   receive(src: B?) {
-         ^~~~~~~~~~~~~~~~~~
-  14 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-9 1`] = `
-"<unknown>:13:3: Receive function can only accept message
-Line 13, col 3:
-  12 | contract Pair {
-> 13 |   receive(src: B) {
-         ^~~~~~~~~~~~~~~~~
-  14 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-10 1`] = `
-"<unknown>:13:3: Receive function can only accept message, Slice or String
-Line 13, col 3:
-  12 | contract Pair {
-> 13 |   receive(src: Int) {
-         ^~~~~~~~~~~~~~~~~~~
-  14 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-11 1`] = `
-"<unknown>:12:23: Type Point not found
-Line 12, col 23:
-  11 |     }
-> 12 |     get fun hello2(): Point {
-                             ^~~~~
-  13 |         return 0;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-12 1`] = `
-"<unknown>:12:1: Type "Main" already exists
-Line 12, col 1:
-  11 | 
-> 12 | struct Main {
-       ^~~~~~~~~~~~~
-  13 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-13 1`] = `
-"<unknown>:12:1: Type "Main" already exists
-Line 12, col 1:
-  11 | 
-> 12 | struct Main {
-       ^~~~~~~~~~~~~
-  13 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-14 1`] = `
-"<unknown>:12:1: Type "Main" already exists
-Line 12, col 1:
-  11 | 
-> 12 | contract Main {
-       ^~~~~~~~~~~~~~~
-  13 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-15 1`] = `
-"<unknown>:12:1: Struct "Main" must have at least one field
-Line 12, col 1:
-  11 | 
-> 12 | struct Main {
-       ^~~~~~~~~~~~~
-  13 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-16 1`] = `
-"<unknown>:16:1: Struct "Main" must have at least one field
-Line 16, col 1:
-  15 | 
-> 16 | struct Main {
-       ^~~~~~~~~~~~~
-  17 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-17 1`] = `
-"<unknown>:8:1: Function "hello" already exists in type "Main"
-Line 8, col 1:
-  7 | 
-> 8 | contract Main {
-      ^~~~~~~~~~~~~~~
-  9 |     fun hello(a: Main): Int {
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-18 1`] = `
-"<unknown>:9:24: Argument name "a" is already used
-Line 9, col 24:
-   8 | contract Main {
->  9 |     fun hello(a: Bool, a: Int): Int {
-                              ^~~~~~
-  10 | 
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-19 1`] = `
-"<unknown>:13:5: Init function already exists
-Line 13, col 5:
-  12 | 
-> 13 |     init(a: Bool) {
-           ^~~~~~~~~~~~~~~
-  14 | 
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-20 1`] = `
-"<unknown>:12:1: Function "hello" already exists in type "Main"
-Line 12, col 1:
-  11 | 
-> 12 | extends fun hello(self: Main): Bool {
-       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  13 |     return true;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-21 1`] = `
-"<unknown>:17:3: Bounce receive function can only accept bounced message, message or Slice
-Line 17, col 3:
-  16 |   
-> 17 |   bounced(src: Int) {
-         ^~~~~~~~~~~~~~~~~~~
-  18 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-22 1`] = `
-"<unknown>:24:3: Bounce receive function for "A" already exists
-Line 24, col 3:
-  23 |   
-> 24 |   bounced(msg: bounced<A>) {
-         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-  25 |   }
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-23 1`] = `
-"<unknown>:24:3: Fallback bounce receive function already exists
-Line 24, col 3:
-  23 |   
-> 24 |   bounced(msg: Slice) {
-         ^~~~~~~~~~~~~~~~~~~~~
-  25 |   }
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-24 1`] = `
-"<unknown>:15:3: bounced<A> is a runtime only type and can't be used as field
-Line 15, col 3:
-  14 | contract Test {
-> 15 |   src: bounced<A>;
-         ^~~~~~~~~~~~~~~
-  16 |   init() {}
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-25 1`] = `
+exports[`resolveDescriptors should fail descriptors for const-eval-overflow 1`] = `
 "<unknown>:8:21: Cannot evaluate constant expression due to integer overflow
 Line 8, col 21:
   7 | 
@@ -258,25 +10,107 @@ Line 8, col 21:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for case-26 1`] = `
-"<unknown>:1:1: Static function "ton" already exists
-Line 1, col 1:
-> 1 | fun ton() {
-      ^~~~~~~~~~~
-  2 | 
+exports[`resolveDescriptors should fail descriptors for contract-bounced-receiver-int 1`] = `
+"<unknown>:17:3: Bounce receive function can only accept bounced message, message or Slice
+Line 17, col 3:
+  16 |   
+> 17 |   bounced(src: Int) {
+         ^~~~~~~~~~~~~~~~~~~
+  18 |     
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for case-27 1`] = `
-"<unknown>:1:1: Static function "dumpStack" already exists
-Line 1, col 1:
-> 1 | fun dumpStack() {
-      ^~~~~~~~~~~~~~~~~
-  2 | 
+exports[`resolveDescriptors should fail descriptors for contract-bounced-storage-var 1`] = `
+"<unknown>:15:3: bounced<A> is a runtime only type and can't be used as field
+Line 15, col 3:
+  14 | contract Test {
+> 15 |   src: bounced<A>;
+         ^~~~~~~~~~~~~~~
+  16 |   init() {}
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for case-28 1`] = `
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced-fallback-receiver 1`] = `
+"<unknown>:24:3: Fallback bounce receive function already exists
+Line 24, col 3:
+  23 |   
+> 24 |   bounced(msg: Slice) {
+         ^~~~~~~~~~~~~~~~~~~~~
+  25 |   }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced-receiver 1`] = `
+"<unknown>:24:3: Bounce receive function for "A" already exists
+Line 24, col 3:
+  23 |   
+> 24 |   bounced(msg: bounced<A>) {
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  25 |   }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-init 1`] = `
+"<unknown>:13:5: Init function already exists
+Line 13, col 5:
+  12 | 
+> 13 |     init(a: Bool) {
+           ^~~~~~~~~~~~~~~
+  14 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-storage-var 1`] = `
+"<unknown>:11:3: Field "b" already exists
+Line 11, col 3:
+  10 |   b: Int;
+> 11 |   b: Int;
+         ^~~~~~
+  12 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-missing-type 1`] = `
+"<unknown>:12:23: Type Point not found
+Line 12, col 23:
+  11 |     }
+> 12 |     get fun hello2(): Point {
+                             ^~~~~
+  13 |         return 0;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-receiver-int 1`] = `
+"<unknown>:13:3: Receive function can only accept message, Slice or String
+Line 13, col 3:
+  12 | contract Pair {
+> 13 |   receive(src: Int) {
+         ^~~~~~~~~~~~~~~~~~~
+  14 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-receiver-optional-msg 1`] = `
+"<unknown>:13:3: Receive function cannot have optional argument
+Line 13, col 3:
+  12 | contract Pair {
+> 13 |   receive(src: B?) {
+         ^~~~~~~~~~~~~~~~~~
+  14 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-receiver-struct 1`] = `
+"<unknown>:13:3: Receive function can only accept message
+Line 13, col 3:
+  12 | contract Pair {
+> 13 |   receive(src: B) {
+         ^~~~~~~~~~~~~~~~~
+  14 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for expr-bitwise-not-bool-in-const1 1`] = `
 "<unknown>:4:18: Cannot reduce expression to a constant integer
 Line 4, col 18:
   3 | 
@@ -285,12 +119,159 @@ Line 4, col 18:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for case-29 1`] = `
+exports[`resolveDescriptors should fail descriptors for expr-bitwise-not-bool-in-const2 1`] = `
 "<unknown>:4:17: Cannot reduce expression to a constant boolean
 Line 4, col 17:
   3 | 
 > 4 | const a: Bool = ~ true;
                       ^~~~~~
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for getter-outside-contract 1`] = `
+"<unknown>:8:1: Getters must be defined within a contract
+Line 8, col 1:
+  7 | 
+> 8 | get fun sample(a: Int): Int {
+      ^~~
+  9 |     return 0;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for method-first-param-not-self1 1`] = `
+"<unknown>:8:17: Extend function must have first argument named "self"
+Line 8, col 17:
+  7 | 
+> 8 | extends fun inc(a: Int): Int {
+                      ^~~~~~
+  9 |     return a + 1;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for method-first-param-not-self2 1`] = `
+"<unknown>:8:17: Argument name "self" is reserved
+Line 8, col 17:
+  7 | 
+> 8 | fun inc(a: Int, self: Int): Int {
+                      ^~~~~~~~~
+  9 |     return a + 1 + self;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for native-fun-getter 1`] = `
+"<unknown>:9:1: Native functions cannot be getters
+Line 9, col 1:
+  8 | @name(hello_world)
+> 9 | get native sample(a: Int): Int;
+      ^~~
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for scope-contract-shadows-contract 1`] = `
+"<unknown>:12:1: Type "Main" already exists
+Line 12, col 1:
+  11 | 
+> 12 | contract Main {
+       ^~~~~~~~~~~~~~~
+  13 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for scope-duplicate-method 1`] = `
+"<unknown>:12:1: Function "hello" already exists in type "Main"
+Line 12, col 1:
+  11 | 
+> 12 | extends fun hello(self: Main): Bool {
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  13 |     return true;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for scope-fun-shadows-builtin-dumpStack 1`] = `
+"<unknown>:1:1: Static function "dumpStack" already exists
+Line 1, col 1:
+> 1 | fun dumpStack() {
+      ^~~~~~~~~~~~~~~~~
+  2 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for scope-fun-shadows-builtin-ton 1`] = `
+"<unknown>:1:1: Static function "ton" already exists
+Line 1, col 1:
+> 1 | fun ton() {
+      ^~~~~~~~~~~
+  2 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for scope-fun-shadows-fun 1`] = `
+"<unknown>:16:1: Struct "Main" must have at least one field
+Line 16, col 1:
+  15 | 
+> 16 | struct Main {
+       ^~~~~~~~~~~~~
+  17 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for scope-internal-fun-shadows-internal-fun 1`] = `
+"<unknown>:8:1: Function "hello" already exists in type "Main"
+Line 8, col 1:
+  7 | 
+> 8 | contract Main {
+      ^~~~~~~~~~~~~~~
+  9 |     fun hello(a: Main): Int {
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for scope-param-shadows-param 1`] = `
+"<unknown>:9:24: Argument name "a" is already used
+Line 9, col 24:
+   8 | contract Main {
+>  9 |     fun hello(a: Bool, a: Int): Int {
+                              ^~~~~~
+  10 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for scope-struct-shadows-contract 1`] = `
+"<unknown>:12:1: Type "Main" already exists
+Line 12, col 1:
+  11 | 
+> 12 | struct Main {
+       ^~~~~~~~~~~~~
+  13 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for scope-struct-shadows-struct 1`] = `
+"<unknown>:12:1: Type "Main" already exists
+Line 12, col 1:
+  11 | 
+> 12 | struct Main {
+       ^~~~~~~~~~~~~
+  13 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for struct-duplicate-field 1`] = `
+"<unknown>:11:3: Field "b" already exists
+Line 11, col 3:
+  10 |   b: Int;
+> 11 |   b: Int;
+         ^~~~~~
+  12 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for struct-empty-not-allowed 1`] = `
+"<unknown>:12:1: Struct "Main" must have at least one field
+Line 12, col 1:
+  11 | 
+> 12 | struct Main {
+       ^~~~~~~~~~~~~
+  13 |     
 "
 `;
 

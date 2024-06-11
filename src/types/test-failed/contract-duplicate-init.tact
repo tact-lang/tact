@@ -6,7 +6,7 @@ trait BaseTrait {
 }
 
 contract Main {
-    init(a: Bool, a: Int) {
+    init(a: Bool, b: Int) {
 
     }
 
