@@ -50,6 +50,46 @@ Line 24, col 3:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-const-string-receiver 1`] = `
+"<unknown>:20:5: Receive function for string "string 1" already exists
+Line 20, col 5:
+  19 | 
+> 20 |     receive(string1) {
+           ^~~~~~~~~~~~~~~~~~
+  21 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-const-string-receiver2 1`] = `
+"<unknown>:15:5: Receive function for "string 1" already exists
+Line 15, col 5:
+  14 | 
+> 15 |     receive("string 1") {
+           ^~~~~~~~~~~~~~~~~~~~~
+  16 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-const-string-receiver3 1`] = `
+"<unknown>:20:5: Constant "string3" not found
+Line 20, col 5:
+  19 | 
+> 20 |     receive(string3) {
+           ^~~~~~~~~~~~~~~~~~
+  21 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-const-string-receiver4 1`] = `
+"<unknown>:15:5: Receive function for string "string 1" already exists
+Line 15, col 5:
+  14 | 
+> 15 |     receive(self.string1) {
+           ^~~~~~~~~~~~~~~~~~~~~~~
+  16 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-duplicate-external-fallback-receiver 1`] = `
 "<unknown>:20:5: Empty receive function already exists
 Line 20, col 5:
@@ -87,36 +127,6 @@ Line 12, col 23:
 > 12 |     get fun hello2(): Point {
                              ^~~~~
   13 |         return 0;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for contract-receiver-const-string-duplicate 1`] = `
-"<unknown>:20:5: Receive function for string "string 1" already exists
-Line 20, col 5:
-  19 | 
-> 20 |     receive(string1) {
-           ^~~~~~~~~~~~~~~~~~
-  21 | 
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for contract-receiver-const-string-duplicate2 1`] = `
-"<unknown>:15:5: Receive function for "string 1" already exists
-Line 15, col 5:
-  14 | 
-> 15 |     receive("string 1") {
-           ^~~~~~~~~~~~~~~~~~~~~
-  16 | 
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for contract-receiver-const-string-duplicate3 1`] = `
-"<unknown>:20:5: Constant "string3" not found
-Line 20, col 5:
-  19 | 
-> 20 |     receive(string3) {
-           ^~~~~~~~~~~~~~~~~~
-  21 | 
 "
 `;
 

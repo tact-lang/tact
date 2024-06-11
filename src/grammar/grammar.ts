@@ -353,7 +353,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             kind: "def_receive",
             selector: {
                 kind: "internal-const-comment",
-                comment: comment.astOfExpression(),
+                comment: comment.astOfLValue(),
             },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
@@ -430,7 +430,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             kind: "def_receive",
             selector: {
                 kind: "external-const-comment",
-                comment: comment.astOfExpression(),
+                comment: comment.astOfLValue(),
             },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),

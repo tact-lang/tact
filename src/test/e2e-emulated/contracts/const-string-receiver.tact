@@ -3,6 +3,8 @@ const string2: String = "string 2";
 const string3: String = "string 3";
 
 contract ConstStringReceiverTester {
+    const string4: String = "string 4";
+
     receive() { }
 
     receive("string 1") {
@@ -15,5 +17,9 @@ contract ConstStringReceiverTester {
 
     receive(string3) {
         self.reply(string3.asComment());
+    }
+
+    receive(self.string4) {
+        self.reply(self.string4.asComment());
     }
 }

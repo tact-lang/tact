@@ -26,6 +26,7 @@ describe("constant string receiver", () => {
         await contract.send(treasure, { value: toNano("10") }, "string 1");
         await contract.send(treasure, { value: toNano("10") }, "string 2");
         await contract.send(treasure, { value: toNano("10") }, "string 3");
+        await contract.send(treasure, { value: toNano("10") }, "string 4");
         await system.run();
 
         expect(tracker.collect()).toMatchSnapshot();

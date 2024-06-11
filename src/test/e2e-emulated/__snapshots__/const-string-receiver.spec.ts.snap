@@ -80,6 +80,12 @@ exports[`constant string receiver should implement const string receiver correct
   "receivers": [
     {
       "message": {
+        "kind": "empty",
+      },
+      "receiver": "internal",
+    },
+    {
+      "message": {
         "kind": "text",
         "text": "string 1",
       },
@@ -96,6 +102,13 @@ exports[`constant string receiver should implement const string receiver correct
       "message": {
         "kind": "text",
         "text": "string 3",
+      },
+      "receiver": "internal",
+    },
+    {
+      "message": {
+        "kind": "text",
+        "text": "string 4",
       },
       "receiver": "internal",
     },
@@ -244,14 +257,14 @@ exports[`constant string receiver should implement const string receiver correct
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQDg3ce4axASb2iP16WY4k7nP9uV--zZxPfmGYbm8ZF_YPj4",
+          "to": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
           "type": "internal",
           "value": "10",
         },
       },
       {
         "$type": "processed",
-        "gasUsed": 6689n,
+        "gasUsed": 6857n,
       },
       {
         "$type": "sent",
@@ -262,10 +275,10 @@ exports[`constant string receiver should implement const string receiver correct
               "type": "text",
             },
             "bounce": true,
-            "from": "kQDg3ce4axASb2iP16WY4k7nP9uV--zZxPfmGYbm8ZF_YPj4",
+            "from": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
             "to": "@treasure(treasure)",
             "type": "internal",
-            "value": "9.992115",
+            "value": "9.991947",
           },
         ],
       },
@@ -283,14 +296,14 @@ exports[`constant string receiver should implement const string receiver correct
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQDg3ce4axASb2iP16WY4k7nP9uV--zZxPfmGYbm8ZF_YPj4",
+          "to": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
           "type": "internal",
           "value": "10",
         },
       },
       {
         "$type": "processed",
-        "gasUsed": 9300n,
+        "gasUsed": 9468n,
       },
       {
         "$type": "sent",
@@ -301,10 +314,10 @@ exports[`constant string receiver should implement const string receiver correct
               "type": "text",
             },
             "bounce": true,
-            "from": "kQDg3ce4axASb2iP16WY4k7nP9uV--zZxPfmGYbm8ZF_YPj4",
+            "from": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
             "to": "@treasure(treasure)",
             "type": "internal",
-            "value": "9.989504",
+            "value": "9.989336",
           },
         ],
       },
@@ -322,14 +335,14 @@ exports[`constant string receiver should implement const string receiver correct
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQDg3ce4axASb2iP16WY4k7nP9uV--zZxPfmGYbm8ZF_YPj4",
+          "to": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
           "type": "internal",
           "value": "10",
         },
       },
       {
         "$type": "processed",
-        "gasUsed": 9377n,
+        "gasUsed": 9581n,
       },
       {
         "$type": "sent",
@@ -340,10 +353,49 @@ exports[`constant string receiver should implement const string receiver correct
               "type": "text",
             },
             "bounce": true,
-            "from": "kQDg3ce4axASb2iP16WY4k7nP9uV--zZxPfmGYbm8ZF_YPj4",
+            "from": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
             "to": "@treasure(treasure)",
             "type": "internal",
-            "value": "9.989427",
+            "value": "9.989223",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    "$seq": 4,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "string 4",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 9730n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "string 4",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "9.989074",
           },
         ],
       },

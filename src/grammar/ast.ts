@@ -367,7 +367,7 @@ export type ASTReceiveType =
       }
     | {
           kind: "internal-const-comment";
-          comment: ASTId;
+          comment: ASTLvalueRef[];
       }
     | {
           kind: "bounce";
@@ -386,7 +386,7 @@ export type ASTReceiveType =
       }
     | {
           kind: "external-const-comment";
-          comment: ASTId;
+          comment: ASTLvalueRef[];
       };
 
 export type ASTReceive = {

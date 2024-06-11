@@ -1033,10 +1033,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         const internal =
                             d.selector.kind === "internal-const-comment";
 
-                        const commentId = d.selector.comment.value;
-                        const commentConstant =
-                            s.constants.find((v) => v.name === commentId) ??
-                            staticConstants.get(commentId);
+                        if (d.selector.comment.length > 2) {
+                            // TEMPORARY
+                            // to be reworked after #284 and #400 are resolved
+                            throwSyntaxError(
+                                "Invalid comment receiver selector",
+                                d.ref,
+                            );
+                        }
+
+                        const isSelf =
+                            d.selector.comment.length === 2 &&
+                            d.selector.comment[0].name === "self";
+
+                        const commentId =
+                            d.selector.comment[d.selector.comment.length - 1]
+                                .name;
+                        const commentConstant = isSelf
+                            ? s.constants.find((v) => v.name === commentId)
+                            : staticConstants.get(commentId);
 
                         if (!commentConstant) {
                             throwSyntaxError(
