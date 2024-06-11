@@ -1033,7 +1033,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         const internal =
                             d.selector.kind === "internal-const-comment";
 
-                        if (d.selector.comment.length > 2) {
+                        if (
+                            d.selector.comment.length > 2 ||
+                            (d.selector.comment.length == 2 &&
+                                d.selector.comment[0].name !== "self")
+                        ) {
                             // TEMPORARY
                             // to be reworked after #284 and #400 are resolved
                             throwSyntaxError(

@@ -90,6 +90,16 @@ Line 15, col 5:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-const-string-receiver5 1`] = `
+"<unknown>:25:5: Invalid comment receiver selector
+Line 25, col 5:
+  24 | 
+> 25 |     receive(self.struct.s) {
+           ^~~~~~~~~~~~~~~~~~~~~~~~
+  26 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-duplicate-external-fallback-receiver 1`] = `
 "<unknown>:20:5: Empty receive function already exists
 Line 20, col 5:
