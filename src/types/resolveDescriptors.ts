@@ -2,7 +2,6 @@ import {
     ASTConstant,
     ASTField,
     ASTFunction,
-    ASTId,
     ASTInitFunction,
     ASTNativeFunction,
     ASTNode,
