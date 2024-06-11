@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
-import { AddressTester } from "./features/output/address_AddressTester";
+import { AddressTester } from "./contracts/output/address_AddressTester";
 import { consoleLogger } from "../logger";
 
 describe("feature-address", () => {

@@ -1,7 +1,7 @@
 import { OpenedContract, beginCell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
-import { DNSTester } from "./features/output/dns_DNSTester";
+import { DNSTester } from "./contracts/output/dns_DNSTester";
 
 function convertToInternal(src: string) {
     if (src === ".") {

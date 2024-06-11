@@ -1,8 +1,8 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
-import { SampleContract2 } from "./features/output/bounced-routing_SampleContract2";
-import { SampleContract } from "./features/output/bounced-routing_SampleContract";
+import { SampleContract2 } from "./contracts/output/bounced-routing_SampleContract2";
+import { SampleContract } from "./contracts/output/bounced-routing_SampleContract";
 
 describe("feature-strings", () => {
     beforeEach(() => {

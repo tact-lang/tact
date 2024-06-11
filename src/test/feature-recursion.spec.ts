@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
-import { RecursionTester } from "./features/output/recursion_RecursionTester";
+import { RecursionTester } from "./contracts/output/recursion_RecursionTester";
 
 describe("feature-recursion", () => {
     beforeEach(() => {

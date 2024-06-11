@@ -1,7 +1,7 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
-import { IntrinsicsTester } from "./features/output/intrinsics_IntrinsicsTester";
+import { IntrinsicsTester } from "./contracts/output/intrinsics_IntrinsicsTester";
 import { sha256_sync } from "@ton/crypto";
 
 describe("feature-intrinsics", () => {

@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
-import { MyContract } from "./features/output/implicit-init_MyContract";
+import { MyContract } from "./contracts/output/implicit-init_MyContract";
 
 describe("feature-implicit-init", () => {
     beforeEach(() => {

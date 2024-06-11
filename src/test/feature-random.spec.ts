@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
-import { RandomContract } from "./features/output/random_RandomContract";
+import { RandomContract } from "./contracts/output/random_RandomContract";
 
 describe("feature-random", () => {
     beforeEach(() => {

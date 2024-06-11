@@ -1,7 +1,7 @@
 import { beginCell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
-import { StringsTester } from "./features/output/strings_StringsTester";
+import { StringsTester } from "./contracts/output/strings_StringsTester";
 
 describe("feature-strings", () => {
     beforeEach(() => {

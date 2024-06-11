@@ -1,8 +1,8 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
-import { A } from "./features/output/ordering_A";
-import { B } from "./features/output/ordering_B";
+import { A } from "./contracts/output/ordering_A";
+import { B } from "./contracts/output/ordering_B";
 
 describe("feature-ordering", () => {
     beforeEach(() => {

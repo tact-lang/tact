@@ -9,7 +9,7 @@ module.exports = async () => {
                 __dirname,
                 "src",
                 "test",
-                "features",
+                "contracts",
                 "output",
                 "*.boc",
             ),

@@ -1,7 +1,7 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
-import { SendTester } from "./features/output/send_SendTester";
+import { SendTester } from "./contracts/output/send_SendTester";
 
 describe("feature-send", () => {
     beforeEach(() => {

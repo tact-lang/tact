@@ -3,7 +3,7 @@ import { __DANGER_resetNodeId } from "../grammar/ast";
 import {
     MapTestContract,
     SomeStruct,
-} from "./features/output/maps_MapTestContract";
+} from "./contracts/output/maps_MapTestContract";
 import { ContractSystem } from "@tact-lang/emulator";
 import { beginCell, toNano } from "@ton/core";
 import { ComputeError } from "@ton/core";

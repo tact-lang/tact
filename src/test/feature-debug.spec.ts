@@ -1,7 +1,7 @@
 import { Address, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../grammar/ast";
-import { Debug } from "./features/output/debug_Debug";
+import { Debug } from "./contracts/output/debug_Debug";
 import path from "path";
 
 describe("feature-debug", () => {
@@ -31,7 +31,7 @@ describe("feature-debug", () => {
             res.indexOf("=== VM LOGS ===") - 2,
         );
 
-        const filePath = path.normalize("src/test/features/debug.tact");
+        const filePath = path.normalize("src/test/contracts/debug.tact");
 
         expect(debugLogs).toStrictEqual(`[DEBUG] File ${filePath}:10:9
 stack(2 values) : 10000000000 () 
