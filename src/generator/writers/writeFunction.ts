@@ -91,7 +91,11 @@ export function writeStatement(
         return;
     } else if (f.kind === "statement_let") {
         // Contract/struct case
-        const t = resolveTypeRef(ctx.ctx, f.type);
+        const t =
+            f.type === null
+                ? getExpType(ctx.ctx, f.expression)
+                : resolveTypeRef(ctx.ctx, f.type);
+
         if (t.kind === "ref") {
             const tt = getType(ctx.ctx, t.name);
             if (tt.kind === "contract" || tt.kind === "struct") {
@@ -110,30 +114,6 @@ export function writeStatement(
 
         ctx.append(
             `${resolveFuncType(t, ctx)} ${id(f.name)} = ${writeCastedExpression(f.expression, t, ctx)};`,
-        );
-        return;
-    } else if (f.kind === "statement_let_no_type") {
-        const varType = getExpType(ctx.ctx, f.expression);
-
-        // Contract/struct case
-        if (varType.kind === "ref") {
-            const tt = getType(ctx.ctx, varType.name);
-            if (tt.kind === "contract" || tt.kind === "struct") {
-                if (varType.optional) {
-                    ctx.append(
-                        `tuple ${id(f.name)} = ${writeCastedExpression(f.expression, varType, ctx)};`,
-                    );
-                } else {
-                    ctx.append(
-                        `var ${resolveFuncTypeUnpack(varType, id(f.name), ctx)} = ${writeCastedExpression(f.expression, varType, ctx)};`,
-                    );
-                }
-                return;
-            }
-        }
-
-        ctx.append(
-            `${resolveFuncType(varType, ctx)} ${id(f.name)} = ${writeCastedExpression(f.expression, varType, ctx)};`,
         );
         return;
     } else if (f.kind === "statement_assign") {

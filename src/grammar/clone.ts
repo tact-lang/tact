@@ -28,12 +28,6 @@ export function cloneNode<T extends ASTNode>(src: T): T {
     } else if (src.kind === "statement_let") {
         return cloneASTNode({
             ...src,
-            type: cloneASTNode(src.type),
-            expression: cloneNode(src.expression),
-        });
-    } else if (src.kind === "statement_let_no_type") {
-        return cloneASTNode({
-            ...src,
             expression: cloneNode(src.expression),
         });
     } else if (src.kind === "statement_condition") {

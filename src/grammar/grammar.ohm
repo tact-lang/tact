@@ -100,8 +100,7 @@ Tact {
 
     StatementBlock = "{" Statement* "}"
 
-    StatementLet = let id ":" Type "=" Expression ";" --withType
-                 | let id "=" Expression ";" --withoutType
+    StatementLet = let id (":" Type)? "=" Expression ";"
 
     StatementReturn = return Expression? ";"
 
