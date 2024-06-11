@@ -12,7 +12,7 @@ trait AbstractTrait {
 contract Contract {
     value: Int;
     init(arg: Bool) {
-        self.update();
+        self.execute();
         self.value = 1;
     }
 
