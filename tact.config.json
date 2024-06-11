@@ -90,12 +90,25 @@
       "output": "./src/test/e2e-emulated/contracts/output"
     },
     {
+      "name": "mutating-method-chaining",
+      "path": "./src/test/e2e-emulated/contracts/mutating-method-chaining.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
       "name": "optionals",
       "path": "./src/test/e2e-emulated/contracts/optionals.tact",
       "output": "./src/test/e2e-emulated/contracts/output",
       "options": {
         "debug": true,
         "masterchain": true
+      }
+    },
+    {
+      "name": "sample-jetton",
+      "path": "./src/test/e2e-emulated/contracts/sample-jetton.tact",
+      "output": "./src/test/e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
       }
     },
     {
@@ -288,9 +301,9 @@
       }
     },
     {
-      "name": "bugs",
-      "path": "./src/test/bugs/bugs.tact",
-      "output": "./src/test/bugs/output",
+      "name": "codegen",
+      "path": "./src/test/codegen/all-contracts.tact",
+      "output": "./src/test/codegen/output",
       "options": {
         "debug": true
       }

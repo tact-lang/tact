@@ -7,6 +7,10 @@ contract StringsTester {
         // Deploy
     }
 
+    receive("backtick-test") {
+        require(1 == 2, "condition can`t be...");
+    }
+
     get fun constantString(): String {
         return "test string";
     }

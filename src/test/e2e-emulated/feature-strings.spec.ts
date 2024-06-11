@@ -15,6 +15,10 @@ describe("feature-strings", () => {
         await contract.send(treasure, { value: toNano("10") }, null);
         await system.run();
 
+        expect(contract.abi.errors!["31733"].message).toStrictEqual(
+            "condition can`t be...",
+        );
+
         // Check methods
         expect(await contract.getConstantString()).toBe("test string");
         expect(await contract.getConstantStringUnicode()).toBe("привет мир 👀");

@@ -2837,6 +2837,355 @@ mutates extends native inc(self: Int): Int;,
 
 exports[`resolveDescriptors should resolve descriptors for item-native-mutating-method 2`] = `{}`;
 
+exports[`resolveDescriptors should resolve descriptors for scope-loops 1`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
+{
+  "scopeIf": {
+    "args": [],
+    "ast": {
+      "args": [],
+      "attributes": [],
+      "id": 36,
+      "kind": "def_function",
+      "name": "scopeIf",
+      "origin": "user",
+      "ref": fun scopeIf() {
+    if (true) {
+        let a: Int = 0;
+    }
+    let a: String = "abc";
+},
+      "return": null,
+      "statements": [
+        {
+          "elseif": null,
+          "expression": {
+            "id": 28,
+            "kind": "boolean",
+            "ref": true,
+            "value": true,
+          },
+          "falseStatements": null,
+          "id": 32,
+          "kind": "statement_condition",
+          "ref": if (true) {
+        let a: Int = 0;
+    },
+          "trueStatements": [
+            {
+              "expression": {
+                "id": 30,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 31,
+              "kind": "statement_let",
+              "name": "a",
+              "ref": let a: Int = 0;,
+              "type": {
+                "id": 29,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+        },
+        {
+          "expression": {
+            "id": 34,
+            "kind": "string",
+            "ref": "abc",
+            "value": "abc",
+          },
+          "id": 35,
+          "kind": "statement_let",
+          "name": "a",
+          "ref": let a: String = "abc";,
+          "type": {
+            "id": 33,
+            "kind": "type_ref_simple",
+            "name": "String",
+            "optional": false,
+            "ref": String,
+          },
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "scopeIf",
+    "origin": "user",
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+  "scopeRepeat": {
+    "args": [],
+    "ast": {
+      "args": [],
+      "attributes": [],
+      "id": 18,
+      "kind": "def_function",
+      "name": "scopeRepeat",
+      "origin": "user",
+      "ref": fun scopeRepeat() {
+    repeat (1) {
+        let a: Int = 0;
+    }
+    let a: String = "abc";
+},
+      "return": null,
+      "statements": [
+        {
+          "id": 14,
+          "iterations": {
+            "id": 10,
+            "kind": "number",
+            "ref": 1,
+            "value": 1n,
+          },
+          "kind": "statement_repeat",
+          "ref": repeat (1) {
+        let a: Int = 0;
+    },
+          "statements": [
+            {
+              "expression": {
+                "id": 12,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 13,
+              "kind": "statement_let",
+              "name": "a",
+              "ref": let a: Int = 0;,
+              "type": {
+                "id": 11,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+        },
+        {
+          "expression": {
+            "id": 16,
+            "kind": "string",
+            "ref": "abc",
+            "value": "abc",
+          },
+          "id": 17,
+          "kind": "statement_let",
+          "name": "a",
+          "ref": let a: String = "abc";,
+          "type": {
+            "id": 15,
+            "kind": "type_ref_simple",
+            "name": "String",
+            "optional": false,
+            "ref": String,
+          },
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "scopeRepeat",
+    "origin": "user",
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+  "scopeUntil": {
+    "args": [],
+    "ast": {
+      "args": [],
+      "attributes": [],
+      "id": 9,
+      "kind": "def_function",
+      "name": "scopeUntil",
+      "origin": "user",
+      "ref": fun scopeUntil() {
+    do {
+        let a: Int = 0;
+    } until (true);
+    let a: String = "abc";
+},
+      "return": null,
+      "statements": [
+        {
+          "condition": {
+            "id": 1,
+            "kind": "boolean",
+            "ref": true,
+            "value": true,
+          },
+          "id": 5,
+          "kind": "statement_until",
+          "ref": do {
+        let a: Int = 0;
+    } until (true);,
+          "statements": [
+            {
+              "expression": {
+                "id": 3,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 4,
+              "kind": "statement_let",
+              "name": "a",
+              "ref": let a: Int = 0;,
+              "type": {
+                "id": 2,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+        },
+        {
+          "expression": {
+            "id": 7,
+            "kind": "string",
+            "ref": "abc",
+            "value": "abc",
+          },
+          "id": 8,
+          "kind": "statement_let",
+          "name": "a",
+          "ref": let a: String = "abc";,
+          "type": {
+            "id": 6,
+            "kind": "type_ref_simple",
+            "name": "String",
+            "optional": false,
+            "ref": String,
+          },
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "scopeUntil",
+    "origin": "user",
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+  "scopeWhile": {
+    "args": [],
+    "ast": {
+      "args": [],
+      "attributes": [],
+      "id": 27,
+      "kind": "def_function",
+      "name": "scopeWhile",
+      "origin": "user",
+      "ref": fun scopeWhile() {
+    while (true) {
+        let a: Int = 0;
+    }
+    let a: String = "abc";
+},
+      "return": null,
+      "statements": [
+        {
+          "condition": {
+            "id": 19,
+            "kind": "boolean",
+            "ref": true,
+            "value": true,
+          },
+          "id": 23,
+          "kind": "statement_while",
+          "ref": while (true) {
+        let a: Int = 0;
+    },
+          "statements": [
+            {
+              "expression": {
+                "id": 21,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 22,
+              "kind": "statement_let",
+              "name": "a",
+              "ref": let a: Int = 0;,
+              "type": {
+                "id": 20,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+        },
+        {
+          "expression": {
+            "id": 25,
+            "kind": "string",
+            "ref": "abc",
+            "value": "abc",
+          },
+          "id": 26,
+          "kind": "statement_let",
+          "name": "a",
+          "ref": let a: String = "abc";,
+          "type": {
+            "id": 24,
+            "kind": "type_ref_simple",
+            "name": "String",
+            "optional": false,
+            "ref": String,
+          },
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "scopeWhile",
+    "origin": "user",
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+}
+`;
+
 exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
 {
   "BaseTrait": {

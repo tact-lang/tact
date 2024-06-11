@@ -7,7 +7,7 @@ struct Foo {
     s: Slice;
 }
 
-contract Issue211 {
+contract Tester {
     s: Slice;
     
     init() {

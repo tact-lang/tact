@@ -2,7 +2,7 @@ import "@stdlib/deploy";
 
 struct TokenInfo {
     ticker: String;
-    decimals: Int; // as uint8; // <------ ISSUE HERE, IF WE REMOVE "as uint8", THE CODE COMPILES WITHOUT PROBLEM
+    decimals: Int as uint8; // <------ ISSUE HERE, IF WE REMOVE "as uint8", THE CODE COMPILES WITHOUT PROBLEM
 }
 
 // messages can contain maps
