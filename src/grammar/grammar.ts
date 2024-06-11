@@ -596,7 +596,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
         return createNode({
             kind: "statement_let_no_type",
             name: arg1.sourceString,
-            expression: arg3.resolve_expression(),
+            expression: arg3.astOfExpression(),
             ref: createRef(this),
         });
     },

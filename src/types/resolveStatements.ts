@@ -193,7 +193,7 @@ function processStatements(
             const expressionType = getExpType(ctx, s.expression);
 
             // Add variable to statement context
-            if (sctx.vars[s.name]) {
+            if (sctx.vars.has(s.name)) {
                 throwError(`Variable already exists: ${s.name}`, s.ref);
             }
             sctx = addVariable(s.name, expressionType, sctx);
