@@ -64,5 +64,5 @@
     "resolveJsonModule": true
   },
   "include": ["src/", "examples/", "scripts/", "./jest.config.js"],
-  "exclude": ["**/*.bind.ts", "src/test/contracts/output/**/*"]
+  "exclude": ["**/*.bind.ts", "src/test/**/output/**/*"]
 }

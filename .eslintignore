@@ -2,8 +2,7 @@ node_modules/
 dist/
 coverage/
 **/output/
-./src/test/bugs/output/
-./src/test/contracts/output/
+src/test/**/output/
 src/func/funcfiftlib.js
 src/grammar/grammar.ohm*.ts
 src/grammar/grammar.ohm*.js
