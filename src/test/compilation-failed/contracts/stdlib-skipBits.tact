@@ -1,4 +1,4 @@
-contract MyContract {
+contract StdlibSkipBits {
     receive() {
         let s: Slice = beginCell().storeUint(123, 64).endCell().asSlice();
         let r: Int = s.loadUint(1);

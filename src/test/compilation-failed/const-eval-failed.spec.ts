@@ -1,8 +1,8 @@
 import { __DANGER_resetNodeId } from "../../grammar/ast";
-import { run } from "../../node";
 import { consoleLogger } from "../../logger";
+import { itShouldNotCompile } from "./util";
 
-describe("fail-bugs", () => {
+describe("fail-const-eval", () => {
     beforeAll(() => {
         jest.spyOn(consoleLogger, "error").mockImplementation(() => {});
     });
@@ -19,14 +19,13 @@ describe("fail-bugs", () => {
         (consoleLogger.error as jest.Mock).mockClear();
     });
 
-    it("should not compile issue 349", async () => {
-        const result = await run({
-            configPath: __dirname + "/tact.config.json",
-            projectNames: ["issue349"],
-        });
-        expect(result).toBe(false);
-        expect((consoleLogger.error as jest.Mock).mock.lastCall[0]).toContain(
-            'Type mismatch: "<void>" is not assignable to "Slice"',
-        );
+    itShouldNotCompile({
+        testName: "const-eval-div-by-zero",
+        errorMessage: "Cannot divide by zero",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-invalid-address",
+        errorMessage:
+            "FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N is not a valid address",
     });
 });

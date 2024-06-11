@@ -1,4 +1,4 @@
-contract ConstantTester {
+contract ConstEvalDivByZero {
     init() {
         
     }

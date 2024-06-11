@@ -1,6 +1,6 @@
 import "@stdlib/deploy";
 
-contract SampleTactContract with Deployable {
+contract ConstEvalInvalidAddress with Deployable {
     init() {
     }
     get fun test_address(): Address {

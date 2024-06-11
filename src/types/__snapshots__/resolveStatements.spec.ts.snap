@@ -200,6 +200,16 @@ Line 10, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for init-vars-analysis-implicit-init 1`] = `
+"<unknown>:4:1: Field "test_field" is not set
+Line 4, col 1:
+  3 | 
+> 4 | contract MyContract {
+      ^~~~~~~~~~~~~~~~~~~~~
+  5 |     counter: Int = 0;
+"
+`;
+
 exports[`resolveStatements should fail statements for init-vars-analysis-missing-storage-var 1`] = `
 "<unknown>:10:5: Field "value" is not set
 Line 10, col 5:

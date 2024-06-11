@@ -1,6 +1,7 @@
-import "@stdlib/deploy";
+primitive Int;
+trait BaseTrait {}
 
-contract MyContract with Deployable {
+contract MyContract {
     counter: Int = 0;
     test_field: Int;
 

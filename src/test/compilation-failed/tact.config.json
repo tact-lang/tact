@@ -1,0 +1,20 @@
+{
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/grammar/configSchema.json",
+  "projects": [
+    {
+      "name": "const-eval-invalid-address",
+      "path": "./contracts/const-eval-invalid-address.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-div-by-zero",
+      "path": "./contracts/const-eval-div-by-zero.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "stdlib-skipBits",
+      "path": "./contracts/stdlib-skipBits.tact",
+      "output": "./contracts/output"
+    }
+  ]
+}
