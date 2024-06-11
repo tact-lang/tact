@@ -1,6 +1,6 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../grammar/ast";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { IntegerLiteralsTester } from "./contracts/output/integer-literals_IntegerLiteralsTester";
 
 describe("feature-integer-literals", () => {

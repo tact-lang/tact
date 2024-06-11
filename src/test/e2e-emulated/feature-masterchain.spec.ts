@@ -1,6 +1,6 @@
 import { Address, beginCell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../grammar/ast";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { MasterchainTester } from "./contracts/output/masterchain_MasterchainTester";
 import { MasterchainTester as EnabledTester } from "./contracts/output/masterchain-allow_MasterchainTester";
 

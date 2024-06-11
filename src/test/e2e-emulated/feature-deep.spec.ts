@@ -1,6 +1,6 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../grammar/ast";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { A } from "./contracts/output/deep_A";
 import { B } from "./contracts/output/deep_B";
 import { C } from "./contracts/output/deep_C";

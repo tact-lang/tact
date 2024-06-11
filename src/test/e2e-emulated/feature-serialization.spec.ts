@@ -1,6 +1,6 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../grammar/ast";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { SerializationTester2 } from "./contracts/output/serialization-2_SerializationTester2";
 import { SerializationTester } from "./contracts/output/serialization_SerializationTester";
 

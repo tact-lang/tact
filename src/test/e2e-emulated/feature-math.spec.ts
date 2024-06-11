@@ -1,6 +1,6 @@
 import { beginCell, Dictionary, toNano } from "@ton/core";
 import { ContractSystem, randomAddress } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../grammar/ast";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { MathTester } from "./contracts/output/math_MathTester";
 
 describe("feature-math", () => {

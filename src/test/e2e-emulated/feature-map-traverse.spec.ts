@@ -1,6 +1,6 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../grammar/ast";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { MapTraverseTestContract } from "./contracts/output/map-traverse_MapTraverseTestContract";
 
 describe("feature-map-traversal", () => {

@@ -1,5 +1,5 @@
-import { randomAddress } from "./utils/randomAddress";
-import { __DANGER_resetNodeId } from "../grammar/ast";
+import { randomAddress } from "../utils/randomAddress";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
 import {
     ContractWithOptionals,
     SomeGenericStruct,
