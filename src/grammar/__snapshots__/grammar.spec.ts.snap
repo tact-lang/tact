@@ -178,16 +178,6 @@ Line 2, col 23:
 "
 `;
 
-exports[`grammar should fail liteal-no-undescores-if-leading-zero 1`] = `
-"<unknown>:2:15: Syntax error: expected ";" 
-Line 2, col 15:
-  1 | fun test_fun(): Int {
-> 2 |     return 012_3;
-                    ^
-  3 | }
-"
-`;
-
 exports[`grammar should fail literal-dec-trailing-underscore 1`] = `
 "<unknown>:2:16: Syntax error: expected a digit 
 Line 2, col 16:
@@ -224,6 +214,16 @@ Line 2, col 14:
   1 | fun test_fun(): Int {
 > 2 |     return 0b_00101010;
                    ^
+  3 | }
+"
+`;
+
+exports[`grammar should fail literal-no-underscores-if-leading-zero 1`] = `
+"<unknown>:2:15: Syntax error: expected ";" 
+Line 2, col 15:
+  1 | fun test_fun(): Int {
+> 2 |     return 012_3;
+                    ^
   3 | }
 "
 `;

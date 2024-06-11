@@ -1160,7 +1160,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
 
 exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-small-not-detected 2`] = `{}`;
 
-exports[`resolveDescriptors should resolve descriptors for contract-uinit-storage-vars 1`] = `
+exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-uninit-storage-vars 1`] = `
 {
   "BaseTrait": {
     "ast": {
@@ -1525,7 +1525,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-uinit-storag
 }
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-uinit-storage-vars 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-uninit-storage-vars 2`] = `{}`;
 
 exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies1 1`] = `
 {
