@@ -31,7 +31,9 @@ describe("feature-debug", () => {
             res.indexOf("=== VM LOGS ===") - 2,
         );
 
-        const filePath = path.normalize("src/test/e2e-emulated/contracts/debug.tact");
+        const filePath = path.normalize(
+            "src/test/e2e-emulated/contracts/debug.tact",
+        );
 
         expect(debugLogs).toStrictEqual(`[DEBUG] File ${filePath}:10:9
 stack(2 values) : 10000000000 () 
