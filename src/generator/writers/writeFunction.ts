@@ -90,6 +90,12 @@ export function writeStatement(
         }
         return;
     } else if (f.kind === "statement_let") {
+        // Underscore name case
+        if (f.name === "_") {
+            ctx.append(`${writeExpression(f.expression, ctx)};`);
+            return;
+        }
+
         // Contract/struct case
         const t =
             f.type === null

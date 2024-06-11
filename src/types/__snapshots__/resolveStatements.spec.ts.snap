@@ -600,6 +600,16 @@ Line 7, col 14:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-underscore-name-access3 1`] = `
+"<unknown>:9:12: Unable to resolve id _
+Line 9, col 12:
+   8 |     let _: Int = someImpureFunction();
+>  9 |     return _;
+                  ^
+  10 | }
+"
+`;
+
 exports[`resolveStatements should resolve statements for contract-receiver-bounced 1`] = `
 [
   [
@@ -1660,6 +1670,23 @@ exports[`resolveStatements should resolve statements for var-underscore-name-in-
   ],
   [
     "x",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-underscore-name-in-let 1`] = `
+[
+  [
+    "123",
+    "Int",
+  ],
+  [
+    "someImpureFunction()",
+    "Int",
+  ],
+  [
+    "123",
     "Int",
   ],
 ]

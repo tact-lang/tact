@@ -1,10 +1,17 @@
 contract UnderscoreVariableTestContract {
+    something: Int;
+
     init() {
-        // Nothing to do
+        self.something = 0;
     }
 
     receive() {
         // Nothing to do
+    }
+
+    fun increaseSomething(): Int {
+        self.something += 1;
+        return 123;
     }
 
     get fun test1(): Int {
@@ -38,5 +45,11 @@ contract UnderscoreVariableTestContract {
             x += k;
         }
         return x;
+    }
+
+    get fun test4(): Int {
+        let _: Int = self.increaseSomething();
+        let _: Int = self.increaseSomething();
+        return self.something;
     }
 }
