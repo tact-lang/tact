@@ -26,7 +26,7 @@ Tact {
          | map "<" typeId (as id)? "," typeId (as id)? ">" --map
          | "bounced" "<" typeId ">" --bounced
 
-    FieldDecl = id ":" Type (as id)? ("=" Expression)? ";"
+    FieldDecl = id ":" Type (as id)? ("=" Expression)?
 
     ConstantAttribute = virtual    --virtual
                       | override   --override
@@ -36,10 +36,11 @@ Tact {
 
     ConstantDeclaration = ConstantAttribute* const id ":" Type ";"
 
-    StructDecl = "struct" typeId "{" StructField* "}" --regular
-               | "message" ("(" integerLiteral ")")? typeId "{" StructField* "}" --message
+    StructDecl = "struct" typeId "{" StructFields "}" --regular
+               | "message" ("(" integerLiteral ")")? typeId "{" StructFields "}" --message
 
     StructField = FieldDecl
+    StructFields = ListOf<StructField, ";"> ";"?
 
     Contract = ContractAttribute* contract id (with NonemptyListOf<id,","> ","?)? "{" ContractItemDecl* "}"
 
@@ -58,7 +59,7 @@ Tact {
                   | ConstantDefinition
                   | ConstantDeclaration
 
-    StorageVar = FieldDecl
+    StorageVar = FieldDecl ";"
 
     ContractInit = "init" "(" ListOf<Parameter,","> ","? ")" "{" Statement* "}"
 
