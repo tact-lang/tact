@@ -3,9 +3,7 @@ const string2: String = "string 2";
 const string3: String = "string 3";
 
 contract ConstStringReceiverTester {
-    init() {
-        
-    }
+    receive() { }
 
     receive("string 1") {
         self.reply("string 1".asComment());
