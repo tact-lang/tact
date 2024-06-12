@@ -974,7 +974,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             },
                             ast: d,
                         });
-                    } else if (d.selector.kind === "internal-fallback") {
+                    } else if (
+                        d.selector.kind === "internal-fallback" ||
+                        d.selector.kind === "external-fallback"
+                    ) {
                         const internal =
                             d.selector.kind === "internal-fallback";
                         // Handle empty
