@@ -3,7 +3,7 @@ import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { ConstantTester } from "./contracts/output/constants_ConstantTester";
 
-describe("feature-constants", () => {
+describe("constants", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

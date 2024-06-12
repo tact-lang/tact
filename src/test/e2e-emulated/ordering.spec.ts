@@ -4,7 +4,7 @@ import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { A } from "./contracts/output/ordering_A";
 import { B } from "./contracts/output/ordering_B";
 
-describe("feature-ordering", () => {
+describe("ordering", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

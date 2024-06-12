@@ -5,7 +5,7 @@ import { A } from "./contracts/output/deep_A";
 import { B } from "./contracts/output/deep_B";
 import { C } from "./contracts/output/deep_C";
 
-describe("feature-random", () => {
+describe("random", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

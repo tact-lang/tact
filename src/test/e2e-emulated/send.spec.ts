@@ -3,7 +3,7 @@ import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { SendTester } from "./contracts/output/send_SendTester";
 
-describe("feature-send", () => {
+describe("send", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

@@ -4,7 +4,7 @@ import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { Debug } from "./contracts/output/debug_Debug";
 import path from "path";
 
-describe("feature-debug", () => {
+describe("debug", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

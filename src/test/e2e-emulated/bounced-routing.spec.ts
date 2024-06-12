@@ -4,7 +4,7 @@ import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { SampleContract2 } from "./contracts/output/bounced-routing_SampleContract2";
 import { SampleContract } from "./contracts/output/bounced-routing_SampleContract";
 
-describe("feature-strings", () => {
+describe("strings", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

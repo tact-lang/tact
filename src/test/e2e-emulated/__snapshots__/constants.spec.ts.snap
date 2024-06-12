@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`feature-constants should implement constants correctly 1`] = `
+exports[`constants should implement constants correctly 1`] = `
 ConstantTester {
   "abi": {
     "errors": {

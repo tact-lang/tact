@@ -4,7 +4,7 @@ import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { AddressTester } from "./contracts/output/address_AddressTester";
 import { consoleLogger } from "../../logger";
 
-describe("feature-address", () => {
+describe("address", () => {
     beforeAll(() => {
         jest.spyOn(consoleLogger, "error").mockImplementation(() => {});
     });

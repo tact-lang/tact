@@ -4,7 +4,7 @@ import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { MasterchainTester } from "./contracts/output/masterchain_MasterchainTester";
 import { MasterchainTester as EnabledTester } from "./contracts/output/masterchain-allow_MasterchainTester";
 
-describe("feature-masterchain", () => {
+describe("masterchain", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

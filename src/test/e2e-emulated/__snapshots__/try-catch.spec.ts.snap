@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`feature-ternary should implement try-catch statements correctly 1`] = `
+exports[`ternary should implement try-catch statements correctly 1`] = `
 [
   {
     "$seq": 1,

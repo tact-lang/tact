@@ -3,7 +3,7 @@ import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { IntegerLiteralsTester } from "./contracts/output/integer-literals_IntegerLiteralsTester";
 
-describe("feature-integer-literals", () => {
+describe("integer-literals", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

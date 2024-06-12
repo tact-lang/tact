@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`feature-send should bounce on unknown message 1`] = `
+exports[`send should bounce on unknown message 1`] = `
 [
   {
     "$seq": 1,
@@ -47,7 +47,7 @@ exports[`feature-send should bounce on unknown message 1`] = `
 ]
 `;
 
-exports[`feature-send should send reply correctly 1`] = `
+exports[`send should send reply correctly 1`] = `
 [
   {
     "$seq": 0,
@@ -94,7 +94,7 @@ exports[`feature-send should send reply correctly 1`] = `
 ]
 `;
 
-exports[`feature-send should send reply correctly 2`] = `
+exports[`send should send reply correctly 2`] = `
 [
   {
     "$seq": 1,

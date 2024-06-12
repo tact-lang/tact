@@ -4,7 +4,7 @@ import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { SerializationTester2 } from "./contracts/output/serialization-2_SerializationTester2";
 import { SerializationTester } from "./contracts/output/serialization_SerializationTester";
 
-describe("feature-serialization", () => {
+describe("serialization", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

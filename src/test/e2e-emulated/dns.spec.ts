@@ -31,7 +31,7 @@ function convertToInternal(src: string) {
     // return res;
 }
 
-describe("feature-dns", () => {
+describe("dns", () => {
     let contract: OpenedContract<DNSTester>;
 
     beforeEach(async () => {

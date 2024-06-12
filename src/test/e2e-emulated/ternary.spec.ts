@@ -3,7 +3,7 @@ import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { TernaryTester } from "./contracts/output/ternary_TernaryTester";
 
-describe("feature-ternary", () => {
+describe("ternary", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

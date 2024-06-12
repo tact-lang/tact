@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`feature-random should chain deep sequences correctly 1`] = `"kQDrBeBEkP7QP4-M2-FUSzRoUQK_AxvhYOKkIGSEHqmmjUqW"`;
+exports[`random should chain deep sequences correctly 1`] = `"kQDrBeBEkP7QP4-M2-FUSzRoUQK_AxvhYOKkIGSEHqmmjUqW"`;
 
-exports[`feature-random should chain deep sequences correctly 2`] = `"kQD4CriC3RmScKPAhCkviu-kHj1peUa71rGD7gERLfT6h7rP"`;
+exports[`random should chain deep sequences correctly 2`] = `"kQD4CriC3RmScKPAhCkviu-kHj1peUa71rGD7gERLfT6h7rP"`;
 
-exports[`feature-random should chain deep sequences correctly 3`] = `"kQBGt4TP7qlVmFk8HoqKcbfHRMJXPx9wiCGqz20U3RjpIZGF"`;
+exports[`random should chain deep sequences correctly 3`] = `"kQBGt4TP7qlVmFk8HoqKcbfHRMJXPx9wiCGqz20U3RjpIZGF"`;
 
-exports[`feature-random should chain deep sequences correctly 4`] = `
+exports[`random should chain deep sequences correctly 4`] = `
 [
   {
     "$seq": 0,
@@ -53,7 +53,7 @@ exports[`feature-random should chain deep sequences correctly 4`] = `
 ]
 `;
 
-exports[`feature-random should chain deep sequences correctly 5`] = `
+exports[`random should chain deep sequences correctly 5`] = `
 [
   {
     "$seq": 0,
@@ -100,7 +100,7 @@ exports[`feature-random should chain deep sequences correctly 5`] = `
 ]
 `;
 
-exports[`feature-random should chain deep sequences correctly 6`] = `
+exports[`random should chain deep sequences correctly 6`] = `
 [
   {
     "$seq": 0,

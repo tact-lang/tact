@@ -3,7 +3,7 @@ import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { RecursionTester } from "./contracts/output/recursion_RecursionTester";
 
-describe("feature-recursion", () => {
+describe("recursion", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

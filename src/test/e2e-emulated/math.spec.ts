@@ -3,7 +3,7 @@ import { ContractSystem, randomAddress } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { MathTester } from "./contracts/output/math_MathTester";
 
-describe("feature-math", () => {
+describe("math", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

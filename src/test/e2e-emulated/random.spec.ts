@@ -3,7 +3,7 @@ import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { RandomContract } from "./contracts/output/random_RandomContract";
 
-describe("feature-random", () => {
+describe("random", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

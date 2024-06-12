@@ -15,7 +15,7 @@ function strEq(a: SomeStruct | null, b: SomeStruct | null) {
     return a.value === b.value;
 }
 
-describe("feature-map", () => {
+describe("map", () => {
     /* eslint-disable */
     let globalCoverage: any;
     beforeAll(() => {

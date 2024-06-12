@@ -3,7 +3,7 @@ import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { MyContract } from "./contracts/output/implicit-init_MyContract";
 
-describe("feature-implicit-init", () => {
+describe("implicit-init", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });

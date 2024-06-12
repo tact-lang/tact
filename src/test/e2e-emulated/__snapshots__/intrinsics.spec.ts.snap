@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`feature-intrinsics should return correct intrinsic results 1`] = `
+exports[`intrinsics should return correct intrinsic results 1`] = `
 [
   {
     "$seq": 1,

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`feature-masterchain should deploy to the workchain 1`] = `
+exports[`masterchain should deploy to the workchain 1`] = `
 [
   {
     "$seq": 0,
@@ -31,7 +31,7 @@ exports[`feature-masterchain should deploy to the workchain 1`] = `
 ]
 `;
 
-exports[`feature-masterchain should deploy to the workchain from masterchain when masterchain enabled 1`] = `
+exports[`masterchain should deploy to the workchain from masterchain when masterchain enabled 1`] = `
 [
   {
     "$seq": 0,
@@ -62,7 +62,7 @@ exports[`feature-masterchain should deploy to the workchain from masterchain whe
 ]
 `;
 
-exports[`feature-masterchain should deploy to the workchain when masterchain enabled 1`] = `
+exports[`masterchain should deploy to the workchain when masterchain enabled 1`] = `
 [
   {
     "$seq": 0,
@@ -93,7 +93,7 @@ exports[`feature-masterchain should deploy to the workchain when masterchain ena
 ]
 `;
 
-exports[`feature-masterchain should not deploy to the workchain from masterchain 1`] = `
+exports[`masterchain should not deploy to the workchain from masterchain 1`] = `
 [
   {
     "$seq": 0,
