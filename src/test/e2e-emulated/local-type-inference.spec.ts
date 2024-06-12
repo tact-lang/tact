@@ -1,9 +1,9 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../grammar/ast";
-import { LocalTypeInferenceTester } from "./features/output/local-type-inference_LocalTypeInferenceTester";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { LocalTypeInferenceTester } from "./contracts/output/local-type-inference_LocalTypeInferenceTester";
 
-describe("feature-local-type-inference", () => {
+describe("local-type-inference", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
