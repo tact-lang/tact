@@ -26,7 +26,8 @@
     "dist/**/*",
     "src/**/*",
     "bin/**/*",
-    "stdlib/**/*"
+    "stdlib/**/*",
+    "!**/test"
   ],
   "main": "./dist/main.js",
   "bin": {

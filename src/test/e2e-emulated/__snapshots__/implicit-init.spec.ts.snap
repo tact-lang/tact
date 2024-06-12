@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`implicit-init should deploy 1`] = `
+[
+  {
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "type": "known",
+            "value": {
+              "$$type": "Deploy",
+              "queryId": 0n,
+            },
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQCmHLVs4hhx9eQvHIhXKr0w4IRdDqnO9LdM6HTrBxxmpeOZ",
+          "type": "internal",
+          "value": "1",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 7147n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "type": "known",
+              "value": {
+                "$$type": "DeployOk",
+                "queryId": 0n,
+              },
+            },
+            "bounce": false,
+            "from": "kQCmHLVs4hhx9eQvHIhXKr0w4IRdDqnO9LdM6HTrBxxmpeOZ",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "0.991657",
+          },
+        ],
+      },
+    ],
+  },
+]
+`;
+
+exports[`implicit-init should increment counter 1`] = `
+[
+  {
+    "$seq": 1,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "increment",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQCmHLVs4hhx9eQvHIhXKr0w4IRdDqnO9LdM6HTrBxxmpeOZ",
+          "type": "internal",
+          "value": "1",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 3746n,
+      },
+    ],
+  },
+  {
+    "$seq": 2,
+    "events": [
+      {
+        "$type": "storage-charged",
+        "amount": "0.000000004",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "increment",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQCmHLVs4hhx9eQvHIhXKr0w4IRdDqnO9LdM6HTrBxxmpeOZ",
+          "type": "internal",
+          "value": "1",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 3746n,
+      },
+    ],
+  },
+]
+`;

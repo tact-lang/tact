@@ -74,26 +74,26 @@ jobs:
 
       - name: CLI Test | Check single-contract compilation
         run: |
-          tact --check test/tact-cli/success.tact
-          tact --func test/tact-cli/success.tact
-          tact test/tact-cli/success.tact
+          tact --check bin/test/success.tact
+          tact --func bin/test/success.tact
+          tact bin/test/success.tact
 
       - name: CLI Test | Check compilation via `--config`
         run: |
           # should output complete results
-          tact --config test/tact-cli/success.config.json
+          tact --config bin/test/success.config.json
           # should only run the syntax and type checking
-          tact --config test/tact-cli/success.config.json --check
+          tact --config bin/test/success.config.json --check
 
       - name: CLI Test | Check parsing of a non-existing CLI flag
         if: runner.os != 'Windows'
         run: |
-          ! tact --nonexistentoption test/tact-cli/success.config.json
+          ! tact --nonexistentoption bin/test/success.config.json
 
       - name: CLI Test | tact executable return non-zero exit code if compilation fails
         if: runner.os != 'Windows'
         run: |
-          ! tact --config test/tact-cli/fail.config.json
+          ! tact --config bin/test/fail.config.json
 
       - name: Link Tact compiler
         run: |

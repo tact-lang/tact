@@ -1,11 +1,8 @@
 import fs from "fs";
 import { decompileAll } from "@tact-lang/opcode";
 import { run } from "../src/node";
-import { build } from "../src/pipeline/build";
 import { FuncCompilationResult, funcCompile } from "../src/func/funcCompile";
 import path from "path";
-import { ConfigProject } from "../src/config/parseConfig";
-import { createNodeFileSystem } from "../src/vfs/createNodeFileSystem";
 import { glob } from "glob";
 import { verify } from "../src/verify";
 import { consoleLogger } from "../src/logger";
@@ -32,31 +29,6 @@ import { __DANGER__disableVersionNumber } from "../src/pipeline/version";
         if (!res.ok) {
             console.error("Failed to verify " + pkgPath + ": " + res.error);
             process.exit(1);
-        }
-    }
-
-    // Compile test contracts
-    for (const p of [
-        { path: path.resolve(__dirname, "..", "src", "test", "contracts") },
-    ]) {
-        const recs = fs.readdirSync(p.path);
-        for (const r of recs) {
-            if (!r.endsWith(".tact")) {
-                continue;
-            }
-
-            const config: ConfigProject = {
-                name: r.slice(0, r.length - ".tact".length),
-                path: "./" + r,
-                output: "./output/",
-            };
-            const stdlib = "@stdlib";
-            const project = createNodeFileSystem(p.path, false);
-            await build({
-                config,
-                stdlib,
-                project,
-            });
         }
     }
 

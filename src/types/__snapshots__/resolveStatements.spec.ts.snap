@@ -1,246 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolveStatements should fail statements for case-0 1`] = `
-"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
-Line 9, col 5:
-   8 | fun isZero(x: Int): Bool {
->  9 |     return x;
-           ^~~~~~~~~
-  10 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-1 1`] = `
-"<unknown>:9:5: Type mismatch: "Bool" is not assignable to "Int"
-Line 9, col 5:
-   8 | fun isZero(x: Int): Bool {
->  9 |     repeat(true) {
-           ^~~~~~~~~~~~~~
-  10 |         x = x + 1;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-2 1`] = `
-"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
-Line 9, col 5:
-   8 | fun isZero(x: Int): Bool {
->  9 |     while(x) {
-           ^~~~~~~~~~
-  10 |         x = x + 1;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-3 1`] = `
-"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
-Line 9, col 5:
-   8 | fun isZero(x: Int): Bool {
->  9 |     do {
-           ^~~~
-  10 |         x = x + 1;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-4 1`] = `
-"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
-Line 9, col 5:
-   8 | fun isZero(x: Int): Bool {
->  9 |     if (x) {
-           ^~~~~~~~
-  10 |         x = x + 1;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-5 1`] = `
-"<unknown>:9:5: Type mismatch: "String" is not assignable to "Int"
-Line 9, col 5:
-   8 | fun isZero(x: Int): Bool {
->  9 |     x = "hello world";
-           ^~~~~~~~~~~~~~~~~~
-  10 |     return true;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-6 1`] = `
-"<unknown>:13:12: Function "f1" expects 2 arguments, got 1
-Line 13, col 12:
-  12 | fun f2(a: Int): Int {
-> 13 |     return f1(a);
-                  ^~~~~
-  14 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-7 1`] = `
-"<unknown>:20:16: Function "f1" expects 2 arguments, got 1
-Line 20, col 16:
-  19 |     fun f2(a: Int): Int {
-> 20 |         return self.f1(a);
-                      ^~~~~~~~~~
-  21 |     }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-8 1`] = `
-"<unknown>:13:18: Invalid type "Bool" for argument "b"
-Line 13, col 18:
-  12 | fun f2(a: Int): Int {
-> 13 |     return f1(a, true);
-                        ^~~~
-  14 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-9 1`] = `
-"<unknown>:20:27: Invalid type "Bool" for argument "b"
-Line 20, col 27:
-  19 |     fun f2(a: Int): Int {
-> 20 |         return self.f1(a, true);
-                                 ^~~~
-  21 |     }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-10 1`] = `
-"<unknown>:10:5: Type mismatch: "Int" is not assignable to "Bool"
-Line 10, col 5:
-   9 |     let a: Int = 0;
-> 10 |     let b: Bool = 0;
-           ^~~~~~~~~~~~~~~~
-  11 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-11 1`] = `
-"<unknown>:17:9: Invalid type "Bool" for fields "b" with type "Int" in type "SomeStruct"
-Line 17, col 9:
-  16 |         a: 1,
-> 17 |         b: false // Invalid type
-               ^~~~~~~~
-  18 |     };
-"
-`;
-
-exports[`resolveStatements should fail statements for case-12 1`] = `
-"<unknown>:17:9: Duplicate fields "a"
-Line 17, col 9:
-  16 |         a: 1,
-> 17 |         a: 2,
-               ^~~~
-  18 |         b: 3
-"
-`;
-
-exports[`resolveStatements should fail statements for case-13 1`] = `
-"<unknown>:16:25: Missing fields "c" in type "SomeStruct"
-Line 16, col 25:
-  15 | fun main() {
-> 16 |     let a: SomeStruct = SomeStruct{
-                               ^~~~~~~~~~~
-  17 |         a: 1,
-"
-`;
-
-exports[`resolveStatements should fail statements for case-14 1`] = `
-"<unknown>:26:25: Invalid type "String" for argument "owner"
-Line 26, col 25:
-  25 |     get fun newInit(): StateInit {
-> 26 |         return initOf A("hello");
-                               ^~~~~~~
-  27 |     }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-15 1`] = `
-"<unknown>:10:5: Field "value" is not set
-Line 10, col 5:
-   9 |     value: Int;
-> 10 |     init() {
-           ^~~~~~~~
-  11 | 
-"
-`;
-
-exports[`resolveStatements should fail statements for case-16 1`] = `
-"<unknown>:10:5: Field "value" is not set
-Line 10, col 5:
-   9 |     value: Int;
-> 10 |     init(arg: Bool) {
-           ^~~~~~~~~~~~~~~~~
-  11 |         if (arg) {
-"
-`;
-
-exports[`resolveStatements should fail statements for case-17 1`] = `
-"<unknown>:10:5: Field "value" is not set
-Line 10, col 5:
-   9 |     value: Int;
-> 10 |     init(arg: Bool) {
-           ^~~~~~~~~~~~~~~~~
-  11 |         if (arg) {
-"
-`;
-
-exports[`resolveStatements should fail statements for case-18 1`] = `
-"<unknown>:10:5: Field "value" is not set
-Line 10, col 5:
-   9 |     value: Int;
-> 10 |     init(arg: Bool) {
-           ^~~~~~~~~~~~~~~~~
-  11 |         if (arg) {
-"
-`;
-
-exports[`resolveStatements should fail statements for case-19 1`] = `
-"<unknown>:12:22: Field "value2" is not initialized
-Line 12, col 22:
-  11 |     init(arg: Bool) {
-> 12 |         self.value = self.value2 + 1;
-                            ^~~~~~~~~~~
-  13 |         self.value2 = 10;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-20 1`] = `
-"<unknown>:17:22: Field "value2" is not initialized
-Line 17, col 22:
-  16 |     init(arg: Bool) {
-> 17 |         self.value = self.value2.a + 1;
-                            ^~~~~~~~~~~
-  18 |         self.value2 = A{ a: 1, b: 2 };
-"
-`;
-
-exports[`resolveStatements should fail statements for case-21 1`] = `
-"<unknown>:17:35: Field "value" is not initialized
-Line 17, col 35:
-  16 |     init(arg: Bool) {
-> 17 |         self.value2 = A{ a: 1, b: self.value };
-                                         ^~~~~~~~~~
-  18 |         self.value = self.value2.a + 1;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-22 1`] = `
-"<unknown>:16:9: Cannot access self before init
-Line 16, col 9:
-  15 |     init(arg: Bool) {
-> 16 |         self.update();
-               ^~~~~~~~~~~~~
-  17 |         self.value = 1;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-23 1`] = `
-"<unknown>:15:9: Cannot access self before init
-Line 15, col 9:
-  14 |     init(arg: Bool) {
-> 15 |         self.update();
-               ^~~~~~~~~~~~~
-  16 |         self.value = 1;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-24 1`] = `
+exports[`resolveStatements should fail statements for bounced-type-is-smaller 1`] = `
 "<unknown>:23:18: Type bounced<"A"> does not have a field named "c"
 Line 23, col 18:
   22 |     let y: Bool = src.b;
@@ -250,287 +10,17 @@ Line 23, col 18:
 "
 `;
 
-exports[`resolveStatements should fail statements for case-25 1`] = `
-"<unknown>:5:12: Incompatible types "Int" and "Bool" for binary operator "=="
-Line 5, col 12:
-  4 | fun foo(x: Int): Bool {
-> 5 |     return x == true;
-                 ^~~~~~~~~
-  6 | }
+exports[`resolveStatements should fail statements for contract-initof-wrong-arg 1`] = `
+"<unknown>:26:25: Invalid type "String" for argument "owner"
+Line 26, col 25:
+  25 |     get fun newInit(): StateInit {
+> 26 |         return initOf A("hello");
+                               ^~~~~~~
+  27 |     }
 "
 `;
 
-exports[`resolveStatements should fail statements for case-26 1`] = `
-"<unknown>:5:24: Non-matching types "Int" and "Bool" for ternary branches
-Line 5, col 24:
-  4 | fun sample(): Int {
-> 5 |     return (true ? 1 : false) ? 2 : 3;
-                             ^~~~~
-  6 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-27 1`] = `
-"<unknown>:5:43: Non-matching types "Bool" and "Int" for ternary branches
-Line 5, col 43:
-  4 | fun sample(): Int {
-> 5 |     return (true ? true : false) ? true : 3;
-                                                ^
-  6 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-28 1`] = `
-"<unknown>:5:5: Type mismatch: "Bool" is not assignable to "Int"
-Line 5, col 5:
-  4 | fun sample(): Int {
-> 5 |     return (true ? true : false) ? true : false;
-          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  6 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-29 1`] = `
-"<unknown>:5:39: Non-matching types "Bool" and "Int" for ternary branches
-Line 5, col 39:
-  4 | fun sample(): Int {
-> 5 |     return true ? 1 : (false ? true : 2);
-                                            ^
-  6 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-30 1`] = `
-"<unknown>:7:9: Static function "toString" does not exist
-Line 7, col 9:
-  6 |     init() {
-> 7 |         toString(); // non-existent function
-              ^~~~~~~~~~
-  8 |     }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-31 1`] = `
-"<unknown>:9:12: Unable to resolve id c
-Line 9, col 12:
-   8 |     }
->  9 |     return c;
-                  ^
-  10 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-32 1`] = `
-"<unknown>:9:12: Unable to resolve id e
-Line 9, col 12:
-   8 |     }
->  9 |     return e;
-                  ^
-  10 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-33 1`] = `
-"<unknown>:5:16: Unable to resolve id e
-Line 5, col 16:
-  4 |     try {
-> 5 |         return e;
-                     ^
-  6 |     } catch (e) {
-"
-`;
-
-exports[`resolveStatements should fail statements for case-34 1`] = `
-"<unknown>:6:5: Variable already exists: "e"
-Line 6, col 5:
-  5 |     let e: String = "qwe";
-> 6 |     try {
-          ^~~~~
-  7 |         return e;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-35 1`] = `
-"<unknown>:8:9: Type mismatch: "Int" is not assignable to "String"
-Line 8, col 9:
-  7 |     } catch (e) {
-> 8 |         return e;
-              ^~~~~~~~~
-  9 |     }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-36 1`] = `
-"<unknown>:14:26: Unknown fields "b" in type "A"
-Line 14, col 26:
-  13 | fun function() {
-> 14 |     let D: A = A { x: a, b };
-                                ^
-  15 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-37 1`] = `
-"<unknown>:6:5: Type mismatch: "Bool" is not assignable to "<void>"
-Line 6, col 5:
-  5 |     m.set(1, 2);
-> 6 |     return m.del(1);
-          ^~~~~~~~~~~~~~~~
-  7 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-38 1`] = `
-"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-Line 6, col 5:
-  5 | contract Foo {
-> 6 |     get fun noReturn(): Int {
-          ^~~~~~~~~~~~~~~~~~~~~~~~~
-  7 |         // ERROR: no return statement
-"
-`;
-
-exports[`resolveStatements should fail statements for case-39 1`] = `
-"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-Line 6, col 5:
-  5 | contract Foo {
-> 6 |     get fun noReturn(): Int {
-          ^~~~~~~~~~~~~~~~~~~~~~~~~
-  7 |         let x: Int = 42;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-40 1`] = `
-"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-Line 6, col 5:
-  5 | contract Foo {
-> 6 |     get fun notAlwaysReachableReturn(b: Bool): Int {
-          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  7 |         if b {
-"
-`;
-
-exports[`resolveStatements should fail statements for case-41 1`] = `
-"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-Line 4, col 1:
-  3 | 
-> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  5 |     if (b) {
-"
-`;
-
-exports[`resolveStatements should fail statements for case-42 1`] = `
-"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-Line 4, col 1:
-  3 | 
-> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  5 |     try {
-"
-`;
-
-exports[`resolveStatements should fail statements for case-43 1`] = `
-"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-Line 4, col 1:
-  3 | 
-> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  5 |     try {
-"
-`;
-
-exports[`resolveStatements should fail statements for case-44 1`] = `
-"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-Line 4, col 1:
-  3 | 
-> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  5 |     while (b) {
-"
-`;
-
-exports[`resolveStatements should fail statements for case-45 1`] = `
-"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-Line 4, col 1:
-  3 | 
-> 4 | fun notAlwaysReachableReturn(n: Int): Int {
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  5 |     repeat (n) {
-"
-`;
-
-exports[`resolveStatements should fail statements for case-46 1`] = `
-"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
-Line 4, col 1:
-  3 | 
-> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  5 |     do {
-"
-`;
-
-exports[`resolveStatements should fail statements for case-47 1`] = `
-"<unknown>:5:5: Variable already exists: "k"
-Line 5, col 5:
-  4 |     let m: map<Int, Int> = emptyMap();
-> 5 |     foreach (k, k in m) {
-          ^~~~~~~~~~~~~~~~~~~~~
-  6 |         // something
-"
-`;
-
-exports[`resolveStatements should fail statements for case-48 1`] = `
-"<unknown>:5:5: Variable already exists: "m"
-Line 5, col 5:
-  4 |     let m: map<Int, Int> = emptyMap();
-> 5 |     foreach (k, m in m) {
-          ^~~~~~~~~~~~~~~~~~~~~
-  6 |         // something
-"
-`;
-
-exports[`resolveStatements should fail statements for case-49 1`] = `
-"<unknown>:8:12: Unable to resolve id v
-Line 8, col 12:
-  7 |     }
-> 8 |     return v;
-                 ^
-  9 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-50 1`] = `
-"<unknown>:8:12: Unable to resolve id x
-Line 8, col 12:
-  7 |     }
-> 8 |     return x;
-                 ^
-  9 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for case-51 1`] = `
-"<unknown>:5:5: Type error: Augmented assignment is only allowed for Int type
-Line 5, col 5:
-  4 |     let a: Bool = false;
-> 5 |     a %= true;
-          ^~~~~~~~~~
-  6 |     return a;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-52 1`] = `
-"<unknown>:5:5: Type error: Augmented assignment is only allowed for Int type
-Line 5, col 5:
-  4 |     let a: String = "foo";
-> 5 |     a %= "bar";
-          ^~~~~~~~~~~
-  6 |     return a;
-"
-`;
-
-exports[`resolveStatements should fail statements for case-53 1`] = `
+exports[`resolveStatements should fail statements for expr-bitwise-not-bool 1`] = `
 "<unknown>:5:12: Invalid type "Bool" for unary operator "~"
 Line 5, col 12:
   4 | fun test(a: Bool): Int {
@@ -540,7 +30,47 @@ Line 5, col 12:
 "
 `;
 
-exports[`resolveStatements should fail statements for case-54 1`] = `
+exports[`resolveStatements should fail statements for expr-cmp-int-bool 1`] = `
+"<unknown>:5:12: Incompatible types "Int" and "Bool" for binary operator "=="
+Line 5, col 12:
+  4 | fun foo(x: Int): Bool {
+> 5 |     return x == true;
+                 ^~~~~~~~~
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-conditional-branch-mismatch 1`] = `
+"<unknown>:5:43: Non-matching types "Bool" and "Int" for ternary branches
+Line 5, col 43:
+  4 | fun sample(): Int {
+> 5 |     return (true ? true : false) ? true : 3;
+                                                ^
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-conditional-branch-mismatch-nested1 1`] = `
+"<unknown>:5:24: Non-matching types "Int" and "Bool" for ternary branches
+Line 5, col 24:
+  4 | fun sample(): Int {
+> 5 |     return (true ? 1 : false) ? 2 : 3;
+                             ^~~~~
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-conditional-branch-mismatch-nested2 1`] = `
+"<unknown>:5:39: Non-matching types "Bool" and "Int" for ternary branches
+Line 5, col 39:
+  4 | fun sample(): Int {
+> 5 |     return true ? 1 : (false ? true : 2);
+                                            ^
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-conditional-non-optional-result-expected 1`] = `
 "<unknown>:6:5: Type mismatch: "Int?" is not assignable to "Int"
 Line 6, col 5:
   5 |     let cond: Bool = true;
@@ -550,49 +80,508 @@ Line 6, col 5:
 "
 `;
 
-exports[`resolveStatements should resolve statements for case-0 1`] = `
+exports[`resolveStatements should fail statements for expr-conditional-result-mismatch 1`] = `
+"<unknown>:5:5: Type mismatch: "Bool" is not assignable to "Int"
+Line 5, col 5:
+  4 | fun sample(): Int {
+> 5 |     return (true ? true : false) ? true : false;
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-internal-fun-call-bool-param.tact 1`] = `
+"<unknown>:20:27: Invalid type "Bool" for argument "b"
+Line 20, col 27:
+  19 |     fun f2(a: Int): Int {
+> 20 |         return self.f1(a, true);
+                                 ^~~~
+  21 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-map-del-method-is-non-void 1`] = `
+"<unknown>:6:5: Type mismatch: "Bool" is not assignable to "<void>"
+Line 6, col 5:
+  5 |     m.set(1, 2);
+> 6 |     return m.del(1);
+          ^~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-module-fun-call-bool-param 1`] = `
+"<unknown>:13:18: Invalid type "Bool" for argument "b"
+Line 13, col 18:
+  12 | fun f2(a: Int): Int {
+> 13 |     return f1(a, true);
+                        ^~~~
+  14 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-struct-duplicate-field 1`] = `
+"<unknown>:17:9: Duplicate fields "a"
+Line 17, col 9:
+  16 |         a: 1,
+> 17 |         a: 2,
+               ^~~~
+  18 |         b: 3
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-struct-impossible-field-punning 1`] = `
+"<unknown>:14:26: Unknown fields "b" in type "A"
+Line 14, col 26:
+  13 | fun function() {
+> 14 |     let D: A = A { x: a, b };
+                                ^
+  15 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-struct-missing-field 1`] = `
+"<unknown>:16:25: Missing fields "c" in type "SomeStruct"
+Line 16, col 25:
+  15 | fun main() {
+> 16 |     let a: SomeStruct = SomeStruct{
+                               ^~~~~~~~~~~
+  17 |         a: 1,
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-struct-wrong-field-type 1`] = `
+"<unknown>:17:9: Invalid type "Bool" for fields "b" with type "Int" in type "SomeStruct"
+Line 17, col 9:
+  16 |         a: 1,
+> 17 |         b: false // Invalid type
+               ^~~~~~~~
+  18 |     };
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-var-int-bool 1`] = `
+"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
+Line 9, col 5:
+   8 | fun isZero(x: Int): Bool {
+>  9 |     return x;
+           ^~~~~~~~~
+  10 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-wrong-arity-internal-fun 1`] = `
+"<unknown>:20:16: Function "f1" expects 2 arguments, got 1
+Line 20, col 16:
+  19 |     fun f2(a: Int): Int {
+> 20 |         return self.f1(a);
+                      ^~~~~~~~~~
+  21 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-wrong-arity-module-fun 1`] = `
+"<unknown>:13:12: Function "f1" expects 2 arguments, got 1
+Line 13, col 12:
+  12 | fun f2(a: Int): Int {
+> 13 |     return f1(a);
+                  ^~~~~
+  14 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for init-vars-analysis-if 1`] = `
+"<unknown>:10:5: Field "value" is not set
+Line 10, col 5:
+   9 |     value: Int;
+> 10 |     init(arg: Bool) {
+           ^~~~~~~~~~~~~~~~~
+  11 |         if (arg) {
+"
+`;
+
+exports[`resolveStatements should fail statements for init-vars-analysis-implicit-init 1`] = `
+"<unknown>:4:1: Field "test_field" is not set
+Line 4, col 1:
+  3 | 
+> 4 | contract MyContract {
+      ^~~~~~~~~~~~~~~~~~~~~
+  5 |     counter: Int = 0;
+"
+`;
+
+exports[`resolveStatements should fail statements for init-vars-analysis-missing-storage-var 1`] = `
+"<unknown>:10:5: Field "value" is not set
+Line 10, col 5:
+   9 |     value: Int;
+> 10 |     init() {
+           ^~~~~~~~
+  11 | 
+"
+`;
+
+exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-override-fun-call 1`] = `
+"<unknown>:15:9: Cannot access self before init
+Line 15, col 9:
+  14 |     init(arg: Bool) {
+> 15 |         self.execute();
+               ^~~~~~~~~~~~~~
+  16 |         self.value = 1;
+"
+`;
+
+exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-struct1 1`] = `
+"<unknown>:17:22: Field "value2" is not initialized
+Line 17, col 22:
+  16 |     init(arg: Bool) {
+> 17 |         self.value = self.value2.a + 1;
+                            ^~~~~~~~~~~
+  18 |         self.value2 = A{ a: 1, b: 2 };
+"
+`;
+
+exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-struct2 1`] = `
+"<unknown>:17:35: Field "value" is not initialized
+Line 17, col 35:
+  16 |     init(arg: Bool) {
+> 17 |         self.value2 = A{ a: 1, b: self.value };
+                                         ^~~~~~~~~~
+  18 |         self.value = self.value2.a + 1;
+"
+`;
+
+exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-var 1`] = `
+"<unknown>:12:22: Field "value2" is not initialized
+Line 12, col 22:
+  11 |     init(arg: Bool) {
+> 12 |         self.value = self.value2 + 1;
+                            ^~~~~~~~~~~
+  13 |         self.value2 = 10;
+"
+`;
+
+exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-var-fun-call 1`] = `
+"<unknown>:16:9: Cannot access self before init
+Line 16, col 9:
+  15 |     init(arg: Bool) {
+> 16 |         self.update();
+               ^~~~~~~~~~~~~
+  17 |         self.value = 1;
+"
+`;
+
+exports[`resolveStatements should fail statements for init-vars-analysis-with-if-else 1`] = `
+"<unknown>:10:5: Field "value" is not set
+Line 10, col 5:
+   9 |     value: Int;
+> 10 |     init(arg: Bool) {
+           ^~~~~~~~~~~~~~~~~
+  11 |         if (arg) {
+"
+`;
+
+exports[`resolveStatements should fail statements for init-vars-analysis-with-if-elseif 1`] = `
+"<unknown>:10:5: Field "value" is not set
+Line 10, col 5:
+   9 |     value: Int;
+> 10 |     init(arg: Bool) {
+           ^~~~~~~~~~~~~~~~~
+  11 |         if (arg) {
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-catch-if 1`] = `
+"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 4, col 1:
+  3 | 
+> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     try {
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-do-if 1`] = `
+"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 4, col 1:
+  3 | 
+> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     do {
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-if 1`] = `
+"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 6, col 5:
+  5 | contract Foo {
+> 6 |     get fun notAlwaysReachableReturn(b: Bool): Int {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |         if b {
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-non-void1 1`] = `
+"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 6, col 5:
+  5 | contract Foo {
+> 6 |     get fun noReturn(): Int {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |         // ERROR: no return statement
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-non-void2 1`] = `
+"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 6, col 5:
+  5 | contract Foo {
+> 6 |     get fun noReturn(): Int {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |         let x: Int = 42;
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-repeat 1`] = `
+"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 4, col 1:
+  3 | 
+> 4 | fun notAlwaysReachableReturn(n: Int): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     repeat (n) {
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-separate-ifs 1`] = `
+"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 4, col 1:
+  3 | 
+> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     if (b) {
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-try 1`] = `
+"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 4, col 1:
+  3 | 
+> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     try {
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-while 1`] = `
+"<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 4, col 1:
+  3 | 
+> 4 | fun notAlwaysReachableReturn(b: Bool): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     while (b) {
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-assgn-int-string 1`] = `
+"<unknown>:9:5: Type mismatch: "String" is not assignable to "Int"
+Line 9, col 5:
+   8 | fun isZero(x: Int): Bool {
+>  9 |     x = "hello world";
+           ^~~~~~~~~~~~~~~~~~
+  10 |     return true;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-augmented-assgn-bool 1`] = `
+"<unknown>:5:5: Type error: Augmented assignment is only allowed for Int type
+Line 5, col 5:
+  4 |     let a: Bool = false;
+> 5 |     a %= true;
+          ^~~~~~~~~~
+  6 |     return a;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-augmented-assgn-string 1`] = `
+"<unknown>:5:5: Type error: Augmented assignment is only allowed for Int type
+Line 5, col 5:
+  4 |     let a: String = "foo";
+> 5 |     a %= "bar";
+          ^~~~~~~~~~~
+  6 |     return a;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-do-int 1`] = `
+"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
+Line 9, col 5:
+   8 | fun isZero(x: Int): Bool {
+>  9 |     do {
+           ^~~~
+  10 |         x = x + 1;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-if-int 1`] = `
+"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
+Line 9, col 5:
+   8 | fun isZero(x: Int): Bool {
+>  9 |     if (x) {
+           ^~~~~~~~
+  10 |         x = x + 1;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-let-wrong-rhs 1`] = `
+"<unknown>:10:5: Type mismatch: "Int" is not assignable to "Bool"
+Line 10, col 5:
+   9 |     let a: Int = 0;
+> 10 |     let b: Bool = 0;
+           ^~~~~~~~~~~~~~~~
+  11 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-repeat-bool 1`] = `
+"<unknown>:9:5: Type mismatch: "Bool" is not assignable to "Int"
+Line 9, col 5:
+   8 | fun isZero(x: Int): Bool {
+>  9 |     repeat(true) {
+           ^~~~~~~~~~~~~~
+  10 |         x = x + 1;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-return-from-try-and-catch 1`] = `
+"<unknown>:8:9: Type mismatch: "Int" is not assignable to "String"
+Line 8, col 9:
+  7 |     } catch (e) {
+> 8 |         return e;
+              ^~~~~~~~~
+  9 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-while-int 1`] = `
+"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
+Line 9, col 5:
+   8 | fun isZero(x: Int): Bool {
+>  9 |     while(x) {
+           ^~~~~~~~~~
+  10 |         x = x + 1;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-catch-param-does-not-shadow-outer-var 1`] = `
+"<unknown>:6:5: Variable already exists: "e"
+Line 6, col 5:
+  5 |     let e: String = "qwe";
+> 6 |     try {
+          ^~~~~
+  7 |         return e;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-catch-param-is-not-visible-in-try 1`] = `
+"<unknown>:5:16: Unable to resolve id e
+Line 5, col 16:
+  4 |     try {
+> 5 |         return e;
+                     ^
+  6 |     } catch (e) {
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-foreach-internal-var-does-not-escape 1`] = `
+"<unknown>:8:12: Unable to resolve id x
+Line 8, col 12:
+  7 |     }
+> 8 |     return x;
+                 ^
+  9 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-foreach-val-does-not-escape 1`] = `
+"<unknown>:8:12: Unable to resolve id v
+Line 8, col 12:
+  7 |     }
+> 8 |     return v;
+                 ^
+  9 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-foreach-val-shadows-key 1`] = `
+"<unknown>:5:5: Variable already exists: "k"
+Line 5, col 5:
+  4 |     let m: map<Int, Int> = emptyMap();
+> 5 |     foreach (k, k in m) {
+          ^~~~~~~~~~~~~~~~~~~~~
+  6 |         // something
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-foreach-val-shadows-map 1`] = `
+"<unknown>:5:5: Variable already exists: "m"
+Line 5, col 5:
+  4 |     let m: map<Int, Int> = emptyMap();
+> 5 |     foreach (k, m in m) {
+          ^~~~~~~~~~~~~~~~~~~~~
+  6 |         // something
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-local-catch-param-does-not-escape 1`] = `
+"<unknown>:9:12: Unable to resolve id e
+Line 9, col 12:
+   8 |     }
+>  9 |     return e;
+                  ^
+  10 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-local-loop-var-does-not-escape 1`] = `
+"<unknown>:9:12: Unable to resolve id c
+Line 9, col 12:
+   8 |     }
+>  9 |     return c;
+                  ^
+  10 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-no-toString-global-fun 1`] = `
+"<unknown>:7:9: Static function "toString" does not exist
+Line 7, col 9:
+  6 |     init() {
+> 7 |         toString(); // non-existent function
+              ^~~~~~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should resolve statements for contract-receiver-bounced 1`] = `
 [
   [
-    "x",
+    "src",
+    "bounced<A>",
+  ],
+  [
+    "src.a",
     "Int",
   ],
   [
-    "0",
-    "Int",
+    "src",
+    "bounced<A>",
   ],
   [
-    "x == 0",
+    "src.b",
     "Bool",
   ],
 ]
 `;
 
-exports[`resolveStatements should resolve statements for case-1 1`] = `
-[
-  [
-    "123",
-    "Int",
-  ],
-  [
-    "10",
-    "Int",
-  ],
-  [
-    "123 + 10",
-    "Int",
-  ],
-  [
-    "x",
-    "Int",
-  ],
-  [
-    "123 + 10 == x",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for case-2 1`] = `
+exports[`resolveStatements should resolve statements for expr-arith-bool-cmp 1`] = `
 [
   [
     "123",
@@ -649,91 +638,35 @@ exports[`resolveStatements should resolve statements for case-2 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve statements for case-3 1`] = `
+exports[`resolveStatements should resolve statements for expr-cmp-arith 1`] = `
 [
+  [
+    "123",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "123 + 10",
+    "Int",
+  ],
   [
     "x",
     "Int",
   ],
   [
-    "y",
-    "Int",
-  ],
-  [
-    "x + y",
-    "Int",
-  ],
-  [
-    "b",
-    "Int",
-  ],
-  [
-    "b",
-    "Int",
-  ],
-  [
-    "1",
-    "Int",
-  ],
-  [
-    "b + 1",
-    "Int",
-  ],
-  [
-    "b",
-    "Int",
-  ],
-  [
-    "0",
-    "Int",
-  ],
-  [
-    "b > 0",
-    "Bool",
-  ],
-  [
-    "z",
-    "Bool",
-  ],
-  [
-    "b > 0 || z",
+    "123 + 10 == x",
     "Bool",
   ],
 ]
 `;
 
-exports[`resolveStatements should resolve statements for case-4 1`] = `
+exports[`resolveStatements should resolve statements for expr-cmp-literal 1`] = `
 [
   [
     "x",
-    "Int",
-  ],
-  [
-    "y",
-    "Int",
-  ],
-  [
-    "x + y",
-    "Int",
-  ],
-  [
-    "b",
-    "Int",
-  ],
-  [
-    "b",
-    "Int",
-  ],
-  [
-    "1",
-    "Int",
-  ],
-  [
-    "b + 1",
-    "Int",
-  ],
-  [
-    "b",
     "Int",
   ],
   [
@@ -741,41 +674,132 @@ exports[`resolveStatements should resolve statements for case-4 1`] = `
     "Int",
   ],
   [
-    "b > 0",
+    "x == 0",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-conditional-with-subtyping 1`] = `
+[
+  [
+    "true",
     "Bool",
   ],
   [
-    "z",
+    "cond",
     "Bool",
   ],
   [
-    "b > 0 || z",
-    "Bool",
+    "42",
+    "Int",
   ],
   [
-    "w",
+    "x",
     "Int?",
   ],
   [
-    "w!!",
-    "Int",
+    "cond ? 42 : x",
+    "Int?",
   ],
   [
-    "0",
-    "Int",
-  ],
-  [
-    "w!! > 0",
+    "true",
     "Bool",
   ],
   [
-    "b > 0 || z || (w!! > 0)",
+    "cond",
     "Bool",
+  ],
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "cond ? x : 42",
+    "Int?",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "cond",
+    "Bool",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "m",
+    "map<Int, Int>",
+  ],
+  [
+    "cond ? null : m",
+    "map<Int, Int>",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "cond",
+    "Bool",
+  ],
+  [
+    "m",
+    "map<Int, Int>",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "cond ? m : null",
+    "map<Int, Int>",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "cond",
+    "Bool",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "Baz { b: 42 }",
+    "Baz",
+  ],
+  [
+    "Baz { b: 42 }.toCell()",
+    "Cell",
+  ],
+  [
+    "x",
+    "Cell?",
+  ],
+  [
+    "cond ? Baz { b: 42 }.toCell() : x",
+    "Cell?",
+  ],
+  [
+    "Bar {
+        a: cond ? Baz { b: 42 }.toCell() : x
+    }",
+    "Bar",
   ],
 ]
 `;
 
-exports[`resolveStatements should resolve statements for case-5 1`] = `
+exports[`resolveStatements should resolve statements for expr-field-access-method-call 1`] = `
 [
   [
     "p",
@@ -824,72 +848,76 @@ exports[`resolveStatements should resolve statements for case-5 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve statements for case-6 1`] = `
+exports[`resolveStatements should resolve statements for expr-maps-del-method 1`] = `
 [
   [
-    "10",
-    "Int",
+    "emptyMap()",
+    "<null>",
   ],
   [
-    "a",
-    "Int",
-  ],
-  [
-    "0",
-    "Int",
-  ],
-  [
-    "a > 0",
-    "Bool",
-  ],
-  [
-    "a",
-    "Int",
-  ],
-  [
-    "10",
-    "Int",
-  ],
-  [
-    "a",
-    "Int",
-  ],
-  [
-    "10",
-    "Int",
-  ],
-  [
-    "-10",
-    "Int",
-  ],
-  [
-    "a < -10",
-    "Bool",
-  ],
-  [
-    "a",
-    "Int",
+    "m",
+    "map<Int, Int>",
   ],
   [
     "1",
     "Int",
   ],
   [
-    "-1",
+    "2",
     "Int",
   ],
   [
-    "a",
+    "m.set(1, 2)",
+    "<void>",
+  ],
+  [
+    "m",
+    "map<Int, Int>",
+  ],
+  [
+    "3",
     "Int",
+  ],
+  [
+    "m.del(3)",
+    "Bool",
+  ],
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "m",
+    "map<Int, Int as uint8>",
   ],
   [
     "1",
     "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "m.set(1, 2)",
+    "<void>",
+  ],
+  [
+    "m",
+    "map<Int, Int as uint8>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "m.del(1)",
+    "Bool",
   ],
 ]
 `;
 
-exports[`resolveStatements should resolve statements for case-7 1`] = `
+exports[`resolveStatements should resolve statements for expr-struct-construction 1`] = `
 [
   [
     "1",
@@ -909,7 +937,7 @@ exports[`resolveStatements should resolve statements for case-7 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve statements for case-8 1`] = `
+exports[`resolveStatements should resolve statements for init-vars-analysis-with-if 1`] = `
 [
   [
     "arg",
@@ -1042,261 +1070,7 @@ exports[`resolveStatements should resolve statements for case-8 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve statements for case-9 1`] = `
-[
-  [
-    "src",
-    "bounced<A>",
-  ],
-  [
-    "src.a",
-    "Int",
-  ],
-  [
-    "src",
-    "bounced<A>",
-  ],
-  [
-    "src.b",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for case-10 1`] = `
-[
-  [
-    "123",
-    "Int",
-  ],
-  [
-    "toString()",
-    "Int",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for case-11 1`] = `
-[
-  [
-    "1",
-    "Int",
-  ],
-  [
-    "toString",
-    "Int",
-  ],
-  [
-    "dump(toString)",
-    "<void>",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for case-12 1`] = `
-[
-  [
-    "a",
-    "Int",
-  ],
-  [
-    "b",
-    "Int",
-  ],
-  [
-    "a + b",
-    "Int",
-  ],
-  [
-    "2",
-    "Int",
-  ],
-  [
-    "(a + b) / 2",
-    "Int",
-  ],
-  [
-    "1",
-    "Int",
-  ],
-  [
-    "10",
-    "Int",
-  ],
-  [
-    "valueOf(1, 10)",
-    "Int",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for case-13 1`] = `
-[
-  [
-    "123",
-    "Int",
-  ],
-  [
-    "456",
-    "Int",
-  ],
-  [
-    "a",
-    "Int",
-  ],
-  [
-    "a",
-    "Int",
-  ],
-  [
-    "b",
-    "Int",
-  ],
-  [
-    "a + b",
-    "Int",
-  ],
-  [
-    "a",
-    "Int",
-  ],
-  [
-    "b",
-    "Int",
-  ],
-  [
-    "a + b",
-    "Int",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for case-14 1`] = `
-[
-  [
-    "123",
-    "Int",
-  ],
-  [
-    "456",
-    "Int",
-  ],
-  [
-    "a",
-    "Int",
-  ],
-  [
-    "b",
-    "Int",
-  ],
-  [
-    "a",
-    "Int",
-  ],
-  [
-    "b",
-    "Int",
-  ],
-  [
-    "a + b",
-    "Int",
-  ],
-  [
-    "b",
-    "Int",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for case-15 1`] = `
-[
-  [
-    "emptyMap()",
-    "<null>",
-  ],
-  [
-    "m",
-    "map<Int, Int>",
-  ],
-  [
-    "1",
-    "Int",
-  ],
-  [
-    "2",
-    "Int",
-  ],
-  [
-    "m.set(1, 2)",
-    "<void>",
-  ],
-  [
-    "m",
-    "map<Int, Int>",
-  ],
-  [
-    "3",
-    "Int",
-  ],
-  [
-    "m.del(3)",
-    "Bool",
-  ],
-  [
-    "emptyMap()",
-    "<null>",
-  ],
-  [
-    "m",
-    "map<Int, Int as uint8>",
-  ],
-  [
-    "1",
-    "Int",
-  ],
-  [
-    "2",
-    "Int",
-  ],
-  [
-    "m.set(1, 2)",
-    "<void>",
-  ],
-  [
-    "m",
-    "map<Int, Int as uint8>",
-  ],
-  [
-    "1",
-    "Int",
-  ],
-  [
-    "m.del(1)",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for case-16 1`] = `[]`;
-
-exports[`resolveStatements should resolve statements for case-17 1`] = `
-[
-  [
-    "42",
-    "Int",
-  ],
-  [
-    "x",
-    "Int",
-  ],
-  [
-    "1",
-    "Int",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for case-18 1`] = `
+exports[`resolveStatements should resolve statements for return-analysis-if-elseif 1`] = `
 [
   [
     "b",
@@ -1329,32 +1103,7 @@ exports[`resolveStatements should resolve statements for case-18 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve statements for case-19 1`] = `
-[
-  [
-    "0",
-    "Int",
-  ],
-  [
-    "1",
-    "Int",
-  ],
-  [
-    "42",
-    "Int",
-  ],
-  [
-    "1",
-    "Int",
-  ],
-  [
-    "43",
-    "Int",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for case-20 1`] = `
+exports[`resolveStatements should resolve statements for return-analysis-if-try-catch-do-loop 1`] = `
 [
   [
     "b",
@@ -1407,7 +1156,51 @@ exports[`resolveStatements should resolve statements for case-20 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve statements for case-21 1`] = `
+exports[`resolveStatements should resolve statements for return-analysis-no-return-in-void1 1`] = `[]`;
+
+exports[`resolveStatements should resolve statements for return-analysis-no-return-in-void2 1`] = `
+[
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for return-analysis-try-catch 1`] = `
+[
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "43",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for stmt-augmented-assgn-numerical-type 1`] = `
 [
   [
     "3",
@@ -1428,121 +1221,338 @@ exports[`resolveStatements should resolve statements for case-21 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve statements for case-22 1`] = `
+exports[`resolveStatements should resolve statements for stmt-let-assgn 1`] = `
 [
   [
-    "true",
-    "Bool",
-  ],
-  [
-    "cond",
-    "Bool",
-  ],
-  [
-    "42",
+    "x",
     "Int",
   ],
   [
-    "x",
-    "Int?",
-  ],
-  [
-    "cond ? 42 : x",
-    "Int?",
-  ],
-  [
-    "true",
-    "Bool",
-  ],
-  [
-    "cond",
-    "Bool",
-  ],
-  [
-    "x",
-    "Int?",
-  ],
-  [
-    "42",
+    "y",
     "Int",
   ],
   [
-    "cond ? x : 42",
-    "Int?",
-  ],
-  [
-    "true",
-    "Bool",
-  ],
-  [
-    "cond",
-    "Bool",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "m",
-    "map<Int, Int>",
-  ],
-  [
-    "cond ? null : m",
-    "map<Int, Int>",
-  ],
-  [
-    "true",
-    "Bool",
-  ],
-  [
-    "cond",
-    "Bool",
-  ],
-  [
-    "m",
-    "map<Int, Int>",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "cond ? m : null",
-    "map<Int, Int>",
-  ],
-  [
-    "true",
-    "Bool",
-  ],
-  [
-    "cond",
-    "Bool",
-  ],
-  [
-    "42",
+    "x + y",
     "Int",
   ],
   [
-    "Baz { b: 42 }",
-    "Baz",
+    "b",
+    "Int",
   ],
   [
-    "Baz { b: 42 }.toCell()",
-    "Cell",
+    "b",
+    "Int",
   ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "b + 1",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "b > 0",
+    "Bool",
+  ],
+  [
+    "z",
+    "Bool",
+  ],
+  [
+    "b > 0 || z",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for stmt-let-assgn-unbox 1`] = `
+[
   [
     "x",
-    "Cell?",
+    "Int",
   ],
   [
-    "cond ? Baz { b: 42 }.toCell() : x",
-    "Cell?",
+    "y",
+    "Int",
   ],
   [
-    "Bar {
-        a: cond ? Baz { b: 42 }.toCell() : x
-    }",
-    "Bar",
+    "x + y",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "b + 1",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "b > 0",
+    "Bool",
+  ],
+  [
+    "z",
+    "Bool",
+  ],
+  [
+    "b > 0 || z",
+    "Bool",
+  ],
+  [
+    "w",
+    "Int?",
+  ],
+  [
+    "w!!",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "w!! > 0",
+    "Bool",
+  ],
+  [
+    "b > 0 || z || (w!! > 0)",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for stmt-let-if-elseif 1`] = `
+[
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "a > 0",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "-10",
+    "Int",
+  ],
+  [
+    "a < -10",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "-1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-scope-let-toString 1`] = `
+[
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "toString",
+    "Int",
+  ],
+  [
+    "dump(toString)",
+    "<void>",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-scope-repeat 1`] = `
+[
+  [
+    "123",
+    "Int",
+  ],
+  [
+    "456",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a + b",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a + b",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-scope-repeat2 1`] = `
+[
+  [
+    "123",
+    "Int",
+  ],
+  [
+    "456",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a + b",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-scope-toString-non-method 1`] = `
+[
+  [
+    "123",
+    "Int",
+  ],
+  [
+    "toString()",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-scope-valueOf-fun 1`] = `
+[
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a + b",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "(a + b) / 2",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "valueOf(1, 10)",
+    "Int",
   ],
 ]
 `;

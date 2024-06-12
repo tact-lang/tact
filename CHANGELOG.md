@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Trailing semicolons in struct and message declarations are optional now: PR [#395](https://github.com/tact-lang/tact/pull/395)
+- Tests are refactored and renamed to convey the sense of what is being tested and to reduce the amount of merge conflicts during development: PR [#402](https://github.com/tact-lang/tact/pull/402)
 
 ### Fixed
 
