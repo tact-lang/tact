@@ -8,6 +8,7 @@ import { resolveSignatures } from "./resolveSignatures";
 import { ASTRef, __DANGER_resetNodeId } from "../grammar/ast";
 import { loadCases } from "../utils/loadCases";
 import { openContext } from "../grammar/store";
+import { featureEnable } from "../config/features";
 
 expect.addSnapshotSerializer({
     test: (src) => src instanceof ASTRef,
@@ -25,6 +26,7 @@ describe("resolveDescriptors", () => {
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
             );
+            ctx = featureEnable(ctx, 'external');
             ctx = resolveDescriptors(ctx);
             ctx = resolveSignatures(ctx);
             expect(getAllTypes(ctx)).toMatchSnapshot();
@@ -33,11 +35,12 @@ describe("resolveDescriptors", () => {
     }
     for (const r of loadCases(__dirname + "/test-failed/")) {
         it("should fail descriptors for " + r.name, () => {
-            const ctx = openContext(
+            let ctx = openContext(
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
             );
+            ctx = featureEnable(ctx, 'external');
             expect(() =>
                 resolveDescriptors(ctx),
             ).toThrowErrorMatchingSnapshot();
