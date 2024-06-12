@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema#",
-  "$id": "http://raw.githubusercontent.com/tact-lang/tact/main/grammar/configSchema.json",
+  "$id": "http://raw.githubusercontent.com/tact-lang/tact/main/json-schemas/configSchema.json",
   "title": "Tact configuration schema",
   "description": "JSON Schema for tact.config.json",
   "type": "object",

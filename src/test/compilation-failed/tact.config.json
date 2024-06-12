@@ -1,5 +1,5 @@
 {
-  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/grammar/configSchema.json",
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/json-schemas/configSchema.json",
   "projects": [
     {
       "name": "const-eval-invalid-address",
