@@ -12,7 +12,6 @@ describe("strings", () => {
         const system = await ContractSystem.create();
         const treasure = system.treasure("treasure");
         const contract = system.open(await ExternalFallbacksTester.fromInit());
-        const tracker = system.track(contract.address);
 
         // Deploy
         await contract.send(treasure, { value: toNano("10") }, null);
