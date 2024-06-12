@@ -208,6 +208,14 @@
       }
     },
     {
+      "name": "external-fallbacks",
+      "path": "./src/test/e2e-emulated/contracts/external-fallbacks.tact",
+      "output": "./src/test/e2e-emulated/contracts/output",
+      "options": {
+        "external": true
+      }
+    },
+    {
       "name": "debug",
       "path": "./src/test/e2e-emulated/contracts/debug.tact",
       "output": "./src/test/e2e-emulated/contracts/output",

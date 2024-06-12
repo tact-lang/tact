@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Return type of `skipBits` now matches FunC and does not lead to compilation errors: PR [#388](https://github.com/tact-lang/tact/pull/388)
 - Typechecking of conditional expressions when one branch's type is a subtype of another, i.e. for optionals and maps/`null`: PR [#394](https://github.com/tact-lang/tact/pull/394)
+- External fallback receivers now work properly: PR [#408](https://github.com/tact-lang/tact/pull/408)
 
 ## [1.3.1] - 2024-06-08
 
