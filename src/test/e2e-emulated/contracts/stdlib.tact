@@ -21,4 +21,8 @@ contract StdlibTest {
     get fun sliceRefs(sc: Slice): Int {
         return sc.refs();
     }
+
+    get fun loadBool(sc: Slice): Bool {
+        return sc.loadBool();
+    }
 }
