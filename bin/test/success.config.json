@@ -1,5 +1,5 @@
 {
-  "$schema": "../../grammar/configSchema.json",
+  "$schema": "../../schemas/configSchema.json",
   "projects": [
     {
       "name": "success",

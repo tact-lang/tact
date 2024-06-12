@@ -50,6 +50,16 @@ Line 24, col 3:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-external-fallback-receiver 1`] = `
+"<unknown>:20:5: Empty receive function already exists
+Line 20, col 5:
+  19 | 
+> 20 |     external() {
+           ^~~~~~~~~~~~
+  21 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-duplicate-init 1`] = `
 "<unknown>:13:5: Init function already exists
 Line 13, col 5:
@@ -1159,6 +1169,367 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
 `;
 
 exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-small-not-detected 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 1`] = `
+{
+  "A": {
+    "ast": {
+      "fields": [
+        {
+          "as": "uint32",
+          "id": 4,
+          "init": null,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int as uint32,
+          "type": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "id": 5,
+      "kind": "def_struct",
+      "message": true,
+      "name": "A",
+      "origin": "user",
+      "prefix": null,
+      "ref": message A {
+    a: Int as uint32;
+},
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "a",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "uint",
+          },
+        },
+        "as": "uint32",
+        "ast": {
+          "as": "uint32",
+          "id": 4,
+          "init": null,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int as uint32,
+          "type": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "name": "a",
+        "ref": a: Int as uint32,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": 3746466057,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "A",
+    "origin": "user",
+    "partialFieldCount": 1,
+    "receivers": [],
+    "signature": "A{a:uint32}",
+    "tlb": "a#df4e8909 a:uint32 = A",
+    "traits": [],
+    "uid": 22757,
+  },
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "Test": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 10,
+          "kind": "def_receive",
+          "ref": external(msg: A) {
+        42;
+    },
+          "selector": {
+            "arg": {
+              "id": 7,
+              "kind": "def_argument",
+              "name": "msg",
+              "ref": msg: A,
+              "type": {
+                "id": 6,
+                "kind": "type_ref_simple",
+                "name": "A",
+                "optional": false,
+                "ref": A,
+              },
+            },
+            "kind": "external-simple",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 8,
+                "kind": "number",
+                "ref": 42,
+                "value": 42n,
+              },
+              "id": 9,
+              "kind": "statement_expression",
+              "ref": 42;,
+            },
+          ],
+        },
+        {
+          "id": 13,
+          "kind": "def_receive",
+          "ref": external() {
+        42;
+    },
+          "selector": {
+            "kind": "external-fallback",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 11,
+                "kind": "number",
+                "ref": 42,
+                "value": 42n,
+              },
+              "id": 12,
+              "kind": "statement_expression",
+              "ref": 42;,
+            },
+          ],
+        },
+      ],
+      "id": 14,
+      "kind": "def_contract",
+      "name": "Test",
+      "origin": "user",
+      "ref": contract Test {
+    external(msg: A) {
+        42;
+    }
+
+    external() {
+        42;
+    }
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "args": [],
+      "ast": {
+        "args": [],
+        "id": 16,
+        "kind": "def_init_function",
+        "ref": contract Test {
+    external(msg: A) {
+        42;
+    }
+
+    external() {
+        42;
+    }
+},
+        "statements": [],
+      },
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Test",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [
+      {
+        "ast": {
+          "id": 10,
+          "kind": "def_receive",
+          "ref": external(msg: A) {
+        42;
+    },
+          "selector": {
+            "arg": {
+              "id": 7,
+              "kind": "def_argument",
+              "name": "msg",
+              "ref": msg: A,
+              "type": {
+                "id": 6,
+                "kind": "type_ref_simple",
+                "name": "A",
+                "optional": false,
+                "ref": A,
+              },
+            },
+            "kind": "external-simple",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 8,
+                "kind": "number",
+                "ref": 42,
+                "value": 42n,
+              },
+              "id": 9,
+              "kind": "statement_expression",
+              "ref": 42;,
+            },
+          ],
+        },
+        "selector": {
+          "kind": "external-binary",
+          "name": "msg",
+          "type": "A",
+        },
+      },
+      {
+        "ast": {
+          "id": 13,
+          "kind": "def_receive",
+          "ref": external() {
+        42;
+    },
+          "selector": {
+            "kind": "external-fallback",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 11,
+                "kind": "number",
+                "ref": 42,
+                "value": 42n,
+              },
+              "id": 12,
+              "kind": "statement_expression",
+              "ref": 42;,
+            },
+          ],
+        },
+        "selector": {
+          "kind": "external-empty",
+        },
+      },
+    ],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait {
+    
+},
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 44104,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 2`] = `{}`;
 
 exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-uninit-storage-vars 1`] = `
 {

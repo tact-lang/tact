@@ -1,5 +1,5 @@
 {
-  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/grammar/configSchema.json",
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
   "projects": [
     {
       "name": "echo",
@@ -205,6 +205,14 @@
       "output": "./src/test/e2e-emulated/contracts/output",
       "options": {
         "debug": true
+      }
+    },
+    {
+      "name": "external-fallbacks",
+      "path": "./src/test/e2e-emulated/contracts/external-fallbacks.tact",
+      "output": "./src/test/e2e-emulated/contracts/output",
+      "options": {
+        "external": true
       }
     },
     {
