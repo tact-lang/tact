@@ -25,18 +25,16 @@ describe("strings", () => {
             { value: toNano("10") },
             {
                 $$type: "Add",
-                x: 10n
+                x: 10n,
             },
         );
         await system.run();
         expect(await contract.getGetA()).toBe(110n);
 
-        await contract.sendExternal(
-            {
-                $$type: "Add",
-                x: 10n
-            },
-        );
+        await contract.sendExternal({
+            $$type: "Add",
+            x: 10n,
+        });
         await system.run();
         expect(await contract.getGetA()).toBe(120n);
 

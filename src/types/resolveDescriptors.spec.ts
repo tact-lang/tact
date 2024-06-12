@@ -26,7 +26,7 @@ describe("resolveDescriptors", () => {
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
             );
-            ctx = featureEnable(ctx, 'external');
+            ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx);
             ctx = resolveSignatures(ctx);
             expect(getAllTypes(ctx)).toMatchSnapshot();
@@ -40,7 +40,7 @@ describe("resolveDescriptors", () => {
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
             );
-            ctx = featureEnable(ctx, 'external');
+            ctx = featureEnable(ctx, "external");
             expect(() =>
                 resolveDescriptors(ctx),
             ).toThrowErrorMatchingSnapshot();
