@@ -39,6 +39,7 @@ const intMapFormats: FormatDef = {
     uint256: { type: "uint", format: 256 },
 
     int257: { type: "int", format: 257 },
+    coins: { type: "uint", format: "coins" },
 };
 
 const cellFormats: FormatDef = {
