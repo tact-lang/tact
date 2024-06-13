@@ -62,5 +62,6 @@ describe("local-type-inference", () => {
         expect(await contract.getTest16()).toBeNull();
         expect(await contract.getTest17()).toBeNull();
         expect(await contract.getTest18()).toBe(2n);
+        expect(await contract.getTest19()).toBeNull();
     });
 });

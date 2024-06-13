@@ -107,4 +107,10 @@ contract LocalTypeInferenceTester with Deployable {
         let x = m.get(1);
         return x;
     }
+
+    get fun test19(): Int? {
+        let x: Int? = null;
+        let y = x;
+        return y;
+    }
 }

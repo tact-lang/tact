@@ -245,6 +245,16 @@ exports[`local-type-inference should automatically set types for let statements 
         "type": "int",
       },
     },
+    {
+      "arguments": [],
+      "name": "test19",
+      "returnType": {
+        "format": 257,
+        "kind": "simple",
+        "optional": true,
+        "type": "int",
+      },
+    },
   ],
   "receivers": [
     {

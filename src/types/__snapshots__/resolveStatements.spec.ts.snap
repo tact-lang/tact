@@ -430,6 +430,26 @@ Line 9, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for stmt-let-unknown-type-inference 1`] = `
+"<unknown>:8:5: Cannot infer type for "a"
+Line 8, col 5:
+  7 | fun test() {
+> 8 |     let a = null;
+          ^~~~~~~~~~~~~
+  9 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-let-unknown-type-inference2 1`] = `
+"<unknown>:8:5: Cannot infer type for "a"
+Line 8, col 5:
+  7 | fun test() {
+> 8 |     let a = emptyMap();
+          ^~~~~~~~~~~~~~~~~~~
+  9 | }
+"
+`;
+
 exports[`resolveStatements should fail statements for stmt-let-wrong-rhs 1`] = `
 "<unknown>:10:5: Type mismatch: "Int" is not assignable to "Bool"
 Line 10, col 5:
@@ -1408,6 +1428,32 @@ exports[`resolveStatements should resolve statements for stmt-let-if-elseif 1`] 
   [
     "1",
     "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for stmt-let-map-type-inference 1`] = `
+[
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "a",
+    "map<Int, Int as uint32>",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for stmt-let-nullable-type-inference 1`] = `
+[
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "a",
+    "Int?",
   ],
 ]
 `;

@@ -187,6 +187,9 @@ function processStatements(
                 }
                 sctx = addVariable(s.name, variableType, sctx);
             } else {
+                if (expressionType.kind === "null") {
+                    throwError(`Cannot infer type for "${s.name}"`, s.ref);
+                }
                 sctx = addVariable(s.name, expressionType, sctx);
             }
         } else if (s.kind === "statement_assign") {
