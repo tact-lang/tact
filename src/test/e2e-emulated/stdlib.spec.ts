@@ -17,11 +17,9 @@ describe("stdlib", () => {
             .storeBit(1)
             .storeRef(beginCell().storeBit(1).endCell())
             .endCell();
-        const bits = await contract.getSliceBits(slice);
-        const refs = await contract.getSliceRefs(slice);
-        const empty = await contract.getSliceEmpty(slice);
-        expect(bits).toBe(2n);
-        expect(refs).toBe(1n);
-        expect(empty).toBe(false);
+        expect(await contract.getSliceBits(slice)).toBe(2n);
+        expect(await contract.getSliceRefs(slice)).toBe(1n);
+        expect(await contract.getSliceEmpty(slice)).toBe(false);
+        expect(await contract.getLoadBool(slice)).toBe(true);
     });
 });

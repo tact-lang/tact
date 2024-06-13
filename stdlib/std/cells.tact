@@ -66,6 +66,9 @@ extends mutates native loadUint(self: Slice, l: Int): Int;
 @name(preload_uint)
 extends native preloadUint(self: Slice, l: Int): Int;
 
+@name(__tact_load_bool)
+extends mutates native loadBool(self: Slice): Bool;
+
 @name(load_coins)
 extends mutates native loadCoins(self: Slice): Int;
 

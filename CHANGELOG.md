@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The bitwise NOT operation (`~`): PR [#337](https://github.com/tact-lang/tact/pull/337)
 - Augmented assignment bitwise operators `|=`, `&=`, `^=`: PR [#350](https://github.com/tact-lang/tact/pull/350)
 - Traversing maps from contract storage and structs is now allowed: PR [#389](https://github.com/tact-lang/tact/pull/389)
+- The `loadBool` method for `Slice` type: PR [#412](https://github.com/tact-lang/tact/pull/412)
 
 ### Changed
 
