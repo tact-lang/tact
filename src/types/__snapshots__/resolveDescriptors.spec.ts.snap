@@ -3208,6 +3208,582 @@ mutates extends native inc(self: Int): Int;,
 
 exports[`resolveDescriptors should resolve descriptors for item-native-mutating-method 2`] = `{}`;
 
+exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "Main": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 4,
+          "init": null,
+          "kind": "def_field",
+          "name": "m",
+          "ref": m: map<Int, Int as coins>,
+          "type": {
+            "id": 3,
+            "key": "Int",
+            "keyAs": null,
+            "kind": "type_ref_map",
+            "ref": map<Int, Int as coins>,
+            "value": "Int",
+            "valueAs": "coins",
+          },
+        },
+        {
+          "args": [],
+          "attributes": [
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 29,
+          "kind": "def_function",
+          "name": "test",
+          "origin": "user",
+          "ref": get fun test(): Int {
+        let m: map<Int, Int as coins> = emptyMap();
+        m.set(1, 2);
+        self.m.set(1, 2);
+        return m.get(1) + self.m.get(1);
+    },
+          "return": {
+            "id": 5,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "id": 7,
+                "kind": "op_static_call",
+                "name": "emptyMap",
+                "ref": emptyMap(),
+              },
+              "id": 8,
+              "kind": "statement_let",
+              "name": "m",
+              "ref": let m: map<Int, Int as coins> = emptyMap();,
+              "type": {
+                "id": 6,
+                "key": "Int",
+                "keyAs": null,
+                "kind": "type_ref_map",
+                "ref": map<Int, Int as coins>,
+                "value": "Int",
+                "valueAs": "coins",
+              },
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "id": 10,
+                    "kind": "number",
+                    "ref": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "id": 11,
+                    "kind": "number",
+                    "ref": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 12,
+                "kind": "op_call",
+                "name": "set",
+                "ref": m.set(1, 2),
+                "src": {
+                  "id": 9,
+                  "kind": "id",
+                  "ref": m,
+                  "value": "m",
+                },
+              },
+              "id": 13,
+              "kind": "statement_expression",
+              "ref": m.set(1, 2);,
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "id": 16,
+                    "kind": "number",
+                    "ref": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "id": 17,
+                    "kind": "number",
+                    "ref": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 18,
+                "kind": "op_call",
+                "name": "set",
+                "ref": self.m.set(1, 2),
+                "src": {
+                  "id": 15,
+                  "kind": "op_field",
+                  "name": "m",
+                  "ref": self.m,
+                  "src": {
+                    "id": 14,
+                    "kind": "id",
+                    "ref": self,
+                    "value": "self",
+                  },
+                },
+              },
+              "id": 19,
+              "kind": "statement_expression",
+              "ref": self.m.set(1, 2);,
+            },
+            {
+              "expression": {
+                "id": 27,
+                "kind": "op_binary",
+                "left": {
+                  "args": [
+                    {
+                      "id": 21,
+                      "kind": "number",
+                      "ref": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 22,
+                  "kind": "op_call",
+                  "name": "get",
+                  "ref": m.get(1),
+                  "src": {
+                    "id": 20,
+                    "kind": "id",
+                    "ref": m,
+                    "value": "m",
+                  },
+                },
+                "op": "+",
+                "ref": m.get(1) + self.m.get(1),
+                "right": {
+                  "args": [
+                    {
+                      "id": 25,
+                      "kind": "number",
+                      "ref": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 26,
+                  "kind": "op_call",
+                  "name": "get",
+                  "ref": self.m.get(1),
+                  "src": {
+                    "id": 24,
+                    "kind": "op_field",
+                    "name": "m",
+                    "ref": self.m,
+                    "src": {
+                      "id": 23,
+                      "kind": "id",
+                      "ref": self,
+                      "value": "self",
+                    },
+                  },
+                },
+              },
+              "id": 28,
+              "kind": "statement_return",
+              "ref": return m.get(1) + self.m.get(1);,
+            },
+          ],
+        },
+      ],
+      "id": 30,
+      "kind": "def_contract",
+      "name": "Main",
+      "origin": "user",
+      "ref": contract Main {
+    m: map<Int, Int as coins>;
+
+    get fun test(): Int {
+        let m: map<Int, Int as coins> = emptyMap();
+        m.set(1, 2);
+        self.m.set(1, 2);
+        return m.get(1) + self.m.get(1);
+    }
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "m",
+          "type": {
+            "key": "int",
+            "keyFormat": undefined,
+            "kind": "dict",
+            "value": "uint",
+            "valueFormat": "coins",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 4,
+          "init": null,
+          "kind": "def_field",
+          "name": "m",
+          "ref": m: map<Int, Int as coins>,
+          "type": {
+            "id": 3,
+            "key": "Int",
+            "keyAs": null,
+            "kind": "type_ref_map",
+            "ref": map<Int, Int as coins>,
+            "value": "Int",
+            "valueAs": "coins",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "name": "m",
+        "ref": m: map<Int, Int as coins>,
+        "type": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "coins",
+        },
+      },
+    ],
+    "functions": Map {
+      "test" => {
+        "args": [],
+        "ast": {
+          "args": [],
+          "attributes": [
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 29,
+          "kind": "def_function",
+          "name": "test",
+          "origin": "user",
+          "ref": get fun test(): Int {
+        let m: map<Int, Int as coins> = emptyMap();
+        m.set(1, 2);
+        self.m.set(1, 2);
+        return m.get(1) + self.m.get(1);
+    },
+          "return": {
+            "id": 5,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "id": 7,
+                "kind": "op_static_call",
+                "name": "emptyMap",
+                "ref": emptyMap(),
+              },
+              "id": 8,
+              "kind": "statement_let",
+              "name": "m",
+              "ref": let m: map<Int, Int as coins> = emptyMap();,
+              "type": {
+                "id": 6,
+                "key": "Int",
+                "keyAs": null,
+                "kind": "type_ref_map",
+                "ref": map<Int, Int as coins>,
+                "value": "Int",
+                "valueAs": "coins",
+              },
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "id": 10,
+                    "kind": "number",
+                    "ref": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "id": 11,
+                    "kind": "number",
+                    "ref": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 12,
+                "kind": "op_call",
+                "name": "set",
+                "ref": m.set(1, 2),
+                "src": {
+                  "id": 9,
+                  "kind": "id",
+                  "ref": m,
+                  "value": "m",
+                },
+              },
+              "id": 13,
+              "kind": "statement_expression",
+              "ref": m.set(1, 2);,
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "id": 16,
+                    "kind": "number",
+                    "ref": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "id": 17,
+                    "kind": "number",
+                    "ref": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 18,
+                "kind": "op_call",
+                "name": "set",
+                "ref": self.m.set(1, 2),
+                "src": {
+                  "id": 15,
+                  "kind": "op_field",
+                  "name": "m",
+                  "ref": self.m,
+                  "src": {
+                    "id": 14,
+                    "kind": "id",
+                    "ref": self,
+                    "value": "self",
+                  },
+                },
+              },
+              "id": 19,
+              "kind": "statement_expression",
+              "ref": self.m.set(1, 2);,
+            },
+            {
+              "expression": {
+                "id": 27,
+                "kind": "op_binary",
+                "left": {
+                  "args": [
+                    {
+                      "id": 21,
+                      "kind": "number",
+                      "ref": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 22,
+                  "kind": "op_call",
+                  "name": "get",
+                  "ref": m.get(1),
+                  "src": {
+                    "id": 20,
+                    "kind": "id",
+                    "ref": m,
+                    "value": "m",
+                  },
+                },
+                "op": "+",
+                "ref": m.get(1) + self.m.get(1),
+                "right": {
+                  "args": [
+                    {
+                      "id": 25,
+                      "kind": "number",
+                      "ref": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 26,
+                  "kind": "op_call",
+                  "name": "get",
+                  "ref": self.m.get(1),
+                  "src": {
+                    "id": 24,
+                    "kind": "op_field",
+                    "name": "m",
+                    "ref": self.m,
+                    "src": {
+                      "id": 23,
+                      "kind": "id",
+                      "ref": self,
+                      "value": "self",
+                    },
+                  },
+                },
+              },
+              "id": 28,
+              "kind": "statement_return",
+              "ref": return m.get(1) + self.m.get(1);,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverrides": false,
+        "isVirtual": false,
+        "name": "test",
+        "origin": "user",
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": "Main",
+      },
+    },
+    "header": null,
+    "init": {
+      "args": [],
+      "ast": {
+        "args": [],
+        "id": 32,
+        "kind": "def_init_function",
+        "ref": contract Main {
+    m: map<Int, Int as coins>;
+
+    get fun test(): Int {
+        let m: map<Int, Int as coins> = emptyMap();
+        m.set(1, 2);
+        self.m.set(1, 2);
+        return m.get(1) + self.m.get(1);
+    }
+},
+        "statements": [],
+      },
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Main",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait {
+    
+},
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 51099,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 2`] = `{}`;
+
 exports[`resolveDescriptors should resolve descriptors for scope-loops 1`] = `{}`;
 
 exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
