@@ -1,4 +1,4 @@
-import { Dictionary, beginCell, toNano } from "@ton/core";
+import { beginCell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { LocalTypeInferenceTester } from "./contracts/output/local-type-inference_LocalTypeInferenceTester";
