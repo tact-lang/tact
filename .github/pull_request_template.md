@@ -8,4 +8,5 @@ If your PR doesn't close a particular issue, please, create the issue first and 
 - [ ] I have updated CHANGELOG.md
 - [ ] I have added tests to demonstrate the contribution is correctly implemented: this usually includes both positive and negative tests, showing the happy path(s) and featuring intentionally broken cases
 - [ ] I have run all the tests locally and no test failure was reported
+- [ ] I have run the linter, formatter and spellchecker
 - [ ] I did not do unrelated and/or undiscussed refactorings
