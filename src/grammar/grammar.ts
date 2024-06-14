@@ -76,23 +76,11 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         funAttributes,
         _nativeKwd,
         tactId,
-        _lparen2,
         params,
-        optTrailingComma,
-        _rparen2,
         _optColon,
         optReturnType,
         _semicolon,
     ) {
-        if (
-            params.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
         checkVariableName(tactId.sourceString, createRef(tactId));
         return createNode({
             kind: "def_native_function",
@@ -103,9 +91,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             name: tactId.sourceString,
             nativeName: funcId.sourceString,
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
-            args: params
-                .asIteration()
-                .children.map((p) => p.astOfDeclaration()),
+            args: params.astsOfList(),
             ref: createRef(this),
         });
     },
@@ -115,9 +101,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             kind: "def_struct",
             origin: ctx!.origin,
             name: typeId.sourceString,
-            fields: fields.children[0]
-                .asIteration()
-                .children.map((field, _semicolon) => field.astOfDeclaration()),
+            fields: fields.astsOfList(),
             prefix: null,
             message: false,
             ref: createRef(this),
@@ -138,10 +122,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             kind: "def_struct",
             origin: ctx!.origin,
             name: typeId.sourceString,
-            //            fields: fields.children.map((f) => f.astOfDeclaration()),
-            fields: fields.children[0]
-                .asIteration()
-                .children.map((field, _semicolon) => field.astOfDeclaration()),
+            fields: fields.astsOfList(),
             prefix: unwrapOptNode(optId, (id) => parseInt(id.sourceString)),
             message: true,
             ref: createRef(this),
@@ -153,7 +134,6 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         contractId,
         _optWithKwd,
         optInheritedTraits,
-        _optTrailingComma,
         _lbrace,
         contractItems,
         _rbrace,
@@ -169,10 +149,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             declarations: contractItems.children.map((item) =>
                 item.astOfItem(),
             ),
-            traits:
-                optInheritedTraits.children[0]
-                    ?.asIteration()
-                    .children.map((e) => e.astOfExpression()) ?? [],
+            traits: optInheritedTraits.children[0]?.astsOfList() ?? [],
             ref: createRef(this),
         });
     },
@@ -182,7 +159,6 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         traitId,
         _optWithKwd,
         optInheritedTraits,
-        _optTrailingComma,
         _lbrace,
         traitItems,
         _rbrace,
@@ -196,10 +172,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
                 ca.astOfContractAttributes(),
             ),
             declarations: traitItems.children.map((item) => item.astOfItem()),
-            traits:
-                optInheritedTraits.children[0]
-                    ?.asIteration()
-                    .children.map((e) => e.astOfExpression()) ?? [],
+            traits: optInheritedTraits.children[0]?.astsOfList() ?? [],
             ref: createRef(this),
         });
     },
@@ -266,26 +239,13 @@ semantics.addOperation<ASTNode>("astOfItem", {
         funAttributes,
         _funKwd,
         funId,
-        _lparen,
         funParameters,
-        optTrailingComma,
-        _rparen,
         _optColon,
         optReturnType,
         _lbrace,
         funBody,
         _rbrace,
     ) {
-        if (
-            funParameters.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
-
         const attributes = funAttributes.children.map((a) =>
             a.astOfFunctionAttributes(),
         ) as ASTFunctionAttribute[];
@@ -297,9 +257,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             attributes,
             name: funId.sourceString,
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
-            args: funParameters
-                .asIteration()
-                .children.map((p) => p.astOfDeclaration()),
+            args: funParameters.astsOfList(),
             statements: funBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
@@ -308,24 +266,11 @@ semantics.addOperation<ASTNode>("astOfItem", {
         funAttributes,
         _funKwd,
         funId,
-        _lparen,
         funParameters,
-        optTrailingComma,
-        _rparen,
         _optColon,
         optReturnType,
         _semicolon,
     ) {
-        if (
-            funParameters.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
-
         const attributes = funAttributes.children.map((a) =>
             a.astOfFunctionAttributes(),
         ) as ASTFunctionAttribute[];
@@ -337,38 +282,15 @@ semantics.addOperation<ASTNode>("astOfItem", {
             attributes,
             name: funId.sourceString,
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
-            args: funParameters
-                .asIteration()
-                .children.map((p) => p.astOfDeclaration()),
+            args: funParameters.astsOfList(),
             statements: null,
             ref: createRef(this),
         });
     },
-    ContractInit(
-        _initKwd,
-        _lparen,
-        initParameters,
-        optTrailingComma,
-        _rparen,
-        _lbrace,
-        initBody,
-        _rbrace,
-    ) {
-        if (
-            initParameters.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
-
+    ContractInit(_initKwd, initParameters, _lbrace, initBody, _rbrace) {
         return createNode({
             kind: "def_init_function",
-            args: initParameters
-                .asIteration()
-                .children.map((p) => p.astOfDeclaration()),
+            args: initParameters.astsOfList(),
             statements: initBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
@@ -508,6 +430,43 @@ semantics.addOperation<ASTConstantAttribute>("astOfConstAttribute", {
     },
     ConstantAttribute_abstract(_) {
         return { type: "abstract", ref: createRef(this) };
+    },
+});
+
+semantics.addOperation<ASTNode[]>("astsOfList", {
+    InheritedTraits(traits, _optTrailingComma) {
+        return traits
+            .asIteration()
+            .children.map((id, _comma) => id.astOfExpression());
+    },
+    StructFields(fields, _optSemicolon) {
+        return fields
+            .asIteration()
+            .children.map((field, _semicolon) => field.astOfDeclaration());
+    },
+    Parameters(_lparen, params, optTrailingComma, _rparen) {
+        if (
+            params.source.contents === "" &&
+            optTrailingComma.sourceString === ","
+        ) {
+            throwError(
+                "Empty parameter list should not have a dangling comma.",
+                createRef(optTrailingComma),
+            );
+        }
+        return params.asIteration().children.map((p) => p.astOfDeclaration());
+    },
+    Arguments(_lparen, args, optTrailingComma, _rparen) {
+        if (
+            args.source.contents === "" &&
+            optTrailingComma.sourceString === ","
+        ) {
+            throwError(
+                "Empty argument list should not have a dangling comma.",
+                createRef(optTrailingComma),
+            );
+        }
+        return args.asIteration().children.map((arg) => arg.astOfExpression());
     },
 });
 
@@ -1135,58 +1094,20 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             ref: createRef(this),
         });
     },
-    ExpressionMethodCall(
-        source,
-        _dot,
-        methodId,
-        _lparen,
-        methodArguments,
-        optTrailingComma,
-        _rparen,
-    ) {
-        if (
-            methodArguments.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
-
+    ExpressionMethodCall(source, _dot, methodId, methodArguments) {
         return createNode({
             kind: "op_call",
             src: source.astOfExpression(),
             name: methodId.sourceString,
-            args: methodArguments
-                .asIteration()
-                .children.map((s) => s.astOfExpression()),
+            args: methodArguments.astsOfList(),
             ref: createRef(this),
         });
     },
-    ExpressionStaticCall(
-        functionId,
-        _lparen,
-        functionArguments,
-        optTrailingComma,
-        _rparen,
-    ) {
-        if (
-            functionArguments.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
-
+    ExpressionStaticCall(functionId, functionArguments) {
         return createNode({
             kind: "op_static_call",
             name: functionId.sourceString,
-            args: functionArguments
-                .asIteration()
-                .children.map((e) => e.astOfExpression()),
+            args: functionArguments.astsOfList(),
             ref: createRef(this),
         });
     },
@@ -1216,30 +1137,11 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             ref: createRef(this),
         });
     },
-    ExpressionInitOf(
-        _initOfKwd,
-        contractId,
-        _lparen,
-        initArguments,
-        optTrailingComma,
-        _rparen,
-    ) {
-        if (
-            initArguments.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
-
+    ExpressionInitOf(_initOfKwd, contractId, initArguments) {
         return createNode({
             kind: "init_of",
             name: contractId.sourceString,
-            args: initArguments
-                .asIteration()
-                .children.map((a) => a.astOfExpression()),
+            args: initArguments.astsOfList(),
             ref: createRef(this),
         });
     },

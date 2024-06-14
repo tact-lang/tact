@@ -19,7 +19,7 @@ Tact {
 
     ModuleConstant = ConstantDefinition
 
-    NativeFunctionDecl = "@name" "(" funcId ")" FunctionAttribute* native id "(" ListOf<Parameter,","> ","? ")" (":" Type)? ";"
+    NativeFunctionDecl = "@name" "(" funcId ")" FunctionAttribute* native id Parameters (":" Type)? ";"
 
     Type = typeId "?" --optional
          | typeId --regular
@@ -42,7 +42,7 @@ Tact {
     StructField = FieldDecl
     StructFields = ListOf<StructField, ";"> ";"?
 
-    Contract = ContractAttribute* contract id (with NonemptyListOf<id,","> ","?)? "{" ContractItemDecl* "}"
+    Contract = ContractAttribute* contract id (with InheritedTraits)? "{" ContractItemDecl* "}"
 
     ContractItemDecl = ContractInit
                      | StorageVar
@@ -50,7 +50,9 @@ Tact {
                      | FunctionDefinition
                      | ConstantDefinition
 
-    Trait = ContractAttribute* trait id (with NonemptyListOf<id,","> ","?)? "{" TraitItemDecl* "}"
+    Trait = ContractAttribute* trait id (with InheritedTraits)? "{" TraitItemDecl* "}"
+
+    InheritedTraits = NonemptyListOf<id,","> ","?
 
     TraitItemDecl = StorageVar
                   | Receiver
@@ -61,7 +63,7 @@ Tact {
 
     StorageVar = FieldDecl ";"
 
-    ContractInit = "init" "(" ListOf<Parameter,","> ","? ")" "{" Statement* "}"
+    ContractInit = "init" Parameters "{" Statement* "}"
 
     ContractAttribute = "@interface" "(" stringLiteral ")" --interface
 
@@ -73,9 +75,11 @@ Tact {
                       | inline    --inline
                       | abstract  --abstract
 
-    FunctionDefinition = FunctionAttribute* fun id "(" ListOf<Parameter,","> ","? ")" (":" Type)? "{" Statement* "}"
+    FunctionDefinition = FunctionAttribute* fun id Parameters (":" Type)? "{" Statement* "}"
 
-    FunctionDeclaration = FunctionAttribute* fun id "(" ListOf<Parameter,","> ","? ")" (":" Type)? ";"
+    FunctionDeclaration = FunctionAttribute* fun id Parameters (":" Type)? ";"
+
+    Parameters = "(" ListOf<Parameter,","> ","? ")"
 
     Parameter = id ":" Type
 
@@ -198,16 +202,18 @@ Tact {
 
     ExpressionFieldAccess = ExpressionPrimary "." id ~"("
 
-    ExpressionMethodCall = ExpressionPrimary "." id "(" ListOf<Expression, ","> ","? ")"
+    ExpressionMethodCall = ExpressionPrimary "." id Arguments
 
     ExpressionStructInstance = typeId "{" ListOf<StructFieldInitializer, ","> ","? "}"
 
-    ExpressionStaticCall = id "(" ListOf<Expression, ","> ","? ")"
+    ExpressionStaticCall = id Arguments
 
-    ExpressionInitOf = initOf id "(" ListOf<Expression, ","> ","? ")"
+    ExpressionInitOf = initOf id Arguments
 
     StructFieldInitializer = id ":" Expression --full
                            | id --punned   // shorthand for `id: id`
+
+    Arguments = "(" ListOf<Expression, ","> ","? ")"
 
     // Type identifiers
     typeId = letterAsciiUC typeIdPart*
