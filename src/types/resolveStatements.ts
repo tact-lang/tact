@@ -170,21 +170,28 @@ function processStatements(
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
 
-            // Check type
-            const expressionType = getExpType(ctx, s.expression);
-            const variableType = resolveTypeRef(ctx, s.type);
-            if (!isAssignable(expressionType, variableType)) {
-                throwError(
-                    `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(variableType)}"`,
-                    s.ref,
-                );
-            }
-
-            // Add variable to statement context
+            // Check variable name
             if (sctx.vars.has(s.name)) {
                 throwError(`Variable "${s.name}" already exists`, s.ref);
             }
-            sctx = addVariable(s.name, variableType, sctx);
+
+            // Check type
+            const expressionType = getExpType(ctx, s.expression);
+            if (s.type !== null) {
+                const variableType = resolveTypeRef(ctx, s.type);
+                if (!isAssignable(expressionType, variableType)) {
+                    throwError(
+                        `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(variableType)}"`,
+                        s.ref,
+                    );
+                }
+                sctx = addVariable(s.name, variableType, sctx);
+            } else {
+                if (expressionType.kind === "null") {
+                    throwError(`Cannot infer type for "${s.name}"`, s.ref);
+                }
+                sctx = addVariable(s.name, expressionType, sctx);
+            }
         } else if (s.kind === "statement_assign") {
             // Process lvalue
             ctx = resolveLValueRef(s.path, sctx, ctx);

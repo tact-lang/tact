@@ -91,7 +91,11 @@ export function writeStatement(
         return;
     } else if (f.kind === "statement_let") {
         // Contract/struct case
-        const t = resolveTypeRef(ctx.ctx, f.type);
+        const t =
+            f.type === null
+                ? getExpType(ctx.ctx, f.expression)
+                : resolveTypeRef(ctx.ctx, f.type);
+
         if (t.kind === "ref") {
             const tt = getType(ctx.ctx, t.name);
             if (tt.kind === "contract" || tt.kind === "struct") {
