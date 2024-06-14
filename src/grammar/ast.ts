@@ -418,7 +418,7 @@ export type ASTStatementLet = {
     kind: "statement_let";
     id: number;
     name: string;
-    type: ASTTypeRef;
+    type: ASTTypeRef | null;
     expression: ASTExpression;
     ref: ASTRef;
 };
@@ -729,7 +729,6 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     //
 
     if (node.kind === "statement_let") {
-        traverse(node.type, callback);
         traverse(node.expression, callback);
     }
     if (node.kind === "statement_return") {
