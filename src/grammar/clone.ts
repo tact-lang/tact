@@ -28,6 +28,7 @@ export function cloneNode<T extends ASTNode>(src: T): T {
     } else if (src.kind === "statement_let") {
         return cloneASTNode({
             ...src,
+            type: src.type ? cloneASTNode(src.type) : null,
             expression: cloneNode(src.expression),
         });
     } else if (src.kind === "statement_condition") {
@@ -131,12 +132,14 @@ export function cloneNode<T extends ASTNode>(src: T): T {
     } else if (src.kind === "def_function") {
         return cloneASTNode({
             ...src,
+            return: src.return ? cloneASTNode(src.return) : null,
             statements: src.statements ? src.statements.map(cloneNode) : null,
             args: src.args.map(cloneNode),
         });
     } else if (src.kind === "def_native_function") {
         return cloneASTNode({
             ...src,
+            return: src.return ? cloneASTNode(src.return) : null,
             args: src.args.map(cloneNode),
         });
     } else if (src.kind === "def_receive") {
@@ -157,6 +160,7 @@ export function cloneNode<T extends ASTNode>(src: T): T {
     } else if (src.kind === "def_constant") {
         return cloneASTNode({
             ...src,
+            type: cloneASTNode(src.type),
             value: src.value ? cloneNode(src.value) : src.value,
         });
     }
