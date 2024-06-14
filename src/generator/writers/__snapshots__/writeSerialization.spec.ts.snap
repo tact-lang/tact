@@ -4600,7 +4600,9 @@ return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));",
   },
   {
     "code": {
-      "code": "return sc_0~$A$_load();",
+      "code": "var r = sc_0~$A$_load();
+sc_0.end_parse();
+return r;",
       "kind": "generic",
     },
     "comment": null,
@@ -9215,7 +9217,9 @@ return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));",
   },
   {
     "code": {
-      "code": "return sc_0~$B$_load();",
+      "code": "var r = sc_0~$B$_load();
+sc_0.end_parse();
+return r;",
       "kind": "generic",
     },
     "comment": null,
@@ -13836,7 +13840,9 @@ return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));",
   },
   {
     "code": {
-      "code": "return sc_0~$C$_load();",
+      "code": "var r = sc_0~$C$_load();
+sc_0.end_parse();
+return r;",
       "kind": "generic",
     },
     "comment": null,
