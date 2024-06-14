@@ -95,6 +95,11 @@
       "output": "./src/test/e2e-emulated/contracts/output"
     },
     {
+      "name": "underscore-variable",
+      "path": "./src/test/e2e-emulated/contracts/underscore-variable.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
       "name": "optionals",
       "path": "./src/test/e2e-emulated/contracts/optionals.tact",
       "output": "./src/test/e2e-emulated/contracts/output",

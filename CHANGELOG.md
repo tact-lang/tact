@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `let` statements can now be used without an explicit type declaration and determine the type automatically if it was not specified: PR [#198](https://github.com/tact-lang/tact/pull/198)
 - The outdated TextMate-style grammar files for text editors have been removed (the most recent grammar files can be found in the [tact-sublime](https://github.com/tact-lang/tact-sublime) repo): PR [#404](https://github.com/tact-lang/tact/pull/404)
 - The JSON schema for `tact.config.json` has been moved to the `json-schemas` project folder: PR [#404](https://github.com/tact-lang/tact/pull/404)
+- Allow underscores as unused variable identifiers: PR [#338](https://github.com/tact-lang/tact/pull/338)
 - The default compilation mode does decompile BoC files anymore, to additionally perform decompilation at the end of the pipeline, set the `fullWithDecompilation` mode in the `mode` project properties of `tact.config.json`: PR [#417](https://github.com/tact-lang/tact/pull/417)
 
 ### Fixed
