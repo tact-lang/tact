@@ -16,6 +16,7 @@ meowModule.then(
     Flags
       -c, --config CONFIG         Specify path to config file (tact.config.json)
       -p, --project ...names      Build only the specified project name(s) from the config file
+      --with-decompilation        Full compilation followed by decompilation of produced binary code
       --func                      Output intermediate FunC code and exit
       --check                     Perform syntax and type checking, then exit
       -v, --version               Print Tact compiler version and exit
@@ -51,6 +52,7 @@ meowModule.then(
             },
           },
           projects: { shortFlag: "p", type: "string", isMultiple: true },
+          withDecompilation: { type: "boolean", default: false },
           func: { type: "boolean", default: false },
           check: { type: "boolean", default: false },
           version: { shortFlag: "v", type: "boolean" },
@@ -86,14 +88,24 @@ meowModule.then(
       cli.showHelp();
     }
 
-    // Disallow specifying both --func and --check flags at the same time
-    if (cli.flags.check && cli.flags.func) {
-      console.log("Error: Flags --func and --check are mutually exclusive!");
+    // Disallow specifying several exclusive compilation mode flags
+    const compilationModeFlags = [
+      cli.flags.check,
+      cli.flags.func,
+      cli.flags.withDecompilation,
+    ];
+    const numOfCompilationModeFlagsSet = compilationModeFlags.filter(
+      (flag) => flag,
+    ).length;
+    if (numOfCompilationModeFlagsSet > 1) {
+      console.log(
+        "Error: Flags --with-decompilation, --func and --check are mutually exclusive!",
+      );
       cli.showHelp();
     }
 
-    // Disallow running --func and --check flags without a config or a file specified
-    if (isEmptyConfigAndInput() && (cli.flags.check || cli.flags.func)) {
+    // Disallow using compilation mode flags without a config or a file specified
+    if (isEmptyConfigAndInput() && numOfCompilationModeFlagsSet > 0) {
       console.log("Error: Either config or Tact file have to be specified!");
       cli.showHelp();
     }
@@ -110,8 +122,7 @@ meowModule.then(
     // Note, that version/help flags are already processed above and don't need to be mentioned here
     if (
       isEmptyConfigAndInput() &&
-      !cli.flags.check &&
-      !cli.flags.func &&
+      numOfCompilationModeFlagsSet === 0 &&
       cli.flags.projects.length === 0
     ) {
       cli.showHelp(0);
@@ -122,7 +133,9 @@ meowModule.then(
       ? "checkOnly"
       : cli.flags.func
         ? "funcOnly"
-        : undefined;
+        : cli.flags.withDecompilation
+          ? "fullWithDecompilation"
+          : undefined;
 
     // TODO: all flags on the cli should take precedence over flags in the config
     // Make a nice model for it in the src/node.ts instead of the current mess
