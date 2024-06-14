@@ -50,6 +50,8 @@ contract UnderscoreVariableTestContract {
     get fun test4(): Int {
         let _: Int = self.increaseSomething();
         let _: Int = self.increaseSomething();
+        let _ = self.increaseSomething();
+        let _ = self.increaseSomething();
         return self.something;
     }
 }

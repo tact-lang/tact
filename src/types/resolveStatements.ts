@@ -29,6 +29,20 @@ function emptyContext(root: ASTRef, returns: TypeRef): StatementContext {
     };
 }
 
+function checkVariableExists(
+    ctx: StatementContext,
+    name: string,
+    ref?: ASTRef,
+): void {
+    if (ctx.vars.has(name)) {
+        if (ref) {
+            throwError(`Variable already exists: "${name}"`, ref);
+        } else {
+            throw Error(`Variable already exists: "${name}"`);
+        }
+    }
+}
+
 function addRequiredVariables(
     name: string,
     src: StatementContext,
@@ -61,11 +75,9 @@ function addVariable(
     ref: TypeRef,
     src: StatementContext,
 ): StatementContext {
-    if (src.vars.has(name)) {
-        throw Error("Variable already exists: " + name); // Should happen earlier
-    }
+    checkVariableExists(src, name); // Should happen earlier
     if (name == "_") {
-        throw Error("Variable name cannot be '_'");
+        return src;
     }
     return {
         ...src,
@@ -174,9 +186,7 @@ function processStatements(
             ctx = resolveExpression(s.expression, sctx, ctx);
 
             // Check variable name
-            if (sctx.vars.has(s.name)) {
-                throwError(`Variable "${s.name}" already exists`, s.ref);
-            }
+            checkVariableExists(sctx, s.name, s.ref);
 
             // Check type
             const expressionType = getExpType(ctx, s.expression);
@@ -188,16 +198,12 @@ function processStatements(
                         s.ref,
                     );
                 }
-                if (s.name !== "_") {
-                    sctx = addVariable(s.name, variableType, sctx);
-                }
+                sctx = addVariable(s.name, variableType, sctx);
             } else {
                 if (expressionType.kind === "null") {
                     throwError(`Cannot infer type for "${s.name}"`, s.ref);
                 }
-                if (s.name !== "_") {
-                    sctx = addVariable(s.name, expressionType, sctx);
-                }
+                sctx = addVariable(s.name, expressionType, sctx);
             }
         } else if (s.kind === "statement_assign") {
             // Process lvalue
@@ -398,19 +404,12 @@ function processStatements(
             let catchCtx = sctx;
 
             // Process catchName variable for exit code
-            if (s.catchName != "_") {
-                if (initialCtx.vars.has(s.catchName)) {
-                    throwError(
-                        `Variable already exists: "${s.catchName}"`,
-                        s.ref,
-                    );
-                }
-                catchCtx = addVariable(
-                    s.catchName,
-                    { kind: "ref", name: "Int", optional: false },
-                    initialCtx,
-                );
-            }
+            checkVariableExists(initialCtx, s.catchName, s.ref);
+            catchCtx = addVariable(
+                s.catchName,
+                { kind: "ref", name: "Int", optional: false },
+                initialCtx,
+            );
 
             // Process catch statements
             const rCatch = processStatements(s.catchStatements, catchCtx, ctx);
@@ -450,12 +449,7 @@ function processStatements(
 
             // Add key and value to statement context
             if (s.keyName != "_") {
-                if (initialCtx.vars.has(s.keyName)) {
-                    throwError(
-                        `Variable already exists: "${s.keyName}"`,
-                        s.ref,
-                    );
-                }
+                checkVariableExists(initialCtx, s.keyName, s.ref);
                 foreachCtx = addVariable(
                     s.keyName,
                     { kind: "ref", name: mapType.key, optional: false },
@@ -463,12 +457,7 @@ function processStatements(
                 );
             }
             if (s.valueName != "_") {
-                if (foreachCtx.vars.has(s.valueName)) {
-                    throwError(
-                        `Variable already exists: "${s.valueName}"`,
-                        s.ref,
-                    );
-                }
+                checkVariableExists(foreachCtx, s.valueName, s.ref);
                 foreachCtx = addVariable(
                     s.valueName,
                     { kind: "ref", name: mapType.value, optional: false },

@@ -6,5 +6,6 @@ fun someImpureFunction(): Int {
 
 fun test(): Int {
     let _: Int = someImpureFunction();
+    let _ = someImpureFunction();
     return 123;
 }

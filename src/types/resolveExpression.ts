@@ -766,6 +766,12 @@ export function resolveExpression(
         const v = sctx.vars.get(exp.value);
         if (!v) {
             if (!hasStaticConstant(ctx, exp.value)) {
+                if (exp.value === "_") {
+                    throwError(
+                        "Wildcard variable name '_' cannot be accessed",
+                        exp.ref,
+                    );
+                }
                 throwError("Unable to resolve id " + exp.value, exp.ref);
             } else {
                 const cc = getStaticConstant(ctx, exp.value);

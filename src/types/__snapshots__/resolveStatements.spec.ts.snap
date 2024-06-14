@@ -581,7 +581,7 @@ Line 7, col 9:
 `;
 
 exports[`resolveStatements should fail statements for var-underscore-name-access 1`] = `
-"<unknown>:6:16: Unable to resolve id _
+"<unknown>:6:16: Wildcard variable name '_' cannot be accessed
 Line 6, col 16:
   5 |     foreach (_, _ in m) {
 > 6 |         return _;
@@ -591,7 +591,7 @@ Line 6, col 16:
 `;
 
 exports[`resolveStatements should fail statements for var-underscore-name-access2 1`] = `
-"<unknown>:7:14: Unable to resolve id _
+"<unknown>:7:14: Wildcard variable name '_' cannot be accessed
 Line 7, col 14:
   6 |     foreach (_, v in m) {
 > 7 |         x += _;
@@ -601,7 +601,7 @@ Line 7, col 14:
 `;
 
 exports[`resolveStatements should fail statements for var-underscore-name-access3 1`] = `
-"<unknown>:9:12: Unable to resolve id _
+"<unknown>:9:12: Wildcard variable name '_' cannot be accessed
 Line 9, col 12:
    8 |     let _: Int = someImpureFunction();
 >  9 |     return _;
@@ -1679,6 +1679,10 @@ exports[`resolveStatements should resolve statements for var-underscore-name-in-
 [
   [
     "123",
+    "Int",
+  ],
+  [
+    "someImpureFunction()",
     "Int",
   ],
   [

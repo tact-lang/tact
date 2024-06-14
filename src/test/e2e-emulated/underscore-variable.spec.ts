@@ -21,6 +21,6 @@ describe("underscore-variable", () => {
         expect(await contract.getTest1()).toEqual(0n);
         expect(await contract.getTest2()).toEqual(12n);
         expect(await contract.getTest3()).toEqual(6n);
-        expect(await contract.getTest4()).toEqual(2n);
+        expect(await contract.getTest4()).toEqual(4n);
     });
 });
