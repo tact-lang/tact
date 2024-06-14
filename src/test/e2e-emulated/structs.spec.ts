@@ -5,6 +5,10 @@ import {
     MyStruct1,
     MyStruct2,
     StructsTester,
+    loadMyStruct1,
+    loadMyStruct2,
+    storeMyStruct1,
+    storeMyStruct2,
 } from "./contracts/output/structs_StructsTester";
 
 describe("structs", () => {
@@ -109,5 +113,44 @@ describe("structs", () => {
         expect((await contract.getTest1(s2, s3)).toString()).toEqual(
             beginCell().storeRef(c2).storeRef(c3).endCell().toString(),
         );
+
+        // Test wrappers
+
+        expect(loadMyStruct1(c1.asSlice())).toMatchObject<MyStruct1>(s1);
+        expect(loadMyStruct1(c2.asSlice())).toMatchObject<MyStruct1>(s2);
+        expect(loadMyStruct2(c3.asSlice())).toMatchSnapshot();
+        expect(loadMyStruct2(c4.asSlice())).toMatchSnapshot();
+        expect(
+            beginCell().store(storeMyStruct1(s1)).endCell().toString(),
+        ).toEqual(c1.toString());
+        expect(
+            beginCell().store(storeMyStruct1(s2)).endCell().toString(),
+        ).toEqual(c2.toString());
+        expect(
+            beginCell().store(storeMyStruct2(s3)).endCell().toString(),
+        ).toEqual(c3.toString());
+        expect(
+            beginCell().store(storeMyStruct2(s4)).endCell().toString(),
+        ).toEqual(c4.toString());
+
+        // Negative parsing tests
+
+        await expect(
+            contract.getFromCell1(beginCell().storeUint(0, 123).endCell()),
+        ).rejects.toThrow("Cell underflow");
+
+        await expect(
+            contract.getFromCell1(
+                beginCell()
+                    .storeStringTail(
+                        "a long string a long string a long string a long string a long string a long string a long string a long string a long string",
+                    )
+                    .endCell(),
+            ),
+        ).rejects.toThrow("Cell underflow");
+
+        expect(() =>
+            loadMyStruct1(beginCell().storeUint(0, 123).endCell().asSlice()),
+        ).toThrow();
     });
 });

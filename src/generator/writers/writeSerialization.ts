@@ -356,7 +356,9 @@ export function writeParser(
         }
         ctx.context("type:" + name);
         ctx.body(() => {
-            ctx.append(`return sc_0~${ops.reader(name, ctx)}();`);
+            ctx.append(`var r = sc_0~${ops.reader(name, ctx)}();`);
+            ctx.append(`sc_0.end_parse();`);
+            ctx.append(`return r;`);
         });
     });
 }
