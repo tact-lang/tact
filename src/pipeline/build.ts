@@ -184,27 +184,26 @@ export async function build(args: {
             continue;
         }
 
-        // Fift decompiler for generated code debug
-        logger.log("   > " + contract + ": fift decompiler");
-        let codeFiftDecompiled: string;
-        try {
-            codeFiftDecompiled = decompileAll({ src: codeBoc });
-            project.writeFile(pathCodeFifDec, codeFiftDecompiled);
-        } catch (e) {
-            logger.error("Fift decompiler crashed");
-            logger.error(errorToString(e));
-            ok = false;
-            continue;
-        }
-
         // Add to built map
         built[contract] = {
-            // codeFunc,
             codeBoc,
-            // codeFift,
-            // codeFiftDecompiled,
             abi,
         };
+
+        if (config.mode === "fullWithDecompilation") {
+            // Fift decompiler for generated code debug
+            logger.log("   > " + contract + ": fift decompiler");
+            let codeFiftDecompiled: string;
+            try {
+                codeFiftDecompiled = decompileAll({ src: codeBoc });
+                project.writeFile(pathCodeFifDec, codeFiftDecompiled);
+            } catch (e) {
+                logger.error("Fift decompiler crashed");
+                logger.error(errorToString(e));
+                ok = false;
+                continue;
+            }
+        }
     }
     if (!ok) {
         logger.log("💥 Compilation failed. Skipping packaging");

@@ -77,13 +77,31 @@ jobs:
           tact --check bin/test/success.tact
           tact --func bin/test/success.tact
           tact bin/test/success.tact
+          tact --with-decompilation bin/test/success.tact
 
       - name: CLI Test | Check compilation via `--config`
         run: |
           # should output complete results
           tact --config bin/test/success.config.json
+          # should output complete result + decompile binary code
+          tact --config bin/test/success.config.with.decompilation.json
           # should only run the syntax and type checking
           tact --config bin/test/success.config.json --check
+
+      - name: CLI Test | Check parsing of mutually exclusive flags - 1
+        if: runner.os != 'Windows'
+        run: |
+          ! tact --func --check bin/test/success.config.json
+
+      - name: CLI Test | Check parsing of mutually exclusive flags - 2
+        if: runner.os != 'Windows'
+        run: |
+          ! tact --with-decompilation --check bin/test/success.config.json
+
+      - name: CLI Test | Check parsing of mutually exclusive flags - 3
+        if: runner.os != 'Windows'
+        run: |
+          ! tact --func --with-decompilation bin/test/success.config.json
 
       - name: CLI Test | Check parsing of a non-existing CLI flag
         if: runner.os != 'Windows'
