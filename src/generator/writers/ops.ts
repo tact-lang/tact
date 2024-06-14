@@ -16,6 +16,8 @@ export const ops = {
     writerCellOpt: (type: string, ctx: WriterContext) =>
         used(`$${type}$_store_opt`, ctx),
     reader: (type: string, ctx: WriterContext) => used(`$${type}$_load`, ctx),
+    readerNonModifying: (type: string, ctx: WriterContext) =>
+        used(`$${type}$_load_not_mut`, ctx),
     readerBounced: (type: string, ctx: WriterContext) =>
         used(`$${type}$_load_bounced`, ctx),
     readerOpt: (type: string, ctx: WriterContext) =>

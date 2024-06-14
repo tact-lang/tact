@@ -149,6 +149,11 @@
       }
     },
     {
+      "name": "structs",
+      "path": "./src/test/e2e-emulated/contracts/structs.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
       "name": "constants",
       "path": "./src/test/e2e-emulated/contracts/constants.tact",
       "output": "./src/test/e2e-emulated/contracts/output",

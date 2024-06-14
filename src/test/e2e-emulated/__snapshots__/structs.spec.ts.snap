@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`structs should implement structs parsing and writing correctly 1`] = `
+{
+  "$$type": "MyStruct2",
+  "m": Dictionary {
+    "_key": {
+      "bits": 257,
+      "parse": [Function],
+      "serialize": [Function],
+    },
+    "_map": Map {},
+    "_value": {
+      "parse": [Function],
+      "serialize": [Function],
+    },
+  },
+  "s": {
+    "$$type": "MyStruct1",
+    "a": 1n,
+    "b": 2n,
+    "c": 3n,
+  },
+}
+`;
+
+exports[`structs should implement structs parsing and writing correctly 2`] = `
+{
+  "$$type": "MyStruct2",
+  "m": Dictionary {
+    "_key": {
+      "bits": 257,
+      "parse": [Function],
+      "serialize": [Function],
+    },
+    "_map": Map {},
+    "_value": {
+      "parse": [Function],
+      "serialize": [Function],
+    },
+  },
+  "s": null,
+}
+`;
+
+exports[`structs should implement structs parsing and writing correctly 3`] = `
+{
+  "$$type": "MyStruct2",
+  "m": Dictionary {
+    "_key": {
+      "bits": 257,
+      "parse": [Function],
+      "serialize": [Function],
+    },
+    "_map": Map {},
+    "_value": {
+      "parse": [Function],
+      "serialize": [Function],
+    },
+  },
+  "s": {
+    "$$type": "MyStruct1",
+    "a": 1n,
+    "b": 2n,
+    "c": 3n,
+  },
+}
+`;
+
+exports[`structs should implement structs parsing and writing correctly 4`] = `
+{
+  "$$type": "MyStruct2",
+  "m": Dictionary {
+    "_key": {
+      "bits": 257,
+      "parse": [Function],
+      "serialize": [Function],
+    },
+    "_map": Map {},
+    "_value": {
+      "parse": [Function],
+      "serialize": [Function],
+    },
+  },
+  "s": null,
+}
+`;

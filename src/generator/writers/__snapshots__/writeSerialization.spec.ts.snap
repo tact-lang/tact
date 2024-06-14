@@ -4598,6 +4598,20 @@ return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));",
     "name": "$A$_load",
     "signature": "(slice, ((int, int, int, int, int, int, int))) $A$_load(slice sc_0)",
   },
+  {
+    "code": {
+      "code": "return sc_0~$A$_load();",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "type:A",
+    "depends": Set {
+      "$A$_load",
+    },
+    "flags": Set {},
+    "name": "$A$_load_not_mut",
+    "signature": "((int, int, int, int, int, int, int)) $A$_load_not_mut(slice sc_0)",
+  },
 ]
 `;
 
@@ -9198,6 +9212,20 @@ return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));",
     "flags": Set {},
     "name": "$B$_load",
     "signature": "(slice, ((int, int, int, int, int, int, int))) $B$_load(slice sc_0)",
+  },
+  {
+    "code": {
+      "code": "return sc_0~$B$_load();",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "type:B",
+    "depends": Set {
+      "$B$_load",
+    },
+    "flags": Set {},
+    "name": "$B$_load_not_mut",
+    "signature": "((int, int, int, int, int, int, int)) $B$_load_not_mut(slice sc_0)",
   },
 ]
 `;
@@ -13805,6 +13833,20 @@ return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));",
     "flags": Set {},
     "name": "$C$_load",
     "signature": "(slice, ((cell, cell, slice, slice, int, int, int, slice))) $C$_load(slice sc_0)",
+  },
+  {
+    "code": {
+      "code": "return sc_0~$C$_load();",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "type:C",
+    "depends": Set {
+      "$C$_load",
+    },
+    "flags": Set {},
+    "name": "$C$_load_not_mut",
+    "signature": "((cell, cell, slice, slice, int, int, int, slice)) $C$_load_not_mut(slice sc_0)",
   },
 ]
 `;
