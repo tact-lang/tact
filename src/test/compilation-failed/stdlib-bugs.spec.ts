@@ -5,6 +5,7 @@ import { itShouldNotCompile } from "./util";
 describe("stdlib-bugs", () => {
     beforeAll(() => {
         jest.spyOn(consoleLogger, "error").mockImplementation(() => {});
+        jest.spyOn(consoleLogger, "log").mockImplementation(() => {});
     });
 
     beforeEach(() => {
@@ -12,11 +13,11 @@ describe("stdlib-bugs", () => {
     });
 
     afterAll(() => {
-        (consoleLogger.error as jest.Mock).mockRestore();
+        jest.restoreAllMocks();
     });
 
     afterEach(() => {
-        (consoleLogger.error as jest.Mock).mockClear();
+        jest.clearAllMocks();
     });
 
     itShouldNotCompile({
