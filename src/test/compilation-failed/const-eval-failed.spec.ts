@@ -5,6 +5,7 @@ import { itShouldNotCompile } from "./util";
 describe("fail-const-eval", () => {
     beforeAll(() => {
         jest.spyOn(consoleLogger, "error").mockImplementation(() => {});
+        jest.spyOn(consoleLogger, "log").mockImplementation(() => {});
     });
 
     beforeEach(() => {
@@ -12,11 +13,11 @@ describe("fail-const-eval", () => {
     });
 
     afterAll(() => {
-        (consoleLogger.error as jest.Mock).mockRestore();
+        jest.restoreAllMocks();
     });
 
     afterEach(() => {
-        (consoleLogger.error as jest.Mock).mockClear();
+        jest.clearAllMocks();
     });
 
     itShouldNotCompile({

@@ -100,7 +100,7 @@ export async function run(args: {
         false,
     ); // Improves developer experience
     for (const config of projects) {
-        console.log("💼 Compiling project " + config.name + "...");
+        consoleLogger.log("💼 Compiling project " + config.name + "...");
         let cliConfig = { ...config };
 
         if (
