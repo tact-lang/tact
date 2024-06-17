@@ -12,6 +12,22 @@ fun foo2(x: Int?): Int? {
     return cond ? x : 42;
 }
 
+fun foo3(): Int? {
+    let cond: Bool = true;
+    return cond ? null : 42;
+}
+
+fun foo4(): Int? {
+    let cond: Bool = true;
+    return cond ? 42 : null;
+}
+
+fun foo5(): Int {
+    let cond: Bool = true;
+    let baz = cond ? 42 : null;
+    return baz!!;
+}
+
 fun bar1(m: map<Int, Int>): map<Int, Int> {
     let cond: Bool = true;
     return cond ? null : m;

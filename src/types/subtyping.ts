@@ -48,3 +48,19 @@ export function isAssignable(src: TypeRef, to: TypeRef): boolean {
     // All other options are not assignable
     return false;
 }
+
+export function moreGeneralType(
+    type1: TypeRef,
+    type2: TypeRef,
+): TypeRef | null {
+    // This takes care of sub-typing for optionals and maps/null
+    if (isAssignable(type1, type2)) return type2;
+    if (isAssignable(type2, type1)) return type1;
+    if (type1.kind === "ref" && !type1.optional && type2.kind === "null") {
+        return { ...type1, optional: true };
+    }
+    if (type2.kind === "ref" && !type2.optional && type1.kind === "null") {
+        return { ...type2, optional: true };
+    }
+    return null;
+}
