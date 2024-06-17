@@ -53,5 +53,41 @@ describe("constants", () => {
         );
         expect(await contract.getSomething20()).toEqual(-6n);
         expect(await contract.getGlobalConst()).toEqual(100n);
+
+        expect(await contract.getSomething21()).toEqual(0n);
+        expect(await contract.getSomething22()).toEqual(-1n);
+        expect(await contract.getSomething23()).toEqual(-1n);
+        expect(await contract.getSomething24()).toEqual(0n);
+        expect(await contract.getSomething25()).toEqual(1n);
+        expect(await contract.getSomething26()).toEqual(4n);
+        expect(await contract.getSomething27()).toEqual(-4n);
+        expect(await contract.getSomething28()).toEqual(-1n);
+
+        expect(await contract.getSomething29()).toEqual(42n);
+        expect(await contract.getSomething30()).toEqual(null);
+        expect(await contract.getSomething31()).toEqual(42n);
+        expect(await contract.getSomething32()).toEqual(42n);
+
+        expect((await contract.getSomething33()).size).toEqual(0);
+        expect((await contract.getSomething34()).size).toEqual(0);
+
+        expect(await contract.getSomething35()).toEqual({
+            $$type: "S",
+            a: false,
+            b: 42n,
+        });
+        expect(await contract.getSomething36()).toEqual({
+            $$type: "S",
+            a: false,
+            b: 42n,
+        });
+        expect(await contract.getSomething37()).toEqual({
+            $$type: "T",
+            a: 42n,
+            s: { $$type: "S", a: true, b: 42n },
+        });
+        expect(await contract.getSomething38()).toEqual(4n);
+        expect(await contract.getSomething39()).toEqual(true);
+        expect(await contract.getSomething40()).toEqual(true);
     });
 });

@@ -38,7 +38,7 @@ fun main() {
     let i: Int = f1(a);
     let j: A = A{a: 1, b: 2};
     let k: Int = j.a;
-    let l: Int = A{a: 1, b: 2}.b;
+    let l: Int = A{a: 1, b}.b;
     let m: Int = -j.b + a;
     let n: Int = -j.b + a + (+b);
     let o: Int? = null;
@@ -59,7 +59,7 @@ const golden: string[] = [
     "$global_f1($a)",
     "$A$_constructor_a_b(1, 2)",
     `$j'a`,
-    "$A$_get_b($A$_constructor_a_b(1, 2))",
+    "$A$_get_b($A$_constructor_a_b(1, $b))",
     `((- $j'b) + $a)`,
     `(((- $j'b) + $a) + (+ $b))`,
     "null()",

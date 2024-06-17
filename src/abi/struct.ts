@@ -1,6 +1,6 @@
 import { ops } from "../generator/writers/ops";
 import { writeExpression } from "../generator/writers/writeExpression";
-import { throwError } from "../grammar/ast";
+import { throwSyntaxError } from "../errors";
 import { getType } from "../types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
 
@@ -11,17 +11,17 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
             name: "toCell",
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
-                    throwError("toCell() expects no arguments", ref);
+                    throwSyntaxError("toCell() expects no arguments", ref);
                 }
                 if (args[0].kind !== "ref") {
-                    throwError(
+                    throwSyntaxError(
                         "toCell() is implemented only a struct type",
                         ref,
                     );
                 }
                 const tp = getType(ctx, args[0].name);
                 if (tp.kind !== "struct") {
-                    throwError(
+                    throwSyntaxError(
                         "toCell() is implemented only a struct type",
                         ref,
                     );
@@ -30,10 +30,10 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
             },
             generate: (ctx, args, resolved, ref) => {
                 if (resolved.length !== 1) {
-                    throwError("toCell() expects no arguments", ref);
+                    throwSyntaxError("toCell() expects no arguments", ref);
                 }
                 if (args[0].kind !== "ref") {
-                    throwError(
+                    throwSyntaxError(
                         "toCell() is implemented only a struct type",
                         ref,
                     );

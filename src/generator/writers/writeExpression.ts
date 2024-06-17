@@ -1,4 +1,5 @@
-import { ASTExpression, throwError } from "../../grammar/ast";
+import { ASTExpression } from "../../grammar/ast";
+import { throwSyntaxError } from "../../errors";
 import { getExpType } from "../../types/resolveExpression";
 import {
     getStaticConstant,
@@ -10,6 +11,7 @@ import {
     FieldDescription,
     printTypeRef,
     TypeDescription,
+    Value,
 } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
@@ -91,35 +93,50 @@ function writeStructConstructor(
     return name;
 }
 
-export function writeValue(
-    s: bigint | string | boolean | Address | Cell | null,
-    ctx: WriterContext,
-): string {
-    if (typeof s === "bigint") {
-        return s.toString(10);
+export function writeValue(val: Value, wCtx: WriterContext): string {
+    if (typeof val === "bigint") {
+        return val.toString(10);
     }
-    if (typeof s === "string") {
-        const id = writeString(s, ctx);
-        ctx.used(id);
+    if (typeof val === "string") {
+        const id = writeString(val, wCtx);
+        wCtx.used(id);
         return `${id}()`;
     }
-    if (typeof s === "boolean") {
-        return s ? "true" : "false";
+    if (typeof val === "boolean") {
+        return val ? "true" : "false";
     }
-    if (Address.isAddress(s)) {
-        const res = writeAddress(s, ctx);
-        ctx.used(res);
+    if (Address.isAddress(val)) {
+        const res = writeAddress(val, wCtx);
+        wCtx.used(res);
         return res + "()";
     }
-    if (s instanceof Cell) {
-        const res = writeCell(s, ctx);
-        ctx.used(res);
+    if (val instanceof Cell) {
+        const res = writeCell(val, wCtx);
+        wCtx.used(res);
         return `${res}()`;
     }
-    if (s === null) {
+    if (val === null) {
         return "null()";
     }
-    throw Error("Invalid value");
+    if (typeof val === "object" && val !== null && "$tactStruct" in val) {
+        // this is a struct value
+        const structDescription = getType(
+            wCtx.ctx,
+            val["$tactStruct"] as string,
+        );
+        const fieldValuesAsTuple = structDescription.fields.map((field) => {
+            if (field.name in val) {
+                return writeValue(val[field.name], wCtx);
+            } else {
+                throw Error(
+                    `Struct value is missing a field: ${field.name}`,
+                    val,
+                );
+            }
+        });
+        return `(${fieldValuesAsTuple.join(", ")})`;
+    }
+    throw Error("Invalid value", val);
 }
 
 export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
@@ -429,7 +446,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         } else if (f.op === "^") {
             op = "^";
         } else {
-            throwError("Unknown binary operator: " + f.op, f.ref);
+            throwSyntaxError("Unknown binary operator: " + f.op, f.ref);
         }
         return (
             "(" +
@@ -479,7 +496,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             return `${ctx.used("__tact_not_null")}(${writeExpression(f.right, ctx)})`;
         }
 
-        throwError("Unknown unary operator: " + f.op, f.ref);
+        throwSyntaxError("Unknown unary operator: " + f.op, f.ref);
     }
 
     //
@@ -494,7 +511,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             src === null ||
             ((src.kind !== "ref" || src.optional) && src.kind !== "ref_bounced")
         ) {
-            throwError(
+            throwSyntaxError(
                 `Cannot access field of non-struct type: "${printTypeRef(src)}"`,
                 f.ref,
             );
@@ -512,7 +529,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         const field = fields.find((v) => v.name === f.name)!;
         const cst = srcT.constants.find((v) => v.name === f.name)!;
         if (!field && !cst) {
-            throwError(
+            throwSyntaxError(
                 `Cannot find field "${f.name}" in struct "${srcT.name}"`,
                 f.ref,
             );
@@ -617,7 +634,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         // Resolve source type
         const src = getExpType(ctx.ctx, f.src);
         if (src === null) {
-            throwError(
+            throwSyntaxError(
                 `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
                 f.ref,
             );
@@ -626,7 +643,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         // Reference type
         if (src.kind === "ref") {
             if (src.optional) {
-                throwError(
+                throwSyntaxError(
                     `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
                     f.ref,
                 );
@@ -701,7 +718,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         // Map types
         if (src.kind === "map") {
             if (!MapFunctions.has(f.name)) {
-                throwError(`Map function "${f.name}" not found`, f.ref);
+                throwSyntaxError(`Map function "${f.name}" not found`, f.ref);
             }
             const abf = MapFunctions.get(f.name)!;
             return abf.generate(
@@ -716,7 +733,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             throw Error("Unimplemented");
         }
 
-        throwError(
+        throwSyntaxError(
             `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
             f.ref,
         );

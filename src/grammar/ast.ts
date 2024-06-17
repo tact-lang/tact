@@ -1,5 +1,4 @@
 import { Interval as RawInterval, Node as RawNode } from "ohm-js";
-import { TactSyntaxError } from "../errors";
 import { TypeOrigin } from "../types/types";
 
 export class ASTRef {
@@ -625,32 +624,6 @@ export function createRef(s: RawNode, ...extra: RawNode[]): ASTRef {
         i = i.coverageWith(...extra.map((e) => e.source));
     }
     return new ASTRef(i, currentFile);
-}
-
-export function throwError(message: string, ref: ASTRef): never {
-    if (ref.file) {
-        const lc = ref.interval.getLineAndColumn() as {
-            lineNum: number;
-            colNum: number;
-        };
-        throw new TactSyntaxError(
-            ref.file +
-                ":" +
-                lc.lineNum +
-                ":" +
-                lc.colNum +
-                ": " +
-                message +
-                "\n" +
-                ref.interval.getLineAndColumnMessage(),
-            ref,
-        );
-    } else {
-        throw new TactSyntaxError(
-            message + ref.interval.getLineAndColumnMessage(),
-            ref,
-        );
-    }
 }
 
 export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {

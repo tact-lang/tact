@@ -1,6 +1,6 @@
-import { TactSyntaxError } from "../../errors";
+import { TactConstEvalError } from "../../errors";
 import { ASTExpression } from "../../grammar/ast";
-import { resolveConstantValue } from "../../types/resolveConstantValue";
+import { evalConstantExpression } from "../../constEval";
 import { getExpType } from "../../types/resolveExpression";
 import { WriterContext } from "../Writer";
 import { writeComment } from "../writers/writeConstant";
@@ -26,11 +26,7 @@ export function tryExpressionIntrinsics(
 
                 // Try to resolve constant value
                 try {
-                    const res = resolveConstantValue(
-                        sourceType,
-                        exp.src,
-                        ctx.ctx,
-                    );
+                    const res = evalConstantExpression(exp.src, ctx.ctx);
                     if (typeof res !== "string") {
                         throw new Error("Expected string");
                     }
@@ -53,7 +49,7 @@ export function tryExpressionIntrinsics(
         const t = getExpType(ctx.ctx, exp);
 
         if (t.kind === "null") {
-            const r = resolveConstantValue(t, exp, ctx.ctx);
+            const r = evalConstantExpression(exp, ctx.ctx);
             if (r !== null) {
                 throw new Error("Expected null");
             }
@@ -61,14 +57,14 @@ export function tryExpressionIntrinsics(
         }
         if (t.kind === "ref") {
             if (t.name === "Int") {
-                const r = resolveConstantValue(t, exp, ctx.ctx);
+                const r = evalConstantExpression(exp, ctx.ctx);
                 if (typeof r !== "bigint") {
                     throw new Error("Expected bigint");
                 }
                 return r.toString(10);
             }
             if (t.name === "Bool") {
-                const r = resolveConstantValue(t, exp, ctx.ctx);
+                const r = evalConstantExpression(exp, ctx.ctx);
                 if (typeof r !== "boolean") {
                     throw new Error("Expected boolean");
                 }
@@ -76,13 +72,8 @@ export function tryExpressionIntrinsics(
             }
         }
     } catch (e) {
-        if (e instanceof TactSyntaxError) {
-            if (
-                !e.message.includes("Cannot reduce expression to a constant") &&
-                !e.message.includes("Expected constant value")
-            ) {
-                throw e;
-            }
+        if (e instanceof TactConstEvalError && e.fatal) {
+            throw e;
         }
     }
 
