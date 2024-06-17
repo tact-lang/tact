@@ -1,6 +1,6 @@
 import { CompilerContext } from "../context";
 import { ASTCondition, ASTRef, ASTStatement, throwError } from "../grammar/ast";
-import { isAssignable } from "./isAssignable";
+import { isAssignable } from "./subtyping";
 import {
     getAllStaticFunctions,
     getAllTypes,

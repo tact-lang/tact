@@ -70,13 +70,33 @@ Line 5, col 39:
 "
 `;
 
-exports[`resolveStatements should fail statements for expr-conditional-non-optional-result-expected 1`] = `
+exports[`resolveStatements should fail statements for expr-conditional-non-optional-result-expected1 1`] = `
 "<unknown>:6:5: Type mismatch: "Int?" is not assignable to "Int"
 Line 6, col 5:
   5 |     let cond: Bool = true;
 > 6 |     return cond ? 42 : x;
           ^~~~~~~~~~~~~~~~~~~~~
   7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-conditional-non-optional-result-expected2 1`] = `
+"<unknown>:6:5: Type mismatch: "Int?" is not assignable to "Int"
+Line 6, col 5:
+  5 |     let cond: Bool = true;
+> 6 |     return cond ? x : 42;
+          ^~~~~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-conditional-non-optional-result-expected3 1`] = `
+"<unknown>:6:5: Type mismatch: "Int?" is not assignable to "Int"
+Line 6, col 5:
+  5 |     let cond: Bool = true;
+> 6 |     let baz: Int = cond ? 42 : null;
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |     return baz!!;
 "
 `;
 
@@ -771,6 +791,74 @@ exports[`resolveStatements should resolve statements for expr-conditional-with-s
   [
     "cond ? x : 42",
     "Int?",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "cond",
+    "Bool",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "cond ? null : 42",
+    "Int?",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "cond",
+    "Bool",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "cond ? 42 : null",
+    "Int?",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "cond",
+    "Bool",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "cond ? 42 : null",
+    "Int?",
+  ],
+  [
+    "baz",
+    "Int?",
+  ],
+  [
+    "baz!!",
+    "Int",
   ],
   [
     "true",

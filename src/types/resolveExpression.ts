@@ -32,7 +32,7 @@ import {
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
-import { isAssignable } from "./isAssignable";
+import { isAssignable, moreGeneralType } from "./subtyping";
 import { StructFunctions } from "../abi/struct";
 
 const store = createContextStore<{
@@ -644,7 +644,6 @@ export function resolveConditional(
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
-    // Resolve condition
     ctx = resolveExpression(ast.condition, sctx, ctx);
     const conditionType = getExpType(ctx, ast.condition);
     if (
@@ -658,20 +657,14 @@ export function resolveConditional(
         );
     }
 
-    // Resolve then and else branches
     ctx = resolveExpression(ast.thenBranch, sctx, ctx);
     ctx = resolveExpression(ast.elseBranch, sctx, ctx);
     const thenType = getExpType(ctx, ast.thenBranch);
     const elseType = getExpType(ctx, ast.elseBranch);
 
-    // This takes care of sub-typing for optionals and maps/null
-    if (isAssignable(thenType, elseType)) {
-        // the type of the else branch is the more general one
-        return registerExpType(ctx, ast, elseType);
-    }
-    if (isAssignable(elseType, thenType)) {
-        // the type of the then branch is the more general one
-        return registerExpType(ctx, ast, thenType);
+    const resultType = moreGeneralType(thenType, elseType);
+    if (resultType) {
+        return registerExpType(ctx, ast, resultType);
     }
 
     throwError(
