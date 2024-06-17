@@ -56,6 +56,8 @@ export function moreGeneralType(
     // This takes care of sub-typing for optionals and maps/null
     if (isAssignable(type1, type2)) return type2;
     if (isAssignable(type2, type1)) return type1;
+    // generalize to a more general optional type
+    // if we have a non-optional and null types
     if (type1.kind === "ref" && !type1.optional && type2.kind === "null") {
         return { ...type1, optional: true };
     }
