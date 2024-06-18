@@ -201,7 +201,10 @@ function processStatements(
                 }
                 sctx = addVariable(s.name, variableType, sctx);
             } else {
-                if (expressionType.kind === "null") {
+                if (
+                    expressionType.kind === "null" ||
+                    expressionType.kind === "void"
+                ) {
                     throwSyntaxError(
                         `Cannot infer type for "${s.name}"`,
                         s.ref,
