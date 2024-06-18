@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow underscores as unused variable identifiers: PR [#338](https://github.com/tact-lang/tact/pull/338)
 - The default compilation mode does decompile BoC files anymore, to additionally perform decompilation at the end of the pipeline, set the `fullWithDecompilation` mode in the `mode` project properties of `tact.config.json`: PR [#417](https://github.com/tact-lang/tact/pull/417)
 - Trait lists, parameters and arguments in the Tact grammar were assigned their own names in the grammar for better readability and code deduplication: PR [#422](https://github.com/tact-lang/tact/pull/422)
-- The semicolon (`;`) terminating a statement is optional if the statement is the last one in the statement block: PR [#XXX](https://github.com/tact-lang/tact/pull/XXX)
+- The semicolon (`;`) terminating a statement is optional if the statement is the last one in the statement block: PR [#434](https://github.com/tact-lang/tact/pull/434)
 
 ### Fixed
 
