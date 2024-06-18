@@ -540,7 +540,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
         optType,
         _equals,
         expression,
-        _semicolon,
+        _optSemicolonIfLastStmtInBlock,
     ) {
         checkVariableName(id.sourceString, createRef(id));
 
@@ -552,7 +552,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             ref: createRef(this),
         });
     },
-    StatementReturn(_returnKwd, optExpression, _semicolon) {
+    StatementReturn(_returnKwd, optExpression, _optSemicolonIfLastStmtInBlock) {
         return createNode({
             kind: "statement_return",
             expression: unwrapOptNode(optExpression, (e) =>
@@ -561,14 +561,19 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             ref: createRef(this),
         });
     },
-    StatementExpression(expression, _semicolon) {
+    StatementExpression(expression, _optSemicolonIfLastStmtInBlock) {
         return createNode({
             kind: "statement_expression",
             expression: expression.astOfExpression(),
             ref: createRef(this),
         });
     },
-    StatementAssign(lvalue, operator, expression, _semicolon) {
+    StatementAssign(
+        lvalue,
+        operator,
+        expression,
+        _optSemicolonIfLastStmtInBlock,
+    ) {
         if (operator.sourceString === "=") {
             return createNode({
                 kind: "statement_assign",
@@ -704,7 +709,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
         _lparen,
         condition,
         _rparen,
-        _semicolon,
+        _optSemicolonIfLastStmtInBlock,
     ) {
         return createNode({
             kind: "statement_until",
