@@ -1,7 +1,7 @@
 import { sha256_sync } from "@ton/crypto";
 import { CompilerContext, createContextStore } from "../context";
 import { ASTNode, traverse } from "../grammar/ast";
-import { resolveConstantValue } from "./resolveConstantValue";
+import { evalConstantExpression } from "../constEval";
 import {
     getAllStaticConstants,
     getAllStaticFunctions,
@@ -24,8 +24,7 @@ function resolveStringsInAST(ast: ASTNode, ctx: CompilerContext) {
             if (node.args.length !== 2) {
                 return;
             }
-            const resolved = resolveConstantValue(
-                { kind: "ref", name: "String", optional: false },
+            const resolved = evalConstantExpression(
                 node.args[1],
                 ctx,
             ) as string;

@@ -2,8 +2,8 @@ import { Address, Cell, toNano } from "@ton/core";
 import { enabledDebug, enabledMasterchain } from "../config/features";
 import { writeAddress, writeCell } from "../generator/writers/writeConstant";
 import { writeExpression } from "../generator/writers/writeExpression";
-import { throwError } from "../grammar/ast";
-import { resolveConstantValue } from "../types/resolveConstantValue";
+import { throwSyntaxError } from "../errors";
+import { evalConstantExpression } from "../constEval";
 import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
 import { sha256_sync } from "@ton/crypto";
@@ -17,22 +17,33 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             name: "ton",
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
-                    throwError("ton() expects single string argument", ref);
+                    throwSyntaxError(
+                        "ton() expects single string argument",
+                        ref,
+                    );
                 }
                 if (args[0].kind !== "ref") {
-                    throwError("ton() expects single string argument", ref);
+                    throwSyntaxError(
+                        "ton() expects single string argument",
+                        ref,
+                    );
                 }
                 if (args[0].name !== "String") {
-                    throwError("ton() expects single string argument", ref);
+                    throwSyntaxError(
+                        "ton() expects single string argument",
+                        ref,
+                    );
                 }
                 return { kind: "ref", name: "Int", optional: false };
             },
             generate: (ctx, args, resolved, ref) => {
                 if (resolved.length !== 1) {
-                    throwError("ton() expects single string argument", ref);
+                    throwSyntaxError(
+                        "ton() expects single string argument",
+                        ref,
+                    );
                 }
-                const str = resolveConstantValue(
-                    { kind: "ref", name: "String", optional: false },
+                const str = evalConstantExpression(
                     resolved[0],
                     ctx.ctx,
                 ) as string;
@@ -46,28 +57,39 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             name: "require",
             resolve: (ctx, args, ref) => {
                 if (args.length !== 2) {
-                    throwError("require() expects two arguments", ref);
+                    throwSyntaxError("require() expects two arguments", ref);
                 }
                 if (args[0].kind !== "ref") {
-                    throwError("require() expects first Bool argument", ref);
+                    throwSyntaxError(
+                        "require() expects first Bool argument",
+                        ref,
+                    );
                 }
                 if (args[0].name !== "Bool") {
-                    throwError("require() expects first Bool argument", ref);
+                    throwSyntaxError(
+                        "require() expects first Bool argument",
+                        ref,
+                    );
                 }
                 if (args[1].kind !== "ref") {
-                    throwError("require() expects second string argument", ref);
+                    throwSyntaxError(
+                        "require() expects second string argument",
+                        ref,
+                    );
                 }
                 if (args[1].name !== "String") {
-                    throwError("require() expects second string argument", ref);
+                    throwSyntaxError(
+                        "require() expects second string argument",
+                        ref,
+                    );
                 }
                 return { kind: "void" };
             },
             generate: (ctx, args, resolved, ref) => {
                 if (resolved.length !== 2) {
-                    throwError("require() expects two arguments", ref);
+                    throwSyntaxError("require() expects two arguments", ref);
                 }
-                const str = resolveConstantValue(
-                    { kind: "ref", name: "String", optional: false },
+                const str = evalConstantExpression(
                     resolved[1],
                     ctx.ctx,
                 ) as string;
@@ -81,22 +103,21 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             name: "address",
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
-                    throwError("address() expects one argument", ref);
+                    throwSyntaxError("address() expects one argument", ref);
                 }
                 if (args[0].kind !== "ref") {
-                    throwError("address() expects string argument", ref);
+                    throwSyntaxError("address() expects string argument", ref);
                 }
                 if (args[0].name !== "String") {
-                    throwError("address() expects string argument", ref);
+                    throwSyntaxError("address() expects string argument", ref);
                 }
                 return { kind: "ref", name: "Address", optional: false };
             },
             generate: (ctx, args, resolved, ref) => {
                 if (resolved.length !== 1) {
-                    throwError("address() expects one argument", ref);
+                    throwSyntaxError("address() expects one argument", ref);
                 }
-                const str = resolveConstantValue(
-                    { kind: "ref", name: "String", optional: false },
+                const str = evalConstantExpression(
                     resolved[0],
                     ctx.ctx,
                 ) as string;
@@ -104,14 +125,14 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 try {
                     address = Address.parse(str);
                 } catch {
-                    throwError(`${str} is not a valid address`, ref);
+                    throwSyntaxError(`${str} is not a valid address`, ref);
                 }
                 if (address.workChain !== 0 && address.workChain !== -1) {
-                    throwError(`Address ${str} invalid address`, ref);
+                    throwSyntaxError(`Address ${str} invalid address`, ref);
                 }
                 if (!enabledMasterchain(ctx.ctx)) {
                     if (address.workChain !== 0) {
-                        throwError(
+                        throwSyntaxError(
                             `Address ${str} from masterchain are not enabled for this contract`,
                             ref,
                         );
@@ -131,24 +152,23 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             name: "cell",
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
-                    throwError("cell() expects one argument", ref);
+                    throwSyntaxError("cell() expects one argument", ref);
                 }
                 if (args[0].kind !== "ref") {
-                    throwError("cell() expects string argument", ref);
+                    throwSyntaxError("cell() expects string argument", ref);
                 }
                 if (args[0].name !== "String") {
-                    throwError("cell() expects string argument", ref);
+                    throwSyntaxError("cell() expects string argument", ref);
                 }
                 return { kind: "ref", name: "Cell", optional: false };
             },
             generate: (ctx, args, resolved, ref) => {
                 if (resolved.length !== 1) {
-                    throwError("cell() expects one argument", ref);
+                    throwSyntaxError("cell() expects one argument", ref);
                 }
 
                 // Load cell data
-                const str = resolveConstantValue(
-                    { kind: "ref", name: "String", optional: false },
+                const str = evalConstantExpression(
                     resolved[0],
                     ctx.ctx,
                 ) as string;
@@ -156,7 +176,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 try {
                     c = Cell.fromBase64(str);
                 } catch (e) {
-                    throwError(`Invalid cell ${str}`, ref);
+                    throwSyntaxError(`Invalid cell ${str}`, ref);
                 }
 
                 // Generate address
@@ -172,7 +192,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             name: "dump",
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
-                    throwError("dump expects 1 argument", ref);
+                    throwSyntaxError("dump expects 1 argument", ref);
                 }
                 return { kind: "void" };
             },
@@ -216,12 +236,12 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         const exp = writeExpression(resolved[0], ctx);
                         return `${ctx.used(`__tact_debug`)}(${exp}, "${debugPrint}")`;
                     }
-                    throwError(
+                    throwSyntaxError(
                         "dump() not supported for type: " + arg.name,
                         ref,
                     );
                 } else {
-                    throwError("dump() not supported for argument", ref);
+                    throwSyntaxError("dump() not supported for argument", ref);
                 }
             },
         },
@@ -232,7 +252,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             name: "dumpStack",
             resolve: (_ctx, args, ref) => {
                 if (args.length !== 0) {
-                    throwError("dumpStack expects no arguments", ref);
+                    throwSyntaxError("dumpStack expects no arguments", ref);
                 }
                 return { kind: "void" };
             },
@@ -255,7 +275,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             name: "emptyMap",
             resolve: (ctx, args, ref) => {
                 if (args.length !== 0) {
-                    throwError("emptyMap expects no arguments", ref);
+                    throwSyntaxError("emptyMap expects no arguments", ref);
                 }
                 return { kind: "null" };
             },
@@ -270,34 +290,36 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             name: "sha256",
             resolve: (ctx, args, ref) => {
                 if (args.length !== 1) {
-                    throwError("sha256 expects 1 argument", ref);
+                    throwSyntaxError("sha256 expects 1 argument", ref);
                 }
                 if (args[0].kind !== "ref") {
-                    throwError("sha256 expects string argument", ref);
+                    throwSyntaxError("sha256 expects string argument", ref);
                 }
                 if (args[0].name !== "String" && args[0].name !== "Slice") {
-                    throwError("sha256 expects string or slice argument", ref);
+                    throwSyntaxError(
+                        "sha256 expects string or slice argument",
+                        ref,
+                    );
                 }
                 return { kind: "ref", name: "Int", optional: false };
             },
             generate: (ctx, args, resolved, ref) => {
                 if (args.length !== 1) {
-                    throwError("sha256 expects 1 argument", ref);
+                    throwSyntaxError("sha256 expects 1 argument", ref);
                 }
                 if (args[0].kind !== "ref") {
-                    throwError("sha256 expects string argument", ref);
+                    throwSyntaxError("sha256 expects string argument", ref);
                 }
 
                 // String case
                 if (args[0].name === "String") {
                     try {
-                        const str = resolveConstantValue(
-                            { kind: "ref", name: "String", optional: false },
+                        const str = evalConstantExpression(
                             resolved[0],
                             ctx.ctx,
                         ) as string;
                         if (Buffer.from(str).length > 128) {
-                            throwError(
+                            throwSyntaxError(
                                 "sha256 expects string argument with byte length <= 128",
                                 ref,
                             );
@@ -318,7 +340,10 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     return `string_hash(${exp})`;
                 }
 
-                throwError("sha256 expects string or slice argument", ref);
+                throwSyntaxError(
+                    "sha256 expects string or slice argument",
+                    ref,
+                );
             },
         },
     ],

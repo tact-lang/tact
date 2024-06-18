@@ -13,8 +13,8 @@ import {
     createNode,
     createRef,
     inFile,
-    throwError,
 } from "./ast";
+import { throwSyntaxError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
 import { TactSyntaxError } from "./../errors";
 import { Node, IterationNode, MatchResult } from "ohm-js";
@@ -51,7 +51,10 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
     Import(_importKwd, path, _semicolon) {
         const pathAST = path.astOfExpression() as ASTString;
         if (pathAST.value.indexOf("\\") >= 0) {
-            throwError('Import path can\'t contain "\\"', createRef(path));
+            throwSyntaxError(
+                'Import path can\'t contain "\\"',
+                createRef(path),
+            );
         }
         return createNode({
             kind: "program_import",
@@ -449,7 +452,7 @@ semantics.addOperation<ASTNode[]>("astsOfList", {
             params.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwError(
+            throwSyntaxError(
                 "Empty parameter list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );
@@ -461,7 +464,7 @@ semantics.addOperation<ASTNode[]>("astsOfList", {
             args.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwError(
+            throwSyntaxError(
                 "Empty argument list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );
@@ -1127,7 +1130,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             structFields.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwError(
+            throwSyntaxError(
                 "Empty parameter list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );

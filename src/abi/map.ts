@@ -1,6 +1,6 @@
 import { ops } from "../generator/writers/ops";
 import { writeExpression } from "../generator/writers/writeExpression";
-import { throwError } from "../grammar/ast";
+import { throwSyntaxError } from "../errors";
 import { getType } from "../types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
 
@@ -12,16 +12,16 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             resolve(ctx, args, ref) {
                 // Check arguments
                 if (args.length !== 3) {
-                    throwError("set expects two arguments", ref); // Should not happen
+                    throwSyntaxError("set expects two arguments", ref); // Should not happen
                 }
                 const self = args[0];
                 if (!self || self.kind !== "map") {
-                    throwError("set expects a map as self argument", ref); // Should not happen
+                    throwSyntaxError("set expects a map as self argument", ref); // Should not happen
                 }
 
                 // Resolve map types
                 if (self.key !== "Int" && self.key !== "Address") {
-                    throwError(
+                    throwSyntaxError(
                         "set expects a map with Int or Address keys",
                         ref,
                     );
@@ -29,13 +29,13 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
 
                 // Check key type
                 if (args[1].kind !== "ref" || args[1].optional) {
-                    throwError(
+                    throwSyntaxError(
                         "set expects a direct type as first argument",
                         ref,
                     );
                 }
                 if (args[1].name !== self.key) {
-                    throwError(
+                    throwSyntaxError(
                         `set expects a "${self.key}" as first argument`,
                         ref,
                     );
@@ -43,13 +43,13 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
 
                 // Check value type
                 if (args[2].kind !== "null" && args[2].kind !== "ref") {
-                    throwError(
+                    throwSyntaxError(
                         "set expects a direct type as second argument",
                         ref,
                     );
                 }
                 if (args[2].kind !== "null" && args[2].name !== self.value) {
-                    throwError(
+                    throwSyntaxError(
                         `set expects a "${self.value}" as second argument`,
                         ref,
                     );
@@ -61,11 +61,11 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             generate: (ctx, args, exprs, ref) => {
                 // Check arguments
                 if (args.length !== 3) {
-                    throwError("set expects two arguments", ref); // Ignore self argument
+                    throwSyntaxError("set expects two arguments", ref); // Ignore self argument
                 }
                 const self = args[0];
                 if (!self || self.kind !== "map") {
-                    throwError("set expects a map as self argument", ref); // Should not happen
+                    throwSyntaxError("set expects a map as self argument", ref); // Should not happen
                 }
 
                 // Render expressions
@@ -107,10 +107,16 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     } else {
                         const t = getType(ctx.ctx, self.value);
                         if (t.kind === "contract") {
-                            throwError(`Contract can't be value of a map`, ref);
+                            throwSyntaxError(
+                                `Contract can't be value of a map`,
+                                ref,
+                            );
                         }
                         if (t.kind === "trait") {
-                            throwError(`Trait can't be value of a map`, ref);
+                            throwSyntaxError(
+                                `Trait can't be value of a map`,
+                                ref,
+                            );
                         }
                         if (t.kind === "struct") {
                             ctx.used(`__tact_dict_set_${kind}_cell`);
@@ -120,7 +126,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                                 return `${resolved[0]}~__tact_dict_set_${kind}_cell(${bits}, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
                             }
                         } else {
-                            throwError(
+                            throwSyntaxError(
                                 `"${t.name}" can't be value of a map`,
                                 ref,
                             );
@@ -156,10 +162,16 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     } else {
                         const t = getType(ctx.ctx, self.value);
                         if (t.kind === "contract") {
-                            throwError(`Contract can't be value of a map`, ref);
+                            throwSyntaxError(
+                                `Contract can't be value of a map`,
+                                ref,
+                            );
                         }
                         if (t.kind === "trait") {
-                            throwError(`Trait can't be value of a map`, ref);
+                            throwSyntaxError(
+                                `Trait can't be value of a map`,
+                                ref,
+                            );
                         }
                         if (t.kind === "struct") {
                             ctx.used(`__tact_dict_set_slice_cell`);
@@ -169,7 +181,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                                 return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
                             }
                         } else {
-                            throwError(
+                            throwSyntaxError(
                                 `"${t.name}" can't be value of a map`,
                                 ref,
                             );
@@ -177,7 +189,10 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     }
                 }
 
-                throwError(`set expects a map with Int or Address keys`, ref);
+                throwSyntaxError(
+                    `set expects a map with Int or Address keys`,
+                    ref,
+                );
             },
         },
     ],
@@ -188,22 +203,22 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             resolve(ctx, args, ref) {
                 // Check arguments
                 if (args.length !== 2) {
-                    throwError("set expects one argument", ref); // Ignore self argument
+                    throwSyntaxError("set expects one argument", ref); // Ignore self argument
                 }
                 const self = args[0];
                 if (!self || self.kind !== "map") {
-                    throwError("set expects a map as self argument", ref); // Should not happen
+                    throwSyntaxError("set expects a map as self argument", ref); // Should not happen
                 }
 
                 // Check key type
                 if (args[1].kind !== "ref" || args[1].optional) {
-                    throwError(
+                    throwSyntaxError(
                         "set expects a direct type as first argument",
                         ref,
                     );
                 }
                 if (args[1].name !== self.key) {
-                    throwError(
+                    throwSyntaxError(
                         `set expects a "${self.key}" as first argument`,
                         ref,
                     );
@@ -213,11 +228,11 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
             generate: (ctx, args, exprs, ref) => {
                 if (args.length !== 2) {
-                    throwError("set expects one argument", ref); // Ignore self argument
+                    throwSyntaxError("set expects one argument", ref); // Ignore self argument
                 }
                 const self = args[0];
                 if (!self || self.kind !== "map") {
-                    throwError("set expects a map as self argument", ref); // Should not happen
+                    throwSyntaxError("set expects a map as self argument", ref); // Should not happen
                 }
 
                 // Render expressions
@@ -259,16 +274,22 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     } else {
                         const t = getType(ctx.ctx, self.value);
                         if (t.kind === "contract") {
-                            throwError(`Contract can't be value of a map`, ref);
+                            throwSyntaxError(
+                                `Contract can't be value of a map`,
+                                ref,
+                            );
                         }
                         if (t.kind === "trait") {
-                            throwError(`Trait can't be value of a map`, ref);
+                            throwSyntaxError(
+                                `Trait can't be value of a map`,
+                                ref,
+                            );
                         }
                         if (t.kind === "struct") {
                             ctx.used(`__tact_dict_get_${kind}_cell`);
                             return `${ops.readerOpt(t.name, ctx)}(__tact_dict_get_${kind}_cell(${resolved[0]}, ${bits}, ${resolved[1]}))`;
                         } else {
-                            throwError(
+                            throwSyntaxError(
                                 `"${t.name}" can't be value of a map`,
                                 ref,
                             );
@@ -304,16 +325,22 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     } else {
                         const t = getType(ctx.ctx, self.value);
                         if (t.kind === "contract") {
-                            throwError(`Contract can't be value of a map`, ref);
+                            throwSyntaxError(
+                                `Contract can't be value of a map`,
+                                ref,
+                            );
                         }
                         if (t.kind === "trait") {
-                            throwError(`Trait can't be value of a map`, ref);
+                            throwSyntaxError(
+                                `Trait can't be value of a map`,
+                                ref,
+                            );
                         }
                         if (t.kind === "struct") {
                             ctx.used(`__tact_dict_get_slice_cell`);
                             return `${ops.readerOpt(t.name, ctx)}(__tact_dict_get_slice_cell(${resolved[0]}, 267, ${resolved[1]}))`;
                         } else {
-                            throwError(
+                            throwSyntaxError(
                                 `"${t.name}" can't be value of a map`,
                                 ref,
                             );
@@ -321,7 +348,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     }
                 }
 
-                throwError(`set expects a map with Int keys`, ref);
+                throwSyntaxError(`set expects a map with Int keys`, ref);
             },
         },
     ],
@@ -332,22 +359,22 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             resolve(ctx, args, ref) {
                 // Check arguments
                 if (args.length !== 2) {
-                    throwError("del expects one argument", ref); // Ignore self argument
+                    throwSyntaxError("del expects one argument", ref); // Ignore self argument
                 }
                 const self = args[0];
                 if (!self || self.kind !== "map") {
-                    throwError("del expects a map as self argument", ref); // Should not happen
+                    throwSyntaxError("del expects a map as self argument", ref); // Should not happen
                 }
 
                 // Check key type
                 if (args[1].kind !== "ref" || args[1].optional) {
-                    throwError(
+                    throwSyntaxError(
                         "del expects a direct type as first argument",
                         ref,
                     );
                 }
                 if (args[1].name !== self.key) {
-                    throwError(
+                    throwSyntaxError(
                         `del expects a "${self.key}" as first argument`,
                         ref,
                     );
@@ -358,11 +385,11 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
             generate: (ctx, args, exprs, ref) => {
                 if (args.length !== 2) {
-                    throwError("del expects one argument", ref); // Ignore self argument
+                    throwSyntaxError("del expects one argument", ref); // Ignore self argument
                 }
                 const self = args[0];
                 if (!self || self.kind !== "map") {
-                    throwError("del expects a map as self argument", ref); // Should not happen
+                    throwSyntaxError("del expects a map as self argument", ref); // Should not happen
                 }
 
                 // Render expressions
@@ -388,7 +415,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     return `${resolved[0]}~__tact_dict_delete(267, ${resolved[1]})`;
                 }
 
-                throwError(`del expects a map with Int keys`, ref);
+                throwSyntaxError(`del expects a map with Int keys`, ref);
             },
         },
     ],
@@ -399,22 +426,28 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             resolve(ctx, args, ref) {
                 // Check arguments
                 if (args.length !== 1) {
-                    throwError("asCell expects one argument", ref); // Ignore self argument
+                    throwSyntaxError("asCell expects one argument", ref); // Ignore self argument
                 }
                 const self = args[0];
                 if (!self || self.kind !== "map") {
-                    throwError("asCell expects a map as self argument", ref); // Should not happen
+                    throwSyntaxError(
+                        "asCell expects a map as self argument",
+                        ref,
+                    ); // Should not happen
                 }
 
                 return { kind: "ref", name: "Cell", optional: true };
             },
             generate: (ctx, args, exprs, ref) => {
                 if (args.length !== 1) {
-                    throwError("asCell expects one argument", ref); // Ignore self argument
+                    throwSyntaxError("asCell expects one argument", ref); // Ignore self argument
                 }
                 const self = args[0];
                 if (!self || self.kind !== "map") {
-                    throwError("asCell expects a map as self argument", ref); // Should not happen
+                    throwSyntaxError(
+                        "asCell expects a map as self argument",
+                        ref,
+                    ); // Should not happen
                 }
 
                 return writeExpression(exprs[0], ctx);
@@ -428,22 +461,28 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             resolve(ctx, args, ref) {
                 // Check arguments
                 if (args.length !== 1) {
-                    throwError("isEmpty expects one argument", ref); // Ignore self argument
+                    throwSyntaxError("isEmpty expects one argument", ref); // Ignore self argument
                 }
                 const self = args[0];
                 if (!self || self.kind !== "map") {
-                    throwError("isEmpty expects a map as self argument", ref); // Should not happen
+                    throwSyntaxError(
+                        "isEmpty expects a map as self argument",
+                        ref,
+                    ); // Should not happen
                 }
 
                 return { kind: "ref", name: "Bool", optional: false };
             },
             generate: (ctx, args, exprs, ref) => {
                 if (args.length !== 1) {
-                    throwError("isEmpty expects one argument", ref); // Ignore self argument
+                    throwSyntaxError("isEmpty expects one argument", ref); // Ignore self argument
                 }
                 const self = args[0];
                 if (!self || self.kind !== "map") {
-                    throwError("isEmpty expects a map as self argument", ref); // Should not happen
+                    throwSyntaxError(
+                        "isEmpty expects a map as self argument",
+                        ref,
+                    ); // Should not happen
                 }
 
                 return `null?(${writeExpression(exprs[0], ctx)})`;

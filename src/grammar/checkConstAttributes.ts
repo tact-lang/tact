@@ -1,4 +1,5 @@
-import { ASTConstantAttribute, ASTRef, throwError } from "./ast";
+import { ASTConstantAttribute, ASTRef } from "./ast";
+import { throwSyntaxError } from "../errors";
 
 export function checkConstAttributes(
     isAbstract: boolean,
@@ -8,17 +9,23 @@ export function checkConstAttributes(
     const k = new Set<string>();
     for (const a of attributes) {
         if (k.has(a.type)) {
-            throwError(`Duplicate function attribute "${a.type}"`, a.ref);
+            throwSyntaxError(`Duplicate function attribute "${a.type}"`, a.ref);
         }
         k.add(a.type);
     }
     if (isAbstract) {
         if (!k.has("abstract")) {
-            throwError(`Abstract function doesn't have abstract modifier`, ref);
+            throwSyntaxError(
+                `Abstract function doesn't have abstract modifier`,
+                ref,
+            );
         }
     } else {
         if (k.has("abstract")) {
-            throwError(`Non abstract function have abstract modifier`, ref);
+            throwSyntaxError(
+                `Non abstract function have abstract modifier`,
+                ref,
+            );
         }
     }
 }

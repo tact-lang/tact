@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`resolveDescriptors should fail descriptors for const-eval-overflow 1`] = `
-"<unknown>:8:21: Cannot evaluate constant expression due to integer overflow
-Line 8, col 21:
+"<unknown>:8:26: Cannot evaluate expression to a constant: the number of bits shifted ('-1073741824') must be within [0..256] range
+Line 8, col 26:
   7 | 
 > 8 | const a: Int = 1 + (1 >> -1073741824);
-                          ^~~~~~~~~~~~~~~~
+                               ^~~~~~~~~~~
   9 | 
 "
 `;
@@ -121,7 +121,7 @@ Line 13, col 3:
 `;
 
 exports[`resolveDescriptors should fail descriptors for expr-bitwise-not-bool-in-const1 1`] = `
-"<unknown>:4:18: Cannot reduce expression to a constant integer
+"<unknown>:4:18: Cannot evaluate expression to a constant: integer expected, but got 'true'
 Line 4, col 18:
   3 | 
 > 4 | const a: Int = ~ true;
@@ -130,11 +130,11 @@ Line 4, col 18:
 `;
 
 exports[`resolveDescriptors should fail descriptors for expr-bitwise-not-bool-in-const2 1`] = `
-"<unknown>:4:17: Cannot reduce expression to a constant boolean
-Line 4, col 17:
+"<unknown>:4:19: Cannot evaluate expression to a constant: integer expected, but got 'true'
+Line 4, col 19:
   3 | 
 > 4 | const a: Bool = ~ true;
-                      ^~~~~~
+                        ^~~~
 "
 `;
 

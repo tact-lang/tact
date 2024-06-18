@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Traversing maps from contract storage and structs is now allowed: PR [#389](https://github.com/tact-lang/tact/pull/389)
 - The `loadBool` method for `Slice` type: PR [#412](https://github.com/tact-lang/tact/pull/412)
 - CLI flag `--with-decompilation` to turn on decompilation of BoC files at the end of the compilation pipeline: PR [#417](https://github.com/tact-lang/tact/pull/417)
+- Support more Tact expressions in the constant evaluator: condition expressions, struct instances, struct field access, `emptyMap()`: PR [#432](https://github.com/tact-lang/tact/pull/432)
 
 ### Changed
 
@@ -34,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Typechecking of conditional expressions when the types of their branches can be generalized, i.e. for non-optionals and `null` can be inferred an optional type: PR [#429](https://github.com/tact-lang/tact/pull/429)
 - External fallback receivers now work properly: PR [#408](https://github.com/tact-lang/tact/pull/408)
 - `Int as coins` as a value type of a map in persistent storage does not throw compilation error anymore: PR [#413](https://github.com/tact-lang/tact/pull/413)
+- The semantics of the Tact arithmetic operations in the constant evaluator to perform rounding towards negative infinity: PR [#432](https://github.com/tact-lang/tact/pull/432)
 
 ## [1.3.1] - 2024-06-08
 

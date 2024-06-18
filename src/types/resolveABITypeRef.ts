@@ -1,5 +1,6 @@
 import { ABITypeRef } from "@ton/core";
-import { ASTField, ASTRef, throwError } from "../grammar/ast";
+import { ASTField, ASTRef } from "../grammar/ast";
+import { throwSyntaxError } from "../errors";
 import { TypeRef } from "./types";
 
 type FormatDef = { [key: string]: { type: string; format: string | number } };
@@ -66,7 +67,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
             if (src.as) {
                 const fmt = intFormats[src.as];
                 if (!fmt) {
-                    throwError(`Unsupported format ${src.as}`, src.ref);
+                    throwSyntaxError(`Unsupported format ${src.as}`, src.ref);
                 }
                 return {
                     kind: "simple",
@@ -84,7 +85,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
         }
         if (src.type.name === "Bool") {
             if (src.as) {
-                throwError(`Unsupported format ${src.as}`, src.ref);
+                throwSyntaxError(`Unsupported format ${src.as}`, src.ref);
             }
             return {
                 kind: "simple",
@@ -96,7 +97,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
             if (src.as) {
                 const fmt = cellFormats[src.as];
                 if (!fmt) {
-                    throwError(`Unsupported format ${src.as}`, src.ref);
+                    throwSyntaxError(`Unsupported format ${src.as}`, src.ref);
                 }
                 return {
                     kind: "simple",
@@ -116,7 +117,10 @@ export function resolveABIType(src: ASTField): ABITypeRef {
                 if (src.as) {
                     const fmt = sliceFormats[src.as];
                     if (!fmt) {
-                        throwError(`Unsupported format ${src.as}`, src.ref);
+                        throwSyntaxError(
+                            `Unsupported format ${src.as}`,
+                            src.ref,
+                        );
                     }
                     return {
                         kind: "simple",
@@ -137,7 +141,10 @@ export function resolveABIType(src: ASTField): ABITypeRef {
                 if (src.as) {
                     const fmt = builderFormats[src.as];
                     if (!fmt) {
-                        throwError(`Unsupported format ${src.as}`, src.ref);
+                        throwSyntaxError(
+                            `Unsupported format ${src.as}`,
+                            src.ref,
+                        );
                     }
                     return {
                         kind: "simple",
@@ -155,7 +162,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
         }
         if (src.type.name === "Address") {
             if (src.as) {
-                throwError(`Unsupported format ${src.as}`, src.ref);
+                throwSyntaxError(`Unsupported format ${src.as}`, src.ref);
             }
             return {
                 kind: "simple",
@@ -165,7 +172,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
         }
         if (src.type.name === "String") {
             if (src.as) {
-                throwError(`Unsupported format ${src.as}`, src.ref);
+                throwSyntaxError(`Unsupported format ${src.as}`, src.ref);
             }
             return {
                 kind: "simple",
@@ -174,7 +181,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
             };
         }
         if (src.type.name === "StringBuilder") {
-            throwError(`Unsupported type "${src.type.name}"`, src.ref);
+            throwSyntaxError(`Unsupported type "${src.type.name}"`, src.ref);
         }
 
         //
@@ -190,7 +197,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
                     format: "ref",
                 };
             } else {
-                throwError(`Unsupported format ${src.as}`, src.ref);
+                throwSyntaxError(`Unsupported format ${src.as}`, src.ref);
             }
         }
         return {
@@ -216,7 +223,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
             if (src.type.keyAs) {
                 const format = intMapFormats[src.type.keyAs];
                 if (!format) {
-                    throwError(
+                    throwSyntaxError(
                         `Unsupported format ${src.type.keyAs} for map key`,
                         src.ref,
                     );
@@ -227,13 +234,16 @@ export function resolveABIType(src: ASTField): ABITypeRef {
         } else if (src.type.key === "Address") {
             key = "address";
             if (src.type.keyAs) {
-                throwError(
+                throwSyntaxError(
                     `Unsupported format ${src.type.keyAs} for map key`,
                     src.ref,
                 );
             }
         } else {
-            throwError(`Unsupported map key type "${src.type.key}"`, src.ref);
+            throwSyntaxError(
+                `Unsupported map key type "${src.type.key}"`,
+                src.ref,
+            );
         }
 
         // Resolve value type
@@ -242,7 +252,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
             if (src.type.valueAs) {
                 const format = intMapFormats[src.type.valueAs];
                 if (!format) {
-                    throwError(
+                    throwSyntaxError(
                         `Unsupported format ${src.type.valueAs} for map value`,
                         src.ref,
                     );
@@ -253,7 +263,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
         } else if (src.type.value === "Bool") {
             value = "bool";
             if (src.type.valueAs) {
-                throwError(
+                throwSyntaxError(
                     `Unsupported format ${src.type.valueAs} for map value`,
                     src.ref,
                 );
@@ -262,26 +272,26 @@ export function resolveABIType(src: ASTField): ABITypeRef {
             value = "cell";
             valueFormat = "ref";
             if (src.type.valueAs && src.type.valueAs !== "reference") {
-                throwError(
+                throwSyntaxError(
                     `Unsupported format ${src.type.valueAs} for map value`,
                     src.ref,
                 );
             }
         } else if (src.type.value === "Slice") {
-            throwError(
+            throwSyntaxError(
                 `Unsupported map value type "${src.type.value}"`,
                 src.ref,
             );
         } else if (src.type.value === "Address") {
             value = "address";
             if (src.type.valueAs) {
-                throwError(
+                throwSyntaxError(
                     `Unsupported format ${src.type.valueAs} for map value`,
                     src.ref,
                 );
             }
         } else if (src.type.value === "String") {
-            throwError(
+            throwSyntaxError(
                 `Unsupported map value type "${src.type.value}"`,
                 src.ref,
             );
@@ -289,7 +299,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
             src.type.value === "StringBuilder" ||
             src.type.value === "Builder"
         ) {
-            throwError(
+            throwSyntaxError(
                 `Unsupported map value type "${src.type.value}"`,
                 src.ref,
             );
@@ -297,7 +307,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
             value = src.type.value;
             valueFormat = "ref";
             if (src.type.valueAs && src.type.valueAs !== "reference") {
-                throwError(
+                throwSyntaxError(
                     `Unsupported format ${src.type.valueAs} for map value`,
                     src.ref,
                 );
@@ -307,7 +317,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
         return { kind: "dict", key, keyFormat, value, valueFormat };
     }
 
-    throwError(`Unsupported type`, src.ref);
+    throwSyntaxError(`Unsupported type`, src.ref);
 }
 
 export function createABITypeRefFromTypeRef(
@@ -362,7 +372,7 @@ export function createABITypeRefFromTypeRef(
             if (src.keyAs) {
                 const format = intMapFormats[src.keyAs];
                 if (!format) {
-                    throwError(
+                    throwSyntaxError(
                         `Unsupported format ${src.keyAs} for map key`,
                         ref,
                     );
@@ -373,7 +383,10 @@ export function createABITypeRefFromTypeRef(
         } else if (src.key === "Address") {
             key = "address";
             if (src.keyAs) {
-                throwError(`Unsupported format ${src.keyAs} for map key`, ref);
+                throwSyntaxError(
+                    `Unsupported format ${src.keyAs} for map key`,
+                    ref,
+                );
             }
         } else {
             throw Error(`Unsupported map key type "${src.key}"`);
@@ -385,7 +398,7 @@ export function createABITypeRefFromTypeRef(
             if (src.valueAs) {
                 const format = intMapFormats[src.valueAs];
                 if (!format) {
-                    throwError(
+                    throwSyntaxError(
                         `Unsupported format ${src.valueAs} for map value`,
                         ref,
                     );
@@ -396,7 +409,7 @@ export function createABITypeRefFromTypeRef(
         } else if (src.value === "Bool") {
             value = "bool";
             if (src.valueAs) {
-                throwError(
+                throwSyntaxError(
                     `Unsupported format ${src.valueAs} for map value`,
                     ref,
                 );
@@ -405,7 +418,7 @@ export function createABITypeRefFromTypeRef(
             value = "cell";
             valueFormat = "ref";
             if (src.valueAs && src.valueAs !== "reference") {
-                throwError(
+                throwSyntaxError(
                     `Unsupported format ${src.valueAs} for map value`,
                     ref,
                 );
@@ -415,7 +428,7 @@ export function createABITypeRefFromTypeRef(
         } else if (src.value === "Address") {
             value = "address";
             if (src.valueAs) {
-                throwError(
+                throwSyntaxError(
                     `Unsupported format ${src.valueAs} for map value`,
                     ref,
                 );
@@ -428,7 +441,7 @@ export function createABITypeRefFromTypeRef(
             value = src.value;
             valueFormat = "ref";
             if (src.valueAs && src.valueAs !== "reference") {
-                throwError(
+                throwSyntaxError(
                     `Unsupported format ${src.valueAs} for map value`,
                     ref,
                 );

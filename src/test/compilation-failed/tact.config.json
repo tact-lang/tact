@@ -12,6 +12,106 @@
       "output": "./contracts/output"
     },
     {
+      "name": "const-eval-mod-by-zero",
+      "path": "./contracts/const-eval-mod-by-zero.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-positive-literal",
+      "path": "./contracts/const-eval-int-overflow-positive-literal.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-negative-literal",
+      "path": "./contracts/const-eval-int-overflow-negative-literal.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-add",
+      "path": "./contracts/const-eval-int-overflow-add.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-sub",
+      "path": "./contracts/const-eval-int-overflow-sub.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-mul1",
+      "path": "./contracts/const-eval-int-overflow-mul1.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-mul2",
+      "path": "./contracts/const-eval-int-overflow-mul2.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-div",
+      "path": "./contracts/const-eval-int-overflow-div.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-ton1",
+      "path": "./contracts/const-eval-int-overflow-ton1.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-ton2",
+      "path": "./contracts/const-eval-int-overflow-ton2.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-pow-1",
+      "path": "./contracts/const-eval-int-overflow-pow-1.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-pow-2",
+      "path": "./contracts/const-eval-int-overflow-pow-2.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-pow2-1",
+      "path": "./contracts/const-eval-int-overflow-pow2-1.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-pow2-2",
+      "path": "./contracts/const-eval-int-overflow-pow2-2.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-shl1",
+      "path": "./contracts/const-eval-int-overflow-shl1.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-shl2",
+      "path": "./contracts/const-eval-int-overflow-shl2.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-struct-instance",
+      "path": "./contracts/const-eval-int-overflow-struct-instance.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-shl-invalid-bits1",
+      "path": "./contracts/const-eval-shl-invalid-bits1.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-shl-invalid-bits2",
+      "path": "./contracts/const-eval-shl-invalid-bits2.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-unboxing-null",
+      "path": "./contracts/const-eval-unboxing-null.tact",
+      "output": "./contracts/output"
+    },
+    {
       "name": "stdlib-skipBits",
       "path": "./contracts/stdlib-skipBits.tact",
       "output": "./contracts/output"

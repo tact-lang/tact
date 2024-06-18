@@ -333,6 +333,11 @@
       "name": "stdlib",
       "path": "./src/test/e2e-emulated/contracts/stdlib.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "structs",
+      "path": "./src/test/e2e-emulated/contracts/structs.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
     }
   ]
 }

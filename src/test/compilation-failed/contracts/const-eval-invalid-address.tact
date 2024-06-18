@@ -1,10 +1,5 @@
-import "@stdlib/deploy";
-
-contract ConstEvalInvalidAddress with Deployable {
-    init() {
-    }
+contract ConstEvalNegativeTest {
     get fun test_address(): Address {
-        let a1: Address = address("FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N");
-        return a1;
+        return address("FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N");
     }
 }
