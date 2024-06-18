@@ -66,12 +66,11 @@ contract ConstantTester {
                               newAddress(0, 0x606813c5f6a76175eae668630c6d8ffe229543610e3d204db245dd51f9ba0503)
                               !=
                               newAddress(0, 0x606813c5f6a76175eae668630c6d8ffe229543610e3d204db245dd51f9ba0503) ||
-                            //   "foo".asCell() == "bar".asCell() ||
                               !(true && false);
 
     const something40: Bool = T {
         a: pow(3, 3) + 3 * 5,
-        s: S {a: true ? 1 == 1 : 50, b: ton("0.000000042")}
+        s: S {a: true ? 1 == 1 : false, b: ton("0.000000042")}
     }.s.a;
 
     init() { }
