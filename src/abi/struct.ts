@@ -48,38 +48,44 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
             name: "fromCell",
             resolve: (ctx, args, ref) => {
                 if (args.length !== 2) {
-                    throwError("fromCell() expects one argument", ref);
+                    throwSyntaxError("fromCell() expects one argument", ref);
                 }
                 if (args[0].kind !== "ref") {
-                    throwError(
+                    throwSyntaxError(
                         "fromCell() is implemented only for struct types",
                         ref,
                     );
                 }
                 const tp = getType(ctx, args[0].name);
                 if (tp.kind !== "struct") {
-                    throwError(
+                    throwSyntaxError(
                         "fromCell() is implemented only for struct types",
                         ref,
                     );
                 }
                 if (args[1].kind !== "ref" || args[1].name !== "Cell") {
-                    throwError("fromCell() expects a Cell as an argument", ref);
+                    throwSyntaxError(
+                        "fromCell() expects a Cell as an argument",
+                        ref,
+                    );
                 }
                 return { kind: "ref", name: args[0].name, optional: false };
             },
             generate: (ctx, args, resolved, ref) => {
                 if (resolved.length !== 2) {
-                    throwError("fromCell() expects one argument", ref);
+                    throwSyntaxError("fromCell() expects one argument", ref);
                 }
                 if (args[0].kind !== "ref") {
-                    throwError(
+                    throwSyntaxError(
                         "fromCell() is implemented only for struct types",
                         ref,
                     );
                 }
                 if (args[1].kind !== "ref" || args[1].name !== "Cell") {
-                    throwError("fromCell() expects a Cell as an argument", ref);
+                    throwSyntaxError(
+                        "fromCell() expects a Cell as an argument",
+                        ref,
+                    );
                 }
                 return `${ops.readerNonModifying(args[0].name, ctx)}(${writeExpression(resolved[1], ctx)}.begin_parse())`;
             },
@@ -91,23 +97,23 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
             name: "fromSlice",
             resolve: (ctx, args, ref) => {
                 if (args.length !== 2) {
-                    throwError("fromSlice() expects one argument", ref);
+                    throwSyntaxError("fromSlice() expects one argument", ref);
                 }
                 if (args[0].kind !== "ref") {
-                    throwError(
+                    throwSyntaxError(
                         "fromSlice() is implemented only for struct types",
                         ref,
                     );
                 }
                 const tp = getType(ctx, args[0].name);
                 if (tp.kind !== "struct") {
-                    throwError(
+                    throwSyntaxError(
                         "fromSlice() is implemented only for struct types",
                         ref,
                     );
                 }
                 if (args[1].kind !== "ref" || args[1].name !== "Slice") {
-                    throwError(
+                    throwSyntaxError(
                         "fromSlice() expects a Slice as an argument",
                         ref,
                     );
@@ -116,16 +122,16 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
             },
             generate: (ctx, args, resolved, ref) => {
                 if (resolved.length !== 2) {
-                    throwError("fromSlice() expects one argument", ref);
+                    throwSyntaxError("fromSlice() expects one argument", ref);
                 }
                 if (args[0].kind !== "ref") {
-                    throwError(
+                    throwSyntaxError(
                         "fromSlice() is implemented only for struct types",
                         ref,
                     );
                 }
                 if (args[1].kind !== "ref" || args[1].name !== "Slice") {
-                    throwError(
+                    throwSyntaxError(
                         "fromSlice() expects a Slice as an argument",
                         ref,
                     );
