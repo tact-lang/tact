@@ -15,7 +15,7 @@ describe("structs", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    it("should implement structs parsing and writing correctly", async () => {
+    it("should implement structs correctly", async () => {
         // Init
         const system = await ContractSystem.create();
         const treasure = system.treasure("treasure");
