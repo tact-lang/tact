@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Traversing maps from contract storage and structs is now allowed: PR [#389](https://github.com/tact-lang/tact/pull/389)
 - The `loadBool` method for `Slice` type: PR [#412](https://github.com/tact-lang/tact/pull/412)
 - CLI flag `--with-decompilation` to turn on decompilation of BoC files at the end of the compilation pipeline: PR [#417](https://github.com/tact-lang/tact/pull/417)
+- Support more Tact expressions in the constant evaluator: condition expressions, struct instances, struct field access, `emptyMap()`: PR [#432](https://github.com/tact-lang/tact/pull/432)
 
 ### Changed
 
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow underscores as unused variable identifiers: PR [#338](https://github.com/tact-lang/tact/pull/338)
 - The default compilation mode does decompile BoC files anymore, to additionally perform decompilation at the end of the pipeline, set the `fullWithDecompilation` mode in the `mode` project properties of `tact.config.json`: PR [#417](https://github.com/tact-lang/tact/pull/417)
 - Trait lists, parameters and arguments in the Tact grammar were assigned their own names in the grammar for better readability and code deduplication: PR [#422](https://github.com/tact-lang/tact/pull/422)
+- The semantics of the Tact arithmetic operations in the constant evaluator to perform rounding towards negative infinity: PR [#432](https://github.com/tact-lang/tact/pull/432)
 
 ### Fixed
 
