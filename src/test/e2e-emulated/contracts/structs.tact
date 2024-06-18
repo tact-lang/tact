@@ -44,13 +44,12 @@ contract StructsTester {
     }
 
     get fun fromCell1(src: Cell): MyStruct1 {
-        let s: MyStruct1 = MyStruct1.fromCell(src);
+        let s = MyStruct1.fromCell(src);
         return s;
     }
 
     get fun fromSlice1(src: Slice): MyStruct1 {
-        let s: MyStruct1 = MyStruct1.fromSlice(src);
-        return s;
+        return MyStruct1.fromSlice(src);
     }
 
     get fun toCell2(s: MyStruct2): Cell {

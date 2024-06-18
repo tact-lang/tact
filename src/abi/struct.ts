@@ -52,14 +52,14 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 }
                 if (args[0].kind !== "ref") {
                     throwError(
-                        "fromCell() is implemented only a struct type",
+                        "fromCell() is implemented only for struct types",
                         ref,
                     );
                 }
                 const tp = getType(ctx, args[0].name);
                 if (tp.kind !== "struct") {
                     throwError(
-                        "fromCell() is implemented only a struct type",
+                        "fromCell() is implemented only for struct types",
                         ref,
                     );
                 }
@@ -74,7 +74,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 }
                 if (args[0].kind !== "ref") {
                     throwError(
-                        "fromCell() is implemented only a struct type",
+                        "fromCell() is implemented only for struct types",
                         ref,
                     );
                 }
@@ -95,14 +95,14 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 }
                 if (args[0].kind !== "ref") {
                     throwError(
-                        "fromSlice() is implemented only a struct type",
+                        "fromSlice() is implemented only for struct types",
                         ref,
                     );
                 }
                 const tp = getType(ctx, args[0].name);
                 if (tp.kind !== "struct") {
                     throwError(
-                        "fromSlice() is implemented only a struct type",
+                        "fromSlice() is implemented only for struct types",
                         ref,
                     );
                 }
@@ -120,7 +120,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 }
                 if (args[0].kind !== "ref") {
                     throwError(
-                        "fromSlice() is implemented only a struct type",
+                        "fromSlice() is implemented only for struct types",
                         ref,
                     );
                 }

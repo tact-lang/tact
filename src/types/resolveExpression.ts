@@ -771,7 +771,7 @@ export function resolveExpression(
                         exp.ref,
                     );
                 }
-                // Handle struct calls
+                // Handle static struct method calls
                 try {
                     const t = getType(ctx, exp.value);
                     if (t.kind === "struct") {
