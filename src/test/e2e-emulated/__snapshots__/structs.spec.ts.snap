@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`structs should implement structs parsing and writing correctly 1`] = `
+exports[`structs should implement structs correctly 1`] = `
 {
   "$$type": "MyStruct2",
   "m": Dictionary {
@@ -24,7 +24,7 @@ exports[`structs should implement structs parsing and writing correctly 1`] = `
 }
 `;
 
-exports[`structs should implement structs parsing and writing correctly 2`] = `
+exports[`structs should implement structs correctly 2`] = `
 {
   "$$type": "MyStruct2",
   "m": Dictionary {
@@ -43,7 +43,7 @@ exports[`structs should implement structs parsing and writing correctly 2`] = `
 }
 `;
 
-exports[`structs should implement structs parsing and writing correctly 3`] = `
+exports[`structs should implement structs correctly 3`] = `
 {
   "$$type": "MyStruct2",
   "m": Dictionary {
@@ -67,7 +67,7 @@ exports[`structs should implement structs parsing and writing correctly 3`] = `
 }
 `;
 
-exports[`structs should implement structs parsing and writing correctly 4`] = `
+exports[`structs should implement structs correctly 4`] = `
 {
   "$$type": "MyStruct2",
   "m": Dictionary {
@@ -86,7 +86,7 @@ exports[`structs should implement structs parsing and writing correctly 4`] = `
 }
 `;
 
-exports[`structs should implement structs parsing and writing correctly 5`] = `
+exports[`structs should implement structs correctly 5`] = `
 {
   "$$type": "MyStruct2",
   "m": Dictionary {
@@ -110,7 +110,7 @@ exports[`structs should implement structs parsing and writing correctly 5`] = `
 }
 `;
 
-exports[`structs should implement structs parsing and writing correctly 6`] = `
+exports[`structs should implement structs correctly 6`] = `
 {
   "$$type": "MyStruct2",
   "m": Dictionary {
