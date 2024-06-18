@@ -89,7 +89,6 @@ Tact {
              | external "(" Parameter? ")" "{" Statement* "}" --externalRegular
              | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
 
-    // Statements
     Statement = StatementLet
               | StatementBlock
               | StatementReturn
@@ -104,13 +103,15 @@ Tact {
 
     StatementBlock = "{" Statement* "}"
 
-    StatementLet = let id (":" Type)? "=" Expression ";"
+    // Do not require the terminating semicolon
+    // if this is the last statement in a block
+    StatementLet = let id (":" Type)? "=" Expression (";" | &"}")
 
-    StatementReturn = return Expression? ";"
+    StatementReturn = return Expression? (";" | &"}")
 
-    StatementExpression = Expression ";"
+    StatementExpression = Expression (";" | &"}")
 
-    StatementAssign = LValue ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "|=" | "&=" | "^=") Expression ";"
+    StatementAssign = LValue ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "|=" | "&=" | "^=") Expression (";" | &"}")
 
     StatementCondition = if Expression "{" Statement* "}" ~else --noElse
                        | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse
@@ -120,7 +121,7 @@ Tact {
 
     StatementRepeat = repeat "(" Expression ")" "{" Statement* "}"
 
-    StatementUntil = do "{" Statement* "}" until "(" Expression ")" ";"
+    StatementUntil = do "{" Statement* "}" until "(" Expression ")" (";" | &"}")
 
     // making the catch clause optional using Ohm's `?` does not make sense
     // because Ohm will create _independent_ optional grammar nodes which
