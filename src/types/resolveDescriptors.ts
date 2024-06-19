@@ -3,7 +3,6 @@ import {
     ASTField,
     ASTFunction,
     ASTInitFunction,
-    ASTLvalueRef,
     ASTNativeFunction,
     ASTNode,
     ASTRef,
@@ -36,7 +35,6 @@ import { resolveABIType } from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
-import { Issue74 } from "../test/codegen/output/codegen_Issue74";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
