@@ -209,7 +209,7 @@ function processStatements(
                 }
                 if (expressionType.kind === "void") {
                     throwSyntaxError(
-                        `Cannot assign void to "${s.name}"`,
+                        `The inferred type of variable "${s.name}" is "void", which is not allowed`,
                         s.ref,
                     );
                 }
