@@ -207,6 +207,12 @@ function processStatements(
                         s.ref,
                     );
                 }
+                if (expressionType.kind === "void") {
+                    throwSyntaxError(
+                        `The inferred type of variable "${s.name}" is "void", which is not allowed`,
+                        s.ref,
+                    );
+                }
                 sctx = addVariable(s.name, expressionType, sctx);
             }
         } else if (s.kind === "statement_assign") {

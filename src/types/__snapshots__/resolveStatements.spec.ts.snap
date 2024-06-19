@@ -470,6 +470,16 @@ Line 8, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for stmt-let-void-inference 1`] = `
+"<unknown>:12:9: The inferred type of variable "voidVar" is "void", which is not allowed
+Line 12, col 9:
+  11 |     get fun foo(): Int {
+> 12 |         let voidVar = foo();
+               ^~~~~~~~~~~~~~~~~~~~
+  13 |         return 42;
+"
+`;
+
 exports[`resolveStatements should fail statements for stmt-let-wrong-rhs 1`] = `
 "<unknown>:10:5: Type mismatch: "Int" is not assignable to "Bool"
 Line 10, col 5:
