@@ -201,12 +201,15 @@ function processStatements(
                 }
                 sctx = addVariable(s.name, variableType, sctx);
             } else {
-                if (
-                    expressionType.kind === "null" ||
-                    expressionType.kind === "void"
-                ) {
+                if (expressionType.kind === "null") {
                     throwSyntaxError(
                         `Cannot infer type for "${s.name}"`,
+                        s.ref,
+                    );
+                }
+                if (expressionType.kind === "void") {
+                    throwSyntaxError(
+                        `Cannot assign void to "${s.name}"`,
                         s.ref,
                     );
                 }

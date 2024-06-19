@@ -471,7 +471,7 @@ Line 8, col 5:
 `;
 
 exports[`resolveStatements should fail statements for stmt-let-void-inference 1`] = `
-"<unknown>:12:9: Cannot infer type for "voidVar"
+"<unknown>:12:9: Cannot assign void to "voidVar"
 Line 12, col 9:
   11 |     get fun foo(): Int {
 > 12 |         let voidVar = foo();
