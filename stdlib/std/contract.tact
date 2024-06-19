@@ -29,7 +29,7 @@ native getComputeFee(workchain: Int, gas_used: Int): Int;
 @name(get_storage_fee)
 native getStorageFee(workchain: Int, seconds: Int, bits: Int, cells: Int): Int;
 
-@name(get_storage_fee)
+@name(get_forward_fee)
 native getForwardFee(workchain: Int, bits: Int, cells: Int): Int;
 
 @name(get_simple_compute_fee)
