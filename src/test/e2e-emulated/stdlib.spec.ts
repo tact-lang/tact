@@ -3,7 +3,7 @@ import { ContractSystem } from "@tact-lang/emulator";
 import { StdlibTest } from "./contracts/output/stdlib_StdlibTest";
 
 describe("stdlib", () => {
-    it("should execute slice methods correctly", async () => {
+    it("should execute standard library functions correctly", async () => {
         // Create and deploy contract
         const system = await ContractSystem.create();
         const treasure = system.treasure("treasure");
@@ -11,7 +11,7 @@ describe("stdlib", () => {
         await contract.send(treasure, { value: toNano("10") }, null);
         await system.run();
 
-        // Execute slice methods
+        // Execute methods
         const slice = beginCell()
             .storeBit(1)
             .storeBit(1)
@@ -22,5 +22,7 @@ describe("stdlib", () => {
         expect(await contract.getSliceRefs(slice)).toBe(1n);
         expect(await contract.getSliceEmpty(slice)).toBe(false);
         expect(await contract.getLoadBool(slice)).toBe(true);
+        expect(await contract.getTvm_2023_07Upgrade()).toEqual(123n);
+        expect(await contract.getTvm_2024_04Upgrade()).toEqual(123n);
     });
 });

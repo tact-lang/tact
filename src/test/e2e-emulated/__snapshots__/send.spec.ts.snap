@@ -39,7 +39,7 @@ exports[`send should bounce on unknown message 1`] = `
           "from": "kQATx58YvlfHtRNTqNXYeKUD0aoA8zP1ffmepeP5UaunSzFu",
           "to": "@treasure(treasure)",
           "type": "internal",
-          "value": "9.996013",
+          "value": "9.994561",
         },
       },
     ],
@@ -73,21 +73,23 @@ exports[`send should send reply correctly 1`] = `
         },
       },
       {
-        "$type": "processed",
-        "gasUsed": 8234n,
+        "$type": "failed",
+        "errorCode": 6,
+        "errorMessage": "Invalid opcode",
       },
       {
-        "$type": "sent",
-        "messages": [
-          {
-            "body": {
-              "text": "Deploy success",
-              "type": "text",
-            },
-            "to": null,
-            "type": "external-out",
+        "$type": "sent-bounced",
+        "message": {
+          "body": {
+            "cell": "x{FFFFFFFF946A98B60000000000000000}",
+            "type": "cell",
           },
-        ],
+          "bounce": false,
+          "from": "kQDIBBzWVCslg5xJXGUR8i6uE3nzNGTEBwrTcKCQ0arY9IJ3",
+          "to": "@treasure(treasure)",
+          "type": "internal",
+          "value": "9.992008",
+        },
       },
     ],
   },
@@ -118,8 +120,9 @@ exports[`send should send reply correctly 2`] = `
         },
       },
       {
-        "$type": "processed",
-        "gasUsed": 7939n,
+        "$type": "failed",
+        "errorCode": 6,
+        "errorMessage": "Invalid opcode",
       },
       {
         "$type": "sent",
@@ -135,20 +138,12 @@ exports[`send should send reply correctly 2`] = `
             "type": "internal",
             "value": "9.990889",
           },
-        ],
-      },
-      {
-        "$type": "sent",
-        "messages": [
-          {
-            "body": {
-              "text": "Something",
-              "type": "text",
-            },
-            "to": null,
-            "type": "external-out",
-          },
-        ],
+          "bounce": false,
+          "from": "kQDIBBzWVCslg5xJXGUR8i6uE3nzNGTEBwrTcKCQ0arY9IJ3",
+          "to": "@treasure(treasure)",
+          "type": "internal",
+          "value": "9.992055",
+        },
       },
     ],
   },
