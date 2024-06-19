@@ -14,10 +14,6 @@ contract Main {
         s: "string 1"
     };
 
-    receive("string 1") {
-
-    }
-
     receive(self.struct.s) {
 
     }

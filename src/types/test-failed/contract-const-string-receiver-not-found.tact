@@ -18,7 +18,7 @@ contract Main {
 
     }
 
-    receive(self.struct.s) {
+    receive(self.struct.s2) {
 
     }
 }

@@ -30,6 +30,36 @@ Line 15, col 3:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-const-string-receiver-not-found 1`] = `
+"<unknown>:21:5: Constant "self.struct.s2" not found
+Line 21, col 5:
+  20 | 
+> 21 |     receive(self.struct.s2) {
+           ^~~~~~~~~~~~~~~~~~~~~~~~~
+  22 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-const-string-receiver-not-found2 1`] = `
+"<unknown>:21:5: Constant "self.struct2.s" not found
+Line 21, col 5:
+  20 | 
+> 21 |     receive(self.struct2.s) {
+           ^~~~~~~~~~~~~~~~~~~~~~~~~
+  22 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-const-string-receiver-not-found3 1`] = `
+"<unknown>:25:5: Constant "self.struct.s" not found
+Line 25, col 5:
+  24 | 
+> 25 |     receive(self.struct.s) {
+           ^~~~~~~~~~~~~~~~~~~~~~~~
+  26 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced-fallback-receiver 1`] = `
 "<unknown>:24:3: Fallback bounce receive function already exists
 Line 24, col 3:
@@ -91,12 +121,12 @@ Line 15, col 5:
 `;
 
 exports[`resolveDescriptors should fail descriptors for contract-duplicate-const-string-receiver5 1`] = `
-"<unknown>:25:5: Invalid comment receiver selector
-Line 25, col 5:
-  24 | 
-> 25 |     receive(self.struct.s) {
+"<unknown>:21:5: Receive function for string "string 1" already exists
+Line 21, col 5:
+  20 | 
+> 21 |     receive(self.struct.s) {
            ^~~~~~~~~~~~~~~~~~~~~~~~
-  26 | 
+  22 | 
 "
 `;
 
@@ -1219,6 +1249,678 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
 `;
 
 exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-small-not-detected 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-const-string-receiver 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 3,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "Main": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [],
+          "id": 11,
+          "kind": "def_constant",
+          "name": "struct",
+          "ref": const struct: MyStruct = MyStruct {
+        s: "string 1"
+    };,
+          "type": {
+            "id": 7,
+            "kind": "type_ref_simple",
+            "name": "MyStruct",
+            "optional": false,
+            "ref": MyStruct,
+          },
+          "value": {
+            "args": [
+              {
+                "exp": {
+                  "id": 8,
+                  "kind": "string",
+                  "ref": "string 1",
+                  "value": "string 1",
+                },
+                "id": 9,
+                "kind": "new_parameter",
+                "name": "s",
+                "ref": s: "string 1",
+              },
+            ],
+            "id": 10,
+            "kind": "op_new",
+            "ref": MyStruct {
+        s: "string 1"
+    },
+            "type": "MyStruct",
+          },
+        },
+        {
+          "id": 15,
+          "kind": "def_receive",
+          "ref": receive(self.struct.s) {
+
+    },
+          "selector": {
+            "comment": [
+              {
+                "id": 12,
+                "kind": "lvalue_ref",
+                "name": "self",
+                "ref": self.,
+              },
+              {
+                "id": 13,
+                "kind": "lvalue_ref",
+                "name": "struct",
+                "ref": struct.,
+              },
+              {
+                "id": 14,
+                "kind": "lvalue_ref",
+                "name": "s",
+                "ref": s,
+              },
+            ],
+            "kind": "internal-const-comment",
+          },
+          "statements": [],
+        },
+      ],
+      "id": 16,
+      "kind": "def_contract",
+      "name": "Main",
+      "origin": "user",
+      "ref": contract Main {
+    const struct: MyStruct = MyStruct {
+        s: "string 1"
+    };
+
+    receive(self.struct.s) {
+
+    }
+},
+      "traits": [],
+    },
+    "constants": [
+      {
+        "ast": {
+          "attributes": [],
+          "id": 11,
+          "kind": "def_constant",
+          "name": "struct",
+          "ref": const struct: MyStruct = MyStruct {
+        s: "string 1"
+    };,
+          "type": {
+            "id": 7,
+            "kind": "type_ref_simple",
+            "name": "MyStruct",
+            "optional": false,
+            "ref": MyStruct,
+          },
+          "value": {
+            "args": [
+              {
+                "exp": {
+                  "id": 8,
+                  "kind": "string",
+                  "ref": "string 1",
+                  "value": "string 1",
+                },
+                "id": 9,
+                "kind": "new_parameter",
+                "name": "s",
+                "ref": s: "string 1",
+              },
+            ],
+            "id": 10,
+            "kind": "op_new",
+            "ref": MyStruct {
+        s: "string 1"
+    },
+            "type": "MyStruct",
+          },
+        },
+        "name": "struct",
+        "ref": const struct: MyStruct = MyStruct {
+        s: "string 1"
+    };,
+        "type": {
+          "kind": "ref",
+          "name": "MyStruct",
+          "optional": false,
+        },
+        "value": {
+          "$tactStruct": "MyStruct",
+          "s": "string 1",
+        },
+      },
+    ],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "args": [],
+      "ast": {
+        "args": [],
+        "id": 18,
+        "kind": "def_init_function",
+        "ref": contract Main {
+    const struct: MyStruct = MyStruct {
+        s: "string 1"
+    };
+
+    receive(self.struct.s) {
+
+    }
+},
+        "statements": [],
+      },
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Main",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [
+      {
+        "ast": {
+          "id": 15,
+          "kind": "def_receive",
+          "ref": receive(self.struct.s) {
+
+    },
+          "selector": {
+            "comment": [
+              {
+                "id": 12,
+                "kind": "lvalue_ref",
+                "name": "self",
+                "ref": self.,
+              },
+              {
+                "id": 13,
+                "kind": "lvalue_ref",
+                "name": "struct",
+                "ref": struct.,
+              },
+              {
+                "id": 14,
+                "kind": "lvalue_ref",
+                "name": "s",
+                "ref": s,
+              },
+            ],
+            "kind": "internal-const-comment",
+          },
+          "statements": [],
+        },
+        "selector": {
+          "comment": "string 1",
+          "kind": "internal-comment",
+        },
+      },
+    ],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 3,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait {
+    
+},
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 51099,
+  },
+  "MyStruct": {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 5,
+          "init": null,
+          "kind": "def_field",
+          "name": "s",
+          "ref": s: String,
+          "type": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "String",
+            "optional": false,
+            "ref": String,
+          },
+        },
+      ],
+      "id": 6,
+      "kind": "def_struct",
+      "message": false,
+      "name": "MyStruct",
+      "origin": "user",
+      "prefix": null,
+      "ref": struct MyStruct {
+    s: String;
+},
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "s",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "string",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 5,
+          "init": null,
+          "kind": "def_field",
+          "name": "s",
+          "ref": s: String,
+          "type": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "String",
+            "optional": false,
+            "ref": String,
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "name": "s",
+        "ref": s: String,
+        "type": {
+          "kind": "ref",
+          "name": "String",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "MyStruct",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "MyStruct{s:^string}",
+    "tlb": "_ s:^string = MyStruct",
+    "traits": [],
+    "uid": 55650,
+  },
+  "String": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "String",
+      "origin": "user",
+      "ref": primitive String;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "String",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 46199,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-const-string-receiver 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-const-string-receiver2 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 6,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "Main": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 8,
+          "kind": "def_receive",
+          "ref": receive("string 1") {
+
+    },
+          "selector": {
+            "comment": {
+              "id": 7,
+              "kind": "string",
+              "ref": "string 1",
+              "value": "string 1",
+            },
+            "kind": "internal-comment",
+          },
+          "statements": [],
+        },
+        {
+          "id": 10,
+          "kind": "def_receive",
+          "ref": receive(string2) {
+
+    },
+          "selector": {
+            "comment": [
+              {
+                "id": 9,
+                "kind": "lvalue_ref",
+                "name": "string2",
+                "ref": string2,
+              },
+            ],
+            "kind": "internal-const-comment",
+          },
+          "statements": [],
+        },
+      ],
+      "id": 11,
+      "kind": "def_contract",
+      "name": "Main",
+      "origin": "user",
+      "ref": contract Main {
+    receive("string 1") {
+
+    }
+
+    receive(string2) {
+
+    }
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "args": [],
+      "ast": {
+        "args": [],
+        "id": 13,
+        "kind": "def_init_function",
+        "ref": contract Main {
+    receive("string 1") {
+
+    }
+
+    receive(string2) {
+
+    }
+},
+        "statements": [],
+      },
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Main",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [
+      {
+        "ast": {
+          "id": 8,
+          "kind": "def_receive",
+          "ref": receive("string 1") {
+
+    },
+          "selector": {
+            "comment": {
+              "id": 7,
+              "kind": "string",
+              "ref": "string 1",
+              "value": "string 1",
+            },
+            "kind": "internal-comment",
+          },
+          "statements": [],
+        },
+        "selector": {
+          "comment": "string 1",
+          "kind": "internal-comment",
+        },
+      },
+      {
+        "ast": {
+          "id": 10,
+          "kind": "def_receive",
+          "ref": receive(string2) {
+
+    },
+          "selector": {
+            "comment": [
+              {
+                "id": 9,
+                "kind": "lvalue_ref",
+                "name": "string2",
+                "ref": string2,
+              },
+            ],
+            "kind": "internal-const-comment",
+          },
+          "statements": [],
+        },
+        "selector": {
+          "comment": "string 2",
+          "kind": "internal-comment",
+        },
+      },
+    ],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 6,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait {
+    
+},
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 51099,
+  },
+  "String": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "String",
+      "origin": "user",
+      "ref": primitive String;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "String",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 46199,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-const-string-receiver2 2`] = `{}`;
 
 exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 1`] = `
 {

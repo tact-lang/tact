@@ -3,6 +3,7 @@ import {
     ASTField,
     ASTFunction,
     ASTInitFunction,
+    ASTLvalueRef,
     ASTNativeFunction,
     ASTNode,
     ASTRef,
@@ -25,6 +26,7 @@ import {
     TypeOrigin,
     TypeRef,
     typeRefEquals,
+    Value,
 } from "./types";
 import { getRawAST } from "../grammar/store";
 import { cloneNode } from "../grammar/clone";
@@ -34,6 +36,7 @@ import { resolveABIType } from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
+import { Issue74 } from "../test/codegen/output/codegen_Issue74";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -1033,54 +1036,58 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         const internal =
                             d.selector.kind === "internal-const-comment";
 
-                        if (
-                            d.selector.comment.length > 2 ||
-                            (d.selector.comment.length == 2 &&
-                                d.selector.comment[0].name !== "self")
-                        ) {
-                            // TEMPORARY
-                            // to be reworked after #284 and #400 are resolved
-                            throwSyntaxError(
-                                "Invalid comment receiver selector",
-                                d.ref,
-                            );
-                        }
+                        let path = d.selector.comment;
+
+                        const pathString = path.map((v) => v.name).join(".");
 
                         const isSelf =
-                            d.selector.comment.length === 2 &&
-                            d.selector.comment[0].name === "self";
+                            path.length >= 2 && path[0].name === "self";
 
-                        const commentId =
-                            d.selector.comment[d.selector.comment.length - 1]
-                                .name;
-                        const commentConstant = isSelf
-                            ? s.constants.find((v) => v.name === commentId)
-                            : staticConstants.get(commentId);
+                        let commentConstant: ConstantDescription | undefined =
+                            undefined;
+                        if (isSelf) {
+                            commentConstant = s.constants.find(
+                                (v) => v.name === path[1].name,
+                            );
+                            path = path.slice(2);
+                        } else {
+                            commentConstant = staticConstants.get(path[0].name);
+                            path = path.slice(1);
+                        }
 
-                        if (!commentConstant) {
+                        let commentValue: Value | undefined =
+                            commentConstant?.value;
+
+                        while (commentValue && path.length > 0) {
+                            if (
+                                commentValue == null ||
+                                typeof commentValue !== "object" ||
+                                !("$tactStruct" in commentValue)
+                            ) {
+                                throwSyntaxError(
+                                    `Cannot find constant "${path[0].name}" in ${pathString}`,
+                                    d.ref,
+                                );
+                            }
+                            commentValue = commentValue[path[0].name];
+                            path = path.slice(1);
+                        }
+
+                        if (!commentValue) {
                             throwSyntaxError(
-                                `Constant "${commentId}" not found`,
+                                `Constant "${pathString}" not found`,
                                 d.ref,
                             );
                         }
 
-                        if (commentConstant.type.kind !== "ref") {
+                        if (typeof commentValue !== "string") {
                             throwSyntaxError(
-                                `Constant "${commentId}" must be a reference type`,
+                                `Constant "${pathString}" must be of type String`,
                                 d.ref,
                             );
                         }
 
-                        if (commentConstant.type.name !== "String") {
-                            throwSyntaxError(
-                                `Constant "${commentId}" must be of type String`,
-                                d.ref,
-                            );
-                        }
-
-                        const c = commentConstant.value as string;
-
-                        if (c === "") {
+                        if (commentValue === "") {
                             throwSyntaxError(
                                 "To use empty comment receiver, just remove argument instead of passing empty string",
                                 d.ref,
@@ -1094,11 +1101,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         (internal
                                             ? "internal-comment"
                                             : "external-comment") &&
-                                    v.selector.comment === c,
+                                    v.selector.comment === commentValue,
                             )
                         ) {
                             throwSyntaxError(
-                                `Receive function for string "${c}" already exists`,
+                                `Receive function for string "${commentValue}" already exists`,
                                 d.ref,
                             );
                         }
@@ -1107,7 +1114,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 kind: internal
                                     ? "internal-comment"
                                     : "external-comment",
-                                comment: c,
+                                comment: commentValue,
                             },
                             ast: d,
                         });

@@ -112,6 +112,20 @@ exports[`constant string receiver should implement const string receiver correct
       },
       "receiver": "internal",
     },
+    {
+      "message": {
+        "kind": "text",
+        "text": "string 5",
+      },
+      "receiver": "internal",
+    },
+    {
+      "message": {
+        "kind": "text",
+        "text": "string 6",
+      },
+      "receiver": "internal",
+    },
   ],
   "types": [
     {
@@ -239,6 +253,34 @@ exports[`constant string receiver should implement const string receiver correct
       "header": null,
       "name": "SendParameters",
     },
+    {
+      "fields": [
+        {
+          "name": "s",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "string",
+          },
+        },
+      ],
+      "header": null,
+      "name": "MyStruct",
+    },
+    {
+      "fields": [
+        {
+          "name": "struct",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "MyStruct",
+          },
+        },
+      ],
+      "header": null,
+      "name": "MyNestedStruct",
+    },
   ],
 }
 `;
@@ -257,7 +299,7 @@ exports[`constant string receiver should implement const string receiver correct
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
+          "to": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
           "type": "internal",
           "value": "10",
         },
@@ -275,7 +317,7 @@ exports[`constant string receiver should implement const string receiver correct
               "type": "text",
             },
             "bounce": true,
-            "from": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
+            "from": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
             "to": "@treasure(treasure)",
             "type": "internal",
             "value": "9.991947",
@@ -296,7 +338,7 @@ exports[`constant string receiver should implement const string receiver correct
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
+          "to": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
           "type": "internal",
           "value": "10",
         },
@@ -314,7 +356,7 @@ exports[`constant string receiver should implement const string receiver correct
               "type": "text",
             },
             "bounce": true,
-            "from": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
+            "from": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
             "to": "@treasure(treasure)",
             "type": "internal",
             "value": "9.989336",
@@ -335,7 +377,7 @@ exports[`constant string receiver should implement const string receiver correct
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
+          "to": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
           "type": "internal",
           "value": "10",
         },
@@ -353,7 +395,7 @@ exports[`constant string receiver should implement const string receiver correct
               "type": "text",
             },
             "bounce": true,
-            "from": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
+            "from": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
             "to": "@treasure(treasure)",
             "type": "internal",
             "value": "9.989223",
@@ -374,14 +416,14 @@ exports[`constant string receiver should implement const string receiver correct
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
+          "to": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
           "type": "internal",
           "value": "10",
         },
       },
       {
         "$type": "processed",
-        "gasUsed": 9730n,
+        "gasUsed": 9766n,
       },
       {
         "$type": "sent",
@@ -392,10 +434,88 @@ exports[`constant string receiver should implement const string receiver correct
               "type": "text",
             },
             "bounce": true,
-            "from": "kQCjCGWLilNv7PPffKoWdQHPZ-88MekCb9F_U5ddfPTsuH3_",
+            "from": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
             "to": "@treasure(treasure)",
             "type": "internal",
-            "value": "9.989074",
+            "value": "9.989038",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    "$seq": 5,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "string 5",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 7453n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "string 5",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "9.991351",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    "$seq": 6,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "string 6",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 7602n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "string 6",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "9.991202",
           },
         ],
       },

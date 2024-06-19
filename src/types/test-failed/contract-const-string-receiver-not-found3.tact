@@ -10,9 +10,13 @@ struct MyStruct {
 }
 
 contract Main {
-    const struct: MyStruct = MyStruct {
-        s: "string 1"
-    };
+    struct: MyStruct;
+
+    init () {
+        self.struct = MyStruct {
+            s: "string 1"
+        };
+    }
 
     receive("string 1") {
 
