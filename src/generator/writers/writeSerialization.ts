@@ -341,6 +341,26 @@ export function writeParser(
             }
         });
     });
+
+    // Write non-modifying variant
+
+    ctx.fun(ops.readerNonModifying(name, ctx), () => {
+        ctx.signature(
+            `(${resolveFuncTypeFromAbi(
+                allocation.ops.map((v) => v.type),
+                ctx,
+            )}) ${ops.readerNonModifying(name, ctx)}(slice sc_0)`,
+        );
+        if (forceInline || isSmall) {
+            ctx.flag("inline");
+        }
+        ctx.context("type:" + name);
+        ctx.body(() => {
+            ctx.append(`var r = sc_0~${ops.reader(name, ctx)}();`);
+            ctx.append(`sc_0.end_parse();`);
+            ctx.append(`return r;`);
+        });
+    });
 }
 
 export function writeBouncedParser(
