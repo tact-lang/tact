@@ -40,6 +40,26 @@ Line 5, col 12:
 "
 `;
 
+exports[`resolveStatements should fail statements for expr-cmp-void1 1`] = `
+"<unknown>:7:12: Expressions of "<void>" type cannot be used for (non)equality operator "=="
+Line 7, col 12:
+  6 | fun baz(): Bool {
+> 7 |     return foo() == bar()
+                 ^~~~~~~~~~~~~~
+  8 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-cmp-void2 1`] = `
+"<unknown>:7:12: Expressions of "<void>" type cannot be used for (non)equality operator "!="
+Line 7, col 12:
+  6 | fun baz(): Bool {
+> 7 |     return foo() != bar()
+                 ^~~~~~~~~~~~~~
+  8 | }
+"
+`;
+
 exports[`resolveStatements should fail statements for expr-conditional-branch-mismatch 1`] = `
 "<unknown>:5:43: Non-matching types "Bool" and "Int" for ternary branches
 Line 5, col 43:
@@ -107,6 +127,16 @@ Line 5, col 5:
 > 5 |     return (true ? true : false) ? true : false;
           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-conditional-void-branches copy 1`] = `
+"<unknown>:6:19: Expressions of "<void>" type cannot be used for conditional expression
+Line 6, col 19:
+  5 | fun bar(): Int {
+> 6 |     let voidVar = true ? foo() : foo();
+                        ^~~~~~~~~~~~~~~~~~~~
+  7 |     return 42;
 "
 `;
 
@@ -430,6 +460,16 @@ Line 5, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for stmt-conditional-expr-stmt-void1 1`] = `
+"<unknown>:5:5: Expressions of "<void>" type cannot be used for conditional expression
+Line 5, col 5:
+  4 | fun baz() {
+> 5 |     true ? foo() : bar();
+          ^~~~~~~~~~~~~~~~~~~~
+  6 | }
+"
+`;
+
 exports[`resolveStatements should fail statements for stmt-do-int 1`] = `
 "<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
 Line 9, col 5:
@@ -507,6 +547,46 @@ Line 8, col 9:
 > 8 |         return e;
               ^~~~~~~~~
   9 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-return-void1 1`] = `
+"<unknown>:4:5: 'return' statement can only be used with non-void types
+Line 4, col 5:
+  3 | fun bar() {
+> 4 |     return foo()
+          ^~~~~~~~~~~~
+  5 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-return-void2 1`] = `
+"<unknown>:6:5: Type mismatch: "Int" is not assignable to "<void>"
+Line 6, col 5:
+  5 | fun bar() {
+> 6 |     return foo()
+          ^~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-return-void3 1`] = `
+"<unknown>:3:18: The function fails to return a result of type "Int"
+Line 3, col 18:
+  2 | 
+> 3 | fun bar(): Int { return }
+                       ^~~~~~
+  4 | 
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-unboxing-expr-stmt-void 1`] = `
+"<unknown>:4:5: Type "<void>" is not optional
+Line 4, col 5:
+  3 | fun bar() {
+> 4 |     foo()!!
+          ^~~~~~~
+  5 | }
 "
 `;
 
