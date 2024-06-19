@@ -771,6 +771,20 @@ export function resolveExpression(
                         exp.ref,
                     );
                 }
+                // Handle static struct method calls
+                try {
+                    const t = getType(ctx, exp.value);
+                    if (t.kind === "struct") {
+                        return registerExpType(ctx, exp, {
+                            kind: "ref",
+                            name: t.name,
+                            optional: false,
+                        });
+                    }
+                } catch {
+                    // Ignore
+                }
+
                 throwSyntaxError("Unable to resolve id " + exp.value, exp.ref);
             } else {
                 const cc = getStaticConstant(ctx, exp.value);
