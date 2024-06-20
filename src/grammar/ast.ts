@@ -366,6 +366,10 @@ export type ASTReceiveType =
           comment: ASTString;
       }
     | {
+          kind: "internal-const-comment";
+          comment: ASTLvalueRef[];
+      }
+    | {
           kind: "bounce";
           arg: ASTArgument;
       }
@@ -379,6 +383,10 @@ export type ASTReceiveType =
     | {
           kind: "external-comment";
           comment: ASTString;
+      }
+    | {
+          kind: "external-const-comment";
+          comment: ASTLvalueRef[];
       };
 
 export type ASTReceive = {

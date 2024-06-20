@@ -340,6 +340,25 @@ semantics.addOperation<ASTNode>("astOfItem", {
             ref: createRef(this),
         });
     },
+    Receiver_constComment(
+        _receiveKwd,
+        _lparen,
+        comment,
+        _rparen,
+        _lbrace,
+        receiverBody,
+        _rbrace,
+    ) {
+        return createNode({
+            kind: "def_receive",
+            selector: {
+                kind: "internal-const-comment",
+                comment: comment.astOfLValue(),
+            },
+            statements: receiverBody.children.map((s) => s.astOfStatement()),
+            ref: createRef(this),
+        });
+    },
     Receiver_bounced(
         _bouncedKwd,
         _lparen,
@@ -393,6 +412,25 @@ semantics.addOperation<ASTNode>("astOfItem", {
             selector: {
                 kind: "external-comment",
                 comment: comment.astOfExpression(),
+            },
+            statements: receiverBody.children.map((s) => s.astOfStatement()),
+            ref: createRef(this),
+        });
+    },
+    Receiver_constExternalComment(
+        _externalKwd,
+        _lparen,
+        comment,
+        _rparen,
+        _lbrace,
+        receiverBody,
+        _rbrace,
+    ) {
+        return createNode({
+            kind: "def_receive",
+            selector: {
+                kind: "external-const-comment",
+                comment: comment.astOfLValue(),
             },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),

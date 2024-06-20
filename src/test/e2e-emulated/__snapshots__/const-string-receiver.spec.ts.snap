@@ -1,0 +1,525 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constant string receiver should implement const string receiver correctly 1`] = `
+{
+  "errors": {
+    "10": {
+      "message": "Dictionary error",
+    },
+    "128": {
+      "message": "Null reference exception",
+    },
+    "129": {
+      "message": "Invalid serialization prefix",
+    },
+    "13": {
+      "message": "Out of gas error",
+    },
+    "130": {
+      "message": "Invalid incoming message",
+    },
+    "131": {
+      "message": "Constraints error",
+    },
+    "132": {
+      "message": "Access denied",
+    },
+    "133": {
+      "message": "Contract stopped",
+    },
+    "134": {
+      "message": "Invalid argument",
+    },
+    "135": {
+      "message": "Code of a contract was not found",
+    },
+    "136": {
+      "message": "Invalid address",
+    },
+    "137": {
+      "message": "Masterchain support is not enabled for this contract",
+    },
+    "2": {
+      "message": "Stack underflow",
+    },
+    "3": {
+      "message": "Stack overflow",
+    },
+    "32": {
+      "message": "Method ID not found",
+    },
+    "34": {
+      "message": "Action is invalid or not supported",
+    },
+    "37": {
+      "message": "Not enough TON",
+    },
+    "38": {
+      "message": "Not enough extra-currencies",
+    },
+    "4": {
+      "message": "Integer overflow",
+    },
+    "5": {
+      "message": "Integer out of expected range",
+    },
+    "6": {
+      "message": "Invalid opcode",
+    },
+    "7": {
+      "message": "Type check error",
+    },
+    "8": {
+      "message": "Cell overflow",
+    },
+    "9": {
+      "message": "Cell underflow",
+    },
+  },
+  "getters": [],
+  "receivers": [
+    {
+      "message": {
+        "kind": "empty",
+      },
+      "receiver": "internal",
+    },
+    {
+      "message": {
+        "kind": "text",
+        "text": "string 1",
+      },
+      "receiver": "internal",
+    },
+    {
+      "message": {
+        "kind": "text",
+        "text": "string 2",
+      },
+      "receiver": "internal",
+    },
+    {
+      "message": {
+        "kind": "text",
+        "text": "string 3",
+      },
+      "receiver": "internal",
+    },
+    {
+      "message": {
+        "kind": "text",
+        "text": "string 4",
+      },
+      "receiver": "internal",
+    },
+    {
+      "message": {
+        "kind": "text",
+        "text": "string 5",
+      },
+      "receiver": "internal",
+    },
+    {
+      "message": {
+        "kind": "text",
+        "text": "string 6",
+      },
+      "receiver": "internal",
+    },
+  ],
+  "types": [
+    {
+      "fields": [
+        {
+          "name": "code",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "data",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "cell",
+          },
+        },
+      ],
+      "header": null,
+      "name": "StateInit",
+    },
+    {
+      "fields": [
+        {
+          "name": "bounced",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+        {
+          "name": "sender",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "address",
+          },
+        },
+        {
+          "name": "value",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "raw",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "slice",
+          },
+        },
+      ],
+      "header": null,
+      "name": "Context",
+    },
+    {
+      "fields": [
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+        {
+          "name": "to",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "address",
+          },
+        },
+        {
+          "name": "value",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "mode",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "body",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "code",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "data",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+      ],
+      "header": null,
+      "name": "SendParameters",
+    },
+    {
+      "fields": [
+        {
+          "name": "s",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "string",
+          },
+        },
+      ],
+      "header": null,
+      "name": "MyStruct",
+    },
+    {
+      "fields": [
+        {
+          "name": "struct",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "MyStruct",
+          },
+        },
+      ],
+      "header": null,
+      "name": "MyNestedStruct",
+    },
+  ],
+}
+`;
+
+exports[`constant string receiver should implement const string receiver correctly 2`] = `
+[
+  {
+    "$seq": 1,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "string 1",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 6857n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "string 1",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "9.991947",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    "$seq": 2,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "string 2",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 9468n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "string 2",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "9.989336",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    "$seq": 3,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "string 3",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 9581n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "string 3",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "9.989223",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    "$seq": 4,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "string 4",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 9766n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "string 4",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "9.989038",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    "$seq": 5,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "string 5",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 7453n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "string 5",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "9.991351",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    "$seq": 6,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "string 6",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 7602n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "string 6",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQBO2__AL4wOwtXplvVV7psQ7PAJKpbbqzS36LyZWcW01Pl7",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": "9.991202",
+          },
+        ],
+      },
+    ],
+  },
+]
+`;

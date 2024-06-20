@@ -25,6 +25,7 @@ import {
     TypeOrigin,
     TypeRef,
     typeRefEquals,
+    Value,
 } from "./types";
 import { getRawAST } from "../grammar/store";
 import { cloneNode } from "../grammar/clone";
@@ -792,6 +793,26 @@ export function resolveDescriptors(ctx: CompilerContext) {
         };
     }
 
+    //
+    // Resolve static constants
+    //
+
+    for (const a of ast.constants) {
+        if (staticConstants.has(a.name)) {
+            throwSyntaxError(
+                `Static constant "${a.name}" already exists`,
+                a.ref,
+            );
+        }
+        if (staticFunctions.has(a.name) || GlobalFunctions.has(a.name)) {
+            throwSyntaxError(
+                `Static function "${a.name}" already exists`,
+                a.ref,
+            );
+        }
+        staticConstants.set(a.name, buildConstantDescription(a));
+    }
+
     for (const a of ast.types) {
         if (a.kind === "def_contract" || a.kind === "def_trait") {
             const s = types.get(a.name)!;
@@ -1003,6 +1024,95 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     ? "internal-comment"
                                     : "external-comment",
                                 comment: c,
+                            },
+                            ast: d,
+                        });
+                    } else if (
+                        d.selector.kind === "internal-const-comment" ||
+                        d.selector.kind === "external-const-comment"
+                    ) {
+                        const internal =
+                            d.selector.kind === "internal-const-comment";
+
+                        let path = d.selector.comment;
+
+                        const pathString = path.map((v) => v.name).join(".");
+
+                        const isSelf =
+                            path.length >= 2 && path[0].name === "self";
+
+                        let commentConstant: ConstantDescription | undefined =
+                            undefined;
+                        if (isSelf) {
+                            commentConstant = s.constants.find(
+                                (v) => v.name === path[1].name,
+                            );
+                            path = path.slice(2);
+                        } else {
+                            commentConstant = staticConstants.get(path[0].name);
+                            path = path.slice(1);
+                        }
+
+                        let commentValue: Value | undefined =
+                            commentConstant?.value;
+
+                        while (commentValue && path.length > 0) {
+                            if (
+                                commentValue == null ||
+                                typeof commentValue !== "object" ||
+                                !("$tactStruct" in commentValue)
+                            ) {
+                                throwSyntaxError(
+                                    `Cannot find constant "${path[0].name}" in ${pathString}`,
+                                    d.ref,
+                                );
+                            }
+                            commentValue = commentValue[path[0].name];
+                            path = path.slice(1);
+                        }
+
+                        if (!commentValue) {
+                            throwSyntaxError(
+                                `Constant "${pathString}" not found`,
+                                d.ref,
+                            );
+                        }
+
+                        if (typeof commentValue !== "string") {
+                            throwSyntaxError(
+                                `Constant "${pathString}" must be of type String`,
+                                d.ref,
+                            );
+                        }
+
+                        if (commentValue === "") {
+                            throwSyntaxError(
+                                "To use empty comment receiver, just remove argument instead of passing empty string",
+                                d.ref,
+                            );
+                        }
+
+                        if (
+                            s.receivers.find(
+                                (v) =>
+                                    v.selector.kind ===
+                                        (internal
+                                            ? "internal-comment"
+                                            : "external-comment") &&
+                                    v.selector.comment === commentValue,
+                            )
+                        ) {
+                            throwSyntaxError(
+                                `Receive function for string "${commentValue}" already exists`,
+                                d.ref,
+                            );
+                        }
+                        s.receivers.push({
+                            selector: {
+                                kind: internal
+                                    ? "internal-comment"
+                                    : "external-comment",
+                                comment: commentValue,
                             },
                             ast: d,
                         });
@@ -1593,26 +1703,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
             staticFunctions.set(r.name, r);
         }
-    }
-
-    //
-    // Resolve static constants
-    //
-
-    for (const a of ast.constants) {
-        if (staticConstants.has(a.name)) {
-            throwSyntaxError(
-                `Static constant "${a.name}" already exists`,
-                a.ref,
-            );
-        }
-        if (staticFunctions.has(a.name) || GlobalFunctions.has(a.name)) {
-            throwSyntaxError(
-                `Static function "${a.name}" already exists`,
-                a.ref,
-            );
-        }
-        staticConstants.set(a.name, buildConstantDescription(a));
     }
 
     //
