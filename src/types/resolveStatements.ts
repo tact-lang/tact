@@ -300,6 +300,17 @@ function processStatements(
 
                 // Check type
                 const expressionType = getExpType(ctx, s.expression);
+
+                // Actually, we might relax the following restriction in the future
+                // Because `return foo()` means `foo(); return` for a void-returning function
+                // And `return foo()` looks nicer when the user needs early exit from a function
+                // right after executing `foo()`
+                if (expressionType.kind == "void") {
+                    throwSyntaxError(
+                        `'return' statement can only be used with non-void types`,
+                        s.ref,
+                    );
+                }
                 if (!isAssignable(expressionType, sctx.returns)) {
                     throwSyntaxError(
                         `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(sctx.returns)}"`,
@@ -309,7 +320,7 @@ function processStatements(
             } else {
                 if (sctx.returns.kind !== "void") {
                     throwSyntaxError(
-                        `Type mismatch: "void" is not assignable to "${printTypeRef(sctx.returns)}"`,
+                        `The function fails to return a result of type "${printTypeRef(sctx.returns)}"`,
                         s.ref,
                     );
                 }

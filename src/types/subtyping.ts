@@ -32,9 +32,8 @@ export function isAssignable(src: TypeRef, to: TypeRef): boolean {
         return true;
     }
 
-    // If either is void
-    if (src.kind === "void" || to.kind === "void") {
-        return false; // Void is not assignable
+    if (src.kind === "void" && to.kind === "void") {
+        return true;
     }
 
     // Check null

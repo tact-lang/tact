@@ -253,6 +253,12 @@ function resolveBinaryOp(
                         exp.ref,
                     );
                 }
+                if (l.kind == "void" || r.kind == "void") {
+                    throwSyntaxError(
+                        `Expressions of "<void>" type cannot be used for (non)equality operator "${exp.op}"`,
+                        exp.ref,
+                    );
+                }
                 if (l.kind !== "ref" || r.kind !== "ref") {
                     throwSyntaxError(
                         `Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`,
@@ -670,6 +676,12 @@ export function resolveConditional(
 
     const resultType = moreGeneralType(thenType, elseType);
     if (resultType) {
+        if (resultType.kind == "void") {
+            throwSyntaxError(
+                `Expressions of "<void>" type cannot be used for conditional expression`,
+                ast.ref,
+            );
+        }
         return registerExpType(ctx, ast, resultType);
     }
 
