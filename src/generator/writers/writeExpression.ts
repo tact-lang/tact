@@ -1,5 +1,5 @@
 import { ASTExpression } from "../../grammar/ast";
-import { TactConstEvalError, throwSyntaxError } from "../../errors";
+import { TactConstEvalError, throwCompilationError } from "../../errors";
 import { getExpType } from "../../types/resolveExpression";
 import {
     getStaticConstant,
@@ -378,7 +378,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
         } else if (f.op === "^") {
             op = "^";
         } else {
-            throwSyntaxError("Unknown binary operator: " + f.op, f.ref);
+            throwCompilationError("Unknown binary operator: " + f.op, f.ref);
         }
         return (
             "(" +
@@ -428,7 +428,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             return `${wCtx.used("__tact_not_null")}(${writeExpression(f.right, wCtx)})`;
         }
 
-        throwSyntaxError("Unknown unary operator: " + f.op, f.ref);
+        throwCompilationError("Unknown unary operator: " + f.op, f.ref);
     }
 
     //
@@ -443,7 +443,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             src === null ||
             ((src.kind !== "ref" || src.optional) && src.kind !== "ref_bounced")
         ) {
-            throwSyntaxError(
+            throwCompilationError(
                 `Cannot access field of non-struct type: "${printTypeRef(src)}"`,
                 f.ref,
             );
@@ -461,7 +461,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
         const field = fields.find((v) => v.name === f.name)!;
         const cst = srcT.constants.find((v) => v.name === f.name)!;
         if (!field && !cst) {
-            throwSyntaxError(
+            throwCompilationError(
                 `Cannot find field "${f.name}" in struct "${srcT.name}"`,
                 f.ref,
             );
@@ -566,7 +566,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
         // Resolve source type
         const src = getExpType(wCtx.ctx, f.src);
         if (src === null) {
-            throwSyntaxError(
+            throwCompilationError(
                 `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
                 f.ref,
             );
@@ -575,7 +575,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
         // Reference type
         if (src.kind === "ref") {
             if (src.optional) {
-                throwSyntaxError(
+                throwCompilationError(
                     `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
                     f.ref,
                 );
@@ -650,7 +650,10 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
         // Map types
         if (src.kind === "map") {
             if (!MapFunctions.has(f.name)) {
-                throwSyntaxError(`Map function "${f.name}" not found`, f.ref);
+                throwCompilationError(
+                    `Map function "${f.name}" not found`,
+                    f.ref,
+                );
             }
             const abf = MapFunctions.get(f.name)!;
             return abf.generate(
@@ -665,7 +668,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             throw Error("Unimplemented");
         }
 
-        throwSyntaxError(
+        throwCompilationError(
             `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
             f.ref,
         );

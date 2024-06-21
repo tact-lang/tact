@@ -1,5 +1,5 @@
 import { ASTFunctionAttribute, ASTRef } from "./ast";
-import { throwSyntaxError } from "../errors";
+import { throwCompilationError } from "../errors";
 
 export function checkFunctionAttributes(
     isAbstract: boolean,
@@ -9,20 +9,23 @@ export function checkFunctionAttributes(
     const k = new Set<string>();
     for (const a of attrs) {
         if (k.has(a.type)) {
-            throwSyntaxError(`Duplicate function attribute "${a.type}"`, a.ref);
+            throwCompilationError(
+                `Duplicate function attribute "${a.type}"`,
+                a.ref,
+            );
         }
         k.add(a.type);
     }
     if (isAbstract) {
         if (!k.has("abstract")) {
-            throwSyntaxError(
+            throwCompilationError(
                 `Abstract function doesn't have abstract modifier`,
                 ref,
             );
         }
     } else {
         if (k.has("abstract")) {
-            throwSyntaxError(
+            throwCompilationError(
                 `Non abstract function have abstract modifier`,
                 ref,
             );
