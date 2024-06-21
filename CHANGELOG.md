@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `loadBool` method for `Slice` type: PR [#412](https://github.com/tact-lang/tact/pull/412)
 - CLI flag `--with-decompilation` to turn on decompilation of BoC files at the end of the compilation pipeline: PR [#417](https://github.com/tact-lang/tact/pull/417)
 - Support more Tact expressions in the constant evaluator: condition expressions, struct instances, struct field access, `emptyMap()`: PR [#432](https://github.com/tact-lang/tact/pull/432) and PR [#445](https://github.com/tact-lang/tact/pull/445)
-- The `fromCell` and `fromSlice` methods for struct parsing: PR [#418](https://github.com/tact-lang/tact/pull/418)
+- Support more Tact expressions in the constant evaluator: condition expressions, struct instances, struct field access, `emptyMap()`: PR [#432](https://github.com/tact-lang/tact/pull/432)
+- The `fromCell` and `fromSlice` methods for struct and message parsing: PR [#418](https://github.com/tact-lang/tact/pull/418) and PR [#454](https://github.com/tact-lang/tact/pull/454)
 - The `return`-statement reachability analysis now takes into account the `throw` and `nativeThrow` functions: PR [#447](https://github.com/tact-lang/tact/pull/447)
 
 ### Changed
