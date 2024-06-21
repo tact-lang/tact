@@ -31,7 +31,7 @@ contract TryCatchTester {
 
     get fun testTryCatch1(): Int {
         try {
-            throw(101);
+            nativeThrowUnless(101, false);
             return 42;
         }
         return 7;
@@ -39,7 +39,7 @@ contract TryCatchTester {
 
     get fun testTryCatch2(): Int {
         try {
-            throw(101);
+            nativeThrowUnless(101, false);
             return 42;
         } catch (e) {
             return e;
@@ -51,7 +51,7 @@ contract TryCatchTester {
             let xs: Slice = beginCell().storeUint(0, 1).endCell().beginParse();
             let x: Int = xs.loadUint(1);
             try {
-                throw(101);
+                nativeThrowUnless(101, false);
             } catch (e) {
                 return e / x; // division by zero, exit code = 4
             }
