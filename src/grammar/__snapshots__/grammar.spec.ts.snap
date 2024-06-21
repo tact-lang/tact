@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`grammar should fail contract-empty-traits-list-with-keyword 1`] = `
-"<unknown>:1:20: Syntax error: expected "_", "A".."Z", or "a".."z" 
+"<unknown>:1:20: Parse error: expected "_", "A".."Z", or "a".."z"
+
 Line 1, col 20:
 > 1 | contract Name with {}
                          ^
@@ -20,7 +21,8 @@ Line 2, col 10:
 `;
 
 exports[`grammar should fail contract-trailing-comma-empty-traits-list 1`] = `
-"<unknown>:1:19: Syntax error: expected "_", "A".."Z", or "a".."z" 
+"<unknown>:1:19: Parse error: expected "_", "A".."Z", or "a".."z"
+
 Line 1, col 19:
 > 1 | contract Name with, {}
                         ^
@@ -49,7 +51,8 @@ Line 2, col 24:
 `;
 
 exports[`grammar should fail ident-cannot-be-if-reserved-word 1`] = `
-"<unknown>:2:9: Syntax error: expected not a reservedWord 
+"<unknown>:2:9: Parse error: expected not a reservedWord
+
 Line 2, col 9:
   1 | fun hello(): Int {
 > 2 |     let if: Int = 0;
@@ -126,7 +129,8 @@ Line 2, col 9:
 `;
 
 exports[`grammar should fail ident-struct-cannot-start-with-__gen 1`] = `
-"<unknown>:1:8: Syntax error: expected "A".."Z" 
+"<unknown>:1:8: Parse error: expected "A".."Z"
+
 Line 1, col 8:
 > 1 | struct __genA {
              ^
@@ -153,7 +157,8 @@ Line 1, col 14:
 `;
 
 exports[`grammar should fail item-fun-without-body 1`] = `
-"<unknown>:1:20: Syntax error: expected "{" 
+"<unknown>:1:20: Parse error: expected "{"
+
 Line 1, col 20:
 > 1 | fun testFunc(): Int;
                          ^
@@ -179,7 +184,8 @@ Line 2, col 23:
 `;
 
 exports[`grammar should fail literal-dec-trailing-underscore 1`] = `
-"<unknown>:2:16: Syntax error: expected a digit 
+"<unknown>:2:16: Parse error: expected a digit
+
 Line 2, col 16:
   1 | fun test_fun(): Int {
 > 2 |     return 123_;
@@ -189,7 +195,8 @@ Line 2, col 16:
 `;
 
 exports[`grammar should fail literal-double-underscore 1`] = `
-"<unknown>:2:20: Syntax error: expected a digit 
+"<unknown>:2:20: Parse error: expected a digit
+
 Line 2, col 20:
   1 | fun test_fun(): Int {
 > 2 |     return 123_123__123;
@@ -199,7 +206,8 @@ Line 2, col 20:
 `;
 
 exports[`grammar should fail literal-hex-trailing-underscore 1`] = `
-"<unknown>:2:18: Syntax error: expected a hexadecimal digit 
+"<unknown>:2:18: Parse error: expected a hexadecimal digit
+
 Line 2, col 18:
   1 | fun test_fun(): Int {
 > 2 |     return 0x123_;
@@ -209,7 +217,8 @@ Line 2, col 18:
 `;
 
 exports[`grammar should fail literal-no-underscore-after-0b 1`] = `
-"<unknown>:2:14: Syntax error: expected "1" or "0" 
+"<unknown>:2:14: Parse error: expected "1" or "0"
+
 Line 2, col 14:
   1 | fun test_fun(): Int {
 > 2 |     return 0b_00101010;
@@ -219,7 +228,8 @@ Line 2, col 14:
 `;
 
 exports[`grammar should fail literal-no-underscores-if-leading-zero 1`] = `
-"<unknown>:2:15: Syntax error: expected "}" or ";" 
+"<unknown>:2:15: Parse error: expected "}" or ";"
+
 Line 2, col 15:
   1 | fun test_fun(): Int {
 > 2 |     return 012_3;
@@ -229,7 +239,8 @@ Line 2, col 15:
 `;
 
 exports[`grammar should fail literal-non-binary-digits 1`] = `
-"<unknown>:2:15: Syntax error: expected "}" or ";" 
+"<unknown>:2:15: Parse error: expected "}" or ";"
+
 Line 2, col 15:
   1 | fun test_fun(): Int {
 > 2 |     return 0b123;
@@ -239,7 +250,8 @@ Line 2, col 15:
 `;
 
 exports[`grammar should fail literal-underscore-after-leading-zero 1`] = `
-"<unknown>:2:13: Syntax error: expected "}" or ";" 
+"<unknown>:2:13: Parse error: expected "}" or ";"
+
 Line 2, col 13:
   1 | fun test_fun(): Int {
 > 2 |     return 0_123;
@@ -249,7 +261,8 @@ Line 2, col 13:
 `;
 
 exports[`grammar should fail struct-double-semicolon 1`] = `
-"<unknown>:2:19: Syntax error: expected "}" 
+"<unknown>:2:19: Parse error: expected "}"
+
 Line 2, col 19:
   1 | // too many semicolons
 > 2 | struct A { x: Int;; }
@@ -259,7 +272,8 @@ Line 2, col 19:
 `;
 
 exports[`grammar should fail struct-missing-semicolon-between-fields 1`] = `
-"<unknown>:2:19: Syntax error: expected "}", ";", "=", "as", or "?" 
+"<unknown>:2:19: Parse error: expected "}", ";", "=", "as", or "?"
+
 Line 2, col 19:
   1 | // missing ; between fields
 > 2 | struct B { x: Int y: Int }
@@ -269,7 +283,8 @@ Line 2, col 19:
 `;
 
 exports[`grammar should fail struct-missing-semicolon-between-fields-with-initializer 1`] = `
-"<unknown>:2:24: Syntax error: expected "}", ";", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", or "||" 
+"<unknown>:2:24: Parse error: expected "}", ";", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", or "||"
+
 Line 2, col 24:
   1 | // missing ; between fields
 > 2 | struct B { x: Int = 42 y: Int }
@@ -279,7 +294,8 @@ Line 2, col 24:
 `;
 
 exports[`grammar should fail trait-empty-traits-list-with-keyword 1`] = `
-"<unknown>:1:17: Syntax error: expected "_", "A".."Z", or "a".."z" 
+"<unknown>:1:17: Parse error: expected "_", "A".."Z", or "a".."z"
+
 Line 1, col 17:
 > 1 | trait Name with {}
                       ^
@@ -308,7 +324,8 @@ Line 2, col 31:
 `;
 
 exports[`grammar should fail trait-trailing-comma-empty-traits-list 1`] = `
-"<unknown>:1:16: Syntax error: expected "_", "A".."Z", or "a".."z" 
+"<unknown>:1:16: Parse error: expected "_", "A".."Z", or "a".."z"
+
 Line 1, col 16:
 > 1 | trait Name with, {}
                      ^
@@ -317,7 +334,8 @@ Line 1, col 16:
 `;
 
 exports[`grammar should fail type-ident-msg-should-be-capitalized 1`] = `
-"<unknown>:1:14: Syntax error: expected "A".."Z" 
+"<unknown>:1:14: Parse error: expected "A".."Z"
+
 Line 1, col 14:
 > 1 | message(123) foo {
                    ^
@@ -326,7 +344,8 @@ Line 1, col 14:
 `;
 
 exports[`grammar should fail type-ident-struct-should-be-capitalized 1`] = `
-"<unknown>:1:8: Syntax error: expected "A".."Z" 
+"<unknown>:1:8: Parse error: expected "A".."Z"
+
 Line 1, col 8:
 > 1 | struct lowercaseIdForType {
              ^

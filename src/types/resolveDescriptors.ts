@@ -10,7 +10,7 @@ import {
     createNode,
     traverse,
 } from "../grammar/ast";
-import { throwSyntaxError } from "../errors";
+import { throwCompilationError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
 import {
     ConstantDescription,
@@ -70,10 +70,10 @@ function verifyMapType(
                     "uint256",
                 ].includes(keyAs)
             ) {
-                throwSyntaxError("Invalid key type for map", ref);
+                throwCompilationError("Invalid key type for map", ref);
             }
         } else {
-            throwSyntaxError("Invalid key type for map", ref);
+            throwCompilationError("Invalid key type for map", ref);
         }
     }
 
@@ -98,10 +98,10 @@ function verifyMapType(
                     "coins",
                 ].includes(valueAs)
             ) {
-                throwSyntaxError("Invalid value type for map", ref);
+                throwCompilationError("Invalid value type for map", ref);
             }
         } else {
-            throwSyntaxError("Invalid value type for map", ref);
+            throwCompilationError("Invalid value type for map", ref);
         }
     }
 }
@@ -145,7 +145,7 @@ function buildTypeRef(
 ): TypeRef {
     if (src.kind === "type_ref_simple") {
         if (!types.has(src.name)) {
-            throwSyntaxError("Type " + src.name + " not found", src.ref);
+            throwCompilationError("Type " + src.name + " not found", src.ref);
         }
         return {
             kind: "ref",
@@ -155,10 +155,10 @@ function buildTypeRef(
     }
     if (src.kind === "type_ref_map") {
         if (!types.has(src.key)) {
-            throwSyntaxError("Type " + src.key + " not found", src.ref);
+            throwCompilationError("Type " + src.key + " not found", src.ref);
         }
         if (!types.has(src.value)) {
-            throwSyntaxError("Type " + src.value + " not found", src.ref);
+            throwCompilationError("Type " + src.value + " not found", src.ref);
         }
         return {
             kind: "map",
@@ -199,7 +199,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const a of ast.types) {
         if (types.has(a.name)) {
-            throwSyntaxError(`Type "${a.name}" already exists`, a.ref);
+            throwCompilationError(`Type "${a.name}" already exists`, a.ref);
         }
 
         const uid = uidForName(a.name, types);
@@ -303,7 +303,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check if field is runtime type
         if (isRuntimeType(tr)) {
-            throwSyntaxError(
+            throwCompilationError(
                 printTypeRef(tr) +
                     " is a runtime only type and can't be used as field",
                 src.ref,
@@ -343,7 +343,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (
                         types.get(a.name)!.fields.find((v) => v.name === f.name)
                     ) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Field "${f.name}" already exists`,
                             f.ref,
                         );
@@ -353,7 +353,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             .get(a.name)!
                             .constants.find((v) => v.name === f.name)
                     ) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Constant "${f.name}" already exists`,
                             f.ref,
                         );
@@ -370,7 +370,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (
                         types.get(a.name)!.fields.find((v) => v.name === f.name)
                     ) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Field "${f.name}" already exists`,
                             f.ref,
                         );
@@ -380,13 +380,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             .get(a.name)!
                             .constants.find((v) => v.name === f.name)
                     ) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Constant "${f.name}" already exists`,
                             f.ref,
                         );
                     }
                     if (f.attributes.find((v) => v.type !== "overrides")) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Constant can be only overridden`,
                             f.ref,
                         );
@@ -402,7 +402,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (a.kind === "def_struct") {
             for (const f of a.fields) {
                 if (types.get(a.name)!.fields.find((v) => v.name === f.name)) {
-                    throwSyntaxError(`Field "${f.name}" already exists`, f.ref);
+                    throwCompilationError(
+                        `Field "${f.name}" already exists`,
+                        f.ref,
+                    );
                 }
                 types
                     .get(a.name)!
@@ -414,7 +417,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     );
             }
             if (a.fields.length === 0 && !a.message) {
-                throwSyntaxError(
+                throwCompilationError(
                     `Struct "${a.name}" must have at least one field`,
                     a.ref,
                 );
@@ -428,13 +431,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (
                         types.get(a.name)!.fields.find((v) => v.name === f.name)
                     ) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Field "${f.name}" already exists`,
                             f.ref,
                         );
                     }
                     if (f.as) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Trait field cannot have serialization specifier`,
                             f.ref,
                         );
@@ -451,7 +454,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (
                         types.get(a.name)!.fields.find((v) => v.name === f.name)
                     ) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Field "${f.name}" already exists`,
                             f.ref,
                         );
@@ -461,13 +464,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             .get(a.name)!
                             .constants.find((v) => v.name === f.name)
                     ) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Constant "${f.name}" already exists`,
                             f.ref,
                         );
                     }
                     if (f.attributes.find((v) => v.type === "overrides")) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Trait constant cannot be overridden`,
                             f.ref,
                         );
@@ -530,25 +533,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Check for native
         if (a.kind === "def_native_function") {
             if (isGetter) {
-                throwSyntaxError(
+                throwCompilationError(
                     "Native functions cannot be getters",
                     isGetter.ref,
                 );
             }
             if (self) {
-                throwSyntaxError(
+                throwCompilationError(
                     "Native functions cannot be defined within a contract",
                     a.ref,
                 );
             }
             if (isVirtual) {
-                throwSyntaxError(
+                throwCompilationError(
                     "Native functions cannot be virtual",
                     isVirtual.ref,
                 );
             }
             if (isOverrides) {
-                throwSyntaxError(
+                throwCompilationError(
                     "Native functions cannot be overrides",
                     isOverrides.ref,
                 );
@@ -557,55 +560,55 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check virtual and overrides
         if (isVirtual && isExtends) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Extend functions cannot be virtual",
                 isVirtual.ref,
             );
         }
         if (isOverrides && isExtends) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Extend functions cannot be overrides",
                 isOverrides.ref,
             );
         }
         if (isAbstract && isExtends) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Extend functions cannot be abstract",
                 isAbstract.ref,
             );
         }
         if (!self && isVirtual) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Virtual functions must be defined within a contract or a trait",
                 isVirtual.ref,
             );
         }
         if (!self && isOverrides) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Overrides functions must be defined within a contract or a trait",
                 isOverrides.ref,
             );
         }
         if (!self && isAbstract) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Abstract functions must be defined within a trait",
                 isAbstract.ref,
             );
         }
         if (isVirtual && isAbstract) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Abstract functions cannot be virtual",
                 isAbstract.ref,
             );
         }
         if (isVirtual && isOverrides) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Overrides functions cannot be virtual",
                 isOverrides.ref,
             );
         }
         if (isAbstract && isOverrides) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Overrides functions cannot be abstract",
                 isOverrides.ref,
             );
@@ -615,7 +618,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (isVirtual) {
             const t = types.get(self!)!;
             if (t.kind !== "trait") {
-                throwSyntaxError(
+                throwCompilationError(
                     "Virtual functions must be defined within a trait",
                     isVirtual.ref,
                 );
@@ -626,7 +629,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (isAbstract) {
             const t = types.get(self!)!;
             if (t.kind !== "trait") {
-                throwSyntaxError(
+                throwCompilationError(
                     "Abstract functions must be defined within a trait",
                     isAbstract.ref,
                 );
@@ -637,7 +640,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (isOverrides) {
             const t = types.get(self!)!;
             if (t.kind !== "contract") {
-                throwSyntaxError(
+                throwCompilationError(
                     "Overrides functions must be defined within a contract",
                     isOverrides.ref,
                 );
@@ -647,7 +650,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Check for common
         if (a.kind === "def_function") {
             if (isGetter && !self) {
-                throwSyntaxError(
+                throwCompilationError(
                     "Getters must be defined within a contract",
                     isGetter.ref,
                 );
@@ -656,44 +659,44 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check for getter
         if (isInline && isGetter) {
-            throwSyntaxError("Getters cannot be inline", isInline.ref);
+            throwCompilationError("Getters cannot be inline", isInline.ref);
         }
 
         // Validate mutating
         if (isExtends) {
             // Validate arguments
             if (self) {
-                throwSyntaxError(
+                throwCompilationError(
                     "Extend functions cannot be defined within a contract",
                     isExtends.ref,
                 );
             }
             if (args.length === 0) {
-                throwSyntaxError(
+                throwCompilationError(
                     "Extend functions must have at least one argument",
                     isExtends.ref,
                 );
             }
             if (args[0].name !== "self") {
-                throwSyntaxError(
+                throwCompilationError(
                     'Extend function must have first argument named "self"',
                     args[0].ref,
                 );
             }
             if (args[0].type.kind !== "ref") {
-                throwSyntaxError(
+                throwCompilationError(
                     "Extend functions must have a reference type as the first argument",
                     args[0].ref,
                 );
             }
             if (args[0].type.optional) {
-                throwSyntaxError(
+                throwCompilationError(
                     "Extend functions must have a non-optional type as the first argument",
                     args[0].ref,
                 );
             }
             if (!types.has(args[0].type.name)) {
-                throwSyntaxError(
+                throwCompilationError(
                     "Type " + args[0].type.name + " not found",
                     args[0].ref,
                 );
@@ -706,7 +709,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check for mutating and extends
         if (isMutating && !isExtends) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Mutating functions must be extend functions",
                 isMutating.ref,
             );
@@ -716,10 +719,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
         const exNames = new Set<string>();
         for (const arg of args) {
             if (arg.name === "self") {
-                throwSyntaxError('Argument name "self" is reserved', arg.ref);
+                throwCompilationError(
+                    'Argument name "self" is reserved',
+                    arg.ref,
+                );
             }
             if (exNames.has(arg.name)) {
-                throwSyntaxError(
+                throwCompilationError(
                     'Argument name "' + arg.name + '" is already used',
                     arg.ref,
                 );
@@ -731,7 +737,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (isGetter) {
             for (const arg of args) {
                 if (isRuntimeType(arg.type)) {
-                    throwSyntaxError(
+                    throwCompilationError(
                         printTypeRef(arg.type) +
                             " is a runtime-only type and can't be used as a getter argument",
                         arg.ref,
@@ -739,7 +745,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
             }
             if (isRuntimeType(returns)) {
-                throwSyntaxError(
+                throwCompilationError(
                     printTypeRef(returns) +
                         " is a runtime-only type and can't be used as getter return type",
                     a.ref,
@@ -778,7 +784,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Check if runtime types are used
         for (const a of args) {
             if (isRuntimeType(a.type)) {
-                throwSyntaxError(
+                throwCompilationError(
                     printTypeRef(a.type) +
                         " is a runtime-only type and can't be used as a init function argument",
                     a.ref,
@@ -802,7 +808,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         throw Error("Function self must be " + s.name); // Impossible
                     }
                     if (s.functions.has(f.name)) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Function "${f.name}" already exists in type "${s.name}"`,
                             s.ast.ref,
                         );
@@ -811,7 +817,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
                 if (d.kind === "def_init_function") {
                     if (s.init) {
-                        throwSyntaxError("Init function already exists", d.ref);
+                        throwCompilationError(
+                            "Init function already exists",
+                            d.ref,
+                        );
                     }
                     s.init = resolveInitFunction(d);
                 }
@@ -821,7 +830,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         d.selector.kind.startsWith("external-") &&
                         !enabledExternals(ctx)
                     ) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             "External functions are not enabled",
                             d.ref,
                         );
@@ -836,13 +845,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
                         // Check argument type
                         if (arg.type.kind !== "type_ref_simple") {
-                            throwSyntaxError(
+                            throwCompilationError(
                                 "Receive function can only accept message",
                                 d.ref,
                             );
                         }
                         if (arg.type.optional) {
-                            throwSyntaxError(
+                            throwCompilationError(
                                 "Receive function cannot have optional argument",
                                 d.ref,
                             );
@@ -851,7 +860,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         // Check resolved argument type
                         const t = types.get(arg.type.name);
                         if (!t) {
-                            throwSyntaxError(
+                            throwCompilationError(
                                 "Type " + arg.type.name + " not found",
                                 d.ref,
                             );
@@ -870,7 +879,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                                 : "external-fallback"),
                                     )
                                 ) {
-                                    throwSyntaxError(
+                                    throwCompilationError(
                                         `Fallback receive function already exists`,
                                         d.ref,
                                     );
@@ -897,7 +906,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                                 : "external-comment-fallback"),
                                     )
                                 ) {
-                                    throwSyntaxError(
+                                    throwCompilationError(
                                         "Comment fallback receive function already exists",
                                         d.ref,
                                     );
@@ -914,7 +923,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     ast: d,
                                 });
                             } else {
-                                throwSyntaxError(
+                                throwCompilationError(
                                     "Receive function can only accept message, Slice or String",
                                     d.ref,
                                 );
@@ -922,19 +931,19 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         } else {
                             // Check type
                             if (t.kind !== "struct") {
-                                throwSyntaxError(
+                                throwCompilationError(
                                     "Receive function can only accept message",
                                     d.ref,
                                 );
                             }
                             if (t.ast.kind !== "def_struct") {
-                                throwSyntaxError(
+                                throwCompilationError(
                                     "Receive function can only accept message",
                                     d.ref,
                                 );
                             }
                             if (!t.ast.message) {
-                                throwSyntaxError(
+                                throwCompilationError(
                                     "Receive function can only accept message",
                                     d.ref,
                                 );
@@ -952,7 +961,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         v.selector.name === n,
                                 )
                             ) {
-                                throwSyntaxError(
+                                throwCompilationError(
                                     `Receive function for "${arg.type.name}" already exists`,
                                     d.ref,
                                 );
@@ -976,7 +985,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     ) {
                         const internal = d.selector.kind === "internal-comment";
                         if (d.selector.comment.value === "") {
-                            throwSyntaxError(
+                            throwCompilationError(
                                 "To use empty comment receiver, just remove argument instead of passing empty string",
                                 d.ref,
                             );
@@ -992,7 +1001,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     v.selector.comment === c,
                             )
                         ) {
-                            throwSyntaxError(
+                            throwCompilationError(
                                 `Receive function for "${c}" already exists`,
                                 d.ref,
                             );
@@ -1022,7 +1031,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         : "external-empty"),
                             )
                         ) {
-                            throwSyntaxError(
+                            throwCompilationError(
                                 "Empty receive function already exists",
                                 d.ref,
                             );
@@ -1041,7 +1050,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         // If argument is a direct reference
                         if (arg.type.kind === "type_ref_simple") {
                             if (arg.type.optional) {
-                                throwSyntaxError(
+                                throwCompilationError(
                                     "Bounce receive function cannot have optional argument",
                                     d.ref,
                                 );
@@ -1055,7 +1064,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                             "bounce-fallback",
                                     )
                                 ) {
-                                    throwSyntaxError(
+                                    throwCompilationError(
                                         `Fallback bounce receive function already exists`,
                                         d.ref,
                                     );
@@ -1074,7 +1083,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     type.ast.kind !== "def_struct" ||
                                     !type.ast.message
                                 ) {
-                                    throwSyntaxError(
+                                    throwCompilationError(
                                         "Bounce receive function can only accept bounced message, message or Slice",
                                         d.ref,
                                     );
@@ -1083,7 +1092,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     type.fields.length !==
                                     type.partialFieldCount
                                 ) {
-                                    throwSyntaxError(
+                                    throwCompilationError(
                                         "This message is too big for bounce receiver, you need to wrap it to a bounced<" +
                                             arg.type.name +
                                             ">.",
@@ -1098,7 +1107,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                             v.selector.name === type.name,
                                     )
                                 ) {
-                                    throwSyntaxError(
+                                    throwCompilationError(
                                         `Bounce receive function for "${arg.type.name}" already exists`,
                                         d.ref,
                                     );
@@ -1116,19 +1125,19 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         } else if (arg.type.kind === "type_ref_bounced") {
                             const t = types.get(arg.type.name)!;
                             if (t.kind !== "struct") {
-                                throwSyntaxError(
+                                throwCompilationError(
                                     "Bounce receive function can only accept bounced<T> struct types",
                                     d.ref,
                                 );
                             }
                             if (t.ast.kind !== "def_struct") {
-                                throwSyntaxError(
+                                throwCompilationError(
                                     "Bounce receive function can only accept bounced<T> struct types",
                                     d.ref,
                                 );
                             }
                             if (!t.ast.message) {
-                                throwSyntaxError(
+                                throwCompilationError(
                                     "Bounce receive function can only accept bounced message, message or Slice",
                                     d.ref,
                                 );
@@ -1140,13 +1149,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         v.selector.type === t.name,
                                 )
                             ) {
-                                throwSyntaxError(
+                                throwCompilationError(
                                     `Bounce receive function for "${t.name}" already exists`,
                                     d.ref,
                                 );
                             }
                             if (t.fields.length === t.partialFieldCount) {
-                                throwSyntaxError(
+                                throwCompilationError(
                                     "This message is small enough for bounce receiver, you need to remove bounced modifier.",
                                     d.ref,
                                 );
@@ -1161,13 +1170,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 ast: d,
                             });
                         } else {
-                            throwSyntaxError(
+                            throwCompilationError(
                                 "Bounce receive function can only accept bounced<T> struct args or Slice",
                                 d.ref,
                             );
                         }
                     } else {
-                        throwSyntaxError(
+                        throwCompilationError(
                             "Invalid receive function selector",
                             d.ref,
                         );
@@ -1214,7 +1223,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
                 const tt = types.get(name);
                 if (!tt) {
-                    throwSyntaxError("Trait " + name + " not found", t.ast.ref);
+                    throwCompilationError(
+                        "Trait " + name + " not found",
+                        t.ast.ref,
+                    );
                 }
                 visited.add(name);
                 traits.push(tt);
@@ -1226,7 +1238,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         visit(f.name);
                     }
                 } else {
-                    throwSyntaxError(
+                    throwCompilationError(
                         "Type " + name + " is not a trait",
                         t.ast.ref,
                     );
@@ -1250,10 +1262,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
         for (const tr of t.traits) {
             // Check that trait is valid
             if (!types.has(tr.name)) {
-                throwSyntaxError("Trait " + tr.name + " not found", t.ast.ref);
+                throwCompilationError(
+                    "Trait " + tr.name + " not found",
+                    t.ast.ref,
+                );
             }
             if (types.get(tr.name)!.kind !== "trait") {
-                throwSyntaxError(
+                throwCompilationError(
                     "Type " + tr.name + " is not a trait",
                     t.ast.ref,
                 );
@@ -1265,7 +1280,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // Check if field exists
                 const ex = t.fields.find((v) => v.name === f.name);
                 if (!ex) {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `Trait "${tr.name}" requires field "${f.name}"`,
                         t.ast.ref,
                     );
@@ -1273,7 +1288,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
                 // Check type
                 if (!typeRefEquals(f.type, ex.type)) {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `Trait "${tr.name}" requires field "${f.name}" of type "${printTypeRef(f.type)}"`,
                         t.ast.ref,
                     );
@@ -1292,7 +1307,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             for (const f of tr.functions.values()) {
                 const ex = t.functions.get(f.name);
                 if (!ex && f.isAbstract) {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `Trait "${tr.name}" requires function "${f.name}"`,
                         t.ast.ref,
                     );
@@ -1301,25 +1316,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // Check overrides
                 if (ex && ex.isOverrides) {
                     if (f.isGetter) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Overridden function "${f.name}" can not be a getter`,
                             ex.ast.ref,
                         );
                     }
                     if (f.isMutating !== ex.isMutating) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Overridden function "${f.name}" should have same mutability`,
                             ex.ast.ref,
                         );
                     }
                     if (!typeRefEquals(f.returns, ex.returns)) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Overridden function "${f.name}" should have same return type`,
                             ex.ast.ref,
                         );
                     }
                     if (f.args.length !== ex.args.length) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Overridden function "${f.name}" should have same number of arguments`,
                             ex.ast.ref,
                         );
@@ -1328,7 +1343,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         const a = ex.args[i];
                         const b = f.args[i];
                         if (!typeRefEquals(a.type, b.type)) {
-                            throwSyntaxError(
+                            throwCompilationError(
                                 `Overridden function "${f.name}" should have same argument types`,
                                 ex.ast.ref,
                             );
@@ -1339,7 +1354,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
                 // Check duplicates
                 if (ex) {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `Function "${f.name}" already exist in "${t.name}"`,
                         t.ast.ref,
                     );
@@ -1360,7 +1375,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     !ex &&
                     f.ast.attributes.find((v) => v.type === "abstract")
                 ) {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `Trait "${tr.name}" requires constant "${f.name}"`,
                         t.ast.ref,
                     );
@@ -1372,7 +1387,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     ex.ast.attributes.find((v) => v.type === "overrides")
                 ) {
                     if (!typeRefEquals(f.type, ex.type)) {
-                        throwSyntaxError(
+                        throwCompilationError(
                             `Overridden constant "${f.name}" should have same type`,
                             ex.ast.ref,
                         );
@@ -1382,7 +1397,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
                 // Check duplicates
                 if (ex) {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `Constant "${f.name}" already exist in "${t.name}"`,
                         t.ast.ref,
                     );
@@ -1451,7 +1466,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         sameReceiver(v.selector, f.selector),
                     )
                 ) {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `Receive function for "${f.selector}" already exists`,
                         t.ast.ref,
                     );
@@ -1482,7 +1497,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             return;
         }
         if (processing.has(name)) {
-            throwSyntaxError(
+            throwCompilationError(
                 `Circular dependency detected for type "${name}"`,
                 types.get(name)!.ast.ref,
             );
@@ -1517,7 +1532,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
         const handler = (src: ASTNode) => {
             if (src.kind === "init_of") {
                 if (!types.has(src.name)) {
-                    throwSyntaxError(`Type "${src.name}" not found`, src.ref);
+                    throwCompilationError(
+                        `Type "${src.name}" not found`,
+                        src.ref,
+                    );
                 }
                 dependsOn.add(src.name);
             }
@@ -1572,7 +1590,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         const r = resolveFunctionDescriptor(null, a, a.origin);
         if (r.self) {
             if (types.get(r.self)!.functions.has(r.name)) {
-                throwSyntaxError(
+                throwCompilationError(
                     `Function "${r.name}" already exists in type "${r.self}"`,
                     r.ast.ref,
                 );
@@ -1580,13 +1598,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
             types.get(r.self)!.functions.set(r.name, r);
         } else {
             if (staticFunctions.has(r.name) || GlobalFunctions.has(r.name)) {
-                throwSyntaxError(
+                throwCompilationError(
                     `Static function "${r.name}" already exists`,
                     r.ast.ref,
                 );
             }
             if (staticConstants.has(r.name)) {
-                throwSyntaxError(
+                throwCompilationError(
                     `Static constant "${r.name}" already exists`,
                     a.ref,
                 );
@@ -1601,13 +1619,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const a of ast.constants) {
         if (staticConstants.has(a.name)) {
-            throwSyntaxError(
+            throwCompilationError(
                 `Static constant "${a.name}" already exists`,
                 a.ref,
             );
         }
         if (staticFunctions.has(a.name) || GlobalFunctions.has(a.name)) {
-            throwSyntaxError(
+            throwCompilationError(
                 `Static function "${a.name}" already exists`,
                 a.ref,
             );

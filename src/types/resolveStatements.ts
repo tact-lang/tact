@@ -1,7 +1,7 @@
 import { CompilerContext } from "../context";
 import { ASTCondition, ASTRef, ASTStatement } from "../grammar/ast";
 import { isAssignable } from "./subtyping";
-import { throwSyntaxError } from "../errors";
+import { throwCompilationError } from "../errors";
 import {
     getAllStaticFunctions,
     getAllTypes,
@@ -37,7 +37,7 @@ function checkVariableExists(
 ): void {
     if (ctx.vars.has(name)) {
         if (ref) {
-            throwSyntaxError(`Variable already exists: "${name}"`, ref);
+            throwCompilationError(`Variable already exists: "${name}"`, ref);
         } else {
             throw Error(`Variable already exists: "${name}"`);
         }
@@ -178,7 +178,7 @@ function processStatements(
     for (const s of statements) {
         // Check for unreachable
         if (returnAlwaysReachable) {
-            throwSyntaxError("Unreachable statement", s.ref);
+            throwCompilationError("Unreachable statement", s.ref);
         }
 
         // Process statement
@@ -194,7 +194,7 @@ function processStatements(
             if (s.type !== null) {
                 const variableType = resolveTypeRef(ctx, s.type);
                 if (!isAssignable(expressionType, variableType)) {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(variableType)}"`,
                         s.ref,
                     );
@@ -202,13 +202,13 @@ function processStatements(
                 sctx = addVariable(s.name, variableType, sctx);
             } else {
                 if (expressionType.kind === "null") {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `Cannot infer type for "${s.name}"`,
                         s.ref,
                     );
                 }
                 if (expressionType.kind === "void") {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `The inferred type of variable "${s.name}" is "void", which is not allowed`,
                         s.ref,
                     );
@@ -226,7 +226,7 @@ function processStatements(
             const expressionType = getExpType(ctx, s.expression);
             const tailType = getExpType(ctx, s.path[s.path.length - 1]);
             if (!isAssignable(expressionType, tailType)) {
-                throwSyntaxError(
+                throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(tailType)}"`,
                     s.ref,
                 );
@@ -258,7 +258,7 @@ function processStatements(
                 tailType.name !== "Int" ||
                 tailType.optional
             ) {
-                throwSyntaxError(
+                throwCompilationError(
                     `Type error: Augmented assignment is only allowed for Int type`,
                     s.ref,
                 );
@@ -296,7 +296,7 @@ function processStatements(
                 expressionType.name !== "Bool" ||
                 expressionType.optional
             ) {
-                throwSyntaxError(
+                throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Bool"`,
                     s.ref,
                 );
@@ -314,20 +314,20 @@ function processStatements(
                 // And `return foo()` looks nicer when the user needs early exit from a function
                 // right after executing `foo()`
                 if (expressionType.kind == "void") {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `'return' statement can only be used with non-void types`,
                         s.ref,
                     );
                 }
                 if (!isAssignable(expressionType, sctx.returns)) {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(sctx.returns)}"`,
                         s.ref,
                     );
                 }
             } else {
                 if (sctx.returns.kind !== "void") {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `The function fails to return a result of type "${printTypeRef(sctx.returns)}"`,
                         s.ref,
                     );
@@ -337,12 +337,12 @@ function processStatements(
             // Check if all required variables are assigned
             if (sctx.requiredFields.length > 0) {
                 if (sctx.requiredFields.length === 1) {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `Field "${sctx.requiredFields[0]}" is not set`,
                         sctx.root,
                     );
                 } else {
-                    throwSyntaxError(
+                    throwCompilationError(
                         `Fields ${sctx.requiredFields.map((x) => '"' + x + '"').join(", ")} are not set`,
                         sctx.root,
                     );
@@ -365,7 +365,7 @@ function processStatements(
                 expressionType.name !== "Int" ||
                 expressionType.optional
             ) {
-                throwSyntaxError(
+                throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Int"`,
                     s.ref,
                 );
@@ -388,7 +388,7 @@ function processStatements(
                 expressionType.name !== "Bool" ||
                 expressionType.optional
             ) {
-                throwSyntaxError(
+                throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Bool"`,
                     s.ref,
                 );
@@ -411,7 +411,7 @@ function processStatements(
                 expressionType.name !== "Bool" ||
                 expressionType.optional
             ) {
-                throwSyntaxError(
+                throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Bool"`,
                     s.ref,
                 );
@@ -468,7 +468,7 @@ function processStatements(
             // Check if map is valid
             const mapType = getExpType(ctx, s.map[s.map.length - 1]);
             if (mapType.kind !== "map") {
-                throwSyntaxError(
+                throwCompilationError(
                     `LValue "${s.map.map((x) => x.name).join(".")}" is not a map`,
                     s.ref,
                 );
@@ -528,7 +528,7 @@ function processFunctionBody(
 
     // Check if a non-void function always returns a value
     if (sctx.returns.kind !== "void" && !res.returnAlwaysReachable) {
-        throwSyntaxError(
+        throwCompilationError(
             `Function does not always return a result. Adding 'return' statement(s) should fix the issue.`,
             res.sctx.root,
         );
@@ -537,12 +537,12 @@ function processFunctionBody(
     // Check if all required variables are assigned
     if (res.sctx.requiredFields.length > 0) {
         if (res.sctx.requiredFields.length === 1) {
-            throwSyntaxError(
+            throwCompilationError(
                 `Field "${res.sctx.requiredFields[0]}" is not set`,
                 res.sctx.root,
             );
         } else {
-            throwSyntaxError(
+            throwCompilationError(
                 `Fields ${res.sctx.requiredFields.map((x) => '"' + x + '"').join(", ")} are not set`,
                 res.sctx.root,
             );

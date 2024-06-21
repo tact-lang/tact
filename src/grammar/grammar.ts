@@ -7,17 +7,15 @@ import {
     ASTNode,
     ASTProgram,
     ASTReceiveType,
-    ASTRef,
     ASTString,
     ASTTypeRef,
     createNode,
     createRef,
     inFile,
 } from "./ast";
-import { throwSyntaxError } from "../errors";
+import { throwParseError, throwCompilationError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
-import { TactSyntaxError } from "./../errors";
-import { Node, IterationNode, MatchResult } from "ohm-js";
+import { Node, IterationNode } from "ohm-js";
 import { TypeOrigin } from "../types/types";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
@@ -51,7 +49,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
     Import(_importKwd, path, _semicolon) {
         const pathAST = path.astOfExpression() as ASTString;
         if (pathAST.value.indexOf("\\") >= 0) {
-            throwSyntaxError(
+            throwCompilationError(
                 'Import path can\'t contain "\\"',
                 createRef(path),
             );
@@ -452,7 +450,7 @@ semantics.addOperation<ASTNode[]>("astsOfList", {
             params.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Empty parameter list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );
@@ -464,7 +462,7 @@ semantics.addOperation<ASTNode[]>("astsOfList", {
             args.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Empty argument list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );
@@ -1130,7 +1128,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             structFields.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwSyntaxError(
+            throwCompilationError(
                 "Empty parameter list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );
@@ -1172,27 +1170,6 @@ semantics.addOperation<ASTNode>("astOfExpression", {
     },
 });
 
-function throwMatchError(matchResult: MatchResult, path: string): never {
-    const interval = matchResult.getInterval();
-    const lc = interval.getLineAndColumn() as {
-        lineNum: number;
-        colNum: number;
-    };
-    const msg = interval.getLineAndColumnMessage();
-    const message =
-        path +
-        ":" +
-        lc.lineNum +
-        ":" +
-        lc.colNum +
-        ": Syntax error: expected " +
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (matchResult as any).getExpectedText() +
-        " \n" +
-        msg;
-    throw new TactSyntaxError(message, new ASTRef(interval, path));
-}
-
 export function parse(
     src: string,
     path: string,
@@ -1201,7 +1178,7 @@ export function parse(
     return inFile(path, () => {
         const matchResult = rawGrammar.match(src);
         if (matchResult.failed()) {
-            throwMatchError(matchResult, path);
+            throwParseError(matchResult, path);
         }
         ctx = { origin };
         try {
