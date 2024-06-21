@@ -25,6 +25,11 @@ struct MyStruct3 {
 
 const globalConstStruct: MyStruct3 = MyStruct3 { s: "global const struct test" };
 
+message MyMessage1 {
+    a: Int;
+    s: MyStruct2;
+}
+
 contract StructsTester {
     s1: S = S {a: false, b: 21 + 21};
     s2: S;
@@ -80,6 +85,18 @@ contract StructsTester {
         let s1_: MyStruct1 = MyStruct1.fromCell(s.loadRef());
         let s2_: MyStruct2 = MyStruct2.fromSlice(s.loadRef().beginParse());
         return beginCell().storeRef(s1_.toCell()).storeRef(s2_.toCell()).endCell();
+    }
+
+    get fun toCellMessage1(m: MyMessage1): Cell {
+        return m.toCell();
+    }
+
+    get fun fromCellMessage1(src: Cell): MyMessage1 {
+        return MyMessage1.fromCell(src);
+    }
+
+    get fun fromSliceMessage1(src: Slice): MyMessage1 {
+        return MyMessage1.fromSlice(src);
     }
 
     get fun contractStructConstantImmediate(): MyStruct3 {
