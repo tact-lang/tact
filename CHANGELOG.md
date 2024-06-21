@@ -9,12 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [1.4.0] - 2024-06-21
+
+### Added
+
 - The bitwise NOT operation (`~`): PR [#337](https://github.com/tact-lang/tact/pull/337)
 - Augmented assignment bitwise operators `|=`, `&=`, `^=`: PR [#350](https://github.com/tact-lang/tact/pull/350)
 - Traversing maps from contract storage and structs is now allowed: PR [#389](https://github.com/tact-lang/tact/pull/389)
 - The `loadBool` method for `Slice` type: PR [#412](https://github.com/tact-lang/tact/pull/412)
 - CLI flag `--with-decompilation` to turn on decompilation of BoC files at the end of the compilation pipeline: PR [#417](https://github.com/tact-lang/tact/pull/417)
-- Support more Tact expressions in the constant evaluator: condition expressions, struct instances, struct field access, `emptyMap()`: PR [#432](https://github.com/tact-lang/tact/pull/432) and PR [#445](https://github.com/tact-lang/tact/pull/445)
+- Support more Tact expressions in the constant evaluator: conditional expressions, struct instances, struct field accesses, `emptyMap()`: PR [#432](https://github.com/tact-lang/tact/pull/432) and PR [#445](https://github.com/tact-lang/tact/pull/445)
 - The `fromCell` and `fromSlice` methods for struct and message parsing: PR [#418](https://github.com/tact-lang/tact/pull/418) and PR [#454](https://github.com/tact-lang/tact/pull/454)
 - The `return`-statement reachability analysis now takes into account the `throw` and `nativeThrow` functions: PR [#447](https://github.com/tact-lang/tact/pull/447)
 
@@ -22,11 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Trailing semicolons in struct and message declarations are optional now: PR [#395](https://github.com/tact-lang/tact/pull/395)
 - Tests are refactored and renamed to convey the sense of what is being tested and to reduce the amount of merge conflicts during development: PR [#402](https://github.com/tact-lang/tact/pull/402)
-- `let` statements can now be used without an explicit type declaration and determine the type automatically if it was not specified: PR [#198](https://github.com/tact-lang/tact/pull/198) and PR [#438](https://github.com/tact-lang/tact/pull/438)
+- `let`-statements can now be used without an explicit type declaration and determine the type automatically if it was not specified: PR [#198](https://github.com/tact-lang/tact/pull/198) and PR [#438](https://github.com/tact-lang/tact/pull/438)
 - The outdated TextMate-style grammar files for text editors have been removed (the most recent grammar files can be found in the [tact-sublime](https://github.com/tact-lang/tact-sublime) repo): PR [#404](https://github.com/tact-lang/tact/pull/404)
-- The JSON schema for `tact.config.json` has been moved to the `json-schemas` project folder: PR [#404](https://github.com/tact-lang/tact/pull/404)
+- The JSON schema for `tact.config.json` has been moved to the `schemas` project folder: PR [#404](https://github.com/tact-lang/tact/pull/404)
 - Allow underscores as unused variable identifiers: PR [#338](https://github.com/tact-lang/tact/pull/338)
-- The default compilation mode does decompile BoC files anymore, to additionally perform decompilation at the end of the pipeline, set the `fullWithDecompilation` mode in the `mode` project properties of `tact.config.json`: PR [#417](https://github.com/tact-lang/tact/pull/417)
+- The default compilation mode does not decompile BoC files anymore, to additionally perform decompilation at the end of the pipeline, set the `fullWithDecompilation` mode in the `mode` project properties of `tact.config.json`: PR [#417](https://github.com/tact-lang/tact/pull/417)
 - Trait lists, parameters and arguments in the Tact grammar were assigned their own names in the grammar for better readability and code deduplication: PR [#422](https://github.com/tact-lang/tact/pull/422)
 - The semicolon (`;`) terminating a statement is optional if the statement is the last one in the statement block: PR [#434](https://github.com/tact-lang/tact/pull/434)
 
@@ -38,7 +46,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - External fallback receivers now work properly: PR [#408](https://github.com/tact-lang/tact/pull/408)
 - `Int as coins` as a value type of a map in persistent storage does not throw compilation error anymore: PR [#413](https://github.com/tact-lang/tact/pull/413)
 - The semantics of the Tact arithmetic operations in the constant evaluator to perform rounding towards negative infinity: PR [#432](https://github.com/tact-lang/tact/pull/432)
-- Inferring `void` type in let statements is now forbidden: PR [#438](https://github.com/tact-lang/tact/pull/438)
 - Better error messages for the `void` type: PR [#442](https://github.com/tact-lang/tact/pull/442)
 - Fixed the native function binding for the stdlib function `nativeThrowWhen` (it needed to be `throw_if` instead of `throw_when`) and also renamed it to `nativeThrowIf` for consistency with FunC: PR [#451](https://github.com/tact-lang/tact/pull/451)
 
