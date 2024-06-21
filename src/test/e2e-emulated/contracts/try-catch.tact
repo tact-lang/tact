@@ -39,7 +39,7 @@ contract TryCatchTester {
 
     get fun testTryCatch2(): Int {
         try {
-            nativeThrowUnless(101, false);
+            nativeThrowIf(101, true);
             return 42;
         } catch (e) {
             return e;

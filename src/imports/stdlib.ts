@@ -174,9 +174,9 @@ files['std/crypto.tact'] =
     'aWNfa2V5OiBJbnQpOiBCb29sOwoKQG5hbWUoY2hlY2tfZGF0YV9zaWduYXR1cmUpCm5hdGl2ZSBjaGVja0RhdGFTaWduYXR1cmUoZGF0YTogU2xpY2UsIHNpZ25hdHVy' +
     'ZTogU2xpY2UsIHB1YmxpY19rZXk6IEludCk6IEJvb2w7Cg==';
 files['std/debug.tact'] =
-    'QG5hbWUodGhyb3cpCm5hdGl2ZSBuYXRpdmVUaHJvdyhjb2RlOiBJbnQpOwoKQG5hbWUodGhyb3dfd2hlbikKbmF0aXZlIG5hdGl2ZVRocm93V2hlbihjb2RlOiBJbnQs' +
-    'IGNvbmRpdGlvbjogQm9vbCk7CgpAbmFtZSh0aHJvdykKbmF0aXZlIHRocm93KGNvZGU6IEludCk7CgpAbmFtZSh0aHJvd191bmxlc3MpCm5hdGl2ZSBuYXRpdmVUaHJv' +
-    'd1VubGVzcyhjb2RlOiBJbnQsIGNvbmRpdGlvbjogQm9vbCk7';
+    'QG5hbWUodGhyb3cpCm5hdGl2ZSBuYXRpdmVUaHJvdyhjb2RlOiBJbnQpOwoKQG5hbWUodGhyb3dfaWYpCm5hdGl2ZSBuYXRpdmVUaHJvd0lmKGNvZGU6IEludCwgY29u' +
+    'ZGl0aW9uOiBCb29sKTsKCkBuYW1lKHRocm93KQpuYXRpdmUgdGhyb3coY29kZTogSW50KTsKCkBuYW1lKHRocm93X3VubGVzcykKbmF0aXZlIG5hdGl2ZVRocm93VW5s' +
+    'ZXNzKGNvZGU6IEludCwgY29uZGl0aW9uOiBCb29sKTs=';
 files['std/math.tact'] =
     'Ly8gUHJlcGFyZSByYW5kb20KCkBuYW1lKHJhbmRvbWl6ZSkKbmF0aXZlIG5hdGl2ZVJhbmRvbWl6ZSh4OiBJbnQpOwoKQG5hbWUocmFuZG9taXplX2x0KQpuYXRpdmUg' +
     'bmF0aXZlUmFuZG9taXplTHQoKTsKCkBuYW1lKF9fdGFjdF9wcmVwYXJlX3JhbmRvbSkKbmF0aXZlIG5hdGl2ZVByZXBhcmVSYW5kb20oKTsKCi8vIFJhbmRvbQoKQG5h' +
