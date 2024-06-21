@@ -125,6 +125,6 @@ describe("fail-const-eval", () => {
     itShouldNotCompile({
         testName: "const-eval-invalid-address",
         errorMessage:
-            "FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N is not a valid address",
+            "Cannot evaluate expression to a constant: invalid address encoding: FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N",
     });
 });
