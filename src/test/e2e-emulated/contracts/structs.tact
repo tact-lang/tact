@@ -19,11 +19,19 @@ struct MyStruct2 {
     s: MyStruct1?;
 }
 
+struct MyStruct3 {
+    s: String;
+}
+
+const globalConstStruct: MyStruct3 = MyStruct3 { s: "global const struct test" };
+
 contract StructsTester {
     s1: S = S {a: false, b: 21 + 21};
     s2: S;
     t1: T = T {a: 43, s: S {a: true, b: 44}};
     t2: T;
+
+    const contractStructConst: MyStruct3 = MyStruct3 { s: "contract const struct test" };
 
     init() {
         self.s2 = S {a: false || false, b: 42};
@@ -72,5 +80,41 @@ contract StructsTester {
         let s1_: MyStruct1 = MyStruct1.fromCell(s.loadRef());
         let s2_: MyStruct2 = MyStruct2.fromSlice(s.loadRef().beginParse());
         return beginCell().storeRef(s1_.toCell()).storeRef(s2_.toCell()).endCell();
+    }
+
+    get fun contractStructConstantImmediate(): MyStruct3 {
+        return self.contractStructConst;
+    }
+
+    get fun globalConstStructConstantImmediate(): MyStruct3 {
+        return globalConstStruct;
+    }
+
+    get fun contractStructConstantFieldImmediate(): String {
+        return self.contractStructConst.s;
+    }
+
+    get fun globalConstStructConstantFieldImmediate(): String {
+        return globalConstStruct.s;
+    }
+
+    get fun contractStructConstantViaVar(): MyStruct3 {
+        let s = self.contractStructConst;
+        return s;
+    }
+
+    get fun globalConstStructConstantViaVar(): MyStruct3 {
+        let s = globalConstStruct;
+        return s;
+    }
+
+    get fun contractStructConstantFieldViaVar(): String {
+        let s = self.contractStructConst.s;
+        return s;
+    }
+
+    get fun globalConstStructConstantFieldViaVar(): String {
+        let s = globalConstStruct.s;
+        return s;
     }
 }

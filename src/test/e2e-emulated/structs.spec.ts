@@ -4,6 +4,7 @@ import { __DANGER_resetNodeId } from "../../grammar/ast";
 import {
     MyStruct1,
     MyStruct2,
+    MyStruct3,
     StructsTester,
     loadMyStruct1,
     loadMyStruct2,
@@ -152,5 +153,33 @@ describe("structs", () => {
         expect(() =>
             loadMyStruct1(beginCell().storeUint(0, 123).endCell().asSlice()),
         ).toThrow();
+
+        const s5: MyStruct3 = {
+            $$type: "MyStruct3",
+            s: "contract const struct test",
+        };
+        const s6: MyStruct3 = {
+            $$type: "MyStruct3",
+            s: "global const struct test",
+        };
+        expect(await contract.getContractStructConstantImmediate()).toEqual(s5);
+        expect(await contract.getGlobalConstStructConstantImmediate()).toEqual(
+            s6,
+        );
+        expect(
+            await contract.getContractStructConstantFieldImmediate(),
+        ).toEqual(s5.s);
+        expect(
+            await contract.getGlobalConstStructConstantFieldImmediate(),
+        ).toEqual(s6.s);
+
+        expect(await contract.getContractStructConstantViaVar()).toEqual(s5);
+        expect(await contract.getGlobalConstStructConstantViaVar()).toEqual(s6);
+        expect(await contract.getContractStructConstantFieldViaVar()).toEqual(
+            s5.s,
+        );
+        expect(
+            await contract.getGlobalConstStructConstantFieldViaVar(),
+        ).toEqual(s6.s);
     });
 });

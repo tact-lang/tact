@@ -9,8 +9,14 @@ import {
     ASTUnaryOperation,
 } from "./grammar/ast";
 import { throwConstEvalError } from "./errors";
-import { StructValue, Value } from "./types/types";
+import { CommentValue, StructValue, Value } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
+import {
+    getStaticConstant,
+    getType,
+    hasStaticConstant,
+} from "./types/resolveDescriptors";
+import { getExpType } from "./types/resolveExpression";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -69,6 +75,19 @@ function ensureFunArity(arity: number, args: ASTExpression[], source: ASTRef) {
     if (args.length !== arity) {
         throwErrorConstEval(
             `function expects ${arity} argument(s), but got ${args.length}`,
+            source,
+        );
+    }
+}
+
+function ensureMethodArity(
+    arity: number,
+    args: ASTExpression[],
+    source: ASTRef,
+) {
+    if (args.length !== arity) {
+        throwErrorConstEval(
+            `method expects ${arity} argument(s), but got ${args.length}`,
             source,
         );
     }
@@ -317,8 +336,34 @@ function evalStructInstance(
 function evalFieldAccess(
     structExpr: ASTExpression,
     fieldId: string,
+    source: ASTRef,
     ctx: CompilerContext,
 ): Value {
+    // special case for contract/trait constant accesses via `self.constant`
+    if (structExpr.kind === "id" && structExpr.value == "self") {
+        const selfTypeRef = getExpType(ctx, structExpr);
+        if (selfTypeRef.kind == "ref") {
+            const contractTypeDescription = getType(ctx, selfTypeRef.name);
+            const foundContractConst = contractTypeDescription.constants.find(
+                (constId) => constId.name === fieldId,
+            );
+            if (foundContractConst === undefined) {
+                // not a constant, e.g. `self.storageVariable`
+                throwNonFatalErrorConstEval(
+                    `cannot a evaluate non-constant self field access`,
+                    structExpr.ref,
+                );
+            }
+            if (foundContractConst.value !== undefined) {
+                return foundContractConst.value;
+            } else {
+                throwErrorConstEval(
+                    `cannot evaluate declared contract/trait constant "${fieldId}" as it does not have a body`,
+                    source,
+                );
+            }
+        }
+    }
     const valStruct = evalConstantExpression(structExpr, ctx);
     if (
         valStruct == null ||
@@ -338,6 +383,30 @@ function evalFieldAccess(
             `struct field ${fieldId} is missing`,
             structExpr.ref,
         );
+    }
+}
+
+function evalMethod(
+    methodName: string,
+    object: ASTExpression,
+    args: ASTExpression[],
+    source: ASTRef,
+    ctx: CompilerContext,
+): Value {
+    switch (methodName) {
+        case "asComment": {
+            ensureMethodArity(0, args, source);
+            const comment = ensureString(
+                evalConstantExpression(object, ctx),
+                object.ref,
+            );
+            return new CommentValue(comment);
+        }
+        default:
+            throwNonFatalErrorConstEval(
+                `calls of "${methodName}" are not supported at this moment`,
+                source,
+            );
     }
 }
 
@@ -518,23 +587,70 @@ function evalBuiltins(
     }
 }
 
+function interpretEscapeSequences(stringLiteral: string) {
+    return stringLiteral.replace(
+        /\\\\|\\"|\\n|\\r|\\t|\\v|\\b|\\f|\\u{([0-9A-Fa-f]+)}|\\u([0-9A-Fa-f]{4})|\\x([0-9A-Fa-f]{2})/g,
+        (match, unicodeCodePoint, unicodeEscape, hexEscape) => {
+            switch (match) {
+                case "\\\\":
+                    return "\\";
+                case '\\"':
+                    return '"';
+                case "\\n":
+                    return "\n";
+                case "\\r":
+                    return "\r";
+                case "\\t":
+                    return "\t";
+                case "\\v":
+                    return "\v";
+                case "\\b":
+                    return "\b";
+                case "\\f":
+                    return "\f";
+                default:
+                    // Handle Unicode code point escape
+                    if (unicodeCodePoint) {
+                        const codePoint = parseInt(unicodeCodePoint, 16);
+                        return String.fromCodePoint(codePoint);
+                    }
+                    // Handle Unicode escape
+                    if (unicodeEscape) {
+                        const codeUnit = parseInt(unicodeEscape, 16);
+                        return String.fromCharCode(codeUnit);
+                    }
+                    // Handle hex escape
+                    if (hexEscape) {
+                        const hexValue = parseInt(hexEscape, 16);
+                        return String.fromCharCode(hexValue);
+                    }
+                    return match;
+            }
+        },
+    );
+}
+
 export function evalConstantExpression(
     ast: ASTExpression,
     ctx: CompilerContext,
 ): Value {
     switch (ast.kind) {
         case "id":
-            throwNonFatalErrorConstEval(
-                "identifiers are not supported at this moment",
-                ast.ref,
-            );
+            if (hasStaticConstant(ctx, ast.value)) {
+                const constant = getStaticConstant(ctx, ast.value);
+                if (constant.value !== undefined) {
+                    return constant.value;
+                } else {
+                    throwErrorConstEval(
+                        `cannot evaluate declared constant "${ast.value}" as it does not have a body`,
+                        ast.ref,
+                    );
+                }
+            }
+            throwNonFatalErrorConstEval("cannot evaluate a variable", ast.ref);
             break;
         case "op_call":
-            throwNonFatalErrorConstEval(
-                "arbitrary function calls are not supported at this moment",
-                ast.ref,
-            );
-            break;
+            return evalMethod(ast.name, ast.src, ast.args, ast.ref, ctx);
         case "init_of":
             throwNonFatalErrorConstEval(
                 "initOf is not supported at this moment",
@@ -549,9 +665,8 @@ export function evalConstantExpression(
             return ast.value;
         case "number":
             return ensureInt(ast.value, ast.ref);
-        // TODO: ensure string is representable
         case "string":
-            return ast.value;
+            return ensureString(interpretEscapeSequences(ast.value), ast.ref);
         case "op_unary":
             return evalUnaryOp(ast.op, ast.right, ast.ref, ctx);
         case "op_binary":
@@ -566,7 +681,7 @@ export function evalConstantExpression(
         case "op_new":
             return evalStructInstance(ast.type, ast.args, ctx);
         case "op_field":
-            return evalFieldAccess(ast.src, ast.name, ctx);
+            return evalFieldAccess(ast.src, ast.name, ast.ref, ctx);
         case "op_static_call":
             return evalBuiltins(ast.name, ast.args, ast.ref, ctx);
     }

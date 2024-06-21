@@ -64,6 +64,10 @@ export type StructValue = {
     [key: string]: Value;
 };
 
+export class CommentValue {
+    constructor(public readonly comment: string) {}
+}
+
 export type Value =
     | bigint
     | boolean
@@ -71,6 +75,7 @@ export type Value =
     | Address
     | Cell
     | null
+    | CommentValue
     | StructValue;
 
 export type FieldDescription = {
