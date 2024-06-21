@@ -113,6 +113,10 @@ jobs:
         run: |
           ! tact --config bin/test/fail.config.json
 
+      - name: CLI Test | Evaluate expression
+        run: |
+          tact -e '(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2'
+
       - name: Link Tact compiler
         run: |
           yarn link

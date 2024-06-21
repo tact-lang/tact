@@ -3,6 +3,7 @@ import {
     ASTAugmentedAssignOperation,
     ASTConstantAttribute,
     ASTContractAttribute,
+    ASTExpression,
     ASTFunctionAttribute,
     ASTNode,
     ASTProgram,
@@ -1187,6 +1188,14 @@ export function parse(
             ctx = null;
         }
     });
+}
+
+export function parseExpression(sourceCode: string): ASTExpression {
+    const matchResult = rawGrammar.match(sourceCode, "Expression");
+    if (matchResult.failed()) {
+        throwParseError(matchResult, "");
+    }
+    return semantics(matchResult).astOfExpression();
 }
 
 export function parseImports(

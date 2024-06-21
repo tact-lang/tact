@@ -19,6 +19,7 @@ meowModule.then(
       --with-decompilation        Full compilation followed by decompilation of produced binary code
       --func                      Output intermediate FunC code and exit
       --check                     Perform syntax and type checking, then exit
+      -e, --eval EXPRESSION       Evaluate a Tact expression and exit
       -v, --version               Print Tact compiler version and exit
       -h, --help                  Display this text and exit
 
@@ -39,17 +40,20 @@ meowModule.then(
             shortFlag: "c",
             type: "string",
             isRequired: (flags, _) => {
-              // Require a config when the projects are specified AND version/help are not specified
-              if (
+              // Require a config when the projects are specified
+              // AND version/help are not specified
+              // AND eval is not specified
+              return (
                 flags.projects.length !== 0 &&
                 !flags.version &&
-                !flags.help
-              ) {
-                return true;
-              }
-              // Don't require it otherwise
-              return false;
+                !flags.help &&
+                !flags.eval
+              );
             },
+          },
+          eval: {
+            shortFlag: "e",
+            type: "string",
           },
           projects: { shortFlag: "p", type: "string", isMultiple: true },
           withDecompilation: { type: "boolean", default: false },
@@ -64,10 +68,7 @@ meowModule.then(
 
     // Helper function to write less in following checks
     const isEmptyConfigAndInput = () => {
-      if (cli.flags.config === undefined && cli.input.length === 0) {
-        return true;
-      }
-      return false;
+      return cli.flags.config === undefined && cli.input.length === 0;
     };
 
     // Show help regardless of other flags
@@ -78,6 +79,21 @@ meowModule.then(
     // Show version regardless of other flags
     if (cli.flags.version) {
       cli.showVersion();
+    }
+
+    // Evaluate expression regardless of other flags
+    if (cli.flags.eval) {
+      const result = main.parseAndEvalExpression(cli.flags.eval);
+      switch (result.kind) {
+        case "ok": {
+          console.log(result.value);
+          process.exit(0);
+        }
+        case "error": {
+          console.log(result.message);
+          process.exit(30);
+        }
+      }
     }
 
     // Disallow specifying both config or Tact source file at the same time
