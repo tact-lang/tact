@@ -2,12 +2,15 @@ import { Dictionary, beginCell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import {
+    MyMessage1,
     MyStruct1,
     MyStruct2,
     MyStruct3,
     StructsTester,
+    loadMyMessage1,
     loadMyStruct1,
     loadMyStruct2,
+    storeMyMessage1,
     storeMyStruct1,
     storeMyStruct2,
 } from "./contracts/output/structs_StructsTester";
@@ -55,6 +58,16 @@ describe("structs", () => {
             ),
             s: null,
         };
+        const m1: MyMessage1 = {
+            $$type: "MyMessage1",
+            a: 1n,
+            s: s3,
+        };
+        const m2: MyMessage1 = {
+            $$type: "MyMessage1",
+            a: 2n,
+            s: s4,
+        };
 
         const c1 = beginCell()
             .storeInt(1, 257)
@@ -77,6 +90,18 @@ describe("structs", () => {
             .storeBit(false) // no struct
             .endCell();
 
+        // my_message1#a98a916c a:int257 s:MyStruct2{m:dict<int, uint64>,s:Maybe MyStruct1{a:int257,b:uint32,c:Maybe int257}} = MyMessage1
+        const c5 = beginCell()
+            .storeUint(0xa98a916c, 32)
+            .storeInt(1, 257)
+            .store(storeMyStruct2(s3))
+            .endCell();
+        const c6 = beginCell()
+            .storeUint(0xa98a916c, 32)
+            .storeInt(2, 257)
+            .store(storeMyStruct2(s4))
+            .endCell();
+
         // Test smart contract
 
         expect((await contract.getToCell1(s1)).toString()).toEqual(
@@ -91,16 +116,26 @@ describe("structs", () => {
         expect((await contract.getToCell2(s4)).toString()).toEqual(
             c4.toString(),
         );
+        expect((await contract.getToCellMessage1(m1)).toString()).toEqual(
+            c5.toString(),
+        );
+        expect((await contract.getToCellMessage1(m2)).toString()).toEqual(
+            c6.toString(),
+        );
 
         expect(await contract.getFromCell1(c1)).toMatchObject<MyStruct1>(s1);
         expect(await contract.getFromCell1(c2)).toMatchObject<MyStruct1>(s2);
         expect(await contract.getFromCell2(c3)).toMatchSnapshot();
         expect(await contract.getFromCell2(c4)).toMatchSnapshot();
+        expect(await contract.getFromCellMessage1(c5)).toMatchSnapshot();
+        expect(await contract.getFromCellMessage1(c6)).toMatchSnapshot();
 
         expect(await contract.getFromSlice1(c1)).toMatchObject<MyStruct1>(s1);
         expect(await contract.getFromSlice1(c2)).toMatchObject<MyStruct1>(s2);
         expect(await contract.getFromSlice2(c3)).toMatchSnapshot();
         expect(await contract.getFromSlice2(c4)).toMatchSnapshot();
+        expect(await contract.getFromSliceMessage1(c5)).toMatchSnapshot();
+        expect(await contract.getFromSliceMessage1(c6)).toMatchSnapshot();
 
         expect((await contract.getTest1(s1, s3)).toString()).toEqual(
             beginCell().storeRef(c1).storeRef(c3).endCell().toString(),
@@ -121,6 +156,8 @@ describe("structs", () => {
         expect(loadMyStruct1(c2.asSlice())).toMatchObject<MyStruct1>(s2);
         expect(loadMyStruct2(c3.asSlice())).toMatchSnapshot();
         expect(loadMyStruct2(c4.asSlice())).toMatchSnapshot();
+        expect(loadMyMessage1(c5.asSlice())).toMatchSnapshot();
+        expect(loadMyMessage1(c6.asSlice())).toMatchSnapshot();
         expect(
             beginCell().store(storeMyStruct1(s1)).endCell().toString(),
         ).toEqual(c1.toString());
@@ -133,6 +170,12 @@ describe("structs", () => {
         expect(
             beginCell().store(storeMyStruct2(s4)).endCell().toString(),
         ).toEqual(c4.toString());
+        expect(
+            beginCell().store(storeMyMessage1(m1)).endCell().toString(),
+        ).toEqual(c5.toString());
+        expect(
+            beginCell().store(storeMyMessage1(m2)).endCell().toString(),
+        ).toEqual(c6.toString());
 
         // Negative parsing tests
 
