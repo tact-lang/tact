@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The semantics of the Tact arithmetic operations in the constant evaluator to perform rounding towards negative infinity: PR [#432](https://github.com/tact-lang/tact/pull/432)
 - Inferring `void` type in let statements is now forbidden: PR [#438](https://github.com/tact-lang/tact/pull/438)
 - Better error messages for the `void` type: PR [#442](https://github.com/tact-lang/tact/pull/442)
+- Fixed the native function binding for the stdlib function `nativeThrowWhen` (it needed to be `throw_if` instead of `throw_when`) and also renamed it to `nativeThrowIf` for consistency with FunC: PR [#451](https://github.com/tact-lang/tact/pull/451)
 
 ## [1.3.1] - 2024-06-08
 
@@ -70,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Empty messages are now correctly converted into cells: PR [#380](https://github.com/tact-lang/tact/pull/380)
 - All integer and boolean expressions are now being attempted to be evaluated as constants. Additionally, compile-time errors are thrown for errors encountered during the evaluation of actual constants: PR [#352](https://github.com/tact-lang/tact/pull/352)
 - Chaining mutable extension functions now does not throw compilation errors: PR [#384](https://github.com/tact-lang/tact/pull/384)
+- Removed unused `ton-compiler` dependency: PR [#452](https://github.com/tact-lang/tact/pull/452)
 
 ## [1.3.0] - 2024-05-03
 

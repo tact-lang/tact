@@ -1,8 +1,8 @@
 @name(throw)
 native nativeThrow(code: Int);
 
-@name(throw_when)
-native nativeThrowWhen(code: Int, condition: Bool);
+@name(throw_if)
+native nativeThrowIf(code: Int, condition: Bool);
 
 @name(throw)
 native throw(code: Int);
