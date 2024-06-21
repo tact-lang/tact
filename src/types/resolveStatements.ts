@@ -274,6 +274,14 @@ function processStatements(
         } else if (s.kind === "statement_expression") {
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
+            // take `throw` and `throwNative` into account when doing
+            // return-reachability analysis
+            if (
+                s.expression.kind === "op_static_call" &&
+                ["throw", "nativeThrow"].includes(s.expression.name)
+            ) {
+                returnAlwaysReachable = true;
+            }
         } else if (s.kind === "statement_condition") {
             // Process condition (expression resolved inside)
             const r = processCondition(s, sctx, ctx);
