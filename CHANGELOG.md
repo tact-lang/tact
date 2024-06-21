@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The semantics of the Tact arithmetic operations in the constant evaluator to perform rounding towards negative infinity: PR [#432](https://github.com/tact-lang/tact/pull/432)
 - Inferring `void` type in let statements is now forbidden: PR [#438](https://github.com/tact-lang/tact/pull/438)
 - Better error messages for the `void` type: PR [#442](https://github.com/tact-lang/tact/pull/442)
+- Fixed the native function binding for the stdlib function `nativeThrowWhen` (it needed to be `throw_if` instead of `throw_when`) and also renamed it to `nativeThrowIf` for consistency with FunC: PR [#XXX](https://github.com/tact-lang/tact/pull/XXX)
 
 ## [1.3.1] - 2024-06-08
 
