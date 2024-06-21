@@ -410,13 +410,33 @@ Line 4, col 1:
 "
 `;
 
-exports[`resolveStatements should fail statements for return-analysis-try 1`] = `
+exports[`resolveStatements should fail statements for return-analysis-throw-wrapped 1`] = `
+"<unknown>:15:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 15, col 1:
+  14 | 
+> 15 | fun notAlwaysReachableReturn(b: Bool): Int {
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  16 |     throwWrapped(42);
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-try1 1`] = `
 "<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
 Line 4, col 1:
   3 | 
 > 4 | fun notAlwaysReachableReturn(b: Bool): Int {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 |     try {
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-try2 1`] = `
+"<unknown>:7:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 7, col 1:
+  6 | 
+> 7 | fun notAlwaysReachableReturn(b: Bool): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  8 |     try {
 "
 `;
 
@@ -1398,6 +1418,48 @@ exports[`resolveStatements should resolve statements for return-analysis-no-retu
   ],
   [
     "1",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for return-analysis-throw1 1`] = `
+[
+  [
+    "c",
+    "Bool",
+  ],
+  [
+    "200",
+    "Int",
+  ],
+  [
+    "throw(200)",
+    "<void>",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for return-analysis-throw2 1`] = `
+[
+  [
+    "c",
+    "Bool",
+  ],
+  [
+    "200",
+    "Int",
+  ],
+  [
+    "nativeThrow(200)",
+    "<void>",
+  ],
+  [
+    "42",
     "Int",
   ],
 ]
