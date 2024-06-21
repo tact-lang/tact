@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`random should chain deep sequences correctly 1`] = `"kQDrBeBEkP7QP4-M2-FUSzRoUQK_AxvhYOKkIGSEHqmmjUqW"`;
+exports[`random should chain deep sequences correctly 1`] = `"kQATqdb_usPnI-Yv62qe8ZaJkYQcUeVavzHkjzHO9df6g7zW"`;
 
-exports[`random should chain deep sequences correctly 2`] = `"kQD4CriC3RmScKPAhCkviu-kHj1peUa71rGD7gERLfT6h7rP"`;
+exports[`random should chain deep sequences correctly 2`] = `"kQDkeJhO2dxcZ7Jja1w33kkbAdNbdN_yIr4C8h9-XiZJ-PD6"`;
 
-exports[`random should chain deep sequences correctly 3`] = `"kQBGt4TP7qlVmFk8HoqKcbfHRMJXPx9wiCGqz20U3RjpIZGF"`;
+exports[`random should chain deep sequences correctly 3`] = `"kQDNRWGtzSn6beFQR9Ag4RO78MsWdoEdblUbD25KTJG_7Zbw"`;
 
 exports[`random should chain deep sequences correctly 4`] = `
 [
