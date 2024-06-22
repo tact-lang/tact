@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `-e` / `--eval` CLI flags to evaluate constant Tact expressions: PR [#462](https://github.com/tact-lang/tact/pull/462)
+
 ### Changed
 
 ### Fixed
