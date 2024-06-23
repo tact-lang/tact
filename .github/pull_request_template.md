@@ -4,7 +4,7 @@ Closes #number
 IMPORTANT:
 If your PR doesn't close a particular issue, please, create the issue first and describe the whole context: what you're adding/changing and why you're doing so. And only then open the Pull Request, which would close that issue!
 
-In case you are adding a new language feature, adding standard library function or introduce other user-facing changes, you need to document it and create a PR to tact-docs.
+In case you are adding a new language feature, a standard library function or introducing other user-facing changes, you need to document them via a new PR to tact-docs.
 -->
 
 - [ ] I have updated CHANGELOG.md
