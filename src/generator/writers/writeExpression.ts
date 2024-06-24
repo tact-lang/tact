@@ -67,7 +67,12 @@ function writeStructConstructor(
     // Generate constructor
     ctx.fun(name, () => {
         const funcType = resolveFuncType(type, ctx);
-        const sig = `(${funcType}) ${name}(${args.map((v) => resolveFuncType(type.fields.find((v2) => v2.name === v)!.type, ctx) + " " + v).join(", ")})`;
+        // rename a struct constructor formal parameter to avoid
+        // name clashes with FunC keywords, e.g. `struct Foo {type: Int}`
+        // is a perfectly fine Tact structure, but its constructor would
+        // have the wrong parameter name: `$Foo$_constructor_type(int type)`
+        const avoidFunCKeywordNameClash = (p: string) => `$${p}`;
+        const sig = `(${funcType}) ${name}(${args.map((v) => resolveFuncType(type.fields.find((v2) => v2.name === v)!.type, ctx) + " " + avoidFunCKeywordNameClash(v)).join(", ")})`;
         ctx.signature(sig);
         ctx.flag("inline");
         ctx.context("type:" + type.name);
@@ -76,7 +81,7 @@ function writeStructConstructor(
             const expressions = type.fields.map((v) => {
                 const arg = args.find((v2) => v2 === v.name);
                 if (arg) {
-                    return arg;
+                    return avoidFunCKeywordNameClash(arg);
                 } else if (v.default !== undefined) {
                     return writeValue(v.default, ctx);
                 } else {
