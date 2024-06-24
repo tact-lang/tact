@@ -31,6 +31,7 @@ import {
     ASTStruct,
     ASTContract,
     ASTTrait,
+    ASTId,
 } from "./grammar/ast";
 
 /**
@@ -545,6 +546,10 @@ class PrettyPrinter {
             .join(".");
     }
 
+    ppASTId(id: ASTId) {
+        return id.value;
+    }
+
     ppASTStatementAssign(statement: ASTStatementAssign): string {
         return `${this.indent()}${this.ppASTLvalueRef(statement.path)} = ${this.ppASTExpression(statement.expression)};`;
     }
@@ -583,7 +588,8 @@ class PrettyPrinter {
     }
 
     ppASTStatementForEach(statement: ASTStatementForEach): string {
-        const header = `foreach (${statement.keyName}, ${statement.valueName} in ${this.ppASTLvalueRef(statement.map)})`;
+        //statement.map is ASTId thus ppASTLvalueRef wouldn't wirk with it
+        const header = `foreach (${statement.keyName}, ${statement.valueName} in ${this.ppASTId(statement.map)})`;
         const body = this.ppStatementBlock(statement.statements);
         return `${this.indent()}${header} ${body}`
     }
