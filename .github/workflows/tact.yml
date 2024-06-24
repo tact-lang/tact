@@ -1,5 +1,8 @@
 name: Tact CI
 
+env:
+  HUSKY: 0
+
 on:
   push:
     branches: ["main"]
