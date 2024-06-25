@@ -1,5 +1,10 @@
 import { CompilerContext } from "../context";
-import { ASTCondition, ASTRef, ASTStatement } from "../grammar/ast";
+import {
+    ASTCondition,
+    ASTRef,
+    ASTStatement,
+    tryExtractPath,
+} from "../grammar/ast";
 import { isAssignable } from "./subtyping";
 import { throwCompilationError } from "../errors";
 import {
@@ -7,11 +12,7 @@ import {
     getAllTypes,
     resolveTypeRef,
 } from "./resolveDescriptors";
-import {
-    getExpType,
-    resolveExpression,
-    resolveLValueRef,
-} from "./resolveExpression";
+import { getExpType, resolveExpression } from "./resolveExpression";
 import { printTypeRef, TypeRef } from "./types";
 
 export type StatementContext = {
@@ -216,15 +217,23 @@ function processStatements(
                 sctx = addVariable(s.name, expressionType, sctx);
             }
         } else if (s.kind === "statement_assign") {
+            const tempSctx = { ...sctx, requiredFields: [] };
             // Process lvalue
-            ctx = resolveLValueRef(s.path, sctx, ctx);
+            ctx = resolveExpression(s.path, tempSctx, ctx);
+            const path = tryExtractPath(s.path);
+            if (path === null) {
+                throwCompilationError(
+                    `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
+                    s.path.ref,
+                );
+            }
 
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
 
             // Check type
             const expressionType = getExpType(ctx, s.expression);
-            const tailType = getExpType(ctx, s.path[s.path.length - 1]);
+            const tailType = getExpType(ctx, s.path);
             if (!isAssignable(expressionType, tailType)) {
                 throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(tailType)}"`,
@@ -233,22 +242,30 @@ function processStatements(
             }
 
             // Mark as assigned
-            if (s.path.length === 2 && s.path[0].name === "self") {
-                const field = s.path[1].name;
+            if (path.length === 2 && path[0].value === "self") {
+                const field = path[1].value;
                 if (sctx.requiredFields.findIndex((v) => v === field) >= 0) {
                     sctx = removeRequiredVariable(field, sctx);
                 }
             }
         } else if (s.kind == "statement_augmentedassign") {
             // Process lvalue
-            ctx = resolveLValueRef(s.path, sctx, ctx);
+            const tempSctx = { ...sctx, requiredFields: [] };
+            ctx = resolveExpression(s.path, tempSctx, ctx);
+            const path = tryExtractPath(s.path);
+            if (path === null) {
+                throwCompilationError(
+                    `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
+                    s.path.ref,
+                );
+            }
 
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
 
             // Check type
             const expressionType = getExpType(ctx, s.expression);
-            const tailType = getExpType(ctx, s.path[s.path.length - 1]);
+            const tailType = getExpType(ctx, s.path);
             // Check if types are Int
             if (
                 expressionType.kind !== "ref" ||
@@ -265,8 +282,8 @@ function processStatements(
             }
 
             // Mark as assigned
-            if (s.path.length === 2 && s.path[0].name === "self") {
-                const field = s.path[1].name;
+            if (path.length === 2 && path[0].value === "self") {
+                const field = path[1].value;
                 if (sctx.requiredFields.findIndex((v) => v === field) >= 0) {
                     sctx = removeRequiredVariable(field, sctx);
                 }
@@ -463,14 +480,21 @@ function processStatements(
             let initialCtx = sctx; // Preserve initial context to use later for merging
 
             // Resolve map expression
-            ctx = resolveLValueRef(s.map, sctx, ctx);
+            ctx = resolveExpression(s.map, sctx, ctx);
+            const mapPath = tryExtractPath(s.map);
+            if (mapPath === null) {
+                throwCompilationError(
+                    `foreach is only allowed over maps that are path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
+                    s.map.ref,
+                );
+            }
 
             // Check if map is valid
-            const mapType = getExpType(ctx, s.map[s.map.length - 1]);
+            const mapType = getExpType(ctx, s.map);
             if (mapType.kind !== "map") {
                 throwCompilationError(
-                    `LValue "${s.map.map((x) => x.name).join(".")}" is not a map`,
-                    s.ref,
+                    `foreach can only be used on maps, but "${mapPath.map((id) => id.value).join(".")}" has type "${printTypeRef(mapType)}"`,
+                    s.map.ref,
                 );
             }
 

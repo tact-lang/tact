@@ -46,7 +46,6 @@ export function forEachExpression(
             case "boolean":
             case "id":
             case "null":
-            case "lvalue_ref":
                 // Primitives and non-composite expressions don't require further traversal
                 break;
             default:
@@ -155,7 +154,6 @@ export function forEachExpression(
             case "boolean":
             case "id":
             case "null":
-            case "lvalue_ref":
                 traverseExpression(node);
                 break;
             case "new_parameter":
@@ -232,7 +230,6 @@ export function foldExpressions<T>(
             case "boolean":
             case "id":
             case "null":
-            case "lvalue_ref":
                 // Primitives and non-composite expressions don't require further traversal
                 break;
             default:
@@ -244,9 +241,12 @@ export function foldExpressions<T>(
     function traverseStatement(acc: T, stmt: ASTStatement): T {
         switch (stmt.kind) {
             case "statement_let":
+            case "statement_expression":
+                acc = traverseExpression(acc, stmt.expression);
+                break;
             case "statement_assign":
             case "statement_augmentedassign":
-            case "statement_expression":
+                acc = traverseExpression(acc, stmt.path);
                 acc = traverseExpression(acc, stmt.expression);
                 break;
             case "statement_return":
@@ -278,7 +278,6 @@ export function foldExpressions<T>(
                 });
                 break;
             case "statement_try":
-            case "statement_foreach":
                 stmt.statements.forEach((st) => {
                     acc = traverseStatement(acc, st);
                 });
@@ -288,6 +287,12 @@ export function foldExpressions<T>(
                     acc = traverseStatement(acc, st);
                 });
                 stmt.catchStatements.forEach((st) => {
+                    acc = traverseStatement(acc, st);
+                });
+                break;
+            case "statement_foreach":
+                acc = traverseExpression(acc, stmt.map);
+                stmt.statements.forEach((st) => {
                     acc = traverseStatement(acc, st);
                 });
                 break;
@@ -364,7 +369,6 @@ export function foldExpressions<T>(
             case "boolean":
             case "id":
             case "null":
-            case "lvalue_ref":
                 acc = traverseExpression(acc, node);
                 break;
             case "new_parameter":
@@ -468,7 +472,6 @@ export function forEachStatement(
             case "boolean":
             case "id":
             case "null":
-            case "lvalue_ref":
             case "new_parameter":
             case "def_argument":
             case "type_ref_simple":
@@ -595,7 +598,6 @@ export function foldStatements<T>(
             case "boolean":
             case "id":
             case "null":
-            case "lvalue_ref":
             case "new_parameter":
             case "def_argument":
             case "type_ref_simple":

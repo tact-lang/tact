@@ -2,7 +2,6 @@ import {
     ASTBoolean,
     ASTExpression,
     ASTInitOf,
-    ASTLvalueRef,
     ASTNull,
     ASTNumber,
     ASTOpBinary,
@@ -362,7 +361,7 @@ function resolveUnaryOp(
     return registerExpType(ctx, exp, resolvedType);
 }
 
-function resolveField(
+function resolveFieldAccess(
     exp: ASTOpField,
     sctx: StatementContext,
     ctx: CompilerContext,
@@ -389,10 +388,10 @@ function resolveField(
         exp.src.kind === "id" &&
         exp.src.value === "self"
     ) {
-        if (sctx.requiredFields.find((v) => v === exp.name)) {
+        if (sctx.requiredFields.find((v) => v === exp.name.value)) {
             throwCompilationError(
-                `Field "${exp.name}" is not initialized`,
-                exp.ref,
+                `Field "${exp.name.value}" is not initialized`,
+                exp.name.ref,
             );
         }
     }
@@ -407,13 +406,13 @@ function resolveField(
         fields = fields.slice(0, srcT.partialFieldCount);
     }
 
-    const field = fields.find((v) => v.name === exp.name);
-    const cst = srcT.constants.find((v) => v.name === exp.name);
+    const field = fields.find((v) => v.name === exp.name.value);
+    const cst = srcT.constants.find((v) => v.name === exp.name.value);
     if (!field && !cst) {
         if (src.kind === "ref_bounced") {
             throwCompilationError(
-                `Type bounced<"${src.name}"> does not have a field named "${exp.name}"`,
-                exp.ref,
+                `Type bounced<"${src.name}"> does not have a field named "${exp.name.value}"`,
+                exp.name.ref,
             );
         } else {
             throwCompilationError(
@@ -697,44 +696,6 @@ export function resolveConditional(
     );
 }
 
-export function resolveLValueRef(
-    path: ASTLvalueRef[],
-    sctx: StatementContext,
-    ctx: CompilerContext,
-): CompilerContext {
-    const paths: ASTLvalueRef[] = path;
-    let t = sctx.vars.get(paths[0].name);
-    if (!t) {
-        throwCompilationError(
-            `Variable "${paths[0].name}" not found`,
-            paths[0].ref,
-        );
-    }
-    ctx = registerExpType(ctx, paths[0], t);
-
-    // Paths
-    for (let i = 1; i < paths.length; i++) {
-        if (t.kind !== "ref" || t.optional) {
-            throwCompilationError(
-                `Invalid type "${printTypeRef(t)}" for field access`,
-                path[i].ref,
-            );
-        }
-        const srcT = getType(ctx, t.name);
-        const ex = srcT.fields.find((v) => v.name === paths[i].name);
-        if (!ex) {
-            throwCompilationError(
-                "Field " + paths[i].name + " not found in type " + srcT.name,
-                path[i].ref,
-            );
-        }
-        ctx = registerExpType(ctx, paths[i], ex.type);
-        t = ex.type;
-    }
-
-    return ctx;
-}
-
 export function resolveExpression(
     exp: ASTExpression,
     sctx: StatementContext,
@@ -820,7 +781,7 @@ export function resolveExpression(
     }
 
     if (exp.kind === "op_field") {
-        return resolveField(exp, sctx, ctx);
+        return resolveFieldAccess(exp, sctx, ctx);
     }
 
     //
