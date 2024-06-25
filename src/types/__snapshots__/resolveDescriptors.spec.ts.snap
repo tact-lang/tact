@@ -245,6 +245,16 @@ Line 9, col 24:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for scope-storage-var-shadows-trait-const 1`] = `
+"<unknown>:8:3: Contract Foo inherits constant "storageReserve" from its traits and hence cannot have a storage variable with the same name
+Line 8, col 3:
+  7 |   // is a virtual constant defined in BaseTrait
+> 8 |   storageReserve: Int;
+        ^~~~~~~~~~~~~~~~~~~
+  9 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for scope-struct-shadows-contract 1`] = `
 "<unknown>:12:1: Type "Main" already exists
 Line 12, col 1:

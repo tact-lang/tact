@@ -1402,6 +1402,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         t.ast.ref,
                     );
                 }
+                const contractField = t.fields.find((v) => v.name === f.name);
+                if (contractField) {
+                    // a trait constant has the same name as a contract field
+                    throwCompilationError(
+                        `Contract ${t.name} inherits constant "${f.name}" from its traits and hence cannot have a storage variable with the same name`,
+                        contractField.ref,
+                    );
+                }
 
                 // Register constant
                 t.constants.push({
