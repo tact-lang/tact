@@ -16,7 +16,7 @@ import {
 } from "./ast";
 import { throwParseError, throwCompilationError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
-import { Node, IterationNode } from "ohm-js";
+import { Node, IterationNode, NonterminalNode } from "ohm-js";
 import { TypeOrigin } from "../types/types";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
@@ -112,7 +112,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
     StructDecl_message(
         _messageKwd,
         _optLparen,
-        optId,
+        optIntMsgId,
         _optRparen,
         typeId,
         _lbrace,
@@ -125,7 +125,9 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             origin: ctx!.origin,
             name: typeId.sourceString,
             fields: fields.astsOfList(),
-            prefix: unwrapOptNode(optId, (id) => parseInt(id.sourceString)),
+            prefix: unwrapOptNode(optIntMsgId, (number) =>
+                Number(bigintOfIntLiteral(number)),
+            ),
             message: true,
             ref: createRef(this),
         });
@@ -819,13 +821,18 @@ semantics.addOperation<ASTNode>("astOfType", {
     },
 });
 
+// handles binary, octal, decimal and hexadecimal integer literals
+function bigintOfIntLiteral(litString: NonterminalNode): bigint {
+    return BigInt(litString.sourceString.replaceAll("_", ""));
+}
+
 // Expressions
 semantics.addOperation<ASTNode>("astOfExpression", {
     // Literals
     integerLiteral(number) {
         return createNode({
             kind: "number",
-            value: BigInt(number.sourceString.replaceAll("_", "")),
+            value: bigintOfIntLiteral(number),
             ref: createRef(this),
         }); // Parses dec, hex, and bin numbers
     },
