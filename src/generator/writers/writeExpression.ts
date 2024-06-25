@@ -1,4 +1,4 @@
-import { ASTExpression } from "../../grammar/ast";
+import { ASTExpression, ASTId, tryExtractPath } from "../../grammar/ast";
 import { TactConstEvalError, throwCompilationError } from "../../errors";
 import { getExpType } from "../../types/resolveExpression";
 import {
@@ -34,21 +34,6 @@ import { evalConstantExpression } from "../../constEval";
 
 function isNull(f: ASTExpression): boolean {
     return f.kind === "null";
-}
-
-function tryExtractPath(f: ASTExpression): string[] | null {
-    if (f.kind === "id") {
-        return [f.value];
-    }
-    if (f.kind === "op_field") {
-        const p = tryExtractPath(f.src);
-        if (p) {
-            return [...p, f.name];
-        } else {
-            return null;
-        }
-    }
-    return null;
 }
 
 function writeStructConstructor(
@@ -153,6 +138,12 @@ export function writeValue(val: Value, wCtx: WriterContext): string {
         return `${id}(${fieldValues.join(", ")})`;
     }
     throw Error("Invalid value", val);
+}
+
+export function writePathExpression(path: ASTId[]): string {
+    return [id(path[0].value), ...path.slice(1).map((id) => id.value)].join(
+        `'`,
+    );
 }
 
 export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
@@ -463,12 +454,12 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             fields = fields.slice(0, srcT.partialFieldCount);
         }
 
-        const field = fields.find((v) => v.name === f.name)!;
-        const cst = srcT.constants.find((v) => v.name === f.name)!;
+        const field = fields.find((v) => v.name === f.name.value)!;
+        const cst = srcT.constants.find((v) => v.name === f.name.value)!;
         if (!field && !cst) {
             throwCompilationError(
-                `Cannot find field "${f.name}" in struct "${srcT.name}"`,
-                f.ref,
+                `Cannot find field "${f.name.value}" in struct "${srcT.name}"`,
+                f.name.ref,
             );
         }
 
@@ -477,10 +468,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             const path = tryExtractPath(f);
             if (path) {
                 // Prepare path
-                const convertedPath: string[] = [];
-                convertedPath.push(id(path[0]));
-                convertedPath.push(...path.slice(1));
-                const idd = convertedPath.join(`'`);
+                const idd = writePathExpression(path);
 
                 // Special case for structs
                 if (field.type.kind === "ref") {

@@ -4,6 +4,7 @@ import {
     ASTExpression,
     ASTNativeFunction,
     ASTStatement,
+    tryExtractPath,
 } from "../../grammar/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
@@ -14,11 +15,12 @@ import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { id } from "./id";
-import { writeExpression } from "./writeExpression";
+import { writeExpression, writePathExpression } from "./writeExpression";
 import { cast } from "./cast";
 import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { ops } from "./ops";
 import { freshIdentifier } from "./freshIdentifier";
+import { throwInternalCompilerError } from "../../errors";
 
 export function writeCastedExpression(
     expression: ASTExpression,
@@ -124,12 +126,18 @@ export function writeStatement(
         return;
     } else if (f.kind === "statement_assign") {
         // Prepare lvalue
-        const path = f.path
-            .map((v, i) => (i === 0 ? id(v.name) : v.name))
-            .join(`'`);
+        const lvaluePath = tryExtractPath(f.path);
+        if (lvaluePath === null) {
+            // typechecker is supposed to catch this
+            throwInternalCompilerError(
+                `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
+                f.path.ref,
+            );
+        }
+        const path = writePathExpression(lvaluePath);
 
         // Contract/struct case
-        const t = getExpType(ctx.ctx, f.path[f.path.length - 1]);
+        const t = getExpType(ctx.ctx, f.path);
         if (t.kind === "ref") {
             const tt = getType(ctx.ctx, t.name);
             if (tt.kind === "contract" || tt.kind === "struct") {
@@ -143,10 +151,16 @@ export function writeStatement(
         ctx.append(`${path} = ${writeCastedExpression(f.expression, t, ctx)};`);
         return;
     } else if (f.kind === "statement_augmentedassign") {
-        const path = f.path
-            .map((v, i) => (i === 0 ? id(v.name) : v.name))
-            .join(`'`);
-        const t = getExpType(ctx.ctx, f.path[f.path.length - 1]);
+        const lvaluePath = tryExtractPath(f.path);
+        if (lvaluePath === null) {
+            // typechecker is supposed to catch this
+            throwInternalCompilerError(
+                `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
+                f.path.ref,
+            );
+        }
+        const path = writePathExpression(lvaluePath);
+        const t = getExpType(ctx.ctx, f.path);
         ctx.append(
             `${path} = ${cast(t, t, `${path} ${f.op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
         );
@@ -214,12 +228,17 @@ export function writeStatement(
         ctx.append(`}`);
         return;
     } else if (f.kind === "statement_foreach") {
-        // Prepare lvalue
-        const path = f.map
-            .map((v, i) => (i === 0 ? id(v.name) : v.name))
-            .join(`'`);
+        const mapPath = tryExtractPath(f.map);
+        if (mapPath === null) {
+            // typechecker is supposed to catch this
+            throwInternalCompilerError(
+                `foreach is only allowed over maps that are path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
+                f.map.ref,
+            );
+        }
+        const path = writePathExpression(mapPath);
 
-        const t = getExpType(ctx.ctx, f.map[f.map.length - 1]);
+        const t = getExpType(ctx.ctx, f.map);
         if (t.kind !== "map") {
             throw Error("Unknown map type");
         }

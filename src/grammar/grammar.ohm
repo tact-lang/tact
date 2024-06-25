@@ -111,7 +111,7 @@ Tact {
 
     StatementExpression = Expression (";" | &"}")
 
-    StatementAssign = LValue ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "|=" | "&=" | "^=") Expression (";" | &"}")
+    StatementAssign = Expression ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "|=" | "&=" | "^=") Expression (";" | &"}")
 
     StatementCondition = if Expression "{" Statement* "}" ~else --noElse
                        | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse
@@ -129,10 +129,7 @@ Tact {
     StatementTry = try "{" Statement* "}" ~catch --noCatch
                  | try "{" Statement* "}" catch "(" id ")" "{" Statement* "}" --withCatch
 
-    StatementForEach = foreach "(" id "," id "in" LValue ")" "{" Statement* "}"
-
-    LValue = id "." LValue --fieldAccess
-           | id --variable
+    StatementForEach = foreach "(" id "," id "in" Expression ")" "{" Statement* "}"
 
     Expression = ExpressionConditional
 

@@ -576,7 +576,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
         if (operator.sourceString === "=") {
             return createNode({
                 kind: "statement_assign",
-                path: lvalue.astOfLValue(),
+                path: lvalue.astOfExpression(),
                 expression: expression.astOfExpression(),
                 ref: createRef(this),
             });
@@ -612,7 +612,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             }
             return createNode({
                 kind: "statement_augmentedassign",
-                path: lvalue.astOfLValue(),
+                path: lvalue.astOfExpression(),
                 op,
                 expression: expression.astOfExpression(),
                 ref: createRef(this),
@@ -764,33 +764,10 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             kind: "statement_foreach",
             keyName: keyId.sourceString,
             valueName: valueId.sourceString,
-            map: mapId.astOfLValue(),
+            map: mapId.astOfExpression(),
             statements: foreachBlock.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
-    },
-});
-
-// LValue
-semantics.addOperation<ASTNode[]>("astOfLValue", {
-    LValue_variable(id) {
-        return [
-            createNode({
-                kind: "lvalue_ref",
-                name: id.sourceString,
-                ref: createRef(this),
-            }),
-        ];
-    },
-    LValue_fieldAccess(id, dot, lvalue) {
-        return [
-            createNode({
-                kind: "lvalue_ref",
-                name: id.sourceString,
-                ref: createRef(id, dot),
-            }),
-            ...lvalue.astOfLValue(),
-        ];
     },
 });
 
@@ -1097,7 +1074,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
         return createNode({
             kind: "op_field",
             src: source.astOfExpression(),
-            name: fieldId.sourceString,
+            name: fieldId.astOfExpression(),
             ref: createRef(this),
         });
     },

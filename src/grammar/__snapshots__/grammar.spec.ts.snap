@@ -465,7 +465,7 @@ exports[`grammar should parse contract-with-init 1`] = `
               },
             },
           ],
-          "id": 17,
+          "id": 19,
           "kind": "def_init_function",
           "ref": init(a: Int, b: Int) {
         self.a = a;
@@ -474,58 +474,64 @@ exports[`grammar should parse contract-with-init 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 11,
+                "id": 12,
                 "kind": "id",
                 "ref": a,
                 "value": "a",
               },
-              "id": 12,
+              "id": 13,
               "kind": "statement_assign",
-              "path": [
-                {
-                  "id": 9,
-                  "kind": "lvalue_ref",
-                  "name": "self",
-                  "ref": self.,
-                },
-                {
+              "path": {
+                "id": 11,
+                "kind": "op_field",
+                "name": {
                   "id": 10,
-                  "kind": "lvalue_ref",
-                  "name": "a",
+                  "kind": "id",
                   "ref": a,
+                  "value": "a",
                 },
-              ],
+                "ref": self.a,
+                "src": {
+                  "id": 9,
+                  "kind": "id",
+                  "ref": self,
+                  "value": "self",
+                },
+              },
               "ref": self.a = a;,
             },
             {
               "expression": {
-                "id": 15,
+                "id": 17,
                 "kind": "id",
                 "ref": b,
                 "value": "b",
               },
-              "id": 16,
+              "id": 18,
               "kind": "statement_assign",
-              "path": [
-                {
-                  "id": 13,
-                  "kind": "lvalue_ref",
-                  "name": "self",
-                  "ref": self.,
-                },
-                {
-                  "id": 14,
-                  "kind": "lvalue_ref",
-                  "name": "b",
+              "path": {
+                "id": 16,
+                "kind": "op_field",
+                "name": {
+                  "id": 15,
+                  "kind": "id",
                   "ref": b,
+                  "value": "b",
                 },
-              ],
+                "ref": self.b,
+                "src": {
+                  "id": 14,
+                  "kind": "id",
+                  "ref": self,
+                  "value": "self",
+                },
+              },
               "ref": self.b = b;,
             },
           ],
         },
       ],
-      "id": 18,
+      "id": 20,
       "kind": "def_contract",
       "name": "Sample",
       "origin": "user",
@@ -541,7 +547,7 @@ exports[`grammar should parse contract-with-init 1`] = `
       "traits": [],
     },
   ],
-  "id": 19,
+  "id": 21,
   "kind": "program",
 }
 `;
@@ -4003,14 +4009,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 10,
           "kind": "statement_augmentedassign",
           "op": "+",
-          "path": [
-            {
-              "id": 8,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 8,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a += b;,
         },
         {
@@ -4023,14 +4027,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 13,
           "kind": "statement_augmentedassign",
           "op": "+",
-          "path": [
-            {
-              "id": 11,
-              "kind": "lvalue_ref",
-              "name": "b",
-              "ref": b,
-            },
-          ],
+          "path": {
+            "id": 11,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
           "ref": b += a;,
         },
         {
@@ -4043,14 +4045,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 16,
           "kind": "statement_augmentedassign",
           "op": "+",
-          "path": [
-            {
-              "id": 14,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 14,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a += 3;,
         },
         {
@@ -4075,14 +4075,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 21,
           "kind": "statement_augmentedassign",
           "op": "+",
-          "path": [
-            {
-              "id": 17,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 17,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a += b + 4;,
         },
         {
@@ -4095,14 +4093,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 24,
           "kind": "statement_augmentedassign",
           "op": "-",
-          "path": [
-            {
-              "id": 22,
-              "kind": "lvalue_ref",
-              "name": "b",
-              "ref": b,
-            },
-          ],
+          "path": {
+            "id": 22,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
           "ref": b -= 1;,
         },
         {
@@ -4115,14 +4111,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 27,
           "kind": "statement_augmentedassign",
           "op": "-",
-          "path": [
-            {
-              "id": 25,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 25,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a -= b;,
         },
         {
@@ -4147,14 +4141,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 32,
           "kind": "statement_augmentedassign",
           "op": "-",
-          "path": [
-            {
-              "id": 28,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 28,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a -= b - 1;,
         },
         {
@@ -4167,14 +4159,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 35,
           "kind": "statement_augmentedassign",
           "op": "*",
-          "path": [
-            {
-              "id": 33,
-              "kind": "lvalue_ref",
-              "name": "b",
-              "ref": b,
-            },
-          ],
+          "path": {
+            "id": 33,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
           "ref": b *= 2;,
         },
         {
@@ -4187,14 +4177,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 38,
           "kind": "statement_augmentedassign",
           "op": "*",
-          "path": [
-            {
-              "id": 36,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 36,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a *= b;,
         },
         {
@@ -4219,14 +4207,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 43,
           "kind": "statement_augmentedassign",
           "op": "*",
-          "path": [
-            {
-              "id": 39,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 39,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a *= b * 2;,
         },
         {
@@ -4239,14 +4225,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 46,
           "kind": "statement_augmentedassign",
           "op": "/",
-          "path": [
-            {
-              "id": 44,
-              "kind": "lvalue_ref",
-              "name": "b",
-              "ref": b,
-            },
-          ],
+          "path": {
+            "id": 44,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
           "ref": b /= 2;,
         },
         {
@@ -4259,14 +4243,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 49,
           "kind": "statement_augmentedassign",
           "op": "/",
-          "path": [
-            {
-              "id": 47,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 47,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a /= b;,
         },
         {
@@ -4291,14 +4273,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 54,
           "kind": "statement_augmentedassign",
           "op": "/",
-          "path": [
-            {
-              "id": 50,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 50,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a /= b / 2;,
         },
         {
@@ -4311,14 +4291,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 57,
           "kind": "statement_augmentedassign",
           "op": "%",
-          "path": [
-            {
-              "id": 55,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 55,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a %= 2;,
         },
         {
@@ -4331,14 +4309,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 60,
           "kind": "statement_augmentedassign",
           "op": "%",
-          "path": [
-            {
-              "id": 58,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 58,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a %= b;,
         },
         {
@@ -4363,14 +4339,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 65,
           "kind": "statement_augmentedassign",
           "op": "%",
-          "path": [
-            {
-              "id": 61,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 61,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a %= b % 2;,
         },
         {
@@ -4475,14 +4449,12 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 10,
           "kind": "statement_augmentedassign",
           "op": "|",
-          "path": [
-            {
-              "id": 8,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 8,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a |= b;,
         },
         {
@@ -4495,14 +4467,12 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 13,
           "kind": "statement_augmentedassign",
           "op": "|",
-          "path": [
-            {
-              "id": 11,
-              "kind": "lvalue_ref",
-              "name": "b",
-              "ref": b,
-            },
-          ],
+          "path": {
+            "id": 11,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
           "ref": b |= a;,
         },
         {
@@ -4515,14 +4485,12 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 16,
           "kind": "statement_augmentedassign",
           "op": "|",
-          "path": [
-            {
-              "id": 14,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 14,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a |= 3;,
         },
         {
@@ -4547,14 +4515,12 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 21,
           "kind": "statement_augmentedassign",
           "op": "|",
-          "path": [
-            {
-              "id": 17,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 17,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a |= b | 4;,
         },
         {
@@ -4567,14 +4533,12 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 24,
           "kind": "statement_augmentedassign",
           "op": "&",
-          "path": [
-            {
-              "id": 22,
-              "kind": "lvalue_ref",
-              "name": "b",
-              "ref": b,
-            },
-          ],
+          "path": {
+            "id": 22,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
           "ref": b &= 1;,
         },
         {
@@ -4587,14 +4551,12 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 27,
           "kind": "statement_augmentedassign",
           "op": "&",
-          "path": [
-            {
-              "id": 25,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 25,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a &= b;,
         },
         {
@@ -4607,14 +4569,12 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 30,
           "kind": "statement_augmentedassign",
           "op": "&",
-          "path": [
-            {
-              "id": 28,
-              "kind": "lvalue_ref",
-              "name": "b",
-              "ref": b,
-            },
-          ],
+          "path": {
+            "id": 28,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
           "ref": b &= a;,
         },
         {
@@ -4639,14 +4599,12 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 35,
           "kind": "statement_augmentedassign",
           "op": "&",
-          "path": [
-            {
-              "id": 31,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 31,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a &= b & 1;,
         },
         {
@@ -4659,14 +4617,12 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 38,
           "kind": "statement_augmentedassign",
           "op": "^",
-          "path": [
-            {
-              "id": 36,
-              "kind": "lvalue_ref",
-              "name": "b",
-              "ref": b,
-            },
-          ],
+          "path": {
+            "id": 36,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
           "ref": b ^= 2;,
         },
         {
@@ -4679,14 +4635,12 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 41,
           "kind": "statement_augmentedassign",
           "op": "^",
-          "path": [
-            {
-              "id": 39,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 39,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a ^= b;,
         },
         {
@@ -4699,14 +4653,12 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 44,
           "kind": "statement_augmentedassign",
           "op": "^",
-          "path": [
-            {
-              "id": 42,
-              "kind": "lvalue_ref",
-              "name": "b",
-              "ref": b,
-            },
-          ],
+          "path": {
+            "id": 42,
+            "kind": "id",
+            "ref": b,
+            "value": "b",
+          },
           "ref": b ^= a;,
         },
         {
@@ -4731,14 +4683,12 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 49,
           "kind": "statement_augmentedassign",
           "op": "^",
-          "path": [
-            {
-              "id": 45,
-              "kind": "lvalue_ref",
-              "name": "a",
-              "ref": a,
-            },
-          ],
+          "path": {
+            "id": 45,
+            "kind": "id",
+            "ref": a,
+            "value": "a",
+          },
           "ref": a ^= b ^ 2;,
         },
         {
@@ -5049,14 +4999,12 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
               "id": 13,
               "kind": "statement_augmentedassign",
               "op": "+",
-              "path": [
-                {
-                  "id": 11,
-                  "kind": "lvalue_ref",
-                  "name": "i",
-                  "ref": i,
-                },
-              ],
+              "path": {
+                "id": 11,
+                "kind": "id",
+                "ref": i,
+                "value": "i",
+              },
               "ref": i += 1,
             },
           ],
@@ -5304,14 +5252,12 @@ exports[`grammar should parse stmt-while-loop 1`] = `
               },
               "id": 15,
               "kind": "statement_assign",
-              "path": [
-                {
-                  "id": 11,
-                  "kind": "lvalue_ref",
-                  "name": "i",
-                  "ref": i,
-                },
-              ],
+              "path": {
+                "id": 11,
+                "kind": "id",
+                "ref": i,
+                "value": "i",
+              },
               "ref": i = i + 1;,
             },
           ],
@@ -5401,14 +5347,12 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
               },
               "id": 9,
               "kind": "statement_assign",
-              "path": [
-                {
-                  "id": 5,
-                  "kind": "lvalue_ref",
-                  "name": "i",
-                  "ref": i,
-                },
-              ],
+              "path": {
+                "id": 5,
+                "kind": "id",
+                "ref": i,
+                "value": "i",
+              },
               "ref": i = i + 1;,
             },
           ],
@@ -5447,14 +5391,12 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
               },
               "id": 16,
               "kind": "statement_assign",
-              "path": [
-                {
-                  "id": 12,
-                  "kind": "lvalue_ref",
-                  "name": "i",
-                  "ref": i,
-                },
-              ],
+              "path": {
+                "id": 12,
+                "kind": "id",
+                "ref": i,
+                "value": "i",
+              },
               "ref": i = i * 10;,
             },
           ],
@@ -5493,14 +5435,12 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
               },
               "id": 23,
               "kind": "statement_assign",
-              "path": [
-                {
-                  "id": 19,
-                  "kind": "lvalue_ref",
-                  "name": "i",
-                  "ref": i,
-                },
-              ],
+              "path": {
+                "id": 19,
+                "kind": "id",
+                "ref": i,
+                "value": "i",
+              },
               "ref": i = i - 1;,
             },
           ],

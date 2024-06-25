@@ -954,7 +954,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "statements": [],
         },
         {
-          "id": 21,
+          "id": 22,
           "kind": "def_receive",
           "ref": bounced(src: bounced<A>) {
     let x: Int = src.c;
@@ -977,9 +977,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "statements": [
             {
               "expression": {
-                "id": 19,
+                "id": 20,
                 "kind": "op_field",
-                "name": "c",
+                "name": {
+                  "id": 19,
+                  "kind": "id",
+                  "ref": c,
+                  "value": "c",
+                },
                 "ref": src.c,
                 "src": {
                   "id": 18,
@@ -988,7 +993,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
                   "value": "src",
                 },
               },
-              "id": 20,
+              "id": 21,
               "kind": "statement_let",
               "name": "x",
               "ref": let x: Int = src.c;,
@@ -1003,7 +1008,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           ],
         },
       ],
-      "id": 22,
+      "id": 23,
       "kind": "def_contract",
       "name": "Test",
       "origin": "user",
@@ -1073,7 +1078,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       },
       {
         "ast": {
-          "id": 21,
+          "id": 22,
           "kind": "def_receive",
           "ref": bounced(src: bounced<A>) {
     let x: Int = src.c;
@@ -1096,9 +1101,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "statements": [
             {
               "expression": {
-                "id": 19,
+                "id": 20,
                 "kind": "op_field",
-                "name": "c",
+                "name": {
+                  "id": 19,
+                  "kind": "id",
+                  "ref": c,
+                  "value": "c",
+                },
                 "ref": src.c,
                 "src": {
                   "id": 18,
@@ -1107,7 +1117,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
                   "value": "src",
                 },
               },
-              "id": 20,
+              "id": 21,
               "kind": "statement_let",
               "name": "x",
               "ref": let x: Int = src.c;,
@@ -2279,7 +2289,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               },
             },
           ],
-          "id": 15,
+          "id": 16,
           "kind": "def_init_function",
           "ref": init(a: Int) {
         self.a = a;
@@ -2287,27 +2297,30 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
-                "id": 13,
+                "id": 14,
                 "kind": "id",
                 "ref": a,
                 "value": "a",
               },
-              "id": 14,
+              "id": 15,
               "kind": "statement_assign",
-              "path": [
-                {
-                  "id": 11,
-                  "kind": "lvalue_ref",
-                  "name": "self",
-                  "ref": self.,
-                },
-                {
+              "path": {
+                "id": 13,
+                "kind": "op_field",
+                "name": {
                   "id": 12,
-                  "kind": "lvalue_ref",
-                  "name": "a",
+                  "kind": "id",
                   "ref": a,
+                  "value": "a",
                 },
-              ],
+                "ref": self.a,
+                "src": {
+                  "id": 11,
+                  "kind": "id",
+                  "ref": self,
+                  "value": "self",
+                },
+              },
               "ref": self.a = a;,
             },
           ],
@@ -2320,7 +2333,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "type": "get",
             },
           ],
-          "id": 19,
+          "id": 20,
           "kind": "def_function",
           "name": "hello",
           "origin": "user",
@@ -2328,7 +2341,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         return 0;
     },
           "return": {
-            "id": 16,
+            "id": 17,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2337,12 +2350,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
-                "id": 17,
+                "id": 18,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 18,
+              "id": 19,
               "kind": "statement_return",
               "ref": return 0;,
             },
@@ -2356,7 +2369,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "type": "get",
             },
           ],
-          "id": 23,
+          "id": 24,
           "kind": "def_function",
           "name": "hello2",
           "origin": "user",
@@ -2364,7 +2377,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         return 0;
     },
           "return": {
-            "id": 20,
+            "id": 21,
             "kind": "type_ref_simple",
             "name": "Point",
             "optional": false,
@@ -2373,19 +2386,19 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
-                "id": 21,
+                "id": 22,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 22,
+              "id": 23,
               "kind": "statement_return",
               "ref": return 0;,
             },
           ],
         },
       ],
-      "id": 24,
+      "id": 25,
       "kind": "def_contract",
       "name": "Main",
       "origin": "user",
@@ -2455,7 +2468,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "type": "get",
             },
           ],
-          "id": 19,
+          "id": 20,
           "kind": "def_function",
           "name": "hello",
           "origin": "user",
@@ -2463,7 +2476,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         return 0;
     },
           "return": {
-            "id": 16,
+            "id": 17,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2472,12 +2485,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
-                "id": 17,
+                "id": 18,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 18,
+              "id": 19,
               "kind": "statement_return",
               "ref": return 0;,
             },
@@ -2508,7 +2521,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "type": "get",
             },
           ],
-          "id": 23,
+          "id": 24,
           "kind": "def_function",
           "name": "hello2",
           "origin": "user",
@@ -2516,7 +2529,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         return 0;
     },
           "return": {
-            "id": 20,
+            "id": 21,
             "kind": "type_ref_simple",
             "name": "Point",
             "optional": false,
@@ -2525,12 +2538,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
-                "id": 21,
+                "id": 22,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 22,
+              "id": 23,
               "kind": "statement_return",
               "ref": return 0;,
             },
@@ -2582,7 +2595,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             },
           },
         ],
-        "id": 15,
+        "id": 16,
         "kind": "def_init_function",
         "ref": init(a: Int) {
         self.a = a;
@@ -2590,27 +2603,30 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "statements": [
           {
             "expression": {
-              "id": 13,
+              "id": 14,
               "kind": "id",
               "ref": a,
               "value": "a",
             },
-            "id": 14,
+            "id": 15,
             "kind": "statement_assign",
-            "path": [
-              {
-                "id": 11,
-                "kind": "lvalue_ref",
-                "name": "self",
-                "ref": self.,
-              },
-              {
+            "path": {
+              "id": 13,
+              "kind": "op_field",
+              "name": {
                 "id": 12,
-                "kind": "lvalue_ref",
-                "name": "a",
+                "kind": "id",
                 "ref": a,
+                "value": "a",
               },
-            ],
+              "ref": self.a,
+              "src": {
+                "id": 11,
+                "kind": "id",
+                "ref": self,
+                "value": "self",
+              },
+            },
             "ref": self.a = a;,
           },
         ],
@@ -3294,7 +3310,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "type": "get",
             },
           ],
-          "id": 29,
+          "id": 31,
           "kind": "def_function",
           "name": "test",
           "origin": "user",
@@ -3369,26 +3385,31 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
-                    "id": 16,
+                    "id": 17,
                     "kind": "number",
                     "ref": 1,
                     "value": 1n,
                   },
                   {
-                    "id": 17,
+                    "id": 18,
                     "kind": "number",
                     "ref": 2,
                     "value": 2n,
                   },
                 ],
-                "id": 18,
+                "id": 19,
                 "kind": "op_call",
                 "name": "set",
                 "ref": self.m.set(1, 2),
                 "src": {
-                  "id": 15,
+                  "id": 16,
                   "kind": "op_field",
-                  "name": "m",
+                  "name": {
+                    "id": 15,
+                    "kind": "id",
+                    "ref": m,
+                    "value": "m",
+                  },
                   "ref": self.m,
                   "src": {
                     "id": 14,
@@ -3398,29 +3419,29 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                   },
                 },
               },
-              "id": 19,
+              "id": 20,
               "kind": "statement_expression",
               "ref": self.m.set(1, 2);,
             },
             {
               "expression": {
-                "id": 27,
+                "id": 29,
                 "kind": "op_binary",
                 "left": {
                   "args": [
                     {
-                      "id": 21,
+                      "id": 22,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
                     },
                   ],
-                  "id": 22,
+                  "id": 23,
                   "kind": "op_call",
                   "name": "get",
                   "ref": m.get(1),
                   "src": {
-                    "id": 20,
+                    "id": 21,
                     "kind": "id",
                     "ref": m,
                     "value": "m",
@@ -3431,23 +3452,28 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "right": {
                   "args": [
                     {
-                      "id": 25,
+                      "id": 27,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
                     },
                   ],
-                  "id": 26,
+                  "id": 28,
                   "kind": "op_call",
                   "name": "get",
                   "ref": self.m.get(1),
                   "src": {
-                    "id": 24,
+                    "id": 26,
                     "kind": "op_field",
-                    "name": "m",
+                    "name": {
+                      "id": 25,
+                      "kind": "id",
+                      "ref": m,
+                      "value": "m",
+                    },
                     "ref": self.m,
                     "src": {
-                      "id": 23,
+                      "id": 24,
                       "kind": "id",
                       "ref": self,
                       "value": "self",
@@ -3455,14 +3481,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                   },
                 },
               },
-              "id": 28,
+              "id": 30,
               "kind": "statement_return",
               "ref": return m.get(1) + self.m.get(1);,
             },
           ],
         },
       ],
-      "id": 30,
+      "id": 32,
       "kind": "def_contract",
       "name": "Main",
       "origin": "user",
@@ -3534,7 +3560,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "type": "get",
             },
           ],
-          "id": 29,
+          "id": 31,
           "kind": "def_function",
           "name": "test",
           "origin": "user",
@@ -3609,26 +3635,31 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
-                    "id": 16,
+                    "id": 17,
                     "kind": "number",
                     "ref": 1,
                     "value": 1n,
                   },
                   {
-                    "id": 17,
+                    "id": 18,
                     "kind": "number",
                     "ref": 2,
                     "value": 2n,
                   },
                 ],
-                "id": 18,
+                "id": 19,
                 "kind": "op_call",
                 "name": "set",
                 "ref": self.m.set(1, 2),
                 "src": {
-                  "id": 15,
+                  "id": 16,
                   "kind": "op_field",
-                  "name": "m",
+                  "name": {
+                    "id": 15,
+                    "kind": "id",
+                    "ref": m,
+                    "value": "m",
+                  },
                   "ref": self.m,
                   "src": {
                     "id": 14,
@@ -3638,29 +3669,29 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                   },
                 },
               },
-              "id": 19,
+              "id": 20,
               "kind": "statement_expression",
               "ref": self.m.set(1, 2);,
             },
             {
               "expression": {
-                "id": 27,
+                "id": 29,
                 "kind": "op_binary",
                 "left": {
                   "args": [
                     {
-                      "id": 21,
+                      "id": 22,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
                     },
                   ],
-                  "id": 22,
+                  "id": 23,
                   "kind": "op_call",
                   "name": "get",
                   "ref": m.get(1),
                   "src": {
-                    "id": 20,
+                    "id": 21,
                     "kind": "id",
                     "ref": m,
                     "value": "m",
@@ -3671,23 +3702,28 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "right": {
                   "args": [
                     {
-                      "id": 25,
+                      "id": 27,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
                     },
                   ],
-                  "id": 26,
+                  "id": 28,
                   "kind": "op_call",
                   "name": "get",
                   "ref": self.m.get(1),
                   "src": {
-                    "id": 24,
+                    "id": 26,
                     "kind": "op_field",
-                    "name": "m",
+                    "name": {
+                      "id": 25,
+                      "kind": "id",
+                      "ref": m,
+                      "value": "m",
+                    },
                     "ref": self.m,
                     "src": {
-                      "id": 23,
+                      "id": 24,
                       "kind": "id",
                       "ref": self,
                       "value": "self",
@@ -3695,7 +3731,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                   },
                 },
               },
-              "id": 28,
+              "id": 30,
               "kind": "statement_return",
               "ref": return m.get(1) + self.m.get(1);,
             },
@@ -3722,7 +3758,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
       "args": [],
       "ast": {
         "args": [],
-        "id": 32,
+        "id": 34,
         "kind": "def_init_function",
         "ref": contract Main {
     m: map<Int, Int as coins>;
