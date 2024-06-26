@@ -1,8 +1,8 @@
 @interface("") trait B {
 }
 
-trait C {  
-    abstract get fun d(e: String): String;  
+trait C {
+    abstract get fun d(e: String): String;
 }
 
 trait Ownable with B {
