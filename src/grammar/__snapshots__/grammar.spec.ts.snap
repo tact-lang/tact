@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`grammar should fail abstract-const-without-modifier 1`] = `
+"<unknown>:2:5: Abstract constant doesn't have abstract modifier
+Line 2, col 5:
+  1 | trait t {
+> 2 |     const c: Int;
+          ^~~~~~~~~~~~~
+  3 | }
+"
+`;
+
 exports[`grammar should fail contract-empty-traits-list-with-keyword 1`] = `
 "<unknown>:1:20: Parse error: expected "_", "A".."Z", or "a".."z"
 
@@ -351,6 +361,48 @@ Line 1, col 8:
              ^
   2 |     a: Int;
 "
+`;
+
+exports[`grammar should parse abstract-const 1`] = `
+{
+  "entries": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "ref": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 2,
+          "kind": "def_constant",
+          "name": "c",
+          "ref": abstract const c: Int;,
+          "type": {
+            "id": 1,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "value": null,
+        },
+      ],
+      "id": 3,
+      "kind": "def_trait",
+      "name": "t",
+      "origin": "user",
+      "ref": trait t {
+    abstract const c: Int;
+},
+      "traits": [],
+    },
+  ],
+  "id": 4,
+  "kind": "program",
+}
 `;
 
 exports[`grammar should parse contract-with-const-override 1`] = `
