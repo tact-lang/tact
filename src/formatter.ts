@@ -3,7 +3,6 @@ import {
     ASTProgramImport,
     ASTNativeFunction,
     ASTProgram,
-    ASTLvalueRef,
     ASTTypeRefBounced,
     ASTTypeRefMap,
     ASTTypeRefSimple,
@@ -159,7 +158,7 @@ class PrettyPrinter {
                 result = `${expr.op}${this.ppASTExpression(expr.right, currentPrecedence)}`;
                 break;
             case "op_field":
-                result = `${this.ppASTExpression(expr.src, currentPrecedence)}.${expr.name}`;
+                result = `${this.ppASTExpression(expr.src, currentPrecedence)}.${this.ppASTId(expr.name)}`;
                 break;
             case "op_call":
                 result = `${this.ppASTExpression(expr.src, currentPrecedence)}.${expr.name}(${expr.args.map((arg) => this.ppASTExpression(arg, currentPrecedence)).join(", ")})`;
@@ -190,9 +189,6 @@ class PrettyPrinter {
                 break;
             case "null":
                 result = "null";
-                break;
-            case "lvalue_ref":
-                result = `${expr.name}`;
                 break;
             default:
                 throw new Error(`Unsupported expression type: ${expr}`);
@@ -519,7 +515,8 @@ class PrettyPrinter {
 
     ppASTStatementLet(statement: ASTStatementLet): string {
         const expression = this.ppASTExpression(statement.expression);
-        return `${this.indent()}let ${statement.name}: ${this.ppASTTypeRef(statement.type)} = ${expression};`;
+        const tyAnnotation = statement.type === null ? "" : `: ${this.ppASTTypeRef(statement.type)}`;  
+    return `${this.indent()}let ${statement.name}${tyAnnotation} = ${expression};`
     }
 
     ppASTStatementReturn(statement: ASTStatementReturn): string {
@@ -533,24 +530,24 @@ class PrettyPrinter {
         return `${this.indent()}${this.ppASTExpression(statement.expression)};`;
     }
 
-    ppASTLvalueRef(lvalues: ASTLvalueRef[]) {
-        return lvalues
-            .map((lvalue) =>lvalue.name)
-            .join(".");
-    }
+    // ppASTLvalueRef(lvalues: ASTLvalueRef[]) {
+    //     return lvalues
+    //         .map((lvalue) =>lvalue.name)
+    //         .join(".");
+    // }
 
     ppASTId(id: ASTId) {
         return id.value;
     }
 
     ppASTStatementAssign(statement: ASTStatementAssign): string {
-        return `${this.indent()}${this.ppASTLvalueRef(statement.path)} = ${this.ppASTExpression(statement.expression)};`;
+        return `${this.indent()}${this.ppASTExpression(statement.path)} = ${this.ppASTExpression(statement.expression)};`;
     }
 
     ppASTStatementAugmentedAssign(
         statement: ASTStatementAugmentedAssign,
     ): string {
-        return `${this.indent()}${this.ppASTLvalueRef(statement.path)} ${statement.op}= ${this.ppASTExpression(statement.expression)};`;
+        return `${this.indent()}${this.ppASTExpression(statement.path)} ${statement.op}= ${this.ppASTExpression(statement.expression)};`;
     }
 
     ppASTCondition(statement: ASTCondition): string {
@@ -582,7 +579,7 @@ class PrettyPrinter {
 
     ppASTStatementForEach(statement: ASTStatementForEach): string {
         //statement.map is ASTId thus ppASTLvalueRef wouldn't wirk with it
-        const header = `foreach (${statement.keyName}, ${statement.valueName} in ${this.ppASTId(statement.map)})`;
+        const header = `foreach (${statement.keyName}, ${statement.valueName} in ${this.ppASTExpression(statement.map)})`;
         const body = this.ppStatementBlock(statement.statements);
         return `${this.indent()}${header} ${body}`
     }
