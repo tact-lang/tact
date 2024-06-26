@@ -406,17 +406,10 @@ class PrettyPrinter {
         const returnType = func.return
             ? `: ${this.ppASTTypeRef(func.return)}`
             : "";
-        this.increaseIndent();
-        const stmtsFormatted = func.statements
-            ? func.statements
-                  .map((stmt) => this.ppASTStatement(stmt))
-                  .join("\n")
-            : "";
         const body = func.statements
-            ? `{\n${stmtsFormatted}`
+            ? ` ${this.ppStatementBlock(func.statements)}`
             : ";";
-        this.decreaseIndent();
-        return `${this.indent()}${attrsFormatted}fun ${func.name}(${argsFormatted})${returnType} ${body}\n${this.indent()}}`;
+        return `${this.indent()}${attrsFormatted}fun ${func.name}(${argsFormatted})${returnType}${body}`;
     }
 
     ppASTReceive(receive: ASTReceive): string {
