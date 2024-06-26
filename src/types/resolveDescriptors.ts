@@ -958,12 +958,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                             (internal
                                                 ? "internal-binary"
                                                 : "external-binary") &&
-                                        v.selector.name === n,
+                                        v.selector.type === n,
                                 )
                             ) {
                                 throwCompilationError(
                                     `Receive function for "${arg.type.name}" already exists`,
-                                    d.ref,
+                                    arg.ref,
                                 );
                             }
 
@@ -1104,12 +1104,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         (v) =>
                                             v.selector.kind ===
                                                 "bounce-binary" &&
-                                            v.selector.name === type.name,
+                                            v.selector.type === type.name,
                                     )
                                 ) {
                                     throwCompilationError(
                                         `Bounce receive function for "${arg.type.name}" already exists`,
-                                        d.ref,
+                                        arg.ref,
                                     );
                                 }
                                 s.receivers.push({
