@@ -1,4 +1,4 @@
-import { ASTExpression } from "../../grammar/ast";
+import { ASTExpression, ASTId, tryExtractPath } from "../../grammar/ast";
 import { TactConstEvalError, throwCompilationError } from "../../errors";
 import { getExpType } from "../../types/resolveExpression";
 import {
@@ -36,21 +36,6 @@ function isNull(f: ASTExpression): boolean {
     return f.kind === "null";
 }
 
-function tryExtractPath(f: ASTExpression): string[] | null {
-    if (f.kind === "id") {
-        return [f.value];
-    }
-    if (f.kind === "op_field") {
-        const p = tryExtractPath(f.src);
-        if (p) {
-            return [...p, f.name];
-        } else {
-            return null;
-        }
-    }
-    return null;
-}
-
 function writeStructConstructor(
     type: TypeDescription,
     args: string[],
@@ -67,7 +52,12 @@ function writeStructConstructor(
     // Generate constructor
     ctx.fun(name, () => {
         const funcType = resolveFuncType(type, ctx);
-        const sig = `(${funcType}) ${name}(${args.map((v) => resolveFuncType(type.fields.find((v2) => v2.name === v)!.type, ctx) + " " + v).join(", ")})`;
+        // rename a struct constructor formal parameter to avoid
+        // name clashes with FunC keywords, e.g. `struct Foo {type: Int}`
+        // is a perfectly fine Tact structure, but its constructor would
+        // have the wrong parameter name: `$Foo$_constructor_type(int type)`
+        const avoidFunCKeywordNameClash = (p: string) => `$${p}`;
+        const sig = `(${funcType}) ${name}(${args.map((v) => resolveFuncType(type.fields.find((v2) => v2.name === v)!.type, ctx) + " " + avoidFunCKeywordNameClash(v)).join(", ")})`;
         ctx.signature(sig);
         ctx.flag("inline");
         ctx.context("type:" + type.name);
@@ -76,7 +66,7 @@ function writeStructConstructor(
             const expressions = type.fields.map((v) => {
                 const arg = args.find((v2) => v2 === v.name);
                 if (arg) {
-                    return arg;
+                    return avoidFunCKeywordNameClash(arg);
                 } else if (v.default !== undefined) {
                     return writeValue(v.default, ctx);
                 } else {
@@ -148,6 +138,12 @@ export function writeValue(val: Value, wCtx: WriterContext): string {
         return `${id}(${fieldValues.join(", ")})`;
     }
     throw Error("Invalid value", val);
+}
+
+export function writePathExpression(path: ASTId[]): string {
+    return [id(path[0].value), ...path.slice(1).map((id) => id.value)].join(
+        `'`,
+    );
 }
 
 export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
@@ -458,12 +454,12 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             fields = fields.slice(0, srcT.partialFieldCount);
         }
 
-        const field = fields.find((v) => v.name === f.name)!;
-        const cst = srcT.constants.find((v) => v.name === f.name)!;
+        const field = fields.find((v) => v.name === f.name.value)!;
+        const cst = srcT.constants.find((v) => v.name === f.name.value)!;
         if (!field && !cst) {
             throwCompilationError(
-                `Cannot find field "${f.name}" in struct "${srcT.name}"`,
-                f.ref,
+                `Cannot find field "${f.name.value}" in struct "${srcT.name}"`,
+                f.name.ref,
             );
         }
 
@@ -472,10 +468,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             const path = tryExtractPath(f);
             if (path) {
                 // Prepare path
-                const convertedPath: string[] = [];
-                convertedPath.push(id(path[0]));
-                convertedPath.push(...path.slice(1));
-                const idd = convertedPath.join(`'`);
+                const idd = writePathExpression(path);
 
                 // Special case for structs
                 if (field.type.kind === "ref") {

@@ -11,18 +11,16 @@ export function cloneNode<T extends ASTNode>(src: T): T {
         return cloneASTNode(src);
     } else if (src.kind === "string") {
         return cloneASTNode(src);
-    } else if (src.kind === "lvalue_ref") {
-        return cloneASTNode(src);
     } else if (src.kind === "statement_assign") {
         return cloneASTNode({
             ...src,
-            path: src.path.map(cloneNode),
+            path: cloneNode(src.path),
             expression: cloneNode(src.expression),
         });
     } else if (src.kind === "statement_augmentedassign") {
         return cloneASTNode({
             ...src,
-            path: src.path.map(cloneNode),
+            path: cloneNode(src.path),
             expression: cloneNode(src.expression),
         });
     } else if (src.kind === "statement_let") {

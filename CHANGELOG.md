@@ -13,8 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Removed the `LValue` grammatical category and replaced it with `Expression`: PR [#479](https://github.com/tact-lang/tact/pull/479)
+
 ### Fixed
 - Error messages for non-abstract constants in traits: PR [#483](https://github.com/tact-lang/tact/pull/483)
+
+- Name clashes with FunC keywords in struct constructor function parameters: PR [#467](https://github.com/tact-lang/tact/issues/467)
+- Error messages for traversing non-path-expressions in `foreach`-loops : PR [#479](https://github.com/tact-lang/tact/pull/479)
+- Shadowing of trait constants by contract storage variables: PR [#480](https://github.com/tact-lang/tact/pull/480)
+- Parsing of non-decimal message opcodes: PR [#481](https://github.com/tact-lang/tact/pull/481)
 
 ## [1.4.0] - 2024-06-21
 

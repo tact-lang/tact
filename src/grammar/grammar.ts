@@ -16,7 +16,7 @@ import {
 } from "./ast";
 import { throwParseError, throwCompilationError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
-import { Node, IterationNode } from "ohm-js";
+import { Node, IterationNode, NonterminalNode } from "ohm-js";
 import { TypeOrigin } from "../types/types";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
@@ -112,7 +112,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
     StructDecl_message(
         _messageKwd,
         _optLparen,
-        optId,
+        optIntMsgId,
         _optRparen,
         typeId,
         _lbrace,
@@ -125,7 +125,9 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             origin: ctx!.origin,
             name: typeId.sourceString,
             fields: fields.astsOfList(),
-            prefix: unwrapOptNode(optId, (id) => parseInt(id.sourceString)),
+            prefix: unwrapOptNode(optIntMsgId, (number) =>
+                Number(bigintOfIntLiteral(number)),
+            ),
             message: true,
             ref: createRef(this),
         });
@@ -576,7 +578,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
         if (operator.sourceString === "=") {
             return createNode({
                 kind: "statement_assign",
-                path: lvalue.astOfLValue(),
+                path: lvalue.astOfExpression(),
                 expression: expression.astOfExpression(),
                 ref: createRef(this),
             });
@@ -612,7 +614,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             }
             return createNode({
                 kind: "statement_augmentedassign",
-                path: lvalue.astOfLValue(),
+                path: lvalue.astOfExpression(),
                 op,
                 expression: expression.astOfExpression(),
                 ref: createRef(this),
@@ -764,33 +766,10 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             kind: "statement_foreach",
             keyName: keyId.sourceString,
             valueName: valueId.sourceString,
-            map: mapId.astOfLValue(),
+            map: mapId.astOfExpression(),
             statements: foreachBlock.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
-    },
-});
-
-// LValue
-semantics.addOperation<ASTNode[]>("astOfLValue", {
-    LValue_variable(id) {
-        return [
-            createNode({
-                kind: "lvalue_ref",
-                name: id.sourceString,
-                ref: createRef(this),
-            }),
-        ];
-    },
-    LValue_fieldAccess(id, dot, lvalue) {
-        return [
-            createNode({
-                kind: "lvalue_ref",
-                name: id.sourceString,
-                ref: createRef(id, dot),
-            }),
-            ...lvalue.astOfLValue(),
-        ];
     },
 });
 
@@ -842,13 +821,18 @@ semantics.addOperation<ASTNode>("astOfType", {
     },
 });
 
+// handles binary, octal, decimal and hexadecimal integer literals
+function bigintOfIntLiteral(litString: NonterminalNode): bigint {
+    return BigInt(litString.sourceString.replaceAll("_", ""));
+}
+
 // Expressions
 semantics.addOperation<ASTNode>("astOfExpression", {
     // Literals
     integerLiteral(number) {
         return createNode({
             kind: "number",
-            value: BigInt(number.sourceString.replaceAll("_", "")),
+            value: bigintOfIntLiteral(number),
             ref: createRef(this),
         }); // Parses dec, hex, and bin numbers
     },
@@ -1097,7 +1081,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
         return createNode({
             kind: "op_field",
             src: source.astOfExpression(),
-            name: fieldId.sourceString,
+            name: fieldId.astOfExpression(),
             ref: createRef(this),
         });
     },

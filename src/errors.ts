@@ -24,6 +24,12 @@ export class TactCompilationError extends TactError {
     }
 }
 
+export class TactInternalCompilerError extends TactError {
+    constructor(message: string, ref: ASTRef) {
+        super(message, ref);
+    }
+}
+
 export class TactConstEvalError extends TactCompilationError {
     fatal: boolean = false;
     constructor(message: string, fatal: boolean, ref: ASTRef) {
@@ -59,6 +65,16 @@ export function throwParseError(matchResult: MatchResult, path: string): never {
 export function throwCompilationError(message: string, source: ASTRef): never {
     throw new TactCompilationError(
         `${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`,
+        source,
+    );
+}
+
+export function throwInternalCompilerError(
+    message: string,
+    source: ASTRef,
+): never {
+    throw new TactInternalCompilerError(
+        `${locationStr(source)}\n[INTERNAL COMPILER ERROR]: ${message}\nPlease report at https://github.com/tact-lang/tact/issues\n${source.interval.getLineAndColumnMessage()}`,
         source,
     );
 }
