@@ -8,6 +8,15 @@ import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeStatement } from "./writeFunction";
 
+export function commentPseudoOpcode(comment: string): string {
+    return beginCell()
+        .storeUint(0, 32)
+        .storeBuffer(Buffer.from(comment, "utf8"))
+        .endCell()
+        .hash()
+        .toString("hex", 0, 64);
+}
+
 export function writeRouter(
     type: TypeDescription,
     kind: "internal" | "external",
@@ -197,14 +206,7 @@ export function writeRouter(
                             selector.kind ===
                             (internal ? "internal-comment" : "external-comment")
                         ) {
-                            const hash = beginCell()
-                                .storeUint(0, 32)
-                                .storeBuffer(
-                                    Buffer.from(selector.comment, "utf8"),
-                                )
-                                .endCell()
-                                .hash()
-                                .toString("hex", 0, 64);
+                            const hash = commentPseudoOpcode(selector.comment);
                             ctx.append();
                             ctx.append(
                                 `;; Receive "${selector.comment}" message`,
@@ -351,12 +353,7 @@ export function writeReceiver(
         selector.kind === "internal-comment" ||
         selector.kind === "external-comment"
     ) {
-        const hash = beginCell()
-            .storeUint(0, 32)
-            .storeBuffer(Buffer.from(selector.comment, "utf8"))
-            .endCell()
-            .hash()
-            .toString("hex", 0, 64);
+        const hash = commentPseudoOpcode(selector.comment);
         ctx.append(
             `(${selfType}, ()) ${ops.receiveText(self.name, selector.kind === "internal-comment" ? "internal" : "external", hash)}(${selfType + " " + id("self")}) impure inline {`,
         );

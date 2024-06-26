@@ -24,6 +24,7 @@
     "forall",
     "funs",
     "funcfiftlib",
+    "idict",
     "initof",
     "infixl",
     "infixr",
@@ -64,6 +65,7 @@
     "testdata",
     "Topup",
     "typechecker",
+    "udict",
     "uintptr",
     "uncons",
     "uninit",
@@ -76,6 +78,7 @@
   ],
   "flagWords": [],
   "ignorePaths": [
+    "*.boc",
     "*.fif",
     "**/*/output",
     "node_modules",
