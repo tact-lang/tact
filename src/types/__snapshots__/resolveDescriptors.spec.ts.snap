@@ -30,7 +30,7 @@ Line 15, col 3:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced-fallback-receiver 1`] = `
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced-fallback 1`] = `
 "<unknown>:24:3: Fallback bounce receive function already exists
 Line 24, col 3:
   23 |   
@@ -40,7 +40,7 @@ Line 24, col 3:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced-receiver 1`] = `
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced1 1`] = `
 "<unknown>:24:3: Bounce receive function for "A" already exists
 Line 24, col 3:
   23 |   
@@ -50,7 +50,27 @@ Line 24, col 3:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-external-fallback-receiver 1`] = `
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced2 1`] = `
+"<unknown>:7:13: Bounce receive function for "Msg" already exists
+Line 7, col 13:
+  6 |     bounced(msg: Msg) { }
+> 7 |     bounced(msg: Msg) { }
+                  ^~~~~~~~
+  8 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-external 1`] = `
+"<unknown>:7:14: Receive function for "Msg" already exists
+Line 7, col 14:
+  6 |     external(msg: Msg) { }
+> 7 |     external(msg: Msg) { }
+                   ^~~~~~~~
+  8 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-external-fallback 1`] = `
 "<unknown>:20:5: Empty receive function already exists
 Line 20, col 5:
   19 | 
@@ -67,6 +87,16 @@ Line 13, col 5:
 > 13 |     init(a: Bool) {
            ^~~~~~~~~~~~~~~
   14 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-receiver 1`] = `
+"<unknown>:7:13: Receive function for "Msg" already exists
+Line 7, col 13:
+  6 |     receive(msg: Msg) { }
+> 7 |     receive(msg: Msg) { }
+                  ^~~~~~~~
+  8 | }
 "
 `;
 
