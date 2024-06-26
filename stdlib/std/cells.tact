@@ -66,6 +66,9 @@ extends mutates native loadUint(self: Slice, l: Int): Int;
 @name(preload_uint)
 extends native preloadUint(self: Slice, l: Int): Int;
 
+@name(__tact_load_bool)
+extends mutates native loadBool(self: Slice): Bool;
+
 @name(load_coins)
 extends mutates native loadCoins(self: Slice): Int;
 
@@ -73,7 +76,7 @@ extends mutates native loadCoins(self: Slice): Int;
 extends mutates native loadAddress(self: Slice): Address;
 
 @name(skip_bits)
-extends mutates native skipBits(self: Slice, l: Int): Slice;
+extends mutates native skipBits(self: Slice, l: Int);
 
 @name(end_parse)
 extends native endParse(self: Slice);

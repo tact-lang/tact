@@ -1,5 +1,4 @@
 import { Interval as RawInterval, Node as RawNode } from "ohm-js";
-import { TactSyntaxError } from "../errors";
 import { TypeOrigin } from "../types/types";
 
 export class ASTRef {
@@ -82,13 +81,6 @@ export type ASTNull = {
     ref: ASTRef;
 };
 
-export type ASTLvalueRef = {
-    kind: "lvalue_ref";
-    id: number;
-    name: string;
-    ref: ASTRef;
-};
-
 //
 // Types
 //
@@ -153,7 +145,7 @@ export type ASTOpBinary = {
     ref: ASTRef;
 };
 
-export type ASTUnaryOperation = "+" | "-" | "!" | "!!";
+export type ASTUnaryOperation = "+" | "-" | "!" | "!!" | "~";
 
 export type ASTOpUnary = {
     kind: "op_unary";
@@ -167,7 +159,7 @@ export type ASTOpField = {
     kind: "op_field";
     id: number;
     src: ASTExpression;
-    name: string;
+    name: ASTId;
     ref: ASTRef;
 };
 
@@ -418,7 +410,7 @@ export type ASTStatementLet = {
     kind: "statement_let";
     id: number;
     name: string;
-    type: ASTTypeRef;
+    type: ASTTypeRef | null;
     expression: ASTExpression;
     ref: ASTRef;
 };
@@ -440,18 +432,26 @@ export type ASTStatementExpression = {
 export type ASTStatementAssign = {
     kind: "statement_assign";
     id: number;
-    path: ASTLvalueRef[];
+    path: ASTExpression;
     expression: ASTExpression;
     ref: ASTRef;
 };
 
-export type ASTAugmentedAssignOperation = "+" | "-" | "*" | "/" | "%";
+export type ASTAugmentedAssignOperation =
+    | "+"
+    | "-"
+    | "*"
+    | "/"
+    | "%"
+    | "|"
+    | "&"
+    | "^";
 
 export type ASTStatementAugmentedAssign = {
     kind: "statement_augmentedassign";
     id: number;
     op: ASTAugmentedAssignOperation;
-    path: ASTLvalueRef[];
+    path: ASTExpression;
     expression: ASTExpression;
     ref: ASTRef;
 };
@@ -511,7 +511,7 @@ export type ASTStatementForEach = {
     id: number;
     keyName: string;
     valueName: string;
-    map: ASTId;
+    map: ASTExpression;
     statements: ASTStatement[];
     ref: ASTRef;
 };
@@ -563,7 +563,6 @@ export type ASTNode =
     | ASTStatementTryCatch
     | ASTStatementForEach
     | ASTReceive
-    | ASTLvalueRef
     | ASTString
     | ASTTrait
     | ASTProgramImport
@@ -580,11 +579,29 @@ export type ASTExpression =
     | ASTOpCallStatic
     | ASTOpNew
     | ASTNull
-    | ASTLvalueRef
     | ASTInitOf
     | ASTString
     | ASTConditional;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract | ASTTrait;
+
+/**
+ * Check if input expression is a 'path expression',
+ * i.e. an identifier or a sequence of field accesses starting from an identifier.
+ * @param path A path expression to check.
+ * @returns An array of identifiers or null if the input expression is not a path expression.
+ */
+export function tryExtractPath(path: ASTExpression): ASTId[] | null {
+    switch (path.kind) {
+        case "id":
+            return [path];
+        case "op_field": {
+            const p = tryExtractPath(path.src);
+            return p ? [...p, path.name] : null;
+        }
+        default:
+            return null;
+    }
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DistributiveOmit<T, K extends keyof any> = T extends any
@@ -617,32 +634,6 @@ export function createRef(s: RawNode, ...extra: RawNode[]): ASTRef {
         i = i.coverageWith(...extra.map((e) => e.source));
     }
     return new ASTRef(i, currentFile);
-}
-
-export function throwError(message: string, ref: ASTRef): never {
-    if (ref.file) {
-        const lc = ref.interval.getLineAndColumn() as {
-            lineNum: number;
-            colNum: number;
-        };
-        throw new TactSyntaxError(
-            ref.file +
-                ":" +
-                lc.lineNum +
-                ":" +
-                lc.colNum +
-                ": " +
-                message +
-                "\n" +
-                ref.interval.getLineAndColumnMessage(),
-            ref,
-        );
-    } else {
-        throw new TactSyntaxError(
-            message + ref.interval.getLineAndColumnMessage(),
-            ref,
-        );
-    }
 }
 
 export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
@@ -721,7 +712,6 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     //
 
     if (node.kind === "statement_let") {
-        traverse(node.type, callback);
         traverse(node.expression, callback);
     }
     if (node.kind === "statement_return") {
@@ -733,15 +723,11 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         traverse(node.expression, callback);
     }
     if (node.kind === "statement_assign") {
-        for (const e of node.path) {
-            traverse(e, callback);
-        }
+        traverse(node.path, callback);
         traverse(node.expression, callback);
     }
     if (node.kind === "statement_augmentedassign") {
-        for (const e of node.path) {
-            traverse(e, callback);
-        }
+        traverse(node.path, callback);
         traverse(node.expression, callback);
     }
     if (node.kind === "statement_condition") {

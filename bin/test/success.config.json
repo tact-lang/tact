@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/configSchema.json",
+  "projects": [
+    {
+      "name": "success",
+      "path": "./success.tact",
+      "output": "./success_output",
+      "mode": "full"
+    }
+  ]
+}

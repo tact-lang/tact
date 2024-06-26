@@ -1,214 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolveDescriptors should fail descriptors for case-0 1`] = `
-"<unknown>:9:1: Native functions cannot be getters
-Line 9, col 1:
-  8 | @name(hello_world)
-> 9 | get native sample(a: Int): Int;
-      ^~~
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-1 1`] = `
-"<unknown>:9:1: Native functions cannot be getters
-Line 9, col 1:
-  8 | @name(hello_world)
-> 9 | get native sample(a: Int): Int;
-      ^~~
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-2 1`] = `
-"<unknown>:8:1: Getters must be defined within a contract
-Line 8, col 1:
+exports[`resolveDescriptors should fail descriptors for const-eval-overflow 1`] = `
+"<unknown>:8:26: Cannot evaluate expression to a constant: the number of bits shifted ('-1073741824') must be within [0..256] range
+Line 8, col 26:
   7 | 
-> 8 | get fun sample(a: Int): Int {
-      ^~~
-  9 |     return 0;
+> 8 | const a: Int = 1 + (1 >> -1073741824);
+                               ^~~~~~~~~~~
+  9 | 
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for case-3 1`] = `
-"<unknown>:8:1: Getters must be defined within a contract
-Line 8, col 1:
-  7 | 
-> 8 | get fun sample(a: Int): Int {
-      ^~~
-  9 |     return 0;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-4 1`] = `
-"<unknown>:8:17: Extend function must have first argument named "self"
-Line 8, col 17:
-  7 | 
-> 8 | extends fun inc(a: Int): Int {
-                      ^~~~~~
-  9 |     return a + 1;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-5 1`] = `
-"<unknown>:8:17: Argument name "self" is reserved
-Line 8, col 17:
-  7 | 
-> 8 | fun inc(a: Int, self: Int): Int {
-                      ^~~~~~~~~
-  9 |     return a + 1 + self;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-6 1`] = `
-"<unknown>:11:3: Field "b" already exists
-Line 11, col 3:
-  10 |   b: Int;
-> 11 |   b: Int;
-         ^~~~~~~
-  12 | }
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-7 1`] = `
-"<unknown>:11:3: Field "b" already exists
-Line 11, col 3:
-  10 |   b: Int;
-> 11 |   b: Int;
-         ^~~~~~~
-  12 | }
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-8 1`] = `
-"<unknown>:13:3: Receive function cannot have optional argument
-Line 13, col 3:
-  12 | contract Pair {
-> 13 |   receive(src: B?) {
-         ^~~~~~~~~~~~~~~~~~
-  14 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-9 1`] = `
-"<unknown>:13:3: Receive function can only accept message
-Line 13, col 3:
-  12 | contract Pair {
-> 13 |   receive(src: B) {
-         ^~~~~~~~~~~~~~~~~
-  14 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-10 1`] = `
-"<unknown>:13:3: Receive function can only accept message, Slice or String
-Line 13, col 3:
-  12 | contract Pair {
-> 13 |   receive(src: Int) {
-         ^~~~~~~~~~~~~~~~~~~
-  14 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-11 1`] = `
-"<unknown>:12:23: Type Point not found
-Line 12, col 23:
-  11 |     }
-> 12 |     get fun hello2(): Point {
-                             ^~~~~
-  13 |         return 0;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-12 1`] = `
-"<unknown>:12:1: Type "Main" already exists
-Line 12, col 1:
-  11 | 
-> 12 | struct Main {
-       ^~~~~~~~~~~~~
-  13 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-13 1`] = `
-"<unknown>:12:1: Type "Main" already exists
-Line 12, col 1:
-  11 | 
-> 12 | struct Main {
-       ^~~~~~~~~~~~~
-  13 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-14 1`] = `
-"<unknown>:12:1: Type "Main" already exists
-Line 12, col 1:
-  11 | 
-> 12 | contract Main {
-       ^~~~~~~~~~~~~~~
-  13 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-15 1`] = `
-"<unknown>:12:1: Struct "Main" must have at least one field
-Line 12, col 1:
-  11 | 
-> 12 | struct Main {
-       ^~~~~~~~~~~~~
-  13 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-16 1`] = `
-"<unknown>:16:1: Struct "Main" must have at least one field
-Line 16, col 1:
-  15 | 
-> 16 | struct Main {
-       ^~~~~~~~~~~~~
-  17 |     
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-17 1`] = `
-"<unknown>:8:1: Function "hello" already exists in type "Main"
-Line 8, col 1:
-  7 | 
-> 8 | contract Main {
-      ^~~~~~~~~~~~~~~
-  9 |     fun hello(a: Main): Int {
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-18 1`] = `
-"<unknown>:9:24: Argument name "a" is already used
-Line 9, col 24:
-   8 | contract Main {
->  9 |     fun hello(a: Bool, a: Int): Int {
-                              ^~~~~~
-  10 | 
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-19 1`] = `
-"<unknown>:13:5: Init function already exists
-Line 13, col 5:
-  12 | 
-> 13 |     init(a: Bool) {
-           ^~~~~~~~~~~~~~~
-  14 | 
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-20 1`] = `
-"<unknown>:12:1: Function "hello" already exists in type "Main"
-Line 12, col 1:
-  11 | 
-> 12 | extends fun hello(self: Main): Bool {
-       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  13 |     return true;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for case-21 1`] = `
+exports[`resolveDescriptors should fail descriptors for contract-bounced-receiver-int 1`] = `
 "<unknown>:17:3: Bounce receive function can only accept bounced message, message or Slice
 Line 17, col 3:
   16 |   
@@ -218,17 +20,17 @@ Line 17, col 3:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for case-22 1`] = `
-"<unknown>:24:3: Bounce receive function for "A" already exists
-Line 24, col 3:
-  23 |   
-> 24 |   bounced(msg: bounced<A>) {
-         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-  25 |   }
+exports[`resolveDescriptors should fail descriptors for contract-bounced-storage-var 1`] = `
+"<unknown>:15:3: bounced<A> is a runtime only type and can't be used as field
+Line 15, col 3:
+  14 | contract Test {
+> 15 |   src: bounced<A>;
+         ^~~~~~~~~~~~~~~
+  16 |   init() {}
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for case-23 1`] = `
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced-fallback-receiver 1`] = `
 "<unknown>:24:3: Fallback bounce receive function already exists
 Line 24, col 3:
   23 |   
@@ -238,36 +40,164 @@ Line 24, col 3:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for case-24 1`] = `
-"<unknown>:15:3: bounced<A> is a runtime only type and can't be used as field
-Line 15, col 3:
-  14 | contract Test {
-> 15 |   src: bounced<A>;
-         ^~~~~~~~~~~~~~~~
-  16 |   init() {}
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced-receiver 1`] = `
+"<unknown>:24:3: Bounce receive function for "A" already exists
+Line 24, col 3:
+  23 |   
+> 24 |   bounced(msg: bounced<A>) {
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  25 |   }
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for case-25 1`] = `
-"<unknown>:8:21: Cannot evaluate constant expression due to integer overflow
-Line 8, col 21:
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-external-fallback-receiver 1`] = `
+"<unknown>:20:5: Empty receive function already exists
+Line 20, col 5:
+  19 | 
+> 20 |     external() {
+           ^~~~~~~~~~~~
+  21 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-init 1`] = `
+"<unknown>:13:5: Init function already exists
+Line 13, col 5:
+  12 | 
+> 13 |     init(a: Bool) {
+           ^~~~~~~~~~~~~~~
+  14 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-storage-var 1`] = `
+"<unknown>:11:3: Field "b" already exists
+Line 11, col 3:
+  10 |   b: Int;
+> 11 |   b: Int;
+         ^~~~~~
+  12 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-missing-type 1`] = `
+"<unknown>:12:23: Type Point not found
+Line 12, col 23:
+  11 |     }
+> 12 |     get fun hello2(): Point {
+                             ^~~~~
+  13 |         return 0;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-receiver-int 1`] = `
+"<unknown>:13:3: Receive function can only accept message, Slice or String
+Line 13, col 3:
+  12 | contract Pair {
+> 13 |   receive(src: Int) {
+         ^~~~~~~~~~~~~~~~~~~
+  14 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-receiver-optional-msg 1`] = `
+"<unknown>:13:3: Receive function cannot have optional argument
+Line 13, col 3:
+  12 | contract Pair {
+> 13 |   receive(src: B?) {
+         ^~~~~~~~~~~~~~~~~~
+  14 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-receiver-struct 1`] = `
+"<unknown>:13:3: Receive function can only accept message
+Line 13, col 3:
+  12 | contract Pair {
+> 13 |   receive(src: B) {
+         ^~~~~~~~~~~~~~~~~
+  14 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for expr-bitwise-not-bool-in-const1 1`] = `
+"<unknown>:4:18: Cannot evaluate expression to a constant: integer expected, but got 'true'
+Line 4, col 18:
+  3 | 
+> 4 | const a: Int = ~ true;
+                       ^~~~
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for expr-bitwise-not-bool-in-const2 1`] = `
+"<unknown>:4:19: Cannot evaluate expression to a constant: integer expected, but got 'true'
+Line 4, col 19:
+  3 | 
+> 4 | const a: Bool = ~ true;
+                        ^~~~
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for getter-outside-contract 1`] = `
+"<unknown>:8:1: Getters must be defined within a contract
+Line 8, col 1:
   7 | 
-> 8 | const a: Int = 1 + (1 >> -1073741824);
-                          ^~~~~~~~~~~~~~~~
-  9 | 
+> 8 | get fun sample(a: Int): Int {
+      ^~~
+  9 |     return 0;
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for case-26 1`] = `
-"<unknown>:1:1: Static function "ton" already exists
-Line 1, col 1:
-> 1 | fun ton() {
-      ^~~~~~~~~~~
-  2 | 
+exports[`resolveDescriptors should fail descriptors for method-first-param-not-self1 1`] = `
+"<unknown>:8:17: Extend function must have first argument named "self"
+Line 8, col 17:
+  7 | 
+> 8 | extends fun inc(a: Int): Int {
+                      ^~~~~~
+  9 |     return a + 1;
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for case-27 1`] = `
+exports[`resolveDescriptors should fail descriptors for method-first-param-not-self2 1`] = `
+"<unknown>:8:17: Argument name "self" is reserved
+Line 8, col 17:
+  7 | 
+> 8 | fun inc(a: Int, self: Int): Int {
+                      ^~~~~~~~~
+  9 |     return a + 1 + self;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for native-fun-getter 1`] = `
+"<unknown>:9:1: Native functions cannot be getters
+Line 9, col 1:
+  8 | @name(hello_world)
+> 9 | get native sample(a: Int): Int;
+      ^~~
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for scope-contract-shadows-contract 1`] = `
+"<unknown>:12:1: Type "Main" already exists
+Line 12, col 1:
+  11 | 
+> 12 | contract Main {
+       ^~~~~~~~~~~~~~~
+  13 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for scope-duplicate-method 1`] = `
+"<unknown>:12:1: Function "hello" already exists in type "Main"
+Line 12, col 1:
+  11 | 
+> 12 | extends fun hello(self: Main): Bool {
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  13 |     return true;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for scope-fun-shadows-builtin-dumpStack 1`] = `
 "<unknown>:1:1: Static function "dumpStack" already exists
 Line 1, col 1:
 > 1 | fun dumpStack() {
@@ -276,2074 +206,96 @@ Line 1, col 1:
 "
 `;
 
-exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
-{
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 3,
-      "kind": "def_trait",
-      "name": "BaseTrait",
-      "origin": "user",
-      "ref": trait BaseTrait {
-    
-},
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Bool": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive",
-      "name": "Bool",
-      "origin": "user",
-      "ref": primitive Bool;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
-    "ast": {
-      "id": 1,
-      "kind": "primitive",
-      "name": "Int",
-      "origin": "user",
-      "ref": primitive Int;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-}
+exports[`resolveDescriptors should fail descriptors for scope-fun-shadows-builtin-ton 1`] = `
+"<unknown>:1:1: Static function "ton" already exists
+Line 1, col 1:
+> 1 | fun ton() {
+      ^~~~~~~~~~~
+  2 | 
+"
 `;
 
-exports[`resolveDescriptors should resolve descriptors for case-0 2`] = `{}`;
-
-exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
-{
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 3,
-      "kind": "def_trait",
-      "name": "BaseTrait",
-      "origin": "user",
-      "ref": trait BaseTrait {
-    
-},
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Bool": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive",
-      "name": "Bool",
-      "origin": "user",
-      "ref": primitive Bool;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
-    "ast": {
-      "id": 1,
-      "kind": "primitive",
-      "name": "Int",
-      "origin": "user",
-      "ref": primitive Int;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "Struct1": {
-    "ast": {
-      "fields": [
-        {
-          "as": null,
-          "id": 5,
-          "init": null,
-          "kind": "def_field",
-          "name": "a",
-          "ref": a: Int;,
-          "type": {
-            "id": 4,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-        {
-          "as": null,
-          "id": 7,
-          "init": null,
-          "kind": "def_field",
-          "name": "b",
-          "ref": b: Bool;,
-          "type": {
-            "id": 6,
-            "kind": "type_ref_simple",
-            "name": "Bool",
-            "optional": false,
-            "ref": Bool,
-          },
-        },
-      ],
-      "id": 8,
-      "kind": "def_struct",
-      "message": false,
-      "name": "Struct1",
-      "origin": "user",
-      "prefix": null,
-      "ref": struct Struct1 {
-    a: Int;
-    b: Bool;
-},
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [
-      {
-        "abi": {
-          "name": "a",
-          "type": {
-            "format": 257,
-            "kind": "simple",
-            "optional": false,
-            "type": "int",
-          },
-        },
-        "as": null,
-        "ast": {
-          "as": null,
-          "id": 5,
-          "init": null,
-          "kind": "def_field",
-          "name": "a",
-          "ref": a: Int;,
-          "type": {
-            "id": 4,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-        "default": undefined,
-        "index": 0,
-        "name": "a",
-        "ref": a: Int;,
-        "type": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false,
-        },
-      },
-      {
-        "abi": {
-          "name": "b",
-          "type": {
-            "kind": "simple",
-            "optional": false,
-            "type": "bool",
-          },
-        },
-        "as": null,
-        "ast": {
-          "as": null,
-          "id": 7,
-          "init": null,
-          "kind": "def_field",
-          "name": "b",
-          "ref": b: Bool;,
-          "type": {
-            "id": 6,
-            "kind": "type_ref_simple",
-            "name": "Bool",
-            "optional": false,
-            "ref": Bool,
-          },
-        },
-        "default": undefined,
-        "index": 1,
-        "name": "b",
-        "ref": b: Bool;,
-        "type": {
-          "kind": "ref",
-          "name": "Bool",
-          "optional": false,
-        },
-      },
-    ],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "struct",
-    "name": "Struct1",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": "Struct1{a:int257,b:bool}",
-    "tlb": "_ a:int257 b:bool = Struct1",
-    "traits": [],
-    "uid": 63177,
-  },
-  "Struct2": {
-    "ast": {
-      "fields": [
-        {
-          "as": null,
-          "id": 10,
-          "init": null,
-          "kind": "def_field",
-          "name": "a",
-          "ref": a: Struct1;,
-          "type": {
-            "id": 9,
-            "kind": "type_ref_simple",
-            "name": "Struct1",
-            "optional": false,
-            "ref": Struct1,
-          },
-        },
-      ],
-      "id": 11,
-      "kind": "def_struct",
-      "message": false,
-      "name": "Struct2",
-      "origin": "user",
-      "prefix": null,
-      "ref": struct Struct2 {
-    a: Struct1;
-},
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [
-      {
-        "abi": {
-          "name": "a",
-          "type": {
-            "kind": "simple",
-            "optional": false,
-            "type": "Struct1",
-          },
-        },
-        "as": null,
-        "ast": {
-          "as": null,
-          "id": 10,
-          "init": null,
-          "kind": "def_field",
-          "name": "a",
-          "ref": a: Struct1;,
-          "type": {
-            "id": 9,
-            "kind": "type_ref_simple",
-            "name": "Struct1",
-            "optional": false,
-            "ref": Struct1,
-          },
-        },
-        "default": undefined,
-        "index": 0,
-        "name": "a",
-        "ref": a: Struct1;,
-        "type": {
-          "kind": "ref",
-          "name": "Struct1",
-          "optional": false,
-        },
-      },
-    ],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "struct",
-    "name": "Struct2",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": "Struct2{a:Struct1{a:int257,b:bool}}",
-    "tlb": "_ a:Struct1{a:int257,b:bool} = Struct2",
-    "traits": [],
-    "uid": 50858,
-  },
-}
+exports[`resolveDescriptors should fail descriptors for scope-fun-shadows-fun 1`] = `
+"<unknown>:16:1: Struct "Main" must have at least one field
+Line 16, col 1:
+  15 | 
+> 16 | struct Main {
+       ^~~~~~~~~~~~~
+  17 |     
+"
 `;
 
-exports[`resolveDescriptors should resolve descriptors for case-1 2`] = `{}`;
-
-exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
-{
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 3,
-      "kind": "def_trait",
-      "name": "BaseTrait",
-      "origin": "user",
-      "ref": trait BaseTrait {
-    
-},
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Bool": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive",
-      "name": "Bool",
-      "origin": "user",
-      "ref": primitive Bool;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
-    "ast": {
-      "id": 1,
-      "kind": "primitive",
-      "name": "Int",
-      "origin": "user",
-      "ref": primitive Int;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-}
+exports[`resolveDescriptors should fail descriptors for scope-internal-fun-shadows-internal-fun 1`] = `
+"<unknown>:8:1: Function "hello" already exists in type "Main"
+Line 8, col 1:
+  7 | 
+> 8 | contract Main {
+      ^~~~~~~~~~~~~~~
+  9 |     fun hello(a: Main): Int {
+"
 `;
 
-exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
-{
-  "testFunc": {
-    "args": [],
-    "ast": {
-      "args": [],
-      "attributes": [],
-      "id": 7,
-      "kind": "def_function",
-      "name": "testFunc",
-      "origin": "user",
-      "ref": fun testFunc(): Int {
-    return 0;
-},
-      "return": {
-        "id": 4,
-        "kind": "type_ref_simple",
-        "name": "Int",
-        "optional": false,
-        "ref": Int,
-      },
-      "statements": [
-        {
-          "expression": {
-            "id": 5,
-            "kind": "number",
-            "ref": 0,
-            "value": 0n,
-          },
-          "id": 6,
-          "kind": "statement_return",
-          "ref": return 0;,
-        },
-      ],
-    },
-    "isAbstract": false,
-    "isGetter": false,
-    "isInline": false,
-    "isMutating": false,
-    "isOverrides": false,
-    "isVirtual": false,
-    "name": "testFunc",
-    "origin": "user",
-    "returns": {
-      "kind": "ref",
-      "name": "Int",
-      "optional": false,
-    },
-    "self": null,
-  },
-  "testFunc2": {
-    "args": [],
-    "ast": {
-      "args": [],
-      "attributes": [],
-      "id": 10,
-      "kind": "def_function",
-      "name": "testFunc2",
-      "origin": "user",
-      "ref": fun testFunc2() {
-    return 0;
-},
-      "return": null,
-      "statements": [
-        {
-          "expression": {
-            "id": 8,
-            "kind": "number",
-            "ref": 0,
-            "value": 0n,
-          },
-          "id": 9,
-          "kind": "statement_return",
-          "ref": return 0;,
-        },
-      ],
-    },
-    "isAbstract": false,
-    "isGetter": false,
-    "isInline": false,
-    "isMutating": false,
-    "isOverrides": false,
-    "isVirtual": false,
-    "name": "testFunc2",
-    "origin": "user",
-    "returns": {
-      "kind": "void",
-    },
-    "self": null,
-  },
-  "testFunc3": {
-    "args": [
-      {
-        "name": "a",
-        "ref": a: Int,
-        "type": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false,
-        },
-      },
-      {
-        "name": "b",
-        "ref": b: Bool,
-        "type": {
-          "kind": "ref",
-          "name": "Bool",
-          "optional": false,
-        },
-      },
-    ],
-    "ast": {
-      "args": [
-        {
-          "id": 12,
-          "kind": "def_argument",
-          "name": "a",
-          "ref": a: Int,
-          "type": {
-            "id": 11,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-        {
-          "id": 14,
-          "kind": "def_argument",
-          "name": "b",
-          "ref": b: Bool,
-          "type": {
-            "id": 13,
-            "kind": "type_ref_simple",
-            "name": "Bool",
-            "optional": false,
-            "ref": Bool,
-          },
-        },
-      ],
-      "attributes": [],
-      "id": 17,
-      "kind": "def_function",
-      "name": "testFunc3",
-      "origin": "user",
-      "ref": fun testFunc3(a: Int, b: Bool) {
-    return 0;
-},
-      "return": null,
-      "statements": [
-        {
-          "expression": {
-            "id": 15,
-            "kind": "number",
-            "ref": 0,
-            "value": 0n,
-          },
-          "id": 16,
-          "kind": "statement_return",
-          "ref": return 0;,
-        },
-      ],
-    },
-    "isAbstract": false,
-    "isGetter": false,
-    "isInline": false,
-    "isMutating": false,
-    "isOverrides": false,
-    "isVirtual": false,
-    "name": "testFunc3",
-    "origin": "user",
-    "returns": {
-      "kind": "void",
-    },
-    "self": null,
-  },
-}
+exports[`resolveDescriptors should fail descriptors for scope-param-shadows-param 1`] = `
+"<unknown>:9:24: Argument name "a" is already used
+Line 9, col 24:
+   8 | contract Main {
+>  9 |     fun hello(a: Bool, a: Int): Int {
+                              ^~~~~~
+  10 | 
+"
 `;
 
-exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
-{
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 3,
-      "kind": "def_trait",
-      "name": "BaseTrait",
-      "origin": "user",
-      "ref": trait BaseTrait {
-    
-},
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Bool": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive",
-      "name": "Bool",
-      "origin": "user",
-      "ref": primitive Bool;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "HelloWorld": {
-    "ast": {
-      "attributes": [],
-      "declarations": [
-        {
-          "as": null,
-          "id": 5,
-          "init": null,
-          "kind": "def_field",
-          "name": "a",
-          "ref": a: Int;,
-          "type": {
-            "id": 4,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-        {
-          "as": null,
-          "id": 7,
-          "init": null,
-          "kind": "def_field",
-          "name": "b",
-          "ref": b: Bool;,
-          "type": {
-            "id": 6,
-            "kind": "type_ref_simple",
-            "name": "Bool",
-            "optional": false,
-            "ref": Bool,
-          },
-        },
-        {
-          "args": [],
-          "id": 8,
-          "kind": "def_init_function",
-          "ref": init() {
-        
-    },
-          "statements": [],
-        },
-        {
-          "args": [],
-          "attributes": [],
-          "id": 9,
-          "kind": "def_function",
-          "name": "hello",
-          "origin": "user",
-          "ref": fun hello() {
-        
-    },
-          "return": null,
-          "statements": [],
-        },
-        {
-          "args": [],
-          "attributes": [],
-          "id": 10,
-          "kind": "def_function",
-          "name": "hello2",
-          "origin": "user",
-          "ref": fun hello2() {
-        
-    },
-          "return": null,
-          "statements": [],
-        },
-      ],
-      "id": 11,
-      "kind": "def_contract",
-      "name": "HelloWorld",
-      "origin": "user",
-      "ref": contract HelloWorld {
-    a: Int;
-    b: Bool;
-
-    init() {
-        
-    }
-
-    fun hello() {
-        
-    }
-
-    fun hello2() {
-        
-    }
-},
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [
-      {
-        "abi": {
-          "name": "a",
-          "type": {
-            "format": 257,
-            "kind": "simple",
-            "optional": false,
-            "type": "int",
-          },
-        },
-        "as": null,
-        "ast": {
-          "as": null,
-          "id": 5,
-          "init": null,
-          "kind": "def_field",
-          "name": "a",
-          "ref": a: Int;,
-          "type": {
-            "id": 4,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-        "default": undefined,
-        "index": 0,
-        "name": "a",
-        "ref": a: Int;,
-        "type": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false,
-        },
-      },
-      {
-        "abi": {
-          "name": "b",
-          "type": {
-            "kind": "simple",
-            "optional": false,
-            "type": "bool",
-          },
-        },
-        "as": null,
-        "ast": {
-          "as": null,
-          "id": 7,
-          "init": null,
-          "kind": "def_field",
-          "name": "b",
-          "ref": b: Bool;,
-          "type": {
-            "id": 6,
-            "kind": "type_ref_simple",
-            "name": "Bool",
-            "optional": false,
-            "ref": Bool,
-          },
-        },
-        "default": undefined,
-        "index": 1,
-        "name": "b",
-        "ref": b: Bool;,
-        "type": {
-          "kind": "ref",
-          "name": "Bool",
-          "optional": false,
-        },
-      },
-    ],
-    "functions": Map {
-      "hello" => {
-        "args": [],
-        "ast": {
-          "args": [],
-          "attributes": [],
-          "id": 9,
-          "kind": "def_function",
-          "name": "hello",
-          "origin": "user",
-          "ref": fun hello() {
-        
-    },
-          "return": null,
-          "statements": [],
-        },
-        "isAbstract": false,
-        "isGetter": false,
-        "isInline": false,
-        "isMutating": true,
-        "isOverrides": false,
-        "isVirtual": false,
-        "name": "hello",
-        "origin": "user",
-        "returns": {
-          "kind": "void",
-        },
-        "self": "HelloWorld",
-      },
-      "hello2" => {
-        "args": [],
-        "ast": {
-          "args": [],
-          "attributes": [],
-          "id": 10,
-          "kind": "def_function",
-          "name": "hello2",
-          "origin": "user",
-          "ref": fun hello2() {
-        
-    },
-          "return": null,
-          "statements": [],
-        },
-        "isAbstract": false,
-        "isGetter": false,
-        "isInline": false,
-        "isMutating": true,
-        "isOverrides": false,
-        "isVirtual": false,
-        "name": "hello2",
-        "origin": "user",
-        "returns": {
-          "kind": "void",
-        },
-        "self": "HelloWorld",
-      },
-    },
-    "header": null,
-    "init": {
-      "args": [],
-      "ast": {
-        "args": [],
-        "id": 8,
-        "kind": "def_init_function",
-        "ref": init() {
-        
-    },
-        "statements": [],
-      },
-    },
-    "interfaces": [],
-    "kind": "contract",
-    "name": "HelloWorld",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [
-      {
-        "ast": {
-          "attributes": [],
-          "declarations": [],
-          "id": 3,
-          "kind": "def_trait",
-          "name": "BaseTrait",
-          "origin": "user",
-          "ref": trait BaseTrait {
-    
-},
-          "traits": [],
-        },
-        "constants": [],
-        "dependsOn": [],
-        "fields": [],
-        "functions": Map {},
-        "header": null,
-        "init": null,
-        "interfaces": [],
-        "kind": "trait",
-        "name": "BaseTrait",
-        "origin": "user",
-        "partialFieldCount": 0,
-        "receivers": [],
-        "signature": null,
-        "tlb": null,
-        "traits": [],
-        "uid": 1020,
-      },
-    ],
-    "uid": 31498,
-  },
-  "Int": {
-    "ast": {
-      "id": 1,
-      "kind": "primitive",
-      "name": "Int",
-      "origin": "user",
-      "ref": primitive Int;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-}
+exports[`resolveDescriptors should fail descriptors for scope-storage-var-shadows-trait-const 1`] = `
+"<unknown>:8:3: Contract Foo inherits constant "storageReserve" from its traits and hence cannot have a storage variable with the same name
+Line 8, col 3:
+  7 |   // is a virtual constant defined in BaseTrait
+> 8 |   storageReserve: Int;
+        ^~~~~~~~~~~~~~~~~~~
+  9 | 
+"
 `;
 
-exports[`resolveDescriptors should resolve descriptors for case-3 2`] = `{}`;
-
-exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
-{
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 3,
-      "kind": "def_trait",
-      "name": "BaseTrait",
-      "origin": "user",
-      "ref": trait BaseTrait {
-    
-},
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Bool": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive",
-      "name": "Bool",
-      "origin": "user",
-      "ref": primitive Bool;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
-    "ast": {
-      "id": 1,
-      "kind": "primitive",
-      "name": "Int",
-      "origin": "user",
-      "ref": primitive Int;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-}
+exports[`resolveDescriptors should fail descriptors for scope-struct-shadows-contract 1`] = `
+"<unknown>:12:1: Type "Main" already exists
+Line 12, col 1:
+  11 | 
+> 12 | struct Main {
+       ^~~~~~~~~~~~~
+  13 |     
+"
 `;
 
-exports[`resolveDescriptors should resolve descriptors for case-4 2`] = `
-{
-  "sample": {
-    "args": [
-      {
-        "name": "a",
-        "ref": a: Int,
-        "type": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false,
-        },
-      },
-    ],
-    "ast": {
-      "args": [
-        {
-          "id": 6,
-          "kind": "def_argument",
-          "name": "a",
-          "ref": a: Int,
-          "type": {
-            "id": 5,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-      ],
-      "attributes": [],
-      "id": 7,
-      "kind": "def_native_function",
-      "name": "sample",
-      "nativeName": "hello_world",
-      "origin": "user",
-      "ref": @name(hello_world)
-native sample(a: Int): Int;,
-      "return": {
-        "id": 4,
-        "kind": "type_ref_simple",
-        "name": "Int",
-        "optional": false,
-        "ref": Int,
-      },
-    },
-    "isAbstract": false,
-    "isGetter": false,
-    "isInline": false,
-    "isMutating": false,
-    "isOverrides": false,
-    "isVirtual": false,
-    "name": "sample",
-    "origin": "user",
-    "returns": {
-      "kind": "ref",
-      "name": "Int",
-      "optional": false,
-    },
-    "self": null,
-  },
-}
+exports[`resolveDescriptors should fail descriptors for scope-struct-shadows-struct 1`] = `
+"<unknown>:12:1: Type "Main" already exists
+Line 12, col 1:
+  11 | 
+> 12 | struct Main {
+       ^~~~~~~~~~~~~
+  13 |     
+"
 `;
 
-exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
-{
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 3,
-      "kind": "def_trait",
-      "name": "BaseTrait",
-      "origin": "user",
-      "ref": trait BaseTrait {
-    
-},
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Bool": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive",
-      "name": "Bool",
-      "origin": "user",
-      "ref": primitive Bool;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
-    "ast": {
-      "id": 1,
-      "kind": "primitive",
-      "name": "Int",
-      "origin": "user",
-      "ref": primitive Int;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {
-      "inc" => {
-        "args": [],
-        "ast": {
-          "args": [
-            {
-              "id": 6,
-              "kind": "def_argument",
-              "name": "self",
-              "ref": self: Int,
-              "type": {
-                "id": 5,
-                "kind": "type_ref_simple",
-                "name": "Int",
-                "optional": false,
-                "ref": Int,
-              },
-            },
-          ],
-          "attributes": [
-            {
-              "ref": mutates,
-              "type": "mutates",
-            },
-            {
-              "ref": extends,
-              "type": "extends",
-            },
-          ],
-          "id": 7,
-          "kind": "def_native_function",
-          "name": "inc",
-          "nativeName": "inc",
-          "origin": "user",
-          "ref": @name(inc)
-mutates extends native inc(self: Int): Int;,
-          "return": {
-            "id": 4,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-        "isAbstract": false,
-        "isGetter": false,
-        "isInline": false,
-        "isMutating": true,
-        "isOverrides": false,
-        "isVirtual": false,
-        "name": "inc",
-        "origin": "user",
-        "returns": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false,
-        },
-        "self": "Int",
-      },
-    },
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-}
+exports[`resolveDescriptors should fail descriptors for struct-duplicate-field 1`] = `
+"<unknown>:11:3: Field "b" already exists
+Line 11, col 3:
+  10 |   b: Int;
+> 11 |   b: Int;
+         ^~~~~~
+  12 | }
+"
 `;
 
-exports[`resolveDescriptors should resolve descriptors for case-5 2`] = `{}`;
-
-exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
-{
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 3,
-      "kind": "def_trait",
-      "name": "BaseTrait",
-      "origin": "user",
-      "ref": trait BaseTrait {
-    
-},
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Bool": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive",
-      "name": "Bool",
-      "origin": "user",
-      "ref": primitive Bool;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
-    "ast": {
-      "id": 1,
-      "kind": "primitive",
-      "name": "Int",
-      "origin": "user",
-      "ref": primitive Int;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {
-      "inc" => {
-        "args": [],
-        "ast": {
-          "args": [
-            {
-              "id": 6,
-              "kind": "def_argument",
-              "name": "self",
-              "ref": self: Int,
-              "type": {
-                "id": 5,
-                "kind": "type_ref_simple",
-                "name": "Int",
-                "optional": false,
-                "ref": Int,
-              },
-            },
-          ],
-          "attributes": [
-            {
-              "ref": extends,
-              "type": "extends",
-            },
-          ],
-          "id": 11,
-          "kind": "def_function",
-          "name": "inc",
-          "origin": "user",
-          "ref": extends fun inc(self: Int): Int {
-    return self + 1;
-},
-          "return": {
-            "id": 4,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-          "statements": [
-            {
-              "expression": {
-                "id": 9,
-                "kind": "op_binary",
-                "left": {
-                  "id": 7,
-                  "kind": "id",
-                  "ref": self,
-                  "value": "self",
-                },
-                "op": "+",
-                "ref": self + 1,
-                "right": {
-                  "id": 8,
-                  "kind": "number",
-                  "ref": 1,
-                  "value": 1n,
-                },
-              },
-              "id": 10,
-              "kind": "statement_return",
-              "ref": return self + 1;,
-            },
-          ],
-        },
-        "isAbstract": false,
-        "isGetter": false,
-        "isInline": false,
-        "isMutating": false,
-        "isOverrides": false,
-        "isVirtual": false,
-        "name": "inc",
-        "origin": "user",
-        "returns": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false,
-        },
-        "self": "Int",
-      },
-    },
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-}
+exports[`resolveDescriptors should fail descriptors for struct-empty-not-allowed 1`] = `
+"<unknown>:12:1: Struct "Main" must have at least one field
+Line 12, col 1:
+  11 | 
+> 12 | struct Main {
+       ^~~~~~~~~~~~~
+  13 |     
+"
 `;
 
-exports[`resolveDescriptors should resolve descriptors for case-6 2`] = `{}`;
-
-exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
-{
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 3,
-      "kind": "def_trait",
-      "name": "BaseTrait",
-      "origin": "user",
-      "ref": trait BaseTrait {
-    
-},
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Bool": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive",
-      "name": "Bool",
-      "origin": "user",
-      "ref": primitive Bool;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
-    "ast": {
-      "id": 1,
-      "kind": "primitive",
-      "name": "Int",
-      "origin": "user",
-      "ref": primitive Int;,
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "Main": {
-    "ast": {
-      "attributes": [],
-      "declarations": [
-        {
-          "as": null,
-          "id": 8,
-          "init": null,
-          "kind": "def_field",
-          "name": "a",
-          "ref": a: Int;,
-          "type": {
-            "id": 7,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-        {
-          "args": [
-            {
-              "id": 10,
-              "kind": "def_argument",
-              "name": "a",
-              "ref": a: Int,
-              "type": {
-                "id": 9,
-                "kind": "type_ref_simple",
-                "name": "Int",
-                "optional": false,
-                "ref": Int,
-              },
-            },
-          ],
-          "id": 15,
-          "kind": "def_init_function",
-          "ref": init(a: Int) {
-        self.a = a;
-    },
-          "statements": [
-            {
-              "expression": {
-                "id": 13,
-                "kind": "id",
-                "ref": a,
-                "value": "a",
-              },
-              "id": 14,
-              "kind": "statement_assign",
-              "path": [
-                {
-                  "id": 11,
-                  "kind": "lvalue_ref",
-                  "name": "self",
-                  "ref": self.,
-                },
-                {
-                  "id": 12,
-                  "kind": "lvalue_ref",
-                  "name": "a",
-                  "ref": a,
-                },
-              ],
-              "ref": self.a = a;,
-            },
-          ],
-        },
-        {
-          "args": [],
-          "attributes": [
-            {
-              "ref": get,
-              "type": "get",
-            },
-          ],
-          "id": 19,
-          "kind": "def_function",
-          "name": "hello",
-          "origin": "user",
-          "ref": get fun hello(): Int {
-        return 0;
-    },
-          "return": {
-            "id": 16,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-          "statements": [
-            {
-              "expression": {
-                "id": 17,
-                "kind": "number",
-                "ref": 0,
-                "value": 0n,
-              },
-              "id": 18,
-              "kind": "statement_return",
-              "ref": return 0;,
-            },
-          ],
-        },
-        {
-          "args": [],
-          "attributes": [
-            {
-              "ref": get,
-              "type": "get",
-            },
-          ],
-          "id": 23,
-          "kind": "def_function",
-          "name": "hello2",
-          "origin": "user",
-          "ref": get fun hello2(): Point {
-        return 0;
-    },
-          "return": {
-            "id": 20,
-            "kind": "type_ref_simple",
-            "name": "Point",
-            "optional": false,
-            "ref": Point,
-          },
-          "statements": [
-            {
-              "expression": {
-                "id": 21,
-                "kind": "number",
-                "ref": 0,
-                "value": 0n,
-              },
-              "id": 22,
-              "kind": "statement_return",
-              "ref": return 0;,
-            },
-          ],
-        },
-      ],
-      "id": 24,
-      "kind": "def_contract",
-      "name": "Main",
-      "origin": "user",
-      "ref": contract Main {
-    a: Int;
-    init(a: Int) {
-        self.a = a;
-    }
-
-    get fun hello(): Int {
-        return 0;
-    }
-    get fun hello2(): Point {
-        return 0;
-    }
-},
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [
-      {
-        "abi": {
-          "name": "a",
-          "type": {
-            "format": 257,
-            "kind": "simple",
-            "optional": false,
-            "type": "int",
-          },
-        },
-        "as": null,
-        "ast": {
-          "as": null,
-          "id": 8,
-          "init": null,
-          "kind": "def_field",
-          "name": "a",
-          "ref": a: Int;,
-          "type": {
-            "id": 7,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-        "default": undefined,
-        "index": 0,
-        "name": "a",
-        "ref": a: Int;,
-        "type": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false,
-        },
-      },
-    ],
-    "functions": Map {
-      "hello" => {
-        "args": [],
-        "ast": {
-          "args": [],
-          "attributes": [
-            {
-              "ref": get,
-              "type": "get",
-            },
-          ],
-          "id": 19,
-          "kind": "def_function",
-          "name": "hello",
-          "origin": "user",
-          "ref": get fun hello(): Int {
-        return 0;
-    },
-          "return": {
-            "id": 16,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-          "statements": [
-            {
-              "expression": {
-                "id": 17,
-                "kind": "number",
-                "ref": 0,
-                "value": 0n,
-              },
-              "id": 18,
-              "kind": "statement_return",
-              "ref": return 0;,
-            },
-          ],
-        },
-        "isAbstract": false,
-        "isGetter": true,
-        "isInline": false,
-        "isMutating": true,
-        "isOverrides": false,
-        "isVirtual": false,
-        "name": "hello",
-        "origin": "user",
-        "returns": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false,
-        },
-        "self": "Main",
-      },
-      "hello2" => {
-        "args": [],
-        "ast": {
-          "args": [],
-          "attributes": [
-            {
-              "ref": get,
-              "type": "get",
-            },
-          ],
-          "id": 23,
-          "kind": "def_function",
-          "name": "hello2",
-          "origin": "user",
-          "ref": get fun hello2(): Point {
-        return 0;
-    },
-          "return": {
-            "id": 20,
-            "kind": "type_ref_simple",
-            "name": "Point",
-            "optional": false,
-            "ref": Point,
-          },
-          "statements": [
-            {
-              "expression": {
-                "id": 21,
-                "kind": "number",
-                "ref": 0,
-                "value": 0n,
-              },
-              "id": 22,
-              "kind": "statement_return",
-              "ref": return 0;,
-            },
-          ],
-        },
-        "isAbstract": false,
-        "isGetter": true,
-        "isInline": false,
-        "isMutating": true,
-        "isOverrides": false,
-        "isVirtual": false,
-        "name": "hello2",
-        "origin": "user",
-        "returns": {
-          "kind": "ref",
-          "name": "Point",
-          "optional": false,
-        },
-        "self": "Main",
-      },
-    },
-    "header": null,
-    "init": {
-      "args": [
-        {
-          "as": null,
-          "name": "a",
-          "ref": a: Int,
-          "type": {
-            "kind": "ref",
-            "name": "Int",
-            "optional": false,
-          },
-        },
-      ],
-      "ast": {
-        "args": [
-          {
-            "id": 10,
-            "kind": "def_argument",
-            "name": "a",
-            "ref": a: Int,
-            "type": {
-              "id": 9,
-              "kind": "type_ref_simple",
-              "name": "Int",
-              "optional": false,
-              "ref": Int,
-            },
-          },
-        ],
-        "id": 15,
-        "kind": "def_init_function",
-        "ref": init(a: Int) {
-        self.a = a;
-    },
-        "statements": [
-          {
-            "expression": {
-              "id": 13,
-              "kind": "id",
-              "ref": a,
-              "value": "a",
-            },
-            "id": 14,
-            "kind": "statement_assign",
-            "path": [
-              {
-                "id": 11,
-                "kind": "lvalue_ref",
-                "name": "self",
-                "ref": self.,
-              },
-              {
-                "id": 12,
-                "kind": "lvalue_ref",
-                "name": "a",
-                "ref": a,
-              },
-            ],
-            "ref": self.a = a;,
-          },
-        ],
-      },
-    },
-    "interfaces": [],
-    "kind": "contract",
-    "name": "Main",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [
-      {
-        "ast": {
-          "attributes": [],
-          "declarations": [],
-          "id": 3,
-          "kind": "def_trait",
-          "name": "BaseTrait",
-          "origin": "user",
-          "ref": trait BaseTrait {
-    
-},
-          "traits": [],
-        },
-        "constants": [],
-        "dependsOn": [],
-        "fields": [],
-        "functions": Map {},
-        "header": null,
-        "init": null,
-        "interfaces": [],
-        "kind": "trait",
-        "name": "BaseTrait",
-        "origin": "user",
-        "partialFieldCount": 0,
-        "receivers": [],
-        "signature": null,
-        "tlb": null,
-        "traits": [],
-        "uid": 1020,
-      },
-    ],
-    "uid": 51099,
-  },
-  "Point": {
-    "ast": {
-      "fields": [
-        {
-          "as": null,
-          "id": 5,
-          "init": null,
-          "kind": "def_field",
-          "name": "p",
-          "ref": p: Int;,
-          "type": {
-            "id": 4,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-      ],
-      "id": 6,
-      "kind": "def_struct",
-      "message": false,
-      "name": "Point",
-      "origin": "user",
-      "prefix": null,
-      "ref": struct Point {
-    p: Int;
-},
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [
-      {
-        "abi": {
-          "name": "p",
-          "type": {
-            "format": 257,
-            "kind": "simple",
-            "optional": false,
-            "type": "int",
-          },
-        },
-        "as": null,
-        "ast": {
-          "as": null,
-          "id": 5,
-          "init": null,
-          "kind": "def_field",
-          "name": "p",
-          "ref": p: Int;,
-          "type": {
-            "id": 4,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-        "default": undefined,
-        "index": 0,
-        "name": "p",
-        "ref": p: Int;,
-        "type": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false,
-        },
-      },
-    ],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "struct",
-    "name": "Point",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": "Point{p:int257}",
-    "tlb": "_ p:int257 = Point",
-    "traits": [],
-    "uid": 35778,
-  },
-}
-`;
-
-exports[`resolveDescriptors should resolve descriptors for case-7 2`] = `{}`;
-
-exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
+exports[`resolveDescriptors should resolve descriptors for contract-bounced-slice 1`] = `
 {
   "A": {
     "ast": {
@@ -2354,7 +306,7 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int as uint32;,
+          "ref": a: Int as uint32,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -2394,7 +346,7 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int as uint32;,
+          "ref": a: Int as uint32,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -2406,7 +358,7 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
         "default": undefined,
         "index": 0,
         "name": "a",
-        "ref": a: Int as uint32;,
+        "ref": a: Int as uint32,
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -2706,9 +658,9 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
 }
 `;
 
-exports[`resolveDescriptors should resolve descriptors for case-8 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for contract-bounced-slice 2`] = `{}`;
 
-exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
+exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-small-not-detected 1`] = `
 {
   "A": {
     "ast": {
@@ -2719,7 +671,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int as uint32;,
+          "ref": a: Int as uint32,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -2734,7 +686,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "b",
-          "ref": b: Bool;,
+          "ref": b: Bool,
           "type": {
             "id": 6,
             "kind": "type_ref_simple",
@@ -2749,7 +701,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "c",
-          "ref": c: Int as uint256;,
+          "ref": c: Int as uint256,
           "type": {
             "id": 8,
             "kind": "type_ref_simple",
@@ -2791,7 +743,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "a",
-          "ref": a: Int as uint32;,
+          "ref": a: Int as uint32,
           "type": {
             "id": 4,
             "kind": "type_ref_simple",
@@ -2803,7 +755,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
         "default": undefined,
         "index": 0,
         "name": "a",
-        "ref": a: Int as uint32;,
+        "ref": a: Int as uint32,
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -2826,7 +778,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "b",
-          "ref": b: Bool;,
+          "ref": b: Bool,
           "type": {
             "id": 6,
             "kind": "type_ref_simple",
@@ -2838,7 +790,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
         "default": undefined,
         "index": 1,
         "name": "b",
-        "ref": b: Bool;,
+        "ref": b: Bool,
         "type": {
           "kind": "ref",
           "name": "Bool",
@@ -2862,7 +814,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "c",
-          "ref": c: Int as uint256;,
+          "ref": c: Int as uint256,
           "type": {
             "id": 8,
             "kind": "type_ref_simple",
@@ -2874,7 +826,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
         "default": undefined,
         "index": 2,
         "name": "c",
-        "ref": c: Int as uint256;,
+        "ref": c: Int as uint256,
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -3012,7 +964,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "statements": [],
         },
         {
-          "id": 21,
+          "id": 22,
           "kind": "def_receive",
           "ref": bounced(src: bounced<A>) {
     let x: Int = src.c;
@@ -3035,9 +987,14 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 19,
+                "id": 20,
                 "kind": "op_field",
-                "name": "c",
+                "name": {
+                  "id": 19,
+                  "kind": "id",
+                  "ref": c,
+                  "value": "c",
+                },
                 "ref": src.c,
                 "src": {
                   "id": 18,
@@ -3046,7 +1003,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
                   "value": "src",
                 },
               },
-              "id": 20,
+              "id": 21,
               "kind": "statement_let",
               "name": "x",
               "ref": let x: Int = src.c;,
@@ -3061,7 +1018,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           ],
         },
       ],
-      "id": 22,
+      "id": 23,
       "kind": "def_contract",
       "name": "Test",
       "origin": "user",
@@ -3131,7 +1088,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
       },
       {
         "ast": {
-          "id": 21,
+          "id": 22,
           "kind": "def_receive",
           "ref": bounced(src: bounced<A>) {
     let x: Int = src.c;
@@ -3154,9 +1111,14 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 19,
+                "id": 20,
                 "kind": "op_field",
-                "name": "c",
+                "name": {
+                  "id": 19,
+                  "kind": "id",
+                  "ref": c,
+                  "value": "c",
+                },
                 "ref": src.c,
                 "src": {
                   "id": 18,
@@ -3165,7 +1127,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
                   "value": "src",
                 },
               },
-              "id": 20,
+              "id": 21,
               "kind": "statement_let",
               "name": "x",
               "ref": let x: Int = src.c;,
@@ -3226,4 +1188,3383 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
 }
 `;
 
-exports[`resolveDescriptors should resolve descriptors for case-9 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-small-not-detected 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 1`] = `
+{
+  "A": {
+    "ast": {
+      "fields": [
+        {
+          "as": "uint32",
+          "id": 4,
+          "init": null,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int as uint32,
+          "type": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "id": 5,
+      "kind": "def_struct",
+      "message": true,
+      "name": "A",
+      "origin": "user",
+      "prefix": null,
+      "ref": message A {
+    a: Int as uint32;
+},
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "a",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "uint",
+          },
+        },
+        "as": "uint32",
+        "ast": {
+          "as": "uint32",
+          "id": 4,
+          "init": null,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int as uint32,
+          "type": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "name": "a",
+        "ref": a: Int as uint32,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": 3746466057,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "A",
+    "origin": "user",
+    "partialFieldCount": 1,
+    "receivers": [],
+    "signature": "A{a:uint32}",
+    "tlb": "a#df4e8909 a:uint32 = A",
+    "traits": [],
+    "uid": 22757,
+  },
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "Test": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 10,
+          "kind": "def_receive",
+          "ref": external(msg: A) {
+        42;
+    },
+          "selector": {
+            "arg": {
+              "id": 7,
+              "kind": "def_argument",
+              "name": "msg",
+              "ref": msg: A,
+              "type": {
+                "id": 6,
+                "kind": "type_ref_simple",
+                "name": "A",
+                "optional": false,
+                "ref": A,
+              },
+            },
+            "kind": "external-simple",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 8,
+                "kind": "number",
+                "ref": 42,
+                "value": 42n,
+              },
+              "id": 9,
+              "kind": "statement_expression",
+              "ref": 42;,
+            },
+          ],
+        },
+        {
+          "id": 13,
+          "kind": "def_receive",
+          "ref": external() {
+        42;
+    },
+          "selector": {
+            "kind": "external-fallback",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 11,
+                "kind": "number",
+                "ref": 42,
+                "value": 42n,
+              },
+              "id": 12,
+              "kind": "statement_expression",
+              "ref": 42;,
+            },
+          ],
+        },
+      ],
+      "id": 14,
+      "kind": "def_contract",
+      "name": "Test",
+      "origin": "user",
+      "ref": contract Test {
+    external(msg: A) {
+        42;
+    }
+
+    external() {
+        42;
+    }
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "args": [],
+      "ast": {
+        "args": [],
+        "id": 16,
+        "kind": "def_init_function",
+        "ref": contract Test {
+    external(msg: A) {
+        42;
+    }
+
+    external() {
+        42;
+    }
+},
+        "statements": [],
+      },
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Test",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [
+      {
+        "ast": {
+          "id": 10,
+          "kind": "def_receive",
+          "ref": external(msg: A) {
+        42;
+    },
+          "selector": {
+            "arg": {
+              "id": 7,
+              "kind": "def_argument",
+              "name": "msg",
+              "ref": msg: A,
+              "type": {
+                "id": 6,
+                "kind": "type_ref_simple",
+                "name": "A",
+                "optional": false,
+                "ref": A,
+              },
+            },
+            "kind": "external-simple",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 8,
+                "kind": "number",
+                "ref": 42,
+                "value": 42n,
+              },
+              "id": 9,
+              "kind": "statement_expression",
+              "ref": 42;,
+            },
+          ],
+        },
+        "selector": {
+          "kind": "external-binary",
+          "name": "msg",
+          "type": "A",
+        },
+      },
+      {
+        "ast": {
+          "id": 13,
+          "kind": "def_receive",
+          "ref": external() {
+        42;
+    },
+          "selector": {
+            "kind": "external-fallback",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 11,
+                "kind": "number",
+                "ref": 42,
+                "value": 42n,
+              },
+              "id": 12,
+              "kind": "statement_expression",
+              "ref": 42;,
+            },
+          ],
+        },
+        "selector": {
+          "kind": "external-empty",
+        },
+      },
+    ],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait {
+    
+},
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 44104,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-uninit-storage-vars 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 3,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "origin": "user",
+      "ref": primitive Bool;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  "HelloWorld": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 5,
+          "init": null,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "as": null,
+          "id": 7,
+          "init": null,
+          "kind": "def_field",
+          "name": "b",
+          "ref": b: Bool,
+          "type": {
+            "id": 6,
+            "kind": "type_ref_simple",
+            "name": "Bool",
+            "optional": false,
+            "ref": Bool,
+          },
+        },
+        {
+          "args": [],
+          "id": 8,
+          "kind": "def_init_function",
+          "ref": init() {
+        
+    },
+          "statements": [],
+        },
+        {
+          "args": [],
+          "attributes": [],
+          "id": 9,
+          "kind": "def_function",
+          "name": "hello",
+          "origin": "user",
+          "ref": fun hello() {
+        
+    },
+          "return": null,
+          "statements": [],
+        },
+        {
+          "args": [],
+          "attributes": [],
+          "id": 10,
+          "kind": "def_function",
+          "name": "hello2",
+          "origin": "user",
+          "ref": fun hello2() {
+        
+    },
+          "return": null,
+          "statements": [],
+        },
+      ],
+      "id": 11,
+      "kind": "def_contract",
+      "name": "HelloWorld",
+      "origin": "user",
+      "ref": contract HelloWorld {
+    a: Int;
+    b: Bool;
+
+    init() {
+        
+    }
+
+    fun hello() {
+        
+    }
+
+    fun hello2() {
+        
+    }
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "a",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 5,
+          "init": null,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "name": "a",
+        "ref": a: Int,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "b",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 7,
+          "init": null,
+          "kind": "def_field",
+          "name": "b",
+          "ref": b: Bool,
+          "type": {
+            "id": 6,
+            "kind": "type_ref_simple",
+            "name": "Bool",
+            "optional": false,
+            "ref": Bool,
+          },
+        },
+        "default": undefined,
+        "index": 1,
+        "name": "b",
+        "ref": b: Bool,
+        "type": {
+          "kind": "ref",
+          "name": "Bool",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {
+      "hello" => {
+        "args": [],
+        "ast": {
+          "args": [],
+          "attributes": [],
+          "id": 9,
+          "kind": "def_function",
+          "name": "hello",
+          "origin": "user",
+          "ref": fun hello() {
+        
+    },
+          "return": null,
+          "statements": [],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverrides": false,
+        "isVirtual": false,
+        "name": "hello",
+        "origin": "user",
+        "returns": {
+          "kind": "void",
+        },
+        "self": "HelloWorld",
+      },
+      "hello2" => {
+        "args": [],
+        "ast": {
+          "args": [],
+          "attributes": [],
+          "id": 10,
+          "kind": "def_function",
+          "name": "hello2",
+          "origin": "user",
+          "ref": fun hello2() {
+        
+    },
+          "return": null,
+          "statements": [],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverrides": false,
+        "isVirtual": false,
+        "name": "hello2",
+        "origin": "user",
+        "returns": {
+          "kind": "void",
+        },
+        "self": "HelloWorld",
+      },
+    },
+    "header": null,
+    "init": {
+      "args": [],
+      "ast": {
+        "args": [],
+        "id": 8,
+        "kind": "def_init_function",
+        "ref": init() {
+        
+    },
+        "statements": [],
+      },
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "HelloWorld",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 3,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait {
+    
+},
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 31498,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-uninit-storage-vars 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies1 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 3,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "origin": "user",
+      "ref": primitive Bool;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies1 2`] = `
+{
+  "testFunc": {
+    "args": [],
+    "ast": {
+      "args": [],
+      "attributes": [],
+      "id": 7,
+      "kind": "def_function",
+      "name": "testFunc",
+      "origin": "user",
+      "ref": fun testFunc(): Int {
+    return 0;
+},
+      "return": {
+        "id": 4,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 5,
+            "kind": "number",
+            "ref": 0,
+            "value": 0n,
+          },
+          "id": 6,
+          "kind": "statement_return",
+          "ref": return 0;,
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "testFunc",
+    "origin": "user",
+    "returns": {
+      "kind": "ref",
+      "name": "Int",
+      "optional": false,
+    },
+    "self": null,
+  },
+  "testFunc2": {
+    "args": [],
+    "ast": {
+      "args": [],
+      "attributes": [],
+      "id": 10,
+      "kind": "def_function",
+      "name": "testFunc2",
+      "origin": "user",
+      "ref": fun testFunc2() {
+    return 0;
+},
+      "return": null,
+      "statements": [
+        {
+          "expression": {
+            "id": 8,
+            "kind": "number",
+            "ref": 0,
+            "value": 0n,
+          },
+          "id": 9,
+          "kind": "statement_return",
+          "ref": return 0;,
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "testFunc2",
+    "origin": "user",
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+  "testFunc3": {
+    "args": [
+      {
+        "name": "a",
+        "ref": a: Int,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "name": "b",
+        "ref": b: Bool,
+        "type": {
+          "kind": "ref",
+          "name": "Bool",
+          "optional": false,
+        },
+      },
+    ],
+    "ast": {
+      "args": [
+        {
+          "id": 12,
+          "kind": "def_argument",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 11,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "id": 14,
+          "kind": "def_argument",
+          "name": "b",
+          "ref": b: Bool,
+          "type": {
+            "id": 13,
+            "kind": "type_ref_simple",
+            "name": "Bool",
+            "optional": false,
+            "ref": Bool,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 17,
+      "kind": "def_function",
+      "name": "testFunc3",
+      "origin": "user",
+      "ref": fun testFunc3(a: Int, b: Bool) {
+    return 0;
+},
+      "return": null,
+      "statements": [
+        {
+          "expression": {
+            "id": 15,
+            "kind": "number",
+            "ref": 0,
+            "value": 0n,
+          },
+          "id": 16,
+          "kind": "statement_return",
+          "ref": return 0;,
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "testFunc3",
+    "origin": "user",
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies2 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 3,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "origin": "user",
+      "ref": primitive Bool;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "Main": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 8,
+          "init": null,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 7,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "args": [
+            {
+              "id": 10,
+              "kind": "def_argument",
+              "name": "a",
+              "ref": a: Int,
+              "type": {
+                "id": 9,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+          "id": 16,
+          "kind": "def_init_function",
+          "ref": init(a: Int) {
+        self.a = a;
+    },
+          "statements": [
+            {
+              "expression": {
+                "id": 14,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "id": 15,
+              "kind": "statement_assign",
+              "path": {
+                "id": 13,
+                "kind": "op_field",
+                "name": {
+                  "id": 12,
+                  "kind": "id",
+                  "ref": a,
+                  "value": "a",
+                },
+                "ref": self.a,
+                "src": {
+                  "id": 11,
+                  "kind": "id",
+                  "ref": self,
+                  "value": "self",
+                },
+              },
+              "ref": self.a = a;,
+            },
+          ],
+        },
+        {
+          "args": [],
+          "attributes": [
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 20,
+          "kind": "def_function",
+          "name": "hello",
+          "origin": "user",
+          "ref": get fun hello(): Int {
+        return 0;
+    },
+          "return": {
+            "id": 17,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 18,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 19,
+              "kind": "statement_return",
+              "ref": return 0;,
+            },
+          ],
+        },
+        {
+          "args": [],
+          "attributes": [
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 24,
+          "kind": "def_function",
+          "name": "hello2",
+          "origin": "user",
+          "ref": get fun hello2(): Point {
+        return 0;
+    },
+          "return": {
+            "id": 21,
+            "kind": "type_ref_simple",
+            "name": "Point",
+            "optional": false,
+            "ref": Point,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 22,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 23,
+              "kind": "statement_return",
+              "ref": return 0;,
+            },
+          ],
+        },
+      ],
+      "id": 25,
+      "kind": "def_contract",
+      "name": "Main",
+      "origin": "user",
+      "ref": contract Main {
+    a: Int;
+    init(a: Int) {
+        self.a = a;
+    }
+
+    get fun hello(): Int {
+        return 0;
+    }
+    get fun hello2(): Point {
+        return 0;
+    }
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "a",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 8,
+          "init": null,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 7,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "name": "a",
+        "ref": a: Int,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {
+      "hello" => {
+        "args": [],
+        "ast": {
+          "args": [],
+          "attributes": [
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 20,
+          "kind": "def_function",
+          "name": "hello",
+          "origin": "user",
+          "ref": get fun hello(): Int {
+        return 0;
+    },
+          "return": {
+            "id": 17,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 18,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 19,
+              "kind": "statement_return",
+              "ref": return 0;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverrides": false,
+        "isVirtual": false,
+        "name": "hello",
+        "origin": "user",
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": "Main",
+      },
+      "hello2" => {
+        "args": [],
+        "ast": {
+          "args": [],
+          "attributes": [
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 24,
+          "kind": "def_function",
+          "name": "hello2",
+          "origin": "user",
+          "ref": get fun hello2(): Point {
+        return 0;
+    },
+          "return": {
+            "id": 21,
+            "kind": "type_ref_simple",
+            "name": "Point",
+            "optional": false,
+            "ref": Point,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 22,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 23,
+              "kind": "statement_return",
+              "ref": return 0;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverrides": false,
+        "isVirtual": false,
+        "name": "hello2",
+        "origin": "user",
+        "returns": {
+          "kind": "ref",
+          "name": "Point",
+          "optional": false,
+        },
+        "self": "Main",
+      },
+    },
+    "header": null,
+    "init": {
+      "args": [
+        {
+          "as": null,
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false,
+          },
+        },
+      ],
+      "ast": {
+        "args": [
+          {
+            "id": 10,
+            "kind": "def_argument",
+            "name": "a",
+            "ref": a: Int,
+            "type": {
+              "id": 9,
+              "kind": "type_ref_simple",
+              "name": "Int",
+              "optional": false,
+              "ref": Int,
+            },
+          },
+        ],
+        "id": 16,
+        "kind": "def_init_function",
+        "ref": init(a: Int) {
+        self.a = a;
+    },
+        "statements": [
+          {
+            "expression": {
+              "id": 14,
+              "kind": "id",
+              "ref": a,
+              "value": "a",
+            },
+            "id": 15,
+            "kind": "statement_assign",
+            "path": {
+              "id": 13,
+              "kind": "op_field",
+              "name": {
+                "id": 12,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "ref": self.a,
+              "src": {
+                "id": 11,
+                "kind": "id",
+                "ref": self,
+                "value": "self",
+              },
+            },
+            "ref": self.a = a;,
+          },
+        ],
+      },
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Main",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 3,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait {
+    
+},
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 51099,
+  },
+  "Point": {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 5,
+          "init": null,
+          "kind": "def_field",
+          "name": "p",
+          "ref": p: Int,
+          "type": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "id": 6,
+      "kind": "def_struct",
+      "message": false,
+      "name": "Point",
+      "origin": "user",
+      "prefix": null,
+      "ref": struct Point {
+    p: Int;
+},
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "p",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 5,
+          "init": null,
+          "kind": "def_field",
+          "name": "p",
+          "ref": p: Int,
+          "type": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "name": "p",
+        "ref": p: Int,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "Point",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "Point{p:int257}",
+    "tlb": "_ p:int257 = Point",
+    "traits": [],
+    "uid": 35778,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies2 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 3,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "origin": "user",
+      "ref": primitive Bool;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "inc" => {
+        "args": [],
+        "ast": {
+          "args": [
+            {
+              "id": 6,
+              "kind": "def_argument",
+              "name": "self",
+              "ref": self: Int,
+              "type": {
+                "id": 5,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+          "attributes": [
+            {
+              "ref": extends,
+              "type": "extends",
+            },
+          ],
+          "id": 11,
+          "kind": "def_function",
+          "name": "inc",
+          "origin": "user",
+          "ref": extends fun inc(self: Int): Int {
+    return self + 1;
+},
+          "return": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 9,
+                "kind": "op_binary",
+                "left": {
+                  "id": 7,
+                  "kind": "id",
+                  "ref": self,
+                  "value": "self",
+                },
+                "op": "+",
+                "ref": self + 1,
+                "right": {
+                  "id": 8,
+                  "kind": "number",
+                  "ref": 1,
+                  "value": 1n,
+                },
+              },
+              "id": 10,
+              "kind": "statement_return",
+              "ref": return self + 1;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": false,
+        "isOverrides": false,
+        "isVirtual": false,
+        "name": "inc",
+        "origin": "user",
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": "Int",
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for item-method 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 3,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "origin": "user",
+      "ref": primitive Bool;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for item-native-decl 2`] = `
+{
+  "sample": {
+    "args": [
+      {
+        "name": "a",
+        "ref": a: Int,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "ast": {
+      "args": [
+        {
+          "id": 6,
+          "kind": "def_argument",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 5,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 7,
+      "kind": "def_native_function",
+      "name": "sample",
+      "nativeName": "hello_world",
+      "origin": "user",
+      "ref": @name(hello_world)
+native sample(a: Int): Int;,
+      "return": {
+        "id": 4,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "sample",
+    "origin": "user",
+    "returns": {
+      "kind": "ref",
+      "name": "Int",
+      "optional": false,
+    },
+    "self": null,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for item-native-mutating-method 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 3,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "origin": "user",
+      "ref": primitive Bool;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "inc" => {
+        "args": [],
+        "ast": {
+          "args": [
+            {
+              "id": 6,
+              "kind": "def_argument",
+              "name": "self",
+              "ref": self: Int,
+              "type": {
+                "id": 5,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+          "attributes": [
+            {
+              "ref": mutates,
+              "type": "mutates",
+            },
+            {
+              "ref": extends,
+              "type": "extends",
+            },
+          ],
+          "id": 7,
+          "kind": "def_native_function",
+          "name": "inc",
+          "nativeName": "inc",
+          "origin": "user",
+          "ref": @name(inc)
+mutates extends native inc(self: Int): Int;,
+          "return": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverrides": false,
+        "isVirtual": false,
+        "name": "inc",
+        "origin": "user",
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": "Int",
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for item-native-mutating-method 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "Main": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 4,
+          "init": null,
+          "kind": "def_field",
+          "name": "m",
+          "ref": m: map<Int, Int as coins>,
+          "type": {
+            "id": 3,
+            "key": "Int",
+            "keyAs": null,
+            "kind": "type_ref_map",
+            "ref": map<Int, Int as coins>,
+            "value": "Int",
+            "valueAs": "coins",
+          },
+        },
+        {
+          "args": [],
+          "attributes": [
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 31,
+          "kind": "def_function",
+          "name": "test",
+          "origin": "user",
+          "ref": get fun test(): Int {
+        let m: map<Int, Int as coins> = emptyMap();
+        m.set(1, 2);
+        self.m.set(1, 2);
+        return m.get(1) + self.m.get(1);
+    },
+          "return": {
+            "id": 5,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "id": 7,
+                "kind": "op_static_call",
+                "name": "emptyMap",
+                "ref": emptyMap(),
+              },
+              "id": 8,
+              "kind": "statement_let",
+              "name": "m",
+              "ref": let m: map<Int, Int as coins> = emptyMap();,
+              "type": {
+                "id": 6,
+                "key": "Int",
+                "keyAs": null,
+                "kind": "type_ref_map",
+                "ref": map<Int, Int as coins>,
+                "value": "Int",
+                "valueAs": "coins",
+              },
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "id": 10,
+                    "kind": "number",
+                    "ref": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "id": 11,
+                    "kind": "number",
+                    "ref": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 12,
+                "kind": "op_call",
+                "name": "set",
+                "ref": m.set(1, 2),
+                "src": {
+                  "id": 9,
+                  "kind": "id",
+                  "ref": m,
+                  "value": "m",
+                },
+              },
+              "id": 13,
+              "kind": "statement_expression",
+              "ref": m.set(1, 2);,
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "id": 17,
+                    "kind": "number",
+                    "ref": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "id": 18,
+                    "kind": "number",
+                    "ref": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 19,
+                "kind": "op_call",
+                "name": "set",
+                "ref": self.m.set(1, 2),
+                "src": {
+                  "id": 16,
+                  "kind": "op_field",
+                  "name": {
+                    "id": 15,
+                    "kind": "id",
+                    "ref": m,
+                    "value": "m",
+                  },
+                  "ref": self.m,
+                  "src": {
+                    "id": 14,
+                    "kind": "id",
+                    "ref": self,
+                    "value": "self",
+                  },
+                },
+              },
+              "id": 20,
+              "kind": "statement_expression",
+              "ref": self.m.set(1, 2);,
+            },
+            {
+              "expression": {
+                "id": 29,
+                "kind": "op_binary",
+                "left": {
+                  "args": [
+                    {
+                      "id": 22,
+                      "kind": "number",
+                      "ref": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 23,
+                  "kind": "op_call",
+                  "name": "get",
+                  "ref": m.get(1),
+                  "src": {
+                    "id": 21,
+                    "kind": "id",
+                    "ref": m,
+                    "value": "m",
+                  },
+                },
+                "op": "+",
+                "ref": m.get(1) + self.m.get(1),
+                "right": {
+                  "args": [
+                    {
+                      "id": 27,
+                      "kind": "number",
+                      "ref": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 28,
+                  "kind": "op_call",
+                  "name": "get",
+                  "ref": self.m.get(1),
+                  "src": {
+                    "id": 26,
+                    "kind": "op_field",
+                    "name": {
+                      "id": 25,
+                      "kind": "id",
+                      "ref": m,
+                      "value": "m",
+                    },
+                    "ref": self.m,
+                    "src": {
+                      "id": 24,
+                      "kind": "id",
+                      "ref": self,
+                      "value": "self",
+                    },
+                  },
+                },
+              },
+              "id": 30,
+              "kind": "statement_return",
+              "ref": return m.get(1) + self.m.get(1);,
+            },
+          ],
+        },
+      ],
+      "id": 32,
+      "kind": "def_contract",
+      "name": "Main",
+      "origin": "user",
+      "ref": contract Main {
+    m: map<Int, Int as coins>;
+
+    get fun test(): Int {
+        let m: map<Int, Int as coins> = emptyMap();
+        m.set(1, 2);
+        self.m.set(1, 2);
+        return m.get(1) + self.m.get(1);
+    }
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "m",
+          "type": {
+            "key": "int",
+            "keyFormat": undefined,
+            "kind": "dict",
+            "value": "uint",
+            "valueFormat": "coins",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 4,
+          "init": null,
+          "kind": "def_field",
+          "name": "m",
+          "ref": m: map<Int, Int as coins>,
+          "type": {
+            "id": 3,
+            "key": "Int",
+            "keyAs": null,
+            "kind": "type_ref_map",
+            "ref": map<Int, Int as coins>,
+            "value": "Int",
+            "valueAs": "coins",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "name": "m",
+        "ref": m: map<Int, Int as coins>,
+        "type": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "coins",
+        },
+      },
+    ],
+    "functions": Map {
+      "test" => {
+        "args": [],
+        "ast": {
+          "args": [],
+          "attributes": [
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 31,
+          "kind": "def_function",
+          "name": "test",
+          "origin": "user",
+          "ref": get fun test(): Int {
+        let m: map<Int, Int as coins> = emptyMap();
+        m.set(1, 2);
+        self.m.set(1, 2);
+        return m.get(1) + self.m.get(1);
+    },
+          "return": {
+            "id": 5,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "id": 7,
+                "kind": "op_static_call",
+                "name": "emptyMap",
+                "ref": emptyMap(),
+              },
+              "id": 8,
+              "kind": "statement_let",
+              "name": "m",
+              "ref": let m: map<Int, Int as coins> = emptyMap();,
+              "type": {
+                "id": 6,
+                "key": "Int",
+                "keyAs": null,
+                "kind": "type_ref_map",
+                "ref": map<Int, Int as coins>,
+                "value": "Int",
+                "valueAs": "coins",
+              },
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "id": 10,
+                    "kind": "number",
+                    "ref": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "id": 11,
+                    "kind": "number",
+                    "ref": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 12,
+                "kind": "op_call",
+                "name": "set",
+                "ref": m.set(1, 2),
+                "src": {
+                  "id": 9,
+                  "kind": "id",
+                  "ref": m,
+                  "value": "m",
+                },
+              },
+              "id": 13,
+              "kind": "statement_expression",
+              "ref": m.set(1, 2);,
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "id": 17,
+                    "kind": "number",
+                    "ref": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "id": 18,
+                    "kind": "number",
+                    "ref": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 19,
+                "kind": "op_call",
+                "name": "set",
+                "ref": self.m.set(1, 2),
+                "src": {
+                  "id": 16,
+                  "kind": "op_field",
+                  "name": {
+                    "id": 15,
+                    "kind": "id",
+                    "ref": m,
+                    "value": "m",
+                  },
+                  "ref": self.m,
+                  "src": {
+                    "id": 14,
+                    "kind": "id",
+                    "ref": self,
+                    "value": "self",
+                  },
+                },
+              },
+              "id": 20,
+              "kind": "statement_expression",
+              "ref": self.m.set(1, 2);,
+            },
+            {
+              "expression": {
+                "id": 29,
+                "kind": "op_binary",
+                "left": {
+                  "args": [
+                    {
+                      "id": 22,
+                      "kind": "number",
+                      "ref": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 23,
+                  "kind": "op_call",
+                  "name": "get",
+                  "ref": m.get(1),
+                  "src": {
+                    "id": 21,
+                    "kind": "id",
+                    "ref": m,
+                    "value": "m",
+                  },
+                },
+                "op": "+",
+                "ref": m.get(1) + self.m.get(1),
+                "right": {
+                  "args": [
+                    {
+                      "id": 27,
+                      "kind": "number",
+                      "ref": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 28,
+                  "kind": "op_call",
+                  "name": "get",
+                  "ref": self.m.get(1),
+                  "src": {
+                    "id": 26,
+                    "kind": "op_field",
+                    "name": {
+                      "id": 25,
+                      "kind": "id",
+                      "ref": m,
+                      "value": "m",
+                    },
+                    "ref": self.m,
+                    "src": {
+                      "id": 24,
+                      "kind": "id",
+                      "ref": self,
+                      "value": "self",
+                    },
+                  },
+                },
+              },
+              "id": 30,
+              "kind": "statement_return",
+              "ref": return m.get(1) + self.m.get(1);,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverrides": false,
+        "isVirtual": false,
+        "name": "test",
+        "origin": "user",
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": "Main",
+      },
+    },
+    "header": null,
+    "init": {
+      "args": [],
+      "ast": {
+        "args": [],
+        "id": 34,
+        "kind": "def_init_function",
+        "ref": contract Main {
+    m: map<Int, Int as coins>;
+
+    get fun test(): Int {
+        let m: map<Int, Int as coins> = emptyMap();
+        m.set(1, 2);
+        self.m.set(1, 2);
+        return m.get(1) + self.m.get(1);
+    }
+},
+        "statements": [],
+      },
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Main",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait {
+    
+},
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 51099,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for scope-loops 1`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
+{
+  "scopeIf": {
+    "args": [],
+    "ast": {
+      "args": [],
+      "attributes": [],
+      "id": 36,
+      "kind": "def_function",
+      "name": "scopeIf",
+      "origin": "user",
+      "ref": fun scopeIf() {
+    if (true) {
+        let a: Int = 0;
+    }
+    let a: String = "abc";
+},
+      "return": null,
+      "statements": [
+        {
+          "elseif": null,
+          "expression": {
+            "id": 28,
+            "kind": "boolean",
+            "ref": true,
+            "value": true,
+          },
+          "falseStatements": null,
+          "id": 32,
+          "kind": "statement_condition",
+          "ref": if (true) {
+        let a: Int = 0;
+    },
+          "trueStatements": [
+            {
+              "expression": {
+                "id": 30,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 31,
+              "kind": "statement_let",
+              "name": "a",
+              "ref": let a: Int = 0;,
+              "type": {
+                "id": 29,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+        },
+        {
+          "expression": {
+            "id": 34,
+            "kind": "string",
+            "ref": "abc",
+            "value": "abc",
+          },
+          "id": 35,
+          "kind": "statement_let",
+          "name": "a",
+          "ref": let a: String = "abc";,
+          "type": {
+            "id": 33,
+            "kind": "type_ref_simple",
+            "name": "String",
+            "optional": false,
+            "ref": String,
+          },
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "scopeIf",
+    "origin": "user",
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+  "scopeRepeat": {
+    "args": [],
+    "ast": {
+      "args": [],
+      "attributes": [],
+      "id": 18,
+      "kind": "def_function",
+      "name": "scopeRepeat",
+      "origin": "user",
+      "ref": fun scopeRepeat() {
+    repeat (1) {
+        let a: Int = 0;
+    }
+    let a: String = "abc";
+},
+      "return": null,
+      "statements": [
+        {
+          "id": 14,
+          "iterations": {
+            "id": 10,
+            "kind": "number",
+            "ref": 1,
+            "value": 1n,
+          },
+          "kind": "statement_repeat",
+          "ref": repeat (1) {
+        let a: Int = 0;
+    },
+          "statements": [
+            {
+              "expression": {
+                "id": 12,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 13,
+              "kind": "statement_let",
+              "name": "a",
+              "ref": let a: Int = 0;,
+              "type": {
+                "id": 11,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+        },
+        {
+          "expression": {
+            "id": 16,
+            "kind": "string",
+            "ref": "abc",
+            "value": "abc",
+          },
+          "id": 17,
+          "kind": "statement_let",
+          "name": "a",
+          "ref": let a: String = "abc";,
+          "type": {
+            "id": 15,
+            "kind": "type_ref_simple",
+            "name": "String",
+            "optional": false,
+            "ref": String,
+          },
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "scopeRepeat",
+    "origin": "user",
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+  "scopeUntil": {
+    "args": [],
+    "ast": {
+      "args": [],
+      "attributes": [],
+      "id": 9,
+      "kind": "def_function",
+      "name": "scopeUntil",
+      "origin": "user",
+      "ref": fun scopeUntil() {
+    do {
+        let a: Int = 0;
+    } until (true);
+    let a: String = "abc";
+},
+      "return": null,
+      "statements": [
+        {
+          "condition": {
+            "id": 1,
+            "kind": "boolean",
+            "ref": true,
+            "value": true,
+          },
+          "id": 5,
+          "kind": "statement_until",
+          "ref": do {
+        let a: Int = 0;
+    } until (true);,
+          "statements": [
+            {
+              "expression": {
+                "id": 3,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 4,
+              "kind": "statement_let",
+              "name": "a",
+              "ref": let a: Int = 0;,
+              "type": {
+                "id": 2,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+        },
+        {
+          "expression": {
+            "id": 7,
+            "kind": "string",
+            "ref": "abc",
+            "value": "abc",
+          },
+          "id": 8,
+          "kind": "statement_let",
+          "name": "a",
+          "ref": let a: String = "abc";,
+          "type": {
+            "id": 6,
+            "kind": "type_ref_simple",
+            "name": "String",
+            "optional": false,
+            "ref": String,
+          },
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "scopeUntil",
+    "origin": "user",
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+  "scopeWhile": {
+    "args": [],
+    "ast": {
+      "args": [],
+      "attributes": [],
+      "id": 27,
+      "kind": "def_function",
+      "name": "scopeWhile",
+      "origin": "user",
+      "ref": fun scopeWhile() {
+    while (true) {
+        let a: Int = 0;
+    }
+    let a: String = "abc";
+},
+      "return": null,
+      "statements": [
+        {
+          "condition": {
+            "id": 19,
+            "kind": "boolean",
+            "ref": true,
+            "value": true,
+          },
+          "id": 23,
+          "kind": "statement_while",
+          "ref": while (true) {
+        let a: Int = 0;
+    },
+          "statements": [
+            {
+              "expression": {
+                "id": 21,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 22,
+              "kind": "statement_let",
+              "name": "a",
+              "ref": let a: Int = 0;,
+              "type": {
+                "id": 20,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+        },
+        {
+          "expression": {
+            "id": 25,
+            "kind": "string",
+            "ref": "abc",
+            "value": "abc",
+          },
+          "id": 26,
+          "kind": "statement_let",
+          "name": "a",
+          "ref": let a: String = "abc";,
+          "type": {
+            "id": 24,
+            "kind": "type_ref_simple",
+            "name": "String",
+            "optional": false,
+            "ref": String,
+          },
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "scopeWhile",
+    "origin": "user",
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 3,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "origin": "user",
+      "ref": primitive Bool;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "Struct1": {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 5,
+          "init": null,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "as": null,
+          "id": 7,
+          "init": null,
+          "kind": "def_field",
+          "name": "b",
+          "ref": b: Bool,
+          "type": {
+            "id": 6,
+            "kind": "type_ref_simple",
+            "name": "Bool",
+            "optional": false,
+            "ref": Bool,
+          },
+        },
+      ],
+      "id": 8,
+      "kind": "def_struct",
+      "message": false,
+      "name": "Struct1",
+      "origin": "user",
+      "prefix": null,
+      "ref": struct Struct1 {
+    a: Int;
+    b: Bool;
+},
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "a",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 5,
+          "init": null,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "name": "a",
+        "ref": a: Int,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "b",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 7,
+          "init": null,
+          "kind": "def_field",
+          "name": "b",
+          "ref": b: Bool,
+          "type": {
+            "id": 6,
+            "kind": "type_ref_simple",
+            "name": "Bool",
+            "optional": false,
+            "ref": Bool,
+          },
+        },
+        "default": undefined,
+        "index": 1,
+        "name": "b",
+        "ref": b: Bool,
+        "type": {
+          "kind": "ref",
+          "name": "Bool",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "Struct1",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "Struct1{a:int257,b:bool}",
+    "tlb": "_ a:int257 b:bool = Struct1",
+    "traits": [],
+    "uid": 63177,
+  },
+  "Struct2": {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 10,
+          "init": null,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Struct1,
+          "type": {
+            "id": 9,
+            "kind": "type_ref_simple",
+            "name": "Struct1",
+            "optional": false,
+            "ref": Struct1,
+          },
+        },
+      ],
+      "id": 11,
+      "kind": "def_struct",
+      "message": false,
+      "name": "Struct2",
+      "origin": "user",
+      "prefix": null,
+      "ref": struct Struct2 {
+    a: Struct1;
+},
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "a",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "Struct1",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 10,
+          "init": null,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Struct1,
+          "type": {
+            "id": 9,
+            "kind": "type_ref_simple",
+            "name": "Struct1",
+            "optional": false,
+            "ref": Struct1,
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "name": "a",
+        "ref": a: Struct1,
+        "type": {
+          "kind": "ref",
+          "name": "Struct1",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "Struct2",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "Struct2{a:Struct1{a:int257,b:bool}}",
+    "tlb": "_ a:Struct1{a:int257,b:bool} = Struct2",
+    "traits": [],
+    "uid": 50858,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for struct-nested 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 3,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait {
+    
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "origin": "user",
+      "ref": primitive Bool;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for trait-base 2`] = `{}`;

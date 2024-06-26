@@ -16,6 +16,8 @@ export const ops = {
     writerCellOpt: (type: string, ctx: WriterContext) =>
         used(`$${type}$_store_opt`, ctx),
     reader: (type: string, ctx: WriterContext) => used(`$${type}$_load`, ctx),
+    readerNonModifying: (type: string, ctx: WriterContext) =>
+        used(`$${type}$_load_not_mut`, ctx),
     readerBounced: (type: string, ctx: WriterContext) =>
         used(`$${type}$_load_bounced`, ctx),
     readerOpt: (type: string, ctx: WriterContext) =>
@@ -73,6 +75,7 @@ export const ops = {
     // Functions
     extension: (type: string, name: string) => `$${type}$_fun_${name}`,
     global: (name: string) => `$global_${name}`,
+    nonModifying: (name: string) => `${name}$not_mut`,
 
     // Constants
     str: (id: string, ctx: WriterContext) => used(`__gen_str_${id}`, ctx),

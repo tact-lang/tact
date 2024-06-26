@@ -9,30 +9,86 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `-e` / `--eval` CLI flags to evaluate constant Tact expressions: PR [#462](https://github.com/tact-lang/tact/pull/462)
+
+### Changed
+
+- Removed the `LValue` grammatical category and replaced it with `Expression`: PR [#479](https://github.com/tact-lang/tact/pull/479)
+
+### Fixed
+
+- Name clashes with FunC keywords in struct constructor function parameters: PR [#467](https://github.com/tact-lang/tact/issues/467)
+- Error messages for traversing non-path-expressions in `foreach`-loops : PR [#479](https://github.com/tact-lang/tact/pull/479)
+- Shadowing of trait constants by contract storage variables: PR [#480](https://github.com/tact-lang/tact/pull/480)
+- Parsing of non-decimal message opcodes: PR [#481](https://github.com/tact-lang/tact/pull/481)
+
+## [1.4.0] - 2024-06-21
+
+### Added
+
+- The bitwise NOT operation (`~`): PR [#337](https://github.com/tact-lang/tact/pull/337)
+- Augmented assignment bitwise operators `|=`, `&=`, `^=`: PR [#350](https://github.com/tact-lang/tact/pull/350)
+- Traversing maps from contract storage and structs is now allowed: PR [#389](https://github.com/tact-lang/tact/pull/389)
+- The `loadBool` method for `Slice` type: PR [#412](https://github.com/tact-lang/tact/pull/412)
+- CLI flag `--with-decompilation` to turn on decompilation of BoC files at the end of the compilation pipeline: PR [#417](https://github.com/tact-lang/tact/pull/417)
+- Support more Tact expressions in the constant evaluator: conditional expressions, struct instances, struct field accesses, `emptyMap()`: PR [#432](https://github.com/tact-lang/tact/pull/432) and PR [#445](https://github.com/tact-lang/tact/pull/445)
+- The `fromCell` and `fromSlice` methods for struct and message parsing: PR [#418](https://github.com/tact-lang/tact/pull/418) and PR [#454](https://github.com/tact-lang/tact/pull/454)
+- The `return`-statement reachability analysis now takes into account the `throw` and `nativeThrow` functions: PR [#447](https://github.com/tact-lang/tact/pull/447)
+
+### Changed
+
+- Trailing semicolons in struct and message declarations are optional now: PR [#395](https://github.com/tact-lang/tact/pull/395)
+- Tests are refactored and renamed to convey the sense of what is being tested and to reduce the amount of merge conflicts during development: PR [#402](https://github.com/tact-lang/tact/pull/402)
+- `let`-statements can now be used without an explicit type declaration and determine the type automatically if it was not specified: PR [#198](https://github.com/tact-lang/tact/pull/198) and PR [#438](https://github.com/tact-lang/tact/pull/438)
+- The outdated TextMate-style grammar files for text editors have been removed (the most recent grammar files can be found in the [tact-sublime](https://github.com/tact-lang/tact-sublime) repo): PR [#404](https://github.com/tact-lang/tact/pull/404)
+- The JSON schema for `tact.config.json` has been moved to the `schemas` project folder: PR [#404](https://github.com/tact-lang/tact/pull/404)
+- Allow underscores as unused variable identifiers: PR [#338](https://github.com/tact-lang/tact/pull/338)
+- The default compilation mode does not decompile BoC files anymore, to additionally perform decompilation at the end of the pipeline, set the `fullWithDecompilation` mode in the `mode` project properties of `tact.config.json`: PR [#417](https://github.com/tact-lang/tact/pull/417)
+- Trait lists, parameters and arguments in the Tact grammar were assigned their own names in the grammar for better readability and code deduplication: PR [#422](https://github.com/tact-lang/tact/pull/422)
+- The semicolon (`;`) terminating a statement is optional if the statement is the last one in the statement block: PR [#434](https://github.com/tact-lang/tact/pull/434)
+
+### Fixed
+
+- Return type of `skipBits` now matches FunC and does not lead to compilation errors: PR [#388](https://github.com/tact-lang/tact/pull/388)
+- Typechecking of conditional expressions when one branch's type is a subtype of another, i.e. for optionals and maps/`null`: PR [#394](https://github.com/tact-lang/tact/pull/394)
+- Typechecking of conditional expressions when the types of their branches can be generalized, i.e. for non-optionals and `null` can be inferred an optional type: PR [#429](https://github.com/tact-lang/tact/pull/429)
+- External fallback receivers now work properly: PR [#408](https://github.com/tact-lang/tact/pull/408)
+- `Int as coins` as a value type of a map in persistent storage does not throw compilation error anymore: PR [#413](https://github.com/tact-lang/tact/pull/413)
+- The semantics of the Tact arithmetic operations in the constant evaluator to perform rounding towards negative infinity: PR [#432](https://github.com/tact-lang/tact/pull/432)
+- Better error messages for the `void` type: PR [#442](https://github.com/tact-lang/tact/pull/442)
+- Fixed the native function binding for the stdlib function `nativeThrowWhen` (it needed to be `throw_if` instead of `throw_when`) and also renamed it to `nativeThrowIf` for consistency with FunC: PR [#451](https://github.com/tact-lang/tact/pull/451)
+
+## [1.3.1] - 2024-06-08
+
+### Added
+
 - Tests for recursive functions: PR [#359](https://github.com/tact-lang/tact/pull/359)
 - API for AST traversal: PR [#368](https://github.com/tact-lang/tact/pull/368)
 - Spell checking for the whole code base: PR [#372](https://github.com/tact-lang/tact/pull/372)
 
 ### Changed
 
-- GitHub actions updated to use NodeJS 20: PR [#360](https://github.com/tact-lang/tact/pull/360)
+- GitHub actions updated to use Node.js 20: PR [#360](https://github.com/tact-lang/tact/pull/360)
 - Refactor AST types to simplify access to third-party tools: PR [#325](https://github.com/tact-lang/tact/pull/325)
 - Refactor the compiler API used to access AST store: PR [#326](https://github.com/tact-lang/tact/pull/326)
 - Update JSON Schema to inform about usage in Blueprint: PR [#330](https://github.com/tact-lang/tact/pull/330)
+- All identifiers in error messages are now quoted for consistency: PR [#363](https://github.com/tact-lang/tact/pull/363)
 - The Tact grammar has been refactored for better readability: PR [#365](https://github.com/tact-lang/tact/pull/365)
+- Error messages now use relative file paths: PR [#456](https://github.com/tact-lang/tact/pull/456)
 
 ### Fixed
 
-- `log2` and `log` math functions were adjusted for consistency in error throwing: PR [#342](https://github.com/tact-lang/tact/pull/342)
+- The `log2` and `log` math functions were adjusted for consistency in error throwing: PR [#342](https://github.com/tact-lang/tact/pull/342)
 - Shadowing built-in static functions is now forbidden: PR [#351](https://github.com/tact-lang/tact/pull/351)
 - Augmented assignment now throws compilation error for non-integer types: PR [#356](https://github.com/tact-lang/tact/pull/356)
 - Built-in function `address()` now handles parse errors correctly: PR [#357](https://github.com/tact-lang/tact/pull/357)
-- All identifiers in error messages are now quoted for consistency: PR [#363](https://github.com/tact-lang/tact/pull/363)
 - The grammar of the unary operators has been fixed, constant and function declarations are prohibited for contracts and at the top level of Tact modules: PR [#365](https://github.com/tact-lang/tact/pull/365)
-- Typos in ABI generation: : PR [#372](https://github.com/tact-lang/tact/pull/372)
+- Typos in ABI generation: PR [#372](https://github.com/tact-lang/tact/pull/372)
 - `__tact_load_address_opt` code generation: PR [#373](https://github.com/tact-lang/tact/pull/373)
 - Empty messages are now correctly converted into cells: PR [#380](https://github.com/tact-lang/tact/pull/380)
 - All integer and boolean expressions are now being attempted to be evaluated as constants. Additionally, compile-time errors are thrown for errors encountered during the evaluation of actual constants: PR [#352](https://github.com/tact-lang/tact/pull/352)
+- Chaining mutable extension functions now does not throw compilation errors: PR [#384](https://github.com/tact-lang/tact/pull/384)
+- Removed unused `ton-compiler` dependency: PR [#452](https://github.com/tact-lang/tact/pull/452)
 
 ## [1.3.0] - 2024-05-03
 

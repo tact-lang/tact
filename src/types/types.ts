@@ -10,6 +10,9 @@ import {
     ASTStatement,
     ASTType,
 } from "../grammar/ast";
+// import {
+//     Value
+// } from "../grammar/value";
 
 export type TypeOrigin = "stdlib" | "user";
 
@@ -57,12 +60,30 @@ export type TypeRef =
           kind: "null";
       };
 
+export type StructValue = {
+    [key: string]: Value;
+};
+
+export class CommentValue {
+    constructor(public readonly comment: string) {}
+}
+
+export type Value =
+    | bigint
+    | boolean
+    | string
+    | Address
+    | Cell
+    | null
+    | CommentValue
+    | StructValue;
+
 export type FieldDescription = {
     name: string;
     index: number;
     type: TypeRef;
     as: string | null;
-    default: bigint | boolean | string | null | Address | Cell | undefined;
+    default: Value | undefined;
     ref: ASTRef;
     ast: ASTNode;
     abi: ABIField;
@@ -71,7 +92,7 @@ export type FieldDescription = {
 export type ConstantDescription = {
     name: string;
     type: TypeRef;
-    value: bigint | boolean | string | Address | Cell | null | undefined;
+    value: Value | undefined;
     ref: ASTRef;
     ast: ASTConstant;
 };

@@ -74,26 +74,48 @@ jobs:
 
       - name: CLI Test | Check single-contract compilation
         run: |
-          tact --check test/tact-cli/success.tact
-          tact --func test/tact-cli/success.tact
-          tact test/tact-cli/success.tact
+          tact --check bin/test/success.tact
+          tact --func bin/test/success.tact
+          tact bin/test/success.tact
+          tact --with-decompilation bin/test/success.tact
 
       - name: CLI Test | Check compilation via `--config`
         run: |
           # should output complete results
-          tact --config test/tact-cli/success.config.json
+          tact --config bin/test/success.config.json
+          # should output complete result + decompile binary code
+          tact --config bin/test/success.config.with.decompilation.json
           # should only run the syntax and type checking
-          tact --config test/tact-cli/success.config.json --check
+          tact --config bin/test/success.config.json --check
+
+      - name: CLI Test | Check parsing of mutually exclusive flags - 1
+        if: runner.os != 'Windows'
+        run: |
+          ! tact --func --check bin/test/success.config.json
+
+      - name: CLI Test | Check parsing of mutually exclusive flags - 2
+        if: runner.os != 'Windows'
+        run: |
+          ! tact --with-decompilation --check bin/test/success.config.json
+
+      - name: CLI Test | Check parsing of mutually exclusive flags - 3
+        if: runner.os != 'Windows'
+        run: |
+          ! tact --func --with-decompilation bin/test/success.config.json
 
       - name: CLI Test | Check parsing of a non-existing CLI flag
         if: runner.os != 'Windows'
         run: |
-          ! tact --nonexistentoption test/tact-cli/success.config.json
+          ! tact --nonexistentoption bin/test/success.config.json
 
       - name: CLI Test | tact executable return non-zero exit code if compilation fails
         if: runner.os != 'Windows'
         run: |
-          ! tact --config test/tact-cli/fail.config.json
+          ! tact --config bin/test/fail.config.json
+
+      - name: CLI Test | Evaluate expression
+        run: |
+          tact -e '(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2'
 
       - name: Link Tact compiler
         run: |

@@ -3,21 +3,20 @@ import {
     ASTAugmentedAssignOperation,
     ASTConstantAttribute,
     ASTContractAttribute,
+    ASTExpression,
     ASTFunctionAttribute,
     ASTNode,
     ASTProgram,
     ASTReceiveType,
-    ASTRef,
     ASTString,
     ASTTypeRef,
     createNode,
     createRef,
     inFile,
-    throwError,
 } from "./ast";
+import { throwParseError, throwCompilationError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
-import { TactSyntaxError } from "./../errors";
-import { Node, IterationNode, MatchResult } from "ohm-js";
+import { Node, IterationNode, NonterminalNode } from "ohm-js";
 import { TypeOrigin } from "../types/types";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
@@ -51,7 +50,10 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
     Import(_importKwd, path, _semicolon) {
         const pathAST = path.astOfExpression() as ASTString;
         if (pathAST.value.indexOf("\\") >= 0) {
-            throwError('Import path can\'t contain "\\"', createRef(path));
+            throwCompilationError(
+                'Import path can\'t contain "\\"',
+                createRef(path),
+            );
         }
         return createNode({
             kind: "program_import",
@@ -76,23 +78,11 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         funAttributes,
         _nativeKwd,
         tactId,
-        _lparen2,
         params,
-        optTrailingComma,
-        _rparen2,
         _optColon,
         optReturnType,
         _semicolon,
     ) {
-        if (
-            params.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
         checkVariableName(tactId.sourceString, createRef(tactId));
         return createNode({
             kind: "def_native_function",
@@ -103,9 +93,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             name: tactId.sourceString,
             nativeName: funcId.sourceString,
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
-            args: params
-                .asIteration()
-                .children.map((p) => p.astOfDeclaration()),
+            args: params.astsOfList(),
             ref: createRef(this),
         });
     },
@@ -115,7 +103,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             kind: "def_struct",
             origin: ctx!.origin,
             name: typeId.sourceString,
-            fields: fields.children.map((f) => f.astOfDeclaration()),
+            fields: fields.astsOfList(),
             prefix: null,
             message: false,
             ref: createRef(this),
@@ -124,7 +112,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
     StructDecl_message(
         _messageKwd,
         _optLparen,
-        optId,
+        optIntMsgId,
         _optRparen,
         typeId,
         _lbrace,
@@ -136,8 +124,10 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             kind: "def_struct",
             origin: ctx!.origin,
             name: typeId.sourceString,
-            fields: fields.children.map((f) => f.astOfDeclaration()),
-            prefix: unwrapOptNode(optId, (id) => parseInt(id.sourceString)),
+            fields: fields.astsOfList(),
+            prefix: unwrapOptNode(optIntMsgId, (number) =>
+                Number(bigintOfIntLiteral(number)),
+            ),
             message: true,
             ref: createRef(this),
         });
@@ -148,7 +138,6 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         contractId,
         _optWithKwd,
         optInheritedTraits,
-        _optTrailingComma,
         _lbrace,
         contractItems,
         _rbrace,
@@ -164,10 +153,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             declarations: contractItems.children.map((item) =>
                 item.astOfItem(),
             ),
-            traits:
-                optInheritedTraits.children[0]
-                    ?.asIteration()
-                    .children.map((e) => e.astOfExpression()) ?? [],
+            traits: optInheritedTraits.children[0]?.astsOfList() ?? [],
             ref: createRef(this),
         });
     },
@@ -177,7 +163,6 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         traitId,
         _optWithKwd,
         optInheritedTraits,
-        _optTrailingComma,
         _lbrace,
         traitItems,
         _rbrace,
@@ -191,10 +176,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
                 ca.astOfContractAttributes(),
             ),
             declarations: traitItems.children.map((item) => item.astOfItem()),
-            traits:
-                optInheritedTraits.children[0]
-                    ?.asIteration()
-                    .children.map((e) => e.astOfExpression()) ?? [],
+            traits: optInheritedTraits.children[0]?.astsOfList() ?? [],
             ref: createRef(this),
         });
     },
@@ -254,33 +236,20 @@ semantics.addOperation<ASTNode>("astOfItem", {
             ref: createRef(this),
         });
     },
-    StorageVar(fieldDecl) {
+    StorageVar(fieldDecl, _semicolon) {
         return fieldDecl.astOfDeclaration();
     },
     FunctionDefinition(
         funAttributes,
         _funKwd,
         funId,
-        _lparen,
         funParameters,
-        optTrailingComma,
-        _rparen,
         _optColon,
         optReturnType,
         _lbrace,
         funBody,
         _rbrace,
     ) {
-        if (
-            funParameters.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
-
         const attributes = funAttributes.children.map((a) =>
             a.astOfFunctionAttributes(),
         ) as ASTFunctionAttribute[];
@@ -292,9 +261,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             attributes,
             name: funId.sourceString,
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
-            args: funParameters
-                .asIteration()
-                .children.map((p) => p.astOfDeclaration()),
+            args: funParameters.astsOfList(),
             statements: funBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
@@ -303,24 +270,11 @@ semantics.addOperation<ASTNode>("astOfItem", {
         funAttributes,
         _funKwd,
         funId,
-        _lparen,
         funParameters,
-        optTrailingComma,
-        _rparen,
         _optColon,
         optReturnType,
         _semicolon,
     ) {
-        if (
-            funParameters.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
-
         const attributes = funAttributes.children.map((a) =>
             a.astOfFunctionAttributes(),
         ) as ASTFunctionAttribute[];
@@ -332,38 +286,15 @@ semantics.addOperation<ASTNode>("astOfItem", {
             attributes,
             name: funId.sourceString,
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
-            args: funParameters
-                .asIteration()
-                .children.map((p) => p.astOfDeclaration()),
+            args: funParameters.astsOfList(),
             statements: null,
             ref: createRef(this),
         });
     },
-    ContractInit(
-        _initKwd,
-        _lparen,
-        initParameters,
-        optTrailingComma,
-        _rparen,
-        _lbrace,
-        initBody,
-        _rbrace,
-    ) {
-        if (
-            initParameters.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
-
+    ContractInit(_initKwd, initParameters, _lbrace, initBody, _rbrace) {
         return createNode({
             kind: "def_init_function",
-            args: initParameters
-                .asIteration()
-                .children.map((p) => p.astOfDeclaration()),
+            args: initParameters.astsOfList(),
             statements: initBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
@@ -506,6 +437,43 @@ semantics.addOperation<ASTConstantAttribute>("astOfConstAttribute", {
     },
 });
 
+semantics.addOperation<ASTNode[]>("astsOfList", {
+    InheritedTraits(traits, _optTrailingComma) {
+        return traits
+            .asIteration()
+            .children.map((id, _comma) => id.astOfExpression());
+    },
+    StructFields(fields, _optSemicolon) {
+        return fields
+            .asIteration()
+            .children.map((field, _semicolon) => field.astOfDeclaration());
+    },
+    Parameters(_lparen, params, optTrailingComma, _rparen) {
+        if (
+            params.source.contents === "" &&
+            optTrailingComma.sourceString === ","
+        ) {
+            throwCompilationError(
+                "Empty parameter list should not have a dangling comma.",
+                createRef(optTrailingComma),
+            );
+        }
+        return params.asIteration().children.map((p) => p.astOfDeclaration());
+    },
+    Arguments(_lparen, args, optTrailingComma, _rparen) {
+        if (
+            args.source.contents === "" &&
+            optTrailingComma.sourceString === ","
+        ) {
+            throwCompilationError(
+                "Empty argument list should not have a dangling comma.",
+                createRef(optTrailingComma),
+            );
+        }
+        return args.asIteration().children.map((arg) => arg.astOfExpression());
+    },
+});
+
 semantics.addOperation<ASTContractAttribute>("astOfContractAttributes", {
     ContractAttribute_interface(_interface, _lparen, interfaceName, _rparen) {
         return {
@@ -525,7 +493,6 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
         optStorageType,
         _optEq,
         optInitializer,
-        _semicolon,
     ) {
         return createNode({
             kind: "def_field",
@@ -567,18 +534,26 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
 semantics.addOperation<ASTNode>("astOfStatement", {
     // TODO: process StatementBlock
 
-    StatementLet(_letKwd, id, _colon, type, _equals, expression, _semicolon) {
+    StatementLet(
+        _letKwd,
+        id,
+        _optColon,
+        optType,
+        _equals,
+        expression,
+        _optSemicolonIfLastStmtInBlock,
+    ) {
         checkVariableName(id.sourceString, createRef(id));
 
         return createNode({
             kind: "statement_let",
             name: id.sourceString,
-            type: type.astOfType(),
+            type: unwrapOptNode(optType, (t) => t.astOfType()),
             expression: expression.astOfExpression(),
             ref: createRef(this),
         });
     },
-    StatementReturn(_returnKwd, optExpression, _semicolon) {
+    StatementReturn(_returnKwd, optExpression, _optSemicolonIfLastStmtInBlock) {
         return createNode({
             kind: "statement_return",
             expression: unwrapOptNode(optExpression, (e) =>
@@ -587,18 +562,23 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             ref: createRef(this),
         });
     },
-    StatementExpression(expression, _semicolon) {
+    StatementExpression(expression, _optSemicolonIfLastStmtInBlock) {
         return createNode({
             kind: "statement_expression",
             expression: expression.astOfExpression(),
             ref: createRef(this),
         });
     },
-    StatementAssign(lvalue, operator, expression, _semicolon) {
+    StatementAssign(
+        lvalue,
+        operator,
+        expression,
+        _optSemicolonIfLastStmtInBlock,
+    ) {
         if (operator.sourceString === "=") {
             return createNode({
                 kind: "statement_assign",
-                path: lvalue.astOfLValue(),
+                path: lvalue.astOfExpression(),
                 expression: expression.astOfExpression(),
                 ref: createRef(this),
             });
@@ -620,12 +600,21 @@ semantics.addOperation<ASTNode>("astOfStatement", {
                 case "%=":
                     op = "%";
                     break;
+                case "|=":
+                    op = "|";
+                    break;
+                case "&=":
+                    op = "&";
+                    break;
+                case "^=":
+                    op = "^";
+                    break;
                 default:
                     throw "Internal compiler error: unreachable augmented assignment operator. Please report at https://github.com/tact-lang/tact/issues";
             }
             return createNode({
                 kind: "statement_augmentedassign",
-                path: lvalue.astOfLValue(),
+                path: lvalue.astOfExpression(),
                 op,
                 expression: expression.astOfExpression(),
                 ref: createRef(this),
@@ -721,7 +710,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
         _lparen,
         condition,
         _rparen,
-        _semicolon,
+        _optSemicolonIfLastStmtInBlock,
     ) {
         return createNode({
             kind: "statement_until",
@@ -784,29 +773,6 @@ semantics.addOperation<ASTNode>("astOfStatement", {
     },
 });
 
-// LValue
-semantics.addOperation<ASTNode[]>("astOfLValue", {
-    LValue_variable(id) {
-        return [
-            createNode({
-                kind: "lvalue_ref",
-                name: id.sourceString,
-                ref: createRef(this),
-            }),
-        ];
-    },
-    LValue_fieldAccess(id, dot, lvalue) {
-        return [
-            createNode({
-                kind: "lvalue_ref",
-                name: id.sourceString,
-                ref: createRef(id, dot),
-            }),
-            ...lvalue.astOfLValue(),
-        ];
-    },
-});
-
 semantics.addOperation<ASTNode>("astOfType", {
     // TypeRefs
     Type_optional(typeId, _questionMark) {
@@ -855,13 +821,18 @@ semantics.addOperation<ASTNode>("astOfType", {
     },
 });
 
+// handles binary, octal, decimal and hexadecimal integer literals
+function bigintOfIntLiteral(litString: NonterminalNode): bigint {
+    return BigInt(litString.sourceString.replaceAll("_", ""));
+}
+
 // Expressions
 semantics.addOperation<ASTNode>("astOfExpression", {
     // Literals
     integerLiteral(number) {
         return createNode({
             kind: "number",
-            value: BigInt(number.sourceString.replaceAll("_", "")),
+            value: bigintOfIntLiteral(number),
             ref: createRef(this),
         }); // Parses dec, hex, and bin numbers
     },
@@ -1086,6 +1057,14 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             ref: createRef(this),
         });
     },
+    ExpressionUnary_bitwiseNot(_tilde, operand) {
+        return createNode({
+            kind: "op_unary",
+            op: "~",
+            right: operand.astOfExpression(),
+            ref: createRef(this),
+        });
+    },
     ExpressionParens(_lparen, expression, _rparen) {
         return expression.astOfExpression();
     },
@@ -1102,62 +1081,24 @@ semantics.addOperation<ASTNode>("astOfExpression", {
         return createNode({
             kind: "op_field",
             src: source.astOfExpression(),
-            name: fieldId.sourceString,
+            name: fieldId.astOfExpression(),
             ref: createRef(this),
         });
     },
-    ExpressionMethodCall(
-        source,
-        _dot,
-        methodId,
-        _lparen,
-        methodArguments,
-        optTrailingComma,
-        _rparen,
-    ) {
-        if (
-            methodArguments.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
-
+    ExpressionMethodCall(source, _dot, methodId, methodArguments) {
         return createNode({
             kind: "op_call",
             src: source.astOfExpression(),
             name: methodId.sourceString,
-            args: methodArguments
-                .asIteration()
-                .children.map((s) => s.astOfExpression()),
+            args: methodArguments.astsOfList(),
             ref: createRef(this),
         });
     },
-    ExpressionStaticCall(
-        functionId,
-        _lparen,
-        functionArguments,
-        optTrailingComma,
-        _rparen,
-    ) {
-        if (
-            functionArguments.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
-
+    ExpressionStaticCall(functionId, functionArguments) {
         return createNode({
             kind: "op_static_call",
             name: functionId.sourceString,
-            args: functionArguments
-                .asIteration()
-                .children.map((e) => e.astOfExpression()),
+            args: functionArguments.astsOfList(),
             ref: createRef(this),
         });
     },
@@ -1172,7 +1113,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             structFields.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwError(
+            throwCompilationError(
                 "Empty parameter list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );
@@ -1187,30 +1128,11 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             ref: createRef(this),
         });
     },
-    ExpressionInitOf(
-        _initOfKwd,
-        contractId,
-        _lparen,
-        initArguments,
-        optTrailingComma,
-        _rparen,
-    ) {
-        if (
-            initArguments.source.contents === "" &&
-            optTrailingComma.sourceString === ","
-        ) {
-            throwError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
-        }
-
+    ExpressionInitOf(_initOfKwd, contractId, initArguments) {
         return createNode({
             kind: "init_of",
             name: contractId.sourceString,
-            args: initArguments
-                .asIteration()
-                .children.map((a) => a.astOfExpression()),
+            args: initArguments.astsOfList(),
             ref: createRef(this),
         });
     },
@@ -1233,27 +1155,6 @@ semantics.addOperation<ASTNode>("astOfExpression", {
     },
 });
 
-function throwMatchError(matchResult: MatchResult, path: string): never {
-    const interval = matchResult.getInterval();
-    const lc = interval.getLineAndColumn() as {
-        lineNum: number;
-        colNum: number;
-    };
-    const msg = interval.getLineAndColumnMessage();
-    const message =
-        path +
-        ":" +
-        lc.lineNum +
-        ":" +
-        lc.colNum +
-        ": Syntax error: expected " +
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (matchResult as any).getExpectedText() +
-        " \n" +
-        msg;
-    throw new TactSyntaxError(message, new ASTRef(interval, path));
-}
-
 export function parse(
     src: string,
     path: string,
@@ -1262,7 +1163,7 @@ export function parse(
     return inFile(path, () => {
         const matchResult = rawGrammar.match(src);
         if (matchResult.failed()) {
-            throwMatchError(matchResult, path);
+            throwParseError(matchResult, path);
         }
         ctx = { origin };
         try {
@@ -1271,6 +1172,14 @@ export function parse(
             ctx = null;
         }
     });
+}
+
+export function parseExpression(sourceCode: string): ASTExpression {
+    const matchResult = rawGrammar.match(sourceCode, "Expression");
+    if (matchResult.failed()) {
+        throwParseError(matchResult, "");
+    }
+    return semantics(matchResult).astOfExpression();
 }
 
 export function parseImports(

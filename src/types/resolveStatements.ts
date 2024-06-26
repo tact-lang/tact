@@ -1,16 +1,18 @@
 import { CompilerContext } from "../context";
-import { ASTCondition, ASTRef, ASTStatement, throwError } from "../grammar/ast";
-import { isAssignable } from "./isAssignable";
+import {
+    ASTCondition,
+    ASTRef,
+    ASTStatement,
+    tryExtractPath,
+} from "../grammar/ast";
+import { isAssignable } from "./subtyping";
+import { throwCompilationError } from "../errors";
 import {
     getAllStaticFunctions,
     getAllTypes,
     resolveTypeRef,
 } from "./resolveDescriptors";
-import {
-    getExpType,
-    resolveExpression,
-    resolveLValueRef,
-} from "./resolveExpression";
+import { getExpType, resolveExpression } from "./resolveExpression";
 import { printTypeRef, TypeRef } from "./types";
 
 export type StatementContext = {
@@ -27,6 +29,20 @@ function emptyContext(root: ASTRef, returns: TypeRef): StatementContext {
         vars: new Map(),
         requiredFields: [],
     };
+}
+
+function checkVariableExists(
+    ctx: StatementContext,
+    name: string,
+    ref?: ASTRef,
+): void {
+    if (ctx.vars.has(name)) {
+        if (ref) {
+            throwCompilationError(`Variable already exists: "${name}"`, ref);
+        } else {
+            throw Error(`Variable already exists: "${name}"`);
+        }
+    }
 }
 
 function addRequiredVariables(
@@ -61,8 +77,9 @@ function addVariable(
     ref: TypeRef,
     src: StatementContext,
 ): StatementContext {
-    if (src.vars.has(name)) {
-        throw Error("Variable already exists: " + name); // Should happen earlier
+    checkVariableExists(src, name); // Should happen earlier
+    if (name == "_") {
+        return src;
     }
     return {
         ...src,
@@ -162,7 +179,7 @@ function processStatements(
     for (const s of statements) {
         // Check for unreachable
         if (returnAlwaysReachable) {
-            throwError("Unreachable statement", s.ref);
+            throwCompilationError("Unreachable statement", s.ref);
         }
 
         // Process statement
@@ -170,55 +187,85 @@ function processStatements(
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
 
+            // Check variable name
+            checkVariableExists(sctx, s.name, s.ref);
+
             // Check type
             const expressionType = getExpType(ctx, s.expression);
-            const variableType = resolveTypeRef(ctx, s.type);
-            if (!isAssignable(expressionType, variableType)) {
-                throwError(
-                    `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(variableType)}"`,
-                    s.ref,
+            if (s.type !== null) {
+                const variableType = resolveTypeRef(ctx, s.type);
+                if (!isAssignable(expressionType, variableType)) {
+                    throwCompilationError(
+                        `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(variableType)}"`,
+                        s.ref,
+                    );
+                }
+                sctx = addVariable(s.name, variableType, sctx);
+            } else {
+                if (expressionType.kind === "null") {
+                    throwCompilationError(
+                        `Cannot infer type for "${s.name}"`,
+                        s.ref,
+                    );
+                }
+                if (expressionType.kind === "void") {
+                    throwCompilationError(
+                        `The inferred type of variable "${s.name}" is "void", which is not allowed`,
+                        s.ref,
+                    );
+                }
+                sctx = addVariable(s.name, expressionType, sctx);
+            }
+        } else if (s.kind === "statement_assign") {
+            const tempSctx = { ...sctx, requiredFields: [] };
+            // Process lvalue
+            ctx = resolveExpression(s.path, tempSctx, ctx);
+            const path = tryExtractPath(s.path);
+            if (path === null) {
+                throwCompilationError(
+                    `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
+                    s.path.ref,
                 );
             }
-
-            // Add variable to statement context
-            if (sctx.vars.has(s.name)) {
-                throwError(`Variable "${s.name}" already exists`, s.ref);
-            }
-            sctx = addVariable(s.name, variableType, sctx);
-        } else if (s.kind === "statement_assign") {
-            // Process lvalue
-            ctx = resolveLValueRef(s.path, sctx, ctx);
 
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
 
             // Check type
             const expressionType = getExpType(ctx, s.expression);
-            const tailType = getExpType(ctx, s.path[s.path.length - 1]);
+            const tailType = getExpType(ctx, s.path);
             if (!isAssignable(expressionType, tailType)) {
-                throwError(
+                throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(tailType)}"`,
                     s.ref,
                 );
             }
 
             // Mark as assigned
-            if (s.path.length === 2 && s.path[0].name === "self") {
-                const field = s.path[1].name;
+            if (path.length === 2 && path[0].value === "self") {
+                const field = path[1].value;
                 if (sctx.requiredFields.findIndex((v) => v === field) >= 0) {
                     sctx = removeRequiredVariable(field, sctx);
                 }
             }
         } else if (s.kind == "statement_augmentedassign") {
             // Process lvalue
-            ctx = resolveLValueRef(s.path, sctx, ctx);
+            const tempSctx = { ...sctx, requiredFields: [] };
+            ctx = resolveExpression(s.path, tempSctx, ctx);
+            const path = tryExtractPath(s.path);
+            if (path === null) {
+                throwCompilationError(
+                    `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
+                    s.path.ref,
+                );
+            }
 
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
 
             // Check type
             const expressionType = getExpType(ctx, s.expression);
-            const tailType = getExpType(ctx, s.path[s.path.length - 1]);
+            const tailType = getExpType(ctx, s.path);
             // Check if types are Int
             if (
                 expressionType.kind !== "ref" ||
@@ -228,15 +275,15 @@ function processStatements(
                 tailType.name !== "Int" ||
                 tailType.optional
             ) {
-                throwError(
+                throwCompilationError(
                     `Type error: Augmented assignment is only allowed for Int type`,
                     s.ref,
                 );
             }
 
             // Mark as assigned
-            if (s.path.length === 2 && s.path[0].name === "self") {
-                const field = s.path[1].name;
+            if (path.length === 2 && path[0].value === "self") {
+                const field = path[1].value;
                 if (sctx.requiredFields.findIndex((v) => v === field) >= 0) {
                     sctx = removeRequiredVariable(field, sctx);
                 }
@@ -244,6 +291,14 @@ function processStatements(
         } else if (s.kind === "statement_expression") {
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
+            // take `throw` and `throwNative` into account when doing
+            // return-reachability analysis
+            if (
+                s.expression.kind === "op_static_call" &&
+                ["throw", "nativeThrow"].includes(s.expression.name)
+            ) {
+                returnAlwaysReachable = true;
+            }
         } else if (s.kind === "statement_condition") {
             // Process condition (expression resolved inside)
             const r = processCondition(s, sctx, ctx);
@@ -258,7 +313,7 @@ function processStatements(
                 expressionType.name !== "Bool" ||
                 expressionType.optional
             ) {
-                throwError(
+                throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Bool"`,
                     s.ref,
                 );
@@ -270,16 +325,27 @@ function processStatements(
 
                 // Check type
                 const expressionType = getExpType(ctx, s.expression);
+
+                // Actually, we might relax the following restriction in the future
+                // Because `return foo()` means `foo(); return` for a void-returning function
+                // And `return foo()` looks nicer when the user needs early exit from a function
+                // right after executing `foo()`
+                if (expressionType.kind == "void") {
+                    throwCompilationError(
+                        `'return' statement can only be used with non-void types`,
+                        s.ref,
+                    );
+                }
                 if (!isAssignable(expressionType, sctx.returns)) {
-                    throwError(
+                    throwCompilationError(
                         `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(sctx.returns)}"`,
                         s.ref,
                     );
                 }
             } else {
                 if (sctx.returns.kind !== "void") {
-                    throwError(
-                        `Type mismatch: "void" is not assignable to "${printTypeRef(sctx.returns)}"`,
+                    throwCompilationError(
+                        `The function fails to return a result of type "${printTypeRef(sctx.returns)}"`,
                         s.ref,
                     );
                 }
@@ -288,12 +354,12 @@ function processStatements(
             // Check if all required variables are assigned
             if (sctx.requiredFields.length > 0) {
                 if (sctx.requiredFields.length === 1) {
-                    throwError(
+                    throwCompilationError(
                         `Field "${sctx.requiredFields[0]}" is not set`,
                         sctx.root,
                     );
                 } else {
-                    throwError(
+                    throwCompilationError(
                         `Fields ${sctx.requiredFields.map((x) => '"' + x + '"').join(", ")} are not set`,
                         sctx.root,
                     );
@@ -316,7 +382,7 @@ function processStatements(
                 expressionType.name !== "Int" ||
                 expressionType.optional
             ) {
-                throwError(
+                throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Int"`,
                     s.ref,
                 );
@@ -339,7 +405,7 @@ function processStatements(
                 expressionType.name !== "Bool" ||
                 expressionType.optional
             ) {
-                throwError(
+                throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Bool"`,
                     s.ref,
                 );
@@ -362,7 +428,7 @@ function processStatements(
                 expressionType.name !== "Bool" ||
                 expressionType.optional
             ) {
-                throwError(
+                throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Bool"`,
                     s.ref,
                 );
@@ -381,11 +447,11 @@ function processStatements(
             const r = processStatements(s.statements, sctx, ctx);
             ctx = r.ctx;
 
+            let catchCtx = sctx;
+
             // Process catchName variable for exit code
-            if (initialCtx.vars.has(s.catchName)) {
-                throwError(`Variable already exists: "${s.catchName}"`, s.ref);
-            }
-            let catchCtx = addVariable(
+            checkVariableExists(initialCtx, s.catchName, s.ref);
+            catchCtx = addVariable(
                 s.catchName,
                 { kind: "ref", name: "Int", optional: false },
                 initialCtx,
@@ -415,30 +481,42 @@ function processStatements(
 
             // Resolve map expression
             ctx = resolveExpression(s.map, sctx, ctx);
+            const mapPath = tryExtractPath(s.map);
+            if (mapPath === null) {
+                throwCompilationError(
+                    `foreach is only allowed over maps that are path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
+                    s.map.ref,
+                );
+            }
 
             // Check if map is valid
-            const mapVariable = sctx.vars.get(s.map.value);
-            if (!mapVariable || mapVariable.kind !== "map") {
-                throwError(`Variable "${s.map.value}" is not a map`, s.ref);
+            const mapType = getExpType(ctx, s.map);
+            if (mapType.kind !== "map") {
+                throwCompilationError(
+                    `foreach can only be used on maps, but "${mapPath.map((id) => id.value).join(".")}" has type "${printTypeRef(mapType)}"`,
+                    s.map.ref,
+                );
             }
 
+            let foreachCtx = sctx;
+
             // Add key and value to statement context
-            if (initialCtx.vars.has(s.keyName)) {
-                throwError(`Variable already exists: "${s.keyName}"`, s.ref);
+            if (s.keyName != "_") {
+                checkVariableExists(initialCtx, s.keyName, s.ref);
+                foreachCtx = addVariable(
+                    s.keyName,
+                    { kind: "ref", name: mapType.key, optional: false },
+                    initialCtx,
+                );
             }
-            let foreachCtx = addVariable(
-                s.keyName,
-                { kind: "ref", name: mapVariable.key, optional: false },
-                initialCtx,
-            );
-            if (foreachCtx.vars.has(s.valueName)) {
-                throwError(`Variable already exists: "${s.valueName}"`, s.ref);
+            if (s.valueName != "_") {
+                checkVariableExists(foreachCtx, s.valueName, s.ref);
+                foreachCtx = addVariable(
+                    s.valueName,
+                    { kind: "ref", name: mapType.value, optional: false },
+                    foreachCtx,
+                );
             }
-            foreachCtx = addVariable(
-                s.valueName,
-                { kind: "ref", name: mapVariable.value, optional: false },
-                foreachCtx,
-            );
 
             // Process inner statements
             const r = processStatements(s.statements, foreachCtx, ctx);
@@ -474,7 +552,7 @@ function processFunctionBody(
 
     // Check if a non-void function always returns a value
     if (sctx.returns.kind !== "void" && !res.returnAlwaysReachable) {
-        throwError(
+        throwCompilationError(
             `Function does not always return a result. Adding 'return' statement(s) should fix the issue.`,
             res.sctx.root,
         );
@@ -483,12 +561,12 @@ function processFunctionBody(
     // Check if all required variables are assigned
     if (res.sctx.requiredFields.length > 0) {
         if (res.sctx.requiredFields.length === 1) {
-            throwError(
+            throwCompilationError(
                 `Field "${res.sctx.requiredFields[0]}" is not set`,
                 res.sctx.root,
             );
         } else {
-            throwError(
+            throwCompilationError(
                 `Fields ${res.sctx.requiredFields.map((x) => '"' + x + '"').join(", ")} are not set`,
                 res.sctx.root,
             );

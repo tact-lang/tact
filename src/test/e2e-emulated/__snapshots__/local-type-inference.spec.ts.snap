@@ -1,0 +1,473 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`local-type-inference should automatically set types for let statements 1`] = `
+{
+  "errors": {
+    "10": {
+      "message": "Dictionary error",
+    },
+    "128": {
+      "message": "Null reference exception",
+    },
+    "129": {
+      "message": "Invalid serialization prefix",
+    },
+    "13": {
+      "message": "Out of gas error",
+    },
+    "130": {
+      "message": "Invalid incoming message",
+    },
+    "131": {
+      "message": "Constraints error",
+    },
+    "132": {
+      "message": "Access denied",
+    },
+    "133": {
+      "message": "Contract stopped",
+    },
+    "134": {
+      "message": "Invalid argument",
+    },
+    "135": {
+      "message": "Code of a contract was not found",
+    },
+    "136": {
+      "message": "Invalid address",
+    },
+    "137": {
+      "message": "Masterchain support is not enabled for this contract",
+    },
+    "2": {
+      "message": "Stack underflow",
+    },
+    "3": {
+      "message": "Stack overflow",
+    },
+    "32": {
+      "message": "Method ID not found",
+    },
+    "34": {
+      "message": "Action is invalid or not supported",
+    },
+    "37": {
+      "message": "Not enough TON",
+    },
+    "38": {
+      "message": "Not enough extra-currencies",
+    },
+    "4": {
+      "message": "Integer overflow",
+    },
+    "5": {
+      "message": "Integer out of expected range",
+    },
+    "6": {
+      "message": "Invalid opcode",
+    },
+    "7": {
+      "message": "Type check error",
+    },
+    "8": {
+      "message": "Cell overflow",
+    },
+    "9": {
+      "message": "Cell underflow",
+    },
+  },
+  "getters": [
+    {
+      "arguments": [],
+      "name": "test1",
+      "returnType": {
+        "format": 257,
+        "kind": "simple",
+        "optional": false,
+        "type": "int",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test2",
+      "returnType": {
+        "format": 257,
+        "kind": "simple",
+        "optional": false,
+        "type": "int",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test3",
+      "returnType": {
+        "kind": "simple",
+        "optional": false,
+        "type": "address",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test4",
+      "returnType": {
+        "kind": "simple",
+        "optional": false,
+        "type": "address",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test5",
+      "returnType": {
+        "kind": "simple",
+        "optional": false,
+        "type": "bool",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test6",
+      "returnType": {
+        "kind": "simple",
+        "optional": false,
+        "type": "slice",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test7",
+      "returnType": {
+        "kind": "simple",
+        "optional": false,
+        "type": "cell",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test8",
+      "returnType": {
+        "kind": "simple",
+        "optional": false,
+        "type": "builder",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test9",
+      "returnType": {
+        "kind": "simple",
+        "optional": false,
+        "type": "string",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test10",
+      "returnType": {
+        "kind": "simple",
+        "optional": false,
+        "type": "string",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test11",
+      "returnType": {
+        "kind": "simple",
+        "optional": false,
+        "type": "StateInit",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test12",
+      "returnType": {
+        "key": "int",
+        "kind": "dict",
+        "value": "int",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test13",
+      "returnType": {
+        "key": "int",
+        "kind": "dict",
+        "value": "uint",
+        "valueFormat": 32,
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test14",
+      "returnType": {
+        "kind": "simple",
+        "optional": false,
+        "type": "MyStruct",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test15",
+      "returnType": {
+        "kind": "simple",
+        "optional": false,
+        "type": "MyStruct",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test16",
+      "returnType": {
+        "format": 257,
+        "kind": "simple",
+        "optional": true,
+        "type": "int",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test17",
+      "returnType": {
+        "format": 257,
+        "kind": "simple",
+        "optional": true,
+        "type": "int",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test18",
+      "returnType": {
+        "format": 257,
+        "kind": "simple",
+        "optional": true,
+        "type": "int",
+      },
+    },
+    {
+      "arguments": [],
+      "name": "test19",
+      "returnType": {
+        "format": 257,
+        "kind": "simple",
+        "optional": true,
+        "type": "int",
+      },
+    },
+  ],
+  "receivers": [
+    {
+      "message": {
+        "kind": "typed",
+        "type": "Deploy",
+      },
+      "receiver": "internal",
+    },
+  ],
+  "types": [
+    {
+      "fields": [
+        {
+          "name": "code",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "data",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "cell",
+          },
+        },
+      ],
+      "header": null,
+      "name": "StateInit",
+    },
+    {
+      "fields": [
+        {
+          "name": "bounced",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+        {
+          "name": "sender",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "address",
+          },
+        },
+        {
+          "name": "value",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "raw",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "slice",
+          },
+        },
+      ],
+      "header": null,
+      "name": "Context",
+    },
+    {
+      "fields": [
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+        {
+          "name": "to",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "address",
+          },
+        },
+        {
+          "name": "value",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "mode",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "body",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "code",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "data",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+      ],
+      "header": null,
+      "name": "SendParameters",
+    },
+    {
+      "fields": [
+        {
+          "name": "queryId",
+          "type": {
+            "format": 64,
+            "kind": "simple",
+            "optional": false,
+            "type": "uint",
+          },
+        },
+      ],
+      "header": 2490013878,
+      "name": "Deploy",
+    },
+    {
+      "fields": [
+        {
+          "name": "queryId",
+          "type": {
+            "format": 64,
+            "kind": "simple",
+            "optional": false,
+            "type": "uint",
+          },
+        },
+      ],
+      "header": 2952335191,
+      "name": "DeployOk",
+    },
+    {
+      "fields": [
+        {
+          "name": "queryId",
+          "type": {
+            "format": 64,
+            "kind": "simple",
+            "optional": false,
+            "type": "uint",
+          },
+        },
+        {
+          "name": "cashback",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "address",
+          },
+        },
+      ],
+      "header": 1829761339,
+      "name": "FactoryDeploy",
+    },
+    {
+      "fields": [
+        {
+          "name": "x",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "y",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+      ],
+      "header": null,
+      "name": "MyStruct",
+    },
+  ],
+}
+`;

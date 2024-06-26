@@ -1,11 +1,7 @@
 import { featureEnable } from "./config/features";
 import { CompilerContext } from "./context";
 import files from "./imports/stdlib";
-import {
-    createVirtualFileSystem,
-    TactSourceError,
-    VirtualFileSystem,
-} from "./main";
+import { createVirtualFileSystem, TactError, VirtualFileSystem } from "./main";
 import { precompile } from "./pipeline/precompile";
 
 export type CheckResultItem = {
@@ -44,7 +40,7 @@ export function check(args: {
     try {
         precompile(ctx, args.project, stdlib, args.entrypoint);
     } catch (e) {
-        if (e instanceof TactSourceError) {
+        if (e instanceof TactError) {
             items.push({
                 type: "error",
                 message: e.message,

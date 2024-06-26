@@ -43,6 +43,12 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
+    ctx.fun("__tact_load_bool", () => {
+        ctx.signature(`(slice, int) __tact_load_bool(slice s)`);
+        ctx.context("stdlib");
+        ctx.asm(`asm( -> 1 0) "1 LDI"`);
+    });
+
     ctx.fun("__tact_load_address", () => {
         ctx.signature(`(slice, slice) __tact_load_address(slice cs)`);
         ctx.flag("inline");

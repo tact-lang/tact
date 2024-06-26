@@ -1,0 +1,283 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`structs should implement structs correctly 1`] = `
+{
+  "$$type": "MyStruct2",
+  "m": Dictionary {
+    "_key": {
+      "bits": 257,
+      "parse": [Function],
+      "serialize": [Function],
+    },
+    "_map": Map {},
+    "_value": {
+      "parse": [Function],
+      "serialize": [Function],
+    },
+  },
+  "s": {
+    "$$type": "MyStruct1",
+    "a": 1n,
+    "b": 2n,
+    "c": 3n,
+  },
+}
+`;
+
+exports[`structs should implement structs correctly 2`] = `
+{
+  "$$type": "MyStruct2",
+  "m": Dictionary {
+    "_key": {
+      "bits": 257,
+      "parse": [Function],
+      "serialize": [Function],
+    },
+    "_map": Map {},
+    "_value": {
+      "parse": [Function],
+      "serialize": [Function],
+    },
+  },
+  "s": null,
+}
+`;
+
+exports[`structs should implement structs correctly 3`] = `
+{
+  "$$type": "MyMessage1",
+  "a": 1n,
+  "s": {
+    "$$type": "MyStruct2",
+    "m": Dictionary {
+      "_key": {
+        "bits": 257,
+        "parse": [Function],
+        "serialize": [Function],
+      },
+      "_map": Map {},
+      "_value": {
+        "parse": [Function],
+        "serialize": [Function],
+      },
+    },
+    "s": {
+      "$$type": "MyStruct1",
+      "a": 1n,
+      "b": 2n,
+      "c": 3n,
+    },
+  },
+}
+`;
+
+exports[`structs should implement structs correctly 4`] = `
+{
+  "$$type": "MyMessage1",
+  "a": 2n,
+  "s": {
+    "$$type": "MyStruct2",
+    "m": Dictionary {
+      "_key": {
+        "bits": 257,
+        "parse": [Function],
+        "serialize": [Function],
+      },
+      "_map": Map {},
+      "_value": {
+        "parse": [Function],
+        "serialize": [Function],
+      },
+    },
+    "s": null,
+  },
+}
+`;
+
+exports[`structs should implement structs correctly 5`] = `
+{
+  "$$type": "MyStruct2",
+  "m": Dictionary {
+    "_key": {
+      "bits": 257,
+      "parse": [Function],
+      "serialize": [Function],
+    },
+    "_map": Map {},
+    "_value": {
+      "parse": [Function],
+      "serialize": [Function],
+    },
+  },
+  "s": {
+    "$$type": "MyStruct1",
+    "a": 1n,
+    "b": 2n,
+    "c": 3n,
+  },
+}
+`;
+
+exports[`structs should implement structs correctly 6`] = `
+{
+  "$$type": "MyStruct2",
+  "m": Dictionary {
+    "_key": {
+      "bits": 257,
+      "parse": [Function],
+      "serialize": [Function],
+    },
+    "_map": Map {},
+    "_value": {
+      "parse": [Function],
+      "serialize": [Function],
+    },
+  },
+  "s": null,
+}
+`;
+
+exports[`structs should implement structs correctly 7`] = `
+{
+  "$$type": "MyMessage1",
+  "a": 1n,
+  "s": {
+    "$$type": "MyStruct2",
+    "m": Dictionary {
+      "_key": {
+        "bits": 257,
+        "parse": [Function],
+        "serialize": [Function],
+      },
+      "_map": Map {},
+      "_value": {
+        "parse": [Function],
+        "serialize": [Function],
+      },
+    },
+    "s": {
+      "$$type": "MyStruct1",
+      "a": 1n,
+      "b": 2n,
+      "c": 3n,
+    },
+  },
+}
+`;
+
+exports[`structs should implement structs correctly 8`] = `
+{
+  "$$type": "MyMessage1",
+  "a": 2n,
+  "s": {
+    "$$type": "MyStruct2",
+    "m": Dictionary {
+      "_key": {
+        "bits": 257,
+        "parse": [Function],
+        "serialize": [Function],
+      },
+      "_map": Map {},
+      "_value": {
+        "parse": [Function],
+        "serialize": [Function],
+      },
+    },
+    "s": null,
+  },
+}
+`;
+
+exports[`structs should implement structs correctly 9`] = `
+{
+  "$$type": "MyStruct2",
+  "m": Dictionary {
+    "_key": {
+      "bits": 257,
+      "parse": [Function],
+      "serialize": [Function],
+    },
+    "_map": Map {},
+    "_value": {
+      "parse": [Function],
+      "serialize": [Function],
+    },
+  },
+  "s": {
+    "$$type": "MyStruct1",
+    "a": 1n,
+    "b": 2n,
+    "c": 3n,
+  },
+}
+`;
+
+exports[`structs should implement structs correctly 10`] = `
+{
+  "$$type": "MyStruct2",
+  "m": Dictionary {
+    "_key": {
+      "bits": 257,
+      "parse": [Function],
+      "serialize": [Function],
+    },
+    "_map": Map {},
+    "_value": {
+      "parse": [Function],
+      "serialize": [Function],
+    },
+  },
+  "s": null,
+}
+`;
+
+exports[`structs should implement structs correctly 11`] = `
+{
+  "$$type": "MyMessage1",
+  "a": 1n,
+  "s": {
+    "$$type": "MyStruct2",
+    "m": Dictionary {
+      "_key": {
+        "bits": 257,
+        "parse": [Function],
+        "serialize": [Function],
+      },
+      "_map": Map {},
+      "_value": {
+        "parse": [Function],
+        "serialize": [Function],
+      },
+    },
+    "s": {
+      "$$type": "MyStruct1",
+      "a": 1n,
+      "b": 2n,
+      "c": 3n,
+    },
+  },
+}
+`;
+
+exports[`structs should implement structs correctly 12`] = `
+{
+  "$$type": "MyMessage1",
+  "a": 2n,
+  "s": {
+    "$$type": "MyStruct2",
+    "m": Dictionary {
+      "_key": {
+        "bits": 257,
+        "parse": [Function],
+        "serialize": [Function],
+      },
+      "_map": Map {},
+      "_value": {
+        "parse": [Function],
+        "serialize": [Function],
+      },
+    },
+    "s": null,
+  },
+}
+`;

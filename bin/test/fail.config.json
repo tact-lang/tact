@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/configSchema.json",
+  "projects": [
+    {
+      "name": "fail",
+      "path": "./fail.tact",
+      "output": "./fail_output",
+      "mode": "checkOnly"
+    }
+  ]
+}

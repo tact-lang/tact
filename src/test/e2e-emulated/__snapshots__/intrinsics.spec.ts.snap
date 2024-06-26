@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`intrinsics should return correct intrinsic results 1`] = `
+[
+  {
+    "$seq": 1,
+    "events": [
+      {
+        "$type": "storage-charged",
+        "amount": "0.00000001",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "emit_1",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "@contract",
+          "type": "internal",
+          "value": "1",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 7881n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "Hello world",
+              "type": "text",
+            },
+            "to": null,
+            "type": "external-out",
+          },
+        ],
+      },
+    ],
+  },
+]
+`;

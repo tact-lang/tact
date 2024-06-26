@@ -20,7 +20,9 @@ const projectSchema = z
         path: z.string(),
         output: z.string(),
         options: optionsSchema.optional(),
-        mode: z.enum(["full", "checkOnly", "funcOnly"]).optional(),
+        mode: z
+            .enum(["fullWithDecompilation", "full", "funcOnly", "checkOnly"])
+            .optional(),
     })
     .strict();
 

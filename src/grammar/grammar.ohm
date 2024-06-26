@@ -19,14 +19,14 @@ Tact {
 
     ModuleConstant = ConstantDefinition
 
-    NativeFunctionDecl = "@name" "(" funcId ")" FunctionAttribute* native id "(" ListOf<Parameter,","> ","? ")" (":" Type)? ";"
+    NativeFunctionDecl = "@name" "(" funcId ")" FunctionAttribute* native id Parameters (":" Type)? ";"
 
     Type = typeId "?" --optional
          | typeId --regular
          | map "<" typeId (as id)? "," typeId (as id)? ">" --map
          | "bounced" "<" typeId ">" --bounced
 
-    FieldDecl = id ":" Type (as id)? ("=" Expression)? ";"
+    FieldDecl = id ":" Type (as id)? ("=" Expression)?
 
     ConstantAttribute = virtual    --virtual
                       | override   --override
@@ -36,12 +36,13 @@ Tact {
 
     ConstantDeclaration = ConstantAttribute* const id ":" Type ";"
 
-    StructDecl = "struct" typeId "{" StructField* "}" --regular
-               | "message" ("(" integerLiteral ")")? typeId "{" StructField* "}" --message
+    StructDecl = "struct" typeId "{" StructFields "}" --regular
+               | "message" ("(" integerLiteral ")")? typeId "{" StructFields "}" --message
 
     StructField = FieldDecl
+    StructFields = ListOf<StructField, ";"> ";"?
 
-    Contract = ContractAttribute* contract id (with NonemptyListOf<id,","> ","?)? "{" ContractItemDecl* "}"
+    Contract = ContractAttribute* contract id (with InheritedTraits)? "{" ContractItemDecl* "}"
 
     ContractItemDecl = ContractInit
                      | StorageVar
@@ -49,7 +50,9 @@ Tact {
                      | FunctionDefinition
                      | ConstantDefinition
 
-    Trait = ContractAttribute* trait id (with NonemptyListOf<id,","> ","?)? "{" TraitItemDecl* "}"
+    Trait = ContractAttribute* trait id (with InheritedTraits)? "{" TraitItemDecl* "}"
+
+    InheritedTraits = NonemptyListOf<id,","> ","?
 
     TraitItemDecl = StorageVar
                   | Receiver
@@ -58,9 +61,9 @@ Tact {
                   | ConstantDefinition
                   | ConstantDeclaration
 
-    StorageVar = FieldDecl
+    StorageVar = FieldDecl ";"
 
-    ContractInit = "init" "(" ListOf<Parameter,","> ","? ")" "{" Statement* "}"
+    ContractInit = "init" Parameters "{" Statement* "}"
 
     ContractAttribute = "@interface" "(" stringLiteral ")" --interface
 
@@ -72,9 +75,11 @@ Tact {
                       | inline    --inline
                       | abstract  --abstract
 
-    FunctionDefinition = FunctionAttribute* fun id "(" ListOf<Parameter,","> ","? ")" (":" Type)? "{" Statement* "}"
+    FunctionDefinition = FunctionAttribute* fun id Parameters (":" Type)? "{" Statement* "}"
 
-    FunctionDeclaration = FunctionAttribute* fun id "(" ListOf<Parameter,","> ","? ")" (":" Type)? ";"
+    FunctionDeclaration = FunctionAttribute* fun id Parameters (":" Type)? ";"
+
+    Parameters = "(" ListOf<Parameter,","> ","? ")"
 
     Parameter = id ":" Type
 
@@ -84,7 +89,6 @@ Tact {
              | external "(" Parameter? ")" "{" Statement* "}" --externalRegular
              | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
 
-    // Statements
     Statement = StatementLet
               | StatementBlock
               | StatementReturn
@@ -99,13 +103,15 @@ Tact {
 
     StatementBlock = "{" Statement* "}"
 
-    StatementLet = let id ":" Type "=" Expression ";"
+    // Do not require the terminating semicolon
+    // if this is the last statement in a block
+    StatementLet = let id (":" Type)? "=" Expression (";" | &"}")
 
-    StatementReturn = return Expression? ";"
+    StatementReturn = return Expression? (";" | &"}")
 
-    StatementExpression = Expression ";"
+    StatementExpression = Expression (";" | &"}")
 
-    StatementAssign = LValue ("=" | "+=" | "-=" | "*=" | "/=" | "%=") Expression ";"
+    StatementAssign = Expression ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "|=" | "&=" | "^=") Expression (";" | &"}")
 
     StatementCondition = if Expression "{" Statement* "}" ~else --noElse
                        | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse
@@ -115,7 +121,7 @@ Tact {
 
     StatementRepeat = repeat "(" Expression ")" "{" Statement* "}"
 
-    StatementUntil = do "{" Statement* "}" until "(" Expression ")" ";"
+    StatementUntil = do "{" Statement* "}" until "(" Expression ")" (";" | &"}")
 
     // making the catch clause optional using Ohm's `?` does not make sense
     // because Ohm will create _independent_ optional grammar nodes which
@@ -123,10 +129,7 @@ Tact {
     StatementTry = try "{" Statement* "}" ~catch --noCatch
                  | try "{" Statement* "}" catch "(" id ")" "{" Statement* "}" --withCatch
 
-    StatementForEach = foreach "(" id "," id "in" id ")" "{" Statement* "}"
-
-    LValue = id "." LValue --fieldAccess
-           | id --variable
+    StatementForEach = foreach "(" id "," id "in" Expression ")" "{" Statement* "}"
 
     Expression = ExpressionConditional
 
@@ -174,6 +177,7 @@ Tact {
     ExpressionUnary = "-" ExpressionUnary --minus
                     | "+" ExpressionUnary --plus
                     | "!" ExpressionUnary --not
+                    | "~" ExpressionUnary --bitwiseNot
                     | ExpressionPrimary
 
     // Order is important
@@ -196,16 +200,18 @@ Tact {
 
     ExpressionFieldAccess = ExpressionPrimary "." id ~"("
 
-    ExpressionMethodCall = ExpressionPrimary "." id "(" ListOf<Expression, ","> ","? ")"
+    ExpressionMethodCall = ExpressionPrimary "." id Arguments
 
     ExpressionStructInstance = typeId "{" ListOf<StructFieldInitializer, ","> ","? "}"
 
-    ExpressionStaticCall = id "(" ListOf<Expression, ","> ","? ")"
+    ExpressionStaticCall = id Arguments
 
-    ExpressionInitOf = initOf id "(" ListOf<Expression, ","> ","? ")"
+    ExpressionInitOf = initOf id Arguments
 
     StructFieldInitializer = id ":" Expression --full
                            | id --punned   // shorthand for `id: id`
+
+    Arguments = "(" ListOf<Expression, ","> ","? ")"
 
     // Type identifiers
     typeId = letterAsciiUC typeIdPart*
