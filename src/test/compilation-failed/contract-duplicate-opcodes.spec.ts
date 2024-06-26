@@ -2,7 +2,7 @@ import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { consoleLogger } from "../../logger";
 import { itShouldNotCompile } from "./util";
 
-describe("stdlib-bugs", () => {
+describe("contract-duplicate-opcodes", () => {
     beforeAll(() => {
         jest.spyOn(consoleLogger, "error").mockImplementation(() => {});
         jest.spyOn(consoleLogger, "log").mockImplementation(() => {});
