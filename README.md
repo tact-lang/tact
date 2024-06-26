@@ -50,7 +50,7 @@ Tact features modern post-C syntax familiar to developers who know TypeScript, S
 Tact makes it easy to declare, decode and encode data structures according to their TL-B schemas.
 
 3. Safe contract interfaces and ABI
-Tact offers strong compile-time checks for contract interfaces, typed addresses and lets describe messages natively in a subset of TL-B.
+Tact offers strong compile-time checks for contract interfaces, typed addresses and lets you describe messages natively in a subset of TL-B.
 
 4. Message dispatch
 Tact offers a convenient yet flexible way to declare, receive and send messages between contracts.
