@@ -39,6 +39,7 @@ contract SampleContract {
         self.a = 10;
         d = a > 0 ? self.a : 0;
         let res: Bool = isZero(1, 2, false, self.c);
+        let e = 42;
         self.b = a;
         self.c = Source{a: 10, b: 20};
     }
