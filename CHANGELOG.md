@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Fixed
+- Error messages for non-abstract constants in traits: PR [#483](https://github.com/tact-lang/tact/pull/483)
 
 ## [1.4.0] - 2024-06-21
 
