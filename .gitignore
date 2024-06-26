@@ -1,3 +1,6 @@
+.vscode
+.DS_Store
+*.swp
 node_modules
 coverage
 dist
@@ -5,4 +8,5 @@ output/
 src/grammar/grammar.ohm-bundle.js
 src/grammar/grammar.ohm-bundle.d.ts
 src/func/funcfiftlib.wasm.js
+
 
