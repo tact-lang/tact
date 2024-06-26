@@ -20,7 +20,6 @@ describe('wallet', () => {
         expect(await contract.getPublicKey()).toBe(publicKey);
         expect(await contract.getWalletId()).toBe(0n);
         expect(await contract.getSeqno()).toBe(0n);
-        //transfer all ton to my wallet
         // Send transfer and check seqno
         const transfer: Transfer = {
             $$type: 'Transfer',
@@ -39,13 +38,11 @@ describe('wallet', () => {
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();
         expect(await contract.getSeqno()).toBe(1n);
-        //open telegram
         // Send empty message
         await contract.send(treasure, { value: toNano(1) }, 'notify');
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();
         expect(await contract.getSeqno()).toBe(2n);
-        //send me some potato chips
         // Send comment message
         await contract.send(treasure, { value: toNano(1) }, null);
         await system.run();
