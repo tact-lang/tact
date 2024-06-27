@@ -1212,6 +1212,18 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const t of types.values()) {
         if (t.ast.kind === "def_trait" || t.ast.kind === "def_contract") {
+            // Check there are no duplicates in the _immediately_ inherited traits
+            const traitSet = new Set<string>(
+                t.ast.traits.map((trait) => trait.value),
+            );
+            if (traitSet.size !== t.ast.traits.length) {
+                const aggregateType =
+                    t.ast.kind === "def_contract" ? "contract" : "trait";
+                throwCompilationError(
+                    `The list of inherited traits for ${aggregateType} "${t.name}" has duplicates`,
+                    t.ast.ref,
+                );
+            }
             // Flatten traits
             const traits: TypeDescription[] = [];
             const visited = new Set<string>();
@@ -1355,7 +1367,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // Check duplicates
                 if (ex) {
                     throwCompilationError(
-                        `Function "${f.name}" already exist in "${t.name}"`,
+                        `Function "${f.name}" already exists in "${t.name}"`,
                         t.ast.ref,
                     );
                 }
@@ -1398,7 +1410,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // Check duplicates
                 if (ex) {
                     throwCompilationError(
-                        `Constant "${f.name}" already exist in "${t.name}"`,
+                        `Constant "${f.name}" already exists in "${t.name}"`,
                         t.ast.ref,
                     );
                 }
