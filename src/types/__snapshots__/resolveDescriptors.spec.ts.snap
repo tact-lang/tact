@@ -110,6 +110,16 @@ Line 11, col 3:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-duplicates-in-trait-list 1`] = `
+"<unknown>:7:1: The list of inherited traits for contract "Test" has duplicates
+Line 7, col 1:
+  6 | 
+> 7 | contract Test with Foo, Foo { }
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  8 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-missing-type 1`] = `
 "<unknown>:12:23: Type Point not found
 Line 12, col 23:
@@ -322,6 +332,16 @@ Line 12, col 1:
 > 12 | struct Main {
        ^~~~~~~~~~~~~
   13 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-duplicates-in-trait-list 1`] = `
+"<unknown>:7:1: The list of inherited traits for trait "Test" has duplicates
+Line 7, col 1:
+  6 | 
+> 7 | trait Test with Foo, Foo { }
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  8 | 
 "
 `;
 

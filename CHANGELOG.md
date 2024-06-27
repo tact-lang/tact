@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Detection of multiple receivers of the same message: PR [#491](https://github.com/tact-lang/tact/pull/491)
 - Detection of non-unique message opcodes: PR [#493](https://github.com/tact-lang/tact/pull/493)
 - Error messages for non-abstract constants in traits: PR [#483](https://github.com/tact-lang/tact/pull/483)
+- All immediately inherited traits must be unique: PR [#500](https://github.com/tact-lang/tact/pull/500)
 
 ## [1.4.0] - 2024-06-21
 
