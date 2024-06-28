@@ -7,11 +7,20 @@ import {
     ASTId,
     ASTNewParameter,
     ASTRef,
-    ASTUnaryOperation,
+    ASTUnaryOperation
 } from "./grammar/ast";
 import { throwConstEvalError } from "./errors";
 import { CommentValue, StructValue, Value } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
+import { 
+    isValue, 
+    extractValue, 
+    makeValueExpression, 
+    makeUnaryExpression,
+    makeBinaryExpression
+} from "./optimizer/util";
+import { DUMMY_AST_REF, ExpressionTransformer, ValueExpression } from "./optimizer/types";
+import { StandardOptimizer } from "./optimizer/standardOptimizer";
 import {
     getStaticConstant,
     getType,
@@ -22,6 +31,10 @@ import { getExpType } from "./types/resolveExpression";
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
 const maxTvmInt: bigint = 2n ** 256n - 1n;
+
+// The optimizer that applies the rewriting rules during partial evaluation. 
+// For the moment we use an optimizer that respects overflows.
+const optimizer: ExpressionTransformer = new StandardOptimizer();
 
 // Throws a non-fatal const-eval error, in the sense that const-eval as a compiler
 // optimization cannot be applied, e.g. to `let`-statements.
@@ -94,7 +107,41 @@ function ensureMethodArity(
     }
 }
 
-function evalUnaryOp(
+export function evalUnaryOp(
+    op: ASTUnaryOperation,
+    valOperand: Value
+): Value {
+    return __evalUnaryOp(op, valOperand, DUMMY_AST_REF, DUMMY_AST_REF);
+}
+
+function __evalUnaryOp(
+    op: ASTUnaryOperation,
+    valOperand: Value,
+    operandRef: ASTRef,
+    source: ASTRef
+): Value {
+    switch (op) {
+        case "+":
+            return ensureInt(valOperand, operandRef);
+        case "-":
+            return ensureInt(-ensureInt(valOperand, operandRef), source);
+        case "~":
+            return ~ensureInt(valOperand, operandRef);
+        case "!":
+            return !ensureBoolean(valOperand, operandRef);
+        case "!!":
+            if (valOperand === null) {
+                throwErrorConstEval(
+                    "non-null value expected but got null",
+                    operandRef,
+                );
+            }
+            return valOperand;
+    }
+}
+
+
+function fullyEvalUnaryOp(
     op: ASTUnaryOperation,
     operand: ASTExpression,
     source: ASTRef,
@@ -103,28 +150,33 @@ function evalUnaryOp(
     // Tact grammar does not have negative integer literals,
     // so in order to avoid errors for `-115792089237316195423570985008687907853269984665640564039457584007913129639936`
     // which is `-(2**256)` we need to have a special case for it
+    
     if (operand.kind === "number" && op === "-") {
         // emulating negative integer literals
         return ensureInt(-operand.value, source);
     }
+
     const valOperand = evalConstantExpression(operand, ctx);
-    switch (op) {
-        case "+":
-            return ensureInt(valOperand, operand.ref);
-        case "-":
-            return ensureInt(-ensureInt(valOperand, operand.ref), source);
-        case "~":
-            return ~ensureInt(valOperand, operand.ref);
-        case "!":
-            return !ensureBoolean(valOperand, operand.ref);
-        case "!!":
-            if (valOperand === null) {
-                throwErrorConstEval(
-                    "non-null value expected but got null",
-                    operand.ref,
-                );
-            }
-            return valOperand;
+
+    return __evalUnaryOp(op, valOperand, operand.ref, source);
+}
+
+function partiallyEvalUnaryOp(
+    op: ASTUnaryOperation,
+    oper: ASTExpression,
+    source: ASTRef,
+    ctx: CompilerContext,
+): ASTExpression {
+    const operand = partiallyEvalExpression(oper, ctx);
+            
+    if (isValue(operand)) {
+        const valueOperand = extractValue(operand as ValueExpression);
+        const result = __evalUnaryOp(op, valueOperand, operand.ref, source);
+        // Wrap the value into a Tree to continue simplifications
+        return makeValueExpression(result);
+    } else {
+        const newAst = makeUnaryExpression(op, operand);
+        return optimizer.applyRules(newAst);
     }
 }
 
@@ -145,29 +197,71 @@ function modFloor(a: bigint, b: bigint): bigint {
     return a - divFloor(a, b) * b;
 }
 
-function evalBinaryOp(
+function fullyEvalBinaryOp(
     op: ASTBinaryOperation,
     left: ASTExpression,
     right: ASTExpression,
     source: ASTRef,
-    ctx: CompilerContext,
+    ctx: CompilerContext
 ): Value {
     const valLeft = evalConstantExpression(left, ctx);
     const valRight = evalConstantExpression(right, ctx);
+
+    return __evalBinaryOp(op, valLeft, valRight, left.ref, right.ref, source);
+}
+
+function partiallyEvalBinaryOp(
+    op: ASTBinaryOperation,
+    left: ASTExpression,
+    right: ASTExpression,
+    source: ASTRef,
+    ctx: CompilerContext
+): ASTExpression {
+    const leftOperand = partiallyEvalExpression(left, ctx);
+    const rightOperand = partiallyEvalExpression(right, ctx);
+            
+    if (isValue(leftOperand) && isValue(rightOperand)) {
+        const valueLeftOperand = extractValue(leftOperand as ValueExpression);
+        const valueRightOperand = extractValue(rightOperand as ValueExpression);
+        const result = __evalBinaryOp(op, valueLeftOperand, valueRightOperand, leftOperand.ref, rightOperand.ref, source);
+        // Wrap the value into a Tree to continue simplifications
+        return makeValueExpression(result);
+    } else {
+        const newAst = makeBinaryExpression(op, leftOperand, rightOperand);
+        return optimizer.applyRules(newAst);
+    }
+}
+
+export function evalBinaryOp(
+    op: ASTBinaryOperation,
+    valLeft: Value,
+    valRight: Value
+): Value {
+    return __evalBinaryOp(op, valLeft, valRight, DUMMY_AST_REF, DUMMY_AST_REF, DUMMY_AST_REF);
+}
+
+function __evalBinaryOp(
+    op: ASTBinaryOperation,
+    valLeft: Value,
+    valRight: Value,
+    refLeft: ASTRef,
+    refRight: ASTRef,
+    source: ASTRef
+): Value {
     switch (op) {
         case "+":
             return ensureInt(
-                ensureInt(valLeft, left.ref) + ensureInt(valRight, right.ref),
+                ensureInt(valLeft, refLeft) + ensureInt(valRight, refRight),
                 source,
             );
         case "-":
             return ensureInt(
-                ensureInt(valLeft, left.ref) - ensureInt(valRight, right.ref),
+                ensureInt(valLeft, refLeft) - ensureInt(valRight, refRight),
                 source,
             );
         case "*":
             return ensureInt(
-                ensureInt(valLeft, left.ref) * ensureInt(valRight, right.ref),
+                ensureInt(valLeft, refLeft) * ensureInt(valRight, refRight),
                 source,
             );
         case "/": {
@@ -175,44 +269,44 @@ function evalBinaryOp(
             // is a non-conventional one: by default it rounds towards negative infinity,
             // meaning, for instance, -1 / 5 = -1 and not zero, as in many mainstream languages.
             // Still, the following holds: a / b * b + a % b == a, for all b != 0.
-            const r = ensureInt(valRight, right.ref);
+            const r = ensureInt(valRight, refRight);
             if (r === 0n)
                 throwErrorConstEval(
                     "divisor expression must be non-zero",
-                    right.ref,
+                    refRight,
                 );
-            return ensureInt(divFloor(ensureInt(valLeft, left.ref), r), source);
+            return ensureInt(divFloor(ensureInt(valLeft, refLeft), r), source);
         }
         case "%": {
             // Same as for division, see the comment above
             // Example: -1 % 5 = 4
-            const r = ensureInt(valRight, right.ref);
+            const r = ensureInt(valRight, refRight);
             if (r === 0n)
                 throwErrorConstEval(
                     "divisor expression must be non-zero",
-                    right.ref,
+                    refRight,
                 );
-            return ensureInt(modFloor(ensureInt(valLeft, left.ref), r), source);
+            return ensureInt(modFloor(ensureInt(valLeft, refLeft), r), source);
         }
         case "&":
             return (
-                ensureInt(valLeft, left.ref) & ensureInt(valRight, right.ref)
+                ensureInt(valLeft, refLeft) & ensureInt(valRight, refRight)
             );
         case "|":
             return (
-                ensureInt(valLeft, left.ref) | ensureInt(valRight, right.ref)
+                ensureInt(valLeft, refLeft) | ensureInt(valRight, refRight)
             );
         case "^":
             return (
-                ensureInt(valLeft, left.ref) ^ ensureInt(valRight, right.ref)
+                ensureInt(valLeft, refLeft) ^ ensureInt(valRight, refRight)
             );
         case "<<": {
-            const valNum = ensureInt(valLeft, left.ref);
-            const valBits = ensureInt(valRight, right.ref);
+            const valNum = ensureInt(valLeft, refLeft);
+            const valBits = ensureInt(valRight, refRight);
             if (0n > valBits || valBits > 256n) {
                 throwErrorConstEval(
                     `the number of bits shifted ('${valBits}') must be within [0..256] range`,
-                    right.ref,
+                    refRight,
                 );
             }
             try {
@@ -228,12 +322,12 @@ function evalBinaryOp(
             }
         }
         case ">>": {
-            const valNum = ensureInt(valLeft, left.ref);
-            const valBits = ensureInt(valRight, right.ref);
+            const valNum = ensureInt(valLeft, refLeft);
+            const valBits = ensureInt(valRight, refRight);
             if (0n > valBits || valBits > 256n) {
                 throwErrorConstEval(
                     `the number of bits shifted ('${valBits}') must be within [0..256] range`,
-                    right.ref,
+                    refRight,
                 );
             }
             try {
@@ -250,19 +344,19 @@ function evalBinaryOp(
         }
         case ">":
             return (
-                ensureInt(valLeft, left.ref) > ensureInt(valRight, right.ref)
+                ensureInt(valLeft, refLeft) > ensureInt(valRight, refRight)
             );
         case "<":
             return (
-                ensureInt(valLeft, left.ref) < ensureInt(valRight, right.ref)
+                ensureInt(valLeft, refLeft) < ensureInt(valRight, refRight)
             );
         case ">=":
             return (
-                ensureInt(valLeft, left.ref) >= ensureInt(valRight, right.ref)
+                ensureInt(valLeft, refLeft) >= ensureInt(valRight, refRight)
             );
         case "<=":
             return (
-                ensureInt(valLeft, left.ref) <= ensureInt(valRight, right.ref)
+                ensureInt(valLeft, refLeft) <= ensureInt(valRight, refRight)
             );
         case "==":
             // the null comparisons account for optional types, e.g.
@@ -288,13 +382,13 @@ function evalBinaryOp(
             return valLeft !== valRight;
         case "&&":
             return (
-                ensureBoolean(valLeft, left.ref) &&
-                ensureBoolean(valRight, right.ref)
+                ensureBoolean(valLeft, refLeft) &&
+                ensureBoolean(valRight, refRight)
             );
         case "||":
             return (
-                ensureBoolean(valLeft, left.ref) ||
-                ensureBoolean(valRight, right.ref)
+                ensureBoolean(valLeft, refLeft) ||
+                ensureBoolean(valRight, refRight)
             );
     }
 }
@@ -667,9 +761,9 @@ export function evalConstantExpression(
         case "string":
             return ensureString(interpretEscapeSequences(ast.value), ast.ref);
         case "op_unary":
-            return evalUnaryOp(ast.op, ast.right, ast.ref, ctx);
+            return fullyEvalUnaryOp(ast.op, ast.right, ast.ref, ctx);
         case "op_binary":
-            return evalBinaryOp(ast.op, ast.left, ast.right, ast.ref, ctx);
+            return fullyEvalBinaryOp(ast.op, ast.left, ast.right, ast.ref, ctx);
         case "conditional":
             return evalConditional(
                 ast.condition,
@@ -685,3 +779,54 @@ export function evalConstantExpression(
             return evalBuiltins(ast.name, ast.args, ast.ref, ctx);
     }
 }
+
+
+function partiallyEvalExpression(ast: ASTExpression, ctx: CompilerContext): ASTExpression {
+    switch (ast.kind) {
+        case "id":
+            // For the moment, id look up is not supported. I just return the node for the moment.
+            return ast;
+        case "op_call":
+            // Not supported yet. I just return the node for the moment.
+            return ast;
+        case "init_of":
+            // Not supported yet. I just return the node for the moment.
+            return ast;
+        case "null":
+            return ast;
+        case "boolean":
+            return ast;
+        case "number":
+            ensureInt(ast.value, ast.ref);
+            return ast;
+        // TODO: ensure string is representable
+        case "string":
+            return ast;
+        case "op_unary":
+            return partiallyEvalUnaryOp(ast.op, ast.right, ast.ref, ctx);
+        case "op_binary":
+            return partiallyEvalBinaryOp(ast.op, ast.left, ast.right, ast.ref, ctx);
+        case "conditional":
+            // Not supported yet. I just return the node for the moment.
+            return ast;
+            //return evalConditional(
+            //    ast.condition,
+            //    ast.thenBranch,
+            //    ast.elseBranch,
+            //    ctx,
+            //);
+        case "op_new":
+            // Not supported yet. I just return the node for the moment.
+            return ast;
+            //return evalStructInstance(ast.type, ast.args, ctx);
+        case "op_field":
+            // Not supported yet. I just return the node for the moment.
+            return ast;
+            //return evalFieldAccess(ast.src, ast.name, ctx);
+        case "op_static_call":
+            // Not supported yet. I just return the node for the moment.
+            return ast;
+            //return evalBuiltins(ast.name, ast.args, ast.ref, ctx);
+    }
+}
+
