@@ -1,5 +1,4 @@
-import { TactLogger } from "../logger";
-import { errorToString } from "../utils/errorToString";
+import { Logger } from "../logger";
 
 // Wasm Imports
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -60,7 +59,7 @@ type CompileResult =
 export async function funcCompile(args: {
     entries: string[];
     sources: { path: string; content: string }[];
-    logger: TactLogger;
+    logger: Logger;
 }): Promise<FuncCompilationResult> {
     // Parameters
     const files: string[] = args.entries;
@@ -180,7 +179,7 @@ export async function funcCompile(args: {
             throw Error("Unexpected compiler response");
         }
     } catch (e) {
-        args.logger.error(errorToString(e));
+        args.logger.error(e as Error);
         throw Error("Unexpected compiler response");
     } finally {
         for (const i of allocatedFunctions) {

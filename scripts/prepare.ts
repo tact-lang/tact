@@ -5,7 +5,7 @@ import { FuncCompilationResult, funcCompile } from "../src/func/funcCompile";
 import path from "path";
 import { glob } from "glob";
 import { verify } from "../src/verify";
-import { consoleLogger } from "../src/logger";
+import { Logger } from "../src/logger";
 import { __DANGER__disableVersionNumber } from "../src/pipeline/version";
 
 // Read cases
@@ -13,8 +13,10 @@ import { __DANGER__disableVersionNumber } from "../src/pipeline/version";
     // Disable version number in packages
     __DANGER__disableVersionNumber();
 
+    const logger = new Logger();
+
     // Compile projects
-    if (!(await run({ configPath: __dirname + "/../tact.config.json" }))) {
+    if (!(await run({ configPath: __dirname + "/../tact.config.json" })).ok) {
         console.error("Tact projects compilation failed");
         process.exit(1);
     }
@@ -64,15 +66,15 @@ import { __DANGER__disableVersionNumber } from "../src/pipeline/version";
                             content: code,
                         },
                     ],
-                    logger: consoleLogger,
+                    logger: logger,
                 });
                 if (!c.ok) {
-                    console.error(c.log);
+                    logger.error(c.log);
                     process.exit(1);
                 }
             } catch (e) {
-                console.error(e);
-                console.error("Failed");
+                logger.error(e as Error);
+                logger.error("Failed");
                 process.exit(1);
             }
             fs.writeFileSync(p.path + r + ".fift", c.fift!);
