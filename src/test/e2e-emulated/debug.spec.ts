@@ -35,21 +35,21 @@ describe("debug", () => {
             "src/test/e2e-emulated/contracts/debug.tact",
         );
 
-        expect(debugLogs).toStrictEqual(`[DEBUG] File ${filePath}:10:9
+        expect(debugLogs).toStrictEqual(`File ${filePath}:10:9
 stack(2 values) : 10000000000 () 
-[DEBUG] File ${filePath}:11:9
+File ${filePath}:11:9
 Hello world!
-[DEBUG] File ${filePath}:12:9
+File ${filePath}:12:9
 123
-[DEBUG] File ${filePath}:13:9
+File ${filePath}:13:9
 true
-[DEBUG] File ${filePath}:14:9
+File ${filePath}:14:9
 false
-[DEBUG] File ${filePath}:15:9
+File ${filePath}:15:9
 null
-[DEBUG] File ${filePath}:16:9
+File ${filePath}:16:9
 ${contract.address.toString({ bounceable: true })}
-[DEBUG] File ${filePath}:17:9
+File ${filePath}:17:9
 ${Address.parseRaw(
     "0:83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8",
 )}`);
