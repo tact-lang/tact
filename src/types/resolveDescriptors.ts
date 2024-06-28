@@ -958,12 +958,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                             (internal
                                                 ? "internal-binary"
                                                 : "external-binary") &&
-                                        v.selector.name === n,
+                                        v.selector.type === n,
                                 )
                             ) {
                                 throwCompilationError(
                                     `Receive function for "${arg.type.name}" already exists`,
-                                    d.ref,
+                                    arg.ref,
                                 );
                             }
 
@@ -1104,12 +1104,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         (v) =>
                                             v.selector.kind ===
                                                 "bounce-binary" &&
-                                            v.selector.name === type.name,
+                                            v.selector.type === type.name,
                                     )
                                 ) {
                                     throwCompilationError(
                                         `Bounce receive function for "${arg.type.name}" already exists`,
-                                        d.ref,
+                                        arg.ref,
                                     );
                                 }
                                 s.receivers.push({
@@ -1212,6 +1212,18 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const t of types.values()) {
         if (t.ast.kind === "def_trait" || t.ast.kind === "def_contract") {
+            // Check there are no duplicates in the _immediately_ inherited traits
+            const traitSet = new Set<string>(
+                t.ast.traits.map((trait) => trait.value),
+            );
+            if (traitSet.size !== t.ast.traits.length) {
+                const aggregateType =
+                    t.ast.kind === "def_contract" ? "contract" : "trait";
+                throwCompilationError(
+                    `The list of inherited traits for ${aggregateType} "${t.name}" has duplicates`,
+                    t.ast.ref,
+                );
+            }
             // Flatten traits
             const traits: TypeDescription[] = [];
             const visited = new Set<string>();
@@ -1301,51 +1313,67 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Copy Trait functions and constants
     //
 
-    function copyTraits(t: TypeDescription) {
-        for (const tr of t.traits) {
+    function copyTraits(contractOrTrait: TypeDescription) {
+        for (const inheritedTrait of contractOrTrait.traits) {
             // Copy functions
-            for (const f of tr.functions.values()) {
-                const ex = t.functions.get(f.name);
-                if (!ex && f.isAbstract) {
+            for (const traitFunction of inheritedTrait.functions.values()) {
+                const funInContractOrTrait = contractOrTrait.functions.get(
+                    traitFunction.name,
+                );
+                if (!funInContractOrTrait && traitFunction.isAbstract) {
                     throwCompilationError(
-                        `Trait "${tr.name}" requires function "${f.name}"`,
-                        t.ast.ref,
+                        `Trait "${inheritedTrait.name}" requires function "${traitFunction.name}"`,
+                        contractOrTrait.ast.ref,
                     );
                 }
 
                 // Check overrides
-                if (ex && ex.isOverrides) {
-                    if (f.isGetter) {
+                if (funInContractOrTrait && funInContractOrTrait.isOverrides) {
+                    if (
+                        traitFunction.isGetter &&
+                        !funInContractOrTrait.isGetter
+                    ) {
                         throwCompilationError(
-                            `Overridden function "${f.name}" can not be a getter`,
-                            ex.ast.ref,
+                            `Overridden function "${traitFunction.name}" must be a getter`,
+                            funInContractOrTrait.ast.ref,
                         );
                     }
-                    if (f.isMutating !== ex.isMutating) {
+                    if (
+                        traitFunction.isMutating !==
+                        funInContractOrTrait.isMutating
+                    ) {
                         throwCompilationError(
-                            `Overridden function "${f.name}" should have same mutability`,
-                            ex.ast.ref,
+                            `Overridden function "${traitFunction.name}" should have same mutability`,
+                            funInContractOrTrait.ast.ref,
                         );
                     }
-                    if (!typeRefEquals(f.returns, ex.returns)) {
+                    if (
+                        !typeRefEquals(
+                            traitFunction.returns,
+                            funInContractOrTrait.returns,
+                        )
+                    ) {
                         throwCompilationError(
-                            `Overridden function "${f.name}" should have same return type`,
-                            ex.ast.ref,
+                            `Overridden function "${traitFunction.name}" should have same return type`,
+                            funInContractOrTrait.ast.ref,
                         );
                     }
-                    if (f.args.length !== ex.args.length) {
+                    if (
+                        traitFunction.args.length !==
+                        funInContractOrTrait.args.length
+                    ) {
                         throwCompilationError(
-                            `Overridden function "${f.name}" should have same number of arguments`,
-                            ex.ast.ref,
+                            `Overridden function "${traitFunction.name}" should have same number of arguments`,
+                            funInContractOrTrait.ast.ref,
                         );
                     }
-                    for (let i = 0; i < f.args.length; i++) {
-                        const a = ex.args[i];
-                        const b = f.args[i];
+                    for (let i = 0; i < traitFunction.args.length; i++) {
+                        const a = funInContractOrTrait.args[i];
+                        const b = traitFunction.args[i];
                         if (!typeRefEquals(a.type, b.type)) {
                             throwCompilationError(
-                                `Overridden function "${f.name}" should have same argument types`,
-                                ex.ast.ref,
+                                `Overridden function "${traitFunction.name}" should have same argument types`,
+                                funInContractOrTrait.ast.ref,
                             );
                         }
                     }
@@ -1353,65 +1381,102 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
 
                 // Check duplicates
-                if (ex) {
+                if (funInContractOrTrait) {
+                    if (traitFunction.isVirtual) {
+                        throwCompilationError(
+                            `Function "${traitFunction.name}" is defined as virtual in trait "${inheritedTrait.name}": you are probably missing "override" keyword`,
+                            funInContractOrTrait.ast.ref,
+                        );
+                    }
                     throwCompilationError(
-                        `Function "${f.name}" already exist in "${t.name}"`,
-                        t.ast.ref,
+                        `Function "${traitFunction.name}" is already defined in trait "${inheritedTrait.name}"`,
+                        funInContractOrTrait.ast.ref,
                     );
                 }
 
                 // Register function
-                t.functions.set(f.name, {
-                    ...f,
-                    self: t.name,
-                    ast: cloneNode(f.ast),
+                contractOrTrait.functions.set(traitFunction.name, {
+                    ...traitFunction,
+                    self: contractOrTrait.name,
+                    ast: cloneNode(traitFunction.ast),
                 });
             }
 
             // Copy constants
-            for (const f of tr.constants) {
-                const ex = t.constants.find((v) => v.name === f.name);
+            for (const traitConstant of inheritedTrait.constants) {
+                const constInContractOrTrait = contractOrTrait.constants.find(
+                    (v) => v.name === traitConstant.name,
+                );
                 if (
-                    !ex &&
-                    f.ast.attributes.find((v) => v.type === "abstract")
+                    !constInContractOrTrait &&
+                    traitConstant.ast.attributes.find(
+                        (v) => v.type === "abstract",
+                    )
                 ) {
                     throwCompilationError(
-                        `Trait "${tr.name}" requires constant "${f.name}"`,
-                        t.ast.ref,
+                        `Trait "${inheritedTrait.name}" requires constant "${traitConstant.name}"`,
+                        contractOrTrait.ast.ref,
                     );
                 }
 
                 // Check overrides
                 if (
-                    ex &&
-                    ex.ast.attributes.find((v) => v.type === "overrides")
+                    constInContractOrTrait &&
+                    constInContractOrTrait.ast.attributes.find(
+                        (v) => v.type === "overrides",
+                    )
                 ) {
-                    if (!typeRefEquals(f.type, ex.type)) {
+                    if (
+                        !typeRefEquals(
+                            traitConstant.type,
+                            constInContractOrTrait.type,
+                        )
+                    ) {
                         throwCompilationError(
-                            `Overridden constant "${f.name}" should have same type`,
-                            ex.ast.ref,
+                            `Overridden constant "${traitConstant.name}" should have same type`,
+                            constInContractOrTrait.ast.ref,
                         );
                     }
                     continue;
                 }
 
                 // Check duplicates
-                if (ex) {
+                if (constInContractOrTrait) {
+                    if (
+                        traitConstant.ast.attributes.find(
+                            (v) => v.type === "virtual",
+                        )
+                    ) {
+                        throwCompilationError(
+                            `Constant "${traitConstant.name}" is defined as virtual in trait "${inheritedTrait.name}": you are probably missing "override" keyword`,
+                            constInContractOrTrait.ast.ref,
+                        );
+                    }
                     throwCompilationError(
-                        `Constant "${f.name}" already exist in "${t.name}"`,
-                        t.ast.ref,
+                        `Constant "${traitConstant.name}" is already defined in trait "${inheritedTrait.name}"`,
+                        constInContractOrTrait.ast.ref,
+                    );
+                }
+                const contractField = contractOrTrait.fields.find(
+                    (v) => v.name === traitConstant.name,
+                );
+                if (contractField) {
+                    // a trait constant has the same name as a contract field
+                    throwCompilationError(
+                        `Contract ${contractOrTrait.name} inherits constant "${traitConstant.name}" from its traits and hence cannot have a storage variable with the same name`,
+                        contractField.ref,
                     );
                 }
 
                 // Register constant
-                t.constants.push({
-                    ...f,
-                    ast: cloneNode(f.ast),
+                contractOrTrait.constants.push({
+                    ...traitConstant,
+                    ast: cloneNode(traitConstant.ast),
                 });
             }
 
             // Copy receivers
-            for (const f of tr.receivers) {
+            for (const f of inheritedTrait.receivers) {
                 // eslint-disable-next-line no-inner-declarations
                 function sameReceiver(
                     a: ReceiverSelector,
@@ -1462,25 +1527,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     return false;
                 }
                 if (
-                    t.receivers.find((v) =>
+                    contractOrTrait.receivers.find((v) =>
                         sameReceiver(v.selector, f.selector),
                     )
                 ) {
                     throwCompilationError(
                         `Receive function for "${f.selector}" already exists`,
-                        t.ast.ref,
+                        contractOrTrait.ast.ref,
                     );
                 }
-                t.receivers.push({
+                contractOrTrait.receivers.push({
                     selector: f.selector,
                     ast: cloneNode(f.ast),
                 });
             }
 
             // Copy interfaces
-            for (const i of tr.interfaces) {
-                if (!t.interfaces.find((v) => v === i)) {
-                    t.interfaces.push(i);
+            for (const i of inheritedTrait.interfaces) {
+                if (!contractOrTrait.interfaces.find((v) => v === i)) {
+                    contractOrTrait.interfaces.push(i);
                 }
             }
         }

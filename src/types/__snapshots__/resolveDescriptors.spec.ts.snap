@@ -30,7 +30,37 @@ Line 15, col 3:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced-fallback-receiver 1`] = `
+exports[`resolveDescriptors should fail descriptors for contract-const-override-virtual-no-keyword 1`] = `
+"<unknown>:9:3: Constant "Foo" is defined as virtual in trait "T": you are probably missing "override" keyword
+Line 9, col 3:
+   8 | contract TestContract with T {
+>  9 |   const Foo: Int = 42;
+         ^~~~~~~~~~~~~~~~~~~~
+  10 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-does-not-override-abstract-const 1`] = `
+"<unknown>:8:1: Trait "T" requires constant "Foo"
+Line 8, col 1:
+  7 | 
+> 8 | contract TestContract with T {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 |   // does not override an abstract const
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-does-not-override-abstract-getter 1`] = `
+"<unknown>:8:1: Trait "T" requires function "getter"
+Line 8, col 1:
+  7 | 
+> 8 | contract TestContract with T {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 |   // does not override an abstract getter
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced-fallback 1`] = `
 "<unknown>:24:3: Fallback bounce receive function already exists
 Line 24, col 3:
   23 |   
@@ -40,7 +70,7 @@ Line 24, col 3:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced-receiver 1`] = `
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced1 1`] = `
 "<unknown>:24:3: Bounce receive function for "A" already exists
 Line 24, col 3:
   23 |   
@@ -50,7 +80,27 @@ Line 24, col 3:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for contract-duplicate-external-fallback-receiver 1`] = `
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-bounced2 1`] = `
+"<unknown>:7:13: Bounce receive function for "Msg" already exists
+Line 7, col 13:
+  6 |     bounced(msg: Msg) { }
+> 7 |     bounced(msg: Msg) { }
+                  ^~~~~~~~
+  8 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-external 1`] = `
+"<unknown>:7:14: Receive function for "Msg" already exists
+Line 7, col 14:
+  6 |     external(msg: Msg) { }
+> 7 |     external(msg: Msg) { }
+                   ^~~~~~~~
+  8 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-external-fallback 1`] = `
 "<unknown>:20:5: Empty receive function already exists
 Line 20, col 5:
   19 | 
@@ -70,6 +120,16 @@ Line 13, col 5:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-duplicate-receiver 1`] = `
+"<unknown>:7:13: Receive function for "Msg" already exists
+Line 7, col 13:
+  6 |     receive(msg: Msg) { }
+> 7 |     receive(msg: Msg) { }
+                  ^~~~~~~~
+  8 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-duplicate-storage-var 1`] = `
 "<unknown>:11:3: Field "b" already exists
 Line 11, col 3:
@@ -77,6 +137,26 @@ Line 11, col 3:
 > 11 |   b: Int;
          ^~~~~~
   12 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-duplicates-in-trait-list 1`] = `
+"<unknown>:7:1: The list of inherited traits for contract "Test" has duplicates
+Line 7, col 1:
+  6 | 
+> 7 | contract Test with Foo, Foo { }
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  8 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-getter-override-virtual-no-keyword 1`] = `
+"<unknown>:9:3: Function "getter" is defined as virtual in trait "T": you are probably missing "override" keyword
+Line 9, col 3:
+   8 | contract TestContract with T {
+>  9 |   get fun getter(): Int { return 43 }
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  10 | }
 "
 `;
 
@@ -245,6 +325,16 @@ Line 9, col 24:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for scope-storage-var-shadows-trait-const 1`] = `
+"<unknown>:8:3: Contract Foo inherits constant "storageReserve" from its traits and hence cannot have a storage variable with the same name
+Line 8, col 3:
+  7 |   // is a virtual constant defined in BaseTrait
+> 8 |   storageReserve: Int;
+        ^~~~~~~~~~~~~~~~~~~
+  9 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for scope-struct-shadows-contract 1`] = `
 "<unknown>:12:1: Type "Main" already exists
 Line 12, col 1:
@@ -282,6 +372,16 @@ Line 12, col 1:
 > 12 | struct Main {
        ^~~~~~~~~~~~~
   13 |     
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-duplicates-in-trait-list 1`] = `
+"<unknown>:7:1: The list of inherited traits for trait "Test" has duplicates
+Line 7, col 1:
+  6 | 
+> 7 | trait Test with Foo, Foo { }
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  8 | 
 "
 `;
 
@@ -954,7 +1054,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "statements": [],
         },
         {
-          "id": 21,
+          "id": 22,
           "kind": "def_receive",
           "ref": bounced(src: bounced<A>) {
     let x: Int = src.c;
@@ -977,9 +1077,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "statements": [
             {
               "expression": {
-                "id": 19,
+                "id": 20,
                 "kind": "op_field",
-                "name": "c",
+                "name": {
+                  "id": 19,
+                  "kind": "id",
+                  "ref": c,
+                  "value": "c",
+                },
                 "ref": src.c,
                 "src": {
                   "id": 18,
@@ -988,7 +1093,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
                   "value": "src",
                 },
               },
-              "id": 20,
+              "id": 21,
               "kind": "statement_let",
               "name": "x",
               "ref": let x: Int = src.c;,
@@ -1003,7 +1108,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           ],
         },
       ],
-      "id": 22,
+      "id": 23,
       "kind": "def_contract",
       "name": "Test",
       "origin": "user",
@@ -1073,7 +1178,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       },
       {
         "ast": {
-          "id": 21,
+          "id": 22,
           "kind": "def_receive",
           "ref": bounced(src: bounced<A>) {
     let x: Int = src.c;
@@ -1096,9 +1201,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "statements": [
             {
               "expression": {
-                "id": 19,
+                "id": 20,
                 "kind": "op_field",
-                "name": "c",
+                "name": {
+                  "id": 19,
+                  "kind": "id",
+                  "ref": c,
+                  "value": "c",
+                },
                 "ref": src.c,
                 "src": {
                   "id": 18,
@@ -1107,7 +1217,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
                   "value": "src",
                 },
               },
-              "id": 20,
+              "id": 21,
               "kind": "statement_let",
               "name": "x",
               "ref": let x: Int = src.c;,
@@ -1169,6 +1279,868 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
 `;
 
 exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-small-not-detected 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-const-override-abstract 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait { },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "T": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "ref": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 4,
+          "kind": "def_constant",
+          "name": "Foo",
+          "ref": abstract const Foo: Int;,
+          "type": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "value": null,
+        },
+      ],
+      "id": 5,
+      "kind": "def_trait",
+      "name": "T",
+      "origin": "user",
+      "ref": trait T {
+  abstract const Foo: Int;
+},
+      "traits": [],
+    },
+    "constants": [
+      {
+        "ast": {
+          "attributes": [
+            {
+              "ref": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 4,
+          "kind": "def_constant",
+          "name": "Foo",
+          "ref": abstract const Foo: Int;,
+          "type": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "value": null,
+        },
+        "name": "Foo",
+        "ref": abstract const Foo: Int;,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "value": undefined,
+      },
+    ],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait { },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 6769,
+  },
+  "TestContract": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "ref": override,
+              "type": "overrides",
+            },
+          ],
+          "id": 8,
+          "kind": "def_constant",
+          "name": "Foo",
+          "ref": override const Foo: Int = 42;,
+          "type": {
+            "id": 6,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "value": {
+            "id": 7,
+            "kind": "number",
+            "ref": 42,
+            "value": 42n,
+          },
+        },
+      ],
+      "id": 10,
+      "kind": "def_contract",
+      "name": "TestContract",
+      "origin": "user",
+      "ref": contract TestContract with T {
+  override const Foo: Int = 42;
+},
+      "traits": [
+        {
+          "id": 9,
+          "kind": "id",
+          "ref": T,
+          "value": "T",
+        },
+      ],
+    },
+    "constants": [
+      {
+        "ast": {
+          "attributes": [
+            {
+              "ref": override,
+              "type": "overrides",
+            },
+          ],
+          "id": 8,
+          "kind": "def_constant",
+          "name": "Foo",
+          "ref": override const Foo: Int = 42;,
+          "type": {
+            "id": 6,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "value": {
+            "id": 7,
+            "kind": "number",
+            "ref": 42,
+            "value": 42n,
+          },
+        },
+        "name": "Foo",
+        "ref": override const Foo: Int = 42;,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "value": 42n,
+      },
+    ],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "args": [],
+      "ast": {
+        "args": [],
+        "id": 12,
+        "kind": "def_init_function",
+        "ref": contract TestContract with T {
+  override const Foo: Int = 42;
+},
+        "statements": [],
+      },
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "TestContract",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait { },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [
+                {
+                  "ref": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 4,
+              "kind": "def_constant",
+              "name": "Foo",
+              "ref": abstract const Foo: Int;,
+              "type": {
+                "id": 3,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+              "value": null,
+            },
+          ],
+          "id": 5,
+          "kind": "def_trait",
+          "name": "T",
+          "origin": "user",
+          "ref": trait T {
+  abstract const Foo: Int;
+},
+          "traits": [],
+        },
+        "constants": [
+          {
+            "ast": {
+              "attributes": [
+                {
+                  "ref": abstract,
+                  "type": "abstract",
+                },
+              ],
+              "id": 4,
+              "kind": "def_constant",
+              "name": "Foo",
+              "ref": abstract const Foo: Int;,
+              "type": {
+                "id": 3,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+              "value": null,
+            },
+            "name": "Foo",
+            "ref": abstract const Foo: Int;,
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "value": undefined,
+          },
+        ],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 2,
+              "kind": "def_trait",
+              "name": "BaseTrait",
+              "origin": "user",
+              "ref": trait BaseTrait { },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+        ],
+        "uid": 6769,
+      },
+    ],
+    "uid": 63070,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-const-override-abstract 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-const-override-virtual 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait { },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "T": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "ref": virtual,
+              "type": "virtual",
+            },
+          ],
+          "id": 5,
+          "kind": "def_constant",
+          "name": "Foo",
+          "ref": virtual const Foo: Int = 41;,
+          "type": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "value": {
+            "id": 4,
+            "kind": "number",
+            "ref": 41,
+            "value": 41n,
+          },
+        },
+      ],
+      "id": 6,
+      "kind": "def_trait",
+      "name": "T",
+      "origin": "user",
+      "ref": trait T {
+   virtual const Foo: Int = 41;
+},
+      "traits": [],
+    },
+    "constants": [
+      {
+        "ast": {
+          "attributes": [
+            {
+              "ref": virtual,
+              "type": "virtual",
+            },
+          ],
+          "id": 5,
+          "kind": "def_constant",
+          "name": "Foo",
+          "ref": virtual const Foo: Int = 41;,
+          "type": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "value": {
+            "id": 4,
+            "kind": "number",
+            "ref": 41,
+            "value": 41n,
+          },
+        },
+        "name": "Foo",
+        "ref": virtual const Foo: Int = 41;,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "value": 41n,
+      },
+    ],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait { },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 6769,
+  },
+  "TestContract": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "ref": override,
+              "type": "overrides",
+            },
+          ],
+          "id": 9,
+          "kind": "def_constant",
+          "name": "Foo",
+          "ref": override const Foo: Int = 42;,
+          "type": {
+            "id": 7,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "value": {
+            "id": 8,
+            "kind": "number",
+            "ref": 42,
+            "value": 42n,
+          },
+        },
+      ],
+      "id": 11,
+      "kind": "def_contract",
+      "name": "TestContract",
+      "origin": "user",
+      "ref": contract TestContract with T {
+  override const Foo: Int = 42;
+},
+      "traits": [
+        {
+          "id": 10,
+          "kind": "id",
+          "ref": T,
+          "value": "T",
+        },
+      ],
+    },
+    "constants": [
+      {
+        "ast": {
+          "attributes": [
+            {
+              "ref": override,
+              "type": "overrides",
+            },
+          ],
+          "id": 9,
+          "kind": "def_constant",
+          "name": "Foo",
+          "ref": override const Foo: Int = 42;,
+          "type": {
+            "id": 7,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "value": {
+            "id": 8,
+            "kind": "number",
+            "ref": 42,
+            "value": 42n,
+          },
+        },
+        "name": "Foo",
+        "ref": override const Foo: Int = 42;,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "value": 42n,
+      },
+    ],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "args": [],
+      "ast": {
+        "args": [],
+        "id": 13,
+        "kind": "def_init_function",
+        "ref": contract TestContract with T {
+  override const Foo: Int = 42;
+},
+        "statements": [],
+      },
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "TestContract",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait { },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [
+                {
+                  "ref": virtual,
+                  "type": "virtual",
+                },
+              ],
+              "id": 5,
+              "kind": "def_constant",
+              "name": "Foo",
+              "ref": virtual const Foo: Int = 41;,
+              "type": {
+                "id": 3,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+              "value": {
+                "id": 4,
+                "kind": "number",
+                "ref": 41,
+                "value": 41n,
+              },
+            },
+          ],
+          "id": 6,
+          "kind": "def_trait",
+          "name": "T",
+          "origin": "user",
+          "ref": trait T {
+   virtual const Foo: Int = 41;
+},
+          "traits": [],
+        },
+        "constants": [
+          {
+            "ast": {
+              "attributes": [
+                {
+                  "ref": virtual,
+                  "type": "virtual",
+                },
+              ],
+              "id": 5,
+              "kind": "def_constant",
+              "name": "Foo",
+              "ref": virtual const Foo: Int = 41;,
+              "type": {
+                "id": 3,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+              "value": {
+                "id": 4,
+                "kind": "number",
+                "ref": 41,
+                "value": 41n,
+              },
+            },
+            "name": "Foo",
+            "ref": virtual const Foo: Int = 41;,
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "value": 41n,
+          },
+        ],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 2,
+              "kind": "def_trait",
+              "name": "BaseTrait",
+              "origin": "user",
+              "ref": trait BaseTrait { },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+        ],
+        "uid": 6769,
+      },
+    ],
+    "uid": 63070,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-const-override-virtual 2`] = `{}`;
 
 exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 1`] = `
 {
@@ -1530,6 +2502,1038 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
 `;
 
 exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-getter-override-abstract 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait { },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "T": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "args": [],
+          "attributes": [
+            {
+              "ref": abstract,
+              "type": "abstract",
+            },
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 4,
+          "kind": "def_function",
+          "name": "getter",
+          "origin": "user",
+          "ref": abstract get fun getter(): Int;,
+          "return": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": null,
+        },
+      ],
+      "id": 5,
+      "kind": "def_trait",
+      "name": "T",
+      "origin": "user",
+      "ref": trait T {
+  abstract get fun getter(): Int;
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "getter" => {
+        "args": [],
+        "ast": {
+          "args": [],
+          "attributes": [
+            {
+              "ref": abstract,
+              "type": "abstract",
+            },
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 4,
+          "kind": "def_function",
+          "name": "getter",
+          "origin": "user",
+          "ref": abstract get fun getter(): Int;,
+          "return": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": null,
+        },
+        "isAbstract": true,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverrides": false,
+        "isVirtual": false,
+        "name": "getter",
+        "origin": "user",
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": "T",
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait { },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 6769,
+  },
+  "TestContract": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "args": [],
+          "attributes": [
+            {
+              "ref": override,
+              "type": "overrides",
+            },
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 9,
+          "kind": "def_function",
+          "name": "getter",
+          "origin": "user",
+          "ref": override get fun getter(): Int { return 0 },
+          "return": {
+            "id": 6,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 7,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 8,
+              "kind": "statement_return",
+              "ref": return 0,
+            },
+          ],
+        },
+      ],
+      "id": 11,
+      "kind": "def_contract",
+      "name": "TestContract",
+      "origin": "user",
+      "ref": contract TestContract with T {
+  override get fun getter(): Int { return 0 }
+},
+      "traits": [
+        {
+          "id": 10,
+          "kind": "id",
+          "ref": T,
+          "value": "T",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "getter" => {
+        "args": [],
+        "ast": {
+          "args": [],
+          "attributes": [
+            {
+              "ref": override,
+              "type": "overrides",
+            },
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 9,
+          "kind": "def_function",
+          "name": "getter",
+          "origin": "user",
+          "ref": override get fun getter(): Int { return 0 },
+          "return": {
+            "id": 6,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 7,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 8,
+              "kind": "statement_return",
+              "ref": return 0,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverrides": true,
+        "isVirtual": false,
+        "name": "getter",
+        "origin": "user",
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": "TestContract",
+      },
+    },
+    "header": null,
+    "init": {
+      "args": [],
+      "ast": {
+        "args": [],
+        "id": 13,
+        "kind": "def_init_function",
+        "ref": contract TestContract with T {
+  override get fun getter(): Int { return 0 }
+},
+        "statements": [],
+      },
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "TestContract",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait { },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "args": [],
+              "attributes": [
+                {
+                  "ref": abstract,
+                  "type": "abstract",
+                },
+                {
+                  "ref": get,
+                  "type": "get",
+                },
+              ],
+              "id": 4,
+              "kind": "def_function",
+              "name": "getter",
+              "origin": "user",
+              "ref": abstract get fun getter(): Int;,
+              "return": {
+                "id": 3,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+              "statements": null,
+            },
+          ],
+          "id": 5,
+          "kind": "def_trait",
+          "name": "T",
+          "origin": "user",
+          "ref": trait T {
+  abstract get fun getter(): Int;
+},
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "getter" => {
+            "args": [],
+            "ast": {
+              "args": [],
+              "attributes": [
+                {
+                  "ref": abstract,
+                  "type": "abstract",
+                },
+                {
+                  "ref": get,
+                  "type": "get",
+                },
+              ],
+              "id": 4,
+              "kind": "def_function",
+              "name": "getter",
+              "origin": "user",
+              "ref": abstract get fun getter(): Int;,
+              "return": {
+                "id": 3,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+              "statements": null,
+            },
+            "isAbstract": true,
+            "isGetter": true,
+            "isInline": false,
+            "isMutating": true,
+            "isOverrides": false,
+            "isVirtual": false,
+            "name": "getter",
+            "origin": "user",
+            "returns": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "self": "T",
+          },
+        },
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 2,
+              "kind": "def_trait",
+              "name": "BaseTrait",
+              "origin": "user",
+              "ref": trait BaseTrait { },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+        ],
+        "uid": 6769,
+      },
+    ],
+    "uid": 63070,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-getter-override-abstract 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-getter-override-virtual 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "def_trait",
+      "name": "BaseTrait",
+      "origin": "user",
+      "ref": trait BaseTrait { },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "origin": "user",
+      "ref": primitive Int;,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "T": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "args": [],
+          "attributes": [
+            {
+              "ref": virtual,
+              "type": "virtual",
+            },
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 6,
+          "kind": "def_function",
+          "name": "getter",
+          "origin": "user",
+          "ref": virtual get fun getter(): Int { return 42 },
+          "return": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 4,
+                "kind": "number",
+                "ref": 42,
+                "value": 42n,
+              },
+              "id": 5,
+              "kind": "statement_return",
+              "ref": return 42,
+            },
+          ],
+        },
+      ],
+      "id": 7,
+      "kind": "def_trait",
+      "name": "T",
+      "origin": "user",
+      "ref": trait T {
+   virtual get fun getter(): Int { return 42 }
+},
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "getter" => {
+        "args": [],
+        "ast": {
+          "args": [],
+          "attributes": [
+            {
+              "ref": virtual,
+              "type": "virtual",
+            },
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 6,
+          "kind": "def_function",
+          "name": "getter",
+          "origin": "user",
+          "ref": virtual get fun getter(): Int { return 42 },
+          "return": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 4,
+                "kind": "number",
+                "ref": 42,
+                "value": 42n,
+              },
+              "id": 5,
+              "kind": "statement_return",
+              "ref": return 42,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverrides": false,
+        "isVirtual": true,
+        "name": "getter",
+        "origin": "user",
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": "T",
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait { },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 6769,
+  },
+  "TestContract": {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "args": [],
+          "attributes": [
+            {
+              "ref": override,
+              "type": "overrides",
+            },
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 11,
+          "kind": "def_function",
+          "name": "getter",
+          "origin": "user",
+          "ref": override get fun getter(): Int { return 43 },
+          "return": {
+            "id": 8,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 9,
+                "kind": "number",
+                "ref": 43,
+                "value": 43n,
+              },
+              "id": 10,
+              "kind": "statement_return",
+              "ref": return 43,
+            },
+          ],
+        },
+      ],
+      "id": 13,
+      "kind": "def_contract",
+      "name": "TestContract",
+      "origin": "user",
+      "ref": contract TestContract with T {
+  override get fun getter(): Int { return 43 }
+},
+      "traits": [
+        {
+          "id": 12,
+          "kind": "id",
+          "ref": T,
+          "value": "T",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "getter" => {
+        "args": [],
+        "ast": {
+          "args": [],
+          "attributes": [
+            {
+              "ref": override,
+              "type": "overrides",
+            },
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 11,
+          "kind": "def_function",
+          "name": "getter",
+          "origin": "user",
+          "ref": override get fun getter(): Int { return 43 },
+          "return": {
+            "id": 8,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 9,
+                "kind": "number",
+                "ref": 43,
+                "value": 43n,
+              },
+              "id": 10,
+              "kind": "statement_return",
+              "ref": return 43,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverrides": true,
+        "isVirtual": false,
+        "name": "getter",
+        "origin": "user",
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": "TestContract",
+      },
+    },
+    "header": null,
+    "init": {
+      "args": [],
+      "ast": {
+        "args": [],
+        "id": 15,
+        "kind": "def_init_function",
+        "ref": contract TestContract with T {
+  override get fun getter(): Int { return 43 }
+},
+        "statements": [],
+      },
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "TestContract",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "def_trait",
+          "name": "BaseTrait",
+          "origin": "user",
+          "ref": trait BaseTrait { },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "args": [],
+              "attributes": [
+                {
+                  "ref": virtual,
+                  "type": "virtual",
+                },
+                {
+                  "ref": get,
+                  "type": "get",
+                },
+              ],
+              "id": 6,
+              "kind": "def_function",
+              "name": "getter",
+              "origin": "user",
+              "ref": virtual get fun getter(): Int { return 42 },
+              "return": {
+                "id": 3,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "id": 4,
+                    "kind": "number",
+                    "ref": 42,
+                    "value": 42n,
+                  },
+                  "id": 5,
+                  "kind": "statement_return",
+                  "ref": return 42,
+                },
+              ],
+            },
+          ],
+          "id": 7,
+          "kind": "def_trait",
+          "name": "T",
+          "origin": "user",
+          "ref": trait T {
+   virtual get fun getter(): Int { return 42 }
+},
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "getter" => {
+            "args": [],
+            "ast": {
+              "args": [],
+              "attributes": [
+                {
+                  "ref": virtual,
+                  "type": "virtual",
+                },
+                {
+                  "ref": get,
+                  "type": "get",
+                },
+              ],
+              "id": 6,
+              "kind": "def_function",
+              "name": "getter",
+              "origin": "user",
+              "ref": virtual get fun getter(): Int { return 42 },
+              "return": {
+                "id": 3,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "id": 4,
+                    "kind": "number",
+                    "ref": 42,
+                    "value": 42n,
+                  },
+                  "id": 5,
+                  "kind": "statement_return",
+                  "ref": return 42,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": true,
+            "isInline": false,
+            "isMutating": true,
+            "isOverrides": false,
+            "isVirtual": true,
+            "name": "getter",
+            "origin": "user",
+            "returns": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+            "self": "T",
+          },
+        },
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 2,
+              "kind": "def_trait",
+              "name": "BaseTrait",
+              "origin": "user",
+              "ref": trait BaseTrait { },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+        ],
+        "uid": 6769,
+      },
+    ],
+    "uid": 63070,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-getter-override-virtual 2`] = `{}`;
 
 exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-uninit-storage-vars 1`] = `
 {
@@ -2279,7 +4283,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               },
             },
           ],
-          "id": 15,
+          "id": 16,
           "kind": "def_init_function",
           "ref": init(a: Int) {
         self.a = a;
@@ -2287,27 +4291,30 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
-                "id": 13,
+                "id": 14,
                 "kind": "id",
                 "ref": a,
                 "value": "a",
               },
-              "id": 14,
+              "id": 15,
               "kind": "statement_assign",
-              "path": [
-                {
-                  "id": 11,
-                  "kind": "lvalue_ref",
-                  "name": "self",
-                  "ref": self.,
-                },
-                {
+              "path": {
+                "id": 13,
+                "kind": "op_field",
+                "name": {
                   "id": 12,
-                  "kind": "lvalue_ref",
-                  "name": "a",
+                  "kind": "id",
                   "ref": a,
+                  "value": "a",
                 },
-              ],
+                "ref": self.a,
+                "src": {
+                  "id": 11,
+                  "kind": "id",
+                  "ref": self,
+                  "value": "self",
+                },
+              },
               "ref": self.a = a;,
             },
           ],
@@ -2320,7 +4327,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "type": "get",
             },
           ],
-          "id": 19,
+          "id": 20,
           "kind": "def_function",
           "name": "hello",
           "origin": "user",
@@ -2328,7 +4335,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         return 0;
     },
           "return": {
-            "id": 16,
+            "id": 17,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2337,12 +4344,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
-                "id": 17,
+                "id": 18,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 18,
+              "id": 19,
               "kind": "statement_return",
               "ref": return 0;,
             },
@@ -2356,7 +4363,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "type": "get",
             },
           ],
-          "id": 23,
+          "id": 24,
           "kind": "def_function",
           "name": "hello2",
           "origin": "user",
@@ -2364,7 +4371,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         return 0;
     },
           "return": {
-            "id": 20,
+            "id": 21,
             "kind": "type_ref_simple",
             "name": "Point",
             "optional": false,
@@ -2373,19 +4380,19 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
-                "id": 21,
+                "id": 22,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 22,
+              "id": 23,
               "kind": "statement_return",
               "ref": return 0;,
             },
           ],
         },
       ],
-      "id": 24,
+      "id": 25,
       "kind": "def_contract",
       "name": "Main",
       "origin": "user",
@@ -2455,7 +4462,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "type": "get",
             },
           ],
-          "id": 19,
+          "id": 20,
           "kind": "def_function",
           "name": "hello",
           "origin": "user",
@@ -2463,7 +4470,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         return 0;
     },
           "return": {
-            "id": 16,
+            "id": 17,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2472,12 +4479,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
-                "id": 17,
+                "id": 18,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 18,
+              "id": 19,
               "kind": "statement_return",
               "ref": return 0;,
             },
@@ -2508,7 +4515,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "type": "get",
             },
           ],
-          "id": 23,
+          "id": 24,
           "kind": "def_function",
           "name": "hello2",
           "origin": "user",
@@ -2516,7 +4523,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         return 0;
     },
           "return": {
-            "id": 20,
+            "id": 21,
             "kind": "type_ref_simple",
             "name": "Point",
             "optional": false,
@@ -2525,12 +4532,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
-                "id": 21,
+                "id": 22,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 22,
+              "id": 23,
               "kind": "statement_return",
               "ref": return 0;,
             },
@@ -2582,7 +4589,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             },
           },
         ],
-        "id": 15,
+        "id": 16,
         "kind": "def_init_function",
         "ref": init(a: Int) {
         self.a = a;
@@ -2590,27 +4597,30 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "statements": [
           {
             "expression": {
-              "id": 13,
+              "id": 14,
               "kind": "id",
               "ref": a,
               "value": "a",
             },
-            "id": 14,
+            "id": 15,
             "kind": "statement_assign",
-            "path": [
-              {
-                "id": 11,
-                "kind": "lvalue_ref",
-                "name": "self",
-                "ref": self.,
-              },
-              {
+            "path": {
+              "id": 13,
+              "kind": "op_field",
+              "name": {
                 "id": 12,
-                "kind": "lvalue_ref",
-                "name": "a",
+                "kind": "id",
                 "ref": a,
+                "value": "a",
               },
-            ],
+              "ref": self.a,
+              "src": {
+                "id": 11,
+                "kind": "id",
+                "ref": self,
+                "value": "self",
+              },
+            },
             "ref": self.a = a;,
           },
         ],
@@ -3294,7 +5304,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "type": "get",
             },
           ],
-          "id": 29,
+          "id": 31,
           "kind": "def_function",
           "name": "test",
           "origin": "user",
@@ -3369,26 +5379,31 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
-                    "id": 16,
+                    "id": 17,
                     "kind": "number",
                     "ref": 1,
                     "value": 1n,
                   },
                   {
-                    "id": 17,
+                    "id": 18,
                     "kind": "number",
                     "ref": 2,
                     "value": 2n,
                   },
                 ],
-                "id": 18,
+                "id": 19,
                 "kind": "op_call",
                 "name": "set",
                 "ref": self.m.set(1, 2),
                 "src": {
-                  "id": 15,
+                  "id": 16,
                   "kind": "op_field",
-                  "name": "m",
+                  "name": {
+                    "id": 15,
+                    "kind": "id",
+                    "ref": m,
+                    "value": "m",
+                  },
                   "ref": self.m,
                   "src": {
                     "id": 14,
@@ -3398,29 +5413,29 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                   },
                 },
               },
-              "id": 19,
+              "id": 20,
               "kind": "statement_expression",
               "ref": self.m.set(1, 2);,
             },
             {
               "expression": {
-                "id": 27,
+                "id": 29,
                 "kind": "op_binary",
                 "left": {
                   "args": [
                     {
-                      "id": 21,
+                      "id": 22,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
                     },
                   ],
-                  "id": 22,
+                  "id": 23,
                   "kind": "op_call",
                   "name": "get",
                   "ref": m.get(1),
                   "src": {
-                    "id": 20,
+                    "id": 21,
                     "kind": "id",
                     "ref": m,
                     "value": "m",
@@ -3431,23 +5446,28 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "right": {
                   "args": [
                     {
-                      "id": 25,
+                      "id": 27,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
                     },
                   ],
-                  "id": 26,
+                  "id": 28,
                   "kind": "op_call",
                   "name": "get",
                   "ref": self.m.get(1),
                   "src": {
-                    "id": 24,
+                    "id": 26,
                     "kind": "op_field",
-                    "name": "m",
+                    "name": {
+                      "id": 25,
+                      "kind": "id",
+                      "ref": m,
+                      "value": "m",
+                    },
                     "ref": self.m,
                     "src": {
-                      "id": 23,
+                      "id": 24,
                       "kind": "id",
                       "ref": self,
                       "value": "self",
@@ -3455,14 +5475,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                   },
                 },
               },
-              "id": 28,
+              "id": 30,
               "kind": "statement_return",
               "ref": return m.get(1) + self.m.get(1);,
             },
           ],
         },
       ],
-      "id": 30,
+      "id": 32,
       "kind": "def_contract",
       "name": "Main",
       "origin": "user",
@@ -3534,7 +5554,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "type": "get",
             },
           ],
-          "id": 29,
+          "id": 31,
           "kind": "def_function",
           "name": "test",
           "origin": "user",
@@ -3609,26 +5629,31 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
-                    "id": 16,
+                    "id": 17,
                     "kind": "number",
                     "ref": 1,
                     "value": 1n,
                   },
                   {
-                    "id": 17,
+                    "id": 18,
                     "kind": "number",
                     "ref": 2,
                     "value": 2n,
                   },
                 ],
-                "id": 18,
+                "id": 19,
                 "kind": "op_call",
                 "name": "set",
                 "ref": self.m.set(1, 2),
                 "src": {
-                  "id": 15,
+                  "id": 16,
                   "kind": "op_field",
-                  "name": "m",
+                  "name": {
+                    "id": 15,
+                    "kind": "id",
+                    "ref": m,
+                    "value": "m",
+                  },
                   "ref": self.m,
                   "src": {
                     "id": 14,
@@ -3638,29 +5663,29 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                   },
                 },
               },
-              "id": 19,
+              "id": 20,
               "kind": "statement_expression",
               "ref": self.m.set(1, 2);,
             },
             {
               "expression": {
-                "id": 27,
+                "id": 29,
                 "kind": "op_binary",
                 "left": {
                   "args": [
                     {
-                      "id": 21,
+                      "id": 22,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
                     },
                   ],
-                  "id": 22,
+                  "id": 23,
                   "kind": "op_call",
                   "name": "get",
                   "ref": m.get(1),
                   "src": {
-                    "id": 20,
+                    "id": 21,
                     "kind": "id",
                     "ref": m,
                     "value": "m",
@@ -3671,23 +5696,28 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "right": {
                   "args": [
                     {
-                      "id": 25,
+                      "id": 27,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
                     },
                   ],
-                  "id": 26,
+                  "id": 28,
                   "kind": "op_call",
                   "name": "get",
                   "ref": self.m.get(1),
                   "src": {
-                    "id": 24,
+                    "id": 26,
                     "kind": "op_field",
-                    "name": "m",
+                    "name": {
+                      "id": 25,
+                      "kind": "id",
+                      "ref": m,
+                      "value": "m",
+                    },
                     "ref": self.m,
                     "src": {
-                      "id": 23,
+                      "id": 24,
                       "kind": "id",
                       "ref": self,
                       "value": "self",
@@ -3695,7 +5725,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                   },
                 },
               },
-              "id": 28,
+              "id": 30,
               "kind": "statement_return",
               "ref": return m.get(1) + self.m.get(1);,
             },
@@ -3722,7 +5752,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
       "args": [],
       "ast": {
         "args": [],
-        "id": 32,
+        "id": 34,
         "kind": "def_init_function",
         "ref": contract Main {
     m: map<Int, Int as coins>;

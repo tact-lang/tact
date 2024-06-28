@@ -5,6 +5,7 @@
       "name": "success",
       "path": "./success.tact",
       "output": "./success_output",
+      "options": { "external": true },
       "mode": "full"
     }
   ]

@@ -10,7 +10,7 @@ export function checkConstAttributes(
     for (const a of attributes) {
         if (k.has(a.type)) {
             throwCompilationError(
-                `Duplicate function attribute "${a.type}"`,
+                `Duplicate constant attribute "${a.type}"`,
                 a.ref,
             );
         }
@@ -19,14 +19,14 @@ export function checkConstAttributes(
     if (isAbstract) {
         if (!k.has("abstract")) {
             throwCompilationError(
-                `Abstract function doesn't have abstract modifier`,
+                `Abstract constant doesn't have abstract modifier`,
                 ref,
             );
         }
     } else {
         if (k.has("abstract")) {
             throwCompilationError(
-                `Non abstract function have abstract modifier`,
+                `Non abstract constant have abstract modifier`,
                 ref,
             );
         }

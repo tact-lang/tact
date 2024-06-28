@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`resolveStatements should fail statements for bounced-type-is-smaller 1`] = `
-"<unknown>:23:18: Type bounced<"A"> does not have a field named "c"
-Line 23, col 18:
+"<unknown>:23:22: Type bounced<"A"> does not have a field named "c"
+Line 23, col 22:
   22 |     let y: Bool = src.b;
 > 23 |     let z: Int = src.c;
-                        ^~~~~
+                            ^
   24 |   }
 "
 `;
@@ -281,31 +281,31 @@ Line 15, col 9:
 `;
 
 exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-struct1 1`] = `
-"<unknown>:17:22: Field "value2" is not initialized
-Line 17, col 22:
+"<unknown>:17:27: Field "value2" is not initialized
+Line 17, col 27:
   16 |     init(arg: Bool) {
 > 17 |         self.value = self.value2.a + 1;
-                            ^~~~~~~~~~~
+                                 ^~~~~~
   18 |         self.value2 = A{ a: 1, b: 2 };
 "
 `;
 
 exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-struct2 1`] = `
-"<unknown>:17:35: Field "value" is not initialized
-Line 17, col 35:
+"<unknown>:17:40: Field "value" is not initialized
+Line 17, col 40:
   16 |     init(arg: Bool) {
 > 17 |         self.value2 = A{ a: 1, b: self.value };
-                                         ^~~~~~~~~~
+                                              ^~~~~
   18 |         self.value = self.value2.a + 1;
 "
 `;
 
 exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-var 1`] = `
-"<unknown>:12:22: Field "value2" is not initialized
-Line 12, col 22:
+"<unknown>:12:27: Field "value2" is not initialized
+Line 12, col 27:
   11 |     init(arg: Bool) {
 > 12 |         self.value = self.value2 + 1;
-                            ^~~~~~~~~~~
+                                 ^~~~~~
   13 |         self.value2 = 10;
 "
 `;
@@ -497,6 +497,26 @@ Line 9, col 5:
 >  9 |     do {
            ^~~~
   10 |         x = x + 1;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-foreach-non-map 1`] = `
+"<unknown>:8:22: foreach can only be used on maps, but "x" has type "Int"
+Line 8, col 22:
+  7 | fun foo(x: Int) {
+> 8 |     foreach (k, v in x) {
+                           ^
+  9 |         throw(1042);
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-foreach-non-path-map 1`] = `
+"<unknown>:12:22: foreach is only allowed over maps that are path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"
+Line 12, col 22:
+  11 | fun foo(x: Int) {
+> 12 |     foreach (k, v in mapFun()) {
+                            ^~~~~~~~
+  13 |         throw(1042);
 "
 `;
 
@@ -1192,11 +1212,11 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
     "Bool",
   ],
   [
-    "self.",
+    "self",
     "Contract",
   ],
   [
-    "value",
+    "self.value",
     "Int",
   ],
   [
@@ -1212,11 +1232,11 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
     "Bool",
   ],
   [
-    "self.",
+    "self",
     "Contract",
   ],
   [
-    "value",
+    "self.value",
     "Int",
   ],
   [
@@ -1224,11 +1244,11 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
     "Int",
   ],
   [
-    "self.",
+    "self",
     "Contract",
   ],
   [
-    "value",
+    "self.value",
     "Int",
   ],
   [
@@ -1236,11 +1256,11 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
     "Int",
   ],
   [
-    "self.",
+    "self",
     "Contract2",
   ],
   [
-    "value",
+    "self.value",
     "Int",
   ],
   [
@@ -1248,11 +1268,11 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
     "Int",
   ],
   [
-    "self.",
+    "self",
     "Contract2",
   ],
   [
-    "value2",
+    "self.value2",
     "S",
   ],
   [
@@ -1272,11 +1292,11 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
     "S",
   ],
   [
-    "self.",
+    "self",
     "Contract3",
   ],
   [
-    "value",
+    "self.value",
     "Int",
   ],
   [
@@ -1292,11 +1312,11 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
     "<void>",
   ],
   [
-    "self.",
+    "self",
     "Contract3",
   ],
   [
-    "value",
+    "self.value",
     "Int",
   ],
   [

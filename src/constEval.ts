@@ -4,6 +4,7 @@ import { CompilerContext } from "./context";
 import {
     ASTBinaryOperation,
     ASTExpression,
+    ASTId,
     ASTNewParameter,
     ASTRef,
     ASTUnaryOperation,
@@ -335,7 +336,7 @@ function evalStructInstance(
 
 function evalFieldAccess(
     structExpr: ASTExpression,
-    fieldId: string,
+    fieldId: ASTId,
     source: ASTRef,
     ctx: CompilerContext,
 ): Value {
@@ -345,7 +346,7 @@ function evalFieldAccess(
         if (selfTypeRef.kind == "ref") {
             const contractTypeDescription = getType(ctx, selfTypeRef.name);
             const foundContractConst = contractTypeDescription.constants.find(
-                (constId) => constId.name === fieldId,
+                (constId) => constId.name === fieldId.value,
             );
             if (foundContractConst === undefined) {
                 // not a constant, e.g. `self.storageVariable`
@@ -358,8 +359,8 @@ function evalFieldAccess(
                 return foundContractConst.value;
             } else {
                 throwErrorConstEval(
-                    `cannot evaluate declared contract/trait constant "${fieldId}" as it does not have a body`,
-                    source,
+                    `cannot evaluate declared contract/trait constant "${fieldId.value}" as it does not have a body`,
+                    fieldId.ref,
                 );
             }
         }
@@ -375,12 +376,12 @@ function evalFieldAccess(
             structExpr.ref,
         );
     }
-    if (fieldId in valStruct) {
-        return valStruct[fieldId];
+    if (fieldId.value in valStruct) {
+        return valStruct[fieldId.value];
     } else {
         // this cannot happen in a well-typed program
         throwErrorConstEval(
-            `struct field ${fieldId} is missing`,
+            `struct field ${fieldId.value} is missing`,
             structExpr.ref,
         );
     }
@@ -657,8 +658,6 @@ export function evalConstantExpression(
                 ast.ref,
             );
             break;
-        case "lvalue_ref":
-            throw "Internal compiler error: lvalue_ref in const-eval";
         case "null":
             return null;
         case "boolean":

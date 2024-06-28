@@ -134,19 +134,43 @@ export type StatementDescription =
           kind: "intrinsic";
       };
 
-export type ReceiverSelector =
+export type BinaryReceiverSelector =
     | {
           kind: "internal-binary";
           type: string;
           name: string;
       }
     | {
-          kind: "internal-empty";
+          kind: "bounce-binary";
+          name: string;
+          type: string;
+          bounced: boolean;
       }
+    | {
+          kind: "external-binary";
+          type: string;
+          name: string;
+      };
+
+export type CommentReceiverSelector =
     | {
           kind: "internal-comment";
           comment: string;
       }
+    | {
+          kind: "external-comment";
+          comment: string;
+      };
+
+export type EmptyReceiverSelector =
+    | {
+          kind: "internal-empty";
+      }
+    | {
+          kind: "external-empty";
+      };
+
+export type FallbackReceiverSelector =
     | {
           kind: "internal-comment-fallback";
           name: string;
@@ -160,24 +184,6 @@ export type ReceiverSelector =
           name: string;
       }
     | {
-          kind: "bounce-binary";
-          name: string;
-          type: string;
-          bounced: boolean;
-      }
-    | {
-          kind: "external-binary";
-          type: string;
-          name: string;
-      }
-    | {
-          kind: "external-empty";
-      }
-    | {
-          kind: "external-comment";
-          comment: string;
-      }
-    | {
           kind: "external-comment-fallback";
           name: string;
       }
@@ -185,6 +191,12 @@ export type ReceiverSelector =
           kind: "external-fallback";
           name: string;
       };
+
+export type ReceiverSelector =
+    | BinaryReceiverSelector
+    | CommentReceiverSelector
+    | EmptyReceiverSelector
+    | FallbackReceiverSelector;
 
 export type ReceiverDescription = {
     selector: ReceiverSelector;

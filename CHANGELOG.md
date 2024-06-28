@@ -13,9 +13,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Removed the `LValue` grammatical category and replaced it with `Expression`: PR [#479](https://github.com/tact-lang/tact/pull/479)
+- Compilation results are placed into the source file directory when compiling without `tact.config.json` file: PR [#495](https://github.com/tact-lang/tact/pull/495)
+- External receivers are enabled for single file compilation: PR [#495](https://github.com/tact-lang/tact/pull/495)
+- `[DEBUG]` prefix was removed from debug prints because a similar prefix was already present: PR [#506](https://github.com/tact-lang/tact/pull/506)
+
 ### Fixed
 
 - Name clashes with FunC keywords in struct constructor function parameters: PR [#467](https://github.com/tact-lang/tact/issues/467)
+- Error messages for traversing non-path-expressions in `foreach`-loops : PR [#479](https://github.com/tact-lang/tact/pull/479)
+- Shadowing of trait constants by contract storage variables: PR [#480](https://github.com/tact-lang/tact/pull/480)
+- Parsing of non-decimal message opcodes: PR [#481](https://github.com/tact-lang/tact/pull/481)
+- Detection of multiple receivers of the same message: PR [#491](https://github.com/tact-lang/tact/pull/491)
+- Detection of non-unique message opcodes: PR [#493](https://github.com/tact-lang/tact/pull/493)
+- Error messages for non-abstract constants in traits: PR [#483](https://github.com/tact-lang/tact/pull/483)
+- All immediately inherited traits must be unique: PR [#500](https://github.com/tact-lang/tact/pull/500)
+- Do not throw error when overriding abstract and virtual getters: PR [#503](https://github.com/tact-lang/tact/pull/503)
 
 ## [1.4.0] - 2024-06-21
 

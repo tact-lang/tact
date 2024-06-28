@@ -115,6 +115,22 @@
       "name": "stdlib-skipBits",
       "path": "./contracts/stdlib-skipBits.tact",
       "output": "./contracts/output"
+    },
+    {
+      "name": "contract-duplicate-bounced-opcode",
+      "path": "./contracts/contract-duplicate-bounced-opcode.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "contract-duplicate-external-opcode",
+      "path": "./contracts/contract-duplicate-external-opcode.tact",
+      "output": "./contracts/output",
+      "options": { "external": true }
+    },
+    {
+      "name": "contract-duplicate-receiver-opcode",
+      "path": "./contracts/contract-duplicate-receiver-opcode.tact",
+      "output": "./contracts/output"
     }
   ]
 }

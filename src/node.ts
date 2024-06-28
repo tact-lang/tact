@@ -22,8 +22,8 @@ async function configForSingleFile(
             {
                 name: path.basename(fileName, ".tact"),
                 path: fileName,
-                output: process.cwd(),
-                options: { debug: true },
+                output: path.dirname(fileName),
+                options: { debug: true, external: true },
                 mode: "full",
             },
         ],
