@@ -1,5 +1,4 @@
 import { run } from "../../node";
-import { consoleLogger } from "../../logger";
 
 // helper to reduce boilerplate
 export function itShouldNotCompile(params: {
@@ -10,10 +9,10 @@ export function itShouldNotCompile(params: {
         const result = await run({
             configPath: __dirname + "/tact.config.json",
             projectNames: [`${params.testName}`],
+            suppressLog: true,
         });
-        expect(result).toBe(false);
-        expect((consoleLogger.error as jest.Mock).mock.lastCall[0]).toContain(
-            params.errorMessage,
-        );
+        expect(result.ok).toBe(false);
+        const message = result.error.map((err) => err.message).join("; ");
+        expect(message).toContain(params.errorMessage);
     });
 }

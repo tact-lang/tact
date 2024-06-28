@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { consoleLogger } from "../logger";
+import { Logger } from "../logger";
 import { funcCompile } from "./funcCompile";
 import files from "../imports/stdlib";
 
@@ -22,7 +22,7 @@ describe("funcCompile", () => {
                 },
                 { path: "/small.fc", content: source },
             ],
-            logger: consoleLogger,
+            logger: new Logger(),
         });
         expect(res.ok).toBe(true);
     });

@@ -165,9 +165,9 @@ meowModule.then(
         projectNames: cli.flags.projects ?? [],
         additionalCliOptions: { mode },
       })
-      .then((success) => {
+      .then((response) => {
         // https://nodejs.org/docs/v20.12.1/api/process.html#exit-codes
-        process.exit(success ? 0 : 30);
+        process.exit(response.ok ? 0 : 30);
       });
   },
 );
