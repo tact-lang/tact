@@ -124,7 +124,7 @@ export function forEachExpression(
                     traverseExpression(node.value);
                 }
                 break;
-            case "program_import":
+            case "import":
                 traverseExpression(node.path);
                 break;
             case "statement_let":
@@ -339,7 +339,7 @@ export function foldExpressions<T>(
                     acc = traverseExpression(acc, node.value);
                 }
                 break;
-            case "program_import":
+            case "import":
                 acc = traverseExpression(acc, node.path);
                 break;
             case "statement_let":
@@ -481,7 +481,7 @@ export function forEachStatement(
             case "def_struct":
             case "def_constant":
             case "def_field":
-            case "program_import":
+            case "import":
             case "primitive":
                 // Do nothing
                 break;
@@ -607,7 +607,7 @@ export function foldStatements<T>(
             case "def_struct":
             case "def_constant":
             case "def_field":
-            case "program_import":
+            case "import":
             case "primitive":
                 // Do nothing
                 break;

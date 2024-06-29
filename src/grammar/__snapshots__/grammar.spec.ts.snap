@@ -490,7 +490,7 @@ exports[`grammar should parse contract-with-imports 1`] = `
   "imports": [
     {
       "id": 2,
-      "kind": "program_import",
+      "kind": "import",
       "path": {
         "id": 1,
         "kind": "string",

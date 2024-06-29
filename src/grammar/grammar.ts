@@ -17,7 +17,7 @@ import {
     ASTString,
     ASTTypeRef,
     createNode,
-    ASTProgramImport,
+    AstImport,
 } from "./ast";
 import { throwParseError, throwCompilationError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
@@ -113,14 +113,14 @@ semantics.addOperation<ASTNode>("astOfImport", {
             );
         }
         return createNode({
-            kind: "program_import",
+            kind: "import",
             path: pathAST,
             ref: createRef(this),
         });
     },
 });
 
-semantics.addOperation<ASTProgramImport[]>("astOfJustImports", {
+semantics.addOperation<AstImport[]>("astOfJustImports", {
     JustImports(imports, _restOfInput) {
         return imports.children.map((item) => item.astOfImport());
     },
@@ -1260,7 +1260,7 @@ export function parseImports(
         }
         ctx = { origin };
         try {
-            const imports: ASTProgramImport[] =
+            const imports: AstImport[] =
                 semantics(matchResult).astOfJustImports();
             return imports.map((imp) => imp.path.value);
         } finally {

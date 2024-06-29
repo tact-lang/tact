@@ -2,9 +2,16 @@ import { ItemOrigin, SrcInfo } from "./grammar";
 
 export type AstModule = {
     kind: "program";
-    imports: ASTProgramImport[];
+    imports: AstImport[];
     entries: AstModuleItem[];
     id: number;
+};
+
+export type AstImport = {
+    kind: "import";
+    path: ASTString;
+    id: number;
+    ref: SrcInfo;
 };
 
 export type AstModuleItem =
@@ -191,13 +198,6 @@ export type ASTConditional = {
     condition: ASTExpression;
     thenBranch: ASTExpression;
     elseBranch: ASTExpression;
-    ref: SrcInfo;
-};
-
-export type ASTProgramImport = {
-    kind: "program_import";
-    id: number;
-    path: ASTString;
     ref: SrcInfo;
 };
 
@@ -526,7 +526,7 @@ export type ASTNode =
     | ASTReceive
     | ASTString
     | ASTTrait
-    | ASTProgramImport
+    | AstImport
     | ASTInitOf
     | ASTConstant;
 export type ASTExpression =
