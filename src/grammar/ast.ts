@@ -3,8 +3,18 @@ import { ItemOrigin, SrcInfo } from "./grammar";
 export type AstModule = {
     kind: "program";
     id: number;
-    entries: ASTProgramEntry[];
+    entries: AstModuleItem[];
 };
+
+export type AstModuleItem =
+    | ASTStruct
+    | ASTContract
+    | ASTPrimitive
+    | ASTFunction
+    | ASTNativeFunction
+    | ASTTrait
+    | ASTProgramImport
+    | ASTConstant;
 
 export type ASTPrimitive = {
     kind: "primitive";
@@ -183,16 +193,6 @@ export type ASTConditional = {
     elseBranch: ASTExpression;
     ref: SrcInfo;
 };
-
-export type ASTProgramEntry =
-    | ASTStruct
-    | ASTContract
-    | ASTPrimitive
-    | ASTFunction
-    | ASTNativeFunction
-    | ASTTrait
-    | ASTProgramImport
-    | ASTConstant;
 
 export type ASTProgramImport = {
     kind: "program_import";
