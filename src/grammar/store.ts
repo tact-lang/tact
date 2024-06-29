@@ -6,10 +6,9 @@ import {
     ASTType,
 } from "./ast";
 import { CompilerContext, createContextStore } from "../context";
-import { parse } from "./grammar";
-import { TypeOrigin } from "../types/types";
+import { ItemOrigin, parse } from "./grammar";
 
-export type TactSource = { code: string; path: string; origin: TypeOrigin };
+export type TactSource = { code: string; path: string; origin: ItemOrigin };
 
 /**
  * Represents the storage for all AST-related data within the compiler context.

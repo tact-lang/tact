@@ -20,11 +20,12 @@ import {
 } from "./ast";
 import { throwParseError, throwCompilationError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
-import { TypeOrigin } from "../types/types";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
 
-let ctx: { origin: TypeOrigin } | null;
+export type ItemOrigin = "stdlib" | "user";
+
+let ctx: { origin: ItemOrigin } | null;
 
 /**
  * Information about source code location (file and interval within it)
@@ -1214,7 +1215,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
 export function parse(
     src: string,
     path: string,
-    origin: TypeOrigin,
+    origin: ItemOrigin,
 ): ASTProgram {
     return inFile(path, () => {
         const matchResult = rawGrammar.match(src);
@@ -1241,7 +1242,7 @@ export function parseExpression(sourceCode: string): ASTExpression {
 export function parseImports(
     src: string,
     path: string,
-    origin: TypeOrigin,
+    origin: ItemOrigin,
 ): string[] {
     const fullAst: ASTProgram = parse(src, path, origin);
     return fullAst.entries.flatMap((item) =>

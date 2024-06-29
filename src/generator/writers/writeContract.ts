@@ -1,10 +1,7 @@
 import { contractErrors } from "../../abi/errors";
 import { enabledInline, enabledMasterchain } from "../../config/features";
-import {
-    InitDescription,
-    TypeDescription,
-    TypeOrigin,
-} from "../../types/types";
+import { ItemOrigin } from "../../grammar/grammar";
+import { InitDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { id, initId } from "./id";
 import { ops } from "./ops";
@@ -18,7 +15,7 @@ import { writeReceiver, writeRouter } from "./writeRouter";
 
 export function writeStorageOps(
     type: TypeDescription,
-    origin: TypeOrigin,
+    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     // Load function

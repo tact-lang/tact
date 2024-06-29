@@ -22,7 +22,6 @@ import {
     printTypeRef,
     ReceiverSelector,
     TypeDescription,
-    TypeOrigin,
     TypeRef,
     typeRefEquals,
 } from "./types";
@@ -34,6 +33,7 @@ import { resolveABIType } from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
+import { ItemOrigin } from "../grammar/grammar";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -501,7 +501,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     function resolveFunctionDescriptor(
         optSelf: string | null,
         a: ASTFunction | ASTNativeFunction,
-        origin: TypeOrigin,
+        origin: ItemOrigin,
     ): FunctionDescription {
         let self = optSelf;
 

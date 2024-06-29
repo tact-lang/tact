@@ -10,15 +10,14 @@ import {
     ASTStatement,
     ASTType,
 } from "../grammar/ast";
+import { ItemOrigin } from "../grammar/grammar";
 // import {
 //     Value
 // } from "../grammar/value";
 
-export type TypeOrigin = "stdlib" | "user";
-
 export type TypeDescription = {
     kind: "struct" | "primitive" | "contract" | "trait";
-    origin: TypeOrigin;
+    origin: ItemOrigin;
     name: string;
     uid: number;
     header: number | null;
@@ -112,7 +111,7 @@ export type InitArgument = {
 
 export type FunctionDescription = {
     name: string;
-    origin: TypeOrigin;
+    origin: ItemOrigin;
     isGetter: boolean;
     isMutating: boolean;
     isOverrides: boolean;

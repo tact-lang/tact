@@ -1,6 +1,7 @@
 import { contractErrors } from "../../abi/errors";
+import { ItemOrigin } from "../../grammar/grammar";
 import { getType } from "../../types/resolveDescriptors";
-import { TypeDescription, TypeOrigin } from "../../types/types";
+import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { ops } from "./ops";
 import { resolveFuncFlatPack } from "./resolveFuncFlatPack";
@@ -11,7 +12,7 @@ import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 
 export function writeAccessors(
     type: TypeDescription,
-    origin: TypeOrigin,
+    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     // Getters
