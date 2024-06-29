@@ -33,16 +33,6 @@ let ctx: { origin: ItemOrigin } | null;
  * and the source code contents.
  */
 export class SrcInfo {
-    static merge(...refs: SrcInfo[]) {
-        if (refs.length === 0) {
-            throw Error("Cannot merge 0 refs");
-        }
-        const merged_interval = refs[0].#interval.coverageWith(
-            ...refs.map((i) => i.#interval),
-        );
-        return new SrcInfo(merged_interval, refs[0].#file);
-    }
-
     readonly #interval: RawInterval;
     readonly #file: string | null;
 
@@ -73,12 +63,8 @@ export function inFile<T>(path: string, callback: () => T) {
     return r;
 }
 
-export function createRef(s: Node, ...extra: Node[]): SrcInfo {
-    let i = s.source;
-    if (extra.length > 0) {
-        i = i.coverageWith(...extra.map((e) => e.source));
-    }
-    return new SrcInfo(i, currentFile);
+export function createRef(s: Node): SrcInfo {
+    return new SrcInfo(s.source, currentFile);
 }
 
 // helper to unwrap optional grammar elements (marked with "?")
