@@ -410,7 +410,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       "kind": "def_struct",
       "message": true,
       "name": "A",
-      "origin": "user",
       "prefix": null,
       "ref": message A {
   a: Int as uint32;
@@ -477,7 +476,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       "id": 3,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait {
     
 },
@@ -505,7 +503,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -530,7 +527,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       "id": 2,
       "kind": "primitive_type_decl",
       "name": "Slice",
-      "origin": "user",
       "ref": primitive Slice;,
     },
     "constants": [],
@@ -613,7 +609,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       "id": 14,
       "kind": "def_contract",
       "name": "Test",
-      "origin": "user",
       "ref": contract Test {
   init() {}
   receive(src: A) {
@@ -719,7 +714,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
           "id": 3,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait {
     
 },
@@ -805,7 +799,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       "kind": "def_struct",
       "message": true,
       "name": "A",
-      "origin": "user",
       "prefix": null,
       "ref": message A {
   a: Int as uint32;
@@ -945,7 +938,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       "id": 3,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait {
     
 },
@@ -973,7 +965,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       "id": 2,
       "kind": "primitive_type_decl",
       "name": "Bool",
-      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -998,7 +989,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -1111,7 +1101,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       "id": 23,
       "kind": "def_contract",
       "name": "Test",
-      "origin": "user",
       "ref": contract Test {
   init() {}
   receive(src: A) {
@@ -1249,7 +1238,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "id": 3,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait {
     
 },
@@ -1289,7 +1277,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
       "id": 2,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait { },
       "traits": [],
     },
@@ -1315,7 +1302,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -1363,7 +1349,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
       "id": 5,
       "kind": "def_trait",
       "name": "T",
-      "origin": "user",
       "ref": trait T {
   abstract const Foo: Int;
 },
@@ -1422,7 +1407,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           "id": 2,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -1479,7 +1463,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
       "id": 10,
       "kind": "def_contract",
       "name": "TestContract",
-      "origin": "user",
       "ref": contract TestContract with T {
   override const Foo: Int = 42;
 },
@@ -1561,7 +1544,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           "id": 2,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -1610,7 +1592,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           "id": 5,
           "kind": "def_trait",
           "name": "T",
-          "origin": "user",
           "ref": trait T {
   abstract const Foo: Int;
 },
@@ -1669,7 +1650,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               "id": 2,
               "kind": "def_trait",
               "name": "BaseTrait",
-              "origin": "user",
               "ref": trait BaseTrait { },
               "traits": [],
             },
@@ -1710,7 +1690,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
       "id": 2,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait { },
       "traits": [],
     },
@@ -1736,7 +1715,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -1789,7 +1767,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
       "id": 6,
       "kind": "def_trait",
       "name": "T",
-      "origin": "user",
       "ref": trait T {
    virtual const Foo: Int = 41;
 },
@@ -1853,7 +1830,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           "id": 2,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -1910,7 +1886,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
       "id": 11,
       "kind": "def_contract",
       "name": "TestContract",
-      "origin": "user",
       "ref": contract TestContract with T {
   override const Foo: Int = 42;
 },
@@ -1992,7 +1967,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           "id": 2,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -2046,7 +2020,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           "id": 6,
           "kind": "def_trait",
           "name": "T",
-          "origin": "user",
           "ref": trait T {
    virtual const Foo: Int = 41;
 },
@@ -2110,7 +2083,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               "id": 2,
               "kind": "def_trait",
               "name": "BaseTrait",
-              "origin": "user",
               "ref": trait BaseTrait { },
               "traits": [],
             },
@@ -2167,7 +2139,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       "kind": "def_struct",
       "message": true,
       "name": "A",
-      "origin": "user",
       "prefix": null,
       "ref": message A {
     a: Int as uint32;
@@ -2234,7 +2205,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       "id": 2,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait {
     
 },
@@ -2262,7 +2232,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -2349,7 +2318,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       "id": 14,
       "kind": "def_contract",
       "name": "Test",
-      "origin": "user",
       "ref": contract Test {
     external(msg: A) {
         42;
@@ -2472,7 +2440,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "id": 2,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait {
     
 },
@@ -2512,7 +2479,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "id": 2,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait { },
       "traits": [],
     },
@@ -2538,7 +2504,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -2577,7 +2542,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 4,
           "kind": "def_function",
           "name": "getter",
-          "origin": "user",
           "ref": abstract get fun getter(): Int;,
           "return": {
             "id": 3,
@@ -2592,7 +2556,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "id": 5,
       "kind": "def_trait",
       "name": "T",
-      "origin": "user",
       "ref": trait T {
   abstract get fun getter(): Int;
 },
@@ -2619,7 +2582,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 4,
           "kind": "def_function",
           "name": "getter",
-          "origin": "user",
           "ref": abstract get fun getter(): Int;,
           "return": {
             "id": 3,
@@ -2664,7 +2626,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 2,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -2707,7 +2668,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 9,
           "kind": "def_function",
           "name": "getter",
-          "origin": "user",
           "ref": override get fun getter(): Int { return 0 },
           "return": {
             "id": 6,
@@ -2734,7 +2694,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "id": 11,
       "kind": "def_contract",
       "name": "TestContract",
-      "origin": "user",
       "ref": contract TestContract with T {
   override get fun getter(): Int { return 0 }
 },
@@ -2768,7 +2727,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 9,
           "kind": "def_function",
           "name": "getter",
-          "origin": "user",
           "ref": override get fun getter(): Int { return 0 },
           "return": {
             "id": 6,
@@ -2836,7 +2794,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 2,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -2876,7 +2833,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "id": 4,
               "kind": "def_function",
               "name": "getter",
-              "origin": "user",
               "ref": abstract get fun getter(): Int;,
               "return": {
                 "id": 3,
@@ -2891,7 +2847,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 5,
           "kind": "def_trait",
           "name": "T",
-          "origin": "user",
           "ref": trait T {
   abstract get fun getter(): Int;
 },
@@ -2918,7 +2873,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "id": 4,
               "kind": "def_function",
               "name": "getter",
-              "origin": "user",
               "ref": abstract get fun getter(): Int;,
               "return": {
                 "id": 3,
@@ -2963,7 +2917,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "id": 2,
               "kind": "def_trait",
               "name": "BaseTrait",
-              "origin": "user",
               "ref": trait BaseTrait { },
               "traits": [],
             },
@@ -3004,7 +2957,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "id": 2,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait { },
       "traits": [],
     },
@@ -3030,7 +2982,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -3069,7 +3020,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 6,
           "kind": "def_function",
           "name": "getter",
-          "origin": "user",
           "ref": virtual get fun getter(): Int { return 42 },
           "return": {
             "id": 3,
@@ -3096,7 +3046,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "id": 7,
       "kind": "def_trait",
       "name": "T",
-      "origin": "user",
       "ref": trait T {
    virtual get fun getter(): Int { return 42 }
 },
@@ -3123,7 +3072,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 6,
           "kind": "def_function",
           "name": "getter",
-          "origin": "user",
           "ref": virtual get fun getter(): Int { return 42 },
           "return": {
             "id": 3,
@@ -3180,7 +3128,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 2,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -3223,7 +3170,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 11,
           "kind": "def_function",
           "name": "getter",
-          "origin": "user",
           "ref": override get fun getter(): Int { return 43 },
           "return": {
             "id": 8,
@@ -3250,7 +3196,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "id": 13,
       "kind": "def_contract",
       "name": "TestContract",
-      "origin": "user",
       "ref": contract TestContract with T {
   override get fun getter(): Int { return 43 }
 },
@@ -3284,7 +3229,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 11,
           "kind": "def_function",
           "name": "getter",
-          "origin": "user",
           "ref": override get fun getter(): Int { return 43 },
           "return": {
             "id": 8,
@@ -3352,7 +3296,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 2,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -3392,7 +3335,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "id": 6,
               "kind": "def_function",
               "name": "getter",
-              "origin": "user",
               "ref": virtual get fun getter(): Int { return 42 },
               "return": {
                 "id": 3,
@@ -3419,7 +3361,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "id": 7,
           "kind": "def_trait",
           "name": "T",
-          "origin": "user",
           "ref": trait T {
    virtual get fun getter(): Int { return 42 }
 },
@@ -3446,7 +3387,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "id": 6,
               "kind": "def_function",
               "name": "getter",
-              "origin": "user",
               "ref": virtual get fun getter(): Int { return 42 },
               "return": {
                 "id": 3,
@@ -3503,7 +3443,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "id": 2,
               "kind": "def_trait",
               "name": "BaseTrait",
-              "origin": "user",
               "ref": trait BaseTrait { },
               "traits": [],
             },
@@ -3544,7 +3483,6 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
       "id": 3,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait {
     
 },
@@ -3572,7 +3510,6 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
       "id": 2,
       "kind": "primitive_type_decl",
       "name": "Bool",
-      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -3641,7 +3578,6 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           "id": 9,
           "kind": "def_function",
           "name": "hello",
-          "origin": "user",
           "ref": fun hello() {
         
     },
@@ -3654,7 +3590,6 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           "id": 10,
           "kind": "def_function",
           "name": "hello2",
-          "origin": "user",
           "ref": fun hello2() {
         
     },
@@ -3665,7 +3600,6 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
       "id": 11,
       "kind": "def_contract",
       "name": "HelloWorld",
-      "origin": "user",
       "ref": contract HelloWorld {
     a: Int;
     b: Bool;
@@ -3768,7 +3702,6 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           "id": 9,
           "kind": "def_function",
           "name": "hello",
-          "origin": "user",
           "ref": fun hello() {
         
     },
@@ -3796,7 +3729,6 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           "id": 10,
           "kind": "def_function",
           "name": "hello2",
-          "origin": "user",
           "ref": fun hello2() {
         
     },
@@ -3846,7 +3778,6 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           "id": 3,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait {
     
 },
@@ -3877,7 +3808,6 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -3911,7 +3841,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "id": 3,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait {
     
 },
@@ -3939,7 +3868,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "id": 2,
       "kind": "primitive_type_decl",
       "name": "Bool",
-      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -3964,7 +3892,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -3997,7 +3924,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "id": 7,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     return 0;
 },
@@ -4045,7 +3971,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "id": 10,
       "kind": "def_function",
       "name": "testFunc2",
-      "origin": "user",
       "ref": fun testFunc2() {
     return 0;
 },
@@ -4131,7 +4056,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "id": 17,
       "kind": "def_function",
       "name": "testFunc3",
-      "origin": "user",
       "ref": fun testFunc3(a: Int, b: Bool) {
     return 0;
 },
@@ -4175,7 +4099,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "id": 3,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait {
     
 },
@@ -4203,7 +4126,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "id": 2,
       "kind": "primitive_type_decl",
       "name": "Bool",
-      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -4228,7 +4150,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -4330,7 +4251,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "id": 20,
           "kind": "def_function",
           "name": "hello",
-          "origin": "user",
           "ref": get fun hello(): Int {
         return 0;
     },
@@ -4366,7 +4286,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "id": 24,
           "kind": "def_function",
           "name": "hello2",
-          "origin": "user",
           "ref": get fun hello2(): Point {
         return 0;
     },
@@ -4395,7 +4314,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "id": 25,
       "kind": "def_contract",
       "name": "Main",
-      "origin": "user",
       "ref": contract Main {
     a: Int;
     init(a: Int) {
@@ -4465,7 +4383,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "id": 20,
           "kind": "def_function",
           "name": "hello",
-          "origin": "user",
           "ref": get fun hello(): Int {
         return 0;
     },
@@ -4518,7 +4435,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "id": 24,
           "kind": "def_function",
           "name": "hello2",
-          "origin": "user",
           "ref": get fun hello2(): Point {
         return 0;
     },
@@ -4642,7 +4558,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "id": 3,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait {
     
 },
@@ -4691,7 +4606,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "kind": "def_struct",
       "message": false,
       "name": "Point",
-      "origin": "user",
       "prefix": null,
       "ref": struct Point {
     p: Int;
@@ -4765,7 +4679,6 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
       "id": 3,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait {
     
 },
@@ -4793,7 +4706,6 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
       "id": 2,
       "kind": "primitive_type_decl",
       "name": "Bool",
-      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -4818,7 +4730,6 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -4852,7 +4763,6 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
           "id": 11,
           "kind": "def_function",
           "name": "inc",
-          "origin": "user",
           "ref": extends fun inc(self: Int): Int {
     return self + 1;
 },
@@ -4932,7 +4842,6 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
       "id": 3,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait {
     
 },
@@ -4960,7 +4869,6 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
       "id": 2,
       "kind": "primitive_type_decl",
       "name": "Bool",
-      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -4985,7 +4893,6 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -5043,7 +4950,6 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 2`] 
       "kind": "def_native_function",
       "name": "sample",
       "nativeName": "hello_world",
-      "origin": "user",
       "ref": @name(hello_world)
 native sample(a: Int): Int;,
       "return": {
@@ -5081,7 +4987,6 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
       "id": 3,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait {
     
 },
@@ -5109,7 +5014,6 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
       "id": 2,
       "kind": "primitive_type_decl",
       "name": "Bool",
-      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -5134,7 +5038,6 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -5173,7 +5076,6 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
           "kind": "def_native_function",
           "name": "inc",
           "nativeName": "inc",
-          "origin": "user",
           "ref": @name(inc)
 mutates extends native inc(self: Int): Int;,
           "return": {
@@ -5227,7 +5129,6 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
       "id": 2,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait {
     
 },
@@ -5255,7 +5156,6 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -5307,7 +5207,6 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
           "id": 31,
           "kind": "def_function",
           "name": "test",
-          "origin": "user",
           "ref": get fun test(): Int {
         let m: map<Int, Int as coins> = emptyMap();
         m.set(1, 2);
@@ -5485,7 +5384,6 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
       "id": 32,
       "kind": "def_contract",
       "name": "Main",
-      "origin": "user",
       "ref": contract Main {
     m: map<Int, Int as coins>;
 
@@ -5557,7 +5455,6 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
           "id": 31,
           "kind": "def_function",
           "name": "test",
-          "origin": "user",
           "ref": get fun test(): Int {
         let m: map<Int, Int as coins> = emptyMap();
         m.set(1, 2);
@@ -5783,7 +5680,6 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
           "id": 2,
           "kind": "def_trait",
           "name": "BaseTrait",
-          "origin": "user",
           "ref": trait BaseTrait {
     
 },
@@ -5826,7 +5722,6 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
       "id": 36,
       "kind": "def_function",
       "name": "scopeIf",
-      "origin": "user",
       "ref": fun scopeIf() {
     if (true) {
         let a: Int = 0;
@@ -5913,7 +5808,6 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
       "id": 18,
       "kind": "def_function",
       "name": "scopeRepeat",
-      "origin": "user",
       "ref": fun scopeRepeat() {
     repeat (1) {
         let a: Int = 0;
@@ -5998,7 +5892,6 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
       "id": 9,
       "kind": "def_function",
       "name": "scopeUntil",
-      "origin": "user",
       "ref": fun scopeUntil() {
     do {
         let a: Int = 0;
@@ -6083,7 +5976,6 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
       "id": 27,
       "kind": "def_function",
       "name": "scopeWhile",
-      "origin": "user",
       "ref": fun scopeWhile() {
     while (true) {
         let a: Int = 0;
@@ -6172,7 +6064,6 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
       "id": 3,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait {
     
 },
@@ -6200,7 +6091,6 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
       "id": 2,
       "kind": "primitive_type_decl",
       "name": "Bool",
-      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -6225,7 +6115,6 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -6283,7 +6172,6 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "Struct1",
-      "origin": "user",
       "prefix": null,
       "ref": struct Struct1 {
     a: Int;
@@ -6402,7 +6290,6 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "Struct2",
-      "origin": "user",
       "prefix": null,
       "ref": struct Struct2 {
     a: Struct1;
@@ -6475,7 +6362,6 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
       "id": 3,
       "kind": "def_trait",
       "name": "BaseTrait",
-      "origin": "user",
       "ref": trait BaseTrait {
     
 },
@@ -6503,7 +6389,6 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
       "id": 2,
       "kind": "primitive_type_decl",
       "name": "Bool",
-      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -6528,7 +6413,6 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],

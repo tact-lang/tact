@@ -207,7 +207,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (a.kind === "primitive_type_decl") {
             types.set(a.name, {
                 kind: "primitive_type_decl",
-                origin: a.origin,
+                origin: a.ref.origin,
                 name: a.name,
                 uid,
                 fields: [],
@@ -227,7 +227,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         } else if (a.kind === "def_contract") {
             types.set(a.name, {
                 kind: "contract",
-                origin: a.origin,
+                origin: a.ref.origin,
                 name: a.name,
                 uid,
                 header: null,
@@ -249,7 +249,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         } else if (a.kind === "def_struct") {
             types.set(a.name, {
                 kind: "struct",
-                origin: a.origin,
+                origin: a.ref.origin,
                 name: a.name,
                 uid,
                 header: null,
@@ -269,7 +269,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         } else if (a.kind === "def_trait") {
             types.set(a.name, {
                 kind: "trait",
-                origin: a.origin,
+                origin: a.ref.origin,
                 name: a.name,
                 uid,
                 header: null,
@@ -1652,7 +1652,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const a of ast.functions) {
-        const r = resolveFunctionDescriptor(null, a, a.origin);
+        const r = resolveFunctionDescriptor(null, a, a.ref.origin);
         if (r.self) {
             if (types.get(r.self)!.functions.has(r.name)) {
                 throwCompilationError(

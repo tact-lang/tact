@@ -404,7 +404,6 @@ exports[`grammar should parse abstract-const 1`] = `
       "id": 3,
       "kind": "def_trait",
       "name": "t",
-      "origin": "user",
       "ref": trait t {
     abstract const c: Int;
 },
@@ -452,7 +451,6 @@ exports[`grammar should parse contract-with-const-override 1`] = `
       "id": 4,
       "kind": "def_contract",
       "name": "Contract",
-      "origin": "user",
       "ref": contract Contract {
     override const Test: Int = 0;
 },
@@ -474,7 +472,6 @@ exports[`grammar should parse contract-with-imports 1`] = `
       "id": 4,
       "kind": "def_contract",
       "name": "Test",
-      "origin": "user",
       "ref": contract Test with Deploy { },
       "traits": [
         {
@@ -638,7 +635,6 @@ exports[`grammar should parse contract-with-init 1`] = `
       "id": 20,
       "kind": "def_contract",
       "name": "Sample",
-      "origin": "user",
       "ref": contract Sample {
     a: Int;
     b: Int;
@@ -664,7 +660,6 @@ exports[`grammar should parse contract-with-trait 1`] = `
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     {
@@ -696,7 +691,6 @@ exports[`grammar should parse contract-with-trait 1`] = `
           "id": 7,
           "kind": "def_function",
           "name": "a",
-          "origin": "user",
           "ref": virtual fun a(): Int {
         return a;
     },
@@ -725,7 +719,6 @@ exports[`grammar should parse contract-with-trait 1`] = `
       "id": 8,
       "kind": "def_trait",
       "name": "SomeTrait",
-      "origin": "user",
       "ref": trait SomeTrait {
     a: Int;
 
@@ -764,7 +757,6 @@ exports[`grammar should parse contract-with-trait 1`] = `
           "id": 14,
           "kind": "def_function",
           "name": "a",
-          "origin": "user",
           "ref": override fun a(): Int {
         return b;
     },
@@ -793,7 +785,6 @@ exports[`grammar should parse contract-with-trait 1`] = `
       "id": 16,
       "kind": "def_contract",
       "name": "Main",
-      "origin": "user",
       "ref": contract Main with SomeTrait {
     b: Int;
 
@@ -824,7 +815,6 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     {
@@ -856,7 +846,6 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
           "id": 7,
           "kind": "def_function",
           "name": "a",
-          "origin": "user",
           "ref": virtual fun a(): Int {
         return a;
     },
@@ -885,7 +874,6 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
       "id": 8,
       "kind": "def_trait",
       "name": "SomeTrait",
-      "origin": "user",
       "ref": trait SomeTrait {
     a: Int;
 
@@ -924,7 +912,6 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
           "id": 14,
           "kind": "def_function",
           "name": "a",
-          "origin": "user",
           "ref": override fun a(): Int {
         return "hello world!";
     },
@@ -953,7 +940,6 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
       "id": 16,
       "kind": "def_contract",
       "name": "Main",
-      "origin": "user",
       "ref": contract Main with SomeTrait {
     b: Int;
 
@@ -986,7 +972,6 @@ exports[`grammar should parse expr-arith 1`] = `
       "id": 10,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20;
 },
@@ -1063,7 +1048,6 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
       "id": 12,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10;
 },
@@ -1152,7 +1136,6 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
       "id": 24,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 123.add(10);
 },
@@ -1315,7 +1298,6 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
       "id": 22,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 10;
 },
@@ -1480,7 +1462,6 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
       "id": 9,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(m: map<Int, Int>): Int {
     return m.asCell()!!.hash();
 },
@@ -1555,7 +1536,6 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
       "id": 19,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(a: Int): Int {
     return a == 123 || a == 456 ? a + 1 : a + 2;
 },
@@ -1687,7 +1667,6 @@ exports[`grammar should parse expr-conditional 1`] = `
       "id": 11,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(a: Int): Int {
     return a == 123 ? 1 : 2;
 },
@@ -1771,7 +1750,6 @@ exports[`grammar should parse expr-conditional-with-let 1`] = `
       "id": 14,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(a: Int): Int {
     let b: Int = a == 123 ? 1 : 2;
     return b;
@@ -1861,7 +1839,6 @@ exports[`grammar should parse expr-fun-call 1`] = `
       "id": 25,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < abs(123.add(10));
 },
@@ -2032,7 +2009,6 @@ exports[`grammar should parse expr-int-literal 1`] = `
       "id": 4,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     return 0;
 },
@@ -2087,7 +2063,6 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
       "id": 24,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(a: Int): Int {
     return a == 123 || a == 456 ? (a == 10 ? a : a * 2) : a + 2;
 },
@@ -2234,7 +2209,6 @@ exports[`grammar should parse expr-parens 1`] = `
       "id": 13,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     return 1 + 2 + (123 + 3)!! > 123;
 },
@@ -2329,7 +2303,6 @@ exports[`grammar should parse expr-with-unbox 1`] = `
       "id": 11,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     return 1 + 2 + 3!! > 123;
 },
@@ -2412,7 +2385,6 @@ exports[`grammar should parse expr-with-var 1`] = `
       "id": 14,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId;
 },
@@ -2540,7 +2512,6 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       "id": 16,
       "kind": "def_function",
       "name": "function",
-      "origin": "user",
       "ref": fun function(a: Int, b: Int): Int {
     return (a >> b) || (a << (32 - b));
 },
@@ -2646,7 +2617,6 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       "id": 32,
       "kind": "def_function",
       "name": "anotherFunction",
-      "origin": "user",
       "ref": fun anotherFunction(
     a: Int,
     b: Int,
@@ -2773,7 +2743,6 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       "id": 45,
       "kind": "def_function",
       "name": "extension",
-      "origin": "user",
       "ref": extends fun extension(self: Int, c: Int, d: Int) {
     return self + c + d;
 },
@@ -2849,7 +2818,6 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       "id": 61,
       "kind": "def_function",
       "name": "coverage",
-      "origin": "user",
       "ref": fun coverage(a: Int, b: Int) {
     let k: Int = a.extension(
         b,
@@ -2982,7 +2950,6 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       "id": 71,
       "kind": "def_function",
       "name": "oneMoreFunction",
-      "origin": "user",
       "ref": fun oneMoreFunction(
     a: Int,
     b: Int,
@@ -3077,7 +3044,6 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       "id": 77,
       "kind": "def_contract",
       "name": "TestContract",
-      "origin": "user",
       "ref": contract TestContract {
     init(
         arg1: Int,
@@ -3092,7 +3058,6 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       "id": 83,
       "kind": "def_function",
       "name": "test",
-      "origin": "user",
       "ref": fun test() {
     let k: StateInit = initOf TestContract(
         2,
@@ -3158,7 +3123,6 @@ exports[`grammar should parse items-multi-funs 1`] = `
       "id": 3,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc() {
     return 0;
 },
@@ -3183,7 +3147,6 @@ exports[`grammar should parse items-multi-funs 1`] = `
       "id": 7,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     return 0;
 },
@@ -3214,7 +3177,6 @@ exports[`grammar should parse items-multi-funs 1`] = `
       "id": 11,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Bool {
     return 0;
 },
@@ -3256,7 +3218,6 @@ exports[`grammar should parse items-native-fun-decls 1`] = `
       "kind": "def_native_function",
       "name": "testFunc",
       "nativeName": "native_name_1",
-      "origin": "user",
       "ref": @name(native_name_1)
 native testFunc();,
       "return": null,
@@ -3268,7 +3229,6 @@ native testFunc();,
       "kind": "def_native_function",
       "name": "testFunc",
       "nativeName": "native_name_2",
-      "origin": "user",
       "ref": @name(native_name_2)
 native testFunc(): Int;,
       "return": {
@@ -3286,7 +3246,6 @@ native testFunc(): Int;,
       "kind": "def_native_function",
       "name": "testFunc",
       "nativeName": "native_name_3",
-      "origin": "user",
       "ref": @name(native_name_3)
 native testFunc(): Bool;,
       "return": {
@@ -3344,7 +3303,6 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
-      "origin": "user",
       "prefix": null,
       "ref": struct A {
     x: Int;
@@ -3391,7 +3349,6 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
       "id": 18,
       "kind": "def_function",
       "name": "getA",
-      "origin": "user",
       "ref": fun getA(): A {
     return A {
         x: 1,
@@ -3488,7 +3445,6 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "B",
-      "origin": "user",
       "prefix": null,
       "ref": message B {
     x: Int;
@@ -3553,7 +3509,6 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
       "id": 38,
       "kind": "def_function",
       "name": "getB",
-      "origin": "user",
       "ref": fun getB(): B {
     return B { x: 1, y: 5, };
 },
@@ -3620,7 +3575,6 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
       "id": 66,
       "kind": "def_function",
       "name": "test_fun",
-      "origin": "user",
       "ref": fun test_fun(): Int {
     let a: Int = 123;
     let b: Int = -123;
@@ -4057,7 +4011,6 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
       "id": 68,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     let a: Int = 1;
     let b: Int = 2;
@@ -4502,7 +4455,6 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
       "id": 52,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(): Int {
     let a: Int = 1;
     let b: Int = 2;
@@ -4861,7 +4813,6 @@ exports[`grammar should parse stmt-if 1`] = `
       "id": 12,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(src: Int?): Int {
     if (src != null) {
         return src;
@@ -4958,7 +4909,6 @@ exports[`grammar should parse stmt-if-else 1`] = `
       "id": 12,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(src: Int?): Int {
     if (src != null) {
         return src;
@@ -5045,7 +4995,6 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       "id": 17,
       "kind": "def_function",
       "name": "test1",
-      "origin": "user",
       "ref": fun test1() {
     let i: Int = 1;
     while(i >= 10 || i <= 100) { i += 1 }
@@ -5160,7 +5109,6 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       "id": 19,
       "kind": "def_function",
       "name": "test2",
-      "origin": "user",
       "ref": fun test2() { return },
       "return": null,
       "statements": [
@@ -5178,7 +5126,6 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       "id": 23,
       "kind": "def_function",
       "name": "test3",
-      "origin": "user",
       "ref": fun test3(): Int { return 42 },
       "return": {
         "id": 20,
@@ -5207,7 +5154,6 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       "id": 33,
       "kind": "def_function",
       "name": "test4",
-      "origin": "user",
       "ref": fun test4(): Int {
     do { 21 + 21 } until (true && true)
 },
@@ -5285,7 +5231,6 @@ exports[`grammar should parse stmt-while-loop 1`] = `
       "id": 17,
       "kind": "def_function",
       "name": "main",
-      "origin": "user",
       "ref": fun main() {
     let i: Int = 1;
     while(i >= 10 || i <= 100) {
@@ -5411,7 +5356,6 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
       "id": 25,
       "kind": "def_function",
       "name": "main",
-      "origin": "user",
       "ref": fun main() {
     let i: Int = 1;
     while(true) {
@@ -5626,7 +5570,6 @@ exports[`grammar should parse struct-field-punning 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
-      "origin": "user",
       "prefix": null,
       "ref": struct A {
     x: Int;
@@ -5751,7 +5694,6 @@ exports[`grammar should parse struct-msg-as 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
-      "origin": "user",
       "prefix": null,
       "ref": struct A {
     x: Int;
@@ -5779,7 +5721,6 @@ exports[`grammar should parse struct-msg-as 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "B",
-      "origin": "user",
       "prefix": null,
       "ref": message B {
     x: Int as coin;
@@ -5822,7 +5763,6 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
-      "origin": "user",
       "prefix": null,
       "ref": struct A {
     x: Int = 1000;
@@ -5875,7 +5815,6 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "B",
-      "origin": "user",
       "prefix": null,
       "ref": message B {
     x: Int as coins = 1000;
@@ -5914,7 +5853,6 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
-      "origin": "user",
       "prefix": null,
       "ref": struct A { x: Int },
     },
@@ -5955,7 +5893,6 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "B",
-      "origin": "user",
       "prefix": null,
       "ref": struct B { x: Int; y: Int },
     },
@@ -6001,7 +5938,6 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "C",
-      "origin": "user",
       "prefix": null,
       "ref": struct C { x: Int; y: Int = 42 },
     },
@@ -6047,7 +5983,6 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "D",
-      "origin": "user",
       "prefix": null,
       "ref": struct D { x: Int = 42; y: Int },
     },
@@ -6073,7 +6008,6 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "E",
-      "origin": "user",
       "prefix": null,
       "ref": message E { x: Int },
     },
@@ -6114,7 +6048,6 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "F",
-      "origin": "user",
       "prefix": null,
       "ref": message F { x: Int; y: Int },
     },
@@ -6160,7 +6093,6 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "G",
-      "origin": "user",
       "prefix": null,
       "ref": message G { x: Int; y: Int = 42 },
     },
@@ -6206,7 +6138,6 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "G",
-      "origin": "user",
       "prefix": null,
       "ref": message G { x: Int = 42; y: Int },
     },
@@ -6224,7 +6155,6 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       "id": 1,
       "kind": "primitive_type_decl",
       "name": "Int",
-      "origin": "user",
       "ref": primitive Int;,
     },
     {
@@ -6249,7 +6179,6 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       "id": 4,
       "kind": "def_trait",
       "name": "OtherTrait",
-      "origin": "user",
       "ref": trait OtherTrait {
     c: Int;
 },
@@ -6277,7 +6206,6 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       "id": 8,
       "kind": "def_trait",
       "name": "SomeTrait",
-      "origin": "user",
       "ref": trait SomeTrait with OtherTrait, {
     a: Int;
 },
@@ -6312,7 +6240,6 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       "id": 12,
       "kind": "def_contract",
       "name": "Main",
-      "origin": "user",
       "ref": contract Main with SomeTrait, {
     b: Int;
 },
@@ -6359,7 +6286,6 @@ exports[`grammar should parse type-struct-with-map 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
-      "origin": "user",
       "prefix": null,
       "ref": struct A {
     y: map<Int, Int>;
@@ -6389,7 +6315,6 @@ exports[`grammar should parse type-struct-with-map 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "B",
-      "origin": "user",
       "prefix": null,
       "ref": message B {
     x: map<Int, Int>;
@@ -6425,7 +6350,6 @@ exports[`grammar should parse types-optional 1`] = `
       "id": 15,
       "kind": "def_function",
       "name": "testFunc",
-      "origin": "user",
       "ref": fun testFunc(src: Int?): Int {
     return 1 + 2 + (123 + 3)!! > 123;
 },

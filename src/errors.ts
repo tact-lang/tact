@@ -2,6 +2,7 @@ import { MatchResult } from "ohm-js";
 import path from "path";
 import { cwd } from "process";
 import { SrcInfo } from "./grammar/ast";
+import { ItemOrigin } from "./grammar/grammar";
 
 export class TactError extends Error {
     readonly ref: SrcInfo;
@@ -51,9 +52,13 @@ function locationStr(sourceInfo: SrcInfo): string {
     }
 }
 
-export function throwParseError(matchResult: MatchResult, path: string): never {
+export function throwParseError(
+    matchResult: MatchResult,
+    path: string,
+    origin: ItemOrigin,
+): never {
     const interval = matchResult.getInterval();
-    const source = new SrcInfo(interval, path);
+    const source = new SrcInfo(interval, path, origin);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const message = `Parse error: expected ${(matchResult as any).getExpectedText()}\n`;
     throw new TactParseError(

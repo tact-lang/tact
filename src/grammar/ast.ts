@@ -1,4 +1,4 @@
-import { ItemOrigin, SrcInfo } from "./grammar";
+import { SrcInfo } from "./grammar";
 
 export type AstModule = {
     kind: "module";
@@ -28,7 +28,6 @@ export type AstPrimitiveTypeDecl = {
     name: string;
     id: number;
     ref: SrcInfo;
-    origin: ItemOrigin;
 };
 
 //
@@ -203,7 +202,6 @@ export type ASTConditional = {
 
 export type ASTStruct = {
     kind: "def_struct";
-    origin: ItemOrigin;
     id: number;
     name: string;
     message: boolean;
@@ -220,7 +218,6 @@ export type ASTTraitDeclaration =
 
 export type ASTTrait = {
     kind: "def_trait";
-    origin: ItemOrigin;
     id: number;
     name: string;
     traits: ASTString[];
@@ -269,7 +266,6 @@ export type ASTContractDeclaration =
 
 export type ASTContract = {
     kind: "def_contract";
-    origin: ItemOrigin;
     id: number;
     name: string;
     traits: ASTString[];
@@ -297,7 +293,6 @@ export type ASTFunctionAttribute =
 
 export type ASTFunction = {
     kind: "def_function";
-    origin: ItemOrigin;
     id: number;
     attributes: ASTFunctionAttribute[];
     name: string;
@@ -345,7 +340,6 @@ export type ASTReceive = {
 
 export type ASTNativeFunction = {
     kind: "def_native_function";
-    origin: ItemOrigin;
     id: number;
     attributes: ASTFunctionAttribute[];
     name: string;

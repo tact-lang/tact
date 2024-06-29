@@ -35,10 +35,16 @@ let ctx: { origin: ItemOrigin } | null;
 export class SrcInfo {
     readonly #interval: RawInterval;
     readonly #file: string | null;
+    readonly #origin: ItemOrigin;
 
-    constructor(interval: RawInterval, file: string | null) {
+    constructor(
+        interval: RawInterval,
+        file: string | null,
+        origin: ItemOrigin,
+    ) {
         this.#interval = interval;
         this.#file = file;
+        this.#origin = origin;
     }
 
     get file() {
@@ -52,6 +58,10 @@ export class SrcInfo {
     get interval() {
         return this.#interval;
     }
+
+    get origin() {
+        return this.#origin;
+    }
 }
 
 let currentFile: string | null = null;
@@ -64,7 +74,7 @@ export function inFile<T>(path: string, callback: () => T) {
 }
 
 export function createRef(s: Node): SrcInfo {
-    return new SrcInfo(s.source, currentFile);
+    return new SrcInfo(s.source, currentFile, ctx!.origin);
 }
 
 // helper to unwrap optional grammar elements (marked with "?")
@@ -117,7 +127,6 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         checkVariableName(type.sourceString, createRef(type));
         return createNode({
             kind: "primitive_type_decl",
-            origin: ctx!.origin,
             name: type.sourceString,
             ref: createRef(this),
         });
@@ -138,7 +147,6 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         checkVariableName(tactId.sourceString, createRef(tactId));
         return createNode({
             kind: "def_native_function",
-            origin: ctx!.origin,
             attributes: funAttributes.children.map((a) =>
                 a.astOfFunctionAttributes(),
             ),
@@ -153,7 +161,6 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         checkVariableName(typeId.sourceString, createRef(typeId));
         return createNode({
             kind: "def_struct",
-            origin: ctx!.origin,
             name: typeId.sourceString,
             fields: fields.astsOfList(),
             prefix: null,
@@ -174,7 +181,6 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         checkVariableName(typeId.sourceString, createRef(typeId));
         return createNode({
             kind: "def_struct",
-            origin: ctx!.origin,
             name: typeId.sourceString,
             fields: fields.astsOfList(),
             prefix: unwrapOptNode(optIntMsgId, (number) =>
@@ -197,7 +203,6 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         checkVariableName(contractId.sourceString, createRef(contractId));
         return createNode({
             kind: "def_contract",
-            origin: ctx!.origin,
             name: contractId.sourceString,
             attributes: attributes.children.map((ca) =>
                 ca.astOfContractAttributes(),
@@ -222,7 +227,6 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         checkVariableName(traitId.sourceString, createRef(traitId));
         return createNode({
             kind: "def_trait",
-            origin: ctx!.origin,
             name: traitId.sourceString,
             attributes: attributes.children.map((ca) =>
                 ca.astOfContractAttributes(),
@@ -309,7 +313,6 @@ semantics.addOperation<ASTNode>("astOfItem", {
         checkFunctionAttributes(false, attributes, createRef(this));
         return createNode({
             kind: "def_function",
-            origin: ctx!.origin,
             attributes,
             name: funId.sourceString,
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
@@ -334,7 +337,6 @@ semantics.addOperation<ASTNode>("astOfItem", {
         checkFunctionAttributes(true, attributes, createRef(this));
         return createNode({
             kind: "def_function",
-            origin: ctx!.origin,
             attributes,
             name: funId.sourceString,
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
@@ -1215,7 +1217,7 @@ export function parse(
     return inFile(path, () => {
         const matchResult = tactGrammar.match(src);
         if (matchResult.failed()) {
-            throwParseError(matchResult, path);
+            throwParseError(matchResult, path, origin);
         }
         ctx = { origin };
         try {
@@ -1229,7 +1231,7 @@ export function parse(
 export function parseExpression(sourceCode: string): ASTExpression {
     const matchResult = tactGrammar.match(sourceCode, "Expression");
     if (matchResult.failed()) {
-        throwParseError(matchResult, "");
+        throwParseError(matchResult, "", "user");
     }
     return semantics(matchResult).astOfExpression();
 }
@@ -1242,7 +1244,7 @@ export function parseImports(
     return inFile(path, () => {
         const matchResult = tactGrammar.match(src, "JustImports");
         if (matchResult.failed()) {
-            throwParseError(matchResult, path);
+            throwParseError(matchResult, path, origin);
         }
         ctx = { origin };
         try {
