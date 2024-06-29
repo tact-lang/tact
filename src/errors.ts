@@ -1,44 +1,44 @@
 import { MatchResult } from "ohm-js";
 import path from "path";
 import { cwd } from "process";
-import { ASTRef } from "./grammar/ast";
+import { SrcInfo } from "./grammar/ast";
 
 export class TactError extends Error {
-    readonly ref: ASTRef;
-    constructor(message: string, ref: ASTRef) {
+    readonly ref: SrcInfo;
+    constructor(message: string, ref: SrcInfo) {
         super(message);
         this.ref = ref;
     }
 }
 
 export class TactParseError extends TactError {
-    constructor(message: string, ref: ASTRef) {
+    constructor(message: string, ref: SrcInfo) {
         super(message, ref);
     }
 }
 
 /// This will be split at least into two categories: typechecking and codegen errors
 export class TactCompilationError extends TactError {
-    constructor(message: string, ref: ASTRef) {
+    constructor(message: string, ref: SrcInfo) {
         super(message, ref);
     }
 }
 
 export class TactInternalCompilerError extends TactError {
-    constructor(message: string, ref: ASTRef) {
+    constructor(message: string, ref: SrcInfo) {
         super(message, ref);
     }
 }
 
 export class TactConstEvalError extends TactCompilationError {
     fatal: boolean = false;
-    constructor(message: string, fatal: boolean, ref: ASTRef) {
+    constructor(message: string, fatal: boolean, ref: SrcInfo) {
         super(message, ref);
         this.fatal = fatal;
     }
 }
 
-function locationStr(sourceInfo: ASTRef): string {
+function locationStr(sourceInfo: SrcInfo): string {
     if (sourceInfo.file) {
         const loc = sourceInfo.interval.getLineAndColumn() as {
             lineNum: number;
@@ -53,7 +53,7 @@ function locationStr(sourceInfo: ASTRef): string {
 
 export function throwParseError(matchResult: MatchResult, path: string): never {
     const interval = matchResult.getInterval();
-    const source = new ASTRef(interval, path);
+    const source = new SrcInfo(interval, path);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const message = `Parse error: expected ${(matchResult as any).getExpectedText()}\n`;
     throw new TactParseError(
@@ -62,7 +62,7 @@ export function throwParseError(matchResult: MatchResult, path: string): never {
     );
 }
 
-export function throwCompilationError(message: string, source: ASTRef): never {
+export function throwCompilationError(message: string, source: SrcInfo): never {
     throw new TactCompilationError(
         `${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`,
         source,
@@ -71,7 +71,7 @@ export function throwCompilationError(message: string, source: ASTRef): never {
 
 export function throwInternalCompilerError(
     message: string,
-    source: ASTRef,
+    source: SrcInfo,
 ): never {
     throw new TactInternalCompilerError(
         `${locationStr(source)}\n[INTERNAL COMPILER ERROR]: ${message}\nPlease report at https://github.com/tact-lang/tact/issues\n${source.interval.getLineAndColumnMessage()}`,
@@ -82,7 +82,7 @@ export function throwInternalCompilerError(
 export function throwConstEvalError(
     message: string,
     fatal: boolean,
-    source: ASTRef,
+    source: SrcInfo,
 ): never {
     throw new TactConstEvalError(
         `${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`,

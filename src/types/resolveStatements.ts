@@ -1,7 +1,7 @@
 import { CompilerContext } from "../context";
 import {
     ASTCondition,
-    ASTRef,
+    SrcInfo,
     ASTStatement,
     tryExtractPath,
 } from "../grammar/ast";
@@ -16,13 +16,13 @@ import { getExpType, resolveExpression } from "./resolveExpression";
 import { printTypeRef, TypeRef } from "./types";
 
 export type StatementContext = {
-    root: ASTRef;
+    root: SrcInfo;
     returns: TypeRef;
     vars: Map<string, TypeRef>;
     requiredFields: string[];
 };
 
-function emptyContext(root: ASTRef, returns: TypeRef): StatementContext {
+function emptyContext(root: SrcInfo, returns: TypeRef): StatementContext {
     return {
         root,
         returns,
@@ -34,7 +34,7 @@ function emptyContext(root: ASTRef, returns: TypeRef): StatementContext {
 function checkVariableExists(
     ctx: StatementContext,
     name: string,
-    ref?: ASTRef,
+    ref?: SrcInfo,
 ): void {
     if (ctx.vars.has(name)) {
         if (ref) {

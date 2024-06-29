@@ -1,10 +1,10 @@
-import { ASTConstantAttribute, ASTRef } from "./ast";
+import { ASTConstantAttribute, SrcInfo } from "./ast";
 import { throwCompilationError } from "../errors";
 
 export function checkConstAttributes(
     isAbstract: boolean,
     attributes: ASTConstantAttribute[],
-    ref: ASTRef,
+    ref: SrcInfo,
 ) {
     const k = new Set<string>();
     for (const a of attributes) {

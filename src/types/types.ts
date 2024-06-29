@@ -6,7 +6,7 @@ import {
     ASTNativeFunction,
     ASTNode,
     ASTReceive,
-    ASTRef,
+    SrcInfo,
     ASTStatement,
     ASTType,
 } from "../grammar/ast";
@@ -84,7 +84,7 @@ export type FieldDescription = {
     type: TypeRef;
     as: string | null;
     default: Value | undefined;
-    ref: ASTRef;
+    ref: SrcInfo;
     ast: ASTNode;
     abi: ABIField;
 };
@@ -93,21 +93,21 @@ export type ConstantDescription = {
     name: string;
     type: TypeRef;
     value: Value | undefined;
-    ref: ASTRef;
+    ref: SrcInfo;
     ast: ASTConstant;
 };
 
 export type FunctionArgument = {
     name: string;
     type: TypeRef;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type InitArgument = {
     name: string;
     type: TypeRef;
     as: string | null;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type FunctionDescription = {

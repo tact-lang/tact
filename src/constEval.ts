@@ -6,7 +6,7 @@ import {
     ASTExpression,
     ASTId,
     ASTNewParameter,
-    ASTRef,
+    SrcInfo,
     ASTUnaryOperation,
 } from "./grammar/ast";
 import { throwConstEvalError } from "./errors";
@@ -26,7 +26,7 @@ const maxTvmInt: bigint = 2n ** 256n - 1n;
 // Throws a non-fatal const-eval error, in the sense that const-eval as a compiler
 // optimization cannot be applied, e.g. to `let`-statements.
 // Note that for const initializers this is a show-stopper.
-function throwNonFatalErrorConstEval(msg: string, source: ASTRef): never {
+function throwNonFatalErrorConstEval(msg: string, source: SrcInfo): never {
     throwConstEvalError(
         `Cannot evaluate expression to a constant: ${msg}`,
         false,
@@ -36,7 +36,7 @@ function throwNonFatalErrorConstEval(msg: string, source: ASTRef): never {
 
 // Throws a fatal const-eval, meaning this is a meaningless program,
 // so compilation should be aborted in all cases
-function throwErrorConstEval(msg: string, source: ASTRef): never {
+function throwErrorConstEval(msg: string, source: SrcInfo): never {
     throwConstEvalError(
         `Cannot evaluate expression to a constant: ${msg}`,
         true,
@@ -44,7 +44,7 @@ function throwErrorConstEval(msg: string, source: ASTRef): never {
     );
 }
 
-function ensureInt(val: Value, source: ASTRef): bigint {
+function ensureInt(val: Value, source: SrcInfo): bigint {
     if (typeof val !== "bigint") {
         throwErrorConstEval(`integer expected, but got '${val}'`, source);
     }
@@ -58,21 +58,21 @@ function ensureInt(val: Value, source: ASTRef): bigint {
     }
 }
 
-function ensureBoolean(val: Value, source: ASTRef): boolean {
+function ensureBoolean(val: Value, source: SrcInfo): boolean {
     if (typeof val !== "boolean") {
         throwErrorConstEval(`boolean expected, but got '${val}'`, source);
     }
     return val;
 }
 
-function ensureString(val: Value, source: ASTRef): string {
+function ensureString(val: Value, source: SrcInfo): string {
     if (typeof val !== "string") {
         throwErrorConstEval(`string expected, but got '${val}'`, source);
     }
     return val;
 }
 
-function ensureFunArity(arity: number, args: ASTExpression[], source: ASTRef) {
+function ensureFunArity(arity: number, args: ASTExpression[], source: SrcInfo) {
     if (args.length !== arity) {
         throwErrorConstEval(
             `function expects ${arity} argument(s), but got ${args.length}`,
@@ -84,7 +84,7 @@ function ensureFunArity(arity: number, args: ASTExpression[], source: ASTRef) {
 function ensureMethodArity(
     arity: number,
     args: ASTExpression[],
-    source: ASTRef,
+    source: SrcInfo,
 ) {
     if (args.length !== arity) {
         throwErrorConstEval(
@@ -97,7 +97,7 @@ function ensureMethodArity(
 function evalUnaryOp(
     op: ASTUnaryOperation,
     operand: ASTExpression,
-    source: ASTRef,
+    source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
     // Tact grammar does not have negative integer literals,
@@ -149,7 +149,7 @@ function evalBinaryOp(
     op: ASTBinaryOperation,
     left: ASTExpression,
     right: ASTExpression,
-    source: ASTRef,
+    source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
     const valLeft = evalConstantExpression(left, ctx);
@@ -337,7 +337,7 @@ function evalStructInstance(
 function evalFieldAccess(
     structExpr: ASTExpression,
     fieldId: ASTId,
-    source: ASTRef,
+    source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
     // special case for contract/trait constant accesses via `self.constant`
@@ -391,7 +391,7 @@ function evalMethod(
     methodName: string,
     object: ASTExpression,
     args: ASTExpression[],
-    source: ASTRef,
+    source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
     switch (methodName) {
@@ -414,7 +414,7 @@ function evalMethod(
 function evalBuiltins(
     builtinName: string,
     args: ASTExpression[],
-    source: ASTRef,
+    source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
     switch (builtinName) {

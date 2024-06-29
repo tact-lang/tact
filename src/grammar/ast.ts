@@ -1,17 +1,19 @@
 import { Interval as RawInterval, Node as RawNode } from "ohm-js";
 import { TypeOrigin } from "../types/types";
 
-export class ASTRef {
-    static merge(...refs: ASTRef[]) {
+/**
+ * Information about source code location (file and interval within it)
+ * and the source code contents.
+ */
+export class SrcInfo {
+    static merge(...refs: SrcInfo[]) {
         if (refs.length === 0) {
             throw Error("Cannot merge 0 refs");
         }
-        let r = refs[0].#interval;
-        const file = refs[0].#file;
-        for (let i = 1; i < refs.length; i++) {
-            r = r.coverageWith(r, refs[i].#interval);
-        }
-        return new ASTRef(r, file);
+        const merged_interval = refs[0].#interval.coverageWith(
+            ...refs.map((i) => i.#interval),
+        );
+        return new SrcInfo(merged_interval, refs[0].#file);
     }
 
     readonly #interval: RawInterval;
@@ -40,7 +42,7 @@ export type ASTPrimitive = {
     origin: TypeOrigin;
     id: number;
     name: string;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 //
@@ -51,34 +53,34 @@ export type ASTNumber = {
     kind: "number";
     id: number;
     value: bigint;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTId = {
     kind: "id";
     id: number;
     value: string;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTBoolean = {
     kind: "boolean";
     id: number;
     value: boolean;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTString = {
     kind: "string";
     id: number;
     value: string;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTNull = {
     kind: "null";
     id: number;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 //
@@ -90,7 +92,7 @@ export type ASTTypeRefSimple = {
     id: number;
     name: string;
     optional: boolean;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTTypeRefMap = {
@@ -100,14 +102,14 @@ export type ASTTypeRefMap = {
     keyAs: string | null;
     value: string;
     valueAs: string | null;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTTypeRefBounced = {
     kind: "type_ref_bounced";
     id: number;
     name: string;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTTypeRef = ASTTypeRefSimple | ASTTypeRefMap | ASTTypeRefBounced;
@@ -142,7 +144,7 @@ export type ASTOpBinary = {
     op: ASTBinaryOperation;
     left: ASTExpression;
     right: ASTExpression;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTUnaryOperation = "+" | "-" | "!" | "!!" | "~";
@@ -152,7 +154,7 @@ export type ASTOpUnary = {
     id: number;
     op: ASTUnaryOperation;
     right: ASTExpression;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTOpField = {
@@ -160,7 +162,7 @@ export type ASTOpField = {
     id: number;
     src: ASTExpression;
     name: ASTId;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTOpCall = {
@@ -169,7 +171,7 @@ export type ASTOpCall = {
     src: ASTExpression;
     name: string;
     args: ASTExpression[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTOpCallStatic = {
@@ -177,7 +179,7 @@ export type ASTOpCallStatic = {
     id: number;
     name: string;
     args: ASTExpression[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTOpNew = {
@@ -185,7 +187,7 @@ export type ASTOpNew = {
     id: number;
     type: string;
     args: ASTNewParameter[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTNewParameter = {
@@ -193,7 +195,7 @@ export type ASTNewParameter = {
     id: number;
     name: string;
     exp: ASTExpression;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTInitOf = {
@@ -201,7 +203,7 @@ export type ASTInitOf = {
     id: number;
     name: string;
     args: ASTExpression[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTConditional = {
@@ -210,7 +212,7 @@ export type ASTConditional = {
     condition: ASTExpression;
     thenBranch: ASTExpression;
     elseBranch: ASTExpression;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 //
@@ -237,7 +239,7 @@ export type ASTProgramImport = {
     kind: "program_import";
     id: number;
     path: ASTString;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTStruct = {
@@ -248,7 +250,7 @@ export type ASTStruct = {
     message: boolean;
     prefix: number | null;
     fields: ASTField[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTTraitDeclaration =
@@ -265,7 +267,7 @@ export type ASTTrait = {
     traits: ASTString[];
     attributes: ASTContractAttribute[];
     declarations: ASTTraitDeclaration[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTField = {
@@ -275,7 +277,7 @@ export type ASTField = {
     type: ASTTypeRef;
     init: ASTExpression | null;
     as: string | null;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTConstant = {
@@ -285,18 +287,18 @@ export type ASTConstant = {
     type: ASTTypeRef;
     value: ASTExpression | null;
     attributes: ASTConstantAttribute[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTConstantAttribute =
-    | { type: "virtual"; ref: ASTRef }
-    | { type: "overrides"; ref: ASTRef }
-    | { type: "abstract"; ref: ASTRef };
+    | { type: "virtual"; ref: SrcInfo }
+    | { type: "overrides"; ref: SrcInfo }
+    | { type: "abstract"; ref: SrcInfo };
 
 export type ASTContractAttribute = {
     type: "interface";
     name: ASTString;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTContractDeclaration =
@@ -314,7 +316,7 @@ export type ASTContract = {
     traits: ASTString[];
     attributes: ASTContractAttribute[];
     declarations: ASTContractDeclaration[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTArgument = {
@@ -322,17 +324,17 @@ export type ASTArgument = {
     id: number;
     name: string;
     type: ASTTypeRef;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTFunctionAttribute =
-    | { type: "get"; ref: ASTRef }
-    | { type: "mutates"; ref: ASTRef }
-    | { type: "extends"; ref: ASTRef }
-    | { type: "virtual"; ref: ASTRef }
-    | { type: "abstract"; ref: ASTRef }
-    | { type: "overrides"; ref: ASTRef }
-    | { type: "inline"; ref: ASTRef };
+    | { type: "get"; ref: SrcInfo }
+    | { type: "mutates"; ref: SrcInfo }
+    | { type: "extends"; ref: SrcInfo }
+    | { type: "virtual"; ref: SrcInfo }
+    | { type: "abstract"; ref: SrcInfo }
+    | { type: "overrides"; ref: SrcInfo }
+    | { type: "inline"; ref: SrcInfo };
 
 export type ASTFunction = {
     kind: "def_function";
@@ -343,7 +345,7 @@ export type ASTFunction = {
     return: ASTTypeRef | null;
     args: ASTArgument[];
     statements: ASTStatement[] | null;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTReceiveType =
@@ -379,7 +381,7 @@ export type ASTReceive = {
     id: number;
     selector: ASTReceiveType;
     statements: ASTStatement[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTNativeFunction = {
@@ -391,7 +393,7 @@ export type ASTNativeFunction = {
     nativeName: string;
     return: ASTTypeRef | null;
     args: ASTArgument[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTInitFunction = {
@@ -399,7 +401,7 @@ export type ASTInitFunction = {
     id: number;
     args: ASTArgument[];
     statements: ASTStatement[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 //
@@ -412,21 +414,21 @@ export type ASTStatementLet = {
     name: string;
     type: ASTTypeRef | null;
     expression: ASTExpression;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTStatementReturn = {
     kind: "statement_return";
     id: number;
     expression: ASTExpression | null;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTStatementExpression = {
     kind: "statement_expression";
     id: number;
     expression: ASTExpression;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTStatementAssign = {
@@ -434,7 +436,7 @@ export type ASTStatementAssign = {
     id: number;
     path: ASTExpression;
     expression: ASTExpression;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTAugmentedAssignOperation =
@@ -453,7 +455,7 @@ export type ASTStatementAugmentedAssign = {
     op: ASTAugmentedAssignOperation;
     path: ASTExpression;
     expression: ASTExpression;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTCondition = {
@@ -463,7 +465,7 @@ export type ASTCondition = {
     trueStatements: ASTStatement[];
     falseStatements: ASTStatement[] | null;
     elseif: ASTCondition | null;
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTStatementWhile = {
@@ -471,7 +473,7 @@ export type ASTStatementWhile = {
     id: number;
     condition: ASTExpression;
     statements: ASTStatement[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTStatementUntil = {
@@ -479,7 +481,7 @@ export type ASTStatementUntil = {
     id: number;
     condition: ASTExpression;
     statements: ASTStatement[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTStatementRepeat = {
@@ -487,14 +489,14 @@ export type ASTStatementRepeat = {
     id: number;
     iterations: ASTExpression;
     statements: ASTStatement[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTStatementTry = {
     kind: "statement_try";
     id: number;
     statements: ASTStatement[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTStatementTryCatch = {
@@ -503,7 +505,7 @@ export type ASTStatementTryCatch = {
     statements: ASTStatement[];
     catchName: string;
     catchStatements: ASTStatement[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 export type ASTStatementForEach = {
@@ -513,7 +515,7 @@ export type ASTStatementForEach = {
     valueName: string;
     map: ASTExpression;
     statements: ASTStatement[];
-    ref: ASTRef;
+    ref: SrcInfo;
 };
 
 //
@@ -628,12 +630,12 @@ export function inFile<T>(path: string, callback: () => T) {
     return r;
 }
 
-export function createRef(s: RawNode, ...extra: RawNode[]): ASTRef {
+export function createRef(s: RawNode, ...extra: RawNode[]): SrcInfo {
     let i = s.source;
     if (extra.length > 0) {
         i = i.coverageWith(...extra.map((e) => e.source));
     }
-    return new ASTRef(i, currentFile);
+    return new SrcInfo(i, currentFile);
 }
 
 export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {

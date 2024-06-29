@@ -5,14 +5,14 @@ import {
     resolveDescriptors,
 } from "./resolveDescriptors";
 import { resolveSignatures } from "./resolveSignatures";
-import { ASTRef, __DANGER_resetNodeId } from "../grammar/ast";
+import { SrcInfo, __DANGER_resetNodeId } from "../grammar/ast";
 import { loadCases } from "../utils/loadCases";
 import { openContext } from "../grammar/store";
 import { featureEnable } from "../config/features";
 
 expect.addSnapshotSerializer({
-    test: (src) => src instanceof ASTRef,
-    print: (src) => `${(src as ASTRef).contents}`,
+    test: (src) => src instanceof SrcInfo,
+    print: (src) => `${(src as SrcInfo).contents}`,
 });
 
 describe("resolveDescriptors", () => {

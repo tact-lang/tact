@@ -1,5 +1,5 @@
 import { ABITypeRef } from "@ton/core";
-import { ASTField, ASTRef } from "../grammar/ast";
+import { ASTField, SrcInfo } from "../grammar/ast";
 import { throwCompilationError } from "../errors";
 import { TypeRef } from "./types";
 
@@ -331,7 +331,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
 
 export function createABITypeRefFromTypeRef(
     src: TypeRef,
-    ref: ASTRef,
+    ref: SrcInfo,
 ): ABITypeRef {
     if (src.kind === "ref") {
         // Primitives

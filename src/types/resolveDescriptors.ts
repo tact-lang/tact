@@ -5,7 +5,7 @@ import {
     ASTInitFunction,
     ASTNativeFunction,
     ASTNode,
-    ASTRef,
+    SrcInfo,
     ASTTypeRef,
     createNode,
     traverse,
@@ -44,7 +44,7 @@ function verifyMapType(
     keyAs: string | null,
     value: string,
     valueAs: string | null,
-    ref: ASTRef,
+    ref: SrcInfo,
 ) {
     if (!keyAs && !valueAs) {
         return;
