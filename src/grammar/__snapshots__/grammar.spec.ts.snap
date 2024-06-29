@@ -689,7 +689,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
             },
           ],
           "id": 7,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "a",
           "ref": virtual fun a(): Int {
         return a;
@@ -755,7 +755,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
             },
           ],
           "id": 14,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "a",
           "ref": override fun a(): Int {
         return b;
@@ -844,7 +844,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
             },
           ],
           "id": 7,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "a",
           "ref": virtual fun a(): Int {
         return a;
@@ -910,7 +910,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
             },
           ],
           "id": 14,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "a",
           "ref": override fun a(): Int {
         return "hello world!";
@@ -970,7 +970,7 @@ exports[`grammar should parse expr-arith 1`] = `
       "args": [],
       "attributes": [],
       "id": 10,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20;
@@ -1046,7 +1046,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
       "args": [],
       "attributes": [],
       "id": 12,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10;
@@ -1134,7 +1134,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
       "args": [],
       "attributes": [],
       "id": 24,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 123.add(10);
@@ -1296,7 +1296,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
       "args": [],
       "attributes": [],
       "id": 22,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 10;
@@ -1460,7 +1460,7 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
       ],
       "attributes": [],
       "id": 9,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(m: map<Int, Int>): Int {
     return m.asCell()!!.hash();
@@ -1534,7 +1534,7 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
       ],
       "attributes": [],
       "id": 19,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(a: Int): Int {
     return a == 123 || a == 456 ? a + 1 : a + 2;
@@ -1665,7 +1665,7 @@ exports[`grammar should parse expr-conditional 1`] = `
       ],
       "attributes": [],
       "id": 11,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(a: Int): Int {
     return a == 123 ? 1 : 2;
@@ -1748,7 +1748,7 @@ exports[`grammar should parse expr-conditional-with-let 1`] = `
       ],
       "attributes": [],
       "id": 14,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(a: Int): Int {
     let b: Int = a == 123 ? 1 : 2;
@@ -1837,7 +1837,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
       "args": [],
       "attributes": [],
       "id": 25,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < abs(123.add(10));
@@ -2007,7 +2007,7 @@ exports[`grammar should parse expr-int-literal 1`] = `
       "args": [],
       "attributes": [],
       "id": 4,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return 0;
@@ -2061,7 +2061,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
       ],
       "attributes": [],
       "id": 24,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(a: Int): Int {
     return a == 123 || a == 456 ? (a == 10 ? a : a * 2) : a + 2;
@@ -2207,7 +2207,7 @@ exports[`grammar should parse expr-parens 1`] = `
       "args": [],
       "attributes": [],
       "id": 13,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return 1 + 2 + (123 + 3)!! > 123;
@@ -2301,7 +2301,7 @@ exports[`grammar should parse expr-with-unbox 1`] = `
       "args": [],
       "attributes": [],
       "id": 11,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return 1 + 2 + 3!! > 123;
@@ -2383,7 +2383,7 @@ exports[`grammar should parse expr-with-var 1`] = `
       "args": [],
       "attributes": [],
       "id": 14,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId;
@@ -2510,7 +2510,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       ],
       "attributes": [],
       "id": 16,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "function",
       "ref": fun function(a: Int, b: Int): Int {
     return (a >> b) || (a << (32 - b));
@@ -2615,7 +2615,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       ],
       "attributes": [],
       "id": 32,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "anotherFunction",
       "ref": fun anotherFunction(
     a: Int,
@@ -2741,7 +2741,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
         },
       ],
       "id": 45,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "extension",
       "ref": extends fun extension(self: Int, c: Int, d: Int) {
     return self + c + d;
@@ -2816,7 +2816,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       ],
       "attributes": [],
       "id": 61,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "coverage",
       "ref": fun coverage(a: Int, b: Int) {
     let k: Int = a.extension(
@@ -2948,7 +2948,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       ],
       "attributes": [],
       "id": 71,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "oneMoreFunction",
       "ref": fun oneMoreFunction(
     a: Int,
@@ -3056,7 +3056,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       "args": [],
       "attributes": [],
       "id": 83,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "test",
       "ref": fun test() {
     let k: StateInit = initOf TestContract(
@@ -3121,7 +3121,7 @@ exports[`grammar should parse items-multi-funs 1`] = `
       "args": [],
       "attributes": [],
       "id": 3,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc() {
     return 0;
@@ -3145,7 +3145,7 @@ exports[`grammar should parse items-multi-funs 1`] = `
       "args": [],
       "attributes": [],
       "id": 7,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return 0;
@@ -3175,7 +3175,7 @@ exports[`grammar should parse items-multi-funs 1`] = `
       "args": [],
       "attributes": [],
       "id": 11,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Bool {
     return 0;
@@ -3347,7 +3347,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
       "args": [],
       "attributes": [],
       "id": 18,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "getA",
       "ref": fun getA(): A {
     return A {
@@ -3507,7 +3507,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
       "args": [],
       "attributes": [],
       "id": 38,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "getB",
       "ref": fun getB(): B {
     return B { x: 1, y: 5, };
@@ -3573,7 +3573,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
       "args": [],
       "attributes": [],
       "id": 66,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "test_fun",
       "ref": fun test_fun(): Int {
     let a: Int = 123;
@@ -4009,7 +4009,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
       "args": [],
       "attributes": [],
       "id": 68,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     let a: Int = 1;
@@ -4453,7 +4453,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
       "args": [],
       "attributes": [],
       "id": 52,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     let a: Int = 1;
@@ -4811,7 +4811,7 @@ exports[`grammar should parse stmt-if 1`] = `
       ],
       "attributes": [],
       "id": 12,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(src: Int?): Int {
     if (src != null) {
@@ -4907,7 +4907,7 @@ exports[`grammar should parse stmt-if-else 1`] = `
       ],
       "attributes": [],
       "id": 12,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(src: Int?): Int {
     if (src != null) {
@@ -4993,7 +4993,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       "args": [],
       "attributes": [],
       "id": 17,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "test1",
       "ref": fun test1() {
     let i: Int = 1;
@@ -5107,7 +5107,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       "args": [],
       "attributes": [],
       "id": 19,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "test2",
       "ref": fun test2() { return },
       "return": null,
@@ -5124,7 +5124,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       "args": [],
       "attributes": [],
       "id": 23,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "test3",
       "ref": fun test3(): Int { return 42 },
       "return": {
@@ -5152,7 +5152,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       "args": [],
       "attributes": [],
       "id": 33,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "test4",
       "ref": fun test4(): Int {
     do { 21 + 21 } until (true && true)
@@ -5229,7 +5229,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
       "args": [],
       "attributes": [],
       "id": 17,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "main",
       "ref": fun main() {
     let i: Int = 1;
@@ -5354,7 +5354,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
       "args": [],
       "attributes": [],
       "id": 25,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "main",
       "ref": fun main() {
     let i: Int = 1;
@@ -6348,7 +6348,7 @@ exports[`grammar should parse types-optional 1`] = `
       ],
       "attributes": [],
       "id": 15,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(src: Int?): Int {
     return 1 + 2 + (123 + 3)!! > 123;

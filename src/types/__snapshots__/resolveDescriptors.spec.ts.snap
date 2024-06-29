@@ -2540,7 +2540,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
           ],
           "id": 4,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "getter",
           "ref": abstract get fun getter(): Int;,
           "return": {
@@ -2580,7 +2580,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
           ],
           "id": 4,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "getter",
           "ref": abstract get fun getter(): Int;,
           "return": {
@@ -2666,7 +2666,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
           ],
           "id": 9,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "getter",
           "ref": override get fun getter(): Int { return 0 },
           "return": {
@@ -2725,7 +2725,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
           ],
           "id": 9,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "getter",
           "ref": override get fun getter(): Int { return 0 },
           "return": {
@@ -2831,7 +2831,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 },
               ],
               "id": 4,
-              "kind": "def_function",
+              "kind": "function_def",
               "name": "getter",
               "ref": abstract get fun getter(): Int;,
               "return": {
@@ -2871,7 +2871,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 },
               ],
               "id": 4,
-              "kind": "def_function",
+              "kind": "function_def",
               "name": "getter",
               "ref": abstract get fun getter(): Int;,
               "return": {
@@ -3018,7 +3018,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
           ],
           "id": 6,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "getter",
           "ref": virtual get fun getter(): Int { return 42 },
           "return": {
@@ -3070,7 +3070,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
           ],
           "id": 6,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "getter",
           "ref": virtual get fun getter(): Int { return 42 },
           "return": {
@@ -3168,7 +3168,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
           ],
           "id": 11,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "getter",
           "ref": override get fun getter(): Int { return 43 },
           "return": {
@@ -3227,7 +3227,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
           ],
           "id": 11,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "getter",
           "ref": override get fun getter(): Int { return 43 },
           "return": {
@@ -3333,7 +3333,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 },
               ],
               "id": 6,
-              "kind": "def_function",
+              "kind": "function_def",
               "name": "getter",
               "ref": virtual get fun getter(): Int { return 42 },
               "return": {
@@ -3385,7 +3385,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 },
               ],
               "id": 6,
-              "kind": "def_function",
+              "kind": "function_def",
               "name": "getter",
               "ref": virtual get fun getter(): Int { return 42 },
               "return": {
@@ -3576,7 +3576,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           "args": [],
           "attributes": [],
           "id": 9,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "hello",
           "ref": fun hello() {
         
@@ -3588,7 +3588,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           "args": [],
           "attributes": [],
           "id": 10,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "hello2",
           "ref": fun hello2() {
         
@@ -3700,7 +3700,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           "args": [],
           "attributes": [],
           "id": 9,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "hello",
           "ref": fun hello() {
         
@@ -3727,7 +3727,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           "args": [],
           "attributes": [],
           "id": 10,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "hello2",
           "ref": fun hello2() {
         
@@ -3922,7 +3922,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "args": [],
       "attributes": [],
       "id": 7,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return 0;
@@ -3969,7 +3969,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "args": [],
       "attributes": [],
       "id": 10,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc2",
       "ref": fun testFunc2() {
     return 0;
@@ -4054,7 +4054,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       ],
       "attributes": [],
       "id": 17,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "testFunc3",
       "ref": fun testFunc3(a: Int, b: Bool) {
     return 0;
@@ -4249,7 +4249,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             },
           ],
           "id": 20,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "hello",
           "ref": get fun hello(): Int {
         return 0;
@@ -4284,7 +4284,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             },
           ],
           "id": 24,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "hello2",
           "ref": get fun hello2(): Point {
         return 0;
@@ -4381,7 +4381,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             },
           ],
           "id": 20,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "hello",
           "ref": get fun hello(): Int {
         return 0;
@@ -4433,7 +4433,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             },
           ],
           "id": 24,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "hello2",
           "ref": get fun hello2(): Point {
         return 0;
@@ -4761,7 +4761,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
             },
           ],
           "id": 11,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "inc",
           "ref": extends fun inc(self: Int): Int {
     return self + 1;
@@ -5205,7 +5205,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
             },
           ],
           "id": 31,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "test",
           "ref": get fun test(): Int {
         let m: map<Int, Int as coins> = emptyMap();
@@ -5453,7 +5453,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
             },
           ],
           "id": 31,
-          "kind": "def_function",
+          "kind": "function_def",
           "name": "test",
           "ref": get fun test(): Int {
         let m: map<Int, Int as coins> = emptyMap();
@@ -5720,7 +5720,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
       "args": [],
       "attributes": [],
       "id": 36,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "scopeIf",
       "ref": fun scopeIf() {
     if (true) {
@@ -5806,7 +5806,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
       "args": [],
       "attributes": [],
       "id": 18,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "scopeRepeat",
       "ref": fun scopeRepeat() {
     repeat (1) {
@@ -5890,7 +5890,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
       "args": [],
       "attributes": [],
       "id": 9,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "scopeUntil",
       "ref": fun scopeUntil() {
     do {
@@ -5974,7 +5974,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
       "args": [],
       "attributes": [],
       "id": 27,
-      "kind": "def_function",
+      "kind": "function_def",
       "name": "scopeWhile",
       "ref": fun scopeWhile() {
     while (true) {

@@ -312,7 +312,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(false, attributes, createRef(this));
         return createNode({
-            kind: "def_function",
+            kind: "function_def",
             attributes,
             name: funId.sourceString,
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
@@ -336,7 +336,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(true, attributes, createRef(this));
         return createNode({
-            kind: "def_function",
+            kind: "function_def",
             attributes,
             name: funId.sourceString,
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),

@@ -593,7 +593,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             // Resolve function
             const ff = t.functions.get(f.name)!;
             let name = ops.extension(src.name, f.name);
-            if (ff.ast.kind === "def_function") {
+            if (ff.ast.kind === "function_def") {
                 wCtx.used(name);
             } else {
                 name = ff.ast.nativeName;

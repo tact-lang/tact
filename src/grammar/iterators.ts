@@ -103,7 +103,7 @@ export function forEachExpression(
             case "primitive_type_decl":
                 // These node types do not require further traversal of expressions or sub-nodes
                 break;
-            case "def_function":
+            case "function_def":
             case "def_init_function":
             case "def_receive":
                 if (node.statements) {
@@ -314,7 +314,7 @@ export function foldExpressions<T>(
             case "primitive_type_decl":
                 // These node types do not require further traversal of expressions or sub-nodes
                 break;
-            case "def_function":
+            case "function_def":
             case "def_init_function":
             case "def_receive":
                 if (node.statements) {
@@ -436,7 +436,7 @@ export function forEachStatement(
             case "module":
                 node.entries.forEach(traverseNode);
                 break;
-            case "def_function":
+            case "function_def":
             case "def_init_function":
             case "def_receive":
                 if (node.statements) node.statements.forEach(traverseStatement);
@@ -556,7 +556,7 @@ export function foldStatements<T>(
                     acc = traverseNode(acc, entry);
                 });
                 break;
-            case "def_function":
+            case "function_def":
             case "def_init_function":
             case "def_receive":
                 if (node.statements) {

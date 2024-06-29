@@ -1,7 +1,7 @@
 import { ABIField, Address, Cell } from "@ton/core";
 import {
     ASTConstant,
-    ASTFunction,
+    AstFunctionDef,
     ASTInitFunction,
     ASTNativeFunction,
     ASTNode,
@@ -121,7 +121,7 @@ export type FunctionDescription = {
     self: string | null;
     returns: TypeRef;
     args: FunctionArgument[];
-    ast: ASTFunction | ASTNativeFunction;
+    ast: AstFunctionDef | ASTNativeFunction;
 };
 
 export type StatementDescription =

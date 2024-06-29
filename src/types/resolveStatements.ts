@@ -579,7 +579,7 @@ function processFunctionBody(
 export function resolveStatements(ctx: CompilerContext) {
     // Process all static functions
     for (const f of Object.values(getAllStaticFunctions(ctx))) {
-        if (f.ast.kind === "def_function") {
+        if (f.ast.kind === "function_def") {
             // Build statement context
             let sctx = emptyContext(f.ast.ref, f.returns);
             for (const p of f.args) {

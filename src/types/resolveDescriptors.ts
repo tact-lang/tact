@@ -1,7 +1,7 @@
 import {
     ASTConstant,
     ASTField,
-    ASTFunction,
+    AstFunctionDef,
     ASTInitFunction,
     ASTNativeFunction,
     ASTNode,
@@ -500,7 +500,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     function resolveFunctionDescriptor(
         optSelf: string | null,
-        a: ASTFunction | ASTNativeFunction,
+        a: AstFunctionDef | ASTNativeFunction,
         origin: ItemOrigin,
     ): FunctionDescription {
         let self = optSelf;
@@ -648,7 +648,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
 
         // Check for common
-        if (a.kind === "def_function") {
+        if (a.kind === "function_def") {
             if (isGetter && !self) {
                 throwCompilationError(
                     "Getters must be defined within a contract",
@@ -802,7 +802,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (a.kind === "def_contract" || a.kind === "def_trait") {
             const s = types.get(a.name)!;
             for (const d of a.declarations) {
-                if (d.kind === "def_function") {
+                if (d.kind === "function_def") {
                     const f = resolveFunctionDescriptor(s.name, d, s.origin);
                     if (f.self !== s.name) {
                         throw Error("Function self must be " + s.name); // Impossible

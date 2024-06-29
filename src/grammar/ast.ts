@@ -16,7 +16,7 @@ export type AstImport = {
 
 export type AstModuleItem =
     | AstPrimitiveTypeDecl
-    | ASTFunction
+    | AstFunctionDef
     | ASTNativeFunction
     | ASTConstant
     | ASTStruct
@@ -26,6 +26,17 @@ export type AstModuleItem =
 export type AstPrimitiveTypeDecl = {
     kind: "primitive_type_decl";
     name: string;
+    id: number;
+    ref: SrcInfo;
+};
+
+export type AstFunctionDef = {
+    kind: "function_def";
+    attributes: ASTFunctionAttribute[];
+    name: string;
+    return: ASTTypeRef | null;
+    args: ASTArgument[];
+    statements: ASTStatement[] | null;
     id: number;
     ref: SrcInfo;
 };
@@ -212,7 +223,7 @@ export type ASTStruct = {
 
 export type ASTTraitDeclaration =
     | ASTField
-    | ASTFunction
+    | AstFunctionDef
     | ASTReceive
     | ASTConstant;
 
@@ -259,7 +270,7 @@ export type ASTContractAttribute = {
 
 export type ASTContractDeclaration =
     | ASTField
-    | ASTFunction
+    | AstFunctionDef
     | ASTInitFunction
     | ASTReceive
     | ASTConstant;
@@ -290,17 +301,6 @@ export type ASTFunctionAttribute =
     | { type: "abstract"; ref: SrcInfo }
     | { type: "overrides"; ref: SrcInfo }
     | { type: "inline"; ref: SrcInfo };
-
-export type ASTFunction = {
-    kind: "def_function";
-    id: number;
-    attributes: ASTFunctionAttribute[];
-    name: string;
-    return: ASTTypeRef | null;
-    args: ASTArgument[];
-    statements: ASTStatement[] | null;
-    ref: SrcInfo;
-};
 
 export type ASTReceiveType =
     | {
@@ -494,7 +494,7 @@ export type ASTNode =
     | ASTField
     | ASTContract
     | ASTArgument
-    | ASTFunction
+    | AstFunctionDef
     | ASTOpCall
     | ASTStatementLet
     | ASTStatementReturn
@@ -606,7 +606,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     // Functions
     //
 
-    if (node.kind === "def_function") {
+    if (node.kind === "function_def") {
         for (const e of node.args) {
             traverse(e, callback);
         }

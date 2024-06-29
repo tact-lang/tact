@@ -527,7 +527,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
         return;
     }
 
-    if (fd.kind !== "def_function") {
+    if (fd.kind !== "function_def") {
         // should never happen, just to satisfy typescript
         throw new Error("Unknown function kind");
     }
