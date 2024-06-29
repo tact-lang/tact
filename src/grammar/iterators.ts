@@ -100,7 +100,7 @@ export function forEachExpression(
                 break;
             case "def_native_function":
             case "def_struct":
-            case "primitive":
+            case "primitive_type_decl":
                 // These node types do not require further traversal of expressions or sub-nodes
                 break;
             case "def_function":
@@ -311,7 +311,7 @@ export function foldExpressions<T>(
                 break;
             case "def_native_function":
             case "def_struct":
-            case "primitive":
+            case "primitive_type_decl":
                 // These node types do not require further traversal of expressions or sub-nodes
                 break;
             case "def_function":
@@ -482,7 +482,7 @@ export function forEachStatement(
             case "def_constant":
             case "def_field":
             case "import":
-            case "primitive":
+            case "primitive_type_decl":
                 // Do nothing
                 break;
             default:
@@ -608,7 +608,7 @@ export function foldStatements<T>(
             case "def_constant":
             case "def_field":
             case "import":
-            case "primitive":
+            case "primitive_type_decl":
                 // Do nothing
                 break;
             default:

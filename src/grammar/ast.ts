@@ -15,7 +15,7 @@ export type AstImport = {
 };
 
 export type AstModuleItem =
-    | ASTPrimitive
+    | AstPrimitiveTypeDecl
     | ASTFunction
     | ASTNativeFunction
     | ASTConstant
@@ -23,12 +23,12 @@ export type AstModuleItem =
     | ASTContract
     | ASTTrait;
 
-export type ASTPrimitive = {
-    kind: "primitive";
-    origin: ItemOrigin;
-    id: number;
+export type AstPrimitiveTypeDecl = {
+    kind: "primitive_type_decl";
     name: string;
+    id: number;
     ref: SrcInfo;
+    origin: ItemOrigin;
 };
 
 //
@@ -505,7 +505,7 @@ export type ASTNode =
     | ASTStatementLet
     | ASTStatementReturn
     | AstModule
-    | ASTPrimitive
+    | AstPrimitiveTypeDecl
     | ASTOpCallStatic
     | ASTStatementExpression
     | ASTNativeFunction
@@ -543,7 +543,7 @@ export type ASTExpression =
     | ASTInitOf
     | ASTString
     | ASTConditional;
-export type ASTType = ASTPrimitive | ASTStruct | ASTContract | ASTTrait;
+export type ASTType = AstPrimitiveTypeDecl | ASTStruct | ASTContract | ASTTrait;
 
 /**
  * Check if input expression is a 'path expression',

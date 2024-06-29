@@ -32,7 +32,7 @@ export function resolveFuncFlatTypes(
     }
 
     // TypeDescription
-    if (descriptor.kind === "primitive") {
+    if (descriptor.kind === "primitive_type_decl") {
         return [resolveFuncType(descriptor, ctx)];
     } else if (descriptor.kind === "struct") {
         if (optional || descriptor.fields.length === 0) {

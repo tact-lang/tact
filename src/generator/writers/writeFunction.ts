@@ -50,7 +50,7 @@ export function unwrapExternal(
                 );
             }
             return;
-        } else if (t.kind === "primitive" && t.name === "Address") {
+        } else if (t.kind === "primitive_type_decl" && t.name === "Address") {
             if (type.optional) {
                 ctx.append(
                     `${resolveFuncType(type, ctx)} ${targetName} = null?(${sourceName}) ? null() : ${ctx.used(`__tact_verify_address`)}(${sourceName});`,

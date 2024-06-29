@@ -204,9 +204,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         const uid = uidForName(a.name, types);
 
-        if (a.kind === "primitive") {
+        if (a.kind === "primitive_type_decl") {
             types.set(a.name, {
-                kind: "primitive",
+                kind: "primitive_type_decl",
                 origin: a.origin,
                 name: a.name,
                 uid,
@@ -867,7 +867,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         }
 
                         // Raw receiver
-                        if (t.kind === "primitive") {
+                        if (t.kind === "primitive_type_decl") {
                             if (t.name === "Slice") {
                                 // Check for existing receiver
                                 if (

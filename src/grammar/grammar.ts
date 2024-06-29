@@ -130,7 +130,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
     PrimitiveTypeDecl(_primitive_kwd, type, _semicolon) {
         checkVariableName(type.sourceString, createRef(type));
         return createNode({
-            kind: "primitive",
+            kind: "primitive_type_decl",
             origin: ctx!.origin,
             name: type.sourceString,
             ref: createRef(this),

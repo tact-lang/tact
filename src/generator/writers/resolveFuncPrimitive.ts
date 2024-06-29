@@ -26,7 +26,7 @@ export function resolveFuncPrimitive(
     }
 
     // TypeDescription
-    if (descriptor.kind === "primitive") {
+    if (descriptor.kind === "primitive_type_decl") {
         if (descriptor.name === "Int") {
             return true;
         } else if (descriptor.name === "Bool") {

@@ -16,7 +16,7 @@ import { ItemOrigin } from "../grammar/grammar";
 // } from "../grammar/value";
 
 export type TypeDescription = {
-    kind: "struct" | "primitive" | "contract" | "trait";
+    kind: "struct" | "primitive_type_decl" | "contract" | "trait";
     origin: ItemOrigin;
     name: string;
     uid: number;

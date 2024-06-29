@@ -71,7 +71,7 @@ export function openContext(
                 entry.kind === "def_struct" ||
                 entry.kind === "def_contract" ||
                 entry.kind === "def_trait" ||
-                entry.kind === "primitive"
+                entry.kind === "primitive_type_decl"
             ) {
                 types.push(entry);
             } else if (

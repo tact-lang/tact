@@ -503,7 +503,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -515,7 +515,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -528,7 +528,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
   "Slice": {
     "ast": {
       "id": 2,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Slice",
       "origin": "user",
       "ref": primitive Slice;,
@@ -540,7 +540,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Slice",
     "origin": "user",
     "partialFieldCount": 0,
@@ -971,7 +971,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
   "Bool": {
     "ast": {
       "id": 2,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Bool",
       "origin": "user",
       "ref": primitive Bool;,
@@ -983,7 +983,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Bool",
     "origin": "user",
     "partialFieldCount": 0,
@@ -996,7 +996,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -1008,7 +1008,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -1313,7 +1313,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -1325,7 +1325,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -1734,7 +1734,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -1746,7 +1746,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -2260,7 +2260,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -2272,7 +2272,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -2536,7 +2536,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -2548,7 +2548,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -3028,7 +3028,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -3040,7 +3040,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -3570,7 +3570,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
   "Bool": {
     "ast": {
       "id": 2,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Bool",
       "origin": "user",
       "ref": primitive Bool;,
@@ -3582,7 +3582,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Bool",
     "origin": "user",
     "partialFieldCount": 0,
@@ -3875,7 +3875,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -3887,7 +3887,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -3937,7 +3937,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
   "Bool": {
     "ast": {
       "id": 2,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Bool",
       "origin": "user",
       "ref": primitive Bool;,
@@ -3949,7 +3949,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Bool",
     "origin": "user",
     "partialFieldCount": 0,
@@ -3962,7 +3962,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -3974,7 +3974,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -4201,7 +4201,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
   "Bool": {
     "ast": {
       "id": 2,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Bool",
       "origin": "user",
       "ref": primitive Bool;,
@@ -4213,7 +4213,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Bool",
     "origin": "user",
     "partialFieldCount": 0,
@@ -4226,7 +4226,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -4238,7 +4238,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -4791,7 +4791,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
   "Bool": {
     "ast": {
       "id": 2,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Bool",
       "origin": "user",
       "ref": primitive Bool;,
@@ -4803,7 +4803,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Bool",
     "origin": "user",
     "partialFieldCount": 0,
@@ -4816,7 +4816,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -4908,7 +4908,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -4958,7 +4958,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
   "Bool": {
     "ast": {
       "id": 2,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Bool",
       "origin": "user",
       "ref": primitive Bool;,
@@ -4970,7 +4970,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Bool",
     "origin": "user",
     "partialFieldCount": 0,
@@ -4983,7 +4983,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -4995,7 +4995,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -5107,7 +5107,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
   "Bool": {
     "ast": {
       "id": 2,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Bool",
       "origin": "user",
       "ref": primitive Bool;,
@@ -5119,7 +5119,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Bool",
     "origin": "user",
     "partialFieldCount": 0,
@@ -5132,7 +5132,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -5203,7 +5203,7 @@ mutates extends native inc(self: Int): Int;,
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -5253,7 +5253,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -5265,7 +5265,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -6198,7 +6198,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
   "Bool": {
     "ast": {
       "id": 2,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Bool",
       "origin": "user",
       "ref": primitive Bool;,
@@ -6210,7 +6210,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Bool",
     "origin": "user",
     "partialFieldCount": 0,
@@ -6223,7 +6223,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -6235,7 +6235,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,
@@ -6501,7 +6501,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
   "Bool": {
     "ast": {
       "id": 2,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Bool",
       "origin": "user",
       "ref": primitive Bool;,
@@ -6513,7 +6513,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Bool",
     "origin": "user",
     "partialFieldCount": 0,
@@ -6526,7 +6526,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
   "Int": {
     "ast": {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -6538,7 +6538,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive",
+    "kind": "primitive_type_decl",
     "name": "Int",
     "origin": "user",
     "partialFieldCount": 0,

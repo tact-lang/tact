@@ -157,7 +157,10 @@ export function writeAccessors(
                             );
                         }
                         continue;
-                    } else if (t.kind === "primitive" && t.name === "Address") {
+                    } else if (
+                        t.kind === "primitive_type_decl" &&
+                        t.name === "Address"
+                    ) {
                         if (f.type.optional) {
                             vars.push(
                                 `${resolveFuncType(f.type, ctx)} v'${f.name}`,

@@ -662,7 +662,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
   "entries": [
     {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -822,7 +822,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
   "entries": [
     {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
@@ -6222,7 +6222,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
   "entries": [
     {
       "id": 1,
-      "kind": "primitive",
+      "kind": "primitive_type_decl",
       "name": "Int",
       "origin": "user",
       "ref": primitive Int;,
