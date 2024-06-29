@@ -45,7 +45,7 @@ exports[`grammar should fail contract-with-imports 1`] = `
 
 Line 6, col 1:
   5 | // all imports must be at the very top of the file
-> 6 | import "@stdlib/notallowed";
+> 6 | import "@stdlib/not-allowed";
       ^
   7 | 
 "

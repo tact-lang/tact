@@ -17,6 +17,7 @@ import {
     ASTString,
     ASTTypeRef,
     createNode,
+    ASTProgramImport,
 } from "./ast";
 import { throwParseError, throwCompilationError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
@@ -116,6 +117,12 @@ semantics.addOperation<ASTNode>("astOfImport", {
             path: pathAST,
             ref: createRef(this),
         });
+    },
+});
+
+semantics.addOperation<ASTProgramImport[]>("astOfJustImports", {
+    JustImports(imports, _restOfInput) {
+        return imports.children.map((item) => item.astOfImport());
     },
 });
 
@@ -1246,6 +1253,18 @@ export function parseImports(
     path: string,
     origin: ItemOrigin,
 ): string[] {
-    const fullAst: AstModule = parse(src, path, origin);
-    return fullAst.imports.map((item) => item.path.value);
+    return inFile(path, () => {
+        const matchResult = tactGrammar.match(src, "JustImports");
+        if (matchResult.failed()) {
+            throwParseError(matchResult, path);
+        }
+        ctx = { origin };
+        try {
+            const imports: ASTProgramImport[] =
+                semantics(matchResult).astOfJustImports();
+            return imports.map((imp) => imp.path.value);
+        } finally {
+            ctx = null;
+        }
+    });
 }
