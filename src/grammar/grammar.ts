@@ -4,7 +4,7 @@ import {
     IterationNode,
     NonterminalNode,
 } from "ohm-js";
-import rawGrammar from "./grammar.ohm-bundle";
+import tactGrammar from "./grammar.ohm-bundle";
 import {
     ASTAugmentedAssignOperation,
     ASTConstantAttribute,
@@ -90,7 +90,7 @@ function unwrapOptNode<T>(
     return optNode ? f(optNode) : null;
 }
 
-const semantics = rawGrammar.createSemantics();
+const semantics = tactGrammar.createSemantics();
 
 semantics.addOperation<ASTNode>("astOfModule", {
     Module(imports, items) {
@@ -1220,7 +1220,7 @@ export function parse(
     origin: ItemOrigin,
 ): AstModule {
     return inFile(path, () => {
-        const matchResult = rawGrammar.match(src);
+        const matchResult = tactGrammar.match(src);
         if (matchResult.failed()) {
             throwParseError(matchResult, path);
         }
@@ -1234,7 +1234,7 @@ export function parse(
 }
 
 export function parseExpression(sourceCode: string): ASTExpression {
-    const matchResult = rawGrammar.match(sourceCode, "Expression");
+    const matchResult = tactGrammar.match(sourceCode, "Expression");
     if (matchResult.failed()) {
         throwParseError(matchResult, "");
     }
