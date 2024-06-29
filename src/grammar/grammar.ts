@@ -96,7 +96,7 @@ const semantics = tactGrammar.createSemantics();
 semantics.addOperation<ASTNode>("astOfModule", {
     Module(imports, items) {
         return createNode({
-            kind: "program",
+            kind: "module",
             imports: imports.children.map((item) => item.astOfImport()),
             entries: items.children.map((item) => item.astOfModuleItem()),
         });

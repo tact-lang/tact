@@ -1,7 +1,7 @@
 import { ItemOrigin, SrcInfo } from "./grammar";
 
 export type AstModule = {
-    kind: "program";
+    kind: "module";
     imports: AstImport[];
     entries: AstModuleItem[];
     id: number;
@@ -587,7 +587,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     // Program
     //
 
-    if (node.kind === "program") {
+    if (node.kind === "module") {
         for (const e of node.entries) {
             traverse(e, callback);
         }

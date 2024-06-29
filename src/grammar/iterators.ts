@@ -95,7 +95,7 @@ export function forEachExpression(
 
     function traverseNode(node: ASTNode): void {
         switch (node.kind) {
-            case "program":
+            case "module":
                 node.entries.forEach(traverseNode);
                 break;
             case "def_native_function":
@@ -304,7 +304,7 @@ export function foldExpressions<T>(
 
     function traverseNode(acc: T, node: ASTNode): T {
         switch (node.kind) {
-            case "program":
+            case "module":
                 node.entries.forEach((entry) => {
                     acc = traverseNode(acc, entry);
                 });
@@ -433,7 +433,7 @@ export function forEachStatement(
 
     function traverseNode(node: ASTNode): void {
         switch (node.kind) {
-            case "program":
+            case "module":
                 node.entries.forEach(traverseNode);
                 break;
             case "def_function":
@@ -551,7 +551,7 @@ export function foldStatements<T>(
 
     function traverseNode(acc: T, node: ASTNode): T {
         switch (node.kind) {
-            case "program":
+            case "module":
                 node.entries.forEach((entry) => {
                     acc = traverseNode(acc, entry);
                 });
