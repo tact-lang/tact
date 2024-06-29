@@ -96,14 +96,13 @@ semantics.addOperation<ASTNode>("astOfModule", {
     Module(imports, items) {
         return createNode({
             kind: "program",
-            entries: imports.children
-                .concat(items.children)
-                .map((item) => item.astOfModuleItem()),
+            imports: imports.children.map((item) => item.astOfImport()),
+            entries: items.children.map((item) => item.astOfModuleItem()),
         });
     },
 });
 
-semantics.addOperation<ASTNode>("astOfModuleItem", {
+semantics.addOperation<ASTNode>("astOfImport", {
     Import(_importKwd, path, _semicolon) {
         const pathAST = path.astOfExpression() as ASTString;
         if (pathAST.value.indexOf("\\") >= 0) {
@@ -118,6 +117,9 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             ref: createRef(this),
         });
     },
+});
+
+semantics.addOperation<ASTNode>("astOfModuleItem", {
     PrimitiveTypeDecl(_primitive_kwd, type, _semicolon) {
         checkVariableName(type.sourceString, createRef(type));
         return createNode({
@@ -1245,7 +1247,5 @@ export function parseImports(
     origin: ItemOrigin,
 ): string[] {
     const fullAst: AstModule = parse(src, path, origin);
-    return fullAst.entries.flatMap((item) =>
-        item.kind === "program_import" ? [item.path.value] : [],
-    );
+    return fullAst.imports.map((item) => item.path.value);
 }

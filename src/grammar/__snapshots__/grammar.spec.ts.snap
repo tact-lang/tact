@@ -40,6 +40,17 @@ Line 1, col 19:
 "
 `;
 
+exports[`grammar should fail contract-with-imports 1`] = `
+"<unknown>:6:1: Parse error: expected end of input, "trait", "contract", "message", "struct", "const", "@name", "fun", or "primitive"
+
+Line 6, col 1:
+  5 | // all imports must be at the very top of the file
+> 6 | import "@stdlib/notallowed";
+      ^
+  7 | 
+"
+`;
+
 exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
 "<unknown>:6:14: Empty argument list should not have a dangling comma.
 Line 6, col 14:
@@ -401,6 +412,7 @@ exports[`grammar should parse abstract-const 1`] = `
     },
   ],
   "id": 4,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -448,6 +460,46 @@ exports[`grammar should parse contract-with-const-override 1`] = `
     },
   ],
   "id": 5,
+  "imports": [],
+  "kind": "program",
+}
+`;
+
+exports[`grammar should parse contract-with-imports 1`] = `
+{
+  "entries": [
+    {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "def_contract",
+      "name": "Test",
+      "origin": "user",
+      "ref": contract Test with Deploy { },
+      "traits": [
+        {
+          "id": 3,
+          "kind": "id",
+          "ref": Deploy,
+          "value": "Deploy",
+        },
+      ],
+    },
+  ],
+  "id": 5,
+  "imports": [
+    {
+      "id": 2,
+      "kind": "program_import",
+      "path": {
+        "id": 1,
+        "kind": "string",
+        "ref": "@stdlib/deploy",
+        "value": "@stdlib/deploy",
+      },
+      "ref": import "@stdlib/deploy";,
+    },
+  ],
   "kind": "program",
 }
 `;
@@ -600,6 +652,7 @@ exports[`grammar should parse contract-with-init 1`] = `
     },
   ],
   "id": 21,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -759,6 +812,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
     },
   ],
   "id": 17,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -918,6 +972,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
     },
   ],
   "id": 17,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -994,6 +1049,7 @@ exports[`grammar should parse expr-arith 1`] = `
     },
   ],
   "id": 11,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -1082,6 +1138,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
     },
   ],
   "id": 13,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -1244,6 +1301,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
     },
   ],
   "id": 25,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -1392,6 +1450,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
     },
   ],
   "id": 23,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -1468,6 +1527,7 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
     },
   ],
   "id": 10,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -1599,6 +1659,7 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
     },
   ],
   "id": 20,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -1682,6 +1743,7 @@ exports[`grammar should parse expr-conditional 1`] = `
     },
   ],
   "id": 12,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -1785,6 +1847,7 @@ exports[`grammar should parse expr-conditional-with-let 1`] = `
     },
   ],
   "id": 15,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -1955,6 +2018,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
     },
   ],
   "id": 26,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -1995,6 +2059,7 @@ exports[`grammar should parse expr-int-literal 1`] = `
     },
   ],
   "id": 5,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -2155,6 +2220,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
     },
   ],
   "id": 25,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -2249,6 +2315,7 @@ exports[`grammar should parse expr-parens 1`] = `
     },
   ],
   "id": 14,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -2331,6 +2398,7 @@ exports[`grammar should parse expr-with-unbox 1`] = `
     },
   ],
   "id": 12,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -2431,6 +2499,7 @@ exports[`grammar should parse expr-with-var 1`] = `
     },
   ],
   "id": 15,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -3075,6 +3144,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
     },
   ],
   "id": 84,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -3171,6 +3241,7 @@ exports[`grammar should parse items-multi-funs 1`] = `
     },
   ],
   "id": 12,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -3228,6 +3299,7 @@ native testFunc(): Bool;,
     },
   ],
   "id": 6,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -3534,6 +3606,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
     },
   ],
   "id": 39,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -3970,6 +4043,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
     },
   ],
   "id": 67,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -4414,6 +4488,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
     },
   ],
   "id": 69,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -4758,6 +4833,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
     },
   ],
   "id": 53,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -4854,6 +4930,7 @@ exports[`grammar should parse stmt-if 1`] = `
     },
   ],
   "id": 13,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -4954,6 +5031,7 @@ exports[`grammar should parse stmt-if-else 1`] = `
     },
   ],
   "id": 13,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -5193,6 +5271,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
     },
   ],
   "id": 34,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -5318,6 +5397,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
     },
   ],
   "id": 18,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -5501,6 +5581,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
     },
   ],
   "id": 26,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -5640,6 +5721,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
     },
   ],
   "id": 19,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -5705,6 +5787,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
     },
   ],
   "id": 7,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -5801,6 +5884,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
     },
   ],
   "id": 12,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -6128,6 +6212,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
     },
   ],
   "id": 41,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -6242,6 +6327,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
     },
   ],
   "id": 13,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -6311,6 +6397,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
     },
   ],
   "id": 7,
+  "imports": [],
   "kind": "program",
 }
 `;
@@ -6419,6 +6506,7 @@ exports[`grammar should parse types-optional 1`] = `
     },
   ],
   "id": 16,
+  "imports": [],
   "kind": "program",
 }
 `;

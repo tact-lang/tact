@@ -2,19 +2,19 @@ import { ItemOrigin, SrcInfo } from "./grammar";
 
 export type AstModule = {
     kind: "program";
-    id: number;
+    imports: ASTProgramImport[];
     entries: AstModuleItem[];
+    id: number;
 };
 
 export type AstModuleItem =
-    | ASTStruct
-    | ASTContract
     | ASTPrimitive
     | ASTFunction
     | ASTNativeFunction
-    | ASTTrait
-    | ASTProgramImport
-    | ASTConstant;
+    | ASTConstant
+    | ASTStruct
+    | ASTContract
+    | ASTTrait;
 
 export type ASTPrimitive = {
     kind: "primitive";
