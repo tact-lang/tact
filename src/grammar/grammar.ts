@@ -12,7 +12,7 @@ import {
     ASTExpression,
     ASTFunctionAttribute,
     ASTNode,
-    ASTProgram,
+    AstModule,
     ASTReceiveType,
     ASTString,
     ASTTypeRef,
@@ -1216,7 +1216,7 @@ export function parse(
     src: string,
     path: string,
     origin: ItemOrigin,
-): ASTProgram {
+): AstModule {
     return inFile(path, () => {
         const matchResult = rawGrammar.match(src);
         if (matchResult.failed()) {
@@ -1244,7 +1244,7 @@ export function parseImports(
     path: string,
     origin: ItemOrigin,
 ): string[] {
-    const fullAst: ASTProgram = parse(src, path, origin);
+    const fullAst: AstModule = parse(src, path, origin);
     return fullAst.entries.flatMap((item) =>
         item.kind === "program_import" ? [item.path.value] : [],
     );

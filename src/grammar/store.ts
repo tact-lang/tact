@@ -1,5 +1,5 @@
 import {
-    ASTProgram,
+    AstModule,
     ASTConstant,
     ASTFunction,
     ASTNativeFunction,
@@ -43,7 +43,7 @@ export function getRawAST(ctx: CompilerContext) {
 /**
  * Parses multiple Tact source files into AST programs.
  */
-export function parsePrograms(sources: TactSource[]): ASTProgram[] {
+export function parsePrograms(sources: TactSource[]): AstModule[] {
     return sources.map((source) =>
         parse(source.code, source.path, source.origin),
     );
@@ -59,7 +59,7 @@ export function openContext(
     ctx: CompilerContext,
     sources: TactSource[],
     funcSources: { code: string; path: string }[],
-    parsedPrograms?: ASTProgram[],
+    parsedPrograms?: AstModule[],
 ): CompilerContext {
     const programs = parsedPrograms ? parsedPrograms : parsePrograms(sources);
     const types: ASTType[] = [];

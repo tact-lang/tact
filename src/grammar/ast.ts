@@ -1,5 +1,11 @@
 import { ItemOrigin, SrcInfo } from "./grammar";
 
+export type AstModule = {
+    kind: "program";
+    id: number;
+    entries: ASTProgramEntry[];
+};
+
 export type ASTPrimitive = {
     kind: "primitive";
     origin: ItemOrigin;
@@ -178,10 +184,6 @@ export type ASTConditional = {
     ref: SrcInfo;
 };
 
-//
-// Program
-//
-
 export type ASTProgramEntry =
     | ASTStruct
     | ASTContract
@@ -191,12 +193,6 @@ export type ASTProgramEntry =
     | ASTTrait
     | ASTProgramImport
     | ASTConstant;
-
-export type ASTProgram = {
-    kind: "program";
-    id: number;
-    entries: ASTProgramEntry[];
-};
 
 export type ASTProgramImport = {
     kind: "program_import";
@@ -508,7 +504,7 @@ export type ASTNode =
     | ASTOpCall
     | ASTStatementLet
     | ASTStatementReturn
-    | ASTProgram
+    | AstModule
     | ASTPrimitive
     | ASTOpCallStatic
     | ASTStatementExpression
