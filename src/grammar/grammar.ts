@@ -1,3 +1,9 @@
+import {
+    Interval as RawInterval,
+    Node,
+    IterationNode,
+    NonterminalNode,
+} from "ohm-js";
 import rawGrammar from "./grammar.ohm-bundle";
 import {
     ASTAugmentedAssignOperation,
@@ -11,17 +17,67 @@ import {
     ASTString,
     ASTTypeRef,
     createNode,
-    createRef,
-    inFile,
 } from "./ast";
 import { throwParseError, throwCompilationError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
-import { Node, IterationNode, NonterminalNode } from "ohm-js";
 import { TypeOrigin } from "../types/types";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
 
 let ctx: { origin: TypeOrigin } | null;
+
+/**
+ * Information about source code location (file and interval within it)
+ * and the source code contents.
+ */
+export class SrcInfo {
+    static merge(...refs: SrcInfo[]) {
+        if (refs.length === 0) {
+            throw Error("Cannot merge 0 refs");
+        }
+        const merged_interval = refs[0].#interval.coverageWith(
+            ...refs.map((i) => i.#interval),
+        );
+        return new SrcInfo(merged_interval, refs[0].#file);
+    }
+
+    readonly #interval: RawInterval;
+    readonly #file: string | null;
+
+    constructor(interval: RawInterval, file: string | null) {
+        this.#interval = interval;
+        this.#file = file;
+    }
+
+    get file() {
+        return this.#file;
+    }
+
+    get contents() {
+        return this.#interval.contents;
+    }
+
+    get interval() {
+        return this.#interval;
+    }
+}
+
+let currentFile: string | null = null;
+
+export function inFile<T>(path: string, callback: () => T) {
+    currentFile = path;
+    const r = callback();
+    currentFile = null;
+    return r;
+}
+
+export function createRef(s: Node, ...extra: Node[]): SrcInfo {
+    let i = s.source;
+    if (extra.length > 0) {
+        i = i.coverageWith(...extra.map((e) => e.source));
+    }
+    return new SrcInfo(i, currentFile);
+}
 
 // helper to unwrap optional grammar elements (marked with "?")
 // ohm-js represents those essentially as lists (IterationNodes)

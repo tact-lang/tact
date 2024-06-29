@@ -1,41 +1,5 @@
-import { Interval as RawInterval, Node as RawNode } from "ohm-js";
 import { TypeOrigin } from "../types/types";
-
-/**
- * Information about source code location (file and interval within it)
- * and the source code contents.
- */
-export class SrcInfo {
-    static merge(...refs: SrcInfo[]) {
-        if (refs.length === 0) {
-            throw Error("Cannot merge 0 refs");
-        }
-        const merged_interval = refs[0].#interval.coverageWith(
-            ...refs.map((i) => i.#interval),
-        );
-        return new SrcInfo(merged_interval, refs[0].#file);
-    }
-
-    readonly #interval: RawInterval;
-    readonly #file: string | null;
-
-    constructor(interval: RawInterval, file: string | null) {
-        this.#interval = interval;
-        this.#file = file;
-    }
-
-    get file() {
-        return this.#file;
-    }
-
-    get contents() {
-        return this.#interval.contents;
-    }
-
-    get interval() {
-        return this.#interval;
-    }
-}
+import { SrcInfo } from "./grammar";
 
 export type ASTPrimitive = {
     kind: "primitive";
@@ -621,23 +585,6 @@ export function __DANGER_resetNodeId() {
     nextId = 1;
 }
 
-let currentFile: string | null = null;
-
-export function inFile<T>(path: string, callback: () => T) {
-    currentFile = path;
-    const r = callback();
-    currentFile = null;
-    return r;
-}
-
-export function createRef(s: RawNode, ...extra: RawNode[]): SrcInfo {
-    let i = s.source;
-    if (extra.length > 0) {
-        i = i.coverageWith(...extra.map((e) => e.source));
-    }
-    return new SrcInfo(i, currentFile);
-}
-
 export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     callback(node);
 
@@ -817,3 +764,4 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         traverse(node.elseBranch, callback);
     }
 }
+export { SrcInfo };
