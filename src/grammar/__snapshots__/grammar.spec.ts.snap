@@ -376,7 +376,9 @@ Line 1, col 8:
 
 exports[`grammar should parse abstract-const 1`] = `
 {
-  "entries": [
+  "id": 7,
+  "imports": [],
+  "items": [
     {
       "attributes": [],
       "declarations": [
@@ -425,15 +427,15 @@ exports[`grammar should parse abstract-const 1`] = `
       "traits": [],
     },
   ],
-  "id": 7,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse contract-with-const-override 1`] = `
 {
-  "entries": [
+  "id": 8,
+  "imports": [],
+  "items": [
     {
       "attributes": [],
       "declarations": [
@@ -487,15 +489,27 @@ exports[`grammar should parse contract-with-const-override 1`] = `
       "traits": [],
     },
   ],
-  "id": 8,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse contract-with-imports 1`] = `
 {
-  "entries": [
+  "id": 6,
+  "imports": [
+    {
+      "id": 2,
+      "kind": "import",
+      "path": {
+        "id": 1,
+        "kind": "string",
+        "ref": "@stdlib/deploy",
+        "value": "@stdlib/deploy",
+      },
+      "ref": import "@stdlib/deploy";,
+    },
+  ],
+  "items": [
     {
       "attributes": [],
       "declarations": [],
@@ -518,27 +532,15 @@ exports[`grammar should parse contract-with-imports 1`] = `
       ],
     },
   ],
-  "id": 6,
-  "imports": [
-    {
-      "id": 2,
-      "kind": "import",
-      "path": {
-        "id": 1,
-        "kind": "string",
-        "ref": "@stdlib/deploy",
-        "value": "@stdlib/deploy",
-      },
-      "ref": import "@stdlib/deploy";,
-    },
-  ],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse contract-with-init 1`] = `
 {
-  "entries": [
+  "id": 30,
+  "imports": [],
+  "items": [
     {
       "attributes": [],
       "declarations": [
@@ -727,15 +729,15 @@ exports[`grammar should parse contract-with-init 1`] = `
       "traits": [],
     },
   ],
-  "id": 30,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse contract-with-trait 1`] = `
 {
-  "entries": [
+  "id": 28,
+  "imports": [],
+  "items": [
     {
       "id": 2,
       "kind": "primitive_type_decl",
@@ -937,15 +939,15 @@ exports[`grammar should parse contract-with-trait 1`] = `
       ],
     },
   ],
-  "id": 28,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse contract-with-trait-string-literal 1`] = `
 {
-  "entries": [
+  "id": 28,
+  "imports": [],
+  "items": [
     {
       "id": 2,
       "kind": "primitive_type_decl",
@@ -1147,15 +1149,15 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
       ],
     },
   ],
-  "id": 28,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-arith 1`] = `
 {
-  "entries": [
+  "id": 13,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -1233,15 +1235,15 @@ exports[`grammar should parse expr-arith 1`] = `
       ],
     },
   ],
-  "id": 13,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-arith-and-cmp 1`] = `
 {
-  "entries": [
+  "id": 15,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -1331,15 +1333,15 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
       ],
     },
   ],
-  "id": 15,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
 {
-  "entries": [
+  "id": 28,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -1508,15 +1510,15 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
       ],
     },
   ],
-  "id": 28,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-arith-bool-var 1`] = `
 {
-  "entries": [
+  "id": 25,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -1666,15 +1668,15 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
       ],
     },
   ],
-  "id": 25,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-chaining-unbox 1`] = `
 {
-  "entries": [
+  "id": 17,
+  "imports": [],
+  "items": [
     {
       "args": [
         {
@@ -1777,15 +1779,15 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
       ],
     },
   ],
-  "id": 17,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-condition-with-or 1`] = `
 {
-  "entries": [
+  "id": 24,
+  "imports": [],
+  "items": [
     {
       "args": [
         {
@@ -1928,15 +1930,15 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
       ],
     },
   ],
-  "id": 24,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-conditional 1`] = `
 {
-  "entries": [
+  "id": 16,
+  "imports": [],
+  "items": [
     {
       "args": [
         {
@@ -2031,15 +2033,15 @@ exports[`grammar should parse expr-conditional 1`] = `
       ],
     },
   ],
-  "id": 16,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-conditional-with-let 1`] = `
 {
-  "entries": [
+  "id": 21,
+  "imports": [],
+  "items": [
     {
       "args": [
         {
@@ -2164,15 +2166,15 @@ exports[`grammar should parse expr-conditional-with-let 1`] = `
       ],
     },
   ],
-  "id": 21,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-fun-call 1`] = `
 {
-  "entries": [
+  "id": 30,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -2354,15 +2356,15 @@ exports[`grammar should parse expr-fun-call 1`] = `
       ],
     },
   ],
-  "id": 30,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-int-literal 1`] = `
 {
-  "entries": [
+  "id": 7,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -2404,15 +2406,15 @@ exports[`grammar should parse expr-int-literal 1`] = `
       ],
     },
   ],
-  "id": 7,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-nested-conditional 1`] = `
 {
-  "entries": [
+  "id": 29,
+  "imports": [],
+  "items": [
     {
       "args": [
         {
@@ -2584,15 +2586,15 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
       ],
     },
   ],
-  "id": 29,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-parens 1`] = `
 {
-  "entries": [
+  "id": 16,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -2688,15 +2690,15 @@ exports[`grammar should parse expr-parens 1`] = `
       ],
     },
   ],
-  "id": 16,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-with-unbox 1`] = `
 {
-  "entries": [
+  "id": 14,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -2780,15 +2782,15 @@ exports[`grammar should parse expr-with-unbox 1`] = `
       ],
     },
   ],
-  "id": 14,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse expr-with-var 1`] = `
 {
-  "entries": [
+  "id": 17,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -2890,15 +2892,15 @@ exports[`grammar should parse expr-with-var 1`] = `
       ],
     },
   ],
-  "id": 17,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] = `
 {
-  "entries": [
+  "id": 130,
+  "imports": [],
+  "items": [
     {
       "args": [
         {
@@ -3758,15 +3760,15 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       ],
     },
   ],
-  "id": 130,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse items-multi-funs 1`] = `
 {
-  "entries": [
+  "id": 17,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -3877,15 +3879,15 @@ exports[`grammar should parse items-multi-funs 1`] = `
       ],
     },
   ],
-  "id": 17,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse items-native-fun-decls 1`] = `
 {
-  "entries": [
+  "id": 14,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -3972,15 +3974,15 @@ native testFunc(): Bool;,
       },
     },
   ],
-  "id": 14,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse items-struct-msg-fun-const 1`] = `
 {
-  "entries": [
+  "id": 68,
+  "imports": [],
+  "items": [
     {
       "fields": [
         {
@@ -4420,15 +4422,15 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
       ],
     },
   ],
-  "id": 68,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
 {
-  "entries": [
+  "id": 93,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -4986,15 +4988,15 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
       ],
     },
   ],
-  "id": 93,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
 {
-  "entries": [
+  "id": 75,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -5460,15 +5462,15 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
       ],
     },
   ],
-  "id": 75,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
 {
-  "entries": [
+  "id": 59,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -5834,15 +5836,15 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
       ],
     },
   ],
-  "id": 59,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse stmt-if 1`] = `
 {
-  "entries": [
+  "id": 17,
+  "imports": [],
+  "items": [
     {
       "args": [
         {
@@ -5950,15 +5952,15 @@ exports[`grammar should parse stmt-if 1`] = `
       ],
     },
   ],
-  "id": 17,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse stmt-if-else 1`] = `
 {
-  "entries": [
+  "id": 17,
+  "imports": [],
+  "items": [
     {
       "args": [
         {
@@ -6070,15 +6072,15 @@ exports[`grammar should parse stmt-if-else 1`] = `
       ],
     },
   ],
-  "id": 17,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
 {
-  "entries": [
+  "id": 43,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -6351,15 +6353,15 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       ],
     },
   ],
-  "id": 43,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse stmt-while-loop 1`] = `
 {
-  "entries": [
+  "id": 21,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -6491,15 +6493,15 @@ exports[`grammar should parse stmt-while-loop 1`] = `
       ],
     },
   ],
-  "id": 21,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
 {
-  "entries": [
+  "id": 29,
+  "imports": [],
+  "items": [
     {
       "args": [],
       "attributes": [],
@@ -6689,15 +6691,15 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
       ],
     },
   ],
-  "id": 29,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse struct-field-punning 1`] = `
 {
-  "entries": [
+  "id": 33,
+  "imports": [],
+  "items": [
     {
       "fields": [
         {
@@ -6898,15 +6900,15 @@ exports[`grammar should parse struct-field-punning 1`] = `
       },
     },
   ],
-  "id": 33,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse struct-msg-as 1`] = `
 {
-  "entries": [
+  "id": 14,
+  "imports": [],
+  "items": [
     {
       "fields": [
         {
@@ -6997,15 +6999,15 @@ exports[`grammar should parse struct-msg-as 1`] = `
 },
     },
   ],
-  "id": 14,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse struct-msg-initializers 1`] = `
 {
-  "entries": [
+  "id": 21,
+  "imports": [],
+  "items": [
     {
       "fields": [
         {
@@ -7137,15 +7139,15 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
 },
     },
   ],
-  "id": 21,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
 {
-  "entries": [
+  "id": 77,
+  "imports": [],
+  "items": [
     {
       "fields": [
         {
@@ -7637,15 +7639,15 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "ref": message G { x: Int = 42; y: Int },
     },
   ],
-  "id": 77,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
 {
-  "entries": [
+  "id": 23,
+  "imports": [],
+  "items": [
     {
       "id": 2,
       "kind": "primitive_type_decl",
@@ -7798,15 +7800,15 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       ],
     },
   ],
-  "id": 23,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse type-struct-with-map 1`] = `
 {
-  "entries": [
+  "id": 15,
+  "imports": [],
+  "items": [
     {
       "fields": [
         {
@@ -7906,15 +7908,15 @@ exports[`grammar should parse type-struct-with-map 1`] = `
 },
     },
   ],
-  "id": 15,
-  "imports": [],
   "kind": "module",
 }
 `;
 
 exports[`grammar should parse types-optional 1`] = `
 {
-  "entries": [
+  "id": 20,
+  "imports": [],
+  "items": [
     {
       "args": [
         {
@@ -8034,8 +8036,6 @@ exports[`grammar should parse types-optional 1`] = `
       ],
     },
   ],
-  "id": 20,
-  "imports": [],
   "kind": "module",
 }
 `;

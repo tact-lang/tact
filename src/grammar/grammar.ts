@@ -100,7 +100,7 @@ semantics.addOperation<ASTNode>("astOfModule", {
         return createNode({
             kind: "module",
             imports: imports.children.map((item) => item.astOfImport()),
-            entries: items.children.map((item) => item.astOfModuleItem()),
+            items: items.children.map((item) => item.astOfModuleItem()),
         });
     },
 });

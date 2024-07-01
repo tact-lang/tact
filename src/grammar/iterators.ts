@@ -96,7 +96,7 @@ export function forEachExpression(
     function traverseNode(node: ASTNode): void {
         switch (node.kind) {
             case "module":
-                node.entries.forEach(traverseNode);
+                node.items.forEach(traverseNode);
                 break;
             case "native_function_decl":
             case "def_struct":
@@ -305,7 +305,7 @@ export function foldExpressions<T>(
     function traverseNode(acc: T, node: ASTNode): T {
         switch (node.kind) {
             case "module":
-                node.entries.forEach((entry) => {
+                node.items.forEach((entry) => {
                     acc = traverseNode(acc, entry);
                 });
                 break;
@@ -434,7 +434,7 @@ export function forEachStatement(
     function traverseNode(node: ASTNode): void {
         switch (node.kind) {
             case "module":
-                node.entries.forEach(traverseNode);
+                node.items.forEach(traverseNode);
                 break;
             case "function_def":
             case "def_init_function":
@@ -552,7 +552,7 @@ export function foldStatements<T>(
     function traverseNode(acc: T, node: ASTNode): T {
         switch (node.kind) {
             case "module":
-                node.entries.forEach((entry) => {
+                node.items.forEach((entry) => {
                     acc = traverseNode(acc, entry);
                 });
                 break;

@@ -3,7 +3,7 @@ import { dummySrcInfo, SrcInfo } from "./grammar";
 export type AstModule = {
     kind: "module";
     imports: AstImport[];
-    entries: AstModuleItem[];
+    items: AstModuleItem[];
     id: number;
 };
 
@@ -646,7 +646,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     //
 
     if (node.kind === "module") {
-        for (const e of node.entries) {
+        for (const e of node.items) {
             traverse(e, callback);
         }
     }
