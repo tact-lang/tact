@@ -1,6 +1,6 @@
 import { ABIField, Address, Cell } from "@ton/core";
 import {
-    ASTConstant,
+    AstConstantDef,
     AstFunctionDef,
     ASTInitFunction,
     AstNativeFunctionDecl,
@@ -95,7 +95,7 @@ export type ConstantDescription = {
     type: TypeRef;
     value: Value | undefined;
     loc: SrcInfo;
-    ast: ASTConstant;
+    ast: AstConstantDef;
 };
 
 export type FunctionParameter = {

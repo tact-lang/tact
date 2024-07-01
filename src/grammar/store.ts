@@ -1,6 +1,6 @@
 import {
     AstModule,
-    ASTConstant,
+    AstConstantDef,
     AstFunctionDef,
     AstNativeFunctionDecl,
     ASTType,
@@ -20,7 +20,7 @@ export type ASTStore = {
     sources: TactSource[];
     funcSources: { code: string; path: string }[];
     functions: (AstFunctionDef | AstNativeFunctionDecl)[];
-    constants: ASTConstant[];
+    constants: AstConstantDef[];
     types: ASTType[];
 };
 
@@ -64,7 +64,7 @@ export function openContext(
     const programs = parsedPrograms ? parsedPrograms : parseModules(sources);
     const types: ASTType[] = [];
     const functions: (AstNativeFunctionDecl | AstFunctionDef)[] = [];
-    const constants: ASTConstant[] = [];
+    const constants: AstConstantDef[] = [];
     for (const program of programs) {
         for (const item of program.items) {
             if (
@@ -79,7 +79,7 @@ export function openContext(
                 item.kind === "native_function_decl"
             ) {
                 functions.push(item);
-            } else if (item.kind === "def_constant") {
+            } else if (item.kind === "constant_def") {
                 constants.push(item);
             }
         }

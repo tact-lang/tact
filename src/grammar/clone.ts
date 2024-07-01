@@ -161,11 +161,13 @@ export function cloneNode<T extends ASTNode>(src: T): T {
             ...src,
             args: src.args.map(cloneNode),
         });
-    } else if (src.kind === "def_constant") {
+    } else if (src.kind === "constant_def") {
         return cloneASTNode({
             ...src,
             type: cloneASTNode(src.type),
-            text: src.value ? cloneNode(src.value) : src.value,
+            text: src.initializer
+                ? cloneNode(src.initializer)
+                : src.initializer,
         });
     }
 

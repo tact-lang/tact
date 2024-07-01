@@ -18,7 +18,7 @@ export type AstModuleItem =
     | AstPrimitiveTypeDecl
     | AstFunctionDef
     | AstNativeFunctionDecl
-    | ASTConstant
+    | AstConstantDef
     | ASTStruct
     | ASTContract
     | ASTTrait;
@@ -58,6 +58,16 @@ export type AstNativeFunctionDecl = {
     nativeName: AstFuncId;
     params: AstTypedParameter[];
     return: ASTTypeRef | null;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstConstantDef = {
+    kind: "constant_def";
+    attributes: ASTConstantAttribute[];
+    name: AstId;
+    type: ASTTypeRef;
+    initializer: ASTExpression | null;
     id: number;
     loc: SrcInfo;
 };
@@ -325,7 +335,7 @@ export type ASTTraitDeclaration =
     | AstFunctionDef
     | AstFunctionDecl
     | ASTReceive
-    | ASTConstant;
+    | AstConstantDef;
 
 export type ASTTrait = {
     kind: "def_trait";
@@ -347,16 +357,6 @@ export type ASTField = {
     loc: SrcInfo;
 };
 
-export type ASTConstant = {
-    kind: "def_constant";
-    id: number;
-    name: AstId;
-    type: ASTTypeRef;
-    value: ASTExpression | null;
-    attributes: ASTConstantAttribute[];
-    loc: SrcInfo;
-};
-
 export type ASTConstantAttribute =
     | { type: "virtual"; loc: SrcInfo }
     | { type: "overrides"; loc: SrcInfo }
@@ -373,7 +373,7 @@ export type ASTContractDeclaration =
     | AstFunctionDef
     | ASTInitFunction
     | ASTReceive
-    | ASTConstant;
+    | AstConstantDef;
 
 export type ASTContract = {
     kind: "def_contract";
@@ -598,7 +598,7 @@ export type ASTNode =
     | ASTReceive
     | ASTTrait
     | AstImport
-    | ASTConstant;
+    | AstConstantDef;
 export type ASTExpression =
     | ASTOpBinary
     | ASTOpUnary
@@ -718,9 +718,9 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
             traverse(node.init, callback);
         }
     }
-    if (node.kind === "def_constant") {
-        if (node.value) {
-            traverse(node.value, callback);
+    if (node.kind === "constant_def") {
+        if (node.initializer) {
+            traverse(node.initializer, callback);
         }
     }
 

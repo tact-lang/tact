@@ -1,5 +1,5 @@
 import {
-    ASTConstant,
+    AstConstantDef,
     ASTField,
     ASTInitFunction,
     AstNativeFunctionDecl,
@@ -346,10 +346,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
         };
     }
 
-    function buildConstantDescription(src: ASTConstant): ConstantDescription {
+    function buildConstantDescription(
+        src: AstConstantDef,
+    ): ConstantDescription {
         const tr = buildTypeRef(src.type, types);
-        const d = src.value
-            ? evalConstantExpression(src.value, ctx)
+        const d = src.initializer
+            ? evalConstantExpression(src.initializer, ctx)
             : undefined;
         return {
             name: idText(src.name),
@@ -393,7 +395,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 types.get(idText(a.name))!.fields.length,
                             ),
                         );
-                } else if (f.kind === "def_constant") {
+                } else if (f.kind === "constant_def") {
                     if (
                         types
                             .get(idText(a.name))!
@@ -485,7 +487,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 types.get(idText(a.name))!.fields.length,
                             ),
                         );
-                } else if (f.kind === "def_constant") {
+                } else if (f.kind === "constant_def") {
                     if (
                         types
                             .get(idText(a.name))!

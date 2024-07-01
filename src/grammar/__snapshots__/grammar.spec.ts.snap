@@ -390,7 +390,8 @@ exports[`grammar should parse abstract-const 1`] = `
             },
           ],
           "id": 5,
-          "kind": "def_constant",
+          "initializer": null,
+          "kind": "constant_def",
           "loc": abstract const c: Int;,
           "name": {
             "id": 2,
@@ -410,7 +411,6 @@ exports[`grammar should parse abstract-const 1`] = `
             },
             "optional": false,
           },
-          "value": null,
         },
       ],
       "id": 6,
@@ -447,7 +447,13 @@ exports[`grammar should parse contract-with-const-override 1`] = `
             },
           ],
           "id": 6,
-          "kind": "def_constant",
+          "initializer": {
+            "id": 5,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+          "kind": "constant_def",
           "loc": override const Test: Int = 0;,
           "name": {
             "id": 2,
@@ -466,12 +472,6 @@ exports[`grammar should parse contract-with-const-override 1`] = `
               "text": "Int",
             },
             "optional": false,
-          },
-          "value": {
-            "id": 5,
-            "kind": "number",
-            "loc": 0,
-            "value": 0n,
           },
         },
       ],
@@ -4054,27 +4054,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
     {
       "attributes": [],
       "id": 19,
-      "kind": "def_constant",
-      "loc": const a: A = A { x: 1 };,
-      "name": {
-        "id": 11,
-        "kind": "id",
-        "loc": a,
-        "text": "a",
-      },
-      "type": {
-        "id": 13,
-        "kind": "type_ref_simple",
-        "loc": A,
-        "name": {
-          "id": 12,
-          "kind": "id",
-          "loc": A,
-          "text": "A",
-        },
-        "optional": false,
-      },
-      "value": {
+      "initializer": {
         "args": [
           {
             "exp": {
@@ -4103,6 +4083,26 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
           "loc": A,
           "text": "A",
         },
+      },
+      "kind": "constant_def",
+      "loc": const a: A = A { x: 1 };,
+      "name": {
+        "id": 11,
+        "kind": "id",
+        "loc": a,
+        "text": "a",
+      },
+      "type": {
+        "id": 13,
+        "kind": "type_ref_simple",
+        "loc": A,
+        "name": {
+          "id": 12,
+          "kind": "id",
+          "loc": A,
+          "text": "A",
+        },
+        "optional": false,
       },
     },
     {
@@ -4266,30 +4266,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
     {
       "attributes": [],
       "id": 54,
-      "kind": "def_constant",
-      "loc": const b: B = B {
-    x: 2,
-    y: 3,
-};,
-      "name": {
-        "id": 43,
-        "kind": "id",
-        "loc": b,
-        "text": "b",
-      },
-      "type": {
-        "id": 45,
-        "kind": "type_ref_simple",
-        "loc": B,
-        "name": {
-          "id": 44,
-          "kind": "id",
-          "loc": B,
-          "text": "B",
-        },
-        "optional": false,
-      },
-      "value": {
+      "initializer": {
         "args": [
           {
             "exp": {
@@ -4338,6 +4315,29 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
           "loc": B,
           "text": "B",
         },
+      },
+      "kind": "constant_def",
+      "loc": const b: B = B {
+    x: 2,
+    y: 3,
+};,
+      "name": {
+        "id": 43,
+        "kind": "id",
+        "loc": b,
+        "text": "b",
+      },
+      "type": {
+        "id": 45,
+        "kind": "type_ref_simple",
+        "loc": B,
+        "name": {
+          "id": 44,
+          "kind": "id",
+          "loc": B,
+          "text": "B",
+        },
+        "optional": false,
       },
     },
     {
@@ -6771,7 +6771,13 @@ exports[`grammar should parse struct-field-punning 1`] = `
     {
       "attributes": [],
       "id": 15,
-      "kind": "def_constant",
+      "initializer": {
+        "id": 14,
+        "kind": "number",
+        "loc": 5,
+        "value": 5n,
+      },
+      "kind": "constant_def",
       "loc": const x: Int = 5;,
       "name": {
         "id": 11,
@@ -6791,17 +6797,17 @@ exports[`grammar should parse struct-field-punning 1`] = `
         },
         "optional": false,
       },
-      "value": {
-        "id": 14,
-        "kind": "number",
-        "loc": 5,
-        "value": 5n,
-      },
     },
     {
       "attributes": [],
       "id": 20,
-      "kind": "def_constant",
+      "initializer": {
+        "id": 19,
+        "kind": "number",
+        "loc": 6,
+        "value": 6n,
+      },
+      "kind": "constant_def",
       "loc": const y: Int = 6;,
       "name": {
         "id": 16,
@@ -6821,37 +6827,11 @@ exports[`grammar should parse struct-field-punning 1`] = `
         },
         "optional": false,
       },
-      "value": {
-        "id": 19,
-        "kind": "number",
-        "loc": 6,
-        "value": 6n,
-      },
     },
     {
       "attributes": [],
       "id": 32,
-      "kind": "def_constant",
-      "loc": const D: A = A { x, y };,
-      "name": {
-        "id": 21,
-        "kind": "id",
-        "loc": D,
-        "text": "D",
-      },
-      "type": {
-        "id": 23,
-        "kind": "type_ref_simple",
-        "loc": A,
-        "name": {
-          "id": 22,
-          "kind": "id",
-          "loc": A,
-          "text": "A",
-        },
-        "optional": false,
-      },
-      "value": {
+      "initializer": {
         "args": [
           {
             "exp": {
@@ -6897,6 +6877,26 @@ exports[`grammar should parse struct-field-punning 1`] = `
           "loc": A,
           "text": "A",
         },
+      },
+      "kind": "constant_def",
+      "loc": const D: A = A { x, y };,
+      "name": {
+        "id": 21,
+        "kind": "id",
+        "loc": D,
+        "text": "D",
+      },
+      "type": {
+        "id": 23,
+        "kind": "type_ref_simple",
+        "loc": A,
+        "name": {
+          "id": 22,
+          "kind": "id",
+          "loc": A,
+          "text": "A",
+        },
+        "optional": false,
       },
     },
   ],

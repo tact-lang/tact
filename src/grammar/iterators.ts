@@ -119,9 +119,9 @@ export function forEachExpression(
                     traverseExpression(node.init);
                 }
                 break;
-            case "def_constant":
-                if (node.value) {
-                    traverseExpression(node.value);
+            case "constant_def":
+                if (node.initializer) {
+                    traverseExpression(node.initializer);
                 }
                 break;
             case "import":
@@ -334,9 +334,9 @@ export function foldExpressions<T>(
                     acc = traverseExpression(acc, node.init);
                 }
                 break;
-            case "def_constant":
-                if (node.value) {
-                    acc = traverseExpression(acc, node.value);
+            case "constant_def":
+                if (node.initializer) {
+                    acc = traverseExpression(acc, node.initializer);
                 }
                 break;
             case "import":
@@ -479,7 +479,7 @@ export function forEachStatement(
             case "type_ref_bounced":
             case "native_function_decl":
             case "def_struct":
-            case "def_constant":
+            case "constant_def":
             case "def_field":
             case "import":
             case "primitive_type_decl":
@@ -606,7 +606,7 @@ export function foldStatements<T>(
             case "native_function_decl":
             case "function_decl":
             case "def_struct":
-            case "def_constant":
+            case "constant_def":
             case "def_field":
             case "import":
             case "primitive_type_decl":
