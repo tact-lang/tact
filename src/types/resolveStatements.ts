@@ -585,10 +585,7 @@ export function resolveStatements(ctx: CompilerContext) {
                 sctx = addVariable(p.name, p.type, sctx);
             }
 
-            // Process
-            if (f.ast.statements) {
-                ctx = processFunctionBody(f.ast.statements, sctx, ctx);
-            }
+            ctx = processFunctionBody(f.ast.statements, sctx, ctx);
         }
     }
 
@@ -698,7 +695,10 @@ export function resolveStatements(ctx: CompilerContext) {
 
         // Process functions
         for (const f of t.functions.values()) {
-            if (f.ast.kind !== "native_function_decl") {
+            if (
+                f.ast.kind !== "native_function_decl" &&
+                f.ast.kind !== "function_decl"
+            ) {
                 // Build statement context
                 let sctx = emptyContext(f.ast.loc, f.returns);
                 sctx = addVariable(

@@ -564,15 +564,15 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             }
 
             // Process statements
-            for (const s of fd.statements!) {
+            for (const s of fd.statements) {
                 writeStatement(s, returnsStr, f.returns, ctx);
             }
 
             // Auto append return
             if (f.self && f.returns.kind === "void" && f.isMutating) {
                 if (
-                    fd.statements!.length === 0 ||
-                    fd.statements![fd.statements!.length - 1].kind !==
+                    fd.statements.length === 0 ||
+                    fd.statements[fd.statements.length - 1].kind !==
                         "statement_return"
                 ) {
                     ctx.append(`return (${returnsStr}, ());`);

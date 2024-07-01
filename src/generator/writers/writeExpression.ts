@@ -607,7 +607,10 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             // Resolve function
             const ff = t.functions.get(idText(f.name))!;
             let name = ops.extension(src.name, idText(f.name));
-            if (ff.ast.kind === "function_def") {
+            if (
+                ff.ast.kind === "function_def" ||
+                ff.ast.kind === "function_decl"
+            ) {
                 wCtx.used(name);
             } else {
                 name = idText(ff.ast.nativeName);

@@ -14,6 +14,7 @@ import {
     AstFunctionDef,
     isSelfId,
     isSlice,
+    AstFunctionDecl,
 } from "../grammar/ast";
 import { idTextErr, throwCompilationError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
@@ -533,7 +534,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     function resolveFunctionDescriptor(
         optSelf: string | null,
-        a: AstFunctionDef | AstNativeFunctionDecl,
+        a: AstFunctionDef | AstNativeFunctionDecl | AstFunctionDecl,
         origin: ItemOrigin,
     ): FunctionDescription {
         let self = optSelf;
@@ -572,7 +573,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
             if (self) {
                 throwCompilationError(
-                    "Native functions cannot be defined within a contract",
+                    "Native functions cannot be declared within a contract",
                     a.loc,
                 );
             }
@@ -833,7 +834,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (a.kind === "def_contract" || a.kind === "def_trait") {
             const s = types.get(idText(a.name))!;
             for (const d of a.declarations) {
-                if (d.kind === "function_def") {
+                if (d.kind === "function_def" || d.kind === "function_decl") {
                     const f = resolveFunctionDescriptor(s.name, d, s.origin);
                     if (f.self !== s.name) {
                         throw Error("Function self must be " + s.name); // Impossible

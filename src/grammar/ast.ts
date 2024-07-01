@@ -36,7 +36,17 @@ export type AstFunctionDef = {
     name: AstId;
     return: ASTTypeRef | null;
     params: AstTypedParameter[];
-    statements: ASTStatement[] | null;
+    statements: ASTStatement[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstFunctionDecl = {
+    kind: "function_decl";
+    attributes: ASTFunctionAttribute[];
+    name: AstId;
+    return: ASTTypeRef | null;
+    params: AstTypedParameter[];
     id: number;
     loc: SrcInfo;
 };
@@ -313,6 +323,7 @@ export type ASTStruct = {
 export type ASTTraitDeclaration =
     | ASTField
     | AstFunctionDef
+    | AstFunctionDecl
     | ASTReceive
     | ASTConstant;
 
@@ -575,6 +586,7 @@ export type ASTNode =
     | ASTContract
     | AstTypedParameter
     | AstFunctionDef
+    | AstFunctionDecl
     | ASTOpCall
     | AstModule
     | AstPrimitiveTypeDecl
@@ -674,10 +686,13 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         for (const e of node.params) {
             traverse(e, callback);
         }
-        if (node.statements) {
-            for (const e of node.statements) {
-                traverse(e, callback);
-            }
+        for (const e of node.statements) {
+            traverse(e, callback);
+        }
+    }
+    if (node.kind === "function_decl") {
+        for (const e of node.params) {
+            traverse(e, callback);
         }
     }
     if (node.kind === "def_init_function") {

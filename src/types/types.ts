@@ -10,6 +10,7 @@ import {
     ASTStatement,
     ASTType,
     AstId,
+    AstFunctionDecl,
 } from "../grammar/ast";
 import { ItemOrigin } from "../grammar/grammar";
 // import {
@@ -122,7 +123,7 @@ export type FunctionDescription = {
     self: string | null;
     returns: TypeRef;
     params: FunctionParameter[];
-    ast: AstFunctionDef | AstNativeFunctionDecl;
+    ast: AstFunctionDef | AstNativeFunctionDecl | AstFunctionDecl;
 };
 
 export type StatementDescription =

@@ -84,7 +84,7 @@ describe("writeExpression", () => {
             throw Error("Unexpected function kind");
         }
         let i = 0;
-        for (const s of main.ast.statements!) {
+        for (const s of main.ast.statements) {
             if (s.kind !== "statement_let") {
                 throw Error("Unexpected statement kind");
             }

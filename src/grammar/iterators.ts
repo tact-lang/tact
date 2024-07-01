@@ -604,6 +604,7 @@ export function foldStatements<T>(
             case "type_ref_map":
             case "type_ref_bounced":
             case "native_function_decl":
+            case "function_decl":
             case "def_struct":
             case "def_constant":
             case "def_field":

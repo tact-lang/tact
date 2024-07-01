@@ -342,12 +342,11 @@ semantics.addOperation<ASTNode>("astOfItem", {
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(true, attributes, createRef(this));
         return createNode({
-            kind: "function_def",
+            kind: "function_decl",
             attributes,
             name: funId.astOfExpression(),
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             params: funParameters.astsOfList(),
-            statements: null,
             loc: createRef(this),
         });
     },

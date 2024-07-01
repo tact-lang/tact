@@ -41,7 +41,7 @@ export function getRawAST(ctx: CompilerContext) {
 }
 
 /**
- * Parses multiple Tact source files into AST programs.
+ * Parses multiple Tact source files into AST modules.
  */
 export function parseModules(sources: TactSource[]): AstModule[] {
     return sources.map((source) =>
@@ -52,35 +52,35 @@ export function parseModules(sources: TactSource[]): AstModule[] {
 /**
  * Extends the compiler context by adding AST entries and source information from
  * given sources and parsed programs.
- * @param parsedModules An optional array of previously parsed programs. If not defined, they will be parsed from `sources`.
+ * @param parsedPrograms An optional array of previously parsed programs. If not defined, they will be parsed from `sources`.
  * @returns The updated compiler context.
  */
 export function openContext(
     ctx: CompilerContext,
     sources: TactSource[],
     funcSources: { code: string; path: string }[],
-    parsedModules?: AstModule[],
+    parsedPrograms?: AstModule[],
 ): CompilerContext {
-    const modules = parsedModules ? parsedModules : parseModules(sources);
+    const programs = parsedPrograms ? parsedPrograms : parseModules(sources);
     const types: ASTType[] = [];
     const functions: (AstNativeFunctionDecl | AstFunctionDef)[] = [];
     const constants: ASTConstant[] = [];
-    for (const module of modules) {
-        for (const entry of module.items) {
+    for (const program of programs) {
+        for (const item of program.items) {
             if (
-                entry.kind === "def_struct" ||
-                entry.kind === "def_contract" ||
-                entry.kind === "def_trait" ||
-                entry.kind === "primitive_type_decl"
+                item.kind === "def_struct" ||
+                item.kind === "def_contract" ||
+                item.kind === "def_trait" ||
+                item.kind === "primitive_type_decl"
             ) {
-                types.push(entry);
+                types.push(item);
             } else if (
-                entry.kind === "function_def" ||
-                entry.kind === "native_function_decl"
+                item.kind === "function_def" ||
+                item.kind === "native_function_decl"
             ) {
-                functions.push(entry);
-            } else if (entry.kind === "def_constant") {
-                constants.push(entry);
+                functions.push(item);
+            } else if (item.kind === "def_constant") {
+                constants.push(item);
             }
         }
     }
