@@ -39,7 +39,7 @@ function checkVariableExists(ctx: StatementContext, name: AstId): void {
     if (ctx.vars.has(idText(name))) {
         throwCompilationError(
             `Variable already exists: ${idTextErr(name)}`,
-            name.ref,
+            name.loc,
         );
     }
 }
@@ -178,7 +178,7 @@ function processStatements(
     for (const s of statements) {
         // Check for unreachable
         if (returnAlwaysReachable) {
-            throwCompilationError("Unreachable statement", s.ref);
+            throwCompilationError("Unreachable statement", s.loc);
         }
 
         // Process statement
@@ -196,7 +196,7 @@ function processStatements(
                 if (!isAssignable(expressionType, variableType)) {
                     throwCompilationError(
                         `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(variableType)}"`,
-                        s.ref,
+                        s.loc,
                     );
                 }
                 sctx = addVariable(s.name, variableType, sctx);
@@ -204,13 +204,13 @@ function processStatements(
                 if (expressionType.kind === "null") {
                     throwCompilationError(
                         `Cannot infer type for ${idTextErr(s.name)}`,
-                        s.ref,
+                        s.loc,
                     );
                 }
                 if (expressionType.kind === "void") {
                     throwCompilationError(
                         `The inferred type of variable ${idTextErr(s.name)} is "void", which is not allowed`,
-                        s.ref,
+                        s.loc,
                     );
                 }
                 sctx = addVariable(s.name, expressionType, sctx);
@@ -223,7 +223,7 @@ function processStatements(
             if (path === null) {
                 throwCompilationError(
                     `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
-                    s.path.ref,
+                    s.path.loc,
                 );
             }
 
@@ -236,7 +236,7 @@ function processStatements(
             if (!isAssignable(expressionType, tailType)) {
                 throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(tailType)}"`,
-                    s.ref,
+                    s.loc,
                 );
             }
 
@@ -255,7 +255,7 @@ function processStatements(
             if (path === null) {
                 throwCompilationError(
                     `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
-                    s.path.ref,
+                    s.path.loc,
                 );
             }
 
@@ -276,7 +276,7 @@ function processStatements(
             ) {
                 throwCompilationError(
                     `Type error: Augmented assignment is only allowed for Int type`,
-                    s.ref,
+                    s.loc,
                 );
             }
 
@@ -314,7 +314,7 @@ function processStatements(
             ) {
                 throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Bool"`,
-                    s.ref,
+                    s.loc,
                 );
             }
         } else if (s.kind === "statement_return") {
@@ -332,20 +332,20 @@ function processStatements(
                 if (expressionType.kind == "void") {
                     throwCompilationError(
                         `'return' statement can only be used with non-void types`,
-                        s.ref,
+                        s.loc,
                     );
                 }
                 if (!isAssignable(expressionType, sctx.returns)) {
                     throwCompilationError(
                         `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(sctx.returns)}"`,
-                        s.ref,
+                        s.loc,
                     );
                 }
             } else {
                 if (sctx.returns.kind !== "void") {
                     throwCompilationError(
                         `The function fails to return a result of type "${printTypeRef(sctx.returns)}"`,
-                        s.ref,
+                        s.loc,
                     );
                 }
             }
@@ -383,7 +383,7 @@ function processStatements(
             ) {
                 throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Int"`,
-                    s.ref,
+                    s.loc,
                 );
             }
         } else if (s.kind === "statement_until") {
@@ -406,7 +406,7 @@ function processStatements(
             ) {
                 throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Bool"`,
-                    s.ref,
+                    s.loc,
                 );
             }
         } else if (s.kind === "statement_while") {
@@ -429,7 +429,7 @@ function processStatements(
             ) {
                 throwCompilationError(
                     `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "Bool"`,
-                    s.ref,
+                    s.loc,
                 );
             }
         } else if (s.kind === "statement_try") {
@@ -484,7 +484,7 @@ function processStatements(
             if (mapPath === null) {
                 throwCompilationError(
                     `foreach is only allowed over maps that are path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
-                    s.map.ref,
+                    s.map.loc,
                 );
             }
 
@@ -493,7 +493,7 @@ function processStatements(
             if (mapType.kind !== "map") {
                 throwCompilationError(
                     `foreach can only be used on maps, but "${mapPath.map((id) => id.text).join(".")}" has type "${printTypeRef(mapType)}"`,
-                    s.map.ref,
+                    s.map.loc,
                 );
             }
 
@@ -580,7 +580,7 @@ export function resolveStatements(ctx: CompilerContext) {
     for (const f of Object.values(getAllStaticFunctions(ctx))) {
         if (f.ast.kind === "function_def") {
             // Build statement context
-            let sctx = emptyContext(f.ast.ref, f.returns);
+            let sctx = emptyContext(f.ast.loc, f.returns);
             for (const p of f.params) {
                 sctx = addVariable(p.name, p.type, sctx);
             }
@@ -597,7 +597,7 @@ export function resolveStatements(ctx: CompilerContext) {
         // Process init
         if (t.init) {
             // Build statement context
-            let sctx = emptyContext(t.init.ast.ref, { kind: "void" });
+            let sctx = emptyContext(t.init.ast.loc, { kind: "void" });
 
             // Self
             sctx = addVariable(
@@ -630,7 +630,7 @@ export function resolveStatements(ctx: CompilerContext) {
         // Process receivers
         for (const f of Object.values(t.receivers)) {
             // Build statement context
-            let sctx = emptyContext(f.ast.ref, { kind: "void" });
+            let sctx = emptyContext(f.ast.loc, { kind: "void" });
             sctx = addVariable(
                 selfId,
                 { kind: "ref", name: t.name, optional: false },
@@ -700,7 +700,7 @@ export function resolveStatements(ctx: CompilerContext) {
         for (const f of t.functions.values()) {
             if (f.ast.kind !== "native_function_decl") {
                 // Build statement context
-                let sctx = emptyContext(f.ast.ref, f.returns);
+                let sctx = emptyContext(f.ast.loc, f.returns);
                 sctx = addVariable(
                     selfId,
                     { kind: "ref", name: t.name, optional: false },

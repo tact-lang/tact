@@ -133,7 +133,7 @@ export function writeStatement(
             // typechecker is supposed to catch this
             throwInternalCompilerError(
                 `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
-                f.path.ref,
+                f.path.loc,
             );
         }
         const path = writePathExpression(lvaluePath);
@@ -158,7 +158,7 @@ export function writeStatement(
             // typechecker is supposed to catch this
             throwInternalCompilerError(
                 `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
-                f.path.ref,
+                f.path.loc,
             );
         }
         const path = writePathExpression(lvaluePath);
@@ -235,7 +235,7 @@ export function writeStatement(
             // typechecker is supposed to catch this
             throwInternalCompilerError(
                 `foreach is only allowed over maps that are path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
-                f.map.ref,
+                f.map.loc,
             );
         }
         const path = writePathExpression(mapPath);

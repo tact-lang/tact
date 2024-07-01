@@ -11,7 +11,7 @@ export type AstImport = {
     kind: "import";
     path: ASTString;
     id: number;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type AstModuleItem =
@@ -27,7 +27,7 @@ export type AstPrimitiveTypeDecl = {
     kind: "primitive_type_decl";
     name: AstId;
     id: number;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type AstFunctionDef = {
@@ -38,7 +38,7 @@ export type AstFunctionDef = {
     params: AstTypedParameter[];
     statements: ASTStatement[] | null;
     id: number;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type AstNativeFunctionDecl = {
@@ -49,21 +49,21 @@ export type AstNativeFunctionDecl = {
     params: AstTypedParameter[];
     return: ASTTypeRef | null;
     id: number;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type AstId = {
     kind: "id";
     text: string;
     id: number;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type AstFuncId = {
     kind: "func_id";
     text: string;
     id: number;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export function idText(ident: AstFuncId): string;
@@ -138,34 +138,34 @@ export const selfId: AstId = {
     kind: "id",
     text: "self",
     id: 0,
-    ref: dummySrcInfo,
+    loc: dummySrcInfo,
 };
 
 export type ASTNumber = {
     kind: "number";
     id: number;
     value: bigint;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTBoolean = {
     kind: "boolean";
     id: number;
     value: boolean;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTString = {
     kind: "string";
     id: number;
     value: string;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTNull = {
     kind: "null";
     id: number;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 //
@@ -177,7 +177,7 @@ export type ASTTypeRefSimple = {
     id: number;
     name: AstId;
     optional: boolean;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTTypeRefMap = {
@@ -187,14 +187,14 @@ export type ASTTypeRefMap = {
     keyAs: AstId | null;
     value: AstId;
     valueAs: AstId | null;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTTypeRefBounced = {
     kind: "type_ref_bounced";
     id: number;
     name: AstId;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTTypeRef = ASTTypeRefSimple | ASTTypeRefMap | ASTTypeRefBounced;
@@ -229,7 +229,7 @@ export type ASTOpBinary = {
     op: ASTBinaryOperation;
     left: ASTExpression;
     right: ASTExpression;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTUnaryOperation = "+" | "-" | "!" | "!!" | "~";
@@ -239,7 +239,7 @@ export type ASTOpUnary = {
     id: number;
     op: ASTUnaryOperation;
     right: ASTExpression;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTOpField = {
@@ -247,7 +247,7 @@ export type ASTOpField = {
     id: number;
     src: ASTExpression;
     name: AstId;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTOpCall = {
@@ -256,7 +256,7 @@ export type ASTOpCall = {
     src: ASTExpression;
     name: AstId;
     args: ASTExpression[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTOpCallStatic = {
@@ -264,7 +264,7 @@ export type ASTOpCallStatic = {
     id: number;
     name: AstId;
     args: ASTExpression[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTOpNew = {
@@ -272,7 +272,7 @@ export type ASTOpNew = {
     id: number;
     type: AstId;
     args: ASTNewParameter[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTNewParameter = {
@@ -280,7 +280,7 @@ export type ASTNewParameter = {
     id: number;
     name: AstId;
     exp: ASTExpression;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTInitOf = {
@@ -288,7 +288,7 @@ export type ASTInitOf = {
     id: number;
     name: AstId;
     args: ASTExpression[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTConditional = {
@@ -297,7 +297,7 @@ export type ASTConditional = {
     condition: ASTExpression;
     thenBranch: ASTExpression;
     elseBranch: ASTExpression;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTStruct = {
@@ -307,7 +307,7 @@ export type ASTStruct = {
     message: boolean;
     prefix: number | null;
     fields: ASTField[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTTraitDeclaration =
@@ -323,7 +323,7 @@ export type ASTTrait = {
     traits: AstId[];
     attributes: ASTContractAttribute[];
     declarations: ASTTraitDeclaration[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTField = {
@@ -333,7 +333,7 @@ export type ASTField = {
     type: ASTTypeRef;
     init: ASTExpression | null;
     as: AstId | null;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTConstant = {
@@ -343,18 +343,18 @@ export type ASTConstant = {
     type: ASTTypeRef;
     value: ASTExpression | null;
     attributes: ASTConstantAttribute[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTConstantAttribute =
-    | { type: "virtual"; ref: SrcInfo }
-    | { type: "overrides"; ref: SrcInfo }
-    | { type: "abstract"; ref: SrcInfo };
+    | { type: "virtual"; loc: SrcInfo }
+    | { type: "overrides"; loc: SrcInfo }
+    | { type: "abstract"; loc: SrcInfo };
 
 export type ASTContractAttribute = {
     type: "interface";
     name: ASTString;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTContractDeclaration =
@@ -371,7 +371,7 @@ export type ASTContract = {
     traits: AstId[];
     attributes: ASTContractAttribute[];
     declarations: ASTContractDeclaration[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type AstTypedParameter = {
@@ -379,17 +379,17 @@ export type AstTypedParameter = {
     id: number;
     name: AstId;
     type: ASTTypeRef;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTFunctionAttribute =
-    | { type: "get"; ref: SrcInfo }
-    | { type: "mutates"; ref: SrcInfo }
-    | { type: "extends"; ref: SrcInfo }
-    | { type: "virtual"; ref: SrcInfo }
-    | { type: "abstract"; ref: SrcInfo }
-    | { type: "overrides"; ref: SrcInfo }
-    | { type: "inline"; ref: SrcInfo };
+    | { type: "get"; loc: SrcInfo }
+    | { type: "mutates"; loc: SrcInfo }
+    | { type: "extends"; loc: SrcInfo }
+    | { type: "virtual"; loc: SrcInfo }
+    | { type: "abstract"; loc: SrcInfo }
+    | { type: "overrides"; loc: SrcInfo }
+    | { type: "inline"; loc: SrcInfo };
 
 export type ASTReceiveType =
     | {
@@ -424,7 +424,7 @@ export type ASTReceive = {
     id: number;
     selector: ASTReceiveType;
     statements: ASTStatement[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTInitFunction = {
@@ -432,7 +432,7 @@ export type ASTInitFunction = {
     id: number;
     params: AstTypedParameter[];
     statements: ASTStatement[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 //
@@ -445,21 +445,21 @@ export type ASTStatementLet = {
     name: AstId;
     type: ASTTypeRef | null;
     expression: ASTExpression;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTStatementReturn = {
     kind: "statement_return";
     id: number;
     expression: ASTExpression | null;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTStatementExpression = {
     kind: "statement_expression";
     id: number;
     expression: ASTExpression;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTStatementAssign = {
@@ -467,7 +467,7 @@ export type ASTStatementAssign = {
     id: number;
     path: ASTExpression;
     expression: ASTExpression;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTAugmentedAssignOperation =
@@ -486,7 +486,7 @@ export type ASTStatementAugmentedAssign = {
     op: ASTAugmentedAssignOperation;
     path: ASTExpression;
     expression: ASTExpression;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTCondition = {
@@ -496,7 +496,7 @@ export type ASTCondition = {
     trueStatements: ASTStatement[];
     falseStatements: ASTStatement[] | null;
     elseif: ASTCondition | null;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTStatementWhile = {
@@ -504,7 +504,7 @@ export type ASTStatementWhile = {
     id: number;
     condition: ASTExpression;
     statements: ASTStatement[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTStatementUntil = {
@@ -512,7 +512,7 @@ export type ASTStatementUntil = {
     id: number;
     condition: ASTExpression;
     statements: ASTStatement[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTStatementRepeat = {
@@ -520,14 +520,14 @@ export type ASTStatementRepeat = {
     id: number;
     iterations: ASTExpression;
     statements: ASTStatement[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTStatementTry = {
     kind: "statement_try";
     id: number;
     statements: ASTStatement[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTStatementTryCatch = {
@@ -536,7 +536,7 @@ export type ASTStatementTryCatch = {
     statements: ASTStatement[];
     catchName: AstId;
     catchStatements: ASTStatement[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type ASTStatementForEach = {
@@ -546,7 +546,7 @@ export type ASTStatementForEach = {
     valueName: AstId;
     map: ASTExpression;
     statements: ASTStatement[];
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 //

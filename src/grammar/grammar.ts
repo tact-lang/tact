@@ -117,7 +117,7 @@ semantics.addOperation<ASTNode>("astOfImport", {
         return createNode({
             kind: "import",
             path: pathAST,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
 });
@@ -134,7 +134,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         return createNode({
             kind: "primitive_type_decl",
             name: typeId.astOfType(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     NativeFunctionDecl(
@@ -160,7 +160,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             nativeName: funcId.astOfExpression(),
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             params: params.astsOfList(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StructDecl_regular(_structKwd, typeId, _lbrace, fields, _rbrace) {
@@ -171,7 +171,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             fields: fields.astsOfList(),
             prefix: null,
             message: false,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StructDecl_message(
@@ -193,7 +193,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
                 Number(bigintOfIntLiteral(number)),
             ),
             message: true,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     Contract(
@@ -217,7 +217,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
                 item.astOfItem(),
             ),
             traits: optInheritedTraits.children[0]?.astsOfList() ?? [],
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     Trait(
@@ -239,7 +239,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             ),
             declarations: traitItems.children.map((item) => item.astOfItem()),
             traits: optInheritedTraits.children[0]?.astsOfList() ?? [],
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ModuleFunction(fun) {
@@ -274,7 +274,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             type: constType.astOfType(),
             value: initExpr.astOfExpression(),
             attributes,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ConstantDeclaration(
@@ -295,7 +295,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             type: constType.astOfType(),
             value: null,
             attributes,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StorageVar(fieldDecl, _semicolon) {
@@ -324,7 +324,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             params: funParameters.astsOfList(),
             statements: funBody.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     FunctionDeclaration(
@@ -348,7 +348,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             params: funParameters.astsOfList(),
             statements: null,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ContractInit(_initKwd, initParameters, _lbrace, initBody, _rbrace) {
@@ -356,7 +356,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             kind: "def_init_function",
             params: initParameters.astsOfList(),
             statements: initBody.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     Receiver_regular(
@@ -379,7 +379,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             kind: "def_receive",
             selector,
             statements: receiverBody.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     Receiver_comment(
@@ -398,7 +398,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
                 comment: comment.astOfExpression(),
             },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     Receiver_bounced(
@@ -414,7 +414,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             kind: "def_receive",
             selector: { kind: "bounce", param: parameter.astOfDeclaration() },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     Receiver_externalRegular(
@@ -437,7 +437,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             kind: "def_receive",
             selector,
             statements: receiverBody.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     Receiver_externalComment(
@@ -456,44 +456,44 @@ semantics.addOperation<ASTNode>("astOfItem", {
                 comment: comment.astOfExpression(),
             },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
 });
 
 semantics.addOperation<ASTFunctionAttribute>("astOfFunctionAttributes", {
     FunctionAttribute_getter(_) {
-        return { type: "get", ref: createRef(this) };
+        return { type: "get", loc: createRef(this) };
     },
     FunctionAttribute_extends(_) {
-        return { type: "extends", ref: createRef(this) };
+        return { type: "extends", loc: createRef(this) };
     },
     FunctionAttribute_mutates(_) {
-        return { type: "mutates", ref: createRef(this) };
+        return { type: "mutates", loc: createRef(this) };
     },
     FunctionAttribute_override(_) {
-        return { type: "overrides", ref: createRef(this) };
+        return { type: "overrides", loc: createRef(this) };
     },
     FunctionAttribute_inline(_) {
-        return { type: "inline", ref: createRef(this) };
+        return { type: "inline", loc: createRef(this) };
     },
     FunctionAttribute_virtual(_) {
-        return { type: "virtual", ref: createRef(this) };
+        return { type: "virtual", loc: createRef(this) };
     },
     FunctionAttribute_abstract(_) {
-        return { type: "abstract", ref: createRef(this) };
+        return { type: "abstract", loc: createRef(this) };
     },
 });
 
 semantics.addOperation<ASTConstantAttribute>("astOfConstAttribute", {
     ConstantAttribute_override(_) {
-        return { type: "overrides", ref: createRef(this) };
+        return { type: "overrides", loc: createRef(this) };
     },
     ConstantAttribute_virtual(_) {
-        return { type: "virtual", ref: createRef(this) };
+        return { type: "virtual", loc: createRef(this) };
     },
     ConstantAttribute_abstract(_) {
-        return { type: "abstract", ref: createRef(this) };
+        return { type: "abstract", loc: createRef(this) };
     },
 });
 
@@ -539,7 +539,7 @@ semantics.addOperation<ASTContractAttribute>("astOfContractAttributes", {
         return {
             type: "interface",
             name: interfaceName.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         };
     },
 });
@@ -560,7 +560,7 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
             type: type.astOfType() as ASTTypeRef,
             as: unwrapOptNode(optStorageType, (t) => t.astOfExpression()),
             init: unwrapOptNode(optInitializer, (e) => e.astOfExpression()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     Parameter(id, _colon, type) {
@@ -569,7 +569,7 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
             kind: "typed_parameter",
             name: id.astOfExpression(),
             type: type.astOfType(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StructFieldInitializer_full(fieldId, _colon, initializer) {
@@ -577,7 +577,7 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
             kind: "new_parameter",
             name: fieldId.astOfExpression(),
             exp: initializer.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StructFieldInitializer_punned(fieldId) {
@@ -585,7 +585,7 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
             kind: "new_parameter",
             name: fieldId.astOfExpression(),
             exp: fieldId.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
 });
@@ -610,7 +610,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             name: id.astOfExpression(),
             type: unwrapOptNode(optType, (t) => t.astOfType()),
             expression: expression.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StatementReturn(_returnKwd, optExpression, _optSemicolonIfLastStmtInBlock) {
@@ -619,14 +619,14 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             expression: unwrapOptNode(optExpression, (e) =>
                 e.astOfExpression(),
             ),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StatementExpression(expression, _optSemicolonIfLastStmtInBlock) {
         return createNode({
             kind: "statement_expression",
             expression: expression.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StatementAssign(
@@ -640,7 +640,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
                 kind: "statement_assign",
                 path: lvalue.astOfExpression(),
                 expression: expression.astOfExpression(),
-                ref: createRef(this),
+                loc: createRef(this),
             });
         } else {
             let op: ASTAugmentedAssignOperation;
@@ -677,7 +677,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
                 path: lvalue.astOfExpression(),
                 op,
                 expression: expression.astOfExpression(),
-                ref: createRef(this),
+                loc: createRef(this),
             });
         }
     },
@@ -688,7 +688,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
             falseStatements: null,
             elseif: null,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StatementCondition_withElse(
@@ -708,7 +708,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
             falseStatements: elseBlock.children.map((s) => s.astOfStatement()),
             elseif: null,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StatementCondition_withElseIf(
@@ -726,7 +726,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
             falseStatements: null,
             elseif: elseifClause.astOfStatement(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StatementWhile(
@@ -742,7 +742,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             kind: "statement_while",
             condition: condition.astOfExpression(),
             statements: loopBody.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StatementRepeat(
@@ -758,7 +758,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             kind: "statement_repeat",
             iterations: iterations.astOfExpression(),
             statements: loopBody.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StatementUntil(
@@ -776,14 +776,14 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             kind: "statement_until",
             condition: condition.astOfExpression(),
             statements: loopBody.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StatementTry_noCatch(_tryKwd, _lbraceTry, tryBlock, _rbraceTry) {
         return createNode({
             kind: "statement_try",
             statements: tryBlock.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StatementTry_withCatch(
@@ -804,7 +804,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             statements: tryBlock.children.map((s) => s.astOfStatement()),
             catchName: exitCodeId.astOfExpression(),
             catchStatements: catchBlock.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     StatementForEach(
@@ -828,7 +828,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
             valueName: valueId.astOfExpression(),
             map: mapId.astOfExpression(),
             statements: foreachBlock.children.map((s) => s.astOfStatement()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
 });
@@ -840,7 +840,7 @@ semantics.addOperation<ASTNode>("astOfType", {
             text:
                 firstTactTypeIdCharacter.sourceString +
                 restOfTactTypeId.sourceString,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     Type_optional(typeId, _questionMark) {
@@ -848,7 +848,7 @@ semantics.addOperation<ASTNode>("astOfType", {
             kind: "type_ref_simple",
             name: typeId.astOfType(),
             optional: true,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     Type_regular(typeId) {
@@ -856,7 +856,7 @@ semantics.addOperation<ASTNode>("astOfType", {
             kind: "type_ref_simple",
             name: typeId.astOfType(),
             optional: false,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     Type_map(
@@ -879,14 +879,14 @@ semantics.addOperation<ASTNode>("astOfType", {
             valueAs: unwrapOptNode(optValueStorageType, (t) =>
                 t.astOfExpression(),
             ),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     Type_bounced(_bouncedKwd, _langle, typeId, _rangle) {
         return createNode({
             kind: "type_ref_bounced",
             name: typeId.astOfType(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
 });
@@ -903,38 +903,38 @@ semantics.addOperation<ASTNode>("astOfExpression", {
         return createNode({
             kind: "number",
             value: bigintOfIntLiteral(number),
-            ref: createRef(this),
+            loc: createRef(this),
         }); // Parses dec, hex, and bin numbers
     },
     boolLiteral(boolValue) {
         return createNode({
             kind: "boolean",
             value: boolValue.sourceString === "true",
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     id(firstTactIdCharacter, restOfTactId) {
         return createNode({
             kind: "id",
             text: firstTactIdCharacter.sourceString + restOfTactId.sourceString,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     funcId(firstFuncIdCharacter, restOfFuncId) {
         return createNode({
             kind: "func_id",
             text: firstFuncIdCharacter.sourceString + restOfFuncId.sourceString,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     null(_nullKwd) {
-        return createNode({ kind: "null", ref: createRef(this) });
+        return createNode({ kind: "null", loc: createRef(this) });
     },
     stringLiteral(_startQuotationMark, string, _endQuotationMark) {
         return createNode({
             kind: "string",
             value: string.sourceString,
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionAdd_add(left, _plus, right) {
@@ -943,7 +943,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "+",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionAdd_sub(left, _minus, right) {
@@ -952,7 +952,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "-",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionMul_div(left, _slash, right) {
@@ -961,7 +961,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "/",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionMul_mul(left, _star, right) {
@@ -970,7 +970,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "*",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionMul_rem(left, _percent, right) {
@@ -979,7 +979,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "%",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionEquality_eq(left, _equalsEquals, right) {
@@ -988,7 +988,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "==",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionEquality_not(left, _bangEquals, right) {
@@ -997,7 +997,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "!=",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionCompare_gt(left, _rangle, right) {
@@ -1006,7 +1006,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: ">",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionCompare_gte(left, _rangleEquals, right) {
@@ -1015,7 +1015,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: ">=",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionCompare_lt(left, _langle, right) {
@@ -1024,7 +1024,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "<",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionCompare_lte(left, _langleEquals, right) {
@@ -1033,7 +1033,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "<=",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionOr_or(left, _pipePipe, right) {
@@ -1042,7 +1042,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "||",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionAnd_and(left, _ampersandAmpersand, right) {
@@ -1051,7 +1051,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "&&",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionBitwiseShift_shr(left, _rangleRangle, right) {
@@ -1060,7 +1060,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: ">>",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionBitwiseShift_shl(left, _langleLangle, right) {
@@ -1069,7 +1069,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "<<",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionBitwiseAnd_bitwiseAnd(left, _ampersand, right) {
@@ -1078,7 +1078,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "&",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionBitwiseOr_bitwiseOr(left, _pipe, right) {
@@ -1087,7 +1087,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "|",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionBitwiseXor_bitwiseXor(left, _caret, right) {
@@ -1096,7 +1096,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             op: "^",
             left: left.astOfExpression(),
             right: right.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
 
@@ -1106,7 +1106,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             kind: "op_unary",
             op: "+",
             right: operand.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionUnary_minus(_minus, operand) {
@@ -1114,7 +1114,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             kind: "op_unary",
             op: "-",
             right: operand.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionUnary_not(_bang, operand) {
@@ -1122,7 +1122,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             kind: "op_unary",
             op: "!",
             right: operand.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionUnary_bitwiseNot(_tilde, operand) {
@@ -1130,7 +1130,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             kind: "op_unary",
             op: "~",
             right: operand.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionParens(_lparen, expression, _rparen) {
@@ -1141,7 +1141,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             kind: "op_unary",
             op: "!!",
             right: operand.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
 
@@ -1150,7 +1150,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             kind: "op_field",
             src: source.astOfExpression(),
             name: fieldId.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionMethodCall(source, _dot, methodId, methodArguments) {
@@ -1159,7 +1159,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             src: source.astOfExpression(),
             name: methodId.astOfExpression(),
             args: methodArguments.astsOfList(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionStaticCall(functionId, functionArguments) {
@@ -1167,7 +1167,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             kind: "op_static_call",
             name: functionId.astOfExpression(),
             args: functionArguments.astsOfList(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionStructInstance(
@@ -1193,7 +1193,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             args: structFields
                 .asIteration()
                 .children.map((d) => d.astOfDeclaration()),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
     ExpressionInitOf(_initOfKwd, contractId, initArguments) {
@@ -1201,7 +1201,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             kind: "init_of",
             name: contractId.astOfExpression(),
             args: initArguments.astsOfList(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
 
@@ -1218,7 +1218,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
             condition: condition.astOfExpression(),
             thenBranch: thenExpression.astOfExpression(),
             elseBranch: elseExpression.astOfExpression(),
-            ref: createRef(this),
+            loc: createRef(this),
         });
     },
 });

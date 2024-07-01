@@ -5,36 +5,36 @@ import { AstId, SrcInfo } from "./grammar/ast";
 import { ItemOrigin } from "./grammar/grammar";
 
 export class TactError extends Error {
-    readonly ref: SrcInfo;
-    constructor(message: string, ref: SrcInfo) {
+    readonly loc: SrcInfo;
+    constructor(message: string, loc: SrcInfo) {
         super(message);
-        this.ref = ref;
+        this.loc = loc;
     }
 }
 
 export class TactParseError extends TactError {
-    constructor(message: string, ref: SrcInfo) {
-        super(message, ref);
+    constructor(message: string, loc: SrcInfo) {
+        super(message, loc);
     }
 }
 
 /// This will be split at least into two categories: typechecking and codegen errors
 export class TactCompilationError extends TactError {
-    constructor(message: string, ref: SrcInfo) {
-        super(message, ref);
+    constructor(message: string, loc: SrcInfo) {
+        super(message, loc);
     }
 }
 
 export class TactInternalCompilerError extends TactError {
-    constructor(message: string, ref: SrcInfo) {
-        super(message, ref);
+    constructor(message: string, loc: SrcInfo) {
+        super(message, loc);
     }
 }
 
 export class TactConstEvalError extends TactCompilationError {
     fatal: boolean = false;
-    constructor(message: string, fatal: boolean, ref: SrcInfo) {
-        super(message, ref);
+    constructor(message: string, fatal: boolean, loc: SrcInfo) {
+        super(message, loc);
         this.fatal = fatal;
     }
 }

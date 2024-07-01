@@ -316,8 +316,8 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             (lt.name !== "Int" && lt.name !== "Bool") ||
             (rt.name !== "Int" && rt.name !== "Bool")
         ) {
-            const file = f.ref.file;
-            const loc_info = f.ref.interval.getLineAndColumn();
+            const file = f.loc.file;
+            const loc_info = f.loc.interval.getLineAndColumn();
             throw Error(
                 `(Internal Compiler Error) Invalid types for binary operation: ${file}:${loc_info.lineNum}:${loc_info.colNum}`,
             ); // Should be unreachable
@@ -386,7 +386,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
         } else if (f.op === "^") {
             op = "^";
         } else {
-            throwCompilationError(`Unknown binary operator: ${f.op}`, f.ref);
+            throwCompilationError(`Unknown binary operator: ${f.op}`, f.loc);
         }
         return (
             "(" +
@@ -436,7 +436,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             return `${wCtx.used("__tact_not_null")}(${writeExpression(f.right, wCtx)})`;
         }
 
-        throwCompilationError(`Unknown unary operator: ${f.op}`, f.ref);
+        throwCompilationError(`Unknown unary operator: ${f.op}`, f.loc);
     }
 
     //
@@ -453,7 +453,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
         ) {
             throwCompilationError(
                 `Cannot access field of non-struct type: "${printTypeRef(src)}"`,
-                f.ref,
+                f.loc,
             );
         }
         const srcT = getType(wCtx.ctx, src.name);
@@ -471,7 +471,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
         if (!field && !cst) {
             throwCompilationError(
                 `Cannot find field "${f.name.text}" in struct "${srcT.name}"`,
-                f.name.ref,
+                f.name.loc,
             );
         }
 
@@ -511,7 +511,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
                 wCtx,
                 f.args.map((v) => getExpType(wCtx.ctx, v)),
                 f.args,
-                f.ref,
+                f.loc,
             );
         }
 
@@ -575,7 +575,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
         if (src === null) {
             throwCompilationError(
                 `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
-                f.ref,
+                f.loc,
             );
         }
 
@@ -584,7 +584,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             if (src.optional) {
                 throwCompilationError(
                     `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
-                    f.ref,
+                    f.loc,
                 );
             }
 
@@ -599,7 +599,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
                         wCtx,
                         [src, ...f.args.map((v) => getExpType(wCtx.ctx, v))],
                         [f.src, ...f.args],
-                        f.ref,
+                        f.loc,
                     );
                 }
             }
@@ -659,7 +659,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             if (!MapFunctions.has(idText(f.name))) {
                 throwCompilationError(
                     `Map function "${idText(f.name)}" not found`,
-                    f.ref,
+                    f.loc,
                 );
             }
             const abf = MapFunctions.get(idText(f.name))!;
@@ -667,7 +667,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
                 wCtx,
                 [src, ...f.args.map((v) => getExpType(wCtx.ctx, v))],
                 [f.src, ...f.args],
-                f.ref,
+                f.loc,
             );
         }
 
@@ -677,7 +677,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
 
         throwCompilationError(
             `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
-            f.ref,
+            f.loc,
         );
     }
 

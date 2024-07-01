@@ -119,11 +119,11 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
                 name: f.name,
                 arguments: f.params.map((v) => ({
                     name: idText(v.name),
-                    type: createABITypeRefFromTypeRef(v.type, v.ref),
+                    type: createABITypeRefFromTypeRef(v.type, v.loc),
                 })),
                 returnType:
                     f.returns.kind !== "void"
-                        ? createABITypeRefFromTypeRef(f.returns, f.ast.ref)
+                        ? createABITypeRefFromTypeRef(f.returns, f.ast.loc)
                         : null,
             });
         }

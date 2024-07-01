@@ -5,11 +5,11 @@ import { TypeRef } from "../types/types";
 
 export type AbiFunction = {
     name: string;
-    resolve: (ctx: CompilerContext, args: TypeRef[], ref: SrcInfo) => TypeRef;
+    resolve: (ctx: CompilerContext, args: TypeRef[], loc: SrcInfo) => TypeRef;
     generate: (
         ctx: WriterContext,
         args: TypeRef[],
         resolved: ASTExpression[],
-        ref: SrcInfo,
+        loc: SrcInfo,
     ) => string;
 };

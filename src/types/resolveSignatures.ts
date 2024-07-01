@@ -198,7 +198,7 @@ function checkBinaryMessageReceiver(
     if (usedOpcodes.has(opcode)) {
         throwCompilationError(
             `Receive functions of a contract or trait cannot process messages with the same opcode: opcodes of message types "${rcv.type}" and "${usedOpcodes.get(opcode)}" are equal`,
-            rcvAst.ref,
+            rcvAst.loc,
         );
     } else {
         usedOpcodes.set(opcode, rcv.type);
@@ -217,7 +217,7 @@ function checkCommentMessageReceiver(
     if (usedOpcodes.has(opcode)) {
         throwCompilationError(
             `Receive functions of a contract or trait cannot process comments with the same hashes: hashes of comment strings "${rcv.comment}" and "${usedOpcodes.get(opcode)}" are equal`,
-            rcvAst.ref,
+            rcvAst.loc,
         );
     } else {
         usedOpcodes.set(opcode, rcv.comment);

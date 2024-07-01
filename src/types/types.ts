@@ -84,7 +84,7 @@ export type FieldDescription = {
     type: TypeRef;
     as: string | null;
     default: Value | undefined;
-    ref: SrcInfo;
+    loc: SrcInfo;
     ast: ASTNode;
     abi: ABIField;
 };
@@ -93,21 +93,21 @@ export type ConstantDescription = {
     name: string;
     type: TypeRef;
     value: Value | undefined;
-    ref: SrcInfo;
+    loc: SrcInfo;
     ast: ASTConstant;
 };
 
 export type FunctionParameter = {
     name: AstId;
     type: TypeRef;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type InitParameter = {
     name: AstId;
     type: TypeRef;
     as: string | null;
-    ref: SrcInfo;
+    loc: SrcInfo;
 };
 
 export type FunctionDescription = {

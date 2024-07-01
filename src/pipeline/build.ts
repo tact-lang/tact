@@ -271,7 +271,7 @@ export async function build(args: {
                 kind: "direct",
                 args: getType(ctx, contract).init!.params.map((v) => ({
                     name: idText(v.name),
-                    type: createABITypeRefFromTypeRef(v.type, v.ref),
+                    type: createABITypeRefFromTypeRef(v.type, v.loc),
                 })),
                 prefix: {
                     bits: 1,
