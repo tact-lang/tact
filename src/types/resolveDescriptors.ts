@@ -2,7 +2,7 @@ import {
     ASTConstant,
     ASTField,
     ASTInitFunction,
-    ASTNativeFunction,
+    AstNativeFunctionDecl,
     ASTNode,
     SrcInfo,
     ASTTypeRef,
@@ -533,7 +533,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     function resolveFunctionDescriptor(
         optSelf: string | null,
-        a: AstFunctionDef | ASTNativeFunction,
+        a: AstFunctionDef | AstNativeFunctionDecl,
         origin: ItemOrigin,
     ): FunctionDescription {
         let self = optSelf;
@@ -564,7 +564,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         const isAbstract = a.attributes.find((a) => a.type === "abstract");
 
         // Check for native
-        if (a.kind === "def_native_function") {
+        if (a.kind === "native_function_decl") {
             if (isGetter) {
                 throwCompilationError(
                     "Native functions cannot be getters",

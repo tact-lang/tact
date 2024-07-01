@@ -2,7 +2,7 @@ import {
     AstModule,
     ASTConstant,
     AstFunctionDef,
-    ASTNativeFunction,
+    AstNativeFunctionDecl,
     ASTType,
 } from "./ast";
 import { CompilerContext, createContextStore } from "../context";
@@ -19,7 +19,7 @@ export type TactSource = { code: string; path: string; origin: ItemOrigin };
 export type ASTStore = {
     sources: TactSource[];
     funcSources: { code: string; path: string }[];
-    functions: (AstFunctionDef | ASTNativeFunction)[];
+    functions: (AstFunctionDef | AstNativeFunctionDecl)[];
     constants: ASTConstant[];
     types: ASTType[];
 };
@@ -63,7 +63,7 @@ export function openContext(
 ): CompilerContext {
     const programs = parsedPrograms ? parsedPrograms : parsePrograms(sources);
     const types: ASTType[] = [];
-    const functions: (ASTNativeFunction | AstFunctionDef)[] = [];
+    const functions: (AstNativeFunctionDecl | AstFunctionDef)[] = [];
     const constants: ASTConstant[] = [];
     for (const program of programs) {
         for (const entry of program.entries) {
@@ -76,7 +76,7 @@ export function openContext(
                 types.push(entry);
             } else if (
                 entry.kind === "function_def" ||
-                entry.kind === "def_native_function"
+                entry.kind === "native_function_decl"
             ) {
                 functions.push(entry);
             } else if (entry.kind === "def_constant") {

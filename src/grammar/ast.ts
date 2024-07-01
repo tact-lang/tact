@@ -17,7 +17,7 @@ export type AstImport = {
 export type AstModuleItem =
     | AstPrimitiveTypeDecl
     | AstFunctionDef
-    | ASTNativeFunction
+    | AstNativeFunctionDecl
     | ASTConstant
     | ASTStruct
     | ASTContract
@@ -37,6 +37,17 @@ export type AstFunctionDef = {
     return: ASTTypeRef | null;
     args: ASTArgument[];
     statements: ASTStatement[] | null;
+    id: number;
+    ref: SrcInfo;
+};
+
+export type AstNativeFunctionDecl = {
+    kind: "native_function_decl";
+    attributes: ASTFunctionAttribute[];
+    name: AstId;
+    nativeName: AstFuncId;
+    args: ASTArgument[];
+    return: ASTTypeRef | null;
     id: number;
     ref: SrcInfo;
 };
@@ -416,17 +427,6 @@ export type ASTReceive = {
     ref: SrcInfo;
 };
 
-export type ASTNativeFunction = {
-    kind: "def_native_function";
-    id: number;
-    attributes: ASTFunctionAttribute[];
-    name: AstId;
-    nativeName: AstFuncId;
-    return: ASTTypeRef | null;
-    args: ASTArgument[];
-    ref: SrcInfo;
-};
-
 export type ASTInitFunction = {
     kind: "def_init_function";
     id: number;
@@ -579,7 +579,7 @@ export type ASTNode =
     | AstModule
     | AstPrimitiveTypeDecl
     | ASTOpCallStatic
-    | ASTNativeFunction
+    | AstNativeFunctionDecl
     | ASTNewParameter
     | ASTTypeRef
     | ASTInitFunction
@@ -693,7 +693,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_native_function") {
+    if (node.kind === "native_function_decl") {
         for (const e of node.args) {
             traverse(e, callback);
         }

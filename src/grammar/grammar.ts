@@ -152,7 +152,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
     ) {
         checkVariableName(tactId.sourceString, createRef(tactId));
         return createNode({
-            kind: "def_native_function",
+            kind: "native_function_decl",
             attributes: funAttributes.children.map((a) =>
                 a.astOfFunctionAttributes(),
             ),

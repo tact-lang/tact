@@ -2,7 +2,7 @@ import { enabledInline } from "../../config/features";
 import {
     ASTCondition,
     ASTExpression,
-    ASTNativeFunction,
+    AstNativeFunctionDecl,
     ASTStatement,
     idText,
     isWildcard,
@@ -501,7 +501,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     }
 
     // Do not write native functions
-    if (f.ast.kind === "def_native_function") {
+    if (f.ast.kind === "native_function_decl") {
         if (f.isMutating) {
             // Write same function in non-mutating form
             const nonMutName = ops.nonModifying(idText(f.ast.nativeName));
@@ -518,7 +518,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 }
                 ctx.body(() => {
                     ctx.append(
-                        `return ${funcIdOf("self")}~${idText((f.ast as ASTNativeFunction).nativeName)}(${fd.args
+                        `return ${funcIdOf("self")}~${idText((f.ast as AstNativeFunctionDecl).nativeName)}(${fd.args
                             .slice(1)
                             .map((arg) => funcIdOf(arg.name))
                             .join(", ")});`,

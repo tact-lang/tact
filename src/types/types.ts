@@ -3,7 +3,7 @@ import {
     ASTConstant,
     AstFunctionDef,
     ASTInitFunction,
-    ASTNativeFunction,
+    AstNativeFunctionDecl,
     ASTNode,
     ASTReceive,
     SrcInfo,
@@ -122,7 +122,7 @@ export type FunctionDescription = {
     self: string | null;
     returns: TypeRef;
     args: FunctionArgument[];
-    ast: AstFunctionDef | ASTNativeFunction;
+    ast: AstFunctionDef | AstNativeFunctionDecl;
 };
 
 export type StatementDescription =

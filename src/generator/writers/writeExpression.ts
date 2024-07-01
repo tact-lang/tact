@@ -517,7 +517,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
 
         const sf = getStaticFunction(wCtx.ctx, idText(f.name));
         let n = ops.global(idText(f.name));
-        if (sf.ast.kind === "def_native_function") {
+        if (sf.ast.kind === "native_function_decl") {
             n = idText(sf.ast.nativeName);
             if (n.startsWith("__tact")) {
                 wCtx.used(n);

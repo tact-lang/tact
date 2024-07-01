@@ -134,7 +134,7 @@ export function cloneNode<T extends ASTNode>(src: T): T {
             statements: src.statements ? src.statements.map(cloneNode) : null,
             args: src.args.map(cloneNode),
         });
-    } else if (src.kind === "def_native_function") {
+    } else if (src.kind === "native_function_decl") {
         return cloneASTNode({
             ...src,
             return: src.return ? cloneASTNode(src.return) : null,

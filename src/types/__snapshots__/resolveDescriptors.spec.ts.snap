@@ -6067,7 +6067,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 2`] 
       ],
       "attributes": [],
       "id": 15,
-      "kind": "def_native_function",
+      "kind": "native_function_decl",
       "name": {
         "id": 7,
         "kind": "id",
@@ -6233,7 +6233,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
             },
           ],
           "id": 15,
-          "kind": "def_native_function",
+          "kind": "native_function_decl",
           "name": {
             "id": 7,
             "kind": "id",

@@ -698,7 +698,7 @@ export function resolveStatements(ctx: CompilerContext) {
 
         // Process functions
         for (const f of t.functions.values()) {
-            if (f.ast.kind !== "def_native_function") {
+            if (f.ast.kind !== "native_function_decl") {
                 // Build statement context
                 let sctx = emptyContext(f.ast.ref, f.returns);
                 sctx = addVariable(
