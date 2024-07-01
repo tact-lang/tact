@@ -67,8 +67,7 @@ describe("fail-const-eval", () => {
     });
     itShouldNotCompile({
         testName: "const-eval-int-overflow-ton1",
-        errorMessage:
-            "Cannot evaluate expression to a constant: invalid 'ton()' argument",
+        errorMessage: `Cannot evaluate expression to a constant: invalid "ton" argument`,
     });
     itShouldNotCompile({
         testName: "const-eval-int-overflow-ton2",
@@ -77,7 +76,7 @@ describe("fail-const-eval", () => {
     });
     itShouldNotCompile({
         testName: "const-eval-int-overflow-pow-1",
-        errorMessage: "'pow()' builtin called with negative exponent -42",
+        errorMessage: `"pow" builtin called with negative exponent -42`,
     });
     itShouldNotCompile({
         testName: "const-eval-int-overflow-pow-2",
@@ -86,7 +85,7 @@ describe("fail-const-eval", () => {
     });
     itShouldNotCompile({
         testName: "const-eval-int-overflow-pow2-1",
-        errorMessage: "'pow2()' builtin called with negative exponent -42",
+        errorMessage: `"pow2" builtin called with negative exponent -42`,
     });
     itShouldNotCompile({
         testName: "const-eval-int-overflow-pow2-2",

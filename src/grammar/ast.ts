@@ -1,4 +1,4 @@
-import { SrcInfo } from "./grammar";
+import { dummySrcInfo, SrcInfo } from "./grammar";
 
 export type AstModule = {
     kind: "module";
@@ -25,7 +25,7 @@ export type AstModuleItem =
 
 export type AstPrimitiveTypeDecl = {
     kind: "primitive_type_decl";
-    name: string;
+    name: AstId;
     id: number;
     ref: SrcInfo;
 };
@@ -33,7 +33,7 @@ export type AstPrimitiveTypeDecl = {
 export type AstFunctionDef = {
     kind: "function_def";
     attributes: ASTFunctionAttribute[];
-    name: string;
+    name: AstId;
     return: ASTTypeRef | null;
     args: ASTArgument[];
     statements: ASTStatement[] | null;
@@ -41,21 +41,99 @@ export type AstFunctionDef = {
     ref: SrcInfo;
 };
 
-//
-// Values
-//
+export type AstId = {
+    kind: "id";
+    text: string;
+    id: number;
+    ref: SrcInfo;
+};
+
+export type AstFuncId = {
+    kind: "func_id";
+    text: string;
+    id: number;
+    ref: SrcInfo;
+};
+
+export function idText(ident: AstFuncId): string;
+export function idText(ident: AstId): string;
+export function idText(ident: AstId | AstFuncId): string {
+    return ident.text;
+}
+
+export function isInt(ident: AstId): boolean {
+    return ident.text === "Int";
+}
+
+export function isBool(ident: AstId): boolean {
+    return ident.text === "Bool";
+}
+
+export function isCell(ident: AstId): boolean {
+    return ident.text === "Cell";
+}
+
+export function isSlice(ident: AstId): boolean {
+    return ident.text === "Slice";
+}
+
+export function isBuilder(ident: AstId): boolean {
+    return ident.text === "Builder";
+}
+
+export function isAddress(ident: AstId): boolean {
+    return ident.text === "Address";
+}
+
+export function isString(ident: AstId): boolean {
+    return ident.text === "String";
+}
+
+export function isStringBuilder(ident: AstId): boolean {
+    return ident.text === "StringBuilder";
+}
+
+export function isSelfId(ident: AstId): boolean {
+    return ident.text === "self";
+}
+
+export function isWildcard(ident: AstId): boolean {
+    return ident.text === "_";
+}
+
+export function isRequire(ident: AstId): boolean {
+    return ident.text === "require";
+}
+
+export function eqNames(left: string, right: string): boolean;
+export function eqNames(left: string, right: AstId): boolean;
+export function eqNames(left: AstId, right: string): boolean;
+export function eqNames(left: AstId, right: AstId): boolean;
+export function eqNames(left: AstId | string, right: AstId | string): boolean {
+    if (typeof left === "string") {
+        if (typeof right === "string") {
+            return left === right;
+        }
+        return left === right.text;
+    } else {
+        if (typeof right === "string") {
+            return left.text === right;
+        }
+        return left.text === right.text;
+    }
+}
+
+export const selfId: AstId = {
+    kind: "id",
+    text: "self",
+    id: 0,
+    ref: dummySrcInfo,
+};
 
 export type ASTNumber = {
     kind: "number";
     id: number;
     value: bigint;
-    ref: SrcInfo;
-};
-
-export type ASTId = {
-    kind: "id";
-    id: number;
-    value: string;
     ref: SrcInfo;
 };
 
@@ -86,7 +164,7 @@ export type ASTNull = {
 export type ASTTypeRefSimple = {
     kind: "type_ref_simple";
     id: number;
-    name: string;
+    name: AstId;
     optional: boolean;
     ref: SrcInfo;
 };
@@ -94,17 +172,17 @@ export type ASTTypeRefSimple = {
 export type ASTTypeRefMap = {
     kind: "type_ref_map";
     id: number;
-    key: string;
-    keyAs: string | null;
-    value: string;
-    valueAs: string | null;
+    key: AstId;
+    keyAs: AstId | null;
+    value: AstId;
+    valueAs: AstId | null;
     ref: SrcInfo;
 };
 
 export type ASTTypeRefBounced = {
     kind: "type_ref_bounced";
     id: number;
-    name: string;
+    name: AstId;
     ref: SrcInfo;
 };
 
@@ -157,7 +235,7 @@ export type ASTOpField = {
     kind: "op_field";
     id: number;
     src: ASTExpression;
-    name: ASTId;
+    name: AstId;
     ref: SrcInfo;
 };
 
@@ -165,7 +243,7 @@ export type ASTOpCall = {
     kind: "op_call";
     id: number;
     src: ASTExpression;
-    name: string;
+    name: AstId;
     args: ASTExpression[];
     ref: SrcInfo;
 };
@@ -173,7 +251,7 @@ export type ASTOpCall = {
 export type ASTOpCallStatic = {
     kind: "op_static_call";
     id: number;
-    name: string;
+    name: AstId;
     args: ASTExpression[];
     ref: SrcInfo;
 };
@@ -181,7 +259,7 @@ export type ASTOpCallStatic = {
 export type ASTOpNew = {
     kind: "op_new";
     id: number;
-    type: string;
+    type: AstId;
     args: ASTNewParameter[];
     ref: SrcInfo;
 };
@@ -189,7 +267,7 @@ export type ASTOpNew = {
 export type ASTNewParameter = {
     kind: "new_parameter";
     id: number;
-    name: string;
+    name: AstId;
     exp: ASTExpression;
     ref: SrcInfo;
 };
@@ -197,7 +275,7 @@ export type ASTNewParameter = {
 export type ASTInitOf = {
     kind: "init_of";
     id: number;
-    name: string;
+    name: AstId;
     args: ASTExpression[];
     ref: SrcInfo;
 };
@@ -214,7 +292,7 @@ export type ASTConditional = {
 export type ASTStruct = {
     kind: "def_struct";
     id: number;
-    name: string;
+    name: AstId;
     message: boolean;
     prefix: number | null;
     fields: ASTField[];
@@ -230,8 +308,8 @@ export type ASTTraitDeclaration =
 export type ASTTrait = {
     kind: "def_trait";
     id: number;
-    name: string;
-    traits: ASTString[];
+    name: AstId;
+    traits: AstId[];
     attributes: ASTContractAttribute[];
     declarations: ASTTraitDeclaration[];
     ref: SrcInfo;
@@ -240,17 +318,17 @@ export type ASTTrait = {
 export type ASTField = {
     kind: "def_field";
     id: number;
-    name: string;
+    name: AstId;
     type: ASTTypeRef;
     init: ASTExpression | null;
-    as: string | null;
+    as: AstId | null;
     ref: SrcInfo;
 };
 
 export type ASTConstant = {
     kind: "def_constant";
     id: number;
-    name: string;
+    name: AstId;
     type: ASTTypeRef;
     value: ASTExpression | null;
     attributes: ASTConstantAttribute[];
@@ -278,8 +356,8 @@ export type ASTContractDeclaration =
 export type ASTContract = {
     kind: "def_contract";
     id: number;
-    name: string;
-    traits: ASTString[];
+    name: AstId;
+    traits: AstId[];
     attributes: ASTContractAttribute[];
     declarations: ASTContractDeclaration[];
     ref: SrcInfo;
@@ -288,7 +366,7 @@ export type ASTContract = {
 export type ASTArgument = {
     kind: "def_argument";
     id: number;
-    name: string;
+    name: AstId;
     type: ASTTypeRef;
     ref: SrcInfo;
 };
@@ -342,8 +420,8 @@ export type ASTNativeFunction = {
     kind: "def_native_function";
     id: number;
     attributes: ASTFunctionAttribute[];
-    name: string;
-    nativeName: string;
+    name: AstId;
+    nativeName: AstFuncId;
     return: ASTTypeRef | null;
     args: ASTArgument[];
     ref: SrcInfo;
@@ -364,7 +442,7 @@ export type ASTInitFunction = {
 export type ASTStatementLet = {
     kind: "statement_let";
     id: number;
-    name: string;
+    name: AstId;
     type: ASTTypeRef | null;
     expression: ASTExpression;
     ref: SrcInfo;
@@ -456,7 +534,7 @@ export type ASTStatementTryCatch = {
     kind: "statement_try_catch";
     id: number;
     statements: ASTStatement[];
-    catchName: string;
+    catchName: AstId;
     catchStatements: ASTStatement[];
     ref: SrcInfo;
 };
@@ -464,8 +542,8 @@ export type ASTStatementTryCatch = {
 export type ASTStatementForEach = {
     kind: "statement_foreach";
     id: number;
-    keyName: string;
-    valueName: string;
+    keyName: AstId;
+    valueName: AstId;
     map: ASTExpression;
     statements: ASTStatement[];
     ref: SrcInfo;
@@ -489,46 +567,32 @@ export type ASTStatement =
     | ASTStatementTryCatch
     | ASTStatementForEach;
 export type ASTNode =
+    | AstFuncId
     | ASTExpression
+    | ASTStatement
     | ASTStruct
     | ASTField
     | ASTContract
     | ASTArgument
     | AstFunctionDef
     | ASTOpCall
-    | ASTStatementLet
-    | ASTStatementReturn
     | AstModule
     | AstPrimitiveTypeDecl
     | ASTOpCallStatic
-    | ASTStatementExpression
     | ASTNativeFunction
-    | ASTStatementAssign
-    | ASTStatementAugmentedAssign
-    | ASTOpNew
     | ASTNewParameter
     | ASTTypeRef
-    | ASTNull
-    | ASTCondition
     | ASTInitFunction
-    | ASTStatementWhile
-    | ASTStatementUntil
-    | ASTStatementRepeat
-    | ASTStatementTry
-    | ASTStatementTryCatch
-    | ASTStatementForEach
     | ASTReceive
-    | ASTString
     | ASTTrait
     | AstImport
-    | ASTInitOf
     | ASTConstant;
 export type ASTExpression =
     | ASTOpBinary
     | ASTOpUnary
     | ASTOpField
     | ASTNumber
-    | ASTId
+    | AstId
     | ASTBoolean
     | ASTOpCall
     | ASTOpCallStatic
@@ -545,7 +609,7 @@ export type ASTType = AstPrimitiveTypeDecl | ASTStruct | ASTContract | ASTTrait;
  * @param path A path expression to check.
  * @returns An array of identifiers or null if the input expression is not a path expression.
  */
-export function tryExtractPath(path: ASTExpression): ASTId[] | null {
+export function tryExtractPath(path: ASTExpression): AstId[] | null {
     switch (path.kind) {
         case "id":
             return [path];

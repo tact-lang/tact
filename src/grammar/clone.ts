@@ -159,7 +159,7 @@ export function cloneNode<T extends ASTNode>(src: T): T {
         return cloneASTNode({
             ...src,
             type: cloneASTNode(src.type),
-            value: src.value ? cloneNode(src.value) : src.value,
+            text: src.value ? cloneNode(src.value) : src.value,
         });
     }
 

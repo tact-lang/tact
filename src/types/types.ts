@@ -9,6 +9,7 @@ import {
     SrcInfo,
     ASTStatement,
     ASTType,
+    AstId,
 } from "../grammar/ast";
 import { ItemOrigin } from "../grammar/grammar";
 // import {
@@ -97,13 +98,13 @@ export type ConstantDescription = {
 };
 
 export type FunctionArgument = {
-    name: string;
+    name: AstId;
     type: TypeRef;
     ref: SrcInfo;
 };
 
 export type InitArgument = {
-    name: string;
+    name: AstId;
     type: TypeRef;
     as: string | null;
     ref: SrcInfo;
@@ -137,18 +138,18 @@ export type BinaryReceiverSelector =
     | {
           kind: "internal-binary";
           type: string;
-          name: string;
+          name: AstId;
       }
     | {
           kind: "bounce-binary";
-          name: string;
+          name: AstId;
           type: string;
           bounced: boolean;
       }
     | {
           kind: "external-binary";
           type: string;
-          name: string;
+          name: AstId;
       };
 
 export type CommentReceiverSelector =
@@ -172,23 +173,23 @@ export type EmptyReceiverSelector =
 export type FallbackReceiverSelector =
     | {
           kind: "internal-comment-fallback";
-          name: string;
+          name: AstId;
       }
     | {
           kind: "internal-fallback";
-          name: string;
+          name: AstId;
       }
     | {
           kind: "bounce-fallback";
-          name: string;
+          name: AstId;
       }
     | {
           kind: "external-comment-fallback";
-          name: string;
+          name: AstId;
       }
     | {
           kind: "external-fallback";
-          name: string;
+          name: AstId;
       };
 
 export type ReceiverSelector =
@@ -196,6 +197,29 @@ export type ReceiverSelector =
     | CommentReceiverSelector
     | EmptyReceiverSelector
     | FallbackReceiverSelector;
+
+// TODO: improve this for empty and fallbacks
+export function receiverSelectorName(selector: ReceiverSelector): string {
+    switch (selector.kind) {
+        case "internal-binary":
+        case "bounce-binary":
+        case "external-binary":
+            return selector.type;
+        case "internal-comment":
+        case "external-comment":
+            return selector.comment;
+        case "internal-empty":
+        case "external-empty":
+            return selector.kind;
+        case "internal-fallback":
+        case "bounce-fallback":
+        case "external-fallback":
+            return selector.kind;
+        case "internal-comment-fallback":
+        case "external-comment-fallback":
+            return selector.kind;
+    }
+}
 
 export type ReceiverDescription = {
     selector: ReceiverSelector;

@@ -293,7 +293,7 @@ function writeSerializerField(
         return;
     }
 
-    throw Error("Unsupported field kind: " + op.kind);
+    throw Error(`Unsupported field kind: ${op.kind}`);
 }
 
 //
@@ -611,5 +611,5 @@ function writeFieldParser(
         return;
     }
 
-    throw Error("Unsupported field kind: " + op.kind);
+    throw Error(`Unsupported field kind: ${op.kind}`);
 }

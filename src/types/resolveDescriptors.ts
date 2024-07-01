@@ -1,7 +1,6 @@
 import {
     ASTConstant,
     ASTField,
-    AstFunctionDef,
     ASTInitFunction,
     ASTNativeFunction,
     ASTNode,
@@ -9,8 +8,14 @@ import {
     ASTTypeRef,
     createNode,
     traverse,
+    idText,
+    AstId,
+    eqNames,
+    AstFunctionDef,
+    isSelfId,
+    isSlice,
 } from "../grammar/ast";
-import { throwCompilationError } from "../errors";
+import { idTextErr, throwCompilationError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
 import {
     ConstantDescription,
@@ -21,6 +26,7 @@ import {
     InitDescription,
     printTypeRef,
     ReceiverSelector,
+    receiverSelectorName,
     TypeDescription,
     TypeRef,
     typeRefEquals,
@@ -41,9 +47,9 @@ const staticConstantsStore = createContextStore<ConstantDescription>();
 
 function verifyMapType(
     key: string,
-    keyAs: string | null,
+    keyAs: AstId | null,
     value: string,
-    valueAs: string | null,
+    valueAs: AstId | null,
     ref: SrcInfo,
 ) {
     if (!keyAs && !valueAs) {
@@ -68,7 +74,7 @@ function verifyMapType(
                     "uint64",
                     "uint128",
                     "uint256",
-                ].includes(keyAs)
+                ].includes(idText(keyAs))
             ) {
                 throwCompilationError("Invalid key type for map", ref);
             }
@@ -96,7 +102,7 @@ function verifyMapType(
                     "uint128",
                     "uint256",
                     "coins",
-                ].includes(valueAs)
+                ].includes(idText(valueAs))
             ) {
                 throwCompilationError("Invalid value type for map", ref);
             }
@@ -124,9 +130,9 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
         return {
             kind: "map",
             key: k,
-            keyAs: src.keyAs,
+            keyAs: src.keyAs !== null ? idText(src.keyAs) : null,
             value: v,
-            valueAs: src.valueAs,
+            valueAs: src.valueAs !== null ? idText(src.valueAs) : null,
         };
     }
     if (src.kind === "type_ref_bounced") {
@@ -144,34 +150,43 @@ function buildTypeRef(
     types: Map<string, TypeDescription>,
 ): TypeRef {
     if (src.kind === "type_ref_simple") {
-        if (!types.has(src.name)) {
-            throwCompilationError("Type " + src.name + " not found", src.ref);
+        if (!types.has(idText(src.name))) {
+            throwCompilationError(
+                `Type ${idTextErr(src.name)} not found`,
+                src.ref,
+            );
         }
         return {
             kind: "ref",
-            name: src.name,
+            name: idText(src.name),
             optional: src.optional,
         };
     }
     if (src.kind === "type_ref_map") {
-        if (!types.has(src.key)) {
-            throwCompilationError("Type " + src.key + " not found", src.ref);
+        if (!types.has(idText(src.key))) {
+            throwCompilationError(
+                `Type ${idTextErr(src.key)} not found`,
+                src.ref,
+            );
         }
-        if (!types.has(src.value)) {
-            throwCompilationError("Type " + src.value + " not found", src.ref);
+        if (!types.has(idText(src.value))) {
+            throwCompilationError(
+                `Type ${idTextErr(src.value)} not found`,
+                src.ref,
+            );
         }
         return {
             kind: "map",
-            key: src.key,
-            keyAs: src.keyAs,
-            value: src.value,
-            valueAs: src.valueAs,
+            key: idText(src.key),
+            keyAs: src.keyAs !== null ? idText(src.keyAs) : null,
+            value: idText(src.value),
+            valueAs: src.valueAs !== null ? idText(src.valueAs) : null,
         };
     }
     if (src.kind === "type_ref_bounced") {
         return {
             kind: "ref_bounced",
-            name: src.name,
+            name: idText(src.name),
         };
     }
 
@@ -198,17 +213,20 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const a of ast.types) {
-        if (types.has(a.name)) {
-            throwCompilationError(`Type "${a.name}" already exists`, a.ref);
+        if (types.has(idText(a.name))) {
+            throwCompilationError(
+                `Type "${idText(a.name)}" already exists`,
+                a.ref,
+            );
         }
 
-        const uid = uidForName(a.name, types);
+        const uid = uidForName(idText(a.name), types);
 
         if (a.kind === "primitive_type_decl") {
-            types.set(a.name, {
+            types.set(idText(a.name), {
                 kind: "primitive_type_decl",
                 origin: a.ref.origin,
-                name: a.name,
+                name: idText(a.name),
                 uid,
                 fields: [],
                 traits: [],
@@ -225,10 +243,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 partialFieldCount: 0,
             });
         } else if (a.kind === "def_contract") {
-            types.set(a.name, {
+            types.set(idText(a.name), {
                 kind: "contract",
                 origin: a.ref.origin,
-                name: a.name,
+                name: idText(a.name),
                 uid,
                 header: null,
                 tlb: null,
@@ -247,10 +265,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 partialFieldCount: 0,
             });
         } else if (a.kind === "def_struct") {
-            types.set(a.name, {
+            types.set(idText(a.name), {
                 kind: "struct",
                 origin: a.ref.origin,
-                name: a.name,
+                name: idText(a.name),
                 uid,
                 header: null,
                 tlb: null,
@@ -267,10 +285,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 partialFieldCount: 0,
             });
         } else if (a.kind === "def_trait") {
-            types.set(a.name, {
+            types.set(idText(a.name), {
                 kind: "trait",
                 origin: a.ref.origin,
-                name: a.name,
+                name: idText(a.name),
                 uid,
                 header: null,
                 tlb: null,
@@ -316,14 +334,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
         const type = resolveABIType(src);
 
         return {
-            name: src.name,
+            name: idText(src.name),
             type: tr,
             index,
-            as: src.as,
+            as: src.as !== null ? idText(src.as) : null,
             default: d,
             ref: src.ref,
             ast: src,
-            abi: { name: src.name, type },
+            abi: { name: idText(src.name), type },
         };
     }
 
@@ -332,7 +350,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
         const d = src.value
             ? evalConstantExpression(src.value, ctx)
             : undefined;
-        return { name: src.name, type: tr, value: d, ref: src.ref, ast: src };
+        return {
+            name: idText(src.name),
+            type: tr,
+            value: d,
+            ref: src.ref,
+            ast: src,
+        };
     }
 
     for (const a of ast.types) {
@@ -341,47 +365,51 @@ export function resolveDescriptors(ctx: CompilerContext) {
             for (const f of a.declarations) {
                 if (f.kind === "def_field") {
                     if (
-                        types.get(a.name)!.fields.find((v) => v.name === f.name)
+                        types
+                            .get(idText(a.name))!
+                            .fields.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Field "${f.name}" already exists`,
+                            `Field ${idTextErr(f.name)} already exists`,
                             f.ref,
                         );
                     }
                     if (
                         types
-                            .get(a.name)!
-                            .constants.find((v) => v.name === f.name)
+                            .get(idText(a.name))!
+                            .constants.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Constant "${f.name}" already exists`,
+                            `Constant ${idText(f.name)} already exists`,
                             f.ref,
                         );
                     }
                     types
-                        .get(a.name)!
+                        .get(idText(a.name))!
                         .fields.push(
                             buildFieldDescription(
                                 f,
-                                types.get(a.name)!.fields.length,
+                                types.get(idText(a.name))!.fields.length,
                             ),
                         );
                 } else if (f.kind === "def_constant") {
                     if (
-                        types.get(a.name)!.fields.find((v) => v.name === f.name)
+                        types
+                            .get(idText(a.name))!
+                            .fields.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Field "${f.name}" already exists`,
+                            `Field ${idTextErr(f.name)} already exists`,
                             f.ref,
                         );
                     }
                     if (
                         types
-                            .get(a.name)!
-                            .constants.find((v) => v.name === f.name)
+                            .get(idText(a.name))!
+                            .constants.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Constant "${f.name}" already exists`,
+                            `Constant ${idTextErr(f.name)} already exists`,
                             f.ref,
                         );
                     }
@@ -392,7 +420,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         );
                     }
                     types
-                        .get(a.name)!
+                        .get(idText(a.name))!
                         .constants.push(buildConstantDescription(f));
                 }
             }
@@ -401,24 +429,28 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Struct
         if (a.kind === "def_struct") {
             for (const f of a.fields) {
-                if (types.get(a.name)!.fields.find((v) => v.name === f.name)) {
+                if (
+                    types
+                        .get(idText(a.name))!
+                        .fields.find((v) => eqNames(v.name, f.name))
+                ) {
                     throwCompilationError(
-                        `Field "${f.name}" already exists`,
+                        `Field ${idTextErr(f.name)} already exists`,
                         f.ref,
                     );
                 }
                 types
-                    .get(a.name)!
+                    .get(idText(a.name))!
                     .fields.push(
                         buildFieldDescription(
                             f,
-                            types.get(a.name)!.fields.length,
+                            types.get(idText(a.name))!.fields.length,
                         ),
                     );
             }
             if (a.fields.length === 0 && !a.message) {
                 throwCompilationError(
-                    `Struct "${a.name}" must have at least one field`,
+                    `Struct ${idTextErr(a.name)} must have at least one field`,
                     a.ref,
                 );
             }
@@ -429,10 +461,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
             for (const f of a.declarations) {
                 if (f.kind === "def_field") {
                     if (
-                        types.get(a.name)!.fields.find((v) => v.name === f.name)
+                        types
+                            .get(idText(a.name))!
+                            .fields.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Field "${f.name}" already exists`,
+                            `Field ${idTextErr(f.name)} already exists`,
                             f.ref,
                         );
                     }
@@ -443,29 +477,31 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         );
                     }
                     types
-                        .get(a.name)!
+                        .get(idText(a.name))!
                         .fields.push(
                             buildFieldDescription(
                                 f,
-                                types.get(a.name)!.fields.length,
+                                types.get(idText(a.name))!.fields.length,
                             ),
                         );
                 } else if (f.kind === "def_constant") {
                     if (
-                        types.get(a.name)!.fields.find((v) => v.name === f.name)
+                        types
+                            .get(idText(a.name))!
+                            .fields.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Field "${f.name}" already exists`,
+                            `Field ${idTextErr(f.name)} already exists`,
                             f.ref,
                         );
                     }
                     if (
                         types
-                            .get(a.name)!
-                            .constants.find((v) => v.name === f.name)
+                            .get(idText(a.name))!
+                            .constants.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Constant "${f.name}" already exists`,
+                            `Constant ${idTextErr(f.name)} already exists`,
                             f.ref,
                         );
                     }
@@ -475,11 +511,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             f.ref,
                         );
                     }
-                    // if (f.attributes.find((v) => v.type === 'abstract')) {
-                    //     continue; // Do not materialize abstract constants
-                    // }
                     types
-                        .get(a.name)!
+                        .get(idText(a.name))!
                         .constants.push(buildConstantDescription(f));
                 }
             }
@@ -677,7 +710,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     isExtends.ref,
                 );
             }
-            if (args[0].name !== "self") {
+            if (!isSelfId(args[0].name)) {
                 throwCompilationError(
                     'Extend function must have first argument named "self"',
                     args[0].ref,
@@ -718,19 +751,19 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Check argument names
         const exNames = new Set<string>();
         for (const arg of args) {
-            if (arg.name === "self") {
+            if (isSelfId(arg.name)) {
                 throwCompilationError(
                     'Argument name "self" is reserved',
                     arg.ref,
                 );
             }
-            if (exNames.has(arg.name)) {
+            if (exNames.has(idText(arg.name))) {
                 throwCompilationError(
-                    'Argument name "' + arg.name + '" is already used',
+                    `Argument name ${idTextErr(arg.name)} is already used`,
                     arg.ref,
                 );
             }
-            exNames.add(arg.name);
+            exNames.add(idText(arg.name));
         }
 
         // Check for runtime types in getters
@@ -755,7 +788,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Register function
         return {
-            name: a.name,
+            name: idText(a.name),
             self: self,
             origin,
             args,
@@ -800,7 +833,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const a of ast.types) {
         if (a.kind === "def_contract" || a.kind === "def_trait") {
-            const s = types.get(a.name)!;
+            const s = types.get(idText(a.name))!;
             for (const d of a.declarations) {
                 if (d.kind === "function_def") {
                     const f = resolveFunctionDescriptor(s.name, d, s.origin);
@@ -858,10 +891,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         }
 
                         // Check resolved argument type
-                        const t = types.get(arg.type.name);
+                        const t = types.get(idText(arg.type.name));
                         if (!t) {
                             throwCompilationError(
-                                "Type " + arg.type.name + " not found",
+                                `Type ${idTextErr(arg.type.name)} not found`,
                                 d.ref,
                             );
                         }
@@ -958,11 +991,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                             (internal
                                                 ? "internal-binary"
                                                 : "external-binary") &&
-                                        v.selector.type === n,
+                                        eqNames(v.selector.type, n),
                                 )
                             ) {
                                 throwCompilationError(
-                                    `Receive function for "${arg.type.name}" already exists`,
+                                    `Receive function for ${idTextErr(arg.type.name)} already exists`,
                                     arg.ref,
                                 );
                             }
@@ -974,7 +1007,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         ? "internal-binary"
                                         : "external-binary",
                                     name: arg.name,
-                                    type: arg.type.name,
+                                    type: idText(arg.type.name),
                                 },
                                 ast: d,
                             });
@@ -1002,7 +1035,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             )
                         ) {
                             throwCompilationError(
-                                `Receive function for "${c}" already exists`,
+                                `Receive function for ${idTextErr(c)} already exists`,
                                 d.ref,
                             );
                         }
@@ -1056,7 +1089,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 );
                             }
 
-                            if (arg.type.name === "Slice") {
+                            if (isSlice(arg.type.name)) {
                                 if (
                                     s.receivers.find(
                                         (v) =>
@@ -1078,7 +1111,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     ast: d,
                                 });
                             } else {
-                                const type = types.get(arg.type.name)!;
+                                const type = types.get(idText(arg.type.name))!;
                                 if (
                                     type.ast.kind !== "def_struct" ||
                                     !type.ast.message
@@ -1093,9 +1126,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     type.partialFieldCount
                                 ) {
                                     throwCompilationError(
-                                        "This message is too big for bounce receiver, you need to wrap it to a bounced<" +
-                                            arg.type.name +
-                                            ">.",
+                                        `This message is too big for bounce receiver, you need to wrap it to a bounced<${idTextErr(arg.type.name)}>.`,
                                         d.ref,
                                     );
                                 }
@@ -1108,7 +1139,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     )
                                 ) {
                                     throwCompilationError(
-                                        `Bounce receive function for "${arg.type.name}" already exists`,
+                                        `Bounce receive function for ${idTextErr(arg.type.name)} already exists`,
                                         arg.ref,
                                     );
                                 }
@@ -1116,14 +1147,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     selector: {
                                         kind: "bounce-binary",
                                         name: arg.name,
-                                        type: arg.type.name,
+                                        type: idText(arg.type.name),
                                         bounced: false,
                                     },
                                     ast: d,
                                 });
                             }
                         } else if (arg.type.kind === "type_ref_bounced") {
-                            const t = types.get(arg.type.name)!;
+                            const t = types.get(idText(arg.type.name))!;
                             if (t.kind !== "struct") {
                                 throwCompilationError(
                                     "Bounce receive function can only accept bounced<T> struct types",
@@ -1150,7 +1181,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 )
                             ) {
                                 throwCompilationError(
-                                    `Bounce receive function for "${t.name}" already exists`,
+                                    `Bounce receive function for ${idTextErr(t.name)} already exists`,
                                     d.ref,
                                 );
                             }
@@ -1164,7 +1195,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 selector: {
                                     kind: "bounce-binary",
                                     name: arg.name,
-                                    type: arg.type.name,
+                                    type: idText(arg.type.name),
                                     bounced: true,
                                 },
                                 ast: d,
@@ -1213,9 +1244,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     for (const t of types.values()) {
         if (t.ast.kind === "def_trait" || t.ast.kind === "def_contract") {
             // Check there are no duplicates in the _immediately_ inherited traits
-            const traitSet = new Set<string>(
-                t.ast.traits.map((trait) => trait.value),
-            );
+            const traitSet = new Set<string>(t.ast.traits.map(idText));
             if (traitSet.size !== t.ast.traits.length) {
                 const aggregateType =
                     t.ast.kind === "def_contract" ? "contract" : "trait";
@@ -1244,7 +1273,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 traits.push(tt);
                 if (tt.ast.kind === "def_trait") {
                     for (const s of tt.ast.traits) {
-                        visit(s.value);
+                        visit(idText(s));
                     }
                     for (const f of tt.traits) {
                         visit(f.name);
@@ -1258,7 +1287,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
             visit("BaseTrait");
             for (const s of t.ast.traits) {
-                visit(s.value);
+                visit(idText(s));
             }
 
             // Assign traits
@@ -1532,7 +1561,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     )
                 ) {
                     throwCompilationError(
-                        `Receive function for "${f.selector}" already exists`,
+                        `Receive function for ${idTextErr(receiverSelectorName(f.selector))} already exists`,
                         contractOrTrait.ast.ref,
                     );
                 }
@@ -1596,13 +1625,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
         const dependsOn = new Set<string>();
         const handler = (src: ASTNode) => {
             if (src.kind === "init_of") {
-                if (!types.has(src.name)) {
+                if (!types.has(idText(src.name))) {
                     throwCompilationError(
-                        `Type "${src.name}" not found`,
+                        `Type ${idTextErr(src.name)} not found`,
                         src.ref,
                     );
                 }
-                dependsOn.add(src.name);
+                dependsOn.add(idText(src.name));
             }
         };
 
@@ -1683,19 +1712,22 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const a of ast.constants) {
-        if (staticConstants.has(a.name)) {
+        if (staticConstants.has(idText(a.name))) {
             throwCompilationError(
-                `Static constant "${a.name}" already exists`,
+                `Static constant ${idTextErr(a.name)} already exists`,
                 a.ref,
             );
         }
-        if (staticFunctions.has(a.name) || GlobalFunctions.has(a.name)) {
+        if (
+            staticFunctions.has(idText(a.name)) ||
+            GlobalFunctions.has(idText(a.name))
+        ) {
             throwCompilationError(
-                `Static function "${a.name}" already exists`,
+                `Static function ${idTextErr(a.name)} already exists`,
                 a.ref,
             );
         }
-        staticConstants.set(a.name, buildConstantDescription(a));
+        staticConstants.set(idText(a.name), buildConstantDescription(a));
     }
 
     //
@@ -1715,7 +1747,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
     return ctx;
 }
 
-export function getType(ctx: CompilerContext, name: string): TypeDescription {
+export function getType(ctx: CompilerContext, ident: AstId): TypeDescription;
+export function getType(ctx: CompilerContext, ident: string): TypeDescription;
+export function getType(
+    ctx: CompilerContext,
+    ident: AstId | string,
+): TypeDescription {
+    const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
     if (!r) {
         throw Error("Type " + name + " not found");

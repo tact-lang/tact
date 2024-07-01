@@ -12,8 +12,11 @@ import {
     ASTOpUnary,
     ASTString,
     ASTConditional,
+    eqNames,
+    idText,
+    isWildcard,
 } from "../grammar/ast";
-import { throwCompilationError } from "../errors";
+import { idTextErr, throwCompilationError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
 import {
     getStaticConstant,
@@ -116,7 +119,7 @@ function resolveStructNew(
 
     if (tp.kind !== "struct") {
         throwCompilationError(
-            `Invalid type "${exp.type}" for construction`,
+            `Invalid type ${idTextErr(exp.type)} for construction`,
             exp.ref,
         );
     }
@@ -125,16 +128,19 @@ function resolveStructNew(
     const processed = new Set<string>();
     for (const e of exp.args) {
         // Check duplicates
-        if (processed.has(e.name)) {
-            throwCompilationError(`Duplicate fields "${e.name}"`, e.ref);
+        if (processed.has(idText(e.name))) {
+            throwCompilationError(
+                `Duplicate fields ${idTextErr(e.name)}`,
+                e.ref,
+            );
         }
-        processed.add(e.name);
+        processed.add(idText(e.name));
 
         // Check existing
-        const f = tp.fields.find((v) => v.name === e.name);
+        const f = tp.fields.find((v) => eqNames(v.name, e.name));
         if (!f) {
             throwCompilationError(
-                `Unknown fields "${e.name}" in type "${tp.name}"`,
+                `Unknown fields ${idTextErr(e.name)} in type ${idTextErr(tp.name)}`,
                 e.ref,
             );
         }
@@ -146,7 +152,7 @@ function resolveStructNew(
         const expressionType = getExpType(ctx, e.exp);
         if (!isAssignable(expressionType, f.type)) {
             throwCompilationError(
-                `Invalid type "${printTypeRef(expressionType)}" for fields "${e.name}" with type "${printTypeRef(f.type)}" in type "${tp.name}"`,
+                `Invalid type "${printTypeRef(expressionType)}" for fields ${idTextErr(e.name)} with type "${printTypeRef(f.type)}" in type "${tp.name}"`,
                 e.ref,
             );
         }
@@ -302,7 +308,7 @@ function resolveBinaryOp(
         }
         resolved = { kind: "ref", name: "Bool", optional: false };
     } else {
-        throw Error("Unsupported operator: " + exp.op);
+        throw Error(`Unsupported operator: ${exp.op}`);
     }
 
     // Register result
@@ -354,7 +360,7 @@ function resolveUnaryOp(
             optional: false,
         };
     } else {
-        throwCompilationError("Unknown operator " + exp.op, exp.ref);
+        throwCompilationError(`Unknown operator: ${exp.op}`, exp.ref);
     }
 
     // Register result
@@ -386,11 +392,11 @@ function resolveFieldAccess(
     if (
         sctx.requiredFields.length > 0 &&
         exp.src.kind === "id" &&
-        exp.src.value === "self"
+        exp.src.text === "self"
     ) {
-        if (sctx.requiredFields.find((v) => v === exp.name.value)) {
+        if (sctx.requiredFields.find((v) => v === exp.name.text)) {
             throwCompilationError(
-                `Field "${exp.name.value}" is not initialized`,
+                `Field "${exp.name.text}" is not initialized`,
                 exp.name.ref,
             );
         }
@@ -406,17 +412,17 @@ function resolveFieldAccess(
         fields = fields.slice(0, srcT.partialFieldCount);
     }
 
-    const field = fields.find((v) => v.name === exp.name.value);
-    const cst = srcT.constants.find((v) => v.name === exp.name.value);
+    const field = fields.find((v) => v.name === exp.name.text);
+    const cst = srcT.constants.find((v) => v.name === exp.name.text);
     if (!field && !cst) {
         if (src.kind === "ref_bounced") {
             throwCompilationError(
-                `Type bounced<"${src.name}"> does not have a field named "${exp.name.value}"`,
+                `Type bounced<"${src.name}"> does not have a field named "${exp.name.text}"`,
                 exp.name.ref,
             );
         } else {
             throwCompilationError(
-                `Type "${src.name}" does not have a field named "${exp.name}"`,
+                `Type ${idTextErr(src.name)} does not have a field named ${idTextErr(exp.name)}`,
                 exp.ref,
             );
         }
@@ -436,8 +442,8 @@ function resolveStaticCall(
     ctx: CompilerContext,
 ): CompilerContext {
     // Check if abi global function
-    if (GlobalFunctions.has(exp.name)) {
-        const f = GlobalFunctions.get(exp.name)!;
+    if (GlobalFunctions.has(idText(exp.name))) {
+        const f = GlobalFunctions.get(idText(exp.name))!;
 
         // Resolve arguments
         for (const e of exp.args) {
@@ -456,15 +462,15 @@ function resolveStaticCall(
     }
 
     // Check if function exists
-    if (!hasStaticFunction(ctx, exp.name)) {
+    if (!hasStaticFunction(ctx, idText(exp.name))) {
         throwCompilationError(
-            `Static function "${exp.name}" does not exist`,
+            `Static function ${idTextErr(exp.name)} does not exist`,
             exp.ref,
         );
     }
 
     // Get static function
-    const f = getStaticFunction(ctx, exp.name);
+    const f = getStaticFunction(ctx, idText(exp.name));
 
     // Resolve call arguments
     for (const e of exp.args) {
@@ -474,7 +480,7 @@ function resolveStaticCall(
     // Check arguments
     if (f.args.length !== exp.args.length) {
         throwCompilationError(
-            `Function "${exp.name}" expects ${f.args.length} arguments, got ${exp.args.length}`,
+            `Function ${idTextErr(exp.name)} expects ${f.args.length} arguments, got ${exp.args.length}`,
             exp.ref,
         );
     }
@@ -484,7 +490,7 @@ function resolveStaticCall(
         const t = getExpType(ctx, e);
         if (!isAssignable(t, a.type)) {
             throwCompilationError(
-                `Invalid type "${printTypeRef(t)}" for argument "${a.name}"`,
+                `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}`,
                 e.ref,
             );
         }
@@ -505,7 +511,7 @@ function resolveCall(
     // Check if self is initialized
     if (
         exp.src.kind === "id" &&
-        exp.src.value === "self" &&
+        exp.src.text === "self" &&
         sctx.requiredFields.length > 0
     ) {
         throwCompilationError("Cannot access self before init", exp.ref);
@@ -539,8 +545,8 @@ function resolveCall(
 
         // Check struct ABI
         if (srcT.kind === "struct") {
-            if (StructFunctions.has(exp.name)) {
-                const abi = StructFunctions.get(exp.name)!;
+            if (StructFunctions.has(idText(exp.name))) {
+                const abi = StructFunctions.get(idText(exp.name))!;
                 const resolved = abi.resolve(
                     ctx,
                     [src, ...exp.args.map((v) => getExpType(ctx, v))],
@@ -550,10 +556,10 @@ function resolveCall(
             }
         }
 
-        const f = srcT.functions.get(exp.name)!;
+        const f = srcT.functions.get(idText(exp.name))!;
         if (!f) {
             throwCompilationError(
-                `Type "${src.name}" does not have a function named "${exp.name}"`,
+                `Type "${src.name}" does not have a function named ${idTextErr(exp.name)}`,
                 exp.ref,
             );
         }
@@ -561,7 +567,7 @@ function resolveCall(
         // Check arguments
         if (f.args.length !== exp.args.length) {
             throwCompilationError(
-                `Function "${exp.name}" expects ${f.args.length} arguments, got ${exp.args.length}`,
+                `Function ${idTextErr(exp.name)} expects ${f.args.length} arguments, got ${exp.args.length}`,
                 exp.ref,
             );
         }
@@ -571,7 +577,7 @@ function resolveCall(
             const t = getExpType(ctx, e);
             if (!isAssignable(t, a.type)) {
                 throwCompilationError(
-                    `Invalid type "${printTypeRef(t)}" for argument "${a.name}"`,
+                    `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}`,
                     e.ref,
                 );
             }
@@ -582,13 +588,13 @@ function resolveCall(
 
     // Handle map
     if (src.kind === "map") {
-        if (!MapFunctions.has(exp.name)) {
+        if (!MapFunctions.has(idText(exp.name))) {
             throwCompilationError(
-                `Map function "${exp.name}" not found`,
+                `Map function ${idTextErr(exp.name)} not found`,
                 exp.ref,
             );
         }
-        const abf = MapFunctions.get(exp.name)!;
+        const abf = MapFunctions.get(idText(exp.name))!;
         const resolved = abf.resolve(
             ctx,
             [src, ...exp.args.map((v) => getExpType(ctx, v))],
@@ -615,11 +621,14 @@ export function resolveInitOf(
     // Resolve type
     const type = getType(ctx, ast.name);
     if (type.kind !== "contract") {
-        throwCompilationError(`Type "${ast.name}" is not a contract`, ast.ref);
+        throwCompilationError(
+            `Type ${idTextErr(ast.name)} is not a contract`,
+            ast.ref,
+        );
     }
     if (!type.init) {
         throwCompilationError(
-            `Contract "${ast.name}" does not have an init function`,
+            `Contract ${idTextErr(ast.name)} does not have an init function`,
             ast.ref,
         );
     }
@@ -642,7 +651,7 @@ export function resolveInitOf(
         const t = getExpType(ctx, e);
         if (!isAssignable(t, a.type)) {
             throwCompilationError(
-                `Invalid type "${printTypeRef(t)}" for argument "${a.name}"`,
+                `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}`,
                 e.ref,
             );
         }
@@ -744,10 +753,10 @@ export function resolveExpression(
 
     if (exp.kind === "id") {
         // Find variable
-        const v = sctx.vars.get(exp.value);
+        const v = sctx.vars.get(exp.text);
         if (!v) {
-            if (!hasStaticConstant(ctx, exp.value)) {
-                if (exp.value === "_") {
+            if (!hasStaticConstant(ctx, exp.text)) {
+                if (isWildcard(exp)) {
                     throwCompilationError(
                         "Wildcard variable name '_' cannot be accessed",
                         exp.ref,
@@ -755,7 +764,7 @@ export function resolveExpression(
                 }
                 // Handle static struct method calls
                 try {
-                    const t = getType(ctx, exp.value);
+                    const t = getType(ctx, exp.text);
                     if (t.kind === "struct") {
                         return registerExpType(ctx, exp, {
                             kind: "ref",
@@ -768,11 +777,11 @@ export function resolveExpression(
                 }
 
                 throwCompilationError(
-                    "Unable to resolve id " + exp.value,
+                    "Unable to resolve id " + exp.text,
                     exp.ref,
                 );
             } else {
-                const cc = getStaticConstant(ctx, exp.value);
+                const cc = getStaticConstant(ctx, exp.text);
                 return registerExpType(ctx, exp, cc.type);
             }
         }

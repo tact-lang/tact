@@ -3,7 +3,7 @@ import { enabledInline, enabledMasterchain } from "../../config/features";
 import { ItemOrigin } from "../../grammar/grammar";
 import { InitDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
-import { id, initId } from "./id";
+import { funcIdOf, funcInitIdOf } from "./id";
 import { ops } from "./ops";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
@@ -56,14 +56,14 @@ export function writeStorageOps(
                 // Load arguments
                 if (type.init!.args.length > 0) {
                     ctx.append(
-                        `(${type.init!.args.map((v) => resolveFuncType(v.type, ctx) + " " + v.name).join(", ")}) = $sc~${ops.reader(initId(type.name), ctx)}();`,
+                        `(${type.init!.args.map((v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) = $sc~${ops.reader(funcInitIdOf(type.name), ctx)}();`,
                     );
                     ctx.append(`$sc.end_parse();`);
                 }
 
                 // Execute init function
                 ctx.append(
-                    `return ${ops.contractInit(type.name, ctx)}(${[...type.init!.args.map((v) => v.name)].join(", ")});`,
+                    `return ${ops.contractInit(type.name, ctx)}(${[...type.init!.args.map((v) => funcIdOf(v.name))].join(", ")});`,
                 );
             });
 
@@ -105,7 +105,7 @@ export function writeInit(
 ) {
     ctx.fun(ops.contractInit(t.name, ctx), () => {
         const args = init.args.map(
-            (v) => resolveFuncType(v.type, ctx) + " " + id(v.name),
+            (v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name),
         );
         const sig = `${resolveFuncType(t, ctx)} ${ops.contractInit(t.name, ctx)}(${args.join(", ")})`;
         ctx.signature(sig);
@@ -115,7 +115,7 @@ export function writeInit(
             for (const a of init.args) {
                 if (!resolveFuncPrimitive(a.type, ctx)) {
                     ctx.append(
-                        `var (${resolveFuncTypeUnpack(a.type, id(a.name), ctx)}) = ${id(a.name)};`,
+                        `var (${resolveFuncTypeUnpack(a.type, funcIdOf(a.name), ctx)}) = ${funcIdOf(a.name)};`,
                     );
                 }
             }
@@ -132,14 +132,14 @@ export function writeInit(
             if (initValues.length > 0) {
                 // Special case for empty contracts
                 ctx.append(
-                    `var (${resolveFuncTypeUnpack(t, id("self"), ctx)}) = (${initValues.join(", ")});`,
+                    `var (${resolveFuncTypeUnpack(t, funcIdOf("self"), ctx)}) = (${initValues.join(", ")});`,
                 );
             } else {
-                ctx.append(`tuple ${id("self")} = null();`);
+                ctx.append(`tuple ${funcIdOf("self")} = null();`);
             }
 
             // Generate statements
-            const returns = resolveFuncTypeUnpack(t, id("self"), ctx);
+            const returns = resolveFuncTypeUnpack(t, funcIdOf("self"), ctx);
             for (const s of init.ast.statements) {
                 writeStatement(s, returns, null, ctx);
             }
@@ -159,7 +159,7 @@ export function writeInit(
         const args = [
             `cell sys'`,
             ...init.args.map(
-                (v) => resolveFuncType(v.type, ctx) + " " + id(v.name),
+                (v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name),
             ),
         ];
         const sig = `(cell, cell) ${ops.contractInitChild(t.name, ctx)}(${args.join(", ")})`;
@@ -202,11 +202,15 @@ export function writeInit(
                     ? [
                           "b",
                           "(" +
-                              t.init!.args.map((a) => id(a.name)).join(", ") +
+                              t
+                                  .init!.args.map((a) => funcIdOf(a.name))
+                                  .join(", ") +
                               ")",
                       ].join(", ")
                     : "b, null()";
-            ctx.append(`b = ${ops.writer(initId(t.name), ctx)}(${args});`);
+            ctx.append(
+                `b = ${ops.writer(funcInitIdOf(t.name), ctx)}(${args});`,
+            );
             ctx.append(`return (mine, b.end_cell());`);
         });
     });

@@ -4,9 +4,13 @@ import {
     SrcInfo,
     ASTStatement,
     tryExtractPath,
+    AstId,
+    idText,
+    isWildcard,
+    selfId,
 } from "../grammar/ast";
 import { isAssignable } from "./subtyping";
-import { throwCompilationError } from "../errors";
+import { idTextErr, throwCompilationError } from "../errors";
 import {
     getAllStaticFunctions,
     getAllTypes,
@@ -31,17 +35,12 @@ function emptyContext(root: SrcInfo, returns: TypeRef): StatementContext {
     };
 }
 
-function checkVariableExists(
-    ctx: StatementContext,
-    name: string,
-    ref?: SrcInfo,
-): void {
-    if (ctx.vars.has(name)) {
-        if (ref) {
-            throwCompilationError(`Variable already exists: "${name}"`, ref);
-        } else {
-            throw Error(`Variable already exists: "${name}"`);
-        }
+function checkVariableExists(ctx: StatementContext, name: AstId): void {
+    if (ctx.vars.has(idText(name))) {
+        throwCompilationError(
+            `Variable already exists: ${idTextErr(name)}`,
+            name.ref,
+        );
     }
 }
 
@@ -73,17 +72,17 @@ function removeRequiredVariable(
 }
 
 function addVariable(
-    name: string,
+    name: AstId,
     ref: TypeRef,
     src: StatementContext,
 ): StatementContext {
     checkVariableExists(src, name); // Should happen earlier
-    if (name == "_") {
+    if (isWildcard(name)) {
         return src;
     }
     return {
         ...src,
-        vars: new Map(src.vars).set(name, ref),
+        vars: new Map(src.vars).set(idText(name), ref),
     };
 }
 
@@ -188,7 +187,7 @@ function processStatements(
             ctx = resolveExpression(s.expression, sctx, ctx);
 
             // Check variable name
-            checkVariableExists(sctx, s.name, s.ref);
+            checkVariableExists(sctx, s.name);
 
             // Check type
             const expressionType = getExpType(ctx, s.expression);
@@ -204,13 +203,13 @@ function processStatements(
             } else {
                 if (expressionType.kind === "null") {
                     throwCompilationError(
-                        `Cannot infer type for "${s.name}"`,
+                        `Cannot infer type for ${idTextErr(s.name)}`,
                         s.ref,
                     );
                 }
                 if (expressionType.kind === "void") {
                     throwCompilationError(
-                        `The inferred type of variable "${s.name}" is "void", which is not allowed`,
+                        `The inferred type of variable ${idTextErr(s.name)} is "void", which is not allowed`,
                         s.ref,
                     );
                 }
@@ -242,8 +241,8 @@ function processStatements(
             }
 
             // Mark as assigned
-            if (path.length === 2 && path[0].value === "self") {
-                const field = path[1].value;
+            if (path.length === 2 && path[0].text === "self") {
+                const field = path[1].text;
                 if (sctx.requiredFields.findIndex((v) => v === field) >= 0) {
                     sctx = removeRequiredVariable(field, sctx);
                 }
@@ -282,8 +281,8 @@ function processStatements(
             }
 
             // Mark as assigned
-            if (path.length === 2 && path[0].value === "self") {
-                const field = path[1].value;
+            if (path.length === 2 && path[0].text === "self") {
+                const field = path[1].text;
                 if (sctx.requiredFields.findIndex((v) => v === field) >= 0) {
                     sctx = removeRequiredVariable(field, sctx);
                 }
@@ -295,7 +294,7 @@ function processStatements(
             // return-reachability analysis
             if (
                 s.expression.kind === "op_static_call" &&
-                ["throw", "nativeThrow"].includes(s.expression.name)
+                ["throw", "nativeThrow"].includes(idText(s.expression.name))
             ) {
                 returnAlwaysReachable = true;
             }
@@ -450,7 +449,7 @@ function processStatements(
             let catchCtx = sctx;
 
             // Process catchName variable for exit code
-            checkVariableExists(initialCtx, s.catchName, s.ref);
+            checkVariableExists(initialCtx, s.catchName);
             catchCtx = addVariable(
                 s.catchName,
                 { kind: "ref", name: "Int", optional: false },
@@ -493,7 +492,7 @@ function processStatements(
             const mapType = getExpType(ctx, s.map);
             if (mapType.kind !== "map") {
                 throwCompilationError(
-                    `foreach can only be used on maps, but "${mapPath.map((id) => id.value).join(".")}" has type "${printTypeRef(mapType)}"`,
+                    `foreach can only be used on maps, but "${mapPath.map((id) => id.text).join(".")}" has type "${printTypeRef(mapType)}"`,
                     s.map.ref,
                 );
             }
@@ -501,16 +500,16 @@ function processStatements(
             let foreachCtx = sctx;
 
             // Add key and value to statement context
-            if (s.keyName != "_") {
-                checkVariableExists(initialCtx, s.keyName, s.ref);
+            if (!isWildcard(s.keyName)) {
+                checkVariableExists(initialCtx, s.keyName);
                 foreachCtx = addVariable(
                     s.keyName,
                     { kind: "ref", name: mapType.key, optional: false },
                     initialCtx,
                 );
             }
-            if (s.valueName != "_") {
-                checkVariableExists(foreachCtx, s.valueName, s.ref);
+            if (!isWildcard(s.valueName)) {
+                checkVariableExists(foreachCtx, s.valueName);
                 foreachCtx = addVariable(
                     s.valueName,
                     { kind: "ref", name: mapType.value, optional: false },
@@ -602,7 +601,7 @@ export function resolveStatements(ctx: CompilerContext) {
 
             // Self
             sctx = addVariable(
-                "self",
+                selfId,
                 { kind: "ref", name: t.name, optional: false },
                 sctx,
             );
@@ -633,7 +632,7 @@ export function resolveStatements(ctx: CompilerContext) {
             // Build statement context
             let sctx = emptyContext(f.ast.ref, { kind: "void" });
             sctx = addVariable(
-                "self",
+                selfId,
                 { kind: "ref", name: t.name, optional: false },
                 sctx,
             );
@@ -703,7 +702,7 @@ export function resolveStatements(ctx: CompilerContext) {
                 // Build statement context
                 let sctx = emptyContext(f.ast.ref, f.returns);
                 sctx = addVariable(
-                    "self",
+                    selfId,
                     { kind: "ref", name: t.name, optional: false },
                     sctx,
                 );

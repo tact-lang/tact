@@ -20,6 +20,7 @@ import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
+import { idText } from "../grammar/ast";
 
 export async function build(args: {
     config: ConfigProject;
@@ -237,7 +238,7 @@ export async function build(args: {
         for (const c of ct.dependsOn) {
             const cd = built[c.name];
             if (!cd) {
-                logger.error("   > " + cd + ": no artifacts found");
+                logger.error(`   > ${cd}: no artifacts found`);
                 return false;
             }
             depends.set(c.uid, Cell.fromBoc(cd.codeBoc)[0]);
@@ -269,7 +270,7 @@ export async function build(args: {
             init: {
                 kind: "direct",
                 args: getType(ctx, contract).init!.args.map((v) => ({
-                    name: v.name,
+                    name: idText(v.name),
                     type: createABITypeRefFromTypeRef(v.type, v.ref),
                 })),
                 prefix: {

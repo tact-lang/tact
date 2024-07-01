@@ -4,12 +4,15 @@ import { CompilerContext } from "./context";
 import {
     ASTBinaryOperation,
     ASTExpression,
-    ASTId,
+    AstId,
     ASTNewParameter,
     SrcInfo,
     ASTUnaryOperation,
+    isSelfId,
+    eqNames,
+    idText,
 } from "./grammar/ast";
-import { throwConstEvalError } from "./errors";
+import { idTextErr, throwConstEvalError } from "./errors";
 import { CommentValue, StructValue, Value } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
 import {
@@ -219,7 +222,7 @@ function evalBinaryOp(
                 return ensureInt(valNum << valBits, source);
             } catch (e) {
                 if (e instanceof RangeError)
-                    // this is actually should not happen
+                    // this actually should not happen
                     throwErrorConstEval(
                         `integer does not fit into TVM Int type`,
                         source,
@@ -318,35 +321,35 @@ function evalConditional(
 }
 
 function evalStructInstance(
-    structTypeId: string,
+    structTypeId: AstId,
     structFields: ASTNewParameter[],
     ctx: CompilerContext,
 ): StructValue {
     return structFields.reduce(
         (resObj, fieldWithInit) => {
-            resObj[fieldWithInit.name] = evalConstantExpression(
+            resObj[fieldWithInit.name.text] = evalConstantExpression(
                 fieldWithInit.exp,
                 ctx,
             );
             return resObj;
         },
-        { $tactStruct: structTypeId } as StructValue,
+        { $tactStruct: structTypeId.text } as StructValue,
     );
 }
 
 function evalFieldAccess(
     structExpr: ASTExpression,
-    fieldId: ASTId,
+    fieldId: AstId,
     source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
     // special case for contract/trait constant accesses via `self.constant`
-    if (structExpr.kind === "id" && structExpr.value == "self") {
+    if (structExpr.kind === "id" && isSelfId(structExpr)) {
         const selfTypeRef = getExpType(ctx, structExpr);
         if (selfTypeRef.kind == "ref") {
             const contractTypeDescription = getType(ctx, selfTypeRef.name);
             const foundContractConst = contractTypeDescription.constants.find(
-                (constId) => constId.name === fieldId.value,
+                (constId) => eqNames(fieldId, constId.name),
             );
             if (foundContractConst === undefined) {
                 // not a constant, e.g. `self.storageVariable`
@@ -359,7 +362,7 @@ function evalFieldAccess(
                 return foundContractConst.value;
             } else {
                 throwErrorConstEval(
-                    `cannot evaluate declared contract/trait constant "${fieldId.value}" as it does not have a body`,
+                    `cannot evaluate declared contract/trait constant ${idTextErr(fieldId)} as it does not have a body`,
                     fieldId.ref,
                 );
             }
@@ -376,25 +379,25 @@ function evalFieldAccess(
             structExpr.ref,
         );
     }
-    if (fieldId.value in valStruct) {
-        return valStruct[fieldId.value];
+    if (fieldId.text in valStruct) {
+        return valStruct[fieldId.text];
     } else {
         // this cannot happen in a well-typed program
         throwErrorConstEval(
-            `struct field ${fieldId.value} is missing`,
+            `struct field ${idTextErr(fieldId)} is missing`,
             structExpr.ref,
         );
     }
 }
 
 function evalMethod(
-    methodName: string,
+    methodName: AstId,
     object: ASTExpression,
     args: ASTExpression[],
     source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
-    switch (methodName) {
+    switch (idText(methodName)) {
         case "asComment": {
             ensureMethodArity(0, args, source);
             const comment = ensureString(
@@ -405,19 +408,19 @@ function evalMethod(
         }
         default:
             throwNonFatalErrorConstEval(
-                `calls of "${methodName}" are not supported at this moment`,
+                `calls of ${idTextErr(methodName)} are not supported at this moment`,
                 source,
             );
     }
 }
 
 function evalBuiltins(
-    builtinName: string,
+    builtinName: AstId,
     args: ASTExpression[],
     source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
-    switch (builtinName) {
+    switch (idText(builtinName)) {
         case "ton": {
             ensureFunArity(1, args, source);
             const tons = ensureString(
@@ -428,7 +431,10 @@ function evalBuiltins(
                 return ensureInt(BigInt(toNano(tons).toString(10)), source);
             } catch (e) {
                 if (e instanceof Error && e.message === "Invalid number") {
-                    throwErrorConstEval("invalid 'ton()' argument", source);
+                    throwErrorConstEval(
+                        `invalid ${idTextErr(builtinName)} argument`,
+                        source,
+                    );
                 }
                 throw e;
             }
@@ -445,7 +451,7 @@ function evalBuiltins(
             );
             if (valExp < 0n) {
                 throwErrorConstEval(
-                    `'pow()' builtin called with negative exponent ${valExp}`,
+                    `${idTextErr(builtinName)} builtin called with negative exponent ${valExp}`,
                     source,
                 );
             }
@@ -470,7 +476,7 @@ function evalBuiltins(
             );
             if (valExponent < 0n) {
                 throwErrorConstEval(
-                    `'pow2()' builtin called with negative exponent ${valExponent}`,
+                    `${idTextErr(builtinName)} builtin called with negative exponent ${valExponent}`,
                     source,
                 );
             }
@@ -582,7 +588,7 @@ function evalBuiltins(
         }
         default:
             throwNonFatalErrorConstEval(
-                `unsupported builtin ${builtinName}`,
+                `unsupported builtin ${idTextErr(builtinName)}`,
                 source,
             );
     }
@@ -637,13 +643,13 @@ export function evalConstantExpression(
 ): Value {
     switch (ast.kind) {
         case "id":
-            if (hasStaticConstant(ctx, ast.value)) {
-                const constant = getStaticConstant(ctx, ast.value);
+            if (hasStaticConstant(ctx, ast.text)) {
+                const constant = getStaticConstant(ctx, ast.text);
                 if (constant.value !== undefined) {
                     return constant.value;
                 } else {
                     throwErrorConstEval(
-                        `cannot evaluate declared constant "${ast.value}" as it does not have a body`,
+                        `cannot evaluate declared constant ${idTextErr(ast)} as it does not have a body`,
                         ast.ref,
                     );
                 }

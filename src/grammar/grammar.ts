@@ -3,6 +3,8 @@ import {
     Node,
     IterationNode,
     NonterminalNode,
+    grammar,
+    Grammar,
 } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
 import {
@@ -64,6 +66,10 @@ export class SrcInfo {
     }
 }
 
+const DummyGrammar: Grammar = grammar("Dummy { DummyRule = any }");
+const DUMMY_INTERVAL = DummyGrammar.match("").getInterval();
+export const dummySrcInfo: SrcInfo = new SrcInfo(DUMMY_INTERVAL, null, "user");
+
 let currentFile: string | null = null;
 
 export function inFile<T>(path: string, callback: () => T) {
@@ -123,11 +129,11 @@ semantics.addOperation<AstImport[]>("astOfJustImports", {
 });
 
 semantics.addOperation<ASTNode>("astOfModuleItem", {
-    PrimitiveTypeDecl(_primitive_kwd, type, _semicolon) {
-        checkVariableName(type.sourceString, createRef(type));
+    PrimitiveTypeDecl(_primitive_kwd, typeId, _semicolon) {
+        checkVariableName(typeId.sourceString, createRef(typeId));
         return createNode({
             kind: "primitive_type_decl",
-            name: type.sourceString,
+            name: typeId.astOfType(),
             ref: createRef(this),
         });
     },
@@ -150,8 +156,8 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             attributes: funAttributes.children.map((a) =>
                 a.astOfFunctionAttributes(),
             ),
-            name: tactId.sourceString,
-            nativeName: funcId.sourceString,
+            name: tactId.astOfExpression(),
+            nativeName: funcId.astOfExpression(),
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             args: params.astsOfList(),
             ref: createRef(this),
@@ -161,7 +167,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         checkVariableName(typeId.sourceString, createRef(typeId));
         return createNode({
             kind: "def_struct",
-            name: typeId.sourceString,
+            name: typeId.astOfType(),
             fields: fields.astsOfList(),
             prefix: null,
             message: false,
@@ -181,7 +187,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         checkVariableName(typeId.sourceString, createRef(typeId));
         return createNode({
             kind: "def_struct",
-            name: typeId.sourceString,
+            name: typeId.astOfType(),
             fields: fields.astsOfList(),
             prefix: unwrapOptNode(optIntMsgId, (number) =>
                 Number(bigintOfIntLiteral(number)),
@@ -203,7 +209,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         checkVariableName(contractId.sourceString, createRef(contractId));
         return createNode({
             kind: "def_contract",
-            name: contractId.sourceString,
+            name: contractId.astOfExpression(),
             attributes: attributes.children.map((ca) =>
                 ca.astOfContractAttributes(),
             ),
@@ -227,7 +233,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
         checkVariableName(traitId.sourceString, createRef(traitId));
         return createNode({
             kind: "def_trait",
-            name: traitId.sourceString,
+            name: traitId.astOfExpression(),
             attributes: attributes.children.map((ca) =>
                 ca.astOfContractAttributes(),
             ),
@@ -264,7 +270,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         checkConstAttributes(false, attributes, createRef(this));
         return createNode({
             kind: "def_constant",
-            name: constId.sourceString,
+            name: constId.astOfExpression(),
             type: constType.astOfType(),
             value: initExpr.astOfExpression(),
             attributes,
@@ -285,7 +291,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         checkConstAttributes(true, attributes, createRef(this));
         return createNode({
             kind: "def_constant",
-            name: constId.sourceString,
+            name: constId.astOfExpression(),
             type: constType.astOfType(),
             value: null,
             attributes,
@@ -314,7 +320,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         return createNode({
             kind: "function_def",
             attributes,
-            name: funId.sourceString,
+            name: funId.astOfExpression(),
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             args: funParameters.astsOfList(),
             statements: funBody.children.map((s) => s.astOfStatement()),
@@ -338,7 +344,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         return createNode({
             kind: "function_def",
             attributes,
-            name: funId.sourceString,
+            name: funId.astOfExpression(),
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             args: funParameters.astsOfList(),
             statements: null,
@@ -550,9 +556,9 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
     ) {
         return createNode({
             kind: "def_field",
-            name: id.sourceString,
+            name: id.astOfExpression(),
             type: type.astOfType() as ASTTypeRef,
-            as: unwrapOptNode(optStorageType, (t) => t.sourceString),
+            as: unwrapOptNode(optStorageType, (t) => t.astOfExpression()),
             init: unwrapOptNode(optInitializer, (e) => e.astOfExpression()),
             ref: createRef(this),
         });
@@ -561,7 +567,7 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
         checkVariableName(id.sourceString, createRef(id));
         return createNode({
             kind: "def_argument",
-            name: id.sourceString,
+            name: id.astOfExpression(),
             type: type.astOfType(),
             ref: createRef(this),
         });
@@ -569,7 +575,7 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
     StructFieldInitializer_full(fieldId, _colon, initializer) {
         return createNode({
             kind: "new_parameter",
-            name: fieldId.sourceString,
+            name: fieldId.astOfExpression(),
             exp: initializer.astOfExpression(),
             ref: createRef(this),
         });
@@ -577,7 +583,7 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
     StructFieldInitializer_punned(fieldId) {
         return createNode({
             kind: "new_parameter",
-            name: fieldId.sourceString,
+            name: fieldId.astOfExpression(),
             exp: fieldId.astOfExpression(),
             ref: createRef(this),
         });
@@ -601,7 +607,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
 
         return createNode({
             kind: "statement_let",
-            name: id.sourceString,
+            name: id.astOfExpression(),
             type: unwrapOptNode(optType, (t) => t.astOfType()),
             expression: expression.astOfExpression(),
             ref: createRef(this),
@@ -796,7 +802,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
         return createNode({
             kind: "statement_try_catch",
             statements: tryBlock.children.map((s) => s.astOfStatement()),
-            catchName: exitCodeId.sourceString,
+            catchName: exitCodeId.astOfExpression(),
             catchStatements: catchBlock.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
@@ -818,8 +824,8 @@ semantics.addOperation<ASTNode>("astOfStatement", {
         checkVariableName(valueId.sourceString, createRef(valueId));
         return createNode({
             kind: "statement_foreach",
-            keyName: keyId.sourceString,
-            valueName: valueId.sourceString,
+            keyName: keyId.astOfExpression(),
+            valueName: valueId.astOfExpression(),
             map: mapId.astOfExpression(),
             statements: foreachBlock.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
@@ -828,11 +834,19 @@ semantics.addOperation<ASTNode>("astOfStatement", {
 });
 
 semantics.addOperation<ASTNode>("astOfType", {
-    // TypeRefs
+    typeId(firstTactTypeIdCharacter, restOfTactTypeId) {
+        return createNode({
+            kind: "id",
+            text:
+                firstTactTypeIdCharacter.sourceString +
+                restOfTactTypeId.sourceString,
+            ref: createRef(this),
+        });
+    },
     Type_optional(typeId, _questionMark) {
         return createNode({
             kind: "type_ref_simple",
-            name: typeId.sourceString,
+            name: typeId.astOfType(),
             optional: true,
             ref: createRef(this),
         });
@@ -840,7 +854,7 @@ semantics.addOperation<ASTNode>("astOfType", {
     Type_regular(typeId) {
         return createNode({
             kind: "type_ref_simple",
-            name: typeId.sourceString,
+            name: typeId.astOfType(),
             optional: false,
             ref: createRef(this),
         });
@@ -859,17 +873,19 @@ semantics.addOperation<ASTNode>("astOfType", {
     ) {
         return createNode({
             kind: "type_ref_map",
-            key: keyTypeId.sourceString,
-            keyAs: unwrapOptNode(optKeyStorageType, (t) => t.sourceString),
-            value: valueTypeId.sourceString,
-            valueAs: unwrapOptNode(optValueStorageType, (t) => t.sourceString),
+            key: keyTypeId.astOfType(),
+            keyAs: unwrapOptNode(optKeyStorageType, (t) => t.astOfExpression()),
+            value: valueTypeId.astOfType(),
+            valueAs: unwrapOptNode(optValueStorageType, (t) =>
+                t.astOfExpression(),
+            ),
             ref: createRef(this),
         });
     },
     Type_bounced(_bouncedKwd, _langle, typeId, _rangle) {
         return createNode({
             kind: "type_ref_bounced",
-            name: typeId.sourceString,
+            name: typeId.astOfType(),
             ref: createRef(this),
         });
     },
@@ -900,16 +916,14 @@ semantics.addOperation<ASTNode>("astOfExpression", {
     id(firstTactIdCharacter, restOfTactId) {
         return createNode({
             kind: "id",
-            value:
-                firstTactIdCharacter.sourceString + restOfTactId.sourceString,
+            text: firstTactIdCharacter.sourceString + restOfTactId.sourceString,
             ref: createRef(this),
         });
     },
     funcId(firstFuncIdCharacter, restOfFuncId) {
         return createNode({
-            kind: "id",
-            value:
-                firstFuncIdCharacter.sourceString + restOfFuncId.sourceString,
+            kind: "func_id",
+            text: firstFuncIdCharacter.sourceString + restOfFuncId.sourceString,
             ref: createRef(this),
         });
     },
@@ -1143,7 +1157,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
         return createNode({
             kind: "op_call",
             src: source.astOfExpression(),
-            name: methodId.sourceString,
+            name: methodId.astOfExpression(),
             args: methodArguments.astsOfList(),
             ref: createRef(this),
         });
@@ -1151,7 +1165,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
     ExpressionStaticCall(functionId, functionArguments) {
         return createNode({
             kind: "op_static_call",
-            name: functionId.sourceString,
+            name: functionId.astOfExpression(),
             args: functionArguments.astsOfList(),
             ref: createRef(this),
         });
@@ -1175,7 +1189,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
 
         return createNode({
             kind: "op_new",
-            type: typeId.sourceString,
+            type: typeId.astOfType(),
             args: structFields
                 .asIteration()
                 .children.map((d) => d.astOfDeclaration()),
@@ -1185,7 +1199,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
     ExpressionInitOf(_initOfKwd, contractId, initArguments) {
         return createNode({
             kind: "init_of",
-            name: contractId.sourceString,
+            name: contractId.astOfExpression(),
             args: initArguments.astsOfList(),
             ref: createRef(this),
         });

@@ -17,7 +17,7 @@ Tact {
     JustImports = Import* any*
 
     // Built-in declarations
-    PrimitiveTypeDecl = primitive Type ";"
+    PrimitiveTypeDecl = primitive typeId ";"
 
     ModuleFunction = FunctionDefinition
 

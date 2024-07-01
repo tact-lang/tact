@@ -161,7 +161,7 @@ Line 9, col 3:
 `;
 
 exports[`resolveDescriptors should fail descriptors for contract-missing-type 1`] = `
-"<unknown>:12:23: Type Point not found
+"<unknown>:12:23: Type "Point" not found
 Line 12, col 23:
   11 |     }
 > 12 |     get fun hello2(): Point {
@@ -391,25 +391,45 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "ast": {
       "fields": [
         {
-          "as": "uint32",
-          "id": 5,
+          "as": {
+            "id": 11,
+            "kind": "id",
+            "ref": uint32,
+            "text": "uint32",
+          },
+          "id": 12,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int as uint32,
           "type": {
-            "id": 4,
+            "id": 10,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 9,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
         },
       ],
-      "id": 6,
+      "id": 13,
       "kind": "def_struct",
       "message": true,
-      "name": "A",
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "ref": A,
+        "text": "A",
+      },
       "prefix": null,
       "ref": message A {
   a: Int as uint32;
@@ -430,16 +450,31 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         },
         "as": "uint32",
         "ast": {
-          "as": "uint32",
-          "id": 5,
+          "as": {
+            "id": 11,
+            "kind": "id",
+            "ref": uint32,
+            "text": "uint32",
+          },
+          "id": 12,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int as uint32,
           "type": {
-            "id": 4,
+            "id": 10,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 9,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -473,9 +508,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 3,
+      "id": 6,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait {
     
 },
@@ -500,9 +540,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -524,9 +569,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
   },
   "Slice": {
     "ast": {
-      "id": 2,
+      "id": 4,
       "kind": "primitive_type_decl",
-      "name": "Slice",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": Slice,
+        "text": "Slice",
+      },
       "ref": primitive Slice;,
     },
     "constants": [],
@@ -552,27 +602,37 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       "declarations": [
         {
           "args": [],
-          "id": 7,
+          "id": 15,
           "kind": "def_init_function",
           "ref": init() {},
           "statements": [],
         },
         {
-          "id": 10,
+          "id": 20,
           "kind": "def_receive",
           "ref": receive(src: A) {
     
   },
           "selector": {
             "arg": {
-              "id": 9,
+              "id": 19,
               "kind": "def_argument",
-              "name": "src",
+              "name": {
+                "id": 16,
+                "kind": "id",
+                "ref": src,
+                "text": "src",
+              },
               "ref": src: A,
               "type": {
-                "id": 8,
+                "id": 18,
                 "kind": "type_ref_simple",
-                "name": "A",
+                "name": {
+                  "id": 17,
+                  "kind": "id",
+                  "ref": A,
+                  "text": "A",
+                },
                 "optional": false,
                 "ref": A,
               },
@@ -582,21 +642,31 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
           "statements": [],
         },
         {
-          "id": 13,
+          "id": 25,
           "kind": "def_receive",
           "ref": bounced(src: Slice) {
     
   },
           "selector": {
             "arg": {
-              "id": 12,
+              "id": 24,
               "kind": "def_argument",
-              "name": "src",
+              "name": {
+                "id": 21,
+                "kind": "id",
+                "ref": src,
+                "text": "src",
+              },
               "ref": src: Slice,
               "type": {
-                "id": 11,
+                "id": 23,
                 "kind": "type_ref_simple",
-                "name": "Slice",
+                "name": {
+                  "id": 22,
+                  "kind": "id",
+                  "ref": Slice,
+                  "text": "Slice",
+                },
                 "optional": false,
                 "ref": Slice,
               },
@@ -606,9 +676,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
           "statements": [],
         },
       ],
-      "id": 14,
+      "id": 26,
       "kind": "def_contract",
-      "name": "Test",
+      "name": {
+        "id": 14,
+        "kind": "id",
+        "ref": Test,
+        "text": "Test",
+      },
       "ref": contract Test {
   init() {}
   receive(src: A) {
@@ -630,7 +705,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       "args": [],
       "ast": {
         "args": [],
-        "id": 7,
+        "id": 15,
         "kind": "def_init_function",
         "ref": init() {},
         "statements": [],
@@ -644,21 +719,31 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "receivers": [
       {
         "ast": {
-          "id": 10,
+          "id": 20,
           "kind": "def_receive",
           "ref": receive(src: A) {
     
   },
           "selector": {
             "arg": {
-              "id": 9,
+              "id": 19,
               "kind": "def_argument",
-              "name": "src",
+              "name": {
+                "id": 16,
+                "kind": "id",
+                "ref": src,
+                "text": "src",
+              },
               "ref": src: A,
               "type": {
-                "id": 8,
+                "id": 18,
                 "kind": "type_ref_simple",
-                "name": "A",
+                "name": {
+                  "id": 17,
+                  "kind": "id",
+                  "ref": A,
+                  "text": "A",
+                },
                 "optional": false,
                 "ref": A,
               },
@@ -669,27 +754,42 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         },
         "selector": {
           "kind": "internal-binary",
-          "name": "src",
+          "name": {
+            "id": 16,
+            "kind": "id",
+            "ref": src,
+            "text": "src",
+          },
           "type": "A",
         },
       },
       {
         "ast": {
-          "id": 13,
+          "id": 25,
           "kind": "def_receive",
           "ref": bounced(src: Slice) {
     
   },
           "selector": {
             "arg": {
-              "id": 12,
+              "id": 24,
               "kind": "def_argument",
-              "name": "src",
+              "name": {
+                "id": 21,
+                "kind": "id",
+                "ref": src,
+                "text": "src",
+              },
               "ref": src: Slice,
               "type": {
-                "id": 11,
+                "id": 23,
                 "kind": "type_ref_simple",
-                "name": "Slice",
+                "name": {
+                  "id": 22,
+                  "kind": "id",
+                  "ref": Slice,
+                  "text": "Slice",
+                },
                 "optional": false,
                 "ref": Slice,
               },
@@ -700,7 +800,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         },
         "selector": {
           "kind": "bounce-fallback",
-          "name": "src",
+          "name": {
+            "id": 21,
+            "kind": "id",
+            "ref": src,
+            "text": "src",
+          },
         },
       },
     ],
@@ -711,9 +816,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 3,
+          "id": 6,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait {
     
 },
@@ -750,55 +860,100 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "ast": {
       "fields": [
         {
-          "as": "uint32",
-          "id": 5,
+          "as": {
+            "id": 11,
+            "kind": "id",
+            "ref": uint32,
+            "text": "uint32",
+          },
+          "id": 12,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int as uint32,
           "type": {
-            "id": 4,
+            "id": 10,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 9,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
         },
         {
           "as": null,
-          "id": 7,
+          "id": 16,
           "init": null,
           "kind": "def_field",
-          "name": "b",
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "ref": b,
+            "text": "b",
+          },
           "ref": b: Bool,
           "type": {
-            "id": 6,
+            "id": 15,
             "kind": "type_ref_simple",
-            "name": "Bool",
+            "name": {
+              "id": 14,
+              "kind": "id",
+              "ref": Bool,
+              "text": "Bool",
+            },
             "optional": false,
             "ref": Bool,
           },
         },
         {
-          "as": "uint256",
-          "id": 9,
+          "as": {
+            "id": 20,
+            "kind": "id",
+            "ref": uint256,
+            "text": "uint256",
+          },
+          "id": 21,
           "init": null,
           "kind": "def_field",
-          "name": "c",
+          "name": {
+            "id": 17,
+            "kind": "id",
+            "ref": c,
+            "text": "c",
+          },
           "ref": c: Int as uint256,
           "type": {
-            "id": 8,
+            "id": 19,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 18,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
         },
       ],
-      "id": 10,
+      "id": 22,
       "kind": "def_struct",
       "message": true,
-      "name": "A",
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "ref": A,
+        "text": "A",
+      },
       "prefix": null,
       "ref": message A {
   a: Int as uint32;
@@ -821,16 +976,31 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         },
         "as": "uint32",
         "ast": {
-          "as": "uint32",
-          "id": 5,
+          "as": {
+            "id": 11,
+            "kind": "id",
+            "ref": uint32,
+            "text": "uint32",
+          },
+          "id": 12,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int as uint32,
           "type": {
-            "id": 4,
+            "id": 10,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 9,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -857,15 +1027,25 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         "as": null,
         "ast": {
           "as": null,
-          "id": 7,
+          "id": 16,
           "init": null,
           "kind": "def_field",
-          "name": "b",
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "ref": b,
+            "text": "b",
+          },
           "ref": b: Bool,
           "type": {
-            "id": 6,
+            "id": 15,
             "kind": "type_ref_simple",
-            "name": "Bool",
+            "name": {
+              "id": 14,
+              "kind": "id",
+              "ref": Bool,
+              "text": "Bool",
+            },
             "optional": false,
             "ref": Bool,
           },
@@ -892,16 +1072,31 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         },
         "as": "uint256",
         "ast": {
-          "as": "uint256",
-          "id": 9,
+          "as": {
+            "id": 20,
+            "kind": "id",
+            "ref": uint256,
+            "text": "uint256",
+          },
+          "id": 21,
           "init": null,
           "kind": "def_field",
-          "name": "c",
+          "name": {
+            "id": 17,
+            "kind": "id",
+            "ref": c,
+            "text": "c",
+          },
           "ref": c: Int as uint256,
           "type": {
-            "id": 8,
+            "id": 19,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 18,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -935,9 +1130,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 3,
+      "id": 6,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait {
     
 },
@@ -962,9 +1162,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
   },
   "Bool": {
     "ast": {
-      "id": 2,
+      "id": 4,
       "kind": "primitive_type_decl",
-      "name": "Bool",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": Bool,
+        "text": "Bool",
+      },
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -986,9 +1191,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -1014,27 +1224,37 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       "declarations": [
         {
           "args": [],
-          "id": 11,
+          "id": 24,
           "kind": "def_init_function",
           "ref": init() {},
           "statements": [],
         },
         {
-          "id": 14,
+          "id": 29,
           "kind": "def_receive",
           "ref": receive(src: A) {
     
   },
           "selector": {
             "arg": {
-              "id": 13,
+              "id": 28,
               "kind": "def_argument",
-              "name": "src",
+              "name": {
+                "id": 25,
+                "kind": "id",
+                "ref": src,
+                "text": "src",
+              },
               "ref": src: A,
               "type": {
-                "id": 12,
+                "id": 27,
                 "kind": "type_ref_simple",
-                "name": "A",
+                "name": {
+                  "id": 26,
+                  "kind": "id",
+                  "ref": A,
+                  "text": "A",
+                },
                 "optional": false,
                 "ref": A,
               },
@@ -1044,21 +1264,31 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "statements": [],
         },
         {
-          "id": 22,
+          "id": 41,
           "kind": "def_receive",
           "ref": bounced(src: bounced<A>) {
     let x: Int = src.c;
   },
           "selector": {
             "arg": {
-              "id": 16,
+              "id": 33,
               "kind": "def_argument",
-              "name": "src",
+              "name": {
+                "id": 30,
+                "kind": "id",
+                "ref": src,
+                "text": "src",
+              },
               "ref": src: bounced<A>,
               "type": {
-                "id": 15,
+                "id": 32,
                 "kind": "type_ref_bounced",
-                "name": "A",
+                "name": {
+                  "id": 31,
+                  "kind": "id",
+                  "ref": A,
+                  "text": "A",
+                },
                 "ref": bounced<A>,
               },
             },
@@ -1067,30 +1297,40 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "statements": [
             {
               "expression": {
-                "id": 20,
+                "id": 39,
                 "kind": "op_field",
                 "name": {
-                  "id": 19,
+                  "id": 38,
                   "kind": "id",
                   "ref": c,
-                  "value": "c",
+                  "text": "c",
                 },
                 "ref": src.c,
                 "src": {
-                  "id": 18,
+                  "id": 37,
                   "kind": "id",
                   "ref": src,
-                  "value": "src",
+                  "text": "src",
                 },
               },
-              "id": 21,
+              "id": 40,
               "kind": "statement_let",
-              "name": "x",
+              "name": {
+                "id": 34,
+                "kind": "id",
+                "ref": x,
+                "text": "x",
+              },
               "ref": let x: Int = src.c;,
               "type": {
-                "id": 17,
+                "id": 36,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 35,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
@@ -1098,9 +1338,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           ],
         },
       ],
-      "id": 23,
+      "id": 42,
       "kind": "def_contract",
-      "name": "Test",
+      "name": {
+        "id": 23,
+        "kind": "id",
+        "ref": Test,
+        "text": "Test",
+      },
       "ref": contract Test {
   init() {}
   receive(src: A) {
@@ -1122,7 +1367,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       "args": [],
       "ast": {
         "args": [],
-        "id": 11,
+        "id": 24,
         "kind": "def_init_function",
         "ref": init() {},
         "statements": [],
@@ -1136,21 +1381,31 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "receivers": [
       {
         "ast": {
-          "id": 14,
+          "id": 29,
           "kind": "def_receive",
           "ref": receive(src: A) {
     
   },
           "selector": {
             "arg": {
-              "id": 13,
+              "id": 28,
               "kind": "def_argument",
-              "name": "src",
+              "name": {
+                "id": 25,
+                "kind": "id",
+                "ref": src,
+                "text": "src",
+              },
               "ref": src: A,
               "type": {
-                "id": 12,
+                "id": 27,
                 "kind": "type_ref_simple",
-                "name": "A",
+                "name": {
+                  "id": 26,
+                  "kind": "id",
+                  "ref": A,
+                  "text": "A",
+                },
                 "optional": false,
                 "ref": A,
               },
@@ -1161,27 +1416,42 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         },
         "selector": {
           "kind": "internal-binary",
-          "name": "src",
+          "name": {
+            "id": 25,
+            "kind": "id",
+            "ref": src,
+            "text": "src",
+          },
           "type": "A",
         },
       },
       {
         "ast": {
-          "id": 22,
+          "id": 41,
           "kind": "def_receive",
           "ref": bounced(src: bounced<A>) {
     let x: Int = src.c;
   },
           "selector": {
             "arg": {
-              "id": 16,
+              "id": 33,
               "kind": "def_argument",
-              "name": "src",
+              "name": {
+                "id": 30,
+                "kind": "id",
+                "ref": src,
+                "text": "src",
+              },
               "ref": src: bounced<A>,
               "type": {
-                "id": 15,
+                "id": 32,
                 "kind": "type_ref_bounced",
-                "name": "A",
+                "name": {
+                  "id": 31,
+                  "kind": "id",
+                  "ref": A,
+                  "text": "A",
+                },
                 "ref": bounced<A>,
               },
             },
@@ -1190,30 +1460,40 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "statements": [
             {
               "expression": {
-                "id": 20,
+                "id": 39,
                 "kind": "op_field",
                 "name": {
-                  "id": 19,
+                  "id": 38,
                   "kind": "id",
                   "ref": c,
-                  "value": "c",
+                  "text": "c",
                 },
                 "ref": src.c,
                 "src": {
-                  "id": 18,
+                  "id": 37,
                   "kind": "id",
                   "ref": src,
-                  "value": "src",
+                  "text": "src",
                 },
               },
-              "id": 21,
+              "id": 40,
               "kind": "statement_let",
-              "name": "x",
+              "name": {
+                "id": 34,
+                "kind": "id",
+                "ref": x,
+                "text": "x",
+              },
               "ref": let x: Int = src.c;,
               "type": {
-                "id": 17,
+                "id": 36,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 35,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
@@ -1223,7 +1503,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         "selector": {
           "bounced": true,
           "kind": "bounce-binary",
-          "name": "src",
+          "name": {
+            "id": 30,
+            "kind": "id",
+            "ref": src,
+            "text": "src",
+          },
           "type": "A",
         },
       },
@@ -1235,9 +1520,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 3,
+          "id": 6,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait {
     
 },
@@ -1274,9 +1564,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 2,
+      "id": 4,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait { },
       "traits": [],
     },
@@ -1299,9 +1594,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -1332,23 +1632,38 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               "type": "abstract",
             },
           ],
-          "id": 4,
+          "id": 9,
           "kind": "def_constant",
-          "name": "Foo",
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "ref": Foo,
+            "text": "Foo",
+          },
           "ref": abstract const Foo: Int;,
           "type": {
-            "id": 3,
+            "id": 8,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 7,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "value": null,
         },
       ],
-      "id": 5,
+      "id": 10,
       "kind": "def_trait",
-      "name": "T",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": T,
+        "text": "T",
+      },
       "ref": trait T {
   abstract const Foo: Int;
 },
@@ -1363,14 +1678,24 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               "type": "abstract",
             },
           ],
-          "id": 4,
+          "id": 9,
           "kind": "def_constant",
-          "name": "Foo",
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "ref": Foo,
+            "text": "Foo",
+          },
           "ref": abstract const Foo: Int;,
           "type": {
-            "id": 3,
+            "id": 8,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 7,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -1404,9 +1729,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 2,
+          "id": 4,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -1441,37 +1771,52 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               "type": "overrides",
             },
           ],
-          "id": 8,
+          "id": 16,
           "kind": "def_constant",
-          "name": "Foo",
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "ref": Foo,
+            "text": "Foo",
+          },
           "ref": override const Foo: Int = 42;,
           "type": {
-            "id": 6,
+            "id": 14,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 13,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "value": {
-            "id": 7,
+            "id": 15,
             "kind": "number",
             "ref": 42,
             "value": 42n,
           },
         },
       ],
-      "id": 10,
+      "id": 18,
       "kind": "def_contract",
-      "name": "TestContract",
+      "name": {
+        "id": 11,
+        "kind": "id",
+        "ref": TestContract,
+        "text": "TestContract",
+      },
       "ref": contract TestContract with T {
   override const Foo: Int = 42;
 },
       "traits": [
         {
-          "id": 9,
+          "id": 17,
           "kind": "id",
           "ref": T,
-          "value": "T",
+          "text": "T",
         },
       ],
     },
@@ -1484,19 +1829,29 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               "type": "overrides",
             },
           ],
-          "id": 8,
+          "id": 16,
           "kind": "def_constant",
-          "name": "Foo",
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "ref": Foo,
+            "text": "Foo",
+          },
           "ref": override const Foo: Int = 42;,
           "type": {
-            "id": 6,
+            "id": 14,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 13,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "value": {
-            "id": 7,
+            "id": 15,
             "kind": "number",
             "ref": 42,
             "value": 42n,
@@ -1520,7 +1875,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
       "args": [],
       "ast": {
         "args": [],
-        "id": 12,
+        "id": 20,
         "kind": "def_init_function",
         "ref": contract TestContract with T {
   override const Foo: Int = 42;
@@ -1541,9 +1896,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 2,
+          "id": 4,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -1575,23 +1935,38 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
                   "type": "abstract",
                 },
               ],
-              "id": 4,
+              "id": 9,
               "kind": "def_constant",
-              "name": "Foo",
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "ref": Foo,
+                "text": "Foo",
+              },
               "ref": abstract const Foo: Int;,
               "type": {
-                "id": 3,
+                "id": 8,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 7,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
               "value": null,
             },
           ],
-          "id": 5,
+          "id": 10,
           "kind": "def_trait",
-          "name": "T",
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "ref": T,
+            "text": "T",
+          },
           "ref": trait T {
   abstract const Foo: Int;
 },
@@ -1606,14 +1981,24 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
                   "type": "abstract",
                 },
               ],
-              "id": 4,
+              "id": 9,
               "kind": "def_constant",
-              "name": "Foo",
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "ref": Foo,
+                "text": "Foo",
+              },
               "ref": abstract const Foo: Int;,
               "type": {
-                "id": 3,
+                "id": 8,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 7,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
@@ -1647,9 +2032,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
             "ast": {
               "attributes": [],
               "declarations": [],
-              "id": 2,
+              "id": 4,
               "kind": "def_trait",
-              "name": "BaseTrait",
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "ref": BaseTrait,
+                "text": "BaseTrait",
+              },
               "ref": trait BaseTrait { },
               "traits": [],
             },
@@ -1687,9 +2077,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 2,
+      "id": 4,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait { },
       "traits": [],
     },
@@ -1712,9 +2107,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -1745,28 +2145,43 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               "type": "virtual",
             },
           ],
-          "id": 5,
+          "id": 10,
           "kind": "def_constant",
-          "name": "Foo",
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "ref": Foo,
+            "text": "Foo",
+          },
           "ref": virtual const Foo: Int = 41;,
           "type": {
-            "id": 3,
+            "id": 8,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 7,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "value": {
-            "id": 4,
+            "id": 9,
             "kind": "number",
             "ref": 41,
             "value": 41n,
           },
         },
       ],
-      "id": 6,
+      "id": 11,
       "kind": "def_trait",
-      "name": "T",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": T,
+        "text": "T",
+      },
       "ref": trait T {
    virtual const Foo: Int = 41;
 },
@@ -1781,19 +2196,29 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               "type": "virtual",
             },
           ],
-          "id": 5,
+          "id": 10,
           "kind": "def_constant",
-          "name": "Foo",
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "ref": Foo,
+            "text": "Foo",
+          },
           "ref": virtual const Foo: Int = 41;,
           "type": {
-            "id": 3,
+            "id": 8,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 7,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "value": {
-            "id": 4,
+            "id": 9,
             "kind": "number",
             "ref": 41,
             "value": 41n,
@@ -1827,9 +2252,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 2,
+          "id": 4,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -1864,37 +2294,52 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               "type": "overrides",
             },
           ],
-          "id": 9,
+          "id": 17,
           "kind": "def_constant",
-          "name": "Foo",
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "ref": Foo,
+            "text": "Foo",
+          },
           "ref": override const Foo: Int = 42;,
           "type": {
-            "id": 7,
+            "id": 15,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 14,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "value": {
-            "id": 8,
+            "id": 16,
             "kind": "number",
             "ref": 42,
             "value": 42n,
           },
         },
       ],
-      "id": 11,
+      "id": 19,
       "kind": "def_contract",
-      "name": "TestContract",
+      "name": {
+        "id": 12,
+        "kind": "id",
+        "ref": TestContract,
+        "text": "TestContract",
+      },
       "ref": contract TestContract with T {
   override const Foo: Int = 42;
 },
       "traits": [
         {
-          "id": 10,
+          "id": 18,
           "kind": "id",
           "ref": T,
-          "value": "T",
+          "text": "T",
         },
       ],
     },
@@ -1907,19 +2352,29 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               "type": "overrides",
             },
           ],
-          "id": 9,
+          "id": 17,
           "kind": "def_constant",
-          "name": "Foo",
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "ref": Foo,
+            "text": "Foo",
+          },
           "ref": override const Foo: Int = 42;,
           "type": {
-            "id": 7,
+            "id": 15,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 14,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "value": {
-            "id": 8,
+            "id": 16,
             "kind": "number",
             "ref": 42,
             "value": 42n,
@@ -1943,7 +2398,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
       "args": [],
       "ast": {
         "args": [],
-        "id": 13,
+        "id": 21,
         "kind": "def_init_function",
         "ref": contract TestContract with T {
   override const Foo: Int = 42;
@@ -1964,9 +2419,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 2,
+          "id": 4,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -1998,28 +2458,43 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
                   "type": "virtual",
                 },
               ],
-              "id": 5,
+              "id": 10,
               "kind": "def_constant",
-              "name": "Foo",
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "ref": Foo,
+                "text": "Foo",
+              },
               "ref": virtual const Foo: Int = 41;,
               "type": {
-                "id": 3,
+                "id": 8,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 7,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
               "value": {
-                "id": 4,
+                "id": 9,
                 "kind": "number",
                 "ref": 41,
                 "value": 41n,
               },
             },
           ],
-          "id": 6,
+          "id": 11,
           "kind": "def_trait",
-          "name": "T",
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "ref": T,
+            "text": "T",
+          },
           "ref": trait T {
    virtual const Foo: Int = 41;
 },
@@ -2034,19 +2509,29 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
                   "type": "virtual",
                 },
               ],
-              "id": 5,
+              "id": 10,
               "kind": "def_constant",
-              "name": "Foo",
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "ref": Foo,
+                "text": "Foo",
+              },
               "ref": virtual const Foo: Int = 41;,
               "type": {
-                "id": 3,
+                "id": 8,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 7,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
               "value": {
-                "id": 4,
+                "id": 9,
                 "kind": "number",
                 "ref": 41,
                 "value": 41n,
@@ -2080,9 +2565,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
             "ast": {
               "attributes": [],
               "declarations": [],
-              "id": 2,
+              "id": 4,
               "kind": "def_trait",
-              "name": "BaseTrait",
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "ref": BaseTrait,
+                "text": "BaseTrait",
+              },
               "ref": trait BaseTrait { },
               "traits": [],
             },
@@ -2120,25 +2610,45 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     "ast": {
       "fields": [
         {
-          "as": "uint32",
-          "id": 4,
+          "as": {
+            "id": 9,
+            "kind": "id",
+            "ref": uint32,
+            "text": "uint32",
+          },
+          "id": 10,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int as uint32,
           "type": {
-            "id": 3,
+            "id": 8,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 7,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
         },
       ],
-      "id": 5,
+      "id": 11,
       "kind": "def_struct",
       "message": true,
-      "name": "A",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": A,
+        "text": "A",
+      },
       "prefix": null,
       "ref": message A {
     a: Int as uint32;
@@ -2159,16 +2669,31 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         },
         "as": "uint32",
         "ast": {
-          "as": "uint32",
-          "id": 4,
+          "as": {
+            "id": 9,
+            "kind": "id",
+            "ref": uint32,
+            "text": "uint32",
+          },
+          "id": 10,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int as uint32,
           "type": {
-            "id": 3,
+            "id": 8,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 7,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -2202,9 +2727,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 2,
+      "id": 4,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait {
     
 },
@@ -2229,9 +2759,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -2256,21 +2791,31 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       "attributes": [],
       "declarations": [
         {
-          "id": 10,
+          "id": 19,
           "kind": "def_receive",
           "ref": external(msg: A) {
         42;
     },
           "selector": {
             "arg": {
-              "id": 7,
+              "id": 16,
               "kind": "def_argument",
-              "name": "msg",
+              "name": {
+                "id": 13,
+                "kind": "id",
+                "ref": msg,
+                "text": "msg",
+              },
               "ref": msg: A,
               "type": {
-                "id": 6,
+                "id": 15,
                 "kind": "type_ref_simple",
-                "name": "A",
+                "name": {
+                  "id": 14,
+                  "kind": "id",
+                  "ref": A,
+                  "text": "A",
+                },
                 "optional": false,
                 "ref": A,
               },
@@ -2280,19 +2825,19 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "statements": [
             {
               "expression": {
-                "id": 8,
+                "id": 17,
                 "kind": "number",
                 "ref": 42,
                 "value": 42n,
               },
-              "id": 9,
+              "id": 18,
               "kind": "statement_expression",
               "ref": 42;,
             },
           ],
         },
         {
-          "id": 13,
+          "id": 22,
           "kind": "def_receive",
           "ref": external() {
         42;
@@ -2303,21 +2848,26 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "statements": [
             {
               "expression": {
-                "id": 11,
+                "id": 20,
                 "kind": "number",
                 "ref": 42,
                 "value": 42n,
               },
-              "id": 12,
+              "id": 21,
               "kind": "statement_expression",
               "ref": 42;,
             },
           ],
         },
       ],
-      "id": 14,
+      "id": 23,
       "kind": "def_contract",
-      "name": "Test",
+      "name": {
+        "id": 12,
+        "kind": "id",
+        "ref": Test,
+        "text": "Test",
+      },
       "ref": contract Test {
     external(msg: A) {
         42;
@@ -2338,7 +2888,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       "args": [],
       "ast": {
         "args": [],
-        "id": 16,
+        "id": 25,
         "kind": "def_init_function",
         "ref": contract Test {
     external(msg: A) {
@@ -2360,21 +2910,31 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     "receivers": [
       {
         "ast": {
-          "id": 10,
+          "id": 19,
           "kind": "def_receive",
           "ref": external(msg: A) {
         42;
     },
           "selector": {
             "arg": {
-              "id": 7,
+              "id": 16,
               "kind": "def_argument",
-              "name": "msg",
+              "name": {
+                "id": 13,
+                "kind": "id",
+                "ref": msg,
+                "text": "msg",
+              },
               "ref": msg: A,
               "type": {
-                "id": 6,
+                "id": 15,
                 "kind": "type_ref_simple",
-                "name": "A",
+                "name": {
+                  "id": 14,
+                  "kind": "id",
+                  "ref": A,
+                  "text": "A",
+                },
                 "optional": false,
                 "ref": A,
               },
@@ -2384,12 +2944,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "statements": [
             {
               "expression": {
-                "id": 8,
+                "id": 17,
                 "kind": "number",
                 "ref": 42,
                 "value": 42n,
               },
-              "id": 9,
+              "id": 18,
               "kind": "statement_expression",
               "ref": 42;,
             },
@@ -2397,13 +2957,18 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         },
         "selector": {
           "kind": "external-binary",
-          "name": "msg",
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "ref": msg,
+            "text": "msg",
+          },
           "type": "A",
         },
       },
       {
         "ast": {
-          "id": 13,
+          "id": 22,
           "kind": "def_receive",
           "ref": external() {
         42;
@@ -2414,12 +2979,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "statements": [
             {
               "expression": {
-                "id": 11,
+                "id": 20,
                 "kind": "number",
                 "ref": 42,
                 "value": 42n,
               },
-              "id": 12,
+              "id": 21,
               "kind": "statement_expression",
               "ref": 42;,
             },
@@ -2437,9 +3002,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 2,
+          "id": 4,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait {
     
 },
@@ -2476,9 +3046,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 2,
+      "id": 4,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait { },
       "traits": [],
     },
@@ -2501,9 +3076,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -2539,23 +3119,38 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "type": "get",
             },
           ],
-          "id": 4,
+          "id": 9,
           "kind": "function_def",
-          "name": "getter",
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "ref": getter,
+            "text": "getter",
+          },
           "ref": abstract get fun getter(): Int;,
           "return": {
-            "id": 3,
+            "id": 8,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 7,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "statements": null,
         },
       ],
-      "id": 5,
+      "id": 10,
       "kind": "def_trait",
-      "name": "T",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": T,
+        "text": "T",
+      },
       "ref": trait T {
   abstract get fun getter(): Int;
 },
@@ -2579,14 +3174,24 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "type": "get",
             },
           ],
-          "id": 4,
+          "id": 9,
           "kind": "function_def",
-          "name": "getter",
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "ref": getter,
+            "text": "getter",
+          },
           "ref": abstract get fun getter(): Int;,
           "return": {
-            "id": 3,
+            "id": 8,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 7,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -2623,9 +3228,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 2,
+          "id": 4,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -2665,44 +3275,59 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "type": "get",
             },
           ],
-          "id": 9,
+          "id": 17,
           "kind": "function_def",
-          "name": "getter",
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "ref": getter,
+            "text": "getter",
+          },
           "ref": override get fun getter(): Int { return 0 },
           "return": {
-            "id": 6,
+            "id": 14,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 13,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "statements": [
             {
               "expression": {
-                "id": 7,
+                "id": 15,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 8,
+              "id": 16,
               "kind": "statement_return",
               "ref": return 0,
             },
           ],
         },
       ],
-      "id": 11,
+      "id": 19,
       "kind": "def_contract",
-      "name": "TestContract",
+      "name": {
+        "id": 11,
+        "kind": "id",
+        "ref": TestContract,
+        "text": "TestContract",
+      },
       "ref": contract TestContract with T {
   override get fun getter(): Int { return 0 }
 },
       "traits": [
         {
-          "id": 10,
+          "id": 18,
           "kind": "id",
           "ref": T,
-          "value": "T",
+          "text": "T",
         },
       ],
     },
@@ -2724,26 +3349,36 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "type": "get",
             },
           ],
-          "id": 9,
+          "id": 17,
           "kind": "function_def",
-          "name": "getter",
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "ref": getter,
+            "text": "getter",
+          },
           "ref": override get fun getter(): Int { return 0 },
           "return": {
-            "id": 6,
+            "id": 14,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 13,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "statements": [
             {
               "expression": {
-                "id": 7,
+                "id": 15,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 8,
+              "id": 16,
               "kind": "statement_return",
               "ref": return 0,
             },
@@ -2770,7 +3405,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "args": [],
       "ast": {
         "args": [],
-        "id": 13,
+        "id": 21,
         "kind": "def_init_function",
         "ref": contract TestContract with T {
   override get fun getter(): Int { return 0 }
@@ -2791,9 +3426,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 2,
+          "id": 4,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -2830,23 +3470,38 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                   "type": "get",
                 },
               ],
-              "id": 4,
+              "id": 9,
               "kind": "function_def",
-              "name": "getter",
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "ref": getter,
+                "text": "getter",
+              },
               "ref": abstract get fun getter(): Int;,
               "return": {
-                "id": 3,
+                "id": 8,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 7,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
               "statements": null,
             },
           ],
-          "id": 5,
+          "id": 10,
           "kind": "def_trait",
-          "name": "T",
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "ref": T,
+            "text": "T",
+          },
           "ref": trait T {
   abstract get fun getter(): Int;
 },
@@ -2870,14 +3525,24 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                   "type": "get",
                 },
               ],
-              "id": 4,
+              "id": 9,
               "kind": "function_def",
-              "name": "getter",
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "ref": getter,
+                "text": "getter",
+              },
               "ref": abstract get fun getter(): Int;,
               "return": {
-                "id": 3,
+                "id": 8,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 7,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
@@ -2914,9 +3579,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "ast": {
               "attributes": [],
               "declarations": [],
-              "id": 2,
+              "id": 4,
               "kind": "def_trait",
-              "name": "BaseTrait",
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "ref": BaseTrait,
+                "text": "BaseTrait",
+              },
               "ref": trait BaseTrait { },
               "traits": [],
             },
@@ -2954,9 +3624,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 2,
+      "id": 4,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait { },
       "traits": [],
     },
@@ -2979,9 +3654,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -3017,35 +3697,50 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "type": "get",
             },
           ],
-          "id": 6,
+          "id": 11,
           "kind": "function_def",
-          "name": "getter",
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "ref": getter,
+            "text": "getter",
+          },
           "ref": virtual get fun getter(): Int { return 42 },
           "return": {
-            "id": 3,
+            "id": 8,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 7,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "statements": [
             {
               "expression": {
-                "id": 4,
+                "id": 9,
                 "kind": "number",
                 "ref": 42,
                 "value": 42n,
               },
-              "id": 5,
+              "id": 10,
               "kind": "statement_return",
               "ref": return 42,
             },
           ],
         },
       ],
-      "id": 7,
+      "id": 12,
       "kind": "def_trait",
-      "name": "T",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": T,
+        "text": "T",
+      },
       "ref": trait T {
    virtual get fun getter(): Int { return 42 }
 },
@@ -3069,26 +3764,36 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "type": "get",
             },
           ],
-          "id": 6,
+          "id": 11,
           "kind": "function_def",
-          "name": "getter",
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "ref": getter,
+            "text": "getter",
+          },
           "ref": virtual get fun getter(): Int { return 42 },
           "return": {
-            "id": 3,
+            "id": 8,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 7,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "statements": [
             {
               "expression": {
-                "id": 4,
+                "id": 9,
                 "kind": "number",
                 "ref": 42,
                 "value": 42n,
               },
-              "id": 5,
+              "id": 10,
               "kind": "statement_return",
               "ref": return 42,
             },
@@ -3125,9 +3830,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 2,
+          "id": 4,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -3167,44 +3877,59 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "type": "get",
             },
           ],
-          "id": 11,
+          "id": 19,
           "kind": "function_def",
-          "name": "getter",
+          "name": {
+            "id": 14,
+            "kind": "id",
+            "ref": getter,
+            "text": "getter",
+          },
           "ref": override get fun getter(): Int { return 43 },
           "return": {
-            "id": 8,
+            "id": 16,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 15,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "statements": [
             {
               "expression": {
-                "id": 9,
+                "id": 17,
                 "kind": "number",
                 "ref": 43,
                 "value": 43n,
               },
-              "id": 10,
+              "id": 18,
               "kind": "statement_return",
               "ref": return 43,
             },
           ],
         },
       ],
-      "id": 13,
+      "id": 21,
       "kind": "def_contract",
-      "name": "TestContract",
+      "name": {
+        "id": 13,
+        "kind": "id",
+        "ref": TestContract,
+        "text": "TestContract",
+      },
       "ref": contract TestContract with T {
   override get fun getter(): Int { return 43 }
 },
       "traits": [
         {
-          "id": 12,
+          "id": 20,
           "kind": "id",
           "ref": T,
-          "value": "T",
+          "text": "T",
         },
       ],
     },
@@ -3226,26 +3951,36 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "type": "get",
             },
           ],
-          "id": 11,
+          "id": 19,
           "kind": "function_def",
-          "name": "getter",
+          "name": {
+            "id": 14,
+            "kind": "id",
+            "ref": getter,
+            "text": "getter",
+          },
           "ref": override get fun getter(): Int { return 43 },
           "return": {
-            "id": 8,
+            "id": 16,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 15,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "statements": [
             {
               "expression": {
-                "id": 9,
+                "id": 17,
                 "kind": "number",
                 "ref": 43,
                 "value": 43n,
               },
-              "id": 10,
+              "id": 18,
               "kind": "statement_return",
               "ref": return 43,
             },
@@ -3272,7 +4007,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "args": [],
       "ast": {
         "args": [],
-        "id": 15,
+        "id": 23,
         "kind": "def_init_function",
         "ref": contract TestContract with T {
   override get fun getter(): Int { return 43 }
@@ -3293,9 +4028,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 2,
+          "id": 4,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait { },
           "traits": [],
         },
@@ -3332,35 +4072,50 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                   "type": "get",
                 },
               ],
-              "id": 6,
+              "id": 11,
               "kind": "function_def",
-              "name": "getter",
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "ref": getter,
+                "text": "getter",
+              },
               "ref": virtual get fun getter(): Int { return 42 },
               "return": {
-                "id": 3,
+                "id": 8,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 7,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
               "statements": [
                 {
                   "expression": {
-                    "id": 4,
+                    "id": 9,
                     "kind": "number",
                     "ref": 42,
                     "value": 42n,
                   },
-                  "id": 5,
+                  "id": 10,
                   "kind": "statement_return",
                   "ref": return 42,
                 },
               ],
             },
           ],
-          "id": 7,
+          "id": 12,
           "kind": "def_trait",
-          "name": "T",
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "ref": T,
+            "text": "T",
+          },
           "ref": trait T {
    virtual get fun getter(): Int { return 42 }
 },
@@ -3384,26 +4139,36 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                   "type": "get",
                 },
               ],
-              "id": 6,
+              "id": 11,
               "kind": "function_def",
-              "name": "getter",
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "ref": getter,
+                "text": "getter",
+              },
               "ref": virtual get fun getter(): Int { return 42 },
               "return": {
-                "id": 3,
+                "id": 8,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 7,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
               "statements": [
                 {
                   "expression": {
-                    "id": 4,
+                    "id": 9,
                     "kind": "number",
                     "ref": 42,
                     "value": 42n,
                   },
-                  "id": 5,
+                  "id": 10,
                   "kind": "statement_return",
                   "ref": return 42,
                 },
@@ -3440,9 +4205,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "ast": {
               "attributes": [],
               "declarations": [],
-              "id": 2,
+              "id": 4,
               "kind": "def_trait",
-              "name": "BaseTrait",
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "ref": BaseTrait,
+                "text": "BaseTrait",
+              },
               "ref": trait BaseTrait { },
               "traits": [],
             },
@@ -3480,9 +4250,14 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 3,
+      "id": 6,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait {
     
 },
@@ -3507,9 +4282,14 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
   },
   "Bool": {
     "ast": {
-      "id": 2,
+      "id": 4,
       "kind": "primitive_type_decl",
-      "name": "Bool",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": Bool,
+        "text": "Bool",
+      },
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -3535,37 +4315,57 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
       "declarations": [
         {
           "as": null,
-          "id": 5,
+          "id": 11,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int,
           "type": {
-            "id": 4,
+            "id": 10,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 9,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
         },
         {
           "as": null,
-          "id": 7,
+          "id": 15,
           "init": null,
           "kind": "def_field",
-          "name": "b",
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "ref": b,
+            "text": "b",
+          },
           "ref": b: Bool,
           "type": {
-            "id": 6,
+            "id": 14,
             "kind": "type_ref_simple",
-            "name": "Bool",
+            "name": {
+              "id": 13,
+              "kind": "id",
+              "ref": Bool,
+              "text": "Bool",
+            },
             "optional": false,
             "ref": Bool,
           },
         },
         {
           "args": [],
-          "id": 8,
+          "id": 16,
           "kind": "def_init_function",
           "ref": init() {
         
@@ -3575,9 +4375,14 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         {
           "args": [],
           "attributes": [],
-          "id": 9,
+          "id": 18,
           "kind": "function_def",
-          "name": "hello",
+          "name": {
+            "id": 17,
+            "kind": "id",
+            "ref": hello,
+            "text": "hello",
+          },
           "ref": fun hello() {
         
     },
@@ -3587,9 +4392,14 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         {
           "args": [],
           "attributes": [],
-          "id": 10,
+          "id": 20,
           "kind": "function_def",
-          "name": "hello2",
+          "name": {
+            "id": 19,
+            "kind": "id",
+            "ref": hello2,
+            "text": "hello2",
+          },
           "ref": fun hello2() {
         
     },
@@ -3597,9 +4407,14 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           "statements": [],
         },
       ],
-      "id": 11,
+      "id": 21,
       "kind": "def_contract",
-      "name": "HelloWorld",
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "ref": HelloWorld,
+        "text": "HelloWorld",
+      },
       "ref": contract HelloWorld {
     a: Int;
     b: Bool;
@@ -3634,15 +4449,25 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "as": null,
         "ast": {
           "as": null,
-          "id": 5,
+          "id": 11,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int,
           "type": {
-            "id": 4,
+            "id": 10,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 9,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -3669,15 +4494,25 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "as": null,
         "ast": {
           "as": null,
-          "id": 7,
+          "id": 15,
           "init": null,
           "kind": "def_field",
-          "name": "b",
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "ref": b,
+            "text": "b",
+          },
           "ref": b: Bool,
           "type": {
-            "id": 6,
+            "id": 14,
             "kind": "type_ref_simple",
-            "name": "Bool",
+            "name": {
+              "id": 13,
+              "kind": "id",
+              "ref": Bool,
+              "text": "Bool",
+            },
             "optional": false,
             "ref": Bool,
           },
@@ -3699,9 +4534,14 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "ast": {
           "args": [],
           "attributes": [],
-          "id": 9,
+          "id": 18,
           "kind": "function_def",
-          "name": "hello",
+          "name": {
+            "id": 17,
+            "kind": "id",
+            "ref": hello,
+            "text": "hello",
+          },
           "ref": fun hello() {
         
     },
@@ -3726,9 +4566,14 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "ast": {
           "args": [],
           "attributes": [],
-          "id": 10,
+          "id": 20,
           "kind": "function_def",
-          "name": "hello2",
+          "name": {
+            "id": 19,
+            "kind": "id",
+            "ref": hello2,
+            "text": "hello2",
+          },
           "ref": fun hello2() {
         
     },
@@ -3754,7 +4599,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
       "args": [],
       "ast": {
         "args": [],
-        "id": 8,
+        "id": 16,
         "kind": "def_init_function",
         "ref": init() {
         
@@ -3775,9 +4620,14 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 3,
+          "id": 6,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait {
     
 },
@@ -3805,9 +4655,14 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -3838,9 +4693,14 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 3,
+      "id": 6,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait {
     
 },
@@ -3865,9 +4725,14 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
   },
   "Bool": {
     "ast": {
-      "id": 2,
+      "id": 4,
       "kind": "primitive_type_decl",
-      "name": "Bool",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": Bool,
+        "text": "Bool",
+      },
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -3889,9 +4754,14 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -3921,28 +4791,38 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "ast": {
       "args": [],
       "attributes": [],
-      "id": 7,
+      "id": 12,
       "kind": "function_def",
-      "name": "testFunc",
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "ref": testFunc,
+        "text": "testFunc",
+      },
       "ref": fun testFunc(): Int {
     return 0;
 },
       "return": {
-        "id": 4,
+        "id": 9,
         "kind": "type_ref_simple",
-        "name": "Int",
+        "name": {
+          "id": 8,
+          "kind": "id",
+          "ref": Int,
+          "text": "Int",
+        },
         "optional": false,
         "ref": Int,
       },
       "statements": [
         {
           "expression": {
-            "id": 5,
+            "id": 10,
             "kind": "number",
             "ref": 0,
             "value": 0n,
           },
-          "id": 6,
+          "id": 11,
           "kind": "statement_return",
           "ref": return 0;,
         },
@@ -3968,9 +4848,14 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "ast": {
       "args": [],
       "attributes": [],
-      "id": 10,
+      "id": 16,
       "kind": "function_def",
-      "name": "testFunc2",
+      "name": {
+        "id": 13,
+        "kind": "id",
+        "ref": testFunc2,
+        "text": "testFunc2",
+      },
       "ref": fun testFunc2() {
     return 0;
 },
@@ -3978,12 +4863,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "statements": [
         {
           "expression": {
-            "id": 8,
+            "id": 14,
             "kind": "number",
             "ref": 0,
             "value": 0n,
           },
-          "id": 9,
+          "id": 15,
           "kind": "statement_return",
           "ref": return 0;,
         },
@@ -4005,7 +4890,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
   "testFunc3": {
     "args": [
       {
-        "name": "a",
+        "name": {
+          "id": 18,
+          "kind": "id",
+          "ref": a,
+          "text": "a",
+        },
         "ref": a: Int,
         "type": {
           "kind": "ref",
@@ -4014,7 +4904,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         },
       },
       {
-        "name": "b",
+        "name": {
+          "id": 22,
+          "kind": "id",
+          "ref": b,
+          "text": "b",
+        },
         "ref": b: Bool,
         "type": {
           "kind": "ref",
@@ -4026,36 +4921,61 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "ast": {
       "args": [
         {
-          "id": 12,
+          "id": 21,
           "kind": "def_argument",
-          "name": "a",
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int,
           "type": {
-            "id": 11,
+            "id": 20,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 19,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
         },
         {
-          "id": 14,
+          "id": 25,
           "kind": "def_argument",
-          "name": "b",
+          "name": {
+            "id": 22,
+            "kind": "id",
+            "ref": b,
+            "text": "b",
+          },
           "ref": b: Bool,
           "type": {
-            "id": 13,
+            "id": 24,
             "kind": "type_ref_simple",
-            "name": "Bool",
+            "name": {
+              "id": 23,
+              "kind": "id",
+              "ref": Bool,
+              "text": "Bool",
+            },
             "optional": false,
             "ref": Bool,
           },
         },
       ],
       "attributes": [],
-      "id": 17,
+      "id": 28,
       "kind": "function_def",
-      "name": "testFunc3",
+      "name": {
+        "id": 17,
+        "kind": "id",
+        "ref": testFunc3,
+        "text": "testFunc3",
+      },
       "ref": fun testFunc3(a: Int, b: Bool) {
     return 0;
 },
@@ -4063,12 +4983,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "statements": [
         {
           "expression": {
-            "id": 15,
+            "id": 26,
             "kind": "number",
             "ref": 0,
             "value": 0n,
           },
-          "id": 16,
+          "id": 27,
           "kind": "statement_return",
           "ref": return 0;,
         },
@@ -4096,9 +5016,14 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 3,
+      "id": 6,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait {
     
 },
@@ -4123,9 +5048,14 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
   },
   "Bool": {
     "ast": {
-      "id": 2,
+      "id": 4,
       "kind": "primitive_type_decl",
-      "name": "Bool",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": Bool,
+        "text": "Bool",
+      },
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -4147,9 +5077,14 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -4175,15 +5110,25 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "declarations": [
         {
           "as": null,
-          "id": 8,
+          "id": 17,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 14,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int,
           "type": {
-            "id": 7,
+            "id": 16,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 15,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -4191,20 +5136,30 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         {
           "args": [
             {
-              "id": 10,
+              "id": 21,
               "kind": "def_argument",
-              "name": "a",
+              "name": {
+                "id": 18,
+                "kind": "id",
+                "ref": a,
+                "text": "a",
+              },
               "ref": a: Int,
               "type": {
-                "id": 9,
+                "id": 20,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 19,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
             },
           ],
-          "id": 16,
+          "id": 27,
           "kind": "def_init_function",
           "ref": init(a: Int) {
         self.a = a;
@@ -4212,28 +5167,28 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
-                "id": 14,
+                "id": 25,
                 "kind": "id",
                 "ref": a,
-                "value": "a",
+                "text": "a",
               },
-              "id": 15,
+              "id": 26,
               "kind": "statement_assign",
               "path": {
-                "id": 13,
+                "id": 24,
                 "kind": "op_field",
                 "name": {
-                  "id": 12,
+                  "id": 23,
                   "kind": "id",
                   "ref": a,
-                  "value": "a",
+                  "text": "a",
                 },
                 "ref": self.a,
                 "src": {
-                  "id": 11,
+                  "id": 22,
                   "kind": "id",
                   "ref": self,
-                  "value": "self",
+                  "text": "self",
                 },
               },
               "ref": self.a = a;,
@@ -4248,28 +5203,38 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "type": "get",
             },
           ],
-          "id": 20,
+          "id": 33,
           "kind": "function_def",
-          "name": "hello",
+          "name": {
+            "id": 28,
+            "kind": "id",
+            "ref": hello,
+            "text": "hello",
+          },
           "ref": get fun hello(): Int {
         return 0;
     },
           "return": {
-            "id": 17,
+            "id": 30,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 29,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "statements": [
             {
               "expression": {
-                "id": 18,
+                "id": 31,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 19,
+              "id": 32,
               "kind": "statement_return",
               "ref": return 0;,
             },
@@ -4283,37 +5248,52 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "type": "get",
             },
           ],
-          "id": 24,
+          "id": 39,
           "kind": "function_def",
-          "name": "hello2",
+          "name": {
+            "id": 34,
+            "kind": "id",
+            "ref": hello2,
+            "text": "hello2",
+          },
           "ref": get fun hello2(): Point {
         return 0;
     },
           "return": {
-            "id": 21,
+            "id": 36,
             "kind": "type_ref_simple",
-            "name": "Point",
+            "name": {
+              "id": 35,
+              "kind": "id",
+              "ref": Point,
+              "text": "Point",
+            },
             "optional": false,
             "ref": Point,
           },
           "statements": [
             {
               "expression": {
-                "id": 22,
+                "id": 37,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 23,
+              "id": 38,
               "kind": "statement_return",
               "ref": return 0;,
             },
           ],
         },
       ],
-      "id": 25,
+      "id": 40,
       "kind": "def_contract",
-      "name": "Main",
+      "name": {
+        "id": 13,
+        "kind": "id",
+        "ref": Main,
+        "text": "Main",
+      },
       "ref": contract Main {
     a: Int;
     init(a: Int) {
@@ -4345,15 +5325,25 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "as": null,
         "ast": {
           "as": null,
-          "id": 8,
+          "id": 17,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 14,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int,
           "type": {
-            "id": 7,
+            "id": 16,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 15,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -4380,28 +5370,38 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "type": "get",
             },
           ],
-          "id": 20,
+          "id": 33,
           "kind": "function_def",
-          "name": "hello",
+          "name": {
+            "id": 28,
+            "kind": "id",
+            "ref": hello,
+            "text": "hello",
+          },
           "ref": get fun hello(): Int {
         return 0;
     },
           "return": {
-            "id": 17,
+            "id": 30,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 29,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "statements": [
             {
               "expression": {
-                "id": 18,
+                "id": 31,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 19,
+              "id": 32,
               "kind": "statement_return",
               "ref": return 0;,
             },
@@ -4432,28 +5432,38 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "type": "get",
             },
           ],
-          "id": 24,
+          "id": 39,
           "kind": "function_def",
-          "name": "hello2",
+          "name": {
+            "id": 34,
+            "kind": "id",
+            "ref": hello2,
+            "text": "hello2",
+          },
           "ref": get fun hello2(): Point {
         return 0;
     },
           "return": {
-            "id": 21,
+            "id": 36,
             "kind": "type_ref_simple",
-            "name": "Point",
+            "name": {
+              "id": 35,
+              "kind": "id",
+              "ref": Point,
+              "text": "Point",
+            },
             "optional": false,
             "ref": Point,
           },
           "statements": [
             {
               "expression": {
-                "id": 22,
+                "id": 37,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 23,
+              "id": 38,
               "kind": "statement_return",
               "ref": return 0;,
             },
@@ -4480,7 +5490,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "args": [
         {
           "as": null,
-          "name": "a",
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int,
           "type": {
             "kind": "ref",
@@ -4492,20 +5507,30 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "ast": {
         "args": [
           {
-            "id": 10,
+            "id": 21,
             "kind": "def_argument",
-            "name": "a",
+            "name": {
+              "id": 18,
+              "kind": "id",
+              "ref": a,
+              "text": "a",
+            },
             "ref": a: Int,
             "type": {
-              "id": 9,
+              "id": 20,
               "kind": "type_ref_simple",
-              "name": "Int",
+              "name": {
+                "id": 19,
+                "kind": "id",
+                "ref": Int,
+                "text": "Int",
+              },
               "optional": false,
               "ref": Int,
             },
           },
         ],
-        "id": 16,
+        "id": 27,
         "kind": "def_init_function",
         "ref": init(a: Int) {
         self.a = a;
@@ -4513,28 +5538,28 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "statements": [
           {
             "expression": {
-              "id": 14,
+              "id": 25,
               "kind": "id",
               "ref": a,
-              "value": "a",
+              "text": "a",
             },
-            "id": 15,
+            "id": 26,
             "kind": "statement_assign",
             "path": {
-              "id": 13,
+              "id": 24,
               "kind": "op_field",
               "name": {
-                "id": 12,
+                "id": 23,
                 "kind": "id",
                 "ref": a,
-                "value": "a",
+                "text": "a",
               },
               "ref": self.a,
               "src": {
-                "id": 11,
+                "id": 22,
                 "kind": "id",
                 "ref": self,
-                "value": "self",
+                "text": "self",
               },
             },
             "ref": self.a = a;,
@@ -4555,9 +5580,14 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 3,
+          "id": 6,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait {
     
 },
@@ -4588,24 +5618,39 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "fields": [
         {
           "as": null,
-          "id": 5,
+          "id": 11,
           "init": null,
           "kind": "def_field",
-          "name": "p",
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "ref": p,
+            "text": "p",
+          },
           "ref": p: Int,
           "type": {
-            "id": 4,
+            "id": 10,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 9,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
         },
       ],
-      "id": 6,
+      "id": 12,
       "kind": "def_struct",
       "message": false,
-      "name": "Point",
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "ref": Point,
+        "text": "Point",
+      },
       "prefix": null,
       "ref": struct Point {
     p: Int;
@@ -4627,15 +5672,25 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "as": null,
         "ast": {
           "as": null,
-          "id": 5,
+          "id": 11,
           "init": null,
           "kind": "def_field",
-          "name": "p",
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "ref": p,
+            "text": "p",
+          },
           "ref": p: Int,
           "type": {
-            "id": 4,
+            "id": 10,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 9,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -4676,9 +5731,14 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 3,
+      "id": 6,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait {
     
 },
@@ -4703,9 +5763,14 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
   },
   "Bool": {
     "ast": {
-      "id": 2,
+      "id": 4,
       "kind": "primitive_type_decl",
-      "name": "Bool",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": Bool,
+        "text": "Bool",
+      },
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -4727,9 +5792,14 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -4741,14 +5811,24 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
         "ast": {
           "args": [
             {
-              "id": 6,
+              "id": 13,
               "kind": "def_argument",
-              "name": "self",
+              "name": {
+                "id": 10,
+                "kind": "id",
+                "ref": self,
+                "text": "self",
+              },
               "ref": self: Int,
               "type": {
-                "id": 5,
+                "id": 12,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 11,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
@@ -4760,40 +5840,50 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
               "type": "extends",
             },
           ],
-          "id": 11,
+          "id": 18,
           "kind": "function_def",
-          "name": "inc",
+          "name": {
+            "id": 7,
+            "kind": "id",
+            "ref": inc,
+            "text": "inc",
+          },
           "ref": extends fun inc(self: Int): Int {
     return self + 1;
 },
           "return": {
-            "id": 4,
+            "id": 9,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 8,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
           "statements": [
             {
               "expression": {
-                "id": 9,
+                "id": 16,
                 "kind": "op_binary",
                 "left": {
-                  "id": 7,
+                  "id": 14,
                   "kind": "id",
                   "ref": self,
-                  "value": "self",
+                  "text": "self",
                 },
                 "op": "+",
                 "ref": self + 1,
                 "right": {
-                  "id": 8,
+                  "id": 15,
                   "kind": "number",
                   "ref": 1,
                   "value": 1n,
                 },
               },
-              "id": 10,
+              "id": 17,
               "kind": "statement_return",
               "ref": return self + 1;,
             },
@@ -4839,9 +5929,14 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 3,
+      "id": 6,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait {
     
 },
@@ -4866,9 +5961,14 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
   },
   "Bool": {
     "ast": {
-      "id": 2,
+      "id": 4,
       "kind": "primitive_type_decl",
-      "name": "Bool",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": Bool,
+        "text": "Bool",
+      },
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -4890,9 +5990,14 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -4920,7 +6025,12 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 2`] 
   "sample": {
     "args": [
       {
-        "name": "a",
+        "name": {
+          "id": 11,
+          "kind": "id",
+          "ref": a,
+          "text": "a",
+        },
         "ref": a: Int,
         "type": {
           "kind": "ref",
@@ -4932,30 +6042,55 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 2`] 
     "ast": {
       "args": [
         {
-          "id": 6,
+          "id": 14,
           "kind": "def_argument",
-          "name": "a",
+          "name": {
+            "id": 11,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int,
           "type": {
-            "id": 5,
+            "id": 13,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 12,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
         },
       ],
       "attributes": [],
-      "id": 7,
+      "id": 15,
       "kind": "def_native_function",
-      "name": "sample",
-      "nativeName": "hello_world",
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "ref": sample,
+        "text": "sample",
+      },
+      "nativeName": {
+        "id": 8,
+        "kind": "func_id",
+        "ref": hello_world,
+        "text": "hello_world",
+      },
       "ref": @name(hello_world)
 native sample(a: Int): Int;,
       "return": {
-        "id": 4,
+        "id": 10,
         "kind": "type_ref_simple",
-        "name": "Int",
+        "name": {
+          "id": 9,
+          "kind": "id",
+          "ref": Int,
+          "text": "Int",
+        },
         "optional": false,
         "ref": Int,
       },
@@ -4984,9 +6119,14 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 3,
+      "id": 6,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait {
     
 },
@@ -5011,9 +6151,14 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
   },
   "Bool": {
     "ast": {
-      "id": 2,
+      "id": 4,
       "kind": "primitive_type_decl",
-      "name": "Bool",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": Bool,
+        "text": "Bool",
+      },
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -5035,9 +6180,14 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -5049,14 +6199,24 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
         "ast": {
           "args": [
             {
-              "id": 6,
+              "id": 14,
               "kind": "def_argument",
-              "name": "self",
+              "name": {
+                "id": 11,
+                "kind": "id",
+                "ref": self,
+                "text": "self",
+              },
               "ref": self: Int,
               "type": {
-                "id": 5,
+                "id": 13,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 12,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
@@ -5072,16 +6232,31 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
               "type": "extends",
             },
           ],
-          "id": 7,
+          "id": 15,
           "kind": "def_native_function",
-          "name": "inc",
-          "nativeName": "inc",
+          "name": {
+            "id": 7,
+            "kind": "id",
+            "ref": inc,
+            "text": "inc",
+          },
+          "nativeName": {
+            "id": 8,
+            "kind": "func_id",
+            "ref": inc,
+            "text": "inc",
+          },
           "ref": @name(inc)
 mutates extends native inc(self: Int): Int;,
           "return": {
-            "id": 4,
+            "id": 10,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 9,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -5126,9 +6301,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 2,
+      "id": 4,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait {
     
 },
@@ -5153,9 +6333,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -5181,19 +6366,39 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
       "declarations": [
         {
           "as": null,
-          "id": 4,
+          "id": 11,
           "init": null,
           "kind": "def_field",
-          "name": "m",
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "ref": m,
+            "text": "m",
+          },
           "ref": m: map<Int, Int as coins>,
           "type": {
-            "id": 3,
-            "key": "Int",
+            "id": 10,
+            "key": {
+              "id": 7,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "keyAs": null,
             "kind": "type_ref_map",
             "ref": map<Int, Int as coins>,
-            "value": "Int",
-            "valueAs": "coins",
+            "value": {
+              "id": 8,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
+            "valueAs": {
+              "id": 9,
+              "kind": "id",
+              "ref": coins,
+              "text": "coins",
+            },
           },
         },
         {
@@ -5204,9 +6409,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "type": "get",
             },
           ],
-          "id": 31,
+          "id": 49,
           "kind": "function_def",
-          "name": "test",
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "ref": test,
+            "text": "test",
+          },
           "ref": get fun test(): Int {
         let m: map<Int, Int as coins> = emptyMap();
         m.set(1, 2);
@@ -5214,9 +6424,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         return m.get(1) + self.m.get(1);
     },
           "return": {
-            "id": 5,
+            "id": 14,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 13,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -5224,53 +6439,83 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
             {
               "expression": {
                 "args": [],
-                "id": 7,
+                "id": 21,
                 "kind": "op_static_call",
-                "name": "emptyMap",
+                "name": {
+                  "id": 20,
+                  "kind": "id",
+                  "ref": emptyMap,
+                  "text": "emptyMap",
+                },
                 "ref": emptyMap(),
               },
-              "id": 8,
+              "id": 22,
               "kind": "statement_let",
-              "name": "m",
+              "name": {
+                "id": 15,
+                "kind": "id",
+                "ref": m,
+                "text": "m",
+              },
               "ref": let m: map<Int, Int as coins> = emptyMap();,
               "type": {
-                "id": 6,
-                "key": "Int",
+                "id": 19,
+                "key": {
+                  "id": 16,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "keyAs": null,
                 "kind": "type_ref_map",
                 "ref": map<Int, Int as coins>,
-                "value": "Int",
-                "valueAs": "coins",
+                "value": {
+                  "id": 17,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
+                "valueAs": {
+                  "id": 18,
+                  "kind": "id",
+                  "ref": coins,
+                  "text": "coins",
+                },
               },
             },
             {
               "expression": {
                 "args": [
                   {
-                    "id": 10,
+                    "id": 25,
                     "kind": "number",
                     "ref": 1,
                     "value": 1n,
                   },
                   {
-                    "id": 11,
+                    "id": 26,
                     "kind": "number",
                     "ref": 2,
                     "value": 2n,
                   },
                 ],
-                "id": 12,
+                "id": 27,
                 "kind": "op_call",
-                "name": "set",
+                "name": {
+                  "id": 24,
+                  "kind": "id",
+                  "ref": set,
+                  "text": "set",
+                },
                 "ref": m.set(1, 2),
                 "src": {
-                  "id": 9,
+                  "id": 23,
                   "kind": "id",
                   "ref": m,
-                  "value": "m",
+                  "text": "m",
                 },
               },
-              "id": 13,
+              "id": 28,
               "kind": "statement_expression",
               "ref": m.set(1, 2);,
             },
@@ -5278,66 +6523,76 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
-                    "id": 17,
+                    "id": 33,
                     "kind": "number",
                     "ref": 1,
                     "value": 1n,
                   },
                   {
-                    "id": 18,
+                    "id": 34,
                     "kind": "number",
                     "ref": 2,
                     "value": 2n,
                   },
                 ],
-                "id": 19,
+                "id": 35,
                 "kind": "op_call",
-                "name": "set",
+                "name": {
+                  "id": 32,
+                  "kind": "id",
+                  "ref": set,
+                  "text": "set",
+                },
                 "ref": self.m.set(1, 2),
                 "src": {
-                  "id": 16,
+                  "id": 31,
                   "kind": "op_field",
                   "name": {
-                    "id": 15,
+                    "id": 30,
                     "kind": "id",
                     "ref": m,
-                    "value": "m",
+                    "text": "m",
                   },
                   "ref": self.m,
                   "src": {
-                    "id": 14,
+                    "id": 29,
                     "kind": "id",
                     "ref": self,
-                    "value": "self",
+                    "text": "self",
                   },
                 },
               },
-              "id": 20,
+              "id": 36,
               "kind": "statement_expression",
               "ref": self.m.set(1, 2);,
             },
             {
               "expression": {
-                "id": 29,
+                "id": 47,
                 "kind": "op_binary",
                 "left": {
                   "args": [
                     {
-                      "id": 22,
+                      "id": 39,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
                     },
                   ],
-                  "id": 23,
+                  "id": 40,
                   "kind": "op_call",
-                  "name": "get",
+                  "name": {
+                    "id": 38,
+                    "kind": "id",
+                    "ref": get,
+                    "text": "get",
+                  },
                   "ref": m.get(1),
                   "src": {
-                    "id": 21,
+                    "id": 37,
                     "kind": "id",
                     "ref": m,
-                    "value": "m",
+                    "text": "m",
                   },
                 },
                 "op": "+",
@@ -5345,45 +6600,55 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "right": {
                   "args": [
                     {
-                      "id": 27,
+                      "id": 45,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
                     },
                   ],
-                  "id": 28,
+                  "id": 46,
                   "kind": "op_call",
-                  "name": "get",
+                  "name": {
+                    "id": 44,
+                    "kind": "id",
+                    "ref": get,
+                    "text": "get",
+                  },
                   "ref": self.m.get(1),
                   "src": {
-                    "id": 26,
+                    "id": 43,
                     "kind": "op_field",
                     "name": {
-                      "id": 25,
+                      "id": 42,
                       "kind": "id",
                       "ref": m,
-                      "value": "m",
+                      "text": "m",
                     },
                     "ref": self.m,
                     "src": {
-                      "id": 24,
+                      "id": 41,
                       "kind": "id",
                       "ref": self,
-                      "value": "self",
+                      "text": "self",
                     },
                   },
                 },
               },
-              "id": 30,
+              "id": 48,
               "kind": "statement_return",
               "ref": return m.get(1) + self.m.get(1);,
             },
           ],
         },
       ],
-      "id": 32,
+      "id": 50,
       "kind": "def_contract",
-      "name": "Main",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": Main,
+        "text": "Main",
+      },
       "ref": contract Main {
     m: map<Int, Int as coins>;
 
@@ -5413,19 +6678,39 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         "as": null,
         "ast": {
           "as": null,
-          "id": 4,
+          "id": 11,
           "init": null,
           "kind": "def_field",
-          "name": "m",
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "ref": m,
+            "text": "m",
+          },
           "ref": m: map<Int, Int as coins>,
           "type": {
-            "id": 3,
-            "key": "Int",
+            "id": 10,
+            "key": {
+              "id": 7,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "keyAs": null,
             "kind": "type_ref_map",
             "ref": map<Int, Int as coins>,
-            "value": "Int",
-            "valueAs": "coins",
+            "value": {
+              "id": 8,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
+            "valueAs": {
+              "id": 9,
+              "kind": "id",
+              "ref": coins,
+              "text": "coins",
+            },
           },
         },
         "default": undefined,
@@ -5452,9 +6737,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "type": "get",
             },
           ],
-          "id": 31,
+          "id": 49,
           "kind": "function_def",
-          "name": "test",
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "ref": test,
+            "text": "test",
+          },
           "ref": get fun test(): Int {
         let m: map<Int, Int as coins> = emptyMap();
         m.set(1, 2);
@@ -5462,9 +6752,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         return m.get(1) + self.m.get(1);
     },
           "return": {
-            "id": 5,
+            "id": 14,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 13,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -5472,53 +6767,83 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
             {
               "expression": {
                 "args": [],
-                "id": 7,
+                "id": 21,
                 "kind": "op_static_call",
-                "name": "emptyMap",
+                "name": {
+                  "id": 20,
+                  "kind": "id",
+                  "ref": emptyMap,
+                  "text": "emptyMap",
+                },
                 "ref": emptyMap(),
               },
-              "id": 8,
+              "id": 22,
               "kind": "statement_let",
-              "name": "m",
+              "name": {
+                "id": 15,
+                "kind": "id",
+                "ref": m,
+                "text": "m",
+              },
               "ref": let m: map<Int, Int as coins> = emptyMap();,
               "type": {
-                "id": 6,
-                "key": "Int",
+                "id": 19,
+                "key": {
+                  "id": 16,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "keyAs": null,
                 "kind": "type_ref_map",
                 "ref": map<Int, Int as coins>,
-                "value": "Int",
-                "valueAs": "coins",
+                "value": {
+                  "id": 17,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
+                "valueAs": {
+                  "id": 18,
+                  "kind": "id",
+                  "ref": coins,
+                  "text": "coins",
+                },
               },
             },
             {
               "expression": {
                 "args": [
                   {
-                    "id": 10,
+                    "id": 25,
                     "kind": "number",
                     "ref": 1,
                     "value": 1n,
                   },
                   {
-                    "id": 11,
+                    "id": 26,
                     "kind": "number",
                     "ref": 2,
                     "value": 2n,
                   },
                 ],
-                "id": 12,
+                "id": 27,
                 "kind": "op_call",
-                "name": "set",
+                "name": {
+                  "id": 24,
+                  "kind": "id",
+                  "ref": set,
+                  "text": "set",
+                },
                 "ref": m.set(1, 2),
                 "src": {
-                  "id": 9,
+                  "id": 23,
                   "kind": "id",
                   "ref": m,
-                  "value": "m",
+                  "text": "m",
                 },
               },
-              "id": 13,
+              "id": 28,
               "kind": "statement_expression",
               "ref": m.set(1, 2);,
             },
@@ -5526,66 +6851,76 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
-                    "id": 17,
+                    "id": 33,
                     "kind": "number",
                     "ref": 1,
                     "value": 1n,
                   },
                   {
-                    "id": 18,
+                    "id": 34,
                     "kind": "number",
                     "ref": 2,
                     "value": 2n,
                   },
                 ],
-                "id": 19,
+                "id": 35,
                 "kind": "op_call",
-                "name": "set",
+                "name": {
+                  "id": 32,
+                  "kind": "id",
+                  "ref": set,
+                  "text": "set",
+                },
                 "ref": self.m.set(1, 2),
                 "src": {
-                  "id": 16,
+                  "id": 31,
                   "kind": "op_field",
                   "name": {
-                    "id": 15,
+                    "id": 30,
                     "kind": "id",
                     "ref": m,
-                    "value": "m",
+                    "text": "m",
                   },
                   "ref": self.m,
                   "src": {
-                    "id": 14,
+                    "id": 29,
                     "kind": "id",
                     "ref": self,
-                    "value": "self",
+                    "text": "self",
                   },
                 },
               },
-              "id": 20,
+              "id": 36,
               "kind": "statement_expression",
               "ref": self.m.set(1, 2);,
             },
             {
               "expression": {
-                "id": 29,
+                "id": 47,
                 "kind": "op_binary",
                 "left": {
                   "args": [
                     {
-                      "id": 22,
+                      "id": 39,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
                     },
                   ],
-                  "id": 23,
+                  "id": 40,
                   "kind": "op_call",
-                  "name": "get",
+                  "name": {
+                    "id": 38,
+                    "kind": "id",
+                    "ref": get,
+                    "text": "get",
+                  },
                   "ref": m.get(1),
                   "src": {
-                    "id": 21,
+                    "id": 37,
                     "kind": "id",
                     "ref": m,
-                    "value": "m",
+                    "text": "m",
                   },
                 },
                 "op": "+",
@@ -5593,36 +6928,41 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "right": {
                   "args": [
                     {
-                      "id": 27,
+                      "id": 45,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
                     },
                   ],
-                  "id": 28,
+                  "id": 46,
                   "kind": "op_call",
-                  "name": "get",
+                  "name": {
+                    "id": 44,
+                    "kind": "id",
+                    "ref": get,
+                    "text": "get",
+                  },
                   "ref": self.m.get(1),
                   "src": {
-                    "id": 26,
+                    "id": 43,
                     "kind": "op_field",
                     "name": {
-                      "id": 25,
+                      "id": 42,
                       "kind": "id",
                       "ref": m,
-                      "value": "m",
+                      "text": "m",
                     },
                     "ref": self.m,
                     "src": {
-                      "id": 24,
+                      "id": 41,
                       "kind": "id",
                       "ref": self,
-                      "value": "self",
+                      "text": "self",
                     },
                   },
                 },
               },
-              "id": 30,
+              "id": 48,
               "kind": "statement_return",
               "ref": return m.get(1) + self.m.get(1);,
             },
@@ -5649,7 +6989,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
       "args": [],
       "ast": {
         "args": [],
-        "id": 34,
+        "id": 52,
         "kind": "def_init_function",
         "ref": contract Main {
     m: map<Int, Int as coins>;
@@ -5677,9 +7017,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         "ast": {
           "attributes": [],
           "declarations": [],
-          "id": 2,
+          "id": 4,
           "kind": "def_trait",
-          "name": "BaseTrait",
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "ref": BaseTrait,
+            "text": "BaseTrait",
+          },
           "ref": trait BaseTrait {
     
 },
@@ -5719,9 +7064,14 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     "ast": {
       "args": [],
       "attributes": [],
-      "id": 36,
+      "id": 56,
       "kind": "function_def",
-      "name": "scopeIf",
+      "name": {
+        "id": 43,
+        "kind": "id",
+        "ref": scopeIf,
+        "text": "scopeIf",
+      },
       "ref": fun scopeIf() {
     if (true) {
         let a: Int = 0;
@@ -5733,13 +7083,13 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         {
           "elseif": null,
           "expression": {
-            "id": 28,
+            "id": 44,
             "kind": "boolean",
             "ref": true,
             "value": true,
           },
           "falseStatements": null,
-          "id": 32,
+          "id": 50,
           "kind": "statement_condition",
           "ref": if (true) {
         let a: Int = 0;
@@ -5747,19 +7097,29 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
           "trueStatements": [
             {
               "expression": {
-                "id": 30,
+                "id": 48,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 31,
+              "id": 49,
               "kind": "statement_let",
-              "name": "a",
+              "name": {
+                "id": 45,
+                "kind": "id",
+                "ref": a,
+                "text": "a",
+              },
               "ref": let a: Int = 0;,
               "type": {
-                "id": 29,
+                "id": 47,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 46,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
@@ -5768,19 +7128,29 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         },
         {
           "expression": {
-            "id": 34,
+            "id": 54,
             "kind": "string",
             "ref": "abc",
             "value": "abc",
           },
-          "id": 35,
+          "id": 55,
           "kind": "statement_let",
-          "name": "a",
+          "name": {
+            "id": 51,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": let a: String = "abc";,
           "type": {
-            "id": 33,
+            "id": 53,
             "kind": "type_ref_simple",
-            "name": "String",
+            "name": {
+              "id": 52,
+              "kind": "id",
+              "ref": String,
+              "text": "String",
+            },
             "optional": false,
             "ref": String,
           },
@@ -5805,9 +7175,14 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     "ast": {
       "args": [],
       "attributes": [],
-      "id": 18,
+      "id": 28,
       "kind": "function_def",
-      "name": "scopeRepeat",
+      "name": {
+        "id": 15,
+        "kind": "id",
+        "ref": scopeRepeat,
+        "text": "scopeRepeat",
+      },
       "ref": fun scopeRepeat() {
     repeat (1) {
         let a: Int = 0;
@@ -5817,9 +7192,9 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
       "return": null,
       "statements": [
         {
-          "id": 14,
+          "id": 22,
           "iterations": {
-            "id": 10,
+            "id": 16,
             "kind": "number",
             "ref": 1,
             "value": 1n,
@@ -5831,19 +7206,29 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
           "statements": [
             {
               "expression": {
-                "id": 12,
+                "id": 20,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 13,
+              "id": 21,
               "kind": "statement_let",
-              "name": "a",
+              "name": {
+                "id": 17,
+                "kind": "id",
+                "ref": a,
+                "text": "a",
+              },
               "ref": let a: Int = 0;,
               "type": {
-                "id": 11,
+                "id": 19,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 18,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
@@ -5852,19 +7237,29 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         },
         {
           "expression": {
-            "id": 16,
+            "id": 26,
             "kind": "string",
             "ref": "abc",
             "value": "abc",
           },
-          "id": 17,
+          "id": 27,
           "kind": "statement_let",
-          "name": "a",
+          "name": {
+            "id": 23,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": let a: String = "abc";,
           "type": {
-            "id": 15,
+            "id": 25,
             "kind": "type_ref_simple",
-            "name": "String",
+            "name": {
+              "id": 24,
+              "kind": "id",
+              "ref": String,
+              "text": "String",
+            },
             "optional": false,
             "ref": String,
           },
@@ -5889,9 +7284,14 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     "ast": {
       "args": [],
       "attributes": [],
-      "id": 9,
+      "id": 14,
       "kind": "function_def",
-      "name": "scopeUntil",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": scopeUntil,
+        "text": "scopeUntil",
+      },
       "ref": fun scopeUntil() {
     do {
         let a: Int = 0;
@@ -5902,12 +7302,12 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
       "statements": [
         {
           "condition": {
-            "id": 1,
+            "id": 2,
             "kind": "boolean",
             "ref": true,
             "value": true,
           },
-          "id": 5,
+          "id": 8,
           "kind": "statement_until",
           "ref": do {
         let a: Int = 0;
@@ -5915,19 +7315,29 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
           "statements": [
             {
               "expression": {
-                "id": 3,
+                "id": 6,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 4,
+              "id": 7,
               "kind": "statement_let",
-              "name": "a",
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "ref": a,
+                "text": "a",
+              },
               "ref": let a: Int = 0;,
               "type": {
-                "id": 2,
+                "id": 5,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 4,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
@@ -5936,19 +7346,29 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         },
         {
           "expression": {
-            "id": 7,
+            "id": 12,
             "kind": "string",
             "ref": "abc",
             "value": "abc",
           },
-          "id": 8,
+          "id": 13,
           "kind": "statement_let",
-          "name": "a",
+          "name": {
+            "id": 9,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": let a: String = "abc";,
           "type": {
-            "id": 6,
+            "id": 11,
             "kind": "type_ref_simple",
-            "name": "String",
+            "name": {
+              "id": 10,
+              "kind": "id",
+              "ref": String,
+              "text": "String",
+            },
             "optional": false,
             "ref": String,
           },
@@ -5973,9 +7393,14 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     "ast": {
       "args": [],
       "attributes": [],
-      "id": 27,
+      "id": 42,
       "kind": "function_def",
-      "name": "scopeWhile",
+      "name": {
+        "id": 29,
+        "kind": "id",
+        "ref": scopeWhile,
+        "text": "scopeWhile",
+      },
       "ref": fun scopeWhile() {
     while (true) {
         let a: Int = 0;
@@ -5986,12 +7411,12 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
       "statements": [
         {
           "condition": {
-            "id": 19,
+            "id": 30,
             "kind": "boolean",
             "ref": true,
             "value": true,
           },
-          "id": 23,
+          "id": 36,
           "kind": "statement_while",
           "ref": while (true) {
         let a: Int = 0;
@@ -5999,19 +7424,29 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
           "statements": [
             {
               "expression": {
-                "id": 21,
+                "id": 34,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 22,
+              "id": 35,
               "kind": "statement_let",
-              "name": "a",
+              "name": {
+                "id": 31,
+                "kind": "id",
+                "ref": a,
+                "text": "a",
+              },
               "ref": let a: Int = 0;,
               "type": {
-                "id": 20,
+                "id": 33,
                 "kind": "type_ref_simple",
-                "name": "Int",
+                "name": {
+                  "id": 32,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
                 "optional": false,
                 "ref": Int,
               },
@@ -6020,19 +7455,29 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         },
         {
           "expression": {
-            "id": 25,
+            "id": 40,
             "kind": "string",
             "ref": "abc",
             "value": "abc",
           },
-          "id": 26,
+          "id": 41,
           "kind": "statement_let",
-          "name": "a",
+          "name": {
+            "id": 37,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": let a: String = "abc";,
           "type": {
-            "id": 24,
+            "id": 39,
             "kind": "type_ref_simple",
-            "name": "String",
+            "name": {
+              "id": 38,
+              "kind": "id",
+              "ref": String,
+              "text": "String",
+            },
             "optional": false,
             "ref": String,
           },
@@ -6061,9 +7506,14 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 3,
+      "id": 6,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait {
     
 },
@@ -6088,9 +7538,14 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
   },
   "Bool": {
     "ast": {
-      "id": 2,
+      "id": 4,
       "kind": "primitive_type_decl",
-      "name": "Bool",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": Bool,
+        "text": "Bool",
+      },
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -6112,9 +7567,14 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
@@ -6139,39 +7599,64 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
       "fields": [
         {
           "as": null,
-          "id": 5,
+          "id": 11,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int,
           "type": {
-            "id": 4,
+            "id": 10,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 9,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
         },
         {
           "as": null,
-          "id": 7,
+          "id": 15,
           "init": null,
           "kind": "def_field",
-          "name": "b",
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "ref": b,
+            "text": "b",
+          },
           "ref": b: Bool,
           "type": {
-            "id": 6,
+            "id": 14,
             "kind": "type_ref_simple",
-            "name": "Bool",
+            "name": {
+              "id": 13,
+              "kind": "id",
+              "ref": Bool,
+              "text": "Bool",
+            },
             "optional": false,
             "ref": Bool,
           },
         },
       ],
-      "id": 8,
+      "id": 16,
       "kind": "def_struct",
       "message": false,
-      "name": "Struct1",
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "ref": Struct1,
+        "text": "Struct1",
+      },
       "prefix": null,
       "ref": struct Struct1 {
     a: Int;
@@ -6194,15 +7679,25 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
         "as": null,
         "ast": {
           "as": null,
-          "id": 5,
+          "id": 11,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Int,
           "type": {
-            "id": 4,
+            "id": 10,
             "kind": "type_ref_simple",
-            "name": "Int",
+            "name": {
+              "id": 9,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
             "optional": false,
             "ref": Int,
           },
@@ -6229,15 +7724,25 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
         "as": null,
         "ast": {
           "as": null,
-          "id": 7,
+          "id": 15,
           "init": null,
           "kind": "def_field",
-          "name": "b",
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "ref": b,
+            "text": "b",
+          },
           "ref": b: Bool,
           "type": {
-            "id": 6,
+            "id": 14,
             "kind": "type_ref_simple",
-            "name": "Bool",
+            "name": {
+              "id": 13,
+              "kind": "id",
+              "ref": Bool,
+              "text": "Bool",
+            },
             "optional": false,
             "ref": Bool,
           },
@@ -6272,24 +7777,39 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
       "fields": [
         {
           "as": null,
-          "id": 10,
+          "id": 21,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Struct1,
           "type": {
-            "id": 9,
+            "id": 20,
             "kind": "type_ref_simple",
-            "name": "Struct1",
+            "name": {
+              "id": 19,
+              "kind": "id",
+              "ref": Struct1,
+              "text": "Struct1",
+            },
             "optional": false,
             "ref": Struct1,
           },
         },
       ],
-      "id": 11,
+      "id": 22,
       "kind": "def_struct",
       "message": false,
-      "name": "Struct2",
+      "name": {
+        "id": 17,
+        "kind": "id",
+        "ref": Struct2,
+        "text": "Struct2",
+      },
       "prefix": null,
       "ref": struct Struct2 {
     a: Struct1;
@@ -6310,15 +7830,25 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
         "as": null,
         "ast": {
           "as": null,
-          "id": 10,
+          "id": 21,
           "init": null,
           "kind": "def_field",
-          "name": "a",
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
           "ref": a: Struct1,
           "type": {
-            "id": 9,
+            "id": 20,
             "kind": "type_ref_simple",
-            "name": "Struct1",
+            "name": {
+              "id": 19,
+              "kind": "id",
+              "ref": Struct1,
+              "text": "Struct1",
+            },
             "optional": false,
             "ref": Struct1,
           },
@@ -6359,9 +7889,14 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
     "ast": {
       "attributes": [],
       "declarations": [],
-      "id": 3,
+      "id": 6,
       "kind": "def_trait",
-      "name": "BaseTrait",
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "ref": BaseTrait,
+        "text": "BaseTrait",
+      },
       "ref": trait BaseTrait {
     
 },
@@ -6386,9 +7921,14 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
   },
   "Bool": {
     "ast": {
-      "id": 2,
+      "id": 4,
       "kind": "primitive_type_decl",
-      "name": "Bool",
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "ref": Bool,
+        "text": "Bool",
+      },
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -6410,9 +7950,14 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
   },
   "Int": {
     "ast": {
-      "id": 1,
+      "id": 2,
       "kind": "primitive_type_decl",
-      "name": "Int",
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "ref": Int,
+        "text": "Int",
+      },
       "ref": primitive Int;,
     },
     "constants": [],
