@@ -492,12 +492,12 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     }
 
     // Resolve function descriptor
-    const args: string[] = [];
+    const params: string[] = [];
     if (self) {
-        args.push(resolveFuncType(self, ctx) + " " + funcIdOf("self"));
+        params.push(resolveFuncType(self, ctx) + " " + funcIdOf("self"));
     }
-    for (const a of f.args) {
-        args.push(resolveFuncType(a.type, ctx) + " " + funcIdOf(a.name));
+    for (const a of f.params) {
+        params.push(resolveFuncType(a.type, ctx) + " " + funcIdOf(a.name));
     }
 
     // Do not write native functions
@@ -507,7 +507,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             const nonMutName = ops.nonModifying(idText(f.ast.nativeName));
             ctx.fun(nonMutName, () => {
                 ctx.signature(
-                    `${returnsOriginal} ${nonMutName}(${args.join(", ")})`,
+                    `${returnsOriginal} ${nonMutName}(${params.join(", ")})`,
                 );
                 ctx.flag("impure");
                 if (enabledInline(ctx.ctx) || f.isInline) {
@@ -518,7 +518,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 }
                 ctx.body(() => {
                     ctx.append(
-                        `return ${funcIdOf("self")}~${idText((f.ast as AstNativeFunctionDecl).nativeName)}(${fd.args
+                        `return ${funcIdOf("self")}~${idText((f.ast as AstNativeFunctionDecl).nativeName)}(${fd.params
                             .slice(1)
                             .map((arg) => funcIdOf(arg.name))
                             .join(", ")});`,
@@ -538,7 +538,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Write function body
     ctx.fun(name, () => {
-        ctx.signature(`${returns} ${name}(${args.join(", ")})`);
+        ctx.signature(`${returns} ${name}(${params.join(", ")})`);
         ctx.flag("impure");
         if (enabledInline(ctx.ctx) || f.isInline) {
             ctx.flag("inline");
@@ -553,7 +553,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                     `var (${resolveFuncTypeUnpack(self, funcIdOf("self"), ctx)}) = ${funcIdOf("self")};`,
                 );
             }
-            for (const a of fd.args) {
+            for (const a of fd.params) {
                 if (
                     !resolveFuncPrimitive(resolveTypeRef(ctx.ctx, a.type), ctx)
                 ) {
@@ -586,7 +586,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
         const nonMutName = ops.nonModifying(name);
         ctx.fun(nonMutName, () => {
             ctx.signature(
-                `${returnsOriginal} ${nonMutName}(${args.join(", ")})`,
+                `${returnsOriginal} ${nonMutName}(${params.join(", ")})`,
             );
             ctx.flag("impure");
             if (enabledInline(ctx.ctx) || f.isInline) {
@@ -597,7 +597,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             }
             ctx.body(() => {
                 ctx.append(
-                    `return ${funcIdOf("self")}~${ctx.used(name)}(${fd.args
+                    `return ${funcIdOf("self")}~${ctx.used(name)}(${fd.params
                         .slice(1)
                         .map((arg) => funcIdOf(arg.name))
                         .join(", ")});`,
@@ -614,15 +614,15 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
         throw new Error(`No self type for getter ${idTextErr(f.name)}`); // Impossible
     }
     ctx.append(
-        `_ %${f.name}(${f.args.map((v) => resolveFuncTupleType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) method_id(${getMethodId(f.name)}) {`,
+        `_ %${f.name}(${f.params.map((v) => resolveFuncTupleType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) method_id(${getMethodId(f.name)}) {`,
     );
     ctx.inIndent(() => {
-        // Unpack arguments
-        for (const arg of f.args) {
+        // Unpack parameters
+        for (const param of f.params) {
             unwrapExternal(
-                funcIdOf(arg.name),
-                funcIdOf(arg.name),
-                arg.type,
+                funcIdOf(param.name),
+                funcIdOf(param.name),
+                param.type,
                 ctx,
             );
         }
@@ -632,7 +632,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 
         // Execute get method
         ctx.append(
-            `var res = self~${ctx.used(ops.extension(self.name, f.name))}(${f.args.map((v) => funcIdOf(v.name)).join(", ")});`,
+            `var res = self~${ctx.used(ops.extension(self.name, f.name))}(${f.params.map((v) => funcIdOf(v.name)).join(", ")});`,
         );
 
         // Pack if needed

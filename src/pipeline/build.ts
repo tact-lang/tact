@@ -269,7 +269,7 @@ export async function build(args: {
             code: artifacts.codeBoc.toString("base64"),
             init: {
                 kind: "direct",
-                args: getType(ctx, contract).init!.args.map((v) => ({
+                args: getType(ctx, contract).init!.params.map((v) => ({
                     name: idText(v.name),
                     type: createABITypeRefFromTypeRef(v.type, v.ref),
                 })),

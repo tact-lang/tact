@@ -2325,17 +2325,26 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "args": [],
             "id": 112,
             "kind": "def_init_function",
+            "params": [],
             "ref": SrcInfo {},
             "statements": [],
           },
           {
-            "args": [
+            "attributes": [],
+            "id": 122,
+            "kind": "function_def",
+            "name": {
+              "id": 113,
+              "kind": "id",
+              "ref": SrcInfo {},
+              "text": "main",
+            },
+            "params": [
               {
                 "id": 117,
-                "kind": "def_argument",
+                "kind": "typed_parameter",
                 "name": {
                   "id": 114,
                   "kind": "id",
@@ -2358,7 +2367,7 @@ exports[`resolveAllocation should write program 1`] = `
               },
               {
                 "id": 121,
-                "kind": "def_argument",
+                "kind": "typed_parameter",
                 "name": {
                   "id": 118,
                   "kind": "id",
@@ -2380,15 +2389,6 @@ exports[`resolveAllocation should write program 1`] = `
                 },
               },
             ],
-            "attributes": [],
-            "id": 122,
-            "kind": "function_def",
-            "name": {
-              "id": 113,
-              "kind": "id",
-              "ref": SrcInfo {},
-              "text": "main",
-            },
             "ref": SrcInfo {},
             "return": null,
             "statements": [],
@@ -2462,7 +2462,77 @@ exports[`resolveAllocation should write program 1`] = `
       ],
       "functions": Map {
         "main" => {
-          "args": [
+          "ast": {
+            "attributes": [],
+            "id": 122,
+            "kind": "function_def",
+            "name": {
+              "id": 113,
+              "kind": "id",
+              "ref": SrcInfo {},
+              "text": "main",
+            },
+            "params": [
+              {
+                "id": 117,
+                "kind": "typed_parameter",
+                "name": {
+                  "id": 114,
+                  "kind": "id",
+                  "ref": SrcInfo {},
+                  "text": "a",
+                },
+                "ref": SrcInfo {},
+                "type": {
+                  "id": 116,
+                  "kind": "type_ref_simple",
+                  "name": {
+                    "id": 115,
+                    "kind": "id",
+                    "ref": SrcInfo {},
+                    "text": "Int",
+                  },
+                  "optional": false,
+                  "ref": SrcInfo {},
+                },
+              },
+              {
+                "id": 121,
+                "kind": "typed_parameter",
+                "name": {
+                  "id": 118,
+                  "kind": "id",
+                  "ref": SrcInfo {},
+                  "text": "b",
+                },
+                "ref": SrcInfo {},
+                "type": {
+                  "id": 120,
+                  "kind": "type_ref_simple",
+                  "name": {
+                    "id": 119,
+                    "kind": "id",
+                    "ref": SrcInfo {},
+                    "text": "Int",
+                  },
+                  "optional": false,
+                  "ref": SrcInfo {},
+                },
+              },
+            ],
+            "ref": SrcInfo {},
+            "return": null,
+            "statements": [],
+          },
+          "isAbstract": false,
+          "isGetter": false,
+          "isInline": false,
+          "isMutating": true,
+          "isOverrides": false,
+          "isVirtual": false,
+          "name": "main",
+          "origin": "user",
+          "params": [
             {
               "name": {
                 "id": 114,
@@ -2492,76 +2562,6 @@ exports[`resolveAllocation should write program 1`] = `
               },
             },
           ],
-          "ast": {
-            "args": [
-              {
-                "id": 117,
-                "kind": "def_argument",
-                "name": {
-                  "id": 114,
-                  "kind": "id",
-                  "ref": SrcInfo {},
-                  "text": "a",
-                },
-                "ref": SrcInfo {},
-                "type": {
-                  "id": 116,
-                  "kind": "type_ref_simple",
-                  "name": {
-                    "id": 115,
-                    "kind": "id",
-                    "ref": SrcInfo {},
-                    "text": "Int",
-                  },
-                  "optional": false,
-                  "ref": SrcInfo {},
-                },
-              },
-              {
-                "id": 121,
-                "kind": "def_argument",
-                "name": {
-                  "id": 118,
-                  "kind": "id",
-                  "ref": SrcInfo {},
-                  "text": "b",
-                },
-                "ref": SrcInfo {},
-                "type": {
-                  "id": 120,
-                  "kind": "type_ref_simple",
-                  "name": {
-                    "id": 119,
-                    "kind": "id",
-                    "ref": SrcInfo {},
-                    "text": "Int",
-                  },
-                  "optional": false,
-                  "ref": SrcInfo {},
-                },
-              },
-            ],
-            "attributes": [],
-            "id": 122,
-            "kind": "function_def",
-            "name": {
-              "id": 113,
-              "kind": "id",
-              "ref": SrcInfo {},
-              "text": "main",
-            },
-            "ref": SrcInfo {},
-            "return": null,
-            "statements": [],
-          },
-          "isAbstract": false,
-          "isGetter": false,
-          "isInline": false,
-          "isMutating": true,
-          "isOverrides": false,
-          "isVirtual": false,
-          "name": "main",
-          "origin": "user",
           "returns": {
             "kind": "void",
           },
@@ -2570,14 +2570,14 @@ exports[`resolveAllocation should write program 1`] = `
       },
       "header": null,
       "init": {
-        "args": [],
         "ast": {
-          "args": [],
           "id": 112,
           "kind": "def_init_function",
+          "params": [],
           "ref": SrcInfo {},
           "statements": [],
         },
+        "params": [],
       },
       "interfaces": [],
       "kind": "contract",

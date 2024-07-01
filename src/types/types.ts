@@ -97,13 +97,13 @@ export type ConstantDescription = {
     ast: ASTConstant;
 };
 
-export type FunctionArgument = {
+export type FunctionParameter = {
     name: AstId;
     type: TypeRef;
     ref: SrcInfo;
 };
 
-export type InitArgument = {
+export type InitParameter = {
     name: AstId;
     type: TypeRef;
     as: string | null;
@@ -121,7 +121,7 @@ export type FunctionDescription = {
     isInline: boolean;
     self: string | null;
     returns: TypeRef;
-    args: FunctionArgument[];
+    params: FunctionParameter[];
     ast: AstFunctionDef | AstNativeFunctionDecl;
 };
 
@@ -227,7 +227,7 @@ export type ReceiverDescription = {
 };
 
 export type InitDescription = {
-    args: InitArgument[];
+    params: InitParameter[];
     ast: ASTInitFunction;
 };
 

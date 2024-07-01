@@ -581,7 +581,7 @@ export function resolveStatements(ctx: CompilerContext) {
         if (f.ast.kind === "function_def") {
             // Build statement context
             let sctx = emptyContext(f.ast.ref, f.returns);
-            for (const p of f.args) {
+            for (const p of f.params) {
                 sctx = addVariable(p.name, p.type, sctx);
             }
 
@@ -619,7 +619,7 @@ export function resolveStatements(ctx: CompilerContext) {
             }
 
             // Args
-            for (const p of t.init.args) {
+            for (const p of t.init.params) {
                 sctx = addVariable(p.name, p.type, sctx);
             }
 
@@ -706,7 +706,7 @@ export function resolveStatements(ctx: CompilerContext) {
                     { kind: "ref", name: t.name, optional: false },
                     sctx,
                 );
-                for (const a of f.args) {
+                for (const a of f.params) {
                     sctx = addVariable(a.name, a.type, sctx);
                 }
 

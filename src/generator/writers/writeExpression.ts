@@ -529,7 +529,9 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             n +
             "(" +
             f.args
-                .map((a, i) => writeCastedExpression(a, sf.args[i].type, wCtx))
+                .map((a, i) =>
+                    writeCastedExpression(a, sf.params[i].type, wCtx),
+                )
                 .join(", ") +
             ")"
         );
@@ -616,7 +618,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
 
             // Render arguments
             let renderedArguments = f.args.map((a, i) =>
-                writeCastedExpression(a, ff.args[i].type, wCtx),
+                writeCastedExpression(a, ff.params[i].type, wCtx),
             );
 
             // Hack to replace a single struct argument to a tensor wrapper since otherwise
@@ -628,8 +630,8 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
                         const tt = getType(wCtx.ctx, t.name);
                         if (
                             (tt.kind === "contract" || tt.kind === "struct") &&
-                            ff.args[0].type.kind === "ref" &&
-                            !ff.args[0].type.optional
+                            ff.params[0].type.kind === "ref" &&
+                            !ff.params[0].type.optional
                         ) {
                             renderedArguments = [
                                 `${ops.typeTensorCast(tt.name, wCtx)}(${renderedArguments[0]})`,
@@ -685,7 +687,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
 
     if (f.kind === "init_of") {
         const type = getType(wCtx.ctx, f.name);
-        return `${ops.contractInitChild(idText(f.name), wCtx)}(${["__tact_context_sys", ...f.args.map((a, i) => writeCastedExpression(a, type.init!.args[i].type, wCtx))].join(", ")})`;
+        return `${ops.contractInitChild(idText(f.name), wCtx)}(${["__tact_context_sys", ...f.args.map((a, i) => writeCastedExpression(a, type.init!.params[i].type, wCtx))].join(", ")})`;
     }
 
     //

@@ -181,7 +181,7 @@ Line 13, col 3:
 `;
 
 exports[`resolveDescriptors should fail descriptors for contract-receiver-optional-msg 1`] = `
-"<unknown>:13:3: Receive function cannot have optional argument
+"<unknown>:13:3: Receive function cannot have optional parameter
 Line 13, col 3:
   12 | contract Pair {
 > 13 |   receive(src: B?) {
@@ -229,7 +229,7 @@ Line 8, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for method-first-param-not-self1 1`] = `
-"<unknown>:8:17: Extend function must have first argument named "self"
+"<unknown>:8:17: Extend function must have first parameter named "self"
 Line 8, col 17:
   7 | 
 > 8 | extends fun inc(a: Int): Int {
@@ -239,7 +239,7 @@ Line 8, col 17:
 `;
 
 exports[`resolveDescriptors should fail descriptors for method-first-param-not-self2 1`] = `
-"<unknown>:8:17: Argument name "self" is reserved
+"<unknown>:8:17: Parameter name "self" is reserved
 Line 8, col 17:
   7 | 
 > 8 | fun inc(a: Int, self: Int): Int {
@@ -316,7 +316,7 @@ Line 8, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for scope-param-shadows-param 1`] = `
-"<unknown>:9:24: Argument name "a" is already used
+"<unknown>:9:24: Parameter name "a" is already used
 Line 9, col 24:
    8 | contract Main {
 >  9 |     fun hello(a: Bool, a: Int): Int {
@@ -601,9 +601,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       "attributes": [],
       "declarations": [
         {
-          "args": [],
           "id": 15,
           "kind": "def_init_function",
+          "params": [],
           "ref": init() {},
           "statements": [],
         },
@@ -614,9 +614,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     
   },
           "selector": {
-            "arg": {
+            "kind": "internal-simple",
+            "param": {
               "id": 19,
-              "kind": "def_argument",
+              "kind": "typed_parameter",
               "name": {
                 "id": 16,
                 "kind": "id",
@@ -637,7 +638,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
                 "ref": A,
               },
             },
-            "kind": "internal-simple",
           },
           "statements": [],
         },
@@ -648,9 +648,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     
   },
           "selector": {
-            "arg": {
+            "kind": "bounce",
+            "param": {
               "id": 24,
-              "kind": "def_argument",
+              "kind": "typed_parameter",
               "name": {
                 "id": 21,
                 "kind": "id",
@@ -671,7 +672,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
                 "ref": Slice,
               },
             },
-            "kind": "bounce",
           },
           "statements": [],
         },
@@ -702,14 +702,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "functions": Map {},
     "header": null,
     "init": {
-      "args": [],
       "ast": {
-        "args": [],
         "id": 15,
         "kind": "def_init_function",
+        "params": [],
         "ref": init() {},
         "statements": [],
       },
+      "params": [],
     },
     "interfaces": [],
     "kind": "contract",
@@ -725,9 +725,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     
   },
           "selector": {
-            "arg": {
+            "kind": "internal-simple",
+            "param": {
               "id": 19,
-              "kind": "def_argument",
+              "kind": "typed_parameter",
               "name": {
                 "id": 16,
                 "kind": "id",
@@ -748,7 +749,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
                 "ref": A,
               },
             },
-            "kind": "internal-simple",
           },
           "statements": [],
         },
@@ -771,9 +771,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     
   },
           "selector": {
-            "arg": {
+            "kind": "bounce",
+            "param": {
               "id": 24,
-              "kind": "def_argument",
+              "kind": "typed_parameter",
               "name": {
                 "id": 21,
                 "kind": "id",
@@ -794,7 +795,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
                 "ref": Slice,
               },
             },
-            "kind": "bounce",
           },
           "statements": [],
         },
@@ -1223,9 +1223,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       "attributes": [],
       "declarations": [
         {
-          "args": [],
           "id": 24,
           "kind": "def_init_function",
+          "params": [],
           "ref": init() {},
           "statements": [],
         },
@@ -1236,9 +1236,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     
   },
           "selector": {
-            "arg": {
+            "kind": "internal-simple",
+            "param": {
               "id": 28,
-              "kind": "def_argument",
+              "kind": "typed_parameter",
               "name": {
                 "id": 25,
                 "kind": "id",
@@ -1259,7 +1260,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
                 "ref": A,
               },
             },
-            "kind": "internal-simple",
           },
           "statements": [],
         },
@@ -1270,9 +1270,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     let x: Int = src.c;
   },
           "selector": {
-            "arg": {
+            "kind": "bounce",
+            "param": {
               "id": 33,
-              "kind": "def_argument",
+              "kind": "typed_parameter",
               "name": {
                 "id": 30,
                 "kind": "id",
@@ -1292,7 +1293,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
                 "ref": bounced<A>,
               },
             },
-            "kind": "bounce",
           },
           "statements": [
             {
@@ -1364,14 +1364,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "functions": Map {},
     "header": null,
     "init": {
-      "args": [],
       "ast": {
-        "args": [],
         "id": 24,
         "kind": "def_init_function",
+        "params": [],
         "ref": init() {},
         "statements": [],
       },
+      "params": [],
     },
     "interfaces": [],
     "kind": "contract",
@@ -1387,9 +1387,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     
   },
           "selector": {
-            "arg": {
+            "kind": "internal-simple",
+            "param": {
               "id": 28,
-              "kind": "def_argument",
+              "kind": "typed_parameter",
               "name": {
                 "id": 25,
                 "kind": "id",
@@ -1410,7 +1411,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
                 "ref": A,
               },
             },
-            "kind": "internal-simple",
           },
           "statements": [],
         },
@@ -1433,9 +1433,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     let x: Int = src.c;
   },
           "selector": {
-            "arg": {
+            "kind": "bounce",
+            "param": {
               "id": 33,
-              "kind": "def_argument",
+              "kind": "typed_parameter",
               "name": {
                 "id": 30,
                 "kind": "id",
@@ -1455,7 +1456,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
                 "ref": bounced<A>,
               },
             },
-            "kind": "bounce",
           },
           "statements": [
             {
@@ -1872,16 +1872,16 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "functions": Map {},
     "header": null,
     "init": {
-      "args": [],
       "ast": {
-        "args": [],
         "id": 20,
         "kind": "def_init_function",
+        "params": [],
         "ref": contract TestContract with T {
   override const Foo: Int = 42;
 },
         "statements": [],
       },
+      "params": [],
     },
     "interfaces": [],
     "kind": "contract",
@@ -2395,16 +2395,16 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "functions": Map {},
     "header": null,
     "init": {
-      "args": [],
       "ast": {
-        "args": [],
         "id": 21,
         "kind": "def_init_function",
+        "params": [],
         "ref": contract TestContract with T {
   override const Foo: Int = 42;
 },
         "statements": [],
       },
+      "params": [],
     },
     "interfaces": [],
     "kind": "contract",
@@ -2797,9 +2797,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         42;
     },
           "selector": {
-            "arg": {
+            "kind": "external-simple",
+            "param": {
               "id": 16,
-              "kind": "def_argument",
+              "kind": "typed_parameter",
               "name": {
                 "id": 13,
                 "kind": "id",
@@ -2820,7 +2821,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
                 "ref": A,
               },
             },
-            "kind": "external-simple",
           },
           "statements": [
             {
@@ -2885,11 +2885,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     "functions": Map {},
     "header": null,
     "init": {
-      "args": [],
       "ast": {
-        "args": [],
         "id": 25,
         "kind": "def_init_function",
+        "params": [],
         "ref": contract Test {
     external(msg: A) {
         42;
@@ -2901,6 +2900,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
 },
         "statements": [],
       },
+      "params": [],
     },
     "interfaces": [],
     "kind": "contract",
@@ -2916,9 +2916,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         42;
     },
           "selector": {
-            "arg": {
+            "kind": "external-simple",
+            "param": {
               "id": 16,
-              "kind": "def_argument",
+              "kind": "typed_parameter",
               "name": {
                 "id": 13,
                 "kind": "id",
@@ -2939,7 +2940,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
                 "ref": A,
               },
             },
-            "kind": "external-simple",
           },
           "statements": [
             {
@@ -3108,7 +3108,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "attributes": [],
       "declarations": [
         {
-          "args": [],
           "attributes": [
             {
               "ref": abstract,
@@ -3127,6 +3126,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "ref": getter,
             "text": "getter",
           },
+          "params": [],
           "ref": abstract get fun getter(): Int;,
           "return": {
             "id": 8,
@@ -3161,9 +3161,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "fields": [],
     "functions": Map {
       "getter" => {
-        "args": [],
         "ast": {
-          "args": [],
           "attributes": [
             {
               "ref": abstract,
@@ -3182,6 +3180,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "ref": getter,
             "text": "getter",
           },
+          "params": [],
           "ref": abstract get fun getter(): Int;,
           "return": {
             "id": 8,
@@ -3205,6 +3204,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "isVirtual": false,
         "name": "getter",
         "origin": "user",
+        "params": [],
         "returns": {
           "kind": "ref",
           "name": "Int",
@@ -3264,7 +3264,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "attributes": [],
       "declarations": [
         {
-          "args": [],
           "attributes": [
             {
               "ref": override,
@@ -3283,6 +3282,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "ref": getter,
             "text": "getter",
           },
+          "params": [],
           "ref": override get fun getter(): Int { return 0 },
           "return": {
             "id": 14,
@@ -3336,9 +3336,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "fields": [],
     "functions": Map {
       "getter" => {
-        "args": [],
         "ast": {
-          "args": [],
           "attributes": [
             {
               "ref": override,
@@ -3357,6 +3355,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "ref": getter,
             "text": "getter",
           },
+          "params": [],
           "ref": override get fun getter(): Int { return 0 },
           "return": {
             "id": 14,
@@ -3392,6 +3391,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "isVirtual": false,
         "name": "getter",
         "origin": "user",
+        "params": [],
         "returns": {
           "kind": "ref",
           "name": "Int",
@@ -3402,16 +3402,16 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     },
     "header": null,
     "init": {
-      "args": [],
       "ast": {
-        "args": [],
         "id": 21,
         "kind": "def_init_function",
+        "params": [],
         "ref": contract TestContract with T {
   override get fun getter(): Int { return 0 }
 },
         "statements": [],
       },
+      "params": [],
     },
     "interfaces": [],
     "kind": "contract",
@@ -3459,7 +3459,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "attributes": [],
           "declarations": [
             {
-              "args": [],
               "attributes": [
                 {
                   "ref": abstract,
@@ -3478,6 +3477,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 "ref": getter,
                 "text": "getter",
               },
+              "params": [],
               "ref": abstract get fun getter(): Int;,
               "return": {
                 "id": 8,
@@ -3512,9 +3512,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "fields": [],
         "functions": Map {
           "getter" => {
-            "args": [],
             "ast": {
-              "args": [],
               "attributes": [
                 {
                   "ref": abstract,
@@ -3533,6 +3531,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 "ref": getter,
                 "text": "getter",
               },
+              "params": [],
               "ref": abstract get fun getter(): Int;,
               "return": {
                 "id": 8,
@@ -3556,6 +3555,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "isVirtual": false,
             "name": "getter",
             "origin": "user",
+            "params": [],
             "returns": {
               "kind": "ref",
               "name": "Int",
@@ -3686,7 +3686,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "attributes": [],
       "declarations": [
         {
-          "args": [],
           "attributes": [
             {
               "ref": virtual,
@@ -3705,6 +3704,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "ref": getter,
             "text": "getter",
           },
+          "params": [],
           "ref": virtual get fun getter(): Int { return 42 },
           "return": {
             "id": 8,
@@ -3751,9 +3751,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "fields": [],
     "functions": Map {
       "getter" => {
-        "args": [],
         "ast": {
-          "args": [],
           "attributes": [
             {
               "ref": virtual,
@@ -3772,6 +3770,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "ref": getter,
             "text": "getter",
           },
+          "params": [],
           "ref": virtual get fun getter(): Int { return 42 },
           "return": {
             "id": 8,
@@ -3807,6 +3806,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "isVirtual": true,
         "name": "getter",
         "origin": "user",
+        "params": [],
         "returns": {
           "kind": "ref",
           "name": "Int",
@@ -3866,7 +3866,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "attributes": [],
       "declarations": [
         {
-          "args": [],
           "attributes": [
             {
               "ref": override,
@@ -3885,6 +3884,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "ref": getter,
             "text": "getter",
           },
+          "params": [],
           "ref": override get fun getter(): Int { return 43 },
           "return": {
             "id": 16,
@@ -3938,9 +3938,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "fields": [],
     "functions": Map {
       "getter" => {
-        "args": [],
         "ast": {
-          "args": [],
           "attributes": [
             {
               "ref": override,
@@ -3959,6 +3957,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "ref": getter,
             "text": "getter",
           },
+          "params": [],
           "ref": override get fun getter(): Int { return 43 },
           "return": {
             "id": 16,
@@ -3994,6 +3993,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "isVirtual": false,
         "name": "getter",
         "origin": "user",
+        "params": [],
         "returns": {
           "kind": "ref",
           "name": "Int",
@@ -4004,16 +4004,16 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     },
     "header": null,
     "init": {
-      "args": [],
       "ast": {
-        "args": [],
         "id": 23,
         "kind": "def_init_function",
+        "params": [],
         "ref": contract TestContract with T {
   override get fun getter(): Int { return 43 }
 },
         "statements": [],
       },
+      "params": [],
     },
     "interfaces": [],
     "kind": "contract",
@@ -4061,7 +4061,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "attributes": [],
           "declarations": [
             {
-              "args": [],
               "attributes": [
                 {
                   "ref": virtual,
@@ -4080,6 +4079,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 "ref": getter,
                 "text": "getter",
               },
+              "params": [],
               "ref": virtual get fun getter(): Int { return 42 },
               "return": {
                 "id": 8,
@@ -4126,9 +4126,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "fields": [],
         "functions": Map {
           "getter" => {
-            "args": [],
             "ast": {
-              "args": [],
               "attributes": [
                 {
                   "ref": virtual,
@@ -4147,6 +4145,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 "ref": getter,
                 "text": "getter",
               },
+              "params": [],
               "ref": virtual get fun getter(): Int { return 42 },
               "return": {
                 "id": 8,
@@ -4182,6 +4181,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "isVirtual": true,
             "name": "getter",
             "origin": "user",
+            "params": [],
             "returns": {
               "kind": "ref",
               "name": "Int",
@@ -4364,16 +4364,15 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           },
         },
         {
-          "args": [],
           "id": 16,
           "kind": "def_init_function",
+          "params": [],
           "ref": init() {
         
     },
           "statements": [],
         },
         {
-          "args": [],
           "attributes": [],
           "id": 18,
           "kind": "function_def",
@@ -4383,6 +4382,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
             "ref": hello,
             "text": "hello",
           },
+          "params": [],
           "ref": fun hello() {
         
     },
@@ -4390,7 +4390,6 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           "statements": [],
         },
         {
-          "args": [],
           "attributes": [],
           "id": 20,
           "kind": "function_def",
@@ -4400,6 +4399,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
             "ref": hello2,
             "text": "hello2",
           },
+          "params": [],
           "ref": fun hello2() {
         
     },
@@ -4530,9 +4530,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     ],
     "functions": Map {
       "hello" => {
-        "args": [],
         "ast": {
-          "args": [],
           "attributes": [],
           "id": 18,
           "kind": "function_def",
@@ -4542,6 +4540,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
             "ref": hello,
             "text": "hello",
           },
+          "params": [],
           "ref": fun hello() {
         
     },
@@ -4556,15 +4555,14 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "isVirtual": false,
         "name": "hello",
         "origin": "user",
+        "params": [],
         "returns": {
           "kind": "void",
         },
         "self": "HelloWorld",
       },
       "hello2" => {
-        "args": [],
         "ast": {
-          "args": [],
           "attributes": [],
           "id": 20,
           "kind": "function_def",
@@ -4574,6 +4572,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
             "ref": hello2,
             "text": "hello2",
           },
+          "params": [],
           "ref": fun hello2() {
         
     },
@@ -4588,6 +4587,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "isVirtual": false,
         "name": "hello2",
         "origin": "user",
+        "params": [],
         "returns": {
           "kind": "void",
         },
@@ -4596,16 +4596,16 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     },
     "header": null,
     "init": {
-      "args": [],
       "ast": {
-        "args": [],
         "id": 16,
         "kind": "def_init_function",
+        "params": [],
         "ref": init() {
         
     },
         "statements": [],
       },
+      "params": [],
     },
     "interfaces": [],
     "kind": "contract",
@@ -4787,9 +4787,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
 exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies1 2`] = `
 {
   "testFunc": {
-    "args": [],
     "ast": {
-      "args": [],
       "attributes": [],
       "id": 12,
       "kind": "function_def",
@@ -4799,6 +4797,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "ref": testFunc,
         "text": "testFunc",
       },
+      "params": [],
       "ref": fun testFunc(): Int {
     return 0;
 },
@@ -4836,6 +4835,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "isVirtual": false,
     "name": "testFunc",
     "origin": "user",
+    "params": [],
     "returns": {
       "kind": "ref",
       "name": "Int",
@@ -4844,9 +4844,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "self": null,
   },
   "testFunc2": {
-    "args": [],
     "ast": {
-      "args": [],
       "attributes": [],
       "id": 16,
       "kind": "function_def",
@@ -4856,6 +4854,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "ref": testFunc2,
         "text": "testFunc2",
       },
+      "params": [],
       "ref": fun testFunc2() {
     return 0;
 },
@@ -4882,13 +4881,98 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "isVirtual": false,
     "name": "testFunc2",
     "origin": "user",
+    "params": [],
     "returns": {
       "kind": "void",
     },
     "self": null,
   },
   "testFunc3": {
-    "args": [
+    "ast": {
+      "attributes": [],
+      "id": 28,
+      "kind": "function_def",
+      "name": {
+        "id": 17,
+        "kind": "id",
+        "ref": testFunc3,
+        "text": "testFunc3",
+      },
+      "params": [
+        {
+          "id": 21,
+          "kind": "typed_parameter",
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
+          "ref": a: Int,
+          "type": {
+            "id": 20,
+            "kind": "type_ref_simple",
+            "name": {
+              "id": 19,
+              "kind": "id",
+              "ref": Int,
+              "text": "Int",
+            },
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "id": 25,
+          "kind": "typed_parameter",
+          "name": {
+            "id": 22,
+            "kind": "id",
+            "ref": b,
+            "text": "b",
+          },
+          "ref": b: Bool,
+          "type": {
+            "id": 24,
+            "kind": "type_ref_simple",
+            "name": {
+              "id": 23,
+              "kind": "id",
+              "ref": Bool,
+              "text": "Bool",
+            },
+            "optional": false,
+            "ref": Bool,
+          },
+        },
+      ],
+      "ref": fun testFunc3(a: Int, b: Bool) {
+    return 0;
+},
+      "return": null,
+      "statements": [
+        {
+          "expression": {
+            "id": 26,
+            "kind": "number",
+            "ref": 0,
+            "value": 0n,
+          },
+          "id": 27,
+          "kind": "statement_return",
+          "ref": return 0;,
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverrides": false,
+    "isVirtual": false,
+    "name": "testFunc3",
+    "origin": "user",
+    "params": [
       {
         "name": {
           "id": 18,
@@ -4918,90 +5002,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         },
       },
     ],
-    "ast": {
-      "args": [
-        {
-          "id": 21,
-          "kind": "def_argument",
-          "name": {
-            "id": 18,
-            "kind": "id",
-            "ref": a,
-            "text": "a",
-          },
-          "ref": a: Int,
-          "type": {
-            "id": 20,
-            "kind": "type_ref_simple",
-            "name": {
-              "id": 19,
-              "kind": "id",
-              "ref": Int,
-              "text": "Int",
-            },
-            "optional": false,
-            "ref": Int,
-          },
-        },
-        {
-          "id": 25,
-          "kind": "def_argument",
-          "name": {
-            "id": 22,
-            "kind": "id",
-            "ref": b,
-            "text": "b",
-          },
-          "ref": b: Bool,
-          "type": {
-            "id": 24,
-            "kind": "type_ref_simple",
-            "name": {
-              "id": 23,
-              "kind": "id",
-              "ref": Bool,
-              "text": "Bool",
-            },
-            "optional": false,
-            "ref": Bool,
-          },
-        },
-      ],
-      "attributes": [],
-      "id": 28,
-      "kind": "function_def",
-      "name": {
-        "id": 17,
-        "kind": "id",
-        "ref": testFunc3,
-        "text": "testFunc3",
-      },
-      "ref": fun testFunc3(a: Int, b: Bool) {
-    return 0;
-},
-      "return": null,
-      "statements": [
-        {
-          "expression": {
-            "id": 26,
-            "kind": "number",
-            "ref": 0,
-            "value": 0n,
-          },
-          "id": 27,
-          "kind": "statement_return",
-          "ref": return 0;,
-        },
-      ],
-    },
-    "isAbstract": false,
-    "isGetter": false,
-    "isInline": false,
-    "isMutating": false,
-    "isOverrides": false,
-    "isVirtual": false,
-    "name": "testFunc3",
-    "origin": "user",
     "returns": {
       "kind": "void",
     },
@@ -5134,10 +5134,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           },
         },
         {
-          "args": [
+          "id": 27,
+          "kind": "def_init_function",
+          "params": [
             {
               "id": 21,
-              "kind": "def_argument",
+              "kind": "typed_parameter",
               "name": {
                 "id": 18,
                 "kind": "id",
@@ -5159,8 +5161,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               },
             },
           ],
-          "id": 27,
-          "kind": "def_init_function",
           "ref": init(a: Int) {
         self.a = a;
     },
@@ -5196,7 +5196,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           ],
         },
         {
-          "args": [],
           "attributes": [
             {
               "ref": get,
@@ -5211,6 +5210,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             "ref": hello,
             "text": "hello",
           },
+          "params": [],
           "ref": get fun hello(): Int {
         return 0;
     },
@@ -5241,7 +5241,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           ],
         },
         {
-          "args": [],
           "attributes": [
             {
               "ref": get,
@@ -5256,6 +5255,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             "ref": hello2,
             "text": "hello2",
           },
+          "params": [],
           "ref": get fun hello2(): Point {
         return 0;
     },
@@ -5361,9 +5361,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     ],
     "functions": Map {
       "hello" => {
-        "args": [],
         "ast": {
-          "args": [],
           "attributes": [
             {
               "ref": get,
@@ -5378,6 +5376,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             "ref": hello,
             "text": "hello",
           },
+          "params": [],
           "ref": get fun hello(): Int {
         return 0;
     },
@@ -5415,6 +5414,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "isVirtual": false,
         "name": "hello",
         "origin": "user",
+        "params": [],
         "returns": {
           "kind": "ref",
           "name": "Int",
@@ -5423,9 +5423,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "self": "Main",
       },
       "hello2" => {
-        "args": [],
         "ast": {
-          "args": [],
           "attributes": [
             {
               "ref": get,
@@ -5440,6 +5438,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             "ref": hello2,
             "text": "hello2",
           },
+          "params": [],
           "ref": get fun hello2(): Point {
         return 0;
     },
@@ -5477,6 +5476,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "isVirtual": false,
         "name": "hello2",
         "origin": "user",
+        "params": [],
         "returns": {
           "kind": "ref",
           "name": "Point",
@@ -5487,28 +5487,13 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     },
     "header": null,
     "init": {
-      "args": [
-        {
-          "as": null,
-          "name": {
-            "id": 18,
-            "kind": "id",
-            "ref": a,
-            "text": "a",
-          },
-          "ref": a: Int,
-          "type": {
-            "kind": "ref",
-            "name": "Int",
-            "optional": false,
-          },
-        },
-      ],
       "ast": {
-        "args": [
+        "id": 27,
+        "kind": "def_init_function",
+        "params": [
           {
             "id": 21,
-            "kind": "def_argument",
+            "kind": "typed_parameter",
             "name": {
               "id": 18,
               "kind": "id",
@@ -5530,8 +5515,6 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             },
           },
         ],
-        "id": 27,
-        "kind": "def_init_function",
         "ref": init(a: Int) {
         self.a = a;
     },
@@ -5566,6 +5549,23 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           },
         ],
       },
+      "params": [
+        {
+          "as": null,
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "ref": a,
+            "text": "a",
+          },
+          "ref": a: Int,
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false,
+          },
+        },
+      ],
     },
     "interfaces": [],
     "kind": "contract",
@@ -5807,12 +5807,25 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
     "fields": [],
     "functions": Map {
       "inc" => {
-        "args": [],
         "ast": {
-          "args": [
+          "attributes": [
+            {
+              "ref": extends,
+              "type": "extends",
+            },
+          ],
+          "id": 18,
+          "kind": "function_def",
+          "name": {
+            "id": 7,
+            "kind": "id",
+            "ref": inc,
+            "text": "inc",
+          },
+          "params": [
             {
               "id": 13,
-              "kind": "def_argument",
+              "kind": "typed_parameter",
               "name": {
                 "id": 10,
                 "kind": "id",
@@ -5834,20 +5847,6 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
               },
             },
           ],
-          "attributes": [
-            {
-              "ref": extends,
-              "type": "extends",
-            },
-          ],
-          "id": 18,
-          "kind": "function_def",
-          "name": {
-            "id": 7,
-            "kind": "id",
-            "ref": inc,
-            "text": "inc",
-          },
           "ref": extends fun inc(self: Int): Int {
     return self + 1;
 },
@@ -5897,6 +5896,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
         "isVirtual": false,
         "name": "inc",
         "origin": "user",
+        "params": [],
         "returns": {
           "kind": "ref",
           "name": "Int",
@@ -6023,27 +6023,26 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
 exports[`resolveDescriptors should resolve descriptors for item-native-decl 2`] = `
 {
   "sample": {
-    "args": [
-      {
-        "name": {
-          "id": 11,
-          "kind": "id",
-          "ref": a,
-          "text": "a",
-        },
-        "ref": a: Int,
-        "type": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false,
-        },
-      },
-    ],
     "ast": {
-      "args": [
+      "attributes": [],
+      "id": 15,
+      "kind": "native_function_decl",
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "ref": sample,
+        "text": "sample",
+      },
+      "nativeName": {
+        "id": 8,
+        "kind": "func_id",
+        "ref": hello_world,
+        "text": "hello_world",
+      },
+      "params": [
         {
           "id": 14,
-          "kind": "def_argument",
+          "kind": "typed_parameter",
           "name": {
             "id": 11,
             "kind": "id",
@@ -6065,21 +6064,6 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 2`] 
           },
         },
       ],
-      "attributes": [],
-      "id": 15,
-      "kind": "native_function_decl",
-      "name": {
-        "id": 7,
-        "kind": "id",
-        "ref": sample,
-        "text": "sample",
-      },
-      "nativeName": {
-        "id": 8,
-        "kind": "func_id",
-        "ref": hello_world,
-        "text": "hello_world",
-      },
       "ref": @name(hello_world)
 native sample(a: Int): Int;,
       "return": {
@@ -6103,6 +6087,22 @@ native sample(a: Int): Int;,
     "isVirtual": false,
     "name": "sample",
     "origin": "user",
+    "params": [
+      {
+        "name": {
+          "id": 11,
+          "kind": "id",
+          "ref": a,
+          "text": "a",
+        },
+        "ref": a: Int,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
     "returns": {
       "kind": "ref",
       "name": "Int",
@@ -6195,33 +6195,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
     "fields": [],
     "functions": Map {
       "inc" => {
-        "args": [],
         "ast": {
-          "args": [
-            {
-              "id": 14,
-              "kind": "def_argument",
-              "name": {
-                "id": 11,
-                "kind": "id",
-                "ref": self,
-                "text": "self",
-              },
-              "ref": self: Int,
-              "type": {
-                "id": 13,
-                "kind": "type_ref_simple",
-                "name": {
-                  "id": 12,
-                  "kind": "id",
-                  "ref": Int,
-                  "text": "Int",
-                },
-                "optional": false,
-                "ref": Int,
-              },
-            },
-          ],
           "attributes": [
             {
               "ref": mutates,
@@ -6246,6 +6220,31 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
             "ref": inc,
             "text": "inc",
           },
+          "params": [
+            {
+              "id": 14,
+              "kind": "typed_parameter",
+              "name": {
+                "id": 11,
+                "kind": "id",
+                "ref": self,
+                "text": "self",
+              },
+              "ref": self: Int,
+              "type": {
+                "id": 13,
+                "kind": "type_ref_simple",
+                "name": {
+                  "id": 12,
+                  "kind": "id",
+                  "ref": Int,
+                  "text": "Int",
+                },
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
           "ref": @name(inc)
 mutates extends native inc(self: Int): Int;,
           "return": {
@@ -6269,6 +6268,7 @@ mutates extends native inc(self: Int): Int;,
         "isVirtual": false,
         "name": "inc",
         "origin": "user",
+        "params": [],
         "returns": {
           "kind": "ref",
           "name": "Int",
@@ -6402,7 +6402,6 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
           },
         },
         {
-          "args": [],
           "attributes": [
             {
               "ref": get,
@@ -6417,6 +6416,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
             "ref": test,
             "text": "test",
           },
+          "params": [],
           "ref": get fun test(): Int {
         let m: map<Int, Int as coins> = emptyMap();
         m.set(1, 2);
@@ -6728,9 +6728,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
     ],
     "functions": Map {
       "test" => {
-        "args": [],
         "ast": {
-          "args": [],
           "attributes": [
             {
               "ref": get,
@@ -6745,6 +6743,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
             "ref": test,
             "text": "test",
           },
+          "params": [],
           "ref": get fun test(): Int {
         let m: map<Int, Int as coins> = emptyMap();
         m.set(1, 2);
@@ -6976,6 +6975,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         "isVirtual": false,
         "name": "test",
         "origin": "user",
+        "params": [],
         "returns": {
           "kind": "ref",
           "name": "Int",
@@ -6986,11 +6986,10 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
     },
     "header": null,
     "init": {
-      "args": [],
       "ast": {
-        "args": [],
         "id": 52,
         "kind": "def_init_function",
+        "params": [],
         "ref": contract Main {
     m: map<Int, Int as coins>;
 
@@ -7003,6 +7002,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
 },
         "statements": [],
       },
+      "params": [],
     },
     "interfaces": [],
     "kind": "contract",
@@ -7060,9 +7060,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 1`] = `{}
 exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
 {
   "scopeIf": {
-    "args": [],
     "ast": {
-      "args": [],
       "attributes": [],
       "id": 56,
       "kind": "function_def",
@@ -7072,6 +7070,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         "ref": scopeIf,
         "text": "scopeIf",
       },
+      "params": [],
       "ref": fun scopeIf() {
     if (true) {
         let a: Int = 0;
@@ -7165,15 +7164,14 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     "isVirtual": false,
     "name": "scopeIf",
     "origin": "user",
+    "params": [],
     "returns": {
       "kind": "void",
     },
     "self": null,
   },
   "scopeRepeat": {
-    "args": [],
     "ast": {
-      "args": [],
       "attributes": [],
       "id": 28,
       "kind": "function_def",
@@ -7183,6 +7181,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         "ref": scopeRepeat,
         "text": "scopeRepeat",
       },
+      "params": [],
       "ref": fun scopeRepeat() {
     repeat (1) {
         let a: Int = 0;
@@ -7274,15 +7273,14 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     "isVirtual": false,
     "name": "scopeRepeat",
     "origin": "user",
+    "params": [],
     "returns": {
       "kind": "void",
     },
     "self": null,
   },
   "scopeUntil": {
-    "args": [],
     "ast": {
-      "args": [],
       "attributes": [],
       "id": 14,
       "kind": "function_def",
@@ -7292,6 +7290,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         "ref": scopeUntil,
         "text": "scopeUntil",
       },
+      "params": [],
       "ref": fun scopeUntil() {
     do {
         let a: Int = 0;
@@ -7383,15 +7382,14 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     "isVirtual": false,
     "name": "scopeUntil",
     "origin": "user",
+    "params": [],
     "returns": {
       "kind": "void",
     },
     "self": null,
   },
   "scopeWhile": {
-    "args": [],
     "ast": {
-      "args": [],
       "attributes": [],
       "id": 42,
       "kind": "function_def",
@@ -7401,6 +7399,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         "ref": scopeWhile,
         "text": "scopeWhile",
       },
+      "params": [],
       "ref": fun scopeWhile() {
     while (true) {
         let a: Int = 0;
@@ -7492,6 +7491,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     "isVirtual": false,
     "name": "scopeWhile",
     "origin": "user",
+    "params": [],
     "returns": {
       "kind": "void",
     },

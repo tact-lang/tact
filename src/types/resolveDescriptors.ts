@@ -20,9 +20,9 @@ import { CompilerContext, createContextStore } from "../context";
 import {
     ConstantDescription,
     FieldDescription,
-    FunctionArgument,
+    FunctionParameter,
     FunctionDescription,
-    InitArgument,
+    InitParameter,
     InitDescription,
     printTypeRef,
     ReceiverSelector,
@@ -544,10 +544,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
             returns = buildTypeRef(a.return, types);
         }
 
-        // Resolve args
-        let args: FunctionArgument[] = [];
-        for (const r of a.args) {
-            args.push({
+        let params: FunctionParameter[] = [];
+        for (const r of a.params) {
+            params.push({
                 name: r.name,
                 type: buildTypeRef(r.type, types),
                 ref: r.ref,
@@ -697,47 +696,46 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Validate mutating
         if (isExtends) {
-            // Validate arguments
             if (self) {
                 throwCompilationError(
                     "Extend functions cannot be defined within a contract",
                     isExtends.ref,
                 );
             }
-            if (args.length === 0) {
+            if (params.length === 0) {
                 throwCompilationError(
-                    "Extend functions must have at least one argument",
+                    "Extend functions must have at least one parameter",
                     isExtends.ref,
                 );
             }
-            if (!isSelfId(args[0].name)) {
+            if (!isSelfId(params[0].name)) {
                 throwCompilationError(
-                    'Extend function must have first argument named "self"',
-                    args[0].ref,
+                    'Extend function must have first parameter named "self"',
+                    params[0].ref,
                 );
             }
-            if (args[0].type.kind !== "ref") {
+            if (params[0].type.kind !== "ref") {
                 throwCompilationError(
-                    "Extend functions must have a reference type as the first argument",
-                    args[0].ref,
+                    "Extend functions must have a reference type as the first parameter",
+                    params[0].ref,
                 );
             }
-            if (args[0].type.optional) {
+            if (params[0].type.optional) {
                 throwCompilationError(
-                    "Extend functions must have a non-optional type as the first argument",
-                    args[0].ref,
+                    "Extend functions must have a non-optional type as the first parameter",
+                    params[0].ref,
                 );
             }
-            if (!types.has(args[0].type.name)) {
+            if (!types.has(params[0].type.name)) {
                 throwCompilationError(
-                    "Type " + args[0].type.name + " not found",
-                    args[0].ref,
+                    "Type " + params[0].type.name + " not found",
+                    params[0].ref,
                 );
             }
 
-            // Update self and remove first argument
-            self = args[0].type.name;
-            args = args.slice(1);
+            // Update self and remove first parameter
+            self = params[0].type.name;
+            params = params.slice(1);
         }
 
         // Check for mutating and extends
@@ -748,32 +746,32 @@ export function resolveDescriptors(ctx: CompilerContext) {
             );
         }
 
-        // Check argument names
+        // Check parameter names
         const exNames = new Set<string>();
-        for (const arg of args) {
-            if (isSelfId(arg.name)) {
+        for (const param of params) {
+            if (isSelfId(param.name)) {
                 throwCompilationError(
-                    'Argument name "self" is reserved',
-                    arg.ref,
+                    'Parameter name "self" is reserved',
+                    param.ref,
                 );
             }
-            if (exNames.has(idText(arg.name))) {
+            if (exNames.has(idText(param.name))) {
                 throwCompilationError(
-                    `Argument name ${idTextErr(arg.name)} is already used`,
-                    arg.ref,
+                    `Parameter name ${idTextErr(param.name)} is already used`,
+                    param.ref,
                 );
             }
-            exNames.add(idText(arg.name));
+            exNames.add(idText(param.name));
         }
 
         // Check for runtime types in getters
         if (isGetter) {
-            for (const arg of args) {
-                if (isRuntimeType(arg.type)) {
+            for (const param of params) {
+                if (isRuntimeType(param.type)) {
                     throwCompilationError(
-                        printTypeRef(arg.type) +
-                            " is a runtime-only type and can't be used as a getter argument",
-                        arg.ref,
+                        printTypeRef(param.type) +
+                            " is a runtime-only type and can't be used as a getter parameter",
+                        param.ref,
                     );
                 }
             }
@@ -791,7 +789,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             name: idText(a.name),
             self: self,
             origin,
-            args,
+            params,
             returns,
             ast: a,
             isMutating: !!isMutating || !!optSelf /* && !isGetter */, // Mark all contract functions as mutating
@@ -804,9 +802,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     function resolveInitFunction(ast: ASTInitFunction): InitDescription {
-        const args: InitArgument[] = [];
-        for (const r of ast.args) {
-            args.push({
+        const params: InitParameter[] = [];
+        for (const r of ast.params) {
+            params.push({
                 name: r.name,
                 type: buildTypeRef(r.type, types),
                 as: null,
@@ -815,18 +813,18 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
 
         // Check if runtime types are used
-        for (const a of args) {
+        for (const a of params) {
             if (isRuntimeType(a.type)) {
                 throwCompilationError(
                     printTypeRef(a.type) +
-                        " is a runtime-only type and can't be used as a init function argument",
+                        " is a runtime-only type and can't be used as a init function parameter",
                     a.ref,
                 );
             }
         }
 
         return {
-            args,
+            params,
             ast,
         };
     }
@@ -873,28 +871,26 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         d.selector.kind === "internal-simple" ||
                         d.selector.kind === "external-simple"
                     ) {
-                        const arg = d.selector.arg;
+                        const param = d.selector.param;
                         const internal = d.selector.kind === "internal-simple";
 
-                        // Check argument type
-                        if (arg.type.kind !== "type_ref_simple") {
+                        if (param.type.kind !== "type_ref_simple") {
                             throwCompilationError(
                                 "Receive function can only accept message",
                                 d.ref,
                             );
                         }
-                        if (arg.type.optional) {
+                        if (param.type.optional) {
                             throwCompilationError(
-                                "Receive function cannot have optional argument",
+                                "Receive function cannot have optional parameter",
                                 d.ref,
                             );
                         }
 
-                        // Check resolved argument type
-                        const t = types.get(idText(arg.type.name));
+                        const t = types.get(idText(param.type.name));
                         if (!t) {
                             throwCompilationError(
-                                `Type ${idTextErr(arg.type.name)} not found`,
+                                `Type ${idTextErr(param.type.name)} not found`,
                                 d.ref,
                             );
                         }
@@ -924,7 +920,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         kind: internal
                                             ? "internal-fallback"
                                             : "external-fallback",
-                                        name: arg.name,
+                                        name: param.name,
                                     },
                                     ast: d,
                                 });
@@ -951,7 +947,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         kind: internal
                                             ? "internal-comment-fallback"
                                             : "external-comment-fallback",
-                                        name: arg.name,
+                                        name: param.name,
                                     },
                                     ast: d,
                                 });
@@ -983,7 +979,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             }
 
                             // Check for duplicate
-                            const n = arg.type.name;
+                            const n = param.type.name;
                             if (
                                 s.receivers.find(
                                     (v) =>
@@ -995,8 +991,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 )
                             ) {
                                 throwCompilationError(
-                                    `Receive function for ${idTextErr(arg.type.name)} already exists`,
-                                    arg.ref,
+                                    `Receive function for ${idTextErr(param.type.name)} already exists`,
+                                    param.ref,
                                 );
                             }
 
@@ -1006,8 +1002,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     kind: internal
                                         ? "internal-binary"
                                         : "external-binary",
-                                    name: arg.name,
-                                    type: idText(arg.type.name),
+                                    name: param.name,
+                                    type: idText(param.type.name),
                                 },
                                 ast: d,
                             });
@@ -1019,7 +1015,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         const internal = d.selector.kind === "internal-comment";
                         if (d.selector.comment.value === "") {
                             throwCompilationError(
-                                "To use empty comment receiver, just remove argument instead of passing empty string",
+                                "To use empty comment receiver, just remove parameter instead of passing empty string",
                                 d.ref,
                             );
                         }
@@ -1078,18 +1074,17 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             ast: d,
                         });
                     } else if (d.selector.kind === "bounce") {
-                        const arg = d.selector.arg;
+                        const param = d.selector.param;
 
-                        // If argument is a direct reference
-                        if (arg.type.kind === "type_ref_simple") {
-                            if (arg.type.optional) {
+                        if (param.type.kind === "type_ref_simple") {
+                            if (param.type.optional) {
                                 throwCompilationError(
-                                    "Bounce receive function cannot have optional argument",
+                                    "Bounce receive function cannot have optional parameter",
                                     d.ref,
                                 );
                             }
 
-                            if (isSlice(arg.type.name)) {
+                            if (isSlice(param.type.name)) {
                                 if (
                                     s.receivers.find(
                                         (v) =>
@@ -1106,12 +1101,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 s.receivers.push({
                                     selector: {
                                         kind: "bounce-fallback",
-                                        name: arg.name,
+                                        name: param.name,
                                     },
                                     ast: d,
                                 });
                             } else {
-                                const type = types.get(idText(arg.type.name))!;
+                                const type = types.get(
+                                    idText(param.type.name),
+                                )!;
                                 if (
                                     type.ast.kind !== "def_struct" ||
                                     !type.ast.message
@@ -1126,7 +1123,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     type.partialFieldCount
                                 ) {
                                     throwCompilationError(
-                                        `This message is too big for bounce receiver, you need to wrap it to a bounced<${idTextErr(arg.type.name)}>.`,
+                                        `This message is too big for bounce receiver, you need to wrap it to a bounced<${idTextErr(param.type.name)}>.`,
                                         d.ref,
                                     );
                                 }
@@ -1139,22 +1136,22 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     )
                                 ) {
                                     throwCompilationError(
-                                        `Bounce receive function for ${idTextErr(arg.type.name)} already exists`,
-                                        arg.ref,
+                                        `Bounce receive function for ${idTextErr(param.type.name)} already exists`,
+                                        param.ref,
                                     );
                                 }
                                 s.receivers.push({
                                     selector: {
                                         kind: "bounce-binary",
-                                        name: arg.name,
-                                        type: idText(arg.type.name),
+                                        name: param.name,
+                                        type: idText(param.type.name),
                                         bounced: false,
                                     },
                                     ast: d,
                                 });
                             }
-                        } else if (arg.type.kind === "type_ref_bounced") {
-                            const t = types.get(idText(arg.type.name))!;
+                        } else if (param.type.kind === "type_ref_bounced") {
+                            const t = types.get(idText(param.type.name))!;
                             if (t.kind !== "struct") {
                                 throwCompilationError(
                                     "Bounce receive function can only accept bounced<T> struct types",
@@ -1194,15 +1191,15 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             s.receivers.push({
                                 selector: {
                                     kind: "bounce-binary",
-                                    name: arg.name,
-                                    type: idText(arg.type.name),
+                                    name: param.name,
+                                    type: idText(param.type.name),
                                     bounced: true,
                                 },
                                 ast: d,
                             });
                         } else {
                             throwCompilationError(
-                                "Bounce receive function can only accept bounced<T> struct args or Slice",
+                                "Bounce receive function can only accept bounced<T> struct parameters or Slice",
                                 d.ref,
                             );
                         }
@@ -1225,10 +1222,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (t.kind === "contract") {
             if (!t.init) {
                 t.init = {
-                    args: [],
+                    params: [],
                     ast: createNode({
                         kind: "def_init_function",
-                        args: [],
+                        params: [],
                         statements: [],
                         ref: t.ast.ref,
                     }) as ASTInitFunction,
@@ -1388,20 +1385,20 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         );
                     }
                     if (
-                        traitFunction.args.length !==
-                        funInContractOrTrait.args.length
+                        traitFunction.params.length !==
+                        funInContractOrTrait.params.length
                     ) {
                         throwCompilationError(
-                            `Overridden function "${traitFunction.name}" should have same number of arguments`,
+                            `Overridden function "${traitFunction.name}" should have same number of parameters`,
                             funInContractOrTrait.ast.ref,
                         );
                     }
-                    for (let i = 0; i < traitFunction.args.length; i++) {
-                        const a = funInContractOrTrait.args[i];
-                        const b = traitFunction.args[i];
+                    for (let i = 0; i < traitFunction.params.length; i++) {
+                        const a = funInContractOrTrait.params[i];
+                        const b = traitFunction.params[i];
                         if (!typeRefEquals(a.type, b.type)) {
                             throwCompilationError(
-                                `Overridden function "${traitFunction.name}" should have same argument types`,
+                                `Overridden function "${traitFunction.name}" should have same parameter types`,
                                 funInContractOrTrait.ast.ref,
                             );
                         }

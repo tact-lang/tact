@@ -159,7 +159,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
             name: tactId.astOfExpression(),
             nativeName: funcId.astOfExpression(),
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
-            args: params.astsOfList(),
+            params: params.astsOfList(),
             ref: createRef(this),
         });
     },
@@ -322,7 +322,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             attributes,
             name: funId.astOfExpression(),
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
-            args: funParameters.astsOfList(),
+            params: funParameters.astsOfList(),
             statements: funBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
@@ -346,7 +346,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
             attributes,
             name: funId.astOfExpression(),
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
-            args: funParameters.astsOfList(),
+            params: funParameters.astsOfList(),
             statements: null,
             ref: createRef(this),
         });
@@ -354,7 +354,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
     ContractInit(_initKwd, initParameters, _lbrace, initBody, _rbrace) {
         return createNode({
             kind: "def_init_function",
-            args: initParameters.astsOfList(),
+            params: initParameters.astsOfList(),
             statements: initBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
@@ -372,7 +372,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         const selector: ASTReceiveType = optParam
             ? {
                   kind: "internal-simple",
-                  arg: optParam.astOfDeclaration(),
+                  param: optParam.astOfDeclaration(),
               }
             : { kind: "internal-fallback" };
         return createNode({
@@ -412,7 +412,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
     ) {
         return createNode({
             kind: "def_receive",
-            selector: { kind: "bounce", arg: parameter.astOfDeclaration() },
+            selector: { kind: "bounce", param: parameter.astOfDeclaration() },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
             ref: createRef(this),
         });
@@ -430,7 +430,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         const selector: ASTReceiveType = optParam
             ? {
                   kind: "external-simple",
-                  arg: optParam.astOfDeclaration(),
+                  param: optParam.astOfDeclaration(),
               }
             : { kind: "external-fallback" };
         return createNode({
@@ -566,7 +566,7 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
     Parameter(id, _colon, type) {
         checkVariableName(id.sourceString, createRef(id));
         return createNode({
-            kind: "def_argument",
+            kind: "typed_parameter",
             name: id.astOfExpression(),
             type: type.astOfType(),
             ref: createRef(this),

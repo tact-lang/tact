@@ -478,14 +478,14 @@ function resolveStaticCall(
     }
 
     // Check arguments
-    if (f.args.length !== exp.args.length) {
+    if (f.params.length !== exp.args.length) {
         throwCompilationError(
-            `Function ${idTextErr(exp.name)} expects ${f.args.length} arguments, got ${exp.args.length}`,
+            `Function ${idTextErr(exp.name)} expects ${f.params.length} arguments, got ${exp.args.length}`,
             exp.ref,
         );
     }
-    for (let i = 0; i < f.args.length; i++) {
-        const a = f.args[i];
+    for (let i = 0; i < f.params.length; i++) {
+        const a = f.params[i];
         const e = exp.args[i];
         const t = getExpType(ctx, e);
         if (!isAssignable(t, a.type)) {
@@ -565,14 +565,14 @@ function resolveCall(
         }
 
         // Check arguments
-        if (f.args.length !== exp.args.length) {
+        if (f.params.length !== exp.args.length) {
             throwCompilationError(
-                `Function ${idTextErr(exp.name)} expects ${f.args.length} arguments, got ${exp.args.length}`,
+                `Function ${idTextErr(exp.name)} expects ${f.params.length} arguments, got ${exp.args.length}`,
                 exp.ref,
             );
         }
-        for (let i = 0; i < f.args.length; i++) {
-            const a = f.args[i];
+        for (let i = 0; i < f.params.length; i++) {
+            const a = f.params[i];
             const e = exp.args[i];
             const t = getExpType(ctx, e);
             if (!isAssignable(t, a.type)) {
@@ -639,14 +639,14 @@ export function resolveInitOf(
     }
 
     // Check arguments
-    if (type.init.args.length !== ast.args.length) {
+    if (type.init.params.length !== ast.args.length) {
         throwCompilationError(
-            `Init function of "${type.name}" expects ${type.init.args.length} arguments, got ${ast.args.length}`,
+            `Init function of "${type.name}" expects ${type.init.params.length} arguments, got ${ast.args.length}`,
             ast.ref,
         );
     }
-    for (let i = 0; i < type.init.args.length; i++) {
-        const a = type.init.args[i];
+    for (let i = 0; i < type.init.params.length; i++) {
+        const a = type.init.params[i];
         const e = ast.args[i];
         const t = getExpType(ctx, e);
         if (!isAssignable(t, a.type)) {

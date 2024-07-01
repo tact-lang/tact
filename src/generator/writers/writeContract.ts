@@ -54,16 +54,16 @@ export function writeStorageOps(
                 }
 
                 // Load arguments
-                if (type.init!.args.length > 0) {
+                if (type.init!.params.length > 0) {
                     ctx.append(
-                        `(${type.init!.args.map((v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) = $sc~${ops.reader(funcInitIdOf(type.name), ctx)}();`,
+                        `(${type.init!.params.map((v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) = $sc~${ops.reader(funcInitIdOf(type.name), ctx)}();`,
                     );
                     ctx.append(`$sc.end_parse();`);
                 }
 
                 // Execute init function
                 ctx.append(
-                    `return ${ops.contractInit(type.name, ctx)}(${[...type.init!.args.map((v) => funcIdOf(v.name))].join(", ")});`,
+                    `return ${ops.contractInit(type.name, ctx)}(${[...type.init!.params.map((v) => funcIdOf(v.name))].join(", ")});`,
                 );
             });
 
@@ -104,15 +104,15 @@ export function writeInit(
     ctx: WriterContext,
 ) {
     ctx.fun(ops.contractInit(t.name, ctx), () => {
-        const args = init.args.map(
+        const args = init.params.map(
             (v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name),
         );
         const sig = `${resolveFuncType(t, ctx)} ${ops.contractInit(t.name, ctx)}(${args.join(", ")})`;
         ctx.signature(sig);
         ctx.flag("impure");
         ctx.body(() => {
-            // Unpack args
-            for (const a of init.args) {
+            // Unpack parameters
+            for (const a of init.params) {
                 if (!resolveFuncPrimitive(a.type, ctx)) {
                     ctx.append(
                         `var (${resolveFuncTypeUnpack(a.type, funcIdOf(a.name), ctx)}) = ${funcIdOf(a.name)};`,
@@ -158,7 +158,7 @@ export function writeInit(
     ctx.fun(ops.contractInitChild(t.name, ctx), () => {
         const args = [
             `cell sys'`,
-            ...init.args.map(
+            ...init.params.map(
                 (v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name),
             ),
         ];
@@ -198,12 +198,12 @@ export function writeInit(
             );
             ctx.append(`b = b.store_int(false, 1);`);
             const args =
-                t.init!.args.length > 0
+                t.init!.params.length > 0
                     ? [
                           "b",
                           "(" +
                               t
-                                  .init!.args.map((a) => funcIdOf(a.name))
+                                  .init!.params.map((a) => funcIdOf(a.name))
                                   .join(", ") +
                               ")",
                       ].join(", ")

@@ -159,7 +159,7 @@ export function forEachExpression(
             case "new_parameter":
                 traverseExpression(node.exp);
                 break;
-            case "def_argument":
+            case "typed_parameter":
             case "type_ref_simple":
             case "type_ref_map":
             case "type_ref_bounced":
@@ -374,7 +374,7 @@ export function foldExpressions<T>(
             case "new_parameter":
                 acc = traverseExpression(acc, node.exp);
                 break;
-            case "def_argument":
+            case "typed_parameter":
             case "type_ref_simple":
             case "type_ref_map":
             case "type_ref_bounced":
@@ -473,7 +473,7 @@ export function forEachStatement(
             case "id":
             case "null":
             case "new_parameter":
-            case "def_argument":
+            case "typed_parameter":
             case "type_ref_simple":
             case "type_ref_map":
             case "type_ref_bounced":
@@ -599,7 +599,7 @@ export function foldStatements<T>(
             case "id":
             case "null":
             case "new_parameter":
-            case "def_argument":
+            case "typed_parameter":
             case "type_ref_simple":
             case "type_ref_map":
             case "type_ref_bounced":

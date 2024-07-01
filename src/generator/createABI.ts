@@ -117,7 +117,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
         if (f.isGetter) {
             getters.push({
                 name: f.name,
-                arguments: f.args.map((v) => ({
+                arguments: f.params.map((v) => ({
                     name: idText(v.name),
                     type: createABITypeRefFromTypeRef(v.type, v.ref),
                 })),

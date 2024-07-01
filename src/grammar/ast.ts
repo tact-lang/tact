@@ -35,7 +35,7 @@ export type AstFunctionDef = {
     attributes: ASTFunctionAttribute[];
     name: AstId;
     return: ASTTypeRef | null;
-    args: ASTArgument[];
+    params: AstTypedParameter[];
     statements: ASTStatement[] | null;
     id: number;
     ref: SrcInfo;
@@ -46,7 +46,7 @@ export type AstNativeFunctionDecl = {
     attributes: ASTFunctionAttribute[];
     name: AstId;
     nativeName: AstFuncId;
-    args: ASTArgument[];
+    params: AstTypedParameter[];
     return: ASTTypeRef | null;
     id: number;
     ref: SrcInfo;
@@ -374,8 +374,8 @@ export type ASTContract = {
     ref: SrcInfo;
 };
 
-export type ASTArgument = {
-    kind: "def_argument";
+export type AstTypedParameter = {
+    kind: "typed_parameter";
     id: number;
     name: AstId;
     type: ASTTypeRef;
@@ -394,7 +394,7 @@ export type ASTFunctionAttribute =
 export type ASTReceiveType =
     | {
           kind: "internal-simple";
-          arg: ASTArgument;
+          param: AstTypedParameter;
       }
     | {
           kind: "internal-fallback";
@@ -405,11 +405,11 @@ export type ASTReceiveType =
       }
     | {
           kind: "bounce";
-          arg: ASTArgument;
+          param: AstTypedParameter;
       }
     | {
           kind: "external-simple";
-          arg: ASTArgument;
+          param: AstTypedParameter;
       }
     | {
           kind: "external-fallback";
@@ -430,7 +430,7 @@ export type ASTReceive = {
 export type ASTInitFunction = {
     kind: "def_init_function";
     id: number;
-    args: ASTArgument[];
+    params: AstTypedParameter[];
     statements: ASTStatement[];
     ref: SrcInfo;
 };
@@ -573,7 +573,7 @@ export type ASTNode =
     | ASTStruct
     | ASTField
     | ASTContract
-    | ASTArgument
+    | AstTypedParameter
     | AstFunctionDef
     | ASTOpCall
     | AstModule
@@ -671,7 +671,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     //
 
     if (node.kind === "function_def") {
-        for (const e of node.args) {
+        for (const e of node.params) {
             traverse(e, callback);
         }
         if (node.statements) {
@@ -681,7 +681,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         }
     }
     if (node.kind === "def_init_function") {
-        for (const e of node.args) {
+        for (const e of node.params) {
             traverse(e, callback);
         }
         for (const e of node.statements) {
@@ -694,7 +694,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         }
     }
     if (node.kind === "native_function_decl") {
-        for (const e of node.args) {
+        for (const e of node.params) {
             traverse(e, callback);
         }
     }
