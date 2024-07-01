@@ -165,9 +165,12 @@ export function cloneNode<T extends ASTNode>(src: T): T {
         return cloneASTNode({
             ...src,
             type: cloneASTNode(src.type),
-            text: src.initializer
-                ? cloneNode(src.initializer)
-                : src.initializer,
+            initializer: cloneNode(src.initializer),
+        });
+    } else if (src.kind === "constant_decl") {
+        return cloneASTNode({
+            ...src,
+            type: cloneASTNode(src.type),
         });
     }
 

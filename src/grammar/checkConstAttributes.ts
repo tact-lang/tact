@@ -26,7 +26,7 @@ export function checkConstAttributes(
     } else {
         if (k.has("abstract")) {
             throwCompilationError(
-                `Non abstract constant have abstract modifier`,
+                `Non-abstract constant has abstract modifier`,
                 loc,
             );
         }

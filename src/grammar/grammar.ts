@@ -290,10 +290,9 @@ semantics.addOperation<ASTNode>("astOfItem", {
         ) as ASTConstantAttribute[];
         checkConstAttributes(true, attributes, createRef(this));
         return createNode({
-            kind: "constant_def",
+            kind: "constant_decl",
             name: constId.astOfExpression(),
             type: constType.astOfType(),
-            initializer: null,
             attributes,
             loc: createRef(this),
         });

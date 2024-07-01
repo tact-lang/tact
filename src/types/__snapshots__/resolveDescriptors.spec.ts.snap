@@ -1633,8 +1633,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
             },
           ],
           "id": 9,
-          "initializer": null,
-          "kind": "constant_def",
+          "kind": "constant_decl",
           "loc": abstract const Foo: Int;,
           "name": {
             "id": 6,
@@ -1679,8 +1678,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
             },
           ],
           "id": 9,
-          "initializer": null,
-          "kind": "constant_def",
+          "kind": "constant_decl",
           "loc": abstract const Foo: Int;,
           "name": {
             "id": 6,
@@ -1936,8 +1934,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
                 },
               ],
               "id": 9,
-              "initializer": null,
-              "kind": "constant_def",
+              "kind": "constant_decl",
               "loc": abstract const Foo: Int;,
               "name": {
                 "id": 6,
@@ -1982,8 +1979,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
                 },
               ],
               "id": 9,
-              "initializer": null,
-              "kind": "constant_def",
+              "kind": "constant_decl",
               "loc": abstract const Foo: Int;,
               "name": {
                 "id": 6,

@@ -67,7 +67,16 @@ export type AstConstantDef = {
     attributes: ASTConstantAttribute[];
     name: AstId;
     type: ASTTypeRef;
-    initializer: ASTExpression | null;
+    initializer: ASTExpression;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstConstantDecl = {
+    kind: "constant_decl";
+    attributes: ASTConstantAttribute[];
+    name: AstId;
+    type: ASTTypeRef;
     id: number;
     loc: SrcInfo;
 };
@@ -335,7 +344,8 @@ export type ASTTraitDeclaration =
     | AstFunctionDef
     | AstFunctionDecl
     | ASTReceive
-    | AstConstantDef;
+    | AstConstantDef
+    | AstConstantDecl;
 
 export type ASTTrait = {
     kind: "def_trait";
@@ -598,7 +608,8 @@ export type ASTNode =
     | ASTReceive
     | ASTTrait
     | AstImport
-    | AstConstantDef;
+    | AstConstantDef
+    | AstConstantDecl;
 export type ASTExpression =
     | ASTOpBinary
     | ASTOpUnary
@@ -719,9 +730,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         }
     }
     if (node.kind === "constant_def") {
-        if (node.initializer) {
-            traverse(node.initializer, callback);
-        }
+        traverse(node.initializer, callback);
     }
 
     //

@@ -11,6 +11,7 @@ import {
     ASTType,
     AstId,
     AstFunctionDecl,
+    AstConstantDecl,
 } from "../grammar/ast";
 import { ItemOrigin } from "../grammar/grammar";
 // import {
@@ -95,7 +96,7 @@ export type ConstantDescription = {
     type: TypeRef;
     value: Value | undefined;
     loc: SrcInfo;
-    ast: AstConstantDef;
+    ast: AstConstantDef | AstConstantDecl;
 };
 
 export type FunctionParameter = {

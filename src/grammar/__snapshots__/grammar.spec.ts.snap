@@ -390,8 +390,7 @@ exports[`grammar should parse abstract-const 1`] = `
             },
           ],
           "id": 5,
-          "initializer": null,
-          "kind": "constant_def",
+          "kind": "constant_decl",
           "loc": abstract const c: Int;,
           "name": {
             "id": 2,

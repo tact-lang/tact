@@ -15,6 +15,7 @@ import {
     isSelfId,
     isSlice,
     AstFunctionDecl,
+    AstConstantDecl,
 } from "../grammar/ast";
 import { idTextErr, throwCompilationError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
@@ -347,12 +348,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     function buildConstantDescription(
-        src: AstConstantDef,
+        src: AstConstantDef | AstConstantDecl,
     ): ConstantDescription {
         const tr = buildTypeRef(src.type, types);
-        const d = src.initializer
-            ? evalConstantExpression(src.initializer, ctx)
-            : undefined;
+        const d =
+            src.kind === "constant_def"
+                ? evalConstantExpression(src.initializer, ctx)
+                : undefined;
         return {
             name: idText(src.name),
             type: tr,
@@ -487,7 +489,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 types.get(idText(a.name))!.fields.length,
                             ),
                         );
-                } else if (f.kind === "constant_def") {
+                } else if (
+                    f.kind === "constant_def" ||
+                    f.kind === "constant_decl"
+                ) {
                     if (
                         types
                             .get(idText(a.name))!
