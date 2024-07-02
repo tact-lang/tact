@@ -115,7 +115,7 @@ export function forEachExpression(
             case "trait":
                 node.declarations.forEach(traverseNode);
                 break;
-            case "def_field":
+            case "field_decl":
                 if (node.init) {
                     traverseExpression(node.init);
                 }
@@ -329,7 +329,7 @@ export function foldExpressions<T>(
                     acc = traverseNode(acc, decl);
                 });
                 break;
-            case "def_field":
+            case "field_decl":
                 if (node.init) {
                     acc = traverseExpression(acc, node.init);
                 }
@@ -480,7 +480,7 @@ export function forEachStatement(
             case "message_decl":
             case "constant_def":
             case "constant_decl":
-            case "def_field":
+            case "field_decl":
             case "import":
             case "primitive_type_decl":
                 // Do nothing
@@ -609,7 +609,7 @@ export function foldStatements<T>(
             case "message_decl":
             case "constant_def":
             case "constant_decl":
-            case "def_field":
+            case "field_decl":
             case "import":
             case "primitive_type_decl":
                 // Do nothing

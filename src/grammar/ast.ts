@@ -85,7 +85,7 @@ export type AstConstantDecl = {
 export type AstStructDecl = {
     kind: "struct_decl";
     name: AstId;
-    fields: ASTField[];
+    fields: AstFieldDecl[];
     id: number;
     loc: SrcInfo;
 };
@@ -94,7 +94,7 @@ export type AstMessageDecl = {
     kind: "message_decl";
     name: AstId;
     opcode: number | null;
-    fields: ASTField[];
+    fields: AstFieldDecl[];
     id: number;
     loc: SrcInfo;
 };
@@ -116,6 +116,31 @@ export type AstTrait = {
     attributes: ASTContractAttribute[];
     declarations: ASTTraitDeclaration[];
     id: number;
+    loc: SrcInfo;
+};
+
+export type ASTContractDeclaration =
+    | AstFieldDecl
+    | AstFunctionDef
+    | ASTInitFunction
+    | ASTReceive
+    | AstConstantDef;
+
+export type ASTTraitDeclaration =
+    | AstFieldDecl
+    | AstFunctionDef
+    | AstFunctionDecl
+    | ASTReceive
+    | AstConstantDef
+    | AstConstantDecl;
+
+export type AstFieldDecl = {
+    kind: "field_decl";
+    id: number;
+    name: AstId;
+    type: ASTTypeRef;
+    init: ASTExpression | null;
+    as: AstId | null;
     loc: SrcInfo;
 };
 
@@ -367,24 +392,6 @@ export type ASTConditional = {
     loc: SrcInfo;
 };
 
-export type ASTTraitDeclaration =
-    | ASTField
-    | AstFunctionDef
-    | AstFunctionDecl
-    | ASTReceive
-    | AstConstantDef
-    | AstConstantDecl;
-
-export type ASTField = {
-    kind: "def_field";
-    id: number;
-    name: AstId;
-    type: ASTTypeRef;
-    init: ASTExpression | null;
-    as: AstId | null;
-    loc: SrcInfo;
-};
-
 export type ASTConstantAttribute =
     | { type: "virtual"; loc: SrcInfo }
     | { type: "overrides"; loc: SrcInfo }
@@ -395,13 +402,6 @@ export type ASTContractAttribute = {
     name: ASTString;
     loc: SrcInfo;
 };
-
-export type ASTContractDeclaration =
-    | ASTField
-    | AstFunctionDef
-    | ASTInitFunction
-    | ASTReceive
-    | AstConstantDef;
 
 export type AstTypedParameter = {
     kind: "typed_parameter";
@@ -601,7 +601,7 @@ export type ASTNode =
     | ASTStatement
     | AstStructDecl
     | AstMessageDecl
-    | ASTField
+    | AstFieldDecl
     | AstContract
     | AstTypedParameter
     | AstFunctionDef
@@ -739,7 +739,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_field") {
+    if (node.kind === "field_decl") {
         if (node.init) {
             traverse(node.init, callback);
         }

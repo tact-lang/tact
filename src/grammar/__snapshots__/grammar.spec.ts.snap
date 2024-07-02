@@ -547,7 +547,7 @@ exports[`grammar should parse contract-with-init 1`] = `
           "as": null,
           "id": 5,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": a: Int,
           "name": {
             "id": 2,
@@ -572,7 +572,7 @@ exports[`grammar should parse contract-with-init 1`] = `
           "as": null,
           "id": 9,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": b: Int,
           "name": {
             "id": 6,
@@ -755,7 +755,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
           "as": null,
           "id": 7,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": a: Int,
           "name": {
             "id": 4,
@@ -846,7 +846,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
           "as": null,
           "id": 19,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": b: Int,
           "name": {
             "id": 16,
@@ -965,7 +965,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
           "as": null,
           "id": 7,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": a: Int,
           "name": {
             "id": 4,
@@ -1056,7 +1056,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
           "as": null,
           "id": 19,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": b: Int,
           "name": {
             "id": 16,
@@ -3988,7 +3988,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
           "as": null,
           "id": 5,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int,
           "name": {
             "id": 2,
@@ -4013,7 +4013,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
           "as": null,
           "id": 9,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": y: Int,
           "name": {
             "id": 6,
@@ -4198,7 +4198,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
           "as": null,
           "id": 37,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int,
           "name": {
             "id": 34,
@@ -4223,7 +4223,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
           "as": null,
           "id": 41,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": y: Int,
           "name": {
             "id": 38,
@@ -6702,7 +6702,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
           "as": null,
           "id": 5,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int,
           "name": {
             "id": 2,
@@ -6727,7 +6727,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
           "as": null,
           "id": 9,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": y: Int,
           "name": {
             "id": 6,
@@ -6909,7 +6909,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
           "as": null,
           "id": 5,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int,
           "name": {
             "id": 2,
@@ -6954,7 +6954,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
           },
           "id": 12,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int as coin,
           "name": {
             "id": 8,
@@ -7010,7 +7010,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
             "loc": 1000,
             "value": 1000n,
           },
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int = 1000,
           "name": {
             "id": 2,
@@ -7060,7 +7060,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
             "loc": 1000,
             "value": 1000n,
           },
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int as coins = 1000,
           "name": {
             "id": 9,
@@ -7090,7 +7090,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
             "loc": true,
             "value": true,
           },
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": y: Bool = true,
           "name": {
             "id": 15,
@@ -7142,7 +7142,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 5,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int,
           "name": {
             "id": 2,
@@ -7180,7 +7180,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 11,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int,
           "name": {
             "id": 8,
@@ -7205,7 +7205,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 15,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": y: Int,
           "name": {
             "id": 12,
@@ -7243,7 +7243,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 21,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int,
           "name": {
             "id": 18,
@@ -7273,7 +7273,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
             "loc": 42,
             "value": 42n,
           },
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": y: Int = 42,
           "name": {
             "id": 22,
@@ -7316,7 +7316,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
             "loc": 42,
             "value": 42n,
           },
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int = 42,
           "name": {
             "id": 29,
@@ -7341,7 +7341,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 37,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": y: Int,
           "name": {
             "id": 34,
@@ -7379,7 +7379,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 43,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int,
           "name": {
             "id": 40,
@@ -7418,7 +7418,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 49,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int,
           "name": {
             "id": 46,
@@ -7443,7 +7443,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 53,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": y: Int,
           "name": {
             "id": 50,
@@ -7482,7 +7482,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 59,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int,
           "name": {
             "id": 56,
@@ -7512,7 +7512,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
             "loc": 42,
             "value": 42n,
           },
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": y: Int = 42,
           "name": {
             "id": 60,
@@ -7556,7 +7556,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
             "loc": 42,
             "value": 42n,
           },
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: Int = 42,
           "name": {
             "id": 67,
@@ -7581,7 +7581,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 75,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": y: Int,
           "name": {
             "id": 72,
@@ -7642,7 +7642,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
           "as": null,
           "id": 7,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": c: Int,
           "name": {
             "id": 4,
@@ -7684,7 +7684,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
           "as": null,
           "id": 13,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": a: Int,
           "name": {
             "id": 10,
@@ -7733,7 +7733,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
           "as": null,
           "id": 20,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": b: Int,
           "name": {
             "id": 17,
@@ -7791,7 +7791,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
           "as": null,
           "id": 6,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": y: map<Int, Int>,
           "name": {
             "id": 2,
@@ -7838,7 +7838,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
           "as": null,
           "id": 13,
           "init": null,
-          "kind": "def_field",
+          "kind": "field_decl",
           "loc": x: map<Int, Int>,
           "name": {
             "id": 9,

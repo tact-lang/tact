@@ -1,6 +1,6 @@
 import { ABITypeRef } from "@ton/core";
 import {
-    ASTField,
+    AstFieldDecl,
     eqNames,
     idText,
     isAddress,
@@ -70,7 +70,7 @@ const builderFormats: FormatDef = {
     remaining: { type: "builder", format: "remainder" },
 };
 
-export function resolveABIType(src: ASTField): ABITypeRef {
+export function resolveABIType(src: AstFieldDecl): ABITypeRef {
     if (src.type.kind === "type_ref_simple") {
         //
         // Primitive types

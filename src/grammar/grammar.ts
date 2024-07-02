@@ -550,7 +550,7 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
         optInitializer,
     ) {
         return createNode({
-            kind: "def_field",
+            kind: "field_decl",
             name: id.astOfExpression(),
             type: type.astOfType() as ASTTypeRef,
             as: unwrapOptNode(optStorageType, (t) => t.astOfExpression()),

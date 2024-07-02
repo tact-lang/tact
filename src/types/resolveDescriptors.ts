@@ -1,6 +1,6 @@
 import {
     AstConstantDef,
-    ASTField,
+    AstFieldDecl,
     ASTInitFunction,
     AstNativeFunctionDecl,
     ASTNode,
@@ -316,7 +316,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function buildFieldDescription(
-        src: ASTField,
+        src: AstFieldDecl,
         index: number,
     ): FieldDescription {
         const tr = buildTypeRef(src.type, types);
@@ -368,7 +368,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Contract
         if (a.kind === "contract") {
             for (const f of a.declarations) {
-                if (f.kind === "def_field") {
+                if (f.kind === "field_decl") {
                     if (
                         types
                             .get(idText(a.name))!
@@ -464,7 +464,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Trait
         if (a.kind === "trait") {
             for (const f of a.declarations) {
-                if (f.kind === "def_field") {
+                if (f.kind === "field_decl") {
                     if (
                         types
                             .get(idText(a.name))!
