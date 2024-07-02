@@ -2,7 +2,7 @@ import { Address, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { Debug } from "./contracts/output/debug_Debug";
-import { posixNormalize } from '../../utils/filePath'
+import { posixNormalize } from "../../utils/filePath";
 
 describe("debug", () => {
     beforeEach(() => {
