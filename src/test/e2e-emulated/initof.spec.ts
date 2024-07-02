@@ -4,8 +4,8 @@ import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { Self } from "./contracts/output/initof_Self";
 import { Parent } from "./contracts/output/initof_Parent";
 import { consoleLogger } from "../../logger";
-import { TestInit } from "./contracts/output/initof_TestInit";
-import { A } from "./contracts/output/initof-2_A";
+import { TestInit } from "./contracts/output/initof-2_TestInit";
+import { A } from "./contracts/output/initof-3_A";
 
 describe("initOf", () => {
     beforeAll(() => {
