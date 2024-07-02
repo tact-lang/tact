@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`initOf should implement initof correctly - 4 1`] = `
+[
+  {
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "aa",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQBMKzwvmyn0kLoIPFPZ3N1raKFO3S-_K7-i-wqoJff5C3FN",
+          "type": "internal",
+          "value": "10",
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 10085n,
+      },
+    ],
+  },
+]
+`;

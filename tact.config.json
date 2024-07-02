@@ -346,6 +346,14 @@
       "options": {
         "debug": true
       }
+    },
+    {
+      "name": "initof-2",
+      "path": "./src/test/e2e-emulated/contracts/initof-2.tact",
+      "output": "./src/test/e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
     }
   ]
 }

@@ -1632,6 +1632,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         for (const f of t.receivers) {
             traverse(f.ast, handler);
         }
+        if (t.init) traverse(t.init.ast, handler);
 
         // Add dependencies
         for (const s of dependsOn) {
