@@ -1242,6 +1242,7 @@ export function parseExpression(sourceCode: string): ASTExpression {
     if (matchResult.failed()) {
         throwParseError(matchResult, "", "user");
     }
+    ctx = { origin: "user" };
     return semantics(matchResult).astOfExpression();
 }
 
