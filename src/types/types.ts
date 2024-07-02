@@ -2,7 +2,7 @@ import { ABIField, Address, Cell } from "@ton/core";
 import {
     AstConstantDef,
     AstFunctionDef,
-    ASTInitFunction,
+    AstContractInit,
     AstNativeFunctionDecl,
     ASTNode,
     AstReceiver,
@@ -230,7 +230,7 @@ export type ReceiverDescription = {
 
 export type InitDescription = {
     params: InitParameter[];
-    ast: ASTInitFunction;
+    ast: AstContractInit;
 };
 
 export function printTypeRef(src: TypeRef): string {

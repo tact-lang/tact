@@ -1,7 +1,7 @@
 import {
     AstConstantDef,
     AstFieldDecl,
-    ASTInitFunction,
+    AstContractInit,
     AstNativeFunctionDecl,
     ASTNode,
     SrcInfo,
@@ -809,7 +809,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         };
     }
 
-    function resolveInitFunction(ast: ASTInitFunction): InitDescription {
+    function resolveInitFunction(ast: AstContractInit): InitDescription {
         const params: InitParameter[] = [];
         for (const r of ast.params) {
             params.push({
@@ -854,7 +854,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     }
                     s.functions.set(f.name, f);
                 }
-                if (d.kind === "def_init_function") {
+                if (d.kind === "contract_init") {
                     if (s.init) {
                         throwCompilationError(
                             "Init function already exists",
@@ -1217,11 +1217,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 t.init = {
                     params: [],
                     ast: createNode({
-                        kind: "def_init_function",
+                        kind: "contract_init",
                         params: [],
                         statements: [],
                         loc: t.ast.loc,
-                    }) as ASTInitFunction,
+                    }) as AstContractInit,
                 };
             }
         }

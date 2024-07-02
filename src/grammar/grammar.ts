@@ -348,7 +348,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
     },
     ContractInit(_initKwd, initParameters, _lbrace, initBody, _rbrace) {
         return createNode({
-            kind: "def_init_function",
+            kind: "contract_init",
             params: initParameters.astsOfList(),
             statements: initBody.children.map((s) => s.astOfStatement()),
             loc: createRef(this),

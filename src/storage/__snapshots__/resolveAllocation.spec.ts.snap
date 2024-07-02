@@ -2316,7 +2316,7 @@ exports[`resolveAllocation should write program 1`] = `
           },
           {
             "id": 112,
-            "kind": "def_init_function",
+            "kind": "contract_init",
             "loc": SrcInfo {},
             "params": [],
             "statements": [],
@@ -2562,7 +2562,7 @@ exports[`resolveAllocation should write program 1`] = `
       "init": {
         "ast": {
           "id": 112,
-          "kind": "def_init_function",
+          "kind": "contract_init",
           "loc": SrcInfo {},
           "params": [],
           "statements": [],

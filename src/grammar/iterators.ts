@@ -105,7 +105,7 @@ export function forEachExpression(
                 // These node types do not require further traversal of expressions or sub-nodes
                 break;
             case "function_def":
-            case "def_init_function":
+            case "contract_init":
             case "receiver":
                 if (node.statements) {
                     node.statements.forEach(traverseStatement);
@@ -315,7 +315,7 @@ export function foldExpressions<T>(
                 // These node types do not require further traversal of expressions or sub-nodes
                 break;
             case "function_def":
-            case "def_init_function":
+            case "contract_init":
             case "receiver":
                 if (node.statements) {
                     node.statements.forEach((stmt) => {
@@ -435,7 +435,7 @@ export function forEachStatement(
                 node.items.forEach(traverseNode);
                 break;
             case "function_def":
-            case "def_init_function":
+            case "contract_init":
             case "receiver":
                 if (node.statements) node.statements.forEach(traverseStatement);
                 break;
@@ -557,7 +557,7 @@ export function foldStatements<T>(
                 });
                 break;
             case "function_def":
-            case "def_init_function":
+            case "contract_init":
             case "receiver":
                 if (node.statements) {
                     node.statements.forEach((stmt) => {

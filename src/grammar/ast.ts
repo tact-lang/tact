@@ -122,7 +122,7 @@ export type AstTrait = {
 export type ASTContractDeclaration =
     | AstFieldDecl
     | AstFunctionDef
-    | ASTInitFunction
+    | AstContractInit
     | AstReceiver
     | AstConstantDef;
 
@@ -152,11 +152,11 @@ export type AstReceiver = {
     loc: SrcInfo;
 };
 
-export type ASTInitFunction = {
-    kind: "def_init_function";
-    id: number;
+export type AstContractInit = {
+    kind: "contract_init";
     params: AstTypedParameter[];
     statements: ASTStatement[];
+    id: number;
     loc: SrcInfo;
 };
 
@@ -582,6 +582,28 @@ export type ASTStatementForEach = {
 // Unions
 //
 
+export type ASTNode =
+    | AstFuncId
+    | ASTExpression
+    | ASTStatement
+    | AstStructDecl
+    | AstMessageDecl
+    | AstFieldDecl
+    | AstContract
+    | AstTypedParameter
+    | AstFunctionDef
+    | AstFunctionDecl
+    | AstModule
+    | AstPrimitiveTypeDecl
+    | AstNativeFunctionDecl
+    | ASTNewParameter
+    | ASTTypeRef
+    | AstContractInit
+    | AstReceiver
+    | AstTrait
+    | AstImport
+    | AstConstantDef
+    | AstConstantDecl;
 export type ASTStatement =
     | ASTStatementLet
     | ASTStatementReturn
@@ -595,30 +617,6 @@ export type ASTStatement =
     | ASTStatementTry
     | ASTStatementTryCatch
     | ASTStatementForEach;
-export type ASTNode =
-    | AstFuncId
-    | ASTExpression
-    | ASTStatement
-    | AstStructDecl
-    | AstMessageDecl
-    | AstFieldDecl
-    | AstContract
-    | AstTypedParameter
-    | AstFunctionDef
-    | AstFunctionDecl
-    | ASTOpCall
-    | AstModule
-    | AstPrimitiveTypeDecl
-    | ASTOpCallStatic
-    | AstNativeFunctionDecl
-    | ASTNewParameter
-    | ASTTypeRef
-    | ASTInitFunction
-    | AstReceiver
-    | AstTrait
-    | AstImport
-    | AstConstantDef
-    | AstConstantDecl;
 export type ASTExpression =
     | ASTOpBinary
     | ASTOpUnary
@@ -721,7 +719,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_init_function") {
+    if (node.kind === "contract_init") {
         for (const e of node.params) {
             traverse(e, callback);
         }

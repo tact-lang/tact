@@ -601,7 +601,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       "declarations": [
         {
           "id": 15,
-          "kind": "def_init_function",
+          "kind": "contract_init",
           "loc": init() {},
           "params": [],
           "statements": [],
@@ -703,7 +703,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "init": {
       "ast": {
         "id": 15,
-        "kind": "def_init_function",
+        "kind": "contract_init",
         "loc": init() {},
         "params": [],
         "statements": [],
@@ -1222,7 +1222,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       "declarations": [
         {
           "id": 24,
-          "kind": "def_init_function",
+          "kind": "contract_init",
           "loc": init() {},
           "params": [],
           "statements": [],
@@ -1364,7 +1364,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "init": {
       "ast": {
         "id": 24,
-        "kind": "def_init_function",
+        "kind": "contract_init",
         "loc": init() {},
         "params": [],
         "statements": [],
@@ -1870,7 +1870,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "init": {
       "ast": {
         "id": 20,
-        "kind": "def_init_function",
+        "kind": "contract_init",
         "loc": contract TestContract with T {
   override const Foo: Int = 42;
 },
@@ -2391,7 +2391,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "init": {
       "ast": {
         "id": 21,
-        "kind": "def_init_function",
+        "kind": "contract_init",
         "loc": contract TestContract with T {
   override const Foo: Int = 42;
 },
@@ -2880,7 +2880,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     "init": {
       "ast": {
         "id": 25,
-        "kind": "def_init_function",
+        "kind": "contract_init",
         "loc": contract Test {
     external(msg: A) {
         42;
@@ -3395,7 +3395,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "init": {
       "ast": {
         "id": 21,
-        "kind": "def_init_function",
+        "kind": "contract_init",
         "loc": contract TestContract with T {
   override get fun getter(): Int { return 0 }
 },
@@ -3995,7 +3995,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "init": {
       "ast": {
         "id": 23,
-        "kind": "def_init_function",
+        "kind": "contract_init",
         "loc": contract TestContract with T {
   override get fun getter(): Int { return 43 }
 },
@@ -4354,7 +4354,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         },
         {
           "id": 16,
-          "kind": "def_init_function",
+          "kind": "contract_init",
           "loc": init() {
         
     },
@@ -4587,7 +4587,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     "init": {
       "ast": {
         "id": 16,
-        "kind": "def_init_function",
+        "kind": "contract_init",
         "loc": init() {
         
     },
@@ -5124,7 +5124,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         },
         {
           "id": 27,
-          "kind": "def_init_function",
+          "kind": "contract_init",
           "loc": init(a: Int) {
         self.a = a;
     },
@@ -5478,7 +5478,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "init": {
       "ast": {
         "id": 27,
-        "kind": "def_init_function",
+        "kind": "contract_init",
         "loc": init(a: Int) {
         self.a = a;
     },
@@ -6975,7 +6975,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
     "init": {
       "ast": {
         "id": 52,
-        "kind": "def_init_function",
+        "kind": "contract_init",
         "loc": contract Main {
     m: map<Int, Int as coins>;
 

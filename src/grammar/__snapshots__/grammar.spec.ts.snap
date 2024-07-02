@@ -595,7 +595,7 @@ exports[`grammar should parse contract-with-init 1`] = `
         },
         {
           "id": 28,
-          "kind": "def_init_function",
+          "kind": "contract_init",
           "loc": init(a: Int, b: Int) {
         self.a = a;
         self.b = b;
@@ -3611,7 +3611,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       "declarations": [
         {
           "id": 118,
-          "kind": "def_init_function",
+          "kind": "contract_init",
           "loc": init(
         arg1: Int,
         arg2: Int,
