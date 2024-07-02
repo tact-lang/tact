@@ -4036,19 +4036,17 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
         },
       ],
       "id": 10,
-      "kind": "def_struct",
+      "kind": "struct_decl",
       "loc": struct A {
     x: Int;
     y: Int;
 },
-      "message": false,
       "name": {
         "id": 1,
         "kind": "id",
         "loc": A,
         "text": "A",
       },
-      "prefix": null,
     },
     {
       "attributes": [],
@@ -4248,19 +4246,18 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
         },
       ],
       "id": 42,
-      "kind": "def_struct",
+      "kind": "message_decl",
       "loc": message B {
     x: Int;
     y: Int;
 },
-      "message": true,
       "name": {
         "id": 33,
         "kind": "id",
         "loc": B,
         "text": "B",
       },
-      "prefix": null,
+      "opcode": null,
     },
     {
       "attributes": [],
@@ -6753,19 +6750,17 @@ exports[`grammar should parse struct-field-punning 1`] = `
         },
       ],
       "id": 10,
-      "kind": "def_struct",
+      "kind": "struct_decl",
       "loc": struct A {
     x: Int;
     y: Int;
 },
-      "message": false,
       "name": {
         "id": 1,
         "kind": "id",
         "loc": A,
         "text": "A",
       },
-      "prefix": null,
     },
     {
       "attributes": [],
@@ -6937,18 +6932,16 @@ exports[`grammar should parse struct-msg-as 1`] = `
         },
       ],
       "id": 6,
-      "kind": "def_struct",
+      "kind": "struct_decl",
       "loc": struct A {
     x: Int;
 },
-      "message": false,
       "name": {
         "id": 1,
         "kind": "id",
         "loc": A,
         "text": "A",
       },
-      "prefix": null,
     },
     {
       "fields": [
@@ -6984,18 +6977,17 @@ exports[`grammar should parse struct-msg-as 1`] = `
         },
       ],
       "id": 13,
-      "kind": "def_struct",
+      "kind": "message_decl",
       "loc": message B {
     x: Int as coin;
 },
-      "message": true,
       "name": {
         "id": 7,
         "kind": "id",
         "loc": B,
         "text": "B",
       },
-      "prefix": null,
+      "opcode": null,
     },
   ],
   "kind": "module",
@@ -7041,18 +7033,16 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
         },
       ],
       "id": 7,
-      "kind": "def_struct",
+      "kind": "struct_decl",
       "loc": struct A {
     x: Int = 1000;
 },
-      "message": false,
       "name": {
         "id": 1,
         "kind": "id",
         "loc": A,
         "text": "A",
       },
-      "prefix": null,
     },
     {
       "fields": [
@@ -7123,19 +7113,18 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
         },
       ],
       "id": 20,
-      "kind": "def_struct",
+      "kind": "message_decl",
       "loc": message B {
     x: Int as coins = 1000;
     y: Bool = true;
 },
-      "message": true,
       "name": {
         "id": 8,
         "kind": "id",
         "loc": B,
         "text": "B",
       },
-      "prefix": null,
+      "opcode": null,
     },
   ],
   "kind": "module",
@@ -7176,16 +7165,14 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         },
       ],
       "id": 6,
-      "kind": "def_struct",
+      "kind": "struct_decl",
       "loc": struct A { x: Int },
-      "message": false,
       "name": {
         "id": 1,
         "kind": "id",
         "loc": A,
         "text": "A",
       },
-      "prefix": null,
     },
     {
       "fields": [
@@ -7241,16 +7228,14 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         },
       ],
       "id": 16,
-      "kind": "def_struct",
+      "kind": "struct_decl",
       "loc": struct B { x: Int; y: Int },
-      "message": false,
       "name": {
         "id": 7,
         "kind": "id",
         "loc": B,
         "text": "B",
       },
-      "prefix": null,
     },
     {
       "fields": [
@@ -7311,16 +7296,14 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         },
       ],
       "id": 27,
-      "kind": "def_struct",
+      "kind": "struct_decl",
       "loc": struct C { x: Int; y: Int = 42 },
-      "message": false,
       "name": {
         "id": 17,
         "kind": "id",
         "loc": C,
         "text": "C",
       },
-      "prefix": null,
     },
     {
       "fields": [
@@ -7381,16 +7364,14 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         },
       ],
       "id": 38,
-      "kind": "def_struct",
+      "kind": "struct_decl",
       "loc": struct D { x: Int = 42; y: Int },
-      "message": false,
       "name": {
         "id": 28,
         "kind": "id",
         "loc": D,
         "text": "D",
       },
-      "prefix": null,
     },
     {
       "fields": [
@@ -7421,16 +7402,15 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         },
       ],
       "id": 44,
-      "kind": "def_struct",
+      "kind": "message_decl",
       "loc": message E { x: Int },
-      "message": true,
       "name": {
         "id": 39,
         "kind": "id",
         "loc": E,
         "text": "E",
       },
-      "prefix": null,
+      "opcode": null,
     },
     {
       "fields": [
@@ -7486,16 +7466,15 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         },
       ],
       "id": 54,
-      "kind": "def_struct",
+      "kind": "message_decl",
       "loc": message F { x: Int; y: Int },
-      "message": true,
       "name": {
         "id": 45,
         "kind": "id",
         "loc": F,
         "text": "F",
       },
-      "prefix": null,
+      "opcode": null,
     },
     {
       "fields": [
@@ -7556,16 +7535,15 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         },
       ],
       "id": 65,
-      "kind": "def_struct",
+      "kind": "message_decl",
       "loc": message G { x: Int; y: Int = 42 },
-      "message": true,
       "name": {
         "id": 55,
         "kind": "id",
         "loc": G,
         "text": "G",
       },
-      "prefix": null,
+      "opcode": null,
     },
     {
       "fields": [
@@ -7626,16 +7604,15 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         },
       ],
       "id": 76,
-      "kind": "def_struct",
+      "kind": "message_decl",
       "loc": message G { x: Int = 42; y: Int },
-      "message": true,
       "name": {
         "id": 66,
         "kind": "id",
         "loc": G,
         "text": "G",
       },
-      "prefix": null,
+      "opcode": null,
     },
   ],
   "kind": "module",
@@ -7844,18 +7821,16 @@ exports[`grammar should parse type-struct-with-map 1`] = `
         },
       ],
       "id": 7,
-      "kind": "def_struct",
+      "kind": "struct_decl",
       "loc": struct A {
     y: map<Int, Int>;
 },
-      "message": false,
       "name": {
         "id": 1,
         "kind": "id",
         "loc": A,
         "text": "A",
       },
-      "prefix": null,
     },
     {
       "fields": [
@@ -7893,18 +7868,17 @@ exports[`grammar should parse type-struct-with-map 1`] = `
         },
       ],
       "id": 14,
-      "kind": "def_struct",
+      "kind": "message_decl",
       "loc": message B {
     x: map<Int, Int>;
 },
-      "message": true,
       "name": {
         "id": 8,
         "kind": "id",
         "loc": B,
         "text": "B",
       },
-      "prefix": null,
+      "opcode": null,
     },
   ],
   "kind": "module",

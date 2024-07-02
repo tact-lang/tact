@@ -166,11 +166,9 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
     StructDecl_regular(_structKwd, typeId, _lbrace, fields, _rbrace) {
         checkVariableName(typeId.sourceString, createRef(typeId));
         return createNode({
-            kind: "def_struct",
+            kind: "struct_decl",
             name: typeId.astOfType(),
             fields: fields.astsOfList(),
-            prefix: null,
-            message: false,
             loc: createRef(this),
         });
     },
@@ -186,13 +184,12 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
     ) {
         checkVariableName(typeId.sourceString, createRef(typeId));
         return createNode({
-            kind: "def_struct",
+            kind: "message_decl",
             name: typeId.astOfType(),
             fields: fields.astsOfList(),
-            prefix: unwrapOptNode(optIntMsgId, (number) =>
+            opcode: unwrapOptNode(optIntMsgId, (number) =>
                 Number(bigintOfIntLiteral(number)),
             ),
-            message: true,
             loc: createRef(this),
         });
     },

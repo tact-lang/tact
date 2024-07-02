@@ -19,7 +19,8 @@ export type AstModuleItem =
     | AstFunctionDef
     | AstNativeFunctionDecl
     | AstConstantDef
-    | ASTStruct
+    | AstStructDecl
+    | AstMessageDecl
     | ASTContract
     | ASTTrait;
 
@@ -77,6 +78,23 @@ export type AstConstantDecl = {
     attributes: ASTConstantAttribute[];
     name: AstId;
     type: ASTTypeRef;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstStructDecl = {
+    kind: "struct_decl";
+    name: AstId;
+    fields: ASTField[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstMessageDecl = {
+    kind: "message_decl";
+    name: AstId;
+    opcode: number | null;
+    fields: ASTField[];
     id: number;
     loc: SrcInfo;
 };
@@ -326,16 +344,6 @@ export type ASTConditional = {
     condition: ASTExpression;
     thenBranch: ASTExpression;
     elseBranch: ASTExpression;
-    loc: SrcInfo;
-};
-
-export type ASTStruct = {
-    kind: "def_struct";
-    id: number;
-    name: AstId;
-    message: boolean;
-    prefix: number | null;
-    fields: ASTField[];
     loc: SrcInfo;
 };
 
@@ -591,7 +599,8 @@ export type ASTNode =
     | AstFuncId
     | ASTExpression
     | ASTStatement
-    | ASTStruct
+    | AstStructDecl
+    | AstMessageDecl
     | ASTField
     | ASTContract
     | AstTypedParameter
@@ -624,7 +633,12 @@ export type ASTExpression =
     | ASTInitOf
     | ASTString
     | ASTConditional;
-export type ASTType = AstPrimitiveTypeDecl | ASTStruct | ASTContract | ASTTrait;
+export type ASTType =
+    | AstPrimitiveTypeDecl
+    | AstStructDecl
+    | AstMessageDecl
+    | ASTContract
+    | ASTTrait;
 
 /**
  * Check if input expression is a 'path expression',
@@ -678,7 +692,12 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_struct") {
+    if (node.kind === "struct_decl") {
+        for (const e of node.fields) {
+            traverse(e, callback);
+        }
+    }
+    if (node.kind === "message_decl") {
         for (const e of node.fields) {
             traverse(e, callback);
         }

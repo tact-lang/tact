@@ -68,7 +68,8 @@ export function openContext(
     for (const program of programs) {
         for (const item of program.items) {
             if (
-                item.kind === "def_struct" ||
+                item.kind === "struct_decl" ||
+                item.kind === "message_decl" ||
                 item.kind === "def_contract" ||
                 item.kind === "def_trait" ||
                 item.kind === "primitive_type_decl"

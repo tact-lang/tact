@@ -422,18 +422,17 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         },
       ],
       "id": 13,
-      "kind": "def_struct",
+      "kind": "message_decl",
       "loc": message A {
   a: Int as uint32;
 },
-      "message": true,
       "name": {
         "id": 7,
         "kind": "id",
         "loc": A,
         "text": "A",
       },
-      "prefix": null,
+      "opcode": null,
     },
     "constants": [],
     "dependsOn": [],
@@ -946,20 +945,19 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         },
       ],
       "id": 22,
-      "kind": "def_struct",
+      "kind": "message_decl",
       "loc": message A {
   a: Int as uint32;
   b: Bool;
   c: Int as uint256;
 },
-      "message": true,
       "name": {
         "id": 7,
         "kind": "id",
         "loc": A,
         "text": "A",
       },
-      "prefix": null,
+      "opcode": null,
     },
     "constants": [],
     "dependsOn": [],
@@ -2637,18 +2635,17 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         },
       ],
       "id": 11,
-      "kind": "def_struct",
+      "kind": "message_decl",
       "loc": message A {
     a: Int as uint32;
 },
-      "message": true,
       "name": {
         "id": 5,
         "kind": "id",
         "loc": A,
         "text": "A",
       },
-      "prefix": null,
+      "opcode": null,
     },
     "constants": [],
     "dependsOn": [],
@@ -5635,18 +5632,16 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         },
       ],
       "id": 12,
-      "kind": "def_struct",
+      "kind": "struct_decl",
       "loc": struct Point {
     p: Int;
 },
-      "message": false,
       "name": {
         "id": 7,
         "kind": "id",
         "loc": Point,
         "text": "Point",
       },
-      "prefix": null,
     },
     "constants": [],
     "dependsOn": [],
@@ -7641,19 +7636,17 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
         },
       ],
       "id": 16,
-      "kind": "def_struct",
+      "kind": "struct_decl",
       "loc": struct Struct1 {
     a: Int;
     b: Bool;
 },
-      "message": false,
       "name": {
         "id": 7,
         "kind": "id",
         "loc": Struct1,
         "text": "Struct1",
       },
-      "prefix": null,
     },
     "constants": [],
     "dependsOn": [],
@@ -7794,18 +7787,16 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
         },
       ],
       "id": 22,
-      "kind": "def_struct",
+      "kind": "struct_decl",
       "loc": struct Struct2 {
     a: Struct1;
 },
-      "message": false,
       "name": {
         "id": 17,
         "kind": "id",
         "loc": Struct2,
         "text": "Struct2",
       },
-      "prefix": null,
     },
     "constants": [],
     "dependsOn": [],

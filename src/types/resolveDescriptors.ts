@@ -266,7 +266,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 constants: [],
                 partialFieldCount: 0,
             });
-        } else if (a.kind === "def_struct") {
+        } else if (a.kind === "struct_decl" || a.kind === "message_decl") {
             types.set(idText(a.name), {
                 kind: "struct",
                 origin: a.loc.origin,
@@ -432,7 +432,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
 
         // Struct
-        if (a.kind === "def_struct") {
+        if (a.kind === "struct_decl" || a.kind === "message_decl") {
             for (const f of a.fields) {
                 if (
                     types
@@ -453,7 +453,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         ),
                     );
             }
-            if (a.fields.length === 0 && !a.message) {
+            if (a.fields.length === 0 && a.kind === "struct_decl") {
                 throwCompilationError(
                     `Struct ${idTextErr(a.name)} must have at least one field`,
                     a.loc,
@@ -973,13 +973,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     d.loc,
                                 );
                             }
-                            if (t.ast.kind !== "def_struct") {
-                                throwCompilationError(
-                                    "Receive function can only accept message",
-                                    d.loc,
-                                );
-                            }
-                            if (!t.ast.message) {
+                            if (t.ast.kind !== "message_decl") {
                                 throwCompilationError(
                                     "Receive function can only accept message",
                                     d.loc,
@@ -1117,10 +1111,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 const type = types.get(
                                     idText(param.type.name),
                                 )!;
-                                if (
-                                    type.ast.kind !== "def_struct" ||
-                                    !type.ast.message
-                                ) {
+                                if (type.ast.kind !== "message_decl") {
                                     throwCompilationError(
                                         "Bounce receive function can only accept bounced message, message or Slice",
                                         d.loc,
@@ -1166,15 +1157,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     d.loc,
                                 );
                             }
-                            if (t.ast.kind !== "def_struct") {
+                            if (t.ast.kind !== "message_decl") {
                                 throwCompilationError(
-                                    "Bounce receive function can only accept bounced<T> struct types",
-                                    d.loc,
-                                );
-                            }
-                            if (!t.ast.message) {
-                                throwCompilationError(
-                                    "Bounce receive function can only accept bounced message, message or Slice",
+                                    "Bounce receive function can only accept bounced<T> message types",
                                     d.loc,
                                 );
                             }

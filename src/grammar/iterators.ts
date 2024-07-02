@@ -99,7 +99,8 @@ export function forEachExpression(
                 node.items.forEach(traverseNode);
                 break;
             case "native_function_decl":
-            case "def_struct":
+            case "struct_decl":
+            case "message_decl":
             case "primitive_type_decl":
                 // These node types do not require further traversal of expressions or sub-nodes
                 break;
@@ -308,7 +309,8 @@ export function foldExpressions<T>(
                 });
                 break;
             case "native_function_decl":
-            case "def_struct":
+            case "struct_decl":
+            case "message_decl":
             case "primitive_type_decl":
                 // These node types do not require further traversal of expressions or sub-nodes
                 break;
@@ -474,7 +476,8 @@ export function forEachStatement(
             case "type_ref_map":
             case "type_ref_bounced":
             case "native_function_decl":
-            case "def_struct":
+            case "struct_decl":
+            case "message_decl":
             case "constant_def":
             case "constant_decl":
             case "def_field":
@@ -602,7 +605,8 @@ export function foldStatements<T>(
             case "type_ref_bounced":
             case "native_function_decl":
             case "function_decl":
-            case "def_struct":
+            case "struct_decl":
+            case "message_decl":
             case "constant_def":
             case "constant_decl":
             case "def_field":

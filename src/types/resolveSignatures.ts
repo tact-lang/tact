@@ -152,9 +152,9 @@ export function resolveSignatures(ctx: CompilerContext) {
         // Calculate signature and method id
         const signature = name + "{" + fields.join(",") + "}";
         let id: number | null = null;
-        if (t.ast.kind === "def_struct" && t.ast.message) {
-            if (t.ast.prefix !== null) {
-                id = t.ast.prefix;
+        if (t.ast.kind === "message_decl") {
+            if (t.ast.opcode !== null) {
+                id = t.ast.opcode;
             } else {
                 id = newMessageId(signature);
             }
