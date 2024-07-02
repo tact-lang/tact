@@ -279,14 +279,6 @@ function processStatements(
                     s.loc,
                 );
             }
-
-            // Mark as assigned
-            if (path.length === 2 && path[0].text === "self") {
-                const field = path[1].text;
-                if (sctx.requiredFields.findIndex((v) => v === field) >= 0) {
-                    sctx = removeRequiredVariable(field, sctx);
-                }
-            }
         } else if (s.kind === "statement_expression") {
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
