@@ -1,9 +1,9 @@
 import { enabledInline } from "../../config/features";
 import {
-    ASTCondition,
+    AstCondition,
     ASTExpression,
     AstNativeFunctionDecl,
-    ASTStatement,
+    AstStatement,
     idText,
     isWildcard,
     tryExtractPath,
@@ -69,7 +69,7 @@ export function unwrapExternal(
 }
 
 export function writeStatement(
-    f: ASTStatement,
+    f: AstStatement,
     self: string | null,
     returns: TypeRef | null,
     ctx: WriterContext,
@@ -443,14 +443,14 @@ export function writeStatement(
 }
 
 function writeCondition(
-    f: ASTCondition,
+    f: AstCondition,
     self: string | null,
     elseif: boolean,
     returns: TypeRef | null,
     ctx: WriterContext,
 ) {
     ctx.append(
-        `${elseif ? "} else" : ""}if (${writeExpression(f.expression, ctx)}) {`,
+        `${elseif ? "} else" : ""}if (${writeExpression(f.condition, ctx)}) {`,
     );
     ctx.inIndent(() => {
         for (const s of f.trueStatements) {

@@ -32,7 +32,7 @@ export function cloneNode<T extends ASTNode>(src: T): T {
     } else if (src.kind === "statement_condition") {
         return cloneASTNode({
             ...src,
-            expression: cloneNode(src.expression),
+            condition: cloneNode(src.condition),
             trueStatements: src.trueStatements.map(cloneNode),
             falseStatements: src.falseStatements
                 ? src.falseStatements.map(cloneNode)

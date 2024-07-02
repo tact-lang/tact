@@ -1,4 +1,4 @@
-import { ASTNode, ASTStatement, ASTExpression } from "./ast";
+import { ASTNode, AstStatement, ASTExpression } from "./ast";
 
 /**
  * Recursively iterates over each expression in an ASTNode and applies a callback to each expression.
@@ -53,7 +53,7 @@ export function forEachExpression(
         }
     }
 
-    function traverseStatement(stmt: ASTStatement): void {
+    function traverseStatement(stmt: AstStatement): void {
         switch (stmt.kind) {
             case "statement_let":
             case "statement_assign":
@@ -65,7 +65,7 @@ export function forEachExpression(
                 if (stmt.expression) traverseExpression(stmt.expression);
                 break;
             case "statement_condition":
-                traverseExpression(stmt.expression);
+                traverseExpression(stmt.condition);
                 stmt.trueStatements.forEach(traverseStatement);
                 if (stmt.falseStatements)
                     stmt.falseStatements.forEach(traverseStatement);
@@ -237,7 +237,7 @@ export function foldExpressions<T>(
         return acc;
     }
 
-    function traverseStatement(acc: T, stmt: ASTStatement): T {
+    function traverseStatement(acc: T, stmt: AstStatement): T {
         switch (stmt.kind) {
             case "statement_let":
             case "statement_expression":
@@ -253,7 +253,7 @@ export function foldExpressions<T>(
                     acc = traverseExpression(acc, stmt.expression);
                 break;
             case "statement_condition":
-                acc = traverseExpression(acc, stmt.expression);
+                acc = traverseExpression(acc, stmt.condition);
                 stmt.trueStatements.forEach((st) => {
                     acc = traverseStatement(acc, st);
                 });
@@ -394,9 +394,9 @@ export function foldExpressions<T>(
  */
 export function forEachStatement(
     node: ASTNode,
-    callback: (stmt: ASTStatement) => void,
+    callback: (stmt: AstStatement) => void,
 ): void {
-    function traverseStatement(stmt: ASTStatement): void {
+    function traverseStatement(stmt: AstStatement): void {
         callback(stmt);
 
         switch (stmt.kind) {
@@ -503,9 +503,9 @@ export function forEachStatement(
 export function foldStatements<T>(
     node: ASTNode,
     acc: T,
-    callback: (acc: T, stmt: ASTStatement) => T,
+    callback: (acc: T, stmt: AstStatement) => T,
 ): T {
-    function traverseStatement(acc: T, stmt: ASTStatement): T {
+    function traverseStatement(acc: T, stmt: AstStatement): T {
         acc = callback(acc, stmt);
 
         switch (stmt.kind) {

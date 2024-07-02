@@ -7,7 +7,7 @@ import {
     ASTNode,
     AstReceiver,
     SrcInfo,
-    ASTStatement,
+    AstStatement,
     ASTType,
     AstId,
     AstFunctionDecl,
@@ -130,7 +130,7 @@ export type FunctionDescription = {
 export type StatementDescription =
     | {
           kind: "native";
-          src: ASTStatement;
+          src: AstStatement;
       }
     | {
           kind: "intrinsic";

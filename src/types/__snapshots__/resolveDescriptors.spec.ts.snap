@@ -7067,13 +7067,13 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
       "return": null,
       "statements": [
         {
-          "elseif": null,
-          "expression": {
+          "condition": {
             "id": 44,
             "kind": "boolean",
             "loc": true,
             "value": true,
           },
+          "elseif": null,
           "falseStatements": null,
           "id": 50,
           "kind": "statement_condition",

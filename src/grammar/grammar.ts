@@ -8,7 +8,7 @@ import {
 } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
 import {
-    ASTAugmentedAssignOperation,
+    AstAugmentedAssignOperation,
     ASTConstantAttribute,
     ASTContractAttribute,
     ASTExpression,
@@ -638,7 +638,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
                 loc: createRef(this),
             });
         } else {
-            let op: ASTAugmentedAssignOperation;
+            let op: AstAugmentedAssignOperation;
             switch (operator.sourceString) {
                 case "+=":
                     op = "+";
@@ -679,7 +679,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
     StatementCondition_noElse(_ifKwd, condition, _lbrace, thenBlock, _rbrace) {
         return createNode({
             kind: "statement_condition",
-            expression: condition.astOfExpression(),
+            condition: condition.astOfExpression(),
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
             falseStatements: null,
             elseif: null,
@@ -699,7 +699,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
     ) {
         return createNode({
             kind: "statement_condition",
-            expression: condition.astOfExpression(),
+            condition: condition.astOfExpression(),
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
             falseStatements: elseBlock.children.map((s) => s.astOfStatement()),
             elseif: null,
@@ -717,7 +717,7 @@ semantics.addOperation<ASTNode>("astOfStatement", {
     ) {
         return createNode({
             kind: "statement_condition",
-            expression: condition.astOfExpression(),
+            condition: condition.astOfExpression(),
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
             falseStatements: null,
             elseif: elseifClause.astOfStatement(),

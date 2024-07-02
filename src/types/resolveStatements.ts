@@ -1,8 +1,8 @@
 import { CompilerContext } from "../context";
 import {
-    ASTCondition,
+    AstCondition,
     SrcInfo,
-    ASTStatement,
+    AstStatement,
     tryExtractPath,
     AstId,
     idText,
@@ -87,7 +87,7 @@ function addVariable(
 }
 
 function processCondition(
-    condition: ASTCondition,
+    condition: AstCondition,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -96,7 +96,7 @@ function processCondition(
     returnAlwaysReachable: boolean;
 } {
     // Process expression
-    ctx = resolveExpression(condition.expression, sctx, ctx);
+    ctx = resolveExpression(condition.condition, sctx, ctx);
     let initialCtx = sctx;
 
     // Simple if
@@ -164,7 +164,7 @@ function processCondition(
 }
 
 function processStatements(
-    statements: ASTStatement[],
+    statements: AstStatement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -306,7 +306,7 @@ function processStatements(
             returnAlwaysReachable ||= r.returnAlwaysReachable;
 
             // Check type
-            const expressionType = getExpType(ctx, s.expression);
+            const expressionType = getExpType(ctx, s.condition);
             if (
                 expressionType.kind !== "ref" ||
                 expressionType.name !== "Bool" ||
@@ -543,7 +543,7 @@ function processStatements(
 }
 
 function processFunctionBody(
-    statements: ASTStatement[],
+    statements: AstStatement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
