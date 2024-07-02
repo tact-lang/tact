@@ -863,7 +863,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     }
                     s.init = resolveInitFunction(d);
                 }
-                if (d.kind === "def_receive") {
+                if (d.kind === "receiver") {
                     // Check if externals are enabled
                     if (
                         d.selector.kind.startsWith("external-") &&

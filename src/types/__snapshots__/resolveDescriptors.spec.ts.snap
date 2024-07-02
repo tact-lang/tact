@@ -608,7 +608,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         },
         {
           "id": 20,
-          "kind": "def_receive",
+          "kind": "receiver",
           "loc": receive(src: A) {
     
   },
@@ -642,7 +642,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         },
         {
           "id": 25,
-          "kind": "def_receive",
+          "kind": "receiver",
           "loc": bounced(src: Slice) {
     
   },
@@ -719,7 +719,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       {
         "ast": {
           "id": 20,
-          "kind": "def_receive",
+          "kind": "receiver",
           "loc": receive(src: A) {
     
   },
@@ -765,7 +765,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       {
         "ast": {
           "id": 25,
-          "kind": "def_receive",
+          "kind": "receiver",
           "loc": bounced(src: Slice) {
     
   },
@@ -1229,7 +1229,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         },
         {
           "id": 29,
-          "kind": "def_receive",
+          "kind": "receiver",
           "loc": receive(src: A) {
     
   },
@@ -1263,7 +1263,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         },
         {
           "id": 41,
-          "kind": "def_receive",
+          "kind": "receiver",
           "loc": bounced(src: bounced<A>) {
     let x: Int = src.c;
   },
@@ -1380,7 +1380,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       {
         "ast": {
           "id": 29,
-          "kind": "def_receive",
+          "kind": "receiver",
           "loc": receive(src: A) {
     
   },
@@ -1426,7 +1426,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       {
         "ast": {
           "id": 41,
-          "kind": "def_receive",
+          "kind": "receiver",
           "loc": bounced(src: bounced<A>) {
     let x: Int = src.c;
   },
@@ -2785,7 +2785,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       "declarations": [
         {
           "id": 19,
-          "kind": "def_receive",
+          "kind": "receiver",
           "loc": external(msg: A) {
         42;
     },
@@ -2831,7 +2831,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         },
         {
           "id": 22,
-          "kind": "def_receive",
+          "kind": "receiver",
           "loc": external() {
         42;
     },
@@ -2904,7 +2904,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       {
         "ast": {
           "id": 19,
-          "kind": "def_receive",
+          "kind": "receiver",
           "loc": external(msg: A) {
         42;
     },
@@ -2962,7 +2962,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       {
         "ast": {
           "id": 22,
-          "kind": "def_receive",
+          "kind": "receiver",
           "loc": external() {
         42;
     },

@@ -146,7 +146,7 @@ export function cloneNode<T extends ASTNode>(src: T): T {
             return: src.return ? cloneASTNode(src.return) : null,
             params: src.params.map(cloneNode),
         });
-    } else if (src.kind === "def_receive") {
+    } else if (src.kind === "receiver") {
         return cloneASTNode({
             ...src,
             statements: src.statements.map(cloneNode),

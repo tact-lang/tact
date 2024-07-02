@@ -5,7 +5,7 @@ import {
     ASTInitFunction,
     AstNativeFunctionDecl,
     ASTNode,
-    ASTReceive,
+    AstReceiver,
     SrcInfo,
     ASTStatement,
     ASTType,
@@ -225,7 +225,7 @@ export function receiverSelectorName(selector: ReceiverSelector): string {
 
 export type ReceiverDescription = {
     selector: ReceiverSelector;
-    ast: ASTReceive;
+    ast: AstReceiver;
 };
 
 export type InitDescription = {

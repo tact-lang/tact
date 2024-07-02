@@ -123,24 +123,40 @@ export type ASTContractDeclaration =
     | AstFieldDecl
     | AstFunctionDef
     | ASTInitFunction
-    | ASTReceive
+    | AstReceiver
     | AstConstantDef;
 
 export type ASTTraitDeclaration =
     | AstFieldDecl
     | AstFunctionDef
     | AstFunctionDecl
-    | ASTReceive
+    | AstReceiver
     | AstConstantDef
     | AstConstantDecl;
 
 export type AstFieldDecl = {
     kind: "field_decl";
-    id: number;
     name: AstId;
     type: ASTTypeRef;
     init: ASTExpression | null;
     as: AstId | null;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstReceiver = {
+    kind: "receiver";
+    selector: ASTReceiveType;
+    statements: ASTStatement[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type ASTInitFunction = {
+    kind: "def_init_function";
+    id: number;
+    params: AstTypedParameter[];
+    statements: ASTStatement[];
     loc: SrcInfo;
 };
 
@@ -448,22 +464,6 @@ export type ASTReceiveType =
           comment: ASTString;
       };
 
-export type ASTReceive = {
-    kind: "def_receive";
-    id: number;
-    selector: ASTReceiveType;
-    statements: ASTStatement[];
-    loc: SrcInfo;
-};
-
-export type ASTInitFunction = {
-    kind: "def_init_function";
-    id: number;
-    params: AstTypedParameter[];
-    statements: ASTStatement[];
-    loc: SrcInfo;
-};
-
 //
 // Statements
 //
@@ -614,7 +614,7 @@ export type ASTNode =
     | ASTNewParameter
     | ASTTypeRef
     | ASTInitFunction
-    | ASTReceive
+    | AstReceiver
     | AstTrait
     | AstImport
     | AstConstantDef
@@ -729,7 +729,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_receive") {
+    if (node.kind === "receiver") {
         for (const e of node.statements) {
             traverse(e, callback);
         }

@@ -371,7 +371,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
               }
             : { kind: "internal-fallback" };
         return createNode({
-            kind: "def_receive",
+            kind: "receiver",
             selector,
             statements: receiverBody.children.map((s) => s.astOfStatement()),
             loc: createRef(this),
@@ -387,7 +387,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         _rbrace,
     ) {
         return createNode({
-            kind: "def_receive",
+            kind: "receiver",
             selector: {
                 kind: "internal-comment",
                 comment: comment.astOfExpression(),
@@ -406,7 +406,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         _rbrace,
     ) {
         return createNode({
-            kind: "def_receive",
+            kind: "receiver",
             selector: { kind: "bounce", param: parameter.astOfDeclaration() },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
             loc: createRef(this),
@@ -429,7 +429,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
               }
             : { kind: "external-fallback" };
         return createNode({
-            kind: "def_receive",
+            kind: "receiver",
             selector,
             statements: receiverBody.children.map((s) => s.astOfStatement()),
             loc: createRef(this),
@@ -445,7 +445,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         _rbrace,
     ) {
         return createNode({
-            kind: "def_receive",
+            kind: "receiver",
             selector: {
                 kind: "external-comment",
                 comment: comment.astOfExpression(),
