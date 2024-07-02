@@ -205,7 +205,7 @@ semantics.addOperation<ASTNode>("astOfModuleItem", {
     ) {
         checkVariableName(contractId.sourceString, createRef(contractId));
         return createNode({
-            kind: "def_contract",
+            kind: "contract",
             name: contractId.astOfExpression(),
             attributes: attributes.children.map((ca) =>
                 ca.astOfContractAttributes(),

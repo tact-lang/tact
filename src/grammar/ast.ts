@@ -21,7 +21,7 @@ export type AstModuleItem =
     | AstConstantDef
     | AstStructDecl
     | AstMessageDecl
-    | ASTContract
+    | AstContract
     | ASTTrait;
 
 export type AstPrimitiveTypeDecl = {
@@ -95,6 +95,16 @@ export type AstMessageDecl = {
     name: AstId;
     opcode: number | null;
     fields: ASTField[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstContract = {
+    kind: "contract";
+    name: AstId;
+    traits: AstId[];
+    attributes: ASTContractAttribute[];
+    declarations: ASTContractDeclaration[];
     id: number;
     loc: SrcInfo;
 };
@@ -393,16 +403,6 @@ export type ASTContractDeclaration =
     | ASTReceive
     | AstConstantDef;
 
-export type ASTContract = {
-    kind: "def_contract";
-    id: number;
-    name: AstId;
-    traits: AstId[];
-    attributes: ASTContractAttribute[];
-    declarations: ASTContractDeclaration[];
-    loc: SrcInfo;
-};
-
 export type AstTypedParameter = {
     kind: "typed_parameter";
     id: number;
@@ -602,7 +602,7 @@ export type ASTNode =
     | AstStructDecl
     | AstMessageDecl
     | ASTField
-    | ASTContract
+    | AstContract
     | AstTypedParameter
     | AstFunctionDef
     | AstFunctionDecl
@@ -637,7 +637,7 @@ export type ASTType =
     | AstPrimitiveTypeDecl
     | AstStructDecl
     | AstMessageDecl
-    | ASTContract
+    | AstContract
     | ASTTrait;
 
 /**
@@ -678,16 +678,12 @@ export function __DANGER_resetNodeId() {
 export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     callback(node);
 
-    //
-    // Program
-    //
-
     if (node.kind === "module") {
         for (const e of node.items) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_contract") {
+    if (node.kind === "contract") {
         for (const e of node.declarations) {
             traverse(e, callback);
         }

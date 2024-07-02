@@ -2385,7 +2385,7 @@ exports[`resolveAllocation should write program 1`] = `
           },
         ],
         "id": 123,
-        "kind": "def_contract",
+        "kind": "contract",
         "loc": SrcInfo {},
         "name": {
           "id": 106,

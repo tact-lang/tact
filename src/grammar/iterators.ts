@@ -111,7 +111,7 @@ export function forEachExpression(
                     node.statements.forEach(traverseStatement);
                 }
                 break;
-            case "def_contract":
+            case "contract":
             case "def_trait":
                 node.declarations.forEach(traverseNode);
                 break;
@@ -323,7 +323,7 @@ export function foldExpressions<T>(
                     });
                 }
                 break;
-            case "def_contract":
+            case "contract":
             case "def_trait":
                 node.declarations.forEach((decl) => {
                     acc = traverseNode(acc, decl);
@@ -439,7 +439,7 @@ export function forEachStatement(
             case "def_receive":
                 if (node.statements) node.statements.forEach(traverseStatement);
                 break;
-            case "def_contract":
+            case "contract":
             case "def_trait":
                 node.declarations.forEach(traverseNode);
                 break;
@@ -565,7 +565,7 @@ export function foldStatements<T>(
                     });
                 }
                 break;
-            case "def_contract":
+            case "contract":
             case "def_trait":
                 node.declarations.forEach((decl) => {
                     acc = traverseNode(acc, decl);

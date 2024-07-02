@@ -70,7 +70,7 @@ export function openContext(
             if (
                 item.kind === "struct_decl" ||
                 item.kind === "message_decl" ||
-                item.kind === "def_contract" ||
+                item.kind === "contract" ||
                 item.kind === "def_trait" ||
                 item.kind === "primitive_type_decl"
             ) {

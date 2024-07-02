@@ -475,7 +475,7 @@ exports[`grammar should parse contract-with-const-override 1`] = `
         },
       ],
       "id": 7,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract Contract {
     override const Test: Int = 0;
 },
@@ -513,7 +513,7 @@ exports[`grammar should parse contract-with-imports 1`] = `
       "attributes": [],
       "declarations": [],
       "id": 5,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract Test with Deploy { },
       "name": {
         "id": 3,
@@ -709,7 +709,7 @@ exports[`grammar should parse contract-with-init 1`] = `
         },
       ],
       "id": 29,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract Sample {
     a: Int;
     b: Int;
@@ -914,7 +914,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
         },
       ],
       "id": 27,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract Main with SomeTrait {
     b: Int;
 
@@ -1124,7 +1124,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
         },
       ],
       "id": 27,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract Main with SomeTrait {
     b: Int;
 
@@ -3668,7 +3668,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
         },
       ],
       "id": 119,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract TestContract {
     init(
         arg1: Int,
@@ -7756,7 +7756,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
         },
       ],
       "id": 22,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract Main with SomeTrait, {
     b: Int;
 },

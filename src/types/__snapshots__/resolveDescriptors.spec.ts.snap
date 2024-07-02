@@ -676,7 +676,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         },
       ],
       "id": 26,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract Test {
   init() {}
   receive(src: A) {
@@ -1337,7 +1337,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         },
       ],
       "id": 42,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract Test {
   init() {}
   receive(src: A) {
@@ -1797,7 +1797,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         },
       ],
       "id": 18,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract TestContract with T {
   override const Foo: Int = 42;
 },
@@ -2318,7 +2318,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         },
       ],
       "id": 19,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract TestContract with T {
   override const Foo: Int = 42;
 },
@@ -2854,7 +2854,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         },
       ],
       "id": 23,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract Test {
     external(msg: A) {
         42;
@@ -3303,7 +3303,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         },
       ],
       "id": 19,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract TestContract with T {
   override get fun getter(): Int { return 0 }
 },
@@ -3903,7 +3903,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         },
       ],
       "id": 21,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract TestContract with T {
   override get fun getter(): Int { return 43 }
 },
@@ -4397,7 +4397,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         },
       ],
       "id": 21,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract HelloWorld {
     a: Int;
     b: Bool;
@@ -5276,7 +5276,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         },
       ],
       "id": 40,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract Main {
     a: Int;
     init(a: Int) {
@@ -6629,7 +6629,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         },
       ],
       "id": 50,
-      "kind": "def_contract",
+      "kind": "contract",
       "loc": contract Main {
     m: map<Int, Int as coins>;
 

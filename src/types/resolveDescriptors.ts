@@ -244,7 +244,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 constants: [],
                 partialFieldCount: 0,
             });
-        } else if (a.kind === "def_contract") {
+        } else if (a.kind === "contract") {
             types.set(idText(a.name), {
                 kind: "contract",
                 origin: a.loc.origin,
@@ -366,7 +366,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const a of ast.types) {
         // Contract
-        if (a.kind === "def_contract") {
+        if (a.kind === "contract") {
             for (const f of a.declarations) {
                 if (f.kind === "def_field") {
                     if (
@@ -838,7 +838,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     for (const a of ast.types) {
-        if (a.kind === "def_contract" || a.kind === "def_trait") {
+        if (a.kind === "contract" || a.kind === "def_trait") {
             const s = types.get(idText(a.name))!;
             for (const d of a.declarations) {
                 if (d.kind === "function_def" || d.kind === "function_decl") {
@@ -1232,12 +1232,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const t of types.values()) {
-        if (t.ast.kind === "def_trait" || t.ast.kind === "def_contract") {
+        if (t.ast.kind === "def_trait" || t.ast.kind === "contract") {
             // Check there are no duplicates in the _immediately_ inherited traits
             const traitSet = new Set<string>(t.ast.traits.map(idText));
             if (traitSet.size !== t.ast.traits.length) {
                 const aggregateType =
-                    t.ast.kind === "def_contract" ? "contract" : "trait";
+                    t.ast.kind === "contract" ? "contract" : "trait";
                 throwCompilationError(
                     `The list of inherited traits for ${aggregateType} "${t.name}" has duplicates`,
                     t.ast.loc,
