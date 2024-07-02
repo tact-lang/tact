@@ -22,7 +22,7 @@ export type AstModuleItem =
     | AstStructDecl
     | AstMessageDecl
     | AstContract
-    | ASTTrait;
+    | AstTrait;
 
 export type AstPrimitiveTypeDecl = {
     kind: "primitive_type_decl";
@@ -105,6 +105,16 @@ export type AstContract = {
     traits: AstId[];
     attributes: ASTContractAttribute[];
     declarations: ASTContractDeclaration[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstTrait = {
+    kind: "trait";
+    name: AstId;
+    traits: AstId[];
+    attributes: ASTContractAttribute[];
+    declarations: ASTTraitDeclaration[];
     id: number;
     loc: SrcInfo;
 };
@@ -365,16 +375,6 @@ export type ASTTraitDeclaration =
     | AstConstantDef
     | AstConstantDecl;
 
-export type ASTTrait = {
-    kind: "def_trait";
-    id: number;
-    name: AstId;
-    traits: AstId[];
-    attributes: ASTContractAttribute[];
-    declarations: ASTTraitDeclaration[];
-    loc: SrcInfo;
-};
-
 export type ASTField = {
     kind: "def_field";
     id: number;
@@ -615,7 +615,7 @@ export type ASTNode =
     | ASTTypeRef
     | ASTInitFunction
     | ASTReceive
-    | ASTTrait
+    | AstTrait
     | AstImport
     | AstConstantDef
     | AstConstantDecl;
@@ -638,7 +638,7 @@ export type ASTType =
     | AstStructDecl
     | AstMessageDecl
     | AstContract
-    | ASTTrait;
+    | AstTrait;
 
 /**
  * Check if input expression is a 'path expression',
@@ -698,7 +698,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_trait") {
+    if (node.kind === "trait") {
         for (const e of node.declarations) {
             traverse(e, callback);
         }

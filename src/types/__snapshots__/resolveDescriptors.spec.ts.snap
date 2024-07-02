@@ -508,7 +508,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       "attributes": [],
       "declarations": [],
       "id": 6,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait {
     
 },
@@ -816,7 +816,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
           "attributes": [],
           "declarations": [],
           "id": 6,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait {
     
 },
@@ -1129,7 +1129,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       "attributes": [],
       "declarations": [],
       "id": 6,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait {
     
 },
@@ -1519,7 +1519,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "attributes": [],
           "declarations": [],
           "id": 6,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait {
     
 },
@@ -1563,7 +1563,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
       "attributes": [],
       "declarations": [],
       "id": 4,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait { },
       "name": {
         "id": 3,
@@ -1654,7 +1654,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         },
       ],
       "id": 10,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait T {
   abstract const Foo: Int;
 },
@@ -1726,7 +1726,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           "attributes": [],
           "declarations": [],
           "id": 4,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait { },
           "name": {
             "id": 3,
@@ -1893,7 +1893,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           "attributes": [],
           "declarations": [],
           "id": 4,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait { },
           "name": {
             "id": 3,
@@ -1955,7 +1955,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
             },
           ],
           "id": 10,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait T {
   abstract const Foo: Int;
 },
@@ -2027,7 +2027,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               "attributes": [],
               "declarations": [],
               "id": 4,
-              "kind": "def_trait",
+              "kind": "trait",
               "loc": trait BaseTrait { },
               "name": {
                 "id": 3,
@@ -2072,7 +2072,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
       "attributes": [],
       "declarations": [],
       "id": 4,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait { },
       "name": {
         "id": 3,
@@ -2169,7 +2169,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         },
       ],
       "id": 11,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait T {
    virtual const Foo: Int = 41;
 },
@@ -2247,7 +2247,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           "attributes": [],
           "declarations": [],
           "id": 4,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait { },
           "name": {
             "id": 3,
@@ -2414,7 +2414,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           "attributes": [],
           "declarations": [],
           "id": 4,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait { },
           "name": {
             "id": 3,
@@ -2482,7 +2482,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
             },
           ],
           "id": 11,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait T {
    virtual const Foo: Int = 41;
 },
@@ -2560,7 +2560,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               "attributes": [],
               "declarations": [],
               "id": 4,
-              "kind": "def_trait",
+              "kind": "trait",
               "loc": trait BaseTrait { },
               "name": {
                 "id": 3,
@@ -2721,7 +2721,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       "attributes": [],
       "declarations": [],
       "id": 4,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait {
     
 },
@@ -2996,7 +2996,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "attributes": [],
           "declarations": [],
           "id": 4,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait {
     
 },
@@ -3040,7 +3040,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "attributes": [],
       "declarations": [],
       "id": 4,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait { },
       "name": {
         "id": 3,
@@ -3136,7 +3136,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         },
       ],
       "id": 10,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait T {
   abstract get fun getter(): Int;
 },
@@ -3220,7 +3220,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "attributes": [],
           "declarations": [],
           "id": 4,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait { },
           "name": {
             "id": 3,
@@ -3418,7 +3418,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "attributes": [],
           "declarations": [],
           "id": 4,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait { },
           "name": {
             "id": 3,
@@ -3485,7 +3485,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
           ],
           "id": 10,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait T {
   abstract get fun getter(): Int;
 },
@@ -3569,7 +3569,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "attributes": [],
               "declarations": [],
               "id": 4,
-              "kind": "def_trait",
+              "kind": "trait",
               "loc": trait BaseTrait { },
               "name": {
                 "id": 3,
@@ -3614,7 +3614,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
       "attributes": [],
       "declarations": [],
       "id": 4,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait { },
       "name": {
         "id": 3,
@@ -3723,7 +3723,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         },
       ],
       "id": 12,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait T {
    virtual get fun getter(): Int { return 42 }
 },
@@ -3820,7 +3820,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "attributes": [],
           "declarations": [],
           "id": 4,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait { },
           "name": {
             "id": 3,
@@ -4018,7 +4018,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "attributes": [],
           "declarations": [],
           "id": 4,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait { },
           "name": {
             "id": 3,
@@ -4098,7 +4098,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
           ],
           "id": 12,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait T {
    virtual get fun getter(): Int { return 42 }
 },
@@ -4195,7 +4195,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "attributes": [],
               "declarations": [],
               "id": 4,
-              "kind": "def_trait",
+              "kind": "trait",
               "loc": trait BaseTrait { },
               "name": {
                 "id": 3,
@@ -4240,7 +4240,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
       "attributes": [],
       "declarations": [],
       "id": 6,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait {
     
 },
@@ -4610,7 +4610,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           "attributes": [],
           "declarations": [],
           "id": 6,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait {
     
 },
@@ -4683,7 +4683,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "attributes": [],
       "declarations": [],
       "id": 6,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait {
     
 },
@@ -5006,7 +5006,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "attributes": [],
       "declarations": [],
       "id": 6,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait {
     
 },
@@ -5570,7 +5570,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "attributes": [],
           "declarations": [],
           "id": 6,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait {
     
 },
@@ -5719,7 +5719,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
       "attributes": [],
       "declarations": [],
       "id": 6,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait {
     
 },
@@ -5917,7 +5917,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
       "attributes": [],
       "declarations": [],
       "id": 6,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait {
     
 },
@@ -6107,7 +6107,7 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
       "attributes": [],
       "declarations": [],
       "id": 6,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait {
     
 },
@@ -6289,7 +6289,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
       "attributes": [],
       "declarations": [],
       "id": 4,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait {
     
 },
@@ -7005,7 +7005,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
           "attributes": [],
           "declarations": [],
           "id": 4,
-          "kind": "def_trait",
+          "kind": "trait",
           "loc": trait BaseTrait {
     
 },
@@ -7494,7 +7494,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
       "attributes": [],
       "declarations": [],
       "id": 6,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait {
     
 },
@@ -7873,7 +7873,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
       "attributes": [],
       "declarations": [],
       "id": 6,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait BaseTrait {
     
 },

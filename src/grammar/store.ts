@@ -71,7 +71,7 @@ export function openContext(
                 item.kind === "struct_decl" ||
                 item.kind === "message_decl" ||
                 item.kind === "contract" ||
-                item.kind === "def_trait" ||
+                item.kind === "trait" ||
                 item.kind === "primitive_type_decl"
             ) {
                 types.push(item);

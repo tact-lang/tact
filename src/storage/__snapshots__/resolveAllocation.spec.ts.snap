@@ -2583,7 +2583,7 @@ exports[`resolveAllocation should write program 1`] = `
             "attributes": [],
             "declarations": [],
             "id": 19,
-            "kind": "def_trait",
+            "kind": "trait",
             "loc": SrcInfo {},
             "name": {
               "id": 18,

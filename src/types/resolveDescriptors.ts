@@ -286,7 +286,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 constants: [],
                 partialFieldCount: 0,
             });
-        } else if (a.kind === "def_trait") {
+        } else if (a.kind === "trait") {
             types.set(idText(a.name), {
                 kind: "trait",
                 origin: a.loc.origin,
@@ -462,7 +462,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
 
         // Trait
-        if (a.kind === "def_trait") {
+        if (a.kind === "trait") {
             for (const f of a.declarations) {
                 if (f.kind === "def_field") {
                     if (
@@ -838,7 +838,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     for (const a of ast.types) {
-        if (a.kind === "contract" || a.kind === "def_trait") {
+        if (a.kind === "contract" || a.kind === "trait") {
             const s = types.get(idText(a.name))!;
             for (const d of a.declarations) {
                 if (d.kind === "function_def" || d.kind === "function_decl") {
@@ -1232,7 +1232,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const t of types.values()) {
-        if (t.ast.kind === "def_trait" || t.ast.kind === "contract") {
+        if (t.ast.kind === "trait" || t.ast.kind === "contract") {
             // Check there are no duplicates in the _immediately_ inherited traits
             const traitSet = new Set<string>(t.ast.traits.map(idText));
             if (traitSet.size !== t.ast.traits.length) {
@@ -1261,7 +1261,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
                 visited.add(name);
                 traits.push(tt);
-                if (tt.ast.kind === "def_trait") {
+                if (tt.ast.kind === "trait") {
                     for (const s of tt.ast.traits) {
                         visit(idText(s));
                     }

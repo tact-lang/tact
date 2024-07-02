@@ -413,7 +413,7 @@ exports[`grammar should parse abstract-const 1`] = `
         },
       ],
       "id": 6,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait t {
     abstract const c: Int;
 },
@@ -823,7 +823,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
         },
       ],
       "id": 14,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait SomeTrait {
     a: Int;
 
@@ -1033,7 +1033,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
         },
       ],
       "id": 14,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait SomeTrait {
     a: Int;
 
@@ -7665,7 +7665,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
         },
       ],
       "id": 8,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait OtherTrait {
     c: Int;
 },
@@ -7707,7 +7707,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
         },
       ],
       "id": 15,
-      "kind": "def_trait",
+      "kind": "trait",
       "loc": trait SomeTrait with OtherTrait, {
     a: Int;
 },
