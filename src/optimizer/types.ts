@@ -5,7 +5,6 @@ import {
     ASTBoolean,
     ASTNull,
     ASTString,
-    ASTOpBinary,
     ASTRef
  } from "../grammar/ast";
 
@@ -16,15 +15,40 @@ export const DUMMY_INTERVAL: Interval = {
     startIdx: 0,
     endIdx: 10,
     contents: "mock contents",
-    minus: jest.fn().mockReturnThis(),
-    relativeTo: jest.fn().mockReturnThis(),
-    subInterval: jest.fn().mockReturnThis(),
-    collapsedLeft: jest.fn().mockReturnThis(),
-    collapsedRight: jest.fn().mockReturnThis(),
-    trimmed: jest.fn().mockReturnThis(),
-    coverageWith: jest.fn().mockReturnThis(),
-    getLineAndColumnMessage: jest.fn().mockReturnValue(`Line 1, Column 0`),
-    getLineAndColumn: jest.fn().mockReturnValue({ line: 1, column: 0 }),
+    minus(that) {
+        return [this];
+    },
+    relativeTo(that) {
+        return this;
+    },
+    subInterval(offset, len) {
+        return this;
+    },
+    collapsedLeft() {
+        return this;
+    },
+    collapsedRight() {
+        return this;
+    },
+    trimmed() {
+        return this;
+    },
+    coverageWith(...intervals) {
+        return this;
+    },
+    getLineAndColumnMessage() {
+        return `Line 1, Column 0`;
+    },
+    getLineAndColumn() {
+        return { 
+            offset: 0, 
+            lineNum: 1, 
+            colNum: 0, 
+            line: "1", 
+            nextLine: "1", 
+            prevLine: "1" 
+        };
+    }
   };
 export const DUMMY_AST_REF: ASTRef = new ASTRef(DUMMY_INTERVAL, "dummy");
 
@@ -33,20 +57,6 @@ export interface ExpressionTransformer {
     applyRules(ast: ASTExpression): ASTExpression
 }
 
-export abstract class Rule {
-
-    private priority: number;
-
-    constructor(priority: number) {
-        this.priority = priority;
-    }
-
-    public abstract applyRule(ast: ASTExpression, optimizer: ExpressionTransformer): ASTExpression;
-
-    // A smaller number means greater priority. 
-    // Hence, negative numbers have higher priority than positive numbers.
-    public getPriority(): number {
-        return this.priority;
-    }
-   
+export interface Rule {
+    applyRule(ast: ASTExpression, optimizer: ExpressionTransformer): ASTExpression;
 }

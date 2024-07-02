@@ -2,18 +2,21 @@
 
 import { evalBinaryOp } from "../constEval";
 import { ASTBinaryOperation, ASTExpression, ASTOpBinary } from "../grammar/ast";
+import { Value } from "../types/types";
 import { ExpressionTransformer, Rule, ValueExpression } from "./types";
 import { 
+    abs,
     checkIsBinaryOpNode, 
     checkIsBinaryOp_NonValue_Value, 
     checkIsBinaryOp_Value_NonValue, 
     extractValue, 
     isValue, 
     makeBinaryExpression, 
-    makeValueExpression 
+    makeValueExpression, 
+    sign
 } from "./util";
 
-export abstract class AssociativeRewriteRule extends Rule {
+export abstract class AssociativeRewriteRule implements Rule {
 
     // An entry (op, S) in the map means "operator op associates with all operators in set S", 
     // mathematically: all op2 \in S. (a op b) op2 c = a op (b op2 c)
@@ -23,9 +26,7 @@ export abstract class AssociativeRewriteRule extends Rule {
     // Mathematically: all op \in commutativeOps. a op b = b op a
     private commutativeOps: Set<ASTBinaryOperation>;
 
-    constructor(priority: number) {
-        super(priority);
-
+    constructor() {
         // + associates with these on the right:
         // i.e., all op \in plusAssoc. (a + b) op c = a + (b op c)
         const plusAssoc = new Set<ASTBinaryOperation>([
@@ -55,6 +56,10 @@ export abstract class AssociativeRewriteRule extends Rule {
         );
     }
 
+
+    public abstract applyRule(ast: ASTExpression, optimizer: ExpressionTransformer): ASTExpression;
+
+
     public areAssociative(op1: ASTBinaryOperation, op2: ASTBinaryOperation): boolean {
         if (this.associativeOps.has(op1)) {
             var rightAssocs = this.associativeOps.get(op1)!;
@@ -73,9 +78,9 @@ export abstract class AllowableOpRule extends AssociativeRewriteRule {
 
     private allowedOps: Set<ASTBinaryOperation>;
 
-    constructor(priority: number) {
-        super(priority);
-        
+    constructor() {
+        super();
+
         this.allowedOps = new Set<ASTBinaryOperation>(
             // Recall that integer operators +,-,*,/,% are not safe with this rule, because
             // there is a risk that they will not preserve overflows in the unknown operands.
@@ -93,11 +98,6 @@ export abstract class AllowableOpRule extends AssociativeRewriteRule {
 }
 
 export class AssociativeRule1 extends AllowableOpRule {
-
-    constructor(priority: number) {
-        super(priority);
-    }
-
 
     public applyRule(ast: ASTExpression, optimizer: ExpressionTransformer): ASTExpression {
         if (checkIsBinaryOpNode(ast)) {
@@ -294,10 +294,6 @@ export class AssociativeRule1 extends AllowableOpRule {
 
 export class AssociativeRule2 extends AllowableOpRule {
 
-    constructor(priority: number) {
-        super(priority);
-    }
-
     public applyRule(ast: ASTExpression, optimizer: ExpressionTransformer): ASTExpression {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as ASTOpBinary;
@@ -435,17 +431,220 @@ export class AssociativeRule2 extends AllowableOpRule {
     }    
 }
 
+function ensureInt(val: Value): bigint {
+    if (typeof val !== "bigint") {
+        throw `integer expected, but got '${val}'`;
+    }
+    return val;
+}
+
 export class AssociativeRule3 extends AssociativeRewriteRule {
 
-    constructor(priority: number) {
-        super(priority);
+    private extraOpCondition: Map<ASTBinaryOperation, (c1: Value, c2: Value, val: Value) => boolean>;
+
+    public constructor() {
+        super();
+
+        this.extraOpCondition = new Map<ASTBinaryOperation,(c1: Value, c2: Value, val: Value) => boolean>([
+            ["+", (c1, c2, val) => {
+                const n1 =  ensureInt(c1);
+                const res = ensureInt(val);
+                return sign(n1) === sign(res) && abs(n1) <= abs(res);
+                }
+            ],
+
+            ["-", (c1, c2, val) => {
+                const n1 =  ensureInt(c1);
+                const res = ensureInt(val);
+                return sign(n1) === sign(res) && abs(n1) <= abs(res);
+                }
+            ],
+
+            ["*", (c1, c2, val) => {
+                const n1 =  ensureInt(c1);
+                const res = ensureInt(val);
+                if (n1 < 0n) {
+                    if (sign(n1) === sign(res)) {
+                        return abs(n1) <= abs(res);
+                    } else {
+                        return abs(n1) < abs(res);
+                    }
+                } else if (n1 === 0n) {
+                    return true;
+                } else {
+                    return abs(n1) <= abs(res);
+                }
+                }
+            ],
+        ]);
+
+    }
+
+    protected opSatisfiesConditions(op: ASTBinaryOperation, c1: Value, c2: Value, res: Value): boolean {
+        if (this.extraOpCondition.has(op)) {
+            return this.extraOpCondition.get(op)!(c1, c2, res);
+        } else {
+            return false;
+        }
     }
 
     public applyRule(ast: ASTExpression, optimizer: ExpressionTransformer): ASTExpression {
-        // TODO: Implementation of rule 3 in the comments of the repository
+        if (checkIsBinaryOpNode(ast)) {
+            const topLevelNode = ast as ASTOpBinary;
+            if (checkIsBinaryOp_NonValue_Value(topLevelNode.left) && isValue(topLevelNode.right)) {
+                // The tree has this form:
+                // (x1 op1 c1) op c2
+                const leftTree = topLevelNode.left as ASTOpBinary;
+                const rightTree = topLevelNode.right as ValueExpression;
+
+                const x1 = leftTree.left;
+                const c1 = extractValue(leftTree.right as ValueExpression);
+                const op1 = leftTree.op;
+                
+                const c2 = extractValue(rightTree);
+
+                const op = topLevelNode.op;
+               
+                // Agglutinate the constants and compute their final value
+                try {
+                    // If an error occurs, we abandon the simplification
+                    const val = evalBinaryOp(op, c1, c2);
+                    
+                    // Check that:
+                    // op1 and op associate
+                    // the extra conditions on op1
+
+                    if (
+                        this.areAssociative(op1, op) &&
+                        this.opSatisfiesConditions(op1, c1, c2, val)
+                    ) {
+
+                        // The final expression is
+                        // x1 op1 val
+
+                        const newConstant = makeValueExpression(val);
+                        return makeBinaryExpression(op1, x1, newConstant);
+                    }
+                } catch(e) {
+                }
+                
+            } else if (checkIsBinaryOp_Value_NonValue(topLevelNode.left) && isValue(topLevelNode.right)) {
+                // The tree has this form:
+                // (c1 op1 x1) op c2
+                const leftTree = topLevelNode.left as ASTOpBinary;
+                const rightTree = topLevelNode.right as ValueExpression;
+
+                const x1 = leftTree.right;
+                const c1 = extractValue(leftTree.left as ValueExpression);
+                const op1 = leftTree.op;
+                
+                const c2 = extractValue(rightTree);
+
+                const op = topLevelNode.op;
+               
+                // Agglutinate the constants and compute their final value
+                try {
+                    // If an error occurs, we abandon the simplification
+                    const val = evalBinaryOp(op, c1, c2);
+                    
+                    // Check that:
+                    // op1 and op associate
+                    // op1 commutes
+                    // the extra conditions on op1
+
+                    if (
+                        this.areAssociative(op1, op) &&
+                        this.isCommutative(op1) &&
+                        this.opSatisfiesConditions(op1, c1, c2, val)
+                    ) {
+
+                        // The final expression is
+                        // x1 op1 val
+
+                        const newConstant = makeValueExpression(val);
+                        return makeBinaryExpression(op1, x1, newConstant);
+                    }
+                } catch(e) {
+                }
+            } else if (isValue(topLevelNode.left) && checkIsBinaryOp_NonValue_Value(topLevelNode.right)) {
+                // The tree has this form:
+                // c2 op (x1 op1 c1)
+                const leftTree = topLevelNode.left as ValueExpression;
+                const rightTree = topLevelNode.right as ASTOpBinary;
+
+                const x1 = rightTree.left;
+                const c1 = extractValue(rightTree.right as ValueExpression);
+                const op1 = rightTree.op;
+                
+                const c2 = extractValue(leftTree);
+
+                const op = topLevelNode.op;
+               
+                // Agglutinate the constants and compute their final value
+                try {
+                    // If an error occurs, we abandon the simplification
+                    const val = evalBinaryOp(op, c2, c1);
+                    
+                    // Check that:
+                    // op and op1 associate
+                    // op1 commutes
+                    // the extra conditions on op1
+
+                    if (
+                        this.areAssociative(op, op1) &&
+                        this.isCommutative(op1) &&
+                        this.opSatisfiesConditions(op1, c1, c2, val)
+                    ) {
+
+                        // The final expression is
+                        // x1 op1 val
+
+                        const newConstant = makeValueExpression(val);
+                        return makeBinaryExpression(op1, x1, newConstant);
+                    }
+                } catch(e) {
+                }
+            } else if (isValue(topLevelNode.left) && checkIsBinaryOp_Value_NonValue(topLevelNode.right)) {
+                // The tree has this form:
+                // c2 op (c1 op1 x1)
+                const leftTree = topLevelNode.left as ValueExpression;
+                const rightTree = topLevelNode.right as ASTOpBinary;
+
+                const x1 = rightTree.right;
+                const c1 = extractValue(rightTree.left as ValueExpression);
+                const op1 = rightTree.op;
+                
+                const c2 = extractValue(leftTree);
+
+                const op = topLevelNode.op;
+               
+                // Agglutinate the constants and compute their final value
+                try {
+                    // If an error occurs, we abandon the simplification
+                    const val = evalBinaryOp(op, c2, c1);
+                    
+                    // Check that:
+                    // op and op1 associate
+                    // the extra conditions on op1
+
+                    if (
+                        this.areAssociative(op, op1) &&
+                        this.opSatisfiesConditions(op1, c1, c2, val)
+                    ) {
+
+                        // The final expression is
+                        // val op1 x1
+
+                        const newConstant = makeValueExpression(val);
+                        return makeBinaryExpression(op1, newConstant, x1);
+                    }
+                } catch(e) {
+                }
+            }
+        }
 
         // If execution reaches here, it means that the rule could not be applied fully
         // so, we return the original tree
         return ast;
-    }
+    }    
 }

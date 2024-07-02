@@ -9,7 +9,7 @@ import {
     ASTRef,
     ASTUnaryOperation
 } from "./grammar/ast";
-import { throwConstEvalError } from "./errors";
+import { TactConstEvalError, throwConstEvalError } from "./errors";
 import { CommentValue, StructValue, Value } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
 import { 
@@ -17,7 +17,9 @@ import {
     extractValue, 
     makeValueExpression, 
     makeUnaryExpression,
-    makeBinaryExpression
+    makeBinaryExpression,
+    divFloor,
+    modFloor
 } from "./optimizer/util";
 import { DUMMY_AST_REF, ExpressionTransformer, ValueExpression } from "./optimizer/types";
 import { StandardOptimizer } from "./optimizer/standardOptimizer";
@@ -178,23 +180,6 @@ function partiallyEvalUnaryOp(
         const newAst = makeUnaryExpression(op, operand);
         return optimizer.applyRules(newAst);
     }
-}
-
-// precondition: the divisor is not zero
-// rounds the division result towards negative infinity
-function divFloor(a: bigint, b: bigint): bigint {
-    const almostSameSign = a > 0n === b > 0n;
-    if (almostSameSign) {
-        return a / b;
-    }
-    return a / b + (a % b === 0n ? 0n : -1n);
-}
-
-// precondition: the divisor is not zero
-// rounds the result towards negative infinity
-// Uses the fact that a / b * b + a % b == a, for all b != 0.
-function modFloor(a: bigint, b: bigint): bigint {
-    return a - divFloor(a, b) * b;
 }
 
 function fullyEvalBinaryOp(
@@ -725,25 +710,28 @@ function interpretEscapeSequences(stringLiteral: string) {
     );
 }
 
+function lookupID(ast: ASTId, ctx: CompilerContext): Value {
+    if (hasStaticConstant(ctx, ast.value)) {
+        const constant = getStaticConstant(ctx, ast.value);
+        if (constant.value !== undefined) {
+            return constant.value;
+        } else {
+            throwErrorConstEval(
+                `cannot evaluate declared constant "${ast.value}" as it does not have a body`,
+                ast.ref,
+            );
+        }
+    }
+    throwNonFatalErrorConstEval("cannot evaluate a variable", ast.ref);
+}
+
 export function evalConstantExpression(
     ast: ASTExpression,
     ctx: CompilerContext,
 ): Value {
     switch (ast.kind) {
         case "id":
-            if (hasStaticConstant(ctx, ast.value)) {
-                const constant = getStaticConstant(ctx, ast.value);
-                if (constant.value !== undefined) {
-                    return constant.value;
-                } else {
-                    throwErrorConstEval(
-                        `cannot evaluate declared constant "${ast.value}" as it does not have a body`,
-                        ast.ref,
-                    );
-                }
-            }
-            throwNonFatalErrorConstEval("cannot evaluate a variable", ast.ref);
-            break;
+            return lookupID(ast, ctx);
         case "op_call":
             return evalMethod(ast.name, ast.src, ast.args, ast.ref, ctx);
         case "init_of":
@@ -778,55 +766,74 @@ export function evalConstantExpression(
         case "op_static_call":
             return evalBuiltins(ast.name, ast.args, ast.ref, ctx);
     }
+    /*const res = partiallyEvalExpression(ast, ctx);
+    if (isValue(res)) {
+        return extractValue(res as ValueExpression);
+    } else {
+        throwNonFatalErrorConstEval(
+            ``,
+            ast.ref
+        );
+    }*/
 }
 
 
 function partiallyEvalExpression(ast: ASTExpression, ctx: CompilerContext): ASTExpression {
     switch (ast.kind) {
         case "id":
-            // For the moment, id look up is not supported. I just return the node for the moment.
-            return ast;
+            try {
+                return makeValueExpression(lookupID(ast, ctx));
+            } catch(e) {
+                if (e instanceof TactConstEvalError) {
+                    if (!e.fatal) {
+                        // If a non-fatal error occurs during lookup, just return the symbol
+                        return ast;
+                    }
+                }
+                throw e;
+            }
         case "op_call":
-            // Not supported yet. I just return the node for the moment.
-            return ast;
+            // Does not partially evaluate at the monent. Will attemp to fully evaluate
+            const resCall =  evalMethod(ast.name, ast.src, ast.args, ast.ref, ctx);
+            return makeValueExpression(resCall);
         case "init_of":
-            // Not supported yet. I just return the node for the moment.
-            return ast;
+            throwNonFatalErrorConstEval(
+                "initOf is not supported at this moment",
+                ast.ref,
+            );
         case "null":
             return ast;
         case "boolean":
             return ast;
         case "number":
-            ensureInt(ast.value, ast.ref);
-            return ast;
-        // TODO: ensure string is representable
+            return makeValueExpression(ensureInt(ast.value, ast.ref));
         case "string":
-            return ast;
+            return makeValueExpression(ensureString(interpretEscapeSequences(ast.value), ast.ref));
         case "op_unary":
             return partiallyEvalUnaryOp(ast.op, ast.right, ast.ref, ctx);
         case "op_binary":
             return partiallyEvalBinaryOp(ast.op, ast.left, ast.right, ast.ref, ctx);
         case "conditional":
-            // Not supported yet. I just return the node for the moment.
-            return ast;
-            //return evalConditional(
-            //    ast.condition,
-            //    ast.thenBranch,
-            //    ast.elseBranch,
-            //    ctx,
-            //);
+            // Does not partially evaluate at the monent. Will attemp to fully evaluate
+            const resCond = evalConditional(
+                ast.condition,
+                ast.thenBranch,
+                ast.elseBranch,
+                ctx,
+            );
+            return makeValueExpression(resCond);
         case "op_new":
-            // Not supported yet. I just return the node for the moment.
-            return ast;
-            //return evalStructInstance(ast.type, ast.args, ctx);
+            // Does not partially evaluate at the monent. Will attemp to fully evaluate
+            const resStruct = evalStructInstance(ast.type, ast.args, ctx);
+            return makeValueExpression(resStruct);
         case "op_field":
-            // Not supported yet. I just return the node for the moment.
-            return ast;
-            //return evalFieldAccess(ast.src, ast.name, ctx);
+            // Does not partially evaluate at the monent. Will attemp to fully evaluate
+            const resField = evalFieldAccess(ast.src, ast.name, ast.ref, ctx);
+            return makeValueExpression(resField);
         case "op_static_call":
-            // Not supported yet. I just return the node for the moment.
-            return ast;
-            //return evalBuiltins(ast.name, ast.args, ast.ref, ctx);
+            // Does not partially evaluate at the monent. Will attemp to fully evaluate
+            const resStaticCall = evalBuiltins(ast.name, ast.args, ast.ref, ctx);
+            return makeValueExpression(resStaticCall);
     }
 }
 

@@ -2,28 +2,28 @@ import { ASTExpression } from "../grammar/ast";
 import { AssociativeRule1, AssociativeRule2, AssociativeRule3 } from "./associative";
 import { Rule, ExpressionTransformer } from "./types";
 
+type PrioritizedRule = {priority: number, rule: Rule};
+
 // This optimizer uses rules that preserve overflows in integer expressions.
 export class StandardOptimizer implements ExpressionTransformer {
 
-    private rules: Rule[];
+    private rules: PrioritizedRule[];
 
     constructor() {
         this.rules = [
-            new AssociativeRule1(0),
-            new AssociativeRule2(1),
-            new AssociativeRule3(3) 
+            {priority: 0, rule: new AssociativeRule1()},
+            {priority: 1, rule: new AssociativeRule2()},
+            {priority: 2, rule: new AssociativeRule3()}
             // TODO: add simpler algebraic rules that will be added to algebraic.ts
         ];
 
         // Sort according to the priorities: smaller number means greater priority. 
         // So, the rules will be sorted increasingly according to their priority number.
-        this.rules.sort((r1, r2) => r1.getPriority() - r2.getPriority());
+        this.rules.sort((r1, r2) => r1.priority - r2.priority);
     }
 
     public applyRules(ast: ASTExpression): ASTExpression {
-        var result = ast;
-        this.rules.forEach(rule => result = rule.applyRule(result, this));
-        return result;
+        return this.rules.reduce((prev, prioritizedRule) => prioritizedRule.rule.applyRule(prev, this), ast);
     }
 
 }
