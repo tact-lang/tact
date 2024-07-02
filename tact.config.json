@@ -338,6 +338,14 @@
       "name": "structs",
       "path": "./src/test/e2e-emulated/contracts/structs.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "initof",
+      "path": "./src/test/e2e-emulated/contracts/initof.tact",
+      "output": "./src/test/e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
     }
   ]
 }
