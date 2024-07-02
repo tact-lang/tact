@@ -2,7 +2,7 @@ import { Address, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { Debug } from "./contracts/output/debug_Debug";
-import path from "path";
+import { posixNormalize } from '../../utils/filePath'
 
 describe("debug", () => {
     beforeEach(() => {
@@ -31,7 +31,7 @@ describe("debug", () => {
             res.indexOf("=== VM LOGS ===") - 2,
         );
 
-        const filePath = path.normalize(
+        const filePath = posixNormalize(
             "src/test/e2e-emulated/contracts/debug.tact",
         );
 
