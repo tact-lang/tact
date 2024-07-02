@@ -1295,21 +1295,21 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "statements": [
             {
               "expression": {
-                "id": 39,
-                "kind": "op_field",
-                "loc": src.c,
-                "name": {
-                  "id": 38,
-                  "kind": "id",
-                  "loc": c,
-                  "text": "c",
-                },
-                "src": {
+                "aggregate": {
                   "id": 37,
                   "kind": "id",
                   "loc": src,
                   "text": "src",
                 },
+                "field": {
+                  "id": 38,
+                  "kind": "id",
+                  "loc": c,
+                  "text": "c",
+                },
+                "id": 39,
+                "kind": "field_access",
+                "loc": src.c,
               },
               "id": 40,
               "kind": "statement_let",
@@ -1458,21 +1458,21 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "statements": [
             {
               "expression": {
-                "id": 39,
-                "kind": "op_field",
-                "loc": src.c,
-                "name": {
-                  "id": 38,
-                  "kind": "id",
-                  "loc": c,
-                  "text": "c",
-                },
-                "src": {
+                "aggregate": {
                   "id": 37,
                   "kind": "id",
                   "loc": src,
                   "text": "src",
                 },
+                "field": {
+                  "id": 38,
+                  "kind": "id",
+                  "loc": c,
+                  "text": "c",
+                },
+                "id": 39,
+                "kind": "field_access",
+                "loc": src.c,
               },
               "id": 40,
               "kind": "statement_let",
@@ -5165,21 +5165,21 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
               "kind": "statement_assign",
               "loc": self.a = a;,
               "path": {
-                "id": 24,
-                "kind": "op_field",
-                "loc": self.a,
-                "name": {
-                  "id": 23,
-                  "kind": "id",
-                  "loc": a,
-                  "text": "a",
-                },
-                "src": {
+                "aggregate": {
                   "id": 22,
                   "kind": "id",
                   "loc": self,
                   "text": "self",
                 },
+                "field": {
+                  "id": 23,
+                  "kind": "id",
+                  "loc": a,
+                  "text": "a",
+                },
+                "id": 24,
+                "kind": "field_access",
+                "loc": self.a,
               },
             },
           ],
@@ -5519,21 +5519,21 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             "kind": "statement_assign",
             "loc": self.a = a;,
             "path": {
-              "id": 24,
-              "kind": "op_field",
-              "loc": self.a,
-              "name": {
-                "id": 23,
-                "kind": "id",
-                "loc": a,
-                "text": "a",
-              },
-              "src": {
+              "aggregate": {
                 "id": 22,
                 "kind": "id",
                 "loc": self,
                 "text": "self",
               },
+              "field": {
+                "id": 23,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              "id": 24,
+              "kind": "field_access",
+              "loc": self.a,
             },
           },
         ],
@@ -6426,15 +6426,15 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
             {
               "expression": {
                 "args": [],
-                "id": 21,
-                "kind": "op_static_call",
-                "loc": emptyMap(),
-                "name": {
+                "function": {
                   "id": 20,
                   "kind": "id",
                   "loc": emptyMap,
                   "text": "emptyMap",
                 },
+                "id": 21,
+                "kind": "static_call",
+                "loc": emptyMap(),
               },
               "id": 22,
               "kind": "statement_let",
@@ -6487,15 +6487,15 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                   },
                 ],
                 "id": 27,
-                "kind": "op_call",
+                "kind": "method_call",
                 "loc": m.set(1, 2),
-                "name": {
+                "method": {
                   "id": 24,
                   "kind": "id",
                   "loc": set,
                   "text": "set",
                 },
-                "src": {
+                "self": {
                   "id": 23,
                   "kind": "id",
                   "loc": m,
@@ -6523,30 +6523,30 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                   },
                 ],
                 "id": 35,
-                "kind": "op_call",
+                "kind": "method_call",
                 "loc": self.m.set(1, 2),
-                "name": {
+                "method": {
                   "id": 32,
                   "kind": "id",
                   "loc": set,
                   "text": "set",
                 },
-                "src": {
-                  "id": 31,
-                  "kind": "op_field",
-                  "loc": self.m,
-                  "name": {
-                    "id": 30,
-                    "kind": "id",
-                    "loc": m,
-                    "text": "m",
-                  },
-                  "src": {
+                "self": {
+                  "aggregate": {
                     "id": 29,
                     "kind": "id",
                     "loc": self,
                     "text": "self",
                   },
+                  "field": {
+                    "id": 30,
+                    "kind": "id",
+                    "loc": m,
+                    "text": "m",
+                  },
+                  "id": 31,
+                  "kind": "field_access",
+                  "loc": self.m,
                 },
               },
               "id": 36,
@@ -6567,15 +6567,15 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                     },
                   ],
                   "id": 40,
-                  "kind": "op_call",
+                  "kind": "method_call",
                   "loc": m.get(1),
-                  "name": {
+                  "method": {
                     "id": 38,
                     "kind": "id",
                     "loc": get,
                     "text": "get",
                   },
-                  "src": {
+                  "self": {
                     "id": 37,
                     "kind": "id",
                     "loc": m,
@@ -6594,30 +6594,30 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                     },
                   ],
                   "id": 46,
-                  "kind": "op_call",
+                  "kind": "method_call",
                   "loc": self.m.get(1),
-                  "name": {
+                  "method": {
                     "id": 44,
                     "kind": "id",
                     "loc": get,
                     "text": "get",
                   },
-                  "src": {
-                    "id": 43,
-                    "kind": "op_field",
-                    "loc": self.m,
-                    "name": {
-                      "id": 42,
-                      "kind": "id",
-                      "loc": m,
-                      "text": "m",
-                    },
-                    "src": {
+                  "self": {
+                    "aggregate": {
                       "id": 41,
                       "kind": "id",
                       "loc": self,
                       "text": "self",
                     },
+                    "field": {
+                      "id": 42,
+                      "kind": "id",
+                      "loc": m,
+                      "text": "m",
+                    },
+                    "id": 43,
+                    "kind": "field_access",
+                    "loc": self.m,
                   },
                 },
               },
@@ -6753,15 +6753,15 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
             {
               "expression": {
                 "args": [],
-                "id": 21,
-                "kind": "op_static_call",
-                "loc": emptyMap(),
-                "name": {
+                "function": {
                   "id": 20,
                   "kind": "id",
                   "loc": emptyMap,
                   "text": "emptyMap",
                 },
+                "id": 21,
+                "kind": "static_call",
+                "loc": emptyMap(),
               },
               "id": 22,
               "kind": "statement_let",
@@ -6814,15 +6814,15 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                   },
                 ],
                 "id": 27,
-                "kind": "op_call",
+                "kind": "method_call",
                 "loc": m.set(1, 2),
-                "name": {
+                "method": {
                   "id": 24,
                   "kind": "id",
                   "loc": set,
                   "text": "set",
                 },
-                "src": {
+                "self": {
                   "id": 23,
                   "kind": "id",
                   "loc": m,
@@ -6850,30 +6850,30 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                   },
                 ],
                 "id": 35,
-                "kind": "op_call",
+                "kind": "method_call",
                 "loc": self.m.set(1, 2),
-                "name": {
+                "method": {
                   "id": 32,
                   "kind": "id",
                   "loc": set,
                   "text": "set",
                 },
-                "src": {
-                  "id": 31,
-                  "kind": "op_field",
-                  "loc": self.m,
-                  "name": {
-                    "id": 30,
-                    "kind": "id",
-                    "loc": m,
-                    "text": "m",
-                  },
-                  "src": {
+                "self": {
+                  "aggregate": {
                     "id": 29,
                     "kind": "id",
                     "loc": self,
                     "text": "self",
                   },
+                  "field": {
+                    "id": 30,
+                    "kind": "id",
+                    "loc": m,
+                    "text": "m",
+                  },
+                  "id": 31,
+                  "kind": "field_access",
+                  "loc": self.m,
                 },
               },
               "id": 36,
@@ -6894,15 +6894,15 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                     },
                   ],
                   "id": 40,
-                  "kind": "op_call",
+                  "kind": "method_call",
                   "loc": m.get(1),
-                  "name": {
+                  "method": {
                     "id": 38,
                     "kind": "id",
                     "loc": get,
                     "text": "get",
                   },
-                  "src": {
+                  "self": {
                     "id": 37,
                     "kind": "id",
                     "loc": m,
@@ -6921,30 +6921,30 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                     },
                   ],
                   "id": 46,
-                  "kind": "op_call",
+                  "kind": "method_call",
                   "loc": self.m.get(1),
-                  "name": {
+                  "method": {
                     "id": 44,
                     "kind": "id",
                     "loc": get,
                     "text": "get",
                   },
-                  "src": {
-                    "id": 43,
-                    "kind": "op_field",
-                    "loc": self.m,
-                    "name": {
-                      "id": 42,
-                      "kind": "id",
-                      "loc": m,
-                      "text": "m",
-                    },
-                    "src": {
+                  "self": {
+                    "aggregate": {
                       "id": 41,
                       "kind": "id",
                       "loc": self,
                       "text": "self",
                     },
+                    "field": {
+                      "id": 42,
+                      "kind": "id",
+                      "loc": m,
+                      "text": "m",
+                    },
+                    "id": 43,
+                    "kind": "field_access",
+                    "loc": self.m,
                   },
                 },
               },

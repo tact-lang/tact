@@ -11,12 +11,12 @@ import {
     AstAugmentedAssignOperation,
     ASTConstantAttribute,
     ASTContractAttribute,
-    ASTExpression,
+    AstExpression,
     ASTFunctionAttribute,
     ASTNode,
     AstModule,
     ASTReceiveType,
-    ASTString,
+    AstString,
     ASTTypeRef,
     createNode,
     AstImport,
@@ -107,7 +107,7 @@ semantics.addOperation<ASTNode>("astOfModule", {
 
 semantics.addOperation<ASTNode>("astOfImport", {
     Import(_importKwd, path, _semicolon) {
-        const pathAST = path.astOfExpression() as ASTString;
+        const pathAST = path.astOfExpression() as AstString;
         if (pathAST.value.indexOf("\\") >= 0) {
             throwCompilationError(
                 'Import path can\'t contain "\\"',
@@ -569,17 +569,17 @@ semantics.addOperation<ASTNode>("astOfDeclaration", {
     },
     StructFieldInitializer_full(fieldId, _colon, initializer) {
         return createNode({
-            kind: "new_parameter",
-            name: fieldId.astOfExpression(),
-            exp: initializer.astOfExpression(),
+            kind: "struct_field_initializer",
+            field: fieldId.astOfExpression(),
+            initializer: initializer.astOfExpression(),
             loc: createRef(this),
         });
     },
     StructFieldInitializer_punned(fieldId) {
         return createNode({
-            kind: "new_parameter",
-            name: fieldId.astOfExpression(),
-            exp: fieldId.astOfExpression(),
+            kind: "struct_field_initializer",
+            field: fieldId.astOfExpression(),
+            initializer: fieldId.astOfExpression(),
             loc: createRef(this),
         });
     },
@@ -1100,7 +1100,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
         return createNode({
             kind: "op_unary",
             op: "+",
-            right: operand.astOfExpression(),
+            operand: operand.astOfExpression(),
             loc: createRef(this),
         });
     },
@@ -1108,7 +1108,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
         return createNode({
             kind: "op_unary",
             op: "-",
-            right: operand.astOfExpression(),
+            operand: operand.astOfExpression(),
             loc: createRef(this),
         });
     },
@@ -1116,7 +1116,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
         return createNode({
             kind: "op_unary",
             op: "!",
-            right: operand.astOfExpression(),
+            operand: operand.astOfExpression(),
             loc: createRef(this),
         });
     },
@@ -1124,7 +1124,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
         return createNode({
             kind: "op_unary",
             op: "~",
-            right: operand.astOfExpression(),
+            operand: operand.astOfExpression(),
             loc: createRef(this),
         });
     },
@@ -1135,32 +1135,32 @@ semantics.addOperation<ASTNode>("astOfExpression", {
         return createNode({
             kind: "op_unary",
             op: "!!",
-            right: operand.astOfExpression(),
+            operand: operand.astOfExpression(),
             loc: createRef(this),
         });
     },
 
     ExpressionFieldAccess(source, _dot, fieldId) {
         return createNode({
-            kind: "op_field",
-            src: source.astOfExpression(),
-            name: fieldId.astOfExpression(),
+            kind: "field_access",
+            aggregate: source.astOfExpression(),
+            field: fieldId.astOfExpression(),
             loc: createRef(this),
         });
     },
     ExpressionMethodCall(source, _dot, methodId, methodArguments) {
         return createNode({
-            kind: "op_call",
-            src: source.astOfExpression(),
-            name: methodId.astOfExpression(),
+            kind: "method_call",
+            self: source.astOfExpression(),
+            method: methodId.astOfExpression(),
             args: methodArguments.astsOfList(),
             loc: createRef(this),
         });
     },
     ExpressionStaticCall(functionId, functionArguments) {
         return createNode({
-            kind: "op_static_call",
-            name: functionId.astOfExpression(),
+            kind: "static_call",
+            function: functionId.astOfExpression(),
             args: functionArguments.astsOfList(),
             loc: createRef(this),
         });
@@ -1183,7 +1183,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
         }
 
         return createNode({
-            kind: "op_new",
+            kind: "struct_instance",
             type: typeId.astOfType(),
             args: structFields
                 .asIteration()
@@ -1194,7 +1194,7 @@ semantics.addOperation<ASTNode>("astOfExpression", {
     ExpressionInitOf(_initOfKwd, contractId, initArguments) {
         return createNode({
             kind: "init_of",
-            name: contractId.astOfExpression(),
+            contract: contractId.astOfExpression(),
             args: initArguments.astsOfList(),
             loc: createRef(this),
         });
@@ -1237,7 +1237,7 @@ export function parse(
     });
 }
 
-export function parseExpression(sourceCode: string): ASTExpression {
+export function parseExpression(sourceCode: string): AstExpression {
     const matchResult = tactGrammar.match(sourceCode, "Expression");
     if (matchResult.failed()) {
         throwParseError(matchResult, "", "user");

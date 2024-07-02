@@ -660,21 +660,21 @@ exports[`grammar should parse contract-with-init 1`] = `
               "kind": "statement_assign",
               "loc": self.a = a;,
               "path": {
-                "id": 20,
-                "kind": "op_field",
-                "loc": self.a,
-                "name": {
-                  "id": 19,
-                  "kind": "id",
-                  "loc": a,
-                  "text": "a",
-                },
-                "src": {
+                "aggregate": {
                   "id": 18,
                   "kind": "id",
                   "loc": self,
                   "text": "self",
                 },
+                "field": {
+                  "id": 19,
+                  "kind": "id",
+                  "loc": a,
+                  "text": "a",
+                },
+                "id": 20,
+                "kind": "field_access",
+                "loc": self.a,
               },
             },
             {
@@ -688,21 +688,21 @@ exports[`grammar should parse contract-with-init 1`] = `
               "kind": "statement_assign",
               "loc": self.b = b;,
               "path": {
-                "id": 25,
-                "kind": "op_field",
-                "loc": self.b,
-                "name": {
-                  "id": 24,
-                  "kind": "id",
-                  "loc": b,
-                  "text": "b",
-                },
-                "src": {
+                "aggregate": {
                   "id": 23,
                   "kind": "id",
                   "loc": self,
                   "text": "self",
                 },
+                "field": {
+                  "id": 24,
+                  "kind": "id",
+                  "loc": b,
+                  "text": "b",
+                },
+                "id": 25,
+                "kind": "field_access",
+                "loc": self.b,
               },
             },
           ],
@@ -1484,15 +1484,15 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                     },
                   ],
                   "id": 22,
-                  "kind": "op_call",
+                  "kind": "method_call",
                   "loc": 123.add(10),
-                  "name": {
+                  "method": {
                     "id": 20,
                     "kind": "id",
                     "loc": add,
                     "text": "add",
                   },
-                  "src": {
+                  "self": {
                     "id": 19,
                     "kind": "number",
                     "loc": 123,
@@ -1738,31 +1738,31 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
           "expression": {
             "args": [],
             "id": 14,
-            "kind": "op_call",
+            "kind": "method_call",
             "loc": m.asCell()!!.hash(),
-            "name": {
+            "method": {
               "id": 13,
               "kind": "id",
               "loc": hash,
               "text": "hash",
             },
-            "src": {
+            "self": {
               "id": 12,
               "kind": "op_unary",
               "loc": m.asCell()!!,
               "op": "!!",
-              "right": {
+              "operand": {
                 "args": [],
                 "id": 11,
-                "kind": "op_call",
+                "kind": "method_call",
                 "loc": m.asCell(),
-                "name": {
+                "method": {
                   "id": 10,
                   "kind": "id",
                   "loc": asCell,
                   "text": "asCell",
                 },
-                "src": {
+                "self": {
                   "id": 9,
                   "kind": "id",
                   "loc": m,
@@ -2319,15 +2319,15 @@ exports[`grammar should parse expr-fun-call 1`] = `
                         },
                       ],
                       "id": 23,
-                      "kind": "op_call",
+                      "kind": "method_call",
                       "loc": 123.add(10),
-                      "name": {
+                      "method": {
                         "id": 21,
                         "kind": "id",
                         "loc": add,
                         "text": "add",
                       },
-                      "src": {
+                      "self": {
                         "id": 20,
                         "kind": "number",
                         "loc": 123,
@@ -2335,15 +2335,15 @@ exports[`grammar should parse expr-fun-call 1`] = `
                       },
                     },
                   ],
-                  "id": 24,
-                  "kind": "op_static_call",
-                  "loc": abs(123.add(10)),
-                  "name": {
+                  "function": {
                     "id": 19,
                     "kind": "id",
                     "loc": abs,
                     "text": "abs",
                   },
+                  "id": 24,
+                  "kind": "static_call",
+                  "loc": abs(123.add(10)),
                 },
               },
             },
@@ -2653,7 +2653,7 @@ exports[`grammar should parse expr-parens 1`] = `
                 "kind": "op_unary",
                 "loc": (123 + 3)!!,
                 "op": "!!",
-                "right": {
+                "operand": {
                   "id": 9,
                   "kind": "op_binary",
                   "left": {
@@ -2757,7 +2757,7 @@ exports[`grammar should parse expr-with-unbox 1`] = `
                 "kind": "op_unary",
                 "loc": 3!!,
                 "op": "!!",
-                "right": {
+                "operand": {
                   "id": 7,
                   "kind": "number",
                   "loc": 3,
@@ -3389,18 +3389,18 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
               },
             ],
             "id": 81,
-            "kind": "op_call",
+            "kind": "method_call",
             "loc": a.extension(
         b,
         4,
     ),
-            "name": {
+            "method": {
               "id": 78,
               "kind": "id",
               "loc": extension,
               "text": "extension",
             },
-            "src": {
+            "self": {
               "id": 77,
               "kind": "id",
               "loc": a,
@@ -3448,18 +3448,18 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
                 "text": "b",
               },
             ],
-            "id": 89,
-            "kind": "op_static_call",
-            "loc": anotherFunction(
-        a,
-        b,
-    ),
-            "name": {
+            "function": {
               "id": 86,
               "kind": "id",
               "loc": anotherFunction,
               "text": "anotherFunction",
             },
+            "id": 89,
+            "kind": "static_call",
+            "loc": anotherFunction(
+        a,
+        b,
+    ),
           },
           "id": 90,
           "kind": "statement_let",
@@ -3584,18 +3584,18 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
                 "text": "b",
               },
             ],
-            "id": 106,
-            "kind": "op_static_call",
-            "loc": anotherFunction(
-        a,
-        b,
-    ),
-            "name": {
+            "function": {
               "id": 103,
               "kind": "id",
               "loc": anotherFunction,
               "text": "anotherFunction",
             },
+            "id": 106,
+            "kind": "static_call",
+            "loc": anotherFunction(
+        a,
+        b,
+    ),
           },
           "id": 107,
           "kind": "statement_return",
@@ -3718,18 +3718,18 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
                 "value": 3n,
               },
             ],
+            "contract": {
+              "id": 124,
+              "kind": "id",
+              "loc": TestContract,
+              "text": "TestContract",
+            },
             "id": 127,
             "kind": "init_of",
             "loc": initOf TestContract(
         2,
         3,
     ),
-            "name": {
-              "id": 124,
-              "kind": "id",
-              "loc": TestContract,
-              "text": "TestContract",
-            },
           },
           "id": 128,
           "kind": "statement_let",
@@ -4054,25 +4054,25 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
       "initializer": {
         "args": [
           {
-            "exp": {
-              "id": 16,
-              "kind": "number",
-              "loc": 1,
-              "value": 1n,
-            },
-            "id": 17,
-            "kind": "new_parameter",
-            "loc": x: 1,
-            "name": {
+            "field": {
               "id": 15,
               "kind": "id",
               "loc": x,
               "text": "x",
             },
+            "id": 17,
+            "initializer": {
+              "id": 16,
+              "kind": "number",
+              "loc": 1,
+              "value": 1n,
+            },
+            "kind": "struct_field_initializer",
+            "loc": x: 1,
           },
         ],
         "id": 18,
-        "kind": "op_new",
+        "kind": "struct_instance",
         "loc": A { x: 1 },
         "type": {
           "id": 14,
@@ -4136,42 +4136,42 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
           "expression": {
             "args": [
               {
-                "exp": {
-                  "id": 25,
-                  "kind": "number",
-                  "loc": 1,
-                  "value": 1n,
-                },
-                "id": 26,
-                "kind": "new_parameter",
-                "loc": x: 1,
-                "name": {
+                "field": {
                   "id": 24,
                   "kind": "id",
                   "loc": x,
                   "text": "x",
                 },
+                "id": 26,
+                "initializer": {
+                  "id": 25,
+                  "kind": "number",
+                  "loc": 1,
+                  "value": 1n,
+                },
+                "kind": "struct_field_initializer",
+                "loc": x: 1,
               },
               {
-                "exp": {
-                  "id": 28,
-                  "kind": "number",
-                  "loc": 2,
-                  "value": 2n,
-                },
-                "id": 29,
-                "kind": "new_parameter",
-                "loc": y: 2,
-                "name": {
+                "field": {
                   "id": 27,
                   "kind": "id",
                   "loc": y,
                   "text": "y",
                 },
+                "id": 29,
+                "initializer": {
+                  "id": 28,
+                  "kind": "number",
+                  "loc": 2,
+                  "value": 2n,
+                },
+                "kind": "struct_field_initializer",
+                "loc": y: 2,
               },
             ],
             "id": 30,
-            "kind": "op_new",
+            "kind": "struct_instance",
             "loc": A {
         x: 1,
         y: 2,
@@ -4265,42 +4265,42 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
       "initializer": {
         "args": [
           {
-            "exp": {
-              "id": 48,
-              "kind": "number",
-              "loc": 2,
-              "value": 2n,
-            },
-            "id": 49,
-            "kind": "new_parameter",
-            "loc": x: 2,
-            "name": {
+            "field": {
               "id": 47,
               "kind": "id",
               "loc": x,
               "text": "x",
             },
+            "id": 49,
+            "initializer": {
+              "id": 48,
+              "kind": "number",
+              "loc": 2,
+              "value": 2n,
+            },
+            "kind": "struct_field_initializer",
+            "loc": x: 2,
           },
           {
-            "exp": {
-              "id": 51,
-              "kind": "number",
-              "loc": 3,
-              "value": 3n,
-            },
-            "id": 52,
-            "kind": "new_parameter",
-            "loc": y: 3,
-            "name": {
+            "field": {
               "id": 50,
               "kind": "id",
               "loc": y,
               "text": "y",
             },
+            "id": 52,
+            "initializer": {
+              "id": 51,
+              "kind": "number",
+              "loc": 3,
+              "value": 3n,
+            },
+            "kind": "struct_field_initializer",
+            "loc": y: 3,
           },
         ],
         "id": 53,
-        "kind": "op_new",
+        "kind": "struct_instance",
         "loc": B {
     x: 2,
     y: 3,
@@ -4367,42 +4367,42 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
           "expression": {
             "args": [
               {
-                "exp": {
-                  "id": 60,
-                  "kind": "number",
-                  "loc": 1,
-                  "value": 1n,
-                },
-                "id": 61,
-                "kind": "new_parameter",
-                "loc": x: 1,
-                "name": {
+                "field": {
                   "id": 59,
                   "kind": "id",
                   "loc": x,
                   "text": "x",
                 },
+                "id": 61,
+                "initializer": {
+                  "id": 60,
+                  "kind": "number",
+                  "loc": 1,
+                  "value": 1n,
+                },
+                "kind": "struct_field_initializer",
+                "loc": x: 1,
               },
               {
-                "exp": {
-                  "id": 63,
-                  "kind": "number",
-                  "loc": 5,
-                  "value": 5n,
-                },
-                "id": 64,
-                "kind": "new_parameter",
-                "loc": y: 5,
-                "name": {
+                "field": {
                   "id": 62,
                   "kind": "id",
                   "loc": y,
                   "text": "y",
                 },
+                "id": 64,
+                "initializer": {
+                  "id": 63,
+                  "kind": "number",
+                  "loc": 5,
+                  "value": 5n,
+                },
+                "kind": "struct_field_initializer",
+                "loc": y: 5,
               },
             ],
             "id": 65,
-            "kind": "op_new",
+            "kind": "struct_instance",
             "loc": B { x: 1, y: 5, },
             "type": {
               "id": 58,
@@ -4501,7 +4501,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
             "kind": "op_unary",
             "loc": -123,
             "op": "-",
-            "right": {
+            "operand": {
               "id": 12,
               "kind": "number",
               "loc": 123,
@@ -4594,7 +4594,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
             "kind": "op_unary",
             "loc": -0x123,
             "op": "-",
-            "right": {
+            "operand": {
               "id": 28,
               "kind": "number",
               "loc": 0x123,
@@ -4687,7 +4687,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
             "kind": "op_unary",
             "loc": -0b101010,
             "op": "-",
-            "right": {
+            "operand": {
               "id": 44,
               "kind": "number",
               "loc": 0b101010,
@@ -4780,7 +4780,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
             "kind": "op_unary",
             "loc": -0o123,
             "op": "-",
-            "right": {
+            "operand": {
               "id": 60,
               "kind": "number",
               "loc": 0o123,
@@ -6828,42 +6828,42 @@ exports[`grammar should parse struct-field-punning 1`] = `
       "initializer": {
         "args": [
           {
-            "exp": {
-              "id": 26,
-              "kind": "id",
-              "loc": x,
-              "text": "x",
-            },
-            "id": 27,
-            "kind": "new_parameter",
-            "loc": x,
-            "name": {
+            "field": {
               "id": 25,
               "kind": "id",
               "loc": x,
               "text": "x",
             },
+            "id": 27,
+            "initializer": {
+              "id": 26,
+              "kind": "id",
+              "loc": x,
+              "text": "x",
+            },
+            "kind": "struct_field_initializer",
+            "loc": x,
           },
           {
-            "exp": {
-              "id": 29,
-              "kind": "id",
-              "loc": y,
-              "text": "y",
-            },
-            "id": 30,
-            "kind": "new_parameter",
-            "loc": y,
-            "name": {
+            "field": {
               "id": 28,
               "kind": "id",
               "loc": y,
               "text": "y",
             },
+            "id": 30,
+            "initializer": {
+              "id": 29,
+              "kind": "id",
+              "loc": y,
+              "text": "y",
+            },
+            "kind": "struct_field_initializer",
+            "loc": y,
           },
         ],
         "id": 31,
-        "kind": "op_new",
+        "kind": "struct_instance",
         "loc": A { x, y },
         "type": {
           "id": 24,
@@ -7973,7 +7973,7 @@ exports[`grammar should parse types-optional 1`] = `
                 "kind": "op_unary",
                 "loc": (123 + 3)!!,
                 "op": "!!",
-                "right": {
+                "operand": {
                   "id": 13,
                   "kind": "op_binary",
                   "left": {

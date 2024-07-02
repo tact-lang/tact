@@ -20,7 +20,7 @@ function exceptionId(src: string): number {
 
 function resolveStringsInAST(ast: ASTNode, ctx: CompilerContext) {
     traverse(ast, (node) => {
-        if (node.kind === "op_static_call" && isRequire(node.name)) {
+        if (node.kind === "static_call" && isRequire(node.function)) {
             if (node.args.length !== 2) {
                 return;
             }

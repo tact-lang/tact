@@ -1,4 +1,4 @@
-import { ASTNode, AstStatement, ASTExpression } from "./ast";
+import { ASTNode, AstStatement, AstExpression } from "./ast";
 
 /**
  * Recursively iterates over each expression in an ASTNode and applies a callback to each expression.
@@ -7,9 +7,9 @@ import { ASTNode, AstStatement, ASTExpression } from "./ast";
  */
 export function forEachExpression(
     node: ASTNode,
-    callback: (expr: ASTExpression) => void,
+    callback: (expr: AstExpression) => void,
 ): void {
-    function traverseExpression(expr: ASTExpression): void {
+    function traverseExpression(expr: AstExpression): void {
         callback(expr);
 
         switch (expr.kind) {
@@ -18,20 +18,22 @@ export function forEachExpression(
                 traverseExpression(expr.right);
                 break;
             case "op_unary":
-                traverseExpression(expr.right);
+                traverseExpression(expr.operand);
                 break;
-            case "op_field":
-                traverseExpression(expr.src);
+            case "field_access":
+                traverseExpression(expr.aggregate);
                 break;
-            case "op_call":
-                traverseExpression(expr.src);
+            case "method_call":
+                traverseExpression(expr.self);
                 expr.args.forEach(traverseExpression);
                 break;
-            case "op_static_call":
+            case "static_call":
                 expr.args.forEach(traverseExpression);
                 break;
-            case "op_new":
-                expr.args.forEach((param) => traverseExpression(param.exp));
+            case "struct_instance":
+                expr.args.forEach((param) =>
+                    traverseExpression(param.initializer),
+                );
                 break;
             case "init_of":
                 expr.args.forEach(traverseExpression);
@@ -142,10 +144,10 @@ export function forEachExpression(
                 break;
             case "op_binary":
             case "op_unary":
-            case "op_field":
-            case "op_call":
-            case "op_static_call":
-            case "op_new":
+            case "field_access":
+            case "method_call":
+            case "static_call":
+            case "struct_instance":
             case "init_of":
             case "conditional":
             case "string":
@@ -155,8 +157,8 @@ export function forEachExpression(
             case "null":
                 traverseExpression(node);
                 break;
-            case "new_parameter":
-                traverseExpression(node.exp);
+            case "struct_field_initializer":
+                traverseExpression(node.initializer);
                 break;
             case "typed_parameter":
             case "type_ref_simple":
@@ -182,9 +184,9 @@ export function forEachExpression(
 export function foldExpressions<T>(
     node: ASTNode,
     acc: T,
-    callback: (acc: T, expr: ASTExpression) => T,
+    callback: (acc: T, expr: AstExpression) => T,
 ): T {
-    function traverseExpression(acc: T, expr: ASTExpression): T {
+    function traverseExpression(acc: T, expr: AstExpression): T {
         acc = callback(acc, expr);
 
         switch (expr.kind) {
@@ -193,25 +195,25 @@ export function foldExpressions<T>(
                 acc = traverseExpression(acc, expr.right);
                 break;
             case "op_unary":
-                acc = traverseExpression(acc, expr.right);
+                acc = traverseExpression(acc, expr.operand);
                 break;
-            case "op_field":
-                acc = traverseExpression(acc, expr.src);
+            case "field_access":
+                acc = traverseExpression(acc, expr.aggregate);
                 break;
-            case "op_call":
-                acc = traverseExpression(acc, expr.src);
+            case "method_call":
+                acc = traverseExpression(acc, expr.self);
                 expr.args.forEach((arg) => {
                     acc = traverseExpression(acc, arg);
                 });
                 break;
-            case "op_static_call":
+            case "static_call":
                 expr.args.forEach((arg) => {
                     acc = traverseExpression(acc, arg);
                 });
                 break;
-            case "op_new":
+            case "struct_instance":
                 expr.args.forEach((param) => {
-                    acc = traverseExpression(acc, param.exp);
+                    acc = traverseExpression(acc, param.initializer);
                 });
                 break;
             case "init_of":
@@ -356,10 +358,10 @@ export function foldExpressions<T>(
                 break;
             case "op_binary":
             case "op_unary":
-            case "op_field":
-            case "op_call":
-            case "op_static_call":
-            case "op_new":
+            case "field_access":
+            case "method_call":
+            case "static_call":
+            case "struct_instance":
             case "init_of":
             case "conditional":
             case "string":
@@ -369,8 +371,8 @@ export function foldExpressions<T>(
             case "null":
                 acc = traverseExpression(acc, node);
                 break;
-            case "new_parameter":
-                acc = traverseExpression(acc, node.exp);
+            case "struct_field_initializer":
+                acc = traverseExpression(acc, node.initializer);
                 break;
             case "typed_parameter":
             case "type_ref_simple":
@@ -459,10 +461,10 @@ export function forEachStatement(
                 break;
             case "op_binary":
             case "op_unary":
-            case "op_field":
-            case "op_call":
-            case "op_static_call":
-            case "op_new":
+            case "field_access":
+            case "method_call":
+            case "static_call":
+            case "struct_instance":
             case "init_of":
             case "conditional":
             case "string":
@@ -470,7 +472,7 @@ export function forEachStatement(
             case "boolean":
             case "id":
             case "null":
-            case "new_parameter":
+            case "struct_field_initializer":
             case "typed_parameter":
             case "type_ref_simple":
             case "type_ref_map":
@@ -587,10 +589,10 @@ export function foldStatements<T>(
                 break;
             case "op_binary":
             case "op_unary":
-            case "op_field":
-            case "op_call":
-            case "op_static_call":
-            case "op_new":
+            case "field_access":
+            case "method_call":
+            case "static_call":
+            case "struct_instance":
             case "init_of":
             case "conditional":
             case "string":
@@ -598,7 +600,7 @@ export function foldStatements<T>(
             case "boolean":
             case "id":
             case "null":
-            case "new_parameter":
+            case "struct_field_initializer":
             case "typed_parameter":
             case "type_ref_simple":
             case "type_ref_map":

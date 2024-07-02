@@ -1615,13 +1615,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
         const dependsOn = new Set<string>();
         const handler = (src: ASTNode) => {
             if (src.kind === "init_of") {
-                if (!types.has(idText(src.name))) {
+                if (!types.has(idText(src.contract))) {
                     throwCompilationError(
-                        `Type ${idTextErr(src.name)} not found`,
+                        `Type ${idTextErr(src.contract)} not found`,
                         src.loc,
                     );
                 }
-                dependsOn.add(idText(src.name));
+                dependsOn.add(idText(src.contract));
             }
         };
 

@@ -285,8 +285,8 @@ function processStatements(
             // take `throw` and `throwNative` into account when doing
             // return-reachability analysis
             if (
-                s.expression.kind === "op_static_call" &&
-                ["throw", "nativeThrow"].includes(idText(s.expression.name))
+                s.expression.kind === "static_call" &&
+                ["throw", "nativeThrow"].includes(idText(s.expression.function))
             ) {
                 returnAlwaysReachable = true;
             }

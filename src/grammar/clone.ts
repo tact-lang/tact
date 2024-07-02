@@ -39,10 +39,10 @@ export function cloneNode<T extends ASTNode>(src: T): T {
                 : null,
             elseif: src.elseif ? cloneNode(src.elseif) : null,
         });
-    } else if (src.kind === "new_parameter") {
+    } else if (src.kind === "struct_field_initializer") {
         return cloneASTNode({
             ...src,
-            exp: cloneNode(src.exp),
+            initializer: cloneNode(src.initializer),
         });
     } else if (src.kind === "statement_expression") {
         return cloneASTNode({
@@ -58,25 +58,25 @@ export function cloneNode<T extends ASTNode>(src: T): T {
     } else if (src.kind === "op_unary") {
         return cloneASTNode({
             ...src,
-            right: cloneNode(src.right),
+            operand: cloneNode(src.operand),
         });
-    } else if (src.kind === "op_new") {
+    } else if (src.kind === "struct_instance") {
         return cloneASTNode({
             ...src,
             args: src.args.map(cloneNode),
         });
-    } else if (src.kind === "op_call") {
+    } else if (src.kind === "method_call") {
         return cloneASTNode({
             ...src,
-            src: cloneNode(src.src),
+            self: cloneNode(src.self),
             args: src.args.map(cloneNode),
         });
-    } else if (src.kind === "op_field") {
+    } else if (src.kind === "field_access") {
         return cloneASTNode({
             ...src,
-            src: cloneNode(src.src),
+            aggregate: cloneNode(src.aggregate),
         });
-    } else if (src.kind === "op_static_call") {
+    } else if (src.kind === "static_call") {
         return cloneASTNode({
             ...src,
             args: src.args.map(cloneNode),

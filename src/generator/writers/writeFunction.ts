@@ -1,7 +1,7 @@
 import { enabledInline } from "../../config/features";
 import {
     AstCondition,
-    ASTExpression,
+    AstExpression,
     AstNativeFunctionDecl,
     AstStatement,
     idText,
@@ -25,7 +25,7 @@ import { freshIdentifier } from "./freshIdentifier";
 import { idTextErr, throwInternalCompilerError } from "../../errors";
 
 export function writeCastedExpression(
-    expression: ASTExpression,
+    expression: AstExpression,
     to: TypeRef,
     ctx: WriterContext,
 ) {

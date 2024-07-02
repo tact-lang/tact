@@ -2,12 +2,12 @@ import { Address, Cell, toNano } from "@ton/core";
 import { enabledMasterchain } from "./config/features";
 import { CompilerContext } from "./context";
 import {
-    ASTBinaryOperation,
-    ASTExpression,
+    AstBinaryOperation,
+    AstExpression,
     AstId,
-    ASTNewParameter,
+    AstStructFieldInitializer,
     SrcInfo,
-    ASTUnaryOperation,
+    AstUnaryOperation,
     isSelfId,
     eqNames,
     idText,
@@ -75,7 +75,7 @@ function ensureString(val: Value, source: SrcInfo): string {
     return val;
 }
 
-function ensureFunArity(arity: number, args: ASTExpression[], source: SrcInfo) {
+function ensureFunArity(arity: number, args: AstExpression[], source: SrcInfo) {
     if (args.length !== arity) {
         throwErrorConstEval(
             `function expects ${arity} argument(s), but got ${args.length}`,
@@ -86,7 +86,7 @@ function ensureFunArity(arity: number, args: ASTExpression[], source: SrcInfo) {
 
 function ensureMethodArity(
     arity: number,
-    args: ASTExpression[],
+    args: AstExpression[],
     source: SrcInfo,
 ) {
     if (args.length !== arity) {
@@ -98,8 +98,8 @@ function ensureMethodArity(
 }
 
 function evalUnaryOp(
-    op: ASTUnaryOperation,
-    operand: ASTExpression,
+    op: AstUnaryOperation,
+    operand: AstExpression,
     source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
@@ -149,9 +149,9 @@ function modFloor(a: bigint, b: bigint): bigint {
 }
 
 function evalBinaryOp(
-    op: ASTBinaryOperation,
-    left: ASTExpression,
-    right: ASTExpression,
+    op: AstBinaryOperation,
+    left: AstExpression,
+    right: AstExpression,
     source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
@@ -303,9 +303,9 @@ function evalBinaryOp(
 }
 
 function evalConditional(
-    condition: ASTExpression,
-    thenBranch: ASTExpression,
-    elseBranch: ASTExpression,
+    condition: AstExpression,
+    thenBranch: AstExpression,
+    elseBranch: AstExpression,
     ctx: CompilerContext,
 ): Value {
     // here we rely on the typechecker that both branches have the same type
@@ -322,13 +322,13 @@ function evalConditional(
 
 function evalStructInstance(
     structTypeId: AstId,
-    structFields: ASTNewParameter[],
+    structFields: AstStructFieldInitializer[],
     ctx: CompilerContext,
 ): StructValue {
     return structFields.reduce(
         (resObj, fieldWithInit) => {
-            resObj[fieldWithInit.name.text] = evalConstantExpression(
-                fieldWithInit.exp,
+            resObj[fieldWithInit.field.text] = evalConstantExpression(
+                fieldWithInit.initializer,
                 ctx,
             );
             return resObj;
@@ -338,7 +338,7 @@ function evalStructInstance(
 }
 
 function evalFieldAccess(
-    structExpr: ASTExpression,
+    structExpr: AstExpression,
     fieldId: AstId,
     source: SrcInfo,
     ctx: CompilerContext,
@@ -392,8 +392,8 @@ function evalFieldAccess(
 
 function evalMethod(
     methodName: AstId,
-    object: ASTExpression,
-    args: ASTExpression[],
+    object: AstExpression,
+    args: AstExpression[],
     source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
@@ -416,7 +416,7 @@ function evalMethod(
 
 function evalBuiltins(
     builtinName: AstId,
-    args: ASTExpression[],
+    args: AstExpression[],
     source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
@@ -638,7 +638,7 @@ function interpretEscapeSequences(stringLiteral: string) {
 }
 
 export function evalConstantExpression(
-    ast: ASTExpression,
+    ast: AstExpression,
     ctx: CompilerContext,
 ): Value {
     switch (ast.kind) {
@@ -656,8 +656,8 @@ export function evalConstantExpression(
             }
             throwNonFatalErrorConstEval("cannot evaluate a variable", ast.loc);
             break;
-        case "op_call":
-            return evalMethod(ast.name, ast.src, ast.args, ast.loc, ctx);
+        case "method_call":
+            return evalMethod(ast.method, ast.self, ast.args, ast.loc, ctx);
         case "init_of":
             throwNonFatalErrorConstEval(
                 "initOf is not supported at this moment",
@@ -673,7 +673,7 @@ export function evalConstantExpression(
         case "string":
             return ensureString(interpretEscapeSequences(ast.value), ast.loc);
         case "op_unary":
-            return evalUnaryOp(ast.op, ast.right, ast.loc, ctx);
+            return evalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
         case "op_binary":
             return evalBinaryOp(ast.op, ast.left, ast.right, ast.loc, ctx);
         case "conditional":
@@ -683,11 +683,11 @@ export function evalConstantExpression(
                 ast.elseBranch,
                 ctx,
             );
-        case "op_new":
+        case "struct_instance":
             return evalStructInstance(ast.type, ast.args, ctx);
-        case "op_field":
-            return evalFieldAccess(ast.src, ast.name, ast.loc, ctx);
-        case "op_static_call":
-            return evalBuiltins(ast.name, ast.args, ast.loc, ctx);
+        case "field_access":
+            return evalFieldAccess(ast.aggregate, ast.field, ast.loc, ctx);
+        case "static_call":
+            return evalBuiltins(ast.function, ast.args, ast.loc, ctx);
     }
 }
