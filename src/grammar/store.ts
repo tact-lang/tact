@@ -1,15 +1,14 @@
 import {
-    ASTProgram,
-    ASTConstant,
-    ASTFunction,
-    ASTNativeFunction,
+    AstModule,
+    AstConstantDef,
+    AstFunctionDef,
+    AstNativeFunctionDecl,
     ASTType,
 } from "./ast";
 import { CompilerContext, createContextStore } from "../context";
-import { parse } from "./grammar";
-import { TypeOrigin } from "../types/types";
+import { ItemOrigin, parse } from "./grammar";
 
-export type TactSource = { code: string; path: string; origin: TypeOrigin };
+export type TactSource = { code: string; path: string; origin: ItemOrigin };
 
 /**
  * Represents the storage for all AST-related data within the compiler context.
@@ -20,8 +19,8 @@ export type TactSource = { code: string; path: string; origin: TypeOrigin };
 export type ASTStore = {
     sources: TactSource[];
     funcSources: { code: string; path: string }[];
-    functions: (ASTFunction | ASTNativeFunction)[];
-    constants: ASTConstant[];
+    functions: (AstFunctionDef | AstNativeFunctionDecl)[];
+    constants: AstConstantDef[];
     types: ASTType[];
 };
 
@@ -42,9 +41,9 @@ export function getRawAST(ctx: CompilerContext) {
 }
 
 /**
- * Parses multiple Tact source files into AST programs.
+ * Parses multiple Tact source files into AST modules.
  */
-export function parsePrograms(sources: TactSource[]): ASTProgram[] {
+export function parseModules(sources: TactSource[]): AstModule[] {
     return sources.map((source) =>
         parse(source.code, source.path, source.origin),
     );
@@ -60,28 +59,29 @@ export function openContext(
     ctx: CompilerContext,
     sources: TactSource[],
     funcSources: { code: string; path: string }[],
-    parsedPrograms?: ASTProgram[],
+    parsedPrograms?: AstModule[],
 ): CompilerContext {
-    const programs = parsedPrograms ? parsedPrograms : parsePrograms(sources);
+    const programs = parsedPrograms ? parsedPrograms : parseModules(sources);
     const types: ASTType[] = [];
-    const functions: (ASTNativeFunction | ASTFunction)[] = [];
-    const constants: ASTConstant[] = [];
+    const functions: (AstNativeFunctionDecl | AstFunctionDef)[] = [];
+    const constants: AstConstantDef[] = [];
     for (const program of programs) {
-        for (const entry of program.entries) {
+        for (const item of program.items) {
             if (
-                entry.kind === "def_struct" ||
-                entry.kind === "def_contract" ||
-                entry.kind === "def_trait" ||
-                entry.kind === "primitive"
+                item.kind === "struct_decl" ||
+                item.kind === "message_decl" ||
+                item.kind === "contract" ||
+                item.kind === "trait" ||
+                item.kind === "primitive_type_decl"
             ) {
-                types.push(entry);
+                types.push(item);
             } else if (
-                entry.kind === "def_function" ||
-                entry.kind === "def_native_function"
+                item.kind === "function_def" ||
+                item.kind === "native_function_decl"
             ) {
-                functions.push(entry);
-            } else if (entry.kind === "def_constant") {
-                constants.push(entry);
+                functions.push(item);
+            } else if (item.kind === "constant_def") {
+                constants.push(item);
             }
         }
     }

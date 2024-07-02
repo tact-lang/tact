@@ -2,7 +2,7 @@ import { beginCell } from "@ton/core";
 import { getType } from "../../types/resolveDescriptors";
 import { ReceiverDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
-import { id } from "./id";
+import { funcIdOf } from "./id";
 import { ops } from "./ops";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
@@ -281,9 +281,9 @@ export function writeReceiver(
     ctx: WriterContext,
 ) {
     const selector = f.selector;
-    const selfRes = resolveFuncTypeUnpack(self, id("self"), ctx);
+    const selfRes = resolveFuncTypeUnpack(self, funcIdOf("self"), ctx);
     const selfType = resolveFuncType(self, ctx);
-    const selfUnpack = `var ${resolveFuncTypeUnpack(self, id("self"), ctx)} = ${id("self")};`;
+    const selfUnpack = `var ${resolveFuncTypeUnpack(self, funcIdOf("self"), ctx)} = ${funcIdOf("self")};`;
 
     // Binary receiver
     if (
@@ -291,8 +291,8 @@ export function writeReceiver(
         selector.kind === "external-binary"
     ) {
         const args = [
-            selfType + " " + id("self"),
-            resolveFuncType(selector.type, ctx) + " " + id(selector.name),
+            selfType + " " + funcIdOf("self"),
+            resolveFuncType(selector.type, ctx) + " " + funcIdOf(selector.name),
         ];
         ctx.append(
             `((${selfType}), ()) ${ops.receiveType(self.name, selector.kind === "internal-binary" ? "internal" : "external", selector.type)}(${args.join(", ")}) impure inline {`,
@@ -300,7 +300,7 @@ export function writeReceiver(
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
             ctx.append(
-                `var ${resolveFuncTypeUnpack(selector.type, id(selector.name), ctx)} = ${id(selector.name)};`,
+                `var ${resolveFuncTypeUnpack(selector.type, funcIdOf(selector.name), ctx)} = ${funcIdOf(selector.name)};`,
             );
 
             for (const s of f.ast.statements) {
@@ -326,7 +326,7 @@ export function writeReceiver(
         selector.kind === "external-empty"
     ) {
         ctx.append(
-            `((${selfType}), ()) ${ops.receiveEmpty(self.name, selector.kind === "internal-empty" ? "internal" : "external")}(${selfType + " " + id("self")}) impure inline {`,
+            `((${selfType}), ()) ${ops.receiveEmpty(self.name, selector.kind === "internal-empty" ? "internal" : "external")}(${selfType + " " + funcIdOf("self")}) impure inline {`,
         );
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
@@ -355,7 +355,7 @@ export function writeReceiver(
     ) {
         const hash = commentPseudoOpcode(selector.comment);
         ctx.append(
-            `(${selfType}, ()) ${ops.receiveText(self.name, selector.kind === "internal-comment" ? "internal" : "external", hash)}(${selfType + " " + id("self")}) impure inline {`,
+            `(${selfType}, ()) ${ops.receiveText(self.name, selector.kind === "internal-comment" ? "internal" : "external", hash)}(${selfType + " " + funcIdOf("self")}) impure inline {`,
         );
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
@@ -383,7 +383,7 @@ export function writeReceiver(
         selector.kind === "external-comment-fallback"
     ) {
         ctx.append(
-            `(${selfType}, ()) ${ops.receiveAnyText(self.name, selector.kind === "internal-comment-fallback" ? "internal" : "external")}(${[selfType + " " + id("self"), "slice " + id(selector.name)].join(", ")}) impure inline {`,
+            `(${selfType}, ()) ${ops.receiveAnyText(self.name, selector.kind === "internal-comment-fallback" ? "internal" : "external")}(${[selfType + " " + funcIdOf("self"), "slice " + funcIdOf(selector.name)].join(", ")}) impure inline {`,
         );
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
@@ -408,7 +408,7 @@ export function writeReceiver(
     // Fallback
     if (selector.kind === "internal-fallback") {
         ctx.append(
-            `(${selfType}, ()) ${ops.receiveAny(self.name, selector.kind === "internal-fallback" ? "internal" : "external")}(${selfType} ${id("self")}, slice ${id(selector.name)}) impure inline {`,
+            `(${selfType}, ()) ${ops.receiveAny(self.name, selector.kind === "internal-fallback" ? "internal" : "external")}(${selfType} ${funcIdOf("self")}, slice ${funcIdOf(selector.name)}) impure inline {`,
         );
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
@@ -433,7 +433,7 @@ export function writeReceiver(
     // Bounced
     if (selector.kind === "bounce-fallback") {
         ctx.append(
-            `(${selfType}, ()) ${ops.receiveBounceAny(self.name)}(${selfType} ${id("self")}, slice ${id(selector.name)}) impure inline {`,
+            `(${selfType}, ()) ${ops.receiveBounceAny(self.name)}(${selfType} ${funcIdOf("self")}, slice ${funcIdOf(selector.name)}) impure inline {`,
         );
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
@@ -457,10 +457,10 @@ export function writeReceiver(
 
     if (selector.kind === "bounce-binary") {
         const args = [
-            selfType + " " + id("self"),
+            selfType + " " + funcIdOf("self"),
             resolveFuncType(selector.type, ctx, false, selector.bounced) +
                 " " +
-                id(selector.name),
+                funcIdOf(selector.name),
         ];
         ctx.append(
             `((${selfType}), ()) ${ops.receiveTypeBounce(self.name, selector.type)}(${args.join(", ")}) impure inline {`,
@@ -468,7 +468,7 @@ export function writeReceiver(
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
             ctx.append(
-                `var ${resolveFuncTypeUnpack(selector.type, id(selector.name), ctx, false, selector.bounced)} = ${id(selector.name)};`,
+                `var ${resolveFuncTypeUnpack(selector.type, funcIdOf(selector.name), ctx, false, selector.bounced)} = ${funcIdOf(selector.name)};`,
             );
 
             for (const s of f.ast.statements) {

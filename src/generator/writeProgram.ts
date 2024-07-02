@@ -25,7 +25,7 @@ import {
     writeMainContract,
     writeStorageOps,
 } from "./writers/writeContract";
-import { initId } from "./writers/id";
+import { funcInitIdOf } from "./writers/id";
 import { idToHex } from "../utils/idToHex";
 import { trimIndent } from "../utils/text";
 
@@ -351,9 +351,21 @@ function writeAll(
     // Init serializers
     for (const t of sortedTypes) {
         if (t.kind === "contract" && t.init) {
-            const allocation = getAllocation(ctx, initId(t.name));
-            writeSerializer(initId(t.name), true, allocation, t.origin, wCtx);
-            writeParser(initId(t.name), false, allocation, t.origin, wCtx);
+            const allocation = getAllocation(ctx, funcInitIdOf(t.name));
+            writeSerializer(
+                funcInitIdOf(t.name),
+                true,
+                allocation,
+                t.origin,
+                wCtx,
+            );
+            writeParser(
+                funcInitIdOf(t.name),
+                false,
+                allocation,
+                t.origin,
+                wCtx,
+            );
         }
     }
 

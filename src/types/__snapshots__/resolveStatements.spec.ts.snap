@@ -641,12 +641,12 @@ Line 9, col 5:
 `;
 
 exports[`resolveStatements should fail statements for var-scope-catch-param-does-not-shadow-outer-var 1`] = `
-"<unknown>:6:5: Variable already exists: "e"
-Line 6, col 5:
-  5 |     let e: String = "qwe";
-> 6 |     try {
-          ^~~~~
+"<unknown>:8:14: Variable already exists: "e"
+Line 8, col 14:
   7 |         return e;
+> 8 |     } catch (e) {
+                   ^
+  9 |         return e;
 "
 `;
 
@@ -681,21 +681,21 @@ Line 8, col 12:
 `;
 
 exports[`resolveStatements should fail statements for var-scope-foreach-val-shadows-key 1`] = `
-"<unknown>:5:5: Variable already exists: "k"
-Line 5, col 5:
+"<unknown>:5:17: Variable already exists: "k"
+Line 5, col 17:
   4 |     let m: map<Int, Int> = emptyMap();
 > 5 |     foreach (k, k in m) {
-          ^~~~~~~~~~~~~~~~~~~~~
+                      ^
   6 |         // something
 "
 `;
 
 exports[`resolveStatements should fail statements for var-scope-foreach-val-shadows-map 1`] = `
-"<unknown>:5:5: Variable already exists: "m"
-Line 5, col 5:
+"<unknown>:5:17: Variable already exists: "m"
+Line 5, col 17:
   4 |     let m: map<Int, Int> = emptyMap();
 > 5 |     foreach (k, m in m) {
-          ^~~~~~~~~~~~~~~~~~~~~
+                      ^
   6 |         // something
 "
 `;
@@ -717,6 +717,16 @@ Line 9, col 12:
 >  9 |     return c;
                   ^
   10 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-missing-storage-var 1`] = `
+"<unknown>:5:9: Type "Test" does not have a field named "nonExistentField"
+Line 5, col 9:
+  4 |     init() {
+> 5 |         self.nonExistentField = 42;
+              ^~~~~~~~~~~~~~~~~~~~~
+  6 |     }
 "
 `;
 

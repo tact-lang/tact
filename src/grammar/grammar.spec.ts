@@ -1,10 +1,10 @@
 import { parse } from "./grammar";
-import { ASTRef, __DANGER_resetNodeId } from "./ast";
+import { SrcInfo, __DANGER_resetNodeId } from "./ast";
 import { loadCases } from "../utils/loadCases";
 
 expect.addSnapshotSerializer({
-    test: (src) => src instanceof ASTRef,
-    print: (src) => `${(src as ASTRef).contents}`,
+    test: (src) => src instanceof SrcInfo,
+    print: (src) => `${(src as SrcInfo).contents}`,
 });
 
 describe("grammar", () => {

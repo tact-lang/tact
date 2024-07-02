@@ -33,7 +33,7 @@ export function resolveFuncFlatPack(
     }
 
     // TypeDescription
-    if (descriptor.kind === "primitive") {
+    if (descriptor.kind === "primitive_type_decl") {
         return [name];
     } else if (descriptor.kind === "struct") {
         if (optional || descriptor.fields.length === 0) {

@@ -1,5 +1,4 @@
-import { parseImports } from "../grammar/grammar";
-import { TypeOrigin } from "../types/types";
+import { ItemOrigin, parseImports } from "../grammar/grammar";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { resolveLibrary } from "./resolveLibrary";
 
@@ -25,13 +24,13 @@ export function resolveImports(args: {
     // Resolve all imports
     //
 
-    const importedTact: { code: string; path: string; origin: TypeOrigin }[] =
+    const importedTact: { code: string; path: string; origin: ItemOrigin }[] =
         [];
-    const importedFunc: { code: string; path: string; origin: TypeOrigin }[] =
+    const importedFunc: { code: string; path: string; origin: ItemOrigin }[] =
         [];
     const processed = new Set<string>();
-    const pending: { code: string; path: string; origin: TypeOrigin }[] = [];
-    function processImports(source: string, path: string, origin: TypeOrigin) {
+    const pending: { code: string; path: string; origin: ItemOrigin }[] = [];
+    function processImports(source: string, path: string, origin: ItemOrigin) {
         const imp = parseImports(source, path, origin);
         for (const i of imp) {
             // Resolve library

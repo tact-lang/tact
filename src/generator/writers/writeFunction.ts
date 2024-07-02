@@ -2,8 +2,10 @@ import { enabledInline } from "../../config/features";
 import {
     ASTCondition,
     ASTExpression,
-    ASTNativeFunction,
+    AstNativeFunctionDecl,
     ASTStatement,
+    idText,
+    isWildcard,
     tryExtractPath,
 } from "../../grammar/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
@@ -14,13 +16,13 @@ import { WriterContext } from "../Writer";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
-import { id } from "./id";
+import { funcIdOf } from "./id";
 import { writeExpression, writePathExpression } from "./writeExpression";
 import { cast } from "./cast";
 import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { ops } from "./ops";
 import { freshIdentifier } from "./freshIdentifier";
-import { throwInternalCompilerError } from "../../errors";
+import { idTextErr, throwInternalCompilerError } from "../../errors";
 
 export function writeCastedExpression(
     expression: ASTExpression,
@@ -50,7 +52,7 @@ export function unwrapExternal(
                 );
             }
             return;
-        } else if (t.kind === "primitive" && t.name === "Address") {
+        } else if (t.kind === "primitive_type_decl" && t.name === "Address") {
             if (type.optional) {
                 ctx.append(
                     `${resolveFuncType(type, ctx)} ${targetName} = null?(${sourceName}) ? null() : ${ctx.used(`__tact_verify_address`)}(${sourceName});`,
@@ -93,7 +95,7 @@ export function writeStatement(
         return;
     } else if (f.kind === "statement_let") {
         // Underscore name case
-        if (f.name === "_") {
+        if (isWildcard(f.name)) {
             ctx.append(`${writeExpression(f.expression, ctx)};`);
             return;
         }
@@ -109,11 +111,11 @@ export function writeStatement(
             if (tt.kind === "contract" || tt.kind === "struct") {
                 if (t.optional) {
                     ctx.append(
-                        `tuple ${id(f.name)} = ${writeCastedExpression(f.expression, t, ctx)};`,
+                        `tuple ${funcIdOf(f.name)} = ${writeCastedExpression(f.expression, t, ctx)};`,
                     );
                 } else {
                     ctx.append(
-                        `var ${resolveFuncTypeUnpack(t, id(f.name), ctx)} = ${writeCastedExpression(f.expression, t, ctx)};`,
+                        `var ${resolveFuncTypeUnpack(t, funcIdOf(f.name), ctx)} = ${writeCastedExpression(f.expression, t, ctx)};`,
                     );
                 }
                 return;
@@ -121,7 +123,7 @@ export function writeStatement(
         }
 
         ctx.append(
-            `${resolveFuncType(t, ctx)} ${id(f.name)} = ${writeCastedExpression(f.expression, t, ctx)};`,
+            `${resolveFuncType(t, ctx)} ${funcIdOf(f.name)} = ${writeCastedExpression(f.expression, t, ctx)};`,
         );
         return;
     } else if (f.kind === "statement_assign") {
@@ -131,7 +133,7 @@ export function writeStatement(
             // typechecker is supposed to catch this
             throwInternalCompilerError(
                 `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
-                f.path.ref,
+                f.path.loc,
             );
         }
         const path = writePathExpression(lvaluePath);
@@ -156,7 +158,7 @@ export function writeStatement(
             // typechecker is supposed to catch this
             throwInternalCompilerError(
                 `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
-                f.path.ref,
+                f.path.loc,
             );
         }
         const path = writePathExpression(lvaluePath);
@@ -215,10 +217,10 @@ export function writeStatement(
                 writeStatement(s, self, returns, ctx);
             }
         });
-        if (f.catchName == "_") {
+        if (isWildcard(f.catchName)) {
             ctx.append(`} catch (_) {`);
         } else {
-            ctx.append(`} catch (_, ${id(f.catchName)}) {`);
+            ctx.append(`} catch (_, ${funcIdOf(f.catchName)}) {`);
         }
         ctx.inIndent(() => {
             for (const s of f.catchStatements) {
@@ -233,7 +235,7 @@ export function writeStatement(
             // typechecker is supposed to catch this
             throwInternalCompilerError(
                 `foreach is only allowed over maps that are path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
-                f.map.ref,
+                f.map.loc,
             );
         }
         const path = writePathExpression(mapPath);
@@ -244,12 +246,12 @@ export function writeStatement(
         }
 
         const flag = freshIdentifier("flag");
-        const key =
-            f.keyName == "_" ? freshIdentifier("underscore") : id(f.keyName);
-        const value =
-            f.valueName == "_"
-                ? freshIdentifier("underscore")
-                : id(f.valueName);
+        const key = isWildcard(f.keyName)
+            ? freshIdentifier("underscore")
+            : funcIdOf(f.keyName);
+        const value = isWildcard(f.valueName)
+            ? freshIdentifier("underscore")
+            : funcIdOf(f.valueName);
 
         // Handle Int key
         if (t.key === "Int") {
@@ -334,7 +336,7 @@ export function writeStatement(
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
                     ctx.append(
-                        `var ${resolveFuncTypeUnpack(t.value, id(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${value}));`,
+                        `var ${resolveFuncTypeUnpack(t.value, funcIdOf(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${value}));`,
                     );
                     for (const s of f.statements) {
                         writeStatement(s, self, returns, ctx);
@@ -421,7 +423,7 @@ export function writeStatement(
                 ctx.append(`while (${flag}) {`);
                 ctx.inIndent(() => {
                     ctx.append(
-                        `var ${resolveFuncTypeUnpack(t.value, id(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${value}));`,
+                        `var ${resolveFuncTypeUnpack(t.value, funcIdOf(f.valueName), ctx)} = ${ops.typeNotNull(t.value, ctx)}(${ops.readerOpt(t.value, ctx)}(${value}));`,
                     );
                     for (const s of f.statements) {
                         writeStatement(s, self, returns, ctx);
@@ -486,26 +488,26 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
         } else {
             returns = `(${resolveFuncType(self, ctx)}, ())`;
         }
-        returnsStr = resolveFuncTypeUnpack(self, id("self"), ctx);
+        returnsStr = resolveFuncTypeUnpack(self, funcIdOf("self"), ctx);
     }
 
     // Resolve function descriptor
-    const args: string[] = [];
+    const params: string[] = [];
     if (self) {
-        args.push(resolveFuncType(self, ctx) + " " + id("self"));
+        params.push(resolveFuncType(self, ctx) + " " + funcIdOf("self"));
     }
-    for (const a of f.args) {
-        args.push(resolveFuncType(a.type, ctx) + " " + id(a.name));
+    for (const a of f.params) {
+        params.push(resolveFuncType(a.type, ctx) + " " + funcIdOf(a.name));
     }
 
     // Do not write native functions
-    if (f.ast.kind === "def_native_function") {
+    if (f.ast.kind === "native_function_decl") {
         if (f.isMutating) {
             // Write same function in non-mutating form
-            const nonMutName = ops.nonModifying(f.ast.nativeName);
+            const nonMutName = ops.nonModifying(idText(f.ast.nativeName));
             ctx.fun(nonMutName, () => {
                 ctx.signature(
-                    `${returnsOriginal} ${nonMutName}(${args.join(", ")})`,
+                    `${returnsOriginal} ${nonMutName}(${params.join(", ")})`,
                 );
                 ctx.flag("impure");
                 if (enabledInline(ctx.ctx) || f.isInline) {
@@ -516,9 +518,9 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 }
                 ctx.body(() => {
                     ctx.append(
-                        `return ${id("self")}~${(f.ast as ASTNativeFunction).nativeName}(${fd.args
+                        `return ${funcIdOf("self")}~${idText((f.ast as AstNativeFunctionDecl).nativeName)}(${fd.params
                             .slice(1)
-                            .map((arg) => id(arg.name))
+                            .map((arg) => funcIdOf(arg.name))
                             .join(", ")});`,
                     );
                 });
@@ -527,7 +529,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
         return;
     }
 
-    if (fd.kind !== "def_function") {
+    if (fd.kind !== "function_def") {
         // should never happen, just to satisfy typescript
         throw new Error("Unknown function kind");
     }
@@ -536,7 +538,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Write function body
     ctx.fun(name, () => {
-        ctx.signature(`${returns} ${name}(${args.join(", ")})`);
+        ctx.signature(`${returns} ${name}(${params.join(", ")})`);
         ctx.flag("impure");
         if (enabledInline(ctx.ctx) || f.isInline) {
             ctx.flag("inline");
@@ -548,29 +550,29 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             // Unpack self
             if (self) {
                 ctx.append(
-                    `var (${resolveFuncTypeUnpack(self, id("self"), ctx)}) = ${id("self")};`,
+                    `var (${resolveFuncTypeUnpack(self, funcIdOf("self"), ctx)}) = ${funcIdOf("self")};`,
                 );
             }
-            for (const a of fd.args) {
+            for (const a of fd.params) {
                 if (
                     !resolveFuncPrimitive(resolveTypeRef(ctx.ctx, a.type), ctx)
                 ) {
                     ctx.append(
-                        `var (${resolveFuncTypeUnpack(resolveTypeRef(ctx.ctx, a.type), id(a.name), ctx)}) = ${id(a.name)};`,
+                        `var (${resolveFuncTypeUnpack(resolveTypeRef(ctx.ctx, a.type), funcIdOf(a.name), ctx)}) = ${funcIdOf(a.name)};`,
                     );
                 }
             }
 
             // Process statements
-            for (const s of fd.statements!) {
+            for (const s of fd.statements) {
                 writeStatement(s, returnsStr, f.returns, ctx);
             }
 
             // Auto append return
             if (f.self && f.returns.kind === "void" && f.isMutating) {
                 if (
-                    fd.statements!.length === 0 ||
-                    fd.statements![fd.statements!.length - 1].kind !==
+                    fd.statements.length === 0 ||
+                    fd.statements[fd.statements.length - 1].kind !==
                         "statement_return"
                 ) {
                     ctx.append(`return (${returnsStr}, ());`);
@@ -584,7 +586,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
         const nonMutName = ops.nonModifying(name);
         ctx.fun(nonMutName, () => {
             ctx.signature(
-                `${returnsOriginal} ${nonMutName}(${args.join(", ")})`,
+                `${returnsOriginal} ${nonMutName}(${params.join(", ")})`,
             );
             ctx.flag("impure");
             if (enabledInline(ctx.ctx) || f.isInline) {
@@ -595,9 +597,9 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             }
             ctx.body(() => {
                 ctx.append(
-                    `return ${id("self")}~${ctx.used(name)}(${fd.args
+                    `return ${funcIdOf("self")}~${ctx.used(name)}(${fd.params
                         .slice(1)
-                        .map((arg) => id(arg.name))
+                        .map((arg) => funcIdOf(arg.name))
                         .join(", ")});`,
                 );
             });
@@ -607,17 +609,22 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
 export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
     // Render tensors
-    const self = f.self ? getType(ctx.ctx, f.self) : null;
+    const self = f.self !== null ? getType(ctx.ctx, f.self) : null;
     if (!self) {
-        throw new Error(`No self type for getter "${f.name}"`); // Impossible
+        throw new Error(`No self type for getter ${idTextErr(f.name)}`); // Impossible
     }
     ctx.append(
-        `_ %${f.name}(${f.args.map((v) => resolveFuncTupleType(v.type, ctx) + " " + id("$" + v.name)).join(", ")}) method_id(${getMethodId(f.name)}) {`,
+        `_ %${f.name}(${f.params.map((v) => resolveFuncTupleType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) method_id(${getMethodId(f.name)}) {`,
     );
     ctx.inIndent(() => {
-        // Unpack arguments
-        for (const arg of f.args) {
-            unwrapExternal(id(arg.name), id("$" + arg.name), arg.type, ctx);
+        // Unpack parameters
+        for (const param of f.params) {
+            unwrapExternal(
+                funcIdOf(param.name),
+                funcIdOf(param.name),
+                param.type,
+                ctx,
+            );
         }
 
         // Load contract state
@@ -625,7 +632,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 
         // Execute get method
         ctx.append(
-            `var res = self~${ctx.used(ops.extension(self.name, f.name))}(${f.args.map((v) => id(v.name)).join(", ")});`,
+            `var res = self~${ctx.used(ops.extension(self.name, f.name))}(${f.params.map((v) => funcIdOf(v.name)).join(", ")});`,
         );
 
         // Pack if needed

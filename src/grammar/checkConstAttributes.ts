@@ -1,17 +1,17 @@
-import { ASTConstantAttribute, ASTRef } from "./ast";
+import { ASTConstantAttribute, SrcInfo } from "./ast";
 import { throwCompilationError } from "../errors";
 
 export function checkConstAttributes(
     isAbstract: boolean,
     attributes: ASTConstantAttribute[],
-    ref: ASTRef,
+    loc: SrcInfo,
 ) {
     const k = new Set<string>();
     for (const a of attributes) {
         if (k.has(a.type)) {
             throwCompilationError(
                 `Duplicate constant attribute "${a.type}"`,
-                a.ref,
+                a.loc,
             );
         }
         k.add(a.type);
@@ -20,14 +20,14 @@ export function checkConstAttributes(
         if (!k.has("abstract")) {
             throwCompilationError(
                 `Abstract constant doesn't have abstract modifier`,
-                ref,
+                loc,
             );
         }
     } else {
         if (k.has("abstract")) {
             throwCompilationError(
-                `Non abstract constant have abstract modifier`,
-                ref,
+                `Non-abstract constant has abstract modifier`,
+                loc,
             );
         }
     }

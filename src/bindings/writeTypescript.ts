@@ -19,6 +19,7 @@ import {
     getAllocationOperationFromField,
 } from "../storage/allocator";
 import { serializers } from "./typescript/serializers";
+import { eqNames } from "../grammar/ast";
 
 function writeArguments(args: ABIArgument[]) {
     const res: string[] = [];
@@ -93,7 +94,7 @@ export function writeTypescript(
             for (const f of src.fields) {
                 const r = f.type;
                 if (r.kind === "simple") {
-                    const e = abi.types!.find((v) => v.name === r.type);
+                    const e = abi.types!.find((v) => eqNames(v.name, r.type));
                     if (e) {
                         if (!t.has(r.type)) {
                             t.add(r.type);

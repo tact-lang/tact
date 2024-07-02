@@ -1,44 +1,45 @@
 import { MatchResult } from "ohm-js";
 import path from "path";
 import { cwd } from "process";
-import { ASTRef } from "./grammar/ast";
+import { AstId, SrcInfo } from "./grammar/ast";
+import { ItemOrigin } from "./grammar/grammar";
 
 export class TactError extends Error {
-    readonly ref: ASTRef;
-    constructor(message: string, ref: ASTRef) {
+    readonly loc: SrcInfo;
+    constructor(message: string, loc: SrcInfo) {
         super(message);
-        this.ref = ref;
+        this.loc = loc;
     }
 }
 
 export class TactParseError extends TactError {
-    constructor(message: string, ref: ASTRef) {
-        super(message, ref);
+    constructor(message: string, loc: SrcInfo) {
+        super(message, loc);
     }
 }
 
 /// This will be split at least into two categories: typechecking and codegen errors
 export class TactCompilationError extends TactError {
-    constructor(message: string, ref: ASTRef) {
-        super(message, ref);
+    constructor(message: string, loc: SrcInfo) {
+        super(message, loc);
     }
 }
 
 export class TactInternalCompilerError extends TactError {
-    constructor(message: string, ref: ASTRef) {
-        super(message, ref);
+    constructor(message: string, loc: SrcInfo) {
+        super(message, loc);
     }
 }
 
 export class TactConstEvalError extends TactCompilationError {
     fatal: boolean = false;
-    constructor(message: string, fatal: boolean, ref: ASTRef) {
-        super(message, ref);
+    constructor(message: string, fatal: boolean, loc: SrcInfo) {
+        super(message, loc);
         this.fatal = fatal;
     }
 }
 
-function locationStr(sourceInfo: ASTRef): string {
+function locationStr(sourceInfo: SrcInfo): string {
     if (sourceInfo.file) {
         const loc = sourceInfo.interval.getLineAndColumn() as {
             lineNum: number;
@@ -51,9 +52,13 @@ function locationStr(sourceInfo: ASTRef): string {
     }
 }
 
-export function throwParseError(matchResult: MatchResult, path: string): never {
+export function throwParseError(
+    matchResult: MatchResult,
+    path: string,
+    origin: ItemOrigin,
+): never {
     const interval = matchResult.getInterval();
-    const source = new ASTRef(interval, path);
+    const source = new SrcInfo(interval, path, origin);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const message = `Parse error: expected ${(matchResult as any).getExpectedText()}\n`;
     throw new TactParseError(
@@ -62,7 +67,7 @@ export function throwParseError(matchResult: MatchResult, path: string): never {
     );
 }
 
-export function throwCompilationError(message: string, source: ASTRef): never {
+export function throwCompilationError(message: string, source: SrcInfo): never {
     throw new TactCompilationError(
         `${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`,
         source,
@@ -71,7 +76,7 @@ export function throwCompilationError(message: string, source: ASTRef): never {
 
 export function throwInternalCompilerError(
     message: string,
-    source: ASTRef,
+    source: SrcInfo,
 ): never {
     throw new TactInternalCompilerError(
         `${locationStr(source)}\n[INTERNAL COMPILER ERROR]: ${message}\nPlease report at https://github.com/tact-lang/tact/issues\n${source.interval.getLineAndColumnMessage()}`,
@@ -82,11 +87,20 @@ export function throwInternalCompilerError(
 export function throwConstEvalError(
     message: string,
     fatal: boolean,
-    source: ASTRef,
+    source: SrcInfo,
 ): never {
     throw new TactConstEvalError(
         `${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`,
         fatal,
         source,
     );
+}
+
+export function idTextErr(ident: string): string;
+export function idTextErr(ident: AstId): string;
+export function idTextErr(ident: AstId | string): string {
+    if (typeof ident === "string") {
+        return `"${ident}"`;
+    }
+    return `"${ident.text}"`;
 }
