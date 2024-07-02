@@ -720,6 +720,16 @@ Line 9, col 12:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-missing-storage-var 1`] = `
+"<unknown>:5:9: Type "Test" does not have a field named "nonExistentField"
+Line 5, col 9:
+  4 |     init() {
+> 5 |         self.nonExistentField = 42;
+              ^~~~~~~~~~~~~~~~~~~~~
+  6 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-no-toString-global-fun 1`] = `
 "<unknown>:7:9: Static function "toString" does not exist
 Line 7, col 9:
