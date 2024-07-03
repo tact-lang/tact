@@ -33,7 +33,7 @@ export type AstPrimitiveTypeDecl = {
 
 export type AstFunctionDef = {
     kind: "function_def";
-    attributes: ASTFunctionAttribute[];
+    attributes: AstFunctionAttribute[];
     name: AstId;
     return: ASTTypeRef | null;
     params: AstTypedParameter[];
@@ -44,7 +44,7 @@ export type AstFunctionDef = {
 
 export type AstFunctionDecl = {
     kind: "function_decl";
-    attributes: ASTFunctionAttribute[];
+    attributes: AstFunctionAttribute[];
     name: AstId;
     return: ASTTypeRef | null;
     params: AstTypedParameter[];
@@ -54,7 +54,7 @@ export type AstFunctionDecl = {
 
 export type AstNativeFunctionDecl = {
     kind: "native_function_decl";
-    attributes: ASTFunctionAttribute[];
+    attributes: AstFunctionAttribute[];
     name: AstId;
     nativeName: AstFuncId;
     params: AstTypedParameter[];
@@ -65,7 +65,7 @@ export type AstNativeFunctionDecl = {
 
 export type AstConstantDef = {
     kind: "constant_def";
-    attributes: ASTConstantAttribute[];
+    attributes: AstConstantAttribute[];
     name: AstId;
     type: ASTTypeRef;
     initializer: AstExpression;
@@ -75,7 +75,7 @@ export type AstConstantDef = {
 
 export type AstConstantDecl = {
     kind: "constant_decl";
-    attributes: ASTConstantAttribute[];
+    attributes: AstConstantAttribute[];
     name: AstId;
     type: ASTTypeRef;
     id: number;
@@ -103,7 +103,7 @@ export type AstContract = {
     kind: "contract";
     name: AstId;
     traits: AstId[];
-    attributes: ASTContractAttribute[];
+    attributes: AstContractAttribute[];
     declarations: ASTContractDeclaration[];
     id: number;
     loc: SrcInfo;
@@ -113,7 +113,7 @@ export type AstTrait = {
     kind: "trait";
     name: AstId;
     traits: AstId[];
-    attributes: ASTContractAttribute[];
+    attributes: AstContractAttribute[];
     declarations: ASTTraitDeclaration[];
     id: number;
     loc: SrcInfo;
@@ -555,16 +555,25 @@ export type AstNull = {
     loc: SrcInfo;
 };
 
-export type ASTConstantAttribute =
+export type AstConstantAttribute =
     | { type: "virtual"; loc: SrcInfo }
     | { type: "overrides"; loc: SrcInfo }
     | { type: "abstract"; loc: SrcInfo };
 
-export type ASTContractAttribute = {
+export type AstContractAttribute = {
     type: "interface";
     name: AstString;
     loc: SrcInfo;
 };
+
+export type AstFunctionAttribute =
+    | { type: "get"; loc: SrcInfo }
+    | { type: "mutates"; loc: SrcInfo }
+    | { type: "extends"; loc: SrcInfo }
+    | { type: "virtual"; loc: SrcInfo }
+    | { type: "abstract"; loc: SrcInfo }
+    | { type: "overrides"; loc: SrcInfo }
+    | { type: "inline"; loc: SrcInfo };
 
 export type AstTypedParameter = {
     kind: "typed_parameter";
@@ -573,15 +582,6 @@ export type AstTypedParameter = {
     type: ASTTypeRef;
     loc: SrcInfo;
 };
-
-export type ASTFunctionAttribute =
-    | { type: "get"; loc: SrcInfo }
-    | { type: "mutates"; loc: SrcInfo }
-    | { type: "extends"; loc: SrcInfo }
-    | { type: "virtual"; loc: SrcInfo }
-    | { type: "abstract"; loc: SrcInfo }
-    | { type: "overrides"; loc: SrcInfo }
-    | { type: "inline"; loc: SrcInfo };
 
 export type ASTReceiveType =
     | {

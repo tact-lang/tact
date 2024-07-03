@@ -9,10 +9,10 @@ import {
 import tactGrammar from "./grammar.ohm-bundle";
 import {
     AstAugmentedAssignOperation,
-    ASTConstantAttribute,
-    ASTContractAttribute,
+    AstConstantAttribute,
+    AstContractAttribute,
     AstExpression,
-    ASTFunctionAttribute,
+    AstFunctionAttribute,
     ASTNode,
     AstModule,
     ASTReceiveType,
@@ -263,7 +263,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
     ) {
         const attributes = constAttributes.children.map((a) =>
             a.astOfConstAttribute(),
-        ) as ASTConstantAttribute[];
+        ) as AstConstantAttribute[];
         checkConstAttributes(false, attributes, createRef(this));
         return createNode({
             kind: "constant_def",
@@ -284,7 +284,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
     ) {
         const attributes = constAttributes.children.map((a) =>
             a.astOfConstAttribute(),
-        ) as ASTConstantAttribute[];
+        ) as AstConstantAttribute[];
         checkConstAttributes(true, attributes, createRef(this));
         return createNode({
             kind: "constant_decl",
@@ -310,7 +310,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
     ) {
         const attributes = funAttributes.children.map((a) =>
             a.astOfFunctionAttributes(),
-        ) as ASTFunctionAttribute[];
+        ) as AstFunctionAttribute[];
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(false, attributes, createRef(this));
         return createNode({
@@ -334,7 +334,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
     ) {
         const attributes = funAttributes.children.map((a) =>
             a.astOfFunctionAttributes(),
-        ) as ASTFunctionAttribute[];
+        ) as AstFunctionAttribute[];
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(true, attributes, createRef(this));
         return createNode({
@@ -456,7 +456,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
     },
 });
 
-semantics.addOperation<ASTFunctionAttribute>("astOfFunctionAttributes", {
+semantics.addOperation<AstFunctionAttribute>("astOfFunctionAttributes", {
     FunctionAttribute_getter(_) {
         return { type: "get", loc: createRef(this) };
     },
@@ -480,7 +480,7 @@ semantics.addOperation<ASTFunctionAttribute>("astOfFunctionAttributes", {
     },
 });
 
-semantics.addOperation<ASTConstantAttribute>("astOfConstAttribute", {
+semantics.addOperation<AstConstantAttribute>("astOfConstAttribute", {
     ConstantAttribute_override(_) {
         return { type: "overrides", loc: createRef(this) };
     },
@@ -529,7 +529,7 @@ semantics.addOperation<ASTNode[]>("astsOfList", {
     },
 });
 
-semantics.addOperation<ASTContractAttribute>("astOfContractAttributes", {
+semantics.addOperation<AstContractAttribute>("astOfContractAttributes", {
     ContractAttribute_interface(_interface, _lparen, interfaceName, _rparen) {
         return {
             type: "interface",
