@@ -8,7 +8,7 @@ import {
     AstReceiver,
     SrcInfo,
     AstStatement,
-    ASTType,
+    AstTypeDecl,
     AstId,
     AstFunctionDecl,
     AstConstantDecl,
@@ -32,7 +32,7 @@ export type TypeDescription = {
     functions: Map<string, FunctionDescription>;
     receivers: ReceiverDescription[];
     init: InitDescription | null;
-    ast: ASTType;
+    ast: AstTypeDecl;
     dependsOn: TypeDescription[];
     interfaces: string[];
     constants: ConstantDescription[];

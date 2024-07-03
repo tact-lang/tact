@@ -24,6 +24,13 @@ export type AstModuleItem =
     | AstContract
     | AstTrait;
 
+export type AstTypeDecl =
+    | AstPrimitiveTypeDecl
+    | AstStructDecl
+    | AstMessageDecl
+    | AstContract
+    | AstTrait;
+
 export type AstPrimitiveTypeDecl = {
     kind: "primitive_type_decl";
     name: AstId;
@@ -611,15 +618,11 @@ export type AstReceiverKind =
           comment: AstString;
       };
 
-//
-// Unions
-//
-
 export type ASTNode =
     | AstFuncId
     | AstExpression
     | AstStatement
-    | ASTType
+    | AstTypeDecl
     | AstFieldDecl
     | AstTypedParameter
     | AstFunctionDef
@@ -633,13 +636,6 @@ export type ASTNode =
     | AstImport
     | AstConstantDef
     | AstConstantDecl;
-
-export type ASTType =
-    | AstPrimitiveTypeDecl
-    | AstStructDecl
-    | AstMessageDecl
-    | AstContract
-    | AstTrait;
 
 /**
  * Check if input expression is a 'path expression',

@@ -3,7 +3,7 @@ import {
     AstConstantDef,
     AstFunctionDef,
     AstNativeFunctionDecl,
-    ASTType,
+    AstTypeDecl,
 } from "./ast";
 import { CompilerContext, createContextStore } from "../context";
 import { ItemOrigin, parse } from "./grammar";
@@ -21,7 +21,7 @@ export type ASTStore = {
     funcSources: { code: string; path: string }[];
     functions: (AstFunctionDef | AstNativeFunctionDecl)[];
     constants: AstConstantDef[];
-    types: ASTType[];
+    types: AstTypeDecl[];
 };
 
 const store = createContextStore<ASTStore>();
@@ -62,7 +62,7 @@ export function openContext(
     parsedPrograms?: AstModule[],
 ): CompilerContext {
     const programs = parsedPrograms ? parsedPrograms : parseModules(sources);
-    const types: ASTType[] = [];
+    const types: AstTypeDecl[] = [];
     const functions: (AstNativeFunctionDecl | AstFunctionDef)[] = [];
     const constants: AstConstantDef[] = [];
     for (const program of programs) {
