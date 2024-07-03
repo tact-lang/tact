@@ -97,6 +97,7 @@
     "src/test/e2e-emulated/__snapshots__/masterchain.spec.ts.snap",
     "src/test/e2e-emulated/__snapshots__/sample-jetton.spec.ts.snap",
     "src/test/e2e-emulated/__snapshots__/try-catch.spec.ts.snap",
+    "src/test/e2e-emulated/__snapshots__/initof.spec.ts.snap",
     "src/test/e2e-emulated/address.spec.ts",
     "src/test/e2e-emulated/intrinsics.spec.ts",
     "src/test/e2e-emulated/optionals.spec.ts",
