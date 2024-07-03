@@ -146,7 +146,7 @@ export type AstFieldDecl = {
 
 export type AstReceiver = {
     kind: "receiver";
-    selector: ASTReceiveType;
+    selector: AstReceiverKind;
     statements: AstStatement[];
     id: number;
     loc: SrcInfo;
@@ -577,13 +577,13 @@ export type AstFunctionAttribute =
 
 export type AstTypedParameter = {
     kind: "typed_parameter";
-    id: number;
     name: AstId;
     type: ASTTypeRef;
+    id: number;
     loc: SrcInfo;
 };
 
-export type ASTReceiveType =
+export type AstReceiverKind =
     | {
           kind: "internal-simple";
           param: AstTypedParameter;

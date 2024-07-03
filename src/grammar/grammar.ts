@@ -15,7 +15,7 @@ import {
     AstFunctionAttribute,
     ASTNode,
     AstModule,
-    ASTReceiveType,
+    AstReceiverKind,
     AstString,
     ASTTypeRef,
     createNode,
@@ -364,7 +364,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         _rbrace,
     ) {
         const optParam = optParameter.children[0];
-        const selector: ASTReceiveType = optParam
+        const selector: AstReceiverKind = optParam
             ? {
                   kind: "internal-simple",
                   param: optParam.astOfDeclaration(),
@@ -422,7 +422,7 @@ semantics.addOperation<ASTNode>("astOfItem", {
         _rbrace,
     ) {
         const optParam = optParameter.children[0];
-        const selector: ASTReceiveType = optParam
+        const selector: AstReceiverKind = optParam
             ? {
                   kind: "external-simple",
                   param: optParam.astOfDeclaration(),
