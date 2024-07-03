@@ -161,9 +161,9 @@ export function forEachExpression(
                 traverseExpression(node.initializer);
                 break;
             case "typed_parameter":
-            case "type_ref_simple":
-            case "type_ref_map":
-            case "type_ref_bounced":
+            case "type_id":
+            case "map_type":
+            case "bounced_message_type":
                 // Do nothing
                 break;
             default:
@@ -375,9 +375,9 @@ export function foldExpressions<T>(
                 acc = traverseExpression(acc, node.initializer);
                 break;
             case "typed_parameter":
-            case "type_ref_simple":
-            case "type_ref_map":
-            case "type_ref_bounced":
+            case "type_id":
+            case "map_type":
+            case "bounced_message_type":
                 // Do nothing
                 break;
             default:
@@ -474,9 +474,9 @@ export function forEachStatement(
             case "null":
             case "struct_field_initializer":
             case "typed_parameter":
-            case "type_ref_simple":
-            case "type_ref_map":
-            case "type_ref_bounced":
+            case "type_id":
+            case "map_type":
+            case "bounced_message_type":
             case "native_function_decl":
             case "struct_decl":
             case "message_decl":
@@ -602,9 +602,9 @@ export function foldStatements<T>(
             case "null":
             case "struct_field_initializer":
             case "typed_parameter":
-            case "type_ref_simple":
-            case "type_ref_map":
-            case "type_ref_bounced":
+            case "type_id":
+            case "map_type":
+            case "bounced_message_type":
             case "native_function_decl":
             case "function_decl":
             case "struct_decl":

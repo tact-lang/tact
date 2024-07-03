@@ -42,7 +42,7 @@ export type AstFunctionDef = {
     kind: "function_def";
     attributes: AstFunctionAttribute[];
     name: AstId;
-    return: ASTTypeRef | null;
+    return: AstType | null;
     params: AstTypedParameter[];
     statements: AstStatement[];
     id: number;
@@ -53,7 +53,7 @@ export type AstFunctionDecl = {
     kind: "function_decl";
     attributes: AstFunctionAttribute[];
     name: AstId;
-    return: ASTTypeRef | null;
+    return: AstType | null;
     params: AstTypedParameter[];
     id: number;
     loc: SrcInfo;
@@ -65,7 +65,7 @@ export type AstNativeFunctionDecl = {
     name: AstId;
     nativeName: AstFuncId;
     params: AstTypedParameter[];
-    return: ASTTypeRef | null;
+    return: AstType | null;
     id: number;
     loc: SrcInfo;
 };
@@ -74,7 +74,7 @@ export type AstConstantDef = {
     kind: "constant_def";
     attributes: AstConstantAttribute[];
     name: AstId;
-    type: ASTTypeRef;
+    type: AstType;
     initializer: AstExpression;
     id: number;
     loc: SrcInfo;
@@ -84,7 +84,7 @@ export type AstConstantDecl = {
     kind: "constant_decl";
     attributes: AstConstantAttribute[];
     name: AstId;
-    type: ASTTypeRef;
+    type: AstType;
     id: number;
     loc: SrcInfo;
 };
@@ -144,7 +144,7 @@ export type AstTraitDeclaration =
 export type AstFieldDecl = {
     kind: "field_decl";
     name: AstId;
-    type: ASTTypeRef;
+    type: AstType;
     initializer: AstExpression | null;
     as: AstId | null;
     id: number;
@@ -188,7 +188,7 @@ export type AstStatement =
 export type AstStatementLet = {
     kind: "statement_let";
     name: AstId;
-    type: ASTTypeRef | null;
+    type: AstType | null;
     expression: AstExpression;
     id: number;
     loc: SrcInfo;
@@ -299,30 +299,40 @@ export type AstStatementForEach = {
 // Types
 //
 
-export type ASTTypeRef = ASTTypeRefSimple | ASTTypeRefMap | ASTTypeRefBounced;
+export type AstType =
+    | AstTypeId
+    | AstOptionalType
+    | AstMapType
+    | AstBouncedMessageType;
 
-export type ASTTypeRefSimple = {
-    kind: "type_ref_simple";
+export type AstTypeId = {
+    kind: "type_id";
+    text: string;
     id: number;
-    name: AstId;
-    optional: boolean;
     loc: SrcInfo;
 };
 
-export type ASTTypeRefMap = {
-    kind: "type_ref_map";
+export type AstOptionalType = {
+    kind: "optional_type";
+    typeArg: AstType;
     id: number;
-    key: AstId;
-    keyAs: AstId | null;
-    value: AstId;
-    valueAs: AstId | null;
     loc: SrcInfo;
 };
 
-export type ASTTypeRefBounced = {
-    kind: "type_ref_bounced";
+export type AstMapType = {
+    kind: "map_type";
+    keyType: AstTypeId;
+    keyStorageType: AstId | null;
+    valueType: AstTypeId;
+    valueStorageType: AstId | null;
     id: number;
-    name: AstId;
+    loc: SrcInfo;
+};
+
+export type AstBouncedMessageType = {
+    kind: "bounced_message_type";
+    messageType: AstTypeId;
+    id: number;
     loc: SrcInfo;
 };
 
@@ -457,41 +467,42 @@ export type AstFuncId = {
     loc: SrcInfo;
 };
 
-export function idText(ident: AstFuncId): string;
 export function idText(ident: AstId): string;
-export function idText(ident: AstId | AstFuncId): string {
+export function idText(ident: AstFuncId): string;
+export function idText(ident: AstTypeId): string;
+export function idText(ident: AstId | AstFuncId | AstTypeId): string {
     return ident.text;
 }
 
-export function isInt(ident: AstId): boolean {
+export function isInt(ident: AstTypeId): boolean {
     return ident.text === "Int";
 }
 
-export function isBool(ident: AstId): boolean {
+export function isBool(ident: AstTypeId): boolean {
     return ident.text === "Bool";
 }
 
-export function isCell(ident: AstId): boolean {
+export function isCell(ident: AstTypeId): boolean {
     return ident.text === "Cell";
 }
 
-export function isSlice(ident: AstId): boolean {
+export function isSlice(ident: AstTypeId): boolean {
     return ident.text === "Slice";
 }
 
-export function isBuilder(ident: AstId): boolean {
+export function isBuilder(ident: AstTypeId): boolean {
     return ident.text === "Builder";
 }
 
-export function isAddress(ident: AstId): boolean {
+export function isAddress(ident: AstTypeId): boolean {
     return ident.text === "Address";
 }
 
-export function isString(ident: AstId): boolean {
+export function isString(ident: AstTypeId): boolean {
     return ident.text === "String";
 }
 
-export function isStringBuilder(ident: AstId): boolean {
+export function isStringBuilder(ident: AstTypeId): boolean {
     return ident.text === "StringBuilder";
 }
 
@@ -511,7 +522,11 @@ export function eqNames(left: string, right: string): boolean;
 export function eqNames(left: string, right: AstId): boolean;
 export function eqNames(left: AstId, right: string): boolean;
 export function eqNames(left: AstId, right: AstId): boolean;
-export function eqNames(left: AstId | string, right: AstId | string): boolean {
+export function eqNames(left: AstId, right: AstId): boolean;
+export function eqNames(
+    left: AstId | AstTypeId | string,
+    right: AstId | AstTypeId | string,
+): boolean {
     if (typeof left === "string") {
         if (typeof right === "string") {
             return left === right;
@@ -585,7 +600,7 @@ export type AstFunctionAttribute =
 export type AstTypedParameter = {
     kind: "typed_parameter";
     name: AstId;
-    type: ASTTypeRef;
+    type: AstType;
     id: number;
     loc: SrcInfo;
 };
@@ -630,7 +645,7 @@ export type AstNode =
     | AstModule
     | AstNativeFunctionDecl
     | AstStructFieldInitializer
-    | ASTTypeRef
+    | AstType
     | AstContractInit
     | AstReceiver
     | AstImport

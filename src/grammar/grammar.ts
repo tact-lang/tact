@@ -17,7 +17,7 @@ import {
     AstModule,
     AstReceiverKind,
     AstString,
-    ASTTypeRef,
+    AstType,
     createAstNode,
     AstImport,
 } from "./ast";
@@ -552,7 +552,7 @@ semantics.addOperation<AstNode>("astOfDeclaration", {
         return createAstNode({
             kind: "field_decl",
             name: id.astOfExpression(),
-            type: type.astOfType() as ASTTypeRef,
+            type: type.astOfType() as AstType,
             as: unwrapOptNode(optStorageType, (t) => t.astOfExpression()),
             initializer: unwrapOptNode(optInitializer, (e) =>
                 e.astOfExpression(),
@@ -833,7 +833,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
 semantics.addOperation<AstNode>("astOfType", {
     typeId(firstTactTypeIdCharacter, restOfTactTypeId) {
         return createAstNode({
-            kind: "id",
+            kind: "type_id",
             text:
                 firstTactTypeIdCharacter.sourceString +
                 restOfTactTypeId.sourceString,
@@ -842,19 +842,13 @@ semantics.addOperation<AstNode>("astOfType", {
     },
     Type_optional(typeId, _questionMark) {
         return createAstNode({
-            kind: "type_ref_simple",
-            name: typeId.astOfType(),
-            optional: true,
+            kind: "optional_type",
+            typeArg: typeId.astOfType(),
             loc: createRef(this),
         });
     },
     Type_regular(typeId) {
-        return createAstNode({
-            kind: "type_ref_simple",
-            name: typeId.astOfType(),
-            optional: false,
-            loc: createRef(this),
-        });
+        return typeId.astOfType();
     },
     Type_map(
         _mapKwd,
@@ -869,11 +863,13 @@ semantics.addOperation<AstNode>("astOfType", {
         _rangle,
     ) {
         return createAstNode({
-            kind: "type_ref_map",
-            key: keyTypeId.astOfType(),
-            keyAs: unwrapOptNode(optKeyStorageType, (t) => t.astOfExpression()),
-            value: valueTypeId.astOfType(),
-            valueAs: unwrapOptNode(optValueStorageType, (t) =>
+            kind: "map_type",
+            keyType: keyTypeId.astOfType(),
+            keyStorageType: unwrapOptNode(optKeyStorageType, (t) =>
+                t.astOfExpression(),
+            ),
+            valueType: valueTypeId.astOfType(),
+            valueStorageType: unwrapOptNode(optValueStorageType, (t) =>
                 t.astOfExpression(),
             ),
             loc: createRef(this),
@@ -881,8 +877,8 @@ semantics.addOperation<AstNode>("astOfType", {
     },
     Type_bounced(_bouncedKwd, _langle, typeId, _rangle) {
         return createAstNode({
-            kind: "type_ref_bounced",
-            name: typeId.astOfType(),
+            kind: "bounced_message_type",
+            messageType: typeId.astOfType(),
             loc: createRef(this),
         });
     },
