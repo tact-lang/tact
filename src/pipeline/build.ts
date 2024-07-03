@@ -20,13 +20,14 @@ import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
 import { idText } from "../grammar/ast";
+import { TactErrorCollection } from "../errors";
 
 export async function build(args: {
     config: ConfigProject;
     project: VirtualFileSystem;
     stdlib: string | VirtualFileSystem;
     logger?: Logger | null | undefined;
-}): Promise<{ ok: boolean; error: Error[] }> {
+}): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
     const { config, project } = args;
     const stdlib =
         typeof args.stdlib === "string"
@@ -79,7 +80,7 @@ export async function build(args: {
 
     // Compile contracts
     let ok = true;
-    const errorMessages: Error[] = [];
+    const errorMessages: TactErrorCollection[] = [];
     const built: {
         [key: string]: {
             codeBoc: Buffer;
