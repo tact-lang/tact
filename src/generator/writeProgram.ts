@@ -378,10 +378,7 @@ function writeAll(
 
     // Static functions
     const sf = getAllStaticFunctions(ctx);
-    for (const k in sf) {
-        const f = sf[k];
-        writeFunction(f, wCtx);
-    }
+    Object.values(sf).forEach((f) => writeFunction(f, wCtx));
 
     // Extensions
     for (const c of allTypes) {

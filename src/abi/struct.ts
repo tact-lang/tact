@@ -13,13 +13,14 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 1) {
                     throwCompilationError("toCell() expects no arguments", ref);
                 }
-                if (args[0].kind !== "ref") {
+                const arg = args[0]!;
+                if (arg.kind !== "ref") {
                     throwCompilationError(
                         "toCell() is implemented only a struct type",
                         ref,
                     );
                 }
-                const tp = getType(ctx, args[0].name);
+                const tp = getType(ctx, arg.name);
                 if (tp.kind !== "struct") {
                     throwCompilationError(
                         "toCell() is implemented only a struct type",
@@ -32,13 +33,14 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 if (resolved.length !== 1) {
                     throwCompilationError("toCell() expects no arguments", ref);
                 }
-                if (args[0].kind !== "ref") {
+                const arg = args[0]!;
+                if (arg.kind !== "ref") {
                     throwCompilationError(
                         "toCell() is implemented only a struct type",
                         ref,
                     );
                 }
-                return `${ops.writerCell(args[0].name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")})`;
+                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")})`;
             },
         },
     ],
@@ -53,26 +55,28 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                if (args[0].kind !== "ref") {
+                const arg0 = args[0]!;
+                const arg1 = args[1]!;
+                if (arg0.kind !== "ref") {
                     throwCompilationError(
                         "fromCell() is implemented only for struct types",
                         ref,
                     );
                 }
-                const tp = getType(ctx, args[0].name);
+                const tp = getType(ctx, arg0.name);
                 if (tp.kind !== "struct") {
                     throwCompilationError(
                         "fromCell() is implemented only for struct types",
                         ref,
                     );
                 }
-                if (args[1].kind !== "ref" || args[1].name !== "Cell") {
+                if (arg1.kind !== "ref" || arg1.name !== "Cell") {
                     throwCompilationError(
                         "fromCell() expects a Cell as an argument",
                         ref,
                     );
                 }
-                return { kind: "ref", name: args[0].name, optional: false };
+                return { kind: "ref", name: arg0.name, optional: false };
             },
             generate: (ctx, args, resolved, ref) => {
                 if (resolved.length !== 2) {
@@ -81,19 +85,21 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                if (args[0].kind !== "ref") {
+                const arg0 = args[0]!;
+                const arg1 = args[1]!;
+                if (arg0.kind !== "ref") {
                     throwCompilationError(
                         "fromCell() is implemented only for struct types",
                         ref,
                     );
                 }
-                if (args[1].kind !== "ref" || args[1].name !== "Cell") {
+                if (arg1.kind !== "ref" || arg1.name !== "Cell") {
                     throwCompilationError(
                         "fromCell() expects a Cell as an argument",
                         ref,
                     );
                 }
-                return `${ops.readerNonModifying(args[0].name, ctx)}(${writeExpression(resolved[1], ctx)}.begin_parse())`;
+                return `${ops.readerNonModifying(arg0.name, ctx)}(${writeExpression(resolved[1]!, ctx)}.begin_parse())`;
             },
         },
     ],
@@ -108,26 +114,28 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                if (args[0].kind !== "ref") {
+                const arg0 = args[0]!;
+                const arg1 = args[1]!;
+                if (arg0.kind !== "ref") {
                     throwCompilationError(
                         "fromSlice() is implemented only for struct types",
                         ref,
                     );
                 }
-                const tp = getType(ctx, args[0].name);
+                const tp = getType(ctx, arg0.name);
                 if (tp.kind !== "struct") {
                     throwCompilationError(
                         "fromSlice() is implemented only for struct types",
                         ref,
                     );
                 }
-                if (args[1].kind !== "ref" || args[1].name !== "Slice") {
+                if (arg1.kind !== "ref" || arg1.name !== "Slice") {
                     throwCompilationError(
                         "fromSlice() expects a Slice as an argument",
                         ref,
                     );
                 }
-                return { kind: "ref", name: args[0].name, optional: false };
+                return { kind: "ref", name: arg0.name, optional: false };
             },
             generate: (ctx, args, resolved, ref) => {
                 if (resolved.length !== 2) {
@@ -136,19 +144,21 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                if (args[0].kind !== "ref") {
+                const arg0 = args[0]!;
+                const arg1 = args[1]!;
+                if (arg0.kind !== "ref") {
                     throwCompilationError(
                         "fromSlice() is implemented only for struct types",
                         ref,
                     );
                 }
-                if (args[1].kind !== "ref" || args[1].name !== "Slice") {
+                if (arg1.kind !== "ref" || arg1.name !== "Slice") {
                     throwCompilationError(
                         "fromSlice() expects a Slice as an argument",
                         ref,
                     );
                 }
-                return `${ops.readerNonModifying(args[0].name, ctx)}(${writeExpression(resolved[1], ctx)})`;
+                return `${ops.readerNonModifying(arg0.name, ctx)}(${writeExpression(resolved[1]!, ctx)})`;
             },
         },
     ],

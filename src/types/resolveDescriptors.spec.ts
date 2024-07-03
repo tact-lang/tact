@@ -12,7 +12,7 @@ import { featureEnable } from "../config/features";
 
 expect.addSnapshotSerializer({
     test: (src) => src instanceof SrcInfo,
-    print: (src) => `${(src as SrcInfo).contents}`,
+    print: (src) => (src as SrcInfo).contents,
 });
 
 describe("resolveDescriptors", () => {

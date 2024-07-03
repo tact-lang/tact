@@ -37,10 +37,10 @@ export function crc16(data: string | Buffer) {
 
     let crc = 0;
 
-    for (let index = 0; index < data.length; index++) {
-        const byte = data[index];
-        crc = (TABLE[((crc >> 8) ^ byte) & 0xff] ^ (crc << 8)) & 0xffff;
-    }
+    data.forEach(
+        (byte) =>
+            (crc = (TABLE[((crc >> 8) ^ byte) & 0xff]! ^ (crc << 8)) & 0xffff),
+    );
 
     return crc;
 }

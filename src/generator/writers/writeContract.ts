@@ -122,13 +122,13 @@ export function writeInit(
 
             // Generate self initial tensor
             const initValues: string[] = [];
-            for (let i = 0; i < t.fields.length; i++) {
+            t.fields.forEach((tField) => {
                 let init = "null()";
-                if (t.fields[i].default !== undefined) {
-                    init = writeValue(t.fields[i].default!, ctx);
+                if (tField.default !== undefined) {
+                    init = writeValue(tField.default!, ctx);
                 }
                 initValues.push(init);
-            }
+            });
             if (initValues.length > 0) {
                 // Special case for empty contracts
                 ctx.append(
@@ -147,7 +147,7 @@ export function writeInit(
             // Return result
             if (
                 init.ast.statements.length === 0 ||
-                init.ast.statements[init.ast.statements.length - 1].kind !==
+                init.ast.statements[init.ast.statements.length - 1]!.kind !==
                     "statement_return"
             ) {
                 ctx.append(`return ${returns};`);

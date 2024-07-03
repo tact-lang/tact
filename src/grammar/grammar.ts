@@ -89,8 +89,8 @@ function unwrapOptNode<T>(
     optional: IterationNode,
     f: (n: Node) => T,
 ): T | null {
-    const optNode = optional.children[0];
-    return optNode ? f(optNode) : null;
+    const optNode = optional.children[0] as Node | undefined;
+    return optNode !== undefined ? f(optNode) : null;
 }
 
 const semantics = tactGrammar.createSemantics();
@@ -421,7 +421,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         receiverBody,
         _rbrace,
     ) {
-        const optParam = optParameter.children[0];
+        const optParam = optParameter.children[0] as Node | undefined;
         const selector: AstReceiverKind = optParam
             ? {
                   kind: "external-simple",

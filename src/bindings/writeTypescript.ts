@@ -112,7 +112,7 @@ export function writeTypescript(
                 type: v.type,
                 op: getAllocationOperationFromField(
                     v.type,
-                    (s) => allocations[s].size,
+                    (s) => allocations[s]!.size,
                 ),
             }));
             const headerBits = f.header ? 32 : 0;
@@ -131,8 +131,8 @@ export function writeTypescript(
 
         for (const s of abi.types) {
             writeStruct(s.name, s.fields, true, w);
-            writeSerializer(s, allocations[s.name].root, w);
-            writeParser(s, allocations[s.name].root, w);
+            writeSerializer(s, allocations[s.name]!.root, w);
+            writeParser(s, allocations[s.name]!.root, w);
             writeTupleParser(s, w);
             writeTupleSerializer(s, w);
             writeDictParser(s, w);
@@ -148,7 +148,7 @@ export function writeTypescript(
             type: v.type,
             op: getAllocationOperationFromField(
                 v.type,
-                (s) => allocations[s].size,
+                (s) => allocations[s]!.size,
             ),
         }));
         const allocation = allocate({
@@ -191,13 +191,11 @@ export function writeTypescript(
     );
     w.inIndent(() => {
         if (abi.errors) {
-            for (const k in abi.errors) {
+            Object.entries(abi.errors).forEach(([k, abiError]) =>
                 w.append(
-                    `${k}: { message: \`${abi.errors[
-                        parseInt(k, 10)
-                    ].message.replaceAll("`", "\\`")}\` },`,
-                );
-            }
+                    `${k}: { message: \`${abiError.message.replaceAll("`", "\\`")}\` },`,
+                ),
+            );
         }
     });
     w.append(`}`);
@@ -309,21 +307,34 @@ export function writeTypescript(
                 if (r.receiver !== "internal") {
                     continue;
                 }
-                if (r.message.kind === "empty") {
-                    receivers.push(`null`);
-                } else if (r.message.kind === "typed") {
-                    receivers.push(`${r.message.type}`);
-                } else if (r.message.kind === "text") {
-                    if (
-                        r.message.text !== null &&
-                        r.message.text !== undefined
-                    ) {
-                        receivers.push(`'${r.message.text}'`);
-                    } else {
-                        receivers.push(`string`);
-                    }
-                } else if (r.message.kind === "any") {
-                    receivers.push(`Slice`);
+                switch (r.message.kind) {
+                    case "empty":
+                        {
+                            receivers.push(`null`);
+                        }
+                        break;
+                    case "typed":
+                        {
+                            receivers.push(r.message.type);
+                        }
+                        break;
+                    case "text":
+                        {
+                            if (
+                                r.message.text !== null &&
+                                r.message.text !== undefined
+                            ) {
+                                receivers.push(`'${r.message.text}'`);
+                            } else {
+                                receivers.push(`string`);
+                            }
+                        }
+                        break;
+                    case "any":
+                        {
+                            receivers.push(`Slice`);
+                        }
+                        break;
                 }
             }
 
@@ -341,48 +352,66 @@ export function writeTypescript(
                         continue;
                     }
                     const msg = r.message;
-                    if (msg.kind === "typed") {
-                        w.append(
-                            `if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === '${msg.type}') {`,
-                        );
-                        w.inIndent(() => {
+                    switch (msg.kind) {
+                        case "typed":
+                            {
+                                w.append(
+                                    `if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === '${msg.type}') {`,
+                                );
+                                w.inIndent(() => {
+                                    w.append(
+                                        `body = beginCell().store(store${msg.type}(message)).endCell();`,
+                                    );
+                                });
+                                w.append(`}`);
+                            }
+                            break;
+                        case "empty":
+                            {
+                                w.append(`if (message === null) {`);
+                                w.inIndent(() => {
+                                    w.append(`body = new Cell();`);
+                                });
+                                w.append(`}`);
+                            }
+                            break;
+                        case "text":
+                            {
+                                if (
+                                    msg.text === null ||
+                                    msg.text === undefined
+                                ) {
+                                    w.append(
+                                        `if (typeof message === 'string') {`,
+                                    );
+                                    w.inIndent(() => {
+                                        w.append(
+                                            `body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`,
+                                        );
+                                    });
+                                    w.append(`}`);
+                                } else {
+                                    w.append(
+                                        `if (message === '${msg.text}') {`,
+                                    );
+                                    w.inIndent(() => {
+                                        w.append(
+                                            `body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`,
+                                        );
+                                    });
+                                    w.append(`}`);
+                                }
+                            }
+                            break;
+                        case "any": {
                             w.append(
-                                `body = beginCell().store(store${msg.type}(message)).endCell();`,
+                                `if (message && typeof message === 'object' && message instanceof Slice) {`,
                             );
-                        });
-                        w.append(`}`);
-                    } else if (msg.kind === "empty") {
-                        w.append(`if (message === null) {`);
-                        w.inIndent(() => {
-                            w.append(`body = new Cell();`);
-                        });
-                        w.append(`}`);
-                    } else if (msg.kind === "text") {
-                        if (msg.text === null || msg.text === undefined) {
-                            w.append(`if (typeof message === 'string') {`);
                             w.inIndent(() => {
-                                w.append(
-                                    `body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`,
-                                );
-                            });
-                            w.append(`}`);
-                        } else {
-                            w.append(`if (message === '${msg.text}') {`);
-                            w.inIndent(() => {
-                                w.append(
-                                    `body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`,
-                                );
+                                w.append(`body = message.asCell();`);
                             });
                             w.append(`}`);
                         }
-                    } else if (msg.kind === "any") {
-                        w.append(
-                            `if (message && typeof message === 'object' && message instanceof Slice) {`,
-                        );
-                        w.inIndent(() => {
-                            w.append(`body = message.asCell();`);
-                        });
-                        w.append(`}`);
                     }
                 }
                 w.append(
@@ -410,21 +439,34 @@ export function writeTypescript(
                 if (r.receiver !== "external") {
                     continue;
                 }
-                if (r.message.kind === "empty") {
-                    receivers.push(`null`);
-                } else if (r.message.kind === "typed") {
-                    receivers.push(`${r.message.type}`);
-                } else if (r.message.kind === "text") {
-                    if (
-                        r.message.text !== null &&
-                        r.message.text !== undefined
-                    ) {
-                        receivers.push(`'${r.message.text}'`);
-                    } else {
-                        receivers.push(`string`);
-                    }
-                } else if (r.message.kind === "any") {
-                    receivers.push(`Slice`);
+                switch (r.message.kind) {
+                    case "empty":
+                        {
+                            receivers.push(`null`);
+                        }
+                        break;
+                    case "typed":
+                        {
+                            receivers.push(r.message.type);
+                        }
+                        break;
+                    case "text":
+                        {
+                            if (
+                                r.message.text !== null &&
+                                r.message.text !== undefined
+                            ) {
+                                receivers.push(`'${r.message.text}'`);
+                            } else {
+                                receivers.push(`string`);
+                            }
+                        }
+                        break;
+                    case "any":
+                        {
+                            receivers.push(`Slice`);
+                        }
+                        break;
                 }
             }
 
@@ -442,48 +484,66 @@ export function writeTypescript(
                         continue;
                     }
                     const msg = r.message;
-                    if (msg.kind === "typed") {
-                        w.append(
-                            `if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === '${msg.type}') {`,
-                        );
-                        w.inIndent(() => {
+                    switch (msg.kind) {
+                        case "typed":
+                            {
+                                w.append(
+                                    `if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === '${msg.type}') {`,
+                                );
+                                w.inIndent(() => {
+                                    w.append(
+                                        `body = beginCell().store(store${msg.type}(message)).endCell();`,
+                                    );
+                                });
+                                w.append(`}`);
+                            }
+                            break;
+                        case "empty":
+                            {
+                                w.append(`if (message === null) {`);
+                                w.inIndent(() => {
+                                    w.append(`body = new Cell();`);
+                                });
+                                w.append(`}`);
+                            }
+                            break;
+                        case "text":
+                            {
+                                if (
+                                    msg.text === null ||
+                                    msg.text === undefined
+                                ) {
+                                    w.append(
+                                        `if (typeof message === 'string') {`,
+                                    );
+                                    w.inIndent(() => {
+                                        w.append(
+                                            `body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`,
+                                        );
+                                    });
+                                    w.append(`}`);
+                                } else {
+                                    w.append(
+                                        `if (message === '${msg.text}') {`,
+                                    );
+                                    w.inIndent(() => {
+                                        w.append(
+                                            `body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`,
+                                        );
+                                    });
+                                    w.append(`}`);
+                                }
+                            }
+                            break;
+                        case "any": {
                             w.append(
-                                `body = beginCell().store(store${msg.type}(message)).endCell();`,
+                                `if (message && typeof message === 'object' && message instanceof Slice) {`,
                             );
-                        });
-                        w.append(`}`);
-                    } else if (msg.kind === "empty") {
-                        w.append(`if (message === null) {`);
-                        w.inIndent(() => {
-                            w.append(`body = new Cell();`);
-                        });
-                        w.append(`}`);
-                    } else if (msg.kind === "text") {
-                        if (msg.text === null || msg.text === undefined) {
-                            w.append(`if (typeof message === 'string') {`);
                             w.inIndent(() => {
-                                w.append(
-                                    `body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`,
-                                );
-                            });
-                            w.append(`}`);
-                        } else {
-                            w.append(`if (message === '${msg.text}') {`);
-                            w.inIndent(() => {
-                                w.append(
-                                    `body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`,
-                                );
+                                w.append(`body = message.asCell();`);
                             });
                             w.append(`}`);
                         }
-                    } else if (msg.kind === "any") {
-                        w.append(
-                            `if (message && typeof message === 'object' && message instanceof Slice) {`,
-                        );
-                        w.inIndent(() => {
-                            w.append(`body = message.asCell();`);
-                        });
-                        w.append(`}`);
                     }
                 }
                 w.append(

@@ -121,120 +121,134 @@ function verifyMapType(
 export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 
 export function resolveTypeRef(ctx: CompilerContext, src: AstType): TypeRef {
-    if (src.kind === "type_id") {
-        const t = getType(ctx, idText(src));
-        return {
-            kind: "ref",
-            name: t.name,
-            optional: false,
-        };
-    }
-    if (src.kind === "optional_type") {
-        if (src.typeArg.kind !== "type_id") {
-            throwInternalCompilerError(
-                "Only optional type identifiers are supported now",
-                src.typeArg.loc,
-            );
+    switch (src.kind) {
+        case "type_id": {
+            const t = getType(ctx, idText(src));
+            return {
+                kind: "ref",
+                name: t.name,
+                optional: false,
+            };
         }
-        const t = getType(ctx, idText(src.typeArg));
-        return {
-            kind: "ref",
-            name: t.name,
-            optional: true,
-        };
+        case "optional_type": {
+            if (src.typeArg.kind !== "type_id") {
+                throwInternalCompilerError(
+                    "Only optional type identifiers are supported now",
+                    src.typeArg.loc,
+                );
+            }
+            const t = getType(ctx, idText(src.typeArg));
+            return {
+                kind: "ref",
+                name: t.name,
+                optional: true,
+            };
+        }
+        case "map_type": {
+            const k = getType(ctx, idText(src.keyType)).name;
+            const v = getType(ctx, idText(src.valueType)).name;
+            verifyMapType(
+                k,
+                src.keyStorageType,
+                v,
+                src.valueStorageType,
+                src.loc,
+            );
+            return {
+                kind: "map",
+                key: k,
+                keyAs:
+                    src.keyStorageType !== null
+                        ? idText(src.keyStorageType)
+                        : null,
+                value: v,
+                valueAs:
+                    src.valueStorageType !== null
+                        ? idText(src.valueStorageType)
+                        : null,
+            };
+        }
+        case "bounced_message_type": {
+            const t = getType(ctx, idText(src.messageType));
+            return {
+                kind: "ref_bounced",
+                name: t.name,
+            };
+        }
     }
-    if (src.kind === "map_type") {
-        const k = getType(ctx, idText(src.keyType)).name;
-        const v = getType(ctx, idText(src.valueType)).name;
-        verifyMapType(k, src.keyStorageType, v, src.valueStorageType, src.loc);
-        return {
-            kind: "map",
-            key: k,
-            keyAs:
-                src.keyStorageType !== null ? idText(src.keyStorageType) : null,
-            value: v,
-            valueAs:
-                src.valueStorageType !== null
-                    ? idText(src.valueStorageType)
-                    : null,
-        };
-    }
-    if (src.kind === "bounced_message_type") {
-        const t = getType(ctx, idText(src.messageType));
-        return {
-            kind: "ref_bounced",
-            name: t.name,
-        };
-    }
-    throw Error("Invalid type ref");
 }
 
 function buildTypeRef(
     src: AstType,
     types: Map<string, TypeDescription>,
 ): TypeRef {
-    if (src.kind === "type_id") {
-        if (!types.has(idText(src))) {
-            throwCompilationError(`Type ${idTextErr(src)} not found`, src.loc);
+    switch (src.kind) {
+        case "type_id": {
+            if (!types.has(idText(src))) {
+                throwCompilationError(
+                    `Type ${idTextErr(src)} not found`,
+                    src.loc,
+                );
+            }
+            return {
+                kind: "ref",
+                name: idText(src),
+                optional: false,
+            };
         }
-        return {
-            kind: "ref",
-            name: idText(src),
-            optional: false,
-        };
+        case "optional_type": {
+            if (src.typeArg.kind !== "type_id") {
+                throwInternalCompilerError(
+                    "Only optional type identifiers are supported now",
+                    src.typeArg.loc,
+                );
+            }
+            if (!types.has(idText(src.typeArg))) {
+                throwCompilationError(
+                    `Type ${idTextErr(src.typeArg)} not found`,
+                    src.loc,
+                );
+            }
+            return {
+                kind: "ref",
+                name: idText(src.typeArg),
+                optional: true,
+            };
+        }
+        case "map_type": {
+            if (!types.has(idText(src.keyType))) {
+                throwCompilationError(
+                    `Type ${idTextErr(src.keyType)} not found`,
+                    src.loc,
+                );
+            }
+            if (!types.has(idText(src.valueType))) {
+                throwCompilationError(
+                    `Type ${idTextErr(src.valueType)} not found`,
+                    src.loc,
+                );
+            }
+            return {
+                kind: "map",
+                key: idText(src.keyType),
+                keyAs:
+                    src.keyStorageType !== null
+                        ? idText(src.keyStorageType)
+                        : null,
+                value: idText(src.valueType),
+                valueAs:
+                    src.valueStorageType !== null
+                        ? idText(src.valueStorageType)
+                        : null,
+            };
+        }
+        case "bounced_message_type": {
+            return {
+                kind: "ref_bounced",
+                name: idText(src.messageType),
+            };
+        }
     }
-    if (src.kind === "optional_type") {
-        if (src.typeArg.kind !== "type_id") {
-            throwInternalCompilerError(
-                "Only optional type identifiers are supported now",
-                src.typeArg.loc,
-            );
-        }
-        if (!types.has(idText(src.typeArg))) {
-            throwCompilationError(
-                `Type ${idTextErr(src.typeArg)} not found`,
-                src.loc,
-            );
-        }
-        return {
-            kind: "ref",
-            name: idText(src.typeArg),
-            optional: true,
-        };
-    }
-    if (src.kind === "map_type") {
-        if (!types.has(idText(src.keyType))) {
-            throwCompilationError(
-                `Type ${idTextErr(src.keyType)} not found`,
-                src.loc,
-            );
-        }
-        if (!types.has(idText(src.valueType))) {
-            throwCompilationError(
-                `Type ${idTextErr(src.valueType)} not found`,
-                src.loc,
-            );
-        }
-        return {
-            kind: "map",
-            key: idText(src.keyType),
-            keyAs:
-                src.keyStorageType !== null ? idText(src.keyStorageType) : null,
-            value: idText(src.valueType),
-            valueAs:
-                src.valueStorageType !== null
-                    ? idText(src.valueStorageType)
-                    : null,
-        };
-    }
-    if (src.kind === "bounced_message_type") {
-        return {
-            kind: "ref_bounced",
-            name: idText(src.messageType),
-        };
-    }
-
-    throw Error("Unknown type ref");
 }
 
 function uidForName(name: string, types: Map<string, TypeDescription>) {
@@ -266,90 +280,98 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         const uid = uidForName(idText(a.name), types);
 
-        if (a.kind === "primitive_type_decl") {
-            types.set(idText(a.name), {
-                kind: "primitive_type_decl",
-                origin: a.loc.origin,
-                name: idText(a.name),
-                uid,
-                fields: [],
-                traits: [],
-                header: null,
-                tlb: null,
-                signature: null,
-                functions: new Map(),
-                receivers: [],
-                dependsOn: [],
-                init: null,
-                ast: a,
-                interfaces: [],
-                constants: [],
-                partialFieldCount: 0,
-            });
-        } else if (a.kind === "contract") {
-            types.set(idText(a.name), {
-                kind: "contract",
-                origin: a.loc.origin,
-                name: idText(a.name),
-                uid,
-                header: null,
-                tlb: null,
-                fields: [],
-                traits: [],
-                signature: null,
-                functions: new Map(),
-                receivers: [],
-                dependsOn: [],
-                init: null,
-                ast: a,
-                interfaces: a.attributes
-                    .filter((v) => v.type === "interface")
-                    .map((v) => v.name.value),
-                constants: [],
-                partialFieldCount: 0,
-            });
-        } else if (a.kind === "struct_decl" || a.kind === "message_decl") {
-            types.set(idText(a.name), {
-                kind: "struct",
-                origin: a.loc.origin,
-                name: idText(a.name),
-                uid,
-                header: null,
-                tlb: null,
-                signature: null,
-                fields: [],
-                traits: [],
-                functions: new Map(),
-                receivers: [],
-                dependsOn: [],
-                init: null,
-                ast: a,
-                interfaces: [],
-                constants: [],
-                partialFieldCount: 0,
-            });
-        } else if (a.kind === "trait") {
-            types.set(idText(a.name), {
-                kind: "trait",
-                origin: a.loc.origin,
-                name: idText(a.name),
-                uid,
-                header: null,
-                tlb: null,
-                signature: null,
-                fields: [],
-                traits: [],
-                functions: new Map(),
-                receivers: [],
-                dependsOn: [],
-                init: null,
-                ast: a,
-                interfaces: a.attributes
-                    .filter((v) => v.type === "interface")
-                    .map((v) => v.name.value),
-                constants: [],
-                partialFieldCount: 0,
-            });
+        switch (a.kind) {
+            case "primitive_type_decl":
+                {
+                    types.set(idText(a.name), {
+                        kind: "primitive_type_decl",
+                        origin: a.loc.origin,
+                        name: idText(a.name),
+                        uid,
+                        fields: [],
+                        traits: [],
+                        header: null,
+                        tlb: null,
+                        signature: null,
+                        functions: new Map(),
+                        receivers: [],
+                        dependsOn: [],
+                        init: null,
+                        ast: a,
+                        interfaces: [],
+                        constants: [],
+                        partialFieldCount: 0,
+                    });
+                }
+                break;
+            case "contract":
+                {
+                    types.set(idText(a.name), {
+                        kind: "contract",
+                        origin: a.loc.origin,
+                        name: idText(a.name),
+                        uid,
+                        header: null,
+                        tlb: null,
+                        fields: [],
+                        traits: [],
+                        signature: null,
+                        functions: new Map(),
+                        receivers: [],
+                        dependsOn: [],
+                        init: null,
+                        ast: a,
+                        interfaces: a.attributes.map((v) => v.name.value),
+                        constants: [],
+                        partialFieldCount: 0,
+                    });
+                }
+                break;
+            case "struct_decl":
+            case "message_decl":
+                {
+                    types.set(idText(a.name), {
+                        kind: "struct",
+                        origin: a.loc.origin,
+                        name: idText(a.name),
+                        uid,
+                        header: null,
+                        tlb: null,
+                        signature: null,
+                        fields: [],
+                        traits: [],
+                        functions: new Map(),
+                        receivers: [],
+                        dependsOn: [],
+                        init: null,
+                        ast: a,
+                        interfaces: [],
+                        constants: [],
+                        partialFieldCount: 0,
+                    });
+                }
+                break;
+            case "trait": {
+                types.set(idText(a.name), {
+                    kind: "trait",
+                    origin: a.loc.origin,
+                    name: idText(a.name),
+                    uid,
+                    header: null,
+                    tlb: null,
+                    signature: null,
+                    fields: [],
+                    traits: [],
+                    functions: new Map(),
+                    receivers: [],
+                    dependsOn: [],
+                    init: null,
+                    ast: a,
+                    interfaces: a.attributes.map((v) => v.name.value),
+                    constants: [],
+                    partialFieldCount: 0,
+                });
+            }
         }
     }
 
@@ -760,33 +782,34 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     isExtends.loc,
                 );
             }
-            if (!isSelfId(params[0].name)) {
+            const firstParam = params[0]!;
+            if (!isSelfId(firstParam.name)) {
                 throwCompilationError(
                     'Extend function must have first parameter named "self"',
-                    params[0].loc,
+                    firstParam.loc,
                 );
             }
-            if (params[0].type.kind !== "ref") {
+            if (firstParam.type.kind !== "ref") {
                 throwCompilationError(
                     "Extend functions must have a reference type as the first parameter",
-                    params[0].loc,
+                    firstParam.loc,
                 );
             }
-            if (params[0].type.optional) {
+            if (firstParam.type.optional) {
                 throwCompilationError(
                     "Extend functions must have a non-optional type as the first parameter",
-                    params[0].loc,
+                    firstParam.loc,
                 );
             }
-            if (!types.has(params[0].type.name)) {
+            if (!types.has(firstParam.type.name)) {
                 throwCompilationError(
-                    "Type " + params[0].type.name + " not found",
-                    params[0].loc,
+                    "Type " + firstParam.type.name + " not found",
+                    firstParam.loc,
                 );
             }
 
             // Update self and remove first parameter
-            self = params[0].type.name;
+            self = firstParam.type.name;
             params = params.slice(1);
         }
 
@@ -919,238 +942,290 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         );
                     }
 
-                    if (
-                        d.selector.kind === "internal-simple" ||
-                        d.selector.kind === "external-simple"
-                    ) {
-                        const param = d.selector.param;
-                        const internal = d.selector.kind === "internal-simple";
+                    switch (d.selector.kind) {
+                        case "internal-simple":
+                        case "external-simple":
+                            {
+                                const param = d.selector.param;
+                                const internal =
+                                    d.selector.kind === "internal-simple";
 
-                        if (param.type.kind !== "type_id") {
-                            throwCompilationError(
-                                "Receive function can only accept non-optional message types",
-                                d.loc,
-                            );
-                        }
-                        const t = types.get(idText(param.type));
-                        if (!t) {
-                            throwCompilationError(
-                                `Type ${idTextErr(param.type)} not found`,
-                                d.loc,
-                            );
-                        }
-
-                        // Raw receiver
-                        if (t.kind === "primitive_type_decl") {
-                            if (t.name === "Slice") {
-                                // Check for existing receiver
-                                if (
-                                    s.receivers.find(
-                                        (v) =>
-                                            v.selector.kind ===
-                                            (internal
-                                                ? "internal-fallback"
-                                                : "external-fallback"),
-                                    )
-                                ) {
+                                if (param.type.kind !== "type_id") {
                                     throwCompilationError(
-                                        `Fallback receive function already exists`,
+                                        "Receive function can only accept non-optional message types",
+                                        d.loc,
+                                    );
+                                }
+                                const t = types.get(idText(param.type));
+                                if (!t) {
+                                    throwCompilationError(
+                                        `Type ${idTextErr(param.type)} not found`,
                                         d.loc,
                                     );
                                 }
 
-                                // Persist receiver
-                                s.receivers.push({
-                                    selector: {
-                                        kind: internal
-                                            ? "internal-fallback"
-                                            : "external-fallback",
-                                        name: param.name,
-                                    },
-                                    ast: d,
-                                });
-                            } else if (t.name === "String") {
-                                // Check for existing receiver
-                                if (
-                                    s.receivers.find(
-                                        (v) =>
-                                            v.selector.kind ===
-                                            (internal
-                                                ? "internal-comment-fallback"
-                                                : "external-comment-fallback"),
-                                    )
-                                ) {
-                                    throwCompilationError(
-                                        "Comment fallback receive function already exists",
-                                        d.loc,
-                                    );
-                                }
+                                // Raw receiver
+                                if (t.kind === "primitive_type_decl") {
+                                    if (t.name === "Slice") {
+                                        // Check for existing receiver
+                                        if (
+                                            s.receivers.find(
+                                                (v) =>
+                                                    v.selector.kind ===
+                                                    (internal
+                                                        ? "internal-fallback"
+                                                        : "external-fallback"),
+                                            )
+                                        ) {
+                                            throwCompilationError(
+                                                `Fallback receive function already exists`,
+                                                d.loc,
+                                            );
+                                        }
 
-                                // Persist receiver
-                                s.receivers.push({
-                                    selector: {
-                                        kind: internal
-                                            ? "internal-comment-fallback"
-                                            : "external-comment-fallback",
-                                        name: param.name,
-                                    },
-                                    ast: d,
-                                });
-                            } else {
-                                throwCompilationError(
-                                    "Receive function can only accept message, Slice or String",
-                                    d.loc,
-                                );
-                            }
-                        } else {
-                            // Check type
-                            if (t.kind !== "struct") {
-                                throwCompilationError(
-                                    "Receive function can only accept message",
-                                    d.loc,
-                                );
-                            }
-                            if (t.ast.kind !== "message_decl") {
-                                throwCompilationError(
-                                    "Receive function can only accept message",
-                                    d.loc,
-                                );
-                            }
+                                        // Persist receiver
+                                        s.receivers.push({
+                                            selector: {
+                                                kind: internal
+                                                    ? "internal-fallback"
+                                                    : "external-fallback",
+                                                name: param.name,
+                                            },
+                                            ast: d,
+                                        });
+                                    } else if (t.name === "String") {
+                                        // Check for existing receiver
+                                        if (
+                                            s.receivers.find(
+                                                (v) =>
+                                                    v.selector.kind ===
+                                                    (internal
+                                                        ? "internal-comment-fallback"
+                                                        : "external-comment-fallback"),
+                                            )
+                                        ) {
+                                            throwCompilationError(
+                                                "Comment fallback receive function already exists",
+                                                d.loc,
+                                            );
+                                        }
 
-                            // Check for duplicate
-                            const n = idText(param.type);
-                            if (
-                                s.receivers.find(
-                                    (v) =>
-                                        v.selector.kind ===
-                                            (internal
+                                        // Persist receiver
+                                        s.receivers.push({
+                                            selector: {
+                                                kind: internal
+                                                    ? "internal-comment-fallback"
+                                                    : "external-comment-fallback",
+                                                name: param.name,
+                                            },
+                                            ast: d,
+                                        });
+                                    } else {
+                                        throwCompilationError(
+                                            "Receive function can only accept message, Slice or String",
+                                            d.loc,
+                                        );
+                                    }
+                                } else {
+                                    // Check type
+                                    if (t.kind !== "struct") {
+                                        throwCompilationError(
+                                            "Receive function can only accept message",
+                                            d.loc,
+                                        );
+                                    }
+                                    if (t.ast.kind !== "message_decl") {
+                                        throwCompilationError(
+                                            "Receive function can only accept message",
+                                            d.loc,
+                                        );
+                                    }
+
+                                    // Check for duplicate
+                                    const n = idText(param.type);
+                                    if (
+                                        s.receivers.find(
+                                            (v) =>
+                                                v.selector.kind ===
+                                                    (internal
+                                                        ? "internal-binary"
+                                                        : "external-binary") &&
+                                                eqNames(v.selector.type, n),
+                                        )
+                                    ) {
+                                        throwCompilationError(
+                                            `Receive function for ${idTextErr(param.type)} already exists`,
+                                            param.loc,
+                                        );
+                                    }
+
+                                    // Persist receiver
+                                    s.receivers.push({
+                                        selector: {
+                                            kind: internal
                                                 ? "internal-binary"
-                                                : "external-binary") &&
-                                        eqNames(v.selector.type, n),
-                                )
-                            ) {
-                                throwCompilationError(
-                                    `Receive function for ${idTextErr(param.type)} already exists`,
-                                    param.loc,
-                                );
+                                                : "external-binary",
+                                            name: param.name,
+                                            type: idText(param.type),
+                                        },
+                                        ast: d,
+                                    });
+                                }
                             }
-
-                            // Persist receiver
-                            s.receivers.push({
-                                selector: {
-                                    kind: internal
-                                        ? "internal-binary"
-                                        : "external-binary",
-                                    name: param.name,
-                                    type: idText(param.type),
-                                },
-                                ast: d,
-                            });
-                        }
-                    } else if (
-                        d.selector.kind === "internal-comment" ||
-                        d.selector.kind === "external-comment"
-                    ) {
-                        const internal = d.selector.kind === "internal-comment";
-                        if (d.selector.comment.value === "") {
-                            throwCompilationError(
-                                "To use empty comment receiver, just remove parameter instead of passing empty string",
-                                d.loc,
-                            );
-                        }
-                        const c = d.selector.comment.value;
-                        if (
-                            s.receivers.find(
-                                (v) =>
-                                    v.selector.kind ===
-                                        (internal
-                                            ? "internal-comment"
-                                            : "external-comment") &&
-                                    v.selector.comment === c,
-                            )
-                        ) {
-                            throwCompilationError(
-                                `Receive function for ${idTextErr(c)} already exists`,
-                                d.loc,
-                            );
-                        }
-                        s.receivers.push({
-                            selector: {
-                                kind: internal
-                                    ? "internal-comment"
-                                    : "external-comment",
-                                comment: c,
-                            },
-                            ast: d,
-                        });
-                    } else if (
-                        d.selector.kind === "internal-fallback" ||
-                        d.selector.kind === "external-fallback"
-                    ) {
-                        const internal =
-                            d.selector.kind === "internal-fallback";
-                        // Handle empty
-                        if (
-                            s.receivers.find(
-                                (v) =>
-                                    v.selector.kind ===
-                                    (internal
-                                        ? "internal-empty"
-                                        : "external-empty"),
-                            )
-                        ) {
-                            throwCompilationError(
-                                "Empty receive function already exists",
-                                d.loc,
-                            );
-                        }
-                        s.receivers.push({
-                            selector: {
-                                kind: internal
-                                    ? "internal-empty"
-                                    : "external-empty",
-                            },
-                            ast: d,
-                        });
-                    } else if (d.selector.kind === "bounce") {
-                        const param = d.selector.param;
-
-                        if (param.type.kind === "type_id") {
-                            if (isSlice(param.type)) {
+                            break;
+                        case "internal-comment":
+                        case "external-comment":
+                            {
+                                const internal =
+                                    d.selector.kind === "internal-comment";
+                                if (d.selector.comment.value === "") {
+                                    throwCompilationError(
+                                        "To use empty comment receiver, just remove parameter instead of passing empty string",
+                                        d.loc,
+                                    );
+                                }
+                                const c = d.selector.comment.value;
                                 if (
                                     s.receivers.find(
                                         (v) =>
                                             v.selector.kind ===
-                                            "bounce-fallback",
+                                                (internal
+                                                    ? "internal-comment"
+                                                    : "external-comment") &&
+                                            v.selector.comment === c,
                                     )
                                 ) {
                                     throwCompilationError(
-                                        `Fallback bounce receive function already exists`,
+                                        `Receive function for ${idTextErr(c)} already exists`,
                                         d.loc,
                                     );
                                 }
-
                                 s.receivers.push({
                                     selector: {
-                                        kind: "bounce-fallback",
-                                        name: param.name,
+                                        kind: internal
+                                            ? "internal-comment"
+                                            : "external-comment",
+                                        comment: c,
                                     },
                                     ast: d,
                                 });
-                            } else {
-                                const type = types.get(idText(param.type))!;
-                                if (type.ast.kind !== "message_decl") {
+                            }
+                            break;
+                        case "internal-fallback":
+                        case "external-fallback":
+                            {
+                                const internal =
+                                    d.selector.kind === "internal-fallback";
+                                // Handle empty
+                                if (
+                                    s.receivers.find(
+                                        (v) =>
+                                            v.selector.kind ===
+                                            (internal
+                                                ? "internal-empty"
+                                                : "external-empty"),
+                                    )
+                                ) {
                                     throwCompilationError(
-                                        "Bounce receive function can only accept bounced message, message or Slice",
+                                        "Empty receive function already exists",
                                         d.loc,
                                     );
                                 }
-                                if (
-                                    type.fields.length !==
-                                    type.partialFieldCount
-                                ) {
+                                s.receivers.push({
+                                    selector: {
+                                        kind: internal
+                                            ? "internal-empty"
+                                            : "external-empty",
+                                    },
+                                    ast: d,
+                                });
+                            }
+                            break;
+                        case "bounce": {
+                            const param = d.selector.param;
+
+                            if (param.type.kind === "type_id") {
+                                if (isSlice(param.type)) {
+                                    if (
+                                        s.receivers.find(
+                                            (v) =>
+                                                v.selector.kind ===
+                                                "bounce-fallback",
+                                        )
+                                    ) {
+                                        throwCompilationError(
+                                            `Fallback bounce receive function already exists`,
+                                            d.loc,
+                                        );
+                                    }
+
+                                    s.receivers.push({
+                                        selector: {
+                                            kind: "bounce-fallback",
+                                            name: param.name,
+                                        },
+                                        ast: d,
+                                    });
+                                } else {
+                                    const type = types.get(idText(param.type))!;
+                                    if (type.ast.kind !== "message_decl") {
+                                        throwCompilationError(
+                                            "Bounce receive function can only accept bounced message, message or Slice",
+                                            d.loc,
+                                        );
+                                    }
+                                    if (
+                                        type.fields.length !==
+                                        type.partialFieldCount
+                                    ) {
+                                        throwCompilationError(
+                                            `This message is too big for bounce receiver, you need to wrap it to a bounced<${idTextErr(param.type)}>.`,
+                                            d.loc,
+                                        );
+                                    }
+                                    if (
+                                        s.receivers.find(
+                                            (v) =>
+                                                v.selector.kind ===
+                                                    "bounce-binary" &&
+                                                v.selector.type === type.name,
+                                        )
+                                    ) {
+                                        throwCompilationError(
+                                            `Bounce receive function for ${idTextErr(param.type)} already exists`,
+                                            param.loc,
+                                        );
+                                    }
+                                    s.receivers.push({
+                                        selector: {
+                                            kind: "bounce-binary",
+                                            name: param.name,
+                                            type: idText(param.type),
+                                            bounced: false,
+                                        },
+                                        ast: d,
+                                    });
+                                }
+                            } else if (param.type.kind === "optional_type") {
+                                throwCompilationError(
+                                    "Bounce receive function cannot have optional parameter",
+                                    d.loc,
+                                );
+                            } else if (
+                                param.type.kind === "bounced_message_type"
+                            ) {
+                                const t = types.get(
+                                    idText(param.type.messageType),
+                                )!;
+                                if (t.kind !== "struct") {
                                     throwCompilationError(
-                                        `This message is too big for bounce receiver, you need to wrap it to a bounced<${idTextErr(param.type)}>.`,
+                                        "Bounce receive function can only accept bounced<T> struct types",
+                                        d.loc,
+                                    );
+                                }
+                                if (t.ast.kind !== "message_decl") {
+                                    throwCompilationError(
+                                        "Bounce receive function can only accept bounced<T> message types",
                                         d.loc,
                                     );
                                 }
@@ -1159,83 +1234,36 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         (v) =>
                                             v.selector.kind ===
                                                 "bounce-binary" &&
-                                            v.selector.type === type.name,
+                                            v.selector.type === t.name,
                                     )
                                 ) {
                                     throwCompilationError(
-                                        `Bounce receive function for ${idTextErr(param.type)} already exists`,
-                                        param.loc,
+                                        `Bounce receive function for ${idTextErr(t.name)} already exists`,
+                                        d.loc,
+                                    );
+                                }
+                                if (t.fields.length === t.partialFieldCount) {
+                                    throwCompilationError(
+                                        "This message is small enough for bounce receiver, you need to remove bounced modifier.",
+                                        d.loc,
                                     );
                                 }
                                 s.receivers.push({
                                     selector: {
                                         kind: "bounce-binary",
                                         name: param.name,
-                                        type: idText(param.type),
-                                        bounced: false,
+                                        type: idText(param.type.messageType),
+                                        bounced: true,
                                     },
                                     ast: d,
                                 });
-                            }
-                        } else if (param.type.kind === "optional_type") {
-                            throwCompilationError(
-                                "Bounce receive function cannot have optional parameter",
-                                d.loc,
-                            );
-                        } else if (param.type.kind === "bounced_message_type") {
-                            const t = types.get(
-                                idText(param.type.messageType),
-                            )!;
-                            if (t.kind !== "struct") {
+                            } else {
                                 throwCompilationError(
-                                    "Bounce receive function can only accept bounced<T> struct types",
+                                    "Bounce receive function can only accept bounced<T> struct parameters or Slice",
                                     d.loc,
                                 );
                             }
-                            if (t.ast.kind !== "message_decl") {
-                                throwCompilationError(
-                                    "Bounce receive function can only accept bounced<T> message types",
-                                    d.loc,
-                                );
-                            }
-                            if (
-                                s.receivers.find(
-                                    (v) =>
-                                        v.selector.kind === "bounce-binary" &&
-                                        v.selector.type === t.name,
-                                )
-                            ) {
-                                throwCompilationError(
-                                    `Bounce receive function for ${idTextErr(t.name)} already exists`,
-                                    d.loc,
-                                );
-                            }
-                            if (t.fields.length === t.partialFieldCount) {
-                                throwCompilationError(
-                                    "This message is small enough for bounce receiver, you need to remove bounced modifier.",
-                                    d.loc,
-                                );
-                            }
-                            s.receivers.push({
-                                selector: {
-                                    kind: "bounce-binary",
-                                    name: param.name,
-                                    type: idText(param.type.messageType),
-                                    bounced: true,
-                                },
-                                ast: d,
-                            });
-                        } else {
-                            throwCompilationError(
-                                "Bounce receive function can only accept bounced<T> struct parameters or Slice",
-                                d.loc,
-                            );
                         }
-                    } else {
-                        throwCompilationError(
-                            "Invalid receive function selector",
-                            d.loc,
-                        );
                     }
                 }
             }
@@ -1422,8 +1450,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         );
                     }
                     for (let i = 0; i < traitFunction.params.length; i++) {
-                        const a = funInContractOrTrait.params[i];
-                        const b = traitFunction.params[i];
+                        const a = funInContractOrTrait.params[i]!;
+                        const b = traitFunction.params[i]!;
                         if (!typeRefEquals(a.type, b.type)) {
                             throwCompilationError(
                                 `Overridden function "${traitFunction.name}" should have same parameter types`,

@@ -40,9 +40,9 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
 
     // Error Codes
     w.write(`# Error Codes`);
-    for (const t in abi.errors!) {
-        w.write(`${t}: ${abi.errors![parseInt(t, 10)].message}`);
-    }
+    Object.entries(abi.errors!).forEach(([t, abiError]) =>
+        w.write(`${t}: ${abiError.message}`),
+    );
 
     return w.end();
 }

@@ -1,3 +1,4 @@
+// eslint-disable rule-name
 import { OpenedContract, beginCell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
@@ -13,7 +14,7 @@ function convertToInternal(src: string) {
         if (i > 0) {
             res = Buffer.concat([res, Buffer.from([0])]);
         }
-        res = Buffer.concat([res, parts[parts.length - i - 1]]);
+        res = Buffer.concat([res, parts[parts.length - i - 1]!]);
     }
     res = Buffer.concat([res, Buffer.from([0])]);
     return res;
@@ -81,11 +82,11 @@ describe("dns", () => {
     ];
 
     for (let i = 0; i < invalidNames.length; i++) {
-        it(`should fail on invalid name: ${invalidNames[i]}`, async () => {
-            expect(await contract.getStringToInternal(invalidNames[i])).toBe(
+        it(`should fail on invalid name: ${invalidNames[i]!}`, async () => {
+            expect(await contract.getStringToInternal(invalidNames[i]!)).toBe(
                 null,
             );
-            const internalAddress = convertToInternal(invalidNames[i]);
+            const internalAddress = convertToInternal(invalidNames[i]!);
             expect(
                 await contract.getDnsInternalVerify(
                     beginCell().storeBuffer(internalAddress).endCell(),
@@ -95,27 +96,27 @@ describe("dns", () => {
     }
 
     for (let i = 0; i < validNames.length; i++) {
-        it(`should convert valid name: ${validNames[i]}`, async () => {
-            const data = (await contract.getStringToInternal(validNames[i]))!;
+        it(`should convert valid name: ${validNames[i]!}`, async () => {
+            const data = (await contract.getStringToInternal(validNames[i]!))!;
             const received = data
                 .beginParse()
                 .loadBuffer(data.bits.length / 8)
                 .toString("hex");
             expect(received).toBe(
                 convertToInternal(
-                    validNames[i].endsWith(".") && validNames[i] !== "."
-                        ? validNames[i].slice(0, validNames[i].length - 1)
-                        : validNames[i],
+                    validNames[i]!.endsWith(".") && validNames[i]! !== "."
+                        ? validNames[i]!.slice(0, validNames[i]!.length - 1)
+                        : validNames[i]!,
                 ).toString("hex"),
             );
         });
     }
 
     for (let i = 0; i < validNames.length; i++) {
-        if (validNames[i] !== ".") {
-            it(`should convert valid name: ${validNames[i]}`, async () => {
+        if (validNames[i]! !== ".") {
+            it(`should convert valid name: ${validNames[i]!}`, async () => {
                 const data = (await contract.getStringToInternal(
-                    validNames[i],
+                    validNames[i]!,
                 ))!;
                 expect(await contract.getDnsInternalVerify(data)).toBe(true);
             });
@@ -123,9 +124,9 @@ describe("dns", () => {
     }
 
     for (let i = 0; i < equalNormalized.length; i++) {
-        it(`should convert equal normalized names: ${equalNormalized[i][0]} ${equalNormalized[i][1]}`, async () => {
+        it(`should convert equal normalized names: ${equalNormalized[i]![0]!} ${equalNormalized[i]![1]!}`, async () => {
             let data1 = (await contract.getStringToInternal(
-                equalNormalized[i][0],
+                equalNormalized[i]![0]!,
             ))!;
             data1 = await contract.getInternalNormalize(data1);
             const received1 = data1
@@ -133,7 +134,7 @@ describe("dns", () => {
                 .loadBuffer(data1.bits.length / 8)
                 .toString("hex");
             let data2 = (await contract.getStringToInternal(
-                equalNormalized[i][1],
+                equalNormalized[i]![1]!,
             ))!;
             data2 = await contract.getInternalNormalize(data2);
             const received2 = data2
@@ -145,9 +146,9 @@ describe("dns", () => {
         });
     }
     for (let i = 0; i < notEqualNormalized.length; i++) {
-        it(`should convert not equal normalized names: ${notEqualNormalized[i][0]} ${notEqualNormalized[i][1]}`, async () => {
+        it(`should convert not equal normalized names: ${notEqualNormalized[i]![0]!} ${notEqualNormalized[i]![1]!}`, async () => {
             let data1 = (await contract.getStringToInternal(
-                notEqualNormalized[i][0],
+                notEqualNormalized[i]![0]!,
             ))!;
             data1 = await contract.getInternalNormalize(data1);
             const received1 = data1
@@ -155,7 +156,7 @@ describe("dns", () => {
                 .loadBuffer(data1.bits.length / 8)
                 .toString("hex");
             let data2 = (await contract.getStringToInternal(
-                notEqualNormalized[i][1],
+                notEqualNormalized[i]![1]!,
             ))!;
             data2 = await contract.getInternalNormalize(data2);
             const received2 = data2
@@ -168,17 +169,17 @@ describe("dns", () => {
     }
 
     for (let i = 0; i < validNames.length; i++) {
-        it("should resolve name " + validNames[i], async () => {
-            const internalAddress = convertToInternal(validNames[i]);
+        it("should resolve name " + validNames[i]!, async () => {
+            const internalAddress = convertToInternal(validNames[i]!);
             const resolved = (await contract.getDnsresolve(
                 beginCell().storeBuffer(internalAddress).endCell(),
                 1n,
             ))!;
             expect(resolved.prefix).toBe(BigInt(internalAddress.length * 8));
-            if (validNames[i] === ".") {
+            if (validNames[i]! === ".") {
                 expect(resolved.record!.bits.length).toBe(0);
                 expect(resolved.record!.refs.length).toBe(0);
-            } else if (validNames[i].endsWith(".")) {
+            } else if (validNames[i]!.endsWith(".")) {
                 expect(
                     resolved
                         .record!.beginParse()
@@ -197,8 +198,8 @@ describe("dns", () => {
     }
 
     for (let i = 0; i < invalidNames.length; i++) {
-        it("should not resolve name " + invalidNames[i], async () => {
-            const internalAddress = convertToInternal(invalidNames[i]);
+        it("should not resolve name " + invalidNames[i]!, async () => {
+            const internalAddress = convertToInternal(invalidNames[i]!);
             await expect(
                 contract.getDnsresolve(
                     beginCell().storeBuffer(internalAddress).endCell(),
@@ -209,13 +210,13 @@ describe("dns", () => {
     }
 
     for (let i = 0; i < validNames.length; i++) {
-        if (validNames[i].endsWith(".")) {
+        if (validNames[i]!.endsWith(".")) {
             continue;
         }
         it(
-            "should resolve name with leading zero " + validNames[i],
+            "should resolve name with leading zero " + validNames[i]!,
             async () => {
-                const internalAddress = convertToInternal(validNames[i]);
+                const internalAddress = convertToInternal(validNames[i]!);
                 const resolved = (await contract.getDnsresolve(
                     beginCell()
                         .storeBuffer(
@@ -230,7 +231,7 @@ describe("dns", () => {
                 expect(resolved.prefix).toBe(
                     BigInt(internalAddress.length * 8 + 8),
                 );
-                if (validNames[i] === ".") {
+                if (validNames[i]! === ".") {
                     expect(resolved.record!.bits.length).toBe(0);
                     expect(resolved.record!.refs.length).toBe(0);
                 } else {
