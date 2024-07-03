@@ -1,4 +1,4 @@
-import { ASTNode, AstStatement, AstExpression } from "./ast";
+import { AstNode, AstStatement, AstExpression } from "./ast";
 
 /**
  * Recursively iterates over each expression in an ASTNode and applies a callback to each expression.
@@ -6,7 +6,7 @@ import { ASTNode, AstStatement, AstExpression } from "./ast";
  * @param callback The callback function to apply to each expression.
  */
 export function forEachExpression(
-    node: ASTNode,
+    node: AstNode,
     callback: (expr: AstExpression) => void,
 ): void {
     function traverseExpression(expr: AstExpression): void {
@@ -95,7 +95,7 @@ export function forEachExpression(
         }
     }
 
-    function traverseNode(node: ASTNode): void {
+    function traverseNode(node: AstNode): void {
         switch (node.kind) {
             case "module":
                 node.items.forEach(traverseNode);
@@ -182,7 +182,7 @@ export function forEachExpression(
  * @returns The final value of the accumulator after processing all expressions.
  */
 export function foldExpressions<T>(
-    node: ASTNode,
+    node: AstNode,
     acc: T,
     callback: (acc: T, expr: AstExpression) => T,
 ): T {
@@ -303,7 +303,7 @@ export function foldExpressions<T>(
         return acc;
     }
 
-    function traverseNode(acc: T, node: ASTNode): T {
+    function traverseNode(acc: T, node: AstNode): T {
         switch (node.kind) {
             case "module":
                 node.items.forEach((entry) => {
@@ -395,7 +395,7 @@ export function foldExpressions<T>(
  * @param callback The callback function to apply to each statement.
  */
 export function forEachStatement(
-    node: ASTNode,
+    node: AstNode,
     callback: (stmt: AstStatement) => void,
 ): void {
     function traverseStatement(stmt: AstStatement): void {
@@ -431,7 +431,7 @@ export function forEachStatement(
         }
     }
 
-    function traverseNode(node: ASTNode): void {
+    function traverseNode(node: AstNode): void {
         switch (node.kind) {
             case "module":
                 node.items.forEach(traverseNode);
@@ -503,7 +503,7 @@ export function forEachStatement(
  * @returns The final value of the accumulator after processing all statements.
  */
 export function foldStatements<T>(
-    node: ASTNode,
+    node: AstNode,
     acc: T,
     callback: (acc: T, stmt: AstStatement) => T,
 ): T {
@@ -551,7 +551,7 @@ export function foldStatements<T>(
         return acc;
     }
 
-    function traverseNode(acc: T, node: ASTNode): T {
+    function traverseNode(acc: T, node: AstNode): T {
         switch (node.kind) {
             case "module":
                 node.items.forEach((entry) => {

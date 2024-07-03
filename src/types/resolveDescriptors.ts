@@ -3,10 +3,10 @@ import {
     AstFieldDecl,
     AstContractInit,
     AstNativeFunctionDecl,
-    ASTNode,
+    AstNode,
     SrcInfo,
     ASTTypeRef,
-    createNode,
+    createAstNode,
     traverse,
     idText,
     AstId,
@@ -1216,7 +1216,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (!t.init) {
                 t.init = {
                     params: [],
-                    ast: createNode({
+                    ast: createAstNode({
                         kind: "contract_init",
                         params: [],
                         statements: [],
@@ -1613,7 +1613,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const [k, t] of types) {
         const dependsOn = new Set<string>();
-        const handler = (src: ASTNode) => {
+        const handler = (src: AstNode) => {
             if (src.kind === "init_of") {
                 if (!types.has(idText(src.contract))) {
                     throwCompilationError(

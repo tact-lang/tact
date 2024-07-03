@@ -618,7 +618,7 @@ export type AstReceiverKind =
           comment: AstString;
       };
 
-export type ASTNode =
+export type AstNode =
     | AstFuncId
     | AstExpression
     | AstStatement
@@ -661,10 +661,10 @@ type DistributiveOmit<T, K extends keyof any> = T extends any
     ? Omit<T, K>
     : never;
 let nextId = 1;
-export function createNode(src: DistributiveOmit<ASTNode, "id">): ASTNode {
+export function createAstNode(src: DistributiveOmit<AstNode, "id">): AstNode {
     return Object.freeze(Object.assign({ id: nextId++ }, src));
 }
-export function cloneASTNode<T extends ASTNode>(src: T): T {
+export function cloneAstNode<T extends AstNode>(src: T): T {
     return { ...src, id: nextId++ };
 }
 
@@ -672,7 +672,7 @@ export function __DANGER_resetNodeId() {
     nextId = 1;
 }
 
-export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
+export function traverse(node: AstNode, callback: (node: AstNode) => void) {
     callback(node);
 
     if (node.kind === "module") {

@@ -4,7 +4,7 @@ import {
     AstFunctionDef,
     AstContractInit,
     AstNativeFunctionDecl,
-    ASTNode,
+    AstNode,
     AstReceiver,
     SrcInfo,
     AstStatement,
@@ -87,7 +87,7 @@ export type FieldDescription = {
     as: string | null;
     default: Value | undefined;
     loc: SrcInfo;
-    ast: ASTNode;
+    ast: AstNode;
     abi: ABIField;
 };
 
