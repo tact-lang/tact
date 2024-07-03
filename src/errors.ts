@@ -1,7 +1,7 @@
 import { MatchResult } from "ohm-js";
 import path from "path";
 import { cwd } from "process";
-import { AstId, SrcInfo } from "./grammar/ast";
+import { AstFuncId, AstId, AstTypeId, SrcInfo } from "./grammar/ast";
 import { ItemOrigin } from "./grammar/grammar";
 
 export class TactError extends Error {
@@ -98,7 +98,11 @@ export function throwConstEvalError(
 
 export function idTextErr(ident: string): string;
 export function idTextErr(ident: AstId): string;
-export function idTextErr(ident: AstId | string): string {
+export function idTextErr(ident: AstFuncId): string;
+export function idTextErr(ident: AstTypeId): string;
+export function idTextErr(
+    ident: AstId | AstFuncId | AstTypeId | string,
+): string {
     if (typeof ident === "string") {
         return `"${ident}"`;
     }

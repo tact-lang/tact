@@ -10,7 +10,7 @@ import {
     ReceiverDescription,
 } from "./types";
 import { throwCompilationError } from "../errors";
-import { ASTReceive } from "../grammar/ast";
+import { AstReceiver } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 
 export function resolveSignatures(ctx: CompilerContext) {
@@ -189,7 +189,7 @@ type binOpcode = number;
 
 function checkBinaryMessageReceiver(
     rcv: BinaryReceiverSelector,
-    rcvAst: ASTReceive,
+    rcvAst: AstReceiver,
     usedOpcodes: Map<binOpcode, messageType>,
     ctx: CompilerContext,
 ) {
@@ -210,7 +210,7 @@ type commentOpcode = string;
 // "opcode" clashes are highly unlikely in this case, of course
 function checkCommentMessageReceiver(
     rcv: CommentReceiverSelector,
-    rcvAst: ASTReceive,
+    rcvAst: AstReceiver,
     usedOpcodes: Map<commentOpcode, messageType>,
 ) {
     const opcode = commentPseudoOpcode(rcv.comment);
