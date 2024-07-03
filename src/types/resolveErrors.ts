@@ -1,6 +1,6 @@
 import { sha256_sync } from "@ton/crypto";
 import { CompilerContext, createContextStore } from "../context";
-import { ASTNode, traverse } from "../grammar/ast";
+import { ASTNode, isRequire, traverse } from "../grammar/ast";
 import { evalConstantExpression } from "../constEval";
 import {
     getAllStaticConstants,
@@ -20,7 +20,7 @@ function exceptionId(src: string): number {
 
 function resolveStringsInAST(ast: ASTNode, ctx: CompilerContext) {
     traverse(ast, (node) => {
-        if (node.kind === "op_static_call" && node.name === "require") {
+        if (node.kind === "op_static_call" && isRequire(node.name)) {
             if (node.args.length !== 2) {
                 return;
             }

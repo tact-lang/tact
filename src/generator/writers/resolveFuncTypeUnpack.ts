@@ -47,7 +47,7 @@ export function resolveFuncTypeUnpack(
     }
 
     // TypeDescription
-    if (descriptor.kind === "primitive") {
+    if (descriptor.kind === "primitive_type_decl") {
         return name;
     } else if (descriptor.kind === "struct") {
         const fieldsToUse = usePartialFields

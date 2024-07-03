@@ -127,25 +127,31 @@ export function cloneNode<T extends ASTNode>(src: T): T {
             ...src,
             statements: src.statements.map(cloneNode),
         });
-    } else if (src.kind === "def_function") {
+    } else if (src.kind === "function_def") {
         return cloneASTNode({
             ...src,
             return: src.return ? cloneASTNode(src.return) : null,
-            statements: src.statements ? src.statements.map(cloneNode) : null,
-            args: src.args.map(cloneNode),
+            statements: src.statements.map(cloneNode),
+            params: src.params.map(cloneNode),
         });
-    } else if (src.kind === "def_native_function") {
+    } else if (src.kind === "function_decl") {
         return cloneASTNode({
             ...src,
             return: src.return ? cloneASTNode(src.return) : null,
-            args: src.args.map(cloneNode),
+            params: src.params.map(cloneNode),
+        });
+    } else if (src.kind === "native_function_decl") {
+        return cloneASTNode({
+            ...src,
+            return: src.return ? cloneASTNode(src.return) : null,
+            params: src.params.map(cloneNode),
         });
     } else if (src.kind === "def_receive") {
         return cloneASTNode({
             ...src,
             statements: src.statements.map(cloneNode),
         });
-    } else if (src.kind === "def_argument") {
+    } else if (src.kind === "typed_parameter") {
         return cloneASTNode({
             ...src,
             type: cloneASTNode(src.type),
@@ -155,11 +161,16 @@ export function cloneNode<T extends ASTNode>(src: T): T {
             ...src,
             args: src.args.map(cloneNode),
         });
-    } else if (src.kind === "def_constant") {
+    } else if (src.kind === "constant_def") {
         return cloneASTNode({
             ...src,
             type: cloneASTNode(src.type),
-            value: src.value ? cloneNode(src.value) : src.value,
+            initializer: cloneNode(src.initializer),
+        });
+    } else if (src.kind === "constant_decl") {
+        return cloneASTNode({
+            ...src,
+            type: cloneASTNode(src.type),
         });
     }
 

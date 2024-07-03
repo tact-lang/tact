@@ -1,17 +1,17 @@
-import { ASTFunctionAttribute, ASTRef } from "./ast";
+import { ASTFunctionAttribute, SrcInfo } from "./ast";
 import { throwCompilationError } from "../errors";
 
 export function checkFunctionAttributes(
     isAbstract: boolean,
     attrs: ASTFunctionAttribute[],
-    ref: ASTRef,
+    loc: SrcInfo,
 ) {
     const k = new Set<string>();
     for (const a of attrs) {
         if (k.has(a.type)) {
             throwCompilationError(
                 `Duplicate function attribute "${a.type}"`,
-                a.ref,
+                a.loc,
             );
         }
         k.add(a.type);
@@ -20,14 +20,14 @@ export function checkFunctionAttributes(
         if (!k.has("abstract")) {
             throwCompilationError(
                 `Abstract function doesn't have abstract modifier`,
-                ref,
+                loc,
             );
         }
     } else {
         if (k.has("abstract")) {
             throwCompilationError(
                 `Non abstract function have abstract modifier`,
-                ref,
+                loc,
             );
         }
     }

@@ -1,8 +1,8 @@
 import { contractErrors } from "../../abi/errors";
+import { ItemOrigin } from "../../grammar/grammar";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { StorageAllocation } from "../../storage/StorageAllocation";
 import { getType } from "../../types/resolveDescriptors";
-import { TypeOrigin } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { ops } from "./ops";
 import { resolveFuncTypeFromAbi } from "./resolveFuncTypeFromAbi";
@@ -18,7 +18,7 @@ export function writeSerializer(
     name: string,
     forceInline: boolean,
     allocation: StorageAllocation,
-    origin: TypeOrigin,
+    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
@@ -71,7 +71,7 @@ export function writeSerializer(
 
 export function writeOptionalSerializer(
     name: string,
-    origin: TypeOrigin,
+    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     ctx.fun(ops.writerCellOpt(name, ctx), () => {
@@ -293,7 +293,7 @@ function writeSerializerField(
         return;
     }
 
-    throw Error("Unsupported field kind: " + op.kind);
+    throw Error(`Unsupported field kind: ${op.kind}`);
 }
 
 //
@@ -304,7 +304,7 @@ export function writeParser(
     name: string,
     forceInline: boolean,
     allocation: StorageAllocation,
-    origin: TypeOrigin,
+    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
@@ -367,7 +367,7 @@ export function writeBouncedParser(
     name: string,
     forceInline: boolean,
     allocation: StorageAllocation,
-    origin: TypeOrigin,
+    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
@@ -408,7 +408,7 @@ export function writeBouncedParser(
 
 export function writeOptionalParser(
     name: string,
-    origin: TypeOrigin,
+    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     ctx.fun(ops.readerOpt(name, ctx), () => {
@@ -611,5 +611,5 @@ function writeFieldParser(
         return;
     }
 
-    throw Error("Unsupported field kind: " + op.kind);
+    throw Error(`Unsupported field kind: ${op.kind}`);
 }

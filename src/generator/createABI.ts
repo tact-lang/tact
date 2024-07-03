@@ -1,6 +1,7 @@
 import { ABIGetter, ABIReceiver, ABIType, ContractABI } from "@ton/core";
 import { contractErrors } from "../abi/errors";
 import { CompilerContext } from "../context";
+import { idText } from "../grammar/ast";
 import { getSupportedInterfaces } from "../types/getSupportedInterfaces";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { getAllTypes } from "../types/resolveDescriptors";
@@ -116,13 +117,13 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
         if (f.isGetter) {
             getters.push({
                 name: f.name,
-                arguments: f.args.map((v) => ({
-                    name: v.name,
-                    type: createABITypeRefFromTypeRef(v.type, v.ref),
+                arguments: f.params.map((v) => ({
+                    name: idText(v.name),
+                    type: createABITypeRefFromTypeRef(v.type, v.loc),
                 })),
                 returnType:
                     f.returns.kind !== "void"
-                        ? createABITypeRefFromTypeRef(f.returns, f.ast.ref)
+                        ? createABITypeRefFromTypeRef(f.returns, f.ast.loc)
                         : null,
             });
         }

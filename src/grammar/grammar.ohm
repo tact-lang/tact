@@ -12,8 +12,12 @@ Tact {
 
     Import = import stringLiteral ";"
 
+    // This is not used in the Tact grammar but
+    // it is useful for imports resolution
+    JustImports = Import* any*
+
     // Built-in declarations
-    PrimitiveTypeDecl = primitive Type ";"
+    PrimitiveTypeDecl = primitive typeId ";"
 
     ModuleFunction = FunctionDefinition
 

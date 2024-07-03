@@ -80,11 +80,11 @@ describe("writeExpression", () => {
         ctx = resolveDescriptors(ctx);
         ctx = resolveStatements(ctx);
         const main = getStaticFunction(ctx, "main");
-        if (main.ast.kind !== "def_function") {
+        if (main.ast.kind !== "function_def") {
             throw Error("Unexpected function kind");
         }
         let i = 0;
-        for (const s of main.ast.statements!) {
+        for (const s of main.ast.statements) {
             if (s.kind !== "statement_let") {
                 throw Error("Unexpected statement kind");
             }

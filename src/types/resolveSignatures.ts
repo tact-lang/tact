@@ -152,9 +152,9 @@ export function resolveSignatures(ctx: CompilerContext) {
         // Calculate signature and method id
         const signature = name + "{" + fields.join(",") + "}";
         let id: number | null = null;
-        if (t.ast.kind === "def_struct" && t.ast.message) {
-            if (t.ast.prefix !== null) {
-                id = t.ast.prefix;
+        if (t.ast.kind === "message_decl") {
+            if (t.ast.opcode !== null) {
+                id = t.ast.opcode;
             } else {
                 id = newMessageId(signature);
             }
@@ -198,7 +198,7 @@ function checkBinaryMessageReceiver(
     if (usedOpcodes.has(opcode)) {
         throwCompilationError(
             `Receive functions of a contract or trait cannot process messages with the same opcode: opcodes of message types "${rcv.type}" and "${usedOpcodes.get(opcode)}" are equal`,
-            rcvAst.ref,
+            rcvAst.loc,
         );
     } else {
         usedOpcodes.set(opcode, rcv.type);
@@ -217,7 +217,7 @@ function checkCommentMessageReceiver(
     if (usedOpcodes.has(opcode)) {
         throwCompilationError(
             `Receive functions of a contract or trait cannot process comments with the same hashes: hashes of comment strings "${rcv.comment}" and "${usedOpcodes.get(opcode)}" are equal`,
-            rcvAst.ref,
+            rcvAst.loc,
         );
     } else {
         usedOpcodes.set(opcode, rcv.comment);

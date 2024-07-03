@@ -95,23 +95,24 @@ export function forEachExpression(
 
     function traverseNode(node: ASTNode): void {
         switch (node.kind) {
-            case "program":
-                node.entries.forEach(traverseNode);
+            case "module":
+                node.items.forEach(traverseNode);
                 break;
-            case "def_native_function":
-            case "def_struct":
-            case "primitive":
+            case "native_function_decl":
+            case "struct_decl":
+            case "message_decl":
+            case "primitive_type_decl":
                 // These node types do not require further traversal of expressions or sub-nodes
                 break;
-            case "def_function":
+            case "function_def":
             case "def_init_function":
             case "def_receive":
                 if (node.statements) {
                     node.statements.forEach(traverseStatement);
                 }
                 break;
-            case "def_contract":
-            case "def_trait":
+            case "contract":
+            case "trait":
                 node.declarations.forEach(traverseNode);
                 break;
             case "def_field":
@@ -119,12 +120,10 @@ export function forEachExpression(
                     traverseExpression(node.init);
                 }
                 break;
-            case "def_constant":
-                if (node.value) {
-                    traverseExpression(node.value);
-                }
+            case "constant_def":
+                traverseExpression(node.initializer);
                 break;
-            case "program_import":
+            case "import":
                 traverseExpression(node.path);
                 break;
             case "statement_let":
@@ -159,7 +158,7 @@ export function forEachExpression(
             case "new_parameter":
                 traverseExpression(node.exp);
                 break;
-            case "def_argument":
+            case "typed_parameter":
             case "type_ref_simple":
             case "type_ref_map":
             case "type_ref_bounced":
@@ -304,17 +303,18 @@ export function foldExpressions<T>(
 
     function traverseNode(acc: T, node: ASTNode): T {
         switch (node.kind) {
-            case "program":
-                node.entries.forEach((entry) => {
+            case "module":
+                node.items.forEach((entry) => {
                     acc = traverseNode(acc, entry);
                 });
                 break;
-            case "def_native_function":
-            case "def_struct":
-            case "primitive":
+            case "native_function_decl":
+            case "struct_decl":
+            case "message_decl":
+            case "primitive_type_decl":
                 // These node types do not require further traversal of expressions or sub-nodes
                 break;
-            case "def_function":
+            case "function_def":
             case "def_init_function":
             case "def_receive":
                 if (node.statements) {
@@ -323,8 +323,8 @@ export function foldExpressions<T>(
                     });
                 }
                 break;
-            case "def_contract":
-            case "def_trait":
+            case "contract":
+            case "trait":
                 node.declarations.forEach((decl) => {
                     acc = traverseNode(acc, decl);
                 });
@@ -334,12 +334,10 @@ export function foldExpressions<T>(
                     acc = traverseExpression(acc, node.init);
                 }
                 break;
-            case "def_constant":
-                if (node.value) {
-                    acc = traverseExpression(acc, node.value);
-                }
+            case "constant_def":
+                acc = traverseExpression(acc, node.initializer);
                 break;
-            case "program_import":
+            case "import":
                 acc = traverseExpression(acc, node.path);
                 break;
             case "statement_let":
@@ -374,7 +372,7 @@ export function foldExpressions<T>(
             case "new_parameter":
                 acc = traverseExpression(acc, node.exp);
                 break;
-            case "def_argument":
+            case "typed_parameter":
             case "type_ref_simple":
             case "type_ref_map":
             case "type_ref_bounced":
@@ -433,16 +431,16 @@ export function forEachStatement(
 
     function traverseNode(node: ASTNode): void {
         switch (node.kind) {
-            case "program":
-                node.entries.forEach(traverseNode);
+            case "module":
+                node.items.forEach(traverseNode);
                 break;
-            case "def_function":
+            case "function_def":
             case "def_init_function":
             case "def_receive":
                 if (node.statements) node.statements.forEach(traverseStatement);
                 break;
-            case "def_contract":
-            case "def_trait":
+            case "contract":
+            case "trait":
                 node.declarations.forEach(traverseNode);
                 break;
             case "statement_let":
@@ -473,16 +471,18 @@ export function forEachStatement(
             case "id":
             case "null":
             case "new_parameter":
-            case "def_argument":
+            case "typed_parameter":
             case "type_ref_simple":
             case "type_ref_map":
             case "type_ref_bounced":
-            case "def_native_function":
-            case "def_struct":
-            case "def_constant":
+            case "native_function_decl":
+            case "struct_decl":
+            case "message_decl":
+            case "constant_def":
+            case "constant_decl":
             case "def_field":
-            case "program_import":
-            case "primitive":
+            case "import":
+            case "primitive_type_decl":
                 // Do nothing
                 break;
             default:
@@ -551,12 +551,12 @@ export function foldStatements<T>(
 
     function traverseNode(acc: T, node: ASTNode): T {
         switch (node.kind) {
-            case "program":
-                node.entries.forEach((entry) => {
+            case "module":
+                node.items.forEach((entry) => {
                     acc = traverseNode(acc, entry);
                 });
                 break;
-            case "def_function":
+            case "function_def":
             case "def_init_function":
             case "def_receive":
                 if (node.statements) {
@@ -565,8 +565,8 @@ export function foldStatements<T>(
                     });
                 }
                 break;
-            case "def_contract":
-            case "def_trait":
+            case "contract":
+            case "trait":
                 node.declarations.forEach((decl) => {
                     acc = traverseNode(acc, decl);
                 });
@@ -599,16 +599,19 @@ export function foldStatements<T>(
             case "id":
             case "null":
             case "new_parameter":
-            case "def_argument":
+            case "typed_parameter":
             case "type_ref_simple":
             case "type_ref_map":
             case "type_ref_bounced":
-            case "def_native_function":
-            case "def_struct":
-            case "def_constant":
+            case "native_function_decl":
+            case "function_decl":
+            case "struct_decl":
+            case "message_decl":
+            case "constant_def":
+            case "constant_decl":
             case "def_field":
-            case "program_import":
-            case "primitive":
+            case "import":
+            case "primitive_type_decl":
                 // Do nothing
                 break;
             default:

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compilation results are placed into the source file directory when compiling without `tact.config.json` file: PR [#495](https://github.com/tact-lang/tact/pull/495)
 - External receivers are enabled for single file compilation: PR [#495](https://github.com/tact-lang/tact/pull/495)
 - `[DEBUG]` prefix was removed from debug prints because a similar prefix was already present: PR [#506](https://github.com/tact-lang/tact/pull/506)
+- File paths in debug prints always use POSIX file paths (even on Windows): PR [#523](https://github.com/tact-lang/tact/pull/523)
 
 ### Fixed
 
@@ -29,6 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Error messages for non-abstract constants in traits: PR [#483](https://github.com/tact-lang/tact/pull/483)
 - All immediately inherited traits must be unique: PR [#500](https://github.com/tact-lang/tact/pull/500)
 - Do not throw error when overriding abstract and virtual getters: PR [#503](https://github.com/tact-lang/tact/pull/503)
+- Error message for non-existent storage variables: PR [#519](https://github.com/tact-lang/tact/issues/519)
+- Error message for duplicate receiver definitions inherited from traits: PR [#519](https://github.com/tact-lang/tact/issues/519)
+- Usage of `initOf` inside of `init()` does not cause error `135` anymore: PR [#521](https://github.com/tact-lang/tact/issues/521)
 
 ## [1.4.0] - 2024-06-21
 
