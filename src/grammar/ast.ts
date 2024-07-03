@@ -111,7 +111,7 @@ export type AstContract = {
     name: AstId;
     traits: AstId[];
     attributes: AstContractAttribute[];
-    declarations: ASTContractDeclaration[];
+    declarations: AstContractDeclaration[];
     id: number;
     loc: SrcInfo;
 };
@@ -121,19 +121,19 @@ export type AstTrait = {
     name: AstId;
     traits: AstId[];
     attributes: AstContractAttribute[];
-    declarations: ASTTraitDeclaration[];
+    declarations: AstTraitDeclaration[];
     id: number;
     loc: SrcInfo;
 };
 
-export type ASTContractDeclaration =
+export type AstContractDeclaration =
     | AstFieldDecl
     | AstFunctionDef
     | AstContractInit
     | AstReceiver
     | AstConstantDef;
 
-export type ASTTraitDeclaration =
+export type AstTraitDeclaration =
     | AstFieldDecl
     | AstFunctionDef
     | AstFunctionDecl
