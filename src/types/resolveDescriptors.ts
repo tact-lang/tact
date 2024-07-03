@@ -1,28 +1,39 @@
 import {
-    ASTConstant,
-    ASTField,
-    ASTFunction,
-    ASTInitFunction,
-    ASTNativeFunction,
-    ASTNode,
-    ASTRef,
-    ASTTypeRef,
-    createNode,
+    AstConstantDef,
+    AstFieldDecl,
+    AstContractInit,
+    AstNativeFunctionDecl,
+    AstNode,
+    SrcInfo,
+    AstType,
+    createAstNode,
     traverse,
+    idText,
+    AstId,
+    eqNames,
+    AstFunctionDef,
+    isSelfId,
+    isSlice,
+    AstFunctionDecl,
+    AstConstantDecl,
 } from "../grammar/ast";
-import { throwCompilationError } from "../errors";
+import {
+    idTextErr,
+    throwCompilationError,
+    throwInternalCompilerError,
+} from "../errors";
 import { CompilerContext, createContextStore } from "../context";
 import {
     ConstantDescription,
     FieldDescription,
-    FunctionArgument,
+    FunctionParameter,
     FunctionDescription,
-    InitArgument,
+    InitParameter,
     InitDescription,
     printTypeRef,
     ReceiverSelector,
+    receiverSelectorName,
     TypeDescription,
-    TypeOrigin,
     TypeRef,
     typeRefEquals,
 } from "./types";
@@ -34,6 +45,7 @@ import { resolveABIType } from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
+import { ItemOrigin } from "../grammar/grammar";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -41,10 +53,10 @@ const staticConstantsStore = createContextStore<ConstantDescription>();
 
 function verifyMapType(
     key: string,
-    keyAs: string | null,
+    keyAs: AstId | null,
     value: string,
-    valueAs: string | null,
-    ref: ASTRef,
+    valueAs: AstId | null,
+    loc: SrcInfo,
 ) {
     if (!keyAs && !valueAs) {
         return;
@@ -68,12 +80,12 @@ function verifyMapType(
                     "uint64",
                     "uint128",
                     "uint256",
-                ].includes(keyAs)
+                ].includes(idText(keyAs))
             ) {
-                throwCompilationError("Invalid key type for map", ref);
+                throwCompilationError("Invalid key type for map", loc);
             }
         } else {
-            throwCompilationError("Invalid key type for map", ref);
+            throwCompilationError("Invalid key type for map", loc);
         }
     }
 
@@ -96,41 +108,59 @@ function verifyMapType(
                     "uint128",
                     "uint256",
                     "coins",
-                ].includes(valueAs)
+                ].includes(idText(valueAs))
             ) {
-                throwCompilationError("Invalid value type for map", ref);
+                throwCompilationError("Invalid value type for map", loc);
             }
         } else {
-            throwCompilationError("Invalid value type for map", ref);
+            throwCompilationError("Invalid value type for map", loc);
         }
     }
 }
 
 export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 
-export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
-    if (src.kind === "type_ref_simple") {
-        const t = getType(ctx, src.name);
+export function resolveTypeRef(ctx: CompilerContext, src: AstType): TypeRef {
+    if (src.kind === "type_id") {
+        const t = getType(ctx, idText(src));
         return {
             kind: "ref",
             name: t.name,
-            optional: src.optional,
+            optional: false,
         };
     }
-    if (src.kind === "type_ref_map") {
-        const k = getType(ctx, src.key).name;
-        const v = getType(ctx, src.value).name;
-        verifyMapType(k, src.keyAs, v, src.valueAs, src.ref);
+    if (src.kind === "optional_type") {
+        if (src.typeArg.kind !== "type_id") {
+            throwInternalCompilerError(
+                "Only optional type identifiers are supported now",
+                src.typeArg.loc,
+            );
+        }
+        const t = getType(ctx, idText(src.typeArg));
+        return {
+            kind: "ref",
+            name: t.name,
+            optional: true,
+        };
+    }
+    if (src.kind === "map_type") {
+        const k = getType(ctx, idText(src.keyType)).name;
+        const v = getType(ctx, idText(src.valueType)).name;
+        verifyMapType(k, src.keyStorageType, v, src.valueStorageType, src.loc);
         return {
             kind: "map",
             key: k,
-            keyAs: src.keyAs,
+            keyAs:
+                src.keyStorageType !== null ? idText(src.keyStorageType) : null,
             value: v,
-            valueAs: src.valueAs,
+            valueAs:
+                src.valueStorageType !== null
+                    ? idText(src.valueStorageType)
+                    : null,
         };
     }
-    if (src.kind === "type_ref_bounced") {
-        const t = getType(ctx, src.name);
+    if (src.kind === "bounced_message_type") {
+        const t = getType(ctx, idText(src.messageType));
         return {
             kind: "ref_bounced",
             name: t.name,
@@ -140,38 +170,67 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
 }
 
 function buildTypeRef(
-    src: ASTTypeRef,
+    src: AstType,
     types: Map<string, TypeDescription>,
 ): TypeRef {
-    if (src.kind === "type_ref_simple") {
-        if (!types.has(src.name)) {
-            throwCompilationError("Type " + src.name + " not found", src.ref);
+    if (src.kind === "type_id") {
+        if (!types.has(idText(src))) {
+            throwCompilationError(`Type ${idTextErr(src)} not found`, src.loc);
         }
         return {
             kind: "ref",
-            name: src.name,
-            optional: src.optional,
+            name: idText(src),
+            optional: false,
         };
     }
-    if (src.kind === "type_ref_map") {
-        if (!types.has(src.key)) {
-            throwCompilationError("Type " + src.key + " not found", src.ref);
+    if (src.kind === "optional_type") {
+        if (src.typeArg.kind !== "type_id") {
+            throwInternalCompilerError(
+                "Only optional type identifiers are supported now",
+                src.typeArg.loc,
+            );
         }
-        if (!types.has(src.value)) {
-            throwCompilationError("Type " + src.value + " not found", src.ref);
+        if (!types.has(idText(src.typeArg))) {
+            throwCompilationError(
+                `Type ${idTextErr(src.typeArg)} not found`,
+                src.loc,
+            );
+        }
+        return {
+            kind: "ref",
+            name: idText(src.typeArg),
+            optional: true,
+        };
+    }
+    if (src.kind === "map_type") {
+        if (!types.has(idText(src.keyType))) {
+            throwCompilationError(
+                `Type ${idTextErr(src.keyType)} not found`,
+                src.loc,
+            );
+        }
+        if (!types.has(idText(src.valueType))) {
+            throwCompilationError(
+                `Type ${idTextErr(src.valueType)} not found`,
+                src.loc,
+            );
         }
         return {
             kind: "map",
-            key: src.key,
-            keyAs: src.keyAs,
-            value: src.value,
-            valueAs: src.valueAs,
+            key: idText(src.keyType),
+            keyAs:
+                src.keyStorageType !== null ? idText(src.keyStorageType) : null,
+            value: idText(src.valueType),
+            valueAs:
+                src.valueStorageType !== null
+                    ? idText(src.valueStorageType)
+                    : null,
         };
     }
-    if (src.kind === "type_ref_bounced") {
+    if (src.kind === "bounced_message_type") {
         return {
             kind: "ref_bounced",
-            name: src.name,
+            name: idText(src.messageType),
         };
     }
 
@@ -198,17 +257,20 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const a of ast.types) {
-        if (types.has(a.name)) {
-            throwCompilationError(`Type "${a.name}" already exists`, a.ref);
+        if (types.has(idText(a.name))) {
+            throwCompilationError(
+                `Type "${idText(a.name)}" already exists`,
+                a.loc,
+            );
         }
 
-        const uid = uidForName(a.name, types);
+        const uid = uidForName(idText(a.name), types);
 
-        if (a.kind === "primitive") {
-            types.set(a.name, {
-                kind: "primitive",
-                origin: a.origin,
-                name: a.name,
+        if (a.kind === "primitive_type_decl") {
+            types.set(idText(a.name), {
+                kind: "primitive_type_decl",
+                origin: a.loc.origin,
+                name: idText(a.name),
                 uid,
                 fields: [],
                 traits: [],
@@ -224,11 +286,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 constants: [],
                 partialFieldCount: 0,
             });
-        } else if (a.kind === "def_contract") {
-            types.set(a.name, {
+        } else if (a.kind === "contract") {
+            types.set(idText(a.name), {
                 kind: "contract",
-                origin: a.origin,
-                name: a.name,
+                origin: a.loc.origin,
+                name: idText(a.name),
                 uid,
                 header: null,
                 tlb: null,
@@ -246,11 +308,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 constants: [],
                 partialFieldCount: 0,
             });
-        } else if (a.kind === "def_struct") {
-            types.set(a.name, {
+        } else if (a.kind === "struct_decl" || a.kind === "message_decl") {
+            types.set(idText(a.name), {
                 kind: "struct",
-                origin: a.origin,
-                name: a.name,
+                origin: a.loc.origin,
+                name: idText(a.name),
                 uid,
                 header: null,
                 tlb: null,
@@ -266,11 +328,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 constants: [],
                 partialFieldCount: 0,
             });
-        } else if (a.kind === "def_trait") {
-            types.set(a.name, {
+        } else if (a.kind === "trait") {
+            types.set(idText(a.name), {
                 kind: "trait",
-                origin: a.origin,
-                name: a.name,
+                origin: a.loc.origin,
+                name: idText(a.name),
                 uid,
                 header: null,
                 tlb: null,
@@ -296,7 +358,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function buildFieldDescription(
-        src: ASTField,
+        src: AstFieldDecl,
         index: number,
     ): FieldDescription {
         const tr = buildTypeRef(src.type, types);
@@ -306,180 +368,203 @@ export function resolveDescriptors(ctx: CompilerContext) {
             throwCompilationError(
                 printTypeRef(tr) +
                     " is a runtime only type and can't be used as field",
-                src.ref,
+                src.loc,
             );
         }
 
-        const d = src.init ? evalConstantExpression(src.init, ctx) : undefined;
+        const d = src.initializer
+            ? evalConstantExpression(src.initializer, ctx)
+            : undefined;
 
         // Resolve abi type
         const type = resolveABIType(src);
 
         return {
-            name: src.name,
+            name: idText(src.name),
             type: tr,
             index,
-            as: src.as,
+            as: src.as !== null ? idText(src.as) : null,
             default: d,
-            ref: src.ref,
+            loc: src.loc,
             ast: src,
-            abi: { name: src.name, type },
+            abi: { name: idText(src.name), type },
         };
     }
 
-    function buildConstantDescription(src: ASTConstant): ConstantDescription {
+    function buildConstantDescription(
+        src: AstConstantDef | AstConstantDecl,
+    ): ConstantDescription {
         const tr = buildTypeRef(src.type, types);
-        const d = src.value
-            ? evalConstantExpression(src.value, ctx)
-            : undefined;
-        return { name: src.name, type: tr, value: d, ref: src.ref, ast: src };
+        const d =
+            src.kind === "constant_def"
+                ? evalConstantExpression(src.initializer, ctx)
+                : undefined;
+        return {
+            name: idText(src.name),
+            type: tr,
+            value: d,
+            loc: src.loc,
+            ast: src,
+        };
     }
 
     for (const a of ast.types) {
         // Contract
-        if (a.kind === "def_contract") {
+        if (a.kind === "contract") {
             for (const f of a.declarations) {
-                if (f.kind === "def_field") {
+                if (f.kind === "field_decl") {
                     if (
-                        types.get(a.name)!.fields.find((v) => v.name === f.name)
+                        types
+                            .get(idText(a.name))!
+                            .fields.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Field "${f.name}" already exists`,
-                            f.ref,
+                            `Field ${idTextErr(f.name)} already exists`,
+                            f.loc,
                         );
                     }
                     if (
                         types
-                            .get(a.name)!
-                            .constants.find((v) => v.name === f.name)
+                            .get(idText(a.name))!
+                            .constants.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Constant "${f.name}" already exists`,
-                            f.ref,
+                            `Constant ${idText(f.name)} already exists`,
+                            f.loc,
                         );
                     }
                     types
-                        .get(a.name)!
+                        .get(idText(a.name))!
                         .fields.push(
                             buildFieldDescription(
                                 f,
-                                types.get(a.name)!.fields.length,
+                                types.get(idText(a.name))!.fields.length,
                             ),
                         );
-                } else if (f.kind === "def_constant") {
+                } else if (f.kind === "constant_def") {
                     if (
-                        types.get(a.name)!.fields.find((v) => v.name === f.name)
+                        types
+                            .get(idText(a.name))!
+                            .fields.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Field "${f.name}" already exists`,
-                            f.ref,
+                            `Field ${idTextErr(f.name)} already exists`,
+                            f.loc,
                         );
                     }
                     if (
                         types
-                            .get(a.name)!
-                            .constants.find((v) => v.name === f.name)
+                            .get(idText(a.name))!
+                            .constants.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Constant "${f.name}" already exists`,
-                            f.ref,
+                            `Constant ${idTextErr(f.name)} already exists`,
+                            f.loc,
                         );
                     }
                     if (f.attributes.find((v) => v.type !== "overrides")) {
                         throwCompilationError(
                             `Constant can be only overridden`,
-                            f.ref,
+                            f.loc,
                         );
                     }
                     types
-                        .get(a.name)!
+                        .get(idText(a.name))!
                         .constants.push(buildConstantDescription(f));
                 }
             }
         }
 
         // Struct
-        if (a.kind === "def_struct") {
+        if (a.kind === "struct_decl" || a.kind === "message_decl") {
             for (const f of a.fields) {
-                if (types.get(a.name)!.fields.find((v) => v.name === f.name)) {
+                if (
+                    types
+                        .get(idText(a.name))!
+                        .fields.find((v) => eqNames(v.name, f.name))
+                ) {
                     throwCompilationError(
-                        `Field "${f.name}" already exists`,
-                        f.ref,
+                        `Field ${idTextErr(f.name)} already exists`,
+                        f.loc,
                     );
                 }
                 types
-                    .get(a.name)!
+                    .get(idText(a.name))!
                     .fields.push(
                         buildFieldDescription(
                             f,
-                            types.get(a.name)!.fields.length,
+                            types.get(idText(a.name))!.fields.length,
                         ),
                     );
             }
-            if (a.fields.length === 0 && !a.message) {
+            if (a.fields.length === 0 && a.kind === "struct_decl") {
                 throwCompilationError(
-                    `Struct "${a.name}" must have at least one field`,
-                    a.ref,
+                    `Struct ${idTextErr(a.name)} must have at least one field`,
+                    a.loc,
                 );
             }
         }
 
         // Trait
-        if (a.kind === "def_trait") {
+        if (a.kind === "trait") {
             for (const f of a.declarations) {
-                if (f.kind === "def_field") {
+                if (f.kind === "field_decl") {
                     if (
-                        types.get(a.name)!.fields.find((v) => v.name === f.name)
+                        types
+                            .get(idText(a.name))!
+                            .fields.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Field "${f.name}" already exists`,
-                            f.ref,
+                            `Field ${idTextErr(f.name)} already exists`,
+                            f.loc,
                         );
                     }
                     if (f.as) {
                         throwCompilationError(
                             `Trait field cannot have serialization specifier`,
-                            f.ref,
+                            f.loc,
                         );
                     }
                     types
-                        .get(a.name)!
+                        .get(idText(a.name))!
                         .fields.push(
                             buildFieldDescription(
                                 f,
-                                types.get(a.name)!.fields.length,
+                                types.get(idText(a.name))!.fields.length,
                             ),
                         );
-                } else if (f.kind === "def_constant") {
+                } else if (
+                    f.kind === "constant_def" ||
+                    f.kind === "constant_decl"
+                ) {
                     if (
-                        types.get(a.name)!.fields.find((v) => v.name === f.name)
+                        types
+                            .get(idText(a.name))!
+                            .fields.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Field "${f.name}" already exists`,
-                            f.ref,
+                            `Field ${idTextErr(f.name)} already exists`,
+                            f.loc,
                         );
                     }
                     if (
                         types
-                            .get(a.name)!
-                            .constants.find((v) => v.name === f.name)
+                            .get(idText(a.name))!
+                            .constants.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Constant "${f.name}" already exists`,
-                            f.ref,
+                            `Constant ${idTextErr(f.name)} already exists`,
+                            f.loc,
                         );
                     }
                     if (f.attributes.find((v) => v.type === "overrides")) {
                         throwCompilationError(
                             `Trait constant cannot be overridden`,
-                            f.ref,
+                            f.loc,
                         );
                     }
-                    // if (f.attributes.find((v) => v.type === 'abstract')) {
-                    //     continue; // Do not materialize abstract constants
-                    // }
                     types
-                        .get(a.name)!
+                        .get(idText(a.name))!
                         .constants.push(buildConstantDescription(f));
                 }
             }
@@ -500,8 +585,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     function resolveFunctionDescriptor(
         optSelf: string | null,
-        a: ASTFunction | ASTNativeFunction,
-        origin: TypeOrigin,
+        a: AstFunctionDef | AstNativeFunctionDecl | AstFunctionDecl,
+        origin: ItemOrigin,
     ): FunctionDescription {
         let self = optSelf;
 
@@ -511,13 +596,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
             returns = buildTypeRef(a.return, types);
         }
 
-        // Resolve args
-        let args: FunctionArgument[] = [];
-        for (const r of a.args) {
-            args.push({
+        let params: FunctionParameter[] = [];
+        for (const r of a.params) {
+            params.push({
                 name: r.name,
                 type: buildTypeRef(r.type, types),
-                ref: r.ref,
+                loc: r.loc,
             });
         }
 
@@ -531,29 +615,29 @@ export function resolveDescriptors(ctx: CompilerContext) {
         const isAbstract = a.attributes.find((a) => a.type === "abstract");
 
         // Check for native
-        if (a.kind === "def_native_function") {
+        if (a.kind === "native_function_decl") {
             if (isGetter) {
                 throwCompilationError(
                     "Native functions cannot be getters",
-                    isGetter.ref,
+                    isGetter.loc,
                 );
             }
             if (self) {
                 throwCompilationError(
-                    "Native functions cannot be defined within a contract",
-                    a.ref,
+                    "Native functions cannot be declared within a contract",
+                    a.loc,
                 );
             }
             if (isVirtual) {
                 throwCompilationError(
                     "Native functions cannot be virtual",
-                    isVirtual.ref,
+                    isVirtual.loc,
                 );
             }
             if (isOverrides) {
                 throwCompilationError(
                     "Native functions cannot be overrides",
-                    isOverrides.ref,
+                    isOverrides.loc,
                 );
             }
         }
@@ -562,55 +646,55 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (isVirtual && isExtends) {
             throwCompilationError(
                 "Extend functions cannot be virtual",
-                isVirtual.ref,
+                isVirtual.loc,
             );
         }
         if (isOverrides && isExtends) {
             throwCompilationError(
                 "Extend functions cannot be overrides",
-                isOverrides.ref,
+                isOverrides.loc,
             );
         }
         if (isAbstract && isExtends) {
             throwCompilationError(
                 "Extend functions cannot be abstract",
-                isAbstract.ref,
+                isAbstract.loc,
             );
         }
         if (!self && isVirtual) {
             throwCompilationError(
                 "Virtual functions must be defined within a contract or a trait",
-                isVirtual.ref,
+                isVirtual.loc,
             );
         }
         if (!self && isOverrides) {
             throwCompilationError(
                 "Overrides functions must be defined within a contract or a trait",
-                isOverrides.ref,
+                isOverrides.loc,
             );
         }
         if (!self && isAbstract) {
             throwCompilationError(
                 "Abstract functions must be defined within a trait",
-                isAbstract.ref,
+                isAbstract.loc,
             );
         }
         if (isVirtual && isAbstract) {
             throwCompilationError(
                 "Abstract functions cannot be virtual",
-                isAbstract.ref,
+                isAbstract.loc,
             );
         }
         if (isVirtual && isOverrides) {
             throwCompilationError(
                 "Overrides functions cannot be virtual",
-                isOverrides.ref,
+                isOverrides.loc,
             );
         }
         if (isAbstract && isOverrides) {
             throwCompilationError(
                 "Overrides functions cannot be abstract",
-                isOverrides.ref,
+                isOverrides.loc,
             );
         }
 
@@ -620,7 +704,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (t.kind !== "trait") {
                 throwCompilationError(
                     "Virtual functions must be defined within a trait",
-                    isVirtual.ref,
+                    isVirtual.loc,
                 );
             }
         }
@@ -631,7 +715,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (t.kind !== "trait") {
                 throwCompilationError(
                     "Abstract functions must be defined within a trait",
-                    isAbstract.ref,
+                    isAbstract.loc,
                 );
             }
         }
@@ -642,105 +726,104 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (t.kind !== "contract") {
                 throwCompilationError(
                     "Overrides functions must be defined within a contract",
-                    isOverrides.ref,
+                    isOverrides.loc,
                 );
             }
         }
 
         // Check for common
-        if (a.kind === "def_function") {
+        if (a.kind === "function_def") {
             if (isGetter && !self) {
                 throwCompilationError(
                     "Getters must be defined within a contract",
-                    isGetter.ref,
+                    isGetter.loc,
                 );
             }
         }
 
         // Check for getter
         if (isInline && isGetter) {
-            throwCompilationError("Getters cannot be inline", isInline.ref);
+            throwCompilationError("Getters cannot be inline", isInline.loc);
         }
 
         // Validate mutating
         if (isExtends) {
-            // Validate arguments
             if (self) {
                 throwCompilationError(
                     "Extend functions cannot be defined within a contract",
-                    isExtends.ref,
+                    isExtends.loc,
                 );
             }
-            if (args.length === 0) {
+            if (params.length === 0) {
                 throwCompilationError(
-                    "Extend functions must have at least one argument",
-                    isExtends.ref,
+                    "Extend functions must have at least one parameter",
+                    isExtends.loc,
                 );
             }
-            if (args[0].name !== "self") {
+            if (!isSelfId(params[0].name)) {
                 throwCompilationError(
-                    'Extend function must have first argument named "self"',
-                    args[0].ref,
+                    'Extend function must have first parameter named "self"',
+                    params[0].loc,
                 );
             }
-            if (args[0].type.kind !== "ref") {
+            if (params[0].type.kind !== "ref") {
                 throwCompilationError(
-                    "Extend functions must have a reference type as the first argument",
-                    args[0].ref,
+                    "Extend functions must have a reference type as the first parameter",
+                    params[0].loc,
                 );
             }
-            if (args[0].type.optional) {
+            if (params[0].type.optional) {
                 throwCompilationError(
-                    "Extend functions must have a non-optional type as the first argument",
-                    args[0].ref,
+                    "Extend functions must have a non-optional type as the first parameter",
+                    params[0].loc,
                 );
             }
-            if (!types.has(args[0].type.name)) {
+            if (!types.has(params[0].type.name)) {
                 throwCompilationError(
-                    "Type " + args[0].type.name + " not found",
-                    args[0].ref,
+                    "Type " + params[0].type.name + " not found",
+                    params[0].loc,
                 );
             }
 
-            // Update self and remove first argument
-            self = args[0].type.name;
-            args = args.slice(1);
+            // Update self and remove first parameter
+            self = params[0].type.name;
+            params = params.slice(1);
         }
 
         // Check for mutating and extends
         if (isMutating && !isExtends) {
             throwCompilationError(
                 "Mutating functions must be extend functions",
-                isMutating.ref,
+                isMutating.loc,
             );
         }
 
-        // Check argument names
+        // Check parameter names
         const exNames = new Set<string>();
-        for (const arg of args) {
-            if (arg.name === "self") {
+        for (const param of params) {
+            if (isSelfId(param.name)) {
                 throwCompilationError(
-                    'Argument name "self" is reserved',
-                    arg.ref,
+                    'Parameter name "self" is reserved',
+                    param.loc,
                 );
             }
-            if (exNames.has(arg.name)) {
+            if (exNames.has(idText(param.name))) {
                 throwCompilationError(
-                    'Argument name "' + arg.name + '" is already used',
-                    arg.ref,
+                    `Parameter name ${idTextErr(param.name)} is already used`,
+                    param.loc,
                 );
             }
-            exNames.add(arg.name);
+            exNames.add(idText(param.name));
         }
 
         // Check for runtime types in getters
         if (isGetter) {
-            for (const arg of args) {
-                if (isRuntimeType(arg.type)) {
+            for (const param of params) {
+                if (isRuntimeType(param.type)) {
                     throwCompilationError(
-                        printTypeRef(arg.type) +
-                            " is a runtime-only type and can't be used as a getter argument",
-                        arg.ref,
+                        printTypeRef(param.type) +
+                            " is a runtime-only type and can't be used as a getter parameter",
+                        param.loc,
                     );
                 }
             }
@@ -748,17 +831,17 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 throwCompilationError(
                     printTypeRef(returns) +
                         " is a runtime-only type and can't be used as getter return type",
-                    a.ref,
+                    a.loc,
                 );
             }
         }
 
         // Register function
         return {
-            name: a.name,
+            name: idText(a.name),
             self: self,
             origin,
-            args,
+            params,
             returns,
             ast: a,
             isMutating: !!isMutating || !!optSelf /* && !isGetter */, // Mark all contract functions as mutating
@@ -770,39 +853,39 @@ export function resolveDescriptors(ctx: CompilerContext) {
         };
     }
 
-    function resolveInitFunction(ast: ASTInitFunction): InitDescription {
-        const args: InitArgument[] = [];
-        for (const r of ast.args) {
-            args.push({
+    function resolveInitFunction(ast: AstContractInit): InitDescription {
+        const params: InitParameter[] = [];
+        for (const r of ast.params) {
+            params.push({
                 name: r.name,
                 type: buildTypeRef(r.type, types),
                 as: null,
-                ref: r.ref,
+                loc: r.loc,
             });
         }
 
         // Check if runtime types are used
-        for (const a of args) {
+        for (const a of params) {
             if (isRuntimeType(a.type)) {
                 throwCompilationError(
                     printTypeRef(a.type) +
-                        " is a runtime-only type and can't be used as a init function argument",
-                    a.ref,
+                        " is a runtime-only type and can't be used as a init function parameter",
+                    a.loc,
                 );
             }
         }
 
         return {
-            args,
+            params,
             ast,
         };
     }
 
     for (const a of ast.types) {
-        if (a.kind === "def_contract" || a.kind === "def_trait") {
-            const s = types.get(a.name)!;
+        if (a.kind === "contract" || a.kind === "trait") {
+            const s = types.get(idText(a.name))!;
             for (const d of a.declarations) {
-                if (d.kind === "def_function") {
+                if (d.kind === "function_def" || d.kind === "function_decl") {
                     const f = resolveFunctionDescriptor(s.name, d, s.origin);
                     if (f.self !== s.name) {
                         throw Error("Function self must be " + s.name); // Impossible
@@ -810,21 +893,21 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (s.functions.has(f.name)) {
                         throwCompilationError(
                             `Function "${f.name}" already exists in type "${s.name}"`,
-                            s.ast.ref,
+                            s.ast.loc,
                         );
                     }
                     s.functions.set(f.name, f);
                 }
-                if (d.kind === "def_init_function") {
+                if (d.kind === "contract_init") {
                     if (s.init) {
                         throwCompilationError(
                             "Init function already exists",
-                            d.ref,
+                            d.loc,
                         );
                     }
                     s.init = resolveInitFunction(d);
                 }
-                if (d.kind === "def_receive") {
+                if (d.kind === "receiver") {
                     // Check if externals are enabled
                     if (
                         d.selector.kind.startsWith("external-") &&
@@ -832,7 +915,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     ) {
                         throwCompilationError(
                             "External functions are not enabled",
-                            d.ref,
+                            d.loc,
                         );
                     }
 
@@ -840,34 +923,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         d.selector.kind === "internal-simple" ||
                         d.selector.kind === "external-simple"
                     ) {
-                        const arg = d.selector.arg;
+                        const param = d.selector.param;
                         const internal = d.selector.kind === "internal-simple";
 
-                        // Check argument type
-                        if (arg.type.kind !== "type_ref_simple") {
+                        if (param.type.kind !== "type_id") {
                             throwCompilationError(
-                                "Receive function can only accept message",
-                                d.ref,
+                                "Receive function can only accept non-optional message types",
+                                d.loc,
                             );
                         }
-                        if (arg.type.optional) {
-                            throwCompilationError(
-                                "Receive function cannot have optional argument",
-                                d.ref,
-                            );
-                        }
-
-                        // Check resolved argument type
-                        const t = types.get(arg.type.name);
+                        const t = types.get(idText(param.type));
                         if (!t) {
                             throwCompilationError(
-                                "Type " + arg.type.name + " not found",
-                                d.ref,
+                                `Type ${idTextErr(param.type)} not found`,
+                                d.loc,
                             );
                         }
 
                         // Raw receiver
-                        if (t.kind === "primitive") {
+                        if (t.kind === "primitive_type_decl") {
                             if (t.name === "Slice") {
                                 // Check for existing receiver
                                 if (
@@ -881,7 +955,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 ) {
                                     throwCompilationError(
                                         `Fallback receive function already exists`,
-                                        d.ref,
+                                        d.loc,
                                     );
                                 }
 
@@ -891,7 +965,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         kind: internal
                                             ? "internal-fallback"
                                             : "external-fallback",
-                                        name: arg.name,
+                                        name: param.name,
                                     },
                                     ast: d,
                                 });
@@ -908,7 +982,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 ) {
                                     throwCompilationError(
                                         "Comment fallback receive function already exists",
-                                        d.ref,
+                                        d.loc,
                                     );
                                 }
 
@@ -918,14 +992,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         kind: internal
                                             ? "internal-comment-fallback"
                                             : "external-comment-fallback",
-                                        name: arg.name,
+                                        name: param.name,
                                     },
                                     ast: d,
                                 });
                             } else {
                                 throwCompilationError(
                                     "Receive function can only accept message, Slice or String",
-                                    d.ref,
+                                    d.loc,
                                 );
                             }
                         } else {
@@ -933,24 +1007,18 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             if (t.kind !== "struct") {
                                 throwCompilationError(
                                     "Receive function can only accept message",
-                                    d.ref,
+                                    d.loc,
                                 );
                             }
-                            if (t.ast.kind !== "def_struct") {
+                            if (t.ast.kind !== "message_decl") {
                                 throwCompilationError(
                                     "Receive function can only accept message",
-                                    d.ref,
-                                );
-                            }
-                            if (!t.ast.message) {
-                                throwCompilationError(
-                                    "Receive function can only accept message",
-                                    d.ref,
+                                    d.loc,
                                 );
                             }
 
                             // Check for duplicate
-                            const n = arg.type.name;
+                            const n = idText(param.type);
                             if (
                                 s.receivers.find(
                                     (v) =>
@@ -958,12 +1026,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                             (internal
                                                 ? "internal-binary"
                                                 : "external-binary") &&
-                                        v.selector.name === n,
+                                        eqNames(v.selector.type, n),
                                 )
                             ) {
                                 throwCompilationError(
-                                    `Receive function for "${arg.type.name}" already exists`,
-                                    d.ref,
+                                    `Receive function for ${idTextErr(param.type)} already exists`,
+                                    param.loc,
                                 );
                             }
 
@@ -973,8 +1041,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     kind: internal
                                         ? "internal-binary"
                                         : "external-binary",
-                                    name: arg.name,
-                                    type: arg.type.name,
+                                    name: param.name,
+                                    type: idText(param.type),
                                 },
                                 ast: d,
                             });
@@ -986,8 +1054,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         const internal = d.selector.kind === "internal-comment";
                         if (d.selector.comment.value === "") {
                             throwCompilationError(
-                                "To use empty comment receiver, just remove argument instead of passing empty string",
-                                d.ref,
+                                "To use empty comment receiver, just remove parameter instead of passing empty string",
+                                d.loc,
                             );
                         }
                         const c = d.selector.comment.value;
@@ -1002,8 +1070,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             )
                         ) {
                             throwCompilationError(
-                                `Receive function for "${c}" already exists`,
-                                d.ref,
+                                `Receive function for ${idTextErr(c)} already exists`,
+                                d.loc,
                             );
                         }
                         s.receivers.push({
@@ -1033,7 +1101,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         ) {
                             throwCompilationError(
                                 "Empty receive function already exists",
-                                d.ref,
+                                d.loc,
                             );
                         }
                         s.receivers.push({
@@ -1045,18 +1113,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             ast: d,
                         });
                     } else if (d.selector.kind === "bounce") {
-                        const arg = d.selector.arg;
+                        const param = d.selector.param;
 
-                        // If argument is a direct reference
-                        if (arg.type.kind === "type_ref_simple") {
-                            if (arg.type.optional) {
-                                throwCompilationError(
-                                    "Bounce receive function cannot have optional argument",
-                                    d.ref,
-                                );
-                            }
-
-                            if (arg.type.name === "Slice") {
+                        if (param.type.kind === "type_id") {
+                            if (isSlice(param.type)) {
                                 if (
                                     s.receivers.find(
                                         (v) =>
@@ -1066,26 +1126,23 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 ) {
                                     throwCompilationError(
                                         `Fallback bounce receive function already exists`,
-                                        d.ref,
+                                        d.loc,
                                     );
                                 }
 
                                 s.receivers.push({
                                     selector: {
                                         kind: "bounce-fallback",
-                                        name: arg.name,
+                                        name: param.name,
                                     },
                                     ast: d,
                                 });
                             } else {
-                                const type = types.get(arg.type.name)!;
-                                if (
-                                    type.ast.kind !== "def_struct" ||
-                                    !type.ast.message
-                                ) {
+                                const type = types.get(idText(param.type))!;
+                                if (type.ast.kind !== "message_decl") {
                                     throwCompilationError(
                                         "Bounce receive function can only accept bounced message, message or Slice",
-                                        d.ref,
+                                        d.loc,
                                     );
                                 }
                                 if (
@@ -1093,10 +1150,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     type.partialFieldCount
                                 ) {
                                     throwCompilationError(
-                                        "This message is too big for bounce receiver, you need to wrap it to a bounced<" +
-                                            arg.type.name +
-                                            ">.",
-                                        d.ref,
+                                        `This message is too big for bounce receiver, you need to wrap it to a bounced<${idTextErr(param.type)}>.`,
+                                        d.loc,
                                     );
                                 }
                                 if (
@@ -1104,42 +1159,43 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         (v) =>
                                             v.selector.kind ===
                                                 "bounce-binary" &&
-                                            v.selector.name === type.name,
+                                            v.selector.type === type.name,
                                     )
                                 ) {
                                     throwCompilationError(
-                                        `Bounce receive function for "${arg.type.name}" already exists`,
-                                        d.ref,
+                                        `Bounce receive function for ${idTextErr(param.type)} already exists`,
+                                        param.loc,
                                     );
                                 }
                                 s.receivers.push({
                                     selector: {
                                         kind: "bounce-binary",
-                                        name: arg.name,
-                                        type: arg.type.name,
+                                        name: param.name,
+                                        type: idText(param.type),
                                         bounced: false,
                                     },
                                     ast: d,
                                 });
                             }
-                        } else if (arg.type.kind === "type_ref_bounced") {
-                            const t = types.get(arg.type.name)!;
+                        } else if (param.type.kind === "optional_type") {
+                            throwCompilationError(
+                                "Bounce receive function cannot have optional parameter",
+                                d.loc,
+                            );
+                        } else if (param.type.kind === "bounced_message_type") {
+                            const t = types.get(
+                                idText(param.type.messageType),
+                            )!;
                             if (t.kind !== "struct") {
                                 throwCompilationError(
                                     "Bounce receive function can only accept bounced<T> struct types",
-                                    d.ref,
+                                    d.loc,
                                 );
                             }
-                            if (t.ast.kind !== "def_struct") {
+                            if (t.ast.kind !== "message_decl") {
                                 throwCompilationError(
-                                    "Bounce receive function can only accept bounced<T> struct types",
-                                    d.ref,
-                                );
-                            }
-                            if (!t.ast.message) {
-                                throwCompilationError(
-                                    "Bounce receive function can only accept bounced message, message or Slice",
-                                    d.ref,
+                                    "Bounce receive function can only accept bounced<T> message types",
+                                    d.loc,
                                 );
                             }
                             if (
@@ -1150,35 +1206,35 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 )
                             ) {
                                 throwCompilationError(
-                                    `Bounce receive function for "${t.name}" already exists`,
-                                    d.ref,
+                                    `Bounce receive function for ${idTextErr(t.name)} already exists`,
+                                    d.loc,
                                 );
                             }
                             if (t.fields.length === t.partialFieldCount) {
                                 throwCompilationError(
                                     "This message is small enough for bounce receiver, you need to remove bounced modifier.",
-                                    d.ref,
+                                    d.loc,
                                 );
                             }
                             s.receivers.push({
                                 selector: {
                                     kind: "bounce-binary",
-                                    name: arg.name,
-                                    type: arg.type.name,
+                                    name: param.name,
+                                    type: idText(param.type.messageType),
                                     bounced: true,
                                 },
                                 ast: d,
                             });
                         } else {
                             throwCompilationError(
-                                "Bounce receive function can only accept bounced<T> struct args or Slice",
-                                d.ref,
+                                "Bounce receive function can only accept bounced<T> struct parameters or Slice",
+                                d.loc,
                             );
                         }
                     } else {
                         throwCompilationError(
                             "Invalid receive function selector",
-                            d.ref,
+                            d.loc,
                         );
                     }
                 }
@@ -1194,13 +1250,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (t.kind === "contract") {
             if (!t.init) {
                 t.init = {
-                    args: [],
-                    ast: createNode({
-                        kind: "def_init_function",
-                        args: [],
+                    params: [],
+                    ast: createAstNode({
+                        kind: "contract_init",
+                        params: [],
                         statements: [],
-                        ref: t.ast.ref,
-                    }) as ASTInitFunction,
+                        loc: t.ast.loc,
+                    }) as AstContractInit,
                 };
             }
         }
@@ -1211,7 +1267,17 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const t of types.values()) {
-        if (t.ast.kind === "def_trait" || t.ast.kind === "def_contract") {
+        if (t.ast.kind === "trait" || t.ast.kind === "contract") {
+            // Check there are no duplicates in the _immediately_ inherited traits
+            const traitSet = new Set<string>(t.ast.traits.map(idText));
+            if (traitSet.size !== t.ast.traits.length) {
+                const aggregateType =
+                    t.ast.kind === "contract" ? "contract" : "trait";
+                throwCompilationError(
+                    `The list of inherited traits for ${aggregateType} "${t.name}" has duplicates`,
+                    t.ast.loc,
+                );
+            }
             // Flatten traits
             const traits: TypeDescription[] = [];
             const visited = new Set<string>();
@@ -1225,14 +1291,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 if (!tt) {
                     throwCompilationError(
                         "Trait " + name + " not found",
-                        t.ast.ref,
+                        t.ast.loc,
                     );
                 }
                 visited.add(name);
                 traits.push(tt);
-                if (tt.ast.kind === "def_trait") {
+                if (tt.ast.kind === "trait") {
                     for (const s of tt.ast.traits) {
-                        visit(s.value);
+                        visit(idText(s));
                     }
                     for (const f of tt.traits) {
                         visit(f.name);
@@ -1240,13 +1306,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 } else {
                     throwCompilationError(
                         "Type " + name + " is not a trait",
-                        t.ast.ref,
+                        t.ast.loc,
                     );
                 }
             }
             visit("BaseTrait");
             for (const s of t.ast.traits) {
-                visit(s.value);
+                visit(idText(s));
             }
 
             // Assign traits
@@ -1264,13 +1330,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (!types.has(tr.name)) {
                 throwCompilationError(
                     "Trait " + tr.name + " not found",
-                    t.ast.ref,
+                    t.ast.loc,
                 );
             }
             if (types.get(tr.name)!.kind !== "trait") {
                 throwCompilationError(
                     "Type " + tr.name + " is not a trait",
-                    t.ast.ref,
+                    t.ast.loc,
                 );
             }
 
@@ -1282,7 +1348,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 if (!ex) {
                     throwCompilationError(
                         `Trait "${tr.name}" requires field "${f.name}"`,
-                        t.ast.ref,
+                        t.ast.loc,
                     );
                 }
 
@@ -1290,7 +1356,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 if (!typeRefEquals(f.type, ex.type)) {
                     throwCompilationError(
                         `Trait "${tr.name}" requires field "${f.name}" of type "${printTypeRef(f.type)}"`,
-                        t.ast.ref,
+                        t.ast.loc,
                     );
                 }
             }
@@ -1301,51 +1367,67 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Copy Trait functions and constants
     //
 
-    function copyTraits(t: TypeDescription) {
-        for (const tr of t.traits) {
+    function copyTraits(contractOrTrait: TypeDescription) {
+        for (const inheritedTrait of contractOrTrait.traits) {
             // Copy functions
-            for (const f of tr.functions.values()) {
-                const ex = t.functions.get(f.name);
-                if (!ex && f.isAbstract) {
+            for (const traitFunction of inheritedTrait.functions.values()) {
+                const funInContractOrTrait = contractOrTrait.functions.get(
+                    traitFunction.name,
+                );
+                if (!funInContractOrTrait && traitFunction.isAbstract) {
                     throwCompilationError(
-                        `Trait "${tr.name}" requires function "${f.name}"`,
-                        t.ast.ref,
+                        `Trait "${inheritedTrait.name}" requires function "${traitFunction.name}"`,
+                        contractOrTrait.ast.loc,
                     );
                 }
 
                 // Check overrides
-                if (ex && ex.isOverrides) {
-                    if (f.isGetter) {
+                if (funInContractOrTrait && funInContractOrTrait.isOverrides) {
+                    if (
+                        traitFunction.isGetter &&
+                        !funInContractOrTrait.isGetter
+                    ) {
                         throwCompilationError(
-                            `Overridden function "${f.name}" can not be a getter`,
-                            ex.ast.ref,
+                            `Overridden function "${traitFunction.name}" must be a getter`,
+                            funInContractOrTrait.ast.loc,
                         );
                     }
-                    if (f.isMutating !== ex.isMutating) {
+                    if (
+                        traitFunction.isMutating !==
+                        funInContractOrTrait.isMutating
+                    ) {
                         throwCompilationError(
-                            `Overridden function "${f.name}" should have same mutability`,
-                            ex.ast.ref,
+                            `Overridden function "${traitFunction.name}" should have same mutability`,
+                            funInContractOrTrait.ast.loc,
                         );
                     }
-                    if (!typeRefEquals(f.returns, ex.returns)) {
+                    if (
+                        !typeRefEquals(
+                            traitFunction.returns,
+                            funInContractOrTrait.returns,
+                        )
+                    ) {
                         throwCompilationError(
-                            `Overridden function "${f.name}" should have same return type`,
-                            ex.ast.ref,
+                            `Overridden function "${traitFunction.name}" should have same return type`,
+                            funInContractOrTrait.ast.loc,
                         );
                     }
-                    if (f.args.length !== ex.args.length) {
+                    if (
+                        traitFunction.params.length !==
+                        funInContractOrTrait.params.length
+                    ) {
                         throwCompilationError(
-                            `Overridden function "${f.name}" should have same number of arguments`,
-                            ex.ast.ref,
+                            `Overridden function "${traitFunction.name}" should have same number of parameters`,
+                            funInContractOrTrait.ast.loc,
                         );
                     }
-                    for (let i = 0; i < f.args.length; i++) {
-                        const a = ex.args[i];
-                        const b = f.args[i];
+                    for (let i = 0; i < traitFunction.params.length; i++) {
+                        const a = funInContractOrTrait.params[i];
+                        const b = traitFunction.params[i];
                         if (!typeRefEquals(a.type, b.type)) {
                             throwCompilationError(
-                                `Overridden function "${f.name}" should have same argument types`,
-                                ex.ast.ref,
+                                `Overridden function "${traitFunction.name}" should have same parameter types`,
+                                funInContractOrTrait.ast.loc,
                             );
                         }
                     }
@@ -1353,73 +1435,102 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
 
                 // Check duplicates
-                if (ex) {
+                if (funInContractOrTrait) {
+                    if (traitFunction.isVirtual) {
+                        throwCompilationError(
+                            `Function "${traitFunction.name}" is defined as virtual in trait "${inheritedTrait.name}": you are probably missing "override" keyword`,
+                            funInContractOrTrait.ast.loc,
+                        );
+                    }
                     throwCompilationError(
-                        `Function "${f.name}" already exist in "${t.name}"`,
-                        t.ast.ref,
+                        `Function "${traitFunction.name}" is already defined in trait "${inheritedTrait.name}"`,
+                        funInContractOrTrait.ast.loc,
                     );
                 }
 
                 // Register function
-                t.functions.set(f.name, {
-                    ...f,
-                    self: t.name,
-                    ast: cloneNode(f.ast),
+                contractOrTrait.functions.set(traitFunction.name, {
+                    ...traitFunction,
+                    self: contractOrTrait.name,
+                    ast: cloneNode(traitFunction.ast),
                 });
             }
 
             // Copy constants
-            for (const f of tr.constants) {
-                const ex = t.constants.find((v) => v.name === f.name);
+            for (const traitConstant of inheritedTrait.constants) {
+                const constInContractOrTrait = contractOrTrait.constants.find(
+                    (v) => v.name === traitConstant.name,
+                );
                 if (
-                    !ex &&
-                    f.ast.attributes.find((v) => v.type === "abstract")
+                    !constInContractOrTrait &&
+                    traitConstant.ast.attributes.find(
+                        (v) => v.type === "abstract",
+                    )
                 ) {
                     throwCompilationError(
-                        `Trait "${tr.name}" requires constant "${f.name}"`,
-                        t.ast.ref,
+                        `Trait "${inheritedTrait.name}" requires constant "${traitConstant.name}"`,
+                        contractOrTrait.ast.loc,
                     );
                 }
 
                 // Check overrides
                 if (
-                    ex &&
-                    ex.ast.attributes.find((v) => v.type === "overrides")
+                    constInContractOrTrait &&
+                    constInContractOrTrait.ast.attributes.find(
+                        (v) => v.type === "overrides",
+                    )
                 ) {
-                    if (!typeRefEquals(f.type, ex.type)) {
+                    if (
+                        !typeRefEquals(
+                            traitConstant.type,
+                            constInContractOrTrait.type,
+                        )
+                    ) {
                         throwCompilationError(
-                            `Overridden constant "${f.name}" should have same type`,
-                            ex.ast.ref,
+                            `Overridden constant "${traitConstant.name}" should have same type`,
+                            constInContractOrTrait.ast.loc,
                         );
                     }
                     continue;
                 }
 
                 // Check duplicates
-                if (ex) {
+                if (constInContractOrTrait) {
+                    if (
+                        traitConstant.ast.attributes.find(
+                            (v) => v.type === "virtual",
+                        )
+                    ) {
+                        throwCompilationError(
+                            `Constant "${traitConstant.name}" is defined as virtual in trait "${inheritedTrait.name}": you are probably missing "override" keyword`,
+                            constInContractOrTrait.ast.loc,
+                        );
+                    }
                     throwCompilationError(
-                        `Constant "${f.name}" already exist in "${t.name}"`,
-                        t.ast.ref,
+                        `Constant "${traitConstant.name}" is already defined in trait "${inheritedTrait.name}"`,
+                        constInContractOrTrait.ast.loc,
                     );
                 }
-                const contractField = t.fields.find((v) => v.name === f.name);
+                const contractField = contractOrTrait.fields.find(
+                    (v) => v.name === traitConstant.name,
+                );
                 if (contractField) {
                     // a trait constant has the same name as a contract field
                     throwCompilationError(
-                        `Contract ${t.name} inherits constant "${f.name}" from its traits and hence cannot have a storage variable with the same name`,
-                        contractField.ref,
+                        `Contract ${contractOrTrait.name} inherits constant "${traitConstant.name}" from its traits and hence cannot have a storage variable with the same name`,
+                        contractField.loc,
                     );
                 }
 
                 // Register constant
-                t.constants.push({
-                    ...f,
-                    ast: cloneNode(f.ast),
+                contractOrTrait.constants.push({
+                    ...traitConstant,
+                    ast: cloneNode(traitConstant.ast),
                 });
             }
 
             // Copy receivers
-            for (const f of tr.receivers) {
+            for (const f of inheritedTrait.receivers) {
                 // eslint-disable-next-line no-inner-declarations
                 function sameReceiver(
                     a: ReceiverSelector,
@@ -1470,25 +1581,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     return false;
                 }
                 if (
-                    t.receivers.find((v) =>
+                    contractOrTrait.receivers.find((v) =>
                         sameReceiver(v.selector, f.selector),
                     )
                 ) {
                     throwCompilationError(
-                        `Receive function for "${f.selector}" already exists`,
-                        t.ast.ref,
+                        `Receive function for ${idTextErr(receiverSelectorName(f.selector))} already exists`,
+                        contractOrTrait.ast.loc,
                     );
                 }
-                t.receivers.push({
+                contractOrTrait.receivers.push({
                     selector: f.selector,
                     ast: cloneNode(f.ast),
                 });
             }
 
             // Copy interfaces
-            for (const i of tr.interfaces) {
-                if (!t.interfaces.find((v) => v === i)) {
-                    t.interfaces.push(i);
+            for (const i of inheritedTrait.interfaces) {
+                if (!contractOrTrait.interfaces.find((v) => v === i)) {
+                    contractOrTrait.interfaces.push(i);
                 }
             }
         }
@@ -1507,7 +1618,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (processing.has(name)) {
             throwCompilationError(
                 `Circular dependency detected for type "${name}"`,
-                types.get(name)!.ast.ref,
+                types.get(name)!.ast.loc,
             );
         }
         processing.has(name);
@@ -1537,15 +1648,15 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const [k, t] of types) {
         const dependsOn = new Set<string>();
-        const handler = (src: ASTNode) => {
+        const handler = (src: AstNode) => {
             if (src.kind === "init_of") {
-                if (!types.has(src.name)) {
+                if (!types.has(idText(src.contract))) {
                     throwCompilationError(
-                        `Type "${src.name}" not found`,
-                        src.ref,
+                        `Type ${idTextErr(src.contract)} not found`,
+                        src.loc,
                     );
                 }
-                dependsOn.add(src.name);
+                dependsOn.add(idText(src.contract));
             }
         };
 
@@ -1556,6 +1667,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         for (const f of t.receivers) {
             traverse(f.ast, handler);
         }
+        if (t.init) traverse(t.init.ast, handler);
 
         // Add dependencies
         for (const s of dependsOn) {
@@ -1595,12 +1707,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const a of ast.functions) {
-        const r = resolveFunctionDescriptor(null, a, a.origin);
+        const r = resolveFunctionDescriptor(null, a, a.loc.origin);
         if (r.self) {
             if (types.get(r.self)!.functions.has(r.name)) {
                 throwCompilationError(
                     `Function "${r.name}" already exists in type "${r.self}"`,
-                    r.ast.ref,
+                    r.ast.loc,
                 );
             }
             types.get(r.self)!.functions.set(r.name, r);
@@ -1608,13 +1720,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (staticFunctions.has(r.name) || GlobalFunctions.has(r.name)) {
                 throwCompilationError(
                     `Static function "${r.name}" already exists`,
-                    r.ast.ref,
+                    r.ast.loc,
                 );
             }
             if (staticConstants.has(r.name)) {
                 throwCompilationError(
                     `Static constant "${r.name}" already exists`,
-                    a.ref,
+                    a.loc,
                 );
             }
             staticFunctions.set(r.name, r);
@@ -1626,19 +1738,22 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const a of ast.constants) {
-        if (staticConstants.has(a.name)) {
+        if (staticConstants.has(idText(a.name))) {
             throwCompilationError(
-                `Static constant "${a.name}" already exists`,
-                a.ref,
+                `Static constant ${idTextErr(a.name)} already exists`,
+                a.loc,
             );
         }
-        if (staticFunctions.has(a.name) || GlobalFunctions.has(a.name)) {
+        if (
+            staticFunctions.has(idText(a.name)) ||
+            GlobalFunctions.has(idText(a.name))
+        ) {
             throwCompilationError(
-                `Static function "${a.name}" already exists`,
-                a.ref,
+                `Static function ${idTextErr(a.name)} already exists`,
+                a.loc,
             );
         }
-        staticConstants.set(a.name, buildConstantDescription(a));
+        staticConstants.set(idText(a.name), buildConstantDescription(a));
     }
 
     //
@@ -1658,7 +1773,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
     return ctx;
 }
 
-export function getType(ctx: CompilerContext, name: string): TypeDescription {
+export function getType(ctx: CompilerContext, ident: AstId): TypeDescription;
+export function getType(ctx: CompilerContext, ident: string): TypeDescription;
+export function getType(
+    ctx: CompilerContext,
+    ident: AstId | string,
+): TypeDescription {
+    const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
     if (!r) {
         throw Error("Type " + name + " not found");

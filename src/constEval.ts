@@ -2,14 +2,17 @@ import { Address, Cell, toNano } from "@ton/core";
 import { enabledMasterchain } from "./config/features";
 import { CompilerContext } from "./context";
 import {
-    ASTBinaryOperation,
-    ASTExpression,
-    ASTId,
-    ASTNewParameter,
-    ASTRef,
-    ASTUnaryOperation,
+    AstBinaryOperation,
+    AstExpression,
+    AstId,
+    AstStructFieldInitializer,
+    SrcInfo,
+    AstUnaryOperation,
+    isSelfId,
+    eqNames,
+    idText,
 } from "./grammar/ast";
-import { throwConstEvalError } from "./errors";
+import { idTextErr, throwConstEvalError } from "./errors";
 import { CommentValue, StructValue, Value } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
 import {
@@ -26,7 +29,7 @@ const maxTvmInt: bigint = 2n ** 256n - 1n;
 // Throws a non-fatal const-eval error, in the sense that const-eval as a compiler
 // optimization cannot be applied, e.g. to `let`-statements.
 // Note that for const initializers this is a show-stopper.
-function throwNonFatalErrorConstEval(msg: string, source: ASTRef): never {
+function throwNonFatalErrorConstEval(msg: string, source: SrcInfo): never {
     throwConstEvalError(
         `Cannot evaluate expression to a constant: ${msg}`,
         false,
@@ -36,7 +39,7 @@ function throwNonFatalErrorConstEval(msg: string, source: ASTRef): never {
 
 // Throws a fatal const-eval, meaning this is a meaningless program,
 // so compilation should be aborted in all cases
-function throwErrorConstEval(msg: string, source: ASTRef): never {
+function throwErrorConstEval(msg: string, source: SrcInfo): never {
     throwConstEvalError(
         `Cannot evaluate expression to a constant: ${msg}`,
         true,
@@ -44,7 +47,7 @@ function throwErrorConstEval(msg: string, source: ASTRef): never {
     );
 }
 
-function ensureInt(val: Value, source: ASTRef): bigint {
+function ensureInt(val: Value, source: SrcInfo): bigint {
     if (typeof val !== "bigint") {
         throwErrorConstEval(`integer expected, but got '${val}'`, source);
     }
@@ -58,21 +61,21 @@ function ensureInt(val: Value, source: ASTRef): bigint {
     }
 }
 
-function ensureBoolean(val: Value, source: ASTRef): boolean {
+function ensureBoolean(val: Value, source: SrcInfo): boolean {
     if (typeof val !== "boolean") {
         throwErrorConstEval(`boolean expected, but got '${val}'`, source);
     }
     return val;
 }
 
-function ensureString(val: Value, source: ASTRef): string {
+function ensureString(val: Value, source: SrcInfo): string {
     if (typeof val !== "string") {
         throwErrorConstEval(`string expected, but got '${val}'`, source);
     }
     return val;
 }
 
-function ensureFunArity(arity: number, args: ASTExpression[], source: ASTRef) {
+function ensureFunArity(arity: number, args: AstExpression[], source: SrcInfo) {
     if (args.length !== arity) {
         throwErrorConstEval(
             `function expects ${arity} argument(s), but got ${args.length}`,
@@ -83,8 +86,8 @@ function ensureFunArity(arity: number, args: ASTExpression[], source: ASTRef) {
 
 function ensureMethodArity(
     arity: number,
-    args: ASTExpression[],
-    source: ASTRef,
+    args: AstExpression[],
+    source: SrcInfo,
 ) {
     if (args.length !== arity) {
         throwErrorConstEval(
@@ -95,9 +98,9 @@ function ensureMethodArity(
 }
 
 function evalUnaryOp(
-    op: ASTUnaryOperation,
-    operand: ASTExpression,
-    source: ASTRef,
+    op: AstUnaryOperation,
+    operand: AstExpression,
+    source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
     // Tact grammar does not have negative integer literals,
@@ -110,18 +113,18 @@ function evalUnaryOp(
     const valOperand = evalConstantExpression(operand, ctx);
     switch (op) {
         case "+":
-            return ensureInt(valOperand, operand.ref);
+            return ensureInt(valOperand, operand.loc);
         case "-":
-            return ensureInt(-ensureInt(valOperand, operand.ref), source);
+            return ensureInt(-ensureInt(valOperand, operand.loc), source);
         case "~":
-            return ~ensureInt(valOperand, operand.ref);
+            return ~ensureInt(valOperand, operand.loc);
         case "!":
-            return !ensureBoolean(valOperand, operand.ref);
+            return !ensureBoolean(valOperand, operand.loc);
         case "!!":
             if (valOperand === null) {
                 throwErrorConstEval(
                     "non-null value expected but got null",
-                    operand.ref,
+                    operand.loc,
                 );
             }
             return valOperand;
@@ -146,10 +149,10 @@ function modFloor(a: bigint, b: bigint): bigint {
 }
 
 function evalBinaryOp(
-    op: ASTBinaryOperation,
-    left: ASTExpression,
-    right: ASTExpression,
-    source: ASTRef,
+    op: AstBinaryOperation,
+    left: AstExpression,
+    right: AstExpression,
+    source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
     const valLeft = evalConstantExpression(left, ctx);
@@ -157,17 +160,17 @@ function evalBinaryOp(
     switch (op) {
         case "+":
             return ensureInt(
-                ensureInt(valLeft, left.ref) + ensureInt(valRight, right.ref),
+                ensureInt(valLeft, left.loc) + ensureInt(valRight, right.loc),
                 source,
             );
         case "-":
             return ensureInt(
-                ensureInt(valLeft, left.ref) - ensureInt(valRight, right.ref),
+                ensureInt(valLeft, left.loc) - ensureInt(valRight, right.loc),
                 source,
             );
         case "*":
             return ensureInt(
-                ensureInt(valLeft, left.ref) * ensureInt(valRight, right.ref),
+                ensureInt(valLeft, left.loc) * ensureInt(valRight, right.loc),
                 source,
             );
         case "/": {
@@ -175,51 +178,51 @@ function evalBinaryOp(
             // is a non-conventional one: by default it rounds towards negative infinity,
             // meaning, for instance, -1 / 5 = -1 and not zero, as in many mainstream languages.
             // Still, the following holds: a / b * b + a % b == a, for all b != 0.
-            const r = ensureInt(valRight, right.ref);
+            const r = ensureInt(valRight, right.loc);
             if (r === 0n)
                 throwErrorConstEval(
                     "divisor expression must be non-zero",
-                    right.ref,
+                    right.loc,
                 );
-            return ensureInt(divFloor(ensureInt(valLeft, left.ref), r), source);
+            return ensureInt(divFloor(ensureInt(valLeft, left.loc), r), source);
         }
         case "%": {
             // Same as for division, see the comment above
             // Example: -1 % 5 = 4
-            const r = ensureInt(valRight, right.ref);
+            const r = ensureInt(valRight, right.loc);
             if (r === 0n)
                 throwErrorConstEval(
                     "divisor expression must be non-zero",
-                    right.ref,
+                    right.loc,
                 );
-            return ensureInt(modFloor(ensureInt(valLeft, left.ref), r), source);
+            return ensureInt(modFloor(ensureInt(valLeft, left.loc), r), source);
         }
         case "&":
             return (
-                ensureInt(valLeft, left.ref) & ensureInt(valRight, right.ref)
+                ensureInt(valLeft, left.loc) & ensureInt(valRight, right.loc)
             );
         case "|":
             return (
-                ensureInt(valLeft, left.ref) | ensureInt(valRight, right.ref)
+                ensureInt(valLeft, left.loc) | ensureInt(valRight, right.loc)
             );
         case "^":
             return (
-                ensureInt(valLeft, left.ref) ^ ensureInt(valRight, right.ref)
+                ensureInt(valLeft, left.loc) ^ ensureInt(valRight, right.loc)
             );
         case "<<": {
-            const valNum = ensureInt(valLeft, left.ref);
-            const valBits = ensureInt(valRight, right.ref);
+            const valNum = ensureInt(valLeft, left.loc);
+            const valBits = ensureInt(valRight, right.loc);
             if (0n > valBits || valBits > 256n) {
                 throwErrorConstEval(
                     `the number of bits shifted ('${valBits}') must be within [0..256] range`,
-                    right.ref,
+                    right.loc,
                 );
             }
             try {
                 return ensureInt(valNum << valBits, source);
             } catch (e) {
                 if (e instanceof RangeError)
-                    // this is actually should not happen
+                    // this actually should not happen
                     throwErrorConstEval(
                         `integer does not fit into TVM Int type`,
                         source,
@@ -228,12 +231,12 @@ function evalBinaryOp(
             }
         }
         case ">>": {
-            const valNum = ensureInt(valLeft, left.ref);
-            const valBits = ensureInt(valRight, right.ref);
+            const valNum = ensureInt(valLeft, left.loc);
+            const valBits = ensureInt(valRight, right.loc);
             if (0n > valBits || valBits > 256n) {
                 throwErrorConstEval(
                     `the number of bits shifted ('${valBits}') must be within [0..256] range`,
-                    right.ref,
+                    right.loc,
                 );
             }
             try {
@@ -250,19 +253,19 @@ function evalBinaryOp(
         }
         case ">":
             return (
-                ensureInt(valLeft, left.ref) > ensureInt(valRight, right.ref)
+                ensureInt(valLeft, left.loc) > ensureInt(valRight, right.loc)
             );
         case "<":
             return (
-                ensureInt(valLeft, left.ref) < ensureInt(valRight, right.ref)
+                ensureInt(valLeft, left.loc) < ensureInt(valRight, right.loc)
             );
         case ">=":
             return (
-                ensureInt(valLeft, left.ref) >= ensureInt(valRight, right.ref)
+                ensureInt(valLeft, left.loc) >= ensureInt(valRight, right.loc)
             );
         case "<=":
             return (
-                ensureInt(valLeft, left.ref) <= ensureInt(valRight, right.ref)
+                ensureInt(valLeft, left.loc) <= ensureInt(valRight, right.loc)
             );
         case "==":
             // the null comparisons account for optional types, e.g.
@@ -288,27 +291,27 @@ function evalBinaryOp(
             return valLeft !== valRight;
         case "&&":
             return (
-                ensureBoolean(valLeft, left.ref) &&
-                ensureBoolean(valRight, right.ref)
+                ensureBoolean(valLeft, left.loc) &&
+                ensureBoolean(valRight, right.loc)
             );
         case "||":
             return (
-                ensureBoolean(valLeft, left.ref) ||
-                ensureBoolean(valRight, right.ref)
+                ensureBoolean(valLeft, left.loc) ||
+                ensureBoolean(valRight, right.loc)
             );
     }
 }
 
 function evalConditional(
-    condition: ASTExpression,
-    thenBranch: ASTExpression,
-    elseBranch: ASTExpression,
+    condition: AstExpression,
+    thenBranch: AstExpression,
+    elseBranch: AstExpression,
     ctx: CompilerContext,
 ): Value {
     // here we rely on the typechecker that both branches have the same type
     const valCond = ensureBoolean(
         evalConstantExpression(condition, ctx),
-        condition.ref,
+        condition.loc,
     );
     if (valCond) {
         return evalConstantExpression(thenBranch, ctx);
@@ -318,49 +321,49 @@ function evalConditional(
 }
 
 function evalStructInstance(
-    structTypeId: string,
-    structFields: ASTNewParameter[],
+    structTypeId: AstId,
+    structFields: AstStructFieldInitializer[],
     ctx: CompilerContext,
 ): StructValue {
     return structFields.reduce(
         (resObj, fieldWithInit) => {
-            resObj[fieldWithInit.name] = evalConstantExpression(
-                fieldWithInit.exp,
+            resObj[fieldWithInit.field.text] = evalConstantExpression(
+                fieldWithInit.initializer,
                 ctx,
             );
             return resObj;
         },
-        { $tactStruct: structTypeId } as StructValue,
+        { $tactStruct: structTypeId.text } as StructValue,
     );
 }
 
 function evalFieldAccess(
-    structExpr: ASTExpression,
-    fieldId: ASTId,
-    source: ASTRef,
+    structExpr: AstExpression,
+    fieldId: AstId,
+    source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
     // special case for contract/trait constant accesses via `self.constant`
-    if (structExpr.kind === "id" && structExpr.value == "self") {
+    if (structExpr.kind === "id" && isSelfId(structExpr)) {
         const selfTypeRef = getExpType(ctx, structExpr);
         if (selfTypeRef.kind == "ref") {
             const contractTypeDescription = getType(ctx, selfTypeRef.name);
             const foundContractConst = contractTypeDescription.constants.find(
-                (constId) => constId.name === fieldId.value,
+                (constId) => eqNames(fieldId, constId.name),
             );
             if (foundContractConst === undefined) {
                 // not a constant, e.g. `self.storageVariable`
                 throwNonFatalErrorConstEval(
                     `cannot a evaluate non-constant self field access`,
-                    structExpr.ref,
+                    structExpr.loc,
                 );
             }
             if (foundContractConst.value !== undefined) {
                 return foundContractConst.value;
             } else {
                 throwErrorConstEval(
-                    `cannot evaluate declared contract/trait constant "${fieldId.value}" as it does not have a body`,
-                    fieldId.ref,
+                    `cannot evaluate declared contract/trait constant ${idTextErr(fieldId)} as it does not have a body`,
+                    fieldId.loc,
                 );
             }
         }
@@ -373,62 +376,65 @@ function evalFieldAccess(
     ) {
         throwErrorConstEval(
             `constant struct expected, but got ${valStruct}`,
-            structExpr.ref,
+            structExpr.loc,
         );
     }
-    if (fieldId.value in valStruct) {
-        return valStruct[fieldId.value];
+    if (fieldId.text in valStruct) {
+        return valStruct[fieldId.text];
     } else {
         // this cannot happen in a well-typed program
         throwErrorConstEval(
-            `struct field ${fieldId.value} is missing`,
-            structExpr.ref,
+            `struct field ${idTextErr(fieldId)} is missing`,
+            structExpr.loc,
         );
     }
 }
 
 function evalMethod(
-    methodName: string,
-    object: ASTExpression,
-    args: ASTExpression[],
-    source: ASTRef,
+    methodName: AstId,
+    object: AstExpression,
+    args: AstExpression[],
+    source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
-    switch (methodName) {
+    switch (idText(methodName)) {
         case "asComment": {
             ensureMethodArity(0, args, source);
             const comment = ensureString(
                 evalConstantExpression(object, ctx),
-                object.ref,
+                object.loc,
             );
             return new CommentValue(comment);
         }
         default:
             throwNonFatalErrorConstEval(
-                `calls of "${methodName}" are not supported at this moment`,
+                `calls of ${idTextErr(methodName)} are not supported at this moment`,
                 source,
             );
     }
 }
 
 function evalBuiltins(
-    builtinName: string,
-    args: ASTExpression[],
-    source: ASTRef,
+    builtinName: AstId,
+    args: AstExpression[],
+    source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
-    switch (builtinName) {
+    switch (idText(builtinName)) {
         case "ton": {
             ensureFunArity(1, args, source);
             const tons = ensureString(
                 evalConstantExpression(args[0], ctx),
-                args[0].ref,
+                args[0].loc,
             );
             try {
                 return ensureInt(BigInt(toNano(tons).toString(10)), source);
             } catch (e) {
                 if (e instanceof Error && e.message === "Invalid number") {
-                    throwErrorConstEval("invalid 'ton()' argument", source);
+                    throwErrorConstEval(
+                        `invalid ${idTextErr(builtinName)} argument`,
+                        source,
+                    );
                 }
                 throw e;
             }
@@ -437,15 +443,15 @@ function evalBuiltins(
             ensureFunArity(2, args, source);
             const valBase = ensureInt(
                 evalConstantExpression(args[0], ctx),
-                args[0].ref,
+                args[0].loc,
             );
             const valExp = ensureInt(
                 evalConstantExpression(args[1], ctx),
-                args[1].ref,
+                args[1].loc,
             );
             if (valExp < 0n) {
                 throwErrorConstEval(
-                    `'pow()' builtin called with negative exponent ${valExp}`,
+                    `${idTextErr(builtinName)} builtin called with negative exponent ${valExp}`,
                     source,
                 );
             }
@@ -466,11 +472,11 @@ function evalBuiltins(
             ensureFunArity(1, args, source);
             const valExponent = ensureInt(
                 evalConstantExpression(args[0], ctx),
-                args[0].ref,
+                args[0].loc,
             );
             if (valExponent < 0n) {
                 throwErrorConstEval(
-                    `'pow2()' builtin called with negative exponent ${valExponent}`,
+                    `${idTextErr(builtinName)} builtin called with negative exponent ${valExponent}`,
                     source,
                 );
             }
@@ -491,7 +497,7 @@ function evalBuiltins(
             ensureFunArity(1, args, source);
             const str = ensureString(
                 evalConstantExpression(args[0], ctx),
-                args[0].ref,
+                args[0].loc,
             );
             const dataSize = Buffer.from(str).length;
             if (dataSize > 128) {
@@ -511,7 +517,7 @@ function evalBuiltins(
                 ensureFunArity(1, args, source);
                 const str = ensureString(
                     evalConstantExpression(args[0], ctx),
-                    args[0].ref,
+                    args[0].loc,
                 );
                 try {
                     return Cell.fromBase64(str);
@@ -528,7 +534,7 @@ function evalBuiltins(
                 ensureFunArity(1, args, source);
                 const str = ensureString(
                     evalConstantExpression(args[0], ctx),
-                    args[0].ref,
+                    args[0].loc,
                 );
                 try {
                     const address = Address.parse(str);
@@ -557,12 +563,12 @@ function evalBuiltins(
             ensureFunArity(2, args, source);
             const wc = ensureInt(
                 evalConstantExpression(args[0], ctx),
-                args[0].ref,
+                args[0].loc,
             );
             const addr = Buffer.from(
                 ensureInt(
                     evalConstantExpression(args[1], ctx),
-                    args[1].ref,
+                    args[1].loc,
                 ).toString(16),
                 "hex",
             );
@@ -582,7 +588,7 @@ function evalBuiltins(
         }
         default:
             throwNonFatalErrorConstEval(
-                `unsupported builtin ${builtinName}`,
+                `unsupported builtin ${idTextErr(builtinName)}`,
                 source,
             );
     }
@@ -632,30 +638,30 @@ function interpretEscapeSequences(stringLiteral: string) {
 }
 
 export function evalConstantExpression(
-    ast: ASTExpression,
+    ast: AstExpression,
     ctx: CompilerContext,
 ): Value {
     switch (ast.kind) {
         case "id":
-            if (hasStaticConstant(ctx, ast.value)) {
-                const constant = getStaticConstant(ctx, ast.value);
+            if (hasStaticConstant(ctx, ast.text)) {
+                const constant = getStaticConstant(ctx, ast.text);
                 if (constant.value !== undefined) {
                     return constant.value;
                 } else {
                     throwErrorConstEval(
-                        `cannot evaluate declared constant "${ast.value}" as it does not have a body`,
-                        ast.ref,
+                        `cannot evaluate declared constant ${idTextErr(ast)} as it does not have a body`,
+                        ast.loc,
                     );
                 }
             }
-            throwNonFatalErrorConstEval("cannot evaluate a variable", ast.ref);
+            throwNonFatalErrorConstEval("cannot evaluate a variable", ast.loc);
             break;
-        case "op_call":
-            return evalMethod(ast.name, ast.src, ast.args, ast.ref, ctx);
+        case "method_call":
+            return evalMethod(ast.method, ast.self, ast.args, ast.loc, ctx);
         case "init_of":
             throwNonFatalErrorConstEval(
                 "initOf is not supported at this moment",
-                ast.ref,
+                ast.loc,
             );
             break;
         case "null":
@@ -663,13 +669,13 @@ export function evalConstantExpression(
         case "boolean":
             return ast.value;
         case "number":
-            return ensureInt(ast.value, ast.ref);
+            return ensureInt(ast.value, ast.loc);
         case "string":
-            return ensureString(interpretEscapeSequences(ast.value), ast.ref);
+            return ensureString(interpretEscapeSequences(ast.value), ast.loc);
         case "op_unary":
-            return evalUnaryOp(ast.op, ast.right, ast.ref, ctx);
+            return evalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
         case "op_binary":
-            return evalBinaryOp(ast.op, ast.left, ast.right, ast.ref, ctx);
+            return evalBinaryOp(ast.op, ast.left, ast.right, ast.loc, ctx);
         case "conditional":
             return evalConditional(
                 ast.condition,
@@ -677,11 +683,11 @@ export function evalConstantExpression(
                 ast.elseBranch,
                 ctx,
             );
-        case "op_new":
+        case "struct_instance":
             return evalStructInstance(ast.type, ast.args, ctx);
-        case "op_field":
-            return evalFieldAccess(ast.src, ast.name, ast.ref, ctx);
-        case "op_static_call":
-            return evalBuiltins(ast.name, ast.args, ast.ref, ctx);
+        case "field_access":
+            return evalFieldAccess(ast.aggregate, ast.field, ast.loc, ctx);
+        case "static_call":
+            return evalBuiltins(ast.function, ast.args, ast.loc, ctx);
     }
 }

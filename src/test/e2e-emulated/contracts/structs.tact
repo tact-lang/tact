@@ -30,6 +30,15 @@ message MyMessage1 {
     s: MyStruct2;
 }
 
+struct Coin {
+    first: Int as coins;
+    second: Int as uint32;
+}
+
+fun directParse(payload: Cell): Coin {
+    return Coin.fromCell(payload);
+}
+
 contract StructsTester {
     s1: S = S {a: false, b: 21 + 21};
     s2: S;
@@ -133,5 +142,16 @@ contract StructsTester {
     get fun globalConstStructConstantFieldViaVar(): String {
         let s = globalConstStruct.s;
         return s;
+    }
+
+    receive("example") {
+        let coin = directParse(
+            beginCell()
+            .storeCoins(42)
+            .storeUint(35, 31)
+            .endCell()
+        );
+        dump(coin.first);
+        dump(coin.second);
     }
 }

@@ -1,122 +1,361 @@
-import { Interval as RawInterval, Node as RawNode } from "ohm-js";
-import { TypeOrigin } from "../types/types";
+import { dummySrcInfo, SrcInfo } from "./grammar";
 
-export class ASTRef {
-    static merge(...refs: ASTRef[]) {
-        if (refs.length === 0) {
-            throw Error("Cannot merge 0 refs");
-        }
-        let r = refs[0].#interval;
-        const file = refs[0].#file;
-        for (let i = 1; i < refs.length; i++) {
-            r = r.coverageWith(r, refs[i].#interval);
-        }
-        return new ASTRef(r, file);
-    }
-
-    readonly #interval: RawInterval;
-    readonly #file: string | null;
-
-    constructor(interval: RawInterval, file: string | null) {
-        this.#interval = interval;
-        this.#file = file;
-    }
-
-    get file() {
-        return this.#file;
-    }
-
-    get contents() {
-        return this.#interval.contents;
-    }
-
-    get interval() {
-        return this.#interval;
-    }
-}
-
-export type ASTPrimitive = {
-    kind: "primitive";
-    origin: TypeOrigin;
+export type AstModule = {
+    kind: "module";
+    imports: AstImport[];
+    items: AstModuleItem[];
     id: number;
-    name: string;
-    ref: ASTRef;
+};
+
+export type AstImport = {
+    kind: "import";
+    path: AstString;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstModuleItem =
+    | AstPrimitiveTypeDecl
+    | AstFunctionDef
+    | AstNativeFunctionDecl
+    | AstConstantDef
+    | AstStructDecl
+    | AstMessageDecl
+    | AstContract
+    | AstTrait;
+
+export type AstTypeDecl =
+    | AstPrimitiveTypeDecl
+    | AstStructDecl
+    | AstMessageDecl
+    | AstContract
+    | AstTrait;
+
+export type AstPrimitiveTypeDecl = {
+    kind: "primitive_type_decl";
+    name: AstId;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstFunctionDef = {
+    kind: "function_def";
+    attributes: AstFunctionAttribute[];
+    name: AstId;
+    return: AstType | null;
+    params: AstTypedParameter[];
+    statements: AstStatement[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstFunctionDecl = {
+    kind: "function_decl";
+    attributes: AstFunctionAttribute[];
+    name: AstId;
+    return: AstType | null;
+    params: AstTypedParameter[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstNativeFunctionDecl = {
+    kind: "native_function_decl";
+    attributes: AstFunctionAttribute[];
+    name: AstId;
+    nativeName: AstFuncId;
+    params: AstTypedParameter[];
+    return: AstType | null;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstConstantDef = {
+    kind: "constant_def";
+    attributes: AstConstantAttribute[];
+    name: AstId;
+    type: AstType;
+    initializer: AstExpression;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstConstantDecl = {
+    kind: "constant_decl";
+    attributes: AstConstantAttribute[];
+    name: AstId;
+    type: AstType;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstStructDecl = {
+    kind: "struct_decl";
+    name: AstId;
+    fields: AstFieldDecl[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstMessageDecl = {
+    kind: "message_decl";
+    name: AstId;
+    opcode: number | null;
+    fields: AstFieldDecl[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstContract = {
+    kind: "contract";
+    name: AstId;
+    traits: AstId[];
+    attributes: AstContractAttribute[];
+    declarations: AstContractDeclaration[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstTrait = {
+    kind: "trait";
+    name: AstId;
+    traits: AstId[];
+    attributes: AstContractAttribute[];
+    declarations: AstTraitDeclaration[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstContractDeclaration =
+    | AstFieldDecl
+    | AstFunctionDef
+    | AstContractInit
+    | AstReceiver
+    | AstConstantDef;
+
+export type AstTraitDeclaration =
+    | AstFieldDecl
+    | AstFunctionDef
+    | AstFunctionDecl
+    | AstReceiver
+    | AstConstantDef
+    | AstConstantDecl;
+
+export type AstFieldDecl = {
+    kind: "field_decl";
+    name: AstId;
+    type: AstType;
+    initializer: AstExpression | null;
+    as: AstId | null;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstReceiver = {
+    kind: "receiver";
+    selector: AstReceiverKind;
+    statements: AstStatement[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstContractInit = {
+    kind: "contract_init";
+    params: AstTypedParameter[];
+    statements: AstStatement[];
+    id: number;
+    loc: SrcInfo;
 };
 
 //
-// Values
+// Statements
 //
 
-export type ASTNumber = {
-    kind: "number";
+export type AstStatement =
+    | AstStatementLet
+    | AstStatementReturn
+    | AstStatementExpression
+    | AstStatementAssign
+    | AstStatementAugmentedAssign
+    | AstCondition
+    | AstStatementWhile
+    | AstStatementUntil
+    | AstStatementRepeat
+    | AstStatementTry
+    | AstStatementTryCatch
+    | AstStatementForEach;
+
+export type AstStatementLet = {
+    kind: "statement_let";
+    name: AstId;
+    type: AstType | null;
+    expression: AstExpression;
     id: number;
-    value: bigint;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTId = {
-    kind: "id";
+export type AstStatementReturn = {
+    kind: "statement_return";
+    expression: AstExpression | null;
     id: number;
-    value: string;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTBoolean = {
-    kind: "boolean";
+export type AstStatementExpression = {
+    kind: "statement_expression";
+    expression: AstExpression;
     id: number;
-    value: boolean;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTString = {
-    kind: "string";
+export type AstStatementAssign = {
+    kind: "statement_assign";
+    path: AstExpression; // left-hand side of `=`
+    expression: AstExpression;
     id: number;
-    value: string;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTNull = {
-    kind: "null";
+export type AstAugmentedAssignOperation =
+    | "+"
+    | "-"
+    | "*"
+    | "/"
+    | "%"
+    | "|"
+    | "&"
+    | "^";
+
+export type AstStatementAugmentedAssign = {
+    kind: "statement_augmentedassign";
+    op: AstAugmentedAssignOperation;
+    path: AstExpression;
+    expression: AstExpression;
     id: number;
-    ref: ASTRef;
+    loc: SrcInfo;
+};
+
+export type AstCondition = {
+    kind: "statement_condition";
+    condition: AstExpression;
+    trueStatements: AstStatement[];
+    falseStatements: AstStatement[] | null;
+    elseif: AstCondition | null;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstStatementWhile = {
+    kind: "statement_while";
+    condition: AstExpression;
+    statements: AstStatement[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstStatementUntil = {
+    kind: "statement_until";
+    condition: AstExpression;
+    statements: AstStatement[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstStatementRepeat = {
+    kind: "statement_repeat";
+    iterations: AstExpression;
+    statements: AstStatement[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstStatementTry = {
+    kind: "statement_try";
+    statements: AstStatement[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstStatementTryCatch = {
+    kind: "statement_try_catch";
+    statements: AstStatement[];
+    catchName: AstId;
+    catchStatements: AstStatement[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstStatementForEach = {
+    kind: "statement_foreach";
+    keyName: AstId;
+    valueName: AstId;
+    map: AstExpression;
+    statements: AstStatement[];
+    id: number;
+    loc: SrcInfo;
 };
 
 //
 // Types
 //
 
-export type ASTTypeRefSimple = {
-    kind: "type_ref_simple";
+export type AstType =
+    | AstTypeId
+    | AstOptionalType
+    | AstMapType
+    | AstBouncedMessageType;
+
+export type AstTypeId = {
+    kind: "type_id";
+    text: string;
     id: number;
-    name: string;
-    optional: boolean;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTTypeRefMap = {
-    kind: "type_ref_map";
+export type AstOptionalType = {
+    kind: "optional_type";
+    typeArg: AstType;
     id: number;
-    key: string;
-    keyAs: string | null;
-    value: string;
-    valueAs: string | null;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTTypeRefBounced = {
-    kind: "type_ref_bounced";
+export type AstMapType = {
+    kind: "map_type";
+    keyType: AstTypeId;
+    keyStorageType: AstId | null;
+    valueType: AstTypeId;
+    valueStorageType: AstId | null;
     id: number;
-    name: string;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTTypeRef = ASTTypeRefSimple | ASTTypeRefMap | ASTTypeRefBounced;
+export type AstBouncedMessageType = {
+    kind: "bounced_message_type";
+    messageType: AstTypeId;
+    id: number;
+    loc: SrcInfo;
+};
 
 //
 // Expressions
 //
 
-export type ASTBinaryOperation =
+export type AstExpression =
+    | AstOpBinary
+    | AstOpUnary
+    | AstFieldAccess
+    | AstNumber
+    | AstId
+    | AstBoolean
+    | AstMethodCall
+    | AstStaticCall
+    | AstStructInstance
+    | AstNull
+    | AstInitOf
+    | AstString
+    | AstConditional;
+
+export type AstBinaryOperation =
     | "+"
     | "-"
     | "*"
@@ -136,453 +375,282 @@ export type ASTBinaryOperation =
     | "|"
     | "^";
 
-export type ASTOpBinary = {
+export type AstOpBinary = {
     kind: "op_binary";
+    op: AstBinaryOperation;
+    left: AstExpression;
+    right: AstExpression;
     id: number;
-    op: ASTBinaryOperation;
-    left: ASTExpression;
-    right: ASTExpression;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTUnaryOperation = "+" | "-" | "!" | "!!" | "~";
+export type AstUnaryOperation = "+" | "-" | "!" | "!!" | "~";
 
-export type ASTOpUnary = {
+export type AstOpUnary = {
     kind: "op_unary";
+    op: AstUnaryOperation;
+    operand: AstExpression;
     id: number;
-    op: ASTUnaryOperation;
-    right: ASTExpression;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTOpField = {
-    kind: "op_field";
+export type AstFieldAccess = {
+    kind: "field_access";
+    aggregate: AstExpression; // contract, trait, struct, message
+    field: AstId;
     id: number;
-    src: ASTExpression;
-    name: ASTId;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTOpCall = {
-    kind: "op_call";
+export type AstMethodCall = {
+    kind: "method_call";
+    self: AstExpression; // anything with a method
+    method: AstId;
+    args: AstExpression[];
     id: number;
-    src: ASTExpression;
-    name: string;
-    args: ASTExpression[];
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTOpCallStatic = {
-    kind: "op_static_call";
+// builtins or top-level (module) functions
+export type AstStaticCall = {
+    kind: "static_call";
+    function: AstId;
+    args: AstExpression[];
     id: number;
-    name: string;
-    args: ASTExpression[];
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTOpNew = {
-    kind: "op_new";
+export type AstStructInstance = {
+    kind: "struct_instance";
+    type: AstId;
+    args: AstStructFieldInitializer[];
     id: number;
-    type: string;
-    args: ASTNewParameter[];
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTNewParameter = {
-    kind: "new_parameter";
+export type AstStructFieldInitializer = {
+    kind: "struct_field_initializer";
+    field: AstId;
+    initializer: AstExpression;
     id: number;
-    name: string;
-    exp: ASTExpression;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTInitOf = {
+export type AstInitOf = {
     kind: "init_of";
+    contract: AstId;
+    args: AstExpression[];
     id: number;
-    name: string;
-    args: ASTExpression[];
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTConditional = {
+export type AstConditional = {
     kind: "conditional";
+    condition: AstExpression;
+    thenBranch: AstExpression;
+    elseBranch: AstExpression;
     id: number;
-    condition: ASTExpression;
-    thenBranch: ASTExpression;
-    elseBranch: ASTExpression;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-//
-// Program
-//
-
-export type ASTProgramEntry =
-    | ASTStruct
-    | ASTContract
-    | ASTPrimitive
-    | ASTFunction
-    | ASTNativeFunction
-    | ASTTrait
-    | ASTProgramImport
-    | ASTConstant;
-
-export type ASTProgram = {
-    kind: "program";
+export type AstId = {
+    kind: "id";
+    text: string;
     id: number;
-    entries: ASTProgramEntry[];
+    loc: SrcInfo;
 };
 
-export type ASTProgramImport = {
-    kind: "program_import";
+export type AstFuncId = {
+    kind: "func_id";
+    text: string;
     id: number;
-    path: ASTString;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTStruct = {
-    kind: "def_struct";
-    origin: TypeOrigin;
-    id: number;
-    name: string;
-    message: boolean;
-    prefix: number | null;
-    fields: ASTField[];
-    ref: ASTRef;
+export function idText(ident: AstId): string;
+export function idText(ident: AstFuncId): string;
+export function idText(ident: AstTypeId): string;
+export function idText(ident: AstId | AstFuncId | AstTypeId): string {
+    return ident.text;
+}
+
+export function isInt(ident: AstTypeId): boolean {
+    return ident.text === "Int";
+}
+
+export function isBool(ident: AstTypeId): boolean {
+    return ident.text === "Bool";
+}
+
+export function isCell(ident: AstTypeId): boolean {
+    return ident.text === "Cell";
+}
+
+export function isSlice(ident: AstTypeId): boolean {
+    return ident.text === "Slice";
+}
+
+export function isBuilder(ident: AstTypeId): boolean {
+    return ident.text === "Builder";
+}
+
+export function isAddress(ident: AstTypeId): boolean {
+    return ident.text === "Address";
+}
+
+export function isString(ident: AstTypeId): boolean {
+    return ident.text === "String";
+}
+
+export function isStringBuilder(ident: AstTypeId): boolean {
+    return ident.text === "StringBuilder";
+}
+
+export function isSelfId(ident: AstId): boolean {
+    return ident.text === "self";
+}
+
+export function isWildcard(ident: AstId): boolean {
+    return ident.text === "_";
+}
+
+export function isRequire(ident: AstId): boolean {
+    return ident.text === "require";
+}
+
+export function eqNames(left: string, right: string): boolean;
+export function eqNames(left: string, right: AstId): boolean;
+export function eqNames(left: AstId, right: string): boolean;
+export function eqNames(left: AstId, right: AstId): boolean;
+export function eqNames(left: AstId, right: AstId): boolean;
+export function eqNames(
+    left: AstId | AstTypeId | string,
+    right: AstId | AstTypeId | string,
+): boolean {
+    if (typeof left === "string") {
+        if (typeof right === "string") {
+            return left === right;
+        }
+        return left === right.text;
+    } else {
+        if (typeof right === "string") {
+            return left.text === right;
+        }
+        return left.text === right.text;
+    }
+}
+
+export const selfId: AstId = {
+    kind: "id",
+    text: "self",
+    id: 0,
+    loc: dummySrcInfo,
 };
 
-export type ASTTraitDeclaration =
-    | ASTField
-    | ASTFunction
-    | ASTReceive
-    | ASTConstant;
-
-export type ASTTrait = {
-    kind: "def_trait";
-    origin: TypeOrigin;
+export type AstNumber = {
+    kind: "number";
+    value: bigint;
     id: number;
-    name: string;
-    traits: ASTString[];
-    attributes: ASTContractAttribute[];
-    declarations: ASTTraitDeclaration[];
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTField = {
-    kind: "def_field";
+export type AstBoolean = {
+    kind: "boolean";
+    value: boolean;
     id: number;
-    name: string;
-    type: ASTTypeRef;
-    init: ASTExpression | null;
-    as: string | null;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTConstant = {
-    kind: "def_constant";
+export type AstString = {
+    kind: "string";
+    value: string;
     id: number;
-    name: string;
-    type: ASTTypeRef;
-    value: ASTExpression | null;
-    attributes: ASTConstantAttribute[];
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTConstantAttribute =
-    | { type: "virtual"; ref: ASTRef }
-    | { type: "overrides"; ref: ASTRef }
-    | { type: "abstract"; ref: ASTRef };
+// `null` value is an inhabitant of several types:
+// it can represent missing values in optional types,
+// or empty map of any key and value types
+export type AstNull = {
+    kind: "null";
+    id: number;
+    loc: SrcInfo;
+};
 
-export type ASTContractAttribute = {
+export type AstConstantAttribute =
+    | { type: "virtual"; loc: SrcInfo }
+    | { type: "overrides"; loc: SrcInfo }
+    | { type: "abstract"; loc: SrcInfo };
+
+export type AstContractAttribute = {
     type: "interface";
-    name: ASTString;
-    ref: ASTRef;
+    name: AstString;
+    loc: SrcInfo;
 };
 
-export type ASTContractDeclaration =
-    | ASTField
-    | ASTFunction
-    | ASTInitFunction
-    | ASTReceive
-    | ASTConstant;
+export type AstFunctionAttribute =
+    | { type: "get"; loc: SrcInfo }
+    | { type: "mutates"; loc: SrcInfo }
+    | { type: "extends"; loc: SrcInfo }
+    | { type: "virtual"; loc: SrcInfo }
+    | { type: "abstract"; loc: SrcInfo }
+    | { type: "overrides"; loc: SrcInfo }
+    | { type: "inline"; loc: SrcInfo };
 
-export type ASTContract = {
-    kind: "def_contract";
-    origin: TypeOrigin;
+export type AstTypedParameter = {
+    kind: "typed_parameter";
+    name: AstId;
+    type: AstType;
     id: number;
-    name: string;
-    traits: ASTString[];
-    attributes: ASTContractAttribute[];
-    declarations: ASTContractDeclaration[];
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type ASTArgument = {
-    kind: "def_argument";
-    id: number;
-    name: string;
-    type: ASTTypeRef;
-    ref: ASTRef;
-};
-
-export type ASTFunctionAttribute =
-    | { type: "get"; ref: ASTRef }
-    | { type: "mutates"; ref: ASTRef }
-    | { type: "extends"; ref: ASTRef }
-    | { type: "virtual"; ref: ASTRef }
-    | { type: "abstract"; ref: ASTRef }
-    | { type: "overrides"; ref: ASTRef }
-    | { type: "inline"; ref: ASTRef };
-
-export type ASTFunction = {
-    kind: "def_function";
-    origin: TypeOrigin;
-    id: number;
-    attributes: ASTFunctionAttribute[];
-    name: string;
-    return: ASTTypeRef | null;
-    args: ASTArgument[];
-    statements: ASTStatement[] | null;
-    ref: ASTRef;
-};
-
-export type ASTReceiveType =
+export type AstReceiverKind =
     | {
           kind: "internal-simple";
-          arg: ASTArgument;
+          param: AstTypedParameter;
       }
     | {
           kind: "internal-fallback";
       }
     | {
           kind: "internal-comment";
-          comment: ASTString;
+          comment: AstString;
       }
     | {
           kind: "bounce";
-          arg: ASTArgument;
+          param: AstTypedParameter;
       }
     | {
           kind: "external-simple";
-          arg: ASTArgument;
+          param: AstTypedParameter;
       }
     | {
           kind: "external-fallback";
       }
     | {
           kind: "external-comment";
-          comment: ASTString;
+          comment: AstString;
       };
 
-export type ASTReceive = {
-    kind: "def_receive";
-    id: number;
-    selector: ASTReceiveType;
-    statements: ASTStatement[];
-    ref: ASTRef;
-};
-
-export type ASTNativeFunction = {
-    kind: "def_native_function";
-    origin: TypeOrigin;
-    id: number;
-    attributes: ASTFunctionAttribute[];
-    name: string;
-    nativeName: string;
-    return: ASTTypeRef | null;
-    args: ASTArgument[];
-    ref: ASTRef;
-};
-
-export type ASTInitFunction = {
-    kind: "def_init_function";
-    id: number;
-    args: ASTArgument[];
-    statements: ASTStatement[];
-    ref: ASTRef;
-};
-
-//
-// Statements
-//
-
-export type ASTStatementLet = {
-    kind: "statement_let";
-    id: number;
-    name: string;
-    type: ASTTypeRef | null;
-    expression: ASTExpression;
-    ref: ASTRef;
-};
-
-export type ASTStatementReturn = {
-    kind: "statement_return";
-    id: number;
-    expression: ASTExpression | null;
-    ref: ASTRef;
-};
-
-export type ASTStatementExpression = {
-    kind: "statement_expression";
-    id: number;
-    expression: ASTExpression;
-    ref: ASTRef;
-};
-
-export type ASTStatementAssign = {
-    kind: "statement_assign";
-    id: number;
-    path: ASTExpression;
-    expression: ASTExpression;
-    ref: ASTRef;
-};
-
-export type ASTAugmentedAssignOperation =
-    | "+"
-    | "-"
-    | "*"
-    | "/"
-    | "%"
-    | "|"
-    | "&"
-    | "^";
-
-export type ASTStatementAugmentedAssign = {
-    kind: "statement_augmentedassign";
-    id: number;
-    op: ASTAugmentedAssignOperation;
-    path: ASTExpression;
-    expression: ASTExpression;
-    ref: ASTRef;
-};
-
-export type ASTCondition = {
-    kind: "statement_condition";
-    id: number;
-    expression: ASTExpression;
-    trueStatements: ASTStatement[];
-    falseStatements: ASTStatement[] | null;
-    elseif: ASTCondition | null;
-    ref: ASTRef;
-};
-
-export type ASTStatementWhile = {
-    kind: "statement_while";
-    id: number;
-    condition: ASTExpression;
-    statements: ASTStatement[];
-    ref: ASTRef;
-};
-
-export type ASTStatementUntil = {
-    kind: "statement_until";
-    id: number;
-    condition: ASTExpression;
-    statements: ASTStatement[];
-    ref: ASTRef;
-};
-
-export type ASTStatementRepeat = {
-    kind: "statement_repeat";
-    id: number;
-    iterations: ASTExpression;
-    statements: ASTStatement[];
-    ref: ASTRef;
-};
-
-export type ASTStatementTry = {
-    kind: "statement_try";
-    id: number;
-    statements: ASTStatement[];
-    ref: ASTRef;
-};
-
-export type ASTStatementTryCatch = {
-    kind: "statement_try_catch";
-    id: number;
-    statements: ASTStatement[];
-    catchName: string;
-    catchStatements: ASTStatement[];
-    ref: ASTRef;
-};
-
-export type ASTStatementForEach = {
-    kind: "statement_foreach";
-    id: number;
-    keyName: string;
-    valueName: string;
-    map: ASTExpression;
-    statements: ASTStatement[];
-    ref: ASTRef;
-};
-
-//
-// Unions
-//
-
-export type ASTStatement =
-    | ASTStatementLet
-    | ASTStatementReturn
-    | ASTStatementExpression
-    | ASTStatementAssign
-    | ASTStatementAugmentedAssign
-    | ASTCondition
-    | ASTStatementWhile
-    | ASTStatementUntil
-    | ASTStatementRepeat
-    | ASTStatementTry
-    | ASTStatementTryCatch
-    | ASTStatementForEach;
-export type ASTNode =
-    | ASTExpression
-    | ASTStruct
-    | ASTField
-    | ASTContract
-    | ASTArgument
-    | ASTFunction
-    | ASTOpCall
-    | ASTStatementLet
-    | ASTStatementReturn
-    | ASTProgram
-    | ASTPrimitive
-    | ASTOpCallStatic
-    | ASTStatementExpression
-    | ASTNativeFunction
-    | ASTStatementAssign
-    | ASTStatementAugmentedAssign
-    | ASTOpNew
-    | ASTNewParameter
-    | ASTTypeRef
-    | ASTNull
-    | ASTCondition
-    | ASTInitFunction
-    | ASTStatementWhile
-    | ASTStatementUntil
-    | ASTStatementRepeat
-    | ASTStatementTry
-    | ASTStatementTryCatch
-    | ASTStatementForEach
-    | ASTReceive
-    | ASTString
-    | ASTTrait
-    | ASTProgramImport
-    | ASTInitOf
-    | ASTConstant;
-export type ASTExpression =
-    | ASTOpBinary
-    | ASTOpUnary
-    | ASTOpField
-    | ASTNumber
-    | ASTId
-    | ASTBoolean
-    | ASTOpCall
-    | ASTOpCallStatic
-    | ASTOpNew
-    | ASTNull
-    | ASTInitOf
-    | ASTString
-    | ASTConditional;
-export type ASTType = ASTPrimitive | ASTStruct | ASTContract | ASTTrait;
+export type AstNode =
+    | AstFuncId
+    | AstExpression
+    | AstStatement
+    | AstTypeDecl
+    | AstFieldDecl
+    | AstTypedParameter
+    | AstFunctionDef
+    | AstFunctionDecl
+    | AstModule
+    | AstNativeFunctionDecl
+    | AstStructFieldInitializer
+    | AstType
+    | AstContractInit
+    | AstReceiver
+    | AstImport
+    | AstConstantDef
+    | AstConstantDecl;
 
 /**
  * Check if input expression is a 'path expression',
@@ -590,13 +658,13 @@ export type ASTType = ASTPrimitive | ASTStruct | ASTContract | ASTTrait;
  * @param path A path expression to check.
  * @returns An array of identifiers or null if the input expression is not a path expression.
  */
-export function tryExtractPath(path: ASTExpression): ASTId[] | null {
+export function tryExtractPath(path: AstExpression): AstId[] | null {
     switch (path.kind) {
         case "id":
             return [path];
-        case "op_field": {
-            const p = tryExtractPath(path.src);
-            return p ? [...p, path.name] : null;
+        case "field_access": {
+            const p = tryExtractPath(path.aggregate);
+            return p ? [...p, path.field] : null;
         }
         default:
             return null;
@@ -608,10 +676,10 @@ type DistributiveOmit<T, K extends keyof any> = T extends any
     ? Omit<T, K>
     : never;
 let nextId = 1;
-export function createNode(src: DistributiveOmit<ASTNode, "id">): ASTNode {
+export function createAstNode(src: DistributiveOmit<AstNode, "id">): AstNode {
     return Object.freeze(Object.assign({ id: nextId++ }, src));
 }
-export function cloneASTNode<T extends ASTNode>(src: T): T {
+export function cloneAstNode<T extends AstNode>(src: T): T {
     return { ...src, id: nextId++ };
 }
 
@@ -619,46 +687,30 @@ export function __DANGER_resetNodeId() {
     nextId = 1;
 }
 
-let currentFile: string | null = null;
-
-export function inFile<T>(path: string, callback: () => T) {
-    currentFile = path;
-    const r = callback();
-    currentFile = null;
-    return r;
-}
-
-export function createRef(s: RawNode, ...extra: RawNode[]): ASTRef {
-    let i = s.source;
-    if (extra.length > 0) {
-        i = i.coverageWith(...extra.map((e) => e.source));
-    }
-    return new ASTRef(i, currentFile);
-}
-
-export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
+export function traverse(node: AstNode, callback: (node: AstNode) => void) {
     callback(node);
 
-    //
-    // Program
-    //
-
-    if (node.kind === "program") {
-        for (const e of node.entries) {
+    if (node.kind === "module") {
+        for (const e of node.items) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_contract") {
+    if (node.kind === "contract") {
         for (const e of node.declarations) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_struct") {
+    if (node.kind === "struct_decl") {
         for (const e of node.fields) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_trait") {
+    if (node.kind === "message_decl") {
+        for (const e of node.fields) {
+            traverse(e, callback);
+        }
+    }
+    if (node.kind === "trait") {
         for (const e of node.declarations) {
             traverse(e, callback);
         }
@@ -668,43 +720,44 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
     // Functions
     //
 
-    if (node.kind === "def_function") {
-        for (const e of node.args) {
-            traverse(e, callback);
-        }
-        if (node.statements) {
-            for (const e of node.statements) {
-                traverse(e, callback);
-            }
-        }
-    }
-    if (node.kind === "def_init_function") {
-        for (const e of node.args) {
+    if (node.kind === "function_def") {
+        for (const e of node.params) {
             traverse(e, callback);
         }
         for (const e of node.statements) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_receive") {
+    if (node.kind === "function_decl") {
+        for (const e of node.params) {
+            traverse(e, callback);
+        }
+    }
+    if (node.kind === "contract_init") {
+        for (const e of node.params) {
+            traverse(e, callback);
+        }
         for (const e of node.statements) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_native_function") {
-        for (const e of node.args) {
+    if (node.kind === "receiver") {
+        for (const e of node.statements) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "def_field") {
-        if (node.init) {
-            traverse(node.init, callback);
+    if (node.kind === "native_function_decl") {
+        for (const e of node.params) {
+            traverse(e, callback);
         }
     }
-    if (node.kind === "def_constant") {
-        if (node.value) {
-            traverse(node.value, callback);
+    if (node.kind === "field_decl") {
+        if (node.initializer) {
+            traverse(node.initializer, callback);
         }
+    }
+    if (node.kind === "constant_def") {
+        traverse(node.initializer, callback);
     }
 
     //
@@ -731,7 +784,7 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         traverse(node.expression, callback);
     }
     if (node.kind === "statement_condition") {
-        traverse(node.expression, callback);
+        traverse(node.condition, callback);
         for (const e of node.trueStatements) {
             traverse(e, callback);
         }
@@ -785,29 +838,29 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         traverse(node.right, callback);
     }
     if (node.kind === "op_unary") {
-        traverse(node.right, callback);
+        traverse(node.operand, callback);
     }
-    if (node.kind === "op_field") {
-        traverse(node.src, callback);
+    if (node.kind === "field_access") {
+        traverse(node.aggregate, callback);
     }
-    if (node.kind === "op_call") {
-        traverse(node.src, callback);
+    if (node.kind === "method_call") {
+        traverse(node.self, callback);
         for (const e of node.args) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "op_static_call") {
+    if (node.kind === "static_call") {
         for (const e of node.args) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "op_new") {
+    if (node.kind === "struct_instance") {
         for (const e of node.args) {
             traverse(e, callback);
         }
     }
-    if (node.kind === "new_parameter") {
-        traverse(node.exp, callback);
+    if (node.kind === "struct_field_initializer") {
+        traverse(node.initializer, callback);
     }
     if (node.kind === "conditional") {
         traverse(node.condition, callback);
@@ -815,3 +868,4 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         traverse(node.elseBranch, callback);
     }
 }
+export { SrcInfo };

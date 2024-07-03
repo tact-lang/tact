@@ -1,5 +1,15 @@
-import { ASTExpression, ASTId, tryExtractPath } from "../../grammar/ast";
-import { TactConstEvalError, throwCompilationError } from "../../errors";
+import {
+    AstExpression,
+    AstId,
+    eqNames,
+    idText,
+    tryExtractPath,
+} from "../../grammar/ast";
+import {
+    idTextErr,
+    TactConstEvalError,
+    throwCompilationError,
+} from "../../errors";
 import { getExpType } from "../../types/resolveExpression";
 import {
     getStaticConstant,
@@ -18,7 +28,7 @@ import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
 import { GlobalFunctions } from "../../abi/global";
-import { id } from "./id";
+import { funcIdOf } from "./id";
 import { StructFunctions } from "../../abi/struct";
 import { resolveFuncType } from "./resolveFuncType";
 import { Address, Cell } from "@ton/core";
@@ -32,7 +42,7 @@ import { ops } from "./ops";
 import { writeCastedExpression } from "./writeFunction";
 import { evalConstantExpression } from "../../constEval";
 
-function isNull(f: ASTExpression): boolean {
+function isNull(f: AstExpression): boolean {
     return f.kind === "null";
 }
 
@@ -140,13 +150,13 @@ export function writeValue(val: Value, wCtx: WriterContext): string {
     throw Error("Invalid value", val);
 }
 
-export function writePathExpression(path: ASTId[]): string {
-    return [id(path[0].value), ...path.slice(1).map((id) => id.value)].join(
+export function writePathExpression(path: AstId[]): string {
+    return [funcIdOf(path[0].text), ...path.slice(1).map((id) => id.text)].join(
         `'`,
     );
 }
 
-export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
+export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
     // literals and constant expressions are covered here
     try {
         const value = evalConstantExpression(f, wCtx.ctx);
@@ -166,24 +176,30 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
         if (t.kind === "ref") {
             const tt = getType(wCtx.ctx, t.name);
             if (tt.kind === "contract" || tt.kind === "struct") {
-                return resolveFuncTypeUnpack(t, id(f.value), wCtx);
+                return resolveFuncTypeUnpack(t, funcIdOf(f.text), wCtx);
             }
         }
 
         if (t.kind === "ref_bounced") {
             const tt = getType(wCtx.ctx, t.name);
             if (tt.kind === "struct") {
-                return resolveFuncTypeUnpack(t, id(f.value), wCtx, false, true);
+                return resolveFuncTypeUnpack(
+                    t,
+                    funcIdOf(f.text),
+                    wCtx,
+                    false,
+                    true,
+                );
             }
         }
 
         // Handle constant
-        if (hasStaticConstant(wCtx.ctx, f.value)) {
-            const c = getStaticConstant(wCtx.ctx, f.value);
+        if (hasStaticConstant(wCtx.ctx, f.text)) {
+            const c = getStaticConstant(wCtx.ctx, f.text);
             return writeValue(c.value!, wCtx);
         }
 
-        return id(f.value);
+        return funcIdOf(f.text);
     }
 
     // NOTE: We always wrap in parentheses to avoid operator precedence issues
@@ -304,8 +320,8 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             (lt.name !== "Int" && lt.name !== "Bool") ||
             (rt.name !== "Int" && rt.name !== "Bool")
         ) {
-            const file = f.ref.file;
-            const loc_info = f.ref.interval.getLineAndColumn();
+            const file = f.loc.file;
+            const loc_info = f.loc.interval.getLineAndColumn();
             throw Error(
                 `(Internal Compiler Error) Invalid types for binary operation: ${file}:${loc_info.lineNum}:${loc_info.colNum}`,
             ); // Should be unreachable
@@ -374,7 +390,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
         } else if (f.op === "^") {
             op = "^";
         } else {
-            throwCompilationError("Unknown binary operator: " + f.op, f.ref);
+            throwCompilationError(`Unknown binary operator: ${f.op}`, f.loc);
         }
         return (
             "(" +
@@ -395,36 +411,36 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
     if (f.kind === "op_unary") {
         // NOTE: Logical not is written as a bitwise not
         if (f.op === "!") {
-            return "(~ " + writeExpression(f.right, wCtx) + ")";
+            return "(~ " + writeExpression(f.operand, wCtx) + ")";
         }
 
         if (f.op === "~") {
-            return "(~ " + writeExpression(f.right, wCtx) + ")";
+            return "(~ " + writeExpression(f.operand, wCtx) + ")";
         }
 
         if (f.op === "-") {
-            return "(- " + writeExpression(f.right, wCtx) + ")";
+            return "(- " + writeExpression(f.operand, wCtx) + ")";
         }
 
         if (f.op === "+") {
-            return "(+ " + writeExpression(f.right, wCtx) + ")";
+            return "(+ " + writeExpression(f.operand, wCtx) + ")";
         }
 
         // NOTE: Assert function that ensures that the value is not null
         if (f.op === "!!") {
-            const t = getExpType(wCtx.ctx, f.right);
+            const t = getExpType(wCtx.ctx, f.operand);
             if (t.kind === "ref") {
                 const tt = getType(wCtx.ctx, t.name);
                 if (tt.kind === "struct") {
-                    return `${ops.typeNotNull(tt.name, wCtx)}(${writeExpression(f.right, wCtx)})`;
+                    return `${ops.typeNotNull(tt.name, wCtx)}(${writeExpression(f.operand, wCtx)})`;
                 }
             }
 
             wCtx.used("__tact_not_null");
-            return `${wCtx.used("__tact_not_null")}(${writeExpression(f.right, wCtx)})`;
+            return `${wCtx.used("__tact_not_null")}(${writeExpression(f.operand, wCtx)})`;
         }
 
-        throwCompilationError("Unknown unary operator: " + f.op, f.ref);
+        throwCompilationError(`Unknown unary operator: ${f.op}`, f.loc);
     }
 
     //
@@ -432,16 +448,16 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
     // NOTE: this branch resolves "a.b", where "a" is an expression and "b" is a field name
     //
 
-    if (f.kind === "op_field") {
+    if (f.kind === "field_access") {
         // Resolve the type of the expression
-        const src = getExpType(wCtx.ctx, f.src);
+        const src = getExpType(wCtx.ctx, f.aggregate);
         if (
             src === null ||
             ((src.kind !== "ref" || src.optional) && src.kind !== "ref_bounced")
         ) {
             throwCompilationError(
                 `Cannot access field of non-struct type: "${printTypeRef(src)}"`,
-                f.ref,
+                f.loc,
             );
         }
         const srcT = getType(wCtx.ctx, src.name);
@@ -454,12 +470,12 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             fields = fields.slice(0, srcT.partialFieldCount);
         }
 
-        const field = fields.find((v) => v.name === f.name.value)!;
-        const cst = srcT.constants.find((v) => v.name === f.name.value)!;
+        const field = fields.find((v) => eqNames(v.name, f.field))!;
+        const cst = srcT.constants.find((v) => eqNames(v.name, f.field))!;
         if (!field && !cst) {
             throwCompilationError(
-                `Cannot find field "${f.name.value}" in struct "${srcT.name}"`,
-                f.name.ref,
+                `Cannot find field ${idTextErr(f.field)} in struct ${idTextErr(srcT.name)}`,
+                f.field.loc,
             );
         }
 
@@ -482,7 +498,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             }
 
             // Getter instead of direct field access
-            return `${ops.typeField(srcT.name, field.name, wCtx)}(${writeExpression(f.src, wCtx)})`;
+            return `${ops.typeField(srcT.name, field.name, wCtx)}(${writeExpression(f.aggregate, wCtx)})`;
         } else {
             return writeValue(cst.value!, wCtx);
         }
@@ -492,21 +508,21 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
     // Static Function Call
     //
 
-    if (f.kind === "op_static_call") {
+    if (f.kind === "static_call") {
         // Check global functions
-        if (GlobalFunctions.has(f.name)) {
-            return GlobalFunctions.get(f.name)!.generate(
+        if (GlobalFunctions.has(idText(f.function))) {
+            return GlobalFunctions.get(idText(f.function))!.generate(
                 wCtx,
                 f.args.map((v) => getExpType(wCtx.ctx, v)),
                 f.args,
-                f.ref,
+                f.loc,
             );
         }
 
-        const sf = getStaticFunction(wCtx.ctx, f.name);
-        let n = ops.global(f.name);
-        if (sf.ast.kind === "def_native_function") {
-            n = sf.ast.nativeName;
+        const sf = getStaticFunction(wCtx.ctx, idText(f.function));
+        let n = ops.global(idText(f.function));
+        if (sf.ast.kind === "native_function_decl") {
+            n = idText(sf.ast.nativeName);
             if (n.startsWith("__tact")) {
                 wCtx.used(n);
             }
@@ -517,7 +533,9 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             n +
             "(" +
             f.args
-                .map((a, i) => writeCastedExpression(a, sf.args[i].type, wCtx))
+                .map((a, i) =>
+                    writeCastedExpression(a, sf.params[i].type, wCtx),
+                )
                 .join(", ") +
             ")"
         );
@@ -527,13 +545,13 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
     // Struct Constructor
     //
 
-    if (f.kind === "op_new") {
+    if (f.kind === "struct_instance") {
         const src = getType(wCtx.ctx, f.type);
 
         // Write a constructor
         const id = writeStructConstructor(
             src,
-            f.args.map((v) => v.name),
+            f.args.map((v) => idText(v.field)),
             wCtx,
         );
         wCtx.used(id);
@@ -542,8 +560,8 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
         const expressions = f.args.map(
             (v) =>
                 writeCastedExpression(
-                    v.exp,
-                    src.fields.find((v2) => v2.name === v.name)!.type,
+                    v.initializer,
+                    src.fields.find((v2) => eqNames(v2.name, v.field))!.type,
                     wCtx,
                 ),
             wCtx,
@@ -555,13 +573,13 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
     // Object-based function call
     //
 
-    if (f.kind === "op_call") {
+    if (f.kind === "method_call") {
         // Resolve source type
-        const src = getExpType(wCtx.ctx, f.src);
+        const src = getExpType(wCtx.ctx, f.self);
         if (src === null) {
             throwCompilationError(
                 `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
-                f.ref,
+                f.loc,
             );
         }
 
@@ -570,7 +588,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             if (src.optional) {
                 throwCompilationError(
                     `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
-                    f.ref,
+                    f.loc,
                 );
             }
 
@@ -579,24 +597,27 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
 
             // Check struct ABI
             if (t.kind === "struct") {
-                if (StructFunctions.has(f.name)) {
-                    const abi = StructFunctions.get(f.name)!;
+                if (StructFunctions.has(idText(f.method))) {
+                    const abi = StructFunctions.get(idText(f.method))!;
                     return abi.generate(
                         wCtx,
                         [src, ...f.args.map((v) => getExpType(wCtx.ctx, v))],
-                        [f.src, ...f.args],
-                        f.ref,
+                        [f.self, ...f.args],
+                        f.loc,
                     );
                 }
             }
 
             // Resolve function
-            const ff = t.functions.get(f.name)!;
-            let name = ops.extension(src.name, f.name);
-            if (ff.ast.kind === "def_function") {
+            const ff = t.functions.get(idText(f.method))!;
+            let name = ops.extension(src.name, idText(f.method));
+            if (
+                ff.ast.kind === "function_def" ||
+                ff.ast.kind === "function_decl"
+            ) {
                 wCtx.used(name);
             } else {
-                name = ff.ast.nativeName;
+                name = idText(ff.ast.nativeName);
                 if (name.startsWith("__tact")) {
                     wCtx.used(name);
                 }
@@ -604,7 +625,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
 
             // Render arguments
             let renderedArguments = f.args.map((a, i) =>
-                writeCastedExpression(a, ff.args[i].type, wCtx),
+                writeCastedExpression(a, ff.params[i].type, wCtx),
             );
 
             // Hack to replace a single struct argument to a tensor wrapper since otherwise
@@ -616,8 +637,8 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
                         const tt = getType(wCtx.ctx, t.name);
                         if (
                             (tt.kind === "contract" || tt.kind === "struct") &&
-                            ff.args[0].type.kind === "ref" &&
-                            !ff.args[0].type.optional
+                            ff.params[0].type.kind === "ref" &&
+                            !ff.params[0].type.optional
                         ) {
                             renderedArguments = [
                                 `${ops.typeTensorCast(tt.name, wCtx)}(${renderedArguments[0]})`,
@@ -628,9 +649,9 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
             }
 
             // Render
-            const s = writeExpression(f.src, wCtx);
+            const s = writeExpression(f.self, wCtx);
             if (ff.isMutating) {
-                if (f.src.kind === "id" || f.src.kind === "op_field") {
+                if (f.self.kind === "id" || f.self.kind === "field_access") {
                     return `${s}~${name}(${renderedArguments.join(", ")})`;
                 } else {
                     return `${wCtx.used(ops.nonModifying(name))}(${[s, ...renderedArguments].join(", ")})`;
@@ -642,18 +663,18 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
 
         // Map types
         if (src.kind === "map") {
-            if (!MapFunctions.has(f.name)) {
+            if (!MapFunctions.has(idText(f.method))) {
                 throwCompilationError(
-                    `Map function "${f.name}" not found`,
-                    f.ref,
+                    `Map function "${idText(f.method)}" not found`,
+                    f.loc,
                 );
             }
-            const abf = MapFunctions.get(f.name)!;
+            const abf = MapFunctions.get(idText(f.method))!;
             return abf.generate(
                 wCtx,
                 [src, ...f.args.map((v) => getExpType(wCtx.ctx, v))],
-                [f.src, ...f.args],
-                f.ref,
+                [f.self, ...f.args],
+                f.loc,
             );
         }
 
@@ -663,7 +684,7 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
 
         throwCompilationError(
             `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
-            f.ref,
+            f.loc,
         );
     }
 
@@ -672,8 +693,8 @@ export function writeExpression(f: ASTExpression, wCtx: WriterContext): string {
     //
 
     if (f.kind === "init_of") {
-        const type = getType(wCtx.ctx, f.name);
-        return `${ops.contractInitChild(f.name, wCtx)}(${["__tact_context_sys", ...f.args.map((a, i) => writeCastedExpression(a, type.init!.args[i].type, wCtx))].join(", ")})`;
+        const type = getType(wCtx.ctx, f.contract);
+        return `${ops.contractInitChild(idText(f.contract), wCtx)}(${["__tact_context_sys", ...f.args.map((a, i) => writeCastedExpression(a, type.init!.params[i].type, wCtx))].join(", ")})`;
     }
 
     //

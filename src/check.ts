@@ -44,13 +44,13 @@ export function check(args: {
             items.push({
                 type: "error",
                 message: e.message,
-                location: e.ref.file
+                location: e.loc.file
                     ? {
-                          file: e.ref.file,
-                          line: e.ref.interval.getLineAndColumn().lineNum,
-                          column: e.ref.interval.getLineAndColumn().colNum,
+                          file: e.loc.file,
+                          line: e.loc.interval.getLineAndColumn().lineNum,
+                          column: e.loc.interval.getLineAndColumn().colNum,
                           length:
-                              e.ref.interval.endIdx - e.ref.interval.startIdx,
+                              e.loc.interval.endIdx - e.loc.interval.startIdx,
                       }
                     : {
                           file: args.entrypoint,

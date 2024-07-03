@@ -26,7 +26,7 @@ export function resolveFuncTupleType(
     }
 
     // TypeDescription
-    if (descriptor.kind === "primitive") {
+    if (descriptor.kind === "primitive_type_decl") {
         if (descriptor.name === "Int") {
             return "int";
         } else if (descriptor.name === "Bool") {

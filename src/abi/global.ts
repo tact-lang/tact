@@ -9,6 +9,7 @@ import { AbiFunction } from "./AbiFunction";
 import { sha256_sync } from "@ton/crypto";
 import path from "path";
 import { cwd } from "process";
+import { posixNormalize } from "../utils/filePath";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
@@ -230,10 +231,10 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 const arg = args[0];
 
                 const filePath = ref.file
-                    ? path.relative(cwd(), ref.file!)
+                    ? posixNormalize(path.relative(cwd(), ref.file!))
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
-                const debugPrint = `[DEBUG] File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}`;
+                const debugPrint = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}`;
 
                 if (arg.kind === "map") {
                     const exp = writeExpression(resolved[0], ctx);
@@ -294,10 +295,10 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     return `${ctx.used("__tact_nop")}()`;
                 }
                 const filePath = ref.file
-                    ? path.relative(cwd(), ref.file!)
+                    ? posixNormalize(path.relative(cwd(), ref.file!))
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
-                const debugPrint = `[DEBUG] File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}`;
+                const debugPrint = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}`;
                 return `${ctx.used(`__tact_debug_stack`)}("${debugPrint}")`;
             },
         },

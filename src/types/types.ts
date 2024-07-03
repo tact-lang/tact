@@ -1,24 +1,26 @@
 import { ABIField, Address, Cell } from "@ton/core";
 import {
-    ASTConstant,
-    ASTFunction,
-    ASTInitFunction,
-    ASTNativeFunction,
-    ASTNode,
-    ASTReceive,
-    ASTRef,
-    ASTStatement,
-    ASTType,
+    AstConstantDef,
+    AstFunctionDef,
+    AstContractInit,
+    AstNativeFunctionDecl,
+    AstNode,
+    AstReceiver,
+    SrcInfo,
+    AstStatement,
+    AstTypeDecl,
+    AstId,
+    AstFunctionDecl,
+    AstConstantDecl,
 } from "../grammar/ast";
+import { ItemOrigin } from "../grammar/grammar";
 // import {
 //     Value
 // } from "../grammar/value";
 
-export type TypeOrigin = "stdlib" | "user";
-
 export type TypeDescription = {
-    kind: "struct" | "primitive" | "contract" | "trait";
-    origin: TypeOrigin;
+    kind: "struct" | "primitive_type_decl" | "contract" | "trait";
+    origin: ItemOrigin;
     name: string;
     uid: number;
     header: number | null;
@@ -30,7 +32,7 @@ export type TypeDescription = {
     functions: Map<string, FunctionDescription>;
     receivers: ReceiverDescription[];
     init: InitDescription | null;
-    ast: ASTType;
+    ast: AstTypeDecl;
     dependsOn: TypeDescription[];
     interfaces: string[];
     constants: ConstantDescription[];
@@ -84,8 +86,8 @@ export type FieldDescription = {
     type: TypeRef;
     as: string | null;
     default: Value | undefined;
-    ref: ASTRef;
-    ast: ASTNode;
+    loc: SrcInfo;
+    ast: AstNode;
     abi: ABIField;
 };
 
@@ -93,26 +95,26 @@ export type ConstantDescription = {
     name: string;
     type: TypeRef;
     value: Value | undefined;
-    ref: ASTRef;
-    ast: ASTConstant;
+    loc: SrcInfo;
+    ast: AstConstantDef | AstConstantDecl;
 };
 
-export type FunctionArgument = {
-    name: string;
+export type FunctionParameter = {
+    name: AstId;
     type: TypeRef;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
-export type InitArgument = {
-    name: string;
+export type InitParameter = {
+    name: AstId;
     type: TypeRef;
     as: string | null;
-    ref: ASTRef;
+    loc: SrcInfo;
 };
 
 export type FunctionDescription = {
     name: string;
-    origin: TypeOrigin;
+    origin: ItemOrigin;
     isGetter: boolean;
     isMutating: boolean;
     isOverrides: boolean;
@@ -121,79 +123,114 @@ export type FunctionDescription = {
     isInline: boolean;
     self: string | null;
     returns: TypeRef;
-    args: FunctionArgument[];
-    ast: ASTFunction | ASTNativeFunction;
+    params: FunctionParameter[];
+    ast: AstFunctionDef | AstNativeFunctionDecl | AstFunctionDecl;
 };
 
 export type StatementDescription =
     | {
           kind: "native";
-          src: ASTStatement;
+          src: AstStatement;
       }
     | {
           kind: "intrinsic";
       };
 
-export type ReceiverSelector =
+export type BinaryReceiverSelector =
     | {
           kind: "internal-binary";
           type: string;
-          name: string;
-      }
-    | {
-          kind: "internal-empty";
-      }
-    | {
-          kind: "internal-comment";
-          comment: string;
-      }
-    | {
-          kind: "internal-comment-fallback";
-          name: string;
-      }
-    | {
-          kind: "internal-fallback";
-          name: string;
-      }
-    | {
-          kind: "bounce-fallback";
-          name: string;
+          name: AstId;
       }
     | {
           kind: "bounce-binary";
-          name: string;
+          name: AstId;
           type: string;
           bounced: boolean;
       }
     | {
           kind: "external-binary";
           type: string;
-          name: string;
-      }
+          name: AstId;
+      };
+
+export type CommentReceiverSelector =
     | {
-          kind: "external-empty";
+          kind: "internal-comment";
+          comment: string;
       }
     | {
           kind: "external-comment";
           comment: string;
+      };
+
+export type EmptyReceiverSelector =
+    | {
+          kind: "internal-empty";
+      }
+    | {
+          kind: "external-empty";
+      };
+
+export type FallbackReceiverSelector =
+    | {
+          kind: "internal-comment-fallback";
+          name: AstId;
+      }
+    | {
+          kind: "internal-fallback";
+          name: AstId;
+      }
+    | {
+          kind: "bounce-fallback";
+          name: AstId;
       }
     | {
           kind: "external-comment-fallback";
-          name: string;
+          name: AstId;
       }
     | {
           kind: "external-fallback";
-          name: string;
+          name: AstId;
       };
+
+export type ReceiverSelector =
+    | BinaryReceiverSelector
+    | CommentReceiverSelector
+    | EmptyReceiverSelector
+    | FallbackReceiverSelector;
+
+// TODO: improve this for empty and fallbacks
+export function receiverSelectorName(selector: ReceiverSelector): string {
+    switch (selector.kind) {
+        case "internal-binary":
+        case "bounce-binary":
+        case "external-binary":
+            return selector.type;
+        case "internal-comment":
+        case "external-comment":
+            return selector.comment;
+        case "internal-empty":
+        case "external-empty":
+            return selector.kind;
+        case "internal-fallback":
+        case "bounce-fallback":
+        case "external-fallback":
+            return selector.kind;
+        case "internal-comment-fallback":
+        case "external-comment-fallback":
+            return selector.kind;
+    }
+}
 
 export type ReceiverDescription = {
     selector: ReceiverSelector;
-    ast: ASTReceive;
+    ast: AstReceiver;
 };
 
 export type InitDescription = {
-    args: InitArgument[];
-    ast: ASTInitFunction;
+    params: InitParameter[];
+    ast: AstContractInit;
 };
 
 export function printTypeRef(src: TypeRef): string {
