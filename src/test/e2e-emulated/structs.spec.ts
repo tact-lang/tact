@@ -26,6 +26,7 @@ describe("structs", () => {
         const contract = system.open(await StructsTester.fromInit());
         await contract.send(treasure, { value: toNano("10") }, null);
         await system.run();
+        const tracker = system.track(contract.address);
 
         expect(await contract.getStructInitializerTest()).toEqual(true);
 
@@ -224,5 +225,11 @@ describe("structs", () => {
         expect(
             await contract.getGlobalConstStructConstantFieldViaVar(),
         ).toEqual(s6.s);
+
+        // https://github.com/tact-lang/tact/issues/472
+
+        await contract.send(treasure, { value: toNano("10") }, "example");
+        await system.run();
+        expect(tracker.collect()).toMatchSnapshot();
     });
 });
