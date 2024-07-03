@@ -398,7 +398,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
             "text": "uint32",
           },
           "id": 12,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int as uint32,
           "name": {
@@ -456,7 +456,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
             "text": "uint32",
           },
           "id": 12,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int as uint32,
           "name": {
@@ -866,7 +866,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             "text": "uint32",
           },
           "id": 12,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int as uint32,
           "name": {
@@ -891,7 +891,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         {
           "as": null,
           "id": 16,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": b: Bool,
           "name": {
@@ -921,7 +921,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             "text": "uint256",
           },
           "id": 21,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": c: Int as uint256,
           "name": {
@@ -981,7 +981,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             "text": "uint32",
           },
           "id": 12,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int as uint32,
           "name": {
@@ -1026,7 +1026,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         "ast": {
           "as": null,
           "id": 16,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": b: Bool,
           "name": {
@@ -1077,7 +1077,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             "text": "uint256",
           },
           "id": 21,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": c: Int as uint256,
           "name": {
@@ -2611,7 +2611,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
             "text": "uint32",
           },
           "id": 10,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int as uint32,
           "name": {
@@ -2669,7 +2669,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
             "text": "uint32",
           },
           "id": 10,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int as uint32,
           "name": {
@@ -4305,7 +4305,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         {
           "as": null,
           "id": 11,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -4330,7 +4330,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         {
           "as": null,
           "id": 15,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": b: Bool,
           "name": {
@@ -4439,7 +4439,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "ast": {
           "as": null,
           "id": 11,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -4484,7 +4484,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "ast": {
           "as": null,
           "id": 15,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": b: Bool,
           "name": {
@@ -5100,7 +5100,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         {
           "as": null,
           "id": 17,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -5315,7 +5315,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "ast": {
           "as": null,
           "id": 17,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -5608,7 +5608,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         {
           "as": null,
           "id": 11,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": p: Int,
           "name": {
@@ -5660,7 +5660,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "ast": {
           "as": null,
           "id": 11,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": p: Int,
           "name": {
@@ -6354,7 +6354,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         {
           "as": null,
           "id": 11,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": m: map<Int, Int as coins>,
           "name": {
@@ -6666,7 +6666,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         "ast": {
           "as": null,
           "id": 11,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": m: map<Int, Int as coins>,
           "name": {
@@ -7587,7 +7587,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
         {
           "as": null,
           "id": 11,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -7612,7 +7612,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
         {
           "as": null,
           "id": 15,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": b: Bool,
           "name": {
@@ -7665,7 +7665,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
         "ast": {
           "as": null,
           "id": 11,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -7710,7 +7710,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
         "ast": {
           "as": null,
           "id": 15,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": b: Bool,
           "name": {
@@ -7763,7 +7763,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
         {
           "as": null,
           "id": 21,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Struct1,
           "name": {
@@ -7814,7 +7814,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
         "ast": {
           "as": null,
           "id": 21,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Struct1,
           "name": {

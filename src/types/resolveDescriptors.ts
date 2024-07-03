@@ -330,7 +330,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
             );
         }
 
-        const d = src.init ? evalConstantExpression(src.init, ctx) : undefined;
+        const d = src.initializer
+            ? evalConstantExpression(src.initializer, ctx)
+            : undefined;
 
         // Resolve abi type
         const type = resolveABIType(src);

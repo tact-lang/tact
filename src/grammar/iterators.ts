@@ -118,8 +118,8 @@ export function forEachExpression(
                 node.declarations.forEach(traverseNode);
                 break;
             case "field_decl":
-                if (node.init) {
-                    traverseExpression(node.init);
+                if (node.initializer) {
+                    traverseExpression(node.initializer);
                 }
                 break;
             case "constant_def":
@@ -332,8 +332,8 @@ export function foldExpressions<T>(
                 });
                 break;
             case "field_decl":
-                if (node.init) {
-                    acc = traverseExpression(acc, node.init);
+                if (node.initializer) {
+                    acc = traverseExpression(acc, node.initializer);
                 }
                 break;
             case "constant_def":

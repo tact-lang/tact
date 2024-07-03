@@ -145,7 +145,7 @@ export type AstFieldDecl = {
     kind: "field_decl";
     name: AstId;
     type: ASTTypeRef;
-    init: AstExpression | null;
+    initializer: AstExpression | null;
     as: AstId | null;
     id: number;
     loc: SrcInfo;
@@ -737,8 +737,8 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
         }
     }
     if (node.kind === "field_decl") {
-        if (node.init) {
-            traverse(node.init, callback);
+        if (node.initializer) {
+            traverse(node.initializer, callback);
         }
     }
     if (node.kind === "constant_def") {

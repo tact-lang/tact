@@ -554,7 +554,9 @@ semantics.addOperation<AstNode>("astOfDeclaration", {
             name: id.astOfExpression(),
             type: type.astOfType() as ASTTypeRef,
             as: unwrapOptNode(optStorageType, (t) => t.astOfExpression()),
-            init: unwrapOptNode(optInitializer, (e) => e.astOfExpression()),
+            initializer: unwrapOptNode(optInitializer, (e) =>
+                e.astOfExpression(),
+            ),
             loc: createRef(this),
         });
     },

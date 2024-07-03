@@ -546,7 +546,7 @@ exports[`grammar should parse contract-with-init 1`] = `
         {
           "as": null,
           "id": 5,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -571,7 +571,7 @@ exports[`grammar should parse contract-with-init 1`] = `
         {
           "as": null,
           "id": 9,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -754,7 +754,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
         {
           "as": null,
           "id": 7,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -845,7 +845,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
         {
           "as": null,
           "id": 19,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -964,7 +964,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
         {
           "as": null,
           "id": 7,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -1055,7 +1055,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
         {
           "as": null,
           "id": 19,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -3987,7 +3987,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
         {
           "as": null,
           "id": 5,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -4012,7 +4012,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
         {
           "as": null,
           "id": 9,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -4197,7 +4197,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
         {
           "as": null,
           "id": 37,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -4222,7 +4222,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
         {
           "as": null,
           "id": 41,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -6701,7 +6701,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
         {
           "as": null,
           "id": 5,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -6726,7 +6726,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
         {
           "as": null,
           "id": 9,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -6908,7 +6908,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
         {
           "as": null,
           "id": 5,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -6953,7 +6953,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
             "text": "coin",
           },
           "id": 12,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": x: Int as coin,
           "name": {
@@ -7004,7 +7004,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
         {
           "as": null,
           "id": 6,
-          "init": {
+          "initializer": {
             "id": 5,
             "kind": "number",
             "loc": 1000,
@@ -7054,7 +7054,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
             "text": "coins",
           },
           "id": 14,
-          "init": {
+          "initializer": {
             "id": 13,
             "kind": "number",
             "loc": 1000,
@@ -7084,7 +7084,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
         {
           "as": null,
           "id": 19,
-          "init": {
+          "initializer": {
             "id": 18,
             "kind": "boolean",
             "loc": true,
@@ -7141,7 +7141,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 5,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -7179,7 +7179,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 11,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -7204,7 +7204,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 15,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -7242,7 +7242,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 21,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -7267,7 +7267,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 26,
-          "init": {
+          "initializer": {
             "id": 25,
             "kind": "number",
             "loc": 42,
@@ -7310,7 +7310,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 33,
-          "init": {
+          "initializer": {
             "id": 32,
             "kind": "number",
             "loc": 42,
@@ -7340,7 +7340,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 37,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -7378,7 +7378,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 43,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -7417,7 +7417,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 49,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -7442,7 +7442,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 53,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -7481,7 +7481,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 59,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -7506,7 +7506,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 64,
-          "init": {
+          "initializer": {
             "id": 63,
             "kind": "number",
             "loc": 42,
@@ -7550,7 +7550,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 71,
-          "init": {
+          "initializer": {
             "id": 70,
             "kind": "number",
             "loc": 42,
@@ -7580,7 +7580,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         {
           "as": null,
           "id": 75,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -7641,7 +7641,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
         {
           "as": null,
           "id": 7,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": c: Int,
           "name": {
@@ -7683,7 +7683,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
         {
           "as": null,
           "id": 13,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -7732,7 +7732,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
         {
           "as": null,
           "id": 20,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -7790,7 +7790,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
         {
           "as": null,
           "id": 6,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": y: map<Int, Int>,
           "name": {
@@ -7837,7 +7837,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
         {
           "as": null,
           "id": 13,
-          "init": null,
+          "initializer": null,
           "kind": "field_decl",
           "loc": x: map<Int, Int>,
           "name": {
