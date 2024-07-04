@@ -1,8 +1,8 @@
 import { CompilerContext } from "../context";
 import {
-    ASTCondition,
+    AstCondition,
     SrcInfo,
-    ASTStatement,
+    AstStatement,
     tryExtractPath,
     AstId,
     idText,
@@ -87,7 +87,7 @@ function addVariable(
 }
 
 function processCondition(
-    condition: ASTCondition,
+    condition: AstCondition,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -96,7 +96,7 @@ function processCondition(
     returnAlwaysReachable: boolean;
 } {
     // Process expression
-    ctx = resolveExpression(condition.expression, sctx, ctx);
+    ctx = resolveExpression(condition.condition, sctx, ctx);
     let initialCtx = sctx;
 
     // Simple if
@@ -164,7 +164,7 @@ function processCondition(
 }
 
 function processStatements(
-    statements: ASTStatement[],
+    statements: AstStatement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -279,22 +279,14 @@ function processStatements(
                     s.loc,
                 );
             }
-
-            // Mark as assigned
-            if (path.length === 2 && path[0].text === "self") {
-                const field = path[1].text;
-                if (sctx.requiredFields.findIndex((v) => v === field) >= 0) {
-                    sctx = removeRequiredVariable(field, sctx);
-                }
-            }
         } else if (s.kind === "statement_expression") {
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
             // take `throw` and `throwNative` into account when doing
             // return-reachability analysis
             if (
-                s.expression.kind === "op_static_call" &&
-                ["throw", "nativeThrow"].includes(idText(s.expression.name))
+                s.expression.kind === "static_call" &&
+                ["throw", "nativeThrow"].includes(idText(s.expression.function))
             ) {
                 returnAlwaysReachable = true;
             }
@@ -306,7 +298,7 @@ function processStatements(
             returnAlwaysReachable ||= r.returnAlwaysReachable;
 
             // Check type
-            const expressionType = getExpType(ctx, s.expression);
+            const expressionType = getExpType(ctx, s.condition);
             if (
                 expressionType.kind !== "ref" ||
                 expressionType.name !== "Bool" ||
@@ -543,7 +535,7 @@ function processStatements(
 }
 
 function processFunctionBody(
-    statements: ASTStatement[],
+    statements: AstStatement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {

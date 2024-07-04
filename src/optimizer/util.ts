@@ -1,14 +1,14 @@
 import {
-    ASTExpression,
-    ASTUnaryOperation,
-    ASTBinaryOperation,
-    createNode,
-    ASTNewParameter
+    AstExpression,
+    AstUnaryOperation,
+    AstBinaryOperation,
+    createAstNode,
+    AstStructFieldInitializer
 } from "../grammar/ast";
 import { Value } from "../types/types";
 import { DUMMY_LOCATION, ValueExpression } from "./types";
 
-export function isValue(ast: ASTExpression): boolean {
+export function isValue(ast: AstExpression): boolean {
     switch (ast.kind) { // Missing structs
         case "null":
         case "boolean":
@@ -17,14 +17,14 @@ export function isValue(ast: ASTExpression): boolean {
             return true;
 
         case "id":
-        case "op_call":
+        case "method_call":
         case "init_of":
         case "op_unary":
         case "op_binary":
         case "conditional":
-        case "op_new":
-        case "op_field":
-        case "op_static_call":
+        case "struct_instance":
+        case "field_access":
+        case "static_call":
             return false;
     }
 }
@@ -44,14 +44,14 @@ export function extractValue(ast: ValueExpression): Value {
 
 export function makeValueExpression(value: Value): ValueExpression {
     if (value === null) {
-        const result = createNode({
+        const result = createAstNode({
             kind: "null",
             loc: DUMMY_LOCATION
         });
         return result as ValueExpression;
     }
     if (typeof value === "string") {
-        const result = createNode({
+        const result = createAstNode({
             kind: "string",
             value: value,
             loc: DUMMY_LOCATION
@@ -59,7 +59,7 @@ export function makeValueExpression(value: Value): ValueExpression {
         return result as ValueExpression;
     }
     if (typeof value === "bigint") {
-        const result = createNode({
+        const result = createAstNode({
             kind: "number",
             value: value,
             loc: DUMMY_LOCATION
@@ -67,7 +67,7 @@ export function makeValueExpression(value: Value): ValueExpression {
         return result as ValueExpression;
     }
     if (typeof value === "boolean") {
-        const result = createNode({
+        const result = createAstNode({
             kind: "boolean",
             value: value,
             loc: DUMMY_LOCATION
@@ -78,36 +78,36 @@ export function makeValueExpression(value: Value): ValueExpression {
 }
 
 
-export function makeUnaryExpression(op: ASTUnaryOperation, operand: ASTExpression): ASTExpression {
-    const result = createNode({
+export function makeUnaryExpression(op: AstUnaryOperation, operand: AstExpression): AstExpression {
+    const result = createAstNode({
         kind: "op_unary",
         op: op,
-        right: operand,
+        operand: operand,
         loc: DUMMY_LOCATION
     });
-    return result as ASTExpression;
+    return result as AstExpression;
 }
 
-export function makeBinaryExpression(op: ASTBinaryOperation, left: ASTExpression, right: ASTExpression): ASTExpression {
-    const result = createNode({
+export function makeBinaryExpression(op: AstBinaryOperation, left: AstExpression, right: AstExpression): AstExpression {
+    const result = createAstNode({
         kind: "op_binary",
         op: op,
         left: left,
         right: right,
         loc: DUMMY_LOCATION
     });
-    return result as ASTExpression;
+    return result as AstExpression;
 }
 
 // Checks if the top level node is a binary op node
-export function checkIsBinaryOpNode(ast: ASTExpression): boolean {
+export function checkIsBinaryOpNode(ast: AstExpression): boolean {
     return (ast.kind === "op_binary");
 }
 
 // Checks if top level node is a binary op node
 // with a non-value node on the left and
 // value node on the right
-export function checkIsBinaryOp_NonValue_Value(ast: ASTExpression): boolean {
+export function checkIsBinaryOp_NonValue_Value(ast: AstExpression): boolean {
     if (ast.kind === "op_binary") {
         return (!isValue(ast.left) && isValue(ast.right))
     } else {
@@ -118,7 +118,7 @@ export function checkIsBinaryOp_NonValue_Value(ast: ASTExpression): boolean {
 // Checks if top level node is a binary op node
 // with a value node on the left and
 // non-value node on the right
-export function checkIsBinaryOp_Value_NonValue(ast: ASTExpression): boolean {
+export function checkIsBinaryOp_Value_NonValue(ast: AstExpression): boolean {
     if (ast.kind === "op_binary") {
         return (isValue(ast.left) && !isValue(ast.right))
     } else {
@@ -157,7 +157,7 @@ export function modFloor(a: bigint, b: bigint): bigint {
 }
 
 // Test equality of ASTExpressions.
-export function areEqualExpressions(ast1: ASTExpression, ast2: ASTExpression): boolean {
+export function areEqualExpressions(ast1: AstExpression, ast2: AstExpression): boolean {
     switch (ast1.kind) {
         case "null":
             return ast2.kind === "null";
@@ -169,17 +169,17 @@ export function areEqualExpressions(ast1: ASTExpression, ast2: ASTExpression): b
             return ast2.kind === "string" ? ast1.value === ast2.value : false;
         case "id":
             return ast2.kind === "id" ? ast1.text === ast2.text : false;
-        case "op_call":
-            if (ast2.kind === "op_call") {
-                return ast1.name.text === ast2.name.text &&
-                areEqualExpressions(ast1.src, ast2.src) &&
+        case "method_call":
+            if (ast2.kind === "method_call") {
+                return ast1.method.text === ast2.method.text &&
+                areEqualExpressions(ast1.self, ast2.self) &&
                 areEqualExpressionArrays(ast1.args, ast2.args);
             } else {
                 return false;
             }
         case "init_of":
             if (ast2.kind === "init_of") {
-                return ast1.name.text === ast2.name.text &&
+                return ast1.contract.text === ast2.contract.text &&
                 areEqualExpressionArrays(ast1.args, ast2.args);
             } else {
                 return false;
@@ -187,7 +187,7 @@ export function areEqualExpressions(ast1: ASTExpression, ast2: ASTExpression): b
         case "op_unary":
             if (ast2.kind === "op_unary") {
                 return ast1.op === ast2.op &&
-                areEqualExpressions(ast1.right, ast2.right);
+                areEqualExpressions(ast1.operand, ast2.operand);
             } else {
                 return false;
             }
@@ -207,23 +207,23 @@ export function areEqualExpressions(ast1: ASTExpression, ast2: ASTExpression): b
             } else {
                 return false;
             }
-        case "op_new":
-            if (ast2.kind === "op_new") {
+        case "struct_instance":
+            if (ast2.kind === "struct_instance") {
                 return ast1.type.text === ast2.type.text &&
                 areEqualParameterArrays(ast1.args, ast2.args);
             } else {
                 return false;
             }
-        case "op_field":
-            if (ast2.kind === "op_field") {
-                return ast1.name.text === ast2.name.text &&
-                areEqualExpressions(ast1.src, ast2.src);
+        case "field_access":
+            if (ast2.kind === "field_access") {
+                return ast1.field.text === ast2.field.text &&
+                areEqualExpressions(ast1.aggregate, ast2.aggregate);
             } else {
                 return false;
             }
-        case "op_static_call":
-            if (ast2.kind === "op_static_call") {
-                return ast1.name.text === ast2.name.text &&
+        case "static_call":
+            if (ast2.kind === "static_call") {
+                return ast1.function.text === ast2.function.text &&
                 areEqualExpressionArrays(ast1.args, ast2.args);
             } else {
                 return false;
@@ -231,12 +231,12 @@ export function areEqualExpressions(ast1: ASTExpression, ast2: ASTExpression): b
     }
 }
 
-function areEqualParameters(arg1: ASTNewParameter, arg2: ASTNewParameter): boolean {
-    return arg1.name.text === arg2.name.text &&
-    areEqualExpressions(arg1.exp, arg2.exp);
+function areEqualParameters(arg1: AstStructFieldInitializer, arg2: AstStructFieldInitializer): boolean {
+    return arg1.field.text === arg2.field.text &&
+    areEqualExpressions(arg1.initializer, arg2.initializer);
 }
 
-function areEqualParameterArrays(arr1: ASTNewParameter[], arr2: ASTNewParameter[]): boolean {
+function areEqualParameterArrays(arr1: AstStructFieldInitializer[], arr2: AstStructFieldInitializer[]): boolean {
     if (arr1.length !== arr2.length) {
         return false;
     }
@@ -250,7 +250,7 @@ function areEqualParameterArrays(arr1: ASTNewParameter[], arr2: ASTNewParameter[
     return true;
 }
 
-function areEqualExpressionArrays(arr1: ASTExpression[], arr2: ASTExpression[]): boolean {
+function areEqualExpressionArrays(arr1: AstExpression[], arr2: AstExpression[]): boolean {
     if (arr1.length !== arr2.length) {
         return false;
     }

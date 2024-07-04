@@ -1,7 +1,7 @@
 // This module includes rules involving associative rewritings of expressions
 
 import { evalBinaryOp } from "../constEval";
-import { ASTBinaryOperation, ASTExpression, ASTOpBinary } from "../grammar/ast";
+import { AstBinaryOperation, AstExpression, AstOpBinary } from "../grammar/ast";
 import { Value } from "../types/types";
 import { ExpressionTransformer, Rule, ValueExpression } from "./types";
 import { 
@@ -20,23 +20,23 @@ export abstract class AssociativeRewriteRule implements Rule {
 
     // An entry (op, S) in the map means "operator op associates with all operators in set S", 
     // mathematically: all op2 \in S. (a op b) op2 c = a op (b op2 c)
-    private associativeOps: Map<ASTBinaryOperation,Set<ASTBinaryOperation>>;
+    private associativeOps: Map<AstBinaryOperation,Set<AstBinaryOperation>>;
     
     // This set contains all operators that commute.
     // Mathematically: all op \in commutativeOps. a op b = b op a
-    private commutativeOps: Set<ASTBinaryOperation>;
+    private commutativeOps: Set<AstBinaryOperation>;
 
     constructor() {
         // + associates with these on the right:
         // i.e., all op \in plusAssoc. (a + b) op c = a + (b op c)
-        const plusAssoc = new Set<ASTBinaryOperation>([
+        const plusAssoc = new Set<AstBinaryOperation>([
             "+", "-"
         ]);
 
         // - does not associate with any operator on the right
 
         // * associates with these on the right:
-        const multAssoc = new Set<ASTBinaryOperation>([
+        const multAssoc = new Set<AstBinaryOperation>([
             "*", "<<"
         ]);
 
@@ -46,21 +46,21 @@ export abstract class AssociativeRewriteRule implements Rule {
 
         // TODO: shifts, bitwise integer operators, boolean operators
 
-        this.associativeOps = new Map<ASTBinaryOperation,Set<ASTBinaryOperation>>([
+        this.associativeOps = new Map<AstBinaryOperation,Set<AstBinaryOperation>>([
             ["+", plusAssoc],
             ["*", multAssoc]
         ]);
 
-        this.commutativeOps = new Set<ASTBinaryOperation>(
+        this.commutativeOps = new Set<AstBinaryOperation>(
             ["+", "*", "!=", "==", "&&", "||"] // TODO: bitwise integer operators
         );
     }
 
 
-    public abstract applyRule(ast: ASTExpression, optimizer: ExpressionTransformer): ASTExpression;
+    public abstract applyRule(ast: AstExpression, optimizer: ExpressionTransformer): AstExpression;
 
 
-    public areAssociative(op1: ASTBinaryOperation, op2: ASTBinaryOperation): boolean {
+    public areAssociative(op1: AstBinaryOperation, op2: AstBinaryOperation): boolean {
         if (this.associativeOps.has(op1)) {
             var rightAssocs = this.associativeOps.get(op1)!;
             return rightAssocs.has(op2);
@@ -69,44 +69,44 @@ export abstract class AssociativeRewriteRule implements Rule {
         }
     }
 
-    public isCommutative(op: ASTBinaryOperation): boolean {
+    public isCommutative(op: AstBinaryOperation): boolean {
         return this.commutativeOps.has(op);
     }
 }
 
 export abstract class AllowableOpRule extends AssociativeRewriteRule {
 
-    private allowedOps: Set<ASTBinaryOperation>;
+    private allowedOps: Set<AstBinaryOperation>;
 
     constructor() {
         super();
 
-        this.allowedOps = new Set<ASTBinaryOperation>(
+        this.allowedOps = new Set<AstBinaryOperation>(
             // Recall that integer operators +,-,*,/,% are not safe with this rule, because
             // there is a risk that they will not preserve overflows in the unknown operands.
             ["&&", "||"] // TODO: check bitwise integer operators
         );
     }
 
-    public isAllowedOp(op: ASTBinaryOperation): boolean {
+    public isAllowedOp(op: AstBinaryOperation): boolean {
         return this.allowedOps.has(op);
     }
 
-    public areAllowedOps(op: ASTBinaryOperation[]): boolean {
+    public areAllowedOps(op: AstBinaryOperation[]): boolean {
         return op.reduce((prev,curr) => prev && this.allowedOps.has(curr), true);
     }
 }
 
 export class AssociativeRule1 extends AllowableOpRule {
 
-    public applyRule(ast: ASTExpression, optimizer: ExpressionTransformer): ASTExpression {
+    public applyRule(ast: AstExpression, optimizer: ExpressionTransformer): AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as ASTOpBinary;
+            const topLevelNode = ast as AstOpBinary;
             if (checkIsBinaryOp_NonValue_Value(topLevelNode.left) && checkIsBinaryOp_NonValue_Value(topLevelNode.right)) {
                 // The tree has this form:
                 // (x1 op1 c1) op (x2 op2 c2)
-                const leftTree = topLevelNode.left as ASTOpBinary;
-                const rightTree = topLevelNode.right as ASTOpBinary;
+                const leftTree = topLevelNode.left as AstOpBinary;
+                const rightTree = topLevelNode.right as AstOpBinary;
 
                 const x1 = leftTree.left;
                 const c1 = leftTree.right as ValueExpression;
@@ -150,8 +150,8 @@ export class AssociativeRule1 extends AllowableOpRule {
             } else if (checkIsBinaryOp_NonValue_Value(topLevelNode.left) && checkIsBinaryOp_Value_NonValue(topLevelNode.right)) {
                 // The tree has this form:
                 // (x1 op1 c1) op (c2 op2 x2)
-                const leftTree = topLevelNode.left as ASTOpBinary;
-                const rightTree = topLevelNode.right as ASTOpBinary;
+                const leftTree = topLevelNode.left as AstOpBinary;
+                const rightTree = topLevelNode.right as AstOpBinary;
 
                 const x1 = leftTree.left;
                 const c1 = leftTree.right as ValueExpression;
@@ -195,8 +195,8 @@ export class AssociativeRule1 extends AllowableOpRule {
             } else if (checkIsBinaryOp_Value_NonValue(topLevelNode.left) && checkIsBinaryOp_NonValue_Value(topLevelNode.right)) {
                 // The tree has this form:
                 // (c1 op1 x1) op (x2 op2 c2)
-                const leftTree = topLevelNode.left as ASTOpBinary;
-                const rightTree = topLevelNode.right as ASTOpBinary;
+                const leftTree = topLevelNode.left as AstOpBinary;
+                const rightTree = topLevelNode.right as AstOpBinary;
 
                 const x1 = leftTree.right;
                 const c1 = leftTree.left as ValueExpression;
@@ -241,8 +241,8 @@ export class AssociativeRule1 extends AllowableOpRule {
             } else if (checkIsBinaryOp_Value_NonValue(topLevelNode.left) && checkIsBinaryOp_Value_NonValue(topLevelNode.right)) {
                 // The tree has this form:
                 // (c1 op1 x1) op (c2 op2 x2)
-                const leftTree = topLevelNode.left as ASTOpBinary;
-                const rightTree = topLevelNode.right as ASTOpBinary;
+                const leftTree = topLevelNode.left as AstOpBinary;
+                const rightTree = topLevelNode.right as AstOpBinary;
 
                 const x1 = leftTree.right;
                 const c1 = leftTree.left as ValueExpression;
@@ -294,13 +294,13 @@ export class AssociativeRule1 extends AllowableOpRule {
 
 export class AssociativeRule2 extends AllowableOpRule {
 
-    public applyRule(ast: ASTExpression, optimizer: ExpressionTransformer): ASTExpression {
+    public applyRule(ast: AstExpression, optimizer: ExpressionTransformer): AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as ASTOpBinary;
+            const topLevelNode = ast as AstOpBinary;
             if (checkIsBinaryOp_NonValue_Value(topLevelNode.left) && !isValue(topLevelNode.right)) {
                 // The tree has this form:
                 // (x1 op1 c1) op x2
-                const leftTree = topLevelNode.left as ASTOpBinary;
+                const leftTree = topLevelNode.left as AstOpBinary;
                 const rightTree = topLevelNode.right;
 
                 const x1 = leftTree.left;
@@ -333,7 +333,7 @@ export class AssociativeRule2 extends AllowableOpRule {
             } else if (checkIsBinaryOp_Value_NonValue(topLevelNode.left) && !isValue(topLevelNode.right)) {
                 // The tree has this form:
                 // (c1 op1 x1) op x2
-                const leftTree = topLevelNode.left as ASTOpBinary;
+                const leftTree = topLevelNode.left as AstOpBinary;
                 const rightTree = topLevelNode.right;
 
                 const x1 = leftTree.right;
@@ -364,7 +364,7 @@ export class AssociativeRule2 extends AllowableOpRule {
                 // The tree has this form:
                 // x2 op (x1 op1 c1)
                 const leftTree = topLevelNode.left;
-                const rightTree = topLevelNode.right as ASTOpBinary;
+                const rightTree = topLevelNode.right as AstOpBinary;
 
                 const x1 = rightTree.left;
                 const c1 = rightTree.right as ValueExpression;
@@ -394,7 +394,7 @@ export class AssociativeRule2 extends AllowableOpRule {
                 // The tree has this form:
                 // x2 op (c1 op1 x1)
                 const leftTree = topLevelNode.left;
-                const rightTree = topLevelNode.right as ASTOpBinary;
+                const rightTree = topLevelNode.right as AstOpBinary;
 
                 const x1 = rightTree.right;
                 const c1 = rightTree.left as ValueExpression;
@@ -440,12 +440,12 @@ function ensureInt(val: Value): bigint {
 
 export class AssociativeRule3 extends AssociativeRewriteRule {
 
-    private extraOpCondition: Map<ASTBinaryOperation, (c1: Value, c2: Value, val: Value) => boolean>;
+    private extraOpCondition: Map<AstBinaryOperation, (c1: Value, c2: Value, val: Value) => boolean>;
 
     public constructor() {
         super();
 
-        this.extraOpCondition = new Map<ASTBinaryOperation,(c1: Value, c2: Value, val: Value) => boolean>([
+        this.extraOpCondition = new Map<AstBinaryOperation,(c1: Value, c2: Value, val: Value) => boolean>([
             ["+", (c1, c2, val) => {
                 const n1 =  ensureInt(c1);
                 const res = ensureInt(val);
@@ -480,7 +480,7 @@ export class AssociativeRule3 extends AssociativeRewriteRule {
 
     }
 
-    protected opSatisfiesConditions(op: ASTBinaryOperation, c1: Value, c2: Value, res: Value): boolean {
+    protected opSatisfiesConditions(op: AstBinaryOperation, c1: Value, c2: Value, res: Value): boolean {
         if (this.extraOpCondition.has(op)) {
             return this.extraOpCondition.get(op)!(c1, c2, res);
         } else {
@@ -488,13 +488,13 @@ export class AssociativeRule3 extends AssociativeRewriteRule {
         }
     }
 
-    public applyRule(ast: ASTExpression, optimizer: ExpressionTransformer): ASTExpression {
+    public applyRule(ast: AstExpression, optimizer: ExpressionTransformer): AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as ASTOpBinary;
+            const topLevelNode = ast as AstOpBinary;
             if (checkIsBinaryOp_NonValue_Value(topLevelNode.left) && isValue(topLevelNode.right)) {
                 // The tree has this form:
                 // (x1 op1 c1) op c2
-                const leftTree = topLevelNode.left as ASTOpBinary;
+                const leftTree = topLevelNode.left as AstOpBinary;
                 const rightTree = topLevelNode.right as ValueExpression;
 
                 const x1 = leftTree.left;
@@ -534,7 +534,7 @@ export class AssociativeRule3 extends AssociativeRewriteRule {
             } else if (checkIsBinaryOp_Value_NonValue(topLevelNode.left) && isValue(topLevelNode.right)) {
                 // The tree has this form:
                 // (c1 op1 x1) op c2
-                const leftTree = topLevelNode.left as ASTOpBinary;
+                const leftTree = topLevelNode.left as AstOpBinary;
                 const rightTree = topLevelNode.right as ValueExpression;
 
                 const x1 = leftTree.right;
@@ -576,7 +576,7 @@ export class AssociativeRule3 extends AssociativeRewriteRule {
                 // The tree has this form:
                 // c2 op (x1 op1 c1)
                 const leftTree = topLevelNode.left as ValueExpression;
-                const rightTree = topLevelNode.right as ASTOpBinary;
+                const rightTree = topLevelNode.right as AstOpBinary;
 
                 const x1 = rightTree.left;
                 const c1 = extractValue(rightTree.right as ValueExpression);
@@ -617,7 +617,7 @@ export class AssociativeRule3 extends AssociativeRewriteRule {
                 // The tree has this form:
                 // c2 op (c1 op1 x1)
                 const leftTree = topLevelNode.left as ValueExpression;
-                const rightTree = topLevelNode.right as ASTOpBinary;
+                const rightTree = topLevelNode.right as AstOpBinary;
 
                 const x1 = rightTree.right;
                 const c1 = extractValue(rightTree.left as ValueExpression);

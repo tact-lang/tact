@@ -1,4 +1,4 @@
-import { ASTExpression, __DANGER_resetNodeId, cloneASTNode } from "../../grammar/ast";
+import { AstExpression, __DANGER_resetNodeId, cloneAstNode } from "../../grammar/ast";
 import { parseExpression } from "../../grammar/grammar";
 import { areEqualExpressions, extractValue, isValue, makeValueExpression } from "../../optimizer/util";
 import { evalUnaryOp, partiallyEvalExpression } from "../../constEval";
@@ -116,7 +116,7 @@ function testExpression(original: string, simplified: string) {
 // do not match, because the parser will produce a UnaryOp node with a child node with value 1.  
 // This is so because Tact does not have a way to write negative literals, but indirectly trough
 // the use of the unary - operator.
-function unaryNegNodesToNumbers(ast: ASTExpression): ASTExpression {
+function unaryNegNodesToNumbers(ast: AstExpression): AstExpression {
     switch (ast.kind) {
         case "null":
             return ast;
@@ -128,51 +128,51 @@ function unaryNegNodesToNumbers(ast: ASTExpression): ASTExpression {
             return ast;
         case "id":
             return ast;
-        case "op_call":
-            const newCallNode = cloneASTNode(ast);
+        case "method_call":
+            const newCallNode = cloneAstNode(ast);
             newCallNode.args = ast.args.map(unaryNegNodesToNumbers);
-            newCallNode.src = unaryNegNodesToNumbers(ast.src);
+            newCallNode.self = unaryNegNodesToNumbers(ast.self);
             return newCallNode;
         case "init_of":
-            const newInitOfNode = cloneASTNode(ast);
+            const newInitOfNode = cloneAstNode(ast);
             newInitOfNode.args = ast.args.map(unaryNegNodesToNumbers);
             return newInitOfNode;
         case "op_unary":
             if (ast.op === "-") {
-                if (isValue(ast.right)) {
+                if (isValue(ast.operand)) {
                     return makeValueExpression(
-                        evalUnaryOp(ast.op, extractValue(ast.right as ValueExpression))
+                        evalUnaryOp(ast.op, extractValue(ast.operand as ValueExpression))
                     );
                 }
             }
-            const newUnaryNode = cloneASTNode(ast);
-            newUnaryNode.right = unaryNegNodesToNumbers(ast.right);
+            const newUnaryNode = cloneAstNode(ast);
+            newUnaryNode.operand = unaryNegNodesToNumbers(ast.operand);
             return newUnaryNode;
         case "op_binary":
-            const newBinaryNode = cloneASTNode(ast);
+            const newBinaryNode = cloneAstNode(ast);
             newBinaryNode.left = unaryNegNodesToNumbers(ast.left);
             newBinaryNode.right = unaryNegNodesToNumbers(ast.right);
             return newBinaryNode;
         case "conditional":
-            const newConditionalNode = cloneASTNode(ast);
+            const newConditionalNode = cloneAstNode(ast);
             newConditionalNode.thenBranch = unaryNegNodesToNumbers(ast.thenBranch);
             newConditionalNode.elseBranch = unaryNegNodesToNumbers(ast.elseBranch);
             return newConditionalNode;
-        case "op_new":
-            const newStructNode = cloneASTNode(ast);
+        case "struct_instance":
+            const newStructNode = cloneAstNode(ast);
             newStructNode.args = ast.args.map(param => {
-                const newParam = cloneASTNode(param);
-                newParam.exp = unaryNegNodesToNumbers(param.exp);
+                const newParam = cloneAstNode(param);
+                newParam.initializer = unaryNegNodesToNumbers(param.initializer);
                 return newParam;
             }
             );
             return newStructNode;
-        case "op_field":
-            const newFieldNode = cloneASTNode(ast);
-            newFieldNode.src = unaryNegNodesToNumbers(ast.src);
+        case "field_access":
+            const newFieldNode = cloneAstNode(ast);
+            newFieldNode.aggregate = unaryNegNodesToNumbers(ast.aggregate);
             return newFieldNode;
-        case "op_static_call":
-            const newStaticCallNode = cloneASTNode(ast);
+        case "static_call":
+            const newStaticCallNode = cloneAstNode(ast);
             newStaticCallNode.args = ast.args.map(unaryNegNodesToNumbers);
             return newStaticCallNode;
     }

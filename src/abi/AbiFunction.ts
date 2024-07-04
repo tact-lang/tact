@@ -1,4 +1,4 @@
-import { ASTExpression, SrcInfo } from "../grammar/ast";
+import { AstExpression, SrcInfo } from "../grammar/ast";
 import { CompilerContext } from "../context";
 import { WriterContext } from "../generator/Writer";
 import { TypeRef } from "../types/types";
@@ -9,7 +9,7 @@ export type AbiFunction = {
     generate: (
         ctx: WriterContext,
         args: TypeRef[],
-        resolved: ASTExpression[],
+        resolved: AstExpression[],
         loc: SrcInfo,
     ) => string;
 };

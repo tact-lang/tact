@@ -1,4 +1,4 @@
-import { ASTExpression } from "../grammar/ast";
+import { AstExpression } from "../grammar/ast";
 import { AssociativeRule1, AssociativeRule2, AssociativeRule3 } from "./associative";
 import { Rule, ExpressionTransformer } from "./types";
 
@@ -22,7 +22,7 @@ export class StandardOptimizer implements ExpressionTransformer {
         this.rules.sort((r1, r2) => r1.priority - r2.priority);
     }
 
-    public applyRules(ast: ASTExpression): ASTExpression {
+    public applyRules(ast: AstExpression): AstExpression {
         return this.rules.reduce((prev, prioritizedRule) => prioritizedRule.rule.applyRule(prev, this), ast);
     }
 

@@ -1,12 +1,12 @@
 import { evalConstantExpression, partiallyEvalExpression } from "./constEval";
 import { CompilerContext } from "./context";
 import { TactConstEvalError, TactParseError } from "./errors";
-import { ASTExpression } from "./grammar/ast";
+import { AstExpression } from "./grammar/ast";
 import { parseExpression } from "./grammar/grammar";
 import { Value } from "./types/types";
 
 export type EvalResult =
-    | { kind: "ok"; value: Value | ASTExpression }
+    | { kind: "ok"; value: Value | AstExpression }
     | { kind: "error"; message: string };
 
 export function parseAndEvalExpression(sourceCode: string): EvalResult {

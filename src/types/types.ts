@@ -2,13 +2,13 @@ import { ABIField, Address, Cell } from "@ton/core";
 import {
     AstConstantDef,
     AstFunctionDef,
-    ASTInitFunction,
+    AstContractInit,
     AstNativeFunctionDecl,
-    ASTNode,
-    ASTReceive,
+    AstNode,
+    AstReceiver,
     SrcInfo,
-    ASTStatement,
-    ASTType,
+    AstStatement,
+    AstTypeDecl,
     AstId,
     AstFunctionDecl,
     AstConstantDecl,
@@ -32,7 +32,7 @@ export type TypeDescription = {
     functions: Map<string, FunctionDescription>;
     receivers: ReceiverDescription[];
     init: InitDescription | null;
-    ast: ASTType;
+    ast: AstTypeDecl;
     dependsOn: TypeDescription[];
     interfaces: string[];
     constants: ConstantDescription[];
@@ -87,7 +87,7 @@ export type FieldDescription = {
     as: string | null;
     default: Value | undefined;
     loc: SrcInfo;
-    ast: ASTNode;
+    ast: AstNode;
     abi: ABIField;
 };
 
@@ -130,7 +130,7 @@ export type FunctionDescription = {
 export type StatementDescription =
     | {
           kind: "native";
-          src: ASTStatement;
+          src: AstStatement;
       }
     | {
           kind: "intrinsic";
@@ -225,12 +225,12 @@ export function receiverSelectorName(selector: ReceiverSelector): string {
 
 export type ReceiverDescription = {
     selector: ReceiverSelector;
-    ast: ASTReceive;
+    ast: AstReceiver;
 };
 
 export type InitDescription = {
     params: InitParameter[];
-    ast: ASTInitFunction;
+    ast: AstContractInit;
 };
 
 export function printTypeRef(src: TypeRef): string {

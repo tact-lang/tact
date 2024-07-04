@@ -73,6 +73,11 @@ contract ConstantTester {
         s: S {a: true ? 1 == 1 : false, b: ton("0.000000042")}
     }.s.a;
 
+    const something41: Address = newAddress(0, 0);
+    const something42: Address = newAddress(0, 0x12345);
+    const something43: Address = newAddress(0, 0x123456789abcdef);
+    const something44: Address = newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873);
+
     init() { }
 
     receive() { }
@@ -117,6 +122,10 @@ contract ConstantTester {
     get fun something38(): Int { return self.something38; }
     get fun something39(): Bool { return self.something39; }
     get fun something40(): Bool { return self.something40; }
+    get fun something41(): Address { return self.something41; }
+    get fun something42(): Address { return self.something42; }
+    get fun something43(): Address { return self.something43; }
+    get fun something44(): Address { return self.something44; }
 
     get fun minInt1(): Int {
         return -115792089237316195423570985008687907853269984665640564039457584007913129639936;

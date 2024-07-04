@@ -1,14 +1,14 @@
 import { Interval } from "ohm-js";
 import { 
-    ASTExpression,
-    ASTNumber,
-    ASTBoolean,
-    ASTNull,
-    ASTString,
+    AstExpression,
+    AstNumber,
+    AstBoolean,
+    AstNull,
+    AstString,
     SrcInfo
  } from "../grammar/ast";
 
-export type ValueExpression =  ASTNumber | ASTBoolean | ASTNull | ASTString;
+export type ValueExpression =  AstNumber | AstBoolean | AstNull | AstString;
 
 export const DUMMY_INTERVAL: Interval = {
     sourceString: "",
@@ -54,9 +54,9 @@ export const DUMMY_LOCATION: SrcInfo = new SrcInfo(DUMMY_INTERVAL, null, "user")
 
   
 export interface ExpressionTransformer {
-    applyRules(ast: ASTExpression): ASTExpression
+    applyRules(ast: AstExpression): AstExpression
 }
 
 export interface Rule {
-    applyRule(ast: ASTExpression, optimizer: ExpressionTransformer): ASTExpression;
+    applyRule(ast: AstExpression, optimizer: ExpressionTransformer): AstExpression;
 }

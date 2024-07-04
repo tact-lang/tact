@@ -1,12 +1,12 @@
 import {
     AstConstantDef,
-    ASTField,
-    ASTInitFunction,
+    AstFieldDecl,
+    AstContractInit,
     AstNativeFunctionDecl,
-    ASTNode,
+    AstNode,
     SrcInfo,
-    ASTTypeRef,
-    createNode,
+    AstType,
+    createAstNode,
     traverse,
     idText,
     AstId,
@@ -17,7 +17,11 @@ import {
     AstFunctionDecl,
     AstConstantDecl,
 } from "../grammar/ast";
-import { idTextErr, throwCompilationError } from "../errors";
+import {
+    idTextErr,
+    throwCompilationError,
+    throwInternalCompilerError,
+} from "../errors";
 import { CompilerContext, createContextStore } from "../context";
 import {
     ConstantDescription,
@@ -116,29 +120,47 @@ function verifyMapType(
 
 export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 
-export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
-    if (src.kind === "type_ref_simple") {
-        const t = getType(ctx, src.name);
+export function resolveTypeRef(ctx: CompilerContext, src: AstType): TypeRef {
+    if (src.kind === "type_id") {
+        const t = getType(ctx, idText(src));
         return {
             kind: "ref",
             name: t.name,
-            optional: src.optional,
+            optional: false,
         };
     }
-    if (src.kind === "type_ref_map") {
-        const k = getType(ctx, src.key).name;
-        const v = getType(ctx, src.value).name;
-        verifyMapType(k, src.keyAs, v, src.valueAs, src.loc);
+    if (src.kind === "optional_type") {
+        if (src.typeArg.kind !== "type_id") {
+            throwInternalCompilerError(
+                "Only optional type identifiers are supported now",
+                src.typeArg.loc,
+            );
+        }
+        const t = getType(ctx, idText(src.typeArg));
+        return {
+            kind: "ref",
+            name: t.name,
+            optional: true,
+        };
+    }
+    if (src.kind === "map_type") {
+        const k = getType(ctx, idText(src.keyType)).name;
+        const v = getType(ctx, idText(src.valueType)).name;
+        verifyMapType(k, src.keyStorageType, v, src.valueStorageType, src.loc);
         return {
             kind: "map",
             key: k,
-            keyAs: src.keyAs !== null ? idText(src.keyAs) : null,
+            keyAs:
+                src.keyStorageType !== null ? idText(src.keyStorageType) : null,
             value: v,
-            valueAs: src.valueAs !== null ? idText(src.valueAs) : null,
+            valueAs:
+                src.valueStorageType !== null
+                    ? idText(src.valueStorageType)
+                    : null,
         };
     }
-    if (src.kind === "type_ref_bounced") {
-        const t = getType(ctx, src.name);
+    if (src.kind === "bounced_message_type") {
+        const t = getType(ctx, idText(src.messageType));
         return {
             kind: "ref_bounced",
             name: t.name,
@@ -148,47 +170,67 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
 }
 
 function buildTypeRef(
-    src: ASTTypeRef,
+    src: AstType,
     types: Map<string, TypeDescription>,
 ): TypeRef {
-    if (src.kind === "type_ref_simple") {
-        if (!types.has(idText(src.name))) {
+    if (src.kind === "type_id") {
+        if (!types.has(idText(src))) {
+            throwCompilationError(`Type ${idTextErr(src)} not found`, src.loc);
+        }
+        return {
+            kind: "ref",
+            name: idText(src),
+            optional: false,
+        };
+    }
+    if (src.kind === "optional_type") {
+        if (src.typeArg.kind !== "type_id") {
+            throwInternalCompilerError(
+                "Only optional type identifiers are supported now",
+                src.typeArg.loc,
+            );
+        }
+        if (!types.has(idText(src.typeArg))) {
             throwCompilationError(
-                `Type ${idTextErr(src.name)} not found`,
+                `Type ${idTextErr(src.typeArg)} not found`,
                 src.loc,
             );
         }
         return {
             kind: "ref",
-            name: idText(src.name),
-            optional: src.optional,
+            name: idText(src.typeArg),
+            optional: true,
         };
     }
-    if (src.kind === "type_ref_map") {
-        if (!types.has(idText(src.key))) {
+    if (src.kind === "map_type") {
+        if (!types.has(idText(src.keyType))) {
             throwCompilationError(
-                `Type ${idTextErr(src.key)} not found`,
+                `Type ${idTextErr(src.keyType)} not found`,
                 src.loc,
             );
         }
-        if (!types.has(idText(src.value))) {
+        if (!types.has(idText(src.valueType))) {
             throwCompilationError(
-                `Type ${idTextErr(src.value)} not found`,
+                `Type ${idTextErr(src.valueType)} not found`,
                 src.loc,
             );
         }
         return {
             kind: "map",
-            key: idText(src.key),
-            keyAs: src.keyAs !== null ? idText(src.keyAs) : null,
-            value: idText(src.value),
-            valueAs: src.valueAs !== null ? idText(src.valueAs) : null,
+            key: idText(src.keyType),
+            keyAs:
+                src.keyStorageType !== null ? idText(src.keyStorageType) : null,
+            value: idText(src.valueType),
+            valueAs:
+                src.valueStorageType !== null
+                    ? idText(src.valueStorageType)
+                    : null,
         };
     }
-    if (src.kind === "type_ref_bounced") {
+    if (src.kind === "bounced_message_type") {
         return {
             kind: "ref_bounced",
-            name: idText(src.name),
+            name: idText(src.messageType),
         };
     }
 
@@ -316,7 +358,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function buildFieldDescription(
-        src: ASTField,
+        src: AstFieldDecl,
         index: number,
     ): FieldDescription {
         const tr = buildTypeRef(src.type, types);
@@ -330,7 +372,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
             );
         }
 
-        const d = src.init ? evalConstantExpression(src.init, ctx) : undefined;
+        const d = src.initializer
+            ? evalConstantExpression(src.initializer, ctx)
+            : undefined;
 
         // Resolve abi type
         const type = resolveABIType(src);
@@ -368,7 +412,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Contract
         if (a.kind === "contract") {
             for (const f of a.declarations) {
-                if (f.kind === "def_field") {
+                if (f.kind === "field_decl") {
                     if (
                         types
                             .get(idText(a.name))!
@@ -464,7 +508,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Trait
         if (a.kind === "trait") {
             for (const f of a.declarations) {
-                if (f.kind === "def_field") {
+                if (f.kind === "field_decl") {
                     if (
                         types
                             .get(idText(a.name))!
@@ -809,7 +853,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         };
     }
 
-    function resolveInitFunction(ast: ASTInitFunction): InitDescription {
+    function resolveInitFunction(ast: AstContractInit): InitDescription {
         const params: InitParameter[] = [];
         for (const r of ast.params) {
             params.push({
@@ -854,7 +898,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     }
                     s.functions.set(f.name, f);
                 }
-                if (d.kind === "def_init_function") {
+                if (d.kind === "contract_init") {
                     if (s.init) {
                         throwCompilationError(
                             "Init function already exists",
@@ -863,7 +907,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     }
                     s.init = resolveInitFunction(d);
                 }
-                if (d.kind === "def_receive") {
+                if (d.kind === "receiver") {
                     // Check if externals are enabled
                     if (
                         d.selector.kind.startsWith("external-") &&
@@ -882,23 +926,16 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         const param = d.selector.param;
                         const internal = d.selector.kind === "internal-simple";
 
-                        if (param.type.kind !== "type_ref_simple") {
+                        if (param.type.kind !== "type_id") {
                             throwCompilationError(
-                                "Receive function can only accept message",
+                                "Receive function can only accept non-optional message types",
                                 d.loc,
                             );
                         }
-                        if (param.type.optional) {
-                            throwCompilationError(
-                                "Receive function cannot have optional parameter",
-                                d.loc,
-                            );
-                        }
-
-                        const t = types.get(idText(param.type.name));
+                        const t = types.get(idText(param.type));
                         if (!t) {
                             throwCompilationError(
-                                `Type ${idTextErr(param.type.name)} not found`,
+                                `Type ${idTextErr(param.type)} not found`,
                                 d.loc,
                             );
                         }
@@ -981,7 +1018,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             }
 
                             // Check for duplicate
-                            const n = param.type.name;
+                            const n = idText(param.type);
                             if (
                                 s.receivers.find(
                                     (v) =>
@@ -993,7 +1030,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 )
                             ) {
                                 throwCompilationError(
-                                    `Receive function for ${idTextErr(param.type.name)} already exists`,
+                                    `Receive function for ${idTextErr(param.type)} already exists`,
                                     param.loc,
                                 );
                             }
@@ -1005,7 +1042,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         ? "internal-binary"
                                         : "external-binary",
                                     name: param.name,
-                                    type: idText(param.type.name),
+                                    type: idText(param.type),
                                 },
                                 ast: d,
                             });
@@ -1078,15 +1115,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     } else if (d.selector.kind === "bounce") {
                         const param = d.selector.param;
 
-                        if (param.type.kind === "type_ref_simple") {
-                            if (param.type.optional) {
-                                throwCompilationError(
-                                    "Bounce receive function cannot have optional parameter",
-                                    d.loc,
-                                );
-                            }
-
-                            if (isSlice(param.type.name)) {
+                        if (param.type.kind === "type_id") {
+                            if (isSlice(param.type)) {
                                 if (
                                     s.receivers.find(
                                         (v) =>
@@ -1108,9 +1138,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     ast: d,
                                 });
                             } else {
-                                const type = types.get(
-                                    idText(param.type.name),
-                                )!;
+                                const type = types.get(idText(param.type))!;
                                 if (type.ast.kind !== "message_decl") {
                                     throwCompilationError(
                                         "Bounce receive function can only accept bounced message, message or Slice",
@@ -1122,7 +1150,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     type.partialFieldCount
                                 ) {
                                     throwCompilationError(
-                                        `This message is too big for bounce receiver, you need to wrap it to a bounced<${idTextErr(param.type.name)}>.`,
+                                        `This message is too big for bounce receiver, you need to wrap it to a bounced<${idTextErr(param.type)}>.`,
                                         d.loc,
                                     );
                                 }
@@ -1135,7 +1163,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     )
                                 ) {
                                     throwCompilationError(
-                                        `Bounce receive function for ${idTextErr(param.type.name)} already exists`,
+                                        `Bounce receive function for ${idTextErr(param.type)} already exists`,
                                         param.loc,
                                     );
                                 }
@@ -1143,14 +1171,21 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     selector: {
                                         kind: "bounce-binary",
                                         name: param.name,
-                                        type: idText(param.type.name),
+                                        type: idText(param.type),
                                         bounced: false,
                                     },
                                     ast: d,
                                 });
                             }
-                        } else if (param.type.kind === "type_ref_bounced") {
-                            const t = types.get(idText(param.type.name))!;
+                        } else if (param.type.kind === "optional_type") {
+                            throwCompilationError(
+                                "Bounce receive function cannot have optional parameter",
+                                d.loc,
+                            );
+                        } else if (param.type.kind === "bounced_message_type") {
+                            const t = types.get(
+                                idText(param.type.messageType),
+                            )!;
                             if (t.kind !== "struct") {
                                 throwCompilationError(
                                     "Bounce receive function can only accept bounced<T> struct types",
@@ -1185,7 +1220,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 selector: {
                                     kind: "bounce-binary",
                                     name: param.name,
-                                    type: idText(param.type.name),
+                                    type: idText(param.type.messageType),
                                     bounced: true,
                                 },
                                 ast: d,
@@ -1216,12 +1251,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (!t.init) {
                 t.init = {
                     params: [],
-                    ast: createNode({
-                        kind: "def_init_function",
+                    ast: createAstNode({
+                        kind: "contract_init",
                         params: [],
                         statements: [],
                         loc: t.ast.loc,
-                    }) as ASTInitFunction,
+                    }) as AstContractInit,
                 };
             }
         }
@@ -1613,15 +1648,15 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const [k, t] of types) {
         const dependsOn = new Set<string>();
-        const handler = (src: ASTNode) => {
+        const handler = (src: AstNode) => {
             if (src.kind === "init_of") {
-                if (!types.has(idText(src.name))) {
+                if (!types.has(idText(src.contract))) {
                     throwCompilationError(
-                        `Type ${idTextErr(src.name)} not found`,
+                        `Type ${idTextErr(src.contract)} not found`,
                         src.loc,
                     );
                 }
-                dependsOn.add(idText(src.name));
+                dependsOn.add(idText(src.contract));
             }
         };
 
@@ -1632,6 +1667,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         for (const f of t.receivers) {
             traverse(f.ast, handler);
         }
+        if (t.init) traverse(t.init.ast, handler);
 
         // Add dependencies
         for (const s of dependsOn) {
