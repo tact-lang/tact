@@ -2,7 +2,8 @@ import {
     ASTExpression,
     ASTUnaryOperation,
     ASTBinaryOperation,
-    createNode
+    createNode,
+    ASTNewParameter
 } from "../grammar/ast";
 import { Value } from "../types/types";
 import { DUMMY_LOCATION, ValueExpression } from "./types";
@@ -153,4 +154,112 @@ export function sign(a: bigint): bigint {
 // Uses the fact that a / b * b + a % b == a, for all b != 0.
 export function modFloor(a: bigint, b: bigint): bigint {
     return a - divFloor(a, b) * b;
+}
+
+// Test equality of ASTExpressions.
+export function areEqualExpressions(ast1: ASTExpression, ast2: ASTExpression): boolean {
+    switch (ast1.kind) {
+        case "null":
+            return ast2.kind === "null";
+        case "boolean":
+            return ast2.kind === "boolean" ? ast1.value === ast2.value : false;
+        case "number":
+            return ast2.kind === "number" ? ast1.value === ast2.value : false;
+        case "string":
+            return ast2.kind === "string" ? ast1.value === ast2.value : false;
+        case "id":
+            return ast2.kind === "id" ? ast1.text === ast2.text : false;
+        case "op_call":
+            if (ast2.kind === "op_call") {
+                return ast1.name.text === ast2.name.text &&
+                areEqualExpressions(ast1.src, ast2.src) &&
+                areEqualExpressionArrays(ast1.args, ast2.args);
+            } else {
+                return false;
+            }
+        case "init_of":
+            if (ast2.kind === "init_of") {
+                return ast1.name.text === ast2.name.text &&
+                areEqualExpressionArrays(ast1.args, ast2.args);
+            } else {
+                return false;
+            }
+        case "op_unary":
+            if (ast2.kind === "op_unary") {
+                return ast1.op === ast2.op &&
+                areEqualExpressions(ast1.right, ast2.right);
+            } else {
+                return false;
+            }
+        case "op_binary":
+            if (ast2.kind === "op_binary") {
+                return ast1.op === ast2.op &&
+                areEqualExpressions(ast1.left, ast2.left) &&
+                areEqualExpressions(ast1.right, ast2.right);
+            } else {
+                return false;
+            }
+        case "conditional":
+            if (ast2.kind === "conditional") {
+                return areEqualExpressions(ast1.condition, ast2.condition) &&
+                areEqualExpressions(ast1.thenBranch, ast2.thenBranch) &&
+                areEqualExpressions(ast1.elseBranch, ast2.elseBranch);
+            } else {
+                return false;
+            }
+        case "op_new":
+            if (ast2.kind === "op_new") {
+                return ast1.type.text === ast2.type.text &&
+                areEqualParameterArrays(ast1.args, ast2.args);
+            } else {
+                return false;
+            }
+        case "op_field":
+            if (ast2.kind === "op_field") {
+                return ast1.name.text === ast2.name.text &&
+                areEqualExpressions(ast1.src, ast2.src);
+            } else {
+                return false;
+            }
+        case "op_static_call":
+            if (ast2.kind === "op_static_call") {
+                return ast1.name.text === ast2.name.text &&
+                areEqualExpressionArrays(ast1.args, ast2.args);
+            } else {
+                return false;
+            }
+    }
+}
+
+function areEqualParameters(arg1: ASTNewParameter, arg2: ASTNewParameter): boolean {
+    return arg1.name.text === arg2.name.text &&
+    areEqualExpressions(arg1.exp, arg2.exp);
+}
+
+function areEqualParameterArrays(arr1: ASTNewParameter[], arr2: ASTNewParameter[]): boolean {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
+    for (var i = 0; i < arr1.length; i++) {
+        if (!areEqualParameters(arr1[i], arr2[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function areEqualExpressionArrays(arr1: ASTExpression[], arr2: ASTExpression[]): boolean {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
+    for (var i = 0; i < arr1.length; i++) {
+        if (!areEqualExpressions(arr1[i], arr2[i])) {
+            return false;
+        }
+    }
+
+    return true;
 }
