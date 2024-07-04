@@ -1,4 +1,4 @@
-import { evalConstantExpression, partiallyEvalExpression } from "./constEval";
+import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "./context";
 import { TactConstEvalError, TactParseError } from "./errors";
 import { parseExpression } from "./grammar/grammar";
