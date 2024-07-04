@@ -1,8 +1,8 @@
 export class CompilerContext {
-    readonly shared: { [key: symbol]: object | undefined } = {};
+    readonly shared: Record<symbol, object | undefined> = {};
 
     constructor(
-        args: { shared: { [key: symbol]: object | undefined } } = {
+        args: { shared: Record<symbol, object | undefined> } = {
             shared: {},
         },
     ) {
@@ -12,7 +12,7 @@ export class CompilerContext {
     }
 
     addShared = <T>(store: symbol, key: string | number, value: T) => {
-        let sh: { [key: string]: T } = {};
+        let sh: Record<string, T> = {};
         if (this.shared[store]) {
             sh = { ...this.shared[store] };
         }
@@ -28,18 +28,18 @@ export function createContextStore<T>() {
             if (!ctx.shared[symbol]) {
                 return null;
             }
-            const m = ctx.shared[symbol] as { [key: string | number]: T };
+            const m = ctx.shared[symbol] as Record<string | number, T>;
             if (m[key]) {
                 return m[key];
             } else {
                 return null;
             }
         },
-        all(ctx: CompilerContext): { [key: string | number]: T } {
+        all(ctx: CompilerContext): Record<string | number, T> {
             if (!ctx.shared[symbol]) {
-                return {} as { [key: string | number]: T };
+                return {} as Record<string | number, T>;
             }
-            const m = ctx.shared[symbol] as { [key: string | number]: T };
+            const m = ctx.shared[symbol] as Record<string | number, T>;
             return m;
         },
         set(ctx: CompilerContext, key: string | number, v: T) {

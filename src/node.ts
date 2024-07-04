@@ -14,9 +14,7 @@ type ConfigWithRootPath = Config & {
     singleFile: boolean;
 };
 
-async function configForSingleFile(
-    fileName: string,
-): Promise<ConfigWithRootPath> {
+function configForSingleFile(fileName: string): ConfigWithRootPath {
     return {
         projects: [
             {
@@ -32,10 +30,10 @@ async function configForSingleFile(
     };
 }
 
-async function loadConfig(
+function loadConfig(
     fileName?: string,
     configPath?: string,
-): Promise<ConfigWithRootPath | null> {
+): ConfigWithRootPath | null {
     if (fileName) return configForSingleFile(fileName);
 
     if (!configPath) return null;
@@ -103,10 +101,7 @@ export async function run(args: {
         consoleLogger.log("💼 Compiling project " + config.name + "...");
         let cliConfig = { ...config };
 
-        if (
-            args.additionalCliOptions !== undefined &&
-            args.additionalCliOptions.mode !== undefined
-        ) {
+        if (args.additionalCliOptions?.mode !== undefined) {
             cliConfig = { ...config, ...args.additionalCliOptions };
         }
 

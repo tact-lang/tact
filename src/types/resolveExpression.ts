@@ -125,7 +125,7 @@ function resolveStructNew(
     }
 
     // Process fields
-    const processed = new Set<string>();
+    const processed: Set<string> = new Set();
     for (const e of exp.args) {
         // Check duplicates
         if (processed.has(idText(e.field))) {

@@ -41,7 +41,7 @@ export function resolveFuncTypeFromAbi(
                     if (t.kind !== "struct") {
                         throw Error("Unsupported type: " + t.kind);
                     }
-                    if (f.optional || t.fields.length === 0) {
+                    if (f.optional ?? t.fields.length === 0) {
                         res.push("tuple");
                     } else {
                         const loaded = t.fields.map((v) => v.abi.type);

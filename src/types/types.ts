@@ -63,6 +63,9 @@ export type TypeRef =
           kind: "null";
       };
 
+// https://github.com/microsoft/TypeScript/issues/35164 and
+// https://github.com/microsoft/TypeScript/pull/57293
+// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 export type StructValue = {
     [key: string]: Value;
 };

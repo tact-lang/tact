@@ -108,7 +108,7 @@ semantics.addOperation<AstNode>("astOfModule", {
 semantics.addOperation<AstNode>("astOfImport", {
     Import(_importKwd, path, _semicolon) {
         const pathAST = path.astOfExpression() as AstString;
-        if (pathAST.value.indexOf("\\") >= 0) {
+        if (pathAST.value.includes("\\")) {
             throwCompilationError(
                 'Import path can\'t contain "\\"',
                 createRef(path),
@@ -363,7 +363,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         receiverBody,
         _rbrace,
     ) {
-        const optParam = optParameter.children[0];
+        const optParam = optParameter.children[0] as Node | undefined;
         const selector: AstReceiverKind = optParam
             ? {
                   kind: "internal-simple",
@@ -667,7 +667,9 @@ semantics.addOperation<AstNode>("astOfStatement", {
                     op = "^";
                     break;
                 default:
-                    throw "Internal compiler error: unreachable augmented assignment operator. Please report at https://github.com/tact-lang/tact/issues";
+                    throw Error(
+                        "Internal compiler error: unreachable augmented assignment operator. Please report at https://github.com/tact-lang/tact/issues",
+                    );
             }
             return createAstNode({
                 kind: "statement_augmentedassign",

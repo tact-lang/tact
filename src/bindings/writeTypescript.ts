@@ -78,19 +78,20 @@ export function writeTypescript(
     `);
     w.append();
 
-    const allocations: {
-        [key: string]: {
+    const allocations: Record<
+        string,
+        {
             size: { bits: number; refs: number };
             root: AllocationCell;
-        };
-    } = {};
+        }
+    > = {};
 
     // Structs
     if (abi.types) {
         // Allocations
         const refs = (src: ABIType) => {
             const res: ABIType[] = [];
-            const t = new Set<string>();
+            const t: Set<string> = new Set();
             for (const f of src.fields) {
                 const r = f.type;
                 if (r.kind === "simple") {
@@ -142,7 +143,7 @@ export function writeTypescript(
     // Init
     if (init) {
         // Write serializer
-        const argTypeName = (abi.name || "Contract") + "_init_args";
+        const argTypeName = (abi.name ?? "Contract") + "_init_args";
         const ops = init.args.map((v) => ({
             name: v.name,
             type: v.type,
@@ -191,11 +192,11 @@ export function writeTypescript(
     );
     w.inIndent(() => {
         if (abi.errors) {
-            Object.entries(abi.errors).forEach(([k, abiError]) =>
+            Object.entries(abi.errors).forEach(([k, abiError]) => {
                 w.append(
                     `${k}: { message: \`${abiError.message.replaceAll("`", "\\`")}\` },`,
-                ),
-            );
+                );
+            });
         }
     });
     w.append(`}`);

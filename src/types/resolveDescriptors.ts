@@ -822,7 +822,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
 
         // Check parameter names
-        const exNames = new Set<string>();
+        const exNames: Set<string> = new Set();
         for (const param of params) {
             if (isSelfId(param.name)) {
                 throwCompilationError(
@@ -1297,7 +1297,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     for (const t of types.values()) {
         if (t.ast.kind === "trait" || t.ast.kind === "contract") {
             // Check there are no duplicates in the _immediately_ inherited traits
-            const traitSet = new Set<string>(t.ast.traits.map(idText));
+            const traitSet: Set<string> = new Set(t.ast.traits.map(idText));
             if (traitSet.size !== t.ast.traits.length) {
                 const aggregateType =
                     t.ast.kind === "contract" ? "contract" : "trait";
@@ -1308,7 +1308,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
             // Flatten traits
             const traits: TypeDescription[] = [];
-            const visited = new Set<string>();
+            const visited: Set<string> = new Set();
             visited.add(t.name);
             // eslint-disable-next-line no-inner-declarations
             function visit(name: string) {
@@ -1410,7 +1410,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
 
                 // Check overrides
-                if (funInContractOrTrait && funInContractOrTrait.isOverrides) {
+                if (funInContractOrTrait?.isOverrides) {
                     if (
                         traitFunction.isGetter &&
                         !funInContractOrTrait.isGetter
@@ -1503,8 +1503,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
                 // Check overrides
                 if (
-                    constInContractOrTrait &&
-                    constInContractOrTrait.ast.attributes.find(
+                    constInContractOrTrait?.ast.attributes.find(
                         (v) => v.type === "overrides",
                     )
                 ) {
@@ -1635,8 +1634,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     // Copy to non-traits to avoid duplicates
 
-    const processed = new Set<string>();
-    const processing = new Set<string>();
+    const processed: Set<string> = new Set();
+    const processing: Set<string> = new Set();
 
     function processType(name: string) {
         // Check if processed
@@ -1675,7 +1674,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (const [k, t] of types) {
-        const dependsOn = new Set<string>();
+        const dependsOn: Set<string> = new Set();
         const handler = (src: AstNode) => {
             if (src.kind === "init_of") {
                 if (!types.has(idText(src.contract))) {
@@ -1720,7 +1719,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
     }
     for (const k of types.keys()) {
-        const dependsOn = new Set<string>();
+        const dependsOn: Set<string> = new Set();
         dependsOn.add(k);
         collectTransient(k, dependsOn);
         for (const s of dependsOn) {
@@ -1801,8 +1800,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
     return ctx;
 }
 
-export function getType(ctx: CompilerContext, ident: AstId): TypeDescription;
-export function getType(ctx: CompilerContext, ident: string): TypeDescription;
 export function getType(
     ctx: CompilerContext,
     ident: AstId | string,

@@ -33,7 +33,7 @@ export function getSortedTypes(ctx: CompilerContext) {
     let structs = types.filter((t) => t.kind === "struct");
     const refs = (src: TypeDescription) => {
         const res: TypeDescription[] = [];
-        const t = new Set<string>();
+        const t: Set<string> = new Set();
         for (const f of src.fields) {
             const r = f.type;
             if (r.kind === "ref") {

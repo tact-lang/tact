@@ -40,7 +40,7 @@ export function resolveFuncTypeFromAbiUnpack(
                         res.push(`${name}'${f.name}`);
                     } else {
                         const t = getType(ctx.ctx, f.type.type);
-                        if (f.type.optional || t.fields.length === 0) {
+                        if (f.type.optional ?? t.fields.length === 0) {
                             res.push(`${name}'${f.name}`);
                         } else {
                             const loaded = t.fields.map((v) => v.abi);
