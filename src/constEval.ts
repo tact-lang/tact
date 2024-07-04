@@ -15,16 +15,20 @@ import {
 import { TactConstEvalError, idTextErr, throwConstEvalError } from "./errors";
 import { CommentValue, StructValue, Value } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
-import { 
-    isValue, 
-    extractValue, 
-    makeValueExpression, 
+import {
+    isValue,
+    extractValue,
+    makeValueExpression,
     makeUnaryExpression,
     makeBinaryExpression,
     divFloor,
-    modFloor
+    modFloor,
 } from "./optimizer/util";
-import { DUMMY_LOCATION, ExpressionTransformer, ValueExpression } from "./optimizer/types";
+import {
+    DUMMY_LOCATION,
+    ExpressionTransformer,
+    ValueExpression,
+} from "./optimizer/types";
 import { StandardOptimizer } from "./optimizer/standardOptimizer";
 import {
     getStaticConstant,
@@ -37,7 +41,7 @@ import { getExpType } from "./types/resolveExpression";
 const minTvmInt: bigint = -(2n ** 256n);
 const maxTvmInt: bigint = 2n ** 256n - 1n;
 
-// The optimizer that applies the rewriting rules during partial evaluation. 
+// The optimizer that applies the rewriting rules during partial evaluation.
 // For the moment we use an optimizer that respects overflows.
 const optimizer: ExpressionTransformer = new StandardOptimizer();
 
@@ -112,10 +116,7 @@ function ensureMethodArity(
     }
 }
 
-export function evalUnaryOp(
-    op: AstUnaryOperation,
-    valOperand: Value
-): Value {
+export function evalUnaryOp(op: AstUnaryOperation, valOperand: Value): Value {
     return __evalUnaryOp(op, valOperand, DUMMY_LOCATION, DUMMY_LOCATION);
 }
 
@@ -123,7 +124,7 @@ function __evalUnaryOp(
     op: AstUnaryOperation,
     valOperand: Value,
     operandRef: SrcInfo,
-    source: SrcInfo
+    source: SrcInfo,
 ): Value {
     switch (op) {
         case "+":
@@ -145,7 +146,6 @@ function __evalUnaryOp(
     }
 }
 
-
 function fullyEvalUnaryOp(
     op: AstUnaryOperation,
     operand: AstExpression,
@@ -155,7 +155,7 @@ function fullyEvalUnaryOp(
     // Tact grammar does not have negative integer literals,
     // so in order to avoid errors for `-115792089237316195423570985008687907853269984665640564039457584007913129639936`
     // which is `-(2**256)` we need to have a special case for it
-    
+
     if (operand.kind === "number" && op === "-") {
         // emulating negative integer literals
         return ensureInt(-operand.value, source);
@@ -168,19 +168,24 @@ function fullyEvalUnaryOp(
 
 function partiallyEvalUnaryOp(
     op: AstUnaryOperation,
-    oper: AstExpression,
+    operand: AstExpression,
     source: SrcInfo,
     ctx: CompilerContext,
 ): AstExpression {
-    const operand = partiallyEvalExpression(oper, ctx);
-            
-    if (isValue(operand)) {
-        const valueOperand = extractValue(operand as ValueExpression);
-        const result = __evalUnaryOp(op, valueOperand, operand.loc, source);
+    const simplOperand = partiallyEvalExpression(operand, ctx);
+
+    if (isValue(simplOperand)) {
+        const valueOperand = extractValue(simplOperand as ValueExpression);
+        const result = __evalUnaryOp(
+            op,
+            valueOperand,
+            simplOperand.loc,
+            source,
+        );
         // Wrap the value into a Tree to continue simplifications
         return makeValueExpression(result);
     } else {
-        const newAst = makeUnaryExpression(op, operand);
+        const newAst = makeUnaryExpression(op, simplOperand);
         return optimizer.applyRules(newAst);
     }
 }
@@ -203,15 +208,22 @@ function partiallyEvalBinaryOp(
     left: AstExpression,
     right: AstExpression,
     source: SrcInfo,
-    ctx: CompilerContext
+    ctx: CompilerContext,
 ): AstExpression {
     const leftOperand = partiallyEvalExpression(left, ctx);
     const rightOperand = partiallyEvalExpression(right, ctx);
-            
+
     if (isValue(leftOperand) && isValue(rightOperand)) {
         const valueLeftOperand = extractValue(leftOperand as ValueExpression);
         const valueRightOperand = extractValue(rightOperand as ValueExpression);
-        const result = __evalBinaryOp(op, valueLeftOperand, valueRightOperand, leftOperand.loc, rightOperand.loc, source);
+        const result = __evalBinaryOp(
+            op,
+            valueLeftOperand,
+            valueRightOperand,
+            leftOperand.loc,
+            rightOperand.loc,
+            source,
+        );
         // Wrap the value into a Tree to continue simplifications
         return makeValueExpression(result);
     } else {
@@ -223,9 +235,16 @@ function partiallyEvalBinaryOp(
 export function evalBinaryOp(
     op: AstBinaryOperation,
     valLeft: Value,
-    valRight: Value
+    valRight: Value,
 ): Value {
-    return __evalBinaryOp(op, valLeft, valRight, DUMMY_LOCATION, DUMMY_LOCATION, DUMMY_LOCATION);
+    return __evalBinaryOp(
+        op,
+        valLeft,
+        valRight,
+        DUMMY_LOCATION,
+        DUMMY_LOCATION,
+        DUMMY_LOCATION,
+    );
 }
 
 function __evalBinaryOp(
@@ -234,7 +253,7 @@ function __evalBinaryOp(
     valRight: Value,
     refLeft: SrcInfo,
     refRight: SrcInfo,
-    source: SrcInfo
+    source: SrcInfo,
 ): Value {
     switch (op) {
         case "+":
@@ -277,17 +296,11 @@ function __evalBinaryOp(
             return ensureInt(modFloor(ensureInt(valLeft, refLeft), r), source);
         }
         case "&":
-            return (
-                ensureInt(valLeft, refLeft) & ensureInt(valRight, refRight)
-            );
+            return ensureInt(valLeft, refLeft) & ensureInt(valRight, refRight);
         case "|":
-            return (
-                ensureInt(valLeft, refLeft) | ensureInt(valRight, refRight)
-            );
+            return ensureInt(valLeft, refLeft) | ensureInt(valRight, refRight);
         case "^":
-            return (
-                ensureInt(valLeft, refLeft) ^ ensureInt(valRight, refRight)
-            );
+            return ensureInt(valLeft, refLeft) ^ ensureInt(valRight, refRight);
         case "<<": {
             const valNum = ensureInt(valLeft, refLeft);
             const valBits = ensureInt(valRight, refRight);
@@ -331,21 +344,13 @@ function __evalBinaryOp(
             }
         }
         case ">":
-            return (
-                ensureInt(valLeft, refLeft) > ensureInt(valRight, refRight)
-            );
+            return ensureInt(valLeft, refLeft) > ensureInt(valRight, refRight);
         case "<":
-            return (
-                ensureInt(valLeft, refLeft) < ensureInt(valRight, refRight)
-            );
+            return ensureInt(valLeft, refLeft) < ensureInt(valRight, refRight);
         case ">=":
-            return (
-                ensureInt(valLeft, refLeft) >= ensureInt(valRight, refRight)
-            );
+            return ensureInt(valLeft, refLeft) >= ensureInt(valRight, refRight);
         case "<=":
-            return (
-                ensureInt(valLeft, refLeft) <= ensureInt(valRight, refRight)
-            );
+            return ensureInt(valLeft, refLeft) <= ensureInt(valRight, refRight);
         case "==":
             // the null comparisons account for optional types, e.g.
             // a const x: Int? = 42 can be compared to null
@@ -773,13 +778,15 @@ export function evalConstantExpression(
     }
 }
 
-
-export function partiallyEvalExpression(ast: AstExpression, ctx: CompilerContext): AstExpression {
+export function partiallyEvalExpression(
+    ast: AstExpression,
+    ctx: CompilerContext,
+): AstExpression {
     switch (ast.kind) {
         case "id":
             try {
                 return makeValueExpression(lookupID(ast, ctx));
-            } catch(e) {
+            } catch (e) {
                 if (e instanceof TactConstEvalError) {
                     if (!e.fatal) {
                         // If a non-fatal error occurs during lookup, just return the symbol
@@ -789,14 +796,16 @@ export function partiallyEvalExpression(ast: AstExpression, ctx: CompilerContext
                 throw e;
             }
         case "method_call":
-            // Does not partially evaluate at the monent. Will attemp to fully evaluate
-            const resCall = evalMethod(ast.method, ast.self, ast.args, ast.loc, ctx);
-            return makeValueExpression(resCall);
+            // Does not partially evaluate at the moment. Will attempt to fully evaluate
+            return makeValueExpression(
+                evalMethod(ast.method, ast.self, ast.args, ast.loc, ctx),
+            );
         case "init_of":
             throwNonFatalErrorConstEval(
                 "initOf is not supported at this moment",
                 ast.loc,
             );
+            break;
         case "null":
             return ast;
         case "boolean":
@@ -804,32 +813,43 @@ export function partiallyEvalExpression(ast: AstExpression, ctx: CompilerContext
         case "number":
             return makeValueExpression(ensureInt(ast.value, ast.loc));
         case "string":
-            return makeValueExpression(ensureString(interpretEscapeSequences(ast.value), ast.loc));
+            return makeValueExpression(
+                ensureString(interpretEscapeSequences(ast.value), ast.loc),
+            );
         case "op_unary":
             return partiallyEvalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
         case "op_binary":
-            return partiallyEvalBinaryOp(ast.op, ast.left, ast.right, ast.loc, ctx);
-        case "conditional":
-            // Does not partially evaluate at the monent. Will attemp to fully evaluate
-            const resCond = evalConditional(
-                ast.condition,
-                ast.thenBranch,
-                ast.elseBranch,
+            return partiallyEvalBinaryOp(
+                ast.op,
+                ast.left,
+                ast.right,
+                ast.loc,
                 ctx,
             );
-            return makeValueExpression(resCond);
+        case "conditional":
+            // Does not partially evaluate at the moment. Will attempt to fully evaluate
+            return makeValueExpression(
+                evalConditional(
+                    ast.condition,
+                    ast.thenBranch,
+                    ast.elseBranch,
+                    ctx,
+                ),
+            );
         case "struct_instance":
-            // Does not partially evaluate at the monent. Will attemp to fully evaluate
-            const resStruct = evalStructInstance(ast.type, ast.args, ctx);
-            return makeValueExpression(resStruct);
+            // Does not partially evaluate at the moment. Will attempt to fully evaluate
+            return makeValueExpression(
+                evalStructInstance(ast.type, ast.args, ctx),
+            );
         case "field_access":
-            // Does not partially evaluate at the monent. Will attemp to fully evaluate
-            const resField = evalFieldAccess(ast.aggregate, ast.field, ast.loc, ctx);
-            return makeValueExpression(resField);
+            // Does not partially evaluate at the moment. Will attempt to fully evaluate
+            return makeValueExpression(
+                evalFieldAccess(ast.aggregate, ast.field, ast.loc, ctx),
+            );
         case "static_call":
-            // Does not partially evaluate at the monent. Will attemp to fully evaluate
-            const resStaticCall = evalBuiltins(ast.function, ast.args, ast.loc, ctx);
-            return makeValueExpression(resStaticCall);
+            // Does not partially evaluate at the moment. Will attempt to fully evaluate
+            return makeValueExpression(
+                evalBuiltins(ast.function, ast.args, ast.loc, ctx),
+            );
     }
 }
-
