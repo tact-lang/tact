@@ -84,21 +84,18 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (self.key === "Int") {
                     let bits = 257;
                     let kind = "int";
-                    if (self.keyAs && self.keyAs.startsWith("int")) {
+                    if (self.keyAs?.startsWith("int")) {
                         bits = parseInt(self.keyAs.slice(3), 10);
-                    } else if (self.keyAs && self.keyAs.startsWith("uint")) {
+                    } else if (self.keyAs?.startsWith("uint")) {
                         bits = parseInt(self.keyAs.slice(4), 10);
                         kind = "uint";
                     }
                     if (self.value === "Int") {
                         let vBits = 257;
                         let vKind = "int";
-                        if (self.valueAs && self.valueAs.startsWith("int")) {
+                        if (self.valueAs?.startsWith("int")) {
                             vBits = parseInt(self.valueAs.slice(3), 10);
-                        } else if (
-                            self.valueAs &&
-                            self.valueAs.startsWith("uint")
-                        ) {
+                        } else if (self.valueAs?.startsWith("uint")) {
                             vBits = parseInt(self.valueAs.slice(4), 10);
                             vKind = "uint";
                         }
@@ -148,12 +145,9 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     if (self.value === "Int") {
                         let vBits = 257;
                         let vKind = "int";
-                        if (self.valueAs && self.valueAs.startsWith("int")) {
+                        if (self.valueAs?.startsWith("int")) {
                             vBits = parseInt(self.valueAs.slice(3), 10);
-                        } else if (
-                            self.valueAs &&
-                            self.valueAs.startsWith("uint")
-                        ) {
+                        } else if (self.valueAs?.startsWith("uint")) {
                             vBits = parseInt(self.valueAs.slice(4), 10);
                             vKind = "uint";
                         }
@@ -258,21 +252,18 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (self.key === "Int") {
                     let bits = 257;
                     let kind = "int";
-                    if (self.keyAs && self.keyAs.startsWith("int")) {
+                    if (self.keyAs?.startsWith("int")) {
                         bits = parseInt(self.keyAs.slice(3), 10);
-                    } else if (self.keyAs && self.keyAs.startsWith("uint")) {
+                    } else if (self.keyAs?.startsWith("uint")) {
                         bits = parseInt(self.keyAs.slice(4), 10);
                         kind = "uint";
                     }
                     if (self.value === "Int") {
                         let vBits = 257;
                         let vKind = "int";
-                        if (self.valueAs && self.valueAs.startsWith("int")) {
+                        if (self.valueAs?.startsWith("int")) {
                             vBits = parseInt(self.valueAs.slice(3), 10);
-                        } else if (
-                            self.valueAs &&
-                            self.valueAs.startsWith("uint")
-                        ) {
+                        } else if (self.valueAs?.startsWith("uint")) {
                             vBits = parseInt(self.valueAs.slice(4), 10);
                             vKind = "uint";
                         }
@@ -318,12 +309,9 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     if (self.value === "Int") {
                         let vBits = 257;
                         let vKind = "int";
-                        if (self.valueAs && self.valueAs.startsWith("int")) {
+                        if (self.valueAs?.startsWith("int")) {
                             vBits = parseInt(self.valueAs.slice(3), 10);
-                        } else if (
-                            self.valueAs &&
-                            self.valueAs.startsWith("uint")
-                        ) {
+                        } else if (self.valueAs?.startsWith("uint")) {
                             vBits = parseInt(self.valueAs.slice(4), 10);
                             vKind = "uint";
                         }
@@ -422,9 +410,9 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (self.key === "Int") {
                     let bits = 257;
                     let kind = "int";
-                    if (self.keyAs && self.keyAs.startsWith("int")) {
+                    if (self.keyAs?.startsWith("int")) {
                         bits = parseInt(self.keyAs.slice(3), 10);
-                    } else if (self.keyAs && self.keyAs.startsWith("uint")) {
+                    } else if (self.keyAs?.startsWith("uint")) {
                         bits = parseInt(self.keyAs.slice(4), 10);
                         kind = "uint";
                     }

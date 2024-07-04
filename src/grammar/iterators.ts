@@ -31,9 +31,9 @@ export function forEachExpression(
                 expr.args.forEach(traverseExpression);
                 break;
             case "struct_instance":
-                expr.args.forEach((param) =>
-                    traverseExpression(param.initializer),
-                );
+                expr.args.forEach((param) => {
+                    traverseExpression(param.initializer);
+                });
                 break;
             case "init_of":
                 expr.args.forEach(traverseExpression);

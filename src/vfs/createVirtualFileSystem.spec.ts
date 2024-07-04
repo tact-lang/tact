@@ -13,7 +13,7 @@ describe("createVirtualFileSystem", () => {
     });
 
     it("should read from virtual file system", () => {
-        const fs: { [key: string]: string } = {
+        const fs: Record<string, string> = {
             ["file.txt"]: Buffer.from("Hello World").toString("base64"),
             ["empty.txt"]: Buffer.from([]).toString("base64"),
         };

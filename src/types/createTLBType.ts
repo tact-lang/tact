@@ -110,13 +110,12 @@ export function createTLBType(
     } else {
         const base = cs.snakeCase(name) + " " + fields + " = " + name;
         const op =
-            knownHeader !== null
-                ? knownHeader
-                : beginCell()
-                      .storeBuffer(sha256_sync(base))
-                      .endCell()
-                      .beginParse()
-                      .loadUint(32);
+            knownHeader ??
+            beginCell()
+                .storeBuffer(sha256_sync(base))
+                .endCell()
+                .beginParse()
+                .loadUint(32);
         const opText = beginCell()
             .storeUint(op, 32)
             .endCell()

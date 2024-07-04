@@ -6,7 +6,7 @@ export function checkConstAttributes(
     attributes: AstConstantAttribute[],
     loc: SrcInfo,
 ) {
-    const k = new Set<string>();
+    const k: Set<string> = new Set();
     for (const a of attributes) {
         if (k.has(a.type)) {
             throwCompilationError(

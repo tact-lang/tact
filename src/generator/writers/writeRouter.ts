@@ -46,7 +46,7 @@ export function writeRouter(
                     return r.selector.kind === "bounce-fallback";
                 });
 
-                if (fallbackReceiver || bounceReceivers.length > 0) {
+                if (fallbackReceiver ?? bounceReceivers.length > 0) {
                     ctx.append();
                     ctx.append(`;; Skip 0xFFFFFFFF`);
                     ctx.append(`in_msg~skip_bits(32);`);

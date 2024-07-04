@@ -15,10 +15,10 @@ import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 
 export function resolveSignatures(ctx: CompilerContext) {
     const types = getAllTypes(ctx);
-    const signatures = new Map<
+    const signatures: Map<
         string,
         { signature: string; tlb: string; id: number | null }
-    >();
+    > = new Map();
     function createTypeFormat(
         type: string,
         format: string | number | boolean | null,
@@ -226,12 +226,14 @@ function checkMessageOpcodesUniqueInContractOrTrait(
     receivers: ReceiverDescription[],
     ctx: CompilerContext,
 ) {
-    const binBouncedRcvUsedOpcodes = new Map<binOpcode, messageType>();
-    const binExternalRcvUsedOpcodes = new Map<binOpcode, messageType>();
-    const binInternalRcvUsedOpcodes = new Map<binOpcode, messageType>();
+    const binBouncedRcvUsedOpcodes: Map<binOpcode, messageType> = new Map();
+    const binExternalRcvUsedOpcodes: Map<binOpcode, messageType> = new Map();
+    const binInternalRcvUsedOpcodes: Map<binOpcode, messageType> = new Map();
 
-    const commentExternalRcvUsedOpcodes = new Map<commentOpcode, messageType>();
-    const commentInternalRcvUsedOpcodes = new Map<commentOpcode, messageType>();
+    const commentExternalRcvUsedOpcodes: Map<commentOpcode, messageType> =
+        new Map();
+    const commentInternalRcvUsedOpcodes: Map<commentOpcode, messageType> =
+        new Map();
 
     for (const rcv of receivers) {
         switch (rcv.selector.kind) {

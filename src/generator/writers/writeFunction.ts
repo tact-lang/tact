@@ -275,18 +275,18 @@ export function writeStatement(
             if (t.key === "Int") {
                 let bits = 257;
                 let kind = "int";
-                if (t.keyAs && t.keyAs.startsWith("int")) {
+                if (t.keyAs?.startsWith("int")) {
                     bits = parseInt(t.keyAs.slice(3), 10);
-                } else if (t.keyAs && t.keyAs.startsWith("uint")) {
+                } else if (t.keyAs?.startsWith("uint")) {
                     bits = parseInt(t.keyAs.slice(4), 10);
                     kind = "uint";
                 }
                 if (t.value === "Int") {
                     let vBits = 257;
                     let vKind = "int";
-                    if (t.valueAs && t.valueAs.startsWith("int")) {
+                    if (t.valueAs?.startsWith("int")) {
                         vBits = parseInt(t.valueAs.slice(3), 10);
-                    } else if (t.valueAs && t.valueAs.startsWith("uint")) {
+                    } else if (t.valueAs?.startsWith("uint")) {
                         vBits = parseInt(t.valueAs.slice(4), 10);
                         vKind = "uint";
                     }
@@ -372,9 +372,9 @@ export function writeStatement(
                 if (t.value === "Int") {
                     let vBits = 257;
                     let vKind = "int";
-                    if (t.valueAs && t.valueAs.startsWith("int")) {
+                    if (t.valueAs?.startsWith("int")) {
                         vBits = parseInt(t.valueAs.slice(3), 10);
-                    } else if (t.valueAs && t.valueAs.startsWith("uint")) {
+                    } else if (t.valueAs?.startsWith("uint")) {
                         vBits = parseInt(t.valueAs.slice(4), 10);
                         vKind = "uint";
                     }

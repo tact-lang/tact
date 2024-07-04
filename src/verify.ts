@@ -10,7 +10,7 @@ export type VerifyResult =
     | {
           ok: true;
           package: PackageFileFormat;
-          files: { [key: string]: string };
+          files: Record<string, string>;
       }
     | {
           ok: false;
@@ -26,7 +26,7 @@ export async function verify(args: {
     pkg: string;
     logger?: TactLogger | null | undefined;
 }): Promise<VerifyResult> {
-    const logger = args.logger || consoleLogger;
+    const logger = args.logger ?? consoleLogger;
 
     // Loading package
     let unpacked: PackageFileFormat;

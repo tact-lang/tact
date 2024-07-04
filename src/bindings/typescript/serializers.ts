@@ -723,7 +723,7 @@ const map: Serializer<MapSerializerDescr> = {
                     value = { kind: "cell" };
                 }
             }
-            if (primitiveTypes.indexOf(src.value) === -1) {
+            if (!primitiveTypes.includes(src.value)) {
                 if (
                     src.valueFormat === null ||
                     src.valueFormat === undefined ||

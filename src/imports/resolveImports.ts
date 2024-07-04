@@ -28,7 +28,7 @@ export function resolveImports(args: {
         [];
     const importedFunc: { code: string; path: string; origin: ItemOrigin }[] =
         [];
-    const processed = new Set<string>();
+    const processed: Set<string> = new Set();
     const pending: { code: string; path: string; origin: ItemOrigin }[] = [];
     function processImports(source: string, path: string, origin: ItemOrigin) {
         const imp = parseImports(source, path, origin);

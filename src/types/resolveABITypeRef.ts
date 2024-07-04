@@ -21,9 +21,10 @@ import {
 } from "../errors";
 import { TypeRef } from "./types";
 
-type FormatDef = {
-    [key: string]: { type: string; format: string | number } | undefined;
-};
+type FormatDef = Record<
+    string,
+    { type: string; format: string | number } | undefined
+>;
 
 const intFormats: FormatDef = {
     int8: { type: "int", format: 8 },
