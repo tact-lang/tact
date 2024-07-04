@@ -566,10 +566,9 @@ function evalBuiltins(
                 args[0].loc,
             );
             const addr = Buffer.from(
-                ensureInt(
-                    evalConstantExpression(args[1], ctx),
-                    args[1].loc,
-                ).toString(16),
+                ensureInt(evalConstantExpression(args[1], ctx), args[1].loc)
+                    .toString(16)
+                    .padStart(64, "0"),
                 "hex",
             );
             if (wc !== 0n && wc !== -1n) {
