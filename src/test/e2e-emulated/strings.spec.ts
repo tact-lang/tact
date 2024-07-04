@@ -15,7 +15,7 @@ describe("strings", () => {
         await contract.send(treasure, { value: toNano("10") }, null);
         await system.run();
 
-        expect(contract.abi.errors!["31733"].message).toStrictEqual(
+        expect(contract.abi.errors!["31733"]!.message).toStrictEqual(
             "condition can`t be...",
         );
 

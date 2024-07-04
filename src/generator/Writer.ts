@@ -191,6 +191,7 @@ export class WriterContext {
         if (!signature && name !== "$main") {
             throw new Error(`Function "${name}" signature not set`);
         }
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!code) {
             throw new Error(`Function "${name}" body not set`);
         }

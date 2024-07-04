@@ -67,21 +67,27 @@ export function openContext(
     const constants: AstConstantDef[] = [];
     for (const program of programs) {
         for (const item of program.items) {
-            if (
-                item.kind === "struct_decl" ||
-                item.kind === "message_decl" ||
-                item.kind === "contract" ||
-                item.kind === "trait" ||
-                item.kind === "primitive_type_decl"
-            ) {
-                types.push(item);
-            } else if (
-                item.kind === "function_def" ||
-                item.kind === "native_function_decl"
-            ) {
-                functions.push(item);
-            } else if (item.kind === "constant_def") {
-                constants.push(item);
+            switch (item.kind) {
+                case "struct_decl":
+                case "message_decl":
+                case "contract":
+                case "trait":
+                case "primitive_type_decl":
+                    {
+                        types.push(item);
+                    }
+                    break;
+                case "function_def":
+                case "native_function_decl":
+                    {
+                        functions.push(item);
+                    }
+                    break;
+                case "constant_def":
+                    {
+                        constants.push(item);
+                    }
+                    break;
             }
         }
     }

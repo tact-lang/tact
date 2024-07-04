@@ -14,8 +14,10 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 3) {
                     throwCompilationError("set expects two arguments", ref); // Should not happen
                 }
-                const self = args[0];
-                if (!self || self.kind !== "map") {
+                const self = args[0]!;
+                const key = args[1]!;
+                const value = args[2]!;
+                if (self.kind !== "map") {
                     throwCompilationError(
                         "set expects a map as self argument",
                         ref,
@@ -31,13 +33,13 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Check key type
-                if (args[1].kind !== "ref" || args[1].optional) {
+                if (key.kind !== "ref" || key.optional) {
                     throwCompilationError(
                         "set expects a direct type as first argument",
                         ref,
                     );
                 }
-                if (args[1].name !== self.key) {
+                if (key.name !== self.key) {
                     throwCompilationError(
                         `set expects a "${self.key}" as first argument`,
                         ref,
@@ -45,13 +47,13 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Check value type
-                if (args[2].kind !== "null" && args[2].kind !== "ref") {
+                if (value.kind !== "null" && value.kind !== "ref") {
                     throwCompilationError(
                         "set expects a direct type as second argument",
                         ref,
                     );
                 }
-                if (args[2].kind !== "null" && args[2].name !== self.value) {
+                if (value.kind !== "null" && value.name !== self.value) {
                     throwCompilationError(
                         `set expects a "${self.value}" as second argument`,
                         ref,
@@ -66,8 +68,9 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 3) {
                     throwCompilationError("set expects two arguments", ref); // Ignore self argument
                 }
-                const self = args[0];
-                if (!self || self.kind !== "map") {
+                const self = args[0]!;
+                const value = args[2]!;
+                if (self.kind !== "map") {
                     throwCompilationError(
                         "set expects a map as self argument",
                         ref,
@@ -126,7 +129,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                         }
                         if (t.kind === "struct") {
                             ctx.used(`__tact_dict_set_${kind}_cell`);
-                            if (args[2].kind === "ref" && !args[2].optional) {
+                            if (value.kind === "ref" && !value.optional) {
                                 return `${resolved[0]}~__tact_dict_set_${kind}_cell(${bits}, ${resolved[1]}, ${ops.writerCell(t.name, ctx)}(${resolved[2]}))`;
                             } else {
                                 return `${resolved[0]}~__tact_dict_set_${kind}_cell(${bits}, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
@@ -181,7 +184,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                         }
                         if (t.kind === "struct") {
                             ctx.used(`__tact_dict_set_slice_cell`);
-                            if (args[2].kind === "ref" && !args[2].optional) {
+                            if (value.kind === "ref" && !value.optional) {
                                 return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, ${ops.writerCell(t.name, ctx)}(${resolved[2]}))`;
                             } else {
                                 return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
@@ -211,8 +214,9 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 2) {
                     throwCompilationError("set expects one argument", ref); // Ignore self argument
                 }
-                const self = args[0];
-                if (!self || self.kind !== "map") {
+                const self = args[0]!;
+                const key = args[1]!;
+                if (self.kind !== "map") {
                     throwCompilationError(
                         "set expects a map as self argument",
                         ref,
@@ -220,13 +224,13 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Check key type
-                if (args[1].kind !== "ref" || args[1].optional) {
+                if (key.kind !== "ref" || key.optional) {
                     throwCompilationError(
                         "set expects a direct type as first argument",
                         ref,
                     );
                 }
-                if (args[1].name !== self.key) {
+                if (key.name !== self.key) {
                     throwCompilationError(
                         `set expects a "${self.key}" as first argument`,
                         ref,
@@ -239,8 +243,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 2) {
                     throwCompilationError("set expects one argument", ref); // Ignore self argument
                 }
-                const self = args[0];
-                if (!self || self.kind !== "map") {
+                const self = args[0]!;
+                if (self.kind !== "map") {
                     throwCompilationError(
                         "set expects a map as self argument",
                         ref,
@@ -373,8 +377,9 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 2) {
                     throwCompilationError("del expects one argument", ref); // Ignore self argument
                 }
-                const self = args[0];
-                if (!self || self.kind !== "map") {
+                const self = args[0]!;
+                const key = args[1]!;
+                if (self.kind !== "map") {
                     throwCompilationError(
                         "del expects a map as self argument",
                         ref,
@@ -382,13 +387,13 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Check key type
-                if (args[1].kind !== "ref" || args[1].optional) {
+                if (key.kind !== "ref" || key.optional) {
                     throwCompilationError(
                         "del expects a direct type as first argument",
                         ref,
                     );
                 }
-                if (args[1].name !== self.key) {
+                if (key.name !== self.key) {
                     throwCompilationError(
                         `del expects a "${self.key}" as first argument`,
                         ref,
@@ -402,8 +407,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 2) {
                     throwCompilationError("del expects one argument", ref); // Ignore self argument
                 }
-                const self = args[0];
-                if (!self || self.kind !== "map") {
+                const self = args[0]!;
+                if (self.kind !== "map") {
                     throwCompilationError(
                         "del expects a map as self argument",
                         ref,
@@ -446,8 +451,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 1) {
                     throwCompilationError("asCell expects one argument", ref); // Ignore self argument
                 }
-                const self = args[0];
-                if (!self || self.kind !== "map") {
+                const self = args[0]!;
+                if (self.kind !== "map") {
                     throwCompilationError(
                         "asCell expects a map as self argument",
                         ref,
@@ -460,15 +465,15 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 1) {
                     throwCompilationError("asCell expects one argument", ref); // Ignore self argument
                 }
-                const self = args[0];
-                if (!self || self.kind !== "map") {
+                const self = args[0]!;
+                if (self.kind !== "map") {
                     throwCompilationError(
                         "asCell expects a map as self argument",
                         ref,
                     ); // Should not happen
                 }
 
-                return writeExpression(exprs[0], ctx);
+                return writeExpression(exprs[0]!, ctx);
             },
         },
     ],
@@ -481,8 +486,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 1) {
                     throwCompilationError("isEmpty expects one argument", ref); // Ignore self argument
                 }
-                const self = args[0];
-                if (!self || self.kind !== "map") {
+                const self = args[0]!;
+                if (self.kind !== "map") {
                     throwCompilationError(
                         "isEmpty expects a map as self argument",
                         ref,
@@ -495,15 +500,15 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 1) {
                     throwCompilationError("isEmpty expects one argument", ref); // Ignore self argument
                 }
-                const self = args[0];
-                if (!self || self.kind !== "map") {
+                const self = args[0]!;
+                if (self.kind !== "map") {
                     throwCompilationError(
                         "isEmpty expects a map as self argument",
                         ref,
                     ); // Should not happen
                 }
 
-                return `null?(${writeExpression(exprs[0], ctx)})`;
+                return `null?(${writeExpression(exprs[0]!, ctx)})`;
             },
         },
     ],

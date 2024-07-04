@@ -102,37 +102,36 @@ export function resolveSignatures(ctx: CompilerContext) {
         } else if (format !== null) {
             throw Error("Unsupported struct format " + format);
         }
-        return `${s.signature}`;
+        return s.signature;
     }
 
     function createTLBField(src: ABIField) {
-        if (src.type.kind === "simple") {
-            let base = createTypeFormat(
-                src.type.type,
-                src.type.format ? src.type.format : null,
-            );
-            if (src.type.optional) {
-                base = "Maybe " + base;
+        switch (src.type.kind) {
+            case "simple": {
+                let base = createTypeFormat(
+                    src.type.type,
+                    src.type.format ? src.type.format : null,
+                );
+                if (src.type.optional) {
+                    base = "Maybe " + base;
+                }
+                return src.name + ":" + base;
             }
-            return src.name + ":" + base;
-        }
-
-        if (src.type.kind === "dict") {
-            if (src.type.format !== null && src.type.format !== undefined) {
-                throw Error("Unsupported map format " + src.type.format);
+            case "dict": {
+                if (src.type.format !== null && src.type.format !== undefined) {
+                    throw Error("Unsupported map format " + src.type.format);
+                }
+                const key = createTypeFormat(
+                    src.type.key,
+                    src.type.keyFormat ? src.type.keyFormat : null,
+                );
+                const value = createTypeFormat(
+                    src.type.value,
+                    src.type.valueFormat ? src.type.valueFormat : null,
+                );
+                return src.name + ":dict<" + key + ", " + value + ">";
             }
-            const key = createTypeFormat(
-                src.type.key,
-                src.type.keyFormat ? src.type.keyFormat : null,
-            );
-            const value = createTypeFormat(
-                src.type.value,
-                src.type.valueFormat ? src.type.valueFormat : null,
-            );
-            return src.name + ":dict<" + key + ", " + value + ">";
         }
-
-        throw Error("Unsupported ABI field");
     }
 
     function createTupleSignature(name: string): {
@@ -169,15 +168,14 @@ export function resolveSignatures(ctx: CompilerContext) {
         return { signature, id, tlb };
     }
 
-    for (const k in types) {
-        const t = types[k];
+    Object.values(types).forEach((t) => {
         if (t.kind === "struct") {
             const r = createTupleSignature(t.name);
             t.tlb = r.tlb;
             t.signature = r.signature;
             t.header = r.id;
         }
-    }
+    });
 
     checkMessageOpcodesUnique(ctx);
 
@@ -283,8 +281,7 @@ function checkMessageOpcodesUniqueInContractOrTrait(
 
 function checkMessageOpcodesUnique(ctx: CompilerContext) {
     const allTypes = getAllTypes(ctx);
-    for (const aggregateId in allTypes) {
-        const aggregate = allTypes[aggregateId];
+    Object.values(allTypes).forEach((aggregate) => {
         switch (aggregate.kind) {
             case "contract":
             case "trait":
@@ -296,5 +293,5 @@ function checkMessageOpcodesUnique(ctx: CompilerContext) {
             default:
                 break;
         }
-    }
+    });
 }

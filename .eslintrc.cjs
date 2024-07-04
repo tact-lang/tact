@@ -32,5 +32,10 @@ module.exports = {
     "@typescript-eslint/no-duplicate-type-constituents": "error",
     "@typescript-eslint/restrict-plus-operands": "error",
     "@typescript-eslint/no-base-to-string": "error",
+    "@typescript-eslint/restrict-template-expressions": "error",
+    "@typescript-eslint/no-useless-template-literals": "error",
+    "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
+    "@typescript-eslint/no-unnecessary-condition": "error",
+    "@typescript-eslint/switch-exhaustiveness-check": "error",
   },
 };

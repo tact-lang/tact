@@ -126,7 +126,7 @@ export function writeValue(val: Value, wCtx: WriterContext): string {
         wCtx.used(id);
         return `${id}()`;
     }
-    if (typeof val === "object" && val !== null && "$tactStruct" in val) {
+    if (typeof val === "object" && "$tactStruct" in val) {
         // this is a struct value
         const structDescription = getType(
             wCtx.ctx,
@@ -137,7 +137,7 @@ export function writeValue(val: Value, wCtx: WriterContext): string {
         wCtx.used(id);
         const fieldValues = structDescription.fields.map((field) => {
             if (field.name in val) {
-                return writeValue(val[field.name], wCtx);
+                return writeValue(val[field.name]!, wCtx);
             } else {
                 throw Error(
                     `Struct value is missing a field: ${field.name}`,
@@ -151,9 +151,7 @@ export function writeValue(val: Value, wCtx: WriterContext): string {
 }
 
 export function writePathExpression(path: AstId[]): string {
-    return [funcIdOf(path[0].text), ...path.slice(1).map((id) => id.text)].join(
-        `'`,
-    );
+    return [funcIdOf(idText(path[0]!)), ...path.slice(1).map(idText)].join(`'`);
 }
 
 export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
@@ -360,43 +358,11 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
         }
 
         // Other ops
-        let op: string;
-        if (f.op === "*") {
-            op = "*";
-        } else if (f.op === "/") {
-            op = "/";
-        } else if (f.op === "%") {
-            op = "%";
-        } else if (f.op === "+") {
-            op = "+";
-        } else if (f.op === "-") {
-            op = "-";
-        } else if (f.op === "<") {
-            op = "<";
-        } else if (f.op === "<=") {
-            op = "<=";
-        } else if (f.op === ">") {
-            op = ">";
-        } else if (f.op === ">=") {
-            op = ">=";
-        } else if (f.op === "<<") {
-            op = "<<";
-        } else if (f.op === ">>") {
-            op = ">>";
-        } else if (f.op === "&") {
-            op = "&";
-        } else if (f.op === "|") {
-            op = "|";
-        } else if (f.op === "^") {
-            op = "^";
-        } else {
-            throwCompilationError(`Unknown binary operator: ${f.op}`, f.loc);
-        }
         return (
             "(" +
             writeExpression(f.left, wCtx) +
             " " +
-            op +
+            f.op +
             " " +
             writeExpression(f.right, wCtx) +
             ")"
@@ -410,37 +376,37 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
 
     if (f.kind === "op_unary") {
         // NOTE: Logical not is written as a bitwise not
-        if (f.op === "!") {
-            return "(~ " + writeExpression(f.operand, wCtx) + ")";
-        }
-
-        if (f.op === "~") {
-            return "(~ " + writeExpression(f.operand, wCtx) + ")";
-        }
-
-        if (f.op === "-") {
-            return "(- " + writeExpression(f.operand, wCtx) + ")";
-        }
-
-        if (f.op === "+") {
-            return "(+ " + writeExpression(f.operand, wCtx) + ")";
-        }
-
-        // NOTE: Assert function that ensures that the value is not null
-        if (f.op === "!!") {
-            const t = getExpType(wCtx.ctx, f.operand);
-            if (t.kind === "ref") {
-                const tt = getType(wCtx.ctx, t.name);
-                if (tt.kind === "struct") {
-                    return `${ops.typeNotNull(tt.name, wCtx)}(${writeExpression(f.operand, wCtx)})`;
-                }
+        switch (f.op) {
+            case "!": {
+                return "(~ " + writeExpression(f.operand, wCtx) + ")";
             }
 
-            wCtx.used("__tact_not_null");
-            return `${wCtx.used("__tact_not_null")}(${writeExpression(f.operand, wCtx)})`;
-        }
+            case "~": {
+                return "(~ " + writeExpression(f.operand, wCtx) + ")";
+            }
 
-        throwCompilationError(`Unknown unary operator: ${f.op}`, f.loc);
+            case "-": {
+                return "(- " + writeExpression(f.operand, wCtx) + ")";
+            }
+
+            case "+": {
+                return "(+ " + writeExpression(f.operand, wCtx) + ")";
+            }
+
+            // NOTE: Assert function that ensures that the value is not null
+            case "!!": {
+                const t = getExpType(wCtx.ctx, f.operand);
+                if (t.kind === "ref") {
+                    const tt = getType(wCtx.ctx, t.name);
+                    if (tt.kind === "struct") {
+                        return `${ops.typeNotNull(tt.name, wCtx)}(${writeExpression(f.operand, wCtx)})`;
+                    }
+                }
+
+                wCtx.used("__tact_not_null");
+                return `${wCtx.used("__tact_not_null")}(${writeExpression(f.operand, wCtx)})`;
+            }
+        }
     }
 
     //
@@ -452,8 +418,8 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
         // Resolve the type of the expression
         const src = getExpType(wCtx.ctx, f.aggregate);
         if (
-            src === null ||
-            ((src.kind !== "ref" || src.optional) && src.kind !== "ref_bounced")
+            (src.kind !== "ref" || src.optional) &&
+            src.kind !== "ref_bounced"
         ) {
             throwCompilationError(
                 `Cannot access field of non-struct type: "${printTypeRef(src)}"`,
@@ -470,8 +436,8 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
             fields = fields.slice(0, srcT.partialFieldCount);
         }
 
-        const field = fields.find((v) => eqNames(v.name, f.field))!;
-        const cst = srcT.constants.find((v) => eqNames(v.name, f.field))!;
+        const field = fields.find((v) => eqNames(v.name, f.field));
+        const cst = srcT.constants.find((v) => eqNames(v.name, f.field));
         if (!field && !cst) {
             throwCompilationError(
                 `Cannot find field ${idTextErr(f.field)} in struct ${idTextErr(srcT.name)}`,
@@ -500,7 +466,7 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
             // Getter instead of direct field access
             return `${ops.typeField(srcT.name, field.name, wCtx)}(${writeExpression(f.aggregate, wCtx)})`;
         } else {
-            return writeValue(cst.value!, wCtx);
+            return writeValue(cst!.value!, wCtx);
         }
     }
 
@@ -534,7 +500,7 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
             "(" +
             f.args
                 .map((a, i) =>
-                    writeCastedExpression(a, sf.params[i].type, wCtx),
+                    writeCastedExpression(a, sf.params[i]!.type, wCtx),
                 )
                 .join(", ") +
             ")"
@@ -576,12 +542,6 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
     if (f.kind === "method_call") {
         // Resolve source type
         const src = getExpType(wCtx.ctx, f.self);
-        if (src === null) {
-            throwCompilationError(
-                `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
-                f.loc,
-            );
-        }
 
         // Reference type
         if (src.kind === "ref") {
@@ -625,20 +585,20 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
 
             // Render arguments
             let renderedArguments = f.args.map((a, i) =>
-                writeCastedExpression(a, ff.params[i].type, wCtx),
+                writeCastedExpression(a, ff.params[i]!.type, wCtx),
             );
 
             // Hack to replace a single struct argument to a tensor wrapper since otherwise
             // func would convert (int) type to just int and break mutating functions
             if (ff.isMutating) {
                 if (f.args.length === 1) {
-                    const t = getExpType(wCtx.ctx, f.args[0]);
+                    const t = getExpType(wCtx.ctx, f.args[0]!);
                     if (t.kind === "ref") {
                         const tt = getType(wCtx.ctx, t.name);
                         if (
                             (tt.kind === "contract" || tt.kind === "struct") &&
-                            ff.params[0].type.kind === "ref" &&
-                            !ff.params[0].type.optional
+                            ff.params[0]!.type.kind === "ref" &&
+                            !ff.params[0]!.type.optional
                         ) {
                             renderedArguments = [
                                 `${ops.typeTensorCast(tt.name, wCtx)}(${renderedArguments[0]})`,
@@ -694,7 +654,7 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
 
     if (f.kind === "init_of") {
         const type = getType(wCtx.ctx, f.contract);
-        return `${ops.contractInitChild(idText(f.contract), wCtx)}(${["__tact_context_sys", ...f.args.map((a, i) => writeCastedExpression(a, type.init!.params[i].type, wCtx))].join(", ")})`;
+        return `${ops.contractInitChild(idText(f.contract), wCtx)}(${["__tact_context_sys", ...f.args.map((a, i) => writeCastedExpression(a, type.init!.params[i]!.type, wCtx))].join(", ")})`;
     }
 
     //

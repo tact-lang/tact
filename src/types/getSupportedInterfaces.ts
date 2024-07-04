@@ -17,8 +17,6 @@ export function getSupportedInterfaces(
     } else {
         interfaces.push("org.ton.chain.any.v0");
     }
-    for (let i = 0; i < type.interfaces.length; i++) {
-        interfaces.push(type.interfaces[i]);
-    }
+    type.interfaces.forEach((iface) => interfaces.push(iface));
     return interfaces;
 }

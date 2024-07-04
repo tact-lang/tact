@@ -81,13 +81,12 @@ export async function build(args: {
     // Compile contracts
     let ok = true;
     const built: {
-        [key: string]: {
-            codeBoc: Buffer;
-            // codeFunc: string,
-            // codeFift: string,
-            // codeFiftDecompiled: string,
-            abi: string;
-        };
+        [key: string]:
+            | {
+                  codeBoc: Buffer;
+                  abi: string;
+              }
+            | undefined;
     } = {};
     for (const contract of getContracts(ctx)) {
         const pathAbi = project.resolve(
@@ -234,14 +233,14 @@ export async function build(args: {
             Dictionary.Values.Cell(),
         );
         const ct = getType(ctx, contract);
-        depends.set(ct.uid, Cell.fromBoc(built[ct.name].codeBoc)[0]); // Mine
+        depends.set(ct.uid, Cell.fromBoc(built[ct.name]!.codeBoc)[0]!); // Mine
         for (const c of ct.dependsOn) {
             const cd = built[c.name];
             if (!cd) {
-                logger.error(`   > ${cd}: no artifacts found`);
+                logger.error(`   > ${c.name}: no artifacts found`);
                 return false;
             }
-            depends.set(c.uid, Cell.fromBoc(cd.codeBoc)[0]);
+            depends.set(c.uid, Cell.fromBoc(cd.codeBoc)[0]!);
         }
         const systemCell = beginCell().storeDict(depends).endCell();
 

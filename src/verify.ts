@@ -37,6 +37,10 @@ export async function verify(args: {
         return { ok: false, error: "invalid-package-format" };
     }
 
+    if (unpacked.sources === undefined) {
+        return { ok: false, error: "invalid-package-format" };
+    }
+
     // Check compiler and version
     if (unpacked.compiler.name !== "tact") {
         return { ok: false, error: "invalid-compiler" };
@@ -69,9 +73,9 @@ export async function verify(args: {
     };
 
     // Build
-    const files: { [key: string]: string } = {};
-    for (const s in unpacked.sources) {
-        files["contract/" + s] = unpacked.sources[s];
+    const files: Record<string, string> = {};
+    for (const [name, source] of Object.entries(unpacked.sources)) {
+        files["contract/" + name] = source;
     }
 
     const result = await run({ config, files, logger });

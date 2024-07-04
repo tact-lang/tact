@@ -70,33 +70,32 @@ function createTypeFormat(
 }
 
 function createTLBField(src: ABIField) {
-    if (src.type.kind === "simple") {
-        let base = createTypeFormat(
-            src.type.type,
-            src.type.format ? src.type.format : null,
-        );
-        if (src.type.optional) {
-            base = "Maybe " + base;
+    switch (src.type.kind) {
+        case "simple": {
+            let base = createTypeFormat(
+                src.type.type,
+                src.type.format ? src.type.format : null,
+            );
+            if (src.type.optional) {
+                base = "Maybe " + base;
+            }
+            return src.name + ":" + base;
         }
-        return src.name + ":" + base;
-    }
-
-    if (src.type.kind === "dict") {
-        if (src.type.format !== null && src.type.format !== undefined) {
-            throw Error("Unsupported map format " + src.type.format);
+        case "dict": {
+            if (src.type.format !== null && src.type.format !== undefined) {
+                throw Error("Unsupported map format " + src.type.format);
+            }
+            const key = createTypeFormat(
+                src.type.key,
+                src.type.keyFormat ? src.type.keyFormat : null,
+            );
+            const value = createTypeFormat(
+                src.type.value,
+                src.type.valueFormat ? src.type.valueFormat : null,
+            );
+            return src.name + ":dict<" + key + ", " + value + ">";
         }
-        const key = createTypeFormat(
-            src.type.key,
-            src.type.keyFormat ? src.type.keyFormat : null,
-        );
-        const value = createTypeFormat(
-            src.type.value,
-            src.type.valueFormat ? src.type.valueFormat : null,
-        );
-        return src.name + ":dict<" + key + ", " + value + ">";
     }
-
-    throw Error("Unsupported ABI field");
 }
 
 export function createTLBType(
