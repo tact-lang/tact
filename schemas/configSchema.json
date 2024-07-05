@@ -46,6 +46,16 @@
                 "default": false,
                 "description": "False by default. If set to true, enables support of external message receivers.\n\nRead more about external message receivers: https://docs.tact-lang.org/book/external."
               },
+              "ipfsAbiGetter": {
+                "type": "boolean",
+                "default": false,
+                "description": "False by default. If set to true, enables generation of a getter with IPFS links describing the contract's ABI.\n\nRead more about IPFS ABI links: https://docs.tact-lang.org/ref/evolution/OTP-003."
+              },
+              "interfacesGetter": {
+                "type": "boolean",
+                "default": false,
+                "description": "False by default. If set to true, enables generation of a getter the information on the interfaces provided by the contract.\n\nRead more about supported interfaces: https://docs.tact-lang.org/ref/evolution/OTP-001."
+              },
               "experimental": {
                 "type": "object",
                 "description": "Experimental options that might be removed in the future. Use with caution!",
