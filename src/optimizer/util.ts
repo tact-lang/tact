@@ -277,7 +277,7 @@ function areEqualParameterArrays(
     }
 
     for (let i = 0; i < arr1.length; i++) {
-        if (!areEqualParameters(arr1[i], arr2[i])) {
+        if (!areEqualParameters(arr1[i]!, arr2[i]!)) {
             return false;
         }
     }
@@ -294,7 +294,7 @@ function areEqualExpressionArrays(
     }
 
     for (let i = 0; i < arr1.length; i++) {
-        if (!areEqualExpressions(arr1[i], arr2[i])) {
+        if (!areEqualExpressions(arr1[i]!, arr2[i]!)) {
             return false;
         }
     }
