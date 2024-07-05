@@ -196,7 +196,7 @@ export async function build(args: {
 
         if (config.mode === "fullWithDecompilation") {
             // Fift decompiler for generated code debug
-            logger.info("   > " + contract + ": fift decompiler");
+            logger.info(`   > ${contract}: fift decompiler`);
             let codeFiftDecompiled: string;
             try {
                 codeFiftDecompiled = decompileAll({ src: codeBoc });
