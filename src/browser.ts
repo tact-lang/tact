@@ -5,7 +5,7 @@ import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
 
 export async function run(args: {
     config: Config;
-    files: { [key: string]: string };
+    files: Record<string, string>;
     logger?: Logger;
 }) {
     // Verify config
@@ -28,7 +28,7 @@ export async function run(args: {
             logger: args.logger,
         });
         success = success && built.ok;
-        if (!built.ok && built.error) {
+        if (!built.ok) {
             errorCollection = { ...errorCollection, ...built.error };
         }
     }

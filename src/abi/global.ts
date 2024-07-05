@@ -23,13 +23,14 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                if (args[0].kind !== "ref") {
+                const arg0 = args[0]!;
+                if (arg0.kind !== "ref") {
                     throwCompilationError(
                         "ton() expects single string argument",
                         ref,
                     );
                 }
-                if (args[0].name !== "String") {
+                if (arg0.name !== "String") {
                     throwCompilationError(
                         "ton() expects single string argument",
                         ref,
@@ -45,7 +46,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const str = evalConstantExpression(
-                    resolved[0],
+                    resolved[0]!,
                     ctx.ctx,
                 ) as string;
                 return toNano(str).toString(10);
@@ -63,25 +64,27 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                if (args[0].kind !== "ref") {
+                const arg0 = args[0]!;
+                const arg1 = args[1]!;
+                if (arg0.kind !== "ref") {
                     throwCompilationError(
                         "require() expects first Bool argument",
                         ref,
                     );
                 }
-                if (args[0].name !== "Bool") {
+                if (arg0.name !== "Bool") {
                     throwCompilationError(
                         "require() expects first Bool argument",
                         ref,
                     );
                 }
-                if (args[1].kind !== "ref") {
+                if (arg1.kind !== "ref") {
                     throwCompilationError(
                         "require() expects second string argument",
                         ref,
                     );
                 }
-                if (args[1].name !== "String") {
+                if (arg1.name !== "String") {
                     throwCompilationError(
                         "require() expects second string argument",
                         ref,
@@ -97,10 +100,10 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const str = evalConstantExpression(
-                    resolved[1],
+                    resolved[1]!,
                     ctx.ctx,
                 ) as string;
-                return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0], ctx)})`;
+                return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0]!, ctx)})`;
             },
         },
     ],
@@ -115,13 +118,14 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                if (args[0].kind !== "ref") {
+                const arg0 = args[0]!;
+                if (arg0.kind !== "ref") {
                     throwCompilationError(
                         "address() expects string argument",
                         ref,
                     );
                 }
-                if (args[0].name !== "String") {
+                if (arg0.name !== "String") {
                     throwCompilationError(
                         "address() expects string argument",
                         ref,
@@ -137,7 +141,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 const str = evalConstantExpression(
-                    resolved[0],
+                    resolved[0]!,
                     ctx.ctx,
                 ) as string;
                 let address: Address;
@@ -176,13 +180,14 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 1) {
                     throwCompilationError("cell() expects one argument", ref);
                 }
-                if (args[0].kind !== "ref") {
+                const arg0 = args[0]!;
+                if (arg0.kind !== "ref") {
                     throwCompilationError(
                         "cell() expects string argument",
                         ref,
                     );
                 }
-                if (args[0].name !== "String") {
+                if (arg0.name !== "String") {
                     throwCompilationError(
                         "cell() expects string argument",
                         ref,
@@ -197,7 +202,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // Load cell data
                 const str = evalConstantExpression(
-                    resolved[0],
+                    resolved[0]!,
                     ctx.ctx,
                 ) as string;
                 let c: Cell;
@@ -228,7 +233,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 if (!enabledDebug(ctx.ctx)) {
                     return `${ctx.used("__tact_nop")}()`;
                 }
-                const arg = args[0];
+                const arg0 = args[0]!;
 
                 const filePath = ref.file
                     ? posixNormalize(path.relative(cwd(), ref.file!))
@@ -236,36 +241,36 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 const lineCol = ref.interval.getLineAndColumn();
                 const debugPrint = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}`;
 
-                if (arg.kind === "map") {
-                    const exp = writeExpression(resolved[0], ctx);
+                if (arg0.kind === "map") {
+                    const exp = writeExpression(resolved[0]!, ctx);
                     return `${ctx.used(`__tact_debug`)}(${exp}, "${debugPrint}")`;
-                } else if (arg.kind === "null") {
+                } else if (arg0.kind === "null") {
                     return `${ctx.used(`__tact_debug_str`)}("null", "${debugPrint}")`;
-                } else if (arg.kind === "void") {
+                } else if (arg0.kind === "void") {
                     return `${ctx.used(`__tact_debug_str`)}("void", "${debugPrint}")`;
-                } else if (arg.kind === "ref") {
-                    if (arg.name === "Int") {
-                        const exp = writeExpression(resolved[0], ctx);
+                } else if (arg0.kind === "ref") {
+                    if (arg0.name === "Int") {
+                        const exp = writeExpression(resolved[0]!, ctx);
                         return `${ctx.used(`__tact_debug_str`)}(${ctx.used(`__tact_int_to_string`)}(${exp}), "${debugPrint}")`;
-                    } else if (arg.name === "Bool") {
-                        const exp = writeExpression(resolved[0], ctx);
+                    } else if (arg0.name === "Bool") {
+                        const exp = writeExpression(resolved[0]!, ctx);
                         return `${ctx.used(`__tact_debug_bool`)}(${exp}, "${debugPrint}")`;
-                    } else if (arg.name === "String") {
-                        const exp = writeExpression(resolved[0], ctx);
+                    } else if (arg0.name === "String") {
+                        const exp = writeExpression(resolved[0]!, ctx);
                         return `${ctx.used(`__tact_debug_str`)}(${exp}, "${debugPrint}")`;
-                    } else if (arg.name === "Address") {
-                        const exp = writeExpression(resolved[0], ctx);
+                    } else if (arg0.name === "Address") {
+                        const exp = writeExpression(resolved[0]!, ctx);
                         return `${ctx.used(`__tact_debug_address`)}(${exp}, "${debugPrint}")`;
                     } else if (
-                        arg.name === "Builder" ||
-                        arg.name === "Slice" ||
-                        arg.name === "Cell"
+                        arg0.name === "Builder" ||
+                        arg0.name === "Slice" ||
+                        arg0.name === "Cell"
                     ) {
-                        const exp = writeExpression(resolved[0], ctx);
+                        const exp = writeExpression(resolved[0]!, ctx);
                         return `${ctx.used(`__tact_debug`)}(${exp}, "${debugPrint}")`;
                     }
                     throwCompilationError(
-                        "dump() not supported for type: " + arg.name,
+                        "dump() not supported for type: " + arg0.name,
                         ref,
                     );
                 } else {
@@ -326,13 +331,14 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 1) {
                     throwCompilationError("sha256 expects 1 argument", ref);
                 }
-                if (args[0].kind !== "ref") {
+                const arg0 = args[0]!;
+                if (arg0.kind !== "ref") {
                     throwCompilationError(
                         "sha256 expects string argument",
                         ref,
                     );
                 }
-                if (args[0].name !== "String" && args[0].name !== "Slice") {
+                if (arg0.name !== "String" && arg0.name !== "Slice") {
                     throwCompilationError(
                         "sha256 expects string or slice argument",
                         ref,
@@ -344,7 +350,8 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 1) {
                     throwCompilationError("sha256 expects 1 argument", ref);
                 }
-                if (args[0].kind !== "ref") {
+                const arg0 = args[0]!;
+                if (arg0.kind !== "ref") {
                     throwCompilationError(
                         "sha256 expects string argument",
                         ref,
@@ -352,10 +359,10 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // String case
-                if (args[0].name === "String") {
+                if (arg0.name === "String") {
                     try {
                         const str = evalConstantExpression(
-                            resolved[0],
+                            resolved[0]!,
                             ctx.ctx,
                         ) as string;
                         if (Buffer.from(str).length > 128) {
@@ -370,13 +377,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     } catch (e) {
                         // Not a constant
                     }
-                    const exp = writeExpression(resolved[0], ctx);
+                    const exp = writeExpression(resolved[0]!, ctx);
                     return `string_hash(${exp})`;
                 }
 
                 // Slice case
-                if (args[0].name === "Slice") {
-                    const exp = writeExpression(resolved[0], ctx);
+                if (arg0.name === "Slice") {
+                    const exp = writeExpression(resolved[0]!, ctx);
                     return `string_hash(${exp})`;
                 }
 

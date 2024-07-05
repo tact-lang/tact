@@ -1,4 +1,4 @@
-import { ASTNode, ASTStatement, ASTExpression } from "./ast";
+import { AstNode, AstStatement, AstExpression } from "./ast";
 
 /**
  * Recursively iterates over each expression in an ASTNode and applies a callback to each expression.
@@ -6,10 +6,10 @@ import { ASTNode, ASTStatement, ASTExpression } from "./ast";
  * @param callback The callback function to apply to each expression.
  */
 export function forEachExpression(
-    node: ASTNode,
-    callback: (expr: ASTExpression) => void,
+    node: AstNode,
+    callback: (expr: AstExpression) => void,
 ): void {
-    function traverseExpression(expr: ASTExpression): void {
+    function traverseExpression(expr: AstExpression): void {
         callback(expr);
 
         switch (expr.kind) {
@@ -18,20 +18,22 @@ export function forEachExpression(
                 traverseExpression(expr.right);
                 break;
             case "op_unary":
-                traverseExpression(expr.right);
+                traverseExpression(expr.operand);
                 break;
-            case "op_field":
-                traverseExpression(expr.src);
+            case "field_access":
+                traverseExpression(expr.aggregate);
                 break;
-            case "op_call":
-                traverseExpression(expr.src);
+            case "method_call":
+                traverseExpression(expr.self);
                 expr.args.forEach(traverseExpression);
                 break;
-            case "op_static_call":
+            case "static_call":
                 expr.args.forEach(traverseExpression);
                 break;
-            case "op_new":
-                expr.args.forEach((param) => traverseExpression(param.exp));
+            case "struct_instance":
+                expr.args.forEach((param) => {
+                    traverseExpression(param.initializer);
+                });
                 break;
             case "init_of":
                 expr.args.forEach(traverseExpression);
@@ -53,7 +55,7 @@ export function forEachExpression(
         }
     }
 
-    function traverseStatement(stmt: ASTStatement): void {
+    function traverseStatement(stmt: AstStatement): void {
         switch (stmt.kind) {
             case "statement_let":
             case "statement_assign":
@@ -65,7 +67,7 @@ export function forEachExpression(
                 if (stmt.expression) traverseExpression(stmt.expression);
                 break;
             case "statement_condition":
-                traverseExpression(stmt.expression);
+                traverseExpression(stmt.condition);
                 stmt.trueStatements.forEach(traverseStatement);
                 if (stmt.falseStatements)
                     stmt.falseStatements.forEach(traverseStatement);
@@ -93,7 +95,7 @@ export function forEachExpression(
         }
     }
 
-    function traverseNode(node: ASTNode): void {
+    function traverseNode(node: AstNode): void {
         switch (node.kind) {
             case "module":
                 node.items.forEach(traverseNode);
@@ -105,19 +107,17 @@ export function forEachExpression(
                 // These node types do not require further traversal of expressions or sub-nodes
                 break;
             case "function_def":
-            case "def_init_function":
-            case "def_receive":
-                if (node.statements) {
-                    node.statements.forEach(traverseStatement);
-                }
+            case "contract_init":
+            case "receiver":
+                node.statements.forEach(traverseStatement);
                 break;
             case "contract":
             case "trait":
                 node.declarations.forEach(traverseNode);
                 break;
-            case "def_field":
-                if (node.init) {
-                    traverseExpression(node.init);
+            case "field_decl":
+                if (node.initializer) {
+                    traverseExpression(node.initializer);
                 }
                 break;
             case "constant_def":
@@ -142,10 +142,10 @@ export function forEachExpression(
                 break;
             case "op_binary":
             case "op_unary":
-            case "op_field":
-            case "op_call":
-            case "op_static_call":
-            case "op_new":
+            case "field_access":
+            case "method_call":
+            case "static_call":
+            case "struct_instance":
             case "init_of":
             case "conditional":
             case "string":
@@ -155,13 +155,13 @@ export function forEachExpression(
             case "null":
                 traverseExpression(node);
                 break;
-            case "new_parameter":
-                traverseExpression(node.exp);
+            case "struct_field_initializer":
+                traverseExpression(node.initializer);
                 break;
             case "typed_parameter":
-            case "type_ref_simple":
-            case "type_ref_map":
-            case "type_ref_bounced":
+            case "type_id":
+            case "map_type":
+            case "bounced_message_type":
                 // Do nothing
                 break;
             default:
@@ -180,11 +180,11 @@ export function forEachExpression(
  * @returns The final value of the accumulator after processing all expressions.
  */
 export function foldExpressions<T>(
-    node: ASTNode,
+    node: AstNode,
     acc: T,
-    callback: (acc: T, expr: ASTExpression) => T,
+    callback: (acc: T, expr: AstExpression) => T,
 ): T {
-    function traverseExpression(acc: T, expr: ASTExpression): T {
+    function traverseExpression(acc: T, expr: AstExpression): T {
         acc = callback(acc, expr);
 
         switch (expr.kind) {
@@ -193,25 +193,25 @@ export function foldExpressions<T>(
                 acc = traverseExpression(acc, expr.right);
                 break;
             case "op_unary":
-                acc = traverseExpression(acc, expr.right);
+                acc = traverseExpression(acc, expr.operand);
                 break;
-            case "op_field":
-                acc = traverseExpression(acc, expr.src);
+            case "field_access":
+                acc = traverseExpression(acc, expr.aggregate);
                 break;
-            case "op_call":
-                acc = traverseExpression(acc, expr.src);
+            case "method_call":
+                acc = traverseExpression(acc, expr.self);
                 expr.args.forEach((arg) => {
                     acc = traverseExpression(acc, arg);
                 });
                 break;
-            case "op_static_call":
+            case "static_call":
                 expr.args.forEach((arg) => {
                     acc = traverseExpression(acc, arg);
                 });
                 break;
-            case "op_new":
+            case "struct_instance":
                 expr.args.forEach((param) => {
-                    acc = traverseExpression(acc, param.exp);
+                    acc = traverseExpression(acc, param.initializer);
                 });
                 break;
             case "init_of":
@@ -237,7 +237,7 @@ export function foldExpressions<T>(
         return acc;
     }
 
-    function traverseStatement(acc: T, stmt: ASTStatement): T {
+    function traverseStatement(acc: T, stmt: AstStatement): T {
         switch (stmt.kind) {
             case "statement_let":
             case "statement_expression":
@@ -253,7 +253,7 @@ export function foldExpressions<T>(
                     acc = traverseExpression(acc, stmt.expression);
                 break;
             case "statement_condition":
-                acc = traverseExpression(acc, stmt.expression);
+                acc = traverseExpression(acc, stmt.condition);
                 stmt.trueStatements.forEach((st) => {
                     acc = traverseStatement(acc, st);
                 });
@@ -301,7 +301,7 @@ export function foldExpressions<T>(
         return acc;
     }
 
-    function traverseNode(acc: T, node: ASTNode): T {
+    function traverseNode(acc: T, node: AstNode): T {
         switch (node.kind) {
             case "module":
                 node.items.forEach((entry) => {
@@ -315,13 +315,11 @@ export function foldExpressions<T>(
                 // These node types do not require further traversal of expressions or sub-nodes
                 break;
             case "function_def":
-            case "def_init_function":
-            case "def_receive":
-                if (node.statements) {
-                    node.statements.forEach((stmt) => {
-                        acc = traverseStatement(acc, stmt);
-                    });
-                }
+            case "contract_init":
+            case "receiver":
+                node.statements.forEach((stmt) => {
+                    acc = traverseStatement(acc, stmt);
+                });
                 break;
             case "contract":
             case "trait":
@@ -329,9 +327,9 @@ export function foldExpressions<T>(
                     acc = traverseNode(acc, decl);
                 });
                 break;
-            case "def_field":
-                if (node.init) {
-                    acc = traverseExpression(acc, node.init);
+            case "field_decl":
+                if (node.initializer) {
+                    acc = traverseExpression(acc, node.initializer);
                 }
                 break;
             case "constant_def":
@@ -356,10 +354,10 @@ export function foldExpressions<T>(
                 break;
             case "op_binary":
             case "op_unary":
-            case "op_field":
-            case "op_call":
-            case "op_static_call":
-            case "op_new":
+            case "field_access":
+            case "method_call":
+            case "static_call":
+            case "struct_instance":
             case "init_of":
             case "conditional":
             case "string":
@@ -369,13 +367,13 @@ export function foldExpressions<T>(
             case "null":
                 acc = traverseExpression(acc, node);
                 break;
-            case "new_parameter":
-                acc = traverseExpression(acc, node.exp);
+            case "struct_field_initializer":
+                acc = traverseExpression(acc, node.initializer);
                 break;
             case "typed_parameter":
-            case "type_ref_simple":
-            case "type_ref_map":
-            case "type_ref_bounced":
+            case "type_id":
+            case "map_type":
+            case "bounced_message_type":
                 // Do nothing
                 break;
             default:
@@ -393,10 +391,10 @@ export function foldExpressions<T>(
  * @param callback The callback function to apply to each statement.
  */
 export function forEachStatement(
-    node: ASTNode,
-    callback: (stmt: ASTStatement) => void,
+    node: AstNode,
+    callback: (stmt: AstStatement) => void,
 ): void {
-    function traverseStatement(stmt: ASTStatement): void {
+    function traverseStatement(stmt: AstStatement): void {
         callback(stmt);
 
         switch (stmt.kind) {
@@ -429,15 +427,15 @@ export function forEachStatement(
         }
     }
 
-    function traverseNode(node: ASTNode): void {
+    function traverseNode(node: AstNode): void {
         switch (node.kind) {
             case "module":
                 node.items.forEach(traverseNode);
                 break;
             case "function_def":
-            case "def_init_function":
-            case "def_receive":
-                if (node.statements) node.statements.forEach(traverseStatement);
+            case "contract_init":
+            case "receiver":
+                node.statements.forEach(traverseStatement);
                 break;
             case "contract":
             case "trait":
@@ -459,10 +457,10 @@ export function forEachStatement(
                 break;
             case "op_binary":
             case "op_unary":
-            case "op_field":
-            case "op_call":
-            case "op_static_call":
-            case "op_new":
+            case "field_access":
+            case "method_call":
+            case "static_call":
+            case "struct_instance":
             case "init_of":
             case "conditional":
             case "string":
@@ -470,17 +468,17 @@ export function forEachStatement(
             case "boolean":
             case "id":
             case "null":
-            case "new_parameter":
+            case "struct_field_initializer":
             case "typed_parameter":
-            case "type_ref_simple":
-            case "type_ref_map":
-            case "type_ref_bounced":
+            case "type_id":
+            case "map_type":
+            case "bounced_message_type":
             case "native_function_decl":
             case "struct_decl":
             case "message_decl":
             case "constant_def":
             case "constant_decl":
-            case "def_field":
+            case "field_decl":
             case "import":
             case "primitive_type_decl":
                 // Do nothing
@@ -501,11 +499,11 @@ export function forEachStatement(
  * @returns The final value of the accumulator after processing all statements.
  */
 export function foldStatements<T>(
-    node: ASTNode,
+    node: AstNode,
     acc: T,
-    callback: (acc: T, stmt: ASTStatement) => T,
+    callback: (acc: T, stmt: AstStatement) => T,
 ): T {
-    function traverseStatement(acc: T, stmt: ASTStatement): T {
+    function traverseStatement(acc: T, stmt: AstStatement): T {
         acc = callback(acc, stmt);
 
         switch (stmt.kind) {
@@ -549,7 +547,7 @@ export function foldStatements<T>(
         return acc;
     }
 
-    function traverseNode(acc: T, node: ASTNode): T {
+    function traverseNode(acc: T, node: AstNode): T {
         switch (node.kind) {
             case "module":
                 node.items.forEach((entry) => {
@@ -557,13 +555,11 @@ export function foldStatements<T>(
                 });
                 break;
             case "function_def":
-            case "def_init_function":
-            case "def_receive":
-                if (node.statements) {
-                    node.statements.forEach((stmt) => {
-                        acc = traverseStatement(acc, stmt);
-                    });
-                }
+            case "contract_init":
+            case "receiver":
+                node.statements.forEach((stmt) => {
+                    acc = traverseStatement(acc, stmt);
+                });
                 break;
             case "contract":
             case "trait":
@@ -587,10 +583,10 @@ export function foldStatements<T>(
                 break;
             case "op_binary":
             case "op_unary":
-            case "op_field":
-            case "op_call":
-            case "op_static_call":
-            case "op_new":
+            case "field_access":
+            case "method_call":
+            case "static_call":
+            case "struct_instance":
             case "init_of":
             case "conditional":
             case "string":
@@ -598,18 +594,18 @@ export function foldStatements<T>(
             case "boolean":
             case "id":
             case "null":
-            case "new_parameter":
+            case "struct_field_initializer":
             case "typed_parameter":
-            case "type_ref_simple":
-            case "type_ref_map":
-            case "type_ref_bounced":
+            case "type_id":
+            case "map_type":
+            case "bounced_message_type":
             case "native_function_decl":
             case "function_decl":
             case "struct_decl":
             case "message_decl":
             case "constant_def":
             case "constant_decl":
-            case "def_field":
+            case "field_decl":
             case "import":
             case "primitive_type_decl":
                 // Do nothing

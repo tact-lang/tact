@@ -1,19 +1,20 @@
 import { ABIField, Address, Cell } from "@ton/core";
+import { throwInternalCompilerError } from "../errors";
 import {
     AstConstantDef,
     AstFunctionDef,
-    ASTInitFunction,
+    AstContractInit,
     AstNativeFunctionDecl,
-    ASTNode,
-    ASTReceive,
+    AstNode,
+    AstReceiver,
     SrcInfo,
-    ASTStatement,
-    ASTType,
+    AstStatement,
+    AstTypeDecl,
     AstId,
     AstFunctionDecl,
     AstConstantDecl,
 } from "../grammar/ast";
-import { ItemOrigin } from "../grammar/grammar";
+import { dummySrcInfo, ItemOrigin } from "../grammar/grammar";
 // import {
 //     Value
 // } from "../grammar/value";
@@ -32,7 +33,7 @@ export type TypeDescription = {
     functions: Map<string, FunctionDescription>;
     receivers: ReceiverDescription[];
     init: InitDescription | null;
-    ast: ASTType;
+    ast: AstTypeDecl;
     dependsOn: TypeDescription[];
     interfaces: string[];
     constants: ConstantDescription[];
@@ -62,6 +63,9 @@ export type TypeRef =
           kind: "null";
       };
 
+// https://github.com/microsoft/TypeScript/issues/35164 and
+// https://github.com/microsoft/TypeScript/pull/57293
+// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 export type StructValue = {
     [key: string]: Value;
 };
@@ -80,6 +84,31 @@ export type Value =
     | CommentValue
     | StructValue;
 
+export function showValue(val: Value): string {
+    if (typeof val === "bigint") {
+        return val.toString(10);
+    } else if (typeof val === "string") {
+        return val;
+    } else if (typeof val === "boolean") {
+        return val ? "true" : "false";
+    } else if (Address.isAddress(val)) {
+        return val.toRawString();
+    } else if (val instanceof Cell) {
+        return val.toString();
+    } else if (val === null) {
+        return "null";
+    } else if (val instanceof CommentValue) {
+        return val.comment;
+    } else if (typeof val === "object" && "$tactStruct" in val) {
+        const assocList = Object.entries(val).map(([key, value]) => {
+            return `${key}: ${showValue(value)}`;
+        });
+        return `{${assocList.join(",")}}`;
+    } else {
+        throwInternalCompilerError("Invalid value", dummySrcInfo);
+    }
+}
+
 export type FieldDescription = {
     name: string;
     index: number;
@@ -87,7 +116,7 @@ export type FieldDescription = {
     as: string | null;
     default: Value | undefined;
     loc: SrcInfo;
-    ast: ASTNode;
+    ast: AstNode;
     abi: ABIField;
 };
 
@@ -130,7 +159,7 @@ export type FunctionDescription = {
 export type StatementDescription =
     | {
           kind: "native";
-          src: ASTStatement;
+          src: AstStatement;
       }
     | {
           kind: "intrinsic";
@@ -225,27 +254,26 @@ export function receiverSelectorName(selector: ReceiverSelector): string {
 
 export type ReceiverDescription = {
     selector: ReceiverSelector;
-    ast: ASTReceive;
+    ast: AstReceiver;
 };
 
 export type InitDescription = {
     params: InitParameter[];
-    ast: ASTInitFunction;
+    ast: AstContractInit;
 };
 
 export function printTypeRef(src: TypeRef): string {
-    if (src.kind === "ref") {
-        return src.name + (src.optional ? "?" : "");
-    } else if (src.kind === "map") {
-        return `map<${src.key + (src.keyAs ? " as " + src.keyAs : "")}, ${src.value + (src.valueAs ? " as " + src.valueAs : "")}>`;
-    } else if (src.kind === "void") {
-        return "<void>";
-    } else if (src.kind === "null") {
-        return "<null>";
-    } else if (src.kind === "ref_bounced") {
-        return `bounced<${src.name}>`;
-    } else {
-        throw Error("Invalid type ref");
+    switch (src.kind) {
+        case "ref":
+            return `${src.name}${src.optional ? "?" : ""}`;
+        case "map":
+            return `map<${src.key + (src.keyAs ? " as " + src.keyAs : "")}, ${src.value + (src.valueAs ? " as " + src.valueAs : "")}>`;
+        case "void":
+            return "<void>";
+        case "null":
+            return "<null>";
+        case "ref_bounced":
+            return `bounced<${src.name}>`;
     }
 }
 

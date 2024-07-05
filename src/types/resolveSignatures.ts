@@ -10,15 +10,15 @@ import {
     ReceiverDescription,
 } from "./types";
 import { throwCompilationError } from "../errors";
-import { ASTReceive } from "../grammar/ast";
+import { AstReceiver } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 
 export function resolveSignatures(ctx: CompilerContext) {
     const types = getAllTypes(ctx);
-    const signatures = new Map<
+    const signatures: Map<
         string,
         { signature: string; tlb: string; id: number | null }
-    >();
+    > = new Map();
     function createTypeFormat(
         type: string,
         format: string | number | boolean | null,
@@ -102,37 +102,36 @@ export function resolveSignatures(ctx: CompilerContext) {
         } else if (format !== null) {
             throw Error("Unsupported struct format " + format);
         }
-        return `${s.signature}`;
+        return s.signature;
     }
 
     function createTLBField(src: ABIField) {
-        if (src.type.kind === "simple") {
-            let base = createTypeFormat(
-                src.type.type,
-                src.type.format ? src.type.format : null,
-            );
-            if (src.type.optional) {
-                base = "Maybe " + base;
+        switch (src.type.kind) {
+            case "simple": {
+                let base = createTypeFormat(
+                    src.type.type,
+                    src.type.format ? src.type.format : null,
+                );
+                if (src.type.optional) {
+                    base = "Maybe " + base;
+                }
+                return src.name + ":" + base;
             }
-            return src.name + ":" + base;
-        }
-
-        if (src.type.kind === "dict") {
-            if (src.type.format !== null && src.type.format !== undefined) {
-                throw Error("Unsupported map format " + src.type.format);
+            case "dict": {
+                if (src.type.format !== null && src.type.format !== undefined) {
+                    throw Error("Unsupported map format " + src.type.format);
+                }
+                const key = createTypeFormat(
+                    src.type.key,
+                    src.type.keyFormat ? src.type.keyFormat : null,
+                );
+                const value = createTypeFormat(
+                    src.type.value,
+                    src.type.valueFormat ? src.type.valueFormat : null,
+                );
+                return src.name + ":dict<" + key + ", " + value + ">";
             }
-            const key = createTypeFormat(
-                src.type.key,
-                src.type.keyFormat ? src.type.keyFormat : null,
-            );
-            const value = createTypeFormat(
-                src.type.value,
-                src.type.valueFormat ? src.type.valueFormat : null,
-            );
-            return src.name + ":dict<" + key + ", " + value + ">";
         }
-
-        throw Error("Unsupported ABI field");
     }
 
     function createTupleSignature(name: string): {
@@ -169,15 +168,14 @@ export function resolveSignatures(ctx: CompilerContext) {
         return { signature, id, tlb };
     }
 
-    for (const k in types) {
-        const t = types[k];
+    Object.values(types).forEach((t) => {
         if (t.kind === "struct") {
             const r = createTupleSignature(t.name);
             t.tlb = r.tlb;
             t.signature = r.signature;
             t.header = r.id;
         }
-    }
+    });
 
     checkMessageOpcodesUnique(ctx);
 
@@ -189,7 +187,7 @@ type binOpcode = number;
 
 function checkBinaryMessageReceiver(
     rcv: BinaryReceiverSelector,
-    rcvAst: ASTReceive,
+    rcvAst: AstReceiver,
     usedOpcodes: Map<binOpcode, messageType>,
     ctx: CompilerContext,
 ) {
@@ -210,7 +208,7 @@ type commentOpcode = string;
 // "opcode" clashes are highly unlikely in this case, of course
 function checkCommentMessageReceiver(
     rcv: CommentReceiverSelector,
-    rcvAst: ASTReceive,
+    rcvAst: AstReceiver,
     usedOpcodes: Map<commentOpcode, messageType>,
 ) {
     const opcode = commentPseudoOpcode(rcv.comment);
@@ -228,12 +226,14 @@ function checkMessageOpcodesUniqueInContractOrTrait(
     receivers: ReceiverDescription[],
     ctx: CompilerContext,
 ) {
-    const binBouncedRcvUsedOpcodes = new Map<binOpcode, messageType>();
-    const binExternalRcvUsedOpcodes = new Map<binOpcode, messageType>();
-    const binInternalRcvUsedOpcodes = new Map<binOpcode, messageType>();
+    const binBouncedRcvUsedOpcodes: Map<binOpcode, messageType> = new Map();
+    const binExternalRcvUsedOpcodes: Map<binOpcode, messageType> = new Map();
+    const binInternalRcvUsedOpcodes: Map<binOpcode, messageType> = new Map();
 
-    const commentExternalRcvUsedOpcodes = new Map<commentOpcode, messageType>();
-    const commentInternalRcvUsedOpcodes = new Map<commentOpcode, messageType>();
+    const commentExternalRcvUsedOpcodes: Map<commentOpcode, messageType> =
+        new Map();
+    const commentInternalRcvUsedOpcodes: Map<commentOpcode, messageType> =
+        new Map();
 
     for (const rcv of receivers) {
         switch (rcv.selector.kind) {
@@ -283,8 +283,7 @@ function checkMessageOpcodesUniqueInContractOrTrait(
 
 function checkMessageOpcodesUnique(ctx: CompilerContext) {
     const allTypes = getAllTypes(ctx);
-    for (const aggregateId in allTypes) {
-        const aggregate = allTypes[aggregateId];
+    Object.values(allTypes).forEach((aggregate) => {
         switch (aggregate.kind) {
             case "contract":
             case "trait":
@@ -296,5 +295,5 @@ function checkMessageOpcodesUnique(ctx: CompilerContext) {
             default:
                 break;
         }
-    }
+    });
 }

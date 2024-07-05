@@ -89,5 +89,17 @@ describe("constants", () => {
         expect(await contract.getSomething38()).toEqual(4n);
         expect(await contract.getSomething39()).toEqual(true);
         expect(await contract.getSomething40()).toEqual(true);
+        expect((await contract.getSomething41()).toRawString()).toEqual(
+            "0:0000000000000000000000000000000000000000000000000000000000000000",
+        );
+        expect((await contract.getSomething42()).toRawString()).toEqual(
+            "0:0000000000000000000000000000000000000000000000000000000000012345",
+        );
+        expect((await contract.getSomething43()).toRawString()).toEqual(
+            "0:0000000000000000000000000000000000000000000000000123456789abcdef",
+        );
+        expect((await contract.getSomething44()).toRawString()).toEqual(
+            "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+        );
     });
 });

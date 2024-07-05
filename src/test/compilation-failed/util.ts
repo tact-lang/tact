@@ -8,7 +8,7 @@ export function itShouldNotCompile(params: {
     it(`should not compile ${params.testName}`, async () => {
         const result = await run({
             configPath: __dirname + "/tact.config.json",
-            projectNames: [`${params.testName}`],
+            projectNames: [params.testName],
             suppressLog: true,
         });
         expect(result.ok).toBe(false);

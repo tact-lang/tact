@@ -3,7 +3,7 @@ import { VirtualFileSystem } from "./VirtualFileSystem";
 
 export function createVirtualFileSystem(
     root: string,
-    fs: { [key: string]: string },
+    fs: Record<string, string>,
     readonly: boolean = true,
 ): VirtualFileSystem {
     let normalizedRoot = normalize(root);
@@ -21,10 +21,10 @@ export function createVirtualFileSystem(
             const name = filePath.slice(normalizedRoot.length);
             return typeof fs[name] === "string";
         },
-        resolve(...filePath) {
+        resolve(...filePath): string {
             return normalize([normalizedRoot, ...filePath].join("/"));
         },
-        readFile(filePath) {
+        readFile(filePath): Buffer {
             if (!filePath.startsWith(normalizedRoot)) {
                 throw new Error(
                     `Path '${filePath}' is outside of the root directory '${normalizedRoot}'`,
@@ -38,7 +38,7 @@ export function createVirtualFileSystem(
                 return Buffer.from(content, "base64");
             }
         },
-        writeFile(filePath, content) {
+        writeFile(filePath, content): void {
             if (readonly) {
                 throw new Error("File system is readonly");
             }

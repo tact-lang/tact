@@ -6,8 +6,9 @@ export function crc32(bytes: Uint8Array, crc = 0xffffffff) {
     if (crc32_table === undefined) {
         calcTable();
     }
-    for (let i = 0; i < bytes.length; ++i)
-        crc = crc32_table![(crc ^ bytes[i]) & 0xff] ^ (crc >>> 8);
+    bytes.forEach(
+        (byte) => (crc = crc32_table![(crc ^ byte) & 0xff]! ^ (crc >>> 8)),
+    );
     return (crc ^ -1) >>> 0;
 }
 

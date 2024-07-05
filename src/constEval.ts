@@ -2,18 +2,18 @@ import { Address, Cell, toNano } from "@ton/core";
 import { enabledMasterchain } from "./config/features";
 import { CompilerContext } from "./context";
 import {
-    ASTBinaryOperation,
-    ASTExpression,
+    AstBinaryOperation,
+    AstExpression,
     AstId,
-    ASTNewParameter,
+    AstStructFieldInitializer,
     SrcInfo,
-    ASTUnaryOperation,
+    AstUnaryOperation,
     isSelfId,
     eqNames,
     idText,
 } from "./grammar/ast";
 import { idTextErr, throwConstEvalError } from "./errors";
-import { CommentValue, StructValue, Value } from "./types/types";
+import { CommentValue, showValue, StructValue, Value } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
 import {
     getStaticConstant,
@@ -49,13 +49,16 @@ function throwErrorConstEval(msg: string, source: SrcInfo): never {
 
 function ensureInt(val: Value, source: SrcInfo): bigint {
     if (typeof val !== "bigint") {
-        throwErrorConstEval(`integer expected, but got '${val}'`, source);
+        throwErrorConstEval(
+            `integer expected, but got '${showValue(val)}'`,
+            source,
+        );
     }
     if (minTvmInt <= val && val <= maxTvmInt) {
         return val;
     } else {
         throwErrorConstEval(
-            `integer '${val}' does not fit into TVM Int type`,
+            `integer '${showValue(val)}' does not fit into TVM Int type`,
             source,
         );
     }
@@ -63,19 +66,25 @@ function ensureInt(val: Value, source: SrcInfo): bigint {
 
 function ensureBoolean(val: Value, source: SrcInfo): boolean {
     if (typeof val !== "boolean") {
-        throwErrorConstEval(`boolean expected, but got '${val}'`, source);
+        throwErrorConstEval(
+            `boolean expected, but got '${showValue(val)}'`,
+            source,
+        );
     }
     return val;
 }
 
 function ensureString(val: Value, source: SrcInfo): string {
     if (typeof val !== "string") {
-        throwErrorConstEval(`string expected, but got '${val}'`, source);
+        throwErrorConstEval(
+            `string expected, but got '${showValue(val)}'`,
+            source,
+        );
     }
     return val;
 }
 
-function ensureFunArity(arity: number, args: ASTExpression[], source: SrcInfo) {
+function ensureFunArity(arity: number, args: AstExpression[], source: SrcInfo) {
     if (args.length !== arity) {
         throwErrorConstEval(
             `function expects ${arity} argument(s), but got ${args.length}`,
@@ -86,7 +95,7 @@ function ensureFunArity(arity: number, args: ASTExpression[], source: SrcInfo) {
 
 function ensureMethodArity(
     arity: number,
-    args: ASTExpression[],
+    args: AstExpression[],
     source: SrcInfo,
 ) {
     if (args.length !== arity) {
@@ -98,8 +107,8 @@ function ensureMethodArity(
 }
 
 function evalUnaryOp(
-    op: ASTUnaryOperation,
-    operand: ASTExpression,
+    op: AstUnaryOperation,
+    operand: AstExpression,
     source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
@@ -149,9 +158,9 @@ function modFloor(a: bigint, b: bigint): bigint {
 }
 
 function evalBinaryOp(
-    op: ASTBinaryOperation,
-    left: ASTExpression,
-    right: ASTExpression,
+    op: AstBinaryOperation,
+    left: AstExpression,
+    right: AstExpression,
     source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
@@ -303,9 +312,9 @@ function evalBinaryOp(
 }
 
 function evalConditional(
-    condition: ASTExpression,
-    thenBranch: ASTExpression,
-    elseBranch: ASTExpression,
+    condition: AstExpression,
+    thenBranch: AstExpression,
+    elseBranch: AstExpression,
     ctx: CompilerContext,
 ): Value {
     // here we rely on the typechecker that both branches have the same type
@@ -322,13 +331,13 @@ function evalConditional(
 
 function evalStructInstance(
     structTypeId: AstId,
-    structFields: ASTNewParameter[],
+    structFields: AstStructFieldInitializer[],
     ctx: CompilerContext,
 ): StructValue {
     return structFields.reduce(
         (resObj, fieldWithInit) => {
-            resObj[fieldWithInit.name.text] = evalConstantExpression(
-                fieldWithInit.exp,
+            resObj[fieldWithInit.field.text] = evalConstantExpression(
+                fieldWithInit.initializer,
                 ctx,
             );
             return resObj;
@@ -338,7 +347,7 @@ function evalStructInstance(
 }
 
 function evalFieldAccess(
-    structExpr: ASTExpression,
+    structExpr: AstExpression,
     fieldId: AstId,
     source: SrcInfo,
     ctx: CompilerContext,
@@ -375,12 +384,12 @@ function evalFieldAccess(
         !("$tactStruct" in valStruct)
     ) {
         throwErrorConstEval(
-            `constant struct expected, but got ${valStruct}`,
+            `constant struct expected, but got ${showValue(valStruct)}`,
             structExpr.loc,
         );
     }
-    if (fieldId.text in valStruct) {
-        return valStruct[fieldId.text];
+    if (idText(fieldId) in valStruct) {
+        return valStruct[idText(fieldId)]!;
     } else {
         // this cannot happen in a well-typed program
         throwErrorConstEval(
@@ -392,8 +401,8 @@ function evalFieldAccess(
 
 function evalMethod(
     methodName: AstId,
-    object: ASTExpression,
-    args: ASTExpression[],
+    object: AstExpression,
+    args: AstExpression[],
     source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
@@ -416,7 +425,7 @@ function evalMethod(
 
 function evalBuiltins(
     builtinName: AstId,
-    args: ASTExpression[],
+    args: AstExpression[],
     source: SrcInfo,
     ctx: CompilerContext,
 ): Value {
@@ -424,8 +433,8 @@ function evalBuiltins(
         case "ton": {
             ensureFunArity(1, args, source);
             const tons = ensureString(
-                evalConstantExpression(args[0], ctx),
-                args[0].loc,
+                evalConstantExpression(args[0]!, ctx),
+                args[0]!.loc,
             );
             try {
                 return ensureInt(BigInt(toNano(tons).toString(10)), source);
@@ -442,12 +451,12 @@ function evalBuiltins(
         case "pow": {
             ensureFunArity(2, args, source);
             const valBase = ensureInt(
-                evalConstantExpression(args[0], ctx),
-                args[0].loc,
+                evalConstantExpression(args[0]!, ctx),
+                args[0]!.loc,
             );
             const valExp = ensureInt(
-                evalConstantExpression(args[1], ctx),
-                args[1].loc,
+                evalConstantExpression(args[1]!, ctx),
+                args[1]!.loc,
             );
             if (valExp < 0n) {
                 throwErrorConstEval(
@@ -471,8 +480,8 @@ function evalBuiltins(
         case "pow2": {
             ensureFunArity(1, args, source);
             const valExponent = ensureInt(
-                evalConstantExpression(args[0], ctx),
-                args[0].loc,
+                evalConstantExpression(args[0]!, ctx),
+                args[0]!.loc,
             );
             if (valExponent < 0n) {
                 throwErrorConstEval(
@@ -496,8 +505,8 @@ function evalBuiltins(
         case "sha256": {
             ensureFunArity(1, args, source);
             const str = ensureString(
-                evalConstantExpression(args[0], ctx),
-                args[0].loc,
+                evalConstantExpression(args[0]!, ctx),
+                args[0]!.loc,
             );
             const dataSize = Buffer.from(str).length;
             if (dataSize > 128) {
@@ -516,8 +525,8 @@ function evalBuiltins(
             {
                 ensureFunArity(1, args, source);
                 const str = ensureString(
-                    evalConstantExpression(args[0], ctx),
-                    args[0].loc,
+                    evalConstantExpression(args[0]!, ctx),
+                    args[0]!.loc,
                 );
                 try {
                     return Cell.fromBase64(str);
@@ -533,8 +542,8 @@ function evalBuiltins(
             {
                 ensureFunArity(1, args, source);
                 const str = ensureString(
-                    evalConstantExpression(args[0], ctx),
-                    args[0].loc,
+                    evalConstantExpression(args[0]!, ctx),
+                    args[0]!.loc,
                 );
                 try {
                     const address = Address.parse(str);
@@ -562,14 +571,13 @@ function evalBuiltins(
         case "newAddress": {
             ensureFunArity(2, args, source);
             const wc = ensureInt(
-                evalConstantExpression(args[0], ctx),
-                args[0].loc,
+                evalConstantExpression(args[0]!, ctx),
+                args[0]!.loc,
             );
             const addr = Buffer.from(
-                ensureInt(
-                    evalConstantExpression(args[1], ctx),
-                    args[1].loc,
-                ).toString(16),
+                ensureInt(evalConstantExpression(args[1]!, ctx), args[1]!.loc)
+                    .toString(16)
+                    .padStart(64, "0"),
                 "hex",
             );
             if (wc !== 0n && wc !== -1n) {
@@ -580,7 +588,7 @@ function evalBuiltins(
             }
             if (!enabledMasterchain(ctx) && wc !== 0n) {
                 throwErrorConstEval(
-                    `${wc}:${addr} address is from masterchain which is not enabled for this contract`,
+                    `${wc}:${addr.toString("hex")} address is from masterchain which is not enabled for this contract`,
                     source,
                 );
             }
@@ -638,7 +646,7 @@ function interpretEscapeSequences(stringLiteral: string) {
 }
 
 export function evalConstantExpression(
-    ast: ASTExpression,
+    ast: AstExpression,
     ctx: CompilerContext,
 ): Value {
     switch (ast.kind) {
@@ -656,8 +664,8 @@ export function evalConstantExpression(
             }
             throwNonFatalErrorConstEval("cannot evaluate a variable", ast.loc);
             break;
-        case "op_call":
-            return evalMethod(ast.name, ast.src, ast.args, ast.loc, ctx);
+        case "method_call":
+            return evalMethod(ast.method, ast.self, ast.args, ast.loc, ctx);
         case "init_of":
             throwNonFatalErrorConstEval(
                 "initOf is not supported at this moment",
@@ -673,7 +681,7 @@ export function evalConstantExpression(
         case "string":
             return ensureString(interpretEscapeSequences(ast.value), ast.loc);
         case "op_unary":
-            return evalUnaryOp(ast.op, ast.right, ast.loc, ctx);
+            return evalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
         case "op_binary":
             return evalBinaryOp(ast.op, ast.left, ast.right, ast.loc, ctx);
         case "conditional":
@@ -683,11 +691,11 @@ export function evalConstantExpression(
                 ast.elseBranch,
                 ctx,
             );
-        case "op_new":
+        case "struct_instance":
             return evalStructInstance(ast.type, ast.args, ctx);
-        case "op_field":
-            return evalFieldAccess(ast.src, ast.name, ast.loc, ctx);
-        case "op_static_call":
-            return evalBuiltins(ast.name, ast.args, ast.loc, ctx);
+        case "field_access":
+            return evalFieldAccess(ast.aggregate, ast.field, ast.loc, ctx);
+        case "static_call":
+            return evalBuiltins(ast.function, ast.args, ast.loc, ctx);
     }
 }

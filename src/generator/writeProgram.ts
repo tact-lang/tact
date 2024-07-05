@@ -253,7 +253,7 @@ function tryExtractModule(
     imported: string[],
 ): WrittenFunction[] | null {
     // Put to map
-    const maps = new Map<string, WrittenFunction>();
+    const maps: Map<string, WrittenFunction> = new Map();
     for (const f of functions) {
         maps.set(f.name, f);
     }
@@ -378,10 +378,9 @@ function writeAll(
 
     // Static functions
     const sf = getAllStaticFunctions(ctx);
-    for (const k in sf) {
-        const f = sf[k];
+    Object.values(sf).forEach((f) => {
         writeFunction(f, wCtx);
-    }
+    });
 
     // Extensions
     for (const c of allTypes) {
