@@ -104,3 +104,10 @@ export function idTextErr(
     }
     return `"${ident.text}"`;
 }
+
+export type TactErrorCollection =
+    | Error
+    | TactParseError
+    | TactCompilationError
+    | TactInternalCompilerError
+    | TactConstEvalError;

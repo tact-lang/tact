@@ -3,26 +3,14 @@ import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { Self } from "./contracts/output/initof_Self";
 import { Parent } from "./contracts/output/initof_Parent";
-import { consoleLogger } from "../../logger";
 import { TestInit } from "./contracts/output/initof-2_TestInit";
 import { A } from "./contracts/output/initof-3_A";
 
 describe("initOf", () => {
-    beforeAll(() => {
-        jest.spyOn(consoleLogger, "error").mockImplementation(() => {});
-    });
-
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
 
-    afterAll(() => {
-        (consoleLogger.error as jest.Mock).mockRestore();
-    });
-
-    afterEach(() => {
-        (consoleLogger.error as jest.Mock).mockClear();
-    });
     it("should implement initOf correctly - 1", async () => {
         // Init
         const system = await ContractSystem.create();
