@@ -40,14 +40,15 @@ void (async () => {
 
         // Compile func files
         for (const p of [{ path: path.join(__dirname, "..", "func") }]) {
-            const recs = fs.readdirSync(p.path);
-            for (const r of recs) {
-                if (!r.endsWith(".fc")) {
+            const files = fs.readdirSync(p.path);
+            for (const file of files) {
+                if (!file.endsWith(".fc")) {
                     continue;
                 }
 
                 // Precompile
-                logger.info(`Processing ${path.join(p.path + r)}`);
+                const funcFileFullPath = path.join(p.path, file);
+                logger.info(`Processing ${path.join(funcFileFullPath)}`);
                 let c: FuncCompilationResult;
                 try {
                     const stdlibPath = path.resolve(
@@ -57,16 +58,16 @@ void (async () => {
                         "stdlib.fc",
                     );
                     const stdlib = fs.readFileSync(stdlibPath, "utf-8");
-                    const code = fs.readFileSync(p.path + r, "utf-8");
+                    const code = fs.readFileSync(funcFileFullPath, "utf-8");
                     c = await funcCompile({
-                        entries: [stdlibPath, p.path + r],
+                        entries: [stdlibPath, funcFileFullPath],
                         sources: [
                             {
                                 path: stdlibPath,
                                 content: stdlib,
                             },
                             {
-                                path: p.path + r,
+                                path: funcFileFullPath,
                                 content: code,
                             },
                         ],
@@ -75,20 +76,20 @@ void (async () => {
                     if (!c.ok) {
                         logger.error(c.log);
                         throw new Error(
-                            `FunC compilation failed for ${path.join(p.path, r)}`,
+                            `FunC compilation failed for ${path.join(p.path, file)}`,
                         );
                     }
                 } catch (e) {
                     logger.error(e as Error);
-                    logger.error(`Failed for ${path.join(p.path, r)}`);
+                    logger.error(`Failed for ${path.join(p.path, file)}`);
                     throw e;
                 }
-                fs.writeFileSync(p.path + r + ".fift", c.fift!);
-                fs.writeFileSync(p.path + r + ".cell", c.output!);
+                fs.writeFileSync(funcFileFullPath + ".fift", c.fift!);
+                fs.writeFileSync(funcFileFullPath + ".cell", c.output!);
 
                 // Cell -> Fift decompiler
                 const source = decompileAll({ src: c.output! });
-                fs.writeFileSync(p.path + r + ".rev.fift", source);
+                fs.writeFileSync(funcFileFullPath + ".rev.fift", source);
             }
         }
     } catch (error) {
