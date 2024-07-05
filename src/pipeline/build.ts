@@ -309,7 +309,7 @@ export async function build(args: {
     // Bindings
     logger.info("   > Bindings");
     for (const pkg of packages) {
-        logger.info("   > " + pkg.name);
+        logger.info(`   > ${pkg.name}`);
         if (pkg.init.deployment.kind !== "system-cell") {
             const message =
                 "   > " +
