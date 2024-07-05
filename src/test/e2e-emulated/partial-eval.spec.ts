@@ -2,17 +2,17 @@ import {
     AstExpression,
     __DANGER_resetNodeId,
     cloneAstNode,
+    eqExpressions,
 } from "../../grammar/ast";
 import { parseExpression } from "../../grammar/grammar";
 import {
-    areEqualExpressions,
     extractValue,
     isValue,
     makeValueExpression,
 } from "../../optimizer/util";
 import { evalUnaryOp, partiallyEvalExpression } from "../../constEval";
 import { CompilerContext } from "../../context";
-import { ValueExpression } from "../../optimizer/types";
+import { AstValue } from "../../optimizer/types";
 
 const additiveExpressions = [
     { original: "X + 3 + 1", simplified: "X + 4" },
@@ -108,7 +108,7 @@ const multiplicativeExpressions = [
 
 function testExpression(original: string, simplified: string) {
     expect(
-        areEqualExpressions(
+        eqExpressions(
             partiallyEvalExpression(
                 parseExpression(original),
                 new CompilerContext(),
@@ -153,7 +153,7 @@ function unaryNegNodesToNumbers(ast: AstExpression): AstExpression {
                     return makeValueExpression(
                         evalUnaryOp(
                             ast.op,
-                            extractValue(ast.operand as ValueExpression),
+                            extractValue(ast.operand as AstValue),
                         ),
                     );
                 }

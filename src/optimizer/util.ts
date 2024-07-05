@@ -2,11 +2,11 @@ import {
     AstExpression,
     AstUnaryOperation,
     AstBinaryOperation,
-    createAstNode,
-    AstStructFieldInitializer,
+    createAstNode
 } from "../grammar/ast";
+import { dummySrcInfo } from "../grammar/grammar";
 import { Value } from "../types/types";
-import { DUMMY_LOCATION, ValueExpression } from "./types";
+import { AstValue } from "./types";
 
 export function isValue(ast: AstExpression): boolean {
     switch (
@@ -31,7 +31,7 @@ export function isValue(ast: AstExpression): boolean {
     }
 }
 
-export function extractValue(ast: ValueExpression): Value {
+export function extractValue(ast: AstValue): Value {
     switch (
         ast.kind // Missing structs
     ) {
@@ -46,37 +46,37 @@ export function extractValue(ast: ValueExpression): Value {
     }
 }
 
-export function makeValueExpression(value: Value): ValueExpression {
+export function makeValueExpression(value: Value): AstValue {
     if (value === null) {
         const result = createAstNode({
             kind: "null",
-            loc: DUMMY_LOCATION,
+            loc: dummySrcInfo,
         });
-        return result as ValueExpression;
+        return result as AstValue;
     }
     if (typeof value === "string") {
         const result = createAstNode({
             kind: "string",
             value: value,
-            loc: DUMMY_LOCATION,
+            loc: dummySrcInfo,
         });
-        return result as ValueExpression;
+        return result as AstValue;
     }
     if (typeof value === "bigint") {
         const result = createAstNode({
             kind: "number",
             value: value,
-            loc: DUMMY_LOCATION,
+            loc: dummySrcInfo,
         });
-        return result as ValueExpression;
+        return result as AstValue;
     }
     if (typeof value === "boolean") {
         const result = createAstNode({
             kind: "boolean",
             value: value,
-            loc: DUMMY_LOCATION,
+            loc: dummySrcInfo,
         });
-        return result as ValueExpression;
+        return result as AstValue;
     }
     throw new Error(
         `structs, addresses, cells, and comment values are not supported at the moment.`,
@@ -91,7 +91,7 @@ export function makeUnaryExpression(
         kind: "op_unary",
         op: op,
         operand: operand,
-        loc: DUMMY_LOCATION,
+        loc: dummySrcInfo,
     });
     return result as AstExpression;
 }
@@ -106,7 +106,7 @@ export function makeBinaryExpression(
         op: op,
         left: left,
         right: right,
-        loc: DUMMY_LOCATION,
+        loc: dummySrcInfo,
     });
     return result as AstExpression;
 }
@@ -166,140 +166,3 @@ export function modFloor(a: bigint, b: bigint): bigint {
     return a - divFloor(a, b) * b;
 }
 
-// Test equality of ASTExpressions.
-export function areEqualExpressions(
-    ast1: AstExpression,
-    ast2: AstExpression,
-): boolean {
-    switch (ast1.kind) {
-        case "null":
-            return ast2.kind === "null";
-        case "boolean":
-            return ast2.kind === "boolean" ? ast1.value === ast2.value : false;
-        case "number":
-            return ast2.kind === "number" ? ast1.value === ast2.value : false;
-        case "string":
-            return ast2.kind === "string" ? ast1.value === ast2.value : false;
-        case "id":
-            return ast2.kind === "id" ? ast1.text === ast2.text : false;
-        case "method_call":
-            if (ast2.kind === "method_call") {
-                return (
-                    ast1.method.text === ast2.method.text &&
-                    areEqualExpressions(ast1.self, ast2.self) &&
-                    areEqualExpressionArrays(ast1.args, ast2.args)
-                );
-            } else {
-                return false;
-            }
-        case "init_of":
-            if (ast2.kind === "init_of") {
-                return (
-                    ast1.contract.text === ast2.contract.text &&
-                    areEqualExpressionArrays(ast1.args, ast2.args)
-                );
-            } else {
-                return false;
-            }
-        case "op_unary":
-            if (ast2.kind === "op_unary") {
-                return (
-                    ast1.op === ast2.op &&
-                    areEqualExpressions(ast1.operand, ast2.operand)
-                );
-            } else {
-                return false;
-            }
-        case "op_binary":
-            if (ast2.kind === "op_binary") {
-                return (
-                    ast1.op === ast2.op &&
-                    areEqualExpressions(ast1.left, ast2.left) &&
-                    areEqualExpressions(ast1.right, ast2.right)
-                );
-            } else {
-                return false;
-            }
-        case "conditional":
-            if (ast2.kind === "conditional") {
-                return (
-                    areEqualExpressions(ast1.condition, ast2.condition) &&
-                    areEqualExpressions(ast1.thenBranch, ast2.thenBranch) &&
-                    areEqualExpressions(ast1.elseBranch, ast2.elseBranch)
-                );
-            } else {
-                return false;
-            }
-        case "struct_instance":
-            if (ast2.kind === "struct_instance") {
-                return (
-                    ast1.type.text === ast2.type.text &&
-                    areEqualParameterArrays(ast1.args, ast2.args)
-                );
-            } else {
-                return false;
-            }
-        case "field_access":
-            if (ast2.kind === "field_access") {
-                return (
-                    ast1.field.text === ast2.field.text &&
-                    areEqualExpressions(ast1.aggregate, ast2.aggregate)
-                );
-            } else {
-                return false;
-            }
-        case "static_call":
-            if (ast2.kind === "static_call") {
-                return (
-                    ast1.function.text === ast2.function.text &&
-                    areEqualExpressionArrays(ast1.args, ast2.args)
-                );
-            } else {
-                return false;
-            }
-    }
-}
-
-function areEqualParameters(
-    arg1: AstStructFieldInitializer,
-    arg2: AstStructFieldInitializer,
-): boolean {
-    return (
-        arg1.field.text === arg2.field.text &&
-        areEqualExpressions(arg1.initializer, arg2.initializer)
-    );
-}
-
-function areEqualParameterArrays(
-    arr1: AstStructFieldInitializer[],
-    arr2: AstStructFieldInitializer[],
-): boolean {
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
-
-    for (let i = 0; i < arr1.length; i++) {
-        if (!areEqualParameters(arr1[i]!, arr2[i]!)) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-function areEqualExpressionArrays(
-    arr1: AstExpression[],
-    arr2: AstExpression[],
-): boolean {
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
-
-    for (let i = 0; i < arr1.length; i++) {
-        if (!areEqualExpressions(arr1[i]!, arr2[i]!)) {
-            return false;
-        }
-    }
-
-    return true;
-}

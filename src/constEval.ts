@@ -25,9 +25,8 @@ import {
     modFloor,
 } from "./optimizer/util";
 import {
-    DUMMY_LOCATION,
     ExpressionTransformer,
-    ValueExpression,
+    AstValue,
 } from "./optimizer/types";
 import { StandardOptimizer } from "./optimizer/standardOptimizer";
 import {
@@ -36,6 +35,7 @@ import {
     hasStaticConstant,
 } from "./types/resolveDescriptors";
 import { getExpType } from "./types/resolveExpression";
+import { dummySrcInfo } from "./grammar/grammar";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -125,30 +125,27 @@ function ensureMethodArity(
     }
 }
 
-export function evalUnaryOp(op: AstUnaryOperation, valOperand: Value): Value {
-    return __evalUnaryOp(op, valOperand, DUMMY_LOCATION, DUMMY_LOCATION);
-}
 
-function __evalUnaryOp(
+export function evalUnaryOp(
     op: AstUnaryOperation,
     valOperand: Value,
-    operandRef: SrcInfo,
-    source: SrcInfo,
+    operandLoc: SrcInfo = dummySrcInfo,
+    source: SrcInfo = dummySrcInfo
 ): Value {
     switch (op) {
         case "+":
-            return ensureInt(valOperand, operandRef);
+            return ensureInt(valOperand, operandLoc);
         case "-":
-            return ensureInt(-ensureInt(valOperand, operandRef), source);
+            return ensureInt(-ensureInt(valOperand, operandLoc), source);
         case "~":
-            return ~ensureInt(valOperand, operandRef);
+            return ~ensureInt(valOperand, operandLoc);
         case "!":
-            return !ensureBoolean(valOperand, operandRef);
+            return !ensureBoolean(valOperand, operandLoc);
         case "!!":
             if (valOperand === null) {
                 throwErrorConstEval(
                     "non-null value expected but got null",
-                    operandRef,
+                    operandLoc,
                 );
             }
             return valOperand;
@@ -172,7 +169,7 @@ function fullyEvalUnaryOp(
 
     const valOperand = evalConstantExpression(operand, ctx);
 
-    return __evalUnaryOp(op, valOperand, operand.loc, source);
+    return evalUnaryOp(op, valOperand, operand.loc, source);
 }
 
 function partiallyEvalUnaryOp(
@@ -184,8 +181,8 @@ function partiallyEvalUnaryOp(
     const simplOperand = partiallyEvalExpression(operand, ctx);
 
     if (isValue(simplOperand)) {
-        const valueOperand = extractValue(simplOperand as ValueExpression);
-        const result = __evalUnaryOp(
+        const valueOperand = extractValue(simplOperand as AstValue);
+        const result = evalUnaryOp(
             op,
             valueOperand,
             simplOperand.loc,
@@ -209,7 +206,7 @@ function fullyEvalBinaryOp(
     const valLeft = evalConstantExpression(left, ctx);
     const valRight = evalConstantExpression(right, ctx);
 
-    return __evalBinaryOp(op, valLeft, valRight, left.loc, right.loc, source);
+    return evalBinaryOp(op, valLeft, valRight, left.loc, right.loc, source);
 }
 
 function partiallyEvalBinaryOp(
@@ -223,9 +220,9 @@ function partiallyEvalBinaryOp(
     const rightOperand = partiallyEvalExpression(right, ctx);
 
     if (isValue(leftOperand) && isValue(rightOperand)) {
-        const valueLeftOperand = extractValue(leftOperand as ValueExpression);
-        const valueRightOperand = extractValue(rightOperand as ValueExpression);
-        const result = __evalBinaryOp(
+        const valueLeftOperand = extractValue(leftOperand as AstValue);
+        const valueRightOperand = extractValue(rightOperand as AstValue);
+        const result = evalBinaryOp(
             op,
             valueLeftOperand,
             valueRightOperand,
@@ -245,39 +242,24 @@ export function evalBinaryOp(
     op: AstBinaryOperation,
     valLeft: Value,
     valRight: Value,
-): Value {
-    return __evalBinaryOp(
-        op,
-        valLeft,
-        valRight,
-        DUMMY_LOCATION,
-        DUMMY_LOCATION,
-        DUMMY_LOCATION,
-    );
-}
-
-function __evalBinaryOp(
-    op: AstBinaryOperation,
-    valLeft: Value,
-    valRight: Value,
-    refLeft: SrcInfo,
-    refRight: SrcInfo,
-    source: SrcInfo,
+    locLeft: SrcInfo = dummySrcInfo,
+    locRight: SrcInfo = dummySrcInfo,
+    source: SrcInfo = dummySrcInfo
 ): Value {
     switch (op) {
         case "+":
             return ensureInt(
-                ensureInt(valLeft, refLeft) + ensureInt(valRight, refRight),
+                ensureInt(valLeft, locLeft) + ensureInt(valRight, locRight),
                 source,
             );
         case "-":
             return ensureInt(
-                ensureInt(valLeft, refLeft) - ensureInt(valRight, refRight),
+                ensureInt(valLeft, locLeft) - ensureInt(valRight, locRight),
                 source,
             );
         case "*":
             return ensureInt(
-                ensureInt(valLeft, refLeft) * ensureInt(valRight, refRight),
+                ensureInt(valLeft, locLeft) * ensureInt(valRight, locRight),
                 source,
             );
         case "/": {
@@ -285,38 +267,38 @@ function __evalBinaryOp(
             // is a non-conventional one: by default it rounds towards negative infinity,
             // meaning, for instance, -1 / 5 = -1 and not zero, as in many mainstream languages.
             // Still, the following holds: a / b * b + a % b == a, for all b != 0.
-            const r = ensureInt(valRight, refRight);
+            const r = ensureInt(valRight, locRight);
             if (r === 0n)
                 throwErrorConstEval(
                     "divisor expression must be non-zero",
-                    refRight,
+                    locRight,
                 );
-            return ensureInt(divFloor(ensureInt(valLeft, refLeft), r), source);
+            return ensureInt(divFloor(ensureInt(valLeft, locLeft), r), source);
         }
         case "%": {
             // Same as for division, see the comment above
             // Example: -1 % 5 = 4
-            const r = ensureInt(valRight, refRight);
+            const r = ensureInt(valRight, locRight);
             if (r === 0n)
                 throwErrorConstEval(
                     "divisor expression must be non-zero",
-                    refRight,
+                    locRight,
                 );
-            return ensureInt(modFloor(ensureInt(valLeft, refLeft), r), source);
+            return ensureInt(modFloor(ensureInt(valLeft, locLeft), r), source);
         }
         case "&":
-            return ensureInt(valLeft, refLeft) & ensureInt(valRight, refRight);
+            return ensureInt(valLeft, locLeft) & ensureInt(valRight, locRight);
         case "|":
-            return ensureInt(valLeft, refLeft) | ensureInt(valRight, refRight);
+            return ensureInt(valLeft, locLeft) | ensureInt(valRight, locRight);
         case "^":
-            return ensureInt(valLeft, refLeft) ^ ensureInt(valRight, refRight);
+            return ensureInt(valLeft, locLeft) ^ ensureInt(valRight, locRight);
         case "<<": {
-            const valNum = ensureInt(valLeft, refLeft);
-            const valBits = ensureInt(valRight, refRight);
+            const valNum = ensureInt(valLeft, locLeft);
+            const valBits = ensureInt(valRight, locRight);
             if (0n > valBits || valBits > 256n) {
                 throwErrorConstEval(
                     `the number of bits shifted ('${valBits}') must be within [0..256] range`,
-                    refRight,
+                    locRight,
                 );
             }
             try {
@@ -332,12 +314,12 @@ function __evalBinaryOp(
             }
         }
         case ">>": {
-            const valNum = ensureInt(valLeft, refLeft);
-            const valBits = ensureInt(valRight, refRight);
+            const valNum = ensureInt(valLeft, locLeft);
+            const valBits = ensureInt(valRight, locRight);
             if (0n > valBits || valBits > 256n) {
                 throwErrorConstEval(
                     `the number of bits shifted ('${valBits}') must be within [0..256] range`,
-                    refRight,
+                    locRight,
                 );
             }
             try {
@@ -353,13 +335,13 @@ function __evalBinaryOp(
             }
         }
         case ">":
-            return ensureInt(valLeft, refLeft) > ensureInt(valRight, refRight);
+            return ensureInt(valLeft, locLeft) > ensureInt(valRight, locRight);
         case "<":
-            return ensureInt(valLeft, refLeft) < ensureInt(valRight, refRight);
+            return ensureInt(valLeft, locLeft) < ensureInt(valRight, locRight);
         case ">=":
-            return ensureInt(valLeft, refLeft) >= ensureInt(valRight, refRight);
+            return ensureInt(valLeft, locLeft) >= ensureInt(valRight, locRight);
         case "<=":
-            return ensureInt(valLeft, refLeft) <= ensureInt(valRight, refRight);
+            return ensureInt(valLeft, locLeft) <= ensureInt(valRight, locRight);
         case "==":
             // the null comparisons account for optional types, e.g.
             // a const x: Int? = 42 can be compared to null
@@ -384,13 +366,13 @@ function __evalBinaryOp(
             return valLeft !== valRight;
         case "&&":
             return (
-                ensureBoolean(valLeft, refLeft) &&
-                ensureBoolean(valRight, refRight)
+                ensureBoolean(valLeft, locLeft) &&
+                ensureBoolean(valRight, locRight)
             );
         case "||":
             return (
-                ensureBoolean(valLeft, refLeft) ||
-                ensureBoolean(valRight, refRight)
+                ensureBoolean(valLeft, locLeft) ||
+                ensureBoolean(valRight, locRight)
             );
     }
 }

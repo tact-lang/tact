@@ -9,10 +9,12 @@ import { Rule, ExpressionTransformer } from "./types";
 type PrioritizedRule = { priority: number; rule: Rule };
 
 // This optimizer uses rules that preserve overflows in integer expressions.
-export class StandardOptimizer implements ExpressionTransformer {
+export class StandardOptimizer extends ExpressionTransformer {
     private rules: PrioritizedRule[];
 
     constructor() {
+        super();
+        
         this.rules = [
             { priority: 0, rule: new AssociativeRule1() },
             { priority: 1, rule: new AssociativeRule2() },
