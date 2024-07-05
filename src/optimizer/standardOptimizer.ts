@@ -14,7 +14,7 @@ export class StandardOptimizer extends ExpressionTransformer {
 
     constructor() {
         super();
-        
+
         this.rules = [
             { priority: 0, rule: new AssociativeRule1() },
             { priority: 1, rule: new AssociativeRule2() },

@@ -1,10 +1,9 @@
-import { Interval } from "ohm-js";
 import {
     AstExpression,
     AstNumber,
     AstBoolean,
     AstNull,
-    AstString
+    AstString,
 } from "../grammar/ast";
 
 export type AstValue = AstNumber | AstBoolean | AstNull | AstString;

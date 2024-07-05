@@ -2,7 +2,7 @@ import {
     AstExpression,
     AstUnaryOperation,
     AstBinaryOperation,
-    createAstNode
+    createAstNode,
 } from "../grammar/ast";
 import { dummySrcInfo } from "../grammar/grammar";
 import { Value } from "../types/types";
@@ -165,4 +165,3 @@ export function sign(a: bigint): bigint {
 export function modFloor(a: bigint, b: bigint): bigint {
     return a - divFloor(a, b) * b;
 }
-

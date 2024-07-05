@@ -24,10 +24,7 @@ import {
     divFloor,
     modFloor,
 } from "./optimizer/util";
-import {
-    ExpressionTransformer,
-    AstValue,
-} from "./optimizer/types";
+import { ExpressionTransformer, AstValue } from "./optimizer/types";
 import { StandardOptimizer } from "./optimizer/standardOptimizer";
 import {
     getStaticConstant,
@@ -125,12 +122,11 @@ function ensureMethodArity(
     }
 }
 
-
 export function evalUnaryOp(
     op: AstUnaryOperation,
     valOperand: Value,
     operandLoc: SrcInfo = dummySrcInfo,
-    source: SrcInfo = dummySrcInfo
+    source: SrcInfo = dummySrcInfo,
 ): Value {
     switch (op) {
         case "+":
@@ -182,12 +178,7 @@ function partiallyEvalUnaryOp(
 
     if (isValue(simplOperand)) {
         const valueOperand = extractValue(simplOperand as AstValue);
-        const result = evalUnaryOp(
-            op,
-            valueOperand,
-            simplOperand.loc,
-            source,
-        );
+        const result = evalUnaryOp(op, valueOperand, simplOperand.loc, source);
         // Wrap the value into a Tree to continue simplifications
         return makeValueExpression(result);
     } else {
@@ -244,7 +235,7 @@ export function evalBinaryOp(
     valRight: Value,
     locLeft: SrcInfo = dummySrcInfo,
     locRight: SrcInfo = dummySrcInfo,
-    source: SrcInfo = dummySrcInfo
+    source: SrcInfo = dummySrcInfo,
 ): Value {
     switch (op) {
         case "+":

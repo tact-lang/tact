@@ -27,7 +27,7 @@ export abstract class AssociativeRewriteRule extends Rule {
 
     constructor() {
         super();
-        
+
         // + associates with these on the right:
         // i.e., all op \in plusAssoc. (a + b) op c = a + (b op c)
         const additiveAssoc: Set<AstBinaryOperation> = new Set(["+", "-"]);
