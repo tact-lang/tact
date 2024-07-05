@@ -467,9 +467,6 @@ export type AstFuncId = {
     loc: SrcInfo;
 };
 
-export function idText(ident: AstId): string;
-export function idText(ident: AstFuncId): string;
-export function idText(ident: AstTypeId): string;
 export function idText(ident: AstId | AstFuncId | AstTypeId): string {
     return ident.text;
 }
@@ -518,11 +515,6 @@ export function isRequire(ident: AstId): boolean {
     return ident.text === "require";
 }
 
-export function eqNames(left: string, right: string): boolean;
-export function eqNames(left: string, right: AstId): boolean;
-export function eqNames(left: AstId, right: string): boolean;
-export function eqNames(left: AstId, right: AstId): boolean;
-export function eqNames(left: AstId, right: AstId): boolean;
 export function eqNames(
     left: AstId | AstTypeId | string,
     right: AstId | AstTypeId | string,

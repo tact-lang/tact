@@ -1,5 +1,10 @@
 import { contractErrors } from "../../abi/errors";
-import { enabledInline, enabledMasterchain } from "../../config/features";
+import {
+    enabledInline,
+    enabledInterfacesGetter,
+    enabledIpfsAbiGetter,
+    enabledMasterchain,
+} from "../../config/features";
 import { ItemOrigin } from "../../grammar/grammar";
 import { InitDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
@@ -122,13 +127,13 @@ export function writeInit(
 
             // Generate self initial tensor
             const initValues: string[] = [];
-            for (let i = 0; i < t.fields.length; i++) {
+            t.fields.forEach((tField) => {
                 let init = "null()";
-                if (t.fields[i].default !== undefined) {
-                    init = writeValue(t.fields[i].default!, ctx);
+                if (tField.default !== undefined) {
+                    init = writeValue(tField.default!, ctx);
                 }
                 initValues.push(init);
-            }
+            });
             if (initValues.length > 0) {
                 // Special case for empty contracts
                 ctx.append(
@@ -147,7 +152,7 @@ export function writeInit(
             // Return result
             if (
                 init.ast.statements.length === 0 ||
-                init.ast.statements[init.ast.statements.length - 1].kind !==
+                init.ast.statements[init.ast.statements.length - 1]!.kind !==
                     "statement_return"
             ) {
                 ctx.append(`return ${returns};`);
@@ -248,15 +253,19 @@ export function writeMainContract(
         }
 
         // Interfaces
-        writeInterfaces(type, ctx);
+        if (enabledInterfacesGetter(ctx.ctx)) {
+            writeInterfaces(type, ctx);
+        }
 
         // ABI
-        ctx.append(`_ get_abi_ipfs() method_id {`);
-        ctx.inIndent(() => {
-            ctx.append(`return "${abiLink}";`);
-        });
-        ctx.append(`}`);
-        ctx.append();
+        if (enabledIpfsAbiGetter(ctx.ctx)) {
+            ctx.append(`_ get_abi_ipfs() method_id {`);
+            ctx.inIndent(() => {
+                ctx.append(`return "${abiLink}";`);
+            });
+            ctx.append(`}`);
+            ctx.append();
+        }
 
         // Deployed
         ctx.append(`_ lazy_deployment_completed() method_id {`);

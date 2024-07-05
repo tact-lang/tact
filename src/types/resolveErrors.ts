@@ -25,7 +25,7 @@ function resolveStringsInAST(ast: AstNode, ctx: CompilerContext) {
                 return;
             }
             const resolved = evalConstantExpression(
-                node.args[1],
+                node.args[1]!,
                 ctx,
             ) as string;
             if (!exceptions.get(ctx, resolved)) {

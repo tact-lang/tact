@@ -598,47 +598,54 @@ type MapSerializerDescr = {
     value: MapSerializerDescrValue;
 };
 function getKeyParser(src: MapSerializerDescrKey) {
-    if (src.kind === "int") {
-        if (src.bits <= 32) {
-            return `Dictionary.Keys.Int(${src.bits})`;
-        } else {
-            return `Dictionary.Keys.BigInt(${src.bits})`;
+    switch (src.kind) {
+        case "int": {
+            if (src.bits <= 32) {
+                return `Dictionary.Keys.Int(${src.bits})`;
+            } else {
+                return `Dictionary.Keys.BigInt(${src.bits})`;
+            }
         }
-    } else if (src.kind === "uint") {
-        if (src.bits <= 32) {
-            return `Dictionary.Keys.Uint(${src.bits})`;
-        } else {
-            return `Dictionary.Keys.BigUint(${src.bits})`;
+        case "uint": {
+            if (src.bits <= 32) {
+                return `Dictionary.Keys.Uint(${src.bits})`;
+            } else {
+                return `Dictionary.Keys.BigUint(${src.bits})`;
+            }
         }
-    } else if (src.kind === "address") {
-        return "Dictionary.Keys.Address()";
-    } else {
-        throw Error("Unreachable");
+        case "address": {
+            return "Dictionary.Keys.Address()";
+        }
     }
 }
 function getValueParser(src: MapSerializerDescrValue) {
-    if (src.kind === "int") {
-        if (src.bits <= 32) {
-            return `Dictionary.Values.Int(${src.bits})`;
-        } else {
-            return `Dictionary.Values.BigInt(${src.bits})`;
+    switch (src.kind) {
+        case "int": {
+            if (src.bits <= 32) {
+                return `Dictionary.Values.Int(${src.bits})`;
+            } else {
+                return `Dictionary.Values.BigInt(${src.bits})`;
+            }
         }
-    } else if (src.kind === "uint") {
-        if (src.bits <= 32) {
-            return `Dictionary.Values.Uint(${src.bits})`;
-        } else {
-            return `Dictionary.Values.BigUint(${src.bits})`;
+        case "uint": {
+            if (src.bits <= 32) {
+                return `Dictionary.Values.Uint(${src.bits})`;
+            } else {
+                return `Dictionary.Values.BigUint(${src.bits})`;
+            }
         }
-    } else if (src.kind === "address") {
-        return "Dictionary.Values.Address()";
-    } else if (src.kind === "cell") {
-        return "Dictionary.Values.Cell()";
-    } else if (src.kind === "boolean") {
-        return "Dictionary.Values.Bool()";
-    } else if (src.kind === "struct") {
-        return `dictValueParser${src.type}()`;
-    } else {
-        throw Error("Unreachable");
+        case "address": {
+            return "Dictionary.Values.Address()";
+        }
+        case "cell": {
+            return "Dictionary.Values.Cell()";
+        }
+        case "boolean": {
+            return "Dictionary.Values.Bool()";
+        }
+        case "struct": {
+            return `dictValueParser${src.type}()`;
+        }
     }
 }
 
@@ -716,7 +723,7 @@ const map: Serializer<MapSerializerDescr> = {
                     value = { kind: "cell" };
                 }
             }
-            if (primitiveTypes.indexOf(src.value) === -1) {
+            if (!primitiveTypes.includes(src.value)) {
                 if (
                     src.valueFormat === null ||
                     src.valueFormat === undefined ||
@@ -740,36 +747,55 @@ const map: Serializer<MapSerializerDescr> = {
     tsType(v) {
         // Resolve key type
         let keyT: string;
-        if (v.key.kind === "int" || v.key.kind === "uint") {
-            if (v.key.bits <= 32) {
-                keyT = `number`;
-            } else {
-                keyT = `bigint`;
+        switch (v.key.kind) {
+            case "int":
+            case "uint":
+                {
+                    if (v.key.bits <= 32) {
+                        keyT = `number`;
+                    } else {
+                        keyT = `bigint`;
+                    }
+                }
+                break;
+            case "address": {
+                keyT = `Address`;
             }
-        } else if (v.key.kind === "address") {
-            keyT = `Address`;
-        } else {
-            throw Error("Unexpected key type");
         }
 
         // Resolve value type
         let valueT: string;
-        if (v.value.kind === "int" || v.value.kind === "uint") {
-            if (v.value.bits <= 32) {
-                valueT = `number`;
-            } else {
-                valueT = `bigint`;
-            }
-        } else if (v.value.kind === "boolean") {
-            valueT = `boolean`;
-        } else if (v.value.kind === "address") {
-            valueT = `Address`;
-        } else if (v.value.kind === "cell") {
-            valueT = `Cell`;
-        } else if (v.value.kind === "struct") {
-            valueT = v.value.type;
-        } else {
-            throw Error("Unexpected key type");
+        switch (v.value.kind) {
+            case "int":
+            case "uint":
+                {
+                    if (v.value.bits <= 32) {
+                        valueT = `number`;
+                    } else {
+                        valueT = `bigint`;
+                    }
+                }
+                break;
+            case "boolean":
+                {
+                    valueT = `boolean`;
+                }
+                break;
+            case "address":
+                {
+                    valueT = `Address`;
+                }
+                break;
+            case "cell":
+                {
+                    valueT = `Cell`;
+                }
+                break;
+            case "struct":
+                {
+                    valueT = v.value.type;
+                }
+                break;
         }
 
         return `Dictionary<${keyT}, ${valueT}>`;

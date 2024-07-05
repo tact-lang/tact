@@ -1,4 +1,4 @@
-const files: { [key: string]: string } = {};
+const files: Record<string, string> = {};
 files['libs/config.tact'] =
     'ZnVuIGdldENvbmZpZ0FkZHJlc3MoKTogQWRkcmVzcyB7CiAgICBsZXQgY2VsbDogQ2VsbCA9IGdldENvbmZpZ1BhcmFtKDApISE7CiAgICBsZXQgc2M6IFNsaWNlID0g' +
     'Y2VsbC5iZWdpblBhcnNlKCk7CiAgICByZXR1cm4gbmV3QWRkcmVzcygtMSwgc2MubG9hZFVpbnQoMjU2KSk7Cn0KCmZ1biBnZXRFbGVjdG9yQWRkcmVzcygpOiBBZGRy' +

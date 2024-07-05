@@ -33,13 +33,13 @@ export async function build(args: {
         typeof args.stdlib === "string"
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
-    const logger: TactLogger = args.logger || consoleLogger;
+    const logger: TactLogger = args.logger ?? consoleLogger;
 
     // Configure context
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
     const cfg: string = JSON.stringify({
         entrypoint: posixNormalize(config.path),
-        options: config.options || {},
+        options: config.options ?? {},
     });
     if (config.options) {
         if (config.options.debug) {
@@ -54,9 +54,17 @@ export async function build(args: {
             logger.error("   > 👀 Enabling external");
             ctx = featureEnable(ctx, "external");
         }
-        if (config.options.experimental && config.options.experimental.inline) {
+        if (config.options.experimental?.inline) {
             logger.error("   > 👀 Enabling inline");
             ctx = featureEnable(ctx, "inline");
+        }
+        if (config.options.ipfsAbiGetter) {
+            logger.error("   > 👀 Enabling IPFS ABI getter");
+            ctx = featureEnable(ctx, "ipfsAbiGetter");
+        }
+        if (config.options.interfacesGetter) {
+            logger.error("   > 👀 Enabling contract interfaces getter");
+            ctx = featureEnable(ctx, "interfacesGetter");
         }
     }
 
@@ -80,15 +88,14 @@ export async function build(args: {
 
     // Compile contracts
     let ok = true;
-    const built: {
-        [key: string]: {
-            codeBoc: Buffer;
-            // codeFunc: string,
-            // codeFift: string,
-            // codeFiftDecompiled: string,
-            abi: string;
-        };
-    } = {};
+    const built: Record<
+        string,
+        | {
+              codeBoc: Buffer;
+              abi: string;
+          }
+        | undefined
+    > = {};
     for (const contract of getContracts(ctx)) {
         const pathAbi = project.resolve(
             config.output,
@@ -234,19 +241,19 @@ export async function build(args: {
             Dictionary.Values.Cell(),
         );
         const ct = getType(ctx, contract);
-        depends.set(ct.uid, Cell.fromBoc(built[ct.name].codeBoc)[0]); // Mine
+        depends.set(ct.uid, Cell.fromBoc(built[ct.name]!.codeBoc)[0]!); // Mine
         for (const c of ct.dependsOn) {
             const cd = built[c.name];
             if (!cd) {
-                logger.error(`   > ${cd}: no artifacts found`);
+                logger.error(`   > ${c.name}: no artifacts found`);
                 return false;
             }
-            depends.set(c.uid, Cell.fromBoc(cd.codeBoc)[0]);
+            depends.set(c.uid, Cell.fromBoc(cd.codeBoc)[0]!);
         }
         const systemCell = beginCell().storeDict(depends).endCell();
 
         // Collect sources
-        const sources: { [key: string]: string } = {};
+        const sources: Record<string, string> = {};
         const rawAst = getRawAST(ctx);
         for (const source of [...rawAst.funcSources, ...rawAst.sources]) {
             if (

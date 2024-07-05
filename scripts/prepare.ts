@@ -9,7 +9,7 @@ import { consoleLogger } from "../src/logger";
 import { __DANGER__disableVersionNumber } from "../src/pipeline/version";
 
 // Read cases
-(async () => {
+void (async () => {
     // Disable version number in packages
     __DANGER__disableVersionNumber();
 

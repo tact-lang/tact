@@ -46,7 +46,7 @@ export function writeRouter(
                     return r.selector.kind === "bounce-fallback";
                 });
 
-                if (fallbackReceiver || bounceReceivers.length > 0) {
+                if (fallbackReceiver ?? bounceReceivers.length > 0) {
                     ctx.append();
                     ctx.append(`;; Skip 0xFFFFFFFF`);
                     ctx.append(`in_msg~skip_bits(32);`);
@@ -69,9 +69,6 @@ export function writeRouter(
                     if (selector.kind !== "bounce-binary")
                         throw Error("Invalid selector type: " + selector.kind); // Should not happen
                     const allocation = getType(ctx.ctx, selector.type);
-                    if (!allocation)
-                        throw Error("Invalid allocation: " + selector.type); // Should not happen
-
                     ctx.append(
                         `;; Bounced handler for ${selector.type} message`,
                     );
@@ -309,7 +306,7 @@ export function writeReceiver(
 
             if (
                 f.ast.statements.length === 0 ||
-                f.ast.statements[f.ast.statements.length - 1].kind !==
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
                     "statement_return"
             ) {
                 ctx.append(`return (${selfRes}, ());`);
@@ -337,7 +334,7 @@ export function writeReceiver(
 
             if (
                 f.ast.statements.length === 0 ||
-                f.ast.statements[f.ast.statements.length - 1].kind !==
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
                     "statement_return"
             ) {
                 ctx.append(`return (${selfRes}, ());`);
@@ -366,7 +363,7 @@ export function writeReceiver(
 
             if (
                 f.ast.statements.length === 0 ||
-                f.ast.statements[f.ast.statements.length - 1].kind !==
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
                     "statement_return"
             ) {
                 ctx.append(`return (${selfRes}, ());`);
@@ -394,7 +391,7 @@ export function writeReceiver(
 
             if (
                 f.ast.statements.length === 0 ||
-                f.ast.statements[f.ast.statements.length - 1].kind !==
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
                     "statement_return"
             ) {
                 ctx.append(`return (${selfRes}, ());`);
@@ -408,7 +405,7 @@ export function writeReceiver(
     // Fallback
     if (selector.kind === "internal-fallback") {
         ctx.append(
-            `(${selfType}, ()) ${ops.receiveAny(self.name, selector.kind === "internal-fallback" ? "internal" : "external")}(${selfType} ${funcIdOf("self")}, slice ${funcIdOf(selector.name)}) impure inline {`,
+            `(${selfType}, ()) ${ops.receiveAny(self.name, "internal")}(${selfType} ${funcIdOf("self")}, slice ${funcIdOf(selector.name)}) impure inline {`,
         );
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
@@ -419,7 +416,7 @@ export function writeReceiver(
 
             if (
                 f.ast.statements.length === 0 ||
-                f.ast.statements[f.ast.statements.length - 1].kind !==
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
                     "statement_return"
             ) {
                 ctx.append(`return (${selfRes}, ());`);
@@ -444,7 +441,7 @@ export function writeReceiver(
 
             if (
                 f.ast.statements.length === 0 ||
-                f.ast.statements[f.ast.statements.length - 1].kind !==
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
                     "statement_return"
             ) {
                 ctx.append(`return (${selfRes}, ());`);
@@ -477,7 +474,7 @@ export function writeReceiver(
 
             if (
                 f.ast.statements.length === 0 ||
-                f.ast.statements[f.ast.statements.length - 1].kind !==
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
                     "statement_return"
             ) {
                 ctx.append(`return (${selfRes}, ());`);

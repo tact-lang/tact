@@ -152,32 +152,33 @@ export async function funcCompile(args: {
 
         const msg = logs.join("\n");
 
-        if (result.status === "error") {
-            return {
-                ok: false,
-                log:
-                    logs.length > 0
-                        ? msg
-                        : result.message
-                          ? result.message
-                          : "Unknown error",
-                fift: null,
-                output: null,
-            };
-        } else if (result.status === "ok") {
-            return {
-                ok: true,
-                log:
-                    logs.length > 0
-                        ? msg
-                        : result.warnings
-                          ? result.warnings
-                          : "",
-                fift: cutFirstLine(result.fiftCode.replaceAll("\\n", "\n")),
-                output: Buffer.from(result.codeBoc, "base64"),
-            };
-        } else {
-            throw Error("Unexpected compiler response");
+        switch (result.status) {
+            case "error": {
+                return {
+                    ok: false,
+                    log:
+                        logs.length > 0
+                            ? msg
+                            : result.message
+                              ? result.message
+                              : "Unknown error",
+                    fift: null,
+                    output: null,
+                };
+            }
+            case "ok": {
+                return {
+                    ok: true,
+                    log:
+                        logs.length > 0
+                            ? msg
+                            : result.warnings
+                              ? result.warnings
+                              : "",
+                    fift: cutFirstLine(result.fiftCode.replaceAll("\\n", "\n")),
+                    output: Buffer.from(result.codeBoc, "base64"),
+                };
+            }
         }
     } catch (e) {
         args.logger.error(errorToString(e));
@@ -190,4 +191,5 @@ export async function funcCompile(args: {
             mod._free(i);
         }
     }
+    throw Error("Unexpected compiler response");
 }

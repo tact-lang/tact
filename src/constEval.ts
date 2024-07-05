@@ -13,7 +13,7 @@ import {
     idText,
 } from "./grammar/ast";
 import { TactConstEvalError, idTextErr, throwConstEvalError } from "./errors";
-import { CommentValue, StructValue, Value } from "./types/types";
+import { CommentValue, showValue, StructValue, Value } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
 import {
     isValue,
@@ -68,13 +68,16 @@ function throwErrorConstEval(msg: string, source: SrcInfo): never {
 
 function ensureInt(val: Value, source: SrcInfo): bigint {
     if (typeof val !== "bigint") {
-        throwErrorConstEval(`integer expected, but got '${val}'`, source);
+        throwErrorConstEval(
+            `integer expected, but got '${showValue(val)}'`,
+            source,
+        );
     }
     if (minTvmInt <= val && val <= maxTvmInt) {
         return val;
     } else {
         throwErrorConstEval(
-            `integer '${val}' does not fit into TVM Int type`,
+            `integer '${showValue(val)}' does not fit into TVM Int type`,
             source,
         );
     }
@@ -82,14 +85,20 @@ function ensureInt(val: Value, source: SrcInfo): bigint {
 
 function ensureBoolean(val: Value, source: SrcInfo): boolean {
     if (typeof val !== "boolean") {
-        throwErrorConstEval(`boolean expected, but got '${val}'`, source);
+        throwErrorConstEval(
+            `boolean expected, but got '${showValue(val)}'`,
+            source,
+        );
     }
     return val;
 }
 
 function ensureString(val: Value, source: SrcInfo): string {
     if (typeof val !== "string") {
-        throwErrorConstEval(`string expected, but got '${val}'`, source);
+        throwErrorConstEval(
+            `string expected, but got '${showValue(val)}'`,
+            source,
+        );
     }
     return val;
 }
@@ -459,12 +468,12 @@ function evalFieldAccess(
         !("$tactStruct" in valStruct)
     ) {
         throwErrorConstEval(
-            `constant struct expected, but got ${valStruct}`,
+            `constant struct expected, but got ${showValue(valStruct)}`,
             structExpr.loc,
         );
     }
-    if (fieldId.text in valStruct) {
-        return valStruct[fieldId.text];
+    if (idText(fieldId) in valStruct) {
+        return valStruct[idText(fieldId)]!;
     } else {
         // this cannot happen in a well-typed program
         throwErrorConstEval(
@@ -508,8 +517,8 @@ function evalBuiltins(
         case "ton": {
             ensureFunArity(1, args, source);
             const tons = ensureString(
-                evalConstantExpression(args[0], ctx),
-                args[0].loc,
+                evalConstantExpression(args[0]!, ctx),
+                args[0]!.loc,
             );
             try {
                 return ensureInt(BigInt(toNano(tons).toString(10)), source);
@@ -526,12 +535,12 @@ function evalBuiltins(
         case "pow": {
             ensureFunArity(2, args, source);
             const valBase = ensureInt(
-                evalConstantExpression(args[0], ctx),
-                args[0].loc,
+                evalConstantExpression(args[0]!, ctx),
+                args[0]!.loc,
             );
             const valExp = ensureInt(
-                evalConstantExpression(args[1], ctx),
-                args[1].loc,
+                evalConstantExpression(args[1]!, ctx),
+                args[1]!.loc,
             );
             if (valExp < 0n) {
                 throwErrorConstEval(
@@ -555,8 +564,8 @@ function evalBuiltins(
         case "pow2": {
             ensureFunArity(1, args, source);
             const valExponent = ensureInt(
-                evalConstantExpression(args[0], ctx),
-                args[0].loc,
+                evalConstantExpression(args[0]!, ctx),
+                args[0]!.loc,
             );
             if (valExponent < 0n) {
                 throwErrorConstEval(
@@ -580,8 +589,8 @@ function evalBuiltins(
         case "sha256": {
             ensureFunArity(1, args, source);
             const str = ensureString(
-                evalConstantExpression(args[0], ctx),
-                args[0].loc,
+                evalConstantExpression(args[0]!, ctx),
+                args[0]!.loc,
             );
             const dataSize = Buffer.from(str).length;
             if (dataSize > 128) {
@@ -600,8 +609,8 @@ function evalBuiltins(
             {
                 ensureFunArity(1, args, source);
                 const str = ensureString(
-                    evalConstantExpression(args[0], ctx),
-                    args[0].loc,
+                    evalConstantExpression(args[0]!, ctx),
+                    args[0]!.loc,
                 );
                 try {
                     return Cell.fromBase64(str);
@@ -617,8 +626,8 @@ function evalBuiltins(
             {
                 ensureFunArity(1, args, source);
                 const str = ensureString(
-                    evalConstantExpression(args[0], ctx),
-                    args[0].loc,
+                    evalConstantExpression(args[0]!, ctx),
+                    args[0]!.loc,
                 );
                 try {
                     const address = Address.parse(str);
@@ -646,11 +655,11 @@ function evalBuiltins(
         case "newAddress": {
             ensureFunArity(2, args, source);
             const wc = ensureInt(
-                evalConstantExpression(args[0], ctx),
-                args[0].loc,
+                evalConstantExpression(args[0]!, ctx),
+                args[0]!.loc,
             );
             const addr = Buffer.from(
-                ensureInt(evalConstantExpression(args[1], ctx), args[1].loc)
+                ensureInt(evalConstantExpression(args[1]!, ctx), args[1]!.loc)
                     .toString(16)
                     .padStart(64, "0"),
                 "hex",
@@ -663,7 +672,7 @@ function evalBuiltins(
             }
             if (!enabledMasterchain(ctx) && wc !== 0n) {
                 throwErrorConstEval(
-                    `${wc}:${addr} address is from masterchain which is not enabled for this contract`,
+                    `${wc}:${addr.toString("hex")} address is from masterchain which is not enabled for this contract`,
                     source,
                 );
             }

@@ -17,7 +17,7 @@ exports[`wallet should deploy 1`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCR5iC3JwCwj6f0xBFwvLeYS8sZvKRQbtXJRpajfqVarbq6",
+          "to": "kQBkJMYSKVKU-3Ow5coQiKI0gKV--vUYHsJC1g_RbzJk2MF3",
           "type": "internal",
           "value": "10",
         },
@@ -33,7 +33,7 @@ exports[`wallet should deploy 1`] = `
     "events": [
       {
         "$type": "storage-charged",
-        "amount": "0.000000006",
+        "amount": "0.000000005",
       },
       {
         "$type": "received",
@@ -45,7 +45,7 @@ exports[`wallet should deploy 1`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCR5iC3JwCwj6f0xBFwvLeYS8sZvKRQbtXJRpajfqVarbq6",
+          "to": "kQBkJMYSKVKU-3Ow5coQiKI0gKV--vUYHsJC1g_RbzJk2MF3",
           "type": "internal",
           "value": "1",
         },
@@ -62,7 +62,7 @@ exports[`wallet should deploy 1`] = `
               "type": "empty",
             },
             "bounce": true,
-            "from": "kQCR5iC3JwCwj6f0xBFwvLeYS8sZvKRQbtXJRpajfqVarbq6",
+            "from": "kQBkJMYSKVKU-3Ow5coQiKI0gKV--vUYHsJC1g_RbzJk2MF3",
             "to": "@treasure(treasure)",
             "type": "internal",
             "value": "10",
@@ -81,7 +81,7 @@ exports[`wallet should deploy 2`] = `
     "events": [
       {
         "$type": "storage-charged",
-        "amount": "0.000000006",
+        "amount": "0.000000005",
       },
       {
         "$type": "received",
@@ -92,7 +92,7 @@ exports[`wallet should deploy 2`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCR5iC3JwCwj6f0xBFwvLeYS8sZvKRQbtXJRpajfqVarbq6",
+          "to": "kQBkJMYSKVKU-3Ow5coQiKI0gKV--vUYHsJC1g_RbzJk2MF3",
           "type": "internal",
           "value": "1",
         },
@@ -113,7 +113,7 @@ exports[`wallet should deploy 3`] = `
     "events": [
       {
         "$type": "storage-charged",
-        "amount": "0.000000006",
+        "amount": "0.000000005",
       },
       {
         "$type": "received",
@@ -123,7 +123,7 @@ exports[`wallet should deploy 3`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCR5iC3JwCwj6f0xBFwvLeYS8sZvKRQbtXJRpajfqVarbq6",
+          "to": "kQBkJMYSKVKU-3Ow5coQiKI0gKV--vUYHsJC1g_RbzJk2MF3",
           "type": "internal",
           "value": "1",
         },

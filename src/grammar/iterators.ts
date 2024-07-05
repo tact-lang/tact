@@ -31,9 +31,9 @@ export function forEachExpression(
                 expr.args.forEach(traverseExpression);
                 break;
             case "struct_instance":
-                expr.args.forEach((param) =>
-                    traverseExpression(param.initializer),
-                );
+                expr.args.forEach((param) => {
+                    traverseExpression(param.initializer);
+                });
                 break;
             case "init_of":
                 expr.args.forEach(traverseExpression);
@@ -109,9 +109,7 @@ export function forEachExpression(
             case "function_def":
             case "contract_init":
             case "receiver":
-                if (node.statements) {
-                    node.statements.forEach(traverseStatement);
-                }
+                node.statements.forEach(traverseStatement);
                 break;
             case "contract":
             case "trait":
@@ -319,11 +317,9 @@ export function foldExpressions<T>(
             case "function_def":
             case "contract_init":
             case "receiver":
-                if (node.statements) {
-                    node.statements.forEach((stmt) => {
-                        acc = traverseStatement(acc, stmt);
-                    });
-                }
+                node.statements.forEach((stmt) => {
+                    acc = traverseStatement(acc, stmt);
+                });
                 break;
             case "contract":
             case "trait":
@@ -439,7 +435,7 @@ export function forEachStatement(
             case "function_def":
             case "contract_init":
             case "receiver":
-                if (node.statements) node.statements.forEach(traverseStatement);
+                node.statements.forEach(traverseStatement);
                 break;
             case "contract":
             case "trait":
@@ -561,11 +557,9 @@ export function foldStatements<T>(
             case "function_def":
             case "contract_init":
             case "receiver":
-                if (node.statements) {
-                    node.statements.forEach((stmt) => {
-                        acc = traverseStatement(acc, stmt);
-                    });
-                }
+                node.statements.forEach((stmt) => {
+                    acc = traverseStatement(acc, stmt);
+                });
                 break;
             case "contract":
             case "trait":
