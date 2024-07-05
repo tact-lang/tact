@@ -228,7 +228,7 @@ export async function build(args: {
         logger.info("   > " + contract);
         const artifacts = built[contract];
         if (!artifacts) {
-            const message = "   > " + contract + ": no artifacts found";
+            const message = `   > ${contract}: no artifacts found`;
             logger.error(message);
             errorMessages.push(new Error(message));
             return { ok: false, error: errorMessages };
