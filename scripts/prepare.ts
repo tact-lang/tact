@@ -48,7 +48,7 @@ void (async () => {
 
                 // Precompile
                 const funcFileFullPath = path.join(p.path, file);
-                logger.info(`Processing ${path.join(funcFileFullPath)}`);
+                logger.info(`Processing ${funcFileFullPath}`);
                 let c: FuncCompilationResult;
                 try {
                     const stdlibPath = path.resolve(
@@ -76,12 +76,12 @@ void (async () => {
                     if (!c.ok) {
                         logger.error(c.log);
                         throw new Error(
-                            `FunC compilation failed for ${path.join(p.path, file)}`,
+                            `FunC compilation failed for ${funcFileFullPath}`,
                         );
                     }
                 } catch (e) {
                     logger.error(e as Error);
-                    logger.error(`Failed for ${path.join(p.path, file)}`);
+                    logger.error(`Failed for ${funcFileFullPath}`);
                     throw e;
                 }
                 fs.writeFileSync(funcFileFullPath + ".fift", c.fift!);
