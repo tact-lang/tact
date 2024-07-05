@@ -604,7 +604,7 @@ function evalBuiltins(
 
 function interpretEscapeSequences(stringLiteral: string) {
     return stringLiteral.replace(
-        /\\\\|\\"|\\n|\\r|\\t|\\v|\\b|\\f|\\u{([0-9A-Fa-f]+)}|\\u([0-9A-Fa-f]{4})|\\x([0-9A-Fa-f]{2})/g,
+        /\\\\|\\"|\\n|\\r|\\t|\\v|\\b|\\f|\\u{([0-9A-Fa-f]{1,6})}|\\u([0-9A-Fa-f]{4})|\\x([0-9A-Fa-f]{2})/g,
         (match, unicodeCodePoint, unicodeEscape, hexEscape) => {
             switch (match) {
                 case "\\\\":
