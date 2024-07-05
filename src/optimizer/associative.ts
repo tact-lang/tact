@@ -28,12 +28,15 @@ export abstract class AssociativeRewriteRule implements Rule {
     constructor() {
         // + associates with these on the right:
         // i.e., all op \in plusAssoc. (a + b) op c = a + (b op c)
-        const additiveAssoc = new Set<AstBinaryOperation>(["+", "-"]);
+        const additiveAssoc: Set<AstBinaryOperation> = new Set(["+", "-"]);
 
         // - does not associate with any operator on the right
 
         // * associates with these on the right:
-        const multiplicativeAssoc = new Set<AstBinaryOperation>(["*", "<<"]);
+        const multiplicativeAssoc: Set<AstBinaryOperation> = new Set([
+            "*",
+            "<<",
+        ]);
 
         // Division / does not associate with any on the right
 
@@ -41,15 +44,12 @@ export abstract class AssociativeRewriteRule implements Rule {
 
         // TODO: shifts, bitwise integer operators, boolean operators
 
-        this.associativeOps = new Map<
-            AstBinaryOperation,
-            Set<AstBinaryOperation>
-        >([
+        this.associativeOps = new Map([
             ["+", additiveAssoc],
             ["*", multiplicativeAssoc],
         ]);
 
-        this.commutativeOps = new Set<AstBinaryOperation>(
+        this.commutativeOps = new Set(
             ["+", "*", "!=", "==", "&&", "||"], // TODO: bitwise integer operators
         );
     }
@@ -82,7 +82,7 @@ export abstract class AllowableOpRule extends AssociativeRewriteRule {
     constructor() {
         super();
 
-        this.allowedOps = new Set<AstBinaryOperation>(
+        this.allowedOps = new Set(
             // Recall that integer operators +,-,*,/,% are not safe with this rule, because
             // there is a risk that they will not preserve overflows in the unknown operands.
             ["&&", "||"], // TODO: check bitwise integer operators
@@ -497,7 +497,7 @@ export class AssociativeRule2 extends AllowableOpRule {
 
 function ensureInt(val: Value): bigint {
     if (typeof val !== "bigint") {
-        throw `integer expected, but got '${val}'`;
+        throw new Error(`integer expected`);
     }
     return val;
 }
@@ -511,10 +511,7 @@ export class AssociativeRule3 extends AssociativeRewriteRule {
     public constructor() {
         super();
 
-        this.extraOpCondition = new Map<
-            AstBinaryOperation,
-            (c1: Value, c2: Value, val: Value) => boolean
-        >([
+        this.extraOpCondition = new Map([
             [
                 "+",
                 (c1, c2, val) => {

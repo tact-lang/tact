@@ -78,7 +78,9 @@ export function makeValueExpression(value: Value): ValueExpression {
         });
         return result as ValueExpression;
     }
-    throw `structs, addresses, cells, and comment values are not supported at the moment`;
+    throw new Error(
+        `structs, addresses, cells, and comment values are not supported at the moment.`,
+    );
 }
 
 export function makeUnaryExpression(

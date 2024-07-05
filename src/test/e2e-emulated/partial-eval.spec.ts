@@ -197,13 +197,13 @@ describe("partial-evaluator", () => {
         __DANGER_resetNodeId();
     });
     it("should correctly simplify partial expressions involving + and -", () => {
-        additiveExpressions.forEach((pair) =>
-            testExpression(pair.original, pair.simplified),
-        );
+        additiveExpressions.forEach((pair) => {
+            testExpression(pair.original, pair.simplified);
+        });
     });
     it("should correctly simplify partial expressions involving *", () => {
-        multiplicativeExpressions.forEach((pair) =>
-            testExpression(pair.original, pair.simplified),
-        );
+        multiplicativeExpressions.forEach((pair) => {
+            testExpression(pair.original, pair.simplified);
+        });
     });
 });
