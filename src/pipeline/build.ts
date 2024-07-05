@@ -143,7 +143,7 @@ export async function build(args: {
         }
 
         // Compiling contract to TVM
-        logger.info("   > " + contract + ": func compiler");
+        logger.info(`   > ${contract}: func compiler`);
         let codeBoc: Buffer;
         try {
             const stdlibPath = stdlib.resolve("stdlib.fc");
