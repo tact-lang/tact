@@ -163,7 +163,7 @@ meowModule.then(
         configPath: cli.flags.config,
         projectNames: cli.flags.projects ?? [],
         additionalCliOptions: { mode },
-        suppressLog: cli.flags.quiet
+        suppressLog: cli.flags.quiet,
       })
       .then((response) => {
         // https://nodejs.org/docs/v20.12.1/api/process.html#exit-codes
