@@ -336,7 +336,7 @@ export async function build(args: {
             );
         } catch (e) {
             const error = e as Error;
-            error.message = `Bindings compiler crashed, ${error.message}`;
+            error.message = `Bindings compiler crashed: ${error.message}`;
             logger.error(error);
             errorMessages.push(error);
             return { ok: false, error: errorMessages };
