@@ -16,6 +16,7 @@ meowModule.then(
     Flags
       -c, --config CONFIG         Specify path to config file (tact.config.json)
       -p, --project ...names      Build only the specified project name(s) from the config file
+      -q, --quiet                 Suppress compiler log output
       --with-decompilation        Full compilation followed by decompilation of produced binary code
       --func                      Output intermediate FunC code and exit
       --check                     Perform syntax and type checking, then exit
@@ -51,14 +52,12 @@ meowModule.then(
               );
             },
           },
-          eval: {
-            shortFlag: "e",
-            type: "string",
-          },
           projects: { shortFlag: "p", type: "string", isMultiple: true },
+          quiet: { shortFlag: "q", type: "boolean", default: false },
           withDecompilation: { type: "boolean", default: false },
           func: { type: "boolean", default: false },
           check: { type: "boolean", default: false },
+          eval: { shortFlag: "e", type: "string" },
           version: { shortFlag: "v", type: "boolean" },
           help: { shortFlag: "h", type: "boolean" },
         },
@@ -164,10 +163,11 @@ meowModule.then(
         configPath: cli.flags.config,
         projectNames: cli.flags.projects ?? [],
         additionalCliOptions: { mode },
+        suppressLog: cli.flags.quiet,
       })
-      .then((success) => {
+      .then((response) => {
         // https://nodejs.org/docs/v20.12.1/api/process.html#exit-codes
-        process.exit(success ? 0 : 30);
+        process.exit(response.ok ? 0 : 30);
       });
   },
 );
