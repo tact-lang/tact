@@ -1,5 +1,10 @@
 import { contractErrors } from "../../abi/errors";
-import { enabledInline, enabledMasterchain } from "../../config/features";
+import {
+    enabledInline,
+    enabledInterfacesGetter,
+    enabledIpfsAbiGetter,
+    enabledMasterchain,
+} from "../../config/features";
 import { ItemOrigin } from "../../grammar/grammar";
 import { InitDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
@@ -248,15 +253,19 @@ export function writeMainContract(
         }
 
         // Interfaces
-        writeInterfaces(type, ctx);
+        if (enabledInterfacesGetter(ctx.ctx)) {
+            writeInterfaces(type, ctx);
+        }
 
         // ABI
-        ctx.append(`_ get_abi_ipfs() method_id {`);
-        ctx.inIndent(() => {
-            ctx.append(`return "${abiLink}";`);
-        });
-        ctx.append(`}`);
-        ctx.append();
+        if (enabledIpfsAbiGetter(ctx.ctx)) {
+            ctx.append(`_ get_abi_ipfs() method_id {`);
+            ctx.inIndent(() => {
+                ctx.append(`return "${abiLink}";`);
+            });
+            ctx.append(`}`);
+            ctx.append();
+        }
 
         // Deployed
         ctx.append(`_ lazy_deployment_completed() method_id {`);

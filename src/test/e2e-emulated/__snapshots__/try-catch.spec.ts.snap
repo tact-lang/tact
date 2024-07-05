@@ -7,7 +7,7 @@ exports[`ternary should implement try-catch statements correctly 1`] = `
     "events": [
       {
         "$type": "storage-charged",
-        "amount": "0.000000007",
+        "amount": "0.000000006",
       },
       {
         "$type": "received",
@@ -18,7 +18,7 @@ exports[`ternary should implement try-catch statements correctly 1`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQDgHT7Fi8yi-nN-GpNCs36I1rRzKCtVHddSzFuuvMOd0SvA",
+          "to": "kQBigf8fP2I2o-v1qNOp7_hRp1we8735yxhf4ZE1rD54dbqU",
           "type": "internal",
           "value": "10",
         },
@@ -34,7 +34,7 @@ exports[`ternary should implement try-catch statements correctly 1`] = `
     "events": [
       {
         "$type": "storage-charged",
-        "amount": "0.000000007",
+        "amount": "0.000000006",
       },
       {
         "$type": "received",
@@ -45,7 +45,7 @@ exports[`ternary should implement try-catch statements correctly 1`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQDgHT7Fi8yi-nN-GpNCs36I1rRzKCtVHddSzFuuvMOd0SvA",
+          "to": "kQBigf8fP2I2o-v1qNOp7_hRp1we8735yxhf4ZE1rD54dbqU",
           "type": "internal",
           "value": "10",
         },
@@ -61,7 +61,7 @@ exports[`ternary should implement try-catch statements correctly 1`] = `
     "events": [
       {
         "$type": "storage-charged",
-        "amount": "0.000000007",
+        "amount": "0.000000006",
       },
       {
         "$type": "received",
@@ -72,7 +72,7 @@ exports[`ternary should implement try-catch statements correctly 1`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQDgHT7Fi8yi-nN-GpNCs36I1rRzKCtVHddSzFuuvMOd0SvA",
+          "to": "kQBigf8fP2I2o-v1qNOp7_hRp1we8735yxhf4ZE1rD54dbqU",
           "type": "internal",
           "value": "10",
         },
@@ -90,7 +90,7 @@ exports[`ternary should implement try-catch statements correctly 1`] = `
               "type": "text",
             },
             "bounce": true,
-            "from": "kQDgHT7Fi8yi-nN-GpNCs36I1rRzKCtVHddSzFuuvMOd0SvA",
+            "from": "kQBigf8fP2I2o-v1qNOp7_hRp1we8735yxhf4ZE1rD54dbqU",
             "to": "@treasure(treasure)",
             "type": "internal",
             "value": "9.986684",

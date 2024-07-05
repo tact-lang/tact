@@ -58,6 +58,14 @@ export async function build(args: {
             logger.error("   > 👀 Enabling inline");
             ctx = featureEnable(ctx, "inline");
         }
+        if (config.options.ipfsAbiGetter) {
+            logger.error("   > 👀 Enabling IPFS ABI getter");
+            ctx = featureEnable(ctx, "ipfsAbiGetter");
+        }
+        if (config.options.interfacesGetter) {
+            logger.error("   > 👀 Enabling contract interfaces getter");
+            ctx = featureEnable(ctx, "interfacesGetter");
+        }
     }
 
     // Precompile

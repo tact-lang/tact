@@ -16,7 +16,7 @@ exports[`bugs should implement mutating method chaining correctly 1`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCGg-qsZbZ6ObsEGqnPA1Q2Ma7bpCHVkJNXu0LvqWZSmD8C",
+          "to": "kQAl2F5UIJZzp5PrfTYOzrbfeDpxygpMvjjRQxQMBU7zCy3V",
           "type": "internal",
           "value": "10",
         },
