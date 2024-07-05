@@ -22,7 +22,12 @@ function configForSingleFile(fileName: string): ConfigWithRootPath {
                 name: path.basename(fileName, ".tact"),
                 path: fileName,
                 output: path.dirname(fileName),
-                options: { debug: true, external: true },
+                options: {
+                    debug: true,
+                    external: true,
+                    ipfsAbiGetter: false,
+                    interfacesGetter: false,
+                },
                 mode: "full",
             },
         ],
