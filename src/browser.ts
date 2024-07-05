@@ -6,7 +6,7 @@ import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
 export async function run(args: {
     config: Config;
     files: { [key: string]: string };
-    logger?: Logger | null | undefined;
+    logger?: Logger;
 }) {
     // Verify config
     const config = verifyConfig(args.config);

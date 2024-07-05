@@ -54,7 +54,7 @@ export class Logger {
         if (message instanceof Error) {
             message = message.stack || message.message;
         } else {
-            message = "" + message.toString();
+            message = message.toString();
         }
 
         if (level > this.level) return;

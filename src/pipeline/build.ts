@@ -26,7 +26,7 @@ export async function build(args: {
     config: ConfigProject;
     project: VirtualFileSystem;
     stdlib: string | VirtualFileSystem;
-    logger?: Logger | null | undefined;
+    logger?: Logger;
 }): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
     const { config, project } = args;
     const stdlib =
@@ -112,7 +112,7 @@ export async function build(args: {
         let codeEntrypoint: string;
 
         // Compiling contract to func
-        logger.info("   > " + contract + ": tact compiler");
+        logger.info(`   > ${contract}: tact compiler`);
         let abi: string;
         try {
             const res = await compile(
@@ -336,10 +336,10 @@ export async function build(args: {
                 bindingsServer,
             );
         } catch (e) {
-            const message = "Bindings compiler crashed";
-            logger.error(message);
-            logger.error(e as Error);
-            errorMessages.push(new Error(message));
+            const error = e as Error;
+            error.message = `Bindings compiler crashed, ${error.message}`;
+            logger.error(error);
+            errorMessages.push(error);
             return { ok: false, error: errorMessages };
         }
     }
@@ -356,10 +356,10 @@ export async function build(args: {
             );
             project.writeFile(pathBindings, report);
         } catch (e) {
-            const message = "Report generation crashed";
-            logger.error(message);
-            logger.error(e as Error);
-            errorMessages.push(new Error(message));
+            const error = e as Error;
+            error.message = `Report generation crashed, ${error.message}`;
+            logger.error(error);
+            errorMessages.push(error);
             return { ok: false, error: errorMessages };
         }
     }

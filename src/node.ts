@@ -69,7 +69,14 @@ export async function run(args: {
 }) {
     const configWithRootPath = await loadConfig(args.fileName, args.configPath);
     if (!configWithRootPath) {
-        return { ok: false, error: [new Error("Unable to load config")] };
+        return {
+            ok: false,
+            error: [
+                new Error(
+                    `Unable to load config from path: ${args.configPath}`,
+                ),
+            ],
+        };
     }
 
     const logger = new Logger(args.suppressLog ? LogLevel.NONE : LogLevel.INFO);
