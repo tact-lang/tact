@@ -18,7 +18,7 @@ void (async () => {
     try {
         // Compile projects
         const compileResult = await run({
-            configPath: path.join(__dirname, "../tact.config.json"),
+            configPath: path.join(__dirname, "..", "tact.config.json"),
         });
         if (!compileResult.ok) {
             throw new Error("Tact projects compilation failed");
