@@ -356,7 +356,7 @@ export async function build(args: {
             project.writeFile(pathBindings, report);
         } catch (e) {
             const error = e as Error;
-            error.message = `Report generation crashed, ${error.message}`;
+            error.message = `Report generation crashed: ${error.message}`;
             logger.error(error);
             errorMessages.push(error);
             return { ok: false, error: errorMessages };
