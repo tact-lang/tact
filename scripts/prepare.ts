@@ -39,7 +39,7 @@ void (async () => {
         }
 
         // Compile func files
-        for (const p of [{ path: path.join(__dirname, "/../func/") }]) {
+        for (const p of [{ path: path.join(__dirname, "..", "func") }]) {
             const recs = fs.readdirSync(p.path);
             for (const r of recs) {
                 if (!r.endsWith(".fc")) {
