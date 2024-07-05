@@ -319,11 +319,7 @@ export async function build(args: {
     for (const pkg of packages) {
         logger.info(`   > ${pkg.name}`);
         if (pkg.init.deployment.kind !== "system-cell") {
-            const message =
-                "   > " +
-                pkg.name +
-                ": unsupported deployment kind " +
-                pkg.init.deployment.kind;
+            const message = `   > ${pkg.name}: unsupported deployment kind ${pkg.init.deployment.kind}`;
             logger.error(message);
             errorMessages.push(new Error(message));
             return { ok: false, error: errorMessages };
