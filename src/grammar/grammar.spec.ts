@@ -4,7 +4,7 @@ import { loadCases } from "../utils/loadCases";
 
 expect.addSnapshotSerializer({
     test: (src) => src instanceof SrcInfo,
-    print: (src) => `${(src as SrcInfo).contents}`,
+    print: (src) => (src as SrcInfo).contents,
 });
 
 describe("grammar", () => {

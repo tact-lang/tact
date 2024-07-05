@@ -121,7 +121,7 @@ describe("masterchain", () => {
         await contract.send(treasure, { value: toNano("10") }, "Deploy");
         await system.run();
         const addr = new Address(-1, Buffer.alloc(32, 0));
-        expect(
+        void expect(
             contract.getParseAddress(beginCell().storeAddress(addr).endCell()),
         ).rejects.toThrowError(
             "Masterchain support is not enabled for this contract",
@@ -181,7 +181,7 @@ describe("masterchain", () => {
         await contract.send(treasure, { value: toNano("10") }, "Deploy");
         await system.run();
         const addr = new Address(-1, Buffer.alloc(32, 0));
-        expect(contract.getSerializeAddress(addr)).rejects.toThrowError(
+        void expect(contract.getSerializeAddress(addr)).rejects.toThrowError(
             "Masterchain support is not enabled for this contract",
         );
     });
@@ -237,7 +237,7 @@ describe("masterchain", () => {
         await system.run();
         const addr = new Address(-1, Buffer.alloc(32, 0));
         const addr2 = new Address(0, Buffer.alloc(32, 0));
-        expect(
+        void expect(
             contract.getHandleStruct({
                 $$type: "TestMessage",
                 address: addr,
@@ -246,7 +246,7 @@ describe("masterchain", () => {
         ).rejects.toThrowError(
             "Masterchain support is not enabled for this contract",
         );
-        expect(
+        void expect(
             contract.getHandleStruct({
                 $$type: "TestMessage",
                 address: addr2,

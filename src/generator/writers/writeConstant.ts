@@ -49,7 +49,7 @@ function writeRawSlice(
     ctx.markRendered(k);
     ctx.fun(`__gen_slice_${prefix}_${h}`, () => {
         ctx.signature(`slice __gen_slice_${prefix}_${h}()`);
-        ctx.comment(`${comment}`);
+        ctx.comment(comment);
         ctx.context("constants");
         ctx.asm(`asm "B{${t}} B>boc <s PUSHSLICE"`);
     });
@@ -71,7 +71,7 @@ function writeRawCell(
     ctx.markRendered(k);
     ctx.fun(`__gen_cell_${prefix}_${h}`, () => {
         ctx.signature(`cell __gen_cell_${prefix}_${h}()`);
-        ctx.comment(`${comment}`);
+        ctx.comment(comment);
         ctx.context("constants");
         ctx.asm(`asm "B{${t}} B>boc PUSHREF"`);
     });

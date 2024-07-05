@@ -38,7 +38,7 @@ describe("serialization", () => {
 
         for (let i = 0; i < cases.length; i++) {
             it("should handle case #" + i, async () => {
-                const cs = cases[i];
+                const cs = cases[i]!;
 
                 // Init contract
                 const system = await ContractSystem.create();
@@ -116,7 +116,7 @@ describe("serialization", () => {
 
         for (let i = 0; i < cases.length; i++) {
             it("should handle case-2 #" + i, async () => {
-                const cs = cases[i];
+                const cs = cases[i]!;
 
                 // Init contract
                 const system = await ContractSystem.create();

@@ -5,7 +5,7 @@ import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
 
 export async function run(args: {
     config: Config;
-    files: { [key: string]: string };
+    files: Record<string, string>;
     logger?: TactLogger | null | undefined;
 }) {
     // Verify config

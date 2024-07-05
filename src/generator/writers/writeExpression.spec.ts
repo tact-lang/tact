@@ -91,7 +91,9 @@ describe("writeExpression", () => {
             const wCtx = new WriterContext(ctx, "Contract1");
             wCtx.fun("$main", () => {
                 wCtx.body(() => {
-                    expect(writeExpression(s.expression, wCtx)).toBe(golden[i]);
+                    expect(writeExpression(s.expression, wCtx)).toBe(
+                        golden[i]!,
+                    );
                 });
             });
             i++;

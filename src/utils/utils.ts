@@ -2,8 +2,8 @@ import { crc16 } from "./crc16";
 
 export function topologicalSort<T>(src: T[], references: (src: T) => T[]) {
     const result: T[] = [];
-    const visited = new Set<T>();
-    const visiting = new Set<T>();
+    const visited: Set<T> = new Set();
+    const visiting: Set<T> = new Set();
     const visit = (src: T) => {
         if (visiting.has(src)) {
             throw Error("Cycle detected");

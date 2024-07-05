@@ -96,10 +96,6 @@ export function throwConstEvalError(
     );
 }
 
-export function idTextErr(ident: string): string;
-export function idTextErr(ident: AstId): string;
-export function idTextErr(ident: AstFuncId): string;
-export function idTextErr(ident: AstTypeId): string;
 export function idTextErr(
     ident: AstId | AstFuncId | AstTypeId | string,
 ): string {

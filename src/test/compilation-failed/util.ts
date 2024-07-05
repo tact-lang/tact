@@ -9,7 +9,7 @@ export function itShouldNotCompile(params: {
     it(`should not compile ${params.testName}`, async () => {
         const result = await run({
             configPath: __dirname + "/tact.config.json",
-            projectNames: [`${params.testName}`],
+            projectNames: [params.testName],
         });
         expect(result).toBe(false);
         expect((consoleLogger.error as jest.Mock).mock.lastCall[0]).toContain(

@@ -31,7 +31,7 @@ describe("benchmarks", () => {
             );
         expect(gasUsed).toMatchInlineSnapshot(`3648n`);
         expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(
-            `429`,
+            `281`,
         );
     });
     it("benchmark functions(inline)", async () => {
@@ -61,7 +61,7 @@ describe("benchmarks", () => {
             );
         expect(gasUsed).toMatchInlineSnapshot(`3517n`);
         expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(
-            `422`,
+            `274`,
         );
     });
 });
