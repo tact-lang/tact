@@ -115,7 +115,7 @@ export async function run(args: {
         false,
     ); // Improves developer experience
     for (const config of projects) {
-        logger.info("💼 Compiling project " + config.name + "...");
+        logger.info(`💼 Compiling project ${config.name} ...`);
         let cliConfig = { ...config };
 
         if (args.additionalCliOptions?.mode !== undefined) {
