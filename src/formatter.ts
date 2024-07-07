@@ -311,8 +311,8 @@ class PrettyPrinter {
                 const formattedDec = this.ppTraitBody(dec);
                 const nextDec = array[index + 1];
                 if (
-                    (dec.kind === "constant_def" &&
-                        nextDec?.kind === "constant_def") ||
+                    ((dec.kind === "constant_def" || dec.kind === "constant_decl")&&
+                        (nextDec?.kind === "constant_def" || nextDec?.kind === "constant_decl")) ||
                     (dec.kind === "field_decl" && nextDec?.kind === "field_decl")
                 ) {
                     return formattedDec;
@@ -367,7 +367,7 @@ class PrettyPrinter {
     ppAstConstDecl(constant: AstConstantDecl): string {
         const attrsRaw = constant.attributes.map((attr) => attr.type).join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
-        return `${this.indent()}${attrsFormatted}const ${constant.name}: ${this.ppAstType(constant.type)};`;
+        return `${this.indent()}${attrsFormatted}const ${this.ppAstId(constant.name)}: ${this.ppAstType(constant.type)};`;
     }
 
     ppAstContract(contract: AstContract): string {
