@@ -10,6 +10,7 @@ trait Ownable with B {
     value: Int;
 
     const someNum: Int = 2;
+    abstract const something: Int;
 
     receive("message") {
 
@@ -27,6 +28,8 @@ trait Ownable with B {
 @interface("a") contract Treasure with Ownable {
     owner: Address;
     value: Int;
+
+    const something: Int = 2;
 
     init(owner: Address) {
         self.owner = owner;
