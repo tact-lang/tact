@@ -1,36 +1,46 @@
 import {
-    ASTConstant,
-    ASTProgramImport,
-    ASTNativeFunction,
-    ASTProgram,
-    ASTTypeRefBounced,
-    ASTTypeRefMap,
-    ASTTypeRefSimple,
-    ASTReceive,
-    ASTInitFunction,
-    ASTStatementRepeat,
-    ASTStatementUntil,
-    ASTStatementWhile,
-    ASTStatementForEach,
-    ASTStatementTry,
-    ASTStatementTryCatch,
-    ASTNewParameter,
-    ASTCondition,
-    ASTStatementAugmentedAssign,
-    ASTStatementAssign,
-    ASTStatementExpression,
-    ASTStatementReturn,
-    ASTStatementLet,
-    ASTFunction,
-    ASTTypeRef,
-    ASTStatement,
-    ASTExpression,
-    ASTField,
-    ASTPrimitive,
-    ASTStruct,
-    ASTContract,
-    ASTTrait,
-    ASTId,
+    AstConstantDef,
+    AstImport,
+    AstNativeFunctionDecl,
+    AstReceiver,
+    AstStatementRepeat,
+    AstStatementUntil,
+    AstStatementWhile,
+    AstStatementForEach,
+    AstStatementTry,
+    AstStatementTryCatch,
+    AstTypedParameter,
+    AstCondition,
+    AstStatementAugmentedAssign,
+    AstStatementAssign,
+    AstStatementExpression,
+    AstStatementReturn,
+    AstStatementLet,
+    AstFunctionDef,
+    AstType,
+    AstStatement,
+    AstExpression,
+    AstContract,
+    AstTrait,
+    AstId,
+    AstModule,
+    AstModuleItem,
+    AstStructDecl,
+    AstMessageDecl,
+    AstTraitDeclaration,
+    AstFunctionDecl,
+    AstConstantDecl,
+    AstContractDeclaration,
+    AstContractInit,
+    AstStructFieldInitializer,
+    AstPrimitiveTypeDecl,
+    AstTypeId,
+    AstMapType,
+    AstBouncedMessageType,
+    AstFieldDecl,
+    AstOptionalType,
+    AstNode,
+    AstFuncId,
 } from "./grammar/ast";
 
 /**
@@ -58,39 +68,45 @@ class PrettyPrinter {
         return " ".repeat(this.indentLevel * this.indentSpaces);
     }
 
-    ppASTPrimitive(primitive: ASTPrimitive): string {
-        return `${this.indent()}primitive ${primitive.name};`;
+    ppAstPrimitiveTypeDecl(primitive: AstPrimitiveTypeDecl): string {
+        return `${this.indent()}primitive ${this.ppAstId(primitive.name)};`;
     }
 
     //
     // Types
     //
 
-    ppASTTypeRef(typeRef: ASTTypeRef): string {
+    ppAstType(typeRef: AstType): string {
         switch (typeRef.kind) {
-            case "type_ref_simple":
-                return this.ppASTTypeRefSimple(typeRef);
-            case "type_ref_map":
-                return this.ppASTTypeRefMap(typeRef);
-            case "type_ref_bounced":
-                return this.ppASTTypeRefBounced(typeRef);
+            case "type_id":
+                return this.ppAstTypeId(typeRef);
+            case "map_type":
+                return this.ppAstMapType(typeRef);
+            case "bounced_message_type":
+                return this.ppAstBouncedMessageType(typeRef);
+            case "optional_type":
+                return this.ppAstOptionalType(typeRef);
             default:
                 throw new Error(`Unknown TypeRef kind: ${typeRef}`);
         }
     }
 
-    ppASTTypeRefSimple(typeRef: ASTTypeRefSimple): string {
-        return `${typeRef.name}${typeRef.optional ? "?" : ""}`;
+    ppAstTypeId(typeRef: AstTypeId): string {
+        return `${typeRef.text}`;
     }
 
-    ppASTTypeRefMap(typeRef: ASTTypeRefMap): string {
-        const keyAlias = typeRef.keyAs ? ` as ${typeRef.keyAs}` : "";
-        const valueAlias = typeRef.valueAs ? ` as ${typeRef.valueAs}` : "";
-        return `map<${typeRef.key}${keyAlias}, ${typeRef.value}${valueAlias}>`;
+    ppAstOptionalType(typeRef: AstOptionalType): string {
+        return `${this.ppAstType(typeRef.typeArg)}?`
     }
 
-    ppASTTypeRefBounced(typeRef: ASTTypeRefBounced): string {
-        return `bounced<${typeRef.name}>`;
+    ppAstMapType(typeRef: AstMapType): string {
+        const keyAlias = typeRef.keyStorageType ? ` as ${this.ppAstId(typeRef.keyStorageType)}` : "";
+        const valueAlias = typeRef.valueStorageType ? ` as ${this.ppAstId(typeRef.valueStorageType)}` : "";
+        return `map<${this.ppAstTypeId(typeRef.keyType)}${keyAlias}, ${this.ppAstTypeId(typeRef.valueType)}${valueAlias}>`;
+    }
+
+    ppAstBouncedMessageType(typeRef: AstBouncedMessageType): string {
+        return `bounced<${this.ppAstTypeId(typeRef.messageType)}>`;
     }
 
     //
@@ -134,8 +150,8 @@ class PrettyPrinter {
                         return 11;
                 }
             case "conditional":
-            case "op_call":
-            case "op_static_call":
+            case "static_call":
+            case "method_call":
                 return 0
             case "op_unary":
                 return 10;
@@ -144,42 +160,42 @@ class PrettyPrinter {
         }
     }
 
-    ppASTExpression(expr: ASTExpression, parentPrecedence: number = 0): string {
+    ppAstExpression(expr: AstExpression, parentPrecedence: number = 0): string {
         let result;
         let currentPrecedence = this.getPrecedence(expr.kind);
 
         switch (expr.kind) {
             case "op_binary":
                 currentPrecedence = this.getPrecedence(expr.kind, expr.op);
-                result = `${this.ppASTExpression(expr.left, currentPrecedence)} ${expr.op} ${this.ppASTExpression(expr.right, currentPrecedence)}`;
+                result = `${this.ppAstExpression(expr.left, currentPrecedence)} ${expr.op} ${this.ppAstExpression(expr.right, currentPrecedence)}`;
                 break;
             case "op_unary":
                 currentPrecedence = this.getPrecedence(expr.kind, expr.op);
-                result = `${expr.op}${this.ppASTExpression(expr.right, currentPrecedence)}`;
+                result = `${expr.op}${this.ppAstExpression(expr.operand, currentPrecedence)}`;
                 break;
-            case "op_field":
-                result = `${this.ppASTExpression(expr.src, currentPrecedence)}.${this.ppASTId(expr.name)}`;
+            case "field_access":
+                result = `${this.ppAstExpression(expr.aggregate, currentPrecedence)}.${this.ppAstId(expr.field)}`;
                 break;
-            case "op_call":
-                result = `${this.ppASTExpression(expr.src, currentPrecedence)}.${expr.name}(${expr.args.map((arg) => this.ppASTExpression(arg, currentPrecedence)).join(", ")})`;
+            case "method_call":
+                result = `${this.ppAstExpression(expr.self, currentPrecedence)}.${this.ppAstId(expr.method)}(${expr.args.map((arg) => this.ppAstExpression(arg, currentPrecedence)).join(", ")})`;
                 break;
-            case "op_static_call":
-                result = `${expr.name}(${expr.args.map((arg) => this.ppASTExpression(arg, currentPrecedence)).join(", ")})`;
+            case "static_call":
+                result = `${this.ppAstId(expr.function)}(${expr.args.map((arg) => this.ppAstExpression(arg, currentPrecedence)).join(", ")})`;
                 break;
-            case "op_new":
-                result = `${expr.type}{${expr.args.map((x) => this.ppASTNewParameter(x)).join(", ")}}`;
+            case "struct_instance":
+                result = `${this.ppAstId(expr.type)}{${expr.args.map((x) => this.ppAstStructFieldInit(x)).join(", ")}}`;
                 break;
             case "init_of":
-                result = `initOf ${expr.name}(${expr.args.map((arg) => this.ppASTExpression(arg, currentPrecedence)).join(", ")})`;
+                result = `initOf ${this.ppAstId(expr.contract)}(${expr.args.map((arg) => this.ppAstExpression(arg, currentPrecedence)).join(", ")})`;
                 break;
             case "conditional":
-                result = `${this.ppASTExpression(expr.condition, currentPrecedence)} ? ${this.ppASTExpression(expr.thenBranch, currentPrecedence)} : ${this.ppASTExpression(expr.elseBranch, currentPrecedence)}`;
+                result = `${this.ppAstExpression(expr.condition, currentPrecedence)} ? ${this.ppAstExpression(expr.thenBranch, currentPrecedence)} : ${this.ppAstExpression(expr.elseBranch, currentPrecedence)}`;
                 break;
             case "number":
                 result = expr.value.toString();
                 break;
             case "id":
-                result = expr.value;
+                result = expr.text;
                 break;
             case "boolean":
                 result = expr.value.toString();
@@ -202,82 +218,89 @@ class PrettyPrinter {
         return result;
     }
 
-    ppASTNewParameter(param: ASTNewParameter): string {
-        return `${param.name}: ${this.ppASTExpression(param.exp)}`;
+    ppAstStructFieldInit(param: AstStructFieldInitializer): string {
+        return `${this.ppAstId(param.field)}: ${this.ppAstExpression(param.initializer)}`;
     }
 
     //
     // Program
     //
 
-    ppASTProgram(program: ASTProgram): string {
-        const entriesFormatted = program.entries
+    ppAstModule(program: AstModule): string {
+        const importsFormatted = program.imports.length > 0 ? 
+            `${program.imports
+            .map((entry) => this.ppAstImport(entry))
+            .join("\n")}\n\n`
+            : "";
+        const entriesFormatted = program.items
             .map((entry, index, array) => {
-                const formattedEntry = this.ppProgramItem(entry);
+                const formattedEntry = this.ppModuleItem(entry);
                 const nextEntry = array[index + 1];
                 if (
-                    entry.kind === "def_constant" &&
-                    nextEntry?.kind === "def_constant"
+                    entry.kind === "constant_def" &&
+                    nextEntry?.kind === "constant_def"
                 ) {
                     return formattedEntry;
                 }
                 return formattedEntry + "\n";
             })
             .join("\n");
-        return entriesFormatted.trim();
+        return `${importsFormatted}${entriesFormatted.trim()}`;
     }
 
-    ppProgramItem(
-        item:
-            | ASTStruct
-            | ASTContract
-            | ASTPrimitive
-            | ASTFunction
-            | ASTNativeFunction
-            | ASTTrait
-            | ASTProgramImport
-            | ASTConstant,
+    ppModuleItem(
+        item: AstModuleItem,
     ): string {
         switch (item.kind) {
-            case "def_struct":
-                return this.ppASTStruct(item);
-            case "def_contract":
-                return this.ppASTContract(item);
-            case "primitive":
-                return this.ppASTPrimitive(item);
-            case "def_function":
-                return this.ppASTFunction(item);
-            case "def_native_function":
-                return this.ppASTNativeFunction(item);
-            case "def_trait":
-                return this.ppASTTrait(item);
-            case "program_import":
-                return this.ppASTProgramImport(item);
-            case "def_constant":
-                return this.ppASTConstant(item);
+            case "struct_decl":
+                return this.ppAstStruct(item);
+            case "contract":
+                return this.ppAstContract(item);
+            case "primitive_type_decl":
+                return this.ppAstPrimitiveTypeDecl(item);
+            case "function_def":
+                return this.ppAstFunctionDef(item);
+            case "native_function_decl":
+                return this.ppAstNativeFunction(item);
+            case "trait":
+                return this.ppAstTrait(item);
+            // case "program_import":
+            //     return this.ppASTProgramImport(item);
+            case "constant_def":
+                return this.ppAstConstant(item);
+            case "message_decl":
+                return this.ppAstMessage(item);
             default:
                 return `Unknown Program Item Type: ${item}`;
         }
     }
 
-    ppASTProgramImport(importItem: ASTProgramImport): string {
+    ppAstImport(importItem: AstImport): string {
         return `${this.indent()}import "${importItem.path.value}";`;
     }
 
-    ppASTStruct(struct: ASTStruct): string {
-        const typePrefix = struct.message ? "message" : "struct";
-        const prefixFormatted =
-            struct.prefix !== null ? `(${struct.prefix}) ` : "";
+    ppAstStruct(struct: AstStructDecl): string {
         this.increaseIndent();
         const fieldsFormatted = struct.fields
-            .map((field) => this.ppASTField(field))
+            .map((field) => this.ppAstFieldDecl(field))
             .join("\n");
         this.decreaseIndent();
-        return `${this.indent()}${typePrefix} ${prefixFormatted}${struct.name} {\n${fieldsFormatted}\n}`;
+        return `${this.indent()}struct ${this.ppAstId(struct.name)} {\n${fieldsFormatted}\n}`;
     }
 
-    ppASTTrait(trait: ASTTrait): string {
-        const traitsFormatted = trait.traits.map((t) => t.value).join(", ");
+    ppAstMessage(struct: AstMessageDecl): string {
+        const prefixFormatted =
+            struct.opcode !== null ? `(${struct.opcode}) ` : "";
+        this.increaseIndent();
+        const fieldsFormatted = struct.fields
+            .map((field) => this.ppAstFieldDecl(field))
+            .join("\n");
+        this.decreaseIndent();
+        return `${this.indent()}message ${prefixFormatted}${this.ppAstId(struct.name)} {\n${fieldsFormatted}\n}`;
+    }
+
+    ppAstTrait(trait: AstTrait): string {
+        const traitsFormatted = trait.traits.map((t) => this.ppAstId(t)).join(", ");
         const attrsRaw = trait.attributes
             .map((attr) => `@${attr.type}("${attr.name.value}")`)
             .join(" ");
@@ -288,9 +311,9 @@ class PrettyPrinter {
                 const formattedDec = this.ppTraitBody(dec);
                 const nextDec = array[index + 1];
                 if (
-                    (dec.kind === "def_constant" &&
-                        nextDec?.kind === "def_constant") ||
-                    (dec.kind === "def_field" && nextDec?.kind === "def_field")
+                    (dec.kind === "constant_def" &&
+                        nextDec?.kind === "constant_def") ||
+                    (dec.kind === "field_decl" && nextDec?.kind === "field_decl")
                 ) {
                     return formattedDec;
                 }
@@ -298,50 +321,58 @@ class PrettyPrinter {
             })
             .join("\n");
         const header = traitsFormatted
-            ? `trait ${trait.name} with ${traitsFormatted}`
-            : `trait ${trait.name}`;
+            ? `trait ${this.ppAstId(trait.name)} with ${traitsFormatted}`
+            : `trait ${this.ppAstId(trait.name)}`;
         this.decreaseIndent();
         return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}${this.indent()}}`;
     }
 
     ppTraitBody(
-        item: ASTField | ASTFunction | ASTReceive | ASTConstant,
+        item: AstTraitDeclaration,
     ): string {
         switch (item.kind) {
-            case "def_field":
-                return this.ppASTField(item);
-            case "def_function":
-                return this.ppASTFunction(item);
-            case "def_receive":
-                return this.ppASTReceive(item);
-            case "def_constant":
-                return this.ppASTConstant(item);
+            case "field_decl":
+                return this.ppAstFieldDecl(item);
+            case "function_def":
+                return this.ppAstFunctionDef(item);
+            case "receiver":
+                return this.ppAstReceiver(item);
+            case "constant_def":
+                return this.ppAstConstant(item);
+            case "function_decl":
+                return this.ppAstFunctionDecl(item);
+            case "constant_decl":
+                return this.ppAstConstDecl(item);
             default:
                 return `Unknown Trait Body Type: ${item}`;
         }
     }
 
-    ppASTField(field: ASTField): string {
-        const typeFormatted = this.ppASTTypeRef(field.type);
-        const initializer = field.init
-            ? ` = ${this.ppASTExpression(field.init)}`
+    ppAstFieldDecl(field: AstFieldDecl): string {
+        const typeFormatted = this.ppAstType(field.type);
+        const initializer = field.initializer
+            ? ` = ${this.ppAstExpression(field.initializer)}`
             : "";
-        const asAlias = field.as ? ` as ${field.as}` : "";
-        return `${this.indent()}${field.name}: ${typeFormatted}${asAlias}${initializer};`;
+        const asAlias = field.as ? ` as ${this.ppAstId(field.as)}` : "";
+        return `${this.indent()}${this.ppAstId(field.name)}: ${typeFormatted}${asAlias}${initializer};`;
     }
 
-    ppASTConstant(constant: ASTConstant): string {
-        const valueFormatted = constant.value
-            ? ` = ${this.ppASTExpression(constant.value)}`
-            : "";
+    ppAstConstant(constant: AstConstantDef): string {
+        const valueFormatted = ` = ${this.ppAstExpression(constant.initializer)}`;
         const attrsRaw = constant.attributes.map((attr) => attr.type).join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
-        return `${this.indent()}${attrsFormatted}const ${constant.name}: ${this.ppASTTypeRef(constant.type)}${valueFormatted};`;
+        return `${this.indent()}${attrsFormatted}const ${this.ppAstId(constant.name)}: ${this.ppAstType(constant.type)}${valueFormatted};`;
     }
 
-    ppASTContract(contract: ASTContract): string {
+    ppAstConstDecl(constant: AstConstantDecl): string {
+        const attrsRaw = constant.attributes.map((attr) => attr.type).join(" ");
+        const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
+        return `${this.indent()}${attrsFormatted}const ${constant.name}: ${this.ppAstType(constant.type)};`;
+    }
+
+    ppAstContract(contract: AstContract): string {
         const traitsFormatted = contract.traits
-            .map((trait) => trait.value)
+            .map((trait) => trait.text)
             .join(", ");
         this.increaseIndent();
         const bodyFormatted = contract.declarations
@@ -349,9 +380,9 @@ class PrettyPrinter {
                 const formattedDec = this.ppContractBody(dec);
                 const nextDec = array[index + 1];
                 if (
-                    (dec.kind === "def_constant" &&
-                        nextDec?.kind === "def_constant") ||
-                    (dec.kind === "def_field" && nextDec?.kind === "def_field")
+                    (dec.kind === "constant_def" &&
+                        nextDec?.kind === "constant_def") ||
+                    (dec.kind === "field_decl" && nextDec?.kind === "field_decl")
                 ) {
                     return formattedDec;
                 }
@@ -360,8 +391,8 @@ class PrettyPrinter {
             .join("\n");
         this.decreaseIndent();
         const header = traitsFormatted
-            ? `contract ${contract.name} with ${traitsFormatted}`
-            : `contract ${contract.name}`;
+            ? `contract ${this.ppAstId(contract.name)} with ${traitsFormatted}`
+            : `contract ${this.ppAstId(contract.name)}`;
         const attrsRaw = contract.attributes
             .map((attr) => `@interface("${attr.name.value}")`)
             .join(" ");
@@ -369,65 +400,70 @@ class PrettyPrinter {
         return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}${this.indent()}}`;
     }
 
-    ppContractBody(
-        declaration:
-            | ASTField
-            | ASTFunction
-            | ASTInitFunction
-            | ASTReceive
-            | ASTConstant,
-    ): string {
+    ppContractBody(declaration: AstContractDeclaration): string {
         switch (declaration.kind) {
-            case "def_field":
-                return this.ppASTField(declaration);
-            case "def_function":
-                return this.ppASTFunction(declaration);
-            case "def_init_function":
-                return this.ppASTInitFunction(declaration);
-            case "def_receive":
-                return this.ppASTReceive(declaration);
-            case "def_constant":
-                return this.ppASTConstant(declaration);
+            case "field_decl":
+                return this.ppAstFieldDecl(declaration);
+            case "function_def":
+                return this.ppAstFunctionDef(declaration);
+            case "contract_init":
+                return this.ppAstInitFunction(declaration);
+            case "receiver":
+                return this.ppAstReceiver(declaration);
+            case "constant_def":
+                return this.ppAstConstant(declaration);
             default:
                 return `Unknown Contract Body Type: ${declaration}`;
         }
     }
 
-    public ppASTFunction(func: ASTFunction): string {
-        const argsFormatted = func.args
-            .map((arg) => `${arg.name}: ${this.ppASTTypeRef(arg.type)}`)
+    public ppAstFunctionDef(func: AstFunctionDef): string {
+        const argsFormatted = func.params
+            .map((arg) => `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`)
             .join(", ");
         const attrsRaw = func.attributes.map((attr) => attr.type).join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
         const returnType = func.return
-            ? `: ${this.ppASTTypeRef(func.return)}`
+            ? `: ${this.ppAstType(func.return)}`
             : "";
         const body = func.statements
             ? ` ${this.ppStatementBlock(func.statements)}`
             : ";";
-        return `${this.indent()}${attrsFormatted}fun ${func.name}(${argsFormatted})${returnType}${body}`;
+        return `${this.indent()}${attrsFormatted}fun ${this.ppAstId(func.name)}(${argsFormatted})${returnType}${body}`;
     }
 
-    ppASTReceive(receive: ASTReceive): string {
-        const header = this.ppASTReceiveHeader(receive)
+    ppAstFunctionDecl(func: AstFunctionDecl): string {
+        const argsFormatted = func.params
+        .map((arg) => `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`)
+        .join(", ");
+        const attrsRaw = func.attributes.map((attr) => attr.type).join(" ");
+        const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
+        const returnType = func.return
+            ? `: ${this.ppAstType(func.return)}`
+            : "";
+        return `${this.indent()}${attrsFormatted}fun ${this.ppAstId(func.name)}(${argsFormatted})${returnType};`;    
+    }
+
+    ppAstReceiver(receive: AstReceiver): string {
+        const header = this.ppAstReceiverHeader(receive)
         const stmtsFormatted = this.ppStatementBlock(
             receive.statements,
         );
         return `${this.indent()}${header} ${stmtsFormatted}`;
     }
 
-    ppASTReceiveHeader(receive: ASTReceive): string {
+    ppAstReceiverHeader(receive: AstReceiver): string {
         switch (receive.selector.kind) {
             case "internal-simple":
-                return `receive(${receive.selector.arg.name}: ${this.ppASTTypeRef(receive.selector.arg.type)})`
+                return `receive(${this.ppAstId(receive.selector.param.name)}: ${this.ppAstType(receive.selector.param.type)})`
             case "internal-fallback":
                 return `receive()`
             case "internal-comment":
                 return `receive("${receive.selector.comment.value}")`
             case "bounce":
-                return `bounced(${receive.selector.arg.name}: ${this.ppASTTypeRef(receive.selector.arg.type)})`
+                return `bounced(${this.ppAstId(receive.selector.param.name)}: ${this.ppAstType(receive.selector.param.type)})`
             case "external-simple":
-                return `external(${receive.selector.arg.name}: ${this.ppASTTypeRef(receive.selector.arg.type)})`
+                return `external(${this.ppAstId(receive.selector.param.name)}: ${this.ppAstType(receive.selector.param.type)})`
             case "external-fallback":
                 return `external()`
             case "external-comment":
@@ -436,27 +472,31 @@ class PrettyPrinter {
     }
 
 
-    ppASTNativeFunction(func: ASTNativeFunction): string {
-        const argsFormatted = func.args
-            .map((arg) => `${arg.name}: ${this.ppASTTypeRef(arg.type)}`)
+    ppAstNativeFunction(func: AstNativeFunctionDecl): string {
+        const argsFormatted = func.params
+            .map((arg) => `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`)
             .join(", ");
         const returnType = func.return
-            ? `: ${this.ppASTTypeRef(func.return)}`
+            ? `: ${this.ppAstType(func.return)}`
             : "";
         let attrs = func.attributes.map((attr) => attr.type).join(" ");
         attrs = attrs ? attrs + " " : "";
-        return `${this.indent()}@name(${func.nativeName})\n${this.indent()}${attrs}native ${func.name}(${argsFormatted})${returnType};`;
+        return `${this.indent()}@name(${this.ppAstFuncId(func.nativeName)})\n${this.indent()}${attrs}native ${this.ppAstId(func.name)}(${argsFormatted})${returnType};`;
     }
 
-    ppASTInitFunction(initFunc: ASTInitFunction): string {
-        const argsFormatted = initFunc.args
-            .map((arg) => `${arg.name}: ${this.ppASTTypeRef(arg.type)}`)
+    ppAstFuncId(func: AstFuncId): string {
+        return func.text
+    }
+
+    ppAstInitFunction(initFunc: AstContractInit): string {
+        const argsFormatted = initFunc.params
+            .map((arg) => `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`)
             .join(", ");
 
         this.increaseIndent()
         const stmtsFormatted = initFunc.statements
             ? initFunc.statements
-                  .map((stmt) => this.ppASTStatement(stmt))
+                  .map((stmt) => this.ppAstStatement(stmt))
                   .join("\n")
             : "";
         this.decreaseIndent()
@@ -468,66 +508,66 @@ class PrettyPrinter {
     // Statements
     //
 
-    ppASTStatement(stmt: ASTStatement): string {
+    ppAstStatement(stmt: AstStatement): string {
         switch (stmt.kind) {
             case "statement_let":
-                return this.ppASTStatementLet(stmt as ASTStatementLet);
+                return this.ppAstStatementLet(stmt as AstStatementLet);
             case "statement_return":
-                return this.ppASTStatementReturn(stmt as ASTStatementReturn);
+                return this.ppAstStatementReturn(stmt as AstStatementReturn);
             case "statement_expression":
-                return this.ppASTStatementExpression(
-                    stmt as ASTStatementExpression,
+                return this.ppAstStatementExpression(
+                    stmt as AstStatementExpression,
                 );
             case "statement_assign":
-                return this.ppASTStatementAssign(stmt as ASTStatementAssign);
+                return this.ppAstStatementAssign(stmt as AstStatementAssign);
             case "statement_augmentedassign":
-                return this.ppASTStatementAugmentedAssign(
-                    stmt as ASTStatementAugmentedAssign,
+                return this.ppAstStatementAugmentedAssign(
+                    stmt as AstStatementAugmentedAssign,
                 );
             case "statement_condition":
-                return this.ppASTCondition(stmt as ASTCondition);
+                return this.ppAstCondition(stmt as AstCondition);
             case "statement_while":
-                return this.ppASTStatementWhile(stmt as ASTStatementWhile);
+                return this.ppAstStatementWhile(stmt as AstStatementWhile);
             case "statement_until":
-                return this.ppASTStatementUntil(stmt as ASTStatementUntil);
+                return this.ppAstStatementUntil(stmt as AstStatementUntil);
             case "statement_repeat":
-                return this.ppASTStatementRepeat(stmt as ASTStatementRepeat);
+                return this.ppAstStatementRepeat(stmt as AstStatementRepeat);
             case "statement_foreach":
-                return this.ppASTStatementForEach(stmt as ASTStatementForEach);
+                return this.ppAstStatementForEach(stmt as AstStatementForEach);
             case "statement_try":
-                return this.ppASTStatementTry(stmt as ASTStatementTry);
+                return this.ppAstStatementTry(stmt as AstStatementTry);
             case "statement_try_catch":
-                return this.ppASTStatementTryCatch(stmt as ASTStatementTryCatch);
+                return this.ppAstStatementTryCatch(stmt as AstStatementTryCatch);
             default:
                 return `Unknown Statement Type: ${stmt}`;
         }
     }
 
-    ppStatementBlock(stmts: ASTStatement[]): string {
+    ppStatementBlock(stmts: AstStatement[]): string {
         this.increaseIndent();
         const stmntsFormatted = stmts
-            .map((stmt) => this.ppASTStatement(stmt))
+            .map((stmt) => this.ppAstStatement(stmt))
             .join("\n")
         this.decreaseIndent()
         const result = `{\n${stmntsFormatted}\n${this.indent()}}`;
         return result;
     }
 
-    ppASTStatementLet(statement: ASTStatementLet): string {
-        const expression = this.ppASTExpression(statement.expression);
-        const tyAnnotation = statement.type === null ? "" : `: ${this.ppASTTypeRef(statement.type)}`;  
-    return `${this.indent()}let ${statement.name}${tyAnnotation} = ${expression};`
+    ppAstStatementLet(statement: AstStatementLet): string {
+        const expression = this.ppAstExpression(statement.expression);
+        const tyAnnotation = statement.type === null ? "" : `: ${this.ppAstType(statement.type)}`;  
+    return `${this.indent()}let ${this.ppAstId(statement.name)}${tyAnnotation} = ${expression};`
     }
 
-    ppASTStatementReturn(statement: ASTStatementReturn): string {
+    ppAstStatementReturn(statement: AstStatementReturn): string {
         const expression = statement.expression
-            ? this.ppASTExpression(statement.expression)
+            ? this.ppAstExpression(statement.expression)
             : "";
         return `${this.indent()}return ${expression};`;
     }
 
-    ppASTStatementExpression(statement: ASTStatementExpression): string {
-        return `${this.indent()}${this.ppASTExpression(statement.expression)};`;
+    ppAstStatementExpression(statement: AstStatementExpression): string {
+        return `${this.indent()}${this.ppAstExpression(statement.expression)};`;
     }
 
     // ppASTLvalueRef(lvalues: ASTLvalueRef[]) {
@@ -536,22 +576,22 @@ class PrettyPrinter {
     //         .join(".");
     // }
 
-    ppASTId(id: ASTId) {
-        return id.value;
+    ppAstId(id: AstId) {
+        return id.text;
     }
 
-    ppASTStatementAssign(statement: ASTStatementAssign): string {
-        return `${this.indent()}${this.ppASTExpression(statement.path)} = ${this.ppASTExpression(statement.expression)};`;
+    ppAstStatementAssign(statement: AstStatementAssign): string {
+        return `${this.indent()}${this.ppAstExpression(statement.path)} = ${this.ppAstExpression(statement.expression)};`;
     }
 
-    ppASTStatementAugmentedAssign(
-        statement: ASTStatementAugmentedAssign,
+    ppAstStatementAugmentedAssign(
+        statement: AstStatementAugmentedAssign,
     ): string {
-        return `${this.indent()}${this.ppASTExpression(statement.path)} ${statement.op}= ${this.ppASTExpression(statement.expression)};`;
+        return `${this.indent()}${this.ppAstExpression(statement.path)} ${statement.op}= ${this.ppAstExpression(statement.expression)};`;
     }
 
-    ppASTCondition(statement: ASTCondition): string {
-        const condition = this.ppASTExpression(statement.expression);
+    ppAstCondition(statement: AstCondition): string {
+        const condition = this.ppAstExpression(statement.condition);
         const trueBranch = this.ppStatementBlock(statement.trueStatements);
         const falseBranch = statement.falseStatements
             ? ` else ${this.ppStatementBlock(statement.falseStatements)}`
@@ -559,40 +599,39 @@ class PrettyPrinter {
         return `${this.indent()}if (${condition}) ${trueBranch}${falseBranch}`;
     }
 
-    ppASTStatementWhile(statement: ASTStatementWhile): string {
-        const condition = this.ppASTExpression(statement.condition);
+    ppAstStatementWhile(statement: AstStatementWhile): string {
+        const condition = this.ppAstExpression(statement.condition);
         const stmts = this.ppStatementBlock(statement.statements);
         return `${this.indent()}while (${condition}) ${stmts}`;
     }
 
-    ppASTStatementRepeat(statement: ASTStatementRepeat): string {
-        const condition = this.ppASTExpression(statement.iterations);
+    ppAstStatementRepeat(statement: AstStatementRepeat): string {
+        const condition = this.ppAstExpression(statement.iterations);
         const stmts = this.ppStatementBlock(statement.statements);
         return `${this.indent()}repeat (${condition}) ${stmts}`;
     }
 
-    ppASTStatementUntil(statement: ASTStatementUntil): string {
-        const condition = this.ppASTExpression(statement.condition);
+    ppAstStatementUntil(statement: AstStatementUntil): string {
+        const condition = this.ppAstExpression(statement.condition);
         const stmts = this.ppStatementBlock(statement.statements);
         return `${this.indent()}do ${stmts} until (${condition});`;
     }
 
-    ppASTStatementForEach(statement: ASTStatementForEach): string {
-        //statement.map is ASTId thus ppASTLvalueRef wouldn't wirk with it
-        const header = `foreach (${statement.keyName}, ${statement.valueName} in ${this.ppASTExpression(statement.map)})`;
+    ppAstStatementForEach(statement: AstStatementForEach): string {
+        const header = `foreach (${this.ppAstId(statement.keyName)}, ${this.ppAstId(statement.valueName)} in ${this.ppAstExpression(statement.map)})`;
         const body = this.ppStatementBlock(statement.statements);
         return `${this.indent()}${header} ${body}`
     }
 
-    ppASTStatementTry(statement: ASTStatementTry): string {
+    ppAstStatementTry(statement: AstStatementTry): string {
         const body = this.ppStatementBlock(statement.statements);
         return `${this.indent()}try ${body}`
     }
 
-    ppASTStatementTryCatch(statement: ASTStatementTryCatch): string {
+    ppAstStatementTryCatch(statement: AstStatementTryCatch): string {
         const tryBody = this.ppStatementBlock(statement.statements);
         const catchBody = this.ppStatementBlock(statement.catchStatements)
-        return `${this.indent()}try ${tryBody} catch (${statement.catchName}) ${catchBody}`
+        return `${this.indent()}try ${tryBody} catch (${this.ppAstId(statement.catchName)}) ${catchBody}`
     }
 }
 
@@ -602,17 +641,17 @@ class PrettyPrinter {
  * @returns A string that represents the formatted AST node.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function formatAST(input: any): string {
+export function formatAst(input: AstNode): string {
     const pp = new PrettyPrinter();
     switch (input.kind) {
-        case "program":
-            return pp.ppASTProgram(input);
+        case "module":
+            return pp.ppAstModule(input);
         case "op_binary":
         case "op_unary":
-        case "op_field":
-        case "op_call":
-        case "op_static_call":
-        case "op_new":
+        case "field_access":
+        case "method_call":
+        case "static_call":
+        case "struct_instance":
         case "init_of":
         case "conditional":
         case "number":
@@ -620,19 +659,18 @@ export function formatAST(input: any): string {
         case "boolean":
         case "string":
         case "null":
-        case "lvalue_ref":
-            return pp.ppASTExpression(input);
-        case "def_struct":
-            return pp.ppASTStruct(input);
-        case "def_constant":
-            return pp.ppASTConstant(input);
-        case "def_function":
-            return pp.ppASTFunction(input);
-        case "def_contract":
-            return pp.ppASTContract(input);
-        case "def_trait":
-            return pp.ppASTTrait(input);
+            return pp.ppAstExpression(input);
+        case "struct_decl":
+            return pp.ppAstStruct(input);
+        case "constant_def":
+            return pp.ppAstConstant(input);
+        case "function_def":
+            return pp.ppAstFunctionDef(input);
+        case "contract":
+            return pp.ppAstContract(input);
+        case "trait":
+            return pp.ppAstTrait(input);
         default:
-            throw new Error(`Unsupported AST type: ${input.ref}`);
+            throw new Error(`Unsupported AST type: ${input.kind}`);
     }
 }
