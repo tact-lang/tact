@@ -620,7 +620,7 @@ function resolveCall(
     );
 }
 
-export function resolveInitOf(
+function resolveInitOf(
     ast: AstInitOf,
     sctx: StatementContext,
     ctx: CompilerContext,
@@ -671,7 +671,7 @@ export function resolveInitOf(
     });
 }
 
-export function resolveConditional(
+function resolveConditional(
     ast: AstConditional,
     sctx: StatementContext,
     ctx: CompilerContext,

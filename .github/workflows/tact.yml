@@ -56,14 +56,18 @@ jobs:
         run: |
           yarn spell
 
+      - name: Check there are no unused dependencies
+        run: |
+          yarn knip
+
       - name: Show an example .pkg file on Windows
         if: runner.os == 'Windows'
         run: |
           type examples\output\echo_Echo.pkg
 
-      - name: Install the package locally
+      - name: Link Tact yarn package
         run: |
-          npm install -g ./
+          yarn link
 
       - name: CLI Test | Compare Tact version from CLI flag `--version` against package.json
         if: runner.os != 'Windows'
@@ -117,10 +121,6 @@ jobs:
         run: |
           tact -e '(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2'
 
-      - name: Link Tact compiler
-        run: |
-          yarn link
-
       - name: Test compatibility with tact-template
         run: |
           git clone https://github.com/tact-lang/tact-template.git
@@ -129,7 +129,7 @@ jobs:
           yarn link @tact-lang/compiler
           yarn build
           yarn test
-          yarn tact --version
+          tact --version
 
       - name: Test compatibility with Blueprint
         run: |
@@ -138,4 +138,4 @@ jobs:
           yarn link @tact-lang/compiler
           yarn build
           yarn test
-          yarn tact --version
+          tact --version

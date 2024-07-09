@@ -63,6 +63,12 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "resolveJsonModule": true
   },
-  "include": ["src/", "examples/", "scripts/", "./jest.config.js"],
+  "include": [
+    "src/",
+    "examples/",
+    "scripts/",
+    "./jest.config.js",
+    "bin/tact.js"
+  ],
   "exclude": ["**/*.bind.ts", "src/test/**/output/**/*"]
 }

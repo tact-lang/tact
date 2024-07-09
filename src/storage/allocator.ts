@@ -8,7 +8,7 @@ import {
 const ALLOCATOR_RESERVE_BIT = 1;
 const ALLOCATOR_RESERVE_REF = 1;
 
-export function getOperationSize(src: AllocationOperationType): {
+function getOperationSize(src: AllocationOperationType): {
     bits: number;
     refs: number;
 } {

@@ -26,7 +26,7 @@ const writeToCStringPtr = (mod: any, str: string, ptr: any) => {
 const readFromCString = (mod: any, pointer: Pointer): string =>
     mod.UTF8ToString(pointer);
 
-export function cutFirstLine(src: string) {
+function cutFirstLine(src: string) {
     return src.slice(src.indexOf("\n") + 1);
 }
 

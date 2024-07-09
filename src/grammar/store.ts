@@ -8,7 +8,7 @@ import {
 import { CompilerContext, createContextStore } from "../context";
 import { ItemOrigin, parse } from "./grammar";
 
-export type TactSource = { code: string; path: string; origin: ItemOrigin };
+type TactSource = { code: string; path: string; origin: ItemOrigin };
 
 /**
  * Represents the storage for all AST-related data within the compiler context.
@@ -16,7 +16,7 @@ export type TactSource = { code: string; path: string; origin: ItemOrigin };
  * @property constants AST entries representing top-level constant definitions.
  * @property types AST entries representing structures, contracts, and traits.
  */
-export type ASTStore = {
+type ASTStore = {
     sources: TactSource[];
     funcSources: { code: string; path: string }[];
     functions: (AstFunctionDef | AstNativeFunctionDecl)[];
@@ -43,7 +43,7 @@ export function getRawAST(ctx: CompilerContext) {
 /**
  * Parses multiple Tact source files into AST modules.
  */
-export function parseModules(sources: TactSource[]): AstModule[] {
+function parseModules(sources: TactSource[]): AstModule[] {
     return sources.map((source) =>
         parse(source.code, source.path, source.origin),
     );
