@@ -67,7 +67,7 @@ jobs:
 
       - name: Link Tact yarn package
         run: |
-          yarn link @tact-lang/compiler
+          yarn link
 
       - name: CLI Test | Compare Tact version from CLI flag `--version` against package.json
         if: runner.os != 'Windows'
@@ -121,15 +121,12 @@ jobs:
         run: |
           tact -e '(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2'
 
-      - name: Link Tact compiler
-        run: |
-          yarn link
-
       - name: Test compatibility with tact-template
         run: |
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
           yarn install
+          yarn link @tact-lang/compiler
           yarn build
           yarn test
           tact --version
@@ -138,6 +135,7 @@ jobs:
         run: |
           yarn create ton -- test-project --type tact-counter --contractName Counter
           cd test-project
+          yarn link @tact-lang/compiler
           yarn build
           yarn test
           tact --version
