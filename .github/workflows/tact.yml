@@ -133,7 +133,7 @@ jobs:
           yarn link @tact-lang/compiler
           yarn build
           yarn test
-          yarn tact --version
+          tact --version
 
       - name: Test compatibility with Blueprint
         run: |
@@ -142,4 +142,4 @@ jobs:
           yarn link @tact-lang/compiler
           yarn build
           yarn test
-          yarn tact --version
+          tact --version
