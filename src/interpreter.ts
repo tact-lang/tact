@@ -4,7 +4,7 @@ import { TactConstEvalError, TactParseError } from "./errors";
 import { parseExpression } from "./grammar/grammar";
 import { Value } from "./types/types";
 
-export type EvalResult =
+type EvalResult =
     | { kind: "ok"; value: Value }
     | { kind: "error"; message: string };
 

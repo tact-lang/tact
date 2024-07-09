@@ -8,7 +8,6 @@ import {
     AstNode,
     AstReceiver,
     SrcInfo,
-    AstStatement,
     AstTypeDecl,
     AstId,
     AstFunctionDecl,
@@ -156,15 +155,6 @@ export type FunctionDescription = {
     ast: AstFunctionDef | AstNativeFunctionDecl | AstFunctionDecl;
 };
 
-export type StatementDescription =
-    | {
-          kind: "native";
-          src: AstStatement;
-      }
-    | {
-          kind: "intrinsic";
-      };
-
 export type BinaryReceiverSelector =
     | {
           kind: "internal-binary";
@@ -193,7 +183,7 @@ export type CommentReceiverSelector =
           comment: string;
       };
 
-export type EmptyReceiverSelector =
+type EmptyReceiverSelector =
     | {
           kind: "internal-empty";
       }
@@ -201,7 +191,7 @@ export type EmptyReceiverSelector =
           kind: "external-empty";
       };
 
-export type FallbackReceiverSelector =
+type FallbackReceiverSelector =
     | {
           kind: "internal-comment-fallback";
           name: AstId;

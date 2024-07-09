@@ -1860,10 +1860,7 @@ export function getAllStaticConstants(ctx: CompilerContext) {
     return staticConstantsStore.all(ctx);
 }
 
-export function resolvePartialFields(
-    ctx: CompilerContext,
-    type: TypeDescription,
-) {
+function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
     if (type.kind !== "struct") return 0;
 
     let partialFieldsCount = 0;
