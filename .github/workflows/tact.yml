@@ -65,9 +65,9 @@ jobs:
         run: |
           type examples\output\echo_Echo.pkg
 
-      - name: Install the package locally
+      - name: Link Tact yarn package
         run: |
-          npm install -g ./
+          yarn link @tact-lang/compiler
 
       - name: CLI Test | Compare Tact version from CLI flag `--version` against package.json
         if: runner.os != 'Windows'
@@ -130,7 +130,6 @@ jobs:
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
           yarn install
-          yarn link @tact-lang/compiler
           yarn build
           yarn test
           tact --version
@@ -139,7 +138,6 @@ jobs:
         run: |
           yarn create ton -- test-project --type tact-counter --contractName Counter
           cd test-project
-          yarn link @tact-lang/compiler
           yarn build
           yarn test
           tact --version
