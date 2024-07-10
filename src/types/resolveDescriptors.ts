@@ -7,7 +7,6 @@ import {
     SrcInfo,
     AstType,
     createAstNode,
-    traverse,
     idText,
     AstId,
     eqNames,
@@ -17,6 +16,7 @@ import {
     AstFunctionDecl,
     AstConstantDecl,
 } from "../grammar/ast";
+import { traverse } from "../grammar/iterators";
 import {
     idTextErr,
     throwCompilationError,
