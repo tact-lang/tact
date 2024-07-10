@@ -2,6 +2,7 @@ import { AstNode, AstStatement, AstExpression } from "./ast";
 
 /**
  * Recursively iterates over each expression in an ASTNode and applies a callback to each expression.
+ * @public
  * @param node The node to traverse.
  * @param callback The callback function to apply to each expression.
  */
@@ -174,6 +175,7 @@ export function forEachExpression(
 
 /**
  * Recursively iterates over each expression in an ASTNode and applies a callback to each expression.
+ * @public
  * @param node The node to traverse.
  * @param acc The initial value of the accumulator.
  * @param callback The callback function to apply to each expression.
@@ -387,6 +389,7 @@ export function foldExpressions<T>(
 
 /**
  * Recursively iterates over each statement in an ASTNode and applies a callback to each statement.
+ * @public
  * @param node The node to traverse.
  * @param callback The callback function to apply to each statement.
  */
@@ -493,6 +496,7 @@ export function forEachStatement(
 
 /**
  * Recursively iterates over each statement in an ASTNode and applies a callback to each statement.
+ * @public
  * @param node The node to traverse.
  * @param acc The initial value of the accumulator.
  * @param callback The callback function to apply to each statement, also passes the accumulator.
