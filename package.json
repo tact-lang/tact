@@ -10,6 +10,7 @@
   "author": "Steve Korshakov <steve@korshakov.com>",
   "license": "MIT",
   "scripts": {
+    "prepare": "yarn clean && yarn gen:grammar && yarn gen:pack && yarn build",
     "gen:grammar": "ohm generateBundles --withTypes src/grammar/*.ohm",
     "gen:pack": "ts-node ./scripts/pack.ts",
     "gen:compiler": "ts-node ./scripts/prepare.ts",
