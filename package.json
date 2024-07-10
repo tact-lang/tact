@@ -1,7 +1,10 @@
 {
   "name": "@tact-lang/compiler",
   "version": "1.4.0",
-  "repository": "https://github.com/tact-lang/tact.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tact-lang/tact.git"
+  },
   "homepage": "https://tact-lang.org",
   "description": "Tact is a next-gen smart contract language for TON",
   "author": "Steve Korshakov <steve@korshakov.com>",
@@ -35,7 +38,7 @@
   ],
   "main": "./dist/main.js",
   "bin": {
-    "tact": "./bin/tact.js"
+    "tact": "bin/tact.js"
   },
   "dependencies": {
     "@tact-lang/opcode": "^0.0.14",
