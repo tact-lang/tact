@@ -63,7 +63,7 @@ jobs:
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
         with:
-          scandir: './scripts'
+          scandir: "./scripts"
 
       - name: Check there are no errors to be fixed in package.json
         run: |
