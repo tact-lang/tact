@@ -5,6 +5,9 @@ import { Self } from "./contracts/output/initof_Self";
 import { Parent } from "./contracts/output/initof_Parent";
 import { TestInit } from "./contracts/output/initof-2_TestInit";
 import { A } from "./contracts/output/initof-3_A";
+import { ContractA as ContractAA } from "./contracts/output/initof-4-A/initof-4-A_ContractA";
+import { ContractA as ContractBA } from "./contracts/output/initof-4-B/initof-4-B_ContractA";
+import { ContractB as ContractBB } from "./contracts/output/initof-4-B/initof-4-B_ContractB";
 
 describe("initOf", () => {
     beforeEach(() => {
@@ -69,5 +72,30 @@ describe("initOf", () => {
         await system.run();
 
         expect(tracker.collect()).toMatchSnapshot();
+    });
+    it("should implement initof correctly - 5", async () => {
+        // Init
+        const system = await ContractSystem.create();
+        const treasure = system.treasure("treasure");
+
+        const AA = system.open(await ContractAA.fromInit(123n));
+        await AA.send(treasure, { value: toNano("10") }, null);
+        await system.run();
+
+        const BA = system.open(await ContractBA.fromInit(123n));
+        await BA.send(treasure, { value: toNano("10") }, null);
+        await system.run();
+
+        const BB = system.open(await ContractBB.fromInit(123n));
+        await BB.send(treasure, { value: toNano("10") }, null);
+        await system.run();
+
+        const addresses = [
+            (await AA.getTest(123n)).toRawString(),
+            (await BA.getTest(123n)).toRawString(),
+            (await BB.getTest(123n)).toRawString(),
+        ];
+        // All addresses should be the same
+        expect(new Set(addresses).size).toBe(1);
     });
 });

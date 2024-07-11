@@ -367,6 +367,22 @@
       }
     },
     {
+      "name": "initof-4-A",
+      "path": "./src/test/e2e-emulated/contracts/initof-4-A.tact",
+      "output": "./src/test/e2e-emulated/contracts/output/initof-4-A",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "initof-4-B",
+      "path": "./src/test/e2e-emulated/contracts/initof-4-B.tact",
+      "output": "./src/test/e2e-emulated/contracts/output/initof-4-B",
+      "options": {
+        "debug": true
+      }
+    },
+    {
       "name": "abi",
       "path": "./src/test/e2e-emulated/contracts/abi.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
