@@ -1,0 +1,823 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`abi should generate ABI correctly 1`] = `
+A {
+  "abi": {
+    "errors": {
+      "10": {
+        "message": "Dictionary error",
+      },
+      "128": {
+        "message": "Null reference exception",
+      },
+      "129": {
+        "message": "Invalid serialization prefix",
+      },
+      "13": {
+        "message": "Out of gas error",
+      },
+      "130": {
+        "message": "Invalid incoming message",
+      },
+      "131": {
+        "message": "Constraints error",
+      },
+      "132": {
+        "message": "Access denied",
+      },
+      "133": {
+        "message": "Contract stopped",
+      },
+      "134": {
+        "message": "Invalid argument",
+      },
+      "135": {
+        "message": "Code of a contract was not found",
+      },
+      "136": {
+        "message": "Invalid address",
+      },
+      "137": {
+        "message": "Masterchain support is not enabled for this contract",
+      },
+      "2": {
+        "message": "Stack underflow",
+      },
+      "3": {
+        "message": "Stack overflow",
+      },
+      "32": {
+        "message": "Method ID not found",
+      },
+      "34": {
+        "message": "Action is invalid or not supported",
+      },
+      "34789": {
+        "message": "1 is not equal to 1",
+      },
+      "37": {
+        "message": "Not enough TON",
+      },
+      "38": {
+        "message": "Not enough extra-currencies",
+      },
+      "4": {
+        "message": "Integer overflow",
+      },
+      "5": {
+        "message": "Integer out of expected range",
+      },
+      "6": {
+        "message": "Invalid opcode",
+      },
+      "7": {
+        "message": "Type check error",
+      },
+      "8": {
+        "message": "Cell overflow",
+      },
+      "9": {
+        "message": "Cell underflow",
+      },
+    },
+    "getters": [
+      {
+        "arguments": [],
+        "name": "test",
+        "returnType": {
+          "kind": "simple",
+          "optional": false,
+          "type": "S2",
+        },
+      },
+    ],
+    "receivers": [
+      {
+        "message": {
+          "kind": "empty",
+        },
+        "receiver": "internal",
+      },
+      {
+        "message": {
+          "kind": "typed",
+          "type": "Deploy",
+        },
+        "receiver": "internal",
+      },
+    ],
+    "types": [
+      {
+        "fields": [
+          {
+            "name": "y",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+        ],
+        "header": null,
+        "name": "S2",
+      },
+      {
+        "fields": [
+          {
+            "name": "queryId",
+            "type": {
+              "format": 64,
+              "kind": "simple",
+              "optional": false,
+              "type": "uint",
+            },
+          },
+        ],
+        "header": 2490013878,
+        "name": "Deploy",
+      },
+      {
+        "fields": [
+          {
+            "name": "queryId",
+            "type": {
+              "format": 64,
+              "kind": "simple",
+              "optional": false,
+              "type": "uint",
+            },
+          },
+        ],
+        "header": 2952335191,
+        "name": "DeployOk",
+      },
+    ],
+  },
+  "address": kQCzGKMpi-k15-r6UTFd9E5Le1jioz3yv7hhWsoPAjLSpzQi,
+  "init": {
+    "code": x{FF00F4A413F4BCF2C80B}
+ x{62_}
+  x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+   x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+    x{6D}
+   x{0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE08210946A98B6BA8EA7D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7FE03070}
+    x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+     x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+      x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+  x{5}
+   x{B9B06DB3CDB3C31}
+    x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+     x{6D}
+    x{807B}
+   x{B82BEED44D0D20001},
+    "data": x{4_}
+ x{C_}
+  x{A0B1CB_}
+   x{FF00F4A413F4BCF2C80B}
+    x{62_}
+     x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+      x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+       x{6D}
+      x{0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE08210946A98B6BA8EA7D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7FE03070}
+       x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+        x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+         x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+     x{5}
+      x{B9B06DB3CDB3C31}
+       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+        x{6D}
+       x{807B}
+      x{B82BEED44D0D20001},
+  },
+}
+`;
+
+exports[`abi should generate ABI correctly 2`] = `
+B {
+  "abi": {
+    "errors": {
+      "10": {
+        "message": "Dictionary error",
+      },
+      "128": {
+        "message": "Null reference exception",
+      },
+      "129": {
+        "message": "Invalid serialization prefix",
+      },
+      "13": {
+        "message": "Out of gas error",
+      },
+      "130": {
+        "message": "Invalid incoming message",
+      },
+      "131": {
+        "message": "Constraints error",
+      },
+      "132": {
+        "message": "Access denied",
+      },
+      "133": {
+        "message": "Contract stopped",
+      },
+      "134": {
+        "message": "Invalid argument",
+      },
+      "135": {
+        "message": "Code of a contract was not found",
+      },
+      "136": {
+        "message": "Invalid address",
+      },
+      "137": {
+        "message": "Masterchain support is not enabled for this contract",
+      },
+      "2": {
+        "message": "Stack underflow",
+      },
+      "3": {
+        "message": "Stack overflow",
+      },
+      "32": {
+        "message": "Method ID not found",
+      },
+      "34": {
+        "message": "Action is invalid or not supported",
+      },
+      "34789": {
+        "message": "1 is not equal to 1",
+      },
+      "37": {
+        "message": "Not enough TON",
+      },
+      "38": {
+        "message": "Not enough extra-currencies",
+      },
+      "4": {
+        "message": "Integer overflow",
+      },
+      "5": {
+        "message": "Integer out of expected range",
+      },
+      "6": {
+        "message": "Invalid opcode",
+      },
+      "7": {
+        "message": "Type check error",
+      },
+      "8": {
+        "message": "Cell overflow",
+      },
+      "9": {
+        "message": "Cell underflow",
+      },
+    },
+    "getters": [
+      {
+        "arguments": [],
+        "name": "test1",
+        "returnType": {
+          "kind": "simple",
+          "optional": false,
+          "type": "address",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "test2",
+        "returnType": {
+          "kind": "simple",
+          "optional": false,
+          "type": "S",
+        },
+      },
+    ],
+    "receivers": [
+      {
+        "message": {
+          "kind": "empty",
+        },
+        "receiver": "internal",
+      },
+      {
+        "message": {
+          "kind": "typed",
+          "type": "Deploy",
+        },
+        "receiver": "internal",
+      },
+    ],
+    "types": [
+      {
+        "fields": [
+          {
+            "name": "y",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+        ],
+        "header": null,
+        "name": "S2",
+      },
+      {
+        "fields": [
+          {
+            "name": "queryId",
+            "type": {
+              "format": 64,
+              "kind": "simple",
+              "optional": false,
+              "type": "uint",
+            },
+          },
+        ],
+        "header": 2490013878,
+        "name": "Deploy",
+      },
+      {
+        "fields": [
+          {
+            "name": "queryId",
+            "type": {
+              "format": 64,
+              "kind": "simple",
+              "optional": false,
+              "type": "uint",
+            },
+          },
+        ],
+        "header": 2952335191,
+        "name": "DeployOk",
+      },
+      {
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+        ],
+        "header": null,
+        "name": "S",
+      },
+    ],
+  },
+  "address": kQBROxcw4b-w5L96t0ffaTEqw-Vh7ij0YgPcHMRYksPLSo-3,
+  "init": {
+    "code": x{FF00F4A413F4BCF2C80B}
+ x{62_}
+  x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+   x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+    x{6D}
+   x{0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE08210946A98B6BA8EA7D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7FE03070}
+    x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+     x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+      x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+  x{2_}
+   x{4}
+    x{B6541B679B67863_}
+     x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+      x{6D}
+     x{F843DB3C7059C87001CB017301CB017001CB0012CCCCC9F900C87201CB017001CB0012CA07CBFFC9D020D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088}
+      x{D0F404306D018158E5018010F40F6FA1F2E087018158E522028010F417C801C8F400C901CC7001CA006D30C9}
+    x{B4587B679B67863_}
+     x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+      x{6D}
+     x{807B}
+   x{BE15F76A268690000C_},
+    "data": x{4_}
+ x{C_}
+  x{66_}
+   x{B71CB_}
+    x{FF00F4A413F4BCF2C80B}
+     x{62_}
+      x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+        x{6D}
+       x{0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE08210946A98B6BA8EA7D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7FE03070}
+        x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+         x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+          x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+      x{5}
+       x{B9B06DB3CDB3C31}
+        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+         x{6D}
+        x{807B}
+       x{B82BEED44D0D20001}
+   x{B510D_}
+    x{FF00F4A413F4BCF2C80B}
+     x{62_}
+      x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+        x{6D}
+       x{0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE08210946A98B6BA8EA7D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7FE03070}
+        x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+         x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+          x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+      x{2_}
+       x{4}
+        x{B6541B679B67863_}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{F843DB3C7059C87001CB017301CB017001CB0012CCCCC9F900C87201CB017001CB0012CA07CBFFC9D020D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088}
+          x{D0F404306D018158E5018010F40F6FA1F2E087018158E522028010F417C801C8F400C901CC7001CA006D30C9}
+        x{B4587B679B67863_}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{807B}
+       x{BE15F76A268690000C_},
+  },
+}
+`;
+
+exports[`abi should generate ABI correctly 3`] = `
+C {
+  "abi": {
+    "errors": {
+      "10": {
+        "message": "Dictionary error",
+      },
+      "128": {
+        "message": "Null reference exception",
+      },
+      "129": {
+        "message": "Invalid serialization prefix",
+      },
+      "13": {
+        "message": "Out of gas error",
+      },
+      "130": {
+        "message": "Invalid incoming message",
+      },
+      "131": {
+        "message": "Constraints error",
+      },
+      "132": {
+        "message": "Access denied",
+      },
+      "133": {
+        "message": "Contract stopped",
+      },
+      "134": {
+        "message": "Invalid argument",
+      },
+      "135": {
+        "message": "Code of a contract was not found",
+      },
+      "136": {
+        "message": "Invalid address",
+      },
+      "137": {
+        "message": "Masterchain support is not enabled for this contract",
+      },
+      "2": {
+        "message": "Stack underflow",
+      },
+      "3": {
+        "message": "Stack overflow",
+      },
+      "32": {
+        "message": "Method ID not found",
+      },
+      "34": {
+        "message": "Action is invalid or not supported",
+      },
+      "34789": {
+        "message": "1 is not equal to 1",
+      },
+      "37": {
+        "message": "Not enough TON",
+      },
+      "38": {
+        "message": "Not enough extra-currencies",
+      },
+      "4": {
+        "message": "Integer overflow",
+      },
+      "5": {
+        "message": "Integer out of expected range",
+      },
+      "6": {
+        "message": "Invalid opcode",
+      },
+      "7": {
+        "message": "Type check error",
+      },
+      "8": {
+        "message": "Cell overflow",
+      },
+      "9": {
+        "message": "Cell underflow",
+      },
+    },
+    "getters": [
+      {
+        "arguments": [],
+        "name": "test",
+        "returnType": {
+          "kind": "simple",
+          "optional": false,
+          "type": "S",
+        },
+      },
+    ],
+    "receivers": [
+      {
+        "message": {
+          "kind": "typed",
+          "type": "Deploy",
+        },
+        "receiver": "internal",
+      },
+    ],
+    "types": [
+      {
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+        ],
+        "header": null,
+        "name": "S",
+      },
+      {
+        "fields": [
+          {
+            "name": "queryId",
+            "type": {
+              "format": 64,
+              "kind": "simple",
+              "optional": false,
+              "type": "uint",
+            },
+          },
+        ],
+        "header": 2490013878,
+        "name": "Deploy",
+      },
+      {
+        "fields": [
+          {
+            "name": "queryId",
+            "type": {
+              "format": 64,
+              "kind": "simple",
+              "optional": false,
+              "type": "uint",
+            },
+          },
+        ],
+        "header": 2952335191,
+        "name": "DeployOk",
+      },
+    ],
+  },
+  "address": kQCx2hthRn_id4fxcoNN3z-f6SbrLvX0EX4is9aE-W2Zkf5l,
+  "init": {
+    "code": x{FF00F4A413F4BCF2C80B}
+ x{62_}
+  x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E082C8F84301CC7F01CA000101810101CF00C9ED54}
+   x{ED44D0D401F863D2000197810101D7000131E030F828D70B0A8309BAF2E089DB3C}
+    x{807B}
+   x{0192307FE07021D749C21F953020D70B1FDE8210946A98B6BA8EA7D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7FE03070}
+    x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+     x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+      x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+  x{5}
+   x{B9B06DB3CDB3C31}
+    x{ED44D0D401F863D2000197810101D7000131E030F828D70B0A8309BAF2E089DB3C}
+     x{807B}
+    x{20}
+   x{B82BEED44D0D20001},
+    "data": x{4_}
+ x{C_}
+  x{A0F14F_}
+   x{FF00F4A413F4BCF2C80B}
+    x{62_}
+     x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E082C8F84301CC7F01CA000101810101CF00C9ED54}
+      x{ED44D0D401F863D2000197810101D7000131E030F828D70B0A8309BAF2E089DB3C}
+       x{807B}
+      x{0192307FE07021D749C21F953020D70B1FDE8210946A98B6BA8EA7D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7FE03070}
+       x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+        x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+         x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+     x{5}
+      x{B9B06DB3CDB3C31}
+       x{ED44D0D401F863D2000197810101D7000131E030F828D70B0A8309BAF2E089DB3C}
+        x{807B}
+       x{20}
+      x{B82BEED44D0D20001},
+  },
+}
+`;
+
+exports[`abi should generate ABI correctly 4`] = `
+D {
+  "abi": {
+    "errors": {
+      "10": {
+        "message": "Dictionary error",
+      },
+      "128": {
+        "message": "Null reference exception",
+      },
+      "129": {
+        "message": "Invalid serialization prefix",
+      },
+      "13": {
+        "message": "Out of gas error",
+      },
+      "130": {
+        "message": "Invalid incoming message",
+      },
+      "131": {
+        "message": "Constraints error",
+      },
+      "132": {
+        "message": "Access denied",
+      },
+      "133": {
+        "message": "Contract stopped",
+      },
+      "134": {
+        "message": "Invalid argument",
+      },
+      "135": {
+        "message": "Code of a contract was not found",
+      },
+      "136": {
+        "message": "Invalid address",
+      },
+      "137": {
+        "message": "Masterchain support is not enabled for this contract",
+      },
+      "2": {
+        "message": "Stack underflow",
+      },
+      "3": {
+        "message": "Stack overflow",
+      },
+      "32": {
+        "message": "Method ID not found",
+      },
+      "34": {
+        "message": "Action is invalid or not supported",
+      },
+      "34789": {
+        "message": "1 is not equal to 1",
+      },
+      "37": {
+        "message": "Not enough TON",
+      },
+      "38": {
+        "message": "Not enough extra-currencies",
+      },
+      "4": {
+        "message": "Integer overflow",
+      },
+      "5": {
+        "message": "Integer out of expected range",
+      },
+      "6": {
+        "message": "Invalid opcode",
+      },
+      "7": {
+        "message": "Type check error",
+      },
+      "8": {
+        "message": "Cell overflow",
+      },
+      "9": {
+        "message": "Cell underflow",
+      },
+    },
+    "getters": [
+      {
+        "arguments": [],
+        "name": "test",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+    ],
+    "receivers": [
+      {
+        "message": {
+          "kind": "empty",
+        },
+        "receiver": "internal",
+      },
+      {
+        "message": {
+          "kind": "typed",
+          "type": "Deploy",
+        },
+        "receiver": "internal",
+      },
+    ],
+    "types": [
+      {
+        "fields": [
+          {
+            "name": "z",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+        ],
+        "header": null,
+        "name": "S3",
+      },
+      {
+        "fields": [
+          {
+            "name": "queryId",
+            "type": {
+              "format": 64,
+              "kind": "simple",
+              "optional": false,
+              "type": "uint",
+            },
+          },
+        ],
+        "header": 2490013878,
+        "name": "Deploy",
+      },
+      {
+        "fields": [
+          {
+            "name": "queryId",
+            "type": {
+              "format": 64,
+              "kind": "simple",
+              "optional": false,
+              "type": "uint",
+            },
+          },
+        ],
+        "header": 2952335191,
+        "name": "DeployOk",
+      },
+    ],
+  },
+  "address": kQDGgRfbk2yifjCfq0K5lTgHjR2BFwKJ35KSSX2cU02g-wUW,
+  "init": {
+    "code": x{FF00F4A413F4BCF2C80B}
+ x{62_}
+  x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+   x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+    x{6D}
+   x{0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE08210946A98B6BA8EA7D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7FE03070}
+    x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+     x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+      x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+  x{5}
+   x{B9B06DB3CDB3C31}
+    x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+     x{6D}
+    x{DB3C}
+     x{807B}
+   x{B82BEED44D0D20001},
+    "data": x{4_}
+ x{C_}
+  x{A01081_}
+   x{FF00F4A413F4BCF2C80B}
+    x{62_}
+     x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+      x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+       x{6D}
+      x{0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE08210946A98B6BA8EA7D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7FE03070}
+       x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+        x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+         x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+     x{5}
+      x{B9B06DB3CDB3C31}
+       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+        x{6D}
+       x{DB3C}
+        x{807B}
+      x{B82BEED44D0D20001},
+  },
+}
+`;

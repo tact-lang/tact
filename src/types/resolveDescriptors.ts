@@ -1794,7 +1794,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (src.kind === "id" || src.kind === "type_id") {
                 if (
                     types.get(idText(src))?.kind === "struct" &&
-                    types.get(idText(src))?.origin === "user"
+                    types.get(idText(src))?.origin != "stdlib"
                 ) {
                     if (!structDependencies.has(name)) {
                         structDependencies.set(name, new Set());
@@ -1802,10 +1802,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     structDependencies.get(name)!.add(types.get(idText(src))!);
                 }
             } else if (src.kind === "init_of") {
-                if (
-                    types.get(idText(src.contract))?.kind === "contract" &&
-                    types.get(idText(src.contract))?.origin === "user"
-                ) {
+                if (types.get(idText(src.contract))?.kind === "contract") {
                     if (!structDependencies.has(name)) {
                         structDependencies.set(name, new Set());
                     }
@@ -1866,14 +1863,20 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Traverse receivers
         for (const f of t.receivers) {
+            if (
+                f.selector.kind === "internal-binary" ||
+                f.selector.kind === "external-binary" ||
+                f.selector.kind === "bounce-binary"
+            ) {
+                if (types.get(f.selector.type)?.kind === "struct") {
+                    if (!structDependencies.has(k)) {
+                        structDependencies.set(k, new Set());
+                    }
+                    structDependencies.get(k)!.add(types.get(f.selector.type)!);
+                }
+            }
             traverse(f.ast, handler);
         }
-    }
-
-    for (const [k, v] of structDependencies) {
-        // print k and .name of each v
-        const vNames = Array.from(v).map((v) => v.name);
-        console.log(k, vNames);
     }
 
     //
