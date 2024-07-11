@@ -26,7 +26,10 @@ export type StatementContext = {
     requiredFields: string[];
 };
 
-function emptyContext(root: SrcInfo, returns: TypeRef): StatementContext {
+export function emptyContext(
+    root: SrcInfo,
+    returns: TypeRef,
+): StatementContext {
     return {
         root,
         returns,

@@ -279,7 +279,7 @@ Line 14, col 26:
 `;
 
 exports[`resolveStatements should fail statements for expr-struct-missing-field 1`] = `
-"<unknown>:16:25: Missing fields "c" in type "SomeStruct"
+"<unknown>:16:25: Missing field "c" in type "SomeStruct"
 Line 16, col 25:
   15 | fun main() {
 > 16 |     let a: SomeStruct = SomeStruct{
@@ -289,7 +289,7 @@ Line 16, col 25:
 `;
 
 exports[`resolveStatements should fail statements for expr-struct-wrong-field-type 1`] = `
-"<unknown>:17:9: Invalid type "Bool" for fields "b" with type "Int" in type "SomeStruct"
+"<unknown>:17:9: Invalid type "Bool" for field "b" with type "Int" in type "SomeStruct"
 Line 17, col 9:
   16 |         a: 1,
 > 17 |         b: false // Invalid type

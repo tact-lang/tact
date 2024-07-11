@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`resolveDescriptors should fail descriptors for const-decl-default-field-wrong-initializer-type copy 1`] = `
+"<unknown>:4:17: Constant "C" has declared type "Bool", but its initializer has incompatible type "Int"
+Line 4, col 17:
+  3 | 
+> 4 | const C: Bool = 42;
+                      ^~
+  5 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for const-eval-overflow 1`] = `
 "<unknown>:8:26: Cannot evaluate expression to a constant: the number of bits shifted ('-1073741824') must be within [0..256] range
 Line 8, col 26:
@@ -27,6 +37,16 @@ Line 15, col 3:
 > 15 |   src: bounced<A>;
          ^~~~~~~~~~~~~~~
   16 |   init() {}
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-const-decl-default-field-wrong-initializer-type 1`] = `
+"<unknown>:5:21: Constant "C" has declared type "Bool", but its initializer has incompatible type "Int"
+Line 5, col 21:
+  4 | contract Test {
+> 5 |     const C: Bool = 42;
+                          ^~
+  6 | }
 "
 `;
 
@@ -201,20 +221,20 @@ Line 13, col 3:
 `;
 
 exports[`resolveDescriptors should fail descriptors for expr-bitwise-not-bool-in-const1 1`] = `
-"<unknown>:4:18: Cannot evaluate expression to a constant: integer expected, but got 'true'
-Line 4, col 18:
+"<unknown>:4:16: Invalid type "Bool" for unary operator "~"
+Line 4, col 16:
   3 | 
 > 4 | const a: Int = ~ true;
-                       ^~~~
+                     ^~~~~~
 "
 `;
 
 exports[`resolveDescriptors should fail descriptors for expr-bitwise-not-bool-in-const2 1`] = `
-"<unknown>:4:19: Cannot evaluate expression to a constant: integer expected, but got 'true'
-Line 4, col 19:
+"<unknown>:4:17: Invalid type "Bool" for unary operator "~"
+Line 4, col 17:
   3 | 
 > 4 | const a: Bool = ~ true;
-                        ^~~~
+                      ^~~~~~
 "
 `;
 
@@ -355,23 +375,52 @@ Line 12, col 1:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-duplicate-field 1`] = `
-"<unknown>:11:3: Field "b" already exists
-Line 11, col 3:
-  10 |   b: Int;
-> 11 |   b: Int;
-         ^~~~~~
-  12 | }
+exports[`resolveDescriptors should fail descriptors for struct-decl-clash-with-int 1`] = `
+"<unknown>:3:1: Type "Int" already exists
+Line 3, col 1:
+  2 | 
+> 3 | struct Int { s: Int = 42 }
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  4 | 
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for struct-empty-not-allowed 1`] = `
-"<unknown>:12:1: Struct "Main" must have at least one field
-Line 12, col 1:
-  11 | 
-> 12 | struct Main {
+exports[`resolveDescriptors should fail descriptors for struct-decl-default-field-wrong-initializer-type 1`] = `
+"<unknown>:3:22: Struct field "s" has declared type "Bool", but its initializer has incompatible type "Int"
+Line 3, col 22:
+  2 | 
+> 3 | struct S { s: Bool = 42 }
+                           ^~
+  4 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for struct-decl-duplicate-decl 1`] = `
+"<unknown>:10:1: Type "Pair" already exists
+Line 10, col 1:
+   9 | 
+> 10 | struct Pair {
        ^~~~~~~~~~~~~
-  13 |     
+  11 |   a: Int;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for struct-decl-duplicate-field 1`] = `
+"<unknown>:8:3: Field "b" already exists
+Line 8, col 3:
+  7 |   b: Int;
+> 8 |   b: Int;
+        ^~~~~~
+  9 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for struct-decl-empty-not-allowed 1`] = `
+"<unknown>:3:1: Struct "Main" must have at least one field
+Line 3, col 1:
+  2 | 
+> 3 | struct Main { }
+      ^~~~~~~~~~~~~~~
 "
 `;
 
@@ -384,6 +433,344 @@ Line 7, col 1:
   8 | 
 "
 `;
+
+exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-default-field 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait { },
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "S": {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 9,
+          "initializer": {
+            "id": 8,
+            "kind": "number",
+            "loc": 42,
+            "value": 42n,
+          },
+          "kind": "field_decl",
+          "loc": s: Int = 42,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 10,
+      "kind": "struct_decl",
+      "loc": struct S { s: Int = 42 },
+      "name": {
+        "id": 5,
+        "kind": "type_id",
+        "loc": S,
+        "text": "S",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "s",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 9,
+          "initializer": {
+            "id": 8,
+            "kind": "number",
+            "loc": 42,
+            "value": 42n,
+          },
+          "kind": "field_decl",
+          "loc": s: Int = 42,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": 42n,
+        "index": 0,
+        "loc": s: Int = 42,
+        "name": "s",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "S",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "S{s:int257}",
+    "tlb": "_ s:int257 = S",
+    "traits": [],
+    "uid": 27286,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-default-field 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-optional-field 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait { },
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "S": {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": s: Int?,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": {
+            "id": 8,
+            "kind": "optional_type",
+            "loc": Int?,
+            "typeArg": {
+              "id": 7,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+      ],
+      "id": 10,
+      "kind": "struct_decl",
+      "loc": struct S { s: Int? },
+      "name": {
+        "id": 5,
+        "kind": "type_id",
+        "loc": S,
+        "text": "S",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "s",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": true,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": s: Int?,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": {
+            "id": 8,
+            "kind": "optional_type",
+            "loc": Int?,
+            "typeArg": {
+              "id": 7,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "default": null,
+        "index": 0,
+        "loc": s: Int?,
+        "name": "s",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": true,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "S",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "S{s:Maybe int257}",
+    "tlb": "_ s:Maybe int257 = S",
+    "traits": [],
+    "uid": 27286,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-optional-field 2`] = `{}`;
 
 exports[`resolveDescriptors should resolve descriptors for contract-bounced-slice 1`] = `
 {
@@ -7025,7 +7412,176 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
 }
 `;
 
-exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
+exports[`resolveDescriptors should resolve descriptors for struct-decl-default-field 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait { },
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "S": {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 9,
+          "initializer": {
+            "id": 8,
+            "kind": "number",
+            "loc": 42,
+            "value": 42n,
+          },
+          "kind": "field_decl",
+          "loc": a: Int = 42,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 10,
+      "kind": "struct_decl",
+      "loc": struct S { a: Int = 42 },
+      "name": {
+        "id": 5,
+        "kind": "type_id",
+        "loc": S,
+        "text": "S",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "a",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 9,
+          "initializer": {
+            "id": 8,
+            "kind": "number",
+            "loc": 42,
+            "value": 42n,
+          },
+          "kind": "field_decl",
+          "loc": a: Int = 42,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": 42n,
+        "index": 0,
+        "loc": a: Int = 42,
+        "name": "a",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "S",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "S{a:int257}",
+    "tlb": "_ a:int257 = S",
+    "traits": [],
+    "uid": 27286,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for struct-decl-default-field 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`] = `
 {
   "BaseTrait": {
     "ast": {
@@ -7366,7 +7922,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-nested 1`] = `
 }
 `;
 
-exports[`resolveDescriptors should resolve descriptors for struct-nested 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 2`] = `{}`;
 
 exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
 {

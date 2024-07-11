@@ -1,0 +1,3 @@
+trait BaseTrait { }
+
+struct Main { }
