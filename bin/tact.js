@@ -4,6 +4,8 @@ const pkg = require("../package.json");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const main = require("../dist/node.js");
 const meowModule = import("meow");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { execFileSync } = require("child_process");
 
 void meowModule.then(
     /** @param meow {import('meow/build/index')} */
@@ -36,6 +38,7 @@ void meowModule.then(
                     url: new URL("file://" + __dirname + __filename).toString(),
                 },
                 description: `Command-line utility for the Tact compiler:\n${pkg.description}`,
+                autoVersion: false,
                 flags: {
                     config: {
                         shortFlag: "c",
@@ -83,7 +86,18 @@ void meowModule.then(
 
         // Show version regardless of other flags
         if (cli.flags.version) {
-            cli.showVersion();
+            console.log(pkg.version);
+            // if working inside a git repository
+            // also print the current git commit hash
+            try {
+                const gitCommit = execFileSync("git", ["rev-parse", "HEAD"], {
+                    encoding: "utf8",
+                    stdio: ["ignore", "pipe", "ignore"],
+                }).trim();
+                console.log(`git commit: ${gitCommit}`);
+            } finally {
+                process.exit(0);
+            }
         }
 
         // Evaluate expression regardless of other flags
