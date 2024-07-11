@@ -16,7 +16,7 @@ function stringId(src: string): number {
     return sha256_sync(src).readUInt32BE(0);
 }
 
-export function exceptionId(src: string): number {
+function exceptionId(src: string): number {
     return (stringId(src) % 63000) + 1000;
 }
 
