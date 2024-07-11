@@ -561,10 +561,18 @@ export function writeTypescript(
         }
 
         // Getters
+        const getterNames: Set<string> = new Set();
         if (abi.getters) {
             for (const g of abi.getters) {
+                const pascalCaseName = changeCase.pascalCase(g.name);
+                if (getterNames.has(pascalCaseName)) {
+                    throw Error(
+                        `Getter with name '${g.name}' already exists in pascal case form`,
+                    );
+                }
+                getterNames.add(pascalCaseName);
                 w.append(
-                    `async get${changeCase.pascalCase(g.name)}(${["provider: ContractProvider", ...writeArguments(g.arguments ? g.arguments : [])].join(", ")}) {`,
+                    `async get${pascalCaseName}(${["provider: ContractProvider", ...writeArguments(g.arguments ? g.arguments : [])].join(", ")}) {`,
                 );
                 w.inIndent(() => {
                     w.append(`let builder = new TupleBuilder();`);

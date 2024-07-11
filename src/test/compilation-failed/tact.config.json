@@ -131,6 +131,11 @@
       "name": "contract-duplicate-receiver-opcode",
       "path": "./contracts/contract-duplicate-receiver-opcode.tact",
       "output": "./contracts/output"
+    },
+    {
+      "name": "contract-duplicate-getter-pascalcase",
+      "path": "./contracts/contract-duplicate-getter-pascalcase.tact",
+      "output": "./contracts/output"
     }
   ]
 }
