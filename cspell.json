@@ -77,7 +77,8 @@
     "привет",
     "PUSHREF",
     "PUSHSLICE",
-    "SETINDEXVARQ"
+    "SETINDEXVARQ",
+    "pascalcase"
   ],
   "flagWords": [],
   "ignorePaths": [
