@@ -365,6 +365,11 @@
       "options": {
         "debug": true
       }
+    },
+    {
+      "name": "abi",
+      "path": "./src/test/e2e-emulated/contracts/abi.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
     }
   ]
 }

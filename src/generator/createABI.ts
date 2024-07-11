@@ -4,7 +4,10 @@ import { CompilerContext } from "../context";
 import { idText } from "../grammar/ast";
 import { getSupportedInterfaces } from "../types/getSupportedInterfaces";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
-import { getAllTypes } from "../types/resolveDescriptors";
+import {
+    getAllTypes,
+    getStructDependencies,
+} from "../types/resolveDescriptors";
 import { getAllErrors } from "../types/resolveErrors";
 
 export function createABI(ctx: CompilerContext, name: string): ContractABI {
@@ -21,7 +24,8 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
 
     // Structs
     const types: ABIType[] = [];
-    for (const t of allTypes) {
+    const structDependencies = getStructDependencies(ctx, contract.name);
+    for (const t of structDependencies) {
         if (t.kind === "struct") {
             types.push({
                 name: t.name,

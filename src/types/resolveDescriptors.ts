@@ -50,6 +50,7 @@ import { ItemOrigin } from "../grammar/grammar";
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
 const staticConstantsStore = createContextStore<ConstantDescription>();
+const structDependenciesStore = createContextStore<Set<TypeDescription>>();
 
 function verifyMapType(
     key: string,
@@ -264,6 +265,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     const types: Map<string, TypeDescription> = new Map();
     const staticFunctions: Map<string, FunctionDescription> = new Map();
     const staticConstants: Map<string, ConstantDescription> = new Map();
+    const structDependencies: Map<string, Set<TypeDescription>> = new Map();
     const ast = getRawAST(ctx);
 
     //
@@ -1784,6 +1786,97 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     //
+    // Register structs dependencies
+    //
+
+    function structDependenciesHandler(name: string) {
+        return (src: AstNode) => {
+            if (src.kind === "id" || src.kind === "type_id") {
+                if (
+                    types.get(idText(src))?.kind === "struct" &&
+                    types.get(idText(src))?.origin === "user"
+                ) {
+                    if (!structDependencies.has(name)) {
+                        structDependencies.set(name, new Set());
+                    }
+                    structDependencies.get(name)!.add(types.get(idText(src))!);
+                }
+            } else if (src.kind === "init_of") {
+                if (
+                    types.get(idText(src.contract))?.kind === "contract" &&
+                    types.get(idText(src.contract))?.origin === "user"
+                ) {
+                    if (!structDependencies.has(name)) {
+                        structDependencies.set(name, new Set());
+                    }
+                    structDependencies.set(
+                        name,
+                        new Set([
+                            ...structDependencies.get(name)!,
+                            ...(structDependencies.get(idText(src.contract)) ??
+                                new Set()),
+                        ]),
+                    );
+                }
+            } else if (src.kind === "static_call") {
+                if (staticFunctions.has(src.function.text)) {
+                    if (!structDependencies.has(name)) {
+                        structDependencies.set(name, new Set());
+                    }
+                    structDependencies.set(
+                        name,
+                        new Set([
+                            ...structDependencies.get(name)!,
+                            ...(structDependencies.get(idText(src.function)) ??
+                                new Set()),
+                        ]),
+                    );
+                }
+            }
+        };
+    }
+
+    for (const [k, t] of staticFunctions) {
+        const handler = structDependenciesHandler(k);
+        traverse(t.ast, handler);
+    }
+
+    for (const [k, t] of types) {
+        const handler = structDependenciesHandler(k);
+
+        // Traverse fields
+        for (const f of t.fields) {
+            traverse(f.ast, handler);
+        }
+
+        // Traverse constants
+        for (const f of t.constants) {
+            traverse(f.ast, handler);
+        }
+
+        // Traverse functions
+        for (const f of t.functions.values()) {
+            traverse(f.ast, handler);
+        }
+
+        // Traverse init
+        if (t.init) {
+            traverse(t.init.ast, handler);
+        }
+
+        // Traverse receivers
+        for (const f of t.receivers) {
+            traverse(f.ast, handler);
+        }
+    }
+
+    for (const [k, v] of structDependencies) {
+        // print k and .name of each v
+        const vNames = Array.from(v).map((v) => v.name);
+        console.log(k, vNames);
+    }
+
+    //
     // Register types and functions in context
     //
 
@@ -1795,6 +1888,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
     for (const [k, t] of staticConstants) {
         ctx = staticConstantsStore.set(ctx, k, t);
+    }
+    for (const [k, t] of structDependencies) {
+        ctx = structDependenciesStore.set(ctx, k, t);
     }
 
     return ctx;
@@ -1858,6 +1954,17 @@ export function getAllStaticFunctions(ctx: CompilerContext) {
 
 export function getAllStaticConstants(ctx: CompilerContext) {
     return staticConstantsStore.all(ctx);
+}
+
+export function getStructDependencies(
+    ctx: CompilerContext,
+    name: string,
+): Set<TypeDescription> {
+    const r = structDependenciesStore.get(ctx, name);
+    if (!r) {
+        throw Error("Entity '" + name + "' not found");
+    }
+    return r;
 }
 
 function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
