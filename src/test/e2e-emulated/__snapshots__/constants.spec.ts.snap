@@ -557,6 +557,52 @@ ConstantTester {
       {
         "fields": [
           {
+            "name": "a",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "bool",
+            },
+          },
+          {
+            "name": "b",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+        ],
+        "header": null,
+        "name": "S",
+      },
+      {
+        "fields": [
+          {
+            "name": "a",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "s",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "S",
+            },
+          },
+        ],
+        "header": null,
+        "name": "T",
+      },
+      {
+        "fields": [
+          {
             "name": "code",
             "type": {
               "kind": "simple",
@@ -678,52 +724,6 @@ ConstantTester {
         ],
         "header": null,
         "name": "SendParameters",
-      },
-      {
-        "fields": [
-          {
-            "name": "a",
-            "type": {
-              "kind": "simple",
-              "optional": false,
-              "type": "bool",
-            },
-          },
-          {
-            "name": "b",
-            "type": {
-              "format": 257,
-              "kind": "simple",
-              "optional": false,
-              "type": "int",
-            },
-          },
-        ],
-        "header": null,
-        "name": "S",
-      },
-      {
-        "fields": [
-          {
-            "name": "a",
-            "type": {
-              "format": 257,
-              "kind": "simple",
-              "optional": false,
-              "type": "int",
-            },
-          },
-          {
-            "name": "s",
-            "type": {
-              "kind": "simple",
-              "optional": false,
-              "type": "S",
-            },
-          },
-        ],
-        "header": null,
-        "name": "T",
       },
     ],
   },
