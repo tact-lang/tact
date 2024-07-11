@@ -1799,7 +1799,15 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (!structDependencies.has(name)) {
                         structDependencies.set(name, new Set());
                     }
-                    structDependencies.get(name)!.add(types.get(idText(src))!);
+                    structDependencies.set(
+                        name,
+                        new Set([
+                            ...structDependencies.get(name)!,
+                            types.get(idText(src))!,
+                            ...(structDependencies.get(idText(src)) ??
+                                new Set()),
+                        ]),
+                    );
                 }
             } else if (src.kind === "init_of") {
                 if (types.get(idText(src.contract))?.kind === "contract") {
@@ -1872,7 +1880,15 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (!structDependencies.has(k)) {
                         structDependencies.set(k, new Set());
                     }
-                    structDependencies.get(k)!.add(types.get(f.selector.type)!);
+                    structDependencies.set(
+                        k,
+                        new Set([
+                            ...structDependencies.get(k)!,
+                            types.get(f.selector.type)!,
+                            ...(structDependencies.get(f.selector.type) ??
+                                new Set()),
+                        ]),
+                    );
                 }
             }
             traverse(f.ast, handler);

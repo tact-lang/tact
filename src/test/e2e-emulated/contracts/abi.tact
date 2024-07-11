@@ -12,6 +12,16 @@ struct S3 {
     z: Int;
 }
 
+struct S4 {
+    a: Int;
+    s: S;
+}
+
+message M1 {
+    a: Int;
+    s: S4;
+}
+
 fun testS3(): Int {
     let s3 = S3 { z: 123 };
     return s3.z;
@@ -57,4 +67,18 @@ contract D with Deployable {
     get fun test(): Int {
         return testS3();
     }
+}
+
+contract E with Deployable {
+    receive() {}
+
+    get fun test(s: S4): Int {
+        return s.a;
+    }
+}
+
+contract F with Deployable {
+    receive() {}
+
+    receive(msg: M1) {}
 }
