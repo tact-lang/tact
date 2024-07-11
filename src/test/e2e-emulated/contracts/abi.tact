@@ -35,7 +35,7 @@ fun testRequire2() {
     require(1 != 2, "1 is equal to 2");
 }
 
-contract A with Deployable {
+contract A {
     receive() {}
 
     get fun test(): S2 {
@@ -44,7 +44,7 @@ contract A with Deployable {
     }
 }
 
-contract B with Deployable {
+contract B {
     receive() {
         require(1 == 1, "1 is not equal to 1");
     }
@@ -58,7 +58,7 @@ contract B with Deployable {
     }
 }
 
-contract C with Deployable {
+contract C {
     s: S;
 
     init () {
@@ -72,7 +72,7 @@ contract C with Deployable {
     }
 }
 
-contract D with Deployable {
+contract D {
     receive() {}
 
     get fun test(): Int {
@@ -80,7 +80,7 @@ contract D with Deployable {
     }
 }
 
-contract E with Deployable {
+contract E {
     receive() {}
 
     get fun test(s: S4): Int {
@@ -88,7 +88,7 @@ contract E with Deployable {
     }
 }
 
-contract F with Deployable {
+contract F {
     receive() {}
 
     receive(msg: M1) {}
