@@ -8,7 +8,7 @@ import {
     getAllTypes,
     getStructDependencies,
 } from "../types/resolveDescriptors";
-import { getAllErrors } from "../types/resolveErrors";
+import { getErrors } from "../types/resolveErrors";
 
 export function createABI(ctx: CompilerContext, name: string): ContractABI {
     const allTypes = Object.values(getAllTypes(ctx));
@@ -152,7 +152,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     for (const e of Object.values(contractErrors)) {
         errors[e.id] = { message: e.message };
     }
-    const codeErrors = getAllErrors(ctx);
+    const codeErrors = getErrors(ctx, contract.name);
     for (const c of codeErrors) {
         errors[c.id + ""] = { message: c.value };
     }

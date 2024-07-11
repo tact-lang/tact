@@ -27,10 +27,19 @@ fun testS3(): Int {
     return s3.z;
 }
 
+fun testRequire1() {
+    require(1 == 1, "1 is not equal to 1");
+}
+
+fun testRequire2() {
+    require(1 != 2, "1 is equal to 2");
+}
+
 contract A with Deployable {
     receive() {}
 
     get fun test(): S2 {
+        testRequire2();
         return S2 { y: 123 };
     }
 }
@@ -53,10 +62,12 @@ contract C with Deployable {
     s: S;
 
     init () {
+        testRequire1();
         self.s = S { x: 123 };
     }
 
     get fun test(): S {
+        testRequire2();
         return self.s;
     }
 }

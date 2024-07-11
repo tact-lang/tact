@@ -46,14 +46,14 @@ A {
       "3": {
         "message": "Stack overflow",
       },
+      "3040": {
+        "message": "1 is equal to 2",
+      },
       "32": {
         "message": "Method ID not found",
       },
       "34": {
         "message": "Action is invalid or not supported",
-      },
-      "34789": {
-        "message": "1 is not equal to 1",
       },
       "37": {
         "message": "Not enough TON",
@@ -735,6 +735,9 @@ C {
       "3": {
         "message": "Stack overflow",
       },
+      "3040": {
+        "message": "1 is equal to 2",
+      },
       "32": {
         "message": "Method ID not found",
       },
@@ -1053,9 +1056,6 @@ D {
       "34": {
         "message": "Action is invalid or not supported",
       },
-      "34789": {
-        "message": "1 is not equal to 1",
-      },
       "37": {
         "message": "Not enough TON",
       },
@@ -1318,6 +1318,704 @@ D {
        x{DB3C}
         x{807B}
       x{B82BEED44D0D20001},
+  },
+}
+`;
+
+exports[`abi should generate ABI correctly 5`] = `
+E {
+  "abi": {
+    "errors": {
+      "10": {
+        "message": "Dictionary error",
+      },
+      "128": {
+        "message": "Null reference exception",
+      },
+      "129": {
+        "message": "Invalid serialization prefix",
+      },
+      "13": {
+        "message": "Out of gas error",
+      },
+      "130": {
+        "message": "Invalid incoming message",
+      },
+      "131": {
+        "message": "Constraints error",
+      },
+      "132": {
+        "message": "Access denied",
+      },
+      "133": {
+        "message": "Contract stopped",
+      },
+      "134": {
+        "message": "Invalid argument",
+      },
+      "135": {
+        "message": "Code of a contract was not found",
+      },
+      "136": {
+        "message": "Invalid address",
+      },
+      "137": {
+        "message": "Masterchain support is not enabled for this contract",
+      },
+      "2": {
+        "message": "Stack underflow",
+      },
+      "3": {
+        "message": "Stack overflow",
+      },
+      "32": {
+        "message": "Method ID not found",
+      },
+      "34": {
+        "message": "Action is invalid or not supported",
+      },
+      "37": {
+        "message": "Not enough TON",
+      },
+      "38": {
+        "message": "Not enough extra-currencies",
+      },
+      "4": {
+        "message": "Integer overflow",
+      },
+      "5": {
+        "message": "Integer out of expected range",
+      },
+      "6": {
+        "message": "Invalid opcode",
+      },
+      "7": {
+        "message": "Type check error",
+      },
+      "8": {
+        "message": "Cell overflow",
+      },
+      "9": {
+        "message": "Cell underflow",
+      },
+    },
+    "getters": [
+      {
+        "arguments": [
+          {
+            "name": "s",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "S4",
+            },
+          },
+        ],
+        "name": "test",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+    ],
+    "receivers": [
+      {
+        "message": {
+          "kind": "empty",
+        },
+        "receiver": "internal",
+      },
+      {
+        "message": {
+          "kind": "typed",
+          "type": "Deploy",
+        },
+        "receiver": "internal",
+      },
+    ],
+    "types": [
+      {
+        "fields": [
+          {
+            "name": "a",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "s",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "S",
+            },
+          },
+        ],
+        "header": null,
+        "name": "S4",
+      },
+      {
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+        ],
+        "header": null,
+        "name": "S",
+      },
+      {
+        "fields": [
+          {
+            "name": "code",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "cell",
+            },
+          },
+          {
+            "name": "data",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "cell",
+            },
+          },
+        ],
+        "header": null,
+        "name": "StateInit",
+      },
+      {
+        "fields": [
+          {
+            "name": "bounced",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "bool",
+            },
+          },
+          {
+            "name": "sender",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "address",
+            },
+          },
+          {
+            "name": "value",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "raw",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "slice",
+            },
+          },
+        ],
+        "header": null,
+        "name": "Context",
+      },
+      {
+        "fields": [
+          {
+            "name": "bounce",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "bool",
+            },
+          },
+          {
+            "name": "to",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "address",
+            },
+          },
+          {
+            "name": "value",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "mode",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "body",
+            "type": {
+              "kind": "simple",
+              "optional": true,
+              "type": "cell",
+            },
+          },
+          {
+            "name": "code",
+            "type": {
+              "kind": "simple",
+              "optional": true,
+              "type": "cell",
+            },
+          },
+          {
+            "name": "data",
+            "type": {
+              "kind": "simple",
+              "optional": true,
+              "type": "cell",
+            },
+          },
+        ],
+        "header": null,
+        "name": "SendParameters",
+      },
+      {
+        "fields": [
+          {
+            "name": "queryId",
+            "type": {
+              "format": 64,
+              "kind": "simple",
+              "optional": false,
+              "type": "uint",
+            },
+          },
+        ],
+        "header": 2490013878,
+        "name": "Deploy",
+      },
+      {
+        "fields": [
+          {
+            "name": "queryId",
+            "type": {
+              "format": 64,
+              "kind": "simple",
+              "optional": false,
+              "type": "uint",
+            },
+          },
+        ],
+        "header": 2952335191,
+        "name": "DeployOk",
+      },
+    ],
+  },
+  "address": kQCaCRf-3xvyeoZ7bi44aM7-2xKPnN8yJCNvUNmHtQF85yKD,
+  "init": {
+    "code": x{FF00F4A413F4BCF2C80B}
+ x{62_}
+  x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+   x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+    x{6D}
+   x{0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE08210946A98B6BA8EA7D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7FE03070}
+    x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+     x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+      x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+  x{5}
+   x{B9B066F226F21DB3C59DB3C31}
+    x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+     x{6D}
+    x{30}
+   x{B82BEED44D0D20001},
+    "data": x{4_}
+ x{C_}
+  x{A030C3_}
+   x{FF00F4A413F4BCF2C80B}
+    x{62_}
+     x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+      x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+       x{6D}
+      x{0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE08210946A98B6BA8EA7D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7FE03070}
+       x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+        x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+         x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+     x{5}
+      x{B9B066F226F21DB3C59DB3C31}
+       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+        x{6D}
+       x{30}
+      x{B82BEED44D0D20001},
+  },
+}
+`;
+
+exports[`abi should generate ABI correctly 6`] = `
+F {
+  "abi": {
+    "errors": {
+      "10": {
+        "message": "Dictionary error",
+      },
+      "128": {
+        "message": "Null reference exception",
+      },
+      "129": {
+        "message": "Invalid serialization prefix",
+      },
+      "13": {
+        "message": "Out of gas error",
+      },
+      "130": {
+        "message": "Invalid incoming message",
+      },
+      "131": {
+        "message": "Constraints error",
+      },
+      "132": {
+        "message": "Access denied",
+      },
+      "133": {
+        "message": "Contract stopped",
+      },
+      "134": {
+        "message": "Invalid argument",
+      },
+      "135": {
+        "message": "Code of a contract was not found",
+      },
+      "136": {
+        "message": "Invalid address",
+      },
+      "137": {
+        "message": "Masterchain support is not enabled for this contract",
+      },
+      "2": {
+        "message": "Stack underflow",
+      },
+      "3": {
+        "message": "Stack overflow",
+      },
+      "32": {
+        "message": "Method ID not found",
+      },
+      "34": {
+        "message": "Action is invalid or not supported",
+      },
+      "37": {
+        "message": "Not enough TON",
+      },
+      "38": {
+        "message": "Not enough extra-currencies",
+      },
+      "4": {
+        "message": "Integer overflow",
+      },
+      "5": {
+        "message": "Integer out of expected range",
+      },
+      "6": {
+        "message": "Invalid opcode",
+      },
+      "7": {
+        "message": "Type check error",
+      },
+      "8": {
+        "message": "Cell overflow",
+      },
+      "9": {
+        "message": "Cell underflow",
+      },
+    },
+    "getters": [],
+    "receivers": [
+      {
+        "message": {
+          "kind": "empty",
+        },
+        "receiver": "internal",
+      },
+      {
+        "message": {
+          "kind": "typed",
+          "type": "M1",
+        },
+        "receiver": "internal",
+      },
+      {
+        "message": {
+          "kind": "typed",
+          "type": "Deploy",
+        },
+        "receiver": "internal",
+      },
+    ],
+    "types": [
+      {
+        "fields": [
+          {
+            "name": "code",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "cell",
+            },
+          },
+          {
+            "name": "data",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "cell",
+            },
+          },
+        ],
+        "header": null,
+        "name": "StateInit",
+      },
+      {
+        "fields": [
+          {
+            "name": "bounced",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "bool",
+            },
+          },
+          {
+            "name": "sender",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "address",
+            },
+          },
+          {
+            "name": "value",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "raw",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "slice",
+            },
+          },
+        ],
+        "header": null,
+        "name": "Context",
+      },
+      {
+        "fields": [
+          {
+            "name": "bounce",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "bool",
+            },
+          },
+          {
+            "name": "to",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "address",
+            },
+          },
+          {
+            "name": "value",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "mode",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "body",
+            "type": {
+              "kind": "simple",
+              "optional": true,
+              "type": "cell",
+            },
+          },
+          {
+            "name": "code",
+            "type": {
+              "kind": "simple",
+              "optional": true,
+              "type": "cell",
+            },
+          },
+          {
+            "name": "data",
+            "type": {
+              "kind": "simple",
+              "optional": true,
+              "type": "cell",
+            },
+          },
+        ],
+        "header": null,
+        "name": "SendParameters",
+      },
+      {
+        "fields": [
+          {
+            "name": "a",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "s",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "S4",
+            },
+          },
+        ],
+        "header": 1517472568,
+        "name": "M1",
+      },
+      {
+        "fields": [
+          {
+            "name": "a",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "s",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "S",
+            },
+          },
+        ],
+        "header": null,
+        "name": "S4",
+      },
+      {
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+        ],
+        "header": null,
+        "name": "S",
+      },
+      {
+        "fields": [
+          {
+            "name": "queryId",
+            "type": {
+              "format": 64,
+              "kind": "simple",
+              "optional": false,
+              "type": "uint",
+            },
+          },
+        ],
+        "header": 2490013878,
+        "name": "Deploy",
+      },
+      {
+        "fields": [
+          {
+            "name": "queryId",
+            "type": {
+              "format": 64,
+              "kind": "simple",
+              "optional": false,
+              "type": "uint",
+            },
+          },
+        ],
+        "header": 2952335191,
+        "name": "DeployOk",
+      },
+    ],
+  },
+  "address": kQAFRysDM97Cy5ql-NGawdCGVaM5F5crH7v3gkzxdGuLTBUL,
+  "init": {
+    "code": x{FF00F4A413F4BCF2C80B}
+ x{62_}
+  x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+   x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+    x{6D}
+   x{0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE02082105A72CB38BA8E2630D31F0182105A72CB38BAF2E081810101D700810101D700810101D700011210236C135F037FE08210946A98B6BAE3023070}
+    x{D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7F}
+     x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+      x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+       x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+  x{A1857DDA89A1A40003_},
+    "data": x{4_}
+ x{C_}
+  x{A05005_}
+   x{FF00F4A413F4BCF2C80B}
+    x{62_}
+     x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+      x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+       x{6D}
+      x{0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE02082105A72CB38BA8E2630D31F0182105A72CB38BAF2E081810101D700810101D700810101D700011210236C135F037FE08210946A98B6BAE3023070}
+       x{D31F018210946A98B6BAF2E081D33F0131C8018210AFF90F5758CB1FCB3FC9F84201706DDB3C7F}
+        x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+         x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+          x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+     x{A1857DDA89A1A40003_},
   },
 }
 `;
