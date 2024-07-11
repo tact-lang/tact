@@ -86,7 +86,7 @@ jobs:
       - name: CLI Test | Compare Tact version from CLI flag `--version` against package.json
         if: runner.os != 'Windows'
         run: |
-          if [ "$(tact --version)" != "$(jq -r '.version' < package.json)" ];
+          if [ "$(tact --version | head -n1)" != "$(jq -r '.version' < package.json)" ];
           then false
           fi
 
