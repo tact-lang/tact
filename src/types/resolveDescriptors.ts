@@ -1792,10 +1792,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     function structDependenciesHandler(name: string) {
         return (src: AstNode) => {
             if (src.kind === "id" || src.kind === "type_id") {
-                if (
-                    types.get(idText(src))?.kind === "struct" &&
-                    types.get(idText(src))?.origin != "stdlib"
-                ) {
+                if (types.get(idText(src))?.kind === "struct") {
                     if (!structDependencies.has(name)) {
                         structDependencies.set(name, new Set());
                     }
