@@ -2,7 +2,7 @@ export function isBlank(src: string): boolean {
     return src.trim().length === 0;
 }
 
-export function indentWidth(src: string): number {
+function indentWidth(src: string): number {
     return src.length - src.trimStart().length;
 }
 

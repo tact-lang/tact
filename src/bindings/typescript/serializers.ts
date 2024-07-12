@@ -13,7 +13,7 @@ const primitiveTypes = [
     "fixed-bytes",
 ];
 
-export type Serializer<T> = {
+type Serializer<T> = {
     // Typescript
     tsType: (v: T) => string;
     tsLoad: (v: T, slice: string, field: string, w: Writer) => void;
