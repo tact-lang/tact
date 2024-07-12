@@ -116,7 +116,7 @@ export async function build(args: {
             const res = await compile(
                 ctx,
                 contract,
-                config.name + "_" + contract,
+                `${config.name}_${contract}`,
             );
             for (const files of res.output.files) {
                 const ffc = project.resolve(config.output, files.name);
