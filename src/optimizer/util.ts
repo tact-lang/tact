@@ -120,14 +120,18 @@ export function checkIsBinaryOpNode(ast: AstExpression): boolean {
 // with a non-value node on the left and
 // value node on the right
 export function checkIsBinaryOp_NonValue_Value(ast: AstExpression): boolean {
-    return ast.kind === "op_binary"? !isValue(ast.left) && isValue(ast.right) : false;
+    return ast.kind === "op_binary"
+        ? !isValue(ast.left) && isValue(ast.right)
+        : false;
 }
 
 // Checks if top level node is a binary op node
 // with a value node on the left and
 // non-value node on the right
 export function checkIsBinaryOp_Value_NonValue(ast: AstExpression): boolean {
-    return ast.kind === "op_binary" ? isValue(ast.left) && !isValue(ast.right) : false;
+    return ast.kind === "op_binary"
+        ? isValue(ast.left) && !isValue(ast.right)
+        : false;
 }
 
 // bigint arithmetic

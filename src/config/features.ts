@@ -26,7 +26,7 @@ export function enabledInterfacesGetter(ctx: CompilerContext) {
     return featureEnabled(ctx, "interfacesGetter");
 }
 
-export function featureEnabled(ctx: CompilerContext, key: string) {
+function featureEnabled(ctx: CompilerContext, key: string) {
     return featureStore.get(ctx, key) === true;
 }
 

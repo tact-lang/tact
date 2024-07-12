@@ -8,6 +8,7 @@
     "augmentedassign",
     "blockstore",
     "bounceable",
+    "cleanall",
     "codegen",
     "decompile",
     "Decompiled",
@@ -32,6 +33,7 @@
     "ipld",
     "jettons",
     "jsxdev",
+    "knip",
     "langle",
     "lparen",
     "lvalue",
@@ -39,6 +41,7 @@
     "maxint",
     "minmax",
     "mintable",
+    "mktemp",
     "multiformats",
     "Korshakov",
     "nocheck",
@@ -97,6 +100,7 @@
     "src/test/e2e-emulated/contracts/intrinsics.tact",
     "src/test/e2e-emulated/contracts/strings.tact",
     "src/test/compilation-fail/fail-const-eval.spec.ts",
+    "src/test/e2e-emulated/getter-names-conflict.spec.ts",
     "stdlib/stdlib.fc"
   ]
 }

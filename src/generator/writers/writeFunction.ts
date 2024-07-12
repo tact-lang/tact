@@ -33,7 +33,7 @@ export function writeCastedExpression(
     return cast(expr, to, writeExpression(expression, ctx), ctx); // Cast for nullable
 }
 
-export function unwrapExternal(
+function unwrapExternal(
     targetName: string,
     sourceName: string,
     type: TypeRef,

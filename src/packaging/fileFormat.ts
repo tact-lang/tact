@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const typeFormat = z.union([
+const typeFormat = z.union([
     z.object({
         kind: z.literal("simple"),
         type: z.string(),
@@ -29,7 +29,7 @@ export const typeFormat = z.union([
     }),
 ]);
 
-export const initFormat = z.object({
+const initFormat = z.object({
     kind: z.literal("direct"),
     args: z.array(
         z.object({

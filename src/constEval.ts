@@ -735,7 +735,13 @@ export function evalConstantExpression(
         case "id":
             return lookupName(ast, ctx);
         case "method_call":
-            return fullyEvalMethod(ast.method, ast.self, ast.args, ast.loc, ctx);
+            return fullyEvalMethod(
+                ast.method,
+                ast.self,
+                ast.args,
+                ast.loc,
+                ctx,
+            );
         case "init_of":
             throwNonFatalErrorConstEval(
                 "initOf is not supported at this moment",

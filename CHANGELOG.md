@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `-e` / `--eval` CLI flags to evaluate constant Tact expressions: PR [#462](https://github.com/tact-lang/tact/pull/462)
 - `-q` / `--quiet` CLI flags to suppress compiler log output: PR [#509](https://github.com/tact-lang/tact/pull/509)
+- Markdown report for compiled contracts now includes Mermaid diagrams for trait inheritance and contract dependencies: PR [#560](https://github.com/tact-lang/tact/pull/560)
 
 ### Changed
 
@@ -37,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Usage of `initOf` inside of `init()` does not cause error `135` anymore: PR [#521](https://github.com/tact-lang/tact/issues/521)
 - Usage of `newAddress` with hash parts shorter than 64 hexadecimal digits does not cause constant evaluation error `Invalid address hash length` anymore: PR [#525](https://github.com/tact-lang/tact/pull/525)
 - Introduced a streamlined error logger for compilation pipeline to support third-party tools: PR [#509](https://github.com/tact-lang/tact/pull/509)
+- Collisions of PascalCase getter names in generated wrappers are now checked: PR [#556](https://github.com/tact-lang/tact/pull/556)
+- Display a clearer error in case the source code file is missing when using Tact's CLI: PR [#561](https://github.com/tact-lang/tact/pull/561)
 
 ## [1.4.0] - 2024-06-21
 
