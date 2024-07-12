@@ -43,6 +43,30 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     Object.entries(abi.errors!).forEach(([t, abiError]) => {
         w.write(`${t}: ${abiError.message}`);
     });
+    w.append();
+
+    const t = getType(ctx, pkg.name);
+
+    // Trait Inheritance Diagram
+    w.write(`# Trait Inheritance Diagram`);
+    w.append();
+    w.write("```mermaid");
+    w.write("graph TD");
+    for (const trait of t.traits) {
+        w.write(`${t.name} --> ${trait.name}`);
+    }
+    w.write("```");
+    w.append();
+
+    // Contract Dependency Diagram
+    w.write(`# Contract Dependency Diagram`);
+    w.append();
+    w.write("```mermaid");
+    w.write("graph TD");
+    for (const dep of t.dependsOn) {
+        w.write(`${t.name} --> ${dep.name}`);
+    }
+    w.write("```");
 
     return w.end();
 }
