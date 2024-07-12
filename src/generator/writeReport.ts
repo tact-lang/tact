@@ -47,6 +47,7 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     w.append();
 
     const t = getType(ctx, pkg.name);
+    const writtenEdges: Set<string> = new Set();
 
     // Trait Inheritance Diagram
     w.write(`# Trait Inheritance Diagram`);
@@ -55,13 +56,21 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     w.write("graph TD");
     function writeTraits(t: TypeDescription) {
         for (const trait of t.traits) {
-            w.write(`${t.name} --> ${trait.name}`);
+            const edge = `${t.name} --> ${trait.name}`;
+            if (writtenEdges.has(edge)) {
+                continue;
+            }
+            writtenEdges.add(edge);
+            w.write(edge);
             writeTraits(trait);
         }
     }
+    w.write(t.name);
     writeTraits(t);
     w.write("```");
     w.append();
+
+    writtenEdges.clear();
 
     // Contract Dependency Diagram
     w.write(`# Contract Dependency Diagram`);
@@ -70,10 +79,17 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     w.write("graph TD");
     function writeDependencies(t: TypeDescription) {
         for (const dep of t.dependsOn) {
-            w.write(`${t.name} --> ${dep.name}`);
+            const edge = `${t.name} --> ${dep.name}`;
+            if (writtenEdges.has(edge)) {
+                continue;
+            }
+            writtenEdges.add(edge);
+            w.write(edge);
             writeDependencies(dep);
         }
     }
+    writtenEdges.clear();
+    w.write(t.name);
     writeDependencies(t);
     w.write("```");
 
