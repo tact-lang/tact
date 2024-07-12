@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Usage of `newAddress` with hash parts shorter than 64 hexadecimal digits does not cause constant evaluation error `Invalid address hash length` anymore: PR [#525](https://github.com/tact-lang/tact/pull/525)
 - Introduced a streamlined error logger for compilation pipeline to support third-party tools: PR [#509](https://github.com/tact-lang/tact/pull/509)
 - Collisions of PascalCase getter names in generated wrappers are now checked: PR [#556](https://github.com/tact-lang/tact/pull/556)
+- Error in case of not existing source file is now thrown in a more clear way: PR [#561](https://github.com/tact-lang/tact/pull/561)
 
 ## [1.4.0] - 2024-06-21
 
