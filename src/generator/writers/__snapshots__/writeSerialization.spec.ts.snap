@@ -365,7 +365,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "s0 DUMP" "DROP"",
+      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "s0 DUMP" "DROP"",
       "kind": "asm",
     },
     "comment": null,
@@ -375,11 +375,11 @@ if (flag) {
       "impure",
     },
     "name": "__tact_debug",
-    "signature": "forall X -> () __tact_debug(X value, slice debug_print)",
+    "signature": "forall X -> () __tact_debug(X value, slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP"",
+      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "STRDUMP" "DROP"",
       "kind": "asm",
     },
     "comment": null,
@@ -389,14 +389,14 @@ if (flag) {
       "impure",
     },
     "name": "__tact_debug_str",
-    "signature": "() __tact_debug_str(slice value, slice debug_print)",
+    "signature": "() __tact_debug_str(slice value, slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
       "code": "if (value) {
-    __tact_debug_str("true", debug_print);
+    __tact_debug_str("true", debug_print_1, debug_print_2);
 } else {
-    __tact_debug_str("false", debug_print);
+    __tact_debug_str("false", debug_print_1, debug_print_2);
 }",
       "kind": "generic",
     },
@@ -409,7 +409,7 @@ if (flag) {
       "impure",
     },
     "name": "__tact_debug_bool",
-    "signature": "() __tact_debug_bool(int value, slice debug_print)",
+    "signature": "() __tact_debug_bool(int value, slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
@@ -523,7 +523,7 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "__tact_debug_str(__tact_address_to_user_friendly(address), debug_print);",
+      "code": "__tact_debug_str(__tact_address_to_user_friendly(address), debug_print_1, debug_print_2);",
       "kind": "generic",
     },
     "comment": null,
@@ -536,11 +536,11 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
       "impure",
     },
     "name": "__tact_debug_address",
-    "signature": "() __tact_debug_address(slice address, slice debug_print)",
+    "signature": "() __tact_debug_address(slice address, slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "DUMPSTK"",
+      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "DUMPSTK"",
       "kind": "asm",
     },
     "comment": null,
@@ -550,7 +550,7 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
       "impure",
     },
     "name": "__tact_debug_stack",
-    "signature": "() __tact_debug_stack(slice debug_print)",
+    "signature": "() __tact_debug_stack(slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
@@ -4982,7 +4982,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "s0 DUMP" "DROP"",
+      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "s0 DUMP" "DROP"",
       "kind": "asm",
     },
     "comment": null,
@@ -4992,11 +4992,11 @@ if (flag) {
       "impure",
     },
     "name": "__tact_debug",
-    "signature": "forall X -> () __tact_debug(X value, slice debug_print)",
+    "signature": "forall X -> () __tact_debug(X value, slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP"",
+      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "STRDUMP" "DROP"",
       "kind": "asm",
     },
     "comment": null,
@@ -5006,14 +5006,14 @@ if (flag) {
       "impure",
     },
     "name": "__tact_debug_str",
-    "signature": "() __tact_debug_str(slice value, slice debug_print)",
+    "signature": "() __tact_debug_str(slice value, slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
       "code": "if (value) {
-    __tact_debug_str("true", debug_print);
+    __tact_debug_str("true", debug_print_1, debug_print_2);
 } else {
-    __tact_debug_str("false", debug_print);
+    __tact_debug_str("false", debug_print_1, debug_print_2);
 }",
       "kind": "generic",
     },
@@ -5026,7 +5026,7 @@ if (flag) {
       "impure",
     },
     "name": "__tact_debug_bool",
-    "signature": "() __tact_debug_bool(int value, slice debug_print)",
+    "signature": "() __tact_debug_bool(int value, slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
@@ -5140,7 +5140,7 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "__tact_debug_str(__tact_address_to_user_friendly(address), debug_print);",
+      "code": "__tact_debug_str(__tact_address_to_user_friendly(address), debug_print_1, debug_print_2);",
       "kind": "generic",
     },
     "comment": null,
@@ -5153,11 +5153,11 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
       "impure",
     },
     "name": "__tact_debug_address",
-    "signature": "() __tact_debug_address(slice address, slice debug_print)",
+    "signature": "() __tact_debug_address(slice address, slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "DUMPSTK"",
+      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "DUMPSTK"",
       "kind": "asm",
     },
     "comment": null,
@@ -5167,7 +5167,7 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
       "impure",
     },
     "name": "__tact_debug_stack",
-    "signature": "() __tact_debug_stack(slice debug_print)",
+    "signature": "() __tact_debug_stack(slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
@@ -9599,7 +9599,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "s0 DUMP" "DROP"",
+      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "s0 DUMP" "DROP"",
       "kind": "asm",
     },
     "comment": null,
@@ -9609,11 +9609,11 @@ if (flag) {
       "impure",
     },
     "name": "__tact_debug",
-    "signature": "forall X -> () __tact_debug(X value, slice debug_print)",
+    "signature": "forall X -> () __tact_debug(X value, slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP"",
+      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "STRDUMP" "DROP"",
       "kind": "asm",
     },
     "comment": null,
@@ -9623,14 +9623,14 @@ if (flag) {
       "impure",
     },
     "name": "__tact_debug_str",
-    "signature": "() __tact_debug_str(slice value, slice debug_print)",
+    "signature": "() __tact_debug_str(slice value, slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
       "code": "if (value) {
-    __tact_debug_str("true", debug_print);
+    __tact_debug_str("true", debug_print_1, debug_print_2);
 } else {
-    __tact_debug_str("false", debug_print);
+    __tact_debug_str("false", debug_print_1, debug_print_2);
 }",
       "kind": "generic",
     },
@@ -9643,7 +9643,7 @@ if (flag) {
       "impure",
     },
     "name": "__tact_debug_bool",
-    "signature": "() __tact_debug_bool(int value, slice debug_print)",
+    "signature": "() __tact_debug_bool(int value, slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
@@ -9757,7 +9757,7 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "__tact_debug_str(__tact_address_to_user_friendly(address), debug_print);",
+      "code": "__tact_debug_str(__tact_address_to_user_friendly(address), debug_print_1, debug_print_2);",
       "kind": "generic",
     },
     "comment": null,
@@ -9770,11 +9770,11 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
       "impure",
     },
     "name": "__tact_debug_address",
-    "signature": "() __tact_debug_address(slice address, slice debug_print)",
+    "signature": "() __tact_debug_address(slice address, slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "DUMPSTK"",
+      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "DUMPSTK"",
       "kind": "asm",
     },
     "comment": null,
@@ -9784,7 +9784,7 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
       "impure",
     },
     "name": "__tact_debug_stack",
-    "signature": "() __tact_debug_stack(slice debug_print)",
+    "signature": "() __tact_debug_stack(slice debug_print_1, slice debug_print_2)",
   },
   {
     "code": {
