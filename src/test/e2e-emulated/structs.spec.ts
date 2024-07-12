@@ -131,12 +131,20 @@ describe("structs", () => {
         expect(await contract.getFromCellMessage1(c5)).toMatchSnapshot();
         expect(await contract.getFromCellMessage1(c6)).toMatchSnapshot();
 
-        expect(await contract.getFromSlice1(c1)).toMatchObject<MyStruct1>(s1);
-        expect(await contract.getFromSlice1(c2)).toMatchObject<MyStruct1>(s2);
-        expect(await contract.getFromSlice2(c3)).toMatchSnapshot();
-        expect(await contract.getFromSlice2(c4)).toMatchSnapshot();
-        expect(await contract.getFromSliceMessage1(c5)).toMatchSnapshot();
-        expect(await contract.getFromSliceMessage1(c6)).toMatchSnapshot();
+        expect(
+            await contract.getFromSlice1(c1.asSlice()),
+        ).toMatchObject<MyStruct1>(s1);
+        expect(
+            await contract.getFromSlice1(c2.asSlice()),
+        ).toMatchObject<MyStruct1>(s2);
+        expect(await contract.getFromSlice2(c3.asSlice())).toMatchSnapshot();
+        expect(await contract.getFromSlice2(c4.asSlice())).toMatchSnapshot();
+        expect(
+            await contract.getFromSliceMessage1(c5.asSlice()),
+        ).toMatchSnapshot();
+        expect(
+            await contract.getFromSliceMessage1(c6.asSlice()),
+        ).toMatchSnapshot();
 
         expect((await contract.getTest1(s1, s3)).toString()).toEqual(
             beginCell().storeRef(c1).storeRef(c3).endCell().toString(),

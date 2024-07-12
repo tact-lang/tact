@@ -308,7 +308,7 @@ const cellSerializer: Serializer<{
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${reader}.readCellOpt()${v.kind !== "cell" ? "?.as" + getCellLikeTsType(v.kind) + "()" : ""};`,
+                `let ${field} = ${reader}.readCellOpt()${v.kind !== "cell" ? "?.as" + getCellLikeTsType(v.kind) + "() ?? null" : ""};`,
             );
         } else {
             w.append(
@@ -328,9 +328,15 @@ const cellSerializer: Serializer<{
         }
     },
     tsStoreTuple(v, to, field, w) {
-        w.append(
-            `${to}.write${getCellLikeTsType(v.kind)}(${field}${v.kind !== "cell" ? ".asCell()" : ""});`,
-        );
+        if (v.optional) {
+            w.append(
+                `${to}.write${getCellLikeTsType(v.kind)}(${field}${v.kind !== "cell" ? "?.asCell()" : ""});`,
+            );
+        } else {
+            w.append(
+                `${to}.write${getCellLikeTsType(v.kind)}(${field}${v.kind !== "cell" ? ".asCell()" : ""});`,
+            );
+        }
     },
     abiMatcher(src) {
         if (src.kind === "simple") {

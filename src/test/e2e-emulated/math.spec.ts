@@ -19,11 +19,13 @@ describe("math", () => {
         const sliceA = beginCell()
             .storeBit(0)
             .storeRef(beginCell().storeBit(1).endCell())
-            .endCell();
+            .endCell()
+            .asSlice();
         const sliceB = beginCell()
             .storeBit(1)
             .storeRef(beginCell().storeBit(1).endCell())
-            .endCell();
+            .endCell()
+            .asSlice();
         const stringA = "foo";
         const stringB = "bar";
         const dictA = Dictionary.empty<bigint, bigint>().set(0n, 0n);
