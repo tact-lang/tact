@@ -279,50 +279,58 @@ const addressSerializer: Serializer<{ optional: boolean }> = {
     },
 };
 
+function getCellLikeTsType(kind: "cell" | "slice" | "builder") {
+    return kind == "cell" ? "Cell" : kind == "slice" ? "Slice" : "Builder";
+}
+
 const cellSerializer: Serializer<{
     kind: "cell" | "slice" | "builder";
     optional: boolean;
 }> = {
     tsType(v) {
         if (v.optional) {
-            return "Cell | null";
+            return `${getCellLikeTsType(v.kind)} | null`;
         } else {
-            return "Cell";
+            return getCellLikeTsType(v.kind);
         }
     },
     tsLoad(v, slice, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${slice}.loadBit() ? ${slice}.loadRef() : null;`,
+                `let ${field} = ${slice}.loadBit() ? ${slice}.loadRef()${v.kind !== "cell" ? ".as" + getCellLikeTsType(v.kind) + "()" : ""} : null;`,
             );
         } else {
-            w.append(`let ${field} = ${slice}.loadRef();`);
+            w.append(
+                `let ${field} = ${slice}.loadRef()${v.kind !== "cell" ? ".as" + getCellLikeTsType(v.kind) + "()" : ""};`,
+            );
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${reader}.readCellOpt();`);
+            w.append(
+                `let ${field} = ${reader}.readCellOpt()${v.kind !== "cell" ? "?.as" + getCellLikeTsType(v.kind) + "()" : ""};`,
+            );
         } else {
-            w.append(`let ${field} = ${reader}.readCell();`);
+            w.append(
+                `let ${field} = ${reader}.readCell()${v.kind !== "cell" ? ".as" + getCellLikeTsType(v.kind) + "()" : ""};`,
+            );
         }
     },
     tsStore(v, builder, field, w) {
         if (v.optional) {
             w.append(
-                `if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true).storeRef(${field}); } else { ${builder}.storeBit(false); }`,
+                `if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true).storeRef(${field}${v.kind !== "cell" ? ".asCell()" : ""}); } else { ${builder}.storeBit(false); }`,
             );
         } else {
-            w.append(`${builder}.storeRef(${field});`);
+            w.append(
+                `${builder}.storeRef(${field}${v.kind !== "cell" ? ".asCell()" : ""});`,
+            );
         }
     },
     tsStoreTuple(v, to, field, w) {
-        if (v.kind === "cell") {
-            w.append(`${to}.writeCell(${field});`);
-        } else if (v.kind === "slice") {
-            w.append(`${to}.writeSlice(${field});`);
-        } else {
-            w.append(`${to}.writeBuilder(${field});`);
-        }
+        w.append(
+            `${to}.write${getCellLikeTsType(v.kind)}(${field}${v.kind !== "cell" ? ".asCell()" : ""});`,
+        );
     },
     abiMatcher(src) {
         if (src.kind === "simple") {
@@ -349,26 +357,28 @@ const cellSerializer: Serializer<{
 
 const remainderSerializer: Serializer<{ kind: "cell" | "slice" | "builder" }> =
     {
-        tsType(_v) {
-            return "Cell";
+        tsType(v) {
+            return getCellLikeTsType(v.kind);
         },
         tsLoad(v, slice, field, w) {
-            w.append(`let ${field} = ${slice}.asCell();`);
+            w.append(
+                `let ${field} = ${slice}${v.kind !== "slice" ? ".as" + getCellLikeTsType(v.kind) + "()" : ""};`,
+            );
         },
         tsLoadTuple(v, reader, field, w) {
-            w.append(`let ${field} = ${reader}.readCell();`);
+            w.append(
+                `let ${field} = ${reader}.readCell()${v.kind !== "cell" ? ".as" + getCellLikeTsType(v.kind) + "()" : ""};`,
+            );
         },
         tsStore(v, builder, field, w) {
-            w.append(`${builder}.storeBuilder(${field}.asBuilder());`);
+            w.append(
+                `${builder}.storeBuilder(${field}${v.kind !== "builder" ? ".asBuilder()" : ""});`,
+            );
         },
         tsStoreTuple(v, to, field, w) {
-            if (v.kind === "cell") {
-                w.append(`${to}.writeCell(${field});`);
-            } else if (v.kind === "slice") {
-                w.append(`${to}.writeSlice(${field});`);
-            } else {
-                w.append(`${to}.writeBuilder(${field});`);
-            }
+            w.append(
+                `${to}.write${getCellLikeTsType(v.kind)}(${field}${v.kind !== "cell" ? ".asCell()" : ""});`,
+            );
         },
         abiMatcher(src) {
             if (src.kind === "simple") {
