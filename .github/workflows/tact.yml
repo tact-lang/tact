@@ -28,10 +28,17 @@ jobs:
           cache: "yarn"
 
       - name: Install dependencies
-
         run: |
           corepack enable
           yarn install
+
+      - name: List installed packages
+        run: |
+          yarn list
+
+      - name: Print some environment info
+        run: |
+          yarn cross-env echo $NODE_ENV
 
       - name: Build and Test Tact compiler
         run: |
@@ -62,6 +69,7 @@ jobs:
 
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
+        if: runner.os != 'Windows'
         with:
           scandir: "./scripts"
 
@@ -149,8 +157,8 @@ jobs:
 
       - name: Test compatibility with Blueprint
         run: |
-          yarn create ton -- test-project --type tact-counter --contractName Counter
-          cd test-project
-          yarn link @tact-lang/compiler
-          yarn build
+          yarn create ton -- test-project --type tact-counter --contractName Counter &&
+          cd test-project &&
+          yarn link @tact-lang/compiler &&
+          yarn build &&
           yarn test
