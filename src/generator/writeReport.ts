@@ -3,6 +3,7 @@ import { CompilerContext } from "../context";
 import { PackageFileFormat } from "../packaging/fileFormat";
 import { getType } from "../types/resolveDescriptors";
 import { Writer } from "../utils/Writer";
+import { TypeDescription } from "../types/types";
 
 export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     const w = new Writer();
@@ -52,9 +53,13 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     w.append();
     w.write("```mermaid");
     w.write("graph TD");
-    for (const trait of t.traits) {
-        w.write(`${t.name} --> ${trait.name}`);
+    function writeTraits(t: TypeDescription) {
+        for (const trait of t.traits) {
+            w.write(`${t.name} --> ${trait.name}`);
+            writeTraits(trait);
+        }
     }
+    writeTraits(t);
     w.write("```");
     w.append();
 
@@ -63,9 +68,13 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     w.append();
     w.write("```mermaid");
     w.write("graph TD");
-    for (const dep of t.dependsOn) {
-        w.write(`${t.name} --> ${dep.name}`);
+    function writeDependencies(t: TypeDescription) {
+        for (const dep of t.dependsOn) {
+            w.write(`${t.name} --> ${dep.name}`);
+            writeDependencies(dep);
+        }
     }
+    writeDependencies(t);
     w.write("```");
 
     return w.end();
