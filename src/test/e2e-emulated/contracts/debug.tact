@@ -9,8 +9,8 @@ contract Debug with Deployable {
     receive("Debug") {
         dumpStack();
         dump("Hello world!");
-        dump(123);
-        dump(true);
+        dump(123); // this comment is not included in the output
+        dump(true); /* this comment is not included in the output */
         dump(false);
         dump(null);
         dump(myAddress());
@@ -20,8 +20,8 @@ contract Debug with Deployable {
     get fun debug() {
         dumpStack();
         dump("Hello world!");
-        dump(123);
-        dump(true);
+        dump(123); // this comment is not included in the output
+        dump(true); /* this comment is not included in the output */
         dump(false);
         dump(null);
         dump(myAddress());
