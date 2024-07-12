@@ -214,16 +214,38 @@ export function writeTypescript(
     w.append(`]`);
     w.append();
 
+    const getterNames: Map<string, string> = new Map();
+
     // Getters
     w.append(`const ${abi.name}_getters: ABIGetter[] = [`);
     w.inIndent(() => {
         if (abi.getters) {
             for (const t of abi.getters) {
                 w.append(JSON.stringify(t) + ",");
+
+                let getterName = changeCase.pascalCase(t.name);
+                if (Array.from(getterNames.values()).includes(getterName)) {
+                    getterName = t.name;
+                }
+                getterNames.set(t.name, getterName);
             }
         }
     });
     w.append(`]`);
+    w.append();
+
+    // Getter mapping
+    w.append(
+        `export const ${abi.name}_getterMapping: { [key: string]: string } = {`,
+    );
+    w.inIndent(() => {
+        if (abi.getters) {
+            for (const t of abi.getters) {
+                w.append(`'${t.name}': 'get${getterNames.get(t.name)}',`);
+            }
+        }
+    });
+    w.append(`}`);
     w.append();
 
     // Receivers
@@ -561,16 +583,10 @@ export function writeTypescript(
         }
 
         // Getters
-        const getterNames: Set<string> = new Set();
         if (abi.getters) {
             for (const g of abi.getters) {
-                let getterName = changeCase.pascalCase(g.name);
-                if (getterNames.has(getterName)) {
-                    getterName = g.name;
-                }
-                getterNames.add(getterName);
                 w.append(
-                    `async get${getterName}(${["provider: ContractProvider", ...writeArguments(g.arguments ? g.arguments : [])].join(", ")}) {`,
+                    `async get${getterNames.get(g.name)}(${["provider: ContractProvider", ...writeArguments(g.arguments ? g.arguments : [])].join(", ")}) {`,
                 );
                 w.inIndent(() => {
                     w.append(`let builder = new TupleBuilder();`);
