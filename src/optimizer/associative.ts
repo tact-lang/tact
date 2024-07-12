@@ -16,7 +16,7 @@ import {
     sign,
 } from "./util";
 
-export abstract class AssociativeRewriteRule extends Rule {
+abstract class AssociativeRewriteRule extends Rule {
     // An entry (op, S) in the map means "operator op associates with all operators in set S",
     // mathematically: all op2 \in S. (a op b) op2 c = a op (b op2 c)
     private associativeOps: Map<AstBinaryOperation, Set<AstBinaryOperation>>;
@@ -73,7 +73,7 @@ export abstract class AssociativeRewriteRule extends Rule {
     }
 }
 
-export abstract class AllowableOpRule extends AssociativeRewriteRule {
+abstract class AllowableOpRule extends AssociativeRewriteRule {
     private allowedOps: Set<AstBinaryOperation>;
 
     constructor() {
