@@ -688,6 +688,7 @@ export function eqExpressions(
         return false;
     }
 
+    try {
     switch (ast1.kind) {
         case "null":
             return true;
@@ -755,6 +756,11 @@ export function eqExpressions(
                 eqExpressionArrays(ast1.args, (ast2 as AstStaticCall).args)
             );
     }
+} catch (e) {
+    // In principle, the assertions "as Ast___" should not fail 
+    // because ast1 and ast2 have the same kind inside the switch.
+    return false;
+}
 }
 
 function eqParameters(
