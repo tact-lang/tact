@@ -17,7 +17,7 @@ exports[`initOf should implement initof correctly - 4 1`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQBw6biPCcbMoZt-69jtzRu0Ph-SSKkM3ehp6y1oWJMYP_8S",
+          "to": "kQB-WfPOGhi7efu_cWyyFyCiHz-IW39AZDElYdpNBz8YTJF4",
           "type": "internal",
           "value": "10",
         },

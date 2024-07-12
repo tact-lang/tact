@@ -243,10 +243,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
                 const debugPrint1 = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}:`;
-                const debugPrint2 = writeValue(
-                    ref.interval.getLineAndColumn().line.trimStart(),
-                    ctx,
-                );
+                const debugPrint2 = writeValue(ref.interval.contents, ctx);
 
                 if (arg0.kind === "map") {
                     const exp = writeExpression(resolved[0]!, ctx);
@@ -311,11 +308,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
                 const debugPrint1 = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}:`;
-                const debugPrint2 = writeValue(
-                    ref.interval.getLineAndColumn().line.trimStart(),
-                    ctx,
-                );
-                return `${ctx.used(`__tact_debug_stack`)}(${debugPrint2}, "${debugPrint1}")`;
+                return `${ctx.used(`__tact_debug_stack`)}("dumpStack()", "${debugPrint1}")`;
             },
         },
     ],
