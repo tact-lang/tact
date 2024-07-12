@@ -352,6 +352,19 @@ const fieldAccessExpressions: Test[] = [
     },
 ];
 
+const initOfExpressions: Test[] = [
+    { expr1: "initOf a(b,c,d)", expr2: "initOf a(b,c,d)", equality: true },
+    { expr1: "initOf a(b,c,d)", expr2: "initOf g(b,c,d)", equality: false },
+    { expr1: "initOf a(b,c,d)", expr2: "initOf a(f,c,d)", equality: false },
+    { expr1: "initOf a(b,c,d)", expr2: "initOf a(b,f,d)", equality: false },
+    { expr1: "initOf a(b,c,d)", expr2: "initOf a(b,c,f)", equality: false },
+    { expr1: "initOf a(b,c,d)", expr2: "initOf a(b)", equality: false },
+    { expr1: "initOf a(b,c,d)", expr2: "initOf a(b,c)", equality: false },
+    { expr1: "initOf a(b,c,d)", expr2: "initOf a(b,c,d,e)", equality: false },
+    { expr1: "initOf a(b,c,d)", expr2: "a(b,c,d)", equality: false },
+    { expr1: "initOf a(b,c,d)", expr2: "s.a(b,c,d)", equality: false },
+];
+
 function testEquality(expr1: string, expr2: string, equal: boolean) {
     expect(eqExpressions(parseExpression(expr1), parseExpression(expr2))).toBe(
         equal,
@@ -394,6 +407,11 @@ describe("expression-equality", () => {
     });
     it("should correctly determine if two expressions involving field accesses are equal or not.", () => {
         fieldAccessExpressions.forEach((test) => {
+            testEquality(test.expr1, test.expr2, test.equality);
+        });
+    });
+    it("should correctly determine if two expressions involving initOf are equal or not.", () => {
+        initOfExpressions.forEach((test) => {
             testEquality(test.expr1, test.expr2, test.equality);
         });
     });
