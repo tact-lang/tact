@@ -1,6 +1,7 @@
-import { toNano } from "@ton/core";
+import { beginCell, Builder, Cell, Slice, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { SerializationTester3 } from "./contracts/output/serialization-3_SerializationTester3";
 import { SerializationTester2 } from "./contracts/output/serialization-2_SerializationTester2";
 import { SerializationTester } from "./contracts/output/serialization_SerializationTester";
 
@@ -158,4 +159,28 @@ describe("serialization", () => {
             });
         }
     }
+    it("serialization-3", async () => {
+        // Init contract
+        const system = await ContractSystem.create();
+        const treasure = system.treasure("treasure");
+        const contract = system.open(
+            await SerializationTester3.fromInit(
+                1n,
+                true,
+                beginCell().endCell(),
+                beginCell().endCell().asSlice(),
+                beginCell().endCell().asBuilder(),
+                "test",
+            ),
+        );
+        await contract.send(treasure, { value: toNano("10") }, null);
+        await system.run();
+
+        expect(await contract.getGetA()).toBe(1n);
+        expect(await contract.getGetB()).toBe(true);
+        expect(await contract.getGetC()).toBeInstanceOf(Cell);
+        expect(await contract.getGetD()).toBeInstanceOf(Slice);
+        expect(await contract.getGetE()).toBeInstanceOf(Builder);
+        expect(await contract.getGetF()).toBe("test");
+    });
 });
