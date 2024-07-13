@@ -6,6 +6,7 @@ import { getExpType } from "../types/resolveExpression";
 import { TypeRef } from "../types/types";
 import {
     AstCondition,
+    AstExpression,
     AstStatement,
     isWildcard,
     tryExtractPath,
@@ -19,7 +20,7 @@ import {
     FuncAstTupleExpr,
     FuncAstUnitExpr,
 } from "../func/syntax";
-import { makeId } from "../func/syntaxUtils";
+import { makeId, makeExprStmt } from "../func/syntaxUtils";
 
 /**
  * Encapsulates generation of Func statements from the Tact statement.
@@ -47,6 +48,17 @@ export class StatementGen {
     }
 
     /**
+     * Translates an expression in the current context.
+     */
+    private makeExpr(expr: AstExpression): FuncAstExpr {
+        return ExpressionGen.fromTact(this.ctx, expr).writeExpression();
+    }
+
+    private makeCastedExpr(expr: AstExpression, to: TypeRef): FuncAstExpr {
+        return ExpressionGen.fromTact(this.ctx, expr).writeCastedExpression(to);
+    }
+
+    /**
      * Tranforms the Tact conditional statement to the Func one.
      */
     private writeCondition(f: AstCondition): FuncAstConditionStmt {
@@ -57,10 +69,7 @@ export class StatementGen {
                 this.selfName,
                 this.returns,
             ).writeStatement();
-        const condition = ExpressionGen.fromTact(
-            this.ctx,
-            f.condition,
-        ).writeExpression();
+        const condition = this.makeExpr(f.condition);
         const thenBlock = f.trueStatements.map(writeStmt);
         const elseStmt: FuncAstConditionStmt | undefined =
             f.falseStatements !== null && f.falseStatements.length > 0
@@ -98,10 +107,10 @@ export class StatementGen {
                           } as FuncAstTupleExpr)
                         : expr;
                 if (this.tactStmt.expression) {
-                    const castedReturns = ExpressionGen.fromTact(
-                        this.ctx,
+                    const castedReturns = this.makeCastedExpr(
                         this.tactStmt.expression,
-                    ).writeCastedExpression(this.returns!);
+                        this.returns!,
+                    );
                     return { kind, value: getValue(castedReturns) };
                 } else {
                     const unit = { kind: "unit_expr" } as FuncAstUnitExpr;
@@ -111,11 +120,9 @@ export class StatementGen {
             case "statement_let": {
                 // Underscore name case
                 if (isWildcard(this.tactStmt.name)) {
-                    const expr = ExpressionGen.fromTact(
-                        this.ctx,
-                        this.tactStmt.expression,
-                    ).writeExpression();
-                    return { kind: "expr_stmt", expr };
+                    return makeExprStmt(
+                        this.makeExpr(this.tactStmt.expression),
+                    );
                 }
 
                 // Contract/struct case
@@ -129,10 +136,10 @@ export class StatementGen {
                     if (tt.kind === "contract" || tt.kind === "struct") {
                         if (t.optional) {
                             const name = funcIdOf(this.tactStmt.name);
-                            const init = ExpressionGen.fromTact(
-                                this.ctx,
+                            const init = this.makeCastedExpr(
                                 this.tactStmt.expression,
-                            ).writeCastedExpression(t);
+                                t,
+                            );
                             return {
                                 kind: "var_def_stmt",
                                 name,
@@ -145,10 +152,10 @@ export class StatementGen {
                                 t,
                                 funcIdOf(this.tactStmt.name),
                             );
-                            const init = ExpressionGen.fromTact(
-                                this.ctx,
+                            const init = this.makeCastedExpr(
                                 this.tactStmt.expression,
-                            ).writeCastedExpression(t);
+                                t,
+                            );
                             return {
                                 kind: "var_def_stmt",
                                 name,
@@ -161,10 +168,7 @@ export class StatementGen {
 
                 const ty = resolveFuncType(this.ctx, t);
                 const name = funcIdOf(this.tactStmt.name);
-                const init = ExpressionGen.fromTact(
-                    this.ctx,
-                    this.tactStmt.expression,
-                ).writeCastedExpression(t);
+                const init = this.makeCastedExpr(this.tactStmt.expression, t);
                 return { kind: "var_def_stmt", name, ty, init };
             }
 
@@ -188,29 +192,24 @@ export class StatementGen {
                         const lhs = makeId(
                             resolveFuncTypeUnpack(this.ctx, t, path.value),
                         );
-                        const rhs = ExpressionGen.fromTact(
-                            this.ctx,
+                        const rhs = this.makeCastedExpr(
                             this.tactStmt.expression,
-                        ).writeCastedExpression(t);
-                        const expr = {
+                            t,
+                        );
+                        return makeExprStmt({
                             kind: "assign_expr",
                             lhs,
                             rhs,
-                        } as FuncAstExpr;
-                        return { kind: "expr_stmt", expr };
+                        });
                     }
                 }
 
-                const rhs = ExpressionGen.fromTact(
-                    this.ctx,
-                    this.tactStmt.expression,
-                ).writeCastedExpression(t);
-                const expr = {
+                const rhs = this.makeCastedExpr(this.tactStmt.expression, t);
+                return makeExprStmt({
                     kind: "assign_expr",
                     lhs: path,
                     rhs,
-                } as FuncAstExpr;
-                return { kind: "expr_stmt", expr };
+                });
             }
 
             //     case "statement_augmentedassign": {
@@ -233,11 +232,7 @@ export class StatementGen {
                 return this.writeCondition(this.tactStmt);
             }
             case "statement_expression": {
-                const expr = ExpressionGen.fromTact(
-                    this.ctx,
-                    this.tactStmt.expression,
-                ).writeExpression();
-                return { kind: "expr_stmt", expr };
+                return makeExprStmt(this.makeExpr(this.tactStmt.expression));
             }
             //     case "statement_while": {
             //         ctx.append(`while (${writeExpression(f.condition, ctx)}) {`);
