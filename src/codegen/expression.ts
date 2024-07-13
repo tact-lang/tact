@@ -12,8 +12,8 @@ import {
     getStaticFunction,
     hasStaticConstant,
 } from "../types/resolveDescriptors";
-import { idText, AstExpression } from "../grammar/ast";
-import { FuncAstExpr, FuncAstUnaryOp } from "../func/syntax";
+import { idText, AstExpression, AstId } from "../grammar/ast";
+import { FuncAstExpr, FuncAstUnaryOp, FuncAstIdExpr } from "../func/syntax";
 import { makeId, makeCall } from "../func/syntaxUtils";
 
 function isNull(f: AstExpression): boolean {
@@ -30,6 +30,15 @@ function addUnary(op: FuncAstUnaryOp, expr: FuncAstExpr): FuncAstExpr {
 
 function negate(expr: FuncAstExpr): FuncAstExpr {
     return addUnary("~", expr);
+}
+
+/**
+ * Creates a Func identifier in the following format: a'b'c.
+ */
+export function writePathExpression(path: AstId[]): FuncAstIdExpr {
+    return makeId(
+        [funcIdOf(idText(path[0]!)), ...path.slice(1).map(idText)].join(`'`),
+    );
 }
 
 /**

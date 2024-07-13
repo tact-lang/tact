@@ -1,4 +1,5 @@
 import { CompilerContext } from "../context";
+import { throwInternalCompilerError } from "../errors";
 import { funcIdOf } from "./util";
 import { getType, resolveTypeRef } from "../types/resolveDescriptors";
 import { getExpType } from "../types/resolveExpression";
@@ -7,8 +8,9 @@ import {
     AstCondition,
     AstStatement,
     isWildcard,
+    tryExtractPath,
 } from "../grammar/ast";
-import { ExpressionGen } from "./expression";
+import { ExpressionGen, writePathExpression } from "./expression";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 import {
     FuncAstStmt,
@@ -17,6 +19,7 @@ import {
     FuncAstTupleExpr,
     FuncAstUnitExpr,
 } from "../func/syntax";
+import { makeId } from "../func/syntaxUtils";
 
 /**
  * Encapsulates generation of Func statements from the Tact statement.
@@ -46,9 +49,7 @@ export class StatementGen {
     /**
      * Tranforms the Tact conditional statement to the Func one.
      */
-    private writeCondition(
-        f: AstCondition,
-    ): FuncAstConditionStmt {
+    private writeCondition(f: AstCondition): FuncAstConditionStmt {
         const writeStmt = (stmt: AstStatement) =>
             StatementGen.fromTact(
                 this.ctx,
@@ -167,35 +168,51 @@ export class StatementGen {
                 return { kind: "var_def_stmt", name, ty, init };
             }
 
-            //     case "statement_assign": {
-            //         // Prepare lvalue
-            //         const lvaluePath = tryExtractPath(f.path);
-            //         if (lvaluePath === null) {
-            //             // typechecker is supposed to catch this
-            //             throwInternalCompilerError(
-            //                 `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
-            //                 f.path.loc,
-            //             );
-            //         }
-            //         const path = writePathExpression(lvaluePath);
-            //
-            //         // Contract/struct case
-            //         const t = getExpType(ctx.ctx, f.path);
-            //         if (t.kind === "ref") {
-            //             const tt = getType(ctx.ctx, t.name);
-            //             if (tt.kind === "contract" || tt.kind === "struct") {
-            //                 ctx.append(
-            //                     `${resolveFuncTypeUnpack(t, path, ctx)} = ${writeCastedExpression(f.expression, t, ctx)};`,
-            //                 );
-            //                 return;
-            //             }
-            //         }
-            //
-            //         ctx.append(
-            //             `${path} = ${writeCastedExpression(f.expression, t, ctx)};`,
-            //         );
-            //         return;
-            //     }
+            case "statement_assign": {
+                // Prepare lvalue
+                const lvaluePath = tryExtractPath(this.tactStmt.path);
+                if (lvaluePath === null) {
+                    // typechecker is supposed to catch this
+                    throwInternalCompilerError(
+                        `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
+                        this.tactStmt.path.loc,
+                    );
+                }
+                const path = writePathExpression(lvaluePath);
+
+                // Contract/struct case
+                const t = getExpType(this.ctx, this.tactStmt.path);
+                if (t.kind === "ref") {
+                    const tt = getType(this.ctx, t.name);
+                    if (tt.kind === "contract" || tt.kind === "struct") {
+                        const lhs = makeId(
+                            resolveFuncTypeUnpack(this.ctx, t, path.value),
+                        );
+                        const rhs = ExpressionGen.fromTact(
+                            this.ctx,
+                            this.tactStmt.expression,
+                        ).writeCastedExpression(t);
+                        const expr = {
+                            kind: "assign_expr",
+                            lhs,
+                            rhs,
+                        } as FuncAstExpr;
+                        return { kind: "expr_stmt", expr };
+                    }
+                }
+
+                const rhs = ExpressionGen.fromTact(
+                    this.ctx,
+                    this.tactStmt.expression,
+                ).writeCastedExpression(t);
+                const expr = {
+                    kind: "assign_expr",
+                    lhs: path,
+                    rhs,
+                } as FuncAstExpr;
+                return { kind: "expr_stmt", expr };
+            }
+
             //     case "statement_augmentedassign": {
             //         const lvaluePath = tryExtractPath(f.path);
             //         if (lvaluePath === null) {
