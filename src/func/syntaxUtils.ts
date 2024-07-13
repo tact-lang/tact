@@ -2,6 +2,7 @@ import {
     FuncAstExpr,
     FuncAstIdExpr,
     FuncAstCallExpr,
+    FuncAstBinaryOp,
     FuncAstStmt,
 } from "./syntax";
 
@@ -22,4 +23,16 @@ export function makeCall(
 
 export function makeExprStmt(expr: FuncAstExpr): FuncAstStmt {
     return { kind: "expr_stmt", expr };
+}
+
+export function makeAssign(lhs: FuncAstExpr, rhs: FuncAstExpr): FuncAstExpr {
+    return { kind: "assign_expr", lhs, rhs };
+}
+
+export function makeBinop(
+    lhs: FuncAstExpr,
+    op: FuncAstBinaryOp,
+    rhs: FuncAstExpr,
+): FuncAstExpr {
+    return { kind: "binary_expr", lhs, op, rhs };
 }

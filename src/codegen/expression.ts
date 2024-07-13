@@ -23,8 +23,13 @@ import {
     eqNames,
     tryExtractPath,
 } from "../grammar/ast";
-import { FuncAstExpr, FuncAstUnaryOp, FuncAstIdExpr } from "../func/syntax";
-import { makeId, makeCall } from "../func/syntaxUtils";
+import {
+    FuncAstExpr,
+    FuncAstUnaryOp,
+    FuncAstIdExpr,
+    FuncAstTernaryExpr,
+} from "../func/syntax";
+import { makeId, makeCall, makeBinop } from "../func/syntaxUtils";
 
 function isNull(f: AstExpression): boolean {
     return f.kind === "null";
@@ -182,7 +187,6 @@ export class ExpressionGen {
         if (this.tactExpr.kind === "op_binary") {
             // Special case for non-integer types and nullable
             if (this.tactExpr.op === "==" || this.tactExpr.op === "!=") {
-                // TODO: Simplify.
                 if (isNull(this.tactExpr.left) && isNull(this.tactExpr.right)) {
                     return {
                         kind: "bool_expr",
@@ -218,143 +222,196 @@ export class ExpressionGen {
                 lt.name === "Address" &&
                 rt.name === "Address"
             ) {
+                const maybeNegate = (call: any): any => {
+                    if (this.tactExpr.kind !== "op_binary") {
+                        throw new Error("Impossible");
+                    }
+                    return this.tactExpr.op == "!=" ? negate(call) : call;
+                };
                 if (lt.optional && rt.optional) {
-                    const call = makeCall("__tact_slice_eq_bits_nullable", [
+                    return maybeNegate(
+                        makeCall("__tact_slice_eq_bits_nullable", [
+                            this.makeExpr(this.tactExpr.left),
+                            this.makeExpr(this.tactExpr.right),
+                        ]),
+                    );
+                }
+                if (lt.optional && !rt.optional) {
+                    return maybeNegate(
+                        makeCall("__tact_slice_eq_bits_nullable_one", [
+                            this.makeExpr(this.tactExpr.left),
+                            this.makeExpr(this.tactExpr.right),
+                        ]),
+                    );
+                }
+                if (!lt.optional && rt.optional) {
+                    return maybeNegate(
+                        makeCall("__tact_slice_eq_bits_nullable_one", [
+                            this.makeExpr(this.tactExpr.right),
+                            this.makeExpr(this.tactExpr.left),
+                        ]),
+                    );
+                }
+                return maybeNegate(
+                    makeCall("__tact_slice_eq_bits", [
+                        this.makeExpr(this.tactExpr.right),
+                        this.makeExpr(this.tactExpr.left),
+                    ]),
+                );
+            }
+
+            // Case for cells equality
+            if (
+                lt.kind === "ref" &&
+                rt.kind === "ref" &&
+                lt.name === "Cell" &&
+                rt.name === "Cell"
+            ) {
+                const op = this.tactExpr.op === "==" ? "eq" : "neq";
+                if (lt.optional && rt.optional) {
+                    return makeCall(`__tact_cell_${op}_nullable`, [
                         this.makeExpr(this.tactExpr.left),
                         this.makeExpr(this.tactExpr.right),
                     ]);
-                    return this.tactExpr.op == "!=" ? negate(call) : call;
                 }
-                //     if (lt.optional && !rt.optional) {
-                //         // wCtx.used(`__tact_slice_eq_bits_nullable_one`);
-                //         return `( ${prefix}__tact_slice_eq_bits_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
-                //     }
-                //     if (!lt.optional && rt.optional) {
-                //         // wCtx.used(`__tact_slice_eq_bits_nullable_one`);
-                //         return `( ${prefix}__tact_slice_eq_bits_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)}) )`;
-                //     }
-                //     // wCtx.used(`__tact_slice_eq_bits`);
-                //     return `( ${prefix}__tact_slice_eq_bits(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)}) )`;
-                // }
-                //
-                // // Case for cells equality
-                // if (
-                //     lt.kind === "ref" &&
-                //     rt.kind === "ref" &&
-                //     lt.name === "Cell" &&
-                //     rt.name === "Cell"
-                // ) {
-                //     const op = f.op === "==" ? "eq" : "neq";
-                //     if (lt.optional && rt.optional) {
-                //         wCtx.used(`__tact_cell_${op}_nullable`);
-                //         return `__tact_cell_${op}_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-                //     }
-                //     if (lt.optional && !rt.optional) {
-                //         wCtx.used(`__tact_cell_${op}_nullable_one`);
-                //         return `__tact_cell_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-                //     }
-                //     if (!lt.optional && rt.optional) {
-                //         wCtx.used(`__tact_cell_${op}_nullable_one`);
-                //         return `__tact_cell_${op}_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
-                //     }
-                //     wCtx.used(`__tact_cell_${op}`);
-                //     return `__tact_cell_${op}(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
-                // }
-                //
-                // // Case for slices and strings equality
-                // if (
-                //     lt.kind === "ref" &&
-                //     rt.kind === "ref" &&
-                //     lt.name === rt.name &&
-                //     (lt.name === "Slice" || lt.name === "String")
-                // ) {
-                //     const op = f.op === "==" ? "eq" : "neq";
-                //     if (lt.optional && rt.optional) {
-                //         wCtx.used(`__tact_slice_${op}_nullable`);
-                //         return `__tact_slice_${op}_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-                //     }
-                //     if (lt.optional && !rt.optional) {
-                //         wCtx.used(`__tact_slice_${op}_nullable_one`);
-                //         return `__tact_slice_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-                //     }
-                //     if (!lt.optional && rt.optional) {
-                //         wCtx.used(`__tact_slice_${op}_nullable_one`);
-                //         return `__tact_slice_${op}_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
-                //     }
-                //     wCtx.used(`__tact_slice_${op}`);
-                //     return `__tact_slice_${op}(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
-                // }
-                //
-                // // Case for maps equality
-                // if (lt.kind === "map" && rt.kind === "map") {
-                //     const op = f.op === "==" ? "eq" : "neq";
-                //     wCtx.used(`__tact_cell_${op}_nullable`);
-                //     return `__tact_cell_${op}_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-                // }
-                //
-                // // Check for int or boolean types
-                // if (
-                //     lt.kind !== "ref" ||
-                //     rt.kind !== "ref" ||
-                //     (lt.name !== "Int" && lt.name !== "Bool") ||
-                //     (rt.name !== "Int" && rt.name !== "Bool")
-                // ) {
-                //     const file = f.loc.file;
-                //     const loc_info = f.loc.interval.getLineAndColumn();
-                //     throw Error(
-                //         `(Internal Compiler Error) Invalid types for binary operation: ${file}:${loc_info.lineNum}:${loc_info.colNum}`,
-                //     ); // Should be unreachable
-                // }
-                //
-                // // Case for ints equality
-                // if (f.op === "==" || f.op === "!=") {
-                //     const op = f.op === "==" ? "eq" : "neq";
-                //     if (lt.optional && rt.optional) {
-                //         wCtx.used(`__tact_int_${op}_nullable`);
-                //         return `__tact_int_${op}_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-                //     }
-                //     if (lt.optional && !rt.optional) {
-                //         wCtx.used(`__tact_int_${op}_nullable_one`);
-                //         return `__tact_int_${op}_nullable_one(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)})`;
-                //     }
-                //     if (!lt.optional && rt.optional) {
-                //         wCtx.used(`__tact_int_${op}_nullable_one`);
-                //         return `__tact_int_${op}_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)})`;
-                //     }
-                //     if (f.op === "==") {
-                //         return `(${writeExpression(f.left, wCtx)} == ${writeExpression(f.right, wCtx)})`;
-                //     } else {
-                //         return `(${writeExpression(f.left, wCtx)} != ${writeExpression(f.right, wCtx)})`;
-                //     }
-                // }
-                //
-                // // Case for "&&" operator
-                // if (f.op === "&&") {
-                //     return `( (${writeExpression(f.left, wCtx)}) ? (${writeExpression(f.right, wCtx)}) : (false) )`;
-                // }
-                //
-                // // Case for "||" operator
-                // if (f.op === "||") {
-                //     return `( (${writeExpression(f.left, wCtx)}) ? (true) : (${writeExpression(f.right, wCtx)}) )`;
-                // }
-                //
-                // // Other ops
-                // return (
-                //     "(" +
-                //     writeExpression(f.left, wCtx) +
-                //     " " +
-                //     f.op +
-                //     " " +
-                //     writeExpression(f.right, wCtx) +
-                //     ")"
-                // );
-                throw new Error("NYI");
+                if (lt.optional && !rt.optional) {
+                    return makeCall(`__tact_cell_${op}_nullable_one`, [
+                        this.makeExpr(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.right),
+                    ]);
+                }
+                if (!lt.optional && rt.optional) {
+                    return makeCall(`__tact_cell_${op}_nullable_one`, [
+                        this.makeExpr(this.tactExpr.right),
+                        this.makeExpr(this.tactExpr.left),
+                    ]);
+                }
+                return makeCall(`__tact_cell_${op}`, [
+                    this.makeExpr(this.tactExpr.right),
+                    this.makeExpr(this.tactExpr.left),
+                ]);
             }
+
+            // Case for slices and strings equality
+            if (
+                lt.kind === "ref" &&
+                rt.kind === "ref" &&
+                lt.name === rt.name &&
+                (lt.name === "Slice" || lt.name === "String")
+            ) {
+                const op = this.tactExpr.op === "==" ? "eq" : "neq";
+                if (lt.optional && rt.optional) {
+                    return makeCall(`__tact_slice_${op}_nullable`, [
+                        this.makeExpr(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.right),
+                    ]);
+                }
+                if (lt.optional && !rt.optional) {
+                    return makeCall(`__tact_slice_${op}_nullable_one`, [
+                        this.makeExpr(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.right),
+                    ]);
+                }
+                if (!lt.optional && rt.optional) {
+                    return makeCall(`__tact_slice_${op}_nullable_one`, [
+                        this.makeExpr(this.tactExpr.right),
+                        this.makeExpr(this.tactExpr.left),
+                    ]);
+                }
+                return makeCall(`__tact_slice_${op}`, [
+                    this.makeExpr(this.tactExpr.right),
+                    this.makeExpr(this.tactExpr.left),
+                ]);
+            }
+
+            // Case for maps equality
+            if (lt.kind === "map" && rt.kind === "map") {
+                const op = this.tactExpr.op === "==" ? "eq" : "neq";
+                return makeCall(`__tact_cell_${op}_nullable`, [
+                    this.makeExpr(this.tactExpr.left),
+                    this.makeExpr(this.tactExpr.right),
+                ]);
+            }
+
+            // Check for int or boolean types
+            if (
+                lt.kind !== "ref" ||
+                rt.kind !== "ref" ||
+                (lt.name !== "Int" && lt.name !== "Bool") ||
+                (rt.name !== "Int" && rt.name !== "Bool")
+            ) {
+                const file = this.tactExpr.loc.file;
+                const loc_info = this.tactExpr.loc.interval.getLineAndColumn();
+                throw Error(
+                    `(Internal Compiler Error) Invalid types for binary operation: ${file}:${loc_info.lineNum}:${loc_info.colNum}`,
+                ); // Should be unreachable
+            }
+
+            // Case for ints equality
+            if (this.tactExpr.op === "==" || this.tactExpr.op === "!=") {
+                const op = this.tactExpr.op === "==" ? "eq" : "neq";
+                if (lt.optional && rt.optional) {
+                    return makeCall(`__tact_int_${op}_nullable`, [
+                        this.makeExpr(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.right),
+                    ]);
+                }
+                if (lt.optional && !rt.optional) {
+                    return makeCall(`__tact_int_${op}_nullable_one`, [
+                        this.makeExpr(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.right),
+                    ]);
+                }
+                if (!lt.optional && rt.optional) {
+                    return makeCall(`__tact_int_${op}_nullable_one`, [
+                        this.makeExpr(this.tactExpr.right),
+                        this.makeExpr(this.tactExpr.left),
+                    ]);
+                }
+                const binop = this.tactExpr.op === "==" ? "==" : "!=";
+                return makeBinop(
+                    this.makeExpr(this.tactExpr.left),
+                    binop,
+                    this.makeExpr(this.tactExpr.right),
+                );
+            }
+
+            // Case for "&&" operator
+            if (this.tactExpr.op === "&&") {
+                const cond = this.makeExpr(this.tactExpr.left);
+                const trueExpr = this.makeExpr(this.tactExpr.right);
+                const falseExpr = { kind: "bool_expr", value: false };
+                return {
+                    kind: "ternary_expr",
+                    cond,
+                    trueExpr,
+                    falseExpr,
+                } as FuncAstTernaryExpr;
+            }
+
+            // Case for "||" operator
+            if (this.tactExpr.op === "||") {
+                const cond = this.makeExpr(this.tactExpr.left);
+                const trueExpr = { kind: "bool_expr", value: true };
+                const falseExpr = this.makeExpr(this.tactExpr.right);
+                return {
+                    kind: "ternary_expr",
+                    cond,
+                    trueExpr,
+                    falseExpr,
+                } as FuncAstTernaryExpr;
+            }
+
+            // Other ops
+            return makeBinop(
+                this.makeExpr(this.tactExpr.left),
+                this.tactExpr.op,
+                this.makeExpr(this.tactExpr.right),
+            );
         }
 
-        //     //
-        //     // Unary operations: !, -, +, !!
-        //     // NOTE: We always wrap in parenthesis to avoid operator precedence issues
+        // Unary operations: !, -, +, !!
+        // NOTE: We always wrap in parenthesis to avoid operator precedence issues
         if (this.tactExpr.kind === "op_unary") {
             // NOTE: Logical not is written as a bitwise not
             switch (this.tactExpr.op) {
@@ -691,9 +748,9 @@ export class ExpressionGen {
         //         return `(${writeExpression(f.condition, wCtx)} ? ${writeExpression(f.thenBranch, wCtx)} : ${writeExpression(f.elseBranch, wCtx)})`;
         //     }
         //
-        //     //
-        //     // Unreachable
-        //     //
+
+        //
+        // Unreachable
         //
         throw Error(`Unknown expression: ${this.tactExpr.kind}`);
     }
