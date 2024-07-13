@@ -18,16 +18,22 @@ describe("formatter", () => {
     it.each(fs.readdirSync(__dirname + "/formatting/proper/"))
     ("souldn't change AST",
         (file) => {
-            const filePath = __dirname + "/formatting/proper/" + file
+            const folderPathProper = join(__dirname, "formatting", "proper")
+            const filePath = join(folderPathProper, file)
             const src = fs.readFileSync(filePath, "utf-8")
             const ast = parse(src, filePath, "user")
             //TODO: change for proper recursive removal
             const astStr = JSONBig.stringify(ast).replace(/"id":[0-9]+,/g, "")
 
             const formatted = formatAst(ast)
-            fs.openSync(join(__dirname, "formatting", "output", file), 'w')
-            fs.writeFileSync(join(__dirname, "formatting", "output", file), formatted, {flag: 'w'})
-            const astFormatted = parse(formatted, __dirname + "/formatting/output/" + file, "user")
+            const folderPathOutput = join(__dirname, "formatting", "output")
+            if (!fs.existsSync(folderPathOutput)) {
+                fs.mkdirSync(folderPathOutput)
+            }
+            const filePathOutput = join(folderPathOutput, file)
+            fs.openSync(filePathOutput, 'w')
+            fs.writeFileSync(filePathOutput, formatted, {flag: 'w'})
+            const astFormatted = parse(formatted, filePathOutput, "user")
             //TODO: change for proper recursive removal
             const astFormattedStr = JSONBig.stringify(astFormatted).replace(/"id":[0-9]+,/g, "")
             expect(astFormattedStr).toEqual(astStr)
