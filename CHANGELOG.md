@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display a clearer error in case the source code file is missing when using Tact's CLI: PR [#561](https://github.com/tact-lang/tact/pull/561)
 - Error messages for unicode code points outside of valid range: PR [#535](https://github.com/tact-lang/tact/pull/535)
 - Correct regex for unicode code points and escaping of control codes in generated comments: PR [#535](https://github.com/tact-lang/tact/pull/535)
+- The `MaxListenersExceededWarning` warning is resolved: [#567](https://github.com/tact-lang/tact/pull/567)
 
 ## [1.4.0] - 2024-06-21
 
