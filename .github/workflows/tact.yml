@@ -64,6 +64,8 @@ jobs:
             exit 1
           fi
 
+          rm "$FILE_PATH.original"
+
       - name: Test Tact compiler
         run: |
           yarn coverage
