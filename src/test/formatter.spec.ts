@@ -27,10 +27,18 @@ describe("formatter", () => {
             //TODO: change for proper recursive removal
             const astStr = JSONBig.stringify(ast).replace(/"id":[0-9]+,/g, "");
 
-            const formatted = formatAst(ast)
-            fs.openSync(join(__dirname, "formatting", "output", file), 'w')
-            fs.writeFileSync(join(__dirname, "formatting", "output", file), formatted, {flag: 'w'})
-            const astFormatted = parse(formatted, __dirname + "/formatting/output/" + file, "user")
+            const formatted = formatAst(ast);
+            fs.openSync(join(__dirname, "formatting", "output", file), "w");
+            fs.writeFileSync(
+                join(__dirname, "formatting", "output", file),
+                formatted,
+                { flag: "w" },
+            );
+            const astFormatted = parse(
+                formatted,
+                __dirname + "/formatting/output/" + file,
+                "user",
+            );
             //TODO: change for proper recursive removal
             const astFormattedStr = JSONBig.stringify(astFormatted).replace(
                 /"id":[0-9]+,/g,
