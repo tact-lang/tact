@@ -9,7 +9,6 @@ import {
     AstStatementForEach,
     AstStatementTry,
     AstStatementTryCatch,
-    AstTypedParameter,
     AstCondition,
     AstStatementAugmentedAssign,
     AstStatementAssign,
@@ -41,6 +40,7 @@ import {
     AstOptionalType,
     AstNode,
     AstFuncId,
+    idText,
 } from "./grammar/ast";
 
 /**
@@ -86,13 +86,11 @@ class PrettyPrinter {
                 return this.ppAstBouncedMessageType(typeRef);
             case "optional_type":
                 return this.ppAstOptionalType(typeRef);
-            default:
-                throw new Error(`Unknown TypeRef kind: ${typeRef}`);
         }
     }
 
     ppAstTypeId(typeRef: AstTypeId): string {
-        return `${typeRef.text}`;
+        return idText(typeRef);
     }
 
     ppAstOptionalType(typeRef: AstOptionalType): string {
@@ -210,8 +208,6 @@ class PrettyPrinter {
             case "null":
                 result = "null";
                 break;
-            default:
-                throw new Error(`Unsupported expression type: ${expr}`);
         }
 
         // Set parens when needed
@@ -247,6 +243,7 @@ class PrettyPrinter {
                 const nextEntry = array[index + 1];
                 if (
                     entry.kind === "constant_def" &&
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                     nextEntry?.kind === "constant_def"
                 ) {
                     return formattedEntry;
@@ -277,8 +274,6 @@ class PrettyPrinter {
                 return this.ppAstConstant(item);
             case "message_decl":
                 return this.ppAstMessage(item);
-            default:
-                return `Unknown Program Item Type: ${item}`;
         }
     }
 
@@ -319,6 +314,7 @@ class PrettyPrinter {
             .map((dec, index, array) => {
                 const formattedDec = this.ppTraitBody(dec);
                 const nextDec = array[index + 1];
+                /* eslint-disable @typescript-eslint/no-unnecessary-condition */
                 if (
                     ((dec.kind === "constant_def" ||
                         dec.kind === "constant_decl") &&
@@ -329,6 +325,7 @@ class PrettyPrinter {
                 ) {
                     return formattedDec;
                 }
+                /* eslint-enable @typescript-eslint/no-unnecessary-condition */
                 return formattedDec + "\n";
             })
             .join("\n");
@@ -353,8 +350,6 @@ class PrettyPrinter {
                 return this.ppAstFunctionDecl(item);
             case "constant_decl":
                 return this.ppAstConstDecl(item);
-            default:
-                return `Unknown Trait Body Type: ${item}`;
         }
     }
 
@@ -391,8 +386,10 @@ class PrettyPrinter {
                 const nextDec = array[index + 1];
                 if (
                     (dec.kind === "constant_def" &&
+                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                         nextDec?.kind === "constant_def") ||
                     (dec.kind === "field_decl" &&
+                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                         nextDec?.kind === "field_decl")
                 ) {
                     return formattedDec;
@@ -423,8 +420,6 @@ class PrettyPrinter {
                 return this.ppAstReceiver(declaration);
             case "constant_def":
                 return this.ppAstConstant(declaration);
-            default:
-                return `Unknown Contract Body Type: ${declaration}`;
         }
     }
 
@@ -440,9 +435,7 @@ class PrettyPrinter {
         const returnType = func.return
             ? `: ${this.ppAstType(func.return)}`
             : "";
-        const body = func.statements
-            ? ` ${this.ppStatementBlock(func.statements)}`
-            : ";";
+        const body = ` ${this.ppStatementBlock(func.statements)}`;
         return `${this.indent()}${attrsFormatted}fun ${this.ppAstId(func.name)}(${argsFormatted})${returnType}${body}`;
     }
 
@@ -515,10 +508,8 @@ class PrettyPrinter {
 
         this.increaseIndent();
         const stmtsFormatted = initFunc.statements
-            ? initFunc.statements
-                  .map((stmt) => this.ppAstStatement(stmt))
-                  .join("\n")
-            : "";
+            .map((stmt) => this.ppAstStatement(stmt))
+            .join("\n");
         this.decreaseIndent();
 
         return `${this.indent()}init(${argsFormatted}) {${stmtsFormatted == "" ? "" : "\n"}${stmtsFormatted}${stmtsFormatted == "" ? "" : "\n" + this.indent()}}`;
@@ -560,18 +551,16 @@ class PrettyPrinter {
                 return this.ppAstStatementTryCatch(
                     stmt as AstStatementTryCatch,
                 );
-            default:
-                return `Unknown Statement Type: ${stmt}`;
         }
     }
 
     ppStatementBlock(stmts: AstStatement[]): string {
         this.increaseIndent();
-        const stmntsFormatted = stmts
+        const stmtsFormatted = stmts
             .map((stmt) => this.ppAstStatement(stmt))
             .join("\n");
         this.decreaseIndent();
-        const result = `{\n${stmntsFormatted}\n${this.indent()}}`;
+        const result = `{\n${stmtsFormatted}\n${this.indent()}}`;
         return result;
     }
 
@@ -594,12 +583,6 @@ class PrettyPrinter {
     ppAstStatementExpression(statement: AstStatementExpression): string {
         return `${this.indent()}${this.ppAstExpression(statement.expression)};`;
     }
-
-    // ppASTLvalueRef(lvalues: ASTLvalueRef[]) {
-    //     return lvalues
-    //         .map((lvalue) =>lvalue.name)
-    //         .join(".");
-    // }
 
     ppAstId(id: AstId) {
         return id.text;

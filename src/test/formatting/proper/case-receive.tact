@@ -36,7 +36,7 @@ contract ReceiveTestContract {
     }
 
     external(m: MyMessage) {
-        aelf.a = m.value;
+        self.a = m.value;
         acceptMessage();
     }
 }
