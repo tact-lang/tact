@@ -52,7 +52,3 @@ native pow(base: Int, exp: Int): Int;
 
 @name(__tact_pow2)
 native pow2(exp: Int): Int;
-
-fun test123(): Int {
-    return 123;
-}

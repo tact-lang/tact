@@ -1926,7 +1926,6 @@ export function writeStdlib(ctx: WriterContext) {
             ctx.write(`
                 throw_unless(5, num > 0);
                 throw_unless(5, base > 1);
-                throw_unless(6, base > 1);
                 if (num < base) {
                     return 0;
                 }
