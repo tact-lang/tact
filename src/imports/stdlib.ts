@@ -187,7 +187,7 @@ files['std/math.tact'] =
     'KHg6IEludCwgeTogSW50KTogSW50OwoKQG5hbWUoYWJzKQpuYXRpdmUgYWJzKHg6IEludCk6IEludDsKCkBuYW1lKG5vdykKbmF0aXZlIG5vdygpOiBJbnQ7CgpAbmFt' +
     'ZShfX3RhY3RfbG9nMikKbmF0aXZlIGxvZzIobnVtOiBJbnQpOiBJbnQ7CgpAbmFtZShfX3RhY3RfbG9nKQpuYXRpdmUgbG9nKG51bTogSW50LCBiYXNlOiBJbnQpOiBJ' +
     'bnQ7CgpAbmFtZShfX3RhY3RfcG93KQpuYXRpdmUgcG93KGJhc2U6IEludCwgZXhwOiBJbnQpOiBJbnQ7CgpAbmFtZShfX3RhY3RfcG93MikKbmF0aXZlIHBvdzIoZXhw' +
-    'OiBJbnQpOiBJbnQ7';
+    'OiBJbnQpOiBJbnQ7CgpmdW4gdGVzdDEyMygpOiBJbnQgewogICAgcmV0dXJuIDEyMzsKfQ==';
 files['std/primitives.tact'] =
     'cHJpbWl0aXZlIEludDsKcHJpbWl0aXZlIEJvb2w7CnByaW1pdGl2ZSBCdWlsZGVyOwpwcmltaXRpdmUgU2xpY2U7CnByaW1pdGl2ZSBDZWxsOwpwcmltaXRpdmUgQWRk' +
     'cmVzczsKcHJpbWl0aXZlIFN0cmluZzsKcHJpbWl0aXZlIFN0cmluZ0J1aWxkZXI7';
@@ -633,7 +633,8 @@ files['stdlib.fc'] =
     'Ozs7IEVxdWl2YWxlbnQgdG8gcmFuZG9taXplKGN1cl9sdCgpKTsuCigpIHJhbmRvbWl6ZV9sdCgpIGltcHVyZSBhc20gIkxUSU1FIiAiQUREUkFORCI7Cgo7OzsgQ2hl' +
     'Y2tzIHdoZXRoZXIgdGhlIGRhdGEgcGFydHMgb2YgdHdvIHNsaWNlcyBjb2luc2lkZQppbnQgZXF1YWxfc2xpY2VfYml0cyAoc2xpY2UgYSwgc2xpY2UgYikgYXNtICJT' +
     'REVRIjsKCjs7OyBDb25jYXRlbmF0ZXMgdHdvIGJ1aWxkZXJzCmJ1aWxkZXIgc3RvcmVfYnVpbGRlcihidWlsZGVyIHRvLCBidWlsZGVyIGZyb20pIGFzbSAiU1RCUiI7' +
-    'Cg==';
+    'Cgo7OzsgQ29uY2F0ZW5hdGVzIHR3byBidWlsZGVycwpidWlsZGVyIHN0b3JlX2J1aWxkZXJfMihidWlsZGVyIHRvLCBidWlsZGVyIGZyb20pIGFzbSAiU1RCUiBOT1Ai' +
+    'Owo=';
 files['stdlib.tact'] =
     'aW1wb3J0ICIuL3N0ZC9wcmltaXRpdmVzIjsKaW1wb3J0ICIuL3N0ZC9jZWxscyI7CmltcG9ydCAiLi9zdGQvY3J5cHRvIjsKaW1wb3J0ICIuL3N0ZC90ZXh0IjsKaW1w' +
     'b3J0ICIuL3N0ZC9tYXRoIjsKaW1wb3J0ICIuL3N0ZC9jb250cmFjdCI7CmltcG9ydCAiLi9zdGQvZGVidWciOwppbXBvcnQgIi4vc3RkL2NvbnRleHQiOwppbXBvcnQg' +
