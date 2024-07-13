@@ -92,6 +92,12 @@ describe("strings", () => {
         expect(await contract.getStringWithEscapedChars4()).toEqual(
             "\u{2028}\u{2029} \u0044 \x41\x42\x43",
         );
+        expect(await contract.getStringWithEscapedChars5()).toEqual(
+            "\u{0} \u{00} \u{000} \u{0000} \u{00000} \u{000000} \u0000 \x00",
+        );
+        expect(await contract.getStringWithEscapedChars6()).toEqual(
+            `\x7F\x1F\x0A\x00 TACT`,
+        );
 
         expect(await contract.getStringWithAddress()).toEqual(
             "EQBKgXCNLPexWhs2L79kiARR1phGH1LwXxRbNsCFF9doc2lN",
