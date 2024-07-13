@@ -1,18 +1,28 @@
 import { CompilerContext } from "../context";
-import { TactConstEvalError, throwCompilationError } from "../errors";
+import {
+    TactConstEvalError,
+    throwCompilationError,
+    idTextErr,
+} from "../errors";
 import { evalConstantExpression } from "../constEval";
 import { resolveFuncTypeUnpack } from "./type";
 import { MapFunctions, StructFunctions, GlobalFunctions } from "./abi";
 import { getExpType } from "../types/resolveExpression";
 import { cast, funcIdOf, ops } from "./util";
-import { printTypeRef, TypeRef, Value } from "../types/types";
+import { printTypeRef, TypeRef, Value, FieldDescription } from "../types/types";
 import {
     getStaticConstant,
     getType,
     getStaticFunction,
     hasStaticConstant,
 } from "../types/resolveDescriptors";
-import { idText, AstExpression, AstId } from "../grammar/ast";
+import {
+    idText,
+    AstExpression,
+    AstId,
+    eqNames,
+    tryExtractPath,
+} from "../grammar/ast";
 import { FuncAstExpr, FuncAstUnaryOp, FuncAstIdExpr } from "../func/syntax";
 import { makeId, makeCall } from "../func/syntaxUtils";
 
@@ -183,7 +193,7 @@ export class ExpressionGen {
                     !isNull(this.tactExpr.right)
                 ) {
                     const call = makeCall("null?", [
-                        this.writeNestedExpression(this.tactExpr.right),
+                        this.makeExpr(this.tactExpr.right),
                     ]);
                     return this.tactExpr.op === "==" ? call : negate(call);
                 } else if (
@@ -191,7 +201,7 @@ export class ExpressionGen {
                     isNull(this.tactExpr.right)
                 ) {
                     const call = makeCall("null?", [
-                        this.writeNestedExpression(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.left),
                     ]);
                     return this.tactExpr.op === "==" ? call : negate(call);
                 }
@@ -210,8 +220,8 @@ export class ExpressionGen {
             ) {
                 if (lt.optional && rt.optional) {
                     const call = makeCall("__tact_slice_eq_bits_nullable", [
-                        this.writeNestedExpression(this.tactExpr.left),
-                        this.writeNestedExpression(this.tactExpr.right),
+                        this.makeExpr(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.right),
                     ]);
                     return this.tactExpr.op == "!=" ? negate(call) : call;
                 }
@@ -350,21 +360,15 @@ export class ExpressionGen {
             switch (this.tactExpr.op) {
                 case "!":
                 case "~": {
-                    const expr = this.writeNestedExpression(
-                        this.tactExpr.operand,
-                    );
+                    const expr = this.makeExpr(this.tactExpr.operand);
                     return negate(expr);
                 }
                 case "-": {
-                    const expr = this.writeNestedExpression(
-                        this.tactExpr.operand,
-                    );
+                    const expr = this.makeExpr(this.tactExpr.operand);
                     return addUnary("-", expr);
                 }
                 case "+": {
-                    const expr = this.writeNestedExpression(
-                        this.tactExpr.operand,
-                    );
+                    const expr = this.makeExpr(this.tactExpr.operand);
                     return addUnary("+", expr);
                 }
 
@@ -375,80 +379,84 @@ export class ExpressionGen {
                         const tt = getType(this.ctx, t.name);
                         if (tt.kind === "struct") {
                             return makeCall(ops.typeNotNull(tt.name), [
-                                this.writeNestedExpression(
-                                    this.tactExpr.operand,
-                                ),
+                                this.makeExpr(this.tactExpr.operand),
                             ]);
                         }
                     }
                     return makeCall("__tact_not_null", [
-                        this.writeNestedExpression(this.tactExpr.operand),
+                        this.makeExpr(this.tactExpr.operand),
                     ]);
                 }
             }
         }
 
-        //     //
-        //     // Field Access
-        //     // NOTE: this branch resolves "a.b", where "a" is an expression and "b" is a field name
-        //     //
         //
-        //     if (f.kind === "field_access") {
-        //         // Resolve the type of the expression
-        //         const src = getExpType(wCtx.ctx, f.aggregate);
-        //         if (
-        //             (src.kind !== "ref" || src.optional) &&
-        //             src.kind !== "ref_bounced"
-        //         ) {
-        //             throwCompilationError(
-        //                 `Cannot access field of non-struct type: "${printTypeRef(src)}"`,
-        //                 f.loc,
-        //             );
-        //         }
-        //         const srcT = getType(wCtx.ctx, src.name);
+        // Field Access
+        // NOTE: this branch resolves "a.b", where "a" is an expression and "b" is a field name
         //
-        //         // Resolve field
-        //         let fields: FieldDescription[];
-        //
-        //         fields = srcT.fields;
-        //         if (src.kind === "ref_bounced") {
-        //             fields = fields.slice(0, srcT.partialFieldCount);
-        //         }
-        //
-        //         const field = fields.find((v) => eqNames(v.name, f.field));
-        //         const cst = srcT.constants.find((v) => eqNames(v.name, f.field));
-        //         if (!field && !cst) {
-        //             throwCompilationError(
-        //                 `Cannot find field ${idTextErr(f.field)} in struct ${idTextErr(srcT.name)}`,
-        //                 f.field.loc,
-        //             );
-        //         }
-        //
-        //         if (field) {
-        //             // Trying to resolve field as a path
-        //             const path = tryExtractPath(f);
-        //             if (path) {
-        //                 // Prepare path
-        //                 const idd = writePathExpression(path);
-        //
-        //                 // Special case for structs
-        //                 if (field.type.kind === "ref") {
-        //                     const ft = getType(wCtx.ctx, field.type.name);
-        //                     if (ft.kind === "struct" || ft.kind === "contract") {
-        //                         return resolveFuncTypeUnpack(field.type, idd, wCtx);
-        //                     }
-        //                 }
-        //
-        //                 return idd;
-        //             }
-        //
-        //             // Getter instead of direct field access
-        //             return `${ops.typeField(srcT.name, field.name, wCtx)}(${writeExpression(f.aggregate, wCtx)})`;
-        //         } else {
-        //             return writeValue(cst!.value!, wCtx);
-        //         }
-        //     }
-        //
+        if (this.tactExpr.kind === "field_access") {
+            // Resolve the type of the expression
+            const src = getExpType(this.ctx, this.tactExpr.aggregate);
+            if (
+                (src.kind !== "ref" || src.optional) &&
+                src.kind !== "ref_bounced"
+            ) {
+                throwCompilationError(
+                    `Cannot access field of non-struct type: "${printTypeRef(src)}"`,
+                    this.tactExpr.loc,
+                );
+            }
+            const srcT = getType(this.ctx, src.name);
+
+            // Resolve field
+            let fields: FieldDescription[];
+
+            fields = srcT.fields;
+            if (src.kind === "ref_bounced") {
+                fields = fields.slice(0, srcT.partialFieldCount);
+            }
+
+            const fieldExpr = this.tactExpr.field;
+            const field = fields.find((v) => eqNames(v.name, fieldExpr));
+            const cst = srcT.constants.find((v) => eqNames(v.name, fieldExpr));
+            if (!field && !cst) {
+                throwCompilationError(
+                    `Cannot find field ${idTextErr(this.tactExpr.field)} in struct ${idTextErr(srcT.name)}`,
+                    this.tactExpr.field.loc,
+                );
+            }
+
+            if (field) {
+                // Trying to resolve field as a path
+                const path = tryExtractPath(this.tactExpr);
+                if (path) {
+                    // Prepare path
+                    const idd = writePathExpression(path);
+
+                    // Special case for structs
+                    if (field.type.kind === "ref") {
+                        const ft = getType(this.ctx, field.type.name);
+                        if (ft.kind === "struct" || ft.kind === "contract") {
+                            return makeId(
+                                resolveFuncTypeUnpack(
+                                    this.ctx,
+                                    field.type,
+                                    idd.value,
+                                ),
+                            );
+                        }
+                    }
+                    return idd;
+                }
+
+                // Getter instead of direct field access
+                return makeCall(ops.typeField(srcT.name, field.name), [
+                    this.makeExpr(this.tactExpr.aggregate),
+                ]);
+            } else {
+                return this.writeValue(cst!.value!);
+            }
+        }
 
         //
         // Static Function Call
@@ -479,7 +487,7 @@ export class ExpressionGen {
             // }
             const fun = makeId(ops.global(idText(this.tactExpr.function)));
             const args = this.tactExpr.args.map((argAst, i) =>
-                this.writeNestedCastedExpression(argAst, sf.params[i]!.type),
+                this.makeCastedExpr(argAst, sf.params[i]!.type),
             );
             return { kind: "call_expr", fun, args };
         }
@@ -574,10 +582,7 @@ export class ExpressionGen {
 
                 // Translate arguments
                 let argExprs = this.tactExpr.args.map((a, i) =>
-                    this.writeNestedCastedExpression(
-                        a,
-                        methodFun.params[i]!.type,
-                    ),
+                    this.makeCastedExpr(a, methodFun.params[i]!.type),
                 );
 
                 // Hack to replace a single struct argument to a tensor wrapper since otherwise
@@ -607,7 +612,7 @@ export class ExpressionGen {
                 }
 
                 // Generate function call
-                const selfExpr = this.writeNestedExpression(this.tactExpr.self);
+                const selfExpr = this.makeExpr(this.tactExpr.self);
                 if (methodFun.isMutating) {
                     if (
                         this.tactExpr.self.kind === "id" ||
@@ -693,7 +698,7 @@ export class ExpressionGen {
         throw Error(`Unknown expression: ${this.tactExpr.kind}`);
     }
 
-    private writeNestedExpression(src: AstExpression): FuncAstExpr {
+    private makeExpr(src: AstExpression): FuncAstExpr {
         return ExpressionGen.fromTact(this.ctx, src).writeExpression();
     }
 
@@ -702,10 +707,7 @@ export class ExpressionGen {
         return cast(this.ctx, expr, to, this.writeExpression());
     }
 
-    private writeNestedCastedExpression(
-        src: AstExpression,
-        to: TypeRef,
-    ): FuncAstExpr {
+    private makeCastedExpr(src: AstExpression, to: TypeRef): FuncAstExpr {
         return ExpressionGen.fromTact(this.ctx, src).writeCastedExpression(to);
     }
 }
