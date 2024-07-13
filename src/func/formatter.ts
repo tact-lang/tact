@@ -2,6 +2,7 @@ import {
     FuncAstNode,
     FuncType,
     FuncAstIdExpr,
+FuncAstAssignExpr,
     FuncAstPragma,
     FuncAstComment,
     FuncAstInclude,
@@ -86,6 +87,10 @@ export class FuncFormatter {
                 return this.formatGlobalVariable(node as FuncAstGlobalVariable);
             case "call_expr":
                 return this.formatCallExpr(node as FuncAstCallExpr);
+            case "assign_expr":
+                return this.formatAssignExpr(
+                    node as FuncAstAssignExpr,
+                );
             case "augmented_assign_expr":
                 return this.formatAugmentedAssignExpr(
                     node as FuncAstAugmentedAssignExpr,
@@ -211,6 +216,14 @@ export class FuncFormatter {
         const fun = this.dump(node.fun);
         const args = node.args.map((arg) => this.dump(arg)).join(", ");
         return `${fun}(${args})`;
+    }
+
+    private static formatAssignExpr(
+        node: FuncAstAssignExpr,
+    ): string {
+        const lhs = this.dump(node.lhs);
+        const rhs = this.dump(node.rhs);
+        return `${lhs} = ${rhs}`;
     }
 
     private static formatAugmentedAssignExpr(

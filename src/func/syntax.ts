@@ -112,6 +112,12 @@ export type FuncAstCallExpr = {
     args: FuncAstExpr[];
 };
 
+export type FuncAstAssignExpr = {
+    kind: "assign_expr";
+    lhs: FuncAstExpr;
+    rhs: FuncAstExpr;
+};
+
 // Augmented assignment: a += 42;
 export type FuncAstAugmentedAssignExpr = {
     kind: "augmented_assign_expr";
@@ -314,6 +320,7 @@ export type FuncAstSimpleExpr =
     | FuncAstPrimitiveTypeExpr;
 export type FuncAstCompositeExpr =
     | FuncAstCallExpr
+    | FuncAstAssignExpr
     | FuncAstAugmentedAssignExpr
     | FuncAstTernaryExpr
     | FuncAstBinaryExpr
