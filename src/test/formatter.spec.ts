@@ -18,27 +18,20 @@ describe("formatter", () => {
     );
     const outputDir = join(__dirname, "formatting", "output");
     fs.mkdirSync(outputDir, { recursive: true });
-    it.each(fs.readdirSync(join(__dirname, "/formatting/proper/")))(
+    it.each(fs.readdirSync(join(__dirname, "formatting", "proper")))(
         "shouldn't change AST",
         (file) => {
-            const filePath = __dirname + "/formatting/proper/" + file;
+            const filePath = join(__dirname, "formatting", "proper", file);
             const src = fs.readFileSync(filePath, "utf-8");
             const ast = parse(src, filePath, "user");
             //TODO: change for proper recursive removal
             const astStr = JSONBig.stringify(ast).replace(/"id":[0-9]+,/g, "");
 
             const formatted = formatAst(ast);
-            fs.openSync(join(__dirname, "formatting", "output", file), "w");
-            fs.writeFileSync(
-                join(__dirname, "formatting", "output", file),
-                formatted,
-                { flag: "w" },
-            );
-            const astFormatted = parse(
-                formatted,
-                __dirname + "/formatting/output/" + file,
-                "user",
-            );
+            const fileName = join(outputDir, file);
+            fs.openSync(fileName, "w");
+            fs.writeFileSync(fileName, formatted, { flag: "w" });
+            const astFormatted = parse(formatted, fileName, "user");
             //TODO: change for proper recursive removal
             const astFormattedStr = JSONBig.stringify(astFormatted).replace(
                 /"id":[0-9]+,/g,
