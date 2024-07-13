@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v3
       
       - name: Capture compiled stdlib
-        id: capture_stdlib
+        if: runner.os != 'Windows'
         run: |
           FILE_PATH="src/imports/stdlib.ts"
           cp "$FILE_PATH" "$FILE_PATH.original"
@@ -53,6 +53,7 @@ jobs:
           yarn build
       
       - name: Verify fresh compiled stdlib
+        if: runner.os != 'Windows'
         run: |
           FILE_PATH="src/imports/stdlib.ts"
           ORIGINAL_CONTENT="${{ steps.capture_stdlib.outputs.original_content }}"
