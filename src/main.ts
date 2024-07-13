@@ -1,3 +1,5 @@
+process.setMaxListeners(0);
+
 export {
     Config,
     ConfigProject,
