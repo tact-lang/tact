@@ -25,8 +25,7 @@ jobs:
         id: capture_stdlib
         run: |
           FILE_PATH="src/imports/stdlib.ts"
-          ORIGINAL_CONTENT=$(cat "$FILE_PATH")
-          echo "::set-output name=original_content::$ORIGINAL_CONTENT"
+          cp "$FILE_PATH" "$FILE_PATH.original"
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -47,12 +46,11 @@ jobs:
         run: |
           yarn cross-env echo $NODE_ENV
 
-      - name: Build and Test Tact compiler
+      - name: Build Tact compiler
         run: |
           yarn clean
           yarn gen
           yarn build
-          yarn coverage
       
       - name: Verify fresh compiled stdlib
         run: |
@@ -60,10 +58,14 @@ jobs:
           ORIGINAL_CONTENT="${{ steps.capture_stdlib.outputs.original_content }}"
           CURRENT_CONTENT=$(cat "$FILE_PATH")
 
-          if [ "$CURRENT_CONTENT" != "$ORIGINAL_CONTENT" ]; then
+          if ! cmp -s "$FILE_PATH" "$FILE_PATH.original"; then
             echo "The stdlib.ts content does not match after compilation. Failing the workflow."
             exit 1
           fi
+      
+      - name: Test Tact compiler
+        run: |
+          yarn coverage
 
       - name: Check there are no errors reported by ESLint
         run: |
