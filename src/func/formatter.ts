@@ -2,7 +2,7 @@ import {
     FuncAstNode,
     FuncType,
     FuncAstIdExpr,
-FuncAstAssignExpr,
+    FuncAstAssignExpr,
     FuncAstPragma,
     FuncAstComment,
     FuncAstInclude,
@@ -88,9 +88,7 @@ export class FuncFormatter {
             case "call_expr":
                 return this.formatCallExpr(node as FuncAstCallExpr);
             case "assign_expr":
-                return this.formatAssignExpr(
-                    node as FuncAstAssignExpr,
-                );
+                return this.formatAssignExpr(node as FuncAstAssignExpr);
             case "augmented_assign_expr":
                 return this.formatAugmentedAssignExpr(
                     node as FuncAstAugmentedAssignExpr,
@@ -167,9 +165,7 @@ export class FuncFormatter {
     private static formatConditionStmt(node: FuncAstConditionStmt): string {
         const condition = node.condition ? this.dump(node.condition) : "";
         const ifnot = node.ifnot ? "ifnot" : "if";
-        const thenBlock = node.body
-            .map((stmt) => this.dump(stmt))
-            .join("\n");
+        const thenBlock = node.body.map((stmt) => this.dump(stmt)).join("\n");
         const elseBlock = node.else ? this.formatConditionStmt(node.else) : "";
         return `${ifnot} ${condition} {\n${thenBlock}\n}${elseBlock ? ` else {\n${elseBlock}\n}` : ""}`;
     }
@@ -218,9 +214,7 @@ export class FuncFormatter {
         return `${fun}(${args})`;
     }
 
-    private static formatAssignExpr(
-        node: FuncAstAssignExpr,
-    ): string {
+    private static formatAssignExpr(node: FuncAstAssignExpr): string {
         const lhs = this.dump(node.lhs);
         const rhs = this.dump(node.rhs);
         return `${lhs} = ${rhs}`;
@@ -236,8 +230,8 @@ export class FuncFormatter {
 
     private static formatTernaryExpr(node: FuncAstTernaryExpr): string {
         const cond = this.dump(node.cond);
-        const body = this.dump(node.body);
-        const elseExpr = this.dump(node.else);
+        const body = this.dump(node.trueExpr);
+        const elseExpr = this.dump(node.falseExpr);
         return `${cond} ? ${body} : ${elseExpr}`;
     }
 

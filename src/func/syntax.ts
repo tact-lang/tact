@@ -128,8 +128,8 @@ export type FuncAstAugmentedAssignExpr = {
 export type FuncAstTernaryExpr = {
     kind: "ternary_expr";
     cond: FuncAstExpr;
-    body: FuncAstExpr;
-    else: FuncAstExpr;
+    trueExpr: FuncAstExpr;
+    falseExpr: FuncAstExpr;
 };
 
 export type FuncAstBinaryExpr = {
