@@ -602,9 +602,9 @@ function evalBuiltins(
     }
 }
 
-function interpretEscapeSequences(stringLiteral: string) {
+function interpretEscapeSequences(stringLiteral: string, source: SrcInfo) {
     return stringLiteral.replace(
-        /\\\\|\\"|\\n|\\r|\\t|\\v|\\b|\\f|\\u{([0-9A-Fa-f]+)}|\\u([0-9A-Fa-f]{4})|\\x([0-9A-Fa-f]{2})/g,
+        /\\\\|\\"|\\n|\\r|\\t|\\v|\\b|\\f|\\u{([0-9A-Fa-f]{1,6})}|\\u([0-9A-Fa-f]{4})|\\x([0-9A-Fa-f]{2})/g,
         (match, unicodeCodePoint, unicodeEscape, hexEscape) => {
             switch (match) {
                 case "\\\\":
@@ -627,6 +627,12 @@ function interpretEscapeSequences(stringLiteral: string) {
                     // Handle Unicode code point escape
                     if (unicodeCodePoint) {
                         const codePoint = parseInt(unicodeCodePoint, 16);
+                        if (codePoint > 0x10ffff) {
+                            throwErrorConstEval(
+                                `unicode code point is outside of valid range 000000-10FFFF: ${stringLiteral}`,
+                                source,
+                            );
+                        }
                         return String.fromCodePoint(codePoint);
                     }
                     // Handle Unicode escape
@@ -679,7 +685,10 @@ export function evalConstantExpression(
         case "number":
             return ensureInt(ast.value, ast.loc);
         case "string":
-            return ensureString(interpretEscapeSequences(ast.value), ast.loc);
+            return ensureString(
+                interpretEscapeSequences(ast.value, ast.loc),
+                ast.loc,
+            );
         case "op_unary":
             return evalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
         case "op_binary":
