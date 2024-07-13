@@ -660,6 +660,26 @@ Line 9, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-does-not-exist 1`] = `
+"<unknown>:5:9: Unable to resolve id 'nonExistentVariable'
+Line 5, col 9:
+  4 |     receive() {
+> 5 |         nonExistentVariable = 42;
+              ^~~~~~~~~~~~~~~~~~~
+  6 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-does-not-exist2 1`] = `
+"<unknown>:13:9: Unable to resolve id 'someField', did you mean 'self.someField'?
+Line 13, col 9:
+  12 |     receive() {
+> 13 |         someField = 42;
+               ^~~~~~~~~
+  14 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-catch-param-does-not-shadow-outer-var 1`] = `
 "<unknown>:8:14: Variable already exists: "e"
 Line 8, col 14:
@@ -671,7 +691,7 @@ Line 8, col 14:
 `;
 
 exports[`resolveStatements should fail statements for var-scope-catch-param-is-not-visible-in-try 1`] = `
-"<unknown>:5:16: Unable to resolve id e
+"<unknown>:5:16: Unable to resolve id 'e'
 Line 5, col 16:
   4 |     try {
 > 5 |         return e;
@@ -681,7 +701,7 @@ Line 5, col 16:
 `;
 
 exports[`resolveStatements should fail statements for var-scope-foreach-internal-var-does-not-escape 1`] = `
-"<unknown>:8:12: Unable to resolve id x
+"<unknown>:8:12: Unable to resolve id 'x'
 Line 8, col 12:
   7 |     }
 > 8 |     return x;
@@ -691,7 +711,7 @@ Line 8, col 12:
 `;
 
 exports[`resolveStatements should fail statements for var-scope-foreach-val-does-not-escape 1`] = `
-"<unknown>:8:12: Unable to resolve id v
+"<unknown>:8:12: Unable to resolve id 'v'
 Line 8, col 12:
   7 |     }
 > 8 |     return v;
@@ -721,7 +741,7 @@ Line 5, col 17:
 `;
 
 exports[`resolveStatements should fail statements for var-scope-local-catch-param-does-not-escape 1`] = `
-"<unknown>:9:12: Unable to resolve id e
+"<unknown>:9:12: Unable to resolve id 'e'
 Line 9, col 12:
    8 |     }
 >  9 |     return e;
@@ -731,7 +751,7 @@ Line 9, col 12:
 `;
 
 exports[`resolveStatements should fail statements for var-scope-local-loop-var-does-not-escape 1`] = `
-"<unknown>:9:12: Unable to resolve id c
+"<unknown>:9:12: Unable to resolve id 'c'
 Line 9, col 12:
    8 |     }
 >  9 |     return c;

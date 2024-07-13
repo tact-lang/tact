@@ -749,6 +749,7 @@ export function resolveExpression(
                             exp.loc,
                         );
                     }
+
                     // Handle static struct method calls
                     try {
                         const t = getType(ctx, exp.text);
@@ -763,8 +764,25 @@ export function resolveExpression(
                         // Ignore
                     }
 
+                    // Handle possible field access and suggest to use self.field instead
+                    const self = sctx.vars.get("self");
+                    if (self && self.kind === "ref") {
+                        const t = getType(ctx, self.name);
+                        if (t.kind === "contract") {
+                            const field = t.fields.find(
+                                (f) => f.name == exp.text,
+                            );
+                            if (field) {
+                                throwCompilationError(
+                                    `Unable to resolve id '${exp.text}', did you mean 'self.${exp.text}'?`,
+                                    exp.loc,
+                                );
+                            }
+                        }
+                    }
+
                     throwCompilationError(
-                        "Unable to resolve id " + exp.text,
+                        `Unable to resolve id '${exp.text}'`,
                         exp.loc,
                     );
                 } else {
