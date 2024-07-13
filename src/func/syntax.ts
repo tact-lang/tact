@@ -35,7 +35,6 @@ export type FuncAstBinaryOp =
     | "*"
     | "/"
     | "%"
-    | "="
     | "<"
     | ">"
     | "&"
