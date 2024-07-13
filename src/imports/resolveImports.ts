@@ -15,9 +15,15 @@ export function resolveImports(args: {
     // const stdlibFunc = args.stdlib.readFile(stdlibFuncPath).toString();
 
     const stdlibTactPath = args.stdlib.resolve("stdlib.tact");
+    if (!args.stdlib.exists(stdlibTactPath)) {
+        throw new Error(`Could not find stdlib.tact at ${stdlibTactPath}`);
+    }
     const stdlibTact = args.stdlib.readFile(stdlibTactPath).toString();
 
     const codePath = args.project.resolve(args.entrypoint);
+    if (!args.project.exists(codePath)) {
+        throw new Error(`Could not find entrypoint ${args.entrypoint}`);
+    }
     const code = args.project.readFile(codePath).toString();
 
     //
@@ -28,7 +34,7 @@ export function resolveImports(args: {
         [];
     const importedFunc: { code: string; path: string; origin: ItemOrigin }[] =
         [];
-    const processed = new Set<string>();
+    const processed: Set<string> = new Set();
     const pending: { code: string; path: string; origin: ItemOrigin }[] = [];
     function processImports(source: string, path: string, origin: ItemOrigin) {
         const imp = parseImports(source, path, origin);
@@ -58,6 +64,9 @@ export function resolveImports(args: {
             // Load code
             const vfs =
                 resolved.source === "project" ? args.project : args.stdlib;
+            if (!vfs.exists(resolved.path)) {
+                throw new Error(`Could not find source file ${resolved.path}`);
+            }
             const code: string = vfs.readFile(resolved.path).toString();
 
             // Add to imports

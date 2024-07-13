@@ -32,7 +32,7 @@ export class WriterContext {
     readonly ctx: CompilerContext;
     #name: string;
     #functions: Map<string, WrittenFunction> = new Map();
-    #functionsRendering = new Set<string>();
+    #functionsRendering: Set<string> = new Set();
     #pendingWriter: Writer | null = null;
     #pendingCode: Body | null = null;
     #pendingDepends: Set<string> | null = null;
@@ -43,7 +43,7 @@ export class WriterContext {
     #pendingContext: string | null = null;
     #nextId = 0;
     // #headers: string[] = [];
-    #rendered = new Set<string>();
+    #rendered: Set<string> = new Set();
 
     constructor(ctx: CompilerContext, name: string) {
         this.ctx = ctx;
@@ -69,7 +69,7 @@ export class WriterContext {
 
     extract(debug: boolean = false) {
         // Check dependencies
-        const missing = new Map<string, string[]>();
+        const missing: Map<string, string[]> = new Map();
         for (const f of this.#functions.values()) {
             for (const d of f.depends) {
                 if (!this.#functions.has(d)) {
@@ -94,7 +94,7 @@ export class WriterContext {
 
         // Remove unused
         if (!debug) {
-            const used = new Set<string>();
+            const used: Set<string> = new Set();
             const visit = (name: string) => {
                 used.add(name);
                 const f = this.#functions.get(name)!;
@@ -191,6 +191,7 @@ export class WriterContext {
         if (!signature && name !== "$main") {
             throw new Error(`Function "${name}" signature not set`);
         }
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!code) {
             throw new Error(`Function "${name}" body not set`);
         }

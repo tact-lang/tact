@@ -5,6 +5,8 @@ const optionsSchema = z
         debug: z.boolean().optional(),
         masterchain: z.boolean().optional(),
         external: z.boolean().optional(),
+        ipfsAbiGetter: z.boolean().optional(),
+        interfacesGetter: z.boolean().optional(),
         experimental: z
             .object({
                 inline: z.boolean().optional(),

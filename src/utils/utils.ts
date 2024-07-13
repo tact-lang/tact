@@ -2,8 +2,8 @@ import { crc16 } from "./crc16";
 
 export function topologicalSort<T>(src: T[], references: (src: T) => T[]) {
     const result: T[] = [];
-    const visited = new Set<T>();
-    const visiting = new Set<T>();
+    const visited: Set<T> = new Set();
+    const visiting: Set<T> = new Set();
     const visit = (src: T) => {
         if (visiting.has(src)) {
             throw Error("Cycle detected");
@@ -22,18 +22,6 @@ export function topologicalSort<T>(src: T[], references: (src: T) => T[]) {
         visit(s);
     }
     return result;
-}
-
-export function deepFreeze<T>(obj: T) {
-    const propNames = Object.getOwnPropertyNames(obj);
-    for (const name of propNames) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const value = (obj as any)[name];
-        if (value && typeof value === "object") {
-            deepFreeze(value);
-        }
-    }
-    return Object.freeze(obj);
 }
 
 export function getMethodId(name: string) {

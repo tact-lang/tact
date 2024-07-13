@@ -1,8 +1,8 @@
 import normalize from "path-normalize";
 import { Cell } from "@ton/core";
 import { Config, Options } from "./config/parseConfig";
-import { consoleLogger } from "./logger";
-import { PackageFileFormat, run, TactLogger } from "./main";
+import { Logger } from "./logger";
+import { PackageFileFormat, run } from "./main";
 import { fileFormat } from "./packaging/fileFormat";
 import { getCompilerVersion } from "./pipeline/version";
 
@@ -10,7 +10,7 @@ export type VerifyResult =
     | {
           ok: true;
           package: PackageFileFormat;
-          files: { [key: string]: string };
+          files: Record<string, string>;
       }
     | {
           ok: false;
@@ -24,9 +24,9 @@ export type VerifyResult =
 
 export async function verify(args: {
     pkg: string;
-    logger?: TactLogger | null | undefined;
+    logger?: Logger | null | undefined;
 }): Promise<VerifyResult> {
-    const logger = args.logger || consoleLogger;
+    const logger = args.logger ?? new Logger();
 
     // Loading package
     let unpacked: PackageFileFormat;
@@ -34,6 +34,10 @@ export async function verify(args: {
         const data = JSON.parse(args.pkg);
         unpacked = fileFormat.parse(data);
     } catch (e) {
+        return { ok: false, error: "invalid-package-format" };
+    }
+
+    if (unpacked.sources === undefined) {
         return { ok: false, error: "invalid-package-format" };
     }
 
@@ -69,13 +73,13 @@ export async function verify(args: {
     };
 
     // Build
-    const files: { [key: string]: string } = {};
-    for (const s in unpacked.sources) {
-        files["contract/" + s] = unpacked.sources[s];
+    const files: Record<string, string> = {};
+    for (const [name, source] of Object.entries(unpacked.sources)) {
+        files["contract/" + name] = source;
     }
 
     const result = await run({ config, files, logger });
-    if (!result) {
+    if (!result.ok) {
         return { ok: false, error: "compilation-failed" };
     }
 

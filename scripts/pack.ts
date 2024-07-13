@@ -23,7 +23,7 @@ const stdlibFiles = glob.sync(
 const dirPrefixToRemove =
     posixNormalize(path.resolve(__dirname, "..", "stdlib")) + "/"; // Remove also the leading slash
 let output: string = "";
-output = "const files: { [key: string]: string } = {};\n";
+output = "const files: Record<string, string> = {};\n";
 for (const f of stdlibFiles) {
     let code = fs.readFileSync(f).toString("base64");
     const name = f.replace(dirPrefixToRemove, "");

@@ -3,7 +3,8 @@ import fs from "fs";
 import { ConfigProject, Config, parseConfig } from "./config/parseConfig";
 import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 import { build } from "./pipeline/build";
-import { consoleLogger } from "./logger";
+import { LogLevel, Logger } from "./logger";
+import { TactErrorCollection } from "./errors";
 
 type AdditionalCliOptions = {
     mode?: ConfigProject["mode"];
@@ -14,16 +15,19 @@ type ConfigWithRootPath = Config & {
     singleFile: boolean;
 };
 
-async function configForSingleFile(
-    fileName: string,
-): Promise<ConfigWithRootPath> {
+function configForSingleFile(fileName: string): ConfigWithRootPath {
     return {
         projects: [
             {
                 name: path.basename(fileName, ".tact"),
                 path: fileName,
                 output: path.dirname(fileName),
-                options: { debug: true, external: true },
+                options: {
+                    debug: true,
+                    external: true,
+                    ipfsAbiGetter: false,
+                    interfacesGetter: false,
+                },
                 mode: "full",
             },
         ],
@@ -32,10 +36,10 @@ async function configForSingleFile(
     };
 }
 
-async function loadConfig(
+function loadConfig(
     fileName?: string,
     configPath?: string,
-): Promise<ConfigWithRootPath | null> {
+): ConfigWithRootPath | null {
     if (fileName) return configForSingleFile(fileName);
 
     if (!configPath) return null;
@@ -64,11 +68,21 @@ export async function run(args: {
     configPath?: string;
     projectNames?: string[];
     additionalCliOptions?: AdditionalCliOptions;
+    suppressLog?: boolean;
 }) {
     const configWithRootPath = await loadConfig(args.fileName, args.configPath);
     if (!configWithRootPath) {
-        return false;
+        return {
+            ok: false,
+            error: [
+                new Error(
+                    `Unable to load config from path: ${args.configPath}`,
+                ),
+            ],
+        };
     }
+
+    const logger = new Logger(args.suppressLog ? LogLevel.NONE : LogLevel.INFO);
 
     // Resolve projects
     let projects = configWithRootPath.projects;
@@ -76,8 +90,12 @@ export async function run(args: {
         // Check that all project names are valid
         for (const pp of args.projectNames) {
             if (!projects.find((v) => v.name === pp)) {
-                console.warn("Unable to find project " + pp);
-                return false;
+                const message = "Unable to find project " + pp;
+                logger.warn(message);
+                return {
+                    ok: false,
+                    error: [new Error(message)],
+                };
             }
         }
 
@@ -85,12 +103,14 @@ export async function run(args: {
         projects = projects.filter((v) => args.projectNames!.includes(v.name));
     }
     if (projects.length === 0) {
-        console.warn("No projects to compile");
-        return false;
+        const message = "No projects to compile";
+        console.warn(message);
+        return { ok: false, error: [new Error(message)] };
     }
 
     // Compile
     let success = true;
+    let errorMessages: TactErrorCollection[] = [];
     const project = createNodeFileSystem(
         configWithRootPath.rootPath as string,
         false,
@@ -100,13 +120,10 @@ export async function run(args: {
         false,
     ); // Improves developer experience
     for (const config of projects) {
-        consoleLogger.log("💼 Compiling project " + config.name + "...");
+        logger.info(`💼 Compiling project ${config.name} ...`);
         let cliConfig = { ...config };
 
-        if (
-            args.additionalCliOptions !== undefined &&
-            args.additionalCliOptions.mode !== undefined
-        ) {
+        if (args.additionalCliOptions?.mode !== undefined) {
             cliConfig = { ...config, ...args.additionalCliOptions };
         }
 
@@ -114,11 +131,14 @@ export async function run(args: {
             config: cliConfig,
             project,
             stdlib,
-            logger: consoleLogger,
+            logger,
         });
-        success = success && built;
+        success = success && built.ok;
+        if (!built.ok && built.error.length > 0) {
+            errorMessages = [...errorMessages, ...built.error];
+        }
     }
-    return success;
+    return { ok: success, error: errorMessages };
 }
 
 export { createNodeFileSystem } from "./vfs/createNodeFileSystem";

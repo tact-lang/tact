@@ -18,7 +18,15 @@ export function enabledExternals(ctx: CompilerContext) {
     return featureEnabled(ctx, "external");
 }
 
-export function featureEnabled(ctx: CompilerContext, key: string) {
+export function enabledIpfsAbiGetter(ctx: CompilerContext) {
+    return featureEnabled(ctx, "ipfsAbiGetter");
+}
+
+export function enabledInterfacesGetter(ctx: CompilerContext) {
+    return featureEnabled(ctx, "interfacesGetter");
+}
+
+function featureEnabled(ctx: CompilerContext, key: string) {
     return featureStore.get(ctx, key) === true;
 }
 

@@ -6,11 +6,6 @@ export function writeString(str: string, ctx: WriterContext) {
     return writeRawSlice("string", `String "${str}"`, cell, ctx);
 }
 
-export function writeStringCell(str: string, ctx: WriterContext) {
-    const cell = beginCell().storeStringTail(str).endCell();
-    return writeRawCell("string", `String "${str}"`, cell, ctx);
-}
-
 export function writeComment(str: string, ctx: WriterContext) {
     const cell = beginCell().storeUint(0, 32).storeStringTail(str).endCell();
     return writeRawCell("comment", `Comment "${str}"`, cell, ctx);
@@ -49,7 +44,7 @@ function writeRawSlice(
     ctx.markRendered(k);
     ctx.fun(`__gen_slice_${prefix}_${h}`, () => {
         ctx.signature(`slice __gen_slice_${prefix}_${h}()`);
-        ctx.comment(`${comment}`);
+        ctx.comment(comment);
         ctx.context("constants");
         ctx.asm(`asm "B{${t}} B>boc <s PUSHSLICE"`);
     });
@@ -71,7 +66,7 @@ function writeRawCell(
     ctx.markRendered(k);
     ctx.fun(`__gen_cell_${prefix}_${h}`, () => {
         ctx.signature(`cell __gen_cell_${prefix}_${h}()`);
-        ctx.comment(`${comment}`);
+        ctx.comment(comment);
         ctx.context("constants");
         ctx.asm(`asm "B{${t}} B>boc PUSHREF"`);
     });

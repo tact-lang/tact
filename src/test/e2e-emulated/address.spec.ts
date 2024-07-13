@@ -2,24 +2,12 @@ import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { AddressTester } from "./contracts/output/address_AddressTester";
-import { consoleLogger } from "../../logger";
 
 describe("address", () => {
-    beforeAll(() => {
-        jest.spyOn(consoleLogger, "error").mockImplementation(() => {});
-    });
-
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
 
-    afterAll(() => {
-        (consoleLogger.error as jest.Mock).mockRestore();
-    });
-
-    afterEach(() => {
-        (consoleLogger.error as jest.Mock).mockClear();
-    });
     it("should implement addresses correctly", async () => {
         // Init
         const system = await ContractSystem.create();

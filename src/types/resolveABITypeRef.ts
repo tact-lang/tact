@@ -21,7 +21,10 @@ import {
 } from "../errors";
 import { TypeRef } from "./types";
 
-type FormatDef = { [key: string]: { type: string; format: string | number } };
+type FormatDef = Record<
+    string,
+    { type: string; format: string | number } | undefined
+>;
 
 const intFormats: FormatDef = {
     int8: { type: "int", format: 8 },
@@ -88,8 +91,7 @@ export function resolveABIType(src: AstFieldDecl): ABITypeRef {
         const typeId: AstTypeId =
             src.type.kind === "type_id"
                 ? src.type
-                : src.type.kind === "optional_type" &&
-                    src.type.typeArg.kind == "type_id"
+                : src.type.typeArg.kind === "type_id"
                   ? src.type.typeArg
                   : throwInternalCompilerError(
                         "Only optional type identifiers are supported now",
@@ -156,21 +158,19 @@ export function resolveABIType(src: AstFieldDecl): ABITypeRef {
         }
         if (isSlice(typeId)) {
             if (src.as) {
-                if (src.as) {
-                    const fmt = sliceFormats[idText(src.as)];
-                    if (!fmt) {
-                        throwCompilationError(
-                            `Unsupported format ${idTextErr(src.as)}`,
-                            src.loc,
-                        );
-                    }
-                    return {
-                        kind: "simple",
-                        type: fmt.type,
-                        optional: src.type.kind === "optional_type",
-                        format: fmt.format,
-                    };
+                const fmt = sliceFormats[idText(src.as)];
+                if (!fmt) {
+                    throwCompilationError(
+                        `Unsupported format ${idTextErr(src.as)}`,
+                        src.loc,
+                    );
                 }
+                return {
+                    kind: "simple",
+                    type: fmt.type,
+                    optional: src.type.kind === "optional_type",
+                    format: fmt.format,
+                };
             }
             return {
                 kind: "simple",
@@ -180,21 +180,19 @@ export function resolveABIType(src: AstFieldDecl): ABITypeRef {
         }
         if (isBuilder(typeId)) {
             if (src.as) {
-                if (src.as) {
-                    const fmt = builderFormats[idText(src.as)];
-                    if (!fmt) {
-                        throwCompilationError(
-                            `Unsupported format ${idTextErr(src.as)}`,
-                            src.loc,
-                        );
-                    }
-                    return {
-                        kind: "simple",
-                        type: fmt.type,
-                        optional: src.type.kind === "optional_type",
-                        format: fmt.format,
-                    };
+                const fmt = builderFormats[idText(src.as)];
+                if (!fmt) {
+                    throwCompilationError(
+                        `Unsupported format ${idTextErr(src.as)}`,
+                        src.loc,
+                    );
                 }
+                return {
+                    kind: "simple",
+                    type: fmt.type,
+                    optional: src.type.kind === "optional_type",
+                    format: fmt.format,
+                };
             }
             return {
                 kind: "simple",

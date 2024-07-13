@@ -72,14 +72,14 @@ export const dummySrcInfo: SrcInfo = new SrcInfo(DUMMY_INTERVAL, null, "user");
 
 let currentFile: string | null = null;
 
-export function inFile<T>(path: string, callback: () => T) {
+function inFile<T>(path: string, callback: () => T) {
     currentFile = path;
     const r = callback();
     currentFile = null;
     return r;
 }
 
-export function createRef(s: Node): SrcInfo {
+function createRef(s: Node): SrcInfo {
     return new SrcInfo(s.source, currentFile, ctx!.origin);
 }
 
@@ -89,8 +89,8 @@ function unwrapOptNode<T>(
     optional: IterationNode,
     f: (n: Node) => T,
 ): T | null {
-    const optNode = optional.children[0];
-    return optNode ? f(optNode) : null;
+    const optNode = optional.children[0] as Node | undefined;
+    return optNode !== undefined ? f(optNode) : null;
 }
 
 const semantics = tactGrammar.createSemantics();
@@ -108,7 +108,7 @@ semantics.addOperation<AstNode>("astOfModule", {
 semantics.addOperation<AstNode>("astOfImport", {
     Import(_importKwd, path, _semicolon) {
         const pathAST = path.astOfExpression() as AstString;
-        if (pathAST.value.indexOf("\\") >= 0) {
+        if (pathAST.value.includes("\\")) {
             throwCompilationError(
                 'Import path can\'t contain "\\"',
                 createRef(path),
@@ -363,7 +363,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         receiverBody,
         _rbrace,
     ) {
-        const optParam = optParameter.children[0];
+        const optParam = optParameter.children[0] as Node | undefined;
         const selector: AstReceiverKind = optParam
             ? {
                   kind: "internal-simple",
@@ -421,7 +421,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         receiverBody,
         _rbrace,
     ) {
-        const optParam = optParameter.children[0];
+        const optParam = optParameter.children[0] as Node | undefined;
         const selector: AstReceiverKind = optParam
             ? {
                   kind: "external-simple",
@@ -667,7 +667,9 @@ semantics.addOperation<AstNode>("astOfStatement", {
                     op = "^";
                     break;
                 default:
-                    throw "Internal compiler error: unreachable augmented assignment operator. Please report at https://github.com/tact-lang/tact/issues";
+                    throw Error(
+                        "Internal compiler error: unreachable augmented assignment operator. Please report at https://github.com/tact-lang/tact/issues",
+                    );
             }
             return createAstNode({
                 kind: "statement_augmentedassign",
