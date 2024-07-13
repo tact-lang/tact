@@ -13,10 +13,23 @@ import {
     hasStaticConstant,
 } from "../types/resolveDescriptors";
 import { idText, AstExpression } from "../grammar/ast";
-import { FuncAstExpr, FuncAstIdExpr, FuncAstCallExpr } from "../func/syntax";
+import { FuncAstExpr, FuncAstUnaryOp } from "../func/syntax";
+import { makeId, makeCall } from "../func/syntaxUtils";
 
 function isNull(f: AstExpression): boolean {
     return f.kind === "null";
+}
+
+function addUnary(op: FuncAstUnaryOp, expr: FuncAstExpr): FuncAstExpr {
+    return {
+        kind: "unary_expr",
+        op,
+        value: expr,
+    };
+}
+
+function negate(expr: FuncAstExpr): FuncAstExpr {
+    return addUnary("~", expr);
 }
 
 /**
@@ -120,7 +133,7 @@ export class ExpressionGen {
                         t,
                         funcIdOf(this.tactExpr.text),
                     );
-                    return { kind: "id_expr", value };
+                    return makeId(value);
                 }
             }
 
@@ -143,18 +156,11 @@ export class ExpressionGen {
                 return this.writeValue(c.value!);
             }
 
-            const value = funcIdOf(this.tactExpr.text);
-            return { kind: "id_expr", value };
+            return makeId(funcIdOf(this.tactExpr.text));
         }
 
         // NOTE: We always wrap in parentheses to avoid operator precedence issues
         if (this.tactExpr.kind === "op_binary") {
-            const negate: (expr: FuncAstExpr) => FuncAstExpr = (expr) => ({
-                kind: "unary_expr",
-                op: "~",
-                value: expr,
-            });
-
             // Special case for non-integer types and nullable
             if (this.tactExpr.op === "==" || this.tactExpr.op === "!=") {
                 // TODO: Simplify.
@@ -167,35 +173,17 @@ export class ExpressionGen {
                     isNull(this.tactExpr.left) &&
                     !isNull(this.tactExpr.right)
                 ) {
-                    const fun = { kind: "id_expr", value: "null?" };
-                    const args = [
-                        ExpressionGen.fromTact(
-                            this.ctx,
-                            this.tactExpr.right,
-                        ).writeExpression(),
-                    ];
-                    const call = {
-                        kind: "call_expr",
-                        fun,
-                        args,
-                    } as FuncAstCallExpr;
+                    const call = makeCall("null?", [
+                        this.writeNestedExpression(this.tactExpr.right),
+                    ]);
                     return this.tactExpr.op === "==" ? call : negate(call);
                 } else if (
                     !isNull(this.tactExpr.left) &&
                     isNull(this.tactExpr.right)
                 ) {
-                    const fun = { kind: "id_expr", value: "null?" };
-                    const args = [
-                        ExpressionGen.fromTact(
-                            this.ctx,
-                            this.tactExpr.left,
-                        ).writeExpression(),
-                    ];
-                    const call = {
-                        kind: "call_expr",
-                        fun,
-                        args,
-                    } as FuncAstCallExpr;
+                    const call = makeCall("null?", [
+                        this.writeNestedExpression(this.tactExpr.left),
+                    ]);
                     return this.tactExpr.op === "==" ? call : negate(call);
                 }
             }
@@ -212,26 +200,10 @@ export class ExpressionGen {
                 rt.name === "Address"
             ) {
                 if (lt.optional && rt.optional) {
-                    // wCtx.used(`__tact_slice_eq_bits_nullable`);
-                    const fun = {
-                        kind: "id_expr",
-                        value: "__tact_slice_eq_bits_nullable",
-                    };
-                    const args = [
-                        ExpressionGen.fromTact(
-                            this.ctx,
-                            this.tactExpr.left,
-                        ).writeExpression(),
-                        ExpressionGen.fromTact(
-                            this.ctx,
-                            this.tactExpr.right,
-                        ).writeExpression(),
-                    ];
-                    const call = {
-                        kind: "call_expr",
-                        fun,
-                        args,
-                    } as FuncAstCallExpr;
+                    const call = makeCall("__tact_slice_eq_bits_nullable", [
+                        this.writeNestedExpression(this.tactExpr.left),
+                        this.writeNestedExpression(this.tactExpr.right),
+                    ]);
                     return this.tactExpr.op == "!=" ? negate(call) : call;
                 }
                 //     if (lt.optional && !rt.optional) {
@@ -364,43 +336,49 @@ export class ExpressionGen {
         //     //
         //     // Unary operations: !, -, +, !!
         //     // NOTE: We always wrap in parenthesis to avoid operator precedence issues
-        //     //
-        //
-        //     if (f.kind === "op_unary") {
-        //         // NOTE: Logical not is written as a bitwise not
-        //         switch (f.op) {
-        //             case "!": {
-        //                 return "(~ " + writeExpression(f.operand, wCtx) + ")";
-        //             }
-        //
-        //             case "~": {
-        //                 return "(~ " + writeExpression(f.operand, wCtx) + ")";
-        //             }
-        //
-        //             case "-": {
-        //                 return "(- " + writeExpression(f.operand, wCtx) + ")";
-        //             }
-        //
-        //             case "+": {
-        //                 return "(+ " + writeExpression(f.operand, wCtx) + ")";
-        //             }
-        //
-        //             // NOTE: Assert function that ensures that the value is not null
-        //             case "!!": {
-        //                 const t = getExpType(wCtx.ctx, f.operand);
-        //                 if (t.kind === "ref") {
-        //                     const tt = getType(wCtx.ctx, t.name);
-        //                     if (tt.kind === "struct") {
-        //                         return `${ops.typeNotNull(tt.name, wCtx)}(${writeExpression(f.operand, wCtx)})`;
-        //                     }
-        //                 }
-        //
-        //                 wCtx.used("__tact_not_null");
-        //                 return `${wCtx.used("__tact_not_null")}(${writeExpression(f.operand, wCtx)})`;
-        //             }
-        //         }
-        //     }
-        //
+        if (this.tactExpr.kind === "op_unary") {
+            // NOTE: Logical not is written as a bitwise not
+            switch (this.tactExpr.op) {
+                case "!":
+                case "~": {
+                    const expr = this.writeNestedExpression(
+                        this.tactExpr.operand,
+                    );
+                    return negate(expr);
+                }
+                case "-": {
+                    const expr = this.writeNestedExpression(
+                        this.tactExpr.operand,
+                    );
+                    return addUnary("-", expr);
+                }
+                case "+": {
+                    const expr = this.writeNestedExpression(
+                        this.tactExpr.operand,
+                    );
+                    return addUnary("+", expr);
+                }
+
+                // NOTE: Assert function that ensures that the value is not null
+                case "!!": {
+                    const t = getExpType(this.ctx, this.tactExpr.operand);
+                    if (t.kind === "ref") {
+                        const tt = getType(this.ctx, t.name);
+                        if (tt.kind === "struct") {
+                            return makeCall(ops.typeNotNull(tt.name), [
+                                this.writeNestedExpression(
+                                    this.tactExpr.operand,
+                                ),
+                            ]);
+                        }
+                    }
+                    return makeCall("__tact_not_null", [
+                        this.writeNestedExpression(this.tactExpr.operand),
+                    ]);
+                }
+            }
+        }
+
         //     //
         //     // Field Access
         //     // NOTE: this branch resolves "a.b", where "a" is an expression and "b" is a field name
@@ -490,14 +468,9 @@ export class ExpressionGen {
             // } else {
             //     // wCtx.used(n);
             // }
-            const fun = {
-                kind: "id_expr",
-                value: ops.global(idText(this.tactExpr.function)),
-            } as FuncAstIdExpr;
+            const fun = makeId(ops.global(idText(this.tactExpr.function)));
             const args = this.tactExpr.args.map((argAst, i) =>
-                ExpressionGen.fromTact(this.ctx, argAst).writeCastedExpression(
-                    sf.params[i]!.type,
-                ),
+                this.writeNestedCastedExpression(argAst, sf.params[i]!.type),
             );
             return { kind: "call_expr", fun, args };
         }
@@ -592,7 +565,8 @@ export class ExpressionGen {
 
                 // Translate arguments
                 let argExprs = this.tactExpr.args.map((a, i) =>
-                    ExpressionGen.fromTact(this.ctx, a).writeCastedExpression(
+                    this.writeNestedCastedExpression(
+                        a,
                         methodFun.params[i]!.type,
                     ),
                 );
@@ -610,10 +584,7 @@ export class ExpressionGen {
                                 methodFun.params[0]!.type.kind === "ref" &&
                                 !methodFun.params[0]!.type.optional
                             ) {
-                                const fun = {
-                                    kind: "id_expr",
-                                    value: ops.typeTensorCast(tt.name),
-                                } as FuncAstIdExpr;
+                                const fun = makeId(ops.typeTensorCast(tt.name));
                                 argExprs = [
                                     {
                                         kind: "call_expr",
@@ -627,10 +598,7 @@ export class ExpressionGen {
                 }
 
                 // Generate function call
-                const selfExpr = ExpressionGen.fromTact(
-                    this.ctx,
-                    this.tactExpr.self,
-                ).writeExpression();
+                const selfExpr = this.writeNestedExpression(this.tactExpr.self);
                 if (methodFun.isMutating) {
                     if (
                         this.tactExpr.self.kind === "id" ||
@@ -641,16 +609,10 @@ export class ExpressionGen {
                                 `Impossible self kind: ${selfExpr.kind}`,
                             );
                         }
-                        const fun = {
-                            kind: "id_expr",
-                            value: `${selfExpr}~${name}`,
-                        } as FuncAstIdExpr;
+                        const fun = makeId(`${selfExpr}~${name}`);
                         return { kind: "call_expr", fun, args: argExprs };
                     } else {
-                        const fun = {
-                            kind: "id_expr",
-                            value: ops.nonModifying(name),
-                        } as FuncAstIdExpr;
+                        const fun = makeId(ops.nonModifying(name));
                         return {
                             kind: "call_expr",
                             fun,
@@ -658,13 +620,9 @@ export class ExpressionGen {
                         };
                     }
                 } else {
-                    const fun = {
-                        kind: "id_expr",
-                        value: name,
-                    } as FuncAstIdExpr;
                     return {
                         kind: "call_expr",
-                        fun,
+                        fun: makeId(name),
                         args: [selfExpr, ...argExprs],
                     };
                 }
@@ -726,8 +684,19 @@ export class ExpressionGen {
         throw Error(`Unknown expression: ${this.tactExpr.kind}`);
     }
 
+    private writeNestedExpression(src: AstExpression): FuncAstExpr {
+        return ExpressionGen.fromTact(this.ctx, src).writeExpression();
+    }
+
     public writeCastedExpression(to: TypeRef): FuncAstExpr {
         const expr = getExpType(this.ctx, this.tactExpr);
         return cast(this.ctx, expr, to, this.writeExpression());
+    }
+
+    private writeNestedCastedExpression(
+        src: AstExpression,
+        to: TypeRef,
+    ): FuncAstExpr {
+        return ExpressionGen.fromTact(this.ctx, src).writeCastedExpression(to);
     }
 }

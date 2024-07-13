@@ -27,7 +27,7 @@ export type FuncType =
     | { kind: "tensor"; value: FuncTensorType }
     | { kind: "type" };
 
-export type FuncAstUnaryOp = "-" | "~";
+export type FuncAstUnaryOp = "-" | "~" | "+";
 
 export type FuncAstBinaryOp =
     | "+"
