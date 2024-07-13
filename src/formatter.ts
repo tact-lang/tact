@@ -96,12 +96,16 @@ class PrettyPrinter {
     }
 
     ppAstOptionalType(typeRef: AstOptionalType): string {
-        return `${this.ppAstType(typeRef.typeArg)}?`
+        return `${this.ppAstType(typeRef.typeArg)}?`;
     }
 
     ppAstMapType(typeRef: AstMapType): string {
-        const keyAlias = typeRef.keyStorageType ? ` as ${this.ppAstId(typeRef.keyStorageType)}` : "";
-        const valueAlias = typeRef.valueStorageType ? ` as ${this.ppAstId(typeRef.valueStorageType)}` : "";
+        const keyAlias = typeRef.keyStorageType
+            ? ` as ${this.ppAstId(typeRef.keyStorageType)}`
+            : "";
+        const valueAlias = typeRef.valueStorageType
+            ? ` as ${this.ppAstId(typeRef.valueStorageType)}`
+            : "";
         return `map<${this.ppAstTypeId(typeRef.keyType)}${keyAlias}, ${this.ppAstTypeId(typeRef.valueType)}${valueAlias}>`;
     }
 
@@ -152,7 +156,7 @@ class PrettyPrinter {
             case "conditional":
             case "static_call":
             case "method_call":
-                return 0
+                return 0;
             case "op_unary":
                 return 10;
             default:
@@ -211,7 +215,11 @@ class PrettyPrinter {
         }
 
         // Set parens when needed
-        if (parentPrecedence > 0 && currentPrecedence > 0 && currentPrecedence < parentPrecedence) {
+        if (
+            parentPrecedence > 0 &&
+            currentPrecedence > 0 &&
+            currentPrecedence < parentPrecedence
+        ) {
             result = `(${result})`;
         }
 
@@ -227,11 +235,12 @@ class PrettyPrinter {
     //
 
     ppAstModule(program: AstModule): string {
-        const importsFormatted = program.imports.length > 0 ? 
-            `${program.imports
-            .map((entry) => this.ppAstImport(entry))
-            .join("\n")}\n\n`
-            : "";
+        const importsFormatted =
+            program.imports.length > 0
+                ? `${program.imports
+                      .map((entry) => this.ppAstImport(entry))
+                      .join("\n")}\n\n`
+                : "";
         const entriesFormatted = program.items
             .map((entry, index, array) => {
                 const formattedEntry = this.ppModuleItem(entry);
@@ -248,9 +257,7 @@ class PrettyPrinter {
         return `${importsFormatted}${entriesFormatted.trim()}`;
     }
 
-    ppModuleItem(
-        item: AstModuleItem,
-    ): string {
+    ppModuleItem(item: AstModuleItem): string {
         switch (item.kind) {
             case "struct_decl":
                 return this.ppAstStruct(item);
@@ -300,7 +307,9 @@ class PrettyPrinter {
     }
 
     ppAstTrait(trait: AstTrait): string {
-        const traitsFormatted = trait.traits.map((t) => this.ppAstId(t)).join(", ");
+        const traitsFormatted = trait.traits
+            .map((t) => this.ppAstId(t))
+            .join(", ");
         const attrsRaw = trait.attributes
             .map((attr) => `@${attr.type}("${attr.name.value}")`)
             .join(" ");
@@ -311,9 +320,12 @@ class PrettyPrinter {
                 const formattedDec = this.ppTraitBody(dec);
                 const nextDec = array[index + 1];
                 if (
-                    ((dec.kind === "constant_def" || dec.kind === "constant_decl")&&
-                        (nextDec?.kind === "constant_def" || nextDec?.kind === "constant_decl")) ||
-                    (dec.kind === "field_decl" && nextDec?.kind === "field_decl")
+                    ((dec.kind === "constant_def" ||
+                        dec.kind === "constant_decl") &&
+                        (nextDec?.kind === "constant_def" ||
+                            nextDec?.kind === "constant_decl")) ||
+                    (dec.kind === "field_decl" &&
+                        nextDec?.kind === "field_decl")
                 ) {
                     return formattedDec;
                 }
@@ -327,9 +339,7 @@ class PrettyPrinter {
         return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}${this.indent()}}`;
     }
 
-    ppTraitBody(
-        item: AstTraitDeclaration,
-    ): string {
+    ppTraitBody(item: AstTraitDeclaration): string {
         switch (item.kind) {
             case "field_decl":
                 return this.ppAstFieldDecl(item);
@@ -382,7 +392,8 @@ class PrettyPrinter {
                 if (
                     (dec.kind === "constant_def" &&
                         nextDec?.kind === "constant_def") ||
-                    (dec.kind === "field_decl" && nextDec?.kind === "field_decl")
+                    (dec.kind === "field_decl" &&
+                        nextDec?.kind === "field_decl")
                 ) {
                     return formattedDec;
                 }
@@ -419,7 +430,10 @@ class PrettyPrinter {
 
     public ppAstFunctionDef(func: AstFunctionDef): string {
         const argsFormatted = func.params
-            .map((arg) => `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`)
+            .map(
+                (arg) =>
+                    `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`,
+            )
             .join(", ");
         const attrsRaw = func.attributes.map((attr) => attr.type).join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
@@ -434,47 +448,50 @@ class PrettyPrinter {
 
     ppAstFunctionDecl(func: AstFunctionDecl): string {
         const argsFormatted = func.params
-        .map((arg) => `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`)
-        .join(", ");
+            .map(
+                (arg) =>
+                    `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`,
+            )
+            .join(", ");
         const attrsRaw = func.attributes.map((attr) => attr.type).join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
         const returnType = func.return
             ? `: ${this.ppAstType(func.return)}`
             : "";
-        return `${this.indent()}${attrsFormatted}fun ${this.ppAstId(func.name)}(${argsFormatted})${returnType};`;    
+        return `${this.indent()}${attrsFormatted}fun ${this.ppAstId(func.name)}(${argsFormatted})${returnType};`;
     }
 
     ppAstReceiver(receive: AstReceiver): string {
-        const header = this.ppAstReceiverHeader(receive)
-        const stmtsFormatted = this.ppStatementBlock(
-            receive.statements,
-        );
+        const header = this.ppAstReceiverHeader(receive);
+        const stmtsFormatted = this.ppStatementBlock(receive.statements);
         return `${this.indent()}${header} ${stmtsFormatted}`;
     }
 
     ppAstReceiverHeader(receive: AstReceiver): string {
         switch (receive.selector.kind) {
             case "internal-simple":
-                return `receive(${this.ppAstId(receive.selector.param.name)}: ${this.ppAstType(receive.selector.param.type)})`
+                return `receive(${this.ppAstId(receive.selector.param.name)}: ${this.ppAstType(receive.selector.param.type)})`;
             case "internal-fallback":
-                return `receive()`
+                return `receive()`;
             case "internal-comment":
-                return `receive("${receive.selector.comment.value}")`
+                return `receive("${receive.selector.comment.value}")`;
             case "bounce":
-                return `bounced(${this.ppAstId(receive.selector.param.name)}: ${this.ppAstType(receive.selector.param.type)})`
+                return `bounced(${this.ppAstId(receive.selector.param.name)}: ${this.ppAstType(receive.selector.param.type)})`;
             case "external-simple":
-                return `external(${this.ppAstId(receive.selector.param.name)}: ${this.ppAstType(receive.selector.param.type)})`
+                return `external(${this.ppAstId(receive.selector.param.name)}: ${this.ppAstType(receive.selector.param.type)})`;
             case "external-fallback":
-                return `external()`
+                return `external()`;
             case "external-comment":
-                return `external("${receive.selector.comment.value}")`
+                return `external("${receive.selector.comment.value}")`;
         }
     }
 
-
     ppAstNativeFunction(func: AstNativeFunctionDecl): string {
         const argsFormatted = func.params
-            .map((arg) => `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`)
+            .map(
+                (arg) =>
+                    `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`,
+            )
             .join(", ");
         const returnType = func.return
             ? `: ${this.ppAstType(func.return)}`
@@ -485,23 +502,26 @@ class PrettyPrinter {
     }
 
     ppAstFuncId(func: AstFuncId): string {
-        return func.text
+        return func.text;
     }
 
     ppAstInitFunction(initFunc: AstContractInit): string {
         const argsFormatted = initFunc.params
-            .map((arg) => `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`)
+            .map(
+                (arg) =>
+                    `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`,
+            )
             .join(", ");
 
-        this.increaseIndent()
+        this.increaseIndent();
         const stmtsFormatted = initFunc.statements
             ? initFunc.statements
                   .map((stmt) => this.ppAstStatement(stmt))
                   .join("\n")
             : "";
-        this.decreaseIndent()
+        this.decreaseIndent();
 
-        return `${this.indent()}init(${argsFormatted}) {${stmtsFormatted == "" ? "" : "\n"}${stmtsFormatted}${stmtsFormatted == "" ? "" : ("\n" + this.indent())}}`;
+        return `${this.indent()}init(${argsFormatted}) {${stmtsFormatted == "" ? "" : "\n"}${stmtsFormatted}${stmtsFormatted == "" ? "" : "\n" + this.indent()}}`;
     }
 
     //
@@ -537,7 +557,9 @@ class PrettyPrinter {
             case "statement_try":
                 return this.ppAstStatementTry(stmt as AstStatementTry);
             case "statement_try_catch":
-                return this.ppAstStatementTryCatch(stmt as AstStatementTryCatch);
+                return this.ppAstStatementTryCatch(
+                    stmt as AstStatementTryCatch,
+                );
             default:
                 return `Unknown Statement Type: ${stmt}`;
         }
@@ -547,16 +569,19 @@ class PrettyPrinter {
         this.increaseIndent();
         const stmntsFormatted = stmts
             .map((stmt) => this.ppAstStatement(stmt))
-            .join("\n")
-        this.decreaseIndent()
+            .join("\n");
+        this.decreaseIndent();
         const result = `{\n${stmntsFormatted}\n${this.indent()}}`;
         return result;
     }
 
     ppAstStatementLet(statement: AstStatementLet): string {
         const expression = this.ppAstExpression(statement.expression);
-        const tyAnnotation = statement.type === null ? "" : `: ${this.ppAstType(statement.type)}`;  
-    return `${this.indent()}let ${this.ppAstId(statement.name)}${tyAnnotation} = ${expression};`
+        const tyAnnotation =
+            statement.type === null
+                ? ""
+                : `: ${this.ppAstType(statement.type)}`;
+        return `${this.indent()}let ${this.ppAstId(statement.name)}${tyAnnotation} = ${expression};`;
     }
 
     ppAstStatementReturn(statement: AstStatementReturn): string {
@@ -620,18 +645,18 @@ class PrettyPrinter {
     ppAstStatementForEach(statement: AstStatementForEach): string {
         const header = `foreach (${this.ppAstId(statement.keyName)}, ${this.ppAstId(statement.valueName)} in ${this.ppAstExpression(statement.map)})`;
         const body = this.ppStatementBlock(statement.statements);
-        return `${this.indent()}${header} ${body}`
+        return `${this.indent()}${header} ${body}`;
     }
 
     ppAstStatementTry(statement: AstStatementTry): string {
         const body = this.ppStatementBlock(statement.statements);
-        return `${this.indent()}try ${body}`
+        return `${this.indent()}try ${body}`;
     }
 
     ppAstStatementTryCatch(statement: AstStatementTryCatch): string {
         const tryBody = this.ppStatementBlock(statement.statements);
-        const catchBody = this.ppStatementBlock(statement.catchStatements)
-        return `${this.indent()}try ${tryBody} catch (${this.ppAstId(statement.catchName)}) ${catchBody}`
+        const catchBody = this.ppStatementBlock(statement.catchStatements);
+        return `${this.indent()}try ${tryBody} catch (${this.ppAstId(statement.catchName)}) ${catchBody}`;
     }
 }
 
