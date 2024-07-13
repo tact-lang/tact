@@ -19,6 +19,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun("__tact_verify_address", () => {
         ctx.signature(`slice __tact_verify_address(slice address)`);
+        ctx.flag("impure");
         ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
@@ -157,6 +158,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun("__tact_not_null", () => {
         ctx.signature(`forall X -> X __tact_not_null(X x)`);
+        ctx.flag("impure");
         ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
@@ -1624,6 +1626,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_dict_get_code`, () => {
         ctx.signature(`cell __tact_dict_get_code(cell dict, int id)`);
+        ctx.flag("impure");
         ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
@@ -1861,6 +1864,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_float_to_string`, () => {
         ctx.signature(`slice __tact_float_to_string(int src, int digits)`);
+        ctx.flag("impure");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
@@ -1915,12 +1919,15 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_log2`, () => {
         ctx.signature(`int __tact_log2(int num)`);
+        ctx.flag("impure");
         ctx.context("stdlib");
         ctx.asm(`asm "DUP 5 THROWIFNOT UBITSIZE DEC"`);
     });
 
     ctx.fun(`__tact_log`, () => {
         ctx.signature(`int __tact_log(int num, int base)`);
+        ctx.flag("impure");
+        ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
@@ -1941,6 +1948,8 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_pow`, () => {
         ctx.signature(`int __tact_pow(int base, int exp)`);
+        ctx.flag("impure");
+        ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
