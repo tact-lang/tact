@@ -20,6 +20,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      
+      - name: Capture compiled stdlib
+        id: capture_stdlib
+        run: |
+          FILE_PATH="src/imports/stdlib.ts"
+          ORIGINAL_CONTENT=$(cat "$FILE_PATH")
+          echo "::set-output name=original_content::$ORIGINAL_CONTENT"
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -46,6 +53,17 @@ jobs:
           yarn gen
           yarn build
           yarn coverage
+      
+      - name: Verify fresh compiled stdlib
+        run: |
+          FILE_PATH="src/imports/stdlib.ts"
+          ORIGINAL_CONTENT="${{ steps.capture_stdlib.outputs.original_content }}"
+          CURRENT_CONTENT=$(cat "$FILE_PATH")
+
+          if [ "$CURRENT_CONTENT" != "$ORIGINAL_CONTENT" ]; then
+            echo "The stdlib.ts content does not match after compilation. Failing the workflow."
+            exit 1
+          fi
 
       - name: Check there are no errors reported by ESLint
         run: |
