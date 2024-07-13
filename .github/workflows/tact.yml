@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
+
       - name: Capture compiled stdlib
         if: runner.os != 'Windows'
         run: |
@@ -51,7 +51,7 @@ jobs:
           yarn clean
           yarn gen
           yarn build
-      
+
       - name: Verify fresh compiled stdlib
         if: runner.os != 'Windows'
         run: |
@@ -63,7 +63,7 @@ jobs:
             echo "The stdlib.ts content does not match after compilation. Failing the workflow."
             exit 1
           fi
-      
+
       - name: Test Tact compiler
         run: |
           yarn coverage
