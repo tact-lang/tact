@@ -35,7 +35,7 @@ describe("local-type-inference", () => {
         expect((await contract.getTest7()).toString()).toStrictEqual(
             beginCell().storeUint(123, 64).endCell().toString(),
         );
-        expect((await contract.getTest8()).toString()).toStrictEqual(
+        expect((await contract.getTest8()).asCell().toString()).toStrictEqual(
             beginCell().storeUint(123, 64).endCell().toString(),
         );
         expect(await contract.getTest9()).toStrictEqual("hello");
