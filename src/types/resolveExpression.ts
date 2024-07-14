@@ -300,6 +300,22 @@ function resolveBinaryOp(
                     }
                 }
 
+                if (le.kind === "null" && re.kind === "ref" && !re.optional) {
+                    throwCompilationError(
+                        `Cannot compare null with non-optional type "${printTypeRef(re)}"`,
+                        exp.loc,
+                    );
+                } else if (
+                    re.kind === "null" &&
+                    le.kind === "ref" &&
+                    !le.optional
+                ) {
+                    throwCompilationError(
+                        `Cannot compare non-optional type "${printTypeRef(le)}" with null`,
+                        exp.loc,
+                    );
+                }
+
                 resolved = { kind: "ref", name: "Bool", optional: false };
             }
             break;

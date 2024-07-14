@@ -170,6 +170,26 @@ Line 13, col 18:
 "
 `;
 
+exports[`resolveStatements should fail statements for expr-null-comparison 1`] = `
+"<unknown>:18:13: Cannot compare non-optional type "S" with null
+Line 18, col 13:
+  17 |     get fun test(): Int {
+> 18 |         if (self.s != null) {
+                   ^~~~~~~~~~~~~~
+  19 |             return self.s.a;
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-null-comparison2 1`] = `
+"<unknown>:18:13: Cannot compare null with non-optional type "S"
+Line 18, col 13:
+  17 |     get fun test(): Int {
+> 18 |         if (null != self.s) {
+                   ^~~~~~~~~~~~~~
+  19 |             return self.s.a;
+"
+`;
+
 exports[`resolveStatements should fail statements for expr-struct-duplicate-field 1`] = `
 "<unknown>:17:9: Duplicate fields "a"
 Line 17, col 9:
