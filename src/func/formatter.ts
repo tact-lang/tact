@@ -166,9 +166,9 @@ export class FuncFormatter {
     }
 
     private formatVarDefStmt(node: FuncAstVarDefStmt): string {
-        const type = node.ty ? `${this.dump(node.ty)} ` : "";
+        const type = node.ty ? `: ${this.dump(node.ty)} ` : "";
         const init = node.init ? ` = ${this.dump(node.init)}` : "";
-        return `var ${node.name}: ${type}${init};`;
+        return `var ${node.name}${type}${init};`;
     }
 
     private formatReturnStmt(node: FuncAstReturnStmt): string {
