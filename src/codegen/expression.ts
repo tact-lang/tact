@@ -1,0 +1,771 @@
+import {
+    TactConstEvalError,
+    throwCompilationError,
+    idTextErr,
+} from "../errors";
+import { evalConstantExpression } from "../constEval";
+import { resolveFuncTypeUnpack } from "./type";
+import { MapFunctions, StructFunctions, GlobalFunctions } from "./abi";
+import { getExpType } from "../types/resolveExpression";
+import { FunctionGen, CodegenContext } from ".";
+import { cast, funcIdOf, ops } from "./util";
+import { printTypeRef, TypeRef, Value, FieldDescription } from "../types/types";
+import {
+    getStaticConstant,
+    getType,
+    getStaticFunction,
+    hasStaticConstant,
+} from "../types/resolveDescriptors";
+import {
+    idText,
+    AstExpression,
+    AstId,
+    eqNames,
+    tryExtractPath,
+} from "../grammar/ast";
+import {
+    FuncAstExpr,
+    FuncAstUnaryOp,
+    FuncAstIdExpr,
+    FuncAstTernaryExpr,
+} from "../func/syntax";
+import { makeId, makeCall, makeBinop } from "../func/syntaxUtils";
+
+function isNull(f: AstExpression): boolean {
+    return f.kind === "null";
+}
+
+function addUnary(op: FuncAstUnaryOp, expr: FuncAstExpr): FuncAstExpr {
+    return {
+        kind: "unary_expr",
+        op,
+        value: expr,
+    };
+}
+
+function negate(expr: FuncAstExpr): FuncAstExpr {
+    return addUnary("~", expr);
+}
+
+/**
+ * Creates a Func identifier in the following format: a'b'c.
+ * TODO: make it a static method
+ */
+export function writePathExpression(path: AstId[]): FuncAstIdExpr {
+    return makeId(
+        [funcIdOf(idText(path[0]!)), ...path.slice(1).map(idText)].join(`'`),
+    );
+}
+
+/**
+ * Encapsulates generation of Func expressions from the Tact expression.
+ */
+export class ExpressionGen {
+    /**
+     * @param tactExpr Expression to translate.
+     */
+    private constructor(
+        private ctx: CodegenContext,
+        private tactExpr: AstExpression,
+    ) {}
+
+    static fromTact(
+        ctx: CodegenContext,
+        tactExpr: AstExpression,
+    ): ExpressionGen {
+        return new ExpressionGen(ctx, tactExpr);
+    }
+
+    /***
+     * Generates FunC literals from Tact ones.
+     */
+    static writeValue(ctx: CodegenContext, val: Value): FuncAstExpr {
+        if (typeof val === "bigint") {
+            return { kind: "number_expr", value: val };
+        }
+        // if (typeof val === "string") {
+        //     const id = writeString(val, wCtx);
+        //     wCtx.used(id);
+        //     return `${id}()`;
+        // }
+        if (typeof val === "boolean") {
+            return { kind: "bool_expr", value: val };
+        }
+        // if (Address.isAddress(val)) {
+        //     const res = writeAddress(val, wCtx);
+        //     wCtx.used(res);
+        //     return res + "()";
+        // }
+        // if (val instanceof Cell) {
+        //     const res = writeCell(val, wCtx);
+        //     wCtx.used(res);
+        //     return `${res}()`;
+        // }
+        if (val === null) {
+            return { kind: "nil_expr" };
+        }
+        // if (val instanceof CommentValue) {
+        //     const id = writeComment(val.comment, wCtx);
+        //     wCtx.used(id);
+        //     return `${id}()`;
+        // }
+        if (typeof val === "object" && "$tactStruct" in val) {
+            // this is a struct value
+            const structDescription = getType(
+                ctx.ctx,
+                val["$tactStruct"] as string,
+            );
+            const fields = structDescription.fields.map((field) => field.name);
+            const constructor = FunctionGen.fromTact(
+                ctx,
+            ).writeStructConstructor(structDescription, fields);
+            ctx.add("constructor", constructor);
+            const fieldValues = structDescription.fields.map((field) => {
+                if (field.name in val) {
+                    return ExpressionGen.writeValue(ctx, val[field.name]!);
+                } else {
+                    throw Error(
+                        `Struct value is missing a field: ${field.name}`,
+                        val,
+                    );
+                }
+            });
+            return makeCall(constructor.name, fieldValues);
+        }
+        throw Error(`Invalid value: ${val}`);
+    }
+
+    public writeExpression(): FuncAstExpr {
+        // literals and constant expressions are covered here
+        try {
+            const value = evalConstantExpression(this.tactExpr, this.ctx.ctx);
+            return ExpressionGen.writeValue(this.ctx,value);
+        } catch (error) {
+            if (!(error instanceof TactConstEvalError) || error.fatal)
+                throw error;
+        }
+
+        //
+        // ID Reference
+        //
+        if (this.tactExpr.kind === "id") {
+            const t = getExpType(this.ctx.ctx, this.tactExpr);
+
+            // Handle packed type
+            if (t.kind === "ref") {
+                const tt = getType(this.ctx.ctx, t.name);
+                if (tt.kind === "contract" || tt.kind === "struct") {
+                    const value = resolveFuncTypeUnpack(
+                        this.ctx.ctx,
+                        t,
+                        funcIdOf(this.tactExpr.text),
+                    );
+                    return makeId(value);
+                }
+            }
+
+            if (t.kind === "ref_bounced") {
+                const tt = getType(this.ctx.ctx, t.name);
+                if (tt.kind === "struct") {
+                    const value = resolveFuncTypeUnpack(
+                        this.ctx.ctx,
+                        t,
+                        funcIdOf(this.tactExpr.text),
+                        false,
+                        true,
+                    );
+                }
+            }
+
+            // Handle constant
+            if (hasStaticConstant(this.ctx.ctx, this.tactExpr.text)) {
+                const c = getStaticConstant(this.ctx.ctx, this.tactExpr.text);
+                return ExpressionGen.writeValue(this.ctx, c.value!);
+            }
+
+            return makeId(funcIdOf(this.tactExpr.text));
+        }
+
+        // NOTE: We always wrap in parentheses to avoid operator precedence issues
+        if (this.tactExpr.kind === "op_binary") {
+            // Special case for non-integer types and nullable
+            if (this.tactExpr.op === "==" || this.tactExpr.op === "!=") {
+                if (isNull(this.tactExpr.left) && isNull(this.tactExpr.right)) {
+                    return {
+                        kind: "bool_expr",
+                        value: this.tactExpr.op === "==",
+                    };
+                } else if (
+                    isNull(this.tactExpr.left) &&
+                    !isNull(this.tactExpr.right)
+                ) {
+                    const call = makeCall("null?", [
+                        this.makeExpr(this.tactExpr.right),
+                    ]);
+                    return this.tactExpr.op === "==" ? call : negate(call);
+                } else if (
+                    !isNull(this.tactExpr.left) &&
+                    isNull(this.tactExpr.right)
+                ) {
+                    const call = makeCall("null?", [
+                        this.makeExpr(this.tactExpr.left),
+                    ]);
+                    return this.tactExpr.op === "==" ? call : negate(call);
+                }
+            }
+
+            // Special case for address
+            const lt = getExpType(this.ctx.ctx, this.tactExpr.left);
+            const rt = getExpType(this.ctx.ctx, this.tactExpr.right);
+
+            // Case for addresses equality
+            if (
+                lt.kind === "ref" &&
+                rt.kind === "ref" &&
+                lt.name === "Address" &&
+                rt.name === "Address"
+            ) {
+                const maybeNegate = (call: any): any => {
+                    if (this.tactExpr.kind !== "op_binary") {
+                        throw new Error("Impossible");
+                    }
+                    return this.tactExpr.op == "!=" ? negate(call) : call;
+                };
+                if (lt.optional && rt.optional) {
+                    return maybeNegate(
+                        makeCall("__tact_slice_eq_bits_nullable", [
+                            this.makeExpr(this.tactExpr.left),
+                            this.makeExpr(this.tactExpr.right),
+                        ]),
+                    );
+                }
+                if (lt.optional && !rt.optional) {
+                    return maybeNegate(
+                        makeCall("__tact_slice_eq_bits_nullable_one", [
+                            this.makeExpr(this.tactExpr.left),
+                            this.makeExpr(this.tactExpr.right),
+                        ]),
+                    );
+                }
+                if (!lt.optional && rt.optional) {
+                    return maybeNegate(
+                        makeCall("__tact_slice_eq_bits_nullable_one", [
+                            this.makeExpr(this.tactExpr.right),
+                            this.makeExpr(this.tactExpr.left),
+                        ]),
+                    );
+                }
+                return maybeNegate(
+                    makeCall("__tact_slice_eq_bits", [
+                        this.makeExpr(this.tactExpr.right),
+                        this.makeExpr(this.tactExpr.left),
+                    ]),
+                );
+            }
+
+            // Case for cells equality
+            if (
+                lt.kind === "ref" &&
+                rt.kind === "ref" &&
+                lt.name === "Cell" &&
+                rt.name === "Cell"
+            ) {
+                const op = this.tactExpr.op === "==" ? "eq" : "neq";
+                if (lt.optional && rt.optional) {
+                    return makeCall(`__tact_cell_${op}_nullable`, [
+                        this.makeExpr(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.right),
+                    ]);
+                }
+                if (lt.optional && !rt.optional) {
+                    return makeCall(`__tact_cell_${op}_nullable_one`, [
+                        this.makeExpr(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.right),
+                    ]);
+                }
+                if (!lt.optional && rt.optional) {
+                    return makeCall(`__tact_cell_${op}_nullable_one`, [
+                        this.makeExpr(this.tactExpr.right),
+                        this.makeExpr(this.tactExpr.left),
+                    ]);
+                }
+                return makeCall(`__tact_cell_${op}`, [
+                    this.makeExpr(this.tactExpr.right),
+                    this.makeExpr(this.tactExpr.left),
+                ]);
+            }
+
+            // Case for slices and strings equality
+            if (
+                lt.kind === "ref" &&
+                rt.kind === "ref" &&
+                lt.name === rt.name &&
+                (lt.name === "Slice" || lt.name === "String")
+            ) {
+                const op = this.tactExpr.op === "==" ? "eq" : "neq";
+                if (lt.optional && rt.optional) {
+                    return makeCall(`__tact_slice_${op}_nullable`, [
+                        this.makeExpr(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.right),
+                    ]);
+                }
+                if (lt.optional && !rt.optional) {
+                    return makeCall(`__tact_slice_${op}_nullable_one`, [
+                        this.makeExpr(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.right),
+                    ]);
+                }
+                if (!lt.optional && rt.optional) {
+                    return makeCall(`__tact_slice_${op}_nullable_one`, [
+                        this.makeExpr(this.tactExpr.right),
+                        this.makeExpr(this.tactExpr.left),
+                    ]);
+                }
+                return makeCall(`__tact_slice_${op}`, [
+                    this.makeExpr(this.tactExpr.right),
+                    this.makeExpr(this.tactExpr.left),
+                ]);
+            }
+
+            // Case for maps equality
+            if (lt.kind === "map" && rt.kind === "map") {
+                const op = this.tactExpr.op === "==" ? "eq" : "neq";
+                return makeCall(`__tact_cell_${op}_nullable`, [
+                    this.makeExpr(this.tactExpr.left),
+                    this.makeExpr(this.tactExpr.right),
+                ]);
+            }
+
+            // Check for int or boolean types
+            if (
+                lt.kind !== "ref" ||
+                rt.kind !== "ref" ||
+                (lt.name !== "Int" && lt.name !== "Bool") ||
+                (rt.name !== "Int" && rt.name !== "Bool")
+            ) {
+                const file = this.tactExpr.loc.file;
+                const loc_info = this.tactExpr.loc.interval.getLineAndColumn();
+                throw Error(
+                    `(Internal Compiler Error) Invalid types for binary operation: ${file}:${loc_info.lineNum}:${loc_info.colNum}`,
+                ); // Should be unreachable
+            }
+
+            // Case for ints equality
+            if (this.tactExpr.op === "==" || this.tactExpr.op === "!=") {
+                const op = this.tactExpr.op === "==" ? "eq" : "neq";
+                if (lt.optional && rt.optional) {
+                    return makeCall(`__tact_int_${op}_nullable`, [
+                        this.makeExpr(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.right),
+                    ]);
+                }
+                if (lt.optional && !rt.optional) {
+                    return makeCall(`__tact_int_${op}_nullable_one`, [
+                        this.makeExpr(this.tactExpr.left),
+                        this.makeExpr(this.tactExpr.right),
+                    ]);
+                }
+                if (!lt.optional && rt.optional) {
+                    return makeCall(`__tact_int_${op}_nullable_one`, [
+                        this.makeExpr(this.tactExpr.right),
+                        this.makeExpr(this.tactExpr.left),
+                    ]);
+                }
+                const binop = this.tactExpr.op === "==" ? "==" : "!=";
+                return makeBinop(
+                    this.makeExpr(this.tactExpr.left),
+                    binop,
+                    this.makeExpr(this.tactExpr.right),
+                );
+            }
+
+            // Case for "&&" operator
+            if (this.tactExpr.op === "&&") {
+                const cond = this.makeExpr(this.tactExpr.left);
+                const trueExpr = this.makeExpr(this.tactExpr.right);
+                const falseExpr = { kind: "bool_expr", value: false };
+                return {
+                    kind: "ternary_expr",
+                    cond,
+                    trueExpr,
+                    falseExpr,
+                } as FuncAstTernaryExpr;
+            }
+
+            // Case for "||" operator
+            if (this.tactExpr.op === "||") {
+                const cond = this.makeExpr(this.tactExpr.left);
+                const trueExpr = { kind: "bool_expr", value: true };
+                const falseExpr = this.makeExpr(this.tactExpr.right);
+                return {
+                    kind: "ternary_expr",
+                    cond,
+                    trueExpr,
+                    falseExpr,
+                } as FuncAstTernaryExpr;
+            }
+
+            // Other ops
+            return makeBinop(
+                this.makeExpr(this.tactExpr.left),
+                this.tactExpr.op,
+                this.makeExpr(this.tactExpr.right),
+            );
+        }
+
+        // Unary operations: !, -, +, !!
+        // NOTE: We always wrap in parenthesis to avoid operator precedence issues
+        if (this.tactExpr.kind === "op_unary") {
+            // NOTE: Logical not is written as a bitwise not
+            switch (this.tactExpr.op) {
+                case "!":
+                case "~": {
+                    const expr = this.makeExpr(this.tactExpr.operand);
+                    return negate(expr);
+                }
+                case "-": {
+                    const expr = this.makeExpr(this.tactExpr.operand);
+                    return addUnary("-", expr);
+                }
+                case "+": {
+                    const expr = this.makeExpr(this.tactExpr.operand);
+                    return addUnary("+", expr);
+                }
+
+                // NOTE: Assert function that ensures that the value is not null
+                case "!!": {
+                    const t = getExpType(this.ctx.ctx, this.tactExpr.operand);
+                    if (t.kind === "ref") {
+                        const tt = getType(this.ctx.ctx, t.name);
+                        if (tt.kind === "struct") {
+                            return makeCall(ops.typeNotNull(tt.name), [
+                                this.makeExpr(this.tactExpr.operand),
+                            ]);
+                        }
+                    }
+                    return makeCall("__tact_not_null", [
+                        this.makeExpr(this.tactExpr.operand),
+                    ]);
+                }
+            }
+        }
+
+        //
+        // Field Access
+        // NOTE: this branch resolves "a.b", where "a" is an expression and "b" is a field name
+        //
+        if (this.tactExpr.kind === "field_access") {
+            // Resolve the type of the expression
+            const src = getExpType(this.ctx.ctx, this.tactExpr.aggregate);
+            if (
+                (src.kind !== "ref" || src.optional) &&
+                src.kind !== "ref_bounced"
+            ) {
+                throwCompilationError(
+                    `Cannot access field of non-struct type: "${printTypeRef(src)}"`,
+                    this.tactExpr.loc,
+                );
+            }
+            const srcT = getType(this.ctx.ctx, src.name);
+
+            // Resolve field
+            let fields: FieldDescription[];
+
+            fields = srcT.fields;
+            if (src.kind === "ref_bounced") {
+                fields = fields.slice(0, srcT.partialFieldCount);
+            }
+
+            const fieldExpr = this.tactExpr.field;
+            const field = fields.find((v) => eqNames(v.name, fieldExpr));
+            const cst = srcT.constants.find((v) => eqNames(v.name, fieldExpr));
+            if (!field && !cst) {
+                throwCompilationError(
+                    `Cannot find field ${idTextErr(this.tactExpr.field)} in struct ${idTextErr(srcT.name)}`,
+                    this.tactExpr.field.loc,
+                );
+            }
+
+            if (field) {
+                // Trying to resolve field as a path
+                const path = tryExtractPath(this.tactExpr);
+                if (path) {
+                    // Prepare path
+                    const idd = writePathExpression(path);
+
+                    // Special case for structs
+                    if (field.type.kind === "ref") {
+                        const ft = getType(this.ctx.ctx, field.type.name);
+                        if (ft.kind === "struct" || ft.kind === "contract") {
+                            return makeId(
+                                resolveFuncTypeUnpack(
+                                    this.ctx.ctx,
+                                    field.type,
+                                    idd.value,
+                                ),
+                            );
+                        }
+                    }
+                    return idd;
+                }
+
+                // Getter instead of direct field access
+                return makeCall(ops.typeField(srcT.name, field.name), [
+                    this.makeExpr(this.tactExpr.aggregate),
+                ]);
+            } else {
+                return ExpressionGen.writeValue(this.ctx, cst!.value!);
+            }
+        }
+
+        //
+        // Static Function Call
+        //
+        if (this.tactExpr.kind === "static_call") {
+            // Check global functions
+            if (GlobalFunctions.has(idText(this.tactExpr.function))) {
+                return GlobalFunctions.get(
+                    idText(this.tactExpr.function),
+                )!.generate(
+                    this.tactExpr.args.map((v) => getExpType(this.ctx.ctx, v)),
+                    this.tactExpr.args,
+                    this.tactExpr.loc,
+                );
+            }
+
+            const sf = getStaticFunction(
+                this.ctx.ctx,
+                idText(this.tactExpr.function),
+            );
+            // if (sf.ast.kind === "native_function_decl") {
+            //     n = idText(sf.ast.nativeName);
+            //     if (n.startsWith("__tact")) {
+            //         // wCtx.used(n);
+            //     }
+            // } else {
+            //     // wCtx.used(n);
+            // }
+            const fun = makeId(ops.global(idText(this.tactExpr.function)));
+            const args = this.tactExpr.args.map((argAst, i) =>
+                this.makeCastedExpr(argAst, sf.params[i]!.type),
+            );
+            return { kind: "call_expr", fun, args };
+        }
+
+        //
+        // Struct Constructor
+        //
+        if (this.tactExpr.kind === "struct_instance") {
+            const src = getType(this.ctx.ctx, this.tactExpr.type);
+
+            // Write a constructor
+            const constructor = FunctionGen.fromTact(
+                this.ctx,
+            ).writeStructConstructor(
+                src,
+                this.tactExpr.args.map((v) => v.field.text),
+            );
+            this.ctx.add("constructor", constructor);
+
+            // Write an expression
+            const args = this.tactExpr.args.map((v) =>
+                this.makeCastedExpr(
+                    v.initializer,
+                    src.fields.find((v2) => eqNames(v2.name, v.field))!.type,
+                ),
+            );
+            return makeCall(constructor.name, args);
+        }
+
+        //
+        // Object-based function call
+        //
+        if (this.tactExpr.kind === "method_call") {
+            // Resolve source type
+            const src = getExpType(this.ctx.ctx, this.tactExpr.self);
+
+            // Reference type
+            if (src.kind === "ref") {
+                if (src.optional) {
+                    throwCompilationError(
+                        `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
+                        this.tactExpr.loc,
+                    );
+                }
+
+                // Render function call
+                const methodTy = getType(this.ctx.ctx, src.name);
+
+                // Check struct ABI
+                if (methodTy.kind === "struct") {
+                    if (StructFunctions.has(idText(this.tactExpr.method))) {
+                        console.log(`getting ${idText(this.tactExpr.method)}`);
+                        const abi = StructFunctions.get(
+                            idText(this.tactExpr.method),
+                        )!;
+                        // return abi.generate(
+                        //     wCtx,
+                        //     [
+                        //         src,
+                        //         ...this.tactExpr.args.map((v) => getExpType(this.ctx.ctx, v)),
+                        //     ],
+                        //     [this.tactExpr.self, ...this.tactExpr.args],
+                        //     this.tactExpr.loc,
+                        // );
+                    }
+                }
+
+                // Resolve function
+                const methodFun = methodTy.functions.get(
+                    idText(this.tactExpr.method),
+                )!;
+                let name = ops.extension(
+                    src.name,
+                    idText(this.tactExpr.method),
+                );
+                if (
+                    methodFun.ast.kind === "function_def" ||
+                    methodFun.ast.kind === "function_decl"
+                ) {
+                    // wCtx.used(name);
+                } else {
+                    name = idText(methodFun.ast.nativeName);
+                    if (name.startsWith("__tact")) {
+                        // wCtx.used(name);
+                    }
+                }
+
+                // Translate arguments
+                let argExprs = this.tactExpr.args.map((a, i) =>
+                    this.makeCastedExpr(a, methodFun.params[i]!.type),
+                );
+
+                // Hack to replace a single struct argument to a tensor wrapper since otherwise
+                // func would convert (int) type to just int and break mutating functions
+                if (methodFun.isMutating) {
+                    if (this.tactExpr.args.length === 1) {
+                        const t = getExpType(
+                            this.ctx.ctx,
+                            this.tactExpr.args[0]!,
+                        );
+                        if (t.kind === "ref") {
+                            const tt = getType(this.ctx.ctx, t.name);
+                            if (
+                                (tt.kind === "contract" ||
+                                    tt.kind === "struct") &&
+                                methodFun.params[0]!.type.kind === "ref" &&
+                                !methodFun.params[0]!.type.optional
+                            ) {
+                                const fun = makeId(ops.typeTensorCast(tt.name));
+                                argExprs = [
+                                    {
+                                        kind: "call_expr",
+                                        fun,
+                                        args: [argExprs[0]!],
+                                    },
+                                ];
+                            }
+                        }
+                    }
+                }
+
+                // Generate function call
+                const selfExpr = this.makeExpr(this.tactExpr.self);
+                if (methodFun.isMutating) {
+                    if (
+                        this.tactExpr.self.kind === "id" ||
+                        this.tactExpr.self.kind === "field_access"
+                    ) {
+                        if (selfExpr.kind !== "id_expr") {
+                            throw new Error(
+                                `Impossible self kind: ${selfExpr.kind}`,
+                            );
+                        }
+                        const fun = makeId(`${selfExpr}~${name}`);
+                        return { kind: "call_expr", fun, args: argExprs };
+                    } else {
+                        const fun = makeId(ops.nonModifying(name));
+                        return {
+                            kind: "call_expr",
+                            fun,
+                            args: [selfExpr, ...argExprs],
+                        };
+                    }
+                } else {
+                    return {
+                        kind: "call_expr",
+                        fun: makeId(name),
+                        args: [selfExpr, ...argExprs],
+                    };
+                }
+            }
+
+            // Map types
+            if (src.kind === "map") {
+                if (!MapFunctions.has(idText(this.tactExpr.method))) {
+                    throwCompilationError(
+                        `Map function "${idText(this.tactExpr.method)}" not found`,
+                        this.tactExpr.loc,
+                    );
+                }
+                const abf = MapFunctions.get(idText(this.tactExpr.method))!;
+                return abf.generate(
+                    [
+                        src,
+                        ...this.tactExpr.args.map((v) =>
+                            getExpType(this.ctx.ctx, v),
+                        ),
+                    ],
+                    [this.tactExpr.self, ...this.tactExpr.args],
+                    this.tactExpr.loc,
+                );
+            }
+
+            if (src.kind === "ref_bounced") {
+                throw Error("Unimplemented");
+            }
+
+            throwCompilationError(
+                `Cannot call function of non - direct type: "${printTypeRef(src)}"`,
+                this.tactExpr.loc,
+            );
+        }
+
+        //
+        //     //
+        //     // Init of
+        //     //
+        //
+        //     if (f.kind === "init_of") {
+        //         const type = getType(wCtx.ctx, f.contract);
+        //         return `${ops.contractInitChild(idText(f.contract), wCtx)}(${["__tact_context_sys", ...f.args.map((a, i) => writeCastedExpression(a, type.init!.params[i]!.type, wCtx))].join(", ")})`;
+        //     }
+        //
+        //     //
+        //     // Ternary operator
+        //     //
+        //
+        //     if (f.kind === "conditional") {
+        //         return `(${writeExpression(f.condition, wCtx)} ? ${writeExpression(f.thenBranch, wCtx)} : ${writeExpression(f.elseBranch, wCtx)})`;
+        //     }
+        //
+
+        //
+        // Unreachable
+        //
+        throw Error(`Unknown expression: ${this.tactExpr.kind}`);
+    }
+
+    private makeExpr(src: AstExpression): FuncAstExpr {
+        return ExpressionGen.fromTact(this.ctx, src).writeExpression();
+    }
+
+    public writeCastedExpression(to: TypeRef): FuncAstExpr {
+        const expr = getExpType(this.ctx.ctx, this.tactExpr);
+        return cast(this.ctx.ctx, expr, to, this.writeExpression());
+    }
+
+    private makeCastedExpr(src: AstExpression, to: TypeRef): FuncAstExpr {
+        return ExpressionGen.fromTact(this.ctx, src).writeCastedExpression(to);
+    }
+}
