@@ -276,7 +276,7 @@ export type FuncAstFunction = {
 
 export type FuncAstComment = {
     kind: "comment";
-    value: string;
+    values: string[]; // Represents multiline comments
 };
 
 export type FuncAstInclude = {

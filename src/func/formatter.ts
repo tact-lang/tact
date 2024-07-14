@@ -310,7 +310,7 @@ export class FuncFormatter {
     }
 
     private static formatComment(node: FuncAstComment): string {
-        return `;; ${node.value}`;
+        return node.values.map((v) => `;; ${v}`).join('\n');
     }
 
     private static formatType(node: FuncType): string {
