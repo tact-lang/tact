@@ -1,6 +1,7 @@
 import {
     FuncAstExpr,
     FuncAstIdExpr,
+    FuncAstTernaryExpr,
     FuncAstPragma,
     FuncAstTensorExpr,
     FuncAstInclude,
@@ -80,4 +81,12 @@ export function makeInclude(value: string): FuncAstInclude {
 
 export function makeTensorExpr(...values: FuncAstExpr[]): FuncAstTensorExpr {
     return { kind: "tensor_expr", values };
+}
+
+export function makeTernaryExpr(
+    cond: FuncAstExpr,
+    trueExpr: FuncAstExpr,
+    falseExpr: FuncAstExpr,
+): FuncAstTernaryExpr {
+    return { kind: "ternary_expr", cond, trueExpr, falseExpr };
 }

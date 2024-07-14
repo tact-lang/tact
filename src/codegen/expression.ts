@@ -29,7 +29,12 @@ import {
     FuncAstIdExpr,
     FuncAstTernaryExpr,
 } from "../func/syntax";
-import { makeId, makeCall, makeBinop } from "../func/syntaxUtils";
+import {
+    makeId,
+    makeCall,
+    makeBinop,
+    makeTernaryExpr,
+} from "../func/syntaxUtils";
 
 function isNull(f: AstExpression): boolean {
     return f.kind === "null";
@@ -76,7 +81,7 @@ export class ExpressionGen {
         return new ExpressionGen(ctx, tactExpr);
     }
 
-    /***
+    /**
      * Generates FunC literals from Tact ones.
      */
     static writeValue(ctx: CodegenContext, val: Value): FuncAstExpr {
@@ -139,7 +144,7 @@ export class ExpressionGen {
         // literals and constant expressions are covered here
         try {
             const value = evalConstantExpression(this.tactExpr, this.ctx.ctx);
-            return ExpressionGen.writeValue(this.ctx,value);
+            return ExpressionGen.writeValue(this.ctx, value);
         } catch (error) {
             if (!(error instanceof TactConstEvalError) || error.fatal)
                 throw error;
@@ -732,23 +737,31 @@ export class ExpressionGen {
         }
 
         //
-        //     //
-        //     // Init of
-        //     //
+        // Init of
         //
-        //     if (f.kind === "init_of") {
-        //         const type = getType(wCtx.ctx, f.contract);
-        //         return `${ops.contractInitChild(idText(f.contract), wCtx)}(${["__tact_context_sys", ...f.args.map((a, i) => writeCastedExpression(a, type.init!.params[i]!.type, wCtx))].join(", ")})`;
-        //     }
+        if (this.tactExpr.kind === "init_of") {
+            const type = getType(this.ctx.ctx, this.tactExpr.contract);
+            return makeCall(
+                ops.contractInitChild(idText(this.tactExpr.contract)),
+                [
+                    makeId("__tact_context_sys"),
+                    ...this.tactExpr.args.map((a, i) =>
+                        this.makeCastedExpr(a, type.init!.params[i]!.type),
+                    ),
+                ],
+            );
+        }
+
         //
-        //     //
-        //     // Ternary operator
-        //     //
+        // Ternary operator
         //
-        //     if (f.kind === "conditional") {
-        //         return `(${writeExpression(f.condition, wCtx)} ? ${writeExpression(f.thenBranch, wCtx)} : ${writeExpression(f.elseBranch, wCtx)})`;
-        //     }
-        //
+        if (this.tactExpr.kind === "conditional") {
+            return makeTernaryExpr(
+                this.makeExpr(this.tactExpr.condition),
+                this.makeExpr(this.tactExpr.thenBranch),
+                this.makeExpr(this.tactExpr.elseBranch),
+            );
+        }
 
         //
         // Unreachable
