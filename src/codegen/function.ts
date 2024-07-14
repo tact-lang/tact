@@ -16,7 +16,7 @@ import {
     makeReturn,
     makeFunction,
 } from "../func/syntaxUtils";
-import { StatementGen, ExpressionGen , CodegenContext } from ".";
+import { StatementGen, ExpressionGen, CodegenContext } from ".";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 
 /**
@@ -109,10 +109,15 @@ export class FunctionGen {
 
         const params: [string, FuncType][] = tactFun.params.reduce(
             (acc, a) => {
-                acc.push([funcIdOf(a.name), resolveFuncType(this.ctx.ctx, a.type)]);
+                acc.push([
+                    funcIdOf(a.name),
+                    resolveFuncType(this.ctx.ctx, a.type),
+                ]);
                 return acc;
             },
-            self ? [[funcIdOf("self"), resolveFuncType(this.ctx.ctx, self)]] : [],
+            self
+                ? [[funcIdOf("self"), resolveFuncType(this.ctx.ctx, self)]]
+                : [],
         );
 
         // TODO: handle native functions delcs. should be in a separatre funciton
@@ -153,7 +158,9 @@ export class FunctionGen {
             });
         }
         for (const a of tactFun.ast.params) {
-            if (!this.resolveFuncPrimitive(resolveTypeRef(this.ctx.ctx, a.type))) {
+            if (
+                !this.resolveFuncPrimitive(resolveTypeRef(this.ctx.ctx, a.type))
+            ) {
                 const name = resolveFuncTypeUnpack(
                     this.ctx.ctx,
                     resolveTypeRef(this.ctx.ctx, a.type),
@@ -192,15 +199,18 @@ export class FunctionGen {
      *     return ($f1, $f2);
      * }
      * ```
+     *
+     * @param type Type description of the struct for which the constructor is generated
+     * @param args Names of the arguments
      */
     public writeStructConstructor(
         type: TypeDescription,
-        args: AstId[],
+        args: string[],
     ): FuncAstFunction {
         const attrs: FuncAstFunctionAttribute[] = ["inline"];
         const name = ops.typeConstructor(
             type.name,
-            args.map((a) => a.text),
+            args.map((a) => a),
         );
         const returnTy = resolveFuncType(this.ctx.ctx, type);
         // Rename a struct constructor formal parameter to avoid
@@ -208,20 +218,20 @@ export class FunctionGen {
         // is a perfectly fine Tact structure, but its constructor would
         // have the wrong parameter name: `$Foo$_constructor_type(int type)`
         const avoidFunCKeywordNameClash = (p: string) => `$${p}`;
-        const params: [string, FuncType][] = args.map((arg: AstId) => [
-            avoidFunCKeywordNameClash(arg.text),
+        const params: [string, FuncType][] = args.map((arg: string) => [
+            avoidFunCKeywordNameClash(arg),
             resolveFuncType(
                 this.ctx.ctx,
-                type.fields.find((v2) => v2.name === arg.text)!.type,
+                type.fields.find((v2) => v2.name === arg)!.type,
             ),
         ]);
         // Create expressions used in actual arguments
         const values: FuncAstExpr[] = type.fields.map((v) => {
-            const arg = args.find((v2) => v2.text === v.name);
+            const arg = args.find((v2) => v2 === v.name);
             if (arg) {
-                return makeId(avoidFunCKeywordNameClash(arg.text));
+                return makeId(avoidFunCKeywordNameClash(arg));
             } else if (v.default !== undefined) {
-                return ExpressionGen.writeValue(v.default);
+                return ExpressionGen.writeValue(this.ctx, v.default);
             } else {
                 throw Error(
                     `Missing argument for field "${v.name}" in struct "${type.name}"`,

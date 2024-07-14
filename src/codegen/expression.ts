@@ -4,17 +4,12 @@ import {
     idTextErr,
 } from "../errors";
 import { evalConstantExpression } from "../constEval";
-import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
+import { resolveFuncTypeUnpack } from "./type";
 import { MapFunctions, StructFunctions, GlobalFunctions } from "./abi";
 import { getExpType } from "../types/resolveExpression";
 import { FunctionGen, CodegenContext } from ".";
 import { cast, funcIdOf, ops } from "./util";
-import {
-    printTypeRef,
-    TypeRef,
-    Value,
-    FieldDescription,
-} from "../types/types";
+import { printTypeRef, TypeRef, Value, FieldDescription } from "../types/types";
 import {
     getStaticConstant,
     getType,
@@ -54,6 +49,7 @@ function negate(expr: FuncAstExpr): FuncAstExpr {
 
 /**
  * Creates a Func identifier in the following format: a'b'c.
+ * TODO: make it a static method
  */
 export function writePathExpression(path: AstId[]): FuncAstIdExpr {
     return makeId(
@@ -83,7 +79,7 @@ export class ExpressionGen {
     /***
      * Generates FunC literals from Tact ones.
      */
-    static writeValue(val: Value): FuncAstExpr {
+    static writeValue(ctx: CodegenContext, val: Value): FuncAstExpr {
         if (typeof val === "bigint") {
             return { kind: "number_expr", value: val };
         }
@@ -113,27 +109,29 @@ export class ExpressionGen {
         //     wCtx.used(id);
         //     return `${id}()`;
         // }
-        // if (typeof val === "object" && "$tactStruct" in val) {
-        //     // this is a struct value
-        //     const structDescription = getType(
-        //         wCtx.ctx,
-        //         val["$tactStruct"] as string,
-        //     );
-        //     const fields = structDescription.fields.map((field) => field.name);
-        //     const id = writeStructConstructor(structDescription, fields, wCtx);
-        //     wCtx.used(id);
-        //     const fieldValues = structDescription.fields.map((field) => {
-        //         if (field.name in val) {
-        //             return writeValue(val[field.name]!, wCtx);
-        //         } else {
-        //             throw Error(
-        //                 `Struct value is missing a field: ${field.name}`,
-        //                 val,
-        //             );
-        //         }
-        //     });
-        //     return `${id}(${fieldValues.join(", ")})`;
-        // }
+        if (typeof val === "object" && "$tactStruct" in val) {
+            // this is a struct value
+            const structDescription = getType(
+                ctx.ctx,
+                val["$tactStruct"] as string,
+            );
+            const fields = structDescription.fields.map((field) => field.name);
+            const constructor = FunctionGen.fromTact(
+                ctx,
+            ).writeStructConstructor(structDescription, fields);
+            ctx.add("constructor", constructor);
+            const fieldValues = structDescription.fields.map((field) => {
+                if (field.name in val) {
+                    return ExpressionGen.writeValue(ctx, val[field.name]!);
+                } else {
+                    throw Error(
+                        `Struct value is missing a field: ${field.name}`,
+                        val,
+                    );
+                }
+            });
+            return makeCall(constructor.name, fieldValues);
+        }
         throw Error(`Invalid value: ${val}`);
     }
 
@@ -141,7 +139,7 @@ export class ExpressionGen {
         // literals and constant expressions are covered here
         try {
             const value = evalConstantExpression(this.tactExpr, this.ctx.ctx);
-            return ExpressionGen.writeValue(value);
+            return ExpressionGen.writeValue(this.ctx,value);
         } catch (error) {
             if (!(error instanceof TactConstEvalError) || error.fatal)
                 throw error;
@@ -182,7 +180,7 @@ export class ExpressionGen {
             // Handle constant
             if (hasStaticConstant(this.ctx.ctx, this.tactExpr.text)) {
                 const c = getStaticConstant(this.ctx.ctx, this.tactExpr.text);
-                return ExpressionGen.writeValue(c.value!);
+                return ExpressionGen.writeValue(this.ctx, c.value!);
             }
 
             return makeId(funcIdOf(this.tactExpr.text));
@@ -516,7 +514,7 @@ export class ExpressionGen {
                     this.makeExpr(this.tactExpr.aggregate),
                 ]);
             } else {
-                return ExpressionGen.writeValue(cst!.value!);
+                return ExpressionGen.writeValue(this.ctx, cst!.value!);
             }
         }
 
@@ -561,9 +559,11 @@ export class ExpressionGen {
             const src = getType(this.ctx.ctx, this.tactExpr.type);
 
             // Write a constructor
-            const constructor = FunctionGen.fromTact(this.ctx).writeStructConstructor(
+            const constructor = FunctionGen.fromTact(
+                this.ctx,
+            ).writeStructConstructor(
                 src,
-                this.tactExpr.args.map((v) => v.field),
+                this.tactExpr.args.map((v) => v.field.text),
             );
             this.ctx.add("constructor", constructor);
 
@@ -644,7 +644,10 @@ export class ExpressionGen {
                 // func would convert (int) type to just int and break mutating functions
                 if (methodFun.isMutating) {
                     if (this.tactExpr.args.length === 1) {
-                        const t = getExpType(this.ctx.ctx, this.tactExpr.args[0]!);
+                        const t = getExpType(
+                            this.ctx.ctx,
+                            this.tactExpr.args[0]!,
+                        );
                         if (t.kind === "ref") {
                             const tt = getType(this.ctx.ctx, t.name);
                             if (
