@@ -190,8 +190,8 @@ export class FunctionGen {
     /**
      * Creates a Func function that represents a constructor for the Tact struct, e.g.:
      * ```
-     * inline (int, int) $MyStruct_$constructor_f1_f2(int $f1, int $f2) {
-     *   return (f1, f2);
+     * ((int, int)) $MyStruct$_constructor_f1_f2(int $f1, int $f2) inline {
+     *     return ($f1, $f2);
      * }
      * ```
      */
