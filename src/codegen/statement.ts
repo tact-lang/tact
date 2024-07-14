@@ -19,7 +19,14 @@ import {
     FuncAstTupleExpr,
     FuncAstUnitExpr,
 } from "../func/syntax";
-import { makeId, makeExprStmt, makeReturn } from "../func/syntaxUtils";
+import {
+    makeId,
+    makeExprStmt,
+    makeReturn,
+    makeTensorExpr,
+} from "../func/syntaxUtils";
+
+import JSONbig from "json-bigint";
 
 /**
  * Encapsulates generation of Func statements from the Tact statement.
@@ -98,12 +105,7 @@ export class StatementGen {
                     ? makeId(this.selfName)
                     : undefined;
                 const getValue = (expr: FuncAstExpr): FuncAstExpr =>
-                    this.selfName
-                        ? ({
-                              kind: "tuple_expr",
-                              values: [selfVar!, expr],
-                          } as FuncAstTupleExpr)
-                        : expr;
+                    this.selfName ? makeTensorExpr(selfVar!, expr) : expr;
                 if (this.tactStmt.expression) {
                     const castedReturns = this.makeCastedExpr(
                         this.tactStmt.expression,

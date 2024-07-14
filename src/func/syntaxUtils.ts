@@ -2,6 +2,7 @@ import {
     FuncAstExpr,
     FuncAstIdExpr,
     FuncAstPragma,
+    FuncAstTensorExpr,
     FuncAstInclude,
     FuncAstFunctionAttribute,
     FuncAstFormalFunctionParam,
@@ -75,4 +76,8 @@ export function makePragma(value: string): FuncAstPragma {
 
 export function makeInclude(value: string): FuncAstInclude {
     return { kind: "include", value };
+}
+
+export function makeTensorExpr(...values: FuncAstExpr[]): FuncAstTensorExpr {
+    return { kind: "tensor_expr", values };
 }

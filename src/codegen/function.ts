@@ -146,10 +146,7 @@ export class FunctionGen {
                 self,
                 funcIdOf("self"),
             );
-            const init: FuncAstExpr = {
-                kind: "id_expr",
-                value: funcIdOf("self"),
-            };
+            const init: FuncAstExpr = makeId(funcIdOf("self"));
             body.push({
                 kind: "var_def_stmt",
                 name: varName,
@@ -166,10 +163,7 @@ export class FunctionGen {
                     resolveTypeRef(this.ctx.ctx, a.type),
                     funcIdOf(a.name),
                 );
-                const init: FuncAstExpr = {
-                    kind: "id_expr",
-                    value: funcIdOf(a.name),
-                };
+                const init: FuncAstExpr = makeId(funcIdOf(a.name));
                 body.push({ kind: "var_def_stmt", name, init, ty: undefined });
             }
         }

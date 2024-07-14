@@ -81,6 +81,7 @@ export class ContractGen {
         m.entries.push(makeComment("", `Contract ${c.name} functions` ,""));
 
         // TODO: Generate init
+
         for (const tactFun of c.functions.values()) {
             const funcFun = FunctionGen.fromTact(this.ctx).writeFunction(
                 tactFun,
