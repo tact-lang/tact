@@ -1,7 +1,7 @@
 import { CompilerContext } from "../context";
 import { createABI } from "../generator/createABI";
 import { writeProgram } from "../generator/writeProgram";
-import { ContractGen, CodegenContext } from "../codegen";
+import { ModuleGen, CodegenContext } from "../codegen";
 import { FuncFormatter } from "../func/formatter";
 
 export type CompilationOutput = {
@@ -29,7 +29,7 @@ export async function compile(
     const abi = createABI(ctx, contractName);
     if (process.env.NEW_CODEGEN === "1") {
         const codegenCtx = new CodegenContext(ctx);
-        const funcContract = ContractGen.fromTact(
+        const funcContract = ModuleGen.fromTact(
             codegenCtx,
             contractName,
             abiName,
