@@ -15,7 +15,7 @@ export class ContractGen {
     ) {}
 
     static fromTact(
-        ctx: CodegenContext ,
+        ctx: CodegenContext,
         contractName: string,
         abiName: string,
     ): ContractGen {
@@ -65,6 +65,7 @@ export class ContractGen {
             const funcFun = FunctionGen.fromTact(this.ctx).writeFunction(
                 tactFun,
             );
+            m.entries.push(funcFun);
         }
     }
 
@@ -79,7 +80,7 @@ export class ContractGen {
         m.entries.push(c);
     }
 
-    public generate(): FuncAstModule {
+    public writeProgram(): FuncAstModule {
         const m: FuncAstModule = { kind: "module", entries: [] };
 
         const allTypes = Object.values(getAllTypes(this.ctx.ctx));

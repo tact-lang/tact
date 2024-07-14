@@ -36,6 +36,8 @@ import {
     FuncAstPrimitiveTypeExpr,
 } from "./syntax";
 
+import JSONbig from "json-bigint";
+
 /**
  * Provides utilities to print the generated Func AST.
  */
@@ -122,7 +124,7 @@ export class FuncFormatter {
                     node as FuncAstPrimitiveTypeExpr,
                 );
             default:
-                throw new Error(`Unsupported node kind: ${node}`);
+                throw new Error(`Unsupported node: ${JSONbig.stringify(node, null, 2)}`);
         }
     }
 

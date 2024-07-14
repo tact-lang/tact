@@ -19,7 +19,7 @@ import {
     FuncAstTupleExpr,
     FuncAstUnitExpr,
 } from "../func/syntax";
-import { makeId, makeExprStmt } from "../func/syntaxUtils";
+import { makeId, makeExprStmt, makeReturn } from "../func/syntaxUtils";
 
 /**
  * Encapsulates generation of Func statements from the Tact statement.
@@ -94,9 +94,8 @@ export class StatementGen {
     public writeStatement(): FuncAstStmt {
         switch (this.tactStmt.kind) {
             case "statement_return": {
-                const kind = "return_stmt";
                 const selfVar = this.selfName
-                    ? { kind: "id", value: this.selfName }
+                    ? makeId(this.selfName)
                     : undefined;
                 const getValue = (expr: FuncAstExpr): FuncAstExpr =>
                     this.selfName
@@ -110,10 +109,10 @@ export class StatementGen {
                         this.tactStmt.expression,
                         this.returns!,
                     );
-                    return { kind, value: getValue(castedReturns) };
+                    return makeReturn(getValue(castedReturns));
                 } else {
                     const unit = { kind: "unit_expr" } as FuncAstUnitExpr;
-                    return { kind, value: getValue(unit) };
+                    return makeReturn(getValue(unit));
                 }
             }
             case "statement_let": {

@@ -33,7 +33,7 @@ export async function compile(
             codegenCtx,
             contractName,
             abiName,
-        ).generate();
+        ).writeProgram();
         const output = FuncFormatter.dump(funcContract);
         throw new Error(`output:\n${output}`);
         // return { output, ctx };
