@@ -281,10 +281,12 @@ export type FuncAstComment = {
 
 export type FuncAstInclude = {
     kind: "include";
+    value: string,
 };
 
 export type FuncAstPragma = {
     kind: "pragma";
+    value: string,
 };
 
 export type FuncAstGlobalVariable = {

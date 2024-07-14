@@ -2,7 +2,13 @@ import { getAllTypes } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { getSortedTypes } from "../storage/resolveAllocation";
 import { FuncAstModule, FuncAstComment } from "../func/syntax";
+import { makeComment, makePragma, makeInclude } from "../func/syntaxUtils";
 import { FunctionGen, CodegenContext } from ".";
+
+/**
+ * Func version used to compile the generated code.
+ */
+export const CODEGEN_FUNC_VERSION = "0.4.4";
 
 /**
  * Encapsulates generation of Func contracts from the Tact contract.
@@ -20,6 +26,18 @@ export class ContractGen {
         abiName: string,
     ): ContractGen {
         return new ContractGen(ctx, contractName, abiName);
+    }
+
+    private addPragmas(m: FuncAstModule): void {
+        m.entries.push(makePragma(`version =${CODEGEN_FUNC_VERSION}`));
+        m.entries.push(makePragma("allow-post-modification"));
+        m.entries.push(makePragma("compute-asm-ltr"));
+    }
+
+    private addIncludes(m: FuncAstModule): void {
+        m.entries.push(makeInclude(`${this.abiName}.headers.fc`));
+        m.entries.push(makeInclude(`${this.abiName}.stdlib.fc`));
+        m.entries.push(makeInclude(`${this.abiName}.storage.fc`));
     }
 
     /**
@@ -60,6 +78,8 @@ export class ContractGen {
      * TODO: Why do we need function from *all* the contracts?
      */
     private addContractFunctions(m: FuncAstModule, c: TypeDescription): void {
+        m.entries.push(makeComment("", `Contract ${c.name} functions` ,""));
+
         // TODO: Generate init
         for (const tactFun of c.functions.values()) {
             const funcFun = FunctionGen.fromTact(this.ctx).writeFunction(
@@ -90,6 +110,8 @@ export class ContractGen {
             throw Error(`Contract "${this.contractName}" not found`);
         }
 
+        this.addPragmas(m);
+        this.addIncludes(m);
         this.addStdlib(m);
         this.addSerializers(m);
         this.addAccessors(m);

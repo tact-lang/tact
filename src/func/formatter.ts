@@ -100,7 +100,9 @@ export class FuncFormatter {
             case "assign_expr":
                 return this.formatAssignExpr(node as FuncAstAssignExpr);
             case "augmented_assign_expr":
-                return this.formatAugmentedAssignExpr(node as FuncAstAugmentedAssignExpr);
+                return this.formatAugmentedAssignExpr(
+                    node as FuncAstAugmentedAssignExpr,
+                );
             case "ternary_expr":
                 return this.formatTernaryExpr(node as FuncAstTernaryExpr);
             case "binary_expr":
@@ -126,22 +128,40 @@ export class FuncFormatter {
             case "hole_expr":
                 return this.formatHoleExpr(node as FuncAstHoleExpr);
             case "primitive_type_expr":
-                return this.formatPrimitiveTypeExpr(node as FuncAstPrimitiveTypeExpr);
+                return this.formatPrimitiveTypeExpr(
+                    node as FuncAstPrimitiveTypeExpr,
+                );
             default:
-                throw new Error(`Unsupported node: ${JSONbig.stringify(node, null, 2)}`);
+                throw new Error(
+                    `Unsupported node: ${JSONbig.stringify(node, null, 2)}`,
+                );
         }
     }
 
     private formatModule(node: FuncAstModule): string {
-        return node.entries.map((entry) => this.dump(entry)).join("\n\n");
+        return node.entries
+            .map((entry, index) => {
+                const previousEntry = node.entries[index - 1];
+                const isSequentialPragmaOrInclude =
+                    previousEntry &&
+                    previousEntry.kind === entry.kind &&
+                    (entry.kind === "include" || entry.kind === "pragma");
+                const separator = isSequentialPragmaOrInclude ? "\n" : "\n\n";
+                return (index > 0 ? separator : "") + this.dump(entry);
+            })
+            .join("");
     }
 
     private formatFunction(node: FuncAstFunction): string {
         const attrs = node.attrs.join(" ");
         const name = node.name;
-        const params = node.params.map((param) => `${this.dump(param.ty)} ${param.name}`).join(", ");
+        const params = node.params
+            .map((param) => `${this.dump(param.ty)} ${param.name}`)
+            .join(", ");
         const returnType = this.dump(node.returnTy);
-        const body = this.formatIndentedBlock(node.body.map((stmt) => this.dump(stmt)).join("\n"));
+        const body = this.formatIndentedBlock(
+            node.body.map((stmt) => this.dump(stmt)).join("\n"),
+        );
         return `${returnType} ${name}(${params}) ${attrs} {\n${body}\n}`;
     }
 
@@ -157,33 +177,45 @@ export class FuncFormatter {
     }
 
     private formatBlockStmt(node: FuncAstBlockStmt): string {
-        const body = this.formatIndentedBlock(node.body.map((stmt) => this.dump(stmt)).join("\n"));
+        const body = this.formatIndentedBlock(
+            node.body.map((stmt) => this.dump(stmt)).join("\n"),
+        );
         return `{\n${body}\n}`;
     }
 
     private formatRepeatStmt(node: FuncAstRepeatStmt): string {
         const condition = this.dump(node.condition);
-        const body = this.formatIndentedBlock(node.body.map((stmt) => this.dump(stmt)).join("\n"));
+        const body = this.formatIndentedBlock(
+            node.body.map((stmt) => this.dump(stmt)).join("\n"),
+        );
         return `repeat ${condition} {\n${body}\n}`;
     }
 
     private formatConditionStmt(node: FuncAstConditionStmt): string {
         const condition = node.condition ? this.dump(node.condition) : "";
         const ifnot = node.ifnot ? "ifnot" : "if";
-        const bodyBlock = this.formatIndentedBlock(node.body.map((stmt) => this.dump(stmt)).join("\n"));
-        const elseBlock = node.else ? ` else {\n${this.formatIndentedBlock(this.dump(node.else))}\n}` : "";
+        const bodyBlock = this.formatIndentedBlock(
+            node.body.map((stmt) => this.dump(stmt)).join("\n"),
+        );
+        const elseBlock = node.else
+            ? ` else {\n${this.formatIndentedBlock(this.dump(node.else))}\n}`
+            : "";
         return `${ifnot} ${condition} {\n${bodyBlock}\n}${elseBlock}`;
     }
 
     private formatDoUntilStmt(node: FuncAstDoUntilStmt): string {
         const condition = this.dump(node.condition);
-        const body = this.formatIndentedBlock(node.body.map((stmt) => this.dump(stmt)).join("\n"));
+        const body = this.formatIndentedBlock(
+            node.body.map((stmt) => this.dump(stmt)).join("\n"),
+        );
         return `do {\n${body}\n} until ${condition};`;
     }
 
     private formatWhileStmt(node: FuncAstWhileStmt): string {
         const condition = this.dump(node.condition);
-        const body = this.formatIndentedBlock(node.body.map((stmt) => this.dump(stmt)).join("\n"));
+        const body = this.formatIndentedBlock(
+            node.body.map((stmt) => this.dump(stmt)).join("\n"),
+        );
         return `while ${condition} {\n${body}\n}`;
     }
 
@@ -192,8 +224,12 @@ export class FuncFormatter {
     }
 
     private formatTryCatchStmt(node: FuncAstTryCatchStmt): string {
-        const tryBlock = this.formatIndentedBlock(node.tryBlock.map((stmt) => this.dump(stmt)).join("\n"));
-        const catchBlock = this.formatIndentedBlock(node.catchBlock.map((stmt) => this.dump(stmt)).join("\n"));
+        const tryBlock = this.formatIndentedBlock(
+            node.tryBlock.map((stmt) => this.dump(stmt)).join("\n"),
+        );
+        const catchBlock = this.formatIndentedBlock(
+            node.catchBlock.map((stmt) => this.dump(stmt)).join("\n"),
+        );
         const catchVar = node.catchVar ? ` (${node.catchVar})` : "";
         return `try {\n${tryBlock}\n} catch${catchVar} {\n${catchBlock}\n}`;
     }
@@ -221,7 +257,9 @@ export class FuncFormatter {
         return `${lhs} = ${rhs}`;
     }
 
-    private formatAugmentedAssignExpr(node: FuncAstAugmentedAssignExpr): string {
+    private formatAugmentedAssignExpr(
+        node: FuncAstAugmentedAssignExpr,
+    ): string {
         const lhs = this.dump(node.lhs);
         const rhs = this.dump(node.rhs);
         return `${lhs} ${node.op} ${rhs}`;
@@ -296,11 +334,11 @@ export class FuncFormatter {
     }
 
     private formatInclude(node: FuncAstInclude): string {
-        return `#include ${node.kind}`;
+        return `#include "${node.value}"`;
     }
 
     private formatPragma(node: FuncAstPragma): string {
-        return `#pragma ${node.kind}`;
+        return `#pragma ${node.value}`;
     }
 
     private formatComment(node: FuncAstComment): string {
@@ -320,7 +358,9 @@ export class FuncFormatter {
             case "tensor":
                 return `(${node.value.map((t) => this.formatType(t)).join(", ")})`;
             default:
-                throw new Error(`Unsupported type kind: ${JSONbig.stringify(node, null, 2)}`);
+                throw new Error(
+                    `Unsupported type kind: ${JSONbig.stringify(node, null, 2)}`,
+                );
         }
     }
 
@@ -328,7 +368,7 @@ export class FuncFormatter {
         this.currentIndent += this.indent;
         const indentedContent = content
             .split("\n")
-            .map(line => " ".repeat(this.currentIndent) + line)
+            .map((line) => " ".repeat(this.currentIndent) + line)
             .join("\n");
         this.currentIndent -= this.indent;
         return indentedContent;

@@ -1,8 +1,11 @@
 import {
     FuncAstExpr,
     FuncAstIdExpr,
+    FuncAstPragma,
+    FuncAstInclude,
     FuncAstFunctionAttribute,
     FuncAstFormalFunctionParam,
+    FuncAstComment,
     FuncAstFunction,
     FuncType,
     FuncAstCallExpr,
@@ -60,4 +63,16 @@ export function makeFunction(
         } as FuncAstFormalFunctionParam;
     });
     return { kind: "function", attrs, name, params, returnTy, body };
+}
+
+export function makeComment(...values: string[]): FuncAstComment {
+    return { kind: "comment", values };
+}
+
+export function makePragma(value: string): FuncAstPragma {
+    return { kind: "pragma", value };
+}
+
+export function makeInclude(value: string): FuncAstInclude {
+    return { kind: "include", value };
 }
