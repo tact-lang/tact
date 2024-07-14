@@ -136,11 +136,11 @@ export class FuncFormatter {
         const attrs = node.attrs.join(" ");
         const name = node.name;
         const params = node.params
-            .map((param) => `${param.ty} ${param.name}`)
+            .map((param) => `${this.dump(param.ty)} ${param.name}`)
             .join(", ");
-        const returnType = node.returnTy;
+        const returnType = this.dump(node.returnTy);
         const body = node.body.map((stmt) => this.dump(stmt)).join("\n");
-        return `${attrs} ${name} ${params} -> ${returnType} {\n${body}\n}`;
+        return `${returnType} ${name}(${params}) ${attrs} {\n${body}\n}`;
     }
 
     private static formatVarDefStmt(node: FuncAstVarDefStmt): string {
@@ -324,9 +324,9 @@ export class FuncFormatter {
             case "type":
                 return node.kind;
             case "tensor":
-                return `tensor(${node.value.map((t) => this.formatType(t)).join(", ")})`;
+                return `(${node.value.map((t) => this.formatType(t)).join(", ")})`;
             default:
-                throw new Error(`Unsupported type kind: ${node}`);
+                throw new Error(`Unsupported type kind: ${JSONbig.stringify(node, null, 2)}`);
         }
     }
 }
