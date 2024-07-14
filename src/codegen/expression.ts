@@ -554,27 +554,28 @@ export class ExpressionGen {
             return { kind: "call_expr", fun, args };
         }
 
-        // //
-        // // Struct Constructor
-        // //
-        // if (this.tactExpr.kind === "struct_instance") {
-        //     const src = getType(this.ctx.ctx, this.tactExpr.type);
         //
-        //     // Write a constructor
-        //     // const id = FunctionGen.fromTact(this.ctx.ctx).writeStructConstructor(
-        //     //     src,
-        //     //     this.tactExpr.args.map((v) => v.field),
-        //     // );
+        // Struct Constructor
         //
-        //     // Write an expression
-        //     const args = this.tactExpr.args.map((v) =>
-        //         this.makeCastedExpr(
-        //             v.initializer,
-        //             src.fields.find((v2) => eqNames(v2.name, v.field))!.type,
-        //         ),
-        //     );
-        //     return makeCall(id, args);
-        // }
+        if (this.tactExpr.kind === "struct_instance") {
+            const src = getType(this.ctx.ctx, this.tactExpr.type);
+
+            // Write a constructor
+            const constructor = FunctionGen.fromTact(this.ctx).writeStructConstructor(
+                src,
+                this.tactExpr.args.map((v) => v.field),
+            );
+            this.ctx.add("constructor", constructor);
+
+            // Write an expression
+            const args = this.tactExpr.args.map((v) =>
+                this.makeCastedExpr(
+                    v.initializer,
+                    src.fields.find((v2) => eqNames(v2.name, v.field))!.type,
+                ),
+            );
+            return makeCall(constructor.name, args);
+        }
 
         //
         // Object-based function call

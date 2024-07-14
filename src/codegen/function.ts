@@ -193,7 +193,7 @@ export class FunctionGen {
      * }
      * ```
      */
-    private writeStructConstructor(
+    public writeStructConstructor(
         type: TypeDescription,
         args: AstId[],
     ): FuncAstFunction {
