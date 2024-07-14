@@ -42,7 +42,15 @@ import JSONbig from "json-bigint";
  * Provides utilities to print the generated Func AST.
  */
 export class FuncFormatter {
-    public static dump(node: FuncAstNode): string {
+    private indent: number;
+    private currentIndent: number;
+
+    constructor(indent: number = 4) {
+        this.indent = indent;
+        this.currentIndent = 0;
+    }
+
+    public dump(node: FuncAstNode): string {
         switch (node.kind) {
             case "id_expr":
                 return this.formatIdExpr(node as FuncAstIdExpr);
@@ -92,9 +100,7 @@ export class FuncFormatter {
             case "assign_expr":
                 return this.formatAssignExpr(node as FuncAstAssignExpr);
             case "augmented_assign_expr":
-                return this.formatAugmentedAssignExpr(
-                    node as FuncAstAugmentedAssignExpr,
-                );
+                return this.formatAugmentedAssignExpr(node as FuncAstAugmentedAssignExpr);
             case "ternary_expr":
                 return this.formatTernaryExpr(node as FuncAstTernaryExpr);
             case "binary_expr":
@@ -120,200 +126,188 @@ export class FuncFormatter {
             case "hole_expr":
                 return this.formatHoleExpr(node as FuncAstHoleExpr);
             case "primitive_type_expr":
-                return this.formatPrimitiveTypeExpr(
-                    node as FuncAstPrimitiveTypeExpr,
-                );
+                return this.formatPrimitiveTypeExpr(node as FuncAstPrimitiveTypeExpr);
             default:
                 throw new Error(`Unsupported node: ${JSONbig.stringify(node, null, 2)}`);
         }
     }
 
-    private static formatModule(node: FuncAstModule): string {
+    private formatModule(node: FuncAstModule): string {
         return node.entries.map((entry) => this.dump(entry)).join("\n");
     }
 
-    private static formatFunction(node: FuncAstFunction): string {
+    private formatFunction(node: FuncAstFunction): string {
         const attrs = node.attrs.join(" ");
         const name = node.name;
-        const params = node.params
-            .map((param) => `${this.dump(param.ty)} ${param.name}`)
-            .join(", ");
+        const params = node.params.map((param) => `${this.dump(param.ty)} ${param.name}`).join(", ");
         const returnType = this.dump(node.returnTy);
-        const body = node.body.map((stmt) => this.dump(stmt)).join("\n");
+        const body = this.formatIndentedBlock(node.body.map((stmt) => this.dump(stmt)).join("\n"));
         return `${returnType} ${name}(${params}) ${attrs} {\n${body}\n}`;
     }
 
-    private static formatVarDefStmt(node: FuncAstVarDefStmt): string {
+    private formatVarDefStmt(node: FuncAstVarDefStmt): string {
         const type = node.ty ? `${this.dump(node.ty)} ` : "";
         const init = node.init ? ` = ${this.dump(node.init)}` : "";
         return `var ${node.name}: ${type}${init};`;
     }
 
-    private static formatReturnStmt(node: FuncAstReturnStmt): string {
+    private formatReturnStmt(node: FuncAstReturnStmt): string {
         const value = node.value ? ` ${this.dump(node.value)}` : "";
         return `return${value};`;
     }
 
-    private static formatBlockStmt(node: FuncAstBlockStmt): string {
-        const body = node.body.map((stmt) => this.dump(stmt)).join("\n");
+    private formatBlockStmt(node: FuncAstBlockStmt): string {
+        const body = this.formatIndentedBlock(node.body.map((stmt) => this.dump(stmt)).join("\n"));
         return `{\n${body}\n}`;
     }
 
-    private static formatRepeatStmt(node: FuncAstRepeatStmt): string {
+    private formatRepeatStmt(node: FuncAstRepeatStmt): string {
         const condition = this.dump(node.condition);
-        const body = node.body.map((stmt) => this.dump(stmt)).join("\n");
+        const body = this.formatIndentedBlock(node.body.map((stmt) => this.dump(stmt)).join("\n"));
         return `repeat ${condition} {\n${body}\n}`;
     }
 
-    private static formatConditionStmt(node: FuncAstConditionStmt): string {
+    private formatConditionStmt(node: FuncAstConditionStmt): string {
         const condition = node.condition ? this.dump(node.condition) : "";
         const ifnot = node.ifnot ? "ifnot" : "if";
-        const thenBlock = node.body.map((stmt) => this.dump(stmt)).join("\n");
-        const elseBlock = node.else ? this.formatConditionStmt(node.else) : "";
-        return `${ifnot} ${condition} {\n${thenBlock}\n}${elseBlock ? ` else {\n${elseBlock}\n}` : ""}`;
+        const bodyBlock = this.formatIndentedBlock(node.body.map((stmt) => this.dump(stmt)).join("\n"));
+        const elseBlock = node.else ? ` else {\n${this.formatIndentedBlock(this.dump(node.else))}\n}` : "";
+        return `${ifnot} ${condition} {\n${bodyBlock}\n}${elseBlock}`;
     }
 
-    private static formatDoUntilStmt(node: FuncAstDoUntilStmt): string {
+    private formatDoUntilStmt(node: FuncAstDoUntilStmt): string {
         const condition = this.dump(node.condition);
-        const body = node.body.map((stmt) => this.dump(stmt)).join("\n");
+        const body = this.formatIndentedBlock(node.body.map((stmt) => this.dump(stmt)).join("\n"));
         return `do {\n${body}\n} until ${condition};`;
     }
 
-    private static formatWhileStmt(node: FuncAstWhileStmt): string {
+    private formatWhileStmt(node: FuncAstWhileStmt): string {
         const condition = this.dump(node.condition);
-        const body = node.body.map((stmt) => this.dump(stmt)).join("\n");
+        const body = this.formatIndentedBlock(node.body.map((stmt) => this.dump(stmt)).join("\n"));
         return `while ${condition} {\n${body}\n}`;
     }
 
-    private static formatExprStmt(node: FuncAstExprStmt): string {
+    private formatExprStmt(node: FuncAstExprStmt): string {
         return `${this.dump(node.expr)};`;
     }
 
-    private static formatTryCatchStmt(node: FuncAstTryCatchStmt): string {
-        const tryBlock = node.tryBlock
-            .map((stmt) => this.dump(stmt))
-            .join("\n");
-        const catchBlock = node.catchBlock
-            .map((stmt) => this.dump(stmt))
-            .join("\n");
+    private formatTryCatchStmt(node: FuncAstTryCatchStmt): string {
+        const tryBlock = this.formatIndentedBlock(node.tryBlock.map((stmt) => this.dump(stmt)).join("\n"));
+        const catchBlock = this.formatIndentedBlock(node.catchBlock.map((stmt) => this.dump(stmt)).join("\n"));
         const catchVar = node.catchVar ? ` (${node.catchVar})` : "";
         return `try {\n${tryBlock}\n} catch${catchVar} {\n${catchBlock}\n}`;
     }
 
-    private static formatConstant(node: FuncAstConstant): string {
+    private formatConstant(node: FuncAstConstant): string {
         const type = this.dump(node.ty);
         const init = this.dump(node.init);
         return `const ${type} = ${init};`;
     }
 
-    private static formatGlobalVariable(node: FuncAstGlobalVariable): string {
+    private formatGlobalVariable(node: FuncAstGlobalVariable): string {
         const type = this.dump(node.ty);
         return `global ${type} ${node.name};`;
     }
 
-    private static formatCallExpr(node: FuncAstCallExpr): string {
+    private formatCallExpr(node: FuncAstCallExpr): string {
         const fun = this.dump(node.fun);
         const args = node.args.map((arg) => this.dump(arg)).join(", ");
         return `${fun}(${args})`;
     }
 
-    private static formatAssignExpr(node: FuncAstAssignExpr): string {
+    private formatAssignExpr(node: FuncAstAssignExpr): string {
         const lhs = this.dump(node.lhs);
         const rhs = this.dump(node.rhs);
         return `${lhs} = ${rhs}`;
     }
 
-    private static formatAugmentedAssignExpr(
-        node: FuncAstAugmentedAssignExpr,
-    ): string {
+    private formatAugmentedAssignExpr(node: FuncAstAugmentedAssignExpr): string {
         const lhs = this.dump(node.lhs);
         const rhs = this.dump(node.rhs);
         return `${lhs} ${node.op} ${rhs}`;
     }
 
-    private static formatTernaryExpr(node: FuncAstTernaryExpr): string {
+    private formatTernaryExpr(node: FuncAstTernaryExpr): string {
         const cond = this.dump(node.cond);
         const body = this.dump(node.trueExpr);
         const elseExpr = this.dump(node.falseExpr);
         return `${cond} ? ${body} : ${elseExpr}`;
     }
 
-    private static formatBinaryExpr(node: FuncAstBinaryExpr): string {
+    private formatBinaryExpr(node: FuncAstBinaryExpr): string {
         const lhs = this.dump(node.lhs);
         const rhs = this.dump(node.rhs);
         return `${lhs} ${node.op} ${rhs}`;
     }
 
-    private static formatUnaryExpr(node: FuncAstUnaryExpr): string {
+    private formatUnaryExpr(node: FuncAstUnaryExpr): string {
         const value = this.dump(node.value);
         return `${node.op}${value}`;
     }
 
-    private static formatNumberExpr(node: FuncAstNumberExpr): string {
+    private formatNumberExpr(node: FuncAstNumberExpr): string {
         return node.value.toString();
     }
 
-    private static formatBoolExpr(node: FuncAstBoolExpr): string {
+    private formatBoolExpr(node: FuncAstBoolExpr): string {
         return node.value.toString();
     }
 
-    private static formatStringExpr(node: FuncAstStringExpr): string {
+    private formatStringExpr(node: FuncAstStringExpr): string {
         return `"${node.value}"`;
     }
 
-    private static formatNilExpr(_: FuncAstNilExpr): string {
+    private formatNilExpr(_: FuncAstNilExpr): string {
         return "nil";
     }
 
-    private static formatApplyExpr(node: FuncAstApplyExpr): string {
+    private formatApplyExpr(node: FuncAstApplyExpr): string {
         const lhs = this.dump(node.lhs);
         const rhs = this.dump(node.rhs);
         return `${lhs} ${rhs}`;
     }
 
-    private static formatTupleExpr(node: FuncAstTupleExpr): string {
+    private formatTupleExpr(node: FuncAstTupleExpr): string {
         const values = node.values.map((value) => this.dump(value)).join(", ");
         return `[${values}]`;
     }
 
-    private static formatTensorExpr(node: FuncAstTensorExpr): string {
+    private formatTensorExpr(node: FuncAstTensorExpr): string {
         const values = node.values.map((value) => this.dump(value)).join(", ");
         return `(${values})`;
     }
 
-    private static formatUnitExpr(_: FuncAstUnitExpr): string {
+    private formatUnitExpr(_: FuncAstUnitExpr): string {
         return "()";
     }
 
-    private static formatHoleExpr(node: FuncAstHoleExpr): string {
+    private formatHoleExpr(node: FuncAstHoleExpr): string {
         const id = node.id ? node.id : "_";
         const init = this.dump(node.init);
         return `${id} = ${init}`;
     }
 
-    private static formatPrimitiveTypeExpr(
-        node: FuncAstPrimitiveTypeExpr,
-    ): string {
+    private formatPrimitiveTypeExpr(node: FuncAstPrimitiveTypeExpr): string {
         return node.ty.kind;
     }
 
-    private static formatIdExpr(node: FuncAstIdExpr): string {
+    private formatIdExpr(node: FuncAstIdExpr): string {
         return node.value;
     }
 
-    private static formatInclude(node: FuncAstInclude): string {
+    private formatInclude(node: FuncAstInclude): string {
         return `#include ${node.kind}`;
     }
 
-    private static formatPragma(node: FuncAstPragma): string {
+    private formatPragma(node: FuncAstPragma): string {
         return `#pragma ${node.kind}`;
     }
 
-    private static formatComment(node: FuncAstComment): string {
-        return node.values.map((v) => `;; ${v}`).join('\n');
+    private formatComment(node: FuncAstComment): string {
+        return node.values.map((v) => `;; ${v}`).join("\n");
     }
 
-    private static formatType(node: FuncType): string {
+    private formatType(node: FuncType): string {
         switch (node.kind) {
             case "int":
             case "cell":
@@ -328,5 +322,15 @@ export class FuncFormatter {
             default:
                 throw new Error(`Unsupported type kind: ${JSONbig.stringify(node, null, 2)}`);
         }
+    }
+
+    private formatIndentedBlock(content: string): string {
+        this.currentIndent += this.indent;
+        const indentedContent = content
+            .split("\n")
+            .map(line => " ".repeat(this.currentIndent) + line)
+            .join("\n");
+        this.currentIndent -= this.indent;
+        return indentedContent;
     }
 }

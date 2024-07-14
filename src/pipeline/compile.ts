@@ -34,7 +34,7 @@ export async function compile(
             contractName,
             abiName,
         ).writeProgram();
-        const output = FuncFormatter.dump(funcContract);
+        const output = new FuncFormatter().dump(funcContract);
         throw new Error(`output:\n${output}`);
         // return { output, ctx };
     } else {
