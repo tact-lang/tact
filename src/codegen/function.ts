@@ -2,17 +2,22 @@ import { CompilerContext } from "../context";
 import { enabledInline } from "../config/features";
 import { getType, resolveTypeRef } from "../types/resolveDescriptors";
 import { ops, funcIdOf } from "./util";
+import { ExpressionGen } from "./expression";
+import { AstId } from "../grammar/ast";
 import { TypeDescription, FunctionDescription, TypeRef } from "../types/types";
 import {
     FuncAstFunction,
     FuncAstStmt,
-    FuncAstFormalFunctionParam,
     FuncAstFunctionAttribute,
     FuncAstExpr,
     FuncType,
-    FuncTensorType,
-    UNIT_TYPE,
 } from "../func/syntax";
+import {
+    makeId,
+    makeCall,
+    makeReturn,
+    makeFunction,
+} from "../func/syntaxUtils";
 import { StatementGen } from "./statement";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 
@@ -23,16 +28,10 @@ export class FunctionGen {
     /**
      * @param tactFun Type description of the Tact function.
      */
-    private constructor(
-        private ctx: CompilerContext,
-        private tactFun: FunctionDescription,
-    ) {}
+    private constructor(private ctx: CompilerContext) {}
 
-    static fromTact(
-        ctx: CompilerContext,
-        tactFun: FunctionDescription,
-    ): FunctionGen {
-        return new FunctionGen(ctx, tactFun);
+    static fromTact(ctx: CompilerContext): FunctionGen {
+        return new FunctionGen(ctx);
     }
 
     private resolveFuncPrimitive(
@@ -93,52 +92,40 @@ export class FunctionGen {
     /**
      * Generates Func function from the Tact funciton description.
      */
-    public generate(): FuncAstFunction {
-        if (this.tactFun.ast.kind !== "function_def") {
-            throw new Error(`Unknown function kind: ${this.tactFun.ast.kind}`);
+    public writeFunction(tactFun: FunctionDescription): FuncAstFunction {
+        if (tactFun.ast.kind !== "function_def") {
+            throw new Error(`Unknown function kind: ${tactFun.ast.kind}`);
         }
 
-        let returnTy = resolveFuncType(this.ctx, this.tactFun.returns);
+        let returnTy = resolveFuncType(this.ctx, tactFun.returns);
         // let returnsStr: string | null;
-        const self: TypeDescription | undefined = this.tactFun.self
-            ? getType(this.ctx, this.tactFun.self)
+        const self: TypeDescription | undefined = tactFun.self
+            ? getType(this.ctx, tactFun.self)
             : undefined;
-        if (self !== undefined && this.tactFun.isMutating) {
+        if (self !== undefined && tactFun.isMutating) {
             // Add `self` to the method signature as it is mutating in the body.
             const selfTy = resolveFuncType(this.ctx, self);
             returnTy = { kind: "tensor", value: [selfTy, returnTy] };
             // returnsStr = resolveFuncTypeUnpack(ctx, self, funcIdOf("self"));
         }
 
-        const params: FuncAstFormalFunctionParam[] = this.tactFun.params.reduce(
-            (acc, a) => [
-                ...acc,
-                {
-                    kind: "function_param",
-                    ty: resolveFuncType(this.ctx, a.type),
-                    name: funcIdOf(a.name),
-                },
-            ],
-            self
-                ? [
-                      {
-                          kind: "function_param",
-                          ty: this.resolveFuncType(self),
-                          name: funcIdOf("self"),
-                      },
-                  ]
-                : [],
+        const params: [string, FuncType][] = tactFun.params.reduce(
+            (acc, a) => {
+                acc.push([funcIdOf(a.name), resolveFuncType(this.ctx, a.type)]);
+                return acc;
+            },
+            self ? [[funcIdOf("self"), resolveFuncType(this.ctx, self)]] : [],
         );
 
         // TODO: handle native functions delcs. should be in a separatre funciton
 
         const name = self
-            ? ops.extension(self.name, this.tactFun.name)
-            : ops.global(this.tactFun.name);
+            ? ops.extension(self.name, tactFun.name)
+            : ops.global(tactFun.name);
 
         // Prepare function attributes
         let attrs: FuncAstFunctionAttribute[] = ["impure"];
-        if (enabledInline(this.ctx) || this.tactFun.isInline) {
+        if (enabledInline(this.ctx) || tactFun.isInline) {
             attrs.push("inline");
         }
         // TODO: handle stdlib
@@ -167,7 +154,7 @@ export class FunctionGen {
                 ty: undefined,
             });
         }
-        for (const a of this.tactFun.ast.params) {
+        for (const a of tactFun.ast.params) {
             if (!this.resolveFuncPrimitive(resolveTypeRef(this.ctx, a.type))) {
                 const name = resolveFuncTypeUnpack(
                     this.ctx,
@@ -187,16 +174,66 @@ export class FunctionGen {
                 ? resolveFuncTypeUnpack(this.ctx, self, funcIdOf("self"))
                 : undefined;
         // Process statements
-        this.tactFun.ast.statements.forEach((stmt) => {
+        tactFun.ast.statements.forEach((stmt) => {
             const funcStmt = StatementGen.fromTact(
                 this.ctx,
                 stmt,
                 selfName,
-                this.tactFun.returns,
+                tactFun.returns,
             ).writeStatement();
             body.push(funcStmt);
         });
 
-        return { kind: "function", attrs, params, returnTy, body };
+        return makeFunction(attrs, name, params, returnTy, body);
+    }
+
+    /**
+     * Creates a Func function that represents a constructor for the Tact struct, e.g.:
+     * ```
+     * inline (int, int) $MyStruct_$constructor_f1_f2(int $f1, int $f2) {
+     *   return (f1, f2);
+     * }
+     * ```
+     */
+    private writeStructConstructor(
+        type: TypeDescription,
+        args: AstId[],
+    ): FuncAstFunction {
+        const attrs: FuncAstFunctionAttribute[] = ["inline"];
+        const name = ops.typeConstructor(
+            type.name,
+            args.map((a) => a.text),
+        );
+        const returnTy = resolveFuncType(this.ctx, type);
+        // Rename a struct constructor formal parameter to avoid
+        // name clashes with FunC keywords, e.g. `struct Foo {type: Int}`
+        // is a perfectly fine Tact structure, but its constructor would
+        // have the wrong parameter name: `$Foo$_constructor_type(int type)`
+        const avoidFunCKeywordNameClash = (p: string) => `$${p}`;
+        const params: [string, FuncType][] = args.map((arg: AstId) => [
+            avoidFunCKeywordNameClash(arg.text),
+            resolveFuncType(
+                this.ctx,
+                type.fields.find((v2) => v2.name === arg.text)!.type,
+            ),
+        ]);
+        // Create expressions used in actual arguments
+        const values: FuncAstExpr[] = type.fields.map((v) => {
+            const arg = args.find((v2) => v2.text === v.name);
+            if (arg) {
+                return makeId(avoidFunCKeywordNameClash(arg.text));
+            } else if (v.default !== undefined) {
+                return ExpressionGen.writeValue(v.default);
+            } else {
+                throw Error(
+                    `Missing argument for field "${v.name}" in struct "${type.name}"`,
+                ); // Must not happen
+            }
+        });
+        const body =
+            values.length === 0 && returnTy.kind === "tuple"
+                ? [makeReturn(makeCall("empty_tuple", []))]
+                : [makeReturn({ kind: "tensor_expr", values })];
+        return makeFunction(attrs, name, params, returnTy, body);
     }
 }

@@ -63,7 +63,7 @@ export class ContractGen {
     private addContractFunctions(m: FuncAstModule, c: TypeDescription): void {
         // TODO: Generate init
         for (const tactFun of c.functions.values()) {
-            const funcFun = FunctionGen.fromTact(this.ctx, tactFun).generate();
+            const funcFun = FunctionGen.fromTact(this.ctx).writeFunction(tactFun);
         }
     }
 

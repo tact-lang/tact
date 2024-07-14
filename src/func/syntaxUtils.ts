@@ -1,6 +1,10 @@
 import {
     FuncAstExpr,
     FuncAstIdExpr,
+    FuncAstFunctionAttribute,
+    FuncAstFormalFunctionParam,
+    FuncAstFunction,
+    FuncType,
     FuncAstCallExpr,
     FuncAstBinaryOp,
     FuncAstStmt,
@@ -11,7 +15,7 @@ export function makeId(value: string): FuncAstIdExpr {
 }
 
 export function makeCall(
-    fun: FuncAstIdExpr | string,
+    fun: FuncAstExpr | string,
     args: FuncAstExpr[],
 ): FuncAstCallExpr {
     return {
@@ -35,4 +39,25 @@ export function makeBinop(
     rhs: FuncAstExpr,
 ): FuncAstExpr {
     return { kind: "binary_expr", lhs, op, rhs };
+}
+
+export function makeReturn(value: FuncAstExpr | undefined): FuncAstStmt {
+    return { kind: "return_stmt", value };
+}
+
+export function makeFunction(
+    attrs: FuncAstFunctionAttribute[],
+    name: string,
+    paramValues: [string, FuncType][],
+    returnTy: FuncType,
+    body: FuncAstStmt[],
+): FuncAstFunction {
+    const params = paramValues.map(([name, ty]) => {
+        return {
+            kind: "function_param",
+            name,
+            ty,
+        } as FuncAstFormalFunctionParam;
+    });
+    return { kind: "function", attrs, name, params, returnTy, body };
 }

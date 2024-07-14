@@ -5,11 +5,17 @@ import {
     idTextErr,
 } from "../errors";
 import { evalConstantExpression } from "../constEval";
-import { resolveFuncTypeUnpack } from "./type";
+import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 import { MapFunctions, StructFunctions, GlobalFunctions } from "./abi";
 import { getExpType } from "../types/resolveExpression";
+import { FunctionGen } from "./function";
 import { cast, funcIdOf, ops } from "./util";
-import { printTypeRef, TypeRef, Value, FieldDescription } from "../types/types";
+import {
+    printTypeRef,
+    TypeRef,
+    Value,
+    FieldDescription,
+} from "../types/types";
 import {
     getStaticConstant,
     getType,
@@ -78,7 +84,7 @@ export class ExpressionGen {
     /***
      * Generates FunC literals from Tact ones.
      */
-    private writeValue(val: Value): FuncAstExpr {
+    static writeValue(val: Value): FuncAstExpr {
         if (typeof val === "bigint") {
             return { kind: "number_expr", value: val };
         }
@@ -136,7 +142,7 @@ export class ExpressionGen {
         // literals and constant expressions are covered here
         try {
             const value = evalConstantExpression(this.tactExpr, this.ctx);
-            return this.writeValue(value);
+            return ExpressionGen.writeValue(value);
         } catch (error) {
             if (!(error instanceof TactConstEvalError) || error.fatal)
                 throw error;
@@ -177,7 +183,7 @@ export class ExpressionGen {
             // Handle constant
             if (hasStaticConstant(this.ctx, this.tactExpr.text)) {
                 const c = getStaticConstant(this.ctx, this.tactExpr.text);
-                return this.writeValue(c.value!);
+                return ExpressionGen.writeValue(c.value!);
             }
 
             return makeId(funcIdOf(this.tactExpr.text));
@@ -511,7 +517,7 @@ export class ExpressionGen {
                     this.makeExpr(this.tactExpr.aggregate),
                 ]);
             } else {
-                return this.writeValue(cst!.value!);
+                return ExpressionGen.writeValue(cst!.value!);
             }
         }
 

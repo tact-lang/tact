@@ -132,12 +132,13 @@ export class FuncFormatter {
 
     private static formatFunction(node: FuncAstFunction): string {
         const attrs = node.attrs.join(" ");
+        const name = node.name;
         const params = node.params
             .map((param) => `${param.ty} ${param.name}`)
             .join(", ");
         const returnType = node.returnTy;
         const body = node.body.map((stmt) => this.dump(stmt)).join("\n");
-        return `${attrs} ${params} -> ${returnType} {\n${body}\n}`;
+        return `${attrs} ${name} ${params} -> ${returnType} {\n${body}\n}`;
     }
 
     private static formatVarDefStmt(node: FuncAstVarDefStmt): string {

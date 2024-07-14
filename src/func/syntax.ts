@@ -267,6 +267,7 @@ export type FuncAstFormalFunctionParam = {
 
 export type FuncAstFunction = {
     kind: "function";
+    name: string,
     attrs: FuncAstFunctionAttribute[];
     params: FuncAstFormalFunctionParam[];
     returnTy: FuncType;
