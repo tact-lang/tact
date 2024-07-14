@@ -1,4 +1,3 @@
-import { CompilerContext } from "../context";
 import {
     TactConstEvalError,
     throwCompilationError,
@@ -8,7 +7,7 @@ import { evalConstantExpression } from "../constEval";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 import { MapFunctions, StructFunctions, GlobalFunctions } from "./abi";
 import { getExpType } from "../types/resolveExpression";
-import { FunctionGen } from "./function";
+import { FunctionGen, CodegenContext } from ".";
 import { cast, funcIdOf, ops } from "./util";
 import {
     printTypeRef,
@@ -70,12 +69,12 @@ export class ExpressionGen {
      * @param tactExpr Expression to translate.
      */
     private constructor(
-        private ctx: CompilerContext,
+        private ctx: CodegenContext,
         private tactExpr: AstExpression,
     ) {}
 
     static fromTact(
-        ctx: CompilerContext,
+        ctx: CodegenContext,
         tactExpr: AstExpression,
     ): ExpressionGen {
         return new ExpressionGen(ctx, tactExpr);
@@ -141,7 +140,7 @@ export class ExpressionGen {
     public writeExpression(): FuncAstExpr {
         // literals and constant expressions are covered here
         try {
-            const value = evalConstantExpression(this.tactExpr, this.ctx);
+            const value = evalConstantExpression(this.tactExpr, this.ctx.ctx);
             return ExpressionGen.writeValue(value);
         } catch (error) {
             if (!(error instanceof TactConstEvalError) || error.fatal)
@@ -152,14 +151,14 @@ export class ExpressionGen {
         // ID Reference
         //
         if (this.tactExpr.kind === "id") {
-            const t = getExpType(this.ctx, this.tactExpr);
+            const t = getExpType(this.ctx.ctx, this.tactExpr);
 
             // Handle packed type
             if (t.kind === "ref") {
-                const tt = getType(this.ctx, t.name);
+                const tt = getType(this.ctx.ctx, t.name);
                 if (tt.kind === "contract" || tt.kind === "struct") {
                     const value = resolveFuncTypeUnpack(
-                        this.ctx,
+                        this.ctx.ctx,
                         t,
                         funcIdOf(this.tactExpr.text),
                     );
@@ -168,10 +167,10 @@ export class ExpressionGen {
             }
 
             if (t.kind === "ref_bounced") {
-                const tt = getType(this.ctx, t.name);
+                const tt = getType(this.ctx.ctx, t.name);
                 if (tt.kind === "struct") {
                     const value = resolveFuncTypeUnpack(
-                        this.ctx,
+                        this.ctx.ctx,
                         t,
                         funcIdOf(this.tactExpr.text),
                         false,
@@ -181,8 +180,8 @@ export class ExpressionGen {
             }
 
             // Handle constant
-            if (hasStaticConstant(this.ctx, this.tactExpr.text)) {
-                const c = getStaticConstant(this.ctx, this.tactExpr.text);
+            if (hasStaticConstant(this.ctx.ctx, this.tactExpr.text)) {
+                const c = getStaticConstant(this.ctx.ctx, this.tactExpr.text);
                 return ExpressionGen.writeValue(c.value!);
             }
 
@@ -218,8 +217,8 @@ export class ExpressionGen {
             }
 
             // Special case for address
-            const lt = getExpType(this.ctx, this.tactExpr.left);
-            const rt = getExpType(this.ctx, this.tactExpr.right);
+            const lt = getExpType(this.ctx.ctx, this.tactExpr.left);
+            const rt = getExpType(this.ctx.ctx, this.tactExpr.right);
 
             // Case for addresses equality
             if (
@@ -437,9 +436,9 @@ export class ExpressionGen {
 
                 // NOTE: Assert function that ensures that the value is not null
                 case "!!": {
-                    const t = getExpType(this.ctx, this.tactExpr.operand);
+                    const t = getExpType(this.ctx.ctx, this.tactExpr.operand);
                     if (t.kind === "ref") {
-                        const tt = getType(this.ctx, t.name);
+                        const tt = getType(this.ctx.ctx, t.name);
                         if (tt.kind === "struct") {
                             return makeCall(ops.typeNotNull(tt.name), [
                                 this.makeExpr(this.tactExpr.operand),
@@ -459,7 +458,7 @@ export class ExpressionGen {
         //
         if (this.tactExpr.kind === "field_access") {
             // Resolve the type of the expression
-            const src = getExpType(this.ctx, this.tactExpr.aggregate);
+            const src = getExpType(this.ctx.ctx, this.tactExpr.aggregate);
             if (
                 (src.kind !== "ref" || src.optional) &&
                 src.kind !== "ref_bounced"
@@ -469,7 +468,7 @@ export class ExpressionGen {
                     this.tactExpr.loc,
                 );
             }
-            const srcT = getType(this.ctx, src.name);
+            const srcT = getType(this.ctx.ctx, src.name);
 
             // Resolve field
             let fields: FieldDescription[];
@@ -498,11 +497,11 @@ export class ExpressionGen {
 
                     // Special case for structs
                     if (field.type.kind === "ref") {
-                        const ft = getType(this.ctx, field.type.name);
+                        const ft = getType(this.ctx.ctx, field.type.name);
                         if (ft.kind === "struct" || ft.kind === "contract") {
                             return makeId(
                                 resolveFuncTypeUnpack(
-                                    this.ctx,
+                                    this.ctx.ctx,
                                     field.type,
                                     idd.value,
                                 ),
@@ -530,14 +529,14 @@ export class ExpressionGen {
                 return GlobalFunctions.get(
                     idText(this.tactExpr.function),
                 )!.generate(
-                    this.tactExpr.args.map((v) => getExpType(this.ctx, v)),
+                    this.tactExpr.args.map((v) => getExpType(this.ctx.ctx, v)),
                     this.tactExpr.args,
                     this.tactExpr.loc,
                 );
             }
 
             const sf = getStaticFunction(
-                this.ctx,
+                this.ctx.ctx,
                 idText(this.tactExpr.function),
             );
             // if (sf.ast.kind === "native_function_decl") {
@@ -555,42 +554,34 @@ export class ExpressionGen {
             return { kind: "call_expr", fun, args };
         }
 
+        // //
+        // // Struct Constructor
+        // //
+        // if (this.tactExpr.kind === "struct_instance") {
+        //     const src = getType(this.ctx.ctx, this.tactExpr.type);
         //
-        //     //
-        //     // Struct Constructor
-        //     //
+        //     // Write a constructor
+        //     // const id = FunctionGen.fromTact(this.ctx.ctx).writeStructConstructor(
+        //     //     src,
+        //     //     this.tactExpr.args.map((v) => v.field),
+        //     // );
         //
-        //     if (f.kind === "struct_instance") {
-        //         const src = getType(wCtx.ctx, f.type);
-        //
-        //         // Write a constructor
-        //         const id = writeStructConstructor(
-        //             src,
-        //             f.args.map((v) => idText(v.field)),
-        //             wCtx,
-        //         );
-        //         wCtx.used(id);
-        //
-        //         // Write an expression
-        //         const expressions = f.args.map(
-        //             (v) =>
-        //                 writeCastedExpression(
-        //                     v.initializer,
-        //                     src.fields.find((v2) => eqNames(v2.name, v.field))!
-        //                         .type,
-        //                     wCtx,
-        //                 ),
-        //             wCtx,
-        //         );
-        //         return `${id}(${expressions.join(", ")})`;
-        //     }
-        //
+        //     // Write an expression
+        //     const args = this.tactExpr.args.map((v) =>
+        //         this.makeCastedExpr(
+        //             v.initializer,
+        //             src.fields.find((v2) => eqNames(v2.name, v.field))!.type,
+        //         ),
+        //     );
+        //     return makeCall(id, args);
+        // }
+
         //
         // Object-based function call
         //
         if (this.tactExpr.kind === "method_call") {
             // Resolve source type
-            const src = getExpType(this.ctx, this.tactExpr.self);
+            const src = getExpType(this.ctx.ctx, this.tactExpr.self);
 
             // Reference type
             if (src.kind === "ref") {
@@ -602,7 +593,7 @@ export class ExpressionGen {
                 }
 
                 // Render function call
-                const methodTy = getType(this.ctx, src.name);
+                const methodTy = getType(this.ctx.ctx, src.name);
 
                 // Check struct ABI
                 if (methodTy.kind === "struct") {
@@ -615,7 +606,7 @@ export class ExpressionGen {
                         //     wCtx,
                         //     [
                         //         src,
-                        //         ...this.tactExpr.args.map((v) => getExpType(this.ctx, v)),
+                        //         ...this.tactExpr.args.map((v) => getExpType(this.ctx.ctx, v)),
                         //     ],
                         //     [this.tactExpr.self, ...this.tactExpr.args],
                         //     this.tactExpr.loc,
@@ -652,9 +643,9 @@ export class ExpressionGen {
                 // func would convert (int) type to just int and break mutating functions
                 if (methodFun.isMutating) {
                     if (this.tactExpr.args.length === 1) {
-                        const t = getExpType(this.ctx, this.tactExpr.args[0]!);
+                        const t = getExpType(this.ctx.ctx, this.tactExpr.args[0]!);
                         if (t.kind === "ref") {
-                            const tt = getType(this.ctx, t.name);
+                            const tt = getType(this.ctx.ctx, t.name);
                             if (
                                 (tt.kind === "contract" ||
                                     tt.kind === "struct") &&
@@ -718,7 +709,7 @@ export class ExpressionGen {
                     [
                         src,
                         ...this.tactExpr.args.map((v) =>
-                            getExpType(this.ctx, v),
+                            getExpType(this.ctx.ctx, v),
                         ),
                     ],
                     [this.tactExpr.self, ...this.tactExpr.args],
@@ -766,8 +757,8 @@ export class ExpressionGen {
     }
 
     public writeCastedExpression(to: TypeRef): FuncAstExpr {
-        const expr = getExpType(this.ctx, this.tactExpr);
-        return cast(this.ctx, expr, to, this.writeExpression());
+        const expr = getExpType(this.ctx.ctx, this.tactExpr);
+        return cast(this.ctx.ctx, expr, to, this.writeExpression());
     }
 
     private makeCastedExpr(src: AstExpression, to: TypeRef): FuncAstExpr {

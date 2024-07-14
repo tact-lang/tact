@@ -1,7 +1,7 @@
 import { CompilerContext } from "../context";
 import { createABI } from "../generator/createABI";
 import { writeProgram } from "../generator/writeProgram";
-import { ContractGen } from "../codegen";
+import { ContractGen, CodegenContext } from "../codegen";
 import { FuncFormatter } from "../func/formatter";
 
 export type CompilationOutput = {
@@ -28,12 +28,13 @@ export async function compile(
 ): Promise<CompilationResults> {
     const abi = createABI(ctx, contractName);
     if (process.env.NEW_CODEGEN === "1") {
-        const funcAst = ContractGen.fromTact(
-            ctx,
+        const codegenCtx = new CodegenContext(ctx);
+        const funcContract = ContractGen.fromTact(
+            codegenCtx,
             contractName,
             abiName,
         ).generate();
-        const output = FuncFormatter.dump(funcAst);
+        const output = FuncFormatter.dump(funcContract);
         throw new Error(`output:\n${output}`);
         // return { output, ctx };
     } else {

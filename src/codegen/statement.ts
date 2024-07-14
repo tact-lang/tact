@@ -1,4 +1,3 @@
-import { CompilerContext } from "../context";
 import { throwInternalCompilerError } from "../errors";
 import { funcIdOf } from "./util";
 import { getType, resolveTypeRef } from "../types/resolveDescriptors";
@@ -11,7 +10,7 @@ import {
     isWildcard,
     tryExtractPath,
 } from "../grammar/ast";
-import { ExpressionGen, writePathExpression } from "./expression";
+import { ExpressionGen, writePathExpression, CodegenContext } from ".";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 import {
     FuncAstStmt,
@@ -32,14 +31,14 @@ export class StatementGen {
      * @param returns The return value of the return statement.
      */
     private constructor(
-        private ctx: CompilerContext,
+        private ctx: CodegenContext,
         private tactStmt: AstStatement,
         private selfName?: string,
         private returns?: TypeRef,
     ) {}
 
     static fromTact(
-        ctx: CompilerContext,
+        ctx: CodegenContext,
         tactStmt: AstStatement,
         selfVarName?: string,
         returns?: TypeRef,
@@ -128,11 +127,11 @@ export class StatementGen {
                 // Contract/struct case
                 const t =
                     this.tactStmt.type === null
-                        ? getExpType(this.ctx, this.tactStmt.expression)
-                        : resolveTypeRef(this.ctx, this.tactStmt.type);
+                        ? getExpType(this.ctx.ctx, this.tactStmt.expression)
+                        : resolveTypeRef(this.ctx.ctx, this.tactStmt.type);
 
                 if (t.kind === "ref") {
-                    const tt = getType(this.ctx, t.name);
+                    const tt = getType(this.ctx.ctx, t.name);
                     if (tt.kind === "contract" || tt.kind === "struct") {
                         if (t.optional) {
                             const name = funcIdOf(this.tactStmt.name);
@@ -148,7 +147,7 @@ export class StatementGen {
                             };
                         } else {
                             const name = resolveFuncTypeUnpack(
-                                this.ctx,
+                                this.ctx.ctx,
                                 t,
                                 funcIdOf(this.tactStmt.name),
                             );
@@ -166,7 +165,7 @@ export class StatementGen {
                     }
                 }
 
-                const ty = resolveFuncType(this.ctx, t);
+                const ty = resolveFuncType(this.ctx.ctx, t);
                 const name = funcIdOf(this.tactStmt.name);
                 const init = this.makeCastedExpr(this.tactStmt.expression, t);
                 return { kind: "var_def_stmt", name, ty, init };
@@ -185,12 +184,12 @@ export class StatementGen {
                 const path = writePathExpression(lvaluePath);
 
                 // Contract/struct case
-                const t = getExpType(this.ctx, this.tactStmt.path);
+                const t = getExpType(this.ctx.ctx, this.tactStmt.path);
                 if (t.kind === "ref") {
-                    const tt = getType(this.ctx, t.name);
+                    const tt = getType(this.ctx.ctx, t.name);
                     if (tt.kind === "contract" || tt.kind === "struct") {
                         const lhs = makeId(
-                            resolveFuncTypeUnpack(this.ctx, t, path.value),
+                            resolveFuncTypeUnpack(this.ctx.ctx, t, path.value),
                         );
                         const rhs = this.makeCastedExpr(
                             this.tactStmt.expression,

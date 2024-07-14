@@ -1,22 +1,21 @@
-import { CompilerContext } from "../context";
 import { getAllTypes } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { getSortedTypes } from "../storage/resolveAllocation";
 import { FuncAstModule, FuncAstComment } from "../func/syntax";
-import { FunctionGen } from "./function";
+import { FunctionGen, CodegenContext } from ".";
 
 /**
  * Encapsulates generation of Func contracts from the Tact contract.
  */
 export class ContractGen {
     private constructor(
-        private ctx: CompilerContext,
+        private ctx: CodegenContext,
         private contractName: string,
         private abiName: string,
     ) {}
 
     static fromTact(
-        ctx: CompilerContext,
+        ctx: CodegenContext ,
         contractName: string,
         abiName: string,
     ): ContractGen {
@@ -31,7 +30,7 @@ export class ContractGen {
     }
 
     private addSerializers(m: FuncAstModule): void {
-        const sortedTypes = getSortedTypes(this.ctx);
+        const sortedTypes = getSortedTypes(this.ctx.ctx);
         for (const t of sortedTypes) {
         }
     }
@@ -63,7 +62,9 @@ export class ContractGen {
     private addContractFunctions(m: FuncAstModule, c: TypeDescription): void {
         // TODO: Generate init
         for (const tactFun of c.functions.values()) {
-            const funcFun = FunctionGen.fromTact(this.ctx).writeFunction(tactFun);
+            const funcFun = FunctionGen.fromTact(this.ctx).writeFunction(
+                tactFun,
+            );
         }
     }
 
@@ -81,7 +82,7 @@ export class ContractGen {
     public generate(): FuncAstModule {
         const m: FuncAstModule = { kind: "module", entries: [] };
 
-        const allTypes = Object.values(getAllTypes(this.ctx));
+        const allTypes = Object.values(getAllTypes(this.ctx.ctx));
         const contracts = allTypes.filter((v) => v.kind === "contract");
         const contract = contracts.find((v) => v.name === this.contractName);
         if (contract === undefined) {
