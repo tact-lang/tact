@@ -133,7 +133,7 @@ export class FuncFormatter {
     }
 
     private formatModule(node: FuncAstModule): string {
-        return node.entries.map((entry) => this.dump(entry)).join("\n");
+        return node.entries.map((entry) => this.dump(entry)).join("\n\n");
     }
 
     private formatFunction(node: FuncAstFunction): string {
