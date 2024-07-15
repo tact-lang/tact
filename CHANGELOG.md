@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `-e` / `--eval` CLI flags to evaluate constant Tact expressions: PR [#462](https://github.com/tact-lang/tact/pull/462)
 - `-q` / `--quiet` CLI flags to suppress compiler log output: PR [#509](https://github.com/tact-lang/tact/pull/509)
 - Markdown report for compiled contracts now includes Mermaid diagrams for trait inheritance and contract dependencies: PR [#560](https://github.com/tact-lang/tact/pull/560)
+- Documentation comments to Zod schema of `tact.config.json` for descriptive hover pop-ups in editors: PR [#575](https://github.com/tact-lang/tact/pull/575)
 
 ### Changed
 
