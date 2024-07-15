@@ -569,6 +569,8 @@ export type AstNull = {
     loc: SrcInfo;
 };
 
+export type AstValue = AstNumber | AstBoolean | AstNull | AstString;
+
 export type AstConstantAttribute =
     | { type: "virtual"; loc: SrcInfo }
     | { type: "overrides"; loc: SrcInfo }
@@ -677,6 +679,151 @@ export function cloneAstNode<T extends AstNode>(src: T): T {
 
 export function __DANGER_resetNodeId() {
     nextId = 1;
+}
+
+// Test equality of AstExpressions.
+export function eqExpressions(
+    ast1: AstExpression,
+    ast2: AstExpression,
+): boolean {
+    if (ast1.kind !== ast2.kind) {
+        return false;
+    }
+
+    switch (ast1.kind) {
+        case "null":
+            return true;
+        case "boolean":
+            return ast1.value === (ast2 as AstBoolean).value;
+        case "number":
+            return ast1.value === (ast2 as AstNumber).value;
+        case "string":
+            return ast1.value === (ast2 as AstString).value;
+        case "id":
+            return eqNames(ast1, ast2 as AstId);
+        case "method_call":
+            return (
+                eqNames(ast1.method, (ast2 as AstMethodCall).method) &&
+                eqExpressions(ast1.self, (ast2 as AstMethodCall).self) &&
+                eqExpressionArrays(ast1.args, (ast2 as AstMethodCall).args)
+            );
+        case "init_of":
+            return (
+                eqNames(ast1.contract, (ast2 as AstInitOf).contract) &&
+                eqExpressionArrays(ast1.args, (ast2 as AstInitOf).args)
+            );
+        case "op_unary":
+            return (
+                ast1.op === (ast2 as AstOpUnary).op &&
+                eqExpressions(ast1.operand, (ast2 as AstOpUnary).operand)
+            );
+        case "op_binary":
+            return (
+                ast1.op === (ast2 as AstOpBinary).op &&
+                eqExpressions(ast1.left, (ast2 as AstOpBinary).left) &&
+                eqExpressions(ast1.right, (ast2 as AstOpBinary).right)
+            );
+        case "conditional":
+            return (
+                eqExpressions(
+                    ast1.condition,
+                    (ast2 as AstConditional).condition,
+                ) &&
+                eqExpressions(
+                    ast1.thenBranch,
+                    (ast2 as AstConditional).thenBranch,
+                ) &&
+                eqExpressions(
+                    ast1.elseBranch,
+                    (ast2 as AstConditional).elseBranch,
+                )
+            );
+        case "struct_instance":
+            return (
+                eqNames(ast1.type, (ast2 as AstStructInstance).type) &&
+                eqParameterArrays(ast1.args, (ast2 as AstStructInstance).args)
+            );
+        case "field_access":
+            return (
+                eqNames(ast1.field, (ast2 as AstFieldAccess).field) &&
+                eqExpressions(
+                    ast1.aggregate,
+                    (ast2 as AstFieldAccess).aggregate,
+                )
+            );
+        case "static_call":
+            return (
+                eqNames(ast1.function, (ast2 as AstStaticCall).function) &&
+                eqExpressionArrays(ast1.args, (ast2 as AstStaticCall).args)
+            );
+    }
+}
+
+function eqParameters(
+    arg1: AstStructFieldInitializer,
+    arg2: AstStructFieldInitializer,
+): boolean {
+    return (
+        eqNames(arg1.field, arg2.field) &&
+        eqExpressions(arg1.initializer, arg2.initializer)
+    );
+}
+
+function eqParameterArrays(
+    arr1: AstStructFieldInitializer[],
+    arr2: AstStructFieldInitializer[],
+): boolean {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
+    for (let i = 0; i < arr1.length; i++) {
+        if (!eqParameters(arr1[i]!, arr2[i]!)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function eqExpressionArrays(
+    arr1: AstExpression[],
+    arr2: AstExpression[],
+): boolean {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
+    for (let i = 0; i < arr1.length; i++) {
+        if (!eqExpressions(arr1[i]!, arr2[i]!)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+export function isValue(ast: AstExpression): boolean {
+    switch (ast.kind) {
+        case "null":
+        case "boolean":
+        case "number":
+        case "string":
+            return true;
+
+        case "struct_instance":
+            return ast.args.every((arg) => isValue(arg.initializer));
+
+        case "id":
+        case "method_call":
+        case "init_of":
+        case "op_unary":
+        case "op_binary":
+        case "conditional":
+        case "field_access":
+        case "static_call":
+            return false;
+    }
 }
 
 export { SrcInfo };
