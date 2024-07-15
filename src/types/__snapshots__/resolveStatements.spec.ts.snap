@@ -1486,6 +1486,75 @@ exports[`resolveStatements should resolve statements for expr-maps-del-method 1`
 ]
 `;
 
+exports[`resolveStatements should resolve statements for expr-maps-exists-method 1`] = `
+[
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "m",
+    "map<Int, Int>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "m.set(1, 2)",
+    "<void>",
+  ],
+  [
+    "m",
+    "map<Int, Int>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "m.exists(1)",
+    "Bool",
+  ],
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "m",
+    "map<Int, Int as uint8>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "m.set(1, 2)",
+    "<void>",
+  ],
+  [
+    "m",
+    "map<Int, Int as uint8>",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "m.exists(2)",
+    "Bool",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for expr-struct-construction 1`] = `
 [
   [
