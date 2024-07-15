@@ -2606,6 +2606,53 @@ return result;",
   },
   {
     "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+return ok;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_exists_int",
+    "signature": "int __tact_dict_exists_int(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+return ok;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_exists_uint",
+    "signature": "int __tact_dict_exists_uint(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+return ok;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_exists_slice",
+    "signature": "int __tact_dict_exists_slice(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
 build_0 = build_0.store_int(v'a, 257);
 build_0 = build_0.store_int(v'b, 257);
@@ -6083,6 +6130,53 @@ return result;",
   },
   {
     "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+return ok;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_exists_int",
+    "signature": "int __tact_dict_exists_int(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+return ok;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_exists_uint",
+    "signature": "int __tact_dict_exists_uint(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+return ok;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_exists_slice",
+    "signature": "int __tact_dict_exists_slice(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
 build_0 = build_0.store_int(v'a, 257);
 build_0 = build_0.store_int(v'b, 257);
@@ -9557,6 +9651,53 @@ return result;",
     "flags": Set {},
     "name": "__tact_pow2",
     "signature": "int __tact_pow2(int exp)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+return ok;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_exists_int",
+    "signature": "int __tact_dict_exists_int(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+return ok;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_exists_uint",
+    "signature": "int __tact_dict_exists_uint(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+return ok;",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_exists_slice",
+    "signature": "int __tact_dict_exists_slice(cell d, int kl, slice k)",
   },
   {
     "code": {
