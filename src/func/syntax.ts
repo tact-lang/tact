@@ -257,7 +257,7 @@ export type FuncAstTryCatchStmt = {
     catchVar: string | null;
 };
 
-export type FuncAstFunctionAttribute = "impure" | "inline";
+export type FuncAstFunctionAttribute = "impure" | "inline" | "inline_ref";
 
 export type FuncAstFormalFunctionParam = {
     kind: "function_param";
@@ -265,8 +265,16 @@ export type FuncAstFormalFunctionParam = {
     ty: FuncType;
 };
 
-export type FuncAstFunction = {
-    kind: "function";
+export type FuncAstFunctionDeclaration = {
+    kind: "function_declaration";
+    name: string,
+    attrs: FuncAstFunctionAttribute[];
+    params: FuncAstFormalFunctionParam[];
+    returnTy: FuncType;
+};
+
+export type FuncAstFunctionDefinition = {
+    kind: "function_definition";
     name: string,
     attrs: FuncAstFunctionAttribute[];
     params: FuncAstFormalFunctionParam[];
@@ -298,7 +306,8 @@ export type FuncAstGlobalVariable = {
 export type FuncAstModuleEntry =
     | FuncAstInclude
     | FuncAstPragma
-    | FuncAstFunction
+    | FuncAstFunctionDefinition
+    | FuncAstFunctionDeclaration
     | FuncAstComment
     | FuncAstConstant
     | FuncAstGlobalVariable;

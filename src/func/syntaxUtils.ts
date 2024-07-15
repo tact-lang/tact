@@ -8,7 +8,8 @@ import {
     FuncAstFunctionAttribute,
     FuncAstFormalFunctionParam,
     FuncAstComment,
-    FuncAstFunction,
+    FuncAstFunctionDefinition,
+    FuncAstFunctionDeclaration,
     FuncType,
     FuncAstCallExpr,
     FuncAstBinaryOp,
@@ -56,7 +57,7 @@ export function makeFunction(
     paramValues: [string, FuncType][],
     returnTy: FuncType,
     body: FuncAstStmt[],
-): FuncAstFunction {
+): FuncAstFunctionDefinition {
     const params = paramValues.map(([name, ty]) => {
         return {
             kind: "function_param",
@@ -64,7 +65,19 @@ export function makeFunction(
             ty,
         } as FuncAstFormalFunctionParam;
     });
-    return { kind: "function", attrs, name, params, returnTy, body };
+    return { kind: "function_definition", attrs, name, params, returnTy, body };
+}
+
+export function declarationFromDefinition(
+    def: FuncAstFunctionDefinition,
+): FuncAstFunctionDeclaration {
+    return {
+        kind: "function_declaration",
+        attrs: def.attrs,
+        name: def.name,
+        params: def.params,
+        returnTy: def.returnTy,
+    };
 }
 
 export function makeComment(...values: string[]): FuncAstComment {

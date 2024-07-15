@@ -1,5 +1,7 @@
 import {
     FuncAstNode,
+    FuncAstFormalFunctionParam,
+    FuncAstFunctionAttribute,
     FuncType,
     FuncAstIdExpr,
     FuncAstAssignExpr,
@@ -7,7 +9,8 @@ import {
     FuncAstComment,
     FuncAstInclude,
     FuncAstModule,
-    FuncAstFunction,
+    FuncAstFunctionDefinition,
+    FuncAstFunctionDeclaration,
     FuncAstVarDefStmt,
     FuncAstReturnStmt,
     FuncAstBlockStmt,
@@ -71,8 +74,14 @@ export class FuncFormatter {
                 return this.formatType(node as FuncType);
             case "module":
                 return this.formatModule(node as FuncAstModule);
-            case "function":
-                return this.formatFunction(node as FuncAstFunction);
+            case "function_declaration":
+                return this.formatFunctionDeclaration(
+                    node as FuncAstFunctionDeclaration,
+                );
+            case "function_definition":
+                return this.formatFunctionDefinition(
+                    node as FuncAstFunctionDefinition,
+                );
             case "var_def_stmt":
                 return this.formatVarDefStmt(node as FuncAstVarDefStmt);
             case "return_stmt":
@@ -152,17 +161,42 @@ export class FuncFormatter {
             .join("");
     }
 
-    private formatFunction(node: FuncAstFunction): string {
-        const attrs = node.attrs.join(" ");
-        const name = node.name;
-        const params = node.params
+    private formatFunctionSignature(
+        name: string,
+        attrs: FuncAstFunctionAttribute[],
+        params: FuncAstFormalFunctionParam[],
+        returnTy: FuncType,
+    ): string {
+        const attrsStr = attrs.join(" ");
+        const nameStr = name;
+        const paramsStr = params
             .map((param) => `${this.dump(param.ty)} ${param.name}`)
             .join(", ");
-        const returnType = this.dump(node.returnTy);
+        const returnTypeStr = this.dump(returnTy);
+        return `${returnTypeStr} ${nameStr}(${paramsStr}) ${attrsStr}`;
+    }
+
+    private formatFunctionDeclaration(node: FuncAstFunctionDefinition): string {
+        const signature = this.formatFunctionSignature(
+            node.name,
+            node.attrs,
+            node.params,
+            node.returnTy,
+        );
+        return `${signature};`;
+    }
+
+    private formatFunctionDefinition(node: FuncAstFunctionDefinition): string {
+        const signature = this.formatFunctionSignature(
+            node.name,
+            node.attrs,
+            node.params,
+            node.returnTy,
+        );
         const body = this.formatIndentedBlock(
             node.body.map((stmt) => this.dump(stmt)).join("\n"),
         );
-        return `${returnType} ${name}(${params}) ${attrs} {\n${body}\n}`;
+        return `${signature} {\n${body}\n}`;
     }
 
     private formatVarDefStmt(node: FuncAstVarDefStmt): string {
