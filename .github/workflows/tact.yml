@@ -45,11 +45,11 @@ jobs:
           yarn clean
           yarn gen
           yarn build
-      
+
       - name: Check there are no errors to be fixed in package.json and no uncommited changes
         run: |
           npm pkg fix && git diff --exit-code
-      
+
       - name: Test Tact compiler
         run: |
           yarn coverage
