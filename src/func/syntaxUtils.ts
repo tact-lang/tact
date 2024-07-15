@@ -1,6 +1,8 @@
 import {
     FuncAstExpr,
     FuncAstIdExpr,
+    FuncAstStringExpr,
+    FuncAstNumberExpr,
     FuncAstModuleEntry,
     FuncAstModule,
     FuncAstTernaryExpr,
@@ -20,6 +22,17 @@ import {
 
 export function makeId(value: string): FuncAstIdExpr {
     return { kind: "id_expr", value };
+}
+
+export function makeStringExpr(value: string): FuncAstStringExpr {
+    return { kind: "string_expr", value };
+}
+
+export function makeNumberExpr(num: bigint | number): FuncAstNumberExpr {
+    return {
+        kind: "number_expr",
+        value: typeof num === "bigint" ? num : BigInt(num),
+    };
 }
 
 export function makeCall(

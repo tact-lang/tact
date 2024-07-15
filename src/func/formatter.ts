@@ -64,6 +64,7 @@ export class FuncFormatter {
             case "comment":
                 return this.formatComment(node as FuncAstComment);
             case "int":
+            case "hole":
             case "cell":
             case "slice":
             case "builder":
@@ -381,6 +382,8 @@ export class FuncFormatter {
 
     private formatType(node: FuncType): string {
         switch (node.kind) {
+            case "hole":
+                return "_";
             case "int":
             case "cell":
             case "slice":

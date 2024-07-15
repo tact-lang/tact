@@ -25,6 +25,7 @@ export type FuncType =
     | { kind: "cont" }
     | { kind: "tuple" }
     | { kind: "tensor"; value: FuncTensorType }
+    | { kind: "hole" } // hole type (`_`) filled in local type inference
     | { kind: "type" };
 
 export type FuncAstUnaryOp = "-" | "~" | "+";
@@ -107,7 +108,7 @@ export type FuncAstIdExpr = {
 
 export type FuncAstCallExpr = {
     kind: "call_expr";
-    fun: FuncAstExpr;
+    fun: FuncAstExpr; // function name or an expression returning a function
     args: FuncAstExpr[];
 };
 
@@ -257,7 +258,11 @@ export type FuncAstTryCatchStmt = {
     catchVar: string | null;
 };
 
-export type FuncAstFunctionAttribute = "impure" | "inline" | "inline_ref";
+export type FuncAstFunctionAttribute =
+    | "impure"
+    | "inline"
+    | "inline_ref"
+    | "method_id";
 
 export type FuncAstFormalFunctionParam = {
     kind: "function_param";
@@ -267,7 +272,7 @@ export type FuncAstFormalFunctionParam = {
 
 export type FuncAstFunctionDeclaration = {
     kind: "function_declaration";
-    name: string,
+    name: string;
     attrs: FuncAstFunctionAttribute[];
     params: FuncAstFormalFunctionParam[];
     returnTy: FuncType;
@@ -275,7 +280,7 @@ export type FuncAstFunctionDeclaration = {
 
 export type FuncAstFunctionDefinition = {
     kind: "function_definition";
-    name: string,
+    name: string;
     attrs: FuncAstFunctionAttribute[];
     params: FuncAstFormalFunctionParam[];
     returnTy: FuncType;
@@ -289,12 +294,12 @@ export type FuncAstComment = {
 
 export type FuncAstInclude = {
     kind: "include";
-    value: string,
+    value: string;
 };
 
 export type FuncAstPragma = {
     kind: "pragma";
-    value: string,
+    value: string;
 };
 
 export type FuncAstGlobalVariable = {

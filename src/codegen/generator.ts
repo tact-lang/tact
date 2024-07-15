@@ -74,17 +74,6 @@ export class FuncGenerator {
         this.generateConstants(generated, functions);
         this.generateStorage(generated, functions);
 
-        // TODO: Everything must be already included to the main contract; otherwise we should add entries from the context
-        //
-        // const remainingFunctions = tryExtractModule(functions, null, imported);
-        // const header: string[] = [];
-        // header.push("#pragma version =0.4.4;");
-        // header.push("#pragma allow-post-modification;");
-        // header.push("#pragma compute-asm-ltr;");
-        // header.push("");
-        // for (const i of files.map((v) => `#include "${v.name}";`)) {
-        //     header.push(i);
-
         // Finalize and dump the main contract, as we have just obtained the structure of the project
         mainContract.entries.unshift(
             ...generated.files.map((f) => makeInclude(f.name)),
@@ -133,6 +122,7 @@ export class FuncGenerator {
         const m = ModuleGen.fromTact(
             this.funcCtx,
             mainContractName,
+            abiLink,
         ).writeAll();
         return m;
     }
@@ -207,6 +197,7 @@ export class FuncGenerator {
         generated: GeneratedFilesInfo,
         functions: FuncAstFunctionDefinition[],
     ): void {
+        // FIXME: We should add only contract methods and special methods here => add attribute and register them in the context
         const m = makeModule();
         m.entries.push(
             makeComment(

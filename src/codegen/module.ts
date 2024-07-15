@@ -1,8 +1,16 @@
 import { getAllTypes } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { getSortedTypes } from "../storage/resolveAllocation";
-import { FuncAstModule } from "../func/syntax";
-import { makeComment, makeModule } from "../func/syntaxUtils";
+import { FuncAstModule, FuncAstFunctionDefinition } from "../func/syntax";
+import {
+    makeComment,
+    makeModule,
+    makeNumberExpr,
+    makeCall,
+    makeFunction,
+    makeReturn,
+    makeStringExpr,
+} from "../func/syntaxUtils";
 import { FunctionGen, CodegenContext } from ".";
 
 /**
@@ -12,13 +20,15 @@ export class ModuleGen {
     private constructor(
         private ctx: CodegenContext,
         private contractName: string,
+        private abiLink: string,
     ) {}
 
     static fromTact(
         ctx: CodegenContext,
         contractName: string,
+        abiLink: string,
     ): ModuleGen {
-        return new ModuleGen(ctx, contractName);
+        return new ModuleGen(ctx, contractName, abiLink);
     }
 
     /**
@@ -72,8 +82,7 @@ export class ModuleGen {
     /**
      * Adds entries from the main Tact contract.
      */
-    private addMainContract(m: FuncAstModule, c: TypeDescription): void {
-        // XXX see: writeMainContract
+    private writeMainContract(m: FuncAstModule, c: TypeDescription): void {
         m.entries.push(
             makeComment("", `Receivers of a Contract ${c.name}`, ""),
         );
@@ -97,21 +106,39 @@ export class ModuleGen {
         // // Interfaces
         // writeInterfaces(type, ctx);
 
-        // // ABI
-        // ctx.append(`_ get_abi_ipfs() method_id {`);
-        // ctx.inIndent(() => {
-        //     ctx.append(`return "${abiLink}";`);
-        // });
-        // ctx.append(`}`);
-        // ctx.append();
+        // ABI:
+        // _ get_abi_ipfs() method_id {
+        //   return "${abiLink}";
+        // }
+        m.entries.push(
+            makeFunction(["method_id"], "get_abi_ipfs", [], { kind: "hole" }, [
+                makeReturn(makeStringExpr(this.abiLink)),
+            ]),
+        );
 
-        // // Deployed
-        // ctx.append(`_ lazy_deployment_completed() method_id {`);
-        // ctx.inIndent(() => {
-        //     ctx.append(`return get_data().begin_parse().load_int(1);`);
-        // });
-        // ctx.append(`}`);
-        // ctx.append();
+        // Deployed
+        //_ lazy_deployment_completed() method_id {
+        //   return get_data().begin_parse().load_int(1);
+        // }
+        m.entries.push(
+            makeFunction(
+                ["method_id"],
+                "lazy_deployment_completed",
+                [],
+                { kind: "hole" },
+                [
+                    makeReturn(
+                        makeCall(
+                            makeCall(
+                                makeCall("load_init", [makeNumberExpr(1)]),
+                                [],
+                            ),
+                            [],
+                        ),
+                    ),
+                ],
+            ),
+        );
 
         // Comments
         m.entries.push(makeComment("", `Routing of a Contract ${c.name}`, ""));
@@ -222,7 +249,7 @@ export class ModuleGen {
         this.addStaticFunctions(m);
         this.addExtensions(m);
         contracts.forEach((c) => this.addContractFunctions(m, c));
-        this.addMainContract(m, contract);
+        this.writeMainContract(m, contract);
 
         return m;
     }
