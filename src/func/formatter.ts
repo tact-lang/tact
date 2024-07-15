@@ -327,7 +327,8 @@ export class FuncFormatter {
     }
 
     private formatStringExpr(node: FuncAstStringExpr): string {
-        return `"${node.value}"`;
+        const ty = node.ty ? node.ty : "";
+        return `"${node.value}"${ty}`;
     }
 
     private formatNilExpr(_: FuncAstNilExpr): string {

@@ -156,9 +156,15 @@ export type FuncAstBoolExpr = {
     value: boolean;
 };
 
+/**
+ * An additional modifier. See: https://docs.ton.org/develop/func/literals_identifiers#string-literals
+ */
+export type FuncStringLiteralType = "s" | "a" | "u" | "h" | "H" | "c";
+
 export type FuncAstStringExpr = {
     kind: "string_expr";
     value: string;
+    ty: FuncStringLiteralType | undefined;
 };
 
 export type FuncAstNilExpr = {

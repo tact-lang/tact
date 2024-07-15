@@ -3,6 +3,7 @@ import {
     FuncAstIdExpr,
     FuncAstStringExpr,
     FuncAstNumberExpr,
+    FuncStringLiteralType,
     FuncAstModuleEntry,
     FuncAstModule,
     FuncAstTernaryExpr,
@@ -24,8 +25,11 @@ export function makeId(value: string): FuncAstIdExpr {
     return { kind: "id_expr", value };
 }
 
-export function makeStringExpr(value: string): FuncAstStringExpr {
-    return { kind: "string_expr", value };
+export function makeStringExpr(
+    value: string,
+    ty?: FuncStringLiteralType,
+): FuncAstStringExpr {
+    return { kind: "string_expr", value, ty };
 }
 
 export function makeNumberExpr(num: bigint | number): FuncAstNumberExpr {
