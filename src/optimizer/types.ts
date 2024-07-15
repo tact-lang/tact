@@ -1,12 +1,4 @@
-import {
-    AstExpression,
-    AstNumber,
-    AstBoolean,
-    AstNull,
-    AstString,
-} from "../grammar/ast";
-
-export type AstValue = AstNumber | AstBoolean | AstNull | AstString;
+import { AstExpression } from "../grammar/ast";
 
 export abstract class ExpressionTransformer {
     public abstract applyRules(ast: AstExpression): AstExpression;

@@ -3,33 +3,11 @@ import {
     AstUnaryOperation,
     AstBinaryOperation,
     createAstNode,
+    AstValue,
+    isValue,
 } from "../grammar/ast";
 import { dummySrcInfo } from "../grammar/grammar";
 import { Value } from "../types/types";
-import { AstValue } from "./types";
-
-export function isValue(ast: AstExpression): boolean {
-    switch (
-        ast.kind // Missing structs
-    ) {
-        case "null":
-        case "boolean":
-        case "number":
-        case "string":
-            return true;
-
-        case "id":
-        case "method_call":
-        case "init_of":
-        case "op_unary":
-        case "op_binary":
-        case "conditional":
-        case "struct_instance":
-        case "field_access":
-        case "static_call":
-            return false;
-    }
-}
 
 export function extractValue(ast: AstValue): Value {
     switch (

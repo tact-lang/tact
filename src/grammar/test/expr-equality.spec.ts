@@ -1,5 +1,5 @@
-import { __DANGER_resetNodeId, eqExpressions } from "../../grammar/ast";
-import { parseExpression } from "../../grammar/grammar";
+import { __DANGER_resetNodeId, eqExpressions } from "../ast";
+import { parseExpression } from "../grammar";
 
 type Test = { expr1: string; expr2: string; equality: boolean };
 

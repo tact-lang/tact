@@ -11,12 +11,13 @@ import {
     isSelfId,
     eqNames,
     idText,
+    AstValue,
+    isValue,
 } from "./grammar/ast";
 import { TactConstEvalError, idTextErr, throwConstEvalError } from "./errors";
 import { CommentValue, showValue, StructValue, Value } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
 import {
-    isValue,
     extractValue,
     makeValueExpression,
     makeUnaryExpression,
@@ -24,7 +25,7 @@ import {
     divFloor,
     modFloor,
 } from "./optimizer/util";
-import { ExpressionTransformer, AstValue } from "./optimizer/types";
+import { ExpressionTransformer } from "./optimizer/types";
 import { StandardOptimizer } from "./optimizer/standardOptimizer";
 import {
     getStaticConstant,
