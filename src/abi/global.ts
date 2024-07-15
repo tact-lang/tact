@@ -1,7 +1,10 @@
 import { Address, Cell, toNano } from "@ton/core";
 import { enabledDebug, enabledMasterchain } from "../config/features";
 import { writeAddress, writeCell } from "../generator/writers/writeConstant";
-import { writeExpression } from "../generator/writers/writeExpression";
+import {
+    writeExpression,
+    writeValue,
+} from "../generator/writers/writeExpression";
 import { throwCompilationError } from "../errors";
 import { evalConstantExpression } from "../constEval";
 import { getErrorId } from "../types/resolveErrors";
@@ -239,35 +242,36 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     ? posixNormalize(path.relative(cwd(), ref.file!))
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
-                const debugPrint = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}`;
+                const debugPrint1 = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}:`;
+                const debugPrint2 = writeValue(ref.interval.contents, ctx);
 
                 if (arg0.kind === "map") {
                     const exp = writeExpression(resolved[0]!, ctx);
-                    return `${ctx.used(`__tact_debug`)}(${exp}, "${debugPrint}")`;
+                    return `${ctx.used(`__tact_debug`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                 } else if (arg0.kind === "null") {
-                    return `${ctx.used(`__tact_debug_str`)}("null", "${debugPrint}")`;
+                    return `${ctx.used(`__tact_debug_str`)}("null", ${debugPrint2}, "${debugPrint1}")`;
                 } else if (arg0.kind === "void") {
-                    return `${ctx.used(`__tact_debug_str`)}("void", "${debugPrint}")`;
+                    return `${ctx.used(`__tact_debug_str`)}("void", ${debugPrint2}, "${debugPrint1}")`;
                 } else if (arg0.kind === "ref") {
                     if (arg0.name === "Int") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_str`)}(${ctx.used(`__tact_int_to_string`)}(${exp}), "${debugPrint}")`;
+                        return `${ctx.used(`__tact_debug_str`)}(${ctx.used(`__tact_int_to_string`)}(${exp}), ${debugPrint2}, "${debugPrint1}")`;
                     } else if (arg0.name === "Bool") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_bool`)}(${exp}, "${debugPrint}")`;
+                        return `${ctx.used(`__tact_debug_bool`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (arg0.name === "String") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_str`)}(${exp}, "${debugPrint}")`;
+                        return `${ctx.used(`__tact_debug_str`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (arg0.name === "Address") {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug_address`)}(${exp}, "${debugPrint}")`;
+                        return `${ctx.used(`__tact_debug_address`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     } else if (
                         arg0.name === "Builder" ||
                         arg0.name === "Slice" ||
                         arg0.name === "Cell"
                     ) {
                         const exp = writeExpression(resolved[0]!, ctx);
-                        return `${ctx.used(`__tact_debug`)}(${exp}, "${debugPrint}")`;
+                        return `${ctx.used(`__tact_debug`)}(${exp}, ${debugPrint2}, "${debugPrint1}")`;
                     }
                     throwCompilationError(
                         "dump() not supported for type: " + arg0.name,
@@ -303,8 +307,8 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     ? posixNormalize(path.relative(cwd(), ref.file!))
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
-                const debugPrint = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}`;
-                return `${ctx.used(`__tact_debug_stack`)}("${debugPrint}")`;
+                const debugPrint1 = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}:`;
+                return `${ctx.used(`__tact_debug_stack`)}("dumpStack()", "${debugPrint1}")`;
             },
         },
     ],

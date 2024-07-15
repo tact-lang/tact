@@ -16,7 +16,8 @@ describe("stdlib", () => {
             .storeBit(1)
             .storeBit(1)
             .storeRef(beginCell().storeBit(1).endCell())
-            .endCell();
+            .endCell()
+            .asSlice();
         expect(await contract.getSliceBits(slice)).toBe(2n);
         expect(await contract.getSliceRefs(slice)).toBe(1n);
         expect(await contract.getSliceEmpty(slice)).toBe(false);

@@ -108,7 +108,7 @@ describe("masterchain", () => {
         expect(
             (
                 await contract.getParseAddress(
-                    beginCell().storeAddress(addr).endCell(),
+                    beginCell().storeAddress(addr).endCell().asSlice(),
                 )
             ).equals(addr),
         ).toBe(true);
@@ -122,7 +122,9 @@ describe("masterchain", () => {
         await system.run();
         const addr = new Address(-1, Buffer.alloc(32, 0));
         void expect(
-            contract.getParseAddress(beginCell().storeAddress(addr).endCell()),
+            contract.getParseAddress(
+                beginCell().storeAddress(addr).endCell().asSlice(),
+            ),
         ).rejects.toThrowError(
             "Masterchain support is not enabled for this contract",
         );
@@ -138,7 +140,7 @@ describe("masterchain", () => {
         expect(
             (
                 await contract.getParseAddress(
-                    beginCell().storeAddress(addr).endCell(),
+                    beginCell().storeAddress(addr).endCell().asSlice(),
                 )
             ).equals(addr),
         ).toBe(true);
@@ -154,7 +156,7 @@ describe("masterchain", () => {
         expect(
             (
                 await contract.getParseAddress(
-                    beginCell().storeAddress(addr).endCell(),
+                    beginCell().storeAddress(addr).endCell().asSlice(),
                 )
             ).equals(addr),
         ).toBe(true);

@@ -104,6 +104,26 @@ contract StringsTester {
         return "\u{2028}\u{2029} \u0044 \x41\x42\x43";
     }
 
+    get fun stringWithEscapedChars5(): String {
+        return "\u{0} \u{00} \u{000} \u{0000} \u{00000} \u{000000} \u0000 \x00";
+    }
+
+    get fun stringWithEscapedChars6(): String {
+        // https://en.m.wikipedia.org/wiki/List_of_Unicode_characters#Control_codes
+        return beginCell()
+            .storeUint(0x7F, 8) // DEL, 127
+            .storeUint(0x1F, 8) // US,  31
+            .storeUint(0x0A, 8) // LF,  10
+            .storeUint(0x00, 8) // NUL, 0
+            .storeUint(32, 8) // Space
+            .storeUint(84, 8) // "T"
+            .storeUint(65, 8) // "A"
+            .storeUint(67, 8) // "C"
+            .storeUint(84, 8) // "T"
+            .asSlice()
+            .asString();
+    }
+
     get fun stringWithAddress(): String {
         return address("EQBKgXCNLPexWhs2L79kiARR1phGH1LwXxRbNsCFF9doc2lN").toString();
     }
