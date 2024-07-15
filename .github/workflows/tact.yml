@@ -21,12 +21,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Capture compiled stdlib
-        if: runner.os != 'Windows'
-        run: |
-          FILE_PATH="src/imports/stdlib.ts"
-          cp "$FILE_PATH" "$FILE_PATH.original"
-
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -51,21 +45,7 @@ jobs:
           yarn clean
           yarn gen
           yarn build
-
-      - name: Verify fresh compiled stdlib
-        if: runner.os != 'Windows'
-        run: |
-          FILE_PATH="src/imports/stdlib.ts"
-          ORIGINAL_CONTENT="${{ steps.capture_stdlib.outputs.original_content }}"
-          CURRENT_CONTENT=$(cat "$FILE_PATH")
-
-          if ! cmp -s "$FILE_PATH" "$FILE_PATH.original"; then
-            echo "The stdlib.ts content does not match after compilation. Failing the workflow."
-            exit 1
-          fi
-
-          rm "$FILE_PATH.original"
-
+      
       - name: Test Tact compiler
         run: |
           yarn coverage

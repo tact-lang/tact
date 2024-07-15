@@ -29,8 +29,12 @@ inline fun random(min: Int, max: Int): Int {
 
 // Math
 
-@name(min)
-native min(x: Int, y: Int): Int;
+fun min(x: Int, y: Int): Int {
+    if (x < y) {
+        return x;
+    }
+    return y;
+}
 
 @name(max)
 native max(x: Int, y: Int): Int;
