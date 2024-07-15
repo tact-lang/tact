@@ -75,7 +75,7 @@ describe("intrinsics", () => {
         expect(await contract.getGetHash2()).toBe(sha256("hello world"));
         expect(
             await contract.getGetHash3(
-                beginCell().storeStringTail("sometest").endCell(),
+                beginCell().storeStringTail("sometest").endCell().asSlice(),
             ),
         ).toBe(sha256("sometest"));
         expect(await contract.getGetHash4("wallet")).toBe(sha256("wallet"));

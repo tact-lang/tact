@@ -63,12 +63,9 @@ describe("strings", () => {
         expect(await contract.getStringWithFloat()).toEqual("9.5");
 
         const base = await contract.getBase64();
-        expect(
-            base
-                .beginParse()
-                .loadBuffer(base.bits.length / 8)
-                .toString(),
-        ).toEqual("Many hands make light work.");
+        expect(base.loadBuffer(base.remainingBits / 8).toString()).toEqual(
+            "Many hands make light work.",
+        );
 
         const b64cases = [
             "SGVsbG8gV29ybGQ=",
@@ -79,7 +76,7 @@ describe("strings", () => {
         for (const b of b64cases) {
             const s = Buffer.from(b, "base64");
             const r = await contract.getProcessBase64(b);
-            const d = r.beginParse().loadBuffer(r.bits.length / 8);
+            const d = r.loadBuffer(r.remainingBits / 8);
             expect(d.toString("hex")).toEqual(s.toString("hex"));
         }
 
@@ -94,6 +91,12 @@ describe("strings", () => {
         );
         expect(await contract.getStringWithEscapedChars4()).toEqual(
             "\u{2028}\u{2029} \u0044 \x41\x42\x43",
+        );
+        expect(await contract.getStringWithEscapedChars5()).toEqual(
+            "\u{0} \u{00} \u{000} \u{0000} \u{00000} \u{000000} \u0000 \x00",
+        );
+        expect(await contract.getStringWithEscapedChars6()).toEqual(
+            `\x7F\x1F\x0A\x00 TACT`,
         );
 
         expect(await contract.getStringWithAddress()).toEqual(
