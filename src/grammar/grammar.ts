@@ -72,14 +72,14 @@ export const dummySrcInfo: SrcInfo = new SrcInfo(DUMMY_INTERVAL, null, "user");
 
 let currentFile: string | null = null;
 
-export function inFile<T>(path: string, callback: () => T) {
+function inFile<T>(path: string, callback: () => T) {
     currentFile = path;
     const r = callback();
     currentFile = null;
     return r;
 }
 
-export function createRef(s: Node): SrcInfo {
+function createRef(s: Node): SrcInfo {
     return new SrcInfo(s.source, currentFile, ctx!.origin);
 }
 

@@ -1,14 +1,14 @@
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { parseImportPath } from "./parseImportPath";
 
-export type ResolveLibraryArgs = {
+type ResolveLibraryArgs = {
     path: string;
     name: string;
     project: VirtualFileSystem;
     stdlib: VirtualFileSystem;
 };
 
-export type ResolveLibraryResult =
+type ResolveLibraryResult =
     | {
           ok: true;
           path: string;

@@ -1,5 +1,5 @@
 import { CompilerContext } from "../context";
-import { trimIndent } from "../utils/text";
+import { escapeUnicodeControlCodes, trimIndent } from "../utils/text";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";
 
@@ -268,7 +268,7 @@ export class WriterContext {
 
     comment(src: string) {
         if (this.#pendingName) {
-            this.#pendingComment = trimIndent(src);
+            this.#pendingComment = escapeUnicodeControlCodes(trimIndent(src));
         } else {
             throw new Error(`Comment can be set only inside function`);
         }

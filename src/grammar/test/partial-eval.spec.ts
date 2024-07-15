@@ -1,18 +1,15 @@
 import {
     AstExpression,
+    AstValue,
     __DANGER_resetNodeId,
     cloneAstNode,
     eqExpressions,
-} from "../../grammar/ast";
-import { parseExpression } from "../../grammar/grammar";
-import {
-    extractValue,
     isValue,
-    makeValueExpression,
-} from "../../optimizer/util";
+} from "../ast";
+import { parseExpression } from "../grammar";
+import { extractValue, makeValueExpression } from "../../optimizer/util";
 import { evalUnaryOp, partiallyEvalExpression } from "../../constEval";
 import { CompilerContext } from "../../context";
-import { AstValue } from "../../optimizer/types";
 
 const additiveExpressions = [
     { original: "X + 3 + 1", simplified: "X + 4" },

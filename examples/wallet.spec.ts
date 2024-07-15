@@ -43,7 +43,10 @@ describe("wallet", () => {
             {
                 $$type: "TransferMessage",
                 transfer,
-                signature: beginCell().storeBuffer(signature).endCell(),
+                signature: beginCell()
+                    .storeBuffer(signature)
+                    .endCell()
+                    .asSlice(),
             },
         );
         await system.run();

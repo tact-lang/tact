@@ -11,12 +11,13 @@ import {
     isSelfId,
     eqNames,
     idText,
+    AstValue,
+    isValue,
 } from "./grammar/ast";
 import { TactConstEvalError, idTextErr, throwConstEvalError } from "./errors";
 import { CommentValue, showValue, StructValue, Value } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
 import {
-    isValue,
     extractValue,
     makeValueExpression,
     makeUnaryExpression,
@@ -24,7 +25,7 @@ import {
     divFloor,
     modFloor,
 } from "./optimizer/util";
-import { ExpressionTransformer, AstValue } from "./optimizer/types";
+import { ExpressionTransformer } from "./optimizer/types";
 import { StandardOptimizer } from "./optimizer/standardOptimizer";
 import {
     getStaticConstant,
@@ -368,7 +369,9 @@ export function evalBinaryOp(
     }
 }
 
-function evalConditional(
+// In the process of writing a partiallyEval version of this
+// function for the partial evaluator
+function fullyEvalConditional(
     condition: AstExpression,
     thenBranch: AstExpression,
     elseBranch: AstExpression,
@@ -386,7 +389,9 @@ function evalConditional(
     }
 }
 
-function evalStructInstance(
+// In the process of writing a partiallyEval version of this
+// function for the partial evaluator
+function fullyEvalStructInstance(
     structTypeId: AstId,
     structFields: AstStructFieldInitializer[],
     ctx: CompilerContext,
@@ -403,7 +408,9 @@ function evalStructInstance(
     );
 }
 
-function evalFieldAccess(
+// In the process of writing a partiallyEval version of this
+// function for the partial evaluator
+function fullyEvalFieldAccess(
     structExpr: AstExpression,
     fieldId: AstId,
     source: SrcInfo,
@@ -456,7 +463,9 @@ function evalFieldAccess(
     }
 }
 
-function evalMethod(
+// In the process of writing a partiallyEval version of this
+// function for the partial evaluator
+function fullyEvalMethod(
     methodName: AstId,
     object: AstExpression,
     args: AstExpression[],
@@ -480,7 +489,9 @@ function evalMethod(
     }
 }
 
-function evalBuiltins(
+// In the process of writing a partiallyEval version of this
+// function for the partial evaluator
+function fullyEvalBuiltins(
     builtinName: AstId,
     args: AstExpression[],
     source: SrcInfo,
@@ -659,9 +670,9 @@ function evalBuiltins(
     }
 }
 
-function interpretEscapeSequences(stringLiteral: string) {
+function interpretEscapeSequences(stringLiteral: string, source: SrcInfo) {
     return stringLiteral.replace(
-        /\\\\|\\"|\\n|\\r|\\t|\\v|\\b|\\f|\\u{([0-9A-Fa-f]+)}|\\u([0-9A-Fa-f]{4})|\\x([0-9A-Fa-f]{2})/g,
+        /\\\\|\\"|\\n|\\r|\\t|\\v|\\b|\\f|\\u{([0-9A-Fa-f]{1,6})}|\\u([0-9A-Fa-f]{4})|\\x([0-9A-Fa-f]{2})/g,
         (match, unicodeCodePoint, unicodeEscape, hexEscape) => {
             switch (match) {
                 case "\\\\":
@@ -684,6 +695,12 @@ function interpretEscapeSequences(stringLiteral: string) {
                     // Handle Unicode code point escape
                     if (unicodeCodePoint) {
                         const codePoint = parseInt(unicodeCodePoint, 16);
+                        if (codePoint > 0x10ffff) {
+                            throwErrorConstEval(
+                                `unicode code point is outside of valid range 000000-10FFFF: ${stringLiteral}`,
+                                source,
+                            );
+                        }
                         return String.fromCodePoint(codePoint);
                     }
                     // Handle Unicode escape
@@ -702,7 +719,7 @@ function interpretEscapeSequences(stringLiteral: string) {
     );
 }
 
-function lookupID(ast: AstId, ctx: CompilerContext): Value {
+function lookupName(ast: AstId, ctx: CompilerContext): Value {
     if (hasStaticConstant(ctx, ast.text)) {
         const constant = getStaticConstant(ctx, ast.text);
         if (constant.value !== undefined) {
@@ -723,9 +740,15 @@ export function evalConstantExpression(
 ): Value {
     switch (ast.kind) {
         case "id":
-            return lookupID(ast, ctx);
+            return lookupName(ast, ctx);
         case "method_call":
-            return evalMethod(ast.method, ast.self, ast.args, ast.loc, ctx);
+            return fullyEvalMethod(
+                ast.method,
+                ast.self,
+                ast.args,
+                ast.loc,
+                ctx,
+            );
         case "init_of":
             throwNonFatalErrorConstEval(
                 "initOf is not supported at this moment",
@@ -739,24 +762,27 @@ export function evalConstantExpression(
         case "number":
             return ensureInt(ast.value, ast.loc);
         case "string":
-            return ensureString(interpretEscapeSequences(ast.value), ast.loc);
+            return ensureString(
+                interpretEscapeSequences(ast.value, ast.loc),
+                ast.loc,
+            );
         case "op_unary":
             return fullyEvalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
         case "op_binary":
             return fullyEvalBinaryOp(ast.op, ast.left, ast.right, ast.loc, ctx);
         case "conditional":
-            return evalConditional(
+            return fullyEvalConditional(
                 ast.condition,
                 ast.thenBranch,
                 ast.elseBranch,
                 ctx,
             );
         case "struct_instance":
-            return evalStructInstance(ast.type, ast.args, ctx);
+            return fullyEvalStructInstance(ast.type, ast.args, ctx);
         case "field_access":
-            return evalFieldAccess(ast.aggregate, ast.field, ast.loc, ctx);
+            return fullyEvalFieldAccess(ast.aggregate, ast.field, ast.loc, ctx);
         case "static_call":
-            return evalBuiltins(ast.function, ast.args, ast.loc, ctx);
+            return fullyEvalBuiltins(ast.function, ast.args, ast.loc, ctx);
     }
 }
 
@@ -767,7 +793,7 @@ export function partiallyEvalExpression(
     switch (ast.kind) {
         case "id":
             try {
-                return makeValueExpression(lookupID(ast, ctx));
+                return makeValueExpression(lookupName(ast, ctx));
             } catch (e) {
                 if (e instanceof TactConstEvalError) {
                     if (!e.fatal) {
@@ -780,7 +806,7 @@ export function partiallyEvalExpression(
         case "method_call":
             // Does not partially evaluate at the moment. Will attempt to fully evaluate
             return makeValueExpression(
-                evalMethod(ast.method, ast.self, ast.args, ast.loc, ctx),
+                fullyEvalMethod(ast.method, ast.self, ast.args, ast.loc, ctx),
             );
         case "init_of":
             throwNonFatalErrorConstEval(
@@ -796,7 +822,10 @@ export function partiallyEvalExpression(
             return makeValueExpression(ensureInt(ast.value, ast.loc));
         case "string":
             return makeValueExpression(
-                ensureString(interpretEscapeSequences(ast.value), ast.loc),
+                ensureString(
+                    interpretEscapeSequences(ast.value, ast.loc),
+                    ast.loc,
+                ),
             );
         case "op_unary":
             return partiallyEvalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
@@ -811,7 +840,7 @@ export function partiallyEvalExpression(
         case "conditional":
             // Does not partially evaluate at the moment. Will attempt to fully evaluate
             return makeValueExpression(
-                evalConditional(
+                fullyEvalConditional(
                     ast.condition,
                     ast.thenBranch,
                     ast.elseBranch,
@@ -821,17 +850,17 @@ export function partiallyEvalExpression(
         case "struct_instance":
             // Does not partially evaluate at the moment. Will attempt to fully evaluate
             return makeValueExpression(
-                evalStructInstance(ast.type, ast.args, ctx),
+                fullyEvalStructInstance(ast.type, ast.args, ctx),
             );
         case "field_access":
             // Does not partially evaluate at the moment. Will attempt to fully evaluate
             return makeValueExpression(
-                evalFieldAccess(ast.aggregate, ast.field, ast.loc, ctx),
+                fullyEvalFieldAccess(ast.aggregate, ast.field, ast.loc, ctx),
             );
         case "static_call":
             // Does not partially evaluate at the moment. Will attempt to fully evaluate
             return makeValueExpression(
-                evalBuiltins(ast.function, ast.args, ast.loc, ctx),
+                fullyEvalBuiltins(ast.function, ast.args, ast.loc, ctx),
             );
     }
 }

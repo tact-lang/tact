@@ -1,22 +1,27 @@
 // This module includes rules involving associative rewrites of expressions
 
 import { evalBinaryOp } from "../constEval";
-import { AstBinaryOperation, AstExpression, AstOpBinary } from "../grammar/ast";
+import {
+    AstBinaryOperation,
+    AstExpression,
+    AstOpBinary,
+    AstValue,
+    isValue,
+} from "../grammar/ast";
 import { Value } from "../types/types";
-import { ExpressionTransformer, Rule, AstValue } from "./types";
+import { ExpressionTransformer, Rule } from "./types";
 import {
     abs,
     checkIsBinaryOpNode,
     checkIsBinaryOp_NonValue_Value,
     checkIsBinaryOp_Value_NonValue,
     extractValue,
-    isValue,
     makeBinaryExpression,
     makeValueExpression,
     sign,
 } from "./util";
 
-export abstract class AssociativeRewriteRule extends Rule {
+abstract class AssociativeRewriteRule extends Rule {
     // An entry (op, S) in the map means "operator op associates with all operators in set S",
     // mathematically: all op2 \in S. (a op b) op2 c = a op (b op2 c)
     private associativeOps: Map<AstBinaryOperation, Set<AstBinaryOperation>>;
@@ -73,7 +78,7 @@ export abstract class AssociativeRewriteRule extends Rule {
     }
 }
 
-export abstract class AllowableOpRule extends AssociativeRewriteRule {
+abstract class AllowableOpRule extends AssociativeRewriteRule {
     private allowedOps: Set<AstBinaryOperation>;
 
     constructor() {

@@ -424,6 +424,64 @@ exports[`grammar should parse abstract-const 1`] = `
 }
 `;
 
+exports[`grammar should parse case-35 1`] = `
+{
+  "id": 7,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 5,
+          "kind": "receiver",
+          "loc": external() {
+        acceptMessage();
+    },
+          "selector": {
+            "kind": "external-fallback",
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 2,
+                  "kind": "id",
+                  "loc": acceptMessage,
+                  "text": "acceptMessage",
+                },
+                "id": 3,
+                "kind": "static_call",
+                "loc": acceptMessage(),
+              },
+              "id": 4,
+              "kind": "statement_expression",
+              "loc": acceptMessage();,
+            },
+          ],
+        },
+      ],
+      "id": 6,
+      "kind": "contract",
+      "loc": contract ReceiveTestContract {
+    external() {
+        acceptMessage();
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": ReceiveTestContract,
+        "text": "ReceiveTestContract",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
 exports[`grammar should parse contract-with-const-override 1`] = `
 {
   "id": 7,

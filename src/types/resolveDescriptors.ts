@@ -7,7 +7,6 @@ import {
     SrcInfo,
     AstType,
     createAstNode,
-    traverse,
     idText,
     AstId,
     eqNames,
@@ -17,6 +16,7 @@ import {
     AstFunctionDecl,
     AstConstantDecl,
 } from "../grammar/ast";
+import { traverse } from "../grammar/iterators";
 import {
     idTextErr,
     throwCompilationError,
@@ -1860,10 +1860,7 @@ export function getAllStaticConstants(ctx: CompilerContext) {
     return staticConstantsStore.all(ctx);
 }
 
-export function resolvePartialFields(
-    ctx: CompilerContext,
-    type: TypeDescription,
-) {
+function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
     if (type.kind !== "struct") return 0;
 
     let partialFieldsCount = 0;
