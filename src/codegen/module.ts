@@ -1,10 +1,17 @@
 import { getAllTypes } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { getSortedTypes } from "../storage/resolveAllocation";
-import { FuncAstModule, FuncAstFunctionDefinition } from "../func/syntax";
+import { getSupportedInterfaces } from "../types/getSupportedInterfaces";
+import {
+    FuncAstModule,
+    FuncAstFunctionDefinition,
+    FuncAstExpr,
+} from "../func/syntax";
 import {
     makeComment,
+    makeTensorExpr,
     makeModule,
+    makeBinop,
     makeNumberExpr,
     makeCall,
     makeFunction,
@@ -65,6 +72,34 @@ export class ModuleGen {
     }
 
     /**
+     * Generates a method that returns the supported interfaces, e.g.:
+     * ```
+     * _ supported_interfaces() method_id {
+     *     return (
+     *         "org.ton.introspection.v0"H >> 128,
+     *         "org.ton.abi.ipfs.v0"H >> 128,
+     *         "org.ton.deploy.lazy.v0"H >> 128,
+     *         "org.ton.chain.workchain.v0"H >> 128);
+     * }
+     * ```
+     */
+    private writeInterfaces(type: TypeDescription): FuncAstFunctionDefinition {
+        const supported: string[] = [];
+        supported.push("org.ton.introspection.v0");
+        supported.push(...getSupportedInterfaces(type, this.ctx.ctx));
+        const shiftExprs: FuncAstExpr[] = supported.map((item) =>
+            makeBinop(makeStringExpr(item, "H"), ">>", makeNumberExpr(128)),
+        );
+        return makeFunction(
+            ["method_id"],
+            "supported_interfaces",
+            [],
+            { kind: "hole" },
+            [makeReturn(makeTensorExpr(...shiftExprs))],
+        );
+    }
+
+    /**
      * Adds functions defined within the Tact contract to the generated Func module.
      * TODO: Why do we need function from *all* the contracts?
      */
@@ -103,8 +138,8 @@ export class ModuleGen {
         //     }
         // }
 
-        // // Interfaces
-        // writeInterfaces(type, ctx);
+        // Interfaces
+        m.entries.push(this.writeInterfaces(c));
 
         // ABI:
         // _ get_abi_ipfs() method_id {
@@ -143,7 +178,7 @@ export class ModuleGen {
         // Comments
         m.entries.push(makeComment("", `Routing of a Contract ${c.name}`, ""));
 
-        // // Render body
+        // Render body
         // const hasExternal = type.receivers.find((v) =>
         //     v.selector.kind.startsWith("external-"),
         // );
