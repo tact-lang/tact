@@ -680,6 +680,16 @@ Line 13, col 9:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-does-not-exist3 1`] = `
+"<unknown>:17:9: Unable to resolve id 'someField', did you mean 'self.someField'?
+Line 17, col 9:
+  16 |     receive() {
+> 17 |         someField = 42;
+               ^~~~~~~~~
+  18 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-catch-param-does-not-shadow-outer-var 1`] = `
 "<unknown>:8:14: Variable already exists: "e"
 Line 8, col 14:
