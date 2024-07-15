@@ -1,4 +1,10 @@
-import { ABIGetter, ABIReceiver, ABIType, ContractABI } from "@ton/core";
+import {
+    ABIArgument,
+    ABIGetter,
+    ABIReceiver,
+    ABIType,
+    ContractABI,
+} from "@ton/core";
 import { contractErrors } from "../abi/errors";
 import { CompilerContext } from "../context";
 import { idText } from "../grammar/ast";
@@ -27,6 +33,20 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
                 name: t.name,
                 header: t.header,
                 fields: t.fields.map((v) => v.abi),
+            });
+        }
+    }
+
+    // init
+    const init: ABIArgument[] = [];
+    if (contract.init) {
+        for (const initParam of Object.values(contract.init.params)) {
+            init.push({
+                name: idText(initParam.name),
+                type: createABITypeRefFromTypeRef(
+                    initParam.type,
+                    initParam.loc,
+                ),
             });
         }
     }
@@ -162,6 +182,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     return {
         name: contract.name,
         types,
+        init,
         receivers,
         getters,
         errors,
