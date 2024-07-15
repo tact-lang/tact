@@ -822,7 +822,10 @@ export function partiallyEvalExpression(
             return makeValueExpression(ensureInt(ast.value, ast.loc));
         case "string":
             return makeValueExpression(
-                ensureString(interpretEscapeSequences(ast.value), ast.loc),
+                ensureString(
+                    interpretEscapeSequences(ast.value, ast.loc),
+                    ast.loc,
+                ),
             );
         case "op_unary":
             return partiallyEvalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
