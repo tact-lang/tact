@@ -1,8 +1,8 @@
 import { CompilerContext } from "../context";
-import { FuncAstFunction } from "../func/syntax";
+import { FuncAstFunctionDefinition } from "../func/syntax";
 
 type ContextValues = {
-    constructor: FuncAstFunction;
+    constructor: FuncAstFunctionDefinition;
 };
 
 export type ContextValueKind = keyof ContextValues;
@@ -15,7 +15,7 @@ export class CodegenContext {
     public ctx: CompilerContext;
 
     /** Generated struct constructors. */
-    private constructors: FuncAstFunction[] = [];
+    private constructors: FuncAstFunctionDefinition[] = [];
 
     constructor(ctx: CompilerContext) {
         this.ctx = ctx;
@@ -27,8 +27,15 @@ export class CodegenContext {
     ): void {
         switch (kind) {
             case "constructor":
-                this.constructors.push(value as FuncAstFunction);
+                this.constructors.push(value as FuncAstFunctionDefinition);
                 break;
         }
+    }
+
+    /**
+     * Returns all the generated functions.
+     */
+    public getFunctions(): FuncAstFunctionDefinition[] {
+        return this.constructors;
     }
 }

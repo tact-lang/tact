@@ -1,10 +1,9 @@
 import { enabledInline } from "../config/features";
 import { getType, resolveTypeRef } from "../types/resolveDescriptors";
 import { ops, funcIdOf } from "./util";
-import { AstId } from "../grammar/ast";
-import { TypeDescription, FunctionDescription, TypeRef } from "../types/types";
+import { TypeDescription, FunctionDescription, InitDescription, TypeRef } from "../types/types";
 import {
-    FuncAstFunction,
+    FuncAstFunctionDefinition,
     FuncAstStmt,
     FuncAstFunctionAttribute,
     FuncAstExpr,
@@ -90,7 +89,7 @@ export class FunctionGen {
     /**
      * Generates Func function from the Tact funciton description.
      */
-    public writeFunction(tactFun: FunctionDescription): FuncAstFunction {
+    public writeFunction(tactFun: FunctionDescription): FuncAstFunctionDefinition {
         if (tactFun.ast.kind !== "function_def") {
             throw new Error(`Unknown function kind: ${tactFun.ast.kind}`);
         }
@@ -200,7 +199,7 @@ export class FunctionGen {
     public writeStructConstructor(
         type: TypeDescription,
         args: string[],
-    ): FuncAstFunction {
+    ): FuncAstFunctionDefinition {
         const attrs: FuncAstFunctionAttribute[] = ["inline"];
         const name = ops.typeConstructor(
             type.name,

@@ -312,6 +312,9 @@ export type FuncAstModuleEntry =
     | FuncAstConstant
     | FuncAstGlobalVariable;
 
+/**
+ * Represents a single Func file.
+ */
 export type FuncAstModule = {
     kind: "module";
     entries: FuncAstModuleEntry[];

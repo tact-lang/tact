@@ -176,7 +176,7 @@ export class FuncFormatter {
         return `${returnTypeStr} ${nameStr}(${paramsStr}) ${attrsStr}`;
     }
 
-    private formatFunctionDeclaration(node: FuncAstFunctionDefinition): string {
+    private formatFunctionDeclaration(node: FuncAstFunctionDeclaration): string {
         const signature = this.formatFunctionSignature(
             node.name,
             node.attrs,

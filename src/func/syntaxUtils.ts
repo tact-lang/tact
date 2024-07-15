@@ -1,6 +1,8 @@
 import {
     FuncAstExpr,
     FuncAstIdExpr,
+    FuncAstModuleEntry,
+    FuncAstModule,
     FuncAstTernaryExpr,
     FuncAstPragma,
     FuncAstTensorExpr,
@@ -102,4 +104,8 @@ export function makeTernaryExpr(
     falseExpr: FuncAstExpr,
 ): FuncAstTernaryExpr {
     return { kind: "ternary_expr", cond, trueExpr, falseExpr };
+}
+
+export function makeModule(entries: FuncAstModuleEntry[] = []): FuncAstModule {
+    return { kind: "module", entries };
 }
