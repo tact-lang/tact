@@ -768,7 +768,7 @@ export function resolveExpression(
                     const self = sctx.vars.get("self");
                     if (self && self.kind === "ref") {
                         const t = getType(ctx, self.name);
-                        if (t.kind === "contract") {
+                        if (t.kind === "contract" || t.kind === "trait") {
                             const field = t.fields.find(
                                 (f) => f.name == exp.text,
                             );
