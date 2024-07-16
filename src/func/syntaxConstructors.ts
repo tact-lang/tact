@@ -1,0 +1,396 @@
+import {
+    FuncAstNumberExpr,
+    FuncAstBoolExpr,
+    FuncAstStringExpr,
+    FuncAstNilExpr,
+    FuncAstIdExpr,
+    FuncAstCallExpr,
+    FuncAstAssignExpr,
+    FuncAstAugmentedAssignExpr,
+    FuncAstTernaryExpr,
+    FuncAstBinaryExpr,
+    FuncAstUnaryExpr,
+    FuncAstApplyExpr,
+    FuncAstTupleExpr,
+    FuncAstTensorExpr,
+    FuncAstUnitExpr,
+    FuncAstHoleExpr,
+    FuncAstPrimitiveTypeExpr,
+    FuncStringLiteralType,
+    FuncAstAugmentedAssignOp,
+    FuncAstBinaryOp,
+    FuncAstUnaryOp,
+    FuncAstVarDefStmt,
+    FuncAstReturnStmt,
+    FuncAstBlockStmt,
+    FuncAstRepeatStmt,
+    FuncAstConditionStmt,
+    FuncAstStmt,
+    FuncAstDoUntilStmt,
+    FuncAstWhileStmt,
+    FuncAstExprStmt,
+    FuncAstTryCatchStmt,
+    FuncAstExpr,
+    FuncType,
+    FuncAstConstant,
+    FuncAstFormalFunctionParam,
+    FuncAstFunctionAttribute,
+    FuncAstFunctionDeclaration,
+    FuncAstFunctionDefinition,
+    FuncAstComment,
+    FuncAstInclude,
+    FuncAstPragma,
+    FuncAstGlobalVariable,
+    FuncAstModuleEntry,
+    FuncAstModule,
+} from "./syntax";
+
+//
+// Types
+//
+export class Type {
+  public static int(): FuncType {
+    return { kind: "int" };
+  }
+
+  public static cell(): FuncType {
+    return { kind: "cell" };
+  }
+
+  public static slice(): FuncType {
+    return { kind: "slice" };
+  }
+
+  public static builder(): FuncType {
+    return { kind: "builder" };
+  }
+
+  public static cont(): FuncType {
+    return { kind: "cont" };
+  }
+
+  public static tuple(): FuncType {
+    return { kind: "tuple" };
+  }
+
+  public static tensor(...value: FuncType[]): FuncType {
+    return { kind: "tensor", value };
+  }
+
+  public static hole(): FuncType {
+    return { kind: "hole" };
+  }
+
+  public static type(): FuncType {
+    return { kind: "type" };
+  }
+}
+
+//
+// Expressions
+//
+
+export const number = (num: bigint | number): FuncAstNumberExpr => ({
+    kind: "number_expr",
+    value: typeof num === "bigint" ? num : BigInt(num),
+});
+
+export const bool = (value: boolean): FuncAstBoolExpr => ({
+    kind: "bool_expr",
+    value,
+});
+
+export const string = (
+    value: string,
+    ty?: FuncStringLiteralType,
+): FuncAstStringExpr => ({
+    kind: "string_expr",
+    value,
+    ty,
+});
+
+export const nil = (): FuncAstNilExpr => ({
+    kind: "nil_expr",
+});
+
+export const id = (value: string): FuncAstIdExpr => ({
+    kind: "id_expr",
+    value,
+});
+
+export const call = (
+    fun: FuncAstExpr | string,
+    args: FuncAstExpr[],
+): FuncAstCallExpr => ({
+    kind: "call_expr",
+    fun: typeof fun === "string" ? id(fun) : fun,
+    args,
+});
+
+export const assign = (
+    lhs: FuncAstExpr,
+    rhs: FuncAstExpr,
+): FuncAstAssignExpr => ({
+    kind: "assign_expr",
+    lhs,
+    rhs,
+});
+
+export const augmentedAssign = (
+    lhs: FuncAstExpr,
+    op: FuncAstAugmentedAssignOp,
+    rhs: FuncAstExpr,
+): FuncAstAugmentedAssignExpr => ({
+    kind: "augmented_assign_expr",
+    lhs,
+    op,
+    rhs,
+});
+
+export const ternary = (
+    cond: FuncAstExpr,
+    trueExpr: FuncAstExpr,
+    falseExpr: FuncAstExpr,
+): FuncAstTernaryExpr => ({
+    kind: "ternary_expr",
+    cond,
+    trueExpr,
+    falseExpr,
+});
+
+export const binop = (
+    lhs: FuncAstExpr,
+    op: FuncAstBinaryOp,
+    rhs: FuncAstExpr,
+): FuncAstBinaryExpr => ({
+    kind: "binary_expr",
+    lhs,
+    op,
+    rhs,
+});
+
+export const unop = (
+    op: FuncAstUnaryOp,
+    value: FuncAstExpr,
+): FuncAstUnaryExpr => ({
+    kind: "unary_expr",
+    op,
+    value,
+});
+
+export const apply = (
+    lhs: FuncAstExpr,
+    rhs: FuncAstExpr,
+): FuncAstApplyExpr => ({
+    kind: "apply_expr",
+    lhs,
+    rhs,
+});
+
+export const tuple = (values: FuncAstExpr[]): FuncAstTupleExpr => ({
+    kind: "tuple_expr",
+    values,
+});
+
+export const tensor = (...values: FuncAstExpr[]): FuncAstTensorExpr => ({
+    kind: "tensor_expr",
+    values,
+});
+
+export const unit = (): FuncAstUnitExpr => ({
+    kind: "unit_expr",
+});
+
+export const hole = (
+    id: string | undefined,
+    init: FuncAstExpr,
+): FuncAstHoleExpr => ({
+    kind: "hole_expr",
+    id,
+    init,
+});
+
+export const primitiveType = (ty: FuncType): FuncAstPrimitiveTypeExpr => ({
+    kind: "primitive_type_expr",
+    ty,
+});
+
+//
+// Statements
+//
+
+export const varDef = (
+    ty: FuncType | undefined,
+    name: string,
+    init?: FuncAstExpr,
+): FuncAstVarDefStmt => ({
+    kind: "var_def_stmt",
+    name,
+    ty,
+    init,
+});
+
+export const ret = (value?: FuncAstExpr): FuncAstReturnStmt => ({
+    kind: "return_stmt",
+    value,
+});
+
+export const block = (body: FuncAstStmt[]): FuncAstBlockStmt => ({
+    kind: "block_stmt",
+    body,
+});
+
+export const repeat = (
+    condition: FuncAstExpr,
+    body: FuncAstStmt[],
+): FuncAstRepeatStmt => ({
+    kind: "repeat_stmt",
+    condition,
+    body,
+});
+
+export const condition = (
+    condition: FuncAstExpr | undefined,
+    ifnot: boolean,
+    body: FuncAstStmt[],
+    elseStmt?: FuncAstConditionStmt,
+): FuncAstConditionStmt => ({
+    kind: "condition_stmt",
+    condition,
+    ifnot,
+    body,
+    else: elseStmt,
+});
+
+export const doUntil = (
+    body: FuncAstStmt[],
+    condition: FuncAstExpr,
+): FuncAstDoUntilStmt => ({
+    kind: "do_until_stmt",
+    body,
+    condition,
+});
+
+export const while_ = (
+    condition: FuncAstExpr,
+    body: FuncAstStmt[],
+): FuncAstWhileStmt => ({
+    kind: "while_stmt",
+    condition,
+    body,
+});
+
+export const expr = (expr: FuncAstExpr): FuncAstExprStmt => ({
+    kind: "expr_stmt",
+    expr,
+});
+
+export const tryCatch = (
+    tryBlock: FuncAstStmt[],
+    catchBlock: FuncAstStmt[],
+    catchVar: string | null,
+): FuncAstTryCatchStmt => ({
+    kind: "try_catch_stmt",
+    tryBlock,
+    catchBlock,
+    catchVar,
+});
+
+// Other top-level elements
+
+export const comment = (...values: string[]): FuncAstComment => ({
+    kind: "comment",
+    values,
+});
+
+export const constant = (ty: FuncType, init: FuncAstExpr): FuncAstConstant => ({
+    kind: "constant",
+    ty,
+    init,
+});
+
+export const functionParam = (
+    name: string,
+    ty: FuncType,
+): FuncAstFormalFunctionParam => ({
+    kind: "function_param",
+    name,
+    ty,
+});
+
+export const functionDeclaration = (
+    name: string,
+    attrs: FuncAstFunctionAttribute[],
+    params: FuncAstFormalFunctionParam[],
+    returnTy: FuncType,
+): FuncAstFunctionDeclaration => ({
+    kind: "function_declaration",
+    name,
+    attrs,
+    params,
+    returnTy,
+});
+
+export const fun = (
+    attrs: FuncAstFunctionAttribute[],
+    name: string,
+    paramValues: [string, FuncType][],
+    returnTy: FuncType,
+    body: FuncAstStmt[],
+): FuncAstFunctionDefinition => {
+    const params = paramValues.map(
+        ([name, ty]) =>
+            ({
+                kind: "function_param",
+                name,
+                ty,
+            }) as FuncAstFormalFunctionParam,
+    );
+    return {
+        kind: "function_definition",
+        name,
+        attrs,
+        params,
+        returnTy,
+        body,
+    };
+};
+
+export function toDeclaration(
+    def: FuncAstFunctionDefinition,
+): FuncAstFunctionDeclaration {
+    return {
+        kind: "function_declaration",
+        attrs: def.attrs,
+        name: def.name,
+        params: def.params,
+        returnTy: def.returnTy,
+    };
+}
+
+export const include = (value: string): FuncAstInclude => ({
+    kind: "include",
+    value,
+});
+
+export const pragma = (value: string): FuncAstPragma => ({
+    kind: "pragma",
+    value,
+});
+
+export const globalVariable = (
+    name: string,
+    ty: FuncType,
+): FuncAstGlobalVariable => ({
+    kind: "global_variable",
+    name,
+    ty,
+});
+
+export const moduleEntry = (entry: FuncAstModuleEntry): FuncAstModuleEntry =>
+    entry;
+
+export const module = (...entries: FuncAstModuleEntry[]): FuncAstModule => ({
+    kind: "module",
+    entries,
+});
