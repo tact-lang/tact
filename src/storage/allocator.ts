@@ -76,49 +76,17 @@ export function getAllocationOperationFromField(
     switch (src.kind) {
         case "simple": {
             if (src.type === "int") {
-                if (src.format === 8) {
+                if (typeof src.format === "number") {
+                    if (src.format < 1 || src.format > 257) {
+                        throw Error("Unsupported int format " + src.format);
+                    }
                     return {
                         kind: "int",
-                        bits: 8,
+                        bits: src.format,
                         optional: src.optional ? src.optional : false,
                     };
-                } else if (src.format === 16) {
-                    return {
-                        kind: "int",
-                        bits: 16,
-                        optional: src.optional ? src.optional : false,
-                    };
-                } else if (src.format === 32) {
-                    return {
-                        kind: "int",
-                        bits: 32,
-                        optional: src.optional ? src.optional : false,
-                    };
-                } else if (src.format === 64) {
-                    return {
-                        kind: "int",
-                        bits: 64,
-                        optional: src.optional ? src.optional : false,
-                    };
-                } else if (src.format === 128) {
-                    return {
-                        kind: "int",
-                        bits: 128,
-                        optional: src.optional ? src.optional : false,
-                    };
-                } else if (src.format === 256) {
-                    return {
-                        kind: "int",
-                        bits: 256,
-                        optional: src.optional ? src.optional : false,
-                    };
-                } else if (src.format === 257) {
-                    return {
-                        kind: "int",
-                        bits: 257,
-                        optional: src.optional ? src.optional : false,
-                    };
-                } else if (src.format !== null && src.format !== undefined) {
+                }
+                if (src.format !== null && src.format !== undefined) {
                     throwInternalCompilerError(
                         `Unsupported int format: ${src.format}`,
                     );
@@ -130,50 +98,27 @@ export function getAllocationOperationFromField(
                 };
             }
             if (src.type === "uint") {
-                if (src.format === 8) {
+                if (typeof src.format === "number") {
+                    if (src.format < 1 || src.format > 256) {
+                        throwInternalCompilerError(
+                            `Unsupported uint format: ${src.format}`,
+                        );
+                    }
                     return {
                         kind: "uint",
-                        bits: 8,
+                        bits: src.format,
                         optional: src.optional ? src.optional : false,
                     };
-                } else if (src.format === 16) {
-                    return {
-                        kind: "uint",
-                        bits: 16,
-                        optional: src.optional ? src.optional : false,
-                    };
-                } else if (src.format === 32) {
-                    return {
-                        kind: "uint",
-                        bits: 32,
-                        optional: src.optional ? src.optional : false,
-                    };
-                } else if (src.format === 64) {
-                    return {
-                        kind: "uint",
-                        bits: 64,
-                        optional: src.optional ? src.optional : false,
-                    };
-                } else if (src.format === 128) {
-                    return {
-                        kind: "uint",
-                        bits: 128,
-                        optional: src.optional ? src.optional : false,
-                    };
-                } else if (src.format === 256) {
-                    return {
-                        kind: "uint",
-                        bits: 256,
-                        optional: src.optional ? src.optional : false,
-                    };
-                } else if (src.format === "coins") {
+                }
+                if (src.format === "coins") {
                     return {
                         kind: "coins",
                         optional: src.optional ? src.optional : false,
                     };
-                } else if (src.format !== null && src.format !== undefined) {
+                }
+                if (src.format !== null && src.format !== undefined) {
                     throwInternalCompilerError(
-                        `Unsupported int format: ${src.format}`,
+                        `Unsupported uint format: ${src.format}`,
                     );
                 }
                 return {
