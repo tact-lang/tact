@@ -1,4 +1,5 @@
 import { AstExpression } from "../grammar/ast";
+import { AddSelf, AddZero, MultiplyOne, MultiplyZero, SubstractSelf } from "./algebraic";
 import {
     AssociativeRule1,
     AssociativeRule2,
@@ -19,7 +20,11 @@ export class StandardOptimizer extends ExpressionTransformer {
             { priority: 0, rule: new AssociativeRule1() },
             { priority: 1, rule: new AssociativeRule2() },
             { priority: 2, rule: new AssociativeRule3() },
-            // TODO: add simpler algebraic rules that will be added to algebraic.ts
+            { priority: 3, rule: new AddZero() },
+            { priority: 4, rule: new MultiplyZero() },
+            { priority: 5, rule: new MultiplyOne() },
+            { priority: 6, rule: new SubstractSelf() },
+            { priority: 7, rule: new AddSelf() },
         ];
 
         // Sort according to the priorities: smaller number means greater priority.
