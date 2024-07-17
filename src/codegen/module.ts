@@ -1,24 +1,38 @@
-import { getAllTypes } from "../types/resolveDescriptors";
+import { getAllTypes, getType } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { getSortedTypes } from "../storage/resolveAllocation";
 import { getSupportedInterfaces } from "../types/getSupportedInterfaces";
+import { ops } from "./util";
 import {
     FuncAstModule,
+    FuncAstStmt,
+    FuncAstFunctionAttribute,
+    FuncType,
     FuncAstFunctionDefinition,
     FuncAstExpr,
 } from "../func/syntax";
 import {
-    makeComment,
-    makeTensorExpr,
-    makeModule,
-    makeBinop,
-    makeNumberExpr,
-    makeCall,
-    makeFunction,
-    makeReturn,
-    makeStringExpr,
-} from "../func/syntaxUtils";
+    comment,
+    assign,
+    expr,
+    call,
+    binop,
+    bool,
+    number,
+    hexnumber,
+    string,
+    fun,
+    ret,
+    tensor,
+    Type,
+    varDef,
+    mod,
+    condition,
+    id,
+} from "../func/syntaxConstructors";
+import { resolveFuncType } from "./type";
 import { FunctionGen, CodegenContext } from ".";
+import { beginCell } from "@ton/core";
 
 /**
  * Encapsulates generation of the main Func compilation module from the main Tact module.
@@ -41,33 +55,33 @@ export class ModuleGen {
     /**
      * Adds stdlib definitions to the generated module.
      */
-    private addStdlib(m: FuncAstModule): void {
+    private addStdlib(_m: FuncAstModule): void {
         // TODO
     }
 
-    private addSerializers(m: FuncAstModule): void {
+    private addSerializers(_m: FuncAstModule): void {
         const sortedTypes = getSortedTypes(this.ctx.ctx);
         for (const t of sortedTypes) {
         }
     }
 
-    private addAccessors(m: FuncAstModule): void {
+    private addAccessors(_m: FuncAstModule): void {
         // TODO
     }
 
-    private addInitSerializer(m: FuncAstModule): void {
+    private addInitSerializer(_m: FuncAstModule): void {
         // TODO
     }
 
-    private addStorageFunctions(m: FuncAstModule): void {
+    private addStorageFunctions(_m: FuncAstModule): void {
         // TODO
     }
 
-    private addStaticFunctions(m: FuncAstModule): void {
+    private addStaticFunctions(_m: FuncAstModule): void {
         // TODO
     }
 
-    private addExtensions(m: FuncAstModule): void {
+    private addExtensions(_m: FuncAstModule): void {
         // TODO
     }
 
@@ -88,14 +102,14 @@ export class ModuleGen {
         supported.push("org.ton.introspection.v0");
         supported.push(...getSupportedInterfaces(type, this.ctx.ctx));
         const shiftExprs: FuncAstExpr[] = supported.map((item) =>
-            makeBinop(makeStringExpr(item, "H"), ">>", makeNumberExpr(128)),
+            binop(string(item, "H"), ">>", number(128)),
         );
-        return makeFunction(
+        return fun(
             ["method_id"],
             "supported_interfaces",
             [],
             { kind: "hole" },
-            [makeReturn(makeTensorExpr(...shiftExprs))],
+            [ret(tensor(...shiftExprs))],
         );
     }
 
@@ -104,7 +118,7 @@ export class ModuleGen {
      * TODO: Why do we need function from *all* the contracts?
      */
     private addContractFunctions(m: FuncAstModule, c: TypeDescription): void {
-        m.entries.push(makeComment("", `Contract ${c.name} functions`, ""));
+        m.entries.push(comment("", `Contract ${c.name} functions`, ""));
 
         for (const tactFun of c.functions.values()) {
             const funcFun = FunctionGen.fromTact(this.ctx).writeFunction(
@@ -486,9 +500,12 @@ export class ModuleGen {
     /**
      * Adds entries from the main Tact contract.
      */
-    private writeMainContract(m: FuncAstModule, c: TypeDescription): void {
+    private writeMainContract(
+        m: FuncAstModule,
+        contractTy: TypeDescription,
+    ): void {
         m.entries.push(
-            makeComment("", `Receivers of a Contract ${c.name}`, ""),
+            comment("", `Receivers of a Contract ${contractTy.name}`, ""),
         );
 
         // // Write receivers
@@ -497,7 +514,7 @@ export class ModuleGen {
         // }
 
         m.entries.push(
-            makeComment("", `Get methods of a Contract ${c.name}`, ""),
+            comment("", `Get methods of a Contract ${contractTy.name}`, ""),
         );
 
         // // Getters
@@ -508,15 +525,15 @@ export class ModuleGen {
         // }
 
         // Interfaces
-        m.entries.push(this.writeInterfaces(c));
+        m.entries.push(this.writeInterfaces(contractTy));
 
         // ABI:
         // _ get_abi_ipfs() method_id {
         //   return "${abiLink}";
         // }
         m.entries.push(
-            makeFunction(["method_id"], "get_abi_ipfs", [], { kind: "hole" }, [
-                makeReturn(makeStringExpr(this.abiLink)),
+            fun(["method_id"], "get_abi_ipfs", [], { kind: "hole" }, [
+                ret(string(this.abiLink)),
             ]),
         );
 
@@ -525,36 +542,25 @@ export class ModuleGen {
         //   return get_data().begin_parse().load_int(1);
         // }
         m.entries.push(
-            makeFunction(
+            fun(
                 ["method_id"],
                 "lazy_deployment_completed",
                 [],
                 { kind: "hole" },
-                [
-                    makeReturn(
-                        makeCall(
-                            makeCall(
-                                makeCall("load_init", [makeNumberExpr(1)]),
-                                [],
-                            ),
-                            [],
-                        ),
-                    ),
-                ],
+                [ret(call(call(call("load_init", [number(1)]), []), []))],
             ),
         );
 
-        // Comments
-        m.entries.push(makeComment("", `Routing of a Contract ${c.name}`, ""));
-
-        // Render body
-        // const hasExternal = type.receivers.find((v) =>
-        //     v.selector.kind.startsWith("external-"),
-        // );
-        // writeRouter(type, "internal", ctx);
-        // if (hasExternal) {
-        //     writeRouter(type, "external", ctx);
-        // }
+        m.entries.push(
+            comment("", `Routing of a Contract ${contractTy.name}`, ""),
+        );
+        const hasExternal = contractTy.receivers.find((v) =>
+            v.selector.kind.startsWith("external-"),
+        );
+        this.writeRouter(contractTy, "internal");
+        if (hasExternal) {
+            this.writeRouter(contractTy, "external");
+        }
 
         // // Render internal receiver
         // ctx.append(
@@ -636,7 +642,7 @@ export class ModuleGen {
     }
 
     public writeAll(): FuncAstModule {
-        const m: FuncAstModule = makeModule();
+        const m: FuncAstModule = mod();
 
         const allTypes = Object.values(getAllTypes(this.ctx.ctx));
         const contracts = allTypes.filter((v) => v.kind === "contract");

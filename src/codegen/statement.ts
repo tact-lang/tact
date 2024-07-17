@@ -16,17 +16,18 @@ import {
     FuncAstStmt,
     FuncAstConditionStmt,
     FuncAstExpr,
-    FuncAstTupleExpr,
     FuncAstUnitExpr,
 } from "../func/syntax";
 import {
-    makeId,
-    makeExprStmt,
-    makeReturn,
-    makeTensorExpr,
-} from "../func/syntaxUtils";
-
-import JSONbig from "json-bigint";
+    id,
+    expr,
+    ret,
+    tensor,
+    assign,
+    condition,
+    varDef,
+    Type,
+} from "../func/syntaxConstructors";
 
 /**
  * Encapsulates generation of Func statements from the Tact statement.
@@ -75,54 +76,38 @@ export class StatementGen {
                 this.selfName,
                 this.returns,
             ).writeStatement();
-        const condition = this.makeExpr(f.condition);
+        const cond = this.makeExpr(f.condition);
         const thenBlock = f.trueStatements.map(writeStmt);
         const elseStmt: FuncAstConditionStmt | undefined =
             f.falseStatements !== null && f.falseStatements.length > 0
-                ? {
-                      kind: "condition_stmt",
-                      condition: undefined,
-                      ifnot: false,
-                      body: f.falseStatements.map(writeStmt),
-                      else: undefined,
-                  }
+                ? condition(undefined, f.falseStatements.map(writeStmt))
                 : f.elseif
                   ? this.writeCondition(f.elseif)
                   : undefined;
-        return {
-            kind: "condition_stmt",
-            condition,
-            ifnot: false,
-            body: thenBlock,
-            else: elseStmt,
-        };
+        return condition(cond, thenBlock, false, elseStmt);
     }
 
     public writeStatement(): FuncAstStmt {
         switch (this.tactStmt.kind) {
             case "statement_return": {
-                const selfVar = this.selfName
-                    ? makeId(this.selfName)
-                    : undefined;
+                const selfVar = this.selfName ? id(this.selfName) : undefined;
                 const getValue = (expr: FuncAstExpr): FuncAstExpr =>
-                    this.selfName ? makeTensorExpr(selfVar!, expr) : expr;
+                    this.selfName ? tensor(selfVar!, expr) : expr;
                 if (this.tactStmt.expression) {
                     const castedReturns = this.makeCastedExpr(
                         this.tactStmt.expression,
                         this.returns!,
                     );
-                    return makeReturn(getValue(castedReturns));
+                    return ret(getValue(castedReturns));
                 } else {
                     const unit = { kind: "unit_expr" } as FuncAstUnitExpr;
-                    return makeReturn(getValue(unit));
+                    return ret(getValue(unit));
                 }
             }
             case "statement_let": {
                 // Underscore name case
                 if (isWildcard(this.tactStmt.name)) {
-                    return makeExprStmt(
-                        this.makeExpr(this.tactStmt.expression),
-                    );
+                    return expr(this.makeExpr(this.tactStmt.expression));
                 }
 
                 // Contract/struct case
@@ -140,12 +125,7 @@ export class StatementGen {
                                 this.tactStmt.expression,
                                 t,
                             );
-                            return {
-                                kind: "var_def_stmt",
-                                name,
-                                ty: { kind: "tuple" },
-                                init,
-                            };
+                            return varDef(Type.tuple(), name, init);
                         } else {
                             const name = resolveFuncTypeUnpack(
                                 this.ctx.ctx,
@@ -156,12 +136,7 @@ export class StatementGen {
                                 this.tactStmt.expression,
                                 t,
                             );
-                            return {
-                                kind: "var_def_stmt",
-                                name,
-                                ty: undefined,
-                                init,
-                            };
+                            return varDef(undefined, name, init);
                         }
                     }
                 }
@@ -169,7 +144,7 @@ export class StatementGen {
                 const ty = resolveFuncType(this.ctx.ctx, t);
                 const name = funcIdOf(this.tactStmt.name);
                 const init = this.makeCastedExpr(this.tactStmt.expression, t);
-                return { kind: "var_def_stmt", name, ty, init };
+                return varDef(ty, name, init);
             }
 
             case "statement_assign": {
@@ -189,27 +164,19 @@ export class StatementGen {
                 if (t.kind === "ref") {
                     const tt = getType(this.ctx.ctx, t.name);
                     if (tt.kind === "contract" || tt.kind === "struct") {
-                        const lhs = makeId(
+                        const lhs = id(
                             resolveFuncTypeUnpack(this.ctx.ctx, t, path.value),
                         );
                         const rhs = this.makeCastedExpr(
                             this.tactStmt.expression,
                             t,
                         );
-                        return makeExprStmt({
-                            kind: "assign_expr",
-                            lhs,
-                            rhs,
-                        });
+                        return expr(assign(lhs, rhs));
                     }
                 }
 
                 const rhs = this.makeCastedExpr(this.tactStmt.expression, t);
-                return makeExprStmt({
-                    kind: "assign_expr",
-                    lhs: path,
-                    rhs,
-                });
+                return expr(assign(path, rhs));
             }
 
             //     case "statement_augmentedassign": {
@@ -232,7 +199,7 @@ export class StatementGen {
                 return this.writeCondition(this.tactStmt);
             }
             case "statement_expression": {
-                return makeExprStmt(this.makeExpr(this.tactStmt.expression));
+                return expr(this.makeExpr(this.tactStmt.expression));
             }
             //     case "statement_while": {
             //         ctx.append(`while (${writeExpression(f.condition, ctx)}) {`);

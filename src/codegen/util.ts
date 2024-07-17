@@ -1,7 +1,8 @@
 import { getType } from "../types/resolveDescriptors";
 import { CompilerContext } from "../context";
 import { TypeRef } from "../types/types";
-import { FuncAstExpr, FuncAstIdExpr } from "../func/syntax";
+import { FuncAstExpr } from "../func/syntax";
+import { id, call } from "../func/syntaxConstructors";
 import { AstId, idText } from "../grammar/ast";
 
 export const ops = {
@@ -74,11 +75,7 @@ export function cast(
         if (!from.optional && to.optional) {
             const type = getType(ctx, from.name);
             if (type.kind === "struct") {
-                const fun = {
-                    kind: "id_expr",
-                    value: ops.typeAsOptional(type.name),
-                } as FuncAstIdExpr;
-                return { kind: "call_expr", fun, args: [expr] };
+                return call(id(ops.typeAsOptional(type.name)), [expr]);
             }
         }
     }

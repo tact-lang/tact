@@ -29,12 +29,7 @@ import {
     FuncAstIdExpr,
     FuncAstTernaryExpr,
 } from "../func/syntax";
-import {
-    makeId,
-    makeCall,
-    makeBinop,
-    makeTernaryExpr,
-} from "../func/syntaxUtils";
+import { id, call, binop, ternary } from "../func/syntaxConstructors";
 
 function isNull(f: AstExpression): boolean {
     return f.kind === "null";
@@ -57,7 +52,7 @@ function negate(expr: FuncAstExpr): FuncAstExpr {
  * TODO: make it a static method
  */
 export function writePathExpression(path: AstId[]): FuncAstIdExpr {
-    return makeId(
+    return id(
         [funcIdOf(idText(path[0]!)), ...path.slice(1).map(idText)].join(`'`),
     );
 }
@@ -135,7 +130,7 @@ export class ExpressionGen {
                     );
                 }
             });
-            return makeCall(constructor.name, fieldValues);
+            return call(constructor.name, fieldValues);
         }
         throw Error(`Invalid value: ${val}`);
     }
@@ -165,7 +160,7 @@ export class ExpressionGen {
                         t,
                         funcIdOf(this.tactExpr.text),
                     );
-                    return makeId(value);
+                    return id(value);
                 }
             }
 
@@ -188,7 +183,7 @@ export class ExpressionGen {
                 return ExpressionGen.writeValue(this.ctx, c.value!);
             }
 
-            return makeId(funcIdOf(this.tactExpr.text));
+            return id(funcIdOf(this.tactExpr.text));
         }
 
         // NOTE: We always wrap in parentheses to avoid operator precedence issues
@@ -204,18 +199,22 @@ export class ExpressionGen {
                     isNull(this.tactExpr.left) &&
                     !isNull(this.tactExpr.right)
                 ) {
-                    const call = makeCall("null?", [
+                    const callExpr = call("null?", [
                         this.makeExpr(this.tactExpr.right),
                     ]);
-                    return this.tactExpr.op === "==" ? call : negate(call);
+                    return this.tactExpr.op === "=="
+                        ? callExpr
+                        : negate(callExpr);
                 } else if (
                     !isNull(this.tactExpr.left) &&
                     isNull(this.tactExpr.right)
                 ) {
-                    const call = makeCall("null?", [
+                    const callExpr = call("null?", [
                         this.makeExpr(this.tactExpr.left),
                     ]);
-                    return this.tactExpr.op === "==" ? call : negate(call);
+                    return this.tactExpr.op === "=="
+                        ? callExpr
+                        : negate(callExpr);
                 }
             }
 
@@ -238,7 +237,7 @@ export class ExpressionGen {
                 };
                 if (lt.optional && rt.optional) {
                     return maybeNegate(
-                        makeCall("__tact_slice_eq_bits_nullable", [
+                        call("__tact_slice_eq_bits_nullable", [
                             this.makeExpr(this.tactExpr.left),
                             this.makeExpr(this.tactExpr.right),
                         ]),
@@ -246,7 +245,7 @@ export class ExpressionGen {
                 }
                 if (lt.optional && !rt.optional) {
                     return maybeNegate(
-                        makeCall("__tact_slice_eq_bits_nullable_one", [
+                        call("__tact_slice_eq_bits_nullable_one", [
                             this.makeExpr(this.tactExpr.left),
                             this.makeExpr(this.tactExpr.right),
                         ]),
@@ -254,14 +253,14 @@ export class ExpressionGen {
                 }
                 if (!lt.optional && rt.optional) {
                     return maybeNegate(
-                        makeCall("__tact_slice_eq_bits_nullable_one", [
+                        call("__tact_slice_eq_bits_nullable_one", [
                             this.makeExpr(this.tactExpr.right),
                             this.makeExpr(this.tactExpr.left),
                         ]),
                     );
                 }
                 return maybeNegate(
-                    makeCall("__tact_slice_eq_bits", [
+                    call("__tact_slice_eq_bits", [
                         this.makeExpr(this.tactExpr.right),
                         this.makeExpr(this.tactExpr.left),
                     ]),
@@ -277,24 +276,24 @@ export class ExpressionGen {
             ) {
                 const op = this.tactExpr.op === "==" ? "eq" : "neq";
                 if (lt.optional && rt.optional) {
-                    return makeCall(`__tact_cell_${op}_nullable`, [
+                    return call(`__tact_cell_${op}_nullable`, [
                         this.makeExpr(this.tactExpr.left),
                         this.makeExpr(this.tactExpr.right),
                     ]);
                 }
                 if (lt.optional && !rt.optional) {
-                    return makeCall(`__tact_cell_${op}_nullable_one`, [
+                    return call(`__tact_cell_${op}_nullable_one`, [
                         this.makeExpr(this.tactExpr.left),
                         this.makeExpr(this.tactExpr.right),
                     ]);
                 }
                 if (!lt.optional && rt.optional) {
-                    return makeCall(`__tact_cell_${op}_nullable_one`, [
+                    return call(`__tact_cell_${op}_nullable_one`, [
                         this.makeExpr(this.tactExpr.right),
                         this.makeExpr(this.tactExpr.left),
                     ]);
                 }
-                return makeCall(`__tact_cell_${op}`, [
+                return call(`__tact_cell_${op}`, [
                     this.makeExpr(this.tactExpr.right),
                     this.makeExpr(this.tactExpr.left),
                 ]);
@@ -309,24 +308,24 @@ export class ExpressionGen {
             ) {
                 const op = this.tactExpr.op === "==" ? "eq" : "neq";
                 if (lt.optional && rt.optional) {
-                    return makeCall(`__tact_slice_${op}_nullable`, [
+                    return call(`__tact_slice_${op}_nullable`, [
                         this.makeExpr(this.tactExpr.left),
                         this.makeExpr(this.tactExpr.right),
                     ]);
                 }
                 if (lt.optional && !rt.optional) {
-                    return makeCall(`__tact_slice_${op}_nullable_one`, [
+                    return call(`__tact_slice_${op}_nullable_one`, [
                         this.makeExpr(this.tactExpr.left),
                         this.makeExpr(this.tactExpr.right),
                     ]);
                 }
                 if (!lt.optional && rt.optional) {
-                    return makeCall(`__tact_slice_${op}_nullable_one`, [
+                    return call(`__tact_slice_${op}_nullable_one`, [
                         this.makeExpr(this.tactExpr.right),
                         this.makeExpr(this.tactExpr.left),
                     ]);
                 }
-                return makeCall(`__tact_slice_${op}`, [
+                return call(`__tact_slice_${op}`, [
                     this.makeExpr(this.tactExpr.right),
                     this.makeExpr(this.tactExpr.left),
                 ]);
@@ -335,7 +334,7 @@ export class ExpressionGen {
             // Case for maps equality
             if (lt.kind === "map" && rt.kind === "map") {
                 const op = this.tactExpr.op === "==" ? "eq" : "neq";
-                return makeCall(`__tact_cell_${op}_nullable`, [
+                return call(`__tact_cell_${op}_nullable`, [
                     this.makeExpr(this.tactExpr.left),
                     this.makeExpr(this.tactExpr.right),
                 ]);
@@ -359,27 +358,26 @@ export class ExpressionGen {
             if (this.tactExpr.op === "==" || this.tactExpr.op === "!=") {
                 const op = this.tactExpr.op === "==" ? "eq" : "neq";
                 if (lt.optional && rt.optional) {
-                    return makeCall(`__tact_int_${op}_nullable`, [
+                    return call(`__tact_int_${op}_nullable`, [
                         this.makeExpr(this.tactExpr.left),
                         this.makeExpr(this.tactExpr.right),
                     ]);
                 }
                 if (lt.optional && !rt.optional) {
-                    return makeCall(`__tact_int_${op}_nullable_one`, [
+                    return call(`__tact_int_${op}_nullable_one`, [
                         this.makeExpr(this.tactExpr.left),
                         this.makeExpr(this.tactExpr.right),
                     ]);
                 }
                 if (!lt.optional && rt.optional) {
-                    return makeCall(`__tact_int_${op}_nullable_one`, [
+                    return call(`__tact_int_${op}_nullable_one`, [
                         this.makeExpr(this.tactExpr.right),
                         this.makeExpr(this.tactExpr.left),
                     ]);
                 }
-                const binop = this.tactExpr.op === "==" ? "==" : "!=";
-                return makeBinop(
+                return binop(
                     this.makeExpr(this.tactExpr.left),
-                    binop,
+                    this.tactExpr.op === "==" ? "==" : "!=",
                     this.makeExpr(this.tactExpr.right),
                 );
             }
@@ -411,7 +409,7 @@ export class ExpressionGen {
             }
 
             // Other ops
-            return makeBinop(
+            return binop(
                 this.makeExpr(this.tactExpr.left),
                 this.tactExpr.op,
                 this.makeExpr(this.tactExpr.right),
@@ -443,12 +441,12 @@ export class ExpressionGen {
                     if (t.kind === "ref") {
                         const tt = getType(this.ctx.ctx, t.name);
                         if (tt.kind === "struct") {
-                            return makeCall(ops.typeNotNull(tt.name), [
+                            return call(ops.typeNotNull(tt.name), [
                                 this.makeExpr(this.tactExpr.operand),
                             ]);
                         }
                     }
-                    return makeCall("__tact_not_null", [
+                    return call("__tact_not_null", [
                         this.makeExpr(this.tactExpr.operand),
                     ]);
                 }
@@ -502,7 +500,7 @@ export class ExpressionGen {
                     if (field.type.kind === "ref") {
                         const ft = getType(this.ctx.ctx, field.type.name);
                         if (ft.kind === "struct" || ft.kind === "contract") {
-                            return makeId(
+                            return id(
                                 resolveFuncTypeUnpack(
                                     this.ctx.ctx,
                                     field.type,
@@ -515,7 +513,7 @@ export class ExpressionGen {
                 }
 
                 // Getter instead of direct field access
-                return makeCall(ops.typeField(srcT.name, field.name), [
+                return call(ops.typeField(srcT.name, field.name), [
                     this.makeExpr(this.tactExpr.aggregate),
                 ]);
             } else {
@@ -550,7 +548,7 @@ export class ExpressionGen {
             // } else {
             //     // wCtx.used(n);
             // }
-            const fun = makeId(ops.global(idText(this.tactExpr.function)));
+            const fun = id(ops.global(idText(this.tactExpr.function)));
             const args = this.tactExpr.args.map((argAst, i) =>
                 this.makeCastedExpr(argAst, sf.params[i]!.type),
             );
@@ -579,7 +577,7 @@ export class ExpressionGen {
                     src.fields.find((v2) => eqNames(v2.name, v.field))!.type,
                 ),
             );
-            return makeCall(constructor.name, args);
+            return call(constructor.name, args);
         }
 
         //
@@ -661,7 +659,7 @@ export class ExpressionGen {
                                 methodFun.params[0]!.type.kind === "ref" &&
                                 !methodFun.params[0]!.type.optional
                             ) {
-                                const fun = makeId(ops.typeTensorCast(tt.name));
+                                const fun = id(ops.typeTensorCast(tt.name));
                                 argExprs = [
                                     {
                                         kind: "call_expr",
@@ -686,10 +684,10 @@ export class ExpressionGen {
                                 `Impossible self kind: ${selfExpr.kind}`,
                             );
                         }
-                        const fun = makeId(`${selfExpr}~${name}`);
+                        const fun = id(`${selfExpr}~${name}`);
                         return { kind: "call_expr", fun, args: argExprs };
                     } else {
-                        const fun = makeId(ops.nonModifying(name));
+                        const fun = id(ops.nonModifying(name));
                         return {
                             kind: "call_expr",
                             fun,
@@ -699,7 +697,7 @@ export class ExpressionGen {
                 } else {
                     return {
                         kind: "call_expr",
-                        fun: makeId(name),
+                        fun: id(name),
                         args: [selfExpr, ...argExprs],
                     };
                 }
@@ -741,22 +739,19 @@ export class ExpressionGen {
         //
         if (this.tactExpr.kind === "init_of") {
             const type = getType(this.ctx.ctx, this.tactExpr.contract);
-            return makeCall(
-                ops.contractInitChild(idText(this.tactExpr.contract)),
-                [
-                    makeId("__tact_context_sys"),
-                    ...this.tactExpr.args.map((a, i) =>
-                        this.makeCastedExpr(a, type.init!.params[i]!.type),
-                    ),
-                ],
-            );
+            return call(ops.contractInitChild(idText(this.tactExpr.contract)), [
+                id("__tact_context_sys"),
+                ...this.tactExpr.args.map((a, i) =>
+                    this.makeCastedExpr(a, type.init!.params[i]!.type),
+                ),
+            ]);
         }
 
         //
         // Ternary operator
         //
         if (this.tactExpr.kind === "conditional") {
-            return makeTernaryExpr(
+            return ternary(
                 this.makeExpr(this.tactExpr.condition),
                 this.makeExpr(this.tactExpr.thenBranch),
                 this.makeExpr(this.tactExpr.elseBranch),

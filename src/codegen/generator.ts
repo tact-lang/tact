@@ -6,12 +6,12 @@ import { ContractABI } from "@ton/core";
 import { FuncFormatter } from "../func/formatter";
 import { FuncAstModule, FuncAstFunctionDefinition } from "../func/syntax";
 import {
-    makeComment,
-    makeModule,
-    makePragma,
-    makeInclude,
-    declarationFromDefinition,
-} from "../func/syntaxUtils";
+    comment,
+    mod,
+    pragma,
+    include,
+    toDeclaration,
+} from "../func/syntaxConstructors";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
 
 export type GeneratedFilesInfo = {
@@ -76,14 +76,14 @@ export class FuncGenerator {
 
         // Finalize and dump the main contract, as we have just obtained the structure of the project
         mainContract.entries.unshift(
-            ...generated.files.map((f) => makeInclude(f.name)),
+            ...generated.files.map((f) => include(f.name)),
         );
         mainContract.entries.unshift(
             ...[
                 `version =${CODEGEN_FUNC_VERSION}`,
                 "allow-post-modification",
                 "compute-asm-ltr",
-            ].map(makePragma),
+            ].map(pragma),
         );
         generated.files.push({
             name: `${this.basename}.code.fc`,
@@ -198,9 +198,9 @@ export class FuncGenerator {
         functions: FuncAstFunctionDefinition[],
     ): void {
         // FIXME: We should add only contract methods and special methods here => add attribute and register them in the context
-        const m = makeModule();
+        const m = mod();
         m.entries.push(
-            makeComment(
+            comment(
                 "",
                 `Header files for ${this.abiSrc.name}`,
                 "NOTE: declarations are sorted for optimal order",
@@ -209,13 +209,13 @@ export class FuncGenerator {
         );
         functions.forEach((f) => {
             // if (f.code.kind === "generic") {
-            m.entries.push(makeComment(f.name));
+            m.entries.push(comment(f.name));
             if (
                 f.attrs.find((attr) => attr !== "impure" && attr !== "inline")
             ) {
                 f.attrs.push("inline_ref");
             }
-            m.entries.push(declarationFromDefinition(f));
+            m.entries.push(toDeclaration(f));
             // }
         });
         generated.files.push({

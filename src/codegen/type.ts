@@ -2,6 +2,7 @@ import { CompilerContext } from "../context";
 import { TypeDescription, TypeRef } from "../types/types";
 import { getType } from "../types/resolveDescriptors";
 import { FuncType, UNIT_TYPE } from "../func/syntax";
+import { Type } from "../func/syntaxConstructors";
 
 /**
  * Unpacks string representation of a user-defined Tact type from its type description.
@@ -132,7 +133,7 @@ export function resolveFuncType(
         );
     }
     if (descriptor.kind === "map") {
-        return { kind: "cell" };
+        return Type.cell();
     }
     if (descriptor.kind === "ref_bounced") {
         return resolveFuncType(ctx, getType(ctx, descriptor.name), false, true);
@@ -144,21 +145,21 @@ export function resolveFuncType(
     // TypeDescription
     if (descriptor.kind === "primitive_type_decl") {
         if (descriptor.name === "Int") {
-            return { kind: "int" };
+            return Type.int();
         } else if (descriptor.name === "Bool") {
-            return { kind: "int" };
+            return Type.int();
         } else if (descriptor.name === "Slice") {
-            return { kind: "slice" };
+            return Type.slice();
         } else if (descriptor.name === "Cell") {
-            return { kind: "cell" };
+            return Type.cell();
         } else if (descriptor.name === "Builder") {
-            return { kind: "builder" };
+            return Type.builder();
         } else if (descriptor.name === "Address") {
-            return { kind: "slice" };
+            return Type.slice();
         } else if (descriptor.name === "String") {
-            return { kind: "slice" };
+            return Type.slice();
         } else if (descriptor.name === "StringBuilder") {
-            return { kind: "tuple" };
+            return Type.tuple();
         } else {
             throw Error(`Unknown primitive type: ${descriptor.name}`);
         }
@@ -167,25 +168,23 @@ export function resolveFuncType(
             ? descriptor.fields.slice(0, descriptor.partialFieldCount)
             : descriptor.fields;
         if (optional || fieldsToUse.length === 0) {
-            return { kind: "tuple" };
+            return Type.tuple();
         } else {
-            return {
-                kind: "tensor",
-                value: fieldsToUse.map((v) =>
+            return Type.tensor(
+                ...fieldsToUse.map((v) =>
                     resolveFuncType(ctx, v.type, false, usePartialFields),
                 ),
-            };
+            );
         }
     } else if (descriptor.kind === "contract") {
         if (optional || descriptor.fields.length === 0) {
-            return { kind: "tuple" };
+            return Type.tuple();
         } else {
-            return {
-                kind: "tensor",
-                value: descriptor.fields.map((v) =>
+            return Type.tensor(
+                ...descriptor.fields.map((v) =>
                     resolveFuncType(ctx, v.type, false, usePartialFields),
                 ),
-            };
+            );
         }
     }
 

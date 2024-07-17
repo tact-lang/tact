@@ -1,7 +1,7 @@
 import { enabledInline } from "../config/features";
 import { getType, resolveTypeRef } from "../types/resolveDescriptors";
 import { ops, funcIdOf } from "./util";
-import { TypeDescription, FunctionDescription, InitDescription, TypeRef } from "../types/types";
+import { TypeDescription, FunctionDescription, TypeRef } from "../types/types";
 import {
     FuncAstFunctionDefinition,
     FuncAstStmt,
@@ -9,12 +9,7 @@ import {
     FuncAstExpr,
     FuncType,
 } from "../func/syntax";
-import {
-    makeId,
-    makeCall,
-    makeReturn,
-    makeFunction,
-} from "../func/syntaxUtils";
+import { id, call, ret, fun } from "../func/syntaxConstructors";
 import { StatementGen, ExpressionGen, CodegenContext } from ".";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 
@@ -89,7 +84,9 @@ export class FunctionGen {
     /**
      * Generates Func function from the Tact funciton description.
      */
-    public writeFunction(tactFun: FunctionDescription): FuncAstFunctionDefinition {
+    public writeFunction(
+        tactFun: FunctionDescription,
+    ): FuncAstFunctionDefinition {
         if (tactFun.ast.kind !== "function_def") {
             throw new Error(`Unknown function kind: ${tactFun.ast.kind}`);
         }
@@ -145,7 +142,7 @@ export class FunctionGen {
                 self,
                 funcIdOf("self"),
             );
-            const init: FuncAstExpr = makeId(funcIdOf("self"));
+            const init: FuncAstExpr = id(funcIdOf("self"));
             body.push({
                 kind: "var_def_stmt",
                 name: varName,
@@ -162,7 +159,7 @@ export class FunctionGen {
                     resolveTypeRef(this.ctx.ctx, a.type),
                     funcIdOf(a.name),
                 );
-                const init: FuncAstExpr = makeId(funcIdOf(a.name));
+                const init: FuncAstExpr = id(funcIdOf(a.name));
                 body.push({ kind: "var_def_stmt", name, init, ty: undefined });
             }
         }
@@ -182,7 +179,7 @@ export class FunctionGen {
             body.push(funcStmt);
         });
 
-        return makeFunction(attrs, name, params, returnTy, body);
+        return fun(attrs, name, params, returnTy, body);
     }
 
     /**
@@ -222,7 +219,7 @@ export class FunctionGen {
         const values: FuncAstExpr[] = type.fields.map((v) => {
             const arg = args.find((v2) => v2 === v.name);
             if (arg) {
-                return makeId(avoidFunCKeywordNameClash(arg));
+                return id(avoidFunCKeywordNameClash(arg));
             } else if (v.default !== undefined) {
                 return ExpressionGen.writeValue(this.ctx, v.default);
             } else {
@@ -233,8 +230,8 @@ export class FunctionGen {
         });
         const body =
             values.length === 0 && returnTy.kind === "tuple"
-                ? [makeReturn(makeCall("empty_tuple", []))]
-                : [makeReturn({ kind: "tensor_expr", values })];
-        return makeFunction(attrs, name, params, returnTy, body);
+                ? [ret(call("empty_tuple", []))]
+                : [ret({ kind: "tensor_expr", values })];
+        return fun(attrs, name, params, returnTy, body);
     }
 }

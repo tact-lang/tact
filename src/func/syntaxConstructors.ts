@@ -50,41 +50,41 @@ import {
 // Types
 //
 export class Type {
-  public static int(): FuncType {
-    return { kind: "int" };
-  }
+    public static int(): FuncType {
+        return { kind: "int" };
+    }
 
-  public static cell(): FuncType {
-    return { kind: "cell" };
-  }
+    public static cell(): FuncType {
+        return { kind: "cell" };
+    }
 
-  public static slice(): FuncType {
-    return { kind: "slice" };
-  }
+    public static slice(): FuncType {
+        return { kind: "slice" };
+    }
 
-  public static builder(): FuncType {
-    return { kind: "builder" };
-  }
+    public static builder(): FuncType {
+        return { kind: "builder" };
+    }
 
-  public static cont(): FuncType {
-    return { kind: "cont" };
-  }
+    public static cont(): FuncType {
+        return { kind: "cont" };
+    }
 
-  public static tuple(): FuncType {
-    return { kind: "tuple" };
-  }
+    public static tuple(): FuncType {
+        return { kind: "tuple" };
+    }
 
-  public static tensor(...value: FuncType[]): FuncType {
-    return { kind: "tensor", value };
-  }
+    public static tensor(...value: FuncType[]): FuncType {
+        return { kind: "tensor", value };
+    }
 
-  public static hole(): FuncType {
-    return { kind: "hole" };
-  }
+    public static hole(): FuncType {
+        return { kind: "hole" };
+    }
 
-  public static type(): FuncType {
-    return { kind: "type" };
-  }
+    public static type(): FuncType {
+        return { kind: "type" };
+    }
 }
 
 //
@@ -257,8 +257,8 @@ export const repeat = (
 
 export const condition = (
     condition: FuncAstExpr | undefined,
-    ifnot: boolean,
     body: FuncAstStmt[],
+    ifnot: boolean = false,
     elseStmt?: FuncAstConditionStmt,
 ): FuncAstConditionStmt => ({
     kind: "condition_stmt",
@@ -396,7 +396,7 @@ export const globalVariable = (
 export const moduleEntry = (entry: FuncAstModuleEntry): FuncAstModuleEntry =>
     entry;
 
-export const module = (...entries: FuncAstModuleEntry[]): FuncAstModule => ({
+export const mod = (...entries: FuncAstModuleEntry[]): FuncAstModule => ({
     kind: "module",
     entries,
 });
