@@ -1,5 +1,6 @@
 import {
     FuncAstNumberExpr,
+    FuncAstHexNumberExpr,
     FuncAstBoolExpr,
     FuncAstStringExpr,
     FuncAstNilExpr,
@@ -93,6 +94,11 @@ export class Type {
 export const number = (num: bigint | number): FuncAstNumberExpr => ({
     kind: "number_expr",
     value: typeof num === "bigint" ? num : BigInt(num),
+});
+
+export const hexnumber = (value: string): FuncAstHexNumberExpr => ({
+    kind: "hex_number_expr",
+    value,
 });
 
 export const bool = (value: boolean): FuncAstBoolExpr => ({

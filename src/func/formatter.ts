@@ -28,6 +28,7 @@ import {
     FuncAstBinaryExpr,
     FuncAstUnaryExpr,
     FuncAstNumberExpr,
+    FuncAstHexNumberExpr,
     FuncAstBoolExpr,
     FuncAstStringExpr,
     FuncAstNilExpr,
@@ -121,6 +122,8 @@ export class FuncFormatter {
                 return this.formatUnaryExpr(node as FuncAstUnaryExpr);
             case "number_expr":
                 return this.formatNumberExpr(node as FuncAstNumberExpr);
+            case "hex_number_expr":
+                return this.formatHexNumberExpr(node as FuncAstHexNumberExpr);
             case "bool_expr":
                 return this.formatBoolExpr(node as FuncAstBoolExpr);
             case "string_expr":
@@ -177,7 +180,9 @@ export class FuncFormatter {
         return `${returnTypeStr} ${nameStr}(${paramsStr}) ${attrsStr}`;
     }
 
-    private formatFunctionDeclaration(node: FuncAstFunctionDeclaration): string {
+    private formatFunctionDeclaration(
+        node: FuncAstFunctionDeclaration,
+    ): string {
         const signature = this.formatFunctionSignature(
             node.name,
             node.attrs,
@@ -320,6 +325,10 @@ export class FuncFormatter {
 
     private formatNumberExpr(node: FuncAstNumberExpr): string {
         return node.value.toString();
+    }
+
+    private formatHexNumberExpr(node: FuncAstHexNumberExpr): string {
+        return node.value;
     }
 
     private formatBoolExpr(node: FuncAstBoolExpr): string {

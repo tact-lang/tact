@@ -95,11 +95,35 @@ interface FuncAstVarDescrFlags {
     NotNull: boolean;
 }
 
-export type FuncAstConstant = {
-    kind: "constant";
-    ty: FuncType;
-    init: FuncAstExpr;
-};
+//
+// Expressions
+//
+
+export type FuncAstLiteralExpr =
+    | FuncAstNumberExpr
+    | FuncAstHexNumberExpr
+    | FuncAstBoolExpr
+    | FuncAstStringExpr
+    | FuncAstNilExpr;
+export type FuncAstSimpleExpr =
+    | FuncAstIdExpr
+    | FuncAstTupleExpr
+    | FuncAstTensorExpr
+    | FuncAstUnitExpr
+    | FuncAstHoleExpr
+    | FuncAstPrimitiveTypeExpr;
+export type FuncAstCompositeExpr =
+    | FuncAstCallExpr
+    | FuncAstAssignExpr
+    | FuncAstAugmentedAssignExpr
+    | FuncAstTernaryExpr
+    | FuncAstBinaryExpr
+    | FuncAstUnaryExpr
+    | FuncAstApplyExpr;
+export type FuncAstExpr =
+    | FuncAstLiteralExpr
+    | FuncAstSimpleExpr
+    | FuncAstCompositeExpr;
 
 export type FuncAstIdExpr = {
     kind: "id_expr";
@@ -149,6 +173,11 @@ export type FuncAstUnaryExpr = {
 export type FuncAstNumberExpr = {
     kind: "number_expr";
     value: bigint;
+};
+
+export type FuncAstHexNumberExpr = {
+    kind: "hex_number_expr";
+    value: string;
 };
 
 export type FuncAstBoolExpr = {
@@ -206,6 +235,22 @@ export type FuncAstPrimitiveTypeExpr = {
     ty: FuncType;
 };
 
+//
+// Statements
+//
+
+export type FuncAstStmt =
+    | FuncAstComment // a comment appearing among statements
+    | FuncAstBlockStmt
+    | FuncAstVarDefStmt
+    | FuncAstReturnStmt
+    | FuncAstRepeatStmt
+    | FuncAstConditionStmt
+    | FuncAstDoUntilStmt
+    | FuncAstWhileStmt
+    | FuncAstExprStmt
+    | FuncAstTryCatchStmt;
+
 // Local variable definition:
 // int x = 2; // ty = int
 // var x = 2; // ty is undefined
@@ -262,6 +307,16 @@ export type FuncAstTryCatchStmt = {
     tryBlock: FuncAstStmt[];
     catchBlock: FuncAstStmt[];
     catchVar: string | null;
+};
+
+//
+// Other and top-level elements
+//
+
+export type FuncAstConstant = {
+    kind: "constant";
+    ty: FuncType;
+    init: FuncAstExpr;
 };
 
 export type FuncAstFunctionAttribute =
@@ -330,42 +385,6 @@ export type FuncAstModule = {
     kind: "module";
     entries: FuncAstModuleEntry[];
 };
-
-export type FuncAstLiteralExpr =
-    | FuncAstNumberExpr
-    | FuncAstBoolExpr
-    | FuncAstStringExpr
-    | FuncAstNilExpr;
-export type FuncAstSimpleExpr =
-    | FuncAstIdExpr
-    | FuncAstTupleExpr
-    | FuncAstTensorExpr
-    | FuncAstUnitExpr
-    | FuncAstHoleExpr
-    | FuncAstPrimitiveTypeExpr;
-export type FuncAstCompositeExpr =
-    | FuncAstCallExpr
-    | FuncAstAssignExpr
-    | FuncAstAugmentedAssignExpr
-    | FuncAstTernaryExpr
-    | FuncAstBinaryExpr
-    | FuncAstUnaryExpr
-    | FuncAstApplyExpr;
-export type FuncAstExpr =
-    | FuncAstLiteralExpr
-    | FuncAstSimpleExpr
-    | FuncAstCompositeExpr;
-
-export type FuncAstStmt =
-    | FuncAstBlockStmt
-    | FuncAstVarDefStmt
-    | FuncAstReturnStmt
-    | FuncAstRepeatStmt
-    | FuncAstConditionStmt
-    | FuncAstDoUntilStmt
-    | FuncAstWhileStmt
-    | FuncAstExprStmt
-    | FuncAstTryCatchStmt;
 
 export type FuncAstNode =
     | FuncAstStmt
