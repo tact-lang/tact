@@ -37,13 +37,13 @@ const additiveExpressions = [
     { original: "-1 + (3 - X)", simplified: "-1 + (3 - X)" },
 
     // Should NOT simplify to (-2) - X because X could be MAX - 2
-    // so that X + 3 causes an overflow, but 
-    // (-2) - X = MIN + 1 does not. 
+    // so that X + 3 causes an overflow, but
+    // (-2) - X = MIN + 1 does not.
     { original: "1 - (X + 3)", simplified: "1 - (X + 3)" },
 
     // Should NOT simplify to (-2) - X because X could be MAX - 2
-    // so that 3 + X causes an overflow, but 
-    // (-2) - X = MIN + 1 does not. 
+    // so that 3 + X causes an overflow, but
+    // (-2) - X = MIN + 1 does not.
     { original: "1 - (3 + X)", simplified: "1 - (3 + X)" },
 
     // This could simplify to 4 - X, but currently, the rule
@@ -54,7 +54,7 @@ const additiveExpressions = [
     // MIN + 3, so that 3 - X = MAX + 1 overflows but
     // X - 2 = MIN + 1 does not.
     { original: "1 - (3 - X)", simplified: "1 - (3 - X)" },
-    
+
     { original: "1 - X + 3", simplified: "4 - X" },
     { original: "X - 1 - 3", simplified: "X - 4" },
     { original: "X - 1 + (-3)", simplified: "X - 4" },
@@ -141,23 +141,26 @@ const multiplicativeExpressions = [
 
 const mixedExpressions = [
     // Should NOT simplify to 0, because X * 2 could overflow
-    { original: "(X * -1 * -2) - (X * -1 * -2)", simplified: "(X * 2) - (X * 2)" },
+    {
+        original: "(X * -1 * -2) - (X * -1 * -2)",
+        simplified: "(X * 2) - (X * 2)",
+    },
 
     { original: "(X * -1 * -2) + (X * -1 * -2)", simplified: "X * 4" },
-]
+];
 
 function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
-    expect(
-        eqExpressions(
-            partiallyEvalExpression(
-                parseExpression(original),
-                new CompilerContext(),
+        expect(
+            eqExpressions(
+                partiallyEvalExpression(
+                    parseExpression(original),
+                    new CompilerContext(),
+                ),
+                unaryNegNodesToNumbers(parseExpression(simplified)),
             ),
-            unaryNegNodesToNumbers(parseExpression(simplified)),
-        ),
-    ).toBe(true);
-});
+        ).toBe(true);
+    });
 }
 
 // Evaluates UnaryOp nodes with operator - into a single a node having a value.

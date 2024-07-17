@@ -148,4 +148,3 @@ export function sign(a: bigint): bigint {
 export function modFloor(a: bigint, b: bigint): bigint {
     return a - divFloor(a, b) * b;
 }
-

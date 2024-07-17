@@ -1,7 +1,13 @@
 // This module includes rules involving associative rewrites of expressions
 
 import { evalBinaryOp } from "../constEval";
-import { AstBinaryOperation, AstExpression, AstOpBinary, AstValue, isValue } from "../grammar/ast";
+import {
+    AstBinaryOperation,
+    AstExpression,
+    AstOpBinary,
+    AstValue,
+    isValue,
+} from "../grammar/ast";
 import { Value } from "../types/types";
 import { ExpressionTransformer, Rule } from "./types";
 import {
@@ -16,8 +22,8 @@ import {
 } from "./util";
 
 type transformationData = {
-    op1_: AstBinaryOperation, 
-    val_: Value
+    op1_: AstBinaryOperation;
+    val_: Value;
 };
 
 type Transform = {
@@ -25,13 +31,13 @@ type Transform = {
     safetyCondition: (c1: Value, val_: Value) => boolean;
 };
 
-export abstract class AssociativeRewriteRule extends Rule {
+abstract class AssociativeRewriteRule extends Rule {
     // An entry (op, S) in the map means "operator op associates with all operators in set S",
     // mathematically: all op2 \in S. (a op b) op2 c = a op (b op2 c)
     private associativeOps: Map<AstBinaryOperation, Set<AstBinaryOperation>>;
 
     // This set contains all operators that commute.
-    // Mathematically: 
+    // Mathematically:
     // all op \in commutativeOps. a op b = b op a
     private commutativeOps: Set<AstBinaryOperation>;
 
@@ -41,9 +47,6 @@ export abstract class AssociativeRewriteRule extends Rule {
         // + associates with these on the right:
         // i.e., all op \in additiveAssoc. (a + b) op c = a + (b op c)
         const additiveAssoc: Set<AstBinaryOperation> = new Set(["+", "-"]);
-
-        // - associates with these on the right:
-        const minusAssoc: Set<AstBinaryOperation> = new Set(["-", "+"]);
 
         // * associates with these on the right:
         const multiplicativeAssoc: Set<AstBinaryOperation> = new Set([
@@ -84,7 +87,7 @@ export abstract class AssociativeRewriteRule extends Rule {
     }
 }
 
-export abstract class AllowableOpRule extends AssociativeRewriteRule {
+abstract class AllowableOpRule extends AssociativeRewriteRule {
     private allowedOps: Set<AstBinaryOperation>;
 
     constructor() {
@@ -511,24 +514,39 @@ function ensureInt(val: Value): bigint {
 }
 
 export class AssociativeRule3 extends Rule {
-
-    private leftAssocTransforms: Map<AstBinaryOperation, Map<AstBinaryOperation, Transform>>;
-    private rightAssocTransforms: Map<AstBinaryOperation, Map<AstBinaryOperation, Transform>>;
-    private rightCommuteTransforms: Map<AstBinaryOperation, Map<AstBinaryOperation, Transform>>;
-    private leftCommuteTransforms: Map<AstBinaryOperation, Map<AstBinaryOperation, Transform>>;
+    private leftAssocTransforms: Map<
+        AstBinaryOperation,
+        Map<AstBinaryOperation, Transform>
+    >;
+    private rightAssocTransforms: Map<
+        AstBinaryOperation,
+        Map<AstBinaryOperation, Transform>
+    >;
+    private rightCommuteTransforms: Map<
+        AstBinaryOperation,
+        Map<AstBinaryOperation, Transform>
+    >;
+    private leftCommuteTransforms: Map<
+        AstBinaryOperation,
+        Map<AstBinaryOperation, Transform>
+    >;
 
     // Some standard conditions that repeat a lot in the rule.
 
-    private standardAdditiveCondition: (c1: bigint, val_: bigint) => boolean = 
-    (c1, val_) => {
+    private standardAdditiveCondition: (c1: bigint, val_: bigint) => boolean = (
+        c1,
+        val_,
+    ) => {
         if (c1 === 0n) {
             return true;
         }
         return sign(c1) === sign(val_) && abs(c1) <= abs(val_);
     };
 
-    private standardMultiplicativeCondition: (c1: bigint, val_: bigint) => boolean =
-    (c1, val_) => {
+    private standardMultiplicativeCondition: (
+        c1: bigint,
+        val_: bigint,
+    ) => boolean = (c1, val_) => {
         if (c1 < 0n) {
             if (sign(c1) === sign(val_)) {
                 return abs(c1) <= abs(val_);
@@ -540,361 +558,450 @@ export class AssociativeRule3 extends Rule {
         } else {
             return abs(c1) <= abs(val_);
         }
-    }
+    };
 
     public constructor() {
         super();
 
         // First, we consider expressions of the form: (x1 op1 c1) op c2.
- 
-        // The following maps correspond to the transformation: x1 op1 (c1_ op_ c2_)_
-        // for each pair of operators op1, op. 
-        // Here, we will denote c1_ op_ c2_ as val, 
-        // and (c1_ op_ c2_)_ as val_
-        
-        // op1 = +
-        
-        // This map stores all possibilities for op and the corresponding transformations for c1, c2 and val.
-        const plusLeftAssocOperators: Map<AstBinaryOperation, Transform> = 
-        new Map([
-            ["+", { // original expression: (x1 + c1) + c2
-                transform: (c1, c2) => {
-                // final expression: x1 + (c1 + c2)
-                const res = evalBinaryOp("+", c1, c2);
-                return {op1_: "+", val_ : res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardAdditiveCondition(n1, res);
-                }
-            }],
 
-            ["-", { // original expression: (x1 + c1) - c2
-                transform: (c1, c2) => {
-                // final expression: x1 + (c1 - c2)
-                const res = evalBinaryOp("-", c1, c2);
-                return {op1_: "+", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardAdditiveCondition(n1, res);
-                }
-            }],
-        ]);
+        // The following maps correspond to the transformation: x1 op1 (c1_ op_ c2_)_
+        // for each pair of operators op1, op.
+        // Here, we will denote c1_ op_ c2_ as val,
+        // and (c1_ op_ c2_)_ as val_
+
+        // op1 = +
+
+        // This map stores all possibilities for op and the corresponding transformations for c1, c2 and val.
+        const plusLeftAssocOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "+",
+                    {
+                        // original expression: (x1 + c1) + c2
+                        transform: (c1, c2) => {
+                            // final expression: x1 + (c1 + c2)
+                            const res = evalBinaryOp("+", c1, c2);
+                            return { op1_: "+", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardAdditiveCondition(n1, res);
+                        },
+                    },
+                ],
+
+                [
+                    "-",
+                    {
+                        // original expression: (x1 + c1) - c2
+                        transform: (c1, c2) => {
+                            // final expression: x1 + (c1 - c2)
+                            const res = evalBinaryOp("-", c1, c2);
+                            return { op1_: "+", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardAdditiveCondition(n1, res);
+                        },
+                    },
+                ],
+            ]);
 
         // op1 = -
 
-        const minusLeftAssocOperators: Map<AstBinaryOperation, Transform> = 
-        new Map([
-            ["+", { // original expression: (x1 - c1) + c2
-                transform: (c1, c2) => {
-                // final expression x1 - (c1 - c2)
-                const res = evalBinaryOp("-", c1, c2);
-                return {op1_: "-", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardAdditiveCondition(n1, res);
-                }
-            }],
+        const minusLeftAssocOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "+",
+                    {
+                        // original expression: (x1 - c1) + c2
+                        transform: (c1, c2) => {
+                            // final expression x1 - (c1 - c2)
+                            const res = evalBinaryOp("-", c1, c2);
+                            return { op1_: "-", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardAdditiveCondition(n1, res);
+                        },
+                    },
+                ],
 
-            ["-", { // original expression: (x1 - c1) - c2
-                transform: (c1, c2) => {
-                // final expression x1 - (c1 + c2)
-                const res = evalBinaryOp("+", c1, c2);
-                return {op1_: "-", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardAdditiveCondition(n1, res);
-                }
-            }],
-        ]);
+                [
+                    "-",
+                    {
+                        // original expression: (x1 - c1) - c2
+                        transform: (c1, c2) => {
+                            // final expression x1 - (c1 + c2)
+                            const res = evalBinaryOp("+", c1, c2);
+                            return { op1_: "-", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardAdditiveCondition(n1, res);
+                        },
+                    },
+                ],
+            ]);
 
         // op1 = *
 
-        const multLeftAssocOperators: Map<AstBinaryOperation, Transform> = 
-        new Map([
-            ["*", { // original expression: (x1 * c1) * c2
-                transform: (c1, c2) => {
-                // final expression x1 * (c1 * c2)
-                const res = evalBinaryOp("*", c1, c2);
-                return {op1_: "*", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardMultiplicativeCondition(n1, res);
-                }
-            }
-            ],
-        ]);
+        const multiplyLeftAssocOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "*",
+                    {
+                        // original expression: (x1 * c1) * c2
+                        transform: (c1, c2) => {
+                            // final expression x1 * (c1 * c2)
+                            const res = evalBinaryOp("*", c1, c2);
+                            return { op1_: "*", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardMultiplicativeCondition(
+                                n1,
+                                res,
+                            );
+                        },
+                    },
+                ],
+            ]);
 
         this.leftAssocTransforms = new Map([
             ["+", plusLeftAssocOperators],
             ["-", minusLeftAssocOperators],
-            ["*", multLeftAssocOperators],
+            ["*", multiplyLeftAssocOperators],
         ]);
 
         // Now consider expressions of the form: c2 op (c1 op1 x1).
 
         // The following maps correspond to the transformation: (c2_ op_ c1_)_ op1 x1
-        // for each pair of operators op1, op. 
-        // Here, we will denote c2_ op_ c1_ as val, 
+        // for each pair of operators op1, op.
+        // Here, we will denote c2_ op_ c1_ as val,
         // and (c2_ op_ c1_)_ as val_
 
         // op = +
-        
-        const plusRightAssocOperators: Map<AstBinaryOperation, Transform> = 
-        new Map([
-            ["+", { // original expression: c2 + (c1 + x1)
-                transform: (c1, c2) => {
-                // final expression (c2 + c1) + x1
-                const res = evalBinaryOp("+", c2, c1);
-                return {op1_: "+", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardAdditiveCondition(n1, res);
-                }
-            }
-            ],
 
-            ["-", { // original expression: c2 + (c1 - x1)
-                transform: (c1, c2) => {
-                // final expression (c2 + c1) - x1
-                const res = evalBinaryOp("+", c2, c1);
-                return {op1_: "-", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardAdditiveCondition(n1, res);
-                }
-            }],
-        ]);
+        const plusRightAssocOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "+",
+                    {
+                        // original expression: c2 + (c1 + x1)
+                        transform: (c1, c2) => {
+                            // final expression (c2 + c1) + x1
+                            const res = evalBinaryOp("+", c2, c1);
+                            return { op1_: "+", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardAdditiveCondition(n1, res);
+                        },
+                    },
+                ],
+
+                [
+                    "-",
+                    {
+                        // original expression: c2 + (c1 - x1)
+                        transform: (c1, c2) => {
+                            // final expression (c2 + c1) - x1
+                            const res = evalBinaryOp("+", c2, c1);
+                            return { op1_: "-", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardAdditiveCondition(n1, res);
+                        },
+                    },
+                ],
+            ]);
 
         // op = -
 
         // Expressions of the form c2 - (c1 op1 x1) (for op1 \in {-, +}) cannot be simplified
         // without violating overflow preservation.
-        // I am currently building a proof of this. 
+        // I am currently building a proof of this.
 
         // op = *
 
-        const multRightAssocOperators: Map<AstBinaryOperation, Transform> = 
-        new Map([
-            ["*", { // original expression: c2 * (c1 * x1)
-                transform: (c1, c2) => {
-                // final expression (c2 * c1) * x1
-                const res = evalBinaryOp("*", c2, c1);
-                return {op1_: "*", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardMultiplicativeCondition(n1, res);
-                }
-            }],
-        ]);
+        const multiplyRightAssocOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "*",
+                    {
+                        // original expression: c2 * (c1 * x1)
+                        transform: (c1, c2) => {
+                            // final expression (c2 * c1) * x1
+                            const res = evalBinaryOp("*", c2, c1);
+                            return { op1_: "*", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardMultiplicativeCondition(
+                                n1,
+                                res,
+                            );
+                        },
+                    },
+                ],
+            ]);
 
         this.rightAssocTransforms = new Map([
             ["+", plusRightAssocOperators],
-            ["*", multRightAssocOperators],
+            ["*", multiplyRightAssocOperators],
         ]);
 
         // Now consider expressions of the form: c2 op (x1 op1 c1).
 
         // The following maps correspond to the transformation: x1 op1 (c2_ op_ c1_)_
-        // for each pair of operators op1, op. 
-        // Here, we will denote c2_ op_ c1_ as val, 
+        // for each pair of operators op1, op.
+        // Here, we will denote c2_ op_ c1_ as val,
         // and (c2_ op_ c1_)_ as val_
 
         // op = +
-        
-        const plusRightCommuteOperators: Map<AstBinaryOperation, Transform> = 
-        new Map([
-            ["+", { // original expression: c2 + (x1 + c1)
-                transform: (c1, c2) => {
-                // final expression x1 + (c2 + c1)
-                const res = evalBinaryOp("+", c2, c1);
-                return {op1_: "+", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardAdditiveCondition(n1, res);
-                }
-            }
-            ],
 
-            ["-", { // original expression: c2 + (x1 - c1)
-                transform: (c1, c2) => {
-                // final expression x1 - (c1 - c2)
-                const res = evalBinaryOp("-", c1, c2);
-                return {op1_: "-", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardAdditiveCondition(n1, res);
-                }
-            }],
-        ]);
+        const plusRightCommuteOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "+",
+                    {
+                        // original expression: c2 + (x1 + c1)
+                        transform: (c1, c2) => {
+                            // final expression x1 + (c2 + c1)
+                            const res = evalBinaryOp("+", c2, c1);
+                            return { op1_: "+", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardAdditiveCondition(n1, res);
+                        },
+                    },
+                ],
+
+                [
+                    "-",
+                    {
+                        // original expression: c2 + (x1 - c1)
+                        transform: (c1, c2) => {
+                            // final expression x1 - (c1 - c2)
+                            const res = evalBinaryOp("-", c1, c2);
+                            return { op1_: "-", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardAdditiveCondition(n1, res);
+                        },
+                    },
+                ],
+            ]);
 
         // op = -
 
         // Expressions of the form c2 - (x1 op1 c1) (for op1 \in {-, +}) cannot be simplified
         // without violating overflow preservation.
-        // I am currently building a proof of this. 
+        // I am currently building a proof of this.
 
         // op = *
 
-        const multRightCommuteOperators: Map<AstBinaryOperation, Transform> = 
-        new Map([
-            ["*", { // original expression: c2 * (x1 * c1)
-                transform: (c1, c2) => {
-                // Final expression x1 * (c2 * c1)
-                const res = evalBinaryOp("*", c2, c1);
-                return {op1_: "*", val_: res};
+        const multiplyRightCommuteOperators: Map<
+            AstBinaryOperation,
+            Transform
+        > = new Map([
+            [
+                "*",
+                {
+                    // original expression: c2 * (x1 * c1)
+                    transform: (c1, c2) => {
+                        // Final expression x1 * (c2 * c1)
+                        const res = evalBinaryOp("*", c2, c1);
+                        return { op1_: "*", val_: res };
+                    },
+                    safetyCondition: (c1, val_) => {
+                        const n1 = ensureInt(c1);
+                        const res = ensureInt(val_);
+                        return this.standardMultiplicativeCondition(n1, res);
+                    },
                 },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardMultiplicativeCondition(n1, res);
-                }
-            }],
+            ],
         ]);
 
         this.rightCommuteTransforms = new Map([
             ["+", plusRightCommuteOperators],
-            ["*", multRightCommuteOperators],
+            ["*", multiplyRightCommuteOperators],
         ]);
 
         // Now consider expressions of the form: (c1 op1 x1) op c2.
 
         // The following maps correspond to the transformation: x1 op1 (c1_ op_ c2_)_ op1 x1
-        // for each pair of operators op1, op. 
-        
-        // op1 = +
-        
-        const plusLeftCommuteOperators: Map<AstBinaryOperation, Transform> = 
-        new Map([
-            ["+", { // original expression: (c1 + x1) + c2
-                transform: (c1, c2) => {
-                // Final expression (c1 + c2) + x1
-                const res = evalBinaryOp("+", c1, c2);
-                return {op1_: "+", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardAdditiveCondition(n1, res);
-                }
-            }
-            ],
+        // for each pair of operators op1, op.
 
-            ["-", { // original expression: (c1 + x1) - c2
-                transform: (c1, c2) => {
-                // Final expression (c1 - c2) + x1
-                const res = evalBinaryOp("-", c1, c2);
-                return {op1_: "+", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardAdditiveCondition(n1, res);
-                }
-            }],
-        ]);
+        // op1 = +
+
+        const plusLeftCommuteOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "+",
+                    {
+                        // original expression: (c1 + x1) + c2
+                        transform: (c1, c2) => {
+                            // Final expression (c1 + c2) + x1
+                            const res = evalBinaryOp("+", c1, c2);
+                            return { op1_: "+", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardAdditiveCondition(n1, res);
+                        },
+                    },
+                ],
+
+                [
+                    "-",
+                    {
+                        // original expression: (c1 + x1) - c2
+                        transform: (c1, c2) => {
+                            // Final expression (c1 - c2) + x1
+                            const res = evalBinaryOp("-", c1, c2);
+                            return { op1_: "+", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardAdditiveCondition(n1, res);
+                        },
+                    },
+                ],
+            ]);
 
         // op1 = -
 
-        const minusLeftCommuteOperators: Map<AstBinaryOperation, Transform> = 
-        new Map([
-            ["+", { // original expression: (c1 - x1) + c2
-                transform: (c1, c2) => {
-                // Final expression (c1 + c2) - x1
-                const res = evalBinaryOp("+", c1, c2);
-                return {op1_: "-", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardAdditiveCondition(n1, res);
-                }
-            }],
+        const minusLeftCommuteOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "+",
+                    {
+                        // original expression: (c1 - x1) + c2
+                        transform: (c1, c2) => {
+                            // Final expression (c1 + c2) - x1
+                            const res = evalBinaryOp("+", c1, c2);
+                            return { op1_: "-", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardAdditiveCondition(n1, res);
+                        },
+                    },
+                ],
 
-            ["-", { // original expression: (c1 - x1) - c2
-                transform: (c1, c2) => {
-                // Final expression (c1 - c2) - x1
-                const res = evalBinaryOp("-", c1, c2);
-                return {op1_: "-", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardAdditiveCondition(n1, res);
-                }
-            }],
-        ]);
+                [
+                    "-",
+                    {
+                        // original expression: (c1 - x1) - c2
+                        transform: (c1, c2) => {
+                            // Final expression (c1 - c2) - x1
+                            const res = evalBinaryOp("-", c1, c2);
+                            return { op1_: "-", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardAdditiveCondition(n1, res);
+                        },
+                    },
+                ],
+            ]);
 
         // op1 = *
 
-        const multLeftCommuteOperators: Map<AstBinaryOperation, Transform> = 
-        new Map([
-            ["*", { // original expression: (c1 * x1) * c2
-                transform: (c1, c2) => {
-                // Final expression (c1 * c2) * x1
-                const res = evalBinaryOp("*", c1, c2);
-                return {op1_: "*", val_: res};
-                },
-                safetyCondition: (c1, val_) =>  {
-                    const n1 = ensureInt(c1);
-                    const res = ensureInt(val_);
-                    return this.standardMultiplicativeCondition(n1, res);
-                }
-            }
-            ],
-        ]);
+        const multiplyLeftCommuteOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "*",
+                    {
+                        // original expression: (c1 * x1) * c2
+                        transform: (c1, c2) => {
+                            // Final expression (c1 * c2) * x1
+                            const res = evalBinaryOp("*", c1, c2);
+                            return { op1_: "*", val_: res };
+                        },
+                        safetyCondition: (c1, val_) => {
+                            const n1 = ensureInt(c1);
+                            const res = ensureInt(val_);
+                            return this.standardMultiplicativeCondition(
+                                n1,
+                                res,
+                            );
+                        },
+                    },
+                ],
+            ]);
 
         this.leftCommuteTransforms = new Map([
             ["+", plusLeftCommuteOperators],
             ["-", minusLeftCommuteOperators],
-            ["*", multLeftCommuteOperators],
+            ["*", multiplyLeftCommuteOperators],
         ]);
     }
 
-    private lookupTransform(keyOp1: AstBinaryOperation, keyOp2: AstBinaryOperation, 
-        transforms: Map<AstBinaryOperation, Map<AstBinaryOperation, Transform>>): Transform | undefined {
-            if (transforms.has(keyOp1)) {
-                const intermediateMap = transforms.get(keyOp1)!;
-                if (intermediateMap.has(keyOp2)) {
-                    return intermediateMap.get(keyOp2)!;
-                }
+    private lookupTransform(
+        keyOp1: AstBinaryOperation,
+        keyOp2: AstBinaryOperation,
+        transforms: Map<AstBinaryOperation, Map<AstBinaryOperation, Transform>>,
+    ): Transform | undefined {
+        if (transforms.has(keyOp1)) {
+            const intermediateMap = transforms.get(keyOp1)!;
+            if (intermediateMap.has(keyOp2)) {
+                return intermediateMap.get(keyOp2)!;
             }
-            return undefined;
+        }
+        return undefined;
     }
 
-    protected getLeftAssociativityTransform(keyOp1: AstBinaryOperation, keyOp2: AstBinaryOperation): Transform | undefined {
+    protected getLeftAssociativityTransform(
+        keyOp1: AstBinaryOperation,
+        keyOp2: AstBinaryOperation,
+    ): Transform | undefined {
         return this.lookupTransform(keyOp1, keyOp2, this.leftAssocTransforms);
     }
 
-    protected getRightAssociativityTransform(keyOp1: AstBinaryOperation, keyOp2: AstBinaryOperation): Transform | undefined {
+    protected getRightAssociativityTransform(
+        keyOp1: AstBinaryOperation,
+        keyOp2: AstBinaryOperation,
+    ): Transform | undefined {
         return this.lookupTransform(keyOp1, keyOp2, this.rightAssocTransforms);
     }
 
-    protected getLeftCommutativityTransform(keyOp1: AstBinaryOperation, keyOp2: AstBinaryOperation): Transform | undefined {
+    protected getLeftCommutativityTransform(
+        keyOp1: AstBinaryOperation,
+        keyOp2: AstBinaryOperation,
+    ): Transform | undefined {
         return this.lookupTransform(keyOp1, keyOp2, this.leftCommuteTransforms);
     }
 
-    protected getRightCommutativityTransform(keyOp1: AstBinaryOperation, keyOp2: AstBinaryOperation): Transform | undefined {
-        return this.lookupTransform(keyOp1, keyOp2, this.rightCommuteTransforms);
+    protected getRightCommutativityTransform(
+        keyOp1: AstBinaryOperation,
+        keyOp2: AstBinaryOperation,
+    ): Transform | undefined {
+        return this.lookupTransform(
+            keyOp1,
+            keyOp2,
+            this.rightCommuteTransforms,
+        );
     }
 
     public applyRule(
@@ -925,17 +1032,18 @@ export class AssociativeRule3 extends Rule {
                 const op = topLevelNode.op;
 
                 try {
-                    const transform = this.getLeftAssociativityTransform(op1, op)!;
+                    const transform = this.getLeftAssociativityTransform(
+                        op1,
+                        op,
+                    )!;
                     const data = transform.transform(c1, c2);
 
                     const op1_ = data.op1_;
                     const val_ = data.val_;
-                    
+
                     // check the safety conditions
 
-                    if (
-                        transform.safetyCondition(c1, val_)
-                    ) {
+                    if (transform.safetyCondition(c1, val_)) {
                         // The final expression is
                         // x1 op1_ val_
 
@@ -972,16 +1080,19 @@ export class AssociativeRule3 extends Rule {
                 const op = topLevelNode.op;
 
                 try {
-                    const transform = this.getLeftCommutativityTransform(op1, op)! 
+                    const transform = this.getLeftCommutativityTransform(
+                        op1,
+                        op,
+                    )!;
                     const data = transform.transform(c1, c2);
-                    
+
                     const op1_ = data.op1_;
                     const val_ = data.val_;
 
                     // Check safety conditions
 
                     if (transform.safetyCondition(c1, val_)) {
-                        // The final expression will be 
+                        // The final expression will be
                         // val_ op1_ x1
 
                         const newConstant = makeValueExpression(val_);
@@ -1017,16 +1128,17 @@ export class AssociativeRule3 extends Rule {
                 const op = topLevelNode.op;
 
                 try {
-                    const transform = this.getRightCommutativityTransform(op, op1)!;
+                    const transform = this.getRightCommutativityTransform(
+                        op,
+                        op1,
+                    )!;
                     const data = transform.transform(c1, c2);
 
                     const op1_ = data.op1_;
                     const val_ = data.val_;
 
                     // check the safety conditions
-                    if (
-                        transform.safetyCondition(c1, val_)
-                    ) {
+                    if (transform.safetyCondition(c1, val_)) {
                         // The final expression is
                         // x1 op1_ val_
 
@@ -1062,16 +1174,17 @@ export class AssociativeRule3 extends Rule {
                 const op = topLevelNode.op;
 
                 try {
-                    const transform = this.getRightAssociativityTransform(op, op1)!;
+                    const transform = this.getRightAssociativityTransform(
+                        op,
+                        op1,
+                    )!;
                     const data = transform.transform(c1, c2);
 
                     const op1_ = data.op1_;
                     const val_ = data.val_;
 
                     // check safety conditions
-                    if(
-                        transform.safetyCondition(c1, val_)
-                    ) {
+                    if (transform.safetyCondition(c1, val_)) {
                         // The final expression is
                         // val_ op1_ x1
 

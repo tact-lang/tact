@@ -1,12 +1,27 @@
-import { AstBinaryOperation, AstExpression, AstNumber, AstOpBinary, AstValue, eqExpressions, isValue } from "../grammar/ast";
+import {
+    AstBinaryOperation,
+    AstExpression,
+    AstOpBinary,
+    eqExpressions,
+    isValue,
+} from "../grammar/ast";
 import { ExpressionTransformer, Rule } from "./types";
-import { checkIsBinaryOpNode, checkIsName, checkIsNumber, extractValue, makeBinaryExpression, makeUnaryExpression, makeValueExpression } from "./util";
+import {
+    checkIsBinaryOpNode,
+    checkIsName,
+    checkIsNumber,
+    makeBinaryExpression,
+    makeUnaryExpression,
+    makeValueExpression,
+} from "./util";
 
 export class AddZero extends Rule {
-
     private additiveOperators: AstBinaryOperation[] = ["+", "-"];
 
-    public applyRule(ast: AstExpression, optimizer: ExpressionTransformer): AstExpression {
+    public applyRule(
+        ast: AstExpression,
+        _optimizer: ExpressionTransformer,
+    ): AstExpression {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as AstOpBinary;
             if (this.additiveOperators.includes(topLevelNode.op)) {
@@ -46,8 +61,10 @@ export class AddZero extends Rule {
 }
 
 export class MultiplyZero extends Rule {
-
-    public applyRule(ast: AstExpression, optimizer: ExpressionTransformer): AstExpression {
+    public applyRule(
+        ast: AstExpression,
+        _optimizer: ExpressionTransformer,
+    ): AstExpression {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as AstOpBinary;
             if (topLevelNode.op === "*") {
@@ -78,8 +95,10 @@ export class MultiplyZero extends Rule {
 }
 
 export class MultiplyOne extends Rule {
-
-    public applyRule(ast: AstExpression, optimizer: ExpressionTransformer): AstExpression {
+    public applyRule(
+        ast: AstExpression,
+        _optimizer: ExpressionTransformer,
+    ): AstExpression {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as AstOpBinary;
             if (topLevelNode.op === "*") {
@@ -113,9 +132,11 @@ export class MultiplyOne extends Rule {
     }
 }
 
-export class SubstractSelf extends Rule {
-
-    public applyRule(ast: AstExpression, optimizer: ExpressionTransformer): AstExpression {
+export class SubtractSelf extends Rule {
+    public applyRule(
+        ast: AstExpression,
+        _optimizer: ExpressionTransformer,
+    ): AstExpression {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as AstOpBinary;
             if (topLevelNode.op === "-") {
@@ -144,8 +165,10 @@ export class SubstractSelf extends Rule {
 }
 
 export class AddSelf extends Rule {
-
-    public applyRule(ast: AstExpression, optimizer: ExpressionTransformer): AstExpression {
+    public applyRule(
+        ast: AstExpression,
+        optimizer: ExpressionTransformer,
+    ): AstExpression {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as AstOpBinary;
             if (topLevelNode.op === "+") {
@@ -161,8 +184,12 @@ export class AddSelf extends Rule {
                     const y = topLevelNode.right;
 
                     if (eqExpressions(x, y)) {
-                        const res = makeBinaryExpression("*", x, makeValueExpression(2n));
-                        // Since we joined the tree, there is further opportunity 
+                        const res = makeBinaryExpression(
+                            "*",
+                            x,
+                            makeValueExpression(2n),
+                        );
+                        // Since we joined the tree, there is further opportunity
                         // for simplification
                         return optimizer.applyRules(res);
                     }

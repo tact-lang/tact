@@ -1,5 +1,11 @@
 import { AstExpression } from "../grammar/ast";
-import { AddSelf, AddZero, MultiplyOne, MultiplyZero, SubstractSelf } from "./algebraic";
+import {
+    AddSelf,
+    AddZero,
+    MultiplyOne,
+    MultiplyZero,
+    SubtractSelf,
+} from "./algebraic";
 import {
     AssociativeRule1,
     AssociativeRule2,
@@ -23,7 +29,7 @@ export class StandardOptimizer extends ExpressionTransformer {
             { priority: 3, rule: new AddZero() },
             { priority: 4, rule: new MultiplyZero() },
             { priority: 5, rule: new MultiplyOne() },
-            { priority: 6, rule: new SubstractSelf() },
+            { priority: 6, rule: new SubtractSelf() },
             { priority: 7, rule: new AddSelf() },
         ];
 
