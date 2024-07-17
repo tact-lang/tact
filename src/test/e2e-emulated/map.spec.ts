@@ -541,6 +541,10 @@ describe("map", () => {
             await system.run();
 
             expect(await contract.getIntMap1IsEmpty()).toBe(true);
+
+            await expect(contract.getCheckNullReference()).rejects.toThrow(
+                "Null reference exception",
+            );
         } catch (e) {
             if (e instanceof ComputeError) {
                 if (e.logs) {
