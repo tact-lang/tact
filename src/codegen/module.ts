@@ -114,6 +114,375 @@ export class ModuleGen {
         }
     }
 
+    private commentPseudoOpcode(comment: string): string {
+        return beginCell()
+            .storeUint(0, 32)
+            .storeBuffer(Buffer.from(comment, "utf8"))
+            .endCell()
+            .hash()
+            .toString("hex", 0, 64);
+    }
+
+    // TODO: refactor this bs asap:
+    //  + two different functions depending on `kind`
+    //  + extract methods
+    //  + separate file
+    private writeRouter(
+        type: TypeDescription,
+        kind: "internal" | "external",
+    ): FuncAstFunctionDefinition {
+        const internal = kind === "internal";
+        const attrs: FuncAstFunctionAttribute[] = ["impure", "inline_ref"];
+        const name = ops.contractRouter(type.name, kind);
+        const returnTy = Type.tensor(
+            resolveFuncType(this.ctx.ctx, type),
+            Type.int(),
+        );
+        const paramValues: [string, FuncType][] = internal
+            ? [
+                  ["self", resolveFuncType(this.ctx.ctx, type)],
+                  ["msg_bounced", Type.int()],
+                  ["in_msg", Type.slice()],
+              ]
+            : [
+                  ["self", resolveFuncType(this.ctx.ctx, type)],
+                  ["in_msg", Type.slice()],
+              ];
+        const functionBody: FuncAstStmt[] = [];
+
+        // ;; Handle bounced messages
+        // if (msg_bounced) {
+        //   ...
+        // }
+        if (internal) {
+            const body: FuncAstStmt[] = [];
+            body.push(comment("Handle bounced messages"));
+            const bounceReceivers = type.receivers.filter((r) => {
+                return r.selector.kind === "bounce-binary";
+            });
+
+            const fallbackReceiver = type.receivers.find((r) => {
+                return r.selector.kind === "bounce-fallback";
+            });
+
+            const condBody: FuncAstStmt[] = [];
+            if (fallbackReceiver ?? bounceReceivers.length > 0) {
+                // ;; Skip 0xFFFFFFFF
+                // in_msg~skip_bits(32);
+                condBody.push(comment("Skip 0xFFFFFFFF"));
+                condBody.push(expr(call("in_msg~skip_bits", [number(32)])));
+            }
+
+            if (bounceReceivers.length > 0) {
+                // ;; Parse op
+                // int op = 0;
+                // if (slice_bits(in_msg) >= 32) {
+                //   op = in_msg.preload_uint(32);
+                // }
+                condBody.push(comment("Parse op"));
+                condBody.push(varDef(Type.int(), "op", number(0)));
+                condBody.push(
+                    condition(
+                        binop(
+                            call("slice_bits", [id("in_msg")]),
+                            ">=",
+                            number(30),
+                        ),
+                        [
+                            expr(
+                                assign(
+                                    id("op"),
+                                    call(id("in_msg.preload_uint"), [
+                                        number(32),
+                                    ]),
+                                ),
+                            ),
+                        ],
+                    ),
+                );
+            }
+
+            for (const r of bounceReceivers) {
+                const selector = r.selector;
+                if (selector.kind !== "bounce-binary")
+                    throw Error(`Invalid selector type: ${selector.kind}`); // Should not happen
+                body.push(
+                    comment(`Bounced handler for ${selector.type} message`),
+                );
+                // XXX: We assert `header` to be non-null only in the new backend; otherwise it could be a compiler bug
+                body.push(
+                    condition(
+                        binop(
+                            id("op"),
+                            "==",
+                            number(
+                                getType(this.ctx.ctx, selector.type).header!,
+                            ),
+                        ),
+                        [
+                            varDef(
+                                undefined,
+                                "msg",
+                                call(
+                                    id(
+                                        `in_msg~${selector.bounced ? ops.readerBounced(selector.type) : ops.reader(selector.type)}`,
+                                    ),
+                                    [],
+                                ),
+                            ),
+                            expr(
+                                call(
+                                    id(
+                                        `self~${ops.receiveTypeBounce(type.name, selector.type)}`,
+                                    ),
+                                    [id("msg")],
+                                ),
+                            ),
+                            ret(tensor(id("self"), bool(true))),
+                        ],
+                    ),
+                );
+            }
+
+            if (fallbackReceiver) {
+                const selector = fallbackReceiver.selector;
+                if (selector.kind !== "bounce-fallback")
+                    throw Error("Invalid selector type: " + selector.kind);
+                body.push(comment("Fallback bounce receiver"));
+                body.push(
+                    expr(
+                        call(id(`self~${ops.receiveBounceAny(type.name)}`), [
+                            id("in_msg"),
+                        ]),
+                    ),
+                );
+                body.push(ret(tensor(id("self"), bool(true))));
+            } else {
+                body.push(ret(tensor(id("self"), bool(true))));
+            }
+            const cond = condition(id("msg_bounced"), body);
+            functionBody.push(cond);
+        }
+
+        // ;; Parse incoming message
+        // int op = 0;
+        // if (slice_bits(in_msg) >= 32) {
+        //   op = in_msg.preload_uint(32);
+        // }
+        functionBody.push(comment("Parse incoming message"));
+        functionBody.push(varDef(Type.int(), "op", number(0)));
+        functionBody.push(
+            condition(
+                binop(call(id("slice_bits"), [id("in_msg")]), ">=", number(32)),
+                [
+                    expr(
+                        assign(
+                            id("op"),
+                            call("in_msg.preload_unit", [number(32)]),
+                        ),
+                    ),
+                ],
+            ),
+        );
+
+        // Non-empty receivers
+        for (const f of type.receivers) {
+            const selector = f.selector;
+
+            // Generic receiver
+            if (
+                selector.kind ===
+                (internal ? "internal-binary" : "external-binary")
+            ) {
+                const allocation = getType(this.ctx.ctx, selector.type);
+                if (!allocation.header) {
+                    throw Error(`Invalid allocation: ${selector.type}`);
+                }
+                functionBody.push(comment(`Receive ${selector.type} message`));
+                functionBody.push(
+                    condition(
+                        binop(id("op"), "==", number(allocation.header)),
+                        [
+                            varDef(
+                                undefined,
+                                "msg",
+                                call(`in_msg~${ops.reader(selector.type)}`, []),
+                            ),
+                            expr(
+                                call(
+                                    `self~${ops.receiveType(type.name, kind, selector.type)}`,
+                                    [id("msg")],
+                                ),
+                            ),
+                        ],
+                    ),
+                );
+            }
+
+            if (
+                selector.kind ===
+                (internal ? "internal-empty" : "external-empty")
+            ) {
+                // ;; Receive empty message
+                // if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+                //   self~${ops.receiveEmpty(type.name, kind)}();
+                //   return (self, true);
+                // }
+                functionBody.push(comment("Receive empty message"));
+                functionBody.push(
+                    condition(
+                        binop(
+                            binop(id("op"), "==", number(0)),
+                            "&",
+                            binop(
+                                call("slice_bits", [id("in_msg")]),
+                                "<=",
+                                number(32),
+                            ),
+                        ),
+                        [
+                            expr(
+                                call(
+                                    `self~${ops.receiveEmpty(type.name, kind)}`,
+                                    [],
+                                ),
+                            ),
+                            ret(tensor(id("self"), bool(true))),
+                        ],
+                    ),
+                );
+            }
+        }
+
+        // Text resolvers
+        const hasComments = !!type.receivers.find((v) =>
+            internal
+                ? v.selector.kind === "internal-comment" ||
+                  v.selector.kind === "internal-comment-fallback"
+                : v.selector.kind === "external-comment" ||
+                  v.selector.kind === "external-comment-fallback",
+        );
+        if (hasComments) {
+            // ;; Text Receivers
+            // if (op == 0) {
+            //   ...
+            // }
+            functionBody.push(comment("Text Receivers"));
+            const cond = binop(id("op"), "==", number(0));
+            const condBody: FuncAstStmt[] = [];
+            if (
+                type.receivers.find(
+                    (v) =>
+                        v.selector.kind ===
+                        (internal ? "internal-comment" : "external-comment"),
+                )
+            ) {
+                // var text_op = slice_hash(in_msg);
+                condBody.push(
+                    varDef(
+                        undefined,
+                        "text_op",
+                        call("slice_hash", [id("in_msg")]),
+                    ),
+                );
+                for (const r of type.receivers) {
+                    if (
+                        r.selector.kind ===
+                        (internal ? "internal-comment" : "external-comment")
+                    ) {
+                        // ;; Receive "increment" message
+                        // if (text_op == 0xc4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae) {
+                        //     self~$A$_internal_text_c4f8d72312edfdef5b7bec7833bdbb162d1511bd78a912aed0f2637af65572ae();
+                        //     return (self, true);
+                        // }
+                        const hash = this.commentPseudoOpcode(
+                            r.selector.comment,
+                        );
+                        condBody.push(
+                            comment(`Receive "${r.selector.comment}" message`),
+                        );
+                        condBody.push(
+                            condition(
+                                binop(
+                                    id("text_op"),
+                                    "==",
+                                    hexnumber(`0x${hash}`),
+                                ),
+                                [
+                                    expr(
+                                        call(
+                                            `self~${ops.receiveText(type.name, kind, hash)}`,
+                                            [],
+                                        ),
+                                    ),
+                                    ret(tensor(id("self"), bool(true))),
+                                ],
+                            ),
+                        );
+                    }
+                }
+            }
+
+            // Comment fallback resolver
+            const fallback = type.receivers.find(
+                (v) =>
+                    v.selector.kind ===
+                    (internal
+                        ? "internal-comment-fallback"
+                        : "external-comment-fallback"),
+            );
+            if (fallback) {
+                condBody.push(
+                    condition(
+                        binop(
+                            call("slice_bits", [id("in_msg")]),
+                            ">=",
+                            number(32),
+                        ),
+                        [
+                            expr(
+                                call(
+                                    id(
+                                        `self~${ops.receiveAnyText(type.name, kind)}`,
+                                    ),
+                                    [call("in_msg.skip_bits", [number(32)])],
+                                ),
+                            ),
+                            ret(tensor(id("self"), bool(true))),
+                        ],
+                    ),
+                );
+            }
+            functionBody.push(condition(cond, condBody));
+        }
+
+        // Fallback
+        const fallbackReceiver = type.receivers.find(
+            (v) =>
+                v.selector.kind ===
+                (internal ? "internal-fallback" : "external-fallback"),
+        );
+        if (fallbackReceiver) {
+            // ;; Receiver fallback
+            // self~${ops.receiveAny(type.name, kind)}(in_msg);
+            // return (self, true);
+            functionBody.push(comment("Receiver fallback"));
+            functionBody.push(
+                expr(
+                    call(`self~${ops.receiveAny(type.name, kind)}`, [
+                        id("in_msg"),
+                    ]),
+                ),
+            );
+            functionBody.push(ret(tensor(id("self"), bool(true))));
+        } else {
+            // return (self, false);
+            functionBody.push(ret(tensor(id("self"), bool(false))));
+        }
+
+        return fun(attrs, name, paramValues, returnTy, functionBody);
+    }
+
     /**
      * Adds entries from the main Tact contract.
      */
