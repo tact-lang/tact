@@ -40,11 +40,18 @@ jobs:
         run: |
           yarn cross-env echo $NODE_ENV
 
-      - name: Build and Test Tact compiler
+      - name: Build Tact compiler
         run: |
           yarn clean
           yarn gen
           yarn build
+
+      - name: Check there are no errors to be fixed in package.json and no uncommited changes
+        run: |
+          npm pkg fix && git diff --exit-code
+
+      - name: Test Tact compiler
+        run: |
           yarn coverage
 
       - name: Check there are no errors reported by ESLint
@@ -72,10 +79,6 @@ jobs:
         if: runner.os != 'Windows'
         with:
           scandir: "./scripts"
-
-      - name: Check there are no errors to be fixed in package.json
-        run: |
-          npm pkg fix && git diff --exit-code
 
       - name: Show an example .pkg file on Windows
         if: runner.os == 'Windows'
