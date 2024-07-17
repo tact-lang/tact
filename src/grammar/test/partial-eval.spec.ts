@@ -13,7 +13,7 @@ import { CompilerContext } from "../../context";
 
 const additiveExpressions = [
     { original: "X + 3 + 1", simplified: "X + 4" },
-    { original: "3 + X + 1", simplified: "X + 4" },
+    { original: "3 + X + 1", simplified: "4 + X" },
     { original: "1 + (X + 3)", simplified: "X + 4" },
     { original: "1 + (3 + X)", simplified: "4 + X" },
 
@@ -28,39 +28,70 @@ const additiveExpressions = [
     { original: "1 + (3 - X)", simplified: "4 - X" },
 
     { original: "X + 3 - (-1)", simplified: "X + 4" },
-    { original: "3 + X - (-1)", simplified: "X + 4" },
-
-    // Should NOT simplify, because the current rules require that - commutes,
-    // which does not. This could be fixed in future rules.
-    { original: "-1 + (X - 3)", simplified: "-1 + (X - 3)" },
+    { original: "3 + X - (-1)", simplified: "4 + X" },
+    { original: "-1 + (X - 3)", simplified: "X - 4" },
 
     // Should NOT simplify to 2 - X, because X could be MIN + 3,
     // so that 3 - X = -MIN = MAX + 1 causes an overflow,
     // but 2 - X = -MIN - 1 = MAX does not
     { original: "-1 + (3 - X)", simplified: "-1 + (3 - X)" },
 
-    // All the following cases should NOT simplify because -
-    // does not associate on the left with - or +.
-    // The following "associative rule" for - will be added in the future:
-    // (x - c1) op c2 -----> x + (-c1 op c2), where op \in {-,+}
+    // Should NOT simplify to (-2) - X because X could be MAX - 2
+    // so that X + 3 causes an overflow, but 
+    // (-2) - X = MIN + 1 does not. 
     { original: "1 - (X + 3)", simplified: "1 - (X + 3)" },
+
+    // Should NOT simplify to (-2) - X because X could be MAX - 2
+    // so that 3 + X causes an overflow, but 
+    // (-2) - X = MIN + 1 does not. 
     { original: "1 - (3 + X)", simplified: "1 - (3 + X)" },
-    { original: "1 - X + 3", simplified: "1 - X + 3" },
-    { original: "X - 1 + 3", simplified: "X - 1 + 3" },
+
+    // This could simplify to 4 - X, but currently, the rule
+    // cannot do it.
     { original: "1 - (X - 3)", simplified: "1 - (X - 3)" },
+
+    // This should NOT simplify to X - 2 because X could be
+    // MIN + 3, so that 3 - X = MAX + 1 overflows but
+    // X - 2 = MIN + 1 does not.
     { original: "1 - (3 - X)", simplified: "1 - (3 - X)" },
+    
+    { original: "1 - X + 3", simplified: "4 - X" },
+    { original: "X - 1 - 3", simplified: "X - 4" },
+    { original: "X - 1 + (-3)", simplified: "X - 4" },
+    { original: "1 - X - (-3)", simplified: "4 - X" },
+
+    // Should NOT simplify to X + 2 or X - (-2), because
+    // X could be MIN so that X - 1 causes an overflow,
+    // but X + 2 or X - (-2) does not.
+    { original: "X - 1 + 3", simplified: "X - 1 + 3" },
+
+    // Should NOT simplify to (-2) - X, because
+    // X could be MIN so that 1 - X causes an overflow,
+    // but (-2) - X = MAX - 1 does not.
     { original: "1 - X - 3", simplified: "1 - X - 3" },
-    { original: "X - 1 - 3", simplified: "X - 1 - 3" },
+
+    { original: "X + 0", simplified: "X" },
+    { original: "0 + X", simplified: "X" },
+    { original: "X - 0", simplified: "X" },
+    { original: "0 - X", simplified: "-X" },
+
+    { original: "X - X", simplified: "0" },
+    { original: "(X - X) - 10", simplified: "-10" },
+
+    { original: "X + X", simplified: "X * 2" },
+    { original: "1 * (X + X)", simplified: "X * 2" },
+    { original: "2 * (X + X)", simplified: "X * 4" },
+    { original: "(X + X) * 2", simplified: "X * 4" },
 ];
 
 const multiplicativeExpressions = [
     { original: "X * 3 * 2", simplified: "X * 6" },
-    { original: "3 * X * 2", simplified: "X * 6" },
+    { original: "3 * X * 2", simplified: "6 * X" },
     { original: "2 * (X * 3)", simplified: "X * 6" },
     { original: "2 * (3 * X)", simplified: "6 * X" },
 
     { original: "X * -3 * -2", simplified: "X * 6" },
-    { original: "-3 * X * -2", simplified: "X * 6" },
+    { original: "-3 * X * -2", simplified: "6 * X" },
     { original: "-2 * (X * -3)", simplified: "X * 6" },
     { original: "-2 * (-3 * X)", simplified: "6 * X" },
 
@@ -72,10 +103,15 @@ const multiplicativeExpressions = [
     { original: "0 * (X * 3)", simplified: "0 * (X * 3)" },
     { original: "0 * (3 * X)", simplified: "0 * (3 * X)" },
 
-    { original: "X * 0 * 3", simplified: "X * 0" },
-    { original: "0 * X * 3", simplified: "X * 0" },
-    { original: "3 * (X * 0)", simplified: "X * 0" },
-    { original: "3 * (0 * X)", simplified: "0 * X" },
+    { original: "X * 0 * 3", simplified: "0" },
+    { original: "0 * X * 3", simplified: "0" },
+    { original: "3 * (X * 0)", simplified: "0" },
+    { original: "3 * (0 * X)", simplified: "0" },
+
+    { original: "X * 1 * 1", simplified: "X" },
+    { original: "1 * X * 1", simplified: "X" },
+    { original: "1 * (X * 1)", simplified: "X" },
+    { original: "1 * (1 * X)", simplified: "X" },
 
     // This expression cannot be further simplified to X,
     // because X could be MIN, so that X * -1 causes an overflow
@@ -103,7 +139,15 @@ const multiplicativeExpressions = [
     { original: "X * -1 * -2", simplified: "X * 2" },
 ];
 
+const mixedExpressions = [
+    // Should NOT simplify to 0, because X * 2 could overflow
+    { original: "(X * -1 * -2) - (X * -1 * -2)", simplified: "(X * 2) - (X * 2)" },
+
+    { original: "(X * -1 * -2) + (X * -1 * -2)", simplified: "X * 4" },
+]
+
 function testExpression(original: string, simplified: string) {
+    it(`should simplify ${original} to ${simplified}`, () => {
     expect(
         eqExpressions(
             partiallyEvalExpression(
@@ -113,6 +157,7 @@ function testExpression(original: string, simplified: string) {
             unaryNegNodesToNumbers(parseExpression(simplified)),
         ),
     ).toBe(true);
+});
 }
 
 // Evaluates UnaryOp nodes with operator - into a single a node having a value.
@@ -193,14 +238,13 @@ describe("partial-evaluator", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    it("should correctly simplify partial expressions involving + and -", () => {
-        additiveExpressions.forEach((pair) => {
-            testExpression(pair.original, pair.simplified);
-        });
+    additiveExpressions.forEach((test) => {
+        testExpression(test.original, test.simplified);
     });
-    it("should correctly simplify partial expressions involving *", () => {
-        multiplicativeExpressions.forEach((pair) => {
-            testExpression(pair.original, pair.simplified);
-        });
+    multiplicativeExpressions.forEach((test) => {
+        testExpression(test.original, test.simplified);
+    });
+    mixedExpressions.forEach((test) => {
+        testExpression(test.original, test.simplified);
     });
 });

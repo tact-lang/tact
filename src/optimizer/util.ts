@@ -112,6 +112,15 @@ export function checkIsBinaryOp_Value_NonValue(ast: AstExpression): boolean {
         : false;
 }
 
+// Checks if the top level node is the specified number
+export function checkIsNumber(ast: AstExpression, n: bigint): boolean {
+    return ast.kind === "number" ? ast.value == n : false;
+}
+
+export function checkIsName(ast: AstExpression): boolean {
+    return ast.kind === "id";
+}
+
 // bigint arithmetic
 
 // precondition: the divisor is not zero
@@ -139,3 +148,4 @@ export function sign(a: bigint): bigint {
 export function modFloor(a: bigint, b: bigint): bigint {
     return a - divFloor(a, b) * b;
 }
+
