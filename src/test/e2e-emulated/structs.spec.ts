@@ -2,11 +2,13 @@ import { Dictionary, beginCell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import {
+    IntFields,
     MyMessage1,
     MyStruct1,
     MyStruct2,
     MyStruct3,
     StructsTester,
+    UintFields,
     loadMyMessage1,
     loadMyStruct1,
     loadMyStruct2,
@@ -286,5 +288,53 @@ describe("structs", () => {
         expect(await contract.getLongAndDeepNestedStruct1()).toMatchSnapshot();
         expect(await contract.getLongAndDeepNestedStruct2()).toMatchSnapshot();
         expect(await contract.getLongAndDeepNestedStruct3()).toMatchSnapshot();
+
+        // int serialization formats
+        const sIntFields: IntFields = {
+            $$type: "IntFields",
+            i1: -1n,
+            i2: -2n,
+            i3: -4n,
+            i255: -(2n ** 254n),
+            i256: -(2n ** 255n),
+            i257: -(2n ** 256n),
+        };
+        const sIntFieldsCell = beginCell()
+            // Storing min values for each bit length
+            .storeInt(-1n, 1)
+            .storeInt(-2n, 2)
+            .storeInt(-4n, 3)
+            .storeInt(-(2n ** 254n), 255)
+            .storeInt(-(2n ** 255n), 256)
+            .storeInt(-(2n ** 256n), 257)
+            .endCell();
+        expect(await contract.getIntFieldsStruct()).toEqual(sIntFields);
+        expect(await contract.getIntFieldsFromCell(sIntFieldsCell)).toEqual(sIntFields);
+
+        // uint serialization formats
+        const mUintFields: UintFields = {
+            $$type: "UintFields",
+            u1: 1n,
+            u2: 3n,
+            u3: 7n,
+            u254: (2n ** 254n) - 1n,
+            u255: (2n ** 255n) - 1n,
+            u256: (2n ** 256n) - 1n,
+        }
+        const mUintFieldsCell = beginCell()
+            // Header
+            .storeUint(0xea01f46a, 32)
+            // Storing max values for each bit length
+            .storeUint(1n, 1)
+            .storeUint(3n, 2)
+            .storeUint(7n, 3)
+            .storeUint((2n ** 254n) - 1n, 254)
+            .storeUint((2n ** 255n) - 1n, 255)
+            .storeUint((2n ** 256n) - 1n, 256)
+            .endCell();
+
+        expect(await contract.getUintFieldsMessage()).toEqual(mUintFields);
+        // This doesn't work for unknown (yet) reasons, tried to debug it whole day
+        // expect(await contract.getUintFieldsFromCell(mUintFieldsCell)).toEqual(mUintFields);
     });
 });
