@@ -379,11 +379,11 @@ export class FuncFormatter {
     }
 
     private formatInclude(node: FuncAstInclude): string {
-        return `#include "${node.value}"`;
+        return `#include "${node.value}";`;
     }
 
     private formatPragma(node: FuncAstPragma): string {
-        return `#pragma ${node.value}`;
+        return `#pragma ${node.value};`;
     }
 
     private formatComment(node: FuncAstComment): string {
