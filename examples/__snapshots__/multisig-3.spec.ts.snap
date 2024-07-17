@@ -17,7 +17,7 @@ exports[`multisig-3 should deploy 1`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCM9SxGev2rN3tzzK8TMNBB0Rhbr-1wc9DKPJoJUzSGM3jm",
+          "to": "kQDpwhep4X3X57rQ89GE4unirFfJJtvEEFrijJiyIj_mDDnN",
           "type": "internal",
           "value": "10",
         },
