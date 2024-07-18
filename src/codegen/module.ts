@@ -292,7 +292,7 @@ export class ModuleGen {
                     expr(
                         assign(
                             id("op"),
-                            call("in_msg.preload_unit", [number(32)]),
+                            call("in_msg.preload_uint", [number(32)]),
                         ),
                     ),
                 ],
