@@ -173,15 +173,15 @@ export class FuncFormatter {
     }
 
     private formatFunctionSignature(
-        name: string,
+        name: FuncAstIdExpr,
         attrs: FuncAstFunctionAttribute[],
         params: FuncAstFormalFunctionParam[],
         returnTy: FuncType,
     ): string {
         const attrsStr = attrs.join(" ");
-        const nameStr = name;
+        const nameStr = this.dump(name);
         const paramsStr = params
-            .map((param) => `${this.dump(param.ty)} ${param.name}`)
+            .map((param) => `${this.dump(param.ty)} ${this.dump(param.name)}`)
             .join(", ");
         const returnTypeStr = this.dump(returnTy);
         return `${returnTypeStr} ${nameStr}(${paramsStr}) ${attrsStr}`;
@@ -213,9 +213,10 @@ export class FuncFormatter {
     }
 
     private formatVarDefStmt(node: FuncAstVarDefStmt): string {
-        const type = node.ty ? `: ${this.dump(node.ty)} ` : "";
+        const name = this.dump(node.name);
+        const type = node.ty ? `: ${this.dump(node.ty)} ` : "var ";
         const init = node.init ? ` = ${this.dump(node.init)}` : "";
-        return `var ${node.name}${type}${init};`;
+        return `${type} ${name}${init};`;
     }
 
     private formatReturnStmt(node: FuncAstReturnStmt): string {
@@ -287,7 +288,7 @@ export class FuncFormatter {
         const catchBlock = this.formatIndentedBlock(
             node.catchBlock.map((stmt) => this.dump(stmt)).join("\n"),
         );
-        const catchVar = node.catchVar ? ` (${node.catchVar})` : "";
+        const catchVar = node.catchVar ? ` (${this.dump(node.catchVar)})` : "";
         return `try {\n${tryBlock}\n} catch${catchVar} {\n${catchBlock}\n}`;
     }
 
@@ -298,8 +299,9 @@ export class FuncFormatter {
     }
 
     private formatGlobalVariable(node: FuncAstGlobalVariable): string {
+        const name = this.dump(node.name);
         const type = this.dump(node.ty);
-        return `global ${type} ${node.name};`;
+        return `global ${type} ${name};`;
     }
 
     private formatCallExpr(node: FuncAstCallExpr): string {

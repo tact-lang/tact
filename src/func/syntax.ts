@@ -256,7 +256,7 @@ export type FuncAstStmt =
 // var x = 2; // ty is undefined
 export type FuncAstVarDefStmt = {
     kind: "var_def_stmt";
-    name: string;
+    name: FuncAstIdExpr;
     ty: FuncType | undefined;
     init: FuncAstExpr | undefined;
 };
@@ -306,7 +306,7 @@ export type FuncAstTryCatchStmt = {
     kind: "try_catch_stmt";
     tryBlock: FuncAstStmt[];
     catchBlock: FuncAstStmt[];
-    catchVar: string | null;
+    catchVar: FuncAstIdExpr | undefined;
 };
 
 //
@@ -327,13 +327,13 @@ export type FuncAstFunctionAttribute =
 
 export type FuncAstFormalFunctionParam = {
     kind: "function_param";
-    name: string;
+    name: FuncAstIdExpr;
     ty: FuncType;
 };
 
 export type FuncAstFunctionDeclaration = {
     kind: "function_declaration";
-    name: string;
+    name: FuncAstIdExpr;
     attrs: FuncAstFunctionAttribute[];
     params: FuncAstFormalFunctionParam[];
     returnTy: FuncType;
@@ -341,7 +341,7 @@ export type FuncAstFunctionDeclaration = {
 
 export type FuncAstFunctionDefinition = {
     kind: "function_definition";
-    name: string;
+    name: FuncAstIdExpr;
     attrs: FuncAstFunctionAttribute[];
     params: FuncAstFormalFunctionParam[];
     returnTy: FuncType;
@@ -367,7 +367,7 @@ export type FuncAstPragma = {
 
 export type FuncAstGlobalVariable = {
     kind: "global_variable";
-    name: string;
+    name: FuncAstIdExpr;
     ty: FuncType;
 };
 

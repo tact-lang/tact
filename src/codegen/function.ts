@@ -9,7 +9,7 @@ import {
     FuncAstExpr,
     FuncType,
 } from "../func/syntax";
-import { id, call, ret, fun } from "../func/syntaxConstructors";
+import { id, call, ret, fun, vardef } from "../func/syntaxConstructors";
 import { StatementGen, ExpressionGen, CodegenContext } from ".";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 
@@ -143,12 +143,7 @@ export class FunctionGen {
                 funcIdOf("self"),
             );
             const init: FuncAstExpr = id(funcIdOf("self"));
-            body.push({
-                kind: "var_def_stmt",
-                name: varName,
-                init,
-                ty: undefined,
-            });
+            body.push(vardef(undefined, varName, init));
         }
         for (const a of tactFun.ast.params) {
             if (
@@ -160,7 +155,7 @@ export class FunctionGen {
                     funcIdOf(a.name),
                 );
                 const init: FuncAstExpr = id(funcIdOf(a.name));
-                body.push({ kind: "var_def_stmt", name, init, ty: undefined });
+                body.push(vardef(undefined, name, init));
             }
         }
 

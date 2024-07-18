@@ -46,6 +46,10 @@ import {
     FuncAstModule,
 } from "./syntax";
 
+function wrapToId<T extends FuncAstExpr | FuncAstIdExpr>(v: T | string): T {
+    return typeof v === "string" ? (id(v) as T) : v;
+}
+
 //
 // Types
 //
@@ -129,7 +133,7 @@ export const call = (
     args: FuncAstExpr[],
 ): FuncAstCallExpr => ({
     kind: "call_expr",
-    fun: typeof fun === "string" ? id(fun) : fun,
+    fun: wrapToId(fun),
     args,
 });
 
@@ -227,11 +231,11 @@ export const primitiveType = (ty: FuncType): FuncAstPrimitiveTypeExpr => ({
 
 export const vardef = (
     ty: FuncType | undefined,
-    name: string,
+    name: string | FuncAstIdExpr,
     init?: FuncAstExpr,
 ): FuncAstVarDefStmt => ({
     kind: "var_def_stmt",
-    name,
+    name: wrapToId(name),
     ty,
     init,
 });
@@ -294,12 +298,12 @@ export const expr = (expr: FuncAstExpr): FuncAstExprStmt => ({
 export const tryCatch = (
     tryBlock: FuncAstStmt[],
     catchBlock: FuncAstStmt[],
-    catchVar: string | null,
+    catchVar?: string | FuncAstIdExpr,
 ): FuncAstTryCatchStmt => ({
     kind: "try_catch_stmt",
     tryBlock,
     catchBlock,
-    catchVar,
+    catchVar: catchVar === undefined ? undefined : wrapToId(catchVar),
 });
 
 // Other top-level elements
@@ -330,22 +334,22 @@ export const constant = (ty: FuncType, init: FuncAstExpr): FuncAstConstant => ({
 });
 
 export const functionParam = (
-    name: string,
+    name: string | FuncAstIdExpr,
     ty: FuncType,
 ): FuncAstFormalFunctionParam => ({
     kind: "function_param",
-    name,
+    name: wrapToId(name),
     ty,
 });
 
 export const functionDeclaration = (
-    name: string,
+    name: string | FuncAstIdExpr,
     attrs: FuncAstFunctionAttribute[],
     params: FuncAstFormalFunctionParam[],
     returnTy: FuncType,
 ): FuncAstFunctionDeclaration => ({
     kind: "function_declaration",
-    name,
+    name: wrapToId(name),
     attrs,
     params,
     returnTy,
@@ -353,7 +357,7 @@ export const functionDeclaration = (
 
 export const fun = (
     attrs: FuncAstFunctionAttribute[],
-    name: string,
+    name: string | FuncAstIdExpr,
     paramValues: [string, FuncType][],
     returnTy: FuncType,
     body: FuncAstStmt[],
@@ -362,13 +366,13 @@ export const fun = (
         ([name, ty]) =>
             ({
                 kind: "function_param",
-                name,
+                name: wrapToId(name),
                 ty,
             }) as FuncAstFormalFunctionParam,
     );
     return {
         kind: "function_definition",
-        name,
+        name: wrapToId(name),
         attrs,
         params,
         returnTy,
@@ -399,11 +403,11 @@ export const pragma = (value: string): FuncAstPragma => ({
 });
 
 export const globalVariable = (
-    name: string,
+    name: string | FuncAstIdExpr,
     ty: FuncType,
 ): FuncAstGlobalVariable => ({
     kind: "global_variable",
-    name,
+    name: wrapToId(name),
     ty,
 });
 
