@@ -24,10 +24,11 @@ export async function compile(
     ctx: CompilerContext,
     contractName: string,
     abiName: string,
+    backend: "new" | "old" = "old",
 ): Promise<CompilationResults> {
     const abi = createABI(ctx, contractName);
     let output: CompilationOutput;
-    if (process.env.NEW_CODEGEN === "1") {
+    if (backend === "new" || process.env.NEW_CODEGEN === "1") {
         output = await FuncGenerator.fromTactProject(
             ctx,
             abi,
@@ -36,9 +37,9 @@ export async function compile(
     } else {
         output = await writeProgram(ctx, abi, abiName);
     }
-    console.log(`${contractName} output:`);
-    output.files.forEach((o) =>
-        console.log(`---------------\nname=${o.name}; code:\n${o.code}\n`),
-    );
+    // console.log(`${contractName} output:`);
+    // output.files.forEach((o) =>
+    //     console.log(`---------------\nname=${o.name}; code:\n${o.code}\n`),
+    // );
     return { output, ctx };
 }
