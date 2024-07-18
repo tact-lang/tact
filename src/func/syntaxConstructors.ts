@@ -225,7 +225,7 @@ export const primitiveType = (ty: FuncType): FuncAstPrimitiveTypeExpr => ({
 // Statements
 //
 
-export const varDef = (
+export const vardef = (
     ty: FuncType | undefined,
     name: string,
     init?: FuncAstExpr,

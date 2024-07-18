@@ -25,7 +25,7 @@ import {
     ret,
     tensor,
     Type,
-    varDef,
+    vardef,
     mod,
     condition,
     id,
@@ -194,7 +194,7 @@ export class ModuleGen {
                 //   op = in_msg.preload_uint(32);
                 // }
                 condBody.push(comment("Parse op"));
-                condBody.push(varDef(Type.int(), "op", number(0)));
+                condBody.push(vardef(Type.int(), "op", number(0)));
                 condBody.push(
                     condition(
                         binop(
@@ -234,7 +234,7 @@ export class ModuleGen {
                             ),
                         ),
                         [
-                            varDef(
+                            vardef(
                                 undefined,
                                 "msg",
                                 call(
@@ -284,7 +284,7 @@ export class ModuleGen {
         //   op = in_msg.preload_uint(32);
         // }
         functionBody.push(comment("Parse incoming message"));
-        functionBody.push(varDef(Type.int(), "op", number(0)));
+        functionBody.push(vardef(Type.int(), "op", number(0)));
         functionBody.push(
             condition(
                 binop(call(id("slice_bits"), [id("in_msg")]), ">=", number(32)),
@@ -317,7 +317,7 @@ export class ModuleGen {
                     condition(
                         binop(id("op"), "==", number(allocation.header)),
                         [
-                            varDef(
+                            vardef(
                                 undefined,
                                 "msg",
                                 call(`in_msg~${ops.reader(selector.type)}`, []),
@@ -393,7 +393,7 @@ export class ModuleGen {
             ) {
                 // var text_op = slice_hash(in_msg);
                 condBody.push(
-                    varDef(
+                    vardef(
                         undefined,
                         "text_op",
                         call("slice_hash", [id("in_msg")]),

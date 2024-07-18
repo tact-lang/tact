@@ -25,7 +25,7 @@ import {
     tensor,
     assign,
     condition,
-    varDef,
+    vardef,
     Type,
 } from "../func/syntaxConstructors";
 
@@ -125,7 +125,7 @@ export class StatementGen {
                                 this.tactStmt.expression,
                                 t,
                             );
-                            return varDef(Type.tuple(), name, init);
+                            return vardef(Type.tuple(), name, init);
                         } else {
                             const name = resolveFuncTypeUnpack(
                                 this.ctx.ctx,
@@ -136,7 +136,7 @@ export class StatementGen {
                                 this.tactStmt.expression,
                                 t,
                             );
-                            return varDef(undefined, name, init);
+                            return vardef(undefined, name, init);
                         }
                     }
                 }
@@ -144,7 +144,7 @@ export class StatementGen {
                 const ty = resolveFuncType(this.ctx.ctx, t);
                 const name = funcIdOf(this.tactStmt.name);
                 const init = this.makeCastedExpr(this.tactStmt.expression, t);
-                return varDef(ty, name, init);
+                return vardef(ty, name, init);
             }
 
             case "statement_assign": {
