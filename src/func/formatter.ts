@@ -159,7 +159,14 @@ export class FuncFormatter {
                     previousEntry &&
                     previousEntry.kind === entry.kind &&
                     (entry.kind === "include" || entry.kind === "pragma");
-                const separator = isSequentialPragmaOrInclude ? "\n" : "\n\n";
+                const isPreviousCommentSkipCR =
+                    previousEntry &&
+                    previousEntry.kind === "comment" &&
+                    (previousEntry as FuncAstComment).skipCR;
+                const separator =
+                    isSequentialPragmaOrInclude || isPreviousCommentSkipCR
+                        ? "\n"
+                        : "\n\n";
                 return (index > 0 ? separator : "") + this.dump(entry);
             })
             .join("");
@@ -218,7 +225,17 @@ export class FuncFormatter {
 
     private formatBlockStmt(node: FuncAstBlockStmt): string {
         const body = this.formatIndentedBlock(
-            node.body.map((stmt) => this.dump(stmt)).join("\n"),
+            node.body
+                .map((stmt, index) => {
+                    const previousStmt = node.body[index - 1];
+                    const isPreviousCommentSkipCR =
+                        previousStmt &&
+                        previousStmt.kind === "comment" &&
+                        (previousStmt as FuncAstComment).skipCR;
+                    const separator = isPreviousCommentSkipCR ? "" : "\n";
+                    return (index > 0 ? separator : "") + this.dump(stmt);
+                })
+                .join(""),
         );
         return `{\n${body}\n}`;
     }
@@ -387,7 +404,7 @@ export class FuncFormatter {
     }
 
     private formatComment(node: FuncAstComment): string {
-        return node.values.map((v) => `;; ${v}`).join("\n");
+        return node.values.map((v) => `${node.style} ${v}`).join("\n");
     }
 
     private formatType(node: FuncType): string {

@@ -304,10 +304,24 @@ export const tryCatch = (
 
 // Other top-level elements
 
-export const comment = (...values: string[]): FuncAstComment => ({
-    kind: "comment",
-    values,
-});
+export function comment(
+    ...args: (string | Partial<{ skipCR: boolean; style: ";" | ";;" }>)[]
+): FuncAstComment {
+    let params: Partial<{ skipCR: boolean; style: ";" | ";;" }> = {};
+    let values: string[];
+
+    if (args.length > 0 && typeof args[args.length - 1] === "object") {
+        params = args.pop() as Partial<{ skipCR: boolean; style: ";" | ";;" }>;
+    }
+    values = args as string[];
+    const { skipCR = false, style = ";;" } = params;
+    return {
+        kind: "comment",
+        values,
+        skipCR,
+        style,
+    };
+}
 
 export const constant = (ty: FuncType, init: FuncAstExpr): FuncAstConstant => ({
     kind: "constant",

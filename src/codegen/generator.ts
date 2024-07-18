@@ -209,7 +209,7 @@ export class FuncGenerator {
         );
         functions.forEach((f) => {
             // if (f.code.kind === "generic") {
-            m.entries.push(comment(f.name));
+            m.entries.push(comment(f.name, { skipCR: true }));
             if (
                 f.attrs.find((attr) => attr !== "impure" && attr !== "inline")
             ) {

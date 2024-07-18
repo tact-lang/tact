@@ -557,9 +557,9 @@ export class ModuleGen {
         const hasExternal = contractTy.receivers.find((v) =>
             v.selector.kind.startsWith("external-"),
         );
-        this.writeRouter(contractTy, "internal");
+        m.entries.push(this.writeRouter(contractTy, "internal"));
         if (hasExternal) {
-            this.writeRouter(contractTy, "external");
+            m.entries.push(this.writeRouter(contractTy, "external"));
         }
 
         // // Render internal receiver

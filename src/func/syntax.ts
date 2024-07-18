@@ -240,7 +240,7 @@ export type FuncAstPrimitiveTypeExpr = {
 //
 
 export type FuncAstStmt =
-    | FuncAstComment // a comment appearing among statements
+    | FuncAstComment // A comment appearing among statements
     | FuncAstBlockStmt
     | FuncAstVarDefStmt
     | FuncAstReturnStmt
@@ -351,6 +351,8 @@ export type FuncAstFunctionDefinition = {
 export type FuncAstComment = {
     kind: "comment";
     values: string[]; // Represents multiline comments
+    skipCR: boolean; // Skips CR before the next line
+    style: ";" | ";;";
 };
 
 export type FuncAstInclude = {
