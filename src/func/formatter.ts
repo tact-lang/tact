@@ -408,7 +408,9 @@ export class FuncFormatter {
     }
 
     private formatComment(node: FuncAstComment): string {
-        return node.values.map((v) => `${node.style} ${v}`).join("\n");
+        return node.values
+            .map((v) => `${node.style}${v.length > 0 ? " " + v : ""}`)
+            .join("\n");
     }
 
     private formatType(node: FuncType): string {
