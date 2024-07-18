@@ -214,7 +214,7 @@ export class FuncFormatter {
 
     private formatVarDefStmt(node: FuncAstVarDefStmt): string {
         const name = this.dump(node.name);
-        const type = node.ty ? `: ${this.dump(node.ty)} ` : "var ";
+        const type = node.ty ? this.dump(node.ty) : "var";
         const init = node.init ? ` = ${this.dump(node.init)}` : "";
         return `${type} ${name}${init};`;
     }
@@ -250,7 +250,9 @@ export class FuncFormatter {
     }
 
     private formatConditionStmt(node: FuncAstConditionStmt): string {
-        const condition = node.condition ? this.dump(node.condition) : "";
+        const condition = node.condition
+            ? `(${this.dump(node.condition)})`
+            : "";
         const ifnot = node.ifnot ? "ifnot" : "if";
         const bodyBlock = this.formatIndentedBlock(
             node.body.map((stmt) => this.dump(stmt)).join("\n"),
