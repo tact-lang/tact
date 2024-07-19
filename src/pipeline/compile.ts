@@ -17,6 +17,14 @@ export type CompilationResults = {
     ctx: CompilerContext;
 };
 
+function printOutput(contractName: string, output: CompilationOutput) {
+    const sep = "---------------\n";
+    console.log(`Contract ${contractName} output:\n`);
+    output.files.forEach((o) =>
+        console.log(`${sep}\nFile ${o.name}:\n${o.code}\n`),
+    );
+}
+
 /**
  * Compiles the given contract to Func.
  */
@@ -37,9 +45,8 @@ export async function compile(
     } else {
         output = await writeProgram(ctx, abi, abiName);
     }
-    // console.log(`${contractName} output:`);
-    // output.files.forEach((o) =>
-    //     console.log(`---------------\nname=${o.name}; code:\n${o.code}\n`),
-    // );
+    if (process.env.PRINT_FUNC === "1") {
+        printOutput(contractName, output);
+    }
     return { output, ctx };
 }
