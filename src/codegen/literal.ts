@@ -1,6 +1,6 @@
 import { CodegenContext, FunctionGen } from ".";
 import { FuncAstExpr } from "../func/syntax";
-import { beginCell, Cell } from "@ton/core";
+import { Address, beginCell, Cell } from "@ton/core";
 import { Value } from "../types/types";
 import {
     call,
@@ -65,6 +65,17 @@ export class LiteralGen {
     }
 
     /**
+     * Returns a function name used to access the address value.
+     */
+private writeAddress(address: Address) {
+    return this.writeRawSlice(
+        "address",
+        address.toString(),
+        beginCell().storeAddress(address).endCell(),
+    );
+}
+
+    /**
      * Generates FunC literals from Tact ones.
      */
     public writeValue(): FuncAstExpr {
@@ -78,11 +89,9 @@ export class LiteralGen {
         if (typeof val === "boolean") {
             return bool(val);
         }
-        // if (Address.isAddress(val)) {
-        //     const res = writeAddress(val, wCtx);
-        //     wCtx.used(res);
-        //     return res + "()";
-        // }
+        if (Address.isAddress(val)) {
+            return call(this.writeAddress(val), [])
+        }
         // if (val instanceof Cell) {
         //     const res = writeCell(val, wCtx);
         //     wCtx.used(res);
