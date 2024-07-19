@@ -146,6 +146,8 @@ message DelAddrMap7 {
     key: Address;
 }
 
+message CheckNullReference {}
+
 contract MapTestContract {
 
     init() {
@@ -944,5 +946,15 @@ contract MapTestContract {
 
     get fun intMap1Del(key: Int): Bool {
         return self.intMap1.del(key);
+    }
+
+    get fun checkNullReference(): Int {
+        let m: map<Int, Int> = emptyMap();
+        return m.get(0)!!;
+    }
+
+    receive(msg: CheckNullReference) {
+        let m: map<Int, Int> = emptyMap();
+        m.get(0)!!;
     }
 }

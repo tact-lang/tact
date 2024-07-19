@@ -19,6 +19,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun("__tact_verify_address", () => {
         ctx.signature(`slice __tact_verify_address(slice address)`);
+        ctx.flag("impure");
         ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
@@ -157,6 +158,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun("__tact_not_null", () => {
         ctx.signature(`forall X -> X __tact_not_null(X x)`);
+        ctx.flag("impure");
         ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
@@ -1921,6 +1923,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_log`, () => {
         ctx.signature(`int __tact_log(int num, int base)`);
+        ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
@@ -1941,6 +1944,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_pow`, () => {
         ctx.signature(`int __tact_pow(int base, int exp)`);
+        ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
