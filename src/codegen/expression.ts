@@ -605,7 +605,7 @@ export class ExpressionGen {
                                 `Impossible self kind: ${selfExpr.kind}`,
                             );
                         }
-                        return call(`${selfExpr}~${name}`, argExprs);
+                        return call(`${selfExpr.value}~${name}`, argExprs);
                     } else {
                         return call(ops.nonModifying(name), [
                             selfExpr,
