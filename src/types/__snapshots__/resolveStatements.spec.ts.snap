@@ -104,6 +104,17 @@ Line 7, col 10:
 "
 `;
 
+exports[`resolveStatements should fail statements for expr-cmp-optional-struct-null 1`] = `
+"<unknown>:7:16: Expressions of "S" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 16:
+  6 |     if (s != null) {
+> 7 |         return s!! == null
+                     ^~~~~~~~~~~
+  8 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for expr-cmp-void-null 1`] = `
 "<unknown>:6:12: Expressions of "<void>" type cannot be used for (non)equality operator "=="
  See https://docs.tact-lang.org/book/operators#binary-equality
@@ -1094,6 +1105,47 @@ exports[`resolveStatements should resolve statements for expr-cmp-optional-null 
   ],
   [
     "null == x",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-cmp-optional-struct-null 1`] = `
+[
+  [
+    "s",
+    "S?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "s != null",
+    "Bool",
+  ],
+  [
+    "s",
+    "S?",
+  ],
+  [
+    "s!!",
+    "S",
+  ],
+  [
+    "s!!.f",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "s!!.f == 42",
+    "Bool",
+  ],
+  [
+    "false",
     "Bool",
   ],
 ]
