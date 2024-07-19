@@ -128,14 +128,19 @@ export const id = (value: string): FuncAstIdExpr => ({
     value,
 });
 
-export const call = (
+export function call(
     fun: FuncAstExpr | string,
     args: FuncAstExpr[],
-): FuncAstCallExpr => ({
-    kind: "call_expr",
-    fun: wrapToId(fun),
-    args,
-});
+    params: Partial<{ receiver: FuncAstExpr }> = {},
+): FuncAstCallExpr {
+    const { receiver = undefined } = params;
+    return {
+        kind: "call_expr",
+        receiver,
+        fun: wrapToId(fun),
+        args,
+    };
+}
 
 export const assign = (
     lhs: FuncAstExpr,

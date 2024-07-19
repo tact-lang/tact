@@ -132,7 +132,10 @@ export type FuncAstIdExpr = {
 
 export type FuncAstCallExpr = {
     kind: "call_expr";
-    fun: FuncAstExpr; // function name or an expression returning a function
+    // Returns the function object, e.g. get_value().load_int()
+    //                                   ^^^^^^^^^^^
+    receiver: FuncAstExpr | undefined;
+    fun: FuncAstExpr; // function name
     args: FuncAstExpr[];
 };
 

@@ -58,8 +58,10 @@ export class FuncFormatter {
     private indent: number;
     private currentIndent: number;
 
-    constructor( params: Partial<{ indent: number, lineLengthLimit: number }> = {},) {
-  const { indent= 4, lineLengthLimit= 100 } = params;
+    constructor(
+        params: Partial<{ indent: number; lineLengthLimit: number }> = {},
+    ) {
+        const { indent = 4, lineLengthLimit = 100 } = params;
         this.lineLengthLimit = lineLengthLimit;
         this.indent = indent;
         this.currentIndent = 0;
@@ -318,9 +320,11 @@ export class FuncFormatter {
     }
 
     private formatCallExpr(node: FuncAstCallExpr): string {
+        const receiver =
+            node.receiver === undefined ? "" : `${this.dump(node.receiver)}.`;
         const fun = this.dump(node.fun);
         const args = node.args.map((arg) => this.dump(arg)).join(", ");
-        return `${fun}(${args})`;
+        return `${receiver}${fun}(${args})`;
     }
 
     private formatAssignExpr(node: FuncAstAssignExpr): string {
