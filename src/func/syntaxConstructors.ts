@@ -47,6 +47,9 @@ import {
 } from "./syntax";
 
 function wrapToId<T extends FuncAstExpr | FuncAstIdExpr>(v: T | string): T {
+    if (typeof v === "string" && v.includes("[object")) {
+        throw new Error("Incorrect input");
+    }
     return typeof v === "string" ? (id(v) as T) : v;
 }
 
