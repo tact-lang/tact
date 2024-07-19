@@ -16,7 +16,6 @@ import {
     FuncAstStmt,
     FuncAstConditionStmt,
     FuncAstExpr,
-    FuncAstUnitExpr,
 } from "../func/syntax";
 import {
     id,

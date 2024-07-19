@@ -9,8 +9,16 @@ import {
     FuncAstExpr,
     FuncType,
 } from "../func/syntax";
-import { id, call, ret, fun, vardef, Type, tensor } from "../func/syntaxConstructors";
-import { StatementGen, ExpressionGen, CodegenContext } from ".";
+import {
+    id,
+    call,
+    ret,
+    fun,
+    vardef,
+    Type,
+    tensor,
+} from "../func/syntaxConstructors";
+import { StatementGen, LiteralGen, CodegenContext } from ".";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 
 /**
@@ -216,7 +224,7 @@ export class FunctionGen {
             if (arg) {
                 return id(avoidFunCKeywordNameClash(arg));
             } else if (v.default !== undefined) {
-                return ExpressionGen.writeValue(this.ctx, v.default);
+                return LiteralGen.fromTact(this.ctx, v.default).writeValue();
             } else {
                 throw Error(
                     `Missing argument for field "${v.name}" in struct "${type.name}"`,

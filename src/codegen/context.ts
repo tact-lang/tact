@@ -1,8 +1,8 @@
 import { CompilerContext } from "../context";
-import { FuncAstFunctionDefinition } from "../func/syntax";
+import { FuncAstFunctionDefinition, FuncAstAsmFunction } from "../func/syntax";
 
 type ContextValues = {
-    constructor: FuncAstFunctionDefinition;
+    function: FuncAstFunctionDefinition | FuncAstAsmFunction;
 };
 
 export type ContextValueKind = keyof ContextValues;
@@ -14,8 +14,11 @@ export type ContextValueKind = keyof ContextValues;
 export class CodegenContext {
     public ctx: CompilerContext;
 
-    /** Generated struct constructors. */
-    private constructors: FuncAstFunctionDefinition[] = [];
+    /** Generated functions. */
+    private functions: Map<
+        string,
+        FuncAstFunctionDefinition | FuncAstAsmFunction
+    > = new Map();
 
     constructor(ctx: CompilerContext) {
         this.ctx = ctx;
@@ -26,16 +29,33 @@ export class CodegenContext {
         value: ContextValues[K],
     ): void {
         switch (kind) {
-            case "constructor":
-                this.constructors.push(value as FuncAstFunctionDefinition);
+            case "function":
+                const fun = value as
+                    | FuncAstFunctionDefinition
+                    | FuncAstAsmFunction;
+                this.functions.set(fun.name.value, fun);
                 break;
+            default:
+                throw new Error(`Unknown kind: ${kind}`);
+        }
+    }
+
+    public has<K extends ContextValueKind>(kind: K, name: string) {
+        switch (kind) {
+            case "function":
+                return this.functions.has(name);
+            default:
+                throw new Error(`Unknown kind: ${kind}`);
         }
     }
 
     /**
-     * Returns all the generated functions.
+     * Returns all the generated functions that has non-asm body.
      */
     public getFunctions(): FuncAstFunctionDefinition[] {
-        return this.constructors;
+        return Array.from(this.functions.values()).filter(
+            (f): f is FuncAstFunctionDefinition =>
+                f.kind === "function_definition",
+        );
     }
 }

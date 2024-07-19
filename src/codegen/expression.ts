@@ -7,7 +7,7 @@ import { evalConstantExpression } from "../constEval";
 import { resolveFuncTypeUnpack } from "./type";
 import { MapFunctions, StructFunctions, GlobalFunctions } from "./abi";
 import { getExpType } from "../types/resolveExpression";
-import { FunctionGen, CodegenContext } from ".";
+import { FunctionGen, CodegenContext, LiteralGen } from ".";
 import { cast, funcIdOf, ops } from "./util";
 import { printTypeRef, TypeRef, Value, FieldDescription } from "../types/types";
 import {
@@ -23,12 +23,15 @@ import {
     eqNames,
     tryExtractPath,
 } from "../grammar/ast";
+import { FuncAstExpr, FuncAstUnaryOp, FuncAstIdExpr } from "../func/syntax";
 import {
-    FuncAstExpr,
-    FuncAstUnaryOp,
-    FuncAstIdExpr,
-} from "../func/syntax";
-import { id, call, binop, ternary, unop, number,nil, bool } from "../func/syntaxConstructors";
+    id,
+    call,
+    binop,
+    ternary,
+    unop,
+    bool,
+} from "../func/syntaxConstructors";
 
 function isNull(f: AstExpression): boolean {
     return f.kind === "null";
@@ -71,70 +74,11 @@ export class ExpressionGen {
         return new ExpressionGen(ctx, tactExpr);
     }
 
-    /**
-     * Generates FunC literals from Tact ones.
-     */
-    static writeValue(ctx: CodegenContext, val: Value): FuncAstExpr {
-        if (typeof val === "bigint") {
-            return number(val);
-        }
-        // if (typeof val === "string") {
-        //     const id = writeString(val, wCtx);
-        //     wCtx.used(id);
-        //     return `${id}()`;
-        // }
-        if (typeof val === "boolean") {
-            return bool(val);
-        }
-        // if (Address.isAddress(val)) {
-        //     const res = writeAddress(val, wCtx);
-        //     wCtx.used(res);
-        //     return res + "()";
-        // }
-        // if (val instanceof Cell) {
-        //     const res = writeCell(val, wCtx);
-        //     wCtx.used(res);
-        //     return `${res}()`;
-        // }
-        if (val === null) {
-            return nil();
-        }
-        // if (val instanceof CommentValue) {
-        //     const id = writeComment(val.comment, wCtx);
-        //     wCtx.used(id);
-        //     return `${id}()`;
-        // }
-        if (typeof val === "object" && "$tactStruct" in val) {
-            // this is a struct value
-            const structDescription = getType(
-                ctx.ctx,
-                val["$tactStruct"] as string,
-            );
-            const fields = structDescription.fields.map((field) => field.name);
-            const constructor = FunctionGen.fromTact(
-                ctx,
-            ).writeStructConstructor(structDescription, fields);
-            ctx.add("constructor", constructor);
-            const fieldValues = structDescription.fields.map((field) => {
-                if (field.name in val) {
-                    return ExpressionGen.writeValue(ctx, val[field.name]!);
-                } else {
-                    throw Error(
-                        `Struct value is missing a field: ${field.name}`,
-                        val,
-                    );
-                }
-            });
-            return call(constructor.name, fieldValues);
-        }
-        throw Error(`Invalid value: ${val}`);
-    }
-
     public writeExpression(): FuncAstExpr {
         // literals and constant expressions are covered here
         try {
             const value = evalConstantExpression(this.tactExpr, this.ctx.ctx);
-            return ExpressionGen.writeValue(this.ctx, value);
+            return this.makeValue(value);
         } catch (error) {
             if (!(error instanceof TactConstEvalError) || error.fatal)
                 throw error;
@@ -175,7 +119,7 @@ export class ExpressionGen {
             // Handle constant
             if (hasStaticConstant(this.ctx.ctx, this.tactExpr.text)) {
                 const c = getStaticConstant(this.ctx.ctx, this.tactExpr.text);
-                return ExpressionGen.writeValue(this.ctx, c.value!);
+                return this.makeValue(c.value!);
             }
 
             return id(funcIdOf(this.tactExpr.text));
@@ -497,7 +441,7 @@ export class ExpressionGen {
                     this.makeExpr(this.tactExpr.aggregate),
                 ]);
             } else {
-                return ExpressionGen.writeValue(this.ctx, cst!.value!);
+                return this.makeValue(cst!.value!);
             }
         }
 
@@ -548,7 +492,7 @@ export class ExpressionGen {
                 src,
                 this.tactExpr.args.map((v) => v.field.text),
             );
-            this.ctx.add("constructor", constructor);
+            this.ctx.add("function", constructor);
 
             // Write an expression
             const args = this.tactExpr.args.map((v) =>
@@ -732,6 +676,10 @@ export class ExpressionGen {
         // Unreachable
         //
         throw Error(`Unknown expression: ${this.tactExpr.kind}`);
+    }
+
+    private makeValue(val: Value): FuncAstExpr {
+        return LiteralGen.fromTact(this.ctx, val).writeValue();
     }
 
     private makeExpr(src: AstExpression): FuncAstExpr {
