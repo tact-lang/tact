@@ -47,9 +47,11 @@ import {
     FuncAstModule,
 } from "./syntax";
 
+import JSONbig from "json-bigint";
+
 function wrapToId<T extends FuncAstExpr | FuncAstIdExpr>(v: T | string): T {
     if (typeof v === "string" && v.includes("[object")) {
-        throw new Error("Incorrect input");
+        throw new Error(`Incorrect input: ${JSONbig.stringify(v, null, 2)}`);
     }
     return typeof v === "string" ? (id(v) as T) : v;
 }
