@@ -30,6 +30,16 @@ Line 5, col 12:
 "
 `;
 
+exports[`resolveStatements should fail statements for expr-cmp-bounced 1`] = `
+"<unknown>:6:10: Bounced types are not supported in binary operators
+Line 6, col 10:
+  5 | fun foo(b: bounced<S>): Bool {
+> 6 |   return b == b;
+               ^~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveStatements should fail statements for expr-cmp-int-bool 1`] = `
 "<unknown>:5:12: Incompatible types "Int" and "Bool" for binary operator "=="
 Line 5, col 12:
@@ -37,6 +47,16 @@ Line 5, col 12:
 > 5 |     return x == true;
                  ^~~~~~~~~
   6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-cmp-map-map 1`] = `
+"<unknown>:6:12: Incompatible types "map<Int, Address>" and "map<Address, Int>" for binary operator "=="
+Line 6, col 12:
+  5 | fun foo(m1: map<Int, Address>, m2: map<Address, Int>): Bool {
+> 6 |     return m1 == m2;
+                 ^~~~~~~~
+  7 | }
 "
 `;
 
@@ -57,6 +77,26 @@ Line 18, col 13:
 > 18 |         if (null != self.s) {
                    ^~~~~~~~~~~~~~
   19 |             return self.s.a;
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-cmp-null-3 1`] = `
+"<unknown>:5:9: Cannot compare null with non-optional type "Int"
+Line 5, col 9:
+  4 |     let x: Int = 42;
+> 5 |     if (null == x) { return }
+              ^~~~~~~~~
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-cmp-null-bounced 1`] = `
+"<unknown>:5:3: Type mismatch: "Bool" is not assignable to "<void>"
+Line 5, col 3:
+  4 | fun foo(b: bounced<S>) {
+> 5 |   return b == null;
+        ^~~~~~~~~~~~~~~~~
+  6 | }
 "
 `;
 
@@ -965,6 +1005,78 @@ exports[`resolveStatements should resolve statements for expr-cmp-literal 1`] = 
   ],
   [
     "x == 0",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-cmp-map-map 1`] = `
+[
+  [
+    "m1",
+    "map<Int, Address>",
+  ],
+  [
+    "m2",
+    "map<Int, Address>",
+  ],
+  [
+    "m1 == m2",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-cmp-map-null 1`] = `
+[
+  [
+    "m",
+    "map<Int, Address>",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "m == null",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-cmp-null-null 1`] = `
+[
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "null == null",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-cmp-optional-null 1`] = `
+[
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "null == x",
     "Bool",
   ],
 ]
