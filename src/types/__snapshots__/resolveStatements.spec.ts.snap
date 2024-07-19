@@ -31,7 +31,8 @@ Line 5, col 12:
 `;
 
 exports[`resolveStatements should fail statements for expr-cmp-bounced 1`] = `
-"<unknown>:6:10: Bounced types are not supported in binary operators
+"<unknown>:6:10: Expressions of "bounced<S>" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
 Line 6, col 10:
   5 | fun foo(b: bounced<S>): Bool {
 > 6 |   return b == b;
@@ -61,7 +62,8 @@ Line 6, col 12:
 `;
 
 exports[`resolveStatements should fail statements for expr-cmp-null-1 1`] = `
-"<unknown>:18:13: Cannot compare non-optional type "S" with null
+"<unknown>:18:13: Expressions of "S" type cannot be used for (non)equality operator "!="
+ See https://docs.tact-lang.org/book/operators#binary-equality
 Line 18, col 13:
   17 |     get fun test(): Int {
 > 18 |         if (self.s != null) {
@@ -71,7 +73,8 @@ Line 18, col 13:
 `;
 
 exports[`resolveStatements should fail statements for expr-cmp-null-2 1`] = `
-"<unknown>:18:13: Cannot compare null with non-optional type "S"
+"<unknown>:18:13: Expressions of "S" type cannot be used for (non)equality operator "!="
+See https://docs.tact-lang.org/book/operators#binary-equality
 Line 18, col 13:
   17 |     get fun test(): Int {
 > 18 |         if (null != self.s) {
@@ -81,7 +84,7 @@ Line 18, col 13:
 `;
 
 exports[`resolveStatements should fail statements for expr-cmp-null-3 1`] = `
-"<unknown>:5:9: Cannot compare null with non-optional type "Int"
+"<unknown>:5:9: Incompatible types "<null>" and "Int" for binary operator "=="
 Line 5, col 9:
   4 |     let x: Int = 42;
 > 5 |     if (null == x) { return }
@@ -91,17 +94,30 @@ Line 5, col 9:
 `;
 
 exports[`resolveStatements should fail statements for expr-cmp-null-bounced 1`] = `
-"<unknown>:5:3: Type mismatch: "Bool" is not assignable to "<void>"
-Line 5, col 3:
-  4 | fun foo(b: bounced<S>) {
-> 5 |   return b == null;
-        ^~~~~~~~~~~~~~~~~
-  6 | }
+"<unknown>:7:10: Expressions of "bounced<S>" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 10:
+  6 | fun foo(b: bounced<S>): Bool {
+> 7 |   return b == null;
+               ^~~~~~~~~
+  8 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-cmp-void-null 1`] = `
+"<unknown>:6:12: Expressions of "<void>" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 6, col 12:
+  5 | fun baz(): Bool {
+> 6 |     return foo() == null
+                 ^~~~~~~~~~~~~
+  7 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for expr-cmp-void1 1`] = `
 "<unknown>:7:12: Expressions of "<void>" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
 Line 7, col 12:
   6 | fun baz(): Bool {
 > 7 |     return foo() == bar()
@@ -112,6 +128,7 @@ Line 7, col 12:
 
 exports[`resolveStatements should fail statements for expr-cmp-void2 1`] = `
 "<unknown>:7:12: Expressions of "<void>" type cannot be used for (non)equality operator "!="
+ See https://docs.tact-lang.org/book/operators#binary-equality
 Line 7, col 12:
   6 | fun baz(): Bool {
 > 7 |     return foo() != bar()
