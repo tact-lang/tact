@@ -542,13 +542,15 @@ export class ModuleGen {
         //   return get_data().begin_parse().load_int(1);
         // }
         m.entries.push(
-            fun(
-                ["method_id"],
-                "lazy_deployment_completed",
-                [],
-                { kind: "hole" },
-                [ret(call(call(call("load_init", [number(1)]), []), []))],
-            ),
+            fun(["method_id"], "lazy_deployment_completed", [], Type.hole(), [
+                ret(
+                    call("load_int", [number(1)], {
+                        receiver: call("begin_parse", [], {
+                            receiver: call("get_data", []),
+                        }),
+                    }),
+                ),
+            ]),
         );
 
         m.entries.push(

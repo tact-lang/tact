@@ -552,7 +552,7 @@ export class ExpressionGen {
             const args = this.tactExpr.args.map((argAst, i) =>
                 this.makeCastedExpr(argAst, sf.params[i]!.type),
             );
-            return { kind: "call_expr", fun, args };
+            return call(fun, args);
         }
 
         //
@@ -659,13 +659,10 @@ export class ExpressionGen {
                                 methodFun.params[0]!.type.kind === "ref" &&
                                 !methodFun.params[0]!.type.optional
                             ) {
-                                const fun = id(ops.typeTensorCast(tt.name));
                                 argExprs = [
-                                    {
-                                        kind: "call_expr",
-                                        fun,
-                                        args: [argExprs[0]!],
-                                    },
+                                    call(ops.typeTensorCast(tt.name), [
+                                        argExprs[0]!,
+                                    ]),
                                 ];
                             }
                         }
@@ -684,22 +681,15 @@ export class ExpressionGen {
                                 `Impossible self kind: ${selfExpr.kind}`,
                             );
                         }
-                        const fun = id(`${selfExpr}~${name}`);
-                        return { kind: "call_expr", fun, args: argExprs };
+                        return call(`${selfExpr}~${name}`, argExprs);
                     } else {
-                        const fun = id(ops.nonModifying(name));
-                        return {
-                            kind: "call_expr",
-                            fun,
-                            args: [selfExpr, ...argExprs],
-                        };
+                        return call(ops.nonModifying(name), [
+                            selfExpr,
+                            ...argExprs,
+                        ]);
                     }
                 } else {
-                    return {
-                        kind: "call_expr",
-                        fun: id(name),
-                        args: [selfExpr, ...argExprs],
-                    };
+                    return call(name, [selfExpr, ...argExprs]);
                 }
             }
 
