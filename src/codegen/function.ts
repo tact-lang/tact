@@ -9,7 +9,7 @@ import {
     FuncAstExpr,
     FuncType,
 } from "../func/syntax";
-import { id, call, ret, fun, vardef } from "../func/syntaxConstructors";
+import { id, call, ret, fun, vardef, Type, tensor } from "../func/syntaxConstructors";
 import { StatementGen, ExpressionGen, CodegenContext } from ".";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 
@@ -99,7 +99,7 @@ export class FunctionGen {
         if (self !== undefined && tactFun.isMutating) {
             // Add `self` to the method signature as it is mutating in the body.
             const selfTy = resolveFuncType(this.ctx.ctx, self);
-            returnTy = { kind: "tensor", value: [selfTy, returnTy] };
+            returnTy = Type.tensor(selfTy, returnTy);
             // returnsStr = resolveFuncTypeUnpack(ctx, self, funcIdOf("self"));
         }
 
@@ -226,7 +226,7 @@ export class FunctionGen {
         const body =
             values.length === 0 && returnTy.kind === "tuple"
                 ? [ret(call("empty_tuple", []))]
-                : [ret({ kind: "tensor_expr", values })];
+                : [ret(tensor(...values))];
         return fun(attrs, name, params, returnTy, body);
     }
 }

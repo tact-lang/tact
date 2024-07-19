@@ -108,7 +108,7 @@ export class ModuleGen {
             ["method_id"],
             "supported_interfaces",
             [],
-            { kind: "hole" },
+            Type.hole(),
             [ret(tensor(...shiftExprs))],
         );
     }
@@ -532,7 +532,7 @@ export class ModuleGen {
         //   return "${abiLink}";
         // }
         m.entries.push(
-            fun(["method_id"], "get_abi_ipfs", [], { kind: "hole" }, [
+            fun(["method_id"], "get_abi_ipfs", [], Type.hole(), [
                 ret(string(this.abiLink)),
             ]),
         );

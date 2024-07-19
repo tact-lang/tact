@@ -27,20 +27,15 @@ import {
     FuncAstExpr,
     FuncAstUnaryOp,
     FuncAstIdExpr,
-    FuncAstTernaryExpr,
 } from "../func/syntax";
-import { id, call, binop, ternary } from "../func/syntaxConstructors";
+import { id, call, binop, ternary, unop, number,nil, bool } from "../func/syntaxConstructors";
 
 function isNull(f: AstExpression): boolean {
     return f.kind === "null";
 }
 
 function addUnary(op: FuncAstUnaryOp, expr: FuncAstExpr): FuncAstExpr {
-    return {
-        kind: "unary_expr",
-        op,
-        value: expr,
-    };
+    return unop(op, expr);
 }
 
 function negate(expr: FuncAstExpr): FuncAstExpr {
@@ -81,7 +76,7 @@ export class ExpressionGen {
      */
     static writeValue(ctx: CodegenContext, val: Value): FuncAstExpr {
         if (typeof val === "bigint") {
-            return { kind: "number_expr", value: val };
+            return number(val);
         }
         // if (typeof val === "string") {
         //     const id = writeString(val, wCtx);
@@ -89,7 +84,7 @@ export class ExpressionGen {
         //     return `${id}()`;
         // }
         if (typeof val === "boolean") {
-            return { kind: "bool_expr", value: val };
+            return bool(val);
         }
         // if (Address.isAddress(val)) {
         //     const res = writeAddress(val, wCtx);
@@ -102,7 +97,7 @@ export class ExpressionGen {
         //     return `${res}()`;
         // }
         if (val === null) {
-            return { kind: "nil_expr" };
+            return nil();
         }
         // if (val instanceof CommentValue) {
         //     const id = writeComment(val.comment, wCtx);
@@ -191,10 +186,7 @@ export class ExpressionGen {
             // Special case for non-integer types and nullable
             if (this.tactExpr.op === "==" || this.tactExpr.op === "!=") {
                 if (isNull(this.tactExpr.left) && isNull(this.tactExpr.right)) {
-                    return {
-                        kind: "bool_expr",
-                        value: this.tactExpr.op === "==",
-                    };
+                    return bool(this.tactExpr.op === "==");
                 } else if (
                     isNull(this.tactExpr.left) &&
                     !isNull(this.tactExpr.right)
@@ -386,26 +378,14 @@ export class ExpressionGen {
             if (this.tactExpr.op === "&&") {
                 const cond = this.makeExpr(this.tactExpr.left);
                 const trueExpr = this.makeExpr(this.tactExpr.right);
-                const falseExpr = { kind: "bool_expr", value: false };
-                return {
-                    kind: "ternary_expr",
-                    cond,
-                    trueExpr,
-                    falseExpr,
-                } as FuncAstTernaryExpr;
+                return ternary(cond, trueExpr, bool(false));
             }
 
             // Case for "||" operator
             if (this.tactExpr.op === "||") {
                 const cond = this.makeExpr(this.tactExpr.left);
-                const trueExpr = { kind: "bool_expr", value: true };
                 const falseExpr = this.makeExpr(this.tactExpr.right);
-                return {
-                    kind: "ternary_expr",
-                    cond,
-                    trueExpr,
-                    falseExpr,
-                } as FuncAstTernaryExpr;
+                return ternary(cond, bool(true), falseExpr);
             }
 
             // Other ops

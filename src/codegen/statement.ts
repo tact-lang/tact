@@ -24,6 +24,7 @@ import {
     ret,
     tensor,
     assign,
+    unit,
     condition,
     vardef,
     Type,
@@ -100,8 +101,7 @@ export class StatementGen {
                     );
                     return ret(getValue(castedReturns));
                 } else {
-                    const unit = { kind: "unit_expr" } as FuncAstUnitExpr;
-                    return ret(getValue(unit));
+                    return ret(getValue(unit()));
                 }
             }
             case "statement_let": {
