@@ -9,8 +9,9 @@ import {
     FuncAstComment,
     FuncAstInclude,
     FuncAstModule,
-    FuncAstFunctionDefinition,
     FuncAstFunctionDeclaration,
+    FuncAstFunctionDefinition,
+    FuncAstAsmFunction,
     FuncAstVarDefStmt,
     FuncAstReturnStmt,
     FuncAstBlockStmt,
@@ -96,6 +97,10 @@ export class FuncFormatter {
             case "function_definition":
                 return this.formatFunctionDefinition(
                     node as FuncAstFunctionDefinition,
+                );
+            case "asm_function_definition":
+                return this.formatAsmFunction(
+                    node as FuncAstAsmFunction,
                 );
             case "var_def_stmt":
                 return this.formatVarDefStmt(node as FuncAstVarDefStmt);
@@ -223,6 +228,16 @@ export class FuncFormatter {
             node.body.map((stmt) => this.dump(stmt)).join("\n"),
         );
         return `${signature} {\n${body}\n}`;
+    }
+
+    private formatAsmFunction(node: FuncAstAsmFunction): string {
+        const signature = this.formatFunctionSignature(
+            node.name,
+            node.attrs,
+            node.params,
+            node.returnTy,
+        );
+        return `${signature} asm ${this.dump(node.rawAsm)};`;
     }
 
     private formatVarDefStmt(node: FuncAstVarDefStmt): string {

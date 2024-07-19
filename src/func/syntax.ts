@@ -351,6 +351,16 @@ export type FuncAstFunctionDefinition = {
     body: FuncAstStmt[];
 };
 
+// e.g.: int preload_uint(slice s, int len) asm "PLDUX";
+export type FuncAstAsmFunction = {
+    kind: "asm_function_definition";
+    name: FuncAstIdExpr;
+    attrs: FuncAstFunctionAttribute[];
+    params: FuncAstFormalFunctionParam[];
+    returnTy: FuncType;
+    rawAsm: FuncAstStringExpr; // Raw TVM assembly
+}
+
 export type FuncAstComment = {
     kind: "comment";
     values: string[]; // Represents multiline comments
@@ -377,8 +387,9 @@ export type FuncAstGlobalVariable = {
 export type FuncAstModuleEntry =
     | FuncAstInclude
     | FuncAstPragma
-    | FuncAstFunctionDefinition
     | FuncAstFunctionDeclaration
+    | FuncAstFunctionDefinition
+    | FuncAstAsmFunction
     | FuncAstComment
     | FuncAstConstant
     | FuncAstGlobalVariable;

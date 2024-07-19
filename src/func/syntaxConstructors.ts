@@ -38,6 +38,7 @@ import {
     FuncAstFunctionAttribute,
     FuncAstFunctionDeclaration,
     FuncAstFunctionDefinition,
+    FuncAstAsmFunction,
     FuncAstComment,
     FuncAstInclude,
     FuncAstPragma,
@@ -363,14 +364,12 @@ export const functionDeclaration = (
     returnTy,
 });
 
-export const fun = (
-    attrs: FuncAstFunctionAttribute[],
-    name: string | FuncAstIdExpr,
-    paramValues: [string, FuncType][],
-    returnTy: FuncType,
-    body: FuncAstStmt[],
-): FuncAstFunctionDefinition => {
-    const params = paramValues.map(
+type FunParamValues = [string, FuncType][];
+
+function transformFunctionParams(
+    paramValues: FunParamValues,
+): FuncAstFormalFunctionParam[] {
+    return paramValues.map(
         ([name, ty]) =>
             ({
                 kind: "function_param",
@@ -378,13 +377,39 @@ export const fun = (
                 ty,
             }) as FuncAstFormalFunctionParam,
     );
+}
+
+export const fun = (
+    attrs: FuncAstFunctionAttribute[],
+    name: string | FuncAstIdExpr,
+    paramValues: FunParamValues,
+    returnTy: FuncType,
+    body: FuncAstStmt[],
+): FuncAstFunctionDefinition => {
     return {
         kind: "function_definition",
         name: wrapToId(name),
         attrs,
-        params,
+        params: transformFunctionParams(paramValues),
         returnTy,
         body,
+    };
+};
+
+export const asmfun = (
+    attrs: FuncAstFunctionAttribute[],
+    name: string | FuncAstIdExpr,
+    paramValues: FunParamValues,
+    returnTy: FuncType,
+    asm: string,
+): FuncAstAsmFunction => {
+    return {
+        kind: "asm_function_definition",
+        name: wrapToId(name),
+        attrs,
+        params: transformFunctionParams(paramValues),
+        returnTy,
+        rawAsm: string(asm),
     };
 };
 
