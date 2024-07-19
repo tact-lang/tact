@@ -101,6 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All identifiers in error messages are now quoted for consistency: PR [#363](https://github.com/tact-lang/tact/pull/363)
 - The Tact grammar has been refactored for better readability: PR [#365](https://github.com/tact-lang/tact/pull/365)
 - Error messages now use relative file paths: PR [#456](https://github.com/tact-lang/tact/pull/456)
+- Comparison between `null` and non-optionals now throws a compilation error: PR [#571](https://github.com/tact-lang/tact/pull/571)
 
 ### Fixed
 
