@@ -46,10 +46,21 @@ import JSONbig from "json-bigint";
  * Provides utilities to print the generated Func AST.
  */
 export class FuncFormatter {
+    /**
+     * Limit for the length of a single line.
+     * @default 100
+     */
+    private lineLengthLimit: number;
+    /**
+     * Number of spaces used for identation.
+     * @default 4
+     */
     private indent: number;
     private currentIndent: number;
 
-    constructor(indent: number = 4) {
+    constructor( params: Partial<{ indent: number, lineLengthLimit: number }> = {},) {
+  const { indent= 4, lineLengthLimit= 100 } = params;
+        this.lineLengthLimit = lineLengthLimit;
         this.indent = indent;
         this.currentIndent = 0;
     }
@@ -377,8 +388,17 @@ export class FuncFormatter {
     }
 
     private formatTensorExpr(node: FuncAstTensorExpr): string {
-        const values = node.values.map((value) => this.dump(value)).join(", ");
-        return `(${values})`;
+        const values = node.values.map((value) => this.dump(value));
+        const singleLine = `(${values.join(", ")})`;
+
+        if (singleLine.length <= this.lineLengthLimit) {
+            return singleLine;
+        } else {
+            const indentedValues = values
+                .map((value) => this.indentLine(value))
+                .join(",\n");
+            return `(\n${indentedValues}\n${" ".repeat(this.currentIndent)})`;
+        }
     }
 
     private formatUnitExpr(_: FuncAstUnitExpr): string {
@@ -432,6 +452,10 @@ export class FuncFormatter {
                     `Unsupported type kind: ${JSONbig.stringify(node, null, 2)}`,
                 );
         }
+    }
+
+    private indentLine(line: string): string {
+        return " ".repeat(this.currentIndent + this.indent) + line;
     }
 
     private formatIndentedBlock(content: string): string {
