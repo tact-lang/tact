@@ -5,6 +5,7 @@ import { topologicalSort } from "../utils/utils";
 import { ContractABI } from "@ton/core";
 import { FuncFormatter } from "../func/formatter";
 import { FuncAstModule, FuncAstFunctionDefinition } from "../func/syntax";
+import { deepCopy } from "../func/syntaxUtils";
 import {
     comment,
     mod,
@@ -210,12 +211,13 @@ export class FuncGenerator {
         functions.forEach((f) => {
             // if (f.code.kind === "generic") {
             m.entries.push(comment(f.name.value, { skipCR: true }));
+            const f_ = deepCopy(f);
             if (
-                f.attrs.find((attr) => attr !== "impure" && attr !== "inline")
+                f_.attrs.find((attr) => attr !== "impure" && attr !== "inline")
             ) {
-                f.attrs.push("inline_ref");
+                f_.attrs.push("inline_ref");
             }
-            m.entries.push(toDeclaration(f));
+            m.entries.push(toDeclaration(f_));
             // }
         });
         generated.files.push({
