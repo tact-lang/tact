@@ -1,7 +1,7 @@
 import { CodegenContext, FunctionGen } from ".";
 import { FuncAstExpr } from "../func/syntax";
 import { Address, beginCell, Cell } from "@ton/core";
-import { Value } from "../types/types";
+import { Value, CommentValue } from "../types/types";
 import {
     call,
     Type,
@@ -49,7 +49,7 @@ export class LiteralGen {
                 funName,
                 [],
                 Type.slice(),
-                `{${t}} B>boc <s PUSHSLICE`,
+                `B{${t}} B>boc <s PUSHSLICE`,
             );
             this.ctx.add("function", fun);
         }
@@ -64,16 +64,60 @@ export class LiteralGen {
         return this.writeRawSlice("string", `String "${str}"`, cell);
     }
 
+    private writeComment(str: string): FuncAstExpr {
+        const cell = beginCell()
+            .storeUint(0, 32)
+            .storeStringTail(str)
+            .endCell();
+        return this.writeRawCell("comment", `Comment "${str}"`, cell);
+    }
+
     /**
      * Returns a function name used to access the address value.
      */
-private writeAddress(address: Address) {
-    return this.writeRawSlice(
-        "address",
-        address.toString(),
-        beginCell().storeAddress(address).endCell(),
-    );
-}
+    private writeAddress(address: Address): FuncAstExpr {
+        return this.writeRawSlice(
+            "address",
+            address.toString(),
+            beginCell().storeAddress(address).endCell(),
+        );
+    }
+
+    /**
+     * Returns a function name used to access the cell value.
+     */
+    private writeCell(cell: Cell): FuncAstExpr {
+        return this.writeRawCell(
+            "cell",
+            `Cell ${cell.hash().toString("base64")}`,
+            cell,
+        );
+    }
+
+    /**
+     * Saves/retrieves a function from the context and returns its name.
+     */
+    private writeRawCell(
+        prefix: string,
+        comment: string,
+        cell: Cell,
+    ): FuncAstExpr {
+        const h = cell.hash().toString("hex");
+        const t = cell.toBoc({ idx: false }).toString("hex");
+        const funName = `__gen_cell_${prefix}_${h}`;
+        if (!this.ctx.has("function", funName)) {
+            // TODO: Add docstring: `comment`
+            const fun = asmfun(
+                [],
+                funName,
+                [],
+                Type.slice(),
+                `B{${t}} B>boc PUSHREF`,
+            );
+            this.ctx.add("function", fun);
+        }
+        return id(funName);
+    }
 
     /**
      * Generates FunC literals from Tact ones.
@@ -90,21 +134,17 @@ private writeAddress(address: Address) {
             return bool(val);
         }
         if (Address.isAddress(val)) {
-            return call(this.writeAddress(val), [])
+            return call(this.writeAddress(val), []);
         }
-        // if (val instanceof Cell) {
-        //     const res = writeCell(val, wCtx);
-        //     wCtx.used(res);
-        //     return `${res}()`;
-        // }
+        if (val instanceof Cell) {
+            return call(this.writeCell(val), []);
+        }
         if (val === null) {
             return nil();
         }
-        // if (val instanceof CommentValue) {
-        //     const id = writeComment(val.comment, wCtx);
-        //     wCtx.used(id);
-        //     return `${id}()`;
-        // }
+        if (val instanceof CommentValue) {
+            return call(this.writeComment(val.comment), []);
+        }
         if (typeof val === "object" && "$tactStruct" in val) {
             // this is a struct value
             const structDescription = getType(
