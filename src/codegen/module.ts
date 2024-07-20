@@ -1,9 +1,11 @@
 import { getAllTypes, getType } from "../types/resolveDescriptors";
-import { TypeDescription } from "../types/types";
+import { ReceiverDescription, TypeDescription } from "../types/types";
 import { getSortedTypes } from "../storage/resolveAllocation";
+import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 import { getSupportedInterfaces } from "../types/getSupportedInterfaces";
-import { ops } from "./util";
+import { funcIdOf, ops } from "./util";
 import {
+    UNIT_TYPE,
     FuncAstModule,
     FuncAstStmt,
     FuncAstFunctionAttribute,
@@ -13,8 +15,10 @@ import {
 } from "../func/syntax";
 import {
     comment,
+    FunParamValue,
     assign,
     expr,
+    unit,
     call,
     binop,
     bool,
@@ -30,9 +34,19 @@ import {
     condition,
     id,
 } from "../func/syntaxConstructors";
-import { resolveFuncType } from "./type";
-import { FunctionGen, CodegenContext } from ".";
+import { FunctionGen, StatementGen, CodegenContext } from ".";
 import { beginCell } from "@ton/core";
+
+import JSONbig from "json-bigint";
+
+export function commentPseudoOpcode(comment: string): string {
+    return beginCell()
+        .storeUint(0, 32)
+        .storeBuffer(Buffer.from(comment, "utf8"))
+        .endCell()
+        .hash()
+        .toString("hex", 0, 64);
+}
 
 /**
  * Encapsulates generation of the main Func compilation module from the main Tact module.
@@ -104,13 +118,9 @@ export class ModuleGen {
         const shiftExprs: FuncAstExpr[] = supported.map((item) =>
             binop(string(item, "H"), ">>", number(128)),
         );
-        return fun(
-            ["method_id"],
-            "supported_interfaces",
-            [],
-            Type.hole(),
-            [ret(tensor(...shiftExprs))],
-        );
+        return fun(["method_id"], "supported_interfaces", [], Type.hole(), [
+            ret(tensor(...shiftExprs)),
+        ]);
     }
 
     /**
@@ -497,6 +507,288 @@ export class ModuleGen {
         return fun(attrs, name, paramValues, returnTy, functionBody);
     }
 
+    private writeReceiver(
+        self: TypeDescription,
+        f: ReceiverDescription,
+    ): FuncAstFunctionDefinition {
+        const selector = f.selector;
+        const selfRes = resolveFuncTypeUnpack(
+            this.ctx.ctx,
+            self,
+            funcIdOf("self"),
+        );
+        const selfType = resolveFuncType(this.ctx.ctx, self);
+        const selfUnpack = vardef(
+            undefined,
+            resolveFuncTypeUnpack(this.ctx.ctx, self, funcIdOf("self")),
+            id(funcIdOf("self")),
+        );
+
+        // Binary receiver
+        if (
+            selector.kind === "internal-binary" ||
+            selector.kind === "external-binary"
+        ) {
+            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const funName = ops.receiveType(
+                self.name,
+                selector.kind === "internal-binary" ? "internal" : "external",
+                selector.type,
+            );
+            const paramValues: FunParamValue[] = [
+                [funcIdOf("self"), selfType],
+                [
+                    funcIdOf(selector.name),
+                    resolveFuncType(this.ctx.ctx, selector.type),
+                ],
+            ];
+            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const body: FuncAstStmt[] = [selfUnpack];
+            body.push(
+                vardef(
+                    undefined,
+                    resolveFuncTypeUnpack(
+                        this.ctx.ctx,
+                        selector.type,
+                        funcIdOf(selector.name),
+                    ),
+                    id(funcIdOf(selector.name)),
+                ),
+            );
+            f.ast.statements.forEach((s) =>
+                body.push(
+                    StatementGen.fromTact(
+                        this.ctx,
+                        s,
+                        selfRes,
+                    ).writeStatement(),
+                ),
+            );
+            if (
+                f.ast.statements.length === 0 ||
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
+                    "statement_return"
+            ) {
+                body.push(ret(tensor(id(selfRes), unit())));
+            }
+            return fun(attrs, funName, paramValues, returnTy, body);
+        }
+
+        // Empty receiver
+        if (
+            selector.kind === "internal-empty" ||
+            selector.kind === "external-empty"
+        ) {
+            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const funName = ops.receiveEmpty(
+                self.name,
+                selector.kind === "internal-empty" ? "internal" : "external",
+            );
+            const paramValues: FunParamValue[] = [[funcIdOf("self"), selfType]];
+            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const body: FuncAstStmt[] = [selfUnpack];
+            f.ast.statements.forEach((s) =>
+                body.push(
+                    StatementGen.fromTact(
+                        this.ctx,
+                        s,
+                        selfRes,
+                    ).writeStatement(),
+                ),
+            );
+            if (
+                f.ast.statements.length === 0 ||
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
+                    "statement_return"
+            ) {
+                body.push(ret(tensor(id(selfRes), unit())));
+            }
+            return fun(attrs, funName, paramValues, returnTy, body);
+        }
+
+        // Comment receiver
+        if (
+            selector.kind === "internal-comment" ||
+            selector.kind === "external-comment"
+        ) {
+            const hash = commentPseudoOpcode(selector.comment);
+            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const funName = ops.receiveText(
+                self.name,
+                selector.kind === "internal-comment" ? "internal" : "external",
+                hash,
+            );
+            const paramValues: FunParamValue[] = [[funcIdOf("self"), selfType]];
+            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const body: FuncAstStmt[] = [selfUnpack];
+            f.ast.statements.forEach((s) =>
+                body.push(
+                    StatementGen.fromTact(
+                        this.ctx,
+                        s,
+                        selfRes,
+                    ).writeStatement(),
+                ),
+            );
+            if (
+                f.ast.statements.length === 0 ||
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
+                    "statement_return"
+            ) {
+                body.push(ret(tensor(id(selfRes), unit())));
+            }
+            return fun(attrs, funName, paramValues, returnTy, body);
+        }
+
+        // Fallback
+        if (
+            selector.kind === "internal-comment-fallback" ||
+            selector.kind === "external-comment-fallback"
+        ) {
+            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const funName = ops.receiveAnyText(
+                self.name,
+                selector.kind === "internal-comment-fallback"
+                    ? "internal"
+                    : "external",
+            );
+            const paramValues: FunParamValue[] = [
+                [funcIdOf("self"), selfType],
+                [funcIdOf(selector.name), Type.slice()],
+            ];
+            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const body: FuncAstStmt[] = [selfUnpack];
+            f.ast.statements.forEach((s) =>
+                body.push(
+                    StatementGen.fromTact(
+                        this.ctx,
+                        s,
+                        selfRes,
+                    ).writeStatement(),
+                ),
+            );
+            if (
+                f.ast.statements.length === 0 ||
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
+                    "statement_return"
+            ) {
+                body.push(ret(tensor(id(selfRes), unit())));
+            }
+            return fun(attrs, funName, paramValues, returnTy, body);
+        }
+
+        // Fallback
+        if (selector.kind === "internal-fallback") {
+            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const funName = ops.receiveAny(self.name, "internal");
+            const paramValues: FunParamValue[] = [
+                [funcIdOf("self"), selfType],
+                [funcIdOf(selector.name), Type.slice()],
+            ];
+            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const body: FuncAstStmt[] = [selfUnpack];
+            f.ast.statements.forEach((s) =>
+                body.push(
+                    StatementGen.fromTact(
+                        this.ctx,
+                        s,
+                        selfRes,
+                    ).writeStatement(),
+                ),
+            );
+            if (
+                f.ast.statements.length === 0 ||
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
+                    "statement_return"
+            ) {
+                body.push(ret(tensor(id(selfRes), unit())));
+            }
+            return fun(attrs, funName, paramValues, returnTy, body);
+        }
+
+        // Bounced
+        if (selector.kind === "bounce-fallback") {
+            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const funName = ops.receiveBounceAny(self.name);
+            const paramValues: FunParamValue[] = [
+                [funcIdOf("self"), selfType],
+                [funcIdOf(selector.name), Type.slice()],
+            ];
+            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const body: FuncAstStmt[] = [selfUnpack];
+            f.ast.statements.forEach((s) =>
+                body.push(
+                    StatementGen.fromTact(
+                        this.ctx,
+                        s,
+                        selfRes,
+                    ).writeStatement(),
+                ),
+            );
+            if (
+                f.ast.statements.length === 0 ||
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
+                    "statement_return"
+            ) {
+                body.push(ret(tensor(id(selfRes), unit())));
+            }
+            return fun(attrs, funName, paramValues, returnTy, body);
+        }
+
+        if (selector.kind === "bounce-binary") {
+            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const funName = ops.receiveTypeBounce(self.name, selector.type);
+            const paramValues: FunParamValue[] = [
+                [funcIdOf("self"), selfType],
+                [
+                    funcIdOf(selector.name),
+                    resolveFuncType(
+                        this.ctx.ctx,
+                        selector.type,
+                        false,
+                        selector.bounced,
+                    ),
+                ],
+            ];
+            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const body: FuncAstStmt[] = [selfUnpack];
+            body.push(
+                vardef(
+                    undefined,
+                    resolveFuncTypeUnpack(
+                        this.ctx.ctx,
+                        selector.type,
+                        funcIdOf(selector.name),
+                        false,
+                        selector.bounced,
+                    ),
+                    id(funcIdOf(selector.name)),
+                ),
+            );
+            f.ast.statements.forEach((s) =>
+                body.push(
+                    StatementGen.fromTact(
+                        this.ctx,
+                        s,
+                        selfRes,
+                    ).writeStatement(),
+                ),
+            );
+            if (
+                f.ast.statements.length === 0 ||
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
+                    "statement_return"
+            ) {
+                body.push(ret(tensor(id(selfRes), unit())));
+            }
+            return fun(attrs, funName, paramValues, returnTy, body);
+        }
+
+        throw new Error(
+            `Unknown selector ${selector.kind}:\n${JSONbig.stringify(selector, null, 2)}`,
+        );
+    }
+
     /**
      * Adds entries from the main Tact contract.
      */
@@ -508,10 +800,10 @@ export class ModuleGen {
             comment("", `Receivers of a Contract ${contractTy.name}`, ""),
         );
 
-        // // Write receivers
-        // for (const r of Object.values(c.receivers)) {
-        //     this.writeReceiver(type, r, ctx);
-        // }
+        // Write receivers
+        for (const r of Object.values(contractTy.receivers)) {
+            m.entries.push(this.writeReceiver(contractTy, r));
+        }
 
         m.entries.push(
             comment("", `Get methods of a Contract ${contractTy.name}`, ""),

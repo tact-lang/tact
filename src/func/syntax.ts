@@ -9,6 +9,8 @@ export const FUNC_VERSION: string = "0.4.4";
  * NOTE: Unit type `()` is a special case of the tensor type.
  */
 export type FuncTensorType = FuncType[];
+
+// TODO: move it to syntaxConstructors
 export const UNIT_TYPE: FuncType = {
     kind: "tensor",
     value: [] as FuncTensorType,

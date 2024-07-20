@@ -372,10 +372,10 @@ export const functionDeclaration = (
     returnTy,
 });
 
-type FunParamValues = [string, FuncType][];
+export type FunParamValue = [string, FuncType];
 
 function transformFunctionParams(
-    paramValues: FunParamValues,
+    paramValues: FunParamValue[],
 ): FuncAstFormalFunctionParam[] {
     return paramValues.map(
         ([name, ty]) =>
@@ -390,7 +390,7 @@ function transformFunctionParams(
 export const fun = (
     attrs: FuncAstFunctionAttribute[],
     name: string | FuncAstIdExpr,
-    paramValues: FunParamValues,
+    paramValues: FunParamValue[],
     returnTy: FuncType,
     body: FuncAstStmt[],
 ): FuncAstFunctionDefinition => {
@@ -407,7 +407,7 @@ export const fun = (
 export const asmfun = (
     attrs: FuncAstFunctionAttribute[],
     name: string | FuncAstIdExpr,
-    paramValues: FunParamValues,
+    paramValues: FunParamValue[],
     returnTy: FuncType,
     asm: string,
 ): FuncAstAsmFunction => {
