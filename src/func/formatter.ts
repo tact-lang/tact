@@ -467,7 +467,7 @@ export class FuncFormatter {
     }
 
     private formatCR(node: FuncAstCR): string {
-        return "\n".repeat(node.lines);
+        return node.lines === 1 ? "" : "\n".repeat(node.lines - 1);
     }
 
     private formatType(node: FuncType): string {

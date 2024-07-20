@@ -27,6 +27,7 @@ import {
     FuncAstExpr,
 } from "../func/syntax";
 import {
+    cr,
     comment,
     FunParamValue,
     assign,
@@ -350,6 +351,7 @@ export class ModuleGen {
             }
             const cond = condition(id("msg_bounced"), body);
             functionBody.push(cond);
+            functionBody.push(cr());
         }
 
         // ;; Parse incoming message
@@ -372,6 +374,7 @@ export class ModuleGen {
                 ],
             ),
         );
+        functionBody.push(cr());
 
         // Non-empty receivers
         for (const f of type.receivers) {
@@ -439,6 +442,7 @@ export class ModuleGen {
                         ],
                     ),
                 );
+            functionBody.push(cr());
             }
         }
 
@@ -542,6 +546,7 @@ export class ModuleGen {
                 );
             }
             functionBody.push(condition(cond, condBody));
+            functionBody.push(cr());
         }
 
         // Fallback
