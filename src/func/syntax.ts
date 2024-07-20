@@ -244,6 +244,7 @@ export type FuncAstPrimitiveTypeExpr = {
 
 export type FuncAstStmt =
     | FuncAstComment // A comment appearing among statements
+    | FuncAstCR // An extra newline separating block of statements
     | FuncAstBlockStmt
     | FuncAstVarDefStmt
     | FuncAstReturnStmt
@@ -359,13 +360,18 @@ export type FuncAstAsmFunction = {
     params: FuncAstFormalFunctionParam[];
     returnTy: FuncType;
     rawAsm: FuncAstStringExpr; // Raw TVM assembly
-}
+};
 
 export type FuncAstComment = {
     kind: "comment";
     values: string[]; // Represents multiline comments
     skipCR: boolean; // Skips CR before the next line
     style: ";" | ";;";
+};
+
+export type FuncAstCR = {
+    kind: "cr";
+    lines: number; // Number of newline symbols
 };
 
 export type FuncAstInclude = {

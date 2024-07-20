@@ -40,6 +40,7 @@ import {
     FuncAstFunctionDefinition,
     FuncAstAsmFunction,
     FuncAstComment,
+    FuncAstCR,
     FuncAstInclude,
     FuncAstPragma,
     FuncAstGlobalVariable,
@@ -337,6 +338,11 @@ export function comment(
         style,
     };
 }
+
+export const cr = (lines: number = 1): FuncAstCR => ({
+    kind: "cr",
+    lines,
+});
 
 export const constant = (ty: FuncType, init: FuncAstExpr): FuncAstConstant => ({
     kind: "constant",

@@ -7,6 +7,7 @@ import {
     FuncAstAssignExpr,
     FuncAstPragma,
     FuncAstComment,
+    FuncAstCR,
     FuncAstInclude,
     FuncAstModule,
     FuncAstFunctionDeclaration,
@@ -78,6 +79,8 @@ export class FuncFormatter {
                 return this.formatPragma(node as FuncAstPragma);
             case "comment":
                 return this.formatComment(node as FuncAstComment);
+            case "cr":
+                return this.formatCR(node as FuncAstCR);
             case "int":
             case "hole":
             case "cell":
@@ -450,6 +453,10 @@ export class FuncFormatter {
         return node.values
             .map((v) => `${node.style}${v.length > 0 ? " " + v : ""}`)
             .join("\n");
+    }
+
+    private formatCR(node: FuncAstCR): string {
+        return '\n'.repeat(node.lines);
     }
 
     private formatType(node: FuncType): string {
