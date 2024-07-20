@@ -13,6 +13,7 @@ import {
     id,
     call,
     ret,
+    FunAttr,
     fun,
     vardef,
     Type,
@@ -131,9 +132,9 @@ export class FunctionGen {
             : ops.global(tactFun.name);
 
         // Prepare function attributes
-        let attrs: FuncAstFunctionAttribute[] = ["impure"];
+        let attrs: FuncAstFunctionAttribute[] = [FunAttr.impure()];
         if (enabledInline(this.ctx.ctx) || tactFun.isInline) {
-            attrs.push("inline");
+            attrs.push(FunAttr.inline());
         }
         // TODO: handle stdlib
         // if (f.origin === "stdlib") {
@@ -200,7 +201,7 @@ export class FunctionGen {
         type: TypeDescription,
         args: string[],
     ): FuncAstFunctionDefinition {
-        const attrs: FuncAstFunctionAttribute[] = ["inline"];
+        const attrs: FuncAstFunctionAttribute[] = [FunAttr.inline()];
         const name = ops.typeConstructor(
             type.name,
             args.map((a) => a),

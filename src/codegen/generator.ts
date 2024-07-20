@@ -12,6 +12,7 @@ import {
     pragma,
     include,
     toDeclaration,
+FunAttr,
 } from "../func/syntaxConstructors";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
 
@@ -213,9 +214,9 @@ export class FuncGenerator {
             m.entries.push(comment(f.name.value, { skipCR: true }));
             const f_ = deepCopy(f);
             if (
-                f_.attrs.find((attr) => attr !== "impure" && attr !== "inline")
+                f_.attrs.find((attr) => attr.kind !== "impure" && attr.kind !== "inline")
             ) {
-                f_.attrs.push("inline_ref");
+                f_.attrs.push(FunAttr.inline_ref());
             }
             m.entries.push(toDeclaration(f_));
             // }

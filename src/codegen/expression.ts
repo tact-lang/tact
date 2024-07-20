@@ -526,7 +526,6 @@ export class ExpressionGen {
                 // Check struct ABI
                 if (methodTy.kind === "struct") {
                     if (StructFunctions.has(idText(this.tactExpr.method))) {
-                        console.log(`getting ${idText(this.tactExpr.method)}`);
                         const abi = StructFunctions.get(
                             idText(this.tactExpr.method),
                         )!;
@@ -551,15 +550,10 @@ export class ExpressionGen {
                     idText(this.tactExpr.method),
                 );
                 if (
-                    methodFun.ast.kind === "function_def" ||
-                    methodFun.ast.kind === "function_decl"
+                    methodFun.ast.kind !== "function_def" &&
+                    methodFun.ast.kind !== "function_decl"
                 ) {
-                    // wCtx.used(name);
-                } else {
                     name = idText(methodFun.ast.nativeName);
-                    if (name.startsWith("__tact")) {
-                        // wCtx.used(name);
-                    }
                 }
 
                 // Translate arguments

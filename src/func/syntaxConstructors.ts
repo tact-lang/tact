@@ -260,6 +260,7 @@ export const primitiveType = (ty: FuncType): FuncAstPrimitiveTypeExpr => ({
 //
 
 export const vardef = (
+    // TODO: replace w/ `FuncType | '_'`
     ty: FuncType | undefined,
     name: string | FuncAstIdExpr,
     init?: FuncAstExpr,

@@ -1,7 +1,19 @@
 import { getAllTypes, getType } from "../types/resolveDescriptors";
-import { ReceiverDescription, TypeDescription } from "../types/types";
+import {
+    ReceiverDescription,
+    TypeDescription,
+    TypeRef,
+    FunctionDescription,
+} from "../types/types";
+import { CompilerContext } from "../context";
 import { getSortedTypes } from "../storage/resolveAllocation";
-import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
+import { getMethodId } from "../utils/utils";
+import { idTextErr } from "../errors";
+import {
+    resolveFuncTypeUnpack,
+    resolveFuncType,
+    resolveFuncTupleType,
+} from "./type";
 import { getSupportedInterfaces } from "../types/getSupportedInterfaces";
 import { funcIdOf, ops } from "./util";
 import {
@@ -10,6 +22,7 @@ import {
     FuncAstStmt,
     FuncAstFunctionAttribute,
     FuncType,
+    FuncAstVarDefStmt,
     FuncAstFunctionDefinition,
     FuncAstExpr,
 } from "../func/syntax";
@@ -29,6 +42,8 @@ import {
     ret,
     tensor,
     Type,
+    ternary,
+    FunAttr,
     vardef,
     mod,
     condition,
@@ -46,6 +61,48 @@ export function commentPseudoOpcode(comment: string): string {
         .endCell()
         .hash()
         .toString("hex", 0, 64);
+}
+
+export function unwrapExternal(
+    ctx: CompilerContext,
+    targetName: string,
+    sourceName: string,
+    type: TypeRef,
+): FuncAstVarDefStmt {
+    if (type.kind === "ref") {
+        const t = getType(ctx, type.name);
+        if (t.kind === "struct") {
+            if (type.optional) {
+                return vardef(
+                    resolveFuncType(ctx, type),
+                    targetName,
+                    call(ops.typeFromOptTuple(t.name), [id(sourceName)]),
+                );
+            } else {
+                return vardef(
+                    resolveFuncType(ctx, type),
+                    targetName,
+                    call(ops.typeFromTuple(t.name), [id(sourceName)]),
+                );
+            }
+        } else if (t.kind === "primitive_type_decl" && t.name === "Address") {
+            if (type.optional) {
+                const init = ternary(
+                    call("null?", [id(sourceName)]),
+                    call("null", []),
+                    call("__tact_verify_address", [id(sourceName)]),
+                );
+                return vardef(resolveFuncType(ctx, type), targetName, init);
+            } else {
+                return vardef(
+                    resolveFuncType(ctx, type),
+                    targetName,
+                    call("__tact_verify_address", [id(sourceName)]),
+                );
+            }
+        }
+    }
+    return vardef(resolveFuncType(ctx, type), targetName, id(sourceName));
 }
 
 /**
@@ -118,9 +175,13 @@ export class ModuleGen {
         const shiftExprs: FuncAstExpr[] = supported.map((item) =>
             binop(string(item, "H"), ">>", number(128)),
         );
-        return fun(["method_id"], "supported_interfaces", [], Type.hole(), [
-            ret(tensor(...shiftExprs)),
-        ]);
+        return fun(
+            [FunAttr.method_id()],
+            "supported_interfaces",
+            [],
+            Type.hole(),
+            [ret(tensor(...shiftExprs))],
+        );
     }
 
     /**
@@ -156,7 +217,10 @@ export class ModuleGen {
         kind: "internal" | "external",
     ): FuncAstFunctionDefinition {
         const internal = kind === "internal";
-        const attrs: FuncAstFunctionAttribute[] = ["impure", "inline_ref"];
+        const attrs: FuncAstFunctionAttribute[] = [
+            FunAttr.impure(),
+            FunAttr.inline_ref(),
+        ];
         const name = ops.contractRouter(type.name, kind);
         const returnTy = Type.tensor(
             resolveFuncType(this.ctx.ctx, type),
@@ -542,7 +606,10 @@ export class ModuleGen {
                     resolveFuncType(this.ctx.ctx, selector.type),
                 ],
             ];
-            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const attrs: FuncAstFunctionAttribute[] = [
+                FunAttr.impure(),
+                FunAttr.inline(),
+            ];
             const body: FuncAstStmt[] = [selfUnpack];
             body.push(
                 vardef(
@@ -585,7 +652,10 @@ export class ModuleGen {
                 selector.kind === "internal-empty" ? "internal" : "external",
             );
             const paramValues: FunParamValue[] = [[funcIdOf("self"), selfType]];
-            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const attrs: FuncAstFunctionAttribute[] = [
+                FunAttr.impure(),
+                FunAttr.inline(),
+            ];
             const body: FuncAstStmt[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
@@ -619,7 +689,10 @@ export class ModuleGen {
                 hash,
             );
             const paramValues: FunParamValue[] = [[funcIdOf("self"), selfType]];
-            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const attrs: FuncAstFunctionAttribute[] = [
+                FunAttr.impure(),
+                FunAttr.inline(),
+            ];
             const body: FuncAstStmt[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
@@ -656,7 +729,10 @@ export class ModuleGen {
                 [funcIdOf("self"), selfType],
                 [funcIdOf(selector.name), Type.slice()],
             ];
-            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const attrs: FuncAstFunctionAttribute[] = [
+                FunAttr.impure(),
+                FunAttr.inline(),
+            ];
             const body: FuncAstStmt[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
@@ -685,7 +761,10 @@ export class ModuleGen {
                 [funcIdOf("self"), selfType],
                 [funcIdOf(selector.name), Type.slice()],
             ];
-            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const attrs: FuncAstFunctionAttribute[] = [
+                FunAttr.impure(),
+                FunAttr.inline(),
+            ];
             const body: FuncAstStmt[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
@@ -714,7 +793,10 @@ export class ModuleGen {
                 [funcIdOf("self"), selfType],
                 [funcIdOf(selector.name), Type.slice()],
             ];
-            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const attrs: FuncAstFunctionAttribute[] = [
+                FunAttr.impure(),
+                FunAttr.inline(),
+            ];
             const body: FuncAstStmt[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
@@ -750,7 +832,10 @@ export class ModuleGen {
                     ),
                 ],
             ];
-            const attrs: FuncAstFunctionAttribute[] = ["impure", "inline"];
+            const attrs: FuncAstFunctionAttribute[] = [
+                FunAttr.impure(),
+                FunAttr.inline(),
+            ];
             const body: FuncAstStmt[] = [selfUnpack];
             body.push(
                 vardef(
@@ -789,6 +874,66 @@ export class ModuleGen {
         );
     }
 
+    private writeGetter(f: FunctionDescription): FuncAstFunctionDefinition {
+        // Render tensors
+        const self = f.self !== null ? getType(this.ctx.ctx, f.self) : null;
+        if (!self) {
+            throw new Error(`No self type for getter ${idTextErr(f.name)}`); // Impossible
+        }
+        const returnTy = Type.hole();
+        const funName = `%${f.name}`;
+        const paramValues: FunParamValue[] = f.params.map((v) => [
+            funcIdOf(v.name),
+            resolveFuncTupleType(this.ctx.ctx, v.type),
+        ]);
+        const attrs = [FunAttr.method_id(getMethodId(f.name))];
+
+        const body: FuncAstStmt[] = [];
+        // Unpack parameters
+        for (const param of f.params) {
+            unwrapExternal(
+                this.ctx.ctx,
+                funcIdOf(param.name),
+                funcIdOf(param.name),
+                param.type,
+            );
+        }
+        // Load contract state
+        body.push(
+            vardef(undefined, "self", call(ops.contractLoad(self.name), [])),
+        );
+        // Execute get method
+        body.push(
+            vardef(
+                undefined,
+                "res",
+                call(
+                    `self~${ops.extension(self.name, f.name)}`,
+                    f.params.map((v) => id(funcIdOf(v.name))),
+                ),
+            ),
+        );
+        // Pack if needed
+        if (f.returns.kind === "ref") {
+            const t = getType(this.ctx.ctx, f.returns.name);
+            if (t.kind === "struct") {
+                if (f.returns.optional) {
+                    body.push(
+                        ret(call(ops.typeToOptExternal(t.name), [id("res")])),
+                    );
+                } else {
+                    body.push(
+                        ret(call(ops.typeToExternal(t.name), [id("res")])),
+                    );
+                }
+                return fun(attrs, funName, paramValues, returnTy, body);
+            }
+        }
+        // Return result
+        body.push(ret(id("res")));
+        return fun(attrs, funName, paramValues, returnTy, body);
+    }
+
     /**
      * Adds entries from the main Tact contract.
      */
@@ -809,12 +954,12 @@ export class ModuleGen {
             comment("", `Get methods of a Contract ${contractTy.name}`, ""),
         );
 
-        // // Getters
-        // for (const f of type.functions.values()) {
-        //     if (f.isGetter) {
-        //         writeGetter(f, ctx);
-        //     }
-        // }
+        // Getters
+        for (const f of contractTy.functions.values()) {
+            if (f.isGetter) {
+                m.entries.push(this.writeGetter(f));
+            }
+        }
 
         // Interfaces
         m.entries.push(this.writeInterfaces(contractTy));
@@ -824,7 +969,7 @@ export class ModuleGen {
         //   return "${abiLink}";
         // }
         m.entries.push(
-            fun(["method_id"], "get_abi_ipfs", [], Type.hole(), [
+            fun([FunAttr.method_id()], "get_abi_ipfs", [], Type.hole(), [
                 ret(string(this.abiLink)),
             ]),
         );
@@ -834,15 +979,21 @@ export class ModuleGen {
         //   return get_data().begin_parse().load_int(1);
         // }
         m.entries.push(
-            fun(["method_id"], "lazy_deployment_completed", [], Type.hole(), [
-                ret(
-                    call("load_int", [number(1)], {
-                        receiver: call("begin_parse", [], {
-                            receiver: call("get_data", []),
+            fun(
+                [FunAttr.method_id()],
+                "lazy_deployment_completed",
+                [],
+                Type.hole(),
+                [
+                    ret(
+                        call("load_int", [number(1)], {
+                            receiver: call("begin_parse", [], {
+                                receiver: call("get_data", []),
+                            }),
                         }),
-                    }),
-                ),
-            ]),
+                    ),
+                ],
+            ),
         );
 
         m.entries.push(

@@ -191,3 +191,55 @@ export function resolveFuncType(
     // Unreachable
     throw Error(`Unknown type: ${descriptor.kind}`);
 }
+
+export function resolveFuncTupleType(
+    ctx: CompilerContext,
+    descriptor: TypeRef | TypeDescription | string,
+): FuncType {
+    // String
+    if (typeof descriptor === "string") {
+        return resolveFuncTupleType(ctx, getType(ctx, descriptor));
+    }
+
+    // TypeRef
+    if (descriptor.kind === "ref") {
+        return resolveFuncTupleType(ctx, getType(ctx, descriptor.name));
+    }
+    if (descriptor.kind === "map") {
+        return Type.cell();
+    }
+    if (descriptor.kind === "ref_bounced") {
+        throw Error("Unimplemented");
+    }
+    if (descriptor.kind === "void") {
+        return Type.tensor();
+    }
+
+    // TypeDescription
+    if (descriptor.kind === "primitive_type_decl") {
+        if (descriptor.name === "Int") {
+            return Type.int();
+        } else if (descriptor.name === "Bool") {
+            return Type.int();
+        } else if (descriptor.name === "Slice") {
+            return Type.slice();
+        } else if (descriptor.name === "Cell") {
+            return Type.cell();
+        } else if (descriptor.name === "Builder") {
+            return Type.builder();
+        } else if (descriptor.name === "Address") {
+            return Type.slice();
+        } else if (descriptor.name === "String") {
+            return Type.slice();
+        } else if (descriptor.name === "StringBuilder") {
+            return Type.tuple();
+        } else {
+            throw Error(`Unknown primitive type: ${descriptor.name}`);
+        }
+    } else if (descriptor.kind === "struct") {
+        return Type.tuple();
+    }
+
+    // Unreachable
+    throw Error(`Unknown type: ${descriptor.kind}`);
+}
