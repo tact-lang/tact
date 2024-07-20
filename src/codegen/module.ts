@@ -178,8 +178,8 @@ export class ModuleGen {
         // if (msg_bounced) {
         //   ...
         // }
-        functionBody.push(comment("Handle bounced messages"));
         if (internal) {
+            functionBody.push(comment("Handle bounced messages"));
             const body: FuncAstStmt[] = [];
             const bounceReceivers = type.receivers.filter((r) => {
                 return r.selector.kind === "bounce-binary";
