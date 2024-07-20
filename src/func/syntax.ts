@@ -326,10 +326,10 @@ export type FuncAstConstant = {
 };
 
 export type FuncAstFunctionAttribute =
-    | "impure"
-    | "inline"
-    | "inline_ref"
-    | "method_id";
+    | { kind: "impure" }
+    | { kind: "inline" }
+    | { kind: "inline_ref" }
+    | { kind: "method_id"; value: number | undefined };
 
 export type FuncAstFormalFunctionParam = {
     kind: "function_param";

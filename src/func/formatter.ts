@@ -102,9 +102,7 @@ export class FuncFormatter {
                     node as FuncAstFunctionDefinition,
                 );
             case "asm_function_definition":
-                return this.formatAsmFunction(
-                    node as FuncAstAsmFunction,
-                );
+                return this.formatAsmFunction(node as FuncAstAsmFunction);
             case "var_def_stmt":
                 return this.formatVarDefStmt(node as FuncAstVarDefStmt);
             case "return_stmt":
@@ -193,13 +191,26 @@ export class FuncFormatter {
             .join("");
     }
 
+    private formatFunctionAttribute(attr: FuncAstFunctionAttribute): string {
+        switch (attr.kind) {
+            case "method_id":
+                return attr.value === undefined
+                    ? "method_id"
+                    : `method_id(${attr.value})`;
+            case "impure":
+            case "inline":
+            case "inline_ref":
+                return attr.kind;
+        }
+    }
+
     private formatFunctionSignature(
         name: FuncAstIdExpr,
         attrs: FuncAstFunctionAttribute[],
         params: FuncAstFormalFunctionParam[],
         returnTy: FuncType,
     ): string {
-        const attrsStr = attrs.join(" ");
+        const attrsStr = attrs.map(this.formatFunctionAttribute).join(" ");
         const nameStr = this.dump(name);
         const paramsStr = params
             .map((param) => `${this.dump(param.ty)} ${this.dump(param.name)}`)
@@ -456,7 +467,7 @@ export class FuncFormatter {
     }
 
     private formatCR(node: FuncAstCR): string {
-        return '\n'.repeat(node.lines);
+        return "\n".repeat(node.lines);
     }
 
     private formatType(node: FuncType): string {

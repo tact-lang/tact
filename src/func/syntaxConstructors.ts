@@ -98,6 +98,24 @@ export class Type {
     }
 }
 
+export class FunAttr {
+    public static impure(): FuncAstFunctionAttribute {
+        return { kind: "impure" };
+    }
+
+    public static inline(): FuncAstFunctionAttribute {
+        return { kind: "inline" };
+    }
+
+    public static inline_ref(): FuncAstFunctionAttribute {
+        return { kind: "inline_ref" };
+    }
+
+    public static method_id(value?: number): FuncAstFunctionAttribute {
+        return { kind: "method_id", value };
+    }
+}
+
 //
 // Expressions
 //
