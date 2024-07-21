@@ -1287,6 +1287,11 @@
   resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.0.14.tgz"
   integrity sha512-8FKHK2jwvViRBReO2t40DCkHAP9KPTRWZof4kdsAUJFlyeWIC8SsRQSl9QkZxF+48WvjDduKNqN5Ltb80paufA==
 
+"@tact-lang/opcode@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@tact-lang/opcode/-/opcode-0.0.16.tgz#cc9e4117ce706d8bb6e054a520bab719f70adf96"
+  integrity sha512-YJTUjoDOy+e+FHHppJiF+uWJ2IMjVknB9VQ5n78pknCE129DazCb/nFXnw0wVRDVcn8Tn59ky+pmjiQjQOjEbw==
+
 "@tact-lang/ton-abi@^0.0.3":
   version "0.0.3"
   resolved "https://registry.npmjs.org/@tact-lang/ton-abi/-/ton-abi-0.0.3.tgz"
