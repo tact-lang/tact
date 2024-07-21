@@ -114,10 +114,10 @@ export function writeAccessors(
                     `return __tact_tuple_create_${flatPack.length}(${flatPack.join(", ")});`,
                 );
             } else {
-                const longTupledFlatPack = chainVars(flatPack);
-                ctx.used(`__tact_tuple_create_${longTupledFlatPack.length}`);
+                const longTupleFlatPack = chainVars(flatPack);
+                ctx.used(`__tact_tuple_create_${longTupleFlatPack.length}`);
                 ctx.append(
-                    `return __tact_tuple_create_${longTupledFlatPack.length}(${longTupledFlatPack.join(", ")});`,
+                    `return __tact_tuple_create_${longTupleFlatPack.length}(${longTupleFlatPack.join(", ")});`,
                 );
             }
         });
@@ -162,10 +162,10 @@ export function writeAccessors(
                     `return __tact_tuple_create_${vars.length}(${vars.join(", ")});`,
                 );
             } else {
-                const longTupledVars = chainVars(vars);
-                ctx.used(`__tact_tuple_create_${longTupledVars.length}`);
+                const longTupleVars = chainVars(vars);
+                ctx.used(`__tact_tuple_create_${longTupleVars.length}`);
                 ctx.append(
-                    `return __tact_tuple_create_${longTupledVars.length}(${longTupledVars.join(", ")});`,
+                    `return __tact_tuple_create_${longTupleVars.length}(${longTupleVars.join(", ")});`,
                 );
             }
         });
