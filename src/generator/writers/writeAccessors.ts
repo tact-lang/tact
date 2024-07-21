@@ -10,6 +10,21 @@ import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 
+function chainVars(vars: string[]): string[] {
+    // let's say we have vars = ['v1', 'v2, ..., 'v32']
+    // we need to split it into chunks of 14
+    const chunks: string[][] = [];
+    while (vars.length > 0) {
+        chunks.push(vars.splice(0, 14));
+    }
+    // and now chain them into a string like this: [v1, v2, ..., v14, [v15, v16, ..., v28, [v29, v30, ..., v32]]
+    while (chunks.length > 1) {
+        const a = chunks.pop()!;
+        chunks[chunks.length - 1]!.push(`[${a.join(", ")}]`);
+    }
+    return chunks[0]!;
+}
+
 export function writeAccessors(
     type: TypeDescription,
     origin: ItemOrigin,
@@ -55,10 +70,30 @@ export function writeAccessors(
             if (flatPack.length !== flatTypes.length)
                 throw Error("Flat pack and flat types length mismatch");
             const pairs = flatPack.map((v, i) => `${flatTypes[i]} ${v}`);
-            ctx.used(`__tact_tuple_destroy_${flatPack.length}`);
-            ctx.append(
-                `var (${pairs.join(", ")}) = __tact_tuple_destroy_${flatPack.length}(v);`,
-            );
+            if (flatPack.length < 16) {
+                ctx.used(`__tact_tuple_destroy_${flatPack.length}`);
+                ctx.append(
+                    `var (${pairs.join(", ")}) = __tact_tuple_destroy_${flatPack.length}(v);`,
+                );
+            } else {
+                flatPack.splice(0, 14);
+                const pairsBatch = pairs.splice(0, 14);
+                ctx.used(`__tact_tuple_destroy_15`);
+                ctx.append(
+                    `var (${pairsBatch.join(", ")}, next) = __tact_tuple_destroy_15(v);`,
+                );
+                while (flatPack.length > 14) {
+                    flatPack.splice(0, 14);
+                    const pairsBatch = pairs.splice(0, 14);
+                    ctx.append(
+                        `var (${pairsBatch.join(", ")}, next) = __tact_tuple_destroy_15(next);`,
+                    );
+                }
+                ctx.used(`__tact_tuple_destroy_${flatPack.length}`);
+                ctx.append(
+                    `var (${pairs.join(", ")}) = __tact_tuple_destroy_${flatPack.length}(next);`,
+                );
+            }
             ctx.append(`return ${resolveFuncTypeUnpack(type, "vvv", ctx)};`);
         });
     });
@@ -73,10 +108,18 @@ export function writeAccessors(
         ctx.body(() => {
             ctx.append(`var ${resolveFuncTypeUnpack(type, "v", ctx)} = v;`);
             const flatPack = resolveFuncFlatPack(type, "v", ctx);
-            ctx.used(`__tact_tuple_create_${flatPack.length}`);
-            ctx.append(
-                `return __tact_tuple_create_${flatPack.length}(${flatPack.join(", ")});`,
-            );
+            if (flatPack.length < 16) {
+                ctx.used(`__tact_tuple_create_${flatPack.length}`);
+                ctx.append(
+                    `return __tact_tuple_create_${flatPack.length}(${flatPack.join(", ")});`,
+                );
+            } else {
+                const longTupledFlatPack = chainVars(flatPack);
+                ctx.used(`__tact_tuple_create_${longTupledFlatPack.length}`);
+                ctx.append(
+                    `return __tact_tuple_create_${longTupledFlatPack.length}(${longTupledFlatPack.join(", ")});`,
+                );
+            }
         });
     });
 
@@ -113,10 +156,18 @@ export function writeAccessors(
                 }
                 vars.push(`v'${f.name}`);
             }
-            ctx.used(`__tact_tuple_create_${vars.length}`);
-            ctx.append(
-                `return __tact_tuple_create_${vars.length}(${vars.join(", ")});`,
-            );
+            if (vars.length < 16) {
+                ctx.used(`__tact_tuple_create_${vars.length}`);
+                ctx.append(
+                    `return __tact_tuple_create_${vars.length}(${vars.join(", ")});`,
+                );
+            } else {
+                const longTupledVars = chainVars(vars);
+                ctx.used(`__tact_tuple_create_${longTupledVars.length}`);
+                ctx.append(
+                    `return __tact_tuple_create_${longTupledVars.length}(${longTupledVars.join(", ")});`,
+                );
+            }
         });
     });
 
@@ -182,10 +233,29 @@ export function writeAccessors(
                 vars.push(`${resolveFuncType(f.type, ctx)} v'${f.name}`);
                 out.push(`v'${f.name}`);
             }
-            ctx.used(`__tact_tuple_destroy_${vars.length}`);
-            ctx.append(
-                `var (${vars.join(", ")}) = __tact_tuple_destroy_${vars.length}(v);`,
-            );
+            if (vars.length < 16) {
+                ctx.used(`__tact_tuple_destroy_${vars.length}`);
+                ctx.append(
+                    `var (${vars.join(", ")}) = __tact_tuple_destroy_${vars.length}(v);`,
+                );
+            } else {
+                const batch = vars.splice(0, 14);
+                ctx.used(`__tact_tuple_destroy_15`);
+                ctx.append(
+                    `var (${batch.join(", ")}, next) = __tact_tuple_destroy_15(v);`,
+                );
+                while (vars.length > 14) {
+                    const batch = vars.splice(0, 14);
+                    ctx.used(`__tact_tuple_destroy_15`);
+                    ctx.append(
+                        `var (${batch.join(", ")}, next) = __tact_tuple_destroy_15(next);`,
+                    );
+                }
+                ctx.used(`__tact_tuple_destroy_${vars.length}`);
+                ctx.append(
+                    `var (${batch.join(", ")}) = __tact_tuple_destroy_${vars.length}(next);`,
+                );
+            }
             ctx.append(`return (${out.join(", ")});`);
         });
     });

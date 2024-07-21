@@ -39,11 +39,86 @@ fun directParse(payload: Cell): Coin {
     return Coin.fromCell(payload);
 }
 
+struct LongStruct15 {
+    x1: Int;
+    x2: Int;
+    x3: Int;
+    x4: Int;
+    x5: Int;
+    x6: Int;
+    x7: Int;
+    x8: Int;
+    x9: Int;
+    x10: Int;
+    x11: Int;
+    x12: Int;
+    x13: Int;
+    x14: Int;
+    x15: Int;
+}
+
+struct LongStruct16 {
+    x1: Int;
+    x2: Int;
+    x3: Int;
+    x4: Int;
+    x5: Int;
+    x6: Int;
+    x7: Int;
+    x8: Int;
+    x9: Int;
+    x10: Int;
+    x11: Int;
+    x12: Int;
+    x13: Int;
+    x14: Int;
+    x15: Int;
+    x16: Int;
+}
+
+struct LongStruct32 {
+    x1: Int;
+    x2: Int;
+    x3: Int;
+    x4: Int;
+    x5: Int;
+    x6: Int;
+    x7: Int;
+    x8: Int;
+    x9: Int;
+    x10: Int;
+    x11: Int;
+    x12: Int;
+    x13: Int;
+    x14: Int;
+    x15: Int;
+    x16: Int;
+    x17: Int;
+    x18: Int;
+    x19: Int;
+    x20: Int;
+    x21: Int;
+    x22: Int;
+    x23: Int;
+    x24: Int;
+    x25: Int;
+    x26: Int;
+    x27: Int;
+    x28: Int;
+    x29: Int;
+    x30: Int;
+    x31: Int;
+    x32: Int;
+}
+
 contract StructsTester {
     s1: S = S {a: false, b: 21 + 21};
     s2: S;
     t1: T = T {a: 43, s: S {a: true, b: 44}};
     t2: T;
+    mapWithLongStructs15: map<Int, LongStruct15> = emptyMap();
+    mapWithLongStructs16: map<Int, LongStruct16> = emptyMap();
+    mapWithLongStructs32: map<Int, LongStruct32> = emptyMap();
 
     const contractStructConst: MyStruct3 = MyStruct3 { s: "contract const struct test" };
 
@@ -153,5 +228,101 @@ contract StructsTester {
         );
         dump(coin.first);
         dump(coin.second);
+    }
+
+    get fun longStruct15Test(): LongStruct15 {
+        let s = LongStruct15 {
+            x1: 1,
+            x2: 2,
+            x3: 3,
+            x4: 4,
+            x5: 5,
+            x6: 6,
+            x7: 7,
+            x8: 8,
+            x9: 9,
+            x10: 10,
+            x11: 11,
+            x12: 12,
+            x13: 13,
+            x14: 14,
+            x15: 15
+        };
+
+        s.x1 = 1;
+        s.x15 = 15;
+
+        self.mapWithLongStructs15.set(1, s);
+        return self.mapWithLongStructs15.get(1)!!;
+    }
+
+    get fun longStruct16Test(): LongStruct16 {
+        let s = LongStruct16 {
+            x1: 1,
+            x2: 2,
+            x3: 3,
+            x4: 4,
+            x5: 5,
+            x6: 6,
+            x7: 7,
+            x8: 8,
+            x9: 9,
+            x10: 10,
+            x11: 11,
+            x12: 12,
+            x13: 13,
+            x14: 14,
+            x15: 15,
+            x16: 16
+        };
+
+        s.x1 = 1;
+        s.x16 = 16;
+
+        self.mapWithLongStructs16.set(1, s);
+        return self.mapWithLongStructs16.get(1)!!;
+    }
+
+    get fun longStruct32Test(): LongStruct32 {
+        let s = LongStruct32 {
+            x1: 1,
+            x2: 2,
+            x3: 3,
+            x4: 4,
+            x5: 5,
+            x6: 6,
+            x7: 7,
+            x8: 8,
+            x9: 9,
+            x10: 10,
+            x11: 11,
+            x12: 12,
+            x13: 13,
+            x14: 14,
+            x15: 15,
+            x16: 16,
+            x17: 17,
+            x18: 18,
+            x19: 19,
+            x20: 20,
+            x21: 21,
+            x22: 22,
+            x23: 23,
+            x24: 24,
+            x25: 25,
+            x26: 26,
+            x27: 27,
+            x28: 28,
+            x29: 29,
+            x30: 30,
+            x31: 31,
+            x32: 32
+        };
+
+        s.x1 = 1;
+        s.x32 = 32;
+
+        self.mapWithLongStructs32.set(1, s);
+        return self.mapWithLongStructs32.get(1)!!;
     }
 }

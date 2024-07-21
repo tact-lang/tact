@@ -239,5 +239,9 @@ describe("structs", () => {
         await contract.send(treasure, { value: toNano("10") }, "example");
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();
+
+        expect(await contract.getLongStruct15Test()).toMatchSnapshot();
+        expect(await contract.getLongStruct16Test()).toMatchSnapshot();
+        expect(await contract.getLongStruct32Test()).toMatchSnapshot();
     });
 });

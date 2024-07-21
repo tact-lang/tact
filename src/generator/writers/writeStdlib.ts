@@ -1655,7 +1655,7 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    for (let i = 1; i < 64; i++) {
+    for (let i = 1; i < 16; i++) {
         ctx.fun(`__tact_tuple_create_${i}`, () => {
             const args: string[] = [];
             for (let j = 0; j < i; j++) {
