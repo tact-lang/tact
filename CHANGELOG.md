@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump used `@tact-lang/opcode` version to `0.0.16` which fixes the issue with `DIV` instructions: PR [#589](https://github.com/tact-lang/tact/pull/589)
 - Incorrect FunC code generated for `recv_external`: PR [#604](https://github.com/tact-lang/tact/pull/604)
 - Allocator bug resulting in cell overflows for some contract data layouts: PR [#615](https://github.com/tact-lang/tact/pull/615)
+- Structs with more than 16 fields do not cause a FunC compilation error anymore: PR [#590](https://github.com/tact-lang/tact/pull/590)
 
 ## [1.4.0] - 2024-06-21
 
