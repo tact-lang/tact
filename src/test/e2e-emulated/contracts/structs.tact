@@ -119,6 +119,27 @@ contract StructsTester {
     mapWithLongStructs15: map<Int, LongStruct15> = emptyMap();
     mapWithLongStructs16: map<Int, LongStruct16> = emptyMap();
     mapWithLongStructs32: map<Int, LongStruct32> = emptyMap();
+    // let's also test contract fields
+    x1: Int = 1;
+    x2: Int = 2;
+    x3: Int = 3;
+    x4: Int = 4;
+    x5: Int = 5;
+    x6: Int = 6;
+    x7: Int = 7;
+    x8: Int = 8;
+    x9: Int = 9;
+    x10: Int = 10;
+    x11: Int = 11;
+    x12: Int = 12;
+    x13: Int = 13;
+    x14: Int = 14;
+    x15: Int = 15;
+    x16: Int = 16;
+    x17: Int = 17;
+    x18: Int = 18;
+    x19: Int = 19;
+    x20: Int = 20;
 
     const contractStructConst: MyStruct3 = MyStruct3 { s: "contract const struct test" };
 
@@ -324,5 +345,10 @@ contract StructsTester {
 
         self.mapWithLongStructs32.set(1, s);
         return self.mapWithLongStructs32.get(1)!!;
+    }
+
+    get fun longContractTest(): Int {
+        return self.x1 + self.x2 + self.x3 + self.x4 + self.x5 + self.x6 + self.x7 + self.x8 + self.x9 + self.x10 +
+               self.x11 + self.x12 + self.x13 + self.x14 + self.x15 + self.x16 + self.x17 + self.x18 + self.x19 + self.x20;
     }
 }
