@@ -1,4 +1,4 @@
-export { CodegenContext } from "./context";
+export { CodegenContext, WrittenFunction, Location } from "./context";
 export { ModuleGen } from "./module";
 export { FunctionGen } from "./function";
 export { StatementGen } from "./statement";

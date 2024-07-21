@@ -1,4 +1,4 @@
-import { CodegenContext, FunctionGen } from ".";
+import { CodegenContext, FunctionGen, Location } from ".";
 import { FuncAstExpr } from "../func/syntax";
 import { Address, beginCell, Cell } from "@ton/core";
 import { Value, CommentValue } from "../types/types";
@@ -42,7 +42,7 @@ export class LiteralGen {
         const h = cell.hash().toString("hex");
         const t = cell.toBoc({ idx: false }).toString("hex");
         const funName = `__gen_slice_${prefix}_${h}`;
-        if (!this.ctx.has("function", funName)) {
+        if (!this.ctx.hasFunction(funName)) {
             // TODO: Add docstring: `comment`
             const fun = asmfun(
                 [],
@@ -51,7 +51,7 @@ export class LiteralGen {
                 Type.slice(),
                 `B{${t}} B>boc <s PUSHSLICE`,
             );
-            this.ctx.add("function", fun);
+            this.ctx.addFunction(fun, "asm", Location.constants());
         }
         return id(funName);
     }
@@ -105,7 +105,7 @@ export class LiteralGen {
         const h = cell.hash().toString("hex");
         const t = cell.toBoc({ idx: false }).toString("hex");
         const funName = `__gen_cell_${prefix}_${h}`;
-        if (!this.ctx.has("function", funName)) {
+        if (!this.ctx.hasFunction(funName)) {
             // TODO: Add docstring: `comment`
             const fun = asmfun(
                 [],
@@ -114,7 +114,7 @@ export class LiteralGen {
                 Type.slice(),
                 `B{${t}} B>boc PUSHREF`,
             );
-            this.ctx.add("function", fun);
+            this.ctx.addFunction(fun, "asm", Location.constants());
         }
         return id(funName);
     }
@@ -155,7 +155,6 @@ export class LiteralGen {
             const constructor = FunctionGen.fromTact(
                 this.ctx,
             ).writeStructConstructor(structDescription, fields);
-            this.ctx.add("function", constructor);
             const fieldValues = structDescription.fields.map((field) => {
                 if (field.name in val) {
                     return this.makeValue(val[field.name]!);

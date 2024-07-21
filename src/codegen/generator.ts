@@ -1,18 +1,23 @@
 import { CompilationOutput } from "../pipeline/compile";
 import { CompilerContext } from "../context";
-import { CodegenContext, ModuleGen } from ".";
-import { topologicalSort } from "../utils/utils";
+import { CodegenContext, ModuleGen, WrittenFunction } from ".";
 import { ContractABI } from "@ton/core";
 import { FuncFormatter } from "../func/formatter";
-import { FuncAstModule, FuncAstFunctionDefinition } from "../func/syntax";
+import {
+    FuncAstModule,
+    FuncAstFunctionDefinition,
+    FuncAstAsmFunction,
+} from "../func/syntax";
 import { deepCopy } from "../func/syntaxUtils";
 import {
     comment,
     mod,
     pragma,
+    Type,
     include,
+    global,
     toDeclaration,
-FunAttr,
+    FunAttr,
 } from "../func/syntaxConstructors";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
 
@@ -69,7 +74,7 @@ export class FuncGenerator {
             this.abiSrc.name!,
             abiLink,
         );
-        const functions = this.extractFunctions(mainContract);
+        const functions = this.funcCtx.extract();
         this.generateHeaders(generated, functions);
         this.generateStdlib(generated, functions);
         this.generateNative(generated);
@@ -130,74 +135,11 @@ export class FuncGenerator {
     }
 
     /**
-     * Extract information about the generated functions from the contract module.
-     */
-    private extractFunctions(
-        mainContract: FuncAstModule,
-    ): FuncAstFunctionDefinition[] {
-        const contractFunctions = mainContract.entries.reduce((acc, e) => {
-            if (
-                e.kind ===
-                "function_definition" /* TODO: || e.kind === "function_declaration" */
-            ) {
-                acc.push(e);
-            }
-            return acc;
-        }, [] as FuncAstFunctionDefinition[]);
-        const generatedFunctions = this.funcCtx.getFunctions();
-        return [...contractFunctions, ...generatedFunctions];
-
-        // // Check dependencies
-        // const missing: Map<string, string[]> = new Map();
-        // for (const f of contract.entries.values()) {
-        //     for (const d of f.depends) {
-        //         if (!this.#functions.has(d)) {
-        //             if (!missing.has(d)) {
-        //                 missing.set(d, [f.name]);
-        //             } else {
-        //                 missing.set(d, [...missing.get(d)!, f.name]);
-        //             }
-        //         }
-        //     }
-        // }
-        // if (missing.size > 0) {
-        //     throw new Error(
-        //         `Functions ${Array.from(missing.keys())
-        //             .map((v) => `"${v}"`)
-        //             .join(", ")} wasn't rendered`,
-        //     );
-        // }
-
-        // // All functions
-        // let all = Array.from(this.#functions.values());
-
-        // // Remove unused
-        // if (!debug) {
-        //     const used: Set<string> = new Set();
-        //     const visit = (name: string) => {
-        //         used.add(name);
-        //         const f = this.#functions.get(name)!;
-        //         for (const d of f.depends) {
-        //             visit(d);
-        //         }
-        //     };
-        //     visit("$main");
-        //     all = all.filter((v) => used.has(v.name));
-        // }
-
-        // Sort functions
-        // const sorted = topologicalSort(all, (f) =>
-        //     Array.from(f.depends).map((v) => this.#functions.get(v)!),
-        // );
-        // return sorted;
-    }
-
-    /**
      * Generates a file that contains declarations of all the generated Func functions.
      */
     private generateHeaders(
         generated: GeneratedFilesInfo,
-        functions: FuncAstFunctionDefinition[],
+        functions: WrittenFunction[],
     ): void {
         // FIXME: We should add only contract methods and special methods here => add attribute and register them in the context
         const m = mod();
@@ -210,16 +152,24 @@ export class FuncGenerator {
             ),
         );
         functions.forEach((f) => {
-            // if (f.code.kind === "generic") {
-            m.entries.push(comment(f.name.value, { skipCR: true }));
-            const f_ = deepCopy(f);
             if (
-                f_.attrs.find((attr) => attr.kind !== "impure" && attr.kind !== "inline")
+                f.kind === "generic" &&
+                f.definition.kind === "function_definition"
             ) {
-                f_.attrs.push(FunAttr.inline_ref());
+                m.entries.push(
+                    comment(f.definition.name.value, { skipCR: true }),
+                );
+                const copiedDefinition = deepCopy(f.definition);
+                if (
+                    copiedDefinition.attrs.find(
+                        (attr) =>
+                            attr.kind !== "impure" && attr.kind !== "inline",
+                    )
+                ) {
+                    copiedDefinition.attrs.push(FunAttr.inline_ref());
+                }
+                m.entries.push(toDeclaration(copiedDefinition));
             }
-            m.entries.push(toDeclaration(f_));
-            // }
         });
         generated.files.push({
             name: `${this.basename}.headers.fc`,
@@ -229,29 +179,28 @@ export class FuncGenerator {
 
     private generateStdlib(
         generated: GeneratedFilesInfo,
-        functions: FuncAstFunctionDefinition[],
+        functions: WrittenFunction[],
     ): void {
-        //     const stdlibHeader = trimIndent(`
-        //     global (int, slice, int, slice) __tact_context;
-        //     global slice __tact_context_sender;
-        //     global cell __tact_context_sys;
-        //     global int __tact_randomized;
-        // `);
-        //
-        //     const stdlibFunctions = tryExtractModule(functions, "stdlib", []);
-        //     if (stdlibFunctions) {
-        //         generated.imported.push("stdlib");
-        //     }
-        //
-        //     const stdlib = emit({
-        //         header: stdlibHeader,
-        //         functions: stdlibFunctions,
-        //     });
-        //
-        //     generated.files.push({
-        //         name: this.basename + ".stdlib.fc",
-        //         code: stdlib,
-        //     });
+        const m = mod();
+        m.entries.push(
+            global(
+                Type.tensor(Type.int(), Type.slice(), Type.int(), Type.slice()),
+                "__tact_context",
+            ),
+        );
+        m.entries.push(global(Type.slice(), "__tact_context_sender"));
+        m.entries.push(global(Type.cell(), "__tact_context_sys"));
+        m.entries.push(global(Type.int(), "__tact_randomized"));
+
+        const stdlibFunctions = this.tryExtractModule(functions, "stdlib", []);
+        if (stdlibFunctions) {
+            generated.imported.push("stdlib");
+        }
+        stdlibFunctions.forEach((f) => m.entries.push(f.definition));
+        generated.files.push({
+            name: `${this.basename}.stdlib.fc`,
+            code: new FuncFormatter().dump(m),
+        });
     }
 
     private generateNative(generated: GeneratedFilesInfo): void {
@@ -269,7 +218,7 @@ export class FuncGenerator {
 
     private generateConstants(
         generated: GeneratedFilesInfo,
-        functions: FuncAstFunctionDefinition[],
+        functions: WrittenFunction[],
     ): void {
         // const constantsFunctions = tryExtractModule(
         //     functions,
@@ -287,7 +236,7 @@ export class FuncGenerator {
 
     private generateStorage(
         generated: GeneratedFilesInfo,
-        functions: FuncAstFunctionDefinition[],
+        functions: WrittenFunction[],
     ): void {
         // const emittedTypes: string[] = [];
         // const types = getSortedTypes(ctx);
@@ -345,5 +294,33 @@ export class FuncGenerator {
         //         code: [...emittedTypes].join("\n\n"),
         //     });
         // }
+    }
+
+    private tryExtractModule(
+        functions: WrittenFunction[],
+        context: string | null,
+        imported: string[],
+    ): WrittenFunction[] {
+        // Put to map
+        const maps: Map<string, WrittenFunction> = new Map();
+        for (const f of functions) {
+            maps.set(f.name, f);
+        }
+
+        // Extract functions of a context
+        const ctxFunctions: WrittenFunction[] = functions
+            .filter((v) => v.kind !== "skip")
+            .filter((v) => {
+                if (context) {
+                    return v.kind === context;
+                } else {
+                    return v.kind === null || !imported.includes(v.kind);
+                }
+            });
+        if (ctxFunctions.length === 0) {
+            return [];
+        }
+
+        return ctxFunctions;
     }
 }

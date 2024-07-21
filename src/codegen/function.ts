@@ -19,7 +19,7 @@ import {
     Type,
     tensor,
 } from "../func/syntaxConstructors";
-import { StatementGen, LiteralGen, CodegenContext } from ".";
+import { StatementGen, LiteralGen, CodegenContext, Location } from ".";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 
 /**
@@ -194,6 +194,8 @@ export class FunctionGen {
      * }
      * ```
      *
+     * The generated constructor will be saved in the context.
+     *
      * @param type Type description of the struct for which the constructor is generated
      * @param args Names of the arguments
      */
@@ -236,6 +238,8 @@ export class FunctionGen {
             values.length === 0 && returnTy.kind === "tuple"
                 ? [ret(call("empty_tuple", []))]
                 : [ret(tensor(...values))];
-        return fun(attrs, name, params, returnTy, body);
+        const constructor = fun(attrs, name, params, returnTy, body);
+        this.ctx.addFunction(constructor, "generic", Location.type(type.name));
+        return constructor;
     }
 }

@@ -492,7 +492,6 @@ export class ExpressionGen {
                 src,
                 this.tactExpr.args.map((v) => v.field.text),
             );
-            this.ctx.add("function", constructor);
 
             // Write an expression
             const args = this.tactExpr.args.map((v) =>

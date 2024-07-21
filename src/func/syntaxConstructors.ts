@@ -462,9 +462,9 @@ export const pragma = (value: string): FuncAstPragma => ({
     value,
 });
 
-export const globalVariable = (
-    name: string | FuncAstIdExpr,
+export const global = (
     ty: FuncType,
+    name: string | FuncAstIdExpr,
 ): FuncAstGlobalVariable => ({
     kind: "global_variable",
     name: wrapToId(name),
