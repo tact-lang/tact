@@ -180,6 +180,16 @@ export async function build(args: {
                 logger,
             });
             if (!c.ok) {
+                const match = c.log.match(
+                    /undefined function `([^`]+)`, defining a global function of unknown type/,
+                );
+                if (match) {
+                    const message = `Function '${match[1]}' does not exist in imported FunC sources`;
+                    logger.error(message);
+                    errorMessages.push(new Error(message));
+                    return { ok: false, error: errorMessages };
+                }
+
                 logger.error(c.log);
                 ok = false;
                 errorMessages.push(new Error(c.log));

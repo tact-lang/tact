@@ -131,6 +131,11 @@
       "name": "contract-duplicate-receiver-opcode",
       "path": "./contracts/contract-duplicate-receiver-opcode.tact",
       "output": "./contracts/output"
+    },
+    {
+      "name": "func-function-does-not-exist",
+      "path": "./contracts/func-function-does-not-exist.tact",
+      "output": "./contracts/output"
     }
   ]
 }

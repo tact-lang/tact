@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Error messages for unicode code points outside of valid range: PR [#535](https://github.com/tact-lang/tact/pull/535)
 - Correct regex for unicode code points and escaping of control codes in generated comments: PR [#535](https://github.com/tact-lang/tact/pull/535)
 - Add `impure` specifier to some stdlib functions that are expected to throw errors: PR [#565](https://github.com/tact-lang/tact/pull/565)
+- Defining non-existing native FunC functions now throws an understandable compilation error: PR [#585](https://github.com/tact-lang/tact/pull/585)
 
 ## [1.4.0] - 2024-06-21
 
