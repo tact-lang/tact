@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `impure` specifier to some stdlib functions that are expected to throw errors: PR [#565](https://github.com/tact-lang/tact/pull/565)
 - Defining non-existing native FunC functions now throws an understandable compilation error: PR [#585](https://github.com/tact-lang/tact/pull/585)
 - Bump used `@tact-lang/opcode` version to `0.0.16` which fixes the issue with `DIV` instructions: PR [#589](https://github.com/tact-lang/tact/pull/589)
+- Incorrect FunC code generated for `recv_external`: PR [#604](https://github.com/tact-lang/tact/pull/604)
 
 ## [1.4.0] - 2024-06-21
 
