@@ -79,6 +79,7 @@ We have formed a large-scale vision for the philosophy of Tact to make sure that
    Tact comes with a live playground, explorer and easy to use deployment tools.
 
 10. ### Verifiable
+
     Tact produces deterministic builds. Compiler helps analyze gas usage and storage costs.
 
 ## License
