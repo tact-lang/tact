@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`map should implement maps correctly 1`] = `
+[
+  {
+    "$seq": 163,
+    "events": [
+      {
+        "$type": "storage-charged",
+        "amount": "0.000000098",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "cell": "x{B182FEE0}",
+            "type": "cell",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQDF6S3qUJdr9fVijosUCNJyi5YNnAe1KvoyKjWqsnky6crw",
+          "type": "internal",
+          "value": "1",
+        },
+      },
+      {
+        "$type": "failed",
+        "errorCode": 128,
+        "errorMessage": "Null reference exception",
+      },
+      {
+        "$type": "sent-bounced",
+        "message": {
+          "body": {
+            "cell": "x{FFFFFFFFB182FEE0}",
+            "type": "cell",
+          },
+          "bounce": false,
+          "from": "kQDF6S3qUJdr9fVijosUCNJyi5YNnAe1KvoyKjWqsnky6crw",
+          "to": "@treasure(treasure)",
+          "type": "internal",
+          "value": "0.981951",
+        },
+      },
+    ],
+  },
+]
+`;

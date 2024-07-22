@@ -239,67 +239,24 @@ function resolveBinaryOp(
         case "==":
         case "!=":
             {
-                // Check if types are compatible
-                if (le.kind !== "null" && re.kind !== "null") {
-                    const l = le;
-                    const r = re;
-
-                    if (l.kind === "map" && r.kind === "map") {
-                        if (
-                            l.key !== r.key ||
-                            l.value !== r.value ||
-                            l.keyAs !== r.keyAs ||
-                            l.valueAs !== r.valueAs
-                        ) {
-                            throwCompilationError(
-                                `Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`,
-                                exp.loc,
-                            );
-                        }
-                    } else {
-                        if (
-                            l.kind === "ref_bounced" ||
-                            r.kind === "ref_bounced"
-                        ) {
-                            throwCompilationError(
-                                "Bounced types are not supported in binary operators",
-                                exp.loc,
-                            );
-                        }
-                        if (l.kind == "void" || r.kind == "void") {
-                            throwCompilationError(
-                                `Expressions of "<void>" type cannot be used for (non)equality operator "${exp.op}"`,
-                                exp.loc,
-                            );
-                        }
-                        if (l.kind !== "ref" || r.kind !== "ref") {
-                            throwCompilationError(
-                                `Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`,
-                                exp.loc,
-                            );
-                        }
-                        if (l.name !== r.name) {
-                            throwCompilationError(
-                                `Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`,
-                                exp.loc,
-                            );
-                        }
-                        if (
-                            r.name !== "Int" &&
-                            r.name !== "Bool" &&
-                            r.name !== "Address" &&
-                            r.name !== "Cell" &&
-                            r.name !== "Slice" &&
-                            r.name !== "String"
-                        ) {
-                            throwCompilationError(
-                                `Invalid type "${r.name}" for binary operator "${exp.op}"`,
-                                exp.loc,
-                            );
-                        }
-                    }
+                if (!isEqualityType(le)) {
+                    throwCompilationError(
+                        `Expressions of "${printTypeRef(le)}" type cannot be used for (non)equality operator "${exp.op}"\n See https://docs.tact-lang.org/book/operators#binary-equality`,
+                        exp.loc,
+                    );
                 }
-
+                if (!isEqualityType(re)) {
+                    throwCompilationError(
+                        `Expressions of "${printTypeRef(re)}" type cannot be used for (non)equality operator "${exp.op}"\nSee https://docs.tact-lang.org/book/operators#binary-equality`,
+                        exp.loc,
+                    );
+                }
+                if (!isAssignable(le, re) && !isAssignable(re, le)) {
+                    throwCompilationError(
+                        `Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`,
+                        exp.loc,
+                    );
+                }
                 resolved = { kind: "ref", name: "Bool", optional: false };
             }
             break;
@@ -323,6 +280,28 @@ function resolveBinaryOp(
 
     // Register result
     return registerExpType(ctx, exp, resolved);
+}
+
+function isEqualityType(ty: TypeRef): boolean {
+    switch (ty.kind) {
+        case "ref": {
+            return (
+                ty.optional ||
+                ty.name === "Int" ||
+                ty.name === "Bool" ||
+                ty.name === "Address" ||
+                ty.name === "Cell" ||
+                ty.name === "Slice" ||
+                ty.name === "String"
+            );
+        }
+        case "null":
+        case "map":
+            return true;
+        case "void":
+        case "ref_bounced":
+            return false;
+    }
 }
 
 function resolveUnaryOp(

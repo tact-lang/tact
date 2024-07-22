@@ -46,6 +46,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display a clearer error in case the source code file is missing when using Tact's CLI: PR [#561](https://github.com/tact-lang/tact/pull/561)
 - Error messages for unicode code points outside of valid range: PR [#535](https://github.com/tact-lang/tact/pull/535)
 - Correct regex for unicode code points and escaping of control codes in generated comments: PR [#535](https://github.com/tact-lang/tact/pull/535)
+- Add `impure` specifier to some stdlib functions that are expected to throw errors: PR [#565](https://github.com/tact-lang/tact/pull/565)
+- Defining non-existing native FunC functions now throws an understandable compilation error: PR [#585](https://github.com/tact-lang/tact/pull/585)
+- Bump used `@tact-lang/opcode` version to `0.0.16` which fixes the issue with `DIV` instructions: PR [#589](https://github.com/tact-lang/tact/pull/589)
 
 ## [1.4.0] - 2024-06-21
 
@@ -100,6 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All identifiers in error messages are now quoted for consistency: PR [#363](https://github.com/tact-lang/tact/pull/363)
 - The Tact grammar has been refactored for better readability: PR [#365](https://github.com/tact-lang/tact/pull/365)
 - Error messages now use relative file paths: PR [#456](https://github.com/tact-lang/tact/pull/456)
+- Comparison between `null` and non-optionals now throws a compilation error: PR [#571](https://github.com/tact-lang/tact/pull/571)
 
 ### Fixed
 
