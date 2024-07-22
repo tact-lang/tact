@@ -10,6 +10,8 @@ import { parseExpression } from "../../grammar/grammar";
 import { extractValue, makeValueExpression } from "../util";
 import { evalUnaryOp, partiallyEvalExpression } from "../../constEval";
 import { CompilerContext } from "../../context";
+import { ExpressionTransformer, Rule } from "../types";
+import { AssociativeRule3 } from "../associative";
 
 const additiveExpressions = [
     { original: "X + 3 + 1", simplified: "X + 4" },
@@ -82,42 +84,6 @@ const additiveExpressions = [
     { original: "1 * (X + X)", simplified: "X * 2" },
     { original: "2 * (X + X)", simplified: "X * 4" },
     { original: "(X + X) * 2", simplified: "X * 4" },
-
-    // The following examples should NOT simplify, but they DO.
-    // This is due to edge cases not considered in the safety conditions of the associative rules
-    
-    // The following three cases forgot to check the case when c1 in
-    // (c1 - X) is 0. The safety condition works when c1 is not 0.
-
-    // PROBLEM: X could be MIN, so that 0 - X overflows but 
-    // -1 - X = MAX does not
-    { original: "(0 - X) + -1", simplified: "-1 - X" },
-
-    // PROBLEM: Same as before
-    { original: "-1 + (0 - X)", simplified: "-1 - X" },
-
-    // PROBLEM: Same as before
-    { original: "(0 - X) - 1", simplified: "-1 - X" },
-
-    // The following case four cases forgot to check that
-    // c2 * c1 < 0 when c1 > 0 in (X * c1) * c2. 
-    // The safety condition requires the strict inequality
-    // |c1| < |c1 * c2| for the case c1 > 0 and c1 * c2 < 0,
-    // while currently has |c1| <= |c1 * c2|
-    
-    // PROBLEM: X could be -(MIN/2) = 2^255, so that
-    // X * 2 = -(MIN/2) * 2 = MAX + 1 = 2^256 overflows,
-    // but X * -2 = 2^255 * -2 = -2^256 = MIN does not.
-    { original: "(X * 2) * -1", simplified: "X * -2" },
-
-    // PROBLEM: Same as before
-    { original: "(2 * X) * -1", simplified: "-2 * X" },
-
-    // PROBLEM: Same as before
-    { original: "-1 * (X * 2)", simplified: "X * -2" },
-
-    // PROBLEM: Same as before
-    { original: "-1 * (2 * X)", simplified: "-2 * X" },
 ];
 
 const multiplicativeExpressions = [
@@ -185,6 +151,44 @@ const mixedExpressions = [
     { original: "(X * -1 * -2) + (X * -1 * -2)", simplified: "X * 4" },
 ];
 
+const failingAssoc3Expressions = [
+    // The following examples should NOT simplify, but they DO.
+    // This is due to edge cases not considered in the safety conditions of the associative rules
+
+    // The following three cases forgot to check the case when c1 in
+    // (c1 - X) is 0. The safety condition works when c1 is not 0.
+
+    // PROBLEM: X could be MIN, so that 0 - X overflows but
+    // -1 - X = MAX does not
+    { original: "(0 - X) + -1", simplified: "-1 - X" },
+
+    // PROBLEM: Same as before
+    { original: "-1 + (0 - X)", simplified: "-1 - X" },
+
+    // PROBLEM: Same as before
+    { original: "(0 - X) - 1", simplified: "-1 - X" },
+
+    // The following case four cases forgot to check that
+    // c2 * c1 < 0 when c1 > 0 in (X * c1) * c2.
+    // The safety condition requires the strict inequality
+    // |c1| < |c1 * c2| for the case c1 > 0 and c1 * c2 < 0,
+    // while currently has |c1| <= |c1 * c2|
+
+    // PROBLEM: X could be -(MIN/2) = 2^255, so that
+    // X * 2 = -(MIN/2) * 2 = MAX + 1 = 2^256 overflows,
+    // but X * -2 = 2^255 * -2 = -2^256 = MIN does not.
+    { original: "(X * 2) * -1", simplified: "X * -2" },
+
+    // PROBLEM: Same as before
+    { original: "(2 * X) * -1", simplified: "-2 * X" },
+
+    // PROBLEM: Same as before
+    { original: "-1 * (X * 2)", simplified: "X * -2" },
+
+    // PROBLEM: Same as before
+    { original: "-1 * (2 * X)", simplified: "-2 * X" },
+];
+
 function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
         expect(
@@ -192,6 +196,23 @@ function testExpression(original: string, simplified: string) {
                 partiallyEvalExpression(
                     parseExpression(original),
                     new CompilerContext(),
+                ),
+                unaryNegNodesToNumbers(parseExpression(simplified)),
+            ),
+        ).toBe(true);
+    });
+}
+
+function testExpressionWithOptimizer(
+    original: string,
+    simplified: string,
+    optimizer: ExpressionTransformer,
+) {
+    it(`should simplify ${original} to ${simplified}`, () => {
+        expect(
+            eqExpressions(
+                optimizer.applyRules(
+                    unaryNegNodesToNumbers(parseExpression(original)),
                 ),
                 unaryNegNodesToNumbers(parseExpression(simplified)),
             ),
@@ -273,6 +294,24 @@ function unaryNegNodesToNumbers(ast: AstExpression): AstExpression {
     }
 }
 
+// A dummy optimizer to test specific rules
+class ParameterizableDummyOptimizer extends ExpressionTransformer {
+    private rules: Rule[];
+
+    constructor(rules: Rule[]) {
+        super();
+
+        this.rules = rules;
+    }
+
+    public applyRules(ast: AstExpression): AstExpression {
+        return this.rules.reduce(
+            (prev, rule) => rule.applyRule(prev, this),
+            ast,
+        );
+    }
+}
+
 describe("partial-evaluator", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
@@ -285,5 +324,15 @@ describe("partial-evaluator", () => {
     });
     mixedExpressions.forEach((test) => {
         testExpression(test.original, test.simplified);
+    });
+
+    // For the following cases, we need an optimizer that only
+    // uses the associative rule 3.
+    const optimizer = new ParameterizableDummyOptimizer([
+        new AssociativeRule3(),
+    ]);
+
+    failingAssoc3Expressions.forEach((test) => {
+        testExpressionWithOptimizer(test.original, test.simplified, optimizer);
     });
 });
