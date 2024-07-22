@@ -41,7 +41,7 @@
     "tact": "bin/tact.js"
   },
   "dependencies": {
-    "@tact-lang/opcode": "^0.0.14",
+    "@tact-lang/opcode": "^0.0.16",
     "@ton/core": "0.56.3",
     "@ton/crypto": "^3.2.0",
     "blockstore-core": "1.0.5",
