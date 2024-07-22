@@ -1655,7 +1655,8 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    for (let i = 1; i < 16; i++) {
+    for (let i = 1; i <= 15; i++) {
+        // 15 is the max number of arguments and return values for asm functions
         ctx.fun(`__tact_tuple_create_${i}`, () => {
             const args: string[] = [];
             for (let j = 0; j < i; j++) {
