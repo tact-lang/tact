@@ -944,7 +944,7 @@ export class ModuleGen {
     private makeInternalReceiver(
         type: TypeDescription,
     ): FuncAstFunctionDefinition {
-        // () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+        // () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure
         const returnTy = UNIT_TYPE;
         const funName = "recv_internal";
         const paramValues: FunParamValue[] = [
@@ -1034,7 +1034,60 @@ export class ModuleGen {
 
         // Persist state
         body.push(comment("Persist state"));
-        body.push(expr(call(ops.contractStore(type.name, ctx), [id("self")])));
+        body.push(expr(call(ops.contractStore(type.name), [id("self")])));
+
+        return fun(attrs, funName, paramValues, returnTy, body);
+    }
+
+    private makeExternalReceiver(
+        type: TypeDescription,
+    ): FuncAstFunctionDefinition {
+        // () recv_external(slice in_msg) impure
+        const returnTy = UNIT_TYPE;
+        const funName = "recv_internal";
+        const paramValues: FunParamValue[] = [
+            ["msg_value", Type.int()],
+            ["in_msg_cell", Type.cell()],
+            ["in_msg", Type.slice()],
+        ];
+        const attrs = [FunAttr.impure()];
+        const body: FuncAstStmt[] = [];
+
+        // Load self
+        body.push(comment("Load contract data"));
+        body.push(
+            vardef(undefined, "self", call(ops.contractLoad(type.name), [])),
+        );
+        body.push(cr());
+
+        // Process operation
+        body.push(comment("Handle operation"));
+        body.push(
+            vardef(
+                Type.int(),
+                id("handled"),
+                call(`self~${ops.contractRouter(type.name, "external")}`, [
+                    id("in_msg"),
+                ]),
+            ),
+        );
+        body.push(cr());
+
+        // Throw if not handled
+        body.push(comment("Throw if not handled"));
+        body.push(
+            expr(
+                call("throw_unless", [
+                    id("handled"),
+                    number(contractErrors.invalidMessage.id),
+                ]),
+            ),
+        );
+        body.push(cr());
+
+        // Persist state
+        body.push(comment("Persist state"));
+        body.push(expr(call(ops.contractStore(type.name), [id("self")])));
 
         return fun(attrs, funName, paramValues, returnTy, body);
     }
@@ -1114,38 +1167,10 @@ export class ModuleGen {
 
         // Render internal receiver
         m.entries.push(this.makeInternalReceiver(contractTy));
-
-        //     // Render external receiver
-        //     if (hasExternal) {
-        //         ctx.append(`() recv_external(slice in_msg) impure {`);
-        //         ctx.inIndent(() => {
-        //             // Load self
-        //             ctx.append(`;; Load contract data`);
-        //             ctx.append(`var self = ${ops.contractLoad(type.name, ctx)}();`);
-        //             ctx.append();
-        //
-        //             // Process operation
-        //             ctx.append(`;; Handle operation`);
-        //             ctx.append(
-        //                 `int handled = self~${ops.contractRouter(type.name, "external")}(in_msg);`,
-        //             );
-        //             ctx.append();
-        //
-        //             // Throw if not handled
-        //             ctx.append(`;; Throw if not handled`);
-        //             ctx.append(
-        //                 `throw_unless(handled, ${contractErrors.invalidMessage.id});`,
-        //             );
-        //             ctx.append();
-        //
-        //             // Persist state
-        //             ctx.append(`;; Persist state`);
-        //             ctx.append(`${ops.contractStore(type.name, ctx)}(self);`);
-        //         });
-        //         ctx.append("}");
-        //         ctx.append();
-        //     }
-        // });
+        if (hasExternal) {
+            // Render external receiver
+            m.entries.push(this.makeExternalReceiver(contractTy));
+        }
     }
 
     public writeAll(): FuncAstModule {
