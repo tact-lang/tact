@@ -12,10 +12,7 @@ export class CompilerContext {
     }
 
     addShared = <T>(store: symbol, key: string | number, value: T) => {
-        let sh: Record<string, T> = {};
-        if (this.shared[store]) {
-            sh = { ...this.shared[store] };
-        }
+        let sh: Record<string | number, T> = { ...this.shared[store] } || {};
         sh[key] = value;
         return new CompilerContext({ shared: { ...this.shared, [store]: sh } });
     };
@@ -24,23 +21,16 @@ export class CompilerContext {
 export function createContextStore<T>() {
     const symbol = Symbol();
     return {
-        get(ctx: CompilerContext, key: string | number) {
-            if (!ctx.shared[symbol]) {
+        get(ctx: CompilerContext, key: string | number): T | null {
+            const m = ctx.shared[symbol] as Record<string | number, T> | undefined;
+            if (!m || !(key in m)) {
                 return null;
             }
-            const m = ctx.shared[symbol] as Record<string | number, T>;
-            if (m[key]) {
-                return m[key];
-            } else {
-                return null;
-            }
+            return m[key];
         },
         all(ctx: CompilerContext): Record<string | number, T> {
-            if (!ctx.shared[symbol]) {
-                return {} as Record<string | number, T>;
-            }
-            const m = ctx.shared[symbol] as Record<string | number, T>;
-            return m;
+            const m = ctx.shared[symbol] as Record<string | number, T> | undefined;
+            return m || {} as Record<string | number, T>;
         },
         set(ctx: CompilerContext, key: string | number, v: T) {
             return ctx.addShared(symbol, key, v);
