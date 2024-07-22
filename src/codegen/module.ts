@@ -9,6 +9,7 @@ import { CompilerContext } from "../context";
 import { getSortedTypes } from "../storage/resolveAllocation";
 import { getMethodId } from "../utils/utils";
 import { idTextErr } from "../errors";
+import { contractErrors } from "../abi/errors";
 import {
     resolveFuncTypeUnpack,
     resolveFuncType,
@@ -28,6 +29,7 @@ import {
 } from "../func/syntax";
 import {
     cr,
+    unop,
     comment,
     FunParamValue,
     assign,
@@ -442,7 +444,7 @@ export class ModuleGen {
                         ],
                     ),
                 );
-            functionBody.push(cr());
+                functionBody.push(cr());
             }
         }
 
@@ -939,6 +941,104 @@ export class ModuleGen {
         return fun(attrs, funName, paramValues, returnTy, body);
     }
 
+    private makeInternalReceiver(
+        type: TypeDescription,
+    ): FuncAstFunctionDefinition {
+        // () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+        const returnTy = UNIT_TYPE;
+        const funName = "recv_internal";
+        const paramValues: FunParamValue[] = [
+            ["msg_value", Type.int()],
+            ["in_msg_cell", Type.cell()],
+            ["in_msg", Type.slice()],
+        ];
+        const attrs = [FunAttr.impure()];
+        const body: FuncAstStmt[] = [];
+
+        // Load context
+        body.push(comment("Context"));
+        body.push(
+            vardef(
+                undefined,
+                "cs",
+                call("begin_parse", [], { receiver: id("in_msg_cell") }),
+            ),
+        );
+        body.push(
+            vardef(undefined, "msg_flags", call("cs~load_uint", [number(4)])),
+        ); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
+        body.push(
+            vardef(
+                undefined,
+                "msg_bounced",
+                unop("-", binop(id("msg_flags"), "&", number(1))),
+            ),
+        );
+        body.push(
+            vardef(
+                Type.slice(),
+                id("msg_sender"),
+                call("__tact_verify_address", [call("cs~load_msg_addr", [])]),
+            ),
+        );
+        body.push(
+            expr(
+                assign(
+                    id("__tact_context"),
+                    tensor(
+                        id("msg_bounced"),
+                        id("msg_sender_addr"),
+                        id("msg_value"),
+                        id("cs"),
+                    ),
+                ),
+            ),
+        );
+        body.push(
+            expr(assign(id("__tact_context_sender"), id("msg_sender_addr"))),
+        );
+        body.push(cr());
+
+        // Load self
+        body.push(comment("Load contract data"));
+        body.push(
+            vardef(undefined, "self", call(ops.contractLoad(type.name), [])),
+        );
+        body.push(cr());
+
+        // Process operation
+        body.push(comment("Handle operation"));
+        body.push(
+            vardef(
+                Type.int(),
+                id("handled"),
+                call(`self~${ops.contractRouter(type.name, "internal")}`, [
+                    id("msg_bounced"),
+                    id("in_msg"),
+                ]),
+            ),
+        );
+        body.push(cr());
+
+        // Throw if not handled
+        body.push(comment("Throw if not handled"));
+        body.push(
+            expr(
+                call("throw_unless", [
+                    number(contractErrors.invalidMessage.id),
+                    id("handled"),
+                ]),
+            ),
+        );
+        body.push(cr());
+
+        // Persist state
+        body.push(comment("Persist state"));
+        body.push(expr(call(ops.contractStore(type.name, ctx), [id("self")])));
+
+        return fun(attrs, funName, paramValues, returnTy, body);
+    }
+
     /**
      * Adds entries from the main Tact contract.
      */
@@ -1012,52 +1112,9 @@ export class ModuleGen {
             m.entries.push(this.writeRouter(contractTy, "external"));
         }
 
-        // // Render internal receiver
-        // ctx.append(
-        //     `() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {`,
-        // );
-        // ctx.inIndent(() => {
-        //     // Load context
-        //     ctx.append();
-        //     ctx.append(`;; Context`);
-        //     ctx.append(`var cs = in_msg_cell.begin_parse();`);
-        //     ctx.append(`var msg_flags = cs~load_uint(4);`); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
-        //     ctx.append(`var msg_bounced = -(msg_flags & 1);`);
-        //     ctx.append(
-        //         `slice msg_sender_addr = ${ctx.used("__tact_verify_address")}(cs~load_msg_addr());`,
-        //     );
-        //     ctx.append(
-        //         `__tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);`,
-        //     );
-        //     ctx.append(`__tact_context_sender = msg_sender_addr;`);
-        //     ctx.append();
-        //
-        //     // Load self
-        //     ctx.append(`;; Load contract data`);
-        //     ctx.append(`var self = ${ops.contractLoad(type.name, ctx)}();`);
-        //     ctx.append();
-        //
-        //     // Process operation
-        //     ctx.append(`;; Handle operation`);
-        //     ctx.append(
-        //         `int handled = self~${ops.contractRouter(type.name, "internal")}(msg_bounced, in_msg);`,
-        //     );
-        //     ctx.append();
-        //
-        //     // Throw if not handled
-        //     ctx.append(`;; Throw if not handled`);
-        //     ctx.append(
-        //         `throw_unless(${contractErrors.invalidMessage.id}, handled);`,
-        //     );
-        //     ctx.append();
-        //
-        //     // Persist state
-        //     ctx.append(`;; Persist state`);
-        //     ctx.append(`${ops.contractStore(type.name, ctx)}(self);`);
-        // });
-        // ctx.append("}");
-        // ctx.append();
-        //
+        // Render internal receiver
+        m.entries.push(this.makeInternalReceiver(contractTy));
+
         //     // Render external receiver
         //     if (hasExternal) {
         //         ctx.append(`() recv_external(slice in_msg) impure {`);
