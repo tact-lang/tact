@@ -3,7 +3,7 @@ import { z } from "zod";
 const optionsSchema = z
     .object({
         /**
-         * If set to true, enables debug output of a contract and allows usage of `dump()` function,
+         * If set to true, enables debug output of a contract and allows the usage of the `dump()` function,
          * which is useful for debugging purposes.
          *
          * Read more: https://docs.tact-lang.org/book/debug

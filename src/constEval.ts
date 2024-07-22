@@ -44,8 +44,8 @@ const maxTvmInt: bigint = 2n ** 256n - 1n;
 const optimizer: ExpressionTransformer = new StandardOptimizer();
 
 // Throws a non-fatal const-eval error, in the sense that const-eval as a compiler
-// optimization cannot be applied, e.g. to `let`-statements.
-// Note that for const initializers this is a show-stopper.
+// optimization cannot be applied, e.g., to `let` statements.
+// Note that for const initializers, this is a show-stopper.
 function throwNonFatalErrorConstEval(msg: string, source: SrcInfo): never {
     throwConstEvalError(
         `Cannot evaluate expression to a constant: ${msg}`,
