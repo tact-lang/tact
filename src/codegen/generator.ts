@@ -239,9 +239,8 @@ export class FuncGenerator {
         if (nativeSources.length > 0) {
             generated.imported.push("native");
             generated.files.push({
-                name:  `${this.basename}.native.fc`,
-                code:
-                    [...nativeSources.map((v) => v.code)].join("\n\n"),
+                name: `${this.basename}.native.fc`,
+                code: [...nativeSources.map((v) => v.code)].join("\n\n"),
             });
         }
     }
@@ -250,18 +249,20 @@ export class FuncGenerator {
         generated: GeneratedFilesInfo,
         functions: WrittenFunction[],
     ): void {
-        // const constantsFunctions = tryExtractModule(
-        //     functions,
-        //     "constants",
-        //     imported,
-        // );
-        // if (constantsFunctions) {
-        //     generated.imported.push("constants");
-        //     generated.files.push({
-        //         name: this.basename + ".constants.fc",
-        //         code: emit({ functions: constantsFunctions }),
-        //     });
-        // }
+        const constantsFunctions = this.tryExtractModule(
+            functions,
+            "constants",
+            generated.imported,
+        );
+        if (constantsFunctions) {
+            generated.imported.push("constants");
+            generated.files.push({
+                name: `${this.basename}.constants.fc`,
+                code: new FuncFormatter().dump(
+                    mod(...constantsFunctions.map((v) => v.definition)),
+                ),
+            });
+        }
     }
 
     private generateStorage(
