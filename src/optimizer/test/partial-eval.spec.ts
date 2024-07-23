@@ -153,37 +153,20 @@ const mixedExpressions = [
 
 const previousFailingAssoc3Expressions = [
     // Previously, the following cases where wrongly simplified
-    // by the partial evaluator.
+    // by the partial evaluator. Now, they do not simplify,
+    // as it should be.
 
-    // PROBLEM: X could be MIN, so that 0 - X overflows but
-    // -1 - X = MAX does not
-    //{ original: "(0 - X) + -1", simplified: "-1 - X" },
-
-    // PROBLEM: Same as before
-    //{ original: "-1 + (0 - X)", simplified: "-1 - X" },
-
-    // PROBLEM: Same as before
-    //{ original: "(0 - X) - 1", simplified: "-1 - X" },
-
-    // PROBLEM: X could be -(MIN/2) = 2^255, so that
-    // X * 2 = -(MIN/2) * 2 = MAX + 1 = 2^256 overflows,
-    // but X * -2 = 2^255 * -2 = -2^256 = MIN does not.
-    //{ original: "(X * 2) * -1", simplified: "X * -2" },
-
-    // PROBLEM: Same as before
-    //{ original: "(2 * X) * -1", simplified: "-2 * X" },
-
-    // PROBLEM: Same as before
-    //{ original: "-1 * (X * 2)", simplified: "X * -2" },
-
-    // PROBLEM: Same as before
-    //{ original: "-1 * (2 * X)", simplified: "-2 * X" },
-
-    // The above cases are now fixed, and no longer simplify:
-
+    // The following three cases should NOT simplify to
+    // -1 - X because X could be MIN, so that 0 - X overflows
+    // but -1 - X = MAX does not.
     { original: "(0 - X) + -1", simplified: "(0 - X) + -1" },
     { original: "-1 + (0 - X)", simplified: "-1 + (0 - X)" },
     { original: "(0 - X) - 1", simplified: "(0 - X) - 1" },
+
+    // The following 4 cases Should NOT simplify to X * -2
+    // because X could be -(MIN/2) = 2^255, so that
+    // X * 2 = -(MIN/2) * 2 = MAX + 1 = 2^256 overflows,
+    // but X * -2 = 2^255 * -2 = -2^256 = MIN does not.
     { original: "(X * 2) * -1", simplified: "(X * 2) * -1" },
     { original: "(2 * X) * -1", simplified: "(2 * X) * -1" },
     { original: "-1 * (X * 2)", simplified: "-1 * (X * 2)" },
