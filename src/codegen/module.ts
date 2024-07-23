@@ -1025,8 +1025,8 @@ export class ModuleGen {
         body.push(
             expr(
                 call("throw_unless", [
-                    id("handled"),
                     number(contractErrors.invalidMessage.id),
+                    id("handled"),
                 ]),
             ),
         );
@@ -1078,8 +1078,8 @@ export class ModuleGen {
         body.push(
             expr(
                 call("throw_unless", [
-                    id("handled"),
                     number(contractErrors.invalidMessage.id),
+                    id("handled"),
                 ]),
             ),
         );
