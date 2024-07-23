@@ -465,12 +465,12 @@ exports[`resolveAllocation should write program 1`] = `
         ],
         "size": {
           "bits": 514,
-          "refs": 0,
+          "refs": 1,
         },
       },
       "size": {
         "bits": 514,
-        "refs": 0,
+        "refs": 1,
       },
     },
     "type": {
@@ -867,7 +867,7 @@ exports[`resolveAllocation should write program 1`] = `
             ],
             "size": {
               "bits": 771,
-              "refs": 0,
+              "refs": 1,
             },
           },
           "ops": [
@@ -916,7 +916,7 @@ exports[`resolveAllocation should write program 1`] = `
           ],
           "size": {
             "bits": 771,
-            "refs": 0,
+            "refs": 1,
           },
         },
         "ops": [
@@ -965,12 +965,12 @@ exports[`resolveAllocation should write program 1`] = `
         ],
         "size": {
           "bits": 771,
-          "refs": 0,
+          "refs": 1,
         },
       },
       "size": {
         "bits": 771,
-        "refs": 0,
+        "refs": 1,
       },
     },
     "type": {
@@ -1667,7 +1667,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": false,
             "size": {
               "bits": 771,
-              "refs": 0,
+              "refs": 1,
             },
             "type": "Deep",
           },
@@ -1685,7 +1685,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": false,
             "size": {
               "bits": 771,
-              "refs": 0,
+              "refs": 1,
             },
             "type": "Deep",
           },
@@ -1703,7 +1703,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": false,
             "size": {
               "bits": 771,
-              "refs": 0,
+              "refs": 1,
             },
             "type": "Deep",
           },
@@ -1727,7 +1727,7 @@ exports[`resolveAllocation should write program 1`] = `
                   "ref": false,
                   "size": {
                     "bits": 771,
-                    "refs": 0,
+                    "refs": 1,
                   },
                   "type": "Deep",
                 },
@@ -1740,7 +1740,7 @@ exports[`resolveAllocation should write program 1`] = `
             ],
             "size": {
               "bits": 771,
-              "refs": 0,
+              "refs": 1,
             },
           },
           "ops": [
@@ -1752,7 +1752,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "ref": false,
                 "size": {
                   "bits": 771,
-                  "refs": 0,
+                  "refs": 1,
                 },
                 "type": "Deep",
               },
@@ -1765,7 +1765,7 @@ exports[`resolveAllocation should write program 1`] = `
           ],
           "size": {
             "bits": 771,
-            "refs": 0,
+            "refs": 2,
           },
         },
         "ops": [
@@ -1777,7 +1777,7 @@ exports[`resolveAllocation should write program 1`] = `
               "ref": false,
               "size": {
                 "bits": 771,
-                "refs": 0,
+                "refs": 1,
               },
               "type": "Deep",
             },
@@ -1790,12 +1790,12 @@ exports[`resolveAllocation should write program 1`] = `
         ],
         "size": {
           "bits": 771,
-          "refs": 0,
+          "refs": 2,
         },
       },
       "size": {
         "bits": 771,
-        "refs": 0,
+        "refs": 2,
       },
     },
     "type": {
