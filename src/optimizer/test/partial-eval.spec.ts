@@ -151,11 +151,8 @@ const mixedExpressions = [
     { original: "(X * -1 * -2) + (X * -1 * -2)", simplified: "X * 4" },
 ];
 
-const previousFailingAssoc3Expressions = [
-    // Previously, the following cases where wrongly simplified
-    // by the partial evaluator. Now, they do not simplify,
-    // as it should be.
-
+// These expressions are edge cases to test the associative rule only.
+const associativeRuleExpressions = [
     // The following three cases should NOT simplify to
     // -1 - X because X could be MIN, so that 0 - X overflows
     // but -1 - X = MAX does not.
@@ -316,7 +313,7 @@ describe("partial-evaluator", () => {
         new AssociativeRule3(),
     ]);
 
-    previousFailingAssoc3Expressions.forEach((test) => {
+    associativeRuleExpressions.forEach((test) => {
         testExpressionWithOptimizer(test.original, test.simplified, optimizer);
     });
 });
