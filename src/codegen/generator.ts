@@ -69,17 +69,47 @@ export class FuncGenerator {
         const abi = JSON.stringify(this.abiSrc);
         const abiLink = await calculateIPFSlink(Buffer.from(abi));
 
-        const generated: GeneratedFilesInfo = { files: [], imported: [] };
         const mainContract = this.generateMainContract(
             this.abiSrc.name!,
             abiLink,
         );
+        // TODO: writeAll
         const functions = this.funcCtx.extract();
+
+        //
+        // Emit files
+        //
+        const generated: GeneratedFilesInfo = { files: [], imported: [] };
+
+        //
+        // Headers
+        //
         this.generateHeaders(generated, functions);
+
+        //
+        // stdlib
+        //
         this.generateStdlib(generated, functions);
+
+        //
+        // native
+        //
         this.generateNative(generated);
+
+        //
+        // constants
+        //
         this.generateConstants(generated, functions);
+
+        //
+        // storage
+        //
         this.generateStorage(generated, functions);
+
+        //
+        // Remaining
+        //
+        // TODO
 
         // Finalize and dump the main contract, as we have just obtained the structure of the project
         mainContract.entries.unshift(
@@ -204,16 +234,16 @@ export class FuncGenerator {
     }
 
     private generateNative(generated: GeneratedFilesInfo): void {
-        // const nativeSources = getRawAST(ctx).funcSources;
-        // if (nativeSources.length > 0) {
-        //     generated.imported.push("native");
-        //     generated.files.push({
-        //         name: this.basename + ".native.fc",
-        //         code: emit({
-        //             header: [...nativeSources.map((v) => v.code)].join("\n\n"),
-        //         }),
-        //     });
-        // }
+        const nativeSources = getRawAST(ctx).funcSources;
+        if (nativeSources.length > 0) {
+            generated.imported.push("native");
+            generated.files.push({
+                name: this.basename + ".native.fc",
+                code: emit({
+                    header: [...nativeSources.map((v) => v.code)].join("\n\n"),
+                }),
+            });
+        }
     }
 
     private generateConstants(
