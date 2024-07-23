@@ -385,7 +385,21 @@ export class FuncFormatter {
 
     private formatUnaryExpr(node: FuncAstUnaryExpr): string {
         const value = this.dump(node.value);
-        return `${node.op}${value}`;
+        const isNonTrivial =
+            node.value.kind !== "number_expr" &&
+            node.value.kind !== "hex_number_expr" &&
+            node.value.kind !== "unit_expr" &&
+            node.value.kind !== "hole_expr" &&
+            node.value.kind !== "tuple_expr" &&
+            node.value.kind !== "tensor_expr" &&
+            node.value.kind !== "primitive_type_expr" &&
+            node.value.kind !== "bool_expr" &&
+            node.value.kind !== "string_expr" &&
+            node.value.kind !== "nil_expr" &&
+            node.value.kind !== "id_expr";
+        return node.op
+            ? `${node.op}${isNonTrivial ? `(${value})` : value}`
+            : value;
     }
 
     private formatNumberExpr(node: FuncAstNumberExpr): string {
