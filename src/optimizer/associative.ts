@@ -531,8 +531,10 @@ export class AssociativeRule3 extends Rule {
         Map<AstBinaryOperation, Transform>
     >;
 
-    // Some standard conditions that repeat a lot in the rule.
+    // Some standard safety conditions that repeat a lot.
 
+    // Safety condition:
+    // c1 != 0 ==> sign(c1) === sign(val_) && abs(c1) <= abs(val_)
     private standardAdditiveCondition: (c1: bigint, val_: bigint) => boolean = (
         c1,
         val_,
@@ -543,20 +545,41 @@ export class AssociativeRule3 extends Rule {
         return sign(c1) === sign(val_) && abs(c1) <= abs(val_);
     };
 
+    // Safety condition:
+    // c1 != 0 ==> sign(c1) === sign(val_) && abs(c1) <= abs(val_)
+    // c1 == 0 ==> val_ >= 0
+    private standardAdditiveWithZeroCondition: (
+        c1: bigint,
+        val_: bigint,
+    ) => boolean = (c1, val_) => {
+        if (c1 === 0n) {
+            return val_ >= 0n;
+        }
+        return sign(c1) === sign(val_) && abs(c1) <= abs(val_);
+    };
+
+    // Safety condition:
+    // c1 != 0 && sign(c1) == sign(val_) ==> abs(c1) <= abs(val_)
+    // c1 != 0 && sign(c1) != sign(val_) ==> abs(c1) < abs(val_)
+    // c1 != 0 ==> val_ != 0
     private standardMultiplicativeCondition: (
         c1: bigint,
         val_: bigint,
     ) => boolean = (c1, val_) => {
-        if (c1 < 0n) {
-            if (sign(c1) === sign(val_)) {
-                return abs(c1) <= abs(val_);
-            } else {
-                return abs(c1) < abs(val_);
-            }
-        } else if (c1 === 0n) {
+        if (c1 === 0n) {
             return true;
-        } else {
+        }
+        // At this point, c1 != 0
+        // hence, val_ must be non-zero as
+        // required by the safety condition
+        if (val_ === 0n) {
+            return false;
+        }
+        // At this point, both c1 and val_ are non-zero
+        if (sign(c1) === sign(val_)) {
             return abs(c1) <= abs(val_);
+        } else {
+            return abs(c1) < abs(val_);
         }
     };
 
@@ -720,7 +743,10 @@ export class AssociativeRule3 extends Rule {
                         safetyCondition: (c1, val_) => {
                             const n1 = ensureInt(c1);
                             const res = ensureInt(val_);
-                            return this.standardAdditiveCondition(n1, res);
+                            return this.standardAdditiveWithZeroCondition(
+                                n1,
+                                res,
+                            );
                         },
                     },
                 ],
@@ -903,7 +929,10 @@ export class AssociativeRule3 extends Rule {
                         safetyCondition: (c1, val_) => {
                             const n1 = ensureInt(c1);
                             const res = ensureInt(val_);
-                            return this.standardAdditiveCondition(n1, res);
+                            return this.standardAdditiveWithZeroCondition(
+                                n1,
+                                res,
+                            );
                         },
                     },
                 ],
@@ -920,7 +949,10 @@ export class AssociativeRule3 extends Rule {
                         safetyCondition: (c1, val_) => {
                             const n1 = ensureInt(c1);
                             const res = ensureInt(val_);
-                            return this.standardAdditiveCondition(n1, res);
+                            return this.standardAdditiveWithZeroCondition(
+                                n1,
+                                res,
+                            );
                         },
                     },
                 ],
