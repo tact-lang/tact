@@ -40,7 +40,7 @@ export type WrittenFunction = {
     name: string;
     definition: FuncAstFunctionDefinition | FuncAstAsmFunction;
     kind: BodyKind;
-    context: LocationContext;
+    context: LocationContext | undefined;
     depends: Set<string>;
 };
 
@@ -60,9 +60,9 @@ export class CodegenContext {
 
     public addFunction(
         value: FuncAstFunctionDefinition | FuncAstAsmFunction,
-        bodyKind: BodyKind,
-        context: LocationContext,
+        params: Partial<{ kind: BodyKind; context: LocationContext }> = {},
     ): void {
+        const { kind = "generic", context = undefined } = params;
         const definition = value as
             | FuncAstFunctionDefinition
             | FuncAstAsmFunction;
@@ -70,7 +70,7 @@ export class CodegenContext {
         this.functions.set(definition.name.value, {
             name: definition.name.value,
             definition,
-            kind: bodyKind,
+            kind,
             context,
             depends,
         });

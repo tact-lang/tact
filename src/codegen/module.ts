@@ -977,7 +977,7 @@ export class ModuleGen {
         body.push(
             vardef(
                 Type.slice(),
-                id("msg_sender"),
+                id("msg_sender_addr"),
                 call("__tact_verify_address", [call("cs~load_msg_addr", [])]),
             ),
         );

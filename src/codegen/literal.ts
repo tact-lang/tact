@@ -51,7 +51,10 @@ export class LiteralGen {
                 Type.slice(),
                 `B{${t}} B>boc <s PUSHSLICE`,
             );
-            this.ctx.addFunction(fun, "asm", Location.constants());
+            this.ctx.addFunction(fun, {
+                kind: "asm",
+                context: Location.constants(),
+            });
         }
         return id(funName);
     }
@@ -114,7 +117,10 @@ export class LiteralGen {
                 Type.slice(),
                 `B{${t}} B>boc PUSHREF`,
             );
-            this.ctx.addFunction(fun, "asm", Location.constants());
+            this.ctx.addFunction(fun, {
+                kind: "asm",
+                context: Location.constants(),
+            });
         }
         return id(funName);
     }

@@ -239,7 +239,9 @@ export class FunctionGen {
                 ? [ret(call("empty_tuple", []))]
                 : [ret(tensor(...values))];
         const constructor = fun(attrs, name, params, returnTy, body);
-        this.ctx.addFunction(constructor, "generic", Location.type(type.name));
+        this.ctx.addFunction(constructor, {
+            context: Location.type(type.name),
+        });
         return constructor;
     }
 }
