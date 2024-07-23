@@ -1,6 +1,7 @@
 import { CompilationOutput } from "../pipeline/compile";
 import { CompilerContext } from "../context";
 import { CodegenContext, ModuleGen, WrittenFunction } from ".";
+import { getRawAST } from "../grammar/store";
 import { ContractABI } from "@ton/core";
 import { FuncFormatter } from "../func/formatter";
 import {
@@ -234,14 +235,13 @@ export class FuncGenerator {
     }
 
     private generateNative(generated: GeneratedFilesInfo): void {
-        const nativeSources = getRawAST(ctx).funcSources;
+        const nativeSources = getRawAST(this.funcCtx.ctx).funcSources;
         if (nativeSources.length > 0) {
             generated.imported.push("native");
             generated.files.push({
-                name: this.basename + ".native.fc",
-                code: emit({
-                    header: [...nativeSources.map((v) => v.code)].join("\n\n"),
-                }),
+                name:  `${this.basename}.native.fc`,
+                code:
+                    [...nativeSources.map((v) => v.code)].join("\n\n"),
             });
         }
     }
