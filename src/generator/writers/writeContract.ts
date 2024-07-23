@@ -355,7 +355,7 @@ export function writeMainContract(
                 // Throw if not handled
                 ctx.append(`;; Throw if not handled`);
                 ctx.append(
-                    `throw_unless(handled, ${contractErrors.invalidMessage.id});`,
+                    `throw_unless(${contractErrors.invalidMessage.id}, handled);`,
                 );
                 ctx.append();
 
