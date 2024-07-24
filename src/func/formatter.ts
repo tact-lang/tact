@@ -210,13 +210,16 @@ export class FuncFormatter {
         params: FuncAstFormalFunctionParam[],
         returnTy: FuncType,
     ): string {
-        const attrsStr = attrs.map(this.formatFunctionAttribute).join(" ");
+        const attrsStr =
+            attrs.length === 0
+                ? ""
+                : ` ${attrs.map(this.formatFunctionAttribute).join(" ")}`;
         const nameStr = this.dump(name);
         const paramsStr = params
             .map((param) => `${this.dump(param.ty)} ${this.dump(param.name)}`)
             .join(", ");
         const returnTypeStr = this.dump(returnTy);
-        return `${returnTypeStr} ${nameStr}(${paramsStr}) ${attrsStr}`;
+        return `${returnTypeStr} ${nameStr}(${paramsStr})${attrsStr}`;
     }
 
     private formatFunctionDeclaration(
