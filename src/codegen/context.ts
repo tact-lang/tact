@@ -21,6 +21,23 @@ export type LocationContext =
     | { kind: "constants" }
     | { kind: "type"; value: string };
 
+export function locEquals(lhs: LocationContext, rhs: LocationContext): boolean {
+    if (lhs.kind !== rhs.kind) {
+        return false;
+    }
+    if (lhs.kind === "type" && rhs.kind === "type") {
+        return lhs.value === rhs.value;
+    }
+    return true;
+}
+
+/**
+ * Returns string value of the location context "as in the old backend".
+ */
+export function locValue(loc: LocationContext): string {
+    return loc.kind === "type" ? `type:${loc.value}` : loc.kind;
+}
+
 export class Location {
     public static stdlib(): LocationContext {
         return { kind: "stdlib" };

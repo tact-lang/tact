@@ -1,14 +1,13 @@
 import { CompilationOutput } from "../pipeline/compile";
+import { getSortedTypes } from "../storage/resolveAllocation";
 import { CompilerContext } from "../context";
+import { idToHex } from "../utils/idToHex";
+import { LocationContext, Location, locEquals, locValue } from ".";
 import { CodegenContext, ModuleGen, WrittenFunction } from ".";
 import { getRawAST } from "../grammar/store";
 import { ContractABI } from "@ton/core";
 import { FuncFormatter } from "../func/formatter";
-import {
-    FuncAstModule,
-    FuncAstFunctionDefinition,
-    FuncAstAsmFunction,
-} from "../func/syntax";
+import { FuncAstModule, FuncAstComment } from "../func/syntax";
 import { deepCopy } from "../func/syntaxUtils";
 import {
     comment,
@@ -223,7 +222,11 @@ export class FuncGenerator {
         m.entries.push(global(Type.cell(), "__tact_context_sys"));
         m.entries.push(global(Type.int(), "__tact_randomized"));
 
-        const stdlibFunctions = this.tryExtractModule(functions, "stdlib", []);
+        const stdlibFunctions = this.tryExtractModule(
+            functions,
+            Location.stdlib(),
+            [],
+        );
         if (stdlibFunctions) {
             generated.imported.push("stdlib");
         }
@@ -251,7 +254,7 @@ export class FuncGenerator {
     ): void {
         const constantsFunctions = this.tryExtractModule(
             functions,
-            "constants",
+            Location.constants(),
             generated.imported,
         );
         if (constantsFunctions) {
@@ -269,67 +272,65 @@ export class FuncGenerator {
         generated: GeneratedFilesInfo,
         functions: WrittenFunction[],
     ): void {
-        // const emittedTypes: string[] = [];
-        // const types = getSortedTypes(ctx);
-        // for (const t of types) {
-        //     const ffs: WrittenFunction[] = [];
-        //     if (
-        //         t.kind === "struct" ||
-        //         t.kind === "contract" ||
-        //         t.kind == "trait"
-        //     ) {
-        //         const typeFunctions = tryExtractModule(
-        //             functions,
-        //             "type:" + t.name,
-        //             generated.imported,
-        //         );
-        //         if (typeFunctions) {
-        //             generated.imported.push("type:" + t.name);
-        //             ffs.push(...typeFunctions);
-        //         }
-        //     }
-        //     if (t.kind === "contract") {
-        //         const typeFunctions = tryExtractModule(
-        //             functions,
-        //             "type:" + t.name + "$init",
-        //             generated.imported,
-        //         );
-        //         if (typeFunctions) {
-        //             generated.imported.push("type:" + t.name + "$init");
-        //             ffs.push(...typeFunctions);
-        //         }
-        //     }
-        //     if (ffs.length > 0) {
-        //         const header: string[] = [];
-        //         header.push(";;");
-        //         header.push(`;; Type: ${t.name}`);
-        //         if (t.header !== null) {
-        //             header.push(`;; Header: 0x${idToHex(t.header)}`);
-        //         }
-        //         if (t.tlb) {
-        //             header.push(`;; TLB: ${t.tlb}`);
-        //         }
-        //         header.push(";;");
-        //
-        //         emittedTypes.push(
-        //             emit({
-        //                 functions: ffs,
-        //                 header: header.join("\n"),
-        //             }),
-        //         );
-        //     }
-        // }
-        // if (emittedTypes.length > 0) {
-        //     generated.files.push({
-        //         name: this.basename + ".storage.fc",
-        //         code: [...emittedTypes].join("\n\n"),
-        //     });
-        // }
+        const generatedModules: FuncAstModule[] = [];
+        const types = getSortedTypes(this.funcCtx.ctx);
+        for (const t of types) {
+            const ffs: WrittenFunction[] = [];
+            if (
+                t.kind === "struct" ||
+                t.kind === "contract" ||
+                t.kind == "trait"
+            ) {
+                const typeFunctions = this.tryExtractModule(
+                    functions,
+                    Location.type(t.name),
+                    generated.imported,
+                );
+                if (typeFunctions) {
+                    generated.imported.push(`type:${t.name}`);
+                    ffs.push(...typeFunctions);
+                }
+            }
+            if (t.kind === "contract") {
+                const typeFunctions = this.tryExtractModule(
+                    functions,
+                    Location.type(`${t.name}$init`),
+                    generated.imported,
+                );
+                if (typeFunctions) {
+                    generated.imported.push("type:" + t.name + "$init");
+                    ffs.push(...typeFunctions);
+                }
+            }
+            const comments: string[] = [];
+            if (ffs.length > 0) {
+                comments.push("");
+                comments.push(`Type: ${t.name}`);
+                if (t.header !== null) {
+                    comments.push(`Header: 0x${idToHex(t.header)}`);
+                }
+                if (t.tlb) {
+                    comments.push(`TLB: ${t.tlb}`);
+                }
+                comments.push("");
+            }
+            generatedModules.push(
+                mod(...[comment(...comments), ...ffs.map((f) => f.definition)]),
+            );
+        }
+        if (generatedModules.length > 0) {
+            generated.files.push({
+                name: `${this.basename}.storage.fc`,
+                code: generatedModules
+                    .map((m) => new FuncFormatter().dump(m))
+                    .join("\n\n"),
+            });
+        }
     }
 
     private tryExtractModule(
         functions: WrittenFunction[],
-        context: string | null,
+        location: LocationContext,
         imported: string[],
     ): WrittenFunction[] {
         // Put to map
@@ -342,10 +343,13 @@ export class FuncGenerator {
         const ctxFunctions: WrittenFunction[] = functions
             .filter((v) => v.kind !== "skip")
             .filter((v) => {
-                if (context) {
-                    return v.kind === context;
+                if (location !== undefined && v.context !== undefined) {
+                    return locEquals(v.context, location);
                 } else {
-                    return v.kind === null || !imported.includes(v.kind);
+                    return (
+                        v.context === undefined ||
+                        !imported.includes(locValue(v.context))
+                    );
                 }
             });
         if (ctxFunctions.length === 0) {
