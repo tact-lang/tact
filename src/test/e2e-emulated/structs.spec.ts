@@ -243,6 +243,7 @@ describe("structs", () => {
         expect(await contract.getLongStruct15Test()).toMatchSnapshot();
         expect(await contract.getLongStruct16Test()).toMatchSnapshot();
         expect(await contract.getLongStruct32Test()).toMatchSnapshot();
+        expect(await contract.getLongNestedStructTest()).toMatchSnapshot();
         expect(await contract.getLongContractTest()).toEqual(210n);
     });
 });
