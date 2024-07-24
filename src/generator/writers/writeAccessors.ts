@@ -278,7 +278,7 @@ export function writeAccessors(
 
     ctx.fun(ops.typeToExternal(type.name, ctx), () => {
         ctx.signature(
-            `(${type.fields.map((v) => resolveFuncTupleType(v.type, ctx)).join(", ")}) ${ops.typeToExternal(type.name, ctx)}((${resolveFuncType(type, ctx)}) v)`,
+            `tuple ${ops.typeToExternal(type.name, ctx)}((${resolveFuncType(type, ctx)}) v)`,
         );
         ctx.flag("inline");
         ctx.context("type:" + type.name);
@@ -288,24 +288,11 @@ export function writeAccessors(
             );
             const vars: string[] = [];
             for (const f of type.fields) {
-                if (f.type.kind === "ref") {
-                    const t = getType(ctx.ctx, f.type.name);
-                    if (t.kind === "struct") {
-                        if (f.type.optional) {
-                            vars.push(
-                                `${ops.typeToOptTuple(f.type.name, ctx)}(v'${f.name})`,
-                            );
-                        } else {
-                            vars.push(
-                                `${ops.typeToTuple(f.type.name, ctx)}(v'${f.name})`,
-                            );
-                        }
-                        continue;
-                    }
-                }
                 vars.push(`v'${f.name}`);
             }
-            ctx.append(`return (${vars.join(", ")});`);
+            ctx.append(
+                `return ${ops.typeToTuple(type.name, ctx)}(${vars.join(", ")});`,
+            );
         });
     });
 

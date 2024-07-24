@@ -145,8 +145,22 @@ function writeSerializerField(gen: number, s: AllocationOperation, w: Writer) {
 export function writeTupleParser(s: ABIType, w: Writer) {
     w.append(`function loadTuple${s.name}(source: TupleReader) {`);
     w.inIndent(() => {
-        for (const f of s.fields) {
-            writeTupleFieldParser("_" + f.name, f.type, w);
+        if (s.fields.length < 16) {
+            for (const f of s.fields) {
+                writeTupleFieldParser("_" + f.name, f.type, w);
+            }
+        } else {
+            const fields = [...s.fields];
+            while (fields.length > 14) {
+                const batch = fields.splice(0, 14);
+                for (const f of batch) {
+                    writeTupleFieldParser("_" + f.name, f.type, w);
+                }
+                w.append(`source = source.readTuple();`);
+            }
+            for (const f of fields) {
+                writeTupleFieldParser("_" + f.name, f.type, w);
+            }
         }
         w.append(
             `return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ": _" + v.name)].join(", ")} };`,
