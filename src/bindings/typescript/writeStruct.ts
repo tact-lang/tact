@@ -3,6 +3,8 @@ import { serializers } from "./serializers";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { Writer } from "../../utils/Writer";
 
+export const maxTupleSize = 15;
+
 export function writeStruct(
     name: string,
     fields: { name: string; type: ABITypeRef }[],
@@ -145,14 +147,14 @@ function writeSerializerField(gen: number, s: AllocationOperation, w: Writer) {
 export function writeTupleParser(s: ABIType, w: Writer) {
     w.append(`function loadTuple${s.name}(source: TupleReader) {`);
     w.inIndent(() => {
-        if (s.fields.length < 16) {
+        if (s.fields.length <= maxTupleSize) {
             for (const f of s.fields) {
                 writeTupleFieldParser("_" + f.name, f.type, w);
             }
         } else {
             const fields = [...s.fields];
-            while (fields.length > 14) {
-                const batch = fields.splice(0, 14);
+            while (fields.length >= maxTupleSize) {
+                const batch = fields.splice(0, maxTupleSize - 1);
                 for (const f of batch) {
                     writeTupleFieldParser("_" + f.name, f.type, w);
                 }

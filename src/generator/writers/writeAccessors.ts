@@ -1,4 +1,5 @@
 import { contractErrors } from "../../abi/errors";
+import { maxTupleSize } from "../../bindings/typescript/writeStruct";
 import { ItemOrigin } from "../../grammar/grammar";
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription } from "../../types/types";
@@ -11,10 +12,10 @@ import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 
 function chainVars(vars: string[]): string[] {
     // let's say we have vars = ['v1', 'v2, ..., 'v32']
-    // we need to split it into chunks of 14
+    // we need to split it into chunks of size maxTupleSize - 1
     const chunks: string[][] = [];
     while (vars.length > 0) {
-        chunks.push(vars.splice(0, 14));
+        chunks.push(vars.splice(0, maxTupleSize - 1));
     }
     // and now chain them into a string like this: [v1, v2, ..., v14, [v15, v16, ..., v28, [v29, v30, ..., v32]]
     while (chunks.length > 1) {
@@ -69,23 +70,23 @@ export function writeAccessors(
             if (flatPack.length !== flatTypes.length)
                 throw Error("Flat pack and flat types length mismatch");
             const pairs = flatPack.map((v, i) => `${flatTypes[i]} ${v}`);
-            if (flatPack.length < 16) {
+            if (flatPack.length <= maxTupleSize) {
                 ctx.used(`__tact_tuple_destroy_${flatPack.length}`);
                 ctx.append(
                     `var (${pairs.join(", ")}) = __tact_tuple_destroy_${flatPack.length}(v);`,
                 );
             } else {
-                flatPack.splice(0, 14);
-                const pairsBatch = pairs.splice(0, 14);
-                ctx.used(`__tact_tuple_destroy_15`);
+                flatPack.splice(0, maxTupleSize - 1);
+                const pairsBatch = pairs.splice(0, maxTupleSize - 1);
+                ctx.used(`__tact_tuple_destroy_${maxTupleSize}`);
                 ctx.append(
-                    `var (${pairsBatch.join(", ")}, next) = __tact_tuple_destroy_15(v);`,
+                    `var (${pairsBatch.join(", ")}, next) = __tact_tuple_destroy_${maxTupleSize}(v);`,
                 );
-                while (flatPack.length > 14) {
-                    flatPack.splice(0, 14);
-                    const pairsBatch = pairs.splice(0, 14);
+                while (flatPack.length >= maxTupleSize) {
+                    flatPack.splice(0, maxTupleSize - 1);
+                    const pairsBatch = pairs.splice(0, maxTupleSize - 1);
                     ctx.append(
-                        `var (${pairsBatch.join(", ")}, next) = __tact_tuple_destroy_15(next);`,
+                        `var (${pairsBatch.join(", ")}, next) = __tact_tuple_destroy_${maxTupleSize}(next);`,
                     );
                 }
                 ctx.used(`__tact_tuple_destroy_${flatPack.length}`);
@@ -107,7 +108,7 @@ export function writeAccessors(
         ctx.body(() => {
             ctx.append(`var ${resolveFuncTypeUnpack(type, "v", ctx)} = v;`);
             const flatPack = resolveFuncFlatPack(type, "v", ctx);
-            if (flatPack.length < 16) {
+            if (flatPack.length <= maxTupleSize) {
                 ctx.used(`__tact_tuple_create_${flatPack.length}`);
                 ctx.append(
                     `return __tact_tuple_create_${flatPack.length}(${flatPack.join(", ")});`,
@@ -155,7 +156,7 @@ export function writeAccessors(
                 }
                 vars.push(`v'${f.name}`);
             }
-            if (vars.length < 16) {
+            if (vars.length <= maxTupleSize) {
                 ctx.used(`__tact_tuple_create_${vars.length}`);
                 ctx.append(
                     `return __tact_tuple_create_${vars.length}(${vars.join(", ")});`,
@@ -232,22 +233,22 @@ export function writeAccessors(
                 vars.push(`${resolveFuncType(f.type, ctx)} v'${f.name}`);
                 out.push(`v'${f.name}`);
             }
-            if (vars.length < 16) {
+            if (vars.length <= maxTupleSize) {
                 ctx.used(`__tact_tuple_destroy_${vars.length}`);
                 ctx.append(
                     `var (${vars.join(", ")}) = __tact_tuple_destroy_${vars.length}(v);`,
                 );
             } else {
-                const batch = vars.splice(0, 14);
-                ctx.used(`__tact_tuple_destroy_15`);
+                const batch = vars.splice(0, maxTupleSize - 1);
+                ctx.used(`__tact_tuple_destroy_${maxTupleSize}`);
                 ctx.append(
-                    `var (${batch.join(", ")}, next) = __tact_tuple_destroy_15(v);`,
+                    `var (${batch.join(", ")}, next) = __tact_tuple_destroy_${maxTupleSize}(v);`,
                 );
-                while (vars.length > 14) {
-                    const batch = vars.splice(0, 14);
-                    ctx.used(`__tact_tuple_destroy_15`);
+                while (vars.length >= maxTupleSize) {
+                    const batch = vars.splice(0, maxTupleSize - 1);
+                    ctx.used(`__tact_tuple_destroy_${maxTupleSize}`);
                     ctx.append(
-                        `var (${batch.join(", ")}, next) = __tact_tuple_destroy_15(next);`,
+                        `var (${batch.join(", ")}, next) = __tact_tuple_destroy_${maxTupleSize}(next);`,
                     );
                 }
                 ctx.used(`__tact_tuple_destroy_${vars.length}`);

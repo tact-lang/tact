@@ -1,4 +1,5 @@
 import { contractErrors } from "../../abi/errors";
+import { maxTupleSize } from "../../bindings/typescript/writeStruct";
 import { enabledMasterchain } from "../../config/features";
 import { WriterContext } from "../Writer";
 
@@ -1655,8 +1656,7 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    for (let i = 1; i <= 15; i++) {
-        // 15 is the max number of arguments and return values for asm functions
+    for (let i = 1; i <= maxTupleSize; i++) {
         ctx.fun(`__tact_tuple_create_${i}`, () => {
             const args: string[] = [];
             for (let j = 0; j < i; j++) {
