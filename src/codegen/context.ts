@@ -186,27 +186,6 @@ export class WriterContext {
     }
 
     public extract(debug: boolean = false): WrittenFunction[] {
-        // Check dependencies
-        const missing: Map<string, string[]> = new Map();
-        for (const f of this.functions.values()) {
-            for (const d of f.depends) {
-                if (!this.functions.has(d)) {
-                    if (!missing.has(d)) {
-                        missing.set(d, [f.name]);
-                    } else {
-                        missing.set(d, [...missing.get(d)!, f.name]);
-                    }
-                }
-            }
-        }
-        if (missing.size > 0) {
-            throw new Error(
-                `Functions ${Array.from(missing.keys())
-                    .map((v) => `"${v}"`)
-                    .join(", ")} wasn't added to the context`,
-            );
-        }
-
         // All functions
         let all = this.allFunctions();
 
@@ -216,13 +195,10 @@ export class WriterContext {
             const visit = (name: string) => {
                 used.add(name);
                 const f = this.functions.get(name);
-                if (f === undefined) {
-                    throw new Error(
-                        `Cannot find function ${name} within the CodegenContext`,
-                    );
-                }
-                for (const d of f.depends) {
-                    visit(d);
+                if (f !== undefined) {
+                    for (const d of f.depends) {
+                        visit(d);
+                    }
                 }
             };
             this.mainFunctions().forEach((f) => visit(f.name));
