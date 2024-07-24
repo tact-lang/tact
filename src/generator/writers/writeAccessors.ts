@@ -6,7 +6,6 @@ import { WriterContext } from "../Writer";
 import { ops } from "./ops";
 import { resolveFuncFlatPack } from "./resolveFuncFlatPack";
 import { resolveFuncFlatTypes } from "./resolveFuncFlatTypes";
-import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 
