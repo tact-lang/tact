@@ -25,7 +25,7 @@ exports[`intrinsics should return correct intrinsic results 1`] = `
       },
       {
         "$type": "processed",
-        "gasUsed": 7881n,
+        "gasUsed": 7915n,
       },
       {
         "$type": "sent",

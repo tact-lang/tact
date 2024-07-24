@@ -137,6 +137,12 @@ export function writeValue(val: Value, wCtx: WriterContext): string {
         wCtx.used(id);
         const fieldValues = structDescription.fields.map((field) => {
             if (field.name in val) {
+                if (field.type.kind === "ref" && field.type.optional) {
+                    const ft = getType(wCtx.ctx, field.type.name);
+                    if (ft.kind === "struct" && val[field.name] !== null) {
+                        return `${ops.typeAsOptional(ft.name, wCtx)}(${writeValue(val[field.name]!, wCtx)})`;
+                    }
+                }
                 return writeValue(val[field.name]!, wCtx);
             } else {
                 throw Error(
