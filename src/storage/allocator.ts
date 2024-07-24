@@ -301,16 +301,27 @@ function allocateSegment(
     let next: AllocationCell | null = null;
     const used: { bits: number; refs: number } = { bits: 0, refs: 0 };
 
+    const [totalBits, totalRefs] = ops.reduce(
+        ([sumBits, sumRefs], op) => {
+            const opSize = getOperationSize(op.op);
+            return [sumBits + opSize.bits, sumRefs + opSize.refs];
+        },
+        [0, 0],
+    );
+    // check if there will be a new allocation segment,
+    // meaning we need to have a spare ref to link it
+    // from the current segment
+    if (totalBits > bits || totalRefs > refs) {
+        refs -= 1;
+    }
+
     for (const [i, op] of ops.entries()) {
         const size = getOperationSize(op.op);
 
         // Check if we can fit this operation
         if (size.bits > bits || size.refs > refs) {
-            next = allocateSegment(
-                ops.slice(i),
-                1023 - ALLOCATOR_RESERVE_BIT,
-                4 - ALLOCATOR_RESERVE_REF,
-            );
+            used.refs += 1;
+            next = allocateSegment(ops.slice(i), 1023, 4);
             break;
         }
 
