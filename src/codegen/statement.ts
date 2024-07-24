@@ -10,7 +10,7 @@ import {
     isWildcard,
     tryExtractPath,
 } from "../grammar/ast";
-import { ExpressionGen, writePathExpression, CodegenContext } from ".";
+import { ExpressionGen, writePathExpression, WriterContext } from ".";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 import {
     FuncAstStmt,
@@ -39,14 +39,14 @@ export class StatementGen {
      * @param returns The return value of the return statement.
      */
     private constructor(
-        private ctx: CodegenContext,
+        private ctx: WriterContext,
         private tactStmt: AstStatement,
         private selfName?: string,
         private returns?: TypeRef,
     ) {}
 
     static fromTact(
-        ctx: CodegenContext,
+        ctx: WriterContext,
         tactStmt: AstStatement,
         selfVarName?: string,
         returns?: TypeRef,

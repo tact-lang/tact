@@ -3,7 +3,7 @@ import { getSortedTypes } from "../storage/resolveAllocation";
 import { CompilerContext } from "../context";
 import { idToHex } from "../utils/idToHex";
 import { LocationContext, Location, locEquals, locValue } from ".";
-import { CodegenContext, ModuleGen, WrittenFunction } from ".";
+import { WriterContext, ModuleGen, WrittenFunction } from ".";
 import { getRawAST } from "../grammar/store";
 import { ContractABI } from "@ton/core";
 import { FuncFormatter } from "../func/formatter";
@@ -40,7 +40,7 @@ export class FuncGenerator {
     private abiSrc: ContractABI;
     /** Basename used e.g. to name the generated Func files. */
     private basename: string;
-    private funcCtx: CodegenContext;
+    private funcCtx: WriterContext;
 
     private constructor(
         tactCtx: CompilerContext,
@@ -50,7 +50,7 @@ export class FuncGenerator {
         this.tactCtx = tactCtx;
         this.abiSrc = abiSrc;
         this.basename = basename;
-        this.funcCtx = new CodegenContext(tactCtx);
+        this.funcCtx = new WriterContext(tactCtx);
     }
 
     static fromTactProject(
@@ -150,7 +150,7 @@ export class FuncGenerator {
 
     /**
      * Runs the generation of the main contract.
-     * This generates some entries from the bottom-up saving them in CodegenContext.
+     * This generates some entries from the bottom-up saving them in WriterContext.
      */
     private generateMainContract(
         mainContractName: string,

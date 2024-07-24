@@ -7,7 +7,7 @@ import { evalConstantExpression } from "../constEval";
 import { resolveFuncTypeUnpack } from "./type";
 import { MapFunctions, StructFunctions, GlobalFunctions } from "./abi";
 import { getExpType } from "../types/resolveExpression";
-import { FunctionGen, CodegenContext, LiteralGen } from ".";
+import { FunctionGen, WriterContext, LiteralGen } from ".";
 import { cast, funcIdOf, ops } from "./util";
 import { printTypeRef, TypeRef, Value, FieldDescription } from "../types/types";
 import {
@@ -63,12 +63,12 @@ export class ExpressionGen {
      * @param tactExpr Expression to translate.
      */
     private constructor(
-        private ctx: CodegenContext,
+        private ctx: WriterContext,
         private tactExpr: AstExpression,
     ) {}
 
     static fromTact(
-        ctx: CodegenContext,
+        ctx: WriterContext,
         tactExpr: AstExpression,
     ): ExpressionGen {
         return new ExpressionGen(ctx, tactExpr);

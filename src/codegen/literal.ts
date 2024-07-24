@@ -1,4 +1,4 @@
-import { CodegenContext, FunctionGen, Location } from ".";
+import { WriterContext, FunctionGen, Location } from ".";
 import { FuncAstExpr } from "../func/syntax";
 import { Address, beginCell, Cell } from "@ton/core";
 import { Value, CommentValue } from "../types/types";
@@ -23,11 +23,11 @@ export class LiteralGen {
      * @param tactExpr Expression to translate.
      */
     private constructor(
-        private ctx: CodegenContext,
+        private ctx: WriterContext,
         private tactValue: Value,
     ) {}
 
-    static fromTact(ctx: CodegenContext, tactValue: Value): LiteralGen {
+    static fromTact(ctx: WriterContext, tactValue: Value): LiteralGen {
         return new LiteralGen(ctx, tactValue);
     }
 
@@ -44,14 +44,14 @@ export class LiteralGen {
         const funName = `__gen_slice_${prefix}_${h}`;
         if (!this.ctx.hasFunction(funName)) {
             // TODO: Add docstring: `comment`
-            const fun = asmfun(
+            const fun = this.ctx.asm(
                 [],
                 funName,
                 [],
                 Type.slice(),
                 `B{${t}} B>boc <s PUSHSLICE`,
             );
-            this.ctx.addFunction(fun, {
+            this.ctx.save(fun, {
                 kind: "asm",
                 context: Location.constants(),
             });
@@ -110,14 +110,14 @@ export class LiteralGen {
         const funName = `__gen_cell_${prefix}_${h}`;
         if (!this.ctx.hasFunction(funName)) {
             // TODO: Add docstring: `comment`
-            const fun = asmfun(
+            const fun = this.ctx.asm(
                 [],
                 funName,
                 [],
                 Type.slice(),
                 `B{${t}} B>boc PUSHREF`,
             );
-            this.ctx.addFunction(fun, {
+            this.ctx.save(fun, {
                 kind: "asm",
                 context: Location.constants(),
             });

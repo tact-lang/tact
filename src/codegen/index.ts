@@ -1,5 +1,5 @@
 export {
-    CodegenContext,
+    WriterContext,
     WrittenFunction,
     Location,
     LocationContext,

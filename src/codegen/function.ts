@@ -19,7 +19,7 @@ import {
     Type,
     tensor,
 } from "../func/syntaxConstructors";
-import { StatementGen, LiteralGen, CodegenContext, Location } from ".";
+import { StatementGen, LiteralGen, WriterContext, Location } from ".";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 
 /**
@@ -29,9 +29,9 @@ export class FunctionGen {
     /**
      * @param tactFun Type description of the Tact function.
      */
-    private constructor(private ctx: CodegenContext) {}
+    private constructor(private ctx: WriterContext) {}
 
-    static fromTact(ctx: CodegenContext): FunctionGen {
+    static fromTact(ctx: WriterContext): FunctionGen {
         return new FunctionGen(ctx);
     }
 
@@ -183,7 +183,7 @@ export class FunctionGen {
             body.push(funcStmt);
         });
 
-        return fun(attrs, name, params, returnTy, body);
+        return this.ctx.fun(attrs, name, params, returnTy, body);
     }
 
     /**
@@ -238,8 +238,8 @@ export class FunctionGen {
             values.length === 0 && returnTy.kind === "tuple"
                 ? [ret(call("empty_tuple", []))]
                 : [ret(tensor(...values))];
-        const constructor = fun(attrs, name, params, returnTy, body);
-        this.ctx.addFunction(constructor, {
+        const constructor = this.ctx.fun(attrs, name, params, returnTy, body);
+        this.ctx.save(constructor, {
             context: Location.type(type.name),
         });
         return constructor;

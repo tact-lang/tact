@@ -56,7 +56,7 @@ import {
     condition,
     id,
 } from "../func/syntaxConstructors";
-import { FunctionGen, StatementGen, CodegenContext } from ".";
+import { FunctionGen, StatementGen, WriterContext } from ".";
 import { beginCell } from "@ton/core";
 
 import JSONbig from "json-bigint";
@@ -117,13 +117,13 @@ export function unwrapExternal(
  */
 export class ModuleGen {
     private constructor(
-        private ctx: CodegenContext,
+        private ctx: WriterContext,
         private contractName: string,
         private abiLink: string,
     ) {}
 
     static fromTact(
-        ctx: CodegenContext,
+        ctx: WriterContext,
         contractName: string,
         abiLink: string,
     ): ModuleGen {
@@ -182,7 +182,7 @@ export class ModuleGen {
         const shiftExprs: FuncAstExpr[] = supported.map((item) =>
             binop(string(item, "H"), ">>", number(128)),
         );
-        return fun(
+        return this.ctx.fun(
             [FunAttr.method_id()],
             "supported_interfaces",
             [],
@@ -277,8 +277,7 @@ export class ModuleGen {
                 body.push(ret(id(returns)));
             }
 
-            const initFun = fun(attrs, funName, paramValues, returnTy, body);
-            this.ctx.addFunction(initFun);
+            this.ctx.fun(attrs, funName, paramValues, returnTy, body);
         }
 
         {
@@ -430,10 +429,9 @@ export class ModuleGen {
                 ),
             );
 
-            this.ctx.addFunction(
-                fun(attrs, funName, paramValues, returnTy, body),
-                { context: Location.type("type:" + t.name + "$init") },
-            );
+            this.ctx.fun(attrs, funName, paramValues, returnTy, body, {
+                context: Location.type("type:" + t.name + "$init"),
+            });
         }
     }
 
@@ -900,7 +898,7 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
         }
 
         // Empty receiver
@@ -935,7 +933,7 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
         }
 
         // Comment receiver
@@ -972,7 +970,7 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
         }
 
         // Fallback
@@ -1012,7 +1010,7 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
         }
 
         // Fallback
@@ -1044,7 +1042,7 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
         }
 
         // Bounced
@@ -1076,7 +1074,7 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
         }
 
         if (selector.kind === "bounce-binary") {
@@ -1128,7 +1126,7 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
         }
 
         throw new Error(
@@ -1188,12 +1186,18 @@ export class ModuleGen {
                         ret(call(ops.typeToExternal(t.name), [id("res")])),
                     );
                 }
-                return fun(attrs, funName, paramValues, returnTy, body);
+                return this.ctx.fun(
+                    attrs,
+                    funName,
+                    paramValues,
+                    returnTy,
+                    body,
+                );
             }
         }
         // Return result
         body.push(ret(id("res")));
-        return fun(attrs, funName, paramValues, returnTy, body);
+        return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
     }
 
     private makeInternalReceiver(
@@ -1291,7 +1295,7 @@ export class ModuleGen {
         body.push(comment("Persist state"));
         body.push(expr(call(ops.contractStore(type.name), [id("self")])));
 
-        return fun(attrs, funName, paramValues, returnTy, body);
+        return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
     }
 
     private makeExternalReceiver(
@@ -1344,11 +1348,14 @@ export class ModuleGen {
         body.push(comment("Persist state"));
         body.push(expr(call(ops.contractStore(type.name), [id("self")])));
 
-        return fun(attrs, funName, paramValues, returnTy, body);
+        return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
     }
 
     /**
-     * Adds entries from the main Tact contract.
+     * Adds entries from the main Tact contract creating a program containing the entrypoint.
+     *
+     * XXX: In the old backend, they simply push multiply functions here, creating an entry
+     * for a non-existent `$main` function.
      */
     private writeMainContract(
         m: FuncAstModule,
@@ -1382,9 +1389,13 @@ export class ModuleGen {
         //   return "${abiLink}";
         // }
         m.entries.push(
-            fun([FunAttr.method_id()], "get_abi_ipfs", [], Type.hole(), [
-                ret(string(this.abiLink)),
-            ]),
+            this.ctx.fun(
+                [FunAttr.method_id()],
+                "get_abi_ipfs",
+                [],
+                Type.hole(),
+                [ret(string(this.abiLink))],
+            ),
         );
 
         // Deployed
@@ -1392,7 +1403,7 @@ export class ModuleGen {
         //   return get_data().begin_parse().load_int(1);
         // }
         m.entries.push(
-            fun(
+            this.ctx.fun(
                 [FunAttr.method_id()],
                 "lazy_deployment_completed",
                 [],
