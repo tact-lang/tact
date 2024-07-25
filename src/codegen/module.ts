@@ -13,6 +13,7 @@ import { getSortedTypes } from "../storage/resolveAllocation";
 import { getMethodId } from "../utils/utils";
 import { idTextErr } from "../errors";
 import { contractErrors } from "../abi/errors";
+import { writeStdlib } from "./stdlib";
 import {
     resolveFuncTypeUnpack,
     resolveFuncType,
@@ -133,8 +134,8 @@ export class ModuleGen {
     /**
      * Adds stdlib definitions to the generated module.
      */
-    private addStdlib(_m: FuncAstModule): void {
-        // TODO
+    private writeStdlib(m: FuncAstModule): void {
+        writeStdlib(this.ctx);
     }
 
     private addSerializers(_m: FuncAstModule): void {
@@ -1475,7 +1476,7 @@ export class ModuleGen {
             throw Error(`Contract "${this.contractName}" not found`);
         }
 
-        this.addStdlib(m);
+        this.writeStdlib(m);
         this.addSerializers(m);
         this.addAccessors(m);
         this.addInitSerializer(m);

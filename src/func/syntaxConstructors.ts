@@ -265,6 +265,11 @@ export function vardef(
     names: string | string[] | FuncAstIdExpr | FuncAstIdExpr[],
     init?: FuncAstExpr,
 ): FuncAstVarDefStmt {
+    if (Array.isArray(names) && names.length === 0) {
+        throw new Error(
+            `Variable definition cannot have an empty set of names`,
+        );
+    }
     return {
         kind: "var_def_stmt",
         names: Array.isArray(names)

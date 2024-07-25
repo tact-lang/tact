@@ -14,6 +14,7 @@ import { forEachExpression } from "../func/iterators";
 /**
  * An additional information on how to handle the function definition.
  * TODO: Refactor: we need only the boolean `skip` field in WrittenFunction.
+ * TODO: We don't need even `skip`. These are merely names without signature saved within the context.
  * XXX: Writer.ts: `Body.kind`
  */
 export type BodyKind = "asm" | "skip" | "generic";
@@ -69,7 +70,7 @@ export class Location {
 
 export type WrittenFunction = {
     name: string;
-    definition: FuncAstFunctionDefinition | FuncAstAsmFunction;
+    definition: FuncAstFunctionDefinition | FuncAstAsmFunction | undefined;
     kind: BodyKind;
     context: LocationContext | undefined;
     depends: Set<string>;
@@ -113,7 +114,10 @@ export class WriterContext {
      * info about the dependencies: functions that it calls.
      */
     public save(
-        value: FuncAstFunctionDefinition | FuncAstAsmFunction,
+        value:
+            | FuncAstFunctionDefinition
+            | FuncAstAsmFunction
+            | { name: string; kind: "name_only" },
         params: Partial<FunctionInfo> = {},
     ): void {
         const {
@@ -121,15 +125,27 @@ export class WriterContext {
             context = undefined,
             inMainContract = false,
         } = params;
-        const definition = value as
+        let name: string;
+        let definition:
             | FuncAstFunctionDefinition
-            | FuncAstAsmFunction;
+            | FuncAstAsmFunction
+            | undefined;
+        if (value.kind === "name_only") {
+            name = value.name;
+            definition = undefined;
+        } else {
+            const defValue = value as
+                | FuncAstFunctionDefinition
+                | FuncAstAsmFunction;
+            name = defValue.name.value;
+            definition = defValue;
+        }
         const depends = new Set<string>();
         if (value.kind === "function_definition") {
             this.addDependencies(value, depends);
         }
-        this.functions.set(definition.name.value, {
-            name: definition.name.value,
+        this.functions.set(name, {
+            name,
             definition,
             kind,
             context,
@@ -153,6 +169,14 @@ export class WriterContext {
         const f = fun(attrs, name, paramValues, returnTy, body);
         this.save(f, params);
         return f;
+    }
+
+    /**
+     * Saves the function name in the context.
+     * XXX: Replicates old WriterContext.skip
+     */
+    public skip(name: string, params: Partial<FunctionInfo> = {}): void {
+        this.save({ name, kind: "name_only" }, params);
     }
 
     /**
@@ -211,7 +235,7 @@ export class WriterContext {
                 // TODO: This will be resolved when all the required functions are added to the new backend.
                 return [];
             }
-        }).filter(f => f !== undefined);
+        }).filter((f) => f !== undefined);
 
         return sorted;
     }
