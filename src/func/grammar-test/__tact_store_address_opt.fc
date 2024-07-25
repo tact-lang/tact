@@ -1,0 +1,11 @@
+#include "include_stdlib.fc";
+#include "__tact_store_address.fc";
+
+builder __tact_store_address_opt(builder b, slice address) inline {
+    if (null?(address)) {
+        b = b.store_uint(0, 2);
+        return b;
+    } else {
+        return __tact_store_address(b, address);
+    }
+}

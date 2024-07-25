@@ -1,0 +1,12 @@
+#include "include_stdlib.fc";
+#include "__tact_verify_address.fc";
+
+(slice, slice) __tact_load_address_opt(slice cs) inline {
+    if (cs.preload_uint(2) != 0) {
+        slice raw = cs~load_msg_addr();
+        return (cs, __tact_verify_address(raw));
+    } else {
+        cs~skip_bits(2);
+        return (cs, null());
+    }
+}

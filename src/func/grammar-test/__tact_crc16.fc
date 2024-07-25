@@ -1,0 +1,29 @@
+#include "include_stdlib.fc";
+
+(slice) __tact_crc16(slice data) inline_ref {
+    slice new_data = begin_cell()
+        .store_slice(data)
+        .store_slice("0000"s)
+    .end_cell().begin_parse();
+    int reg = 0;
+    while (~ new_data.slice_data_empty?()) {
+        int byte = new_data~load_uint(8);
+        int mask = 0x80;
+        while (mask > 0) {
+            reg <<= 1;
+            if (byte & mask) {
+                reg += 1;
+            }
+            mask >>= 1;
+            if (reg > 0xffff) {
+                reg &= 0xffff;
+                reg ^= 0x1021;
+            }
+        }
+    }
+    (int q, int r) = divmod(reg, 256);
+    return begin_cell()
+        .store_uint(q, 8)
+        .store_uint(r, 8)
+    .end_cell().begin_parse();
+}

@@ -1,0 +1,6 @@
+#include "include_stdlib.fc";
+#include "__tact_verify_address.fc";
+
+builder __tact_store_address(builder b, slice address) inline {
+    return b.store_slice(__tact_verify_address(address));
+}

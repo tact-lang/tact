@@ -1,0 +1,7 @@
+#include "include_stdlib.fc";
+#include "__tact_verify_address.fc";
+
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    return (cs, __tact_verify_address(raw));
+}

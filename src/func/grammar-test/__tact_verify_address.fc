@@ -1,0 +1,23 @@
+#include "include_stdlib.fc";
+
+const int INVALID_ADDRESS = 136;
+const int MC_NOT_ENABLED = 137;
+
+;; Without masterchain enabled
+slice __tact_verify_address(slice address) inline {
+    throw_unless(INVALID_ADDRESS, address.slice_bits() == 267);
+    var h = address.preload_uint(11);
+    throw_if(MC_NOT_ENABLED, h == 1279);
+    throw_unless(INVALID_ADDRESS, h == 1024);
+
+    return address;
+}
+
+;; With masterchain enabled
+slice __tact_verify_address_masterchain(slice address) inline {
+    throw_unless(INVALID_ADDRESS, address.slice_bits() == 267);
+    var h = address.preload_uint(11);
+    throw_unless(INVALID_ADDRESS, (h == 1024) | (h == 1279));
+
+    return address;
+}

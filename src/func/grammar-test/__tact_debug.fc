@@ -1,0 +1,3 @@
+#include "include_stdlib.fc";
+
+forall X -> () __tact_debug(X value, slice debug_print) impure asm "STRDUMP" "DROP" "s0 DUMP" "DROP";

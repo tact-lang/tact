@@ -1,0 +1,3 @@
+#include "include_stdlib.fc";
+
+(slice, int) __tact_load_bool(slice s) asm( -> 1 0) "1 LDI";
