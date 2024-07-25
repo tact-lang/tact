@@ -69,11 +69,11 @@ export class FuncGenerator {
         const abi = JSON.stringify(this.abiSrc);
         const abiLink = await calculateIPFSlink(Buffer.from(abi));
 
-        const mainContract = this.generateMainContract(
+        const m = ModuleGen.fromTact(
+            this.funcCtx,
             this.abiSrc.name!,
             abiLink,
-        );
-        // TODO: writeAll
+        ).writeAll();
         const functions = this.funcCtx.extract();
 
         //
@@ -112,10 +112,10 @@ export class FuncGenerator {
         // TODO
 
         // Finalize and dump the main contract, as we have just obtained the structure of the project
-        mainContract.entries.unshift(
+        m.entries.unshift(
             ...generated.files.map((f) => include(f.name)),
         );
-        mainContract.entries.unshift(
+        m.entries.unshift(
             ...[
                 `version =${CODEGEN_FUNC_VERSION}`,
                 "allow-post-modification",
@@ -124,7 +124,7 @@ export class FuncGenerator {
         );
         generated.files.push({
             name: `${this.basename}.code.fc`,
-            code: new FuncFormatter().dump(mainContract),
+            code: new FuncFormatter().dump(m),
         });
 
         // header.push("");
@@ -146,22 +146,6 @@ export class FuncGenerator {
             files: generated.files,
             abi,
         };
-    }
-
-    /**
-     * Runs the generation of the main contract.
-     * This generates some entries from the bottom-up saving them in WriterContext.
-     */
-    private generateMainContract(
-        mainContractName: string,
-        abiLink: string,
-    ): FuncAstModule {
-        const m = ModuleGen.fromTact(
-            this.funcCtx,
-            mainContractName,
-            abiLink,
-        ).writeAll();
-        return m;
     }
 
     /**
