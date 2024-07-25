@@ -188,6 +188,7 @@ export class ModuleGen {
             [],
             Type.hole(),
             [ret(tensor(...shiftExprs))],
+            { inMainContract: true },
         );
     }
 
@@ -828,7 +829,9 @@ export class ModuleGen {
             functionBody.push(ret(tensor(id("self"), bool(false))));
         }
 
-        return fun(attrs, name, paramValues, returnTy, functionBody);
+        return this.ctx.fun(attrs, name, paramValues, returnTy, functionBody, {
+            inMainContract: true,
+        });
     }
 
     private writeReceiver(
@@ -898,7 +901,9 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body, {
+                inMainContract: true,
+            });
         }
 
         // Empty receiver
@@ -933,7 +938,9 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body, {
+                inMainContract: true,
+            });
         }
 
         // Comment receiver
@@ -970,7 +977,9 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body, {
+                inMainContract: true,
+            });
         }
 
         // Fallback
@@ -1010,7 +1019,9 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body, {
+                inMainContract: true,
+            });
         }
 
         // Fallback
@@ -1042,7 +1053,9 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body, {
+                inMainContract: true,
+            });
         }
 
         // Bounced
@@ -1074,7 +1087,9 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body, {
+                inMainContract: true,
+            });
         }
 
         if (selector.kind === "bounce-binary") {
@@ -1126,7 +1141,9 @@ export class ModuleGen {
             ) {
                 body.push(ret(tensor(id(selfRes), unit())));
             }
-            return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
+            return this.ctx.fun(attrs, funName, paramValues, returnTy, body, {
+                inMainContract: true,
+            });
         }
 
         throw new Error(
@@ -1192,12 +1209,15 @@ export class ModuleGen {
                     paramValues,
                     returnTy,
                     body,
+                    { inMainContract: true },
                 );
             }
         }
         // Return result
         body.push(ret(id("res")));
-        return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
+        return this.ctx.fun(attrs, funName, paramValues, returnTy, body, {
+            inMainContract: true,
+        });
     }
 
     private makeInternalReceiver(
@@ -1295,7 +1315,9 @@ export class ModuleGen {
         body.push(comment("Persist state"));
         body.push(expr(call(ops.contractStore(type.name), [id("self")])));
 
-        return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
+        return this.ctx.fun(attrs, funName, paramValues, returnTy, body, {
+            inMainContract: true,
+        });
     }
 
     private makeExternalReceiver(
@@ -1348,7 +1370,9 @@ export class ModuleGen {
         body.push(comment("Persist state"));
         body.push(expr(call(ops.contractStore(type.name), [id("self")])));
 
-        return this.ctx.fun(attrs, funName, paramValues, returnTy, body);
+        return this.ctx.fun(attrs, funName, paramValues, returnTy, body, {
+            inMainContract: true,
+        });
     }
 
     /**
@@ -1395,6 +1419,7 @@ export class ModuleGen {
                 [],
                 Type.hole(),
                 [ret(string(this.abiLink))],
+                { inMainContract: true },
             ),
         );
 
@@ -1417,6 +1442,7 @@ export class ModuleGen {
                         }),
                     ),
                 ],
+                { inMainContract: true },
             ),
         );
 

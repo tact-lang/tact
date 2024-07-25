@@ -190,25 +190,28 @@ export class WriterContext {
         let all = this.allFunctions();
 
         // Remove unused
-        if (!debug) {
-            const used: Set<string> = new Set();
-            const visit = (name: string) => {
-                used.add(name);
-                const f = this.functions.get(name);
-                if (f !== undefined) {
-                    for (const d of f.depends) {
-                        visit(d);
-                    }
+        const used: Set<string> = new Set();
+        const visit = (name: string) => {
+            used.add(name);
+            const f = this.functions.get(name);
+            if (f !== undefined) {
+                for (const d of f.depends) {
+                    visit(d);
                 }
-            };
-            this.mainFunctions().forEach((f) => visit(f.name));
-            all = all.filter((v) => used.has(v.name));
-        }
+            }
+        };
+        this.mainFunctions().forEach((f) => visit(f.name));
+        all = all.filter((v) => used.has(v.name));
 
         // Sort functions
-        const sorted = topologicalSort(all, (f) =>
-            Array.from(f.depends).map((v) => this.functions.get(v)!),
-        );
+        const sorted = topologicalSort(all, (f) => {
+            if (f !== undefined) {
+                return Array.from(f.depends).map((v) => this.functions.get(v)!);
+            } else {
+                // TODO: This will be resolved when all the required functions are added to the new backend.
+                return [];
+            }
+        }).filter(f => f !== undefined);
 
         return sorted;
     }
