@@ -260,9 +260,10 @@ export type FuncAstStmt =
 // Local variable definition:
 // int x = 2; // ty = int
 // var x = 2; // ty is undefined
+// var (x, y) = 2; // ty is undefined; names = ["x", "y"]
 export type FuncAstVarDefStmt = {
     kind: "var_def_stmt";
-    name: FuncAstIdExpr;
+    names: FuncAstIdExpr[];
     ty: FuncType | undefined;
     init: FuncAstExpr | undefined;
 };

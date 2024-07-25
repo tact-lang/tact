@@ -259,17 +259,21 @@ export const primitiveType = (ty: FuncType): FuncAstPrimitiveTypeExpr => ({
 // Statements
 //
 
-export const vardef = (
+export function vardef(
     // TODO: replace w/ `FuncType | '_'`
     ty: FuncType | undefined,
-    name: string | FuncAstIdExpr,
+    names: string | string[] | FuncAstIdExpr | FuncAstIdExpr[],
     init?: FuncAstExpr,
-): FuncAstVarDefStmt => ({
-    kind: "var_def_stmt",
-    name: wrapToId(name),
-    ty,
-    init,
-});
+): FuncAstVarDefStmt {
+    return {
+        kind: "var_def_stmt",
+        names: Array.isArray(names)
+            ? names.map((v) => wrapToId(v))
+            : [wrapToId(names)],
+        ty,
+        init,
+    };
+}
 
 export const ret = (value?: FuncAstExpr): FuncAstReturnStmt => ({
     kind: "return_stmt",

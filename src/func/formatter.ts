@@ -258,10 +258,12 @@ export class FuncFormatter {
     }
 
     private formatVarDefStmt(node: FuncAstVarDefStmt): string {
-        const name = this.dump(node.name);
+        const names = node.names.map(this.dump);
+        const namesStr =
+            names.length === 1 ? names[0] : `(${names.join(", ")})`;
         const type = node.ty ? this.dump(node.ty) : "var";
         const init = node.init ? ` = ${this.dump(node.init)}` : "";
-        return `${type} ${name}${init};`;
+        return `${type} ${namesStr}${init};`;
     }
 
     private formatReturnStmt(node: FuncAstReturnStmt): string {
