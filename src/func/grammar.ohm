@@ -1,0 +1,145 @@
+FunC {
+  Module = Pragma* Include* ModuleItem*
+
+  //
+  // Compiler pragmas and includes
+  //
+
+  Pragma = pragma ("allow-post-modification" | "compute-asm-ltr") ";" --string
+         | pragma ("version" | "not-version") versionRange ";" --versionRange
+         | pragma "test-version-set" stringLiteral ";" --versionString
+
+  Include = include stringLiteral ";"
+
+  //
+  // Top-level, module items
+  //
+
+  ModuleItem = FunctionDeclaration
+             | FunctionDefinition
+             | AsmFunctionDefinition
+             | GlobalVariables
+             | Constants
+
+  FunctionDeclaration = FunctionCommon ";"
+
+  FunctionDefinition = FunctionCommon "{" Statement* "}"
+
+  AsmFunctionDefinition = FunctionCommon "asm" ("(" AsmArrangement ")")? stringLiteral+ --singleLine
+                        | FunctionCommon "asm" ("(" AsmArrangement ")")? multiLineString --multiLine
+
+  AsmArrangement = "->" integerLiteralDec+ --returns
+                 | id+ ~"->" --arguments
+                 | id+ "->" integerLiteralDec+ --argumentsToReturns
+
+  // Common parts of function declarations and definitions
+  FunctionCommon = Forall? Type functionId Parameters FunctionAttribute*
+
+  // Called "specifiers" in https://docs.ton.org/develop/func/functions#specifiers
+  FunctionAttribute = "impure"
+                    | "inline"
+                    | "inline_ref"
+                    | "method_id"
+                    | MethodId
+  MethodId = "method_id" "(" integerLiteralNonNegative ")"
+
+  GlobalVariables = "global" NonemptyListOf<GlobalVariableDeclaration, ","> ";"
+  GlobalVariableDeclaration = Type id
+
+  Constants = "const" NonemptyListOf<ConstantDefinition, ","> ";"
+  ConstantDefinition = Type? id "=" Expression
+
+  //
+  // Statements
+  //
+
+  // TODO:
+  Statement = "TODO"
+
+  // OK, this one is interesting
+  // And the following expressions one too!
+
+  //
+  // Expressions, ordered by precedence
+  // NOTE: they should parse exactly as FunC 0.4.4 does it, including the issues with precedences of ^ | and similar
+  //
+
+  // TODO:
+  Expression = "TODO"
+
+  //
+  // Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
+  //
+
+  Parameters = "(" ListOf<Parameter, ","> ")"
+  Parameter = Type id
+
+  Forall = forall NonemptyListOf<Type, ","> "->"
+  Type = id
+
+  //
+  // Lexical rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
+  //
+
+  // TODO: Test if they can be names of variables, constants, functions
+  // Reserved keywords, order matters
+  keyword = pragma
+          | include
+          | forall
+
+  pragma = "#pragma" ~idPart
+  include = "#include" ~idPart
+  forall = "forall" ~idPart
+
+  // TODO: pre-defined function names?
+  // main, recv_internal, recv_external, run_ticktock
+
+  // Identifiers
+  // TODO: Validate against https://docs.ton.org/develop/func/literals_identifiers#identifiers and https://github.com/ton-blockchain/ton/blob/master/crypto/func/parse-func.cpp
+  // They allow much more freedom it seems, which makes `funcId` in Tact's grammar.ohm invalid :/
+  functionId = ("." | "~")? id
+  id = ~keyword #idStart #(idPart*)
+  idStart = letterAscii | "_" | "'" | "?" | "!" | "::" | "&"
+  idPart = idStart | digit
+
+  // Letters
+  letterAscii = letterAsciiLC | letterAsciiUC
+  letterAsciiLC = "a".."z"
+  letterAsciiUC = "A".."Z"
+
+  // Version ranges
+  versionRange = ("=" | "^" | "<" | "<=" | ">" | ">=")? integerLiteralDec ("." integerLiteralDec)? ("." integerLiteralDec)?
+
+  // Integers
+  integerLiteral = "-"? integerLiteralNonNegative
+  integerLiteralNonNegative = integerLiteralHex
+                         | integerLiteralDec
+
+  // hexDigit defined in Ohm's built-in rules (otherwise: hexDigit = "0".."9" | "a".."f" | "A".."F")
+  integerLiteralHex = "0x" hexDigit+
+
+  // digit defined in Ohm's built-in rules (otherwise: digit = "0".."9")
+  integerLiteralDec = digit+
+
+  // Strings
+  stringLiteral = "\"" (~"\"" any)* "\"" stringType?
+  stringType = "s" --sliceHex
+             | "a" --sliceInternalAddress
+             | "u" --intHex
+             | "h" --int32Sha256
+             | "H" --int256Sha256
+             | "c" --intCrc32
+  multiLineString = "\"\"\"" (~"\"\"\"" any)* "\"\"\""
+
+  // Comments
+  space += comment | lineTerminator
+
+  // For semantic actions comment_singleLine and comment_multiLine
+  comment = ";;" (~lineTerminator any)* --singleLine
+          | multiLineComment --multiLine
+
+  // Nested multi-line comments
+  multiLineComment = "{-" (~("-}" | "{-") any)* multiLineComment? (~"-}" any)* "-}"
+
+  lineTerminator = "\n" | "\r" | "\u2028" | "\u2029"
+}

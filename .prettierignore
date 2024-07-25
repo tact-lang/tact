@@ -4,5 +4,7 @@
 /src/func/funcfiftlib.wasm.js
 /src/grammar/grammar.ohm-bundle.d.ts
 /src/grammar/grammar.ohm-bundle.js
+/src/func/grammar.ohm*.ts
+/src/func/grammar.ohm*.js
 /src/imports/stdlib.ts
 /grammar

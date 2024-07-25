@@ -4,9 +4,9 @@ import { loadCases } from "../utils/loadCases";
 describe("FunC parser", () => {
     beforeEach(() => {});
 
-    // Checking that FunC files match with the grammar
+    // Checking that FunC files match the grammar
     for (const r of loadCases(__dirname + "/test/")) {
-        it(r.name + " should match with the grammar", () => {
+        it(r.name + " should match the grammar", () => {
             expect(match(r.code).ok).toStrictEqual(true);
         });
     }

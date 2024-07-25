@@ -4,7 +4,7 @@ import FuncGrammar from "./grammar.ohm-bundle";
 type Match = { ok: false; message: string; interval: Interval } | { ok: true };
 
 /**
- * Checks that given `src` string of FunC code matches with the FunC grammar
+ * Checks if the given `src` string of FunC code matches the FunC grammar
  */
 export function match(src: string): Match {
     const matchResult = FuncGrammar.match(src);
