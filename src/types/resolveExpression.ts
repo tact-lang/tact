@@ -152,7 +152,7 @@ function resolveStructNew(
         const expressionType = getExpType(ctx, e.initializer);
         if (!isAssignable(expressionType, f.type)) {
             throwCompilationError(
-                `Invalid type "${printTypeRef(expressionType)}" for fields ${idTextErr(e.field)} with type "${printTypeRef(f.type)}" in type "${tp.name}"`,
+                `Invalid type "${printTypeRef(expressionType)}" for field ${idTextErr(e.field)} with type "${printTypeRef(f.type)}" in type "${tp.name}"`,
                 e.loc,
             );
         }
@@ -160,9 +160,13 @@ function resolveStructNew(
 
     // Check missing fields
     for (const f of tp.fields) {
-        if (f.default === undefined && !processed.has(f.name)) {
+        if (
+            !processed.has(f.name) &&
+            f.ast.initializer === null &&
+            !(f.type.kind === "ref" && f.type.optional)
+        ) {
             throwCompilationError(
-                `Missing fields "${f.name}" in type "${tp.name}"`,
+                `Missing field "${f.name}" in type "${tp.name}"`,
                 exp.loc,
             );
         }

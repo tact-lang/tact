@@ -52,6 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Incorrect FunC code generated for `recv_external`: PR [#604](https://github.com/tact-lang/tact/pull/604)
 - Allocator bug resulting in cell overflows for some contract data layouts: PR [#615](https://github.com/tact-lang/tact/pull/615)
 - Structs with more than 15 fields do not cause a FunC compilation error anymore: PR [#590](https://github.com/tact-lang/tact/pull/590)
+- Typechecking for constant and struct field initializers: PR [#621](https://github.com/tact-lang/tact/pull/621)
+- Constant evaluation for structures with default and optional fields: PR [#621](https://github.com/tact-lang/tact/pull/621)
 
 ## [1.4.0] - 2024-06-21
 
