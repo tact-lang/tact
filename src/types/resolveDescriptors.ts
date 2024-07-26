@@ -2084,16 +2084,22 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
         }
 
         if (lowLinks.get(struct.name) === indices.get(struct.name)) {
-            // cycle detected
-            if (stack.length > 1) {
-                return stack;
-            } else if (stack.length === 1) {
+            const cycle: AstId[] = [];
+            let e = "";
+            do {
+                const last = stack.pop()!;
+                e = idText(last);
+                onStack.delete(e);
+                cycle.push(last);
+            } while (e !== struct.name);
+
+            if (cycle.length > 1) {
+                return cycle.reverse();
+            } else if (cycle.length === 1) {
                 if (selfReferencingVertices.has(struct.name)) {
                     // filter out trivial SCCs
-                    return stack;
+                    return cycle;
                 }
-                stack.pop();
-                onStack.delete(struct.name);
             }
         }
         return [];

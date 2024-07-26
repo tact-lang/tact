@@ -7954,6 +7954,328 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
 
 exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 2`] = `{}`;
 
+exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-types 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait { },
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Int": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "SetIntMap4": {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 8,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": key: Int,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": key,
+            "text": "key",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": null,
+          "id": 12,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": value: SomeStruct?,
+          "name": {
+            "id": 9,
+            "kind": "id",
+            "loc": value,
+            "text": "value",
+          },
+          "type": {
+            "id": 11,
+            "kind": "optional_type",
+            "loc": SomeStruct?,
+            "typeArg": {
+              "id": 10,
+              "kind": "type_id",
+              "loc": SomeStruct,
+              "text": "SomeStruct",
+            },
+          },
+        },
+      ],
+      "id": 13,
+      "kind": "message_decl",
+      "loc": message SetIntMap4 {
+    key: Int;
+    value: SomeStruct?;
+},
+      "name": {
+        "id": 5,
+        "kind": "type_id",
+        "loc": SetIntMap4,
+        "text": "SetIntMap4",
+      },
+      "opcode": null,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "key",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 8,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": key: Int,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": key,
+            "text": "key",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": key: Int,
+        "name": "key",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "value",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "SomeStruct",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 12,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": value: SomeStruct?,
+          "name": {
+            "id": 9,
+            "kind": "id",
+            "loc": value,
+            "text": "value",
+          },
+          "type": {
+            "id": 11,
+            "kind": "optional_type",
+            "loc": SomeStruct?,
+            "typeArg": {
+              "id": 10,
+              "kind": "type_id",
+              "loc": SomeStruct,
+              "text": "SomeStruct",
+            },
+          },
+        },
+        "default": null,
+        "index": 1,
+        "loc": value: SomeStruct?,
+        "name": "value",
+        "type": {
+          "kind": "ref",
+          "name": "SomeStruct",
+          "optional": true,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": 383013829,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "SetIntMap4",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "SetIntMap4{key:int257,value:Maybe SomeStruct{value:int257}}",
+    "tlb": "set_int_map4#16d453c5 key:int257 value:Maybe SomeStruct{value:int257} = SetIntMap4",
+    "traits": [],
+    "uid": 24351,
+  },
+  "SomeStruct": {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 17,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": value: Int,
+          "name": {
+            "id": 15,
+            "kind": "id",
+            "loc": value,
+            "text": "value",
+          },
+          "type": {
+            "id": 16,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 18,
+      "kind": "struct_decl",
+      "loc": struct SomeStruct { value: Int },
+      "name": {
+        "id": 14,
+        "kind": "type_id",
+        "loc": SomeStruct,
+        "text": "SomeStruct",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "value",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 17,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": value: Int,
+          "name": {
+            "id": 15,
+            "kind": "id",
+            "loc": value,
+            "text": "value",
+          },
+          "type": {
+            "id": 16,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": value: Int,
+        "name": "value",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "SomeStruct",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "SomeStruct{value:int257}",
+    "tlb": "_ value:int257 = SomeStruct",
+    "traits": [],
+    "uid": 61480,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-types 2`] = `{}`;
+
 exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
 {
   "BaseTrait": {
