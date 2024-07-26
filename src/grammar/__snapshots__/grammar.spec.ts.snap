@@ -187,12 +187,12 @@ Line 1, col 20:
 `;
 
 exports[`grammar should fail item-native-fun-comma 1`] = `
-"<unknown>:1:19: Parse error: expected ")"
+"<unknown>:1:11: Parse error: expected ")"
 
-Line 1, col 19:
-> 1 | @name(send_message,then_terminate)
-                        ^
-  2 | native idTest4();
+Line 1, col 11:
+> 1 | @name(lol lol)
+                ^
+  2 | native itTest5();
 "
 `;
 
@@ -226,22 +226,22 @@ Line 2, col 31:
 `;
 
 exports[`grammar should fail item-native-fun-number 1`] = `
-"<unknown>:1:11: Parse error: expected ")"
+"<unknown>:1:10: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
 
-Line 1, col 11:
-> 1 | @name(take(first)Entry)
-                ^
-  2 | native idTest1();
+Line 1, col 10:
+> 1 | @name(123)
+               ^
+  2 | native idTest9();
 "
 `;
 
 exports[`grammar should fail item-native-fun-only-underscore 1`] = `
-"<unknown>:1:11: Parse error: expected ")"
+"<unknown>:1:8: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
 
-Line 1, col 11:
-> 1 | @name(take(first)Entry)
-                ^
-  2 | native idTest1();
+Line 1, col 8:
+> 1 | @name(_)
+             ^
+  2 | native idTest5();
 "
 `;
 
