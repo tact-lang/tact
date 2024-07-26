@@ -334,7 +334,7 @@ describe("structs", () => {
             .endCell();
 
         expect(await contract.getUintFieldsMessage()).toEqual(mUintFields);
-        // This doesn't work for unknown (yet) reasons, tried to debug it whole day
+        // This doesn't work for unknown (yet) reasons
         // expect(await contract.getUintFieldsFromCell(mUintFieldsCell)).toEqual(mUintFields);
     });
 });

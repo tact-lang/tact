@@ -3,7 +3,7 @@
 exports[`map should implement maps correctly 1`] = `
 [
   {
-    "$seq": 163,
+    "$seq": 173,
     "events": [
       {
         "$type": "storage-charged",
@@ -39,7 +39,7 @@ exports[`map should implement maps correctly 1`] = `
           "from": "kQD2HX3w4uRmCoe34-siEhRl5sEC6x8BSBZexutmtSOfYWoh",
           "to": "@treasure(treasure)",
           "type": "internal",
-          "value": "0.982029",
+          "value": "0.981251",
         },
       },
     ],
