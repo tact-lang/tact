@@ -413,17 +413,29 @@ function resolveFieldAccess(
     const field = fields.find((v) => eqNames(v.name, exp.field));
     const cst = srcT.constants.find((v) => eqNames(v.name, exp.field));
     if (!field && !cst) {
-        if (src.kind === "ref_bounced") {
-            throwCompilationError(
-                `Type bounced<${idTextErr(src.name)}> does not have a field named ${idTextErr(exp.field)}`,
-                exp.field.loc,
-            );
-        } else {
-            throwCompilationError(
-                `Type ${idTextErr(src.name)} does not have a field named ${idTextErr(exp.field)}`,
-                exp.loc,
-            );
+        const typeStr =
+            src.kind === "ref_bounced"
+                ? `bounced<${idTextErr(src.name)}>`
+                : idTextErr(src.name);
+
+        if (src.kind === "ref" && !src.optional) {
+            // Check for struct methods
+            if (
+                (srcT.kind === "struct" &&
+                    StructFunctions.has(idText(exp.field))) ||
+                srcT.functions.has(idText(exp.field))
+            ) {
+                throwCompilationError(
+                    `Type ${typeStr} does not have a field named "${exp.field.text}", did you mean "${exp.field.text}()" instead?`,
+                    exp.loc,
+                );
+            }
         }
+
+        throwCompilationError(
+            `Type ${typeStr} does not have a field named ${idTextErr(exp.field)}`,
+            exp.field.loc,
+        );
     }
 
     // Register result type
@@ -548,32 +560,41 @@ function resolveCall(
         }
 
         const f = srcT.functions.get(idText(exp.method));
-        if (!f) {
-            throwCompilationError(
-                `Type "${src.name}" does not have a function named ${idTextErr(exp.method)}`,
-                exp.loc,
-            );
-        }
-
-        // Check arguments
-        if (f.params.length !== exp.args.length) {
-            throwCompilationError(
-                `Function ${idTextErr(exp.method)} expects ${f.params.length} arguments, got ${exp.args.length}`,
-                exp.loc,
-            );
-        }
-        for (const [i, a] of f.params.entries()) {
-            const e = exp.args[i]!;
-            const t = getExpType(ctx, e);
-            if (!isAssignable(t, a.type)) {
+        if (f) {
+            // Check arguments
+            if (f.params.length !== exp.args.length) {
                 throwCompilationError(
-                    `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}`,
-                    e.loc,
+                    `Function ${idTextErr(exp.method)} expects ${f.params.length} arguments, got ${exp.args.length}`,
+                    exp.loc,
                 );
             }
+            for (const [i, a] of f.params.entries()) {
+                const e = exp.args[i]!;
+                const t = getExpType(ctx, e);
+                if (!isAssignable(t, a.type)) {
+                    throwCompilationError(
+                        `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}`,
+                        e.loc,
+                    );
+                }
+            }
+
+            return registerExpType(ctx, exp, f.returns);
         }
 
-        return registerExpType(ctx, exp, f.returns);
+        // Check if a field with the same name exists
+        const field = srcT.fields.find((v) => eqNames(v.name, exp.method));
+        if (field) {
+            throwCompilationError(
+                `Type "${src.name}" does not have a function named "${exp.method.text}()", did you mean field "${exp.method.text}" instead?`,
+                exp.loc,
+            );
+        }
+
+        throwCompilationError(
+            `Type "${src.name}" does not have a function named ${idTextErr(exp.method)}`,
+            exp.loc,
+        );
     }
 
     // Handle map
