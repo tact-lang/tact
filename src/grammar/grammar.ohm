@@ -246,12 +246,6 @@ Tact {
 
     nonZeroDigit = "1".."9"
 
-    funcNumberDec = digit+
-
-    funcNumberHex = "0x" hexDigit+
-
-    funcNumberPos = funcNumberDec | funcNumberHex
-
     // Letters
     letterAsciiLC = "a".."z"
 
@@ -269,9 +263,12 @@ Tact {
     id = ~reservedWord #idStart #(idPart*)
 
     // FunC identifiers, where `funcId` stands for FunC function identifier
-    // The plain identifier cannot be a single underscore nor a number
+    // The plain identifier cannot be a single underscore nor just a number
+
+    funcNumberInId = "-"? digit? digit* ~digit
+                   | "-"? ("0x" hexDigit+)? ~hexDigit
     
-    funcPlainId = digit* &(~(digit) any) "_"? (~(whiteSpace | "(" | ")" | "," | "." | ";" | "~") any)+
+    funcPlainId = funcNumberInId "_"? (~(whiteSpace | "(" | ")" | "," | "." | ";" | "~") any)+
 
     funcQuotedId = "`" (~("`" | "\n") any)+ "`"
 
