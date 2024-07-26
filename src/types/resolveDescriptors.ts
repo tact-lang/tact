@@ -1797,20 +1797,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
     ctx = initializeConstantsAndDefaultContractAndStructFields(ctx);
 
     // detect self-referencing or mutually-recursive types
-    const cycle = recursiveTypesDetected(ctx);
-    if (cycle.length === 1) {
-        const tyId = cycle[0]!;
-        throwCompilationError(
-            `Self-referencing types are not supported: type ${idTextErr(tyId)} refers to itself in its definition`,
-            tyId.loc,
-        );
-    } else if (cycle.length > 1) {
-        const tyIds = cycle.map((tyId) => idTextErr(tyId)).join(", ");
-        throwCompilationError(
-            `Mutually recursive types are not supported: types ${tyIds} form a cycle`,
-            cycle[0]!.loc,
-        );
-    }
+    checkRecursiveTypes(ctx);
+
     return ctx;
 }
 
@@ -2006,7 +1994,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
     return ctx;
 }
 
-function recursiveTypesDetected(ctx: CompilerContext): AstId[] {
+function checkRecursiveTypes(ctx: CompilerContext): void {
     // the implementation is basically Tarjan's algorithm,
     // which removes trivial SCCs, i.e. nodes (structs) that do not refer to themselves
     // and terminates early if a non-trivial SCC is detected
@@ -2026,7 +2014,19 @@ function recursiveTypesDetected(ctx: CompilerContext): AstId[] {
     for (const struct of structs) {
         if (!indices.has(struct.name)) {
             const cycle = strongConnect(struct);
-            if (cycle.length > 0) return cycle;
+            if (cycle.length === 1) {
+                const tyId = cycle[0]!;
+                throwCompilationError(
+                    `Self-referencing types are not supported: type ${idTextErr(tyId)} refers to itself in its definition`,
+                    tyId.loc,
+                );
+            } else if (cycle.length > 1) {
+                const tyIds = cycle.map((tyId) => idTextErr(tyId)).join(", ");
+                throwCompilationError(
+                    `Mutually recursive types are not supported: types ${tyIds} form a cycle`,
+                    cycle[0]!.loc,
+                );
+            }
         }
     }
 
@@ -2089,6 +2089,7 @@ function recursiveTypesDetected(ctx: CompilerContext): AstId[] {
                 return stack;
             } else if (stack.length === 1) {
                 if (selfReferencingVertices.has(struct.name)) {
+                    // filter out trivial SCCs
                     return stack;
                 }
                 stack.pop();
@@ -2097,5 +2098,4 @@ function recursiveTypesDetected(ctx: CompilerContext): AstId[] {
         }
         return [];
     }
-    return [];
 }
