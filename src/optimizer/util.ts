@@ -89,27 +89,26 @@ export function makeBinaryExpression(
     return result as AstExpression;
 }
 
+// Checks if the top level node is an unary op node
+export function checkIsUnaryOpNode(ast: AstExpression): boolean {
+    return ast.kind === "op_unary";
+}
+
 // Checks if the top level node is a binary op node
 export function checkIsBinaryOpNode(ast: AstExpression): boolean {
     return ast.kind === "op_binary";
 }
 
 // Checks if top level node is a binary op node
-// with a non-value node on the left and
-// value node on the right
-export function checkIsBinaryOp_NonValue_Value(ast: AstExpression): boolean {
-    return ast.kind === "op_binary"
-        ? !isValue(ast.left) && isValue(ast.right)
-        : false;
+// with a value node on the right
+export function checkIsBinaryOp_With_RightValue(ast: AstExpression): boolean {
+    return ast.kind === "op_binary" ? isValue(ast.right) : false;
 }
 
 // Checks if top level node is a binary op node
-// with a value node on the left and
-// non-value node on the right
-export function checkIsBinaryOp_Value_NonValue(ast: AstExpression): boolean {
-    return ast.kind === "op_binary"
-        ? isValue(ast.left) && !isValue(ast.right)
-        : false;
+// with a value node on the left
+export function checkIsBinaryOp_With_LeftValue(ast: AstExpression): boolean {
+    return ast.kind === "op_binary" ? isValue(ast.left) : false;
 }
 
 // Checks if the top level node is the specified number
@@ -119,6 +118,11 @@ export function checkIsNumber(ast: AstExpression, n: bigint): boolean {
 
 export function checkIsName(ast: AstExpression): boolean {
     return ast.kind === "id";
+}
+
+// Checks if the top level node is the specified boolean
+export function checkIsBoolean(ast: AstExpression, b: boolean): boolean {
+    return ast.kind === "boolean" ? ast.value == b : false;
 }
 
 // bigint arithmetic

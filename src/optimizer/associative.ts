@@ -13,8 +13,8 @@ import { ExpressionTransformer, Rule } from "./types";
 import {
     abs,
     checkIsBinaryOpNode,
-    checkIsBinaryOp_NonValue_Value,
-    checkIsBinaryOp_Value_NonValue,
+    checkIsBinaryOp_With_RightValue,
+    checkIsBinaryOp_With_LeftValue,
     extractValue,
     makeBinaryExpression,
     makeValueExpression,
@@ -90,11 +90,10 @@ abstract class AllowableOpRule extends AssociativeRewriteRule {
     constructor() {
         super();
 
-        this.allowedOps = new Set(
-            // Recall that integer operators +,-,*,/,% are not safe with this rule, because
-            // there is a risk that they will not preserve overflows in the unknown operands.
-            ["&&", "||"], // TODO: check bitwise integer operators
-        );
+        this.allowedOps = new Set();
+        // Recall that integer operators +,-,*,/,% are not safe with this rule, because
+        // there is a risk that they will not preserve overflows in the unknown operands.
+        //["&&", "||"], // TODO: check bitwise integer operators
     }
 
     public isAllowedOp(op: AstBinaryOperation): boolean {
@@ -109,6 +108,10 @@ abstract class AllowableOpRule extends AssociativeRewriteRule {
     }
 }
 
+// This rule will be removed in a future refactoring, since
+// no operator can use it due to the safety conditions.
+// At first I thought that boolean expressions could use them
+// but I found out they cannot.
 export class AssociativeRule1 extends AllowableOpRule {
     public applyRule(
         ast: AstExpression,
@@ -117,8 +120,8 @@ export class AssociativeRule1 extends AllowableOpRule {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as AstOpBinary;
             if (
-                checkIsBinaryOp_NonValue_Value(topLevelNode.left) &&
-                checkIsBinaryOp_NonValue_Value(topLevelNode.right)
+                checkIsBinaryOp_With_RightValue(topLevelNode.left) &&
+                checkIsBinaryOp_With_RightValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (x1 op1 c1) op (x2 op2 c2)
@@ -171,8 +174,8 @@ export class AssociativeRule1 extends AllowableOpRule {
                     }
                 }
             } else if (
-                checkIsBinaryOp_NonValue_Value(topLevelNode.left) &&
-                checkIsBinaryOp_Value_NonValue(topLevelNode.right)
+                checkIsBinaryOp_With_RightValue(topLevelNode.left) &&
+                checkIsBinaryOp_With_LeftValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (x1 op1 c1) op (c2 op2 x2)
@@ -225,8 +228,8 @@ export class AssociativeRule1 extends AllowableOpRule {
                     }
                 }
             } else if (
-                checkIsBinaryOp_Value_NonValue(topLevelNode.left) &&
-                checkIsBinaryOp_NonValue_Value(topLevelNode.right)
+                checkIsBinaryOp_With_LeftValue(topLevelNode.left) &&
+                checkIsBinaryOp_With_RightValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (c1 op1 x1) op (x2 op2 c2)
@@ -281,8 +284,8 @@ export class AssociativeRule1 extends AllowableOpRule {
                     }
                 }
             } else if (
-                checkIsBinaryOp_Value_NonValue(topLevelNode.left) &&
-                checkIsBinaryOp_Value_NonValue(topLevelNode.right)
+                checkIsBinaryOp_With_LeftValue(topLevelNode.left) &&
+                checkIsBinaryOp_With_LeftValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (c1 op1 x1) op (c2 op2 x2)
@@ -343,6 +346,10 @@ export class AssociativeRule1 extends AllowableOpRule {
     }
 }
 
+// This rule will be removed in a future refactoring, since
+// no operator can use it due to the safety conditions.
+// At first I thought that boolean expressions could use them
+// but I found out they cannot.
 export class AssociativeRule2 extends AllowableOpRule {
     public applyRule(
         ast: AstExpression,
@@ -351,7 +358,7 @@ export class AssociativeRule2 extends AllowableOpRule {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as AstOpBinary;
             if (
-                checkIsBinaryOp_NonValue_Value(topLevelNode.left) &&
+                checkIsBinaryOp_With_RightValue(topLevelNode.left) &&
                 !isValue(topLevelNode.right)
             ) {
                 // The tree has this form:
@@ -388,7 +395,7 @@ export class AssociativeRule2 extends AllowableOpRule {
                     return makeBinaryExpression(op, newLeft, c1);
                 }
             } else if (
-                checkIsBinaryOp_Value_NonValue(topLevelNode.left) &&
+                checkIsBinaryOp_With_LeftValue(topLevelNode.left) &&
                 !isValue(topLevelNode.right)
             ) {
                 // The tree has this form:
@@ -424,7 +431,7 @@ export class AssociativeRule2 extends AllowableOpRule {
                 }
             } else if (
                 !isValue(topLevelNode.left) &&
-                checkIsBinaryOp_NonValue_Value(topLevelNode.right)
+                checkIsBinaryOp_With_RightValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // x2 op (x1 op1 c1)
@@ -459,7 +466,7 @@ export class AssociativeRule2 extends AllowableOpRule {
                 }
             } else if (
                 !isValue(topLevelNode.left) &&
-                checkIsBinaryOp_Value_NonValue(topLevelNode.right)
+                checkIsBinaryOp_With_LeftValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // x2 op (c1 op1 x1)
@@ -726,10 +733,58 @@ export class AssociativeRule3 extends Rule {
                 ],
             ]);
 
+        // op1 = &&
+
+        const andLeftAssocOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "&&",
+                    // original expression: (x1 && c1) && c2
+                    (x1, c1, c2) => {
+                        // final expression x1 && (c1 && c2)
+                        const val_ = evalBinaryOp("&&", c1, c2);
+                        const val_node = makeValueExpression(val_);
+                        return {
+                            simplifiedExpression: makeBinaryExpression(
+                                "&&",
+                                x1,
+                                val_node,
+                            ),
+                            safetyCondition: true,
+                        };
+                    },
+                ],
+            ]);
+
+        // op1 = ||
+
+        const orLeftAssocOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "||",
+                    // original expression: (x1 || c1) || c2
+                    (x1, c1, c2) => {
+                        // final expression x1 || (c1 || c2)
+                        const val_ = evalBinaryOp("||", c1, c2);
+                        const val_node = makeValueExpression(val_);
+                        return {
+                            simplifiedExpression: makeBinaryExpression(
+                                "||",
+                                x1,
+                                val_node,
+                            ),
+                            safetyCondition: true,
+                        };
+                    },
+                ],
+            ]);
+
         this.leftAssocTransforms = new Map([
             ["+", plusLeftAssocOperators],
             ["-", minusLeftAssocOperators],
             ["*", multiplyLeftAssocOperators],
+            ["&&", andLeftAssocOperators],
+            ["||", orLeftAssocOperators],
         ]);
 
         // Now consider expressions of the form: c2 op (c1 op1 x1).
@@ -864,10 +919,60 @@ export class AssociativeRule3 extends Rule {
                 ],
             ]);
 
+        // op = &&
+
+        const andRightAssocOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "&&",
+
+                    // original expression: c2 && (c1 && x1)
+                    (x1, c1, c2) => {
+                        // final expression (c2 && c1) && x1
+                        const val_ = evalBinaryOp("&&", c2, c1);
+                        const val_node = makeValueExpression(val_);
+                        return {
+                            simplifiedExpression: makeBinaryExpression(
+                                "&&",
+                                val_node,
+                                x1,
+                            ),
+                            safetyCondition: true,
+                        };
+                    },
+                ],
+            ]);
+
+        // op = ||
+
+        const orRightAssocOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "||",
+
+                    // original expression: c2 || (c1 || x1)
+                    (x1, c1, c2) => {
+                        // final expression (c2 || c1) || x1
+                        const val_ = evalBinaryOp("||", c2, c1);
+                        const val_node = makeValueExpression(val_);
+                        return {
+                            simplifiedExpression: makeBinaryExpression(
+                                "||",
+                                val_node,
+                                x1,
+                            ),
+                            safetyCondition: true,
+                        };
+                    },
+                ],
+            ]);
+
         this.rightAssocTransforms = new Map([
             ["+", plusRightAssocOperators],
             ["-", minusRightAssocOperators],
             ["*", multiplyRightAssocOperators],
+            ["&&", andRightAssocOperators],
+            ["||", orRightAssocOperators],
         ]);
 
         // Now consider expressions of the form: c2 op (x1 op1 c1).
@@ -1001,10 +1106,86 @@ export class AssociativeRule3 extends Rule {
             ],
         ]);
 
+        // op = &&
+
+        const andRightCommuteOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "&&",
+                    // original expression: c2 && (x1 && c1)
+                    (x1, c1, c2) => {
+                        const val_ = evalBinaryOp("&&", c2, c1);
+                        const val_node = makeValueExpression(val_);
+                        let final_expr;
+                        if (c2 === true) {
+                            // Final expression x1 && (c2 && c1)
+                            final_expr = makeBinaryExpression(
+                                "&&",
+                                x1,
+                                val_node,
+                            );
+                        } else {
+                            // Final expression (c2 && c1) && x1
+
+                            // Note that by the safety condition,
+                            // at this point c1 = true.
+                            final_expr = makeBinaryExpression(
+                                "&&",
+                                val_node,
+                                x1,
+                            );
+                        }
+                        return {
+                            simplifiedExpression: final_expr,
+                            safetyCondition: c1 === true || c2 === true,
+                        };
+                    },
+                ],
+            ]);
+
+        // op = ||
+
+        const orRightCommuteOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "||",
+                    // original expression: c2 || (x1 || c1)
+                    (x1, c1, c2) => {
+                        const val_ = evalBinaryOp("||", c2, c1);
+                        const val_node = makeValueExpression(val_);
+                        let final_expr;
+                        if (c2 === false) {
+                            // Final expression x1 || (c2 || c1)
+                            final_expr = makeBinaryExpression(
+                                "||",
+                                x1,
+                                val_node,
+                            );
+                        } else {
+                            // Final expression (c2 || c1) || x1
+
+                            // Note that by the safety condition,
+                            // at this point c1 = false.
+                            final_expr = makeBinaryExpression(
+                                "||",
+                                val_node,
+                                x1,
+                            );
+                        }
+                        return {
+                            simplifiedExpression: final_expr,
+                            safetyCondition: c1 === false || c2 === false,
+                        };
+                    },
+                ],
+            ]);
+
         this.rightCommuteTransforms = new Map([
             ["+", plusRightCommuteOperators],
             ["-", minusRightCommuteOperators],
             ["*", multiplyRightCommuteOperators],
+            ["&&", andRightCommuteOperators],
+            ["||", orRightCommuteOperators],
         ]);
 
         // Now consider expressions of the form: (c1 op1 x1) op c2.
@@ -1137,10 +1318,86 @@ export class AssociativeRule3 extends Rule {
                 ],
             ]);
 
+        // op1 = &&
+
+        const andLeftCommuteOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "&&",
+                    // original expression: (c1 && x1) && c2
+                    (x1, c1, c2) => {
+                        const val_ = evalBinaryOp("&&", c1, c2);
+                        const val_node = makeValueExpression(val_);
+                        let final_expr;
+                        if (c2 === true) {
+                            // Final expression (c1 && c2) && x1
+                            final_expr = makeBinaryExpression(
+                                "&&",
+                                val_node,
+                                x1,
+                            );
+                        } else {
+                            // Final expression x1 && (c1 && c2)
+
+                            // Note that by the safety condition,
+                            // at this point c1 = true.
+                            final_expr = makeBinaryExpression(
+                                "&&",
+                                x1,
+                                val_node,
+                            );
+                        }
+                        return {
+                            simplifiedExpression: final_expr,
+                            safetyCondition: c1 === true || c2 === true,
+                        };
+                    },
+                ],
+            ]);
+
+        // op1 = ||
+
+        const orLeftCommuteOperators: Map<AstBinaryOperation, Transform> =
+            new Map([
+                [
+                    "||",
+                    // original expression: (c1 || x1) || c2
+                    (x1, c1, c2) => {
+                        const val_ = evalBinaryOp("||", c1, c2);
+                        const val_node = makeValueExpression(val_);
+                        let final_expr;
+                        if (c2 === false) {
+                            // Final expression (c1 || c2) || x1
+                            final_expr = makeBinaryExpression(
+                                "||",
+                                val_node,
+                                x1,
+                            );
+                        } else {
+                            // Final expression x1 || (c1 || c2)
+
+                            // Note that by the safety condition,
+                            // at this point c1 = false.
+                            final_expr = makeBinaryExpression(
+                                "||",
+                                x1,
+                                val_node,
+                            );
+                        }
+                        return {
+                            simplifiedExpression: final_expr,
+                            safetyCondition: c1 === false || c2 === false,
+                        };
+                    },
+                ],
+            ]);
+
         this.leftCommuteTransforms = new Map([
             ["+", plusLeftCommuteOperators],
             ["-", minusLeftCommuteOperators],
             ["*", multiplyLeftCommuteOperators],
+            ["&&", andLeftCommuteOperators],
+            ["||", orLeftCommuteOperators],
         ]);
     }
 
@@ -1197,7 +1454,7 @@ export class AssociativeRule3 extends Rule {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as AstOpBinary;
             if (
-                checkIsBinaryOp_NonValue_Value(topLevelNode.left) &&
+                checkIsBinaryOp_With_RightValue(topLevelNode.left) &&
                 isValue(topLevelNode.right)
             ) {
                 // The tree has this form:
@@ -1230,7 +1487,7 @@ export class AssociativeRule3 extends Rule {
                     // Do nothing: will exit rule without modifying tree
                 }
             } else if (
-                checkIsBinaryOp_Value_NonValue(topLevelNode.left) &&
+                checkIsBinaryOp_With_LeftValue(topLevelNode.left) &&
                 isValue(topLevelNode.right)
             ) {
                 // The tree has this form:
@@ -1264,7 +1521,7 @@ export class AssociativeRule3 extends Rule {
                 }
             } else if (
                 isValue(topLevelNode.left) &&
-                checkIsBinaryOp_NonValue_Value(topLevelNode.right)
+                checkIsBinaryOp_With_RightValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // c2 op (x1 op1 c1)
@@ -1297,7 +1554,7 @@ export class AssociativeRule3 extends Rule {
                 }
             } else if (
                 isValue(topLevelNode.left) &&
-                checkIsBinaryOp_Value_NonValue(topLevelNode.right)
+                checkIsBinaryOp_With_LeftValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // c2 op (c1 op1 x1)

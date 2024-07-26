@@ -254,6 +254,68 @@ const associativeRuleExpressions = [
     { original: "-2 - ((-1) + X)", simplified: "-2 - ((-1) + X)" },
 ];
 
+const booleanExpressions = [
+    { original: "X && false && false", simplified: "false" },
+    { original: "false && X && false", simplified: "false" },
+    { original: "false && (X && false)", simplified: "false" },
+    { original: "false && (false && X)", simplified: "false" },
+    { original: "X && true && false", simplified: "false" },
+    { original: "true && X && false", simplified: "false" },
+    { original: "false && (X && true)", simplified: "false" },
+    { original: "false && (true && X)", simplified: "false" },
+    { original: "X && false && true", simplified: "false" },
+    { original: "false && X && true", simplified: "false" },
+    { original: "true && (X && false)", simplified: "false" },
+    { original: "true && (false && X)", simplified: "false" },
+    { original: "X && true && true", simplified: "X" },
+    { original: "true && X && true", simplified: "X" },
+    { original: "true && (X && true)", simplified: "X" },
+    { original: "true && (true && X)", simplified: "X" },
+    { original: "X || false || false", simplified: "X" },
+    { original: "false || X || false", simplified: "X" },
+    { original: "false || (X || false)", simplified: "X" },
+    { original: "false || (false || X)", simplified: "X" },
+    { original: "X || true || false", simplified: "true" },
+    { original: "true || X || false", simplified: "true" },
+    { original: "false || (X || true)", simplified: "true" },
+    { original: "false || (true || X)", simplified: "true" },
+    { original: "X || false || true", simplified: "true" },
+    { original: "false || X || true", simplified: "true" },
+    { original: "true || (X || false)", simplified: "true" },
+    { original: "true || (false || X)", simplified: "true" },
+    { original: "X || true || true", simplified: "true" },
+    { original: "true || X || true", simplified: "true" },
+    { original: "true || (X || true)", simplified: "true" },
+    { original: "true || (true || X)", simplified: "true" },
+
+    { original: "!!X || !X", simplified: "true" },
+    { original: "!!X && !X", simplified: "false" },
+    { original: "!!X && X", simplified: "X" },
+    { original: "!!X || X", simplified: "X" },
+    { original: "!(X && !X)", simplified: "true" },
+    { original: "!(X || !X)", simplified: "false" },
+    { original: "(!!X || X) && !X", simplified: "false" },
+    { original: "!!X || X || !X", simplified: "true" },
+    { original: "!!X && X || !X", simplified: "true" },
+    { original: "!!X && X && !X", simplified: "false" },
+    { original: "!!X || (X && !X)", simplified: "X" },
+    { original: "!!X || (X || !X)", simplified: "true" },
+    { original: "!!X && (X || !X)", simplified: "X" },
+    { original: "!!X && (X && !X)", simplified: "false" },
+    { original: "!!X || !(X && !X)", simplified: "true" },
+    { original: "!!X || !(X || !X)", simplified: "X" },
+    { original: "!!X && !(X || !X)", simplified: "false" },
+    { original: "!!X && !(X && !X)", simplified: "X" },
+
+    { original: "X && false && Y && false", simplified: "false" },
+    { original: "X && true && Y && true", simplified: "X && Y" },
+    { original: "X && false && (Y && true)", simplified: "false" },
+    {
+        original: "(!!X && !(X && !X)) && (!!Y && !(Y && !Y)) && true",
+        simplified: "X && Y",
+    },
+];
+
 function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
         expect(
@@ -400,5 +462,9 @@ describe("partial-evaluator", () => {
 
     associativeRuleExpressions.forEach((test) => {
         testExpressionWithOptimizer(test.original, test.simplified, optimizer);
+    });
+
+    booleanExpressions.forEach((test) => {
+        testExpression(test.original, test.simplified);
     });
 });

@@ -2,8 +2,19 @@ import { AstExpression } from "../grammar/ast";
 import {
     AddSelf,
     AddZero,
+    AndFalse,
+    AndSelf,
+    AndTrue,
+    Contradiction,
+    DoubleNegation,
+    ExcludedMiddle,
     MultiplyOne,
     MultiplyZero,
+    NegateFalse,
+    NegateTrue,
+    OrFalse,
+    OrSelf,
+    OrTrue,
     SubtractSelf,
 } from "./algebraic";
 import {
@@ -31,6 +42,17 @@ export class StandardOptimizer extends ExpressionTransformer {
             { priority: 5, rule: new MultiplyOne() },
             { priority: 6, rule: new SubtractSelf() },
             { priority: 7, rule: new AddSelf() },
+            { priority: 8, rule: new OrTrue() },
+            { priority: 9, rule: new AndFalse() },
+            { priority: 10, rule: new OrFalse() },
+            { priority: 11, rule: new AndTrue() },
+            { priority: 12, rule: new OrSelf() },
+            { priority: 13, rule: new AndSelf() },
+            { priority: 14, rule: new ExcludedMiddle() },
+            { priority: 15, rule: new Contradiction() },
+            { priority: 16, rule: new DoubleNegation() },
+            { priority: 17, rule: new NegateTrue() },
+            { priority: 18, rule: new NegateFalse() },
         ];
 
         // Sort according to the priorities: smaller number means greater priority.
