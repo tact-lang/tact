@@ -396,16 +396,33 @@ function fullyEvalStructInstance(
     structFields: AstStructFieldInitializer[],
     ctx: CompilerContext,
 ): StructValue {
-    return structFields.reduce(
-        (resObj, fieldWithInit) => {
-            resObj[fieldWithInit.field.text] = evalConstantExpression(
-                fieldWithInit.initializer,
-                ctx,
-            );
+    const structTy = getType(ctx, structTypeId);
+
+    // initialize the resulting struct value with
+    // the default values for fields with initializers
+    // or null for uninitialized optional fields
+    const resultWithDefaultFields: StructValue = structTy.fields.reduce(
+        (resObj, field) => {
+            if (field.default !== undefined) {
+                resObj[field.name] = field.default;
+            } else {
+                if (field.type.kind === "ref" && field.type.optional) {
+                    resObj[field.name] = null;
+                }
+            }
             return resObj;
         },
-        { $tactStruct: structTypeId.text } as StructValue,
+        { $tactStruct: idText(structTypeId) } as StructValue,
     );
+
+    // this will override default fields set above
+    return structFields.reduce((resObj, fieldWithInit) => {
+        resObj[idText(fieldWithInit.field)] = evalConstantExpression(
+            fieldWithInit.initializer,
+            ctx,
+        );
+        return resObj;
+    }, resultWithDefaultFields);
 }
 
 // In the process of writing a partiallyEval version of this

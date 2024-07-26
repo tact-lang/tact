@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Values of `Slice` and `Builder` types are not converted to `Cell` in Typescript bindings anymore: PR [#562](https://github.com/tact-lang/tact/pull/562)
 - Debug prints now include line content for better debugging experience: PR [#563](https://github.com/tact-lang/tact/pull/563)
 - Compilation error in case of access to a non-existent variable that is present in the contract storage now suggests the `self.` prefix: PR [#568](https://github.com/tact-lang/tact/pull/568)
+- Error messages in case when accessed field does not exist but there is a method with the same name (or vice versa) now suggest using parentheses: PR [#622](https://github.com/tact-lang/tact/pull/622)
 
 ### Fixed
 
@@ -52,6 +53,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Incorrect FunC code generated for `recv_external`: PR [#604](https://github.com/tact-lang/tact/pull/604)
 - Allocator bug resulting in cell overflows for some contract data layouts: PR [#615](https://github.com/tact-lang/tact/pull/615)
 - Structs with more than 15 fields do not cause a FunC compilation error anymore: PR [#590](https://github.com/tact-lang/tact/pull/590)
+- Typechecking for constant and struct field initializers: PR [#621](https://github.com/tact-lang/tact/pull/621)
+- Constant evaluation for structures with default and optional fields: PR [#621](https://github.com/tact-lang/tact/pull/621)
 
 ## [1.4.0] - 2024-06-21
 

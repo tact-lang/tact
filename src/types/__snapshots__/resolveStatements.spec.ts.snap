@@ -228,6 +228,26 @@ Line 6, col 19:
 "
 `;
 
+exports[`resolveStatements should fail statements for expr-field-does-not-exist 1`] = `
+"<unknown>:14:7: Type "Slice" does not have a field named "bits"
+Line 14, col 7:
+  13 |     let s: Slice = "123".asSlice();
+> 14 |     s.bits;
+             ^~~~
+  15 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-field-does-not-exist-but-method-does 1`] = `
+"<unknown>:17:5: Type "Slice" does not have a field named "bits", did you mean "bits()" instead?
+Line 17, col 5:
+  16 |     let s: Slice = "123".asSlice();
+> 17 |     s.bits;
+           ^~~~~~
+  18 | }
+"
+`;
+
 exports[`resolveStatements should fail statements for expr-internal-fun-call-bool-param.tact 1`] = `
 "<unknown>:20:27: Invalid type "Bool" for argument "b"
 Line 20, col 27:
@@ -245,6 +265,16 @@ Line 6, col 5:
 > 6 |     return m.del(1);
           ^~~~~~~~~~~~~~~~
   7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-method-does-not-exist-but-field-does 1`] = `
+"<unknown>:13:5: Type "S" does not have a function named "x()", did you mean field "x" instead?
+Line 13, col 5:
+  12 |     let s: S = S{ x: 1 };
+> 13 |     s.x();
+           ^~~~~
+  14 | }
 "
 `;
 
@@ -279,7 +309,7 @@ Line 14, col 26:
 `;
 
 exports[`resolveStatements should fail statements for expr-struct-missing-field 1`] = `
-"<unknown>:16:25: Missing fields "c" in type "SomeStruct"
+"<unknown>:16:25: Missing field "c" in type "SomeStruct"
 Line 16, col 25:
   15 | fun main() {
 > 16 |     let a: SomeStruct = SomeStruct{
@@ -289,7 +319,7 @@ Line 16, col 25:
 `;
 
 exports[`resolveStatements should fail statements for expr-struct-wrong-field-type 1`] = `
-"<unknown>:17:9: Invalid type "Bool" for fields "b" with type "Int" in type "SomeStruct"
+"<unknown>:17:9: Invalid type "Bool" for field "b" with type "Int" in type "SomeStruct"
 Line 17, col 9:
   16 |         a: 1,
 > 17 |         b: false // Invalid type
@@ -869,11 +899,11 @@ Line 9, col 12:
 `;
 
 exports[`resolveStatements should fail statements for var-scope-missing-storage-var 1`] = `
-"<unknown>:5:9: Type "Test" does not have a field named "nonExistentField"
-Line 5, col 9:
+"<unknown>:5:14: Type "Test" does not have a field named "nonExistentField"
+Line 5, col 14:
   4 |     init() {
 > 5 |         self.nonExistentField = 42;
-              ^~~~~~~~~~~~~~~~~~~~~
+                   ^~~~~~~~~~~~~~~~
   6 |     }
 "
 `;
