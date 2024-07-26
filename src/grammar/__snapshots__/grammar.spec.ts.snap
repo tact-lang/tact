@@ -71,6 +71,126 @@ Line 2, col 24:
 "
 `;
 
+exports[`grammar should fail funcid-native-fun-comma 1`] = `
+"<unknown>:1:19: Parse error: expected ")"
+
+Line 1, col 19:
+> 1 | @name(send_message,then_terminate)
+                        ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-dot 1`] = `
+"<unknown>:1:10: Parse error: expected ")"
+
+Line 1, col 10:
+> 1 | @name(msg.sender)
+               ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-multiline-comments 1`] = `
+"<unknown>:1:7: Parse error: expected not ("\\"" or "{-")
+
+Line 1, col 7:
+> 1 | @name({-aaa-})
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-number 1`] = `
+"<unknown>:1:10: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+
+Line 1, col 10:
+> 1 | @name(123)
+               ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-number-decimal 1`] = `
+"<unknown>:1:8: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+
+Line 1, col 8:
+> 1 | @name(0)
+             ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-number-hexadecimal 1`] = `
+"<unknown>:1:10: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+
+Line 1, col 10:
+> 1 | @name(0x0)
+               ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-only-underscore 1`] = `
+"<unknown>:1:8: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+
+Line 1, col 8:
+> 1 | @name(_)
+             ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-parens 1`] = `
+"<unknown>:1:11: Parse error: expected ")"
+
+Line 1, col 11:
+> 1 | @name(take(first)Entry)
+                ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-semicolons 1`] = `
+"<unknown>:1:9: Parse error: expected ")"
+
+Line 1, col 9:
+> 1 | @name(pa;;in"\`aaa\`")
+              ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-space 1`] = `
+"<unknown>:1:11: Parse error: expected ")"
+
+Line 1, col 11:
+> 1 | @name(foo foo)
+                ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-string 1`] = `
+"<unknown>:1:7: Parse error: expected not ("\\"" or "{-")
+
+Line 1, col 7:
+> 1 | @name("not_a_string)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-unclosed-parens 1`] = `
+"<unknown>:1:9: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+
+Line 1, col 9:
+> 1 | @name(aa(bb)
+              ^
+  2 | native idTest();
+"
+`;
+
 exports[`grammar should fail ident-cannot-be-if-reserved-word 1`] = `
 "<unknown>:2:9: Parse error: expected not a reservedWord
 
@@ -186,7 +306,7 @@ Line 1, col 20:
 "
 `;
 
-exports[`grammar should fail item-native-fun-not-void-decl-trailing-comma-no-params.tact 1`] = `
+exports[`grammar should fail item-native-fun-not-void-decl-trailing-comma-no-params 1`] = `
 "<unknown>:2:31: Empty parameter list should not have a dangling comma.
 Line 2, col 31:
   1 | @name(native_name_2)
@@ -324,7 +444,7 @@ Line 1, col 17:
 "
 `;
 
-exports[`grammar should fail trait-fun-non-void-trailing-comma-no-params.tact 1`] = `
+exports[`grammar should fail trait-fun-non-void-trailing-comma-no-params 1`] = `
 "<unknown>:2:39: Empty parameter list should not have a dangling comma.
 Line 2, col 39:
   1 | trait Test {
@@ -3693,6 +3813,394 @@ native testFunc(): Bool;,
         "loc": Bool,
         "text": "Bool",
       },
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse items-native-fun-funcid 1`] = `
+{
+  "id": 55,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 3,
+      "kind": "native_function_decl",
+      "loc": @name(query')
+native idTest1();,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": idTest1,
+        "text": "idTest1",
+      },
+      "nativeName": {
+        "id": 2,
+        "kind": "func_id",
+        "loc": query',
+        "text": "query'",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 6,
+      "kind": "native_function_decl",
+      "loc": @name(query'')
+native idTest2();,
+      "name": {
+        "id": 4,
+        "kind": "id",
+        "loc": idTest2,
+        "text": "idTest2",
+      },
+      "nativeName": {
+        "id": 5,
+        "kind": "func_id",
+        "loc": query'',
+        "text": "query''",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 9,
+      "kind": "native_function_decl",
+      "loc": @name(CHECK)
+native idTest3();,
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "loc": idTest3,
+        "text": "idTest3",
+      },
+      "nativeName": {
+        "id": 8,
+        "kind": "func_id",
+        "loc": CHECK,
+        "text": "CHECK",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 12,
+      "kind": "native_function_decl",
+      "loc": @name(_internal_val)
+native idTest4();,
+      "name": {
+        "id": 10,
+        "kind": "id",
+        "loc": idTest4,
+        "text": "idTest4",
+      },
+      "nativeName": {
+        "id": 11,
+        "kind": "func_id",
+        "loc": _internal_val,
+        "text": "_internal_val",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 15,
+      "kind": "native_function_decl",
+      "loc": @name(message_found?)
+native idTest5();,
+      "name": {
+        "id": 13,
+        "kind": "id",
+        "loc": idTest5,
+        "text": "idTest5",
+      },
+      "nativeName": {
+        "id": 14,
+        "kind": "func_id",
+        "loc": message_found?,
+        "text": "message_found?",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 18,
+      "kind": "native_function_decl",
+      "loc": @name(get_pubkeys&signatures)
+native idTest6();,
+      "name": {
+        "id": 16,
+        "kind": "id",
+        "loc": idTest6,
+        "text": "idTest6",
+      },
+      "nativeName": {
+        "id": 17,
+        "kind": "func_id",
+        "loc": get_pubkeys&signatures,
+        "text": "get_pubkeys&signatures",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 21,
+      "kind": "native_function_decl",
+      "loc": @name(dict::udict_set_builder)
+native idTest7();,
+      "name": {
+        "id": 19,
+        "kind": "id",
+        "loc": idTest7,
+        "text": "idTest7",
+      },
+      "nativeName": {
+        "id": 20,
+        "kind": "func_id",
+        "loc": dict::udict_set_builder,
+        "text": "dict::udict_set_builder",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 24,
+      "kind": "native_function_decl",
+      "loc": @name(_+_)
+native idTest8();,
+      "name": {
+        "id": 22,
+        "kind": "id",
+        "loc": idTest8,
+        "text": "idTest8",
+      },
+      "nativeName": {
+        "id": 23,
+        "kind": "func_id",
+        "loc": _+_,
+        "text": "_+_",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 27,
+      "kind": "native_function_decl",
+      "loc": @name(__)
+native idTest9();,
+      "name": {
+        "id": 25,
+        "kind": "id",
+        "loc": idTest9,
+        "text": "idTest9",
+      },
+      "nativeName": {
+        "id": 26,
+        "kind": "func_id",
+        "loc": __,
+        "text": "__",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 30,
+      "kind": "native_function_decl",
+      "loc": @name(fatal!)
+native idTest10();,
+      "name": {
+        "id": 28,
+        "kind": "id",
+        "loc": idTest10,
+        "text": "idTest10",
+      },
+      "nativeName": {
+        "id": 29,
+        "kind": "func_id",
+        "loc": fatal!,
+        "text": "fatal!",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 33,
+      "kind": "native_function_decl",
+      "loc": @name(123validname)
+native idTest11();,
+      "name": {
+        "id": 31,
+        "kind": "id",
+        "loc": idTest11,
+        "text": "idTest11",
+      },
+      "nativeName": {
+        "id": 32,
+        "kind": "func_id",
+        "loc": 123validname,
+        "text": "123validname",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 36,
+      "kind": "native_function_decl",
+      "loc": @name(2+2=2*2)
+native idTest12();,
+      "name": {
+        "id": 34,
+        "kind": "id",
+        "loc": idTest12,
+        "text": "idTest12",
+      },
+      "nativeName": {
+        "id": 35,
+        "kind": "func_id",
+        "loc": 2+2=2*2,
+        "text": "2+2=2*2",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 39,
+      "kind": "native_function_decl",
+      "loc": @name(-alsovalidname)
+native idTest13();,
+      "name": {
+        "id": 37,
+        "kind": "id",
+        "loc": idTest13,
+        "text": "idTest13",
+      },
+      "nativeName": {
+        "id": 38,
+        "kind": "func_id",
+        "loc": -alsovalidname,
+        "text": "-alsovalidname",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 42,
+      "kind": "native_function_decl",
+      "loc": @name(0xefefefhahaha)
+native idTest14();,
+      "name": {
+        "id": 40,
+        "kind": "id",
+        "loc": idTest14,
+        "text": "idTest14",
+      },
+      "nativeName": {
+        "id": 41,
+        "kind": "func_id",
+        "loc": 0xefefefhahaha,
+        "text": "0xefefefhahaha",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 45,
+      "kind": "native_function_decl",
+      "loc": @name({hehehe})
+native idTest15();,
+      "name": {
+        "id": 43,
+        "kind": "id",
+        "loc": idTest15,
+        "text": "idTest15",
+      },
+      "nativeName": {
+        "id": 44,
+        "kind": "func_id",
+        "loc": {hehehe},
+        "text": "{hehehe}",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 48,
+      "kind": "native_function_decl",
+      "loc": @name(pa{--}in"\`aaa\`")
+native idTest16();,
+      "name": {
+        "id": 46,
+        "kind": "id",
+        "loc": idTest16,
+        "text": "idTest16",
+      },
+      "nativeName": {
+        "id": 47,
+        "kind": "func_id",
+        "loc": pa{--}in"\`aaa\`",
+        "text": "pa{--}in"\`aaa\`"",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 51,
+      "kind": "native_function_decl",
+      "loc": @name(\`I'm a function too\`)
+native idTest17();,
+      "name": {
+        "id": 49,
+        "kind": "id",
+        "loc": idTest17,
+        "text": "idTest17",
+      },
+      "nativeName": {
+        "id": 50,
+        "kind": "func_id",
+        "loc": \`I'm a function too\`,
+        "text": "\`I'm a function too\`",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 54,
+      "kind": "native_function_decl",
+      "loc": @name(\`any symbols ; ~ () are allowed here...\`)
+native idTest18();,
+      "name": {
+        "id": 52,
+        "kind": "id",
+        "loc": idTest18,
+        "text": "idTest18",
+      },
+      "nativeName": {
+        "id": 53,
+        "kind": "func_id",
+        "loc": \`any symbols ; ~ () are allowed here...\`,
+        "text": "\`any symbols ; ~ () are allowed here...\`",
+      },
+      "params": [],
+      "return": null,
     },
   ],
   "kind": "module",
