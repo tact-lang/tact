@@ -30,6 +30,26 @@ Line 17, col 3:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-bounced-receiver-missing-type-1 1`] = `
+"<unknown>:2:14: Unknown bounced receiver parameter type: "A"
+Line 2, col 14:
+  1 | contract Test {
+> 2 |   bounced(a: A) {}
+                   ^
+  3 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for contract-bounced-receiver-missing-type-2 1`] = `
+"<unknown>:2:14: Unknown bounced receiver parameter type: "A"
+Line 2, col 14:
+  1 | contract Test {
+> 2 |   bounced(a: bounced<A>) {}
+                   ^~~~~~~~~~
+  3 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-bounced-storage-var 1`] = `
 "<unknown>:15:3: bounced<A> is a runtime only type and can't be used as field
 Line 15, col 3:
