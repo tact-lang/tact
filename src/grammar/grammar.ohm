@@ -253,7 +253,7 @@ Tact {
 
     letterAscii = letterAsciiLC | letterAsciiUC
 
-    letterComment = letterAsciiLC | letterAsciiUC | digit | "_"
+    letterDigitUnderscore = letterAsciiLC | letterAsciiUC | digit | "_"
 
     // Tact identifiers
     idStart = letterAscii | "_"
@@ -262,10 +262,14 @@ Tact {
 
     id = ~reservedWord #idStart #(idPart*)
 
-    // FunC identifiers
-    funcLetter = letterAscii | "_" | "'" | "?" | "!" | "::" | "&"
+    // FunC identifiers, where `funcId` stands for FunC function identifier
+    funcPlainId = (~(whiteSpace | "(" | ")" | "," | "." | ";" | "~") any)+
 
-    funcId = funcLetter #(funcLetter | digit)*
+    funcQuotedId = "`" (~("`" | "\n") any)+ "`"
+                 // | digit funcPlainId digit?
+                 // | "_" funcPlainId "_"?
+
+    funcId = ~("\"" | "{-") ("." | "~")? #(funcQuotedId | funcPlainId)
 
     // Boolean literals
     boolLiteral = ("true" | "false") ~idPart
@@ -360,6 +364,8 @@ Tact {
     reservedWord = keyword
 
     // Comments
+    whiteSpace = "\t" | " " | lineTerminator
+
     space += comment | lineTerminator
 
     comment = multiLineComment | singleLineComment
