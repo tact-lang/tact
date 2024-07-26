@@ -33,79 +33,230 @@ FunC {
                  | id+ "->" integerLiteralDec+ --argumentsToReturns
 
   // Common parts of function declarations and definitions
-  FunctionCommon = Forall? Type functionId Parameters FunctionAttribute*
+  FunctionCommon = Forall? TypeMapped functionId Parameters FunctionAttribute*
 
   // Called "specifiers" in https://docs.ton.org/develop/func/functions#specifiers
   FunctionAttribute = "impure"
                     | "inline"
                     | "inline_ref"
                     | "method_id"
-                    | MethodId
-  MethodId = "method_id" "(" integerLiteralNonNegative ")"
+                    | MethodIdValue
+
+  MethodIdValue = "method_id" "(" integerLiteralNonNegative ")"
 
   GlobalVariables = "global" NonemptyListOf<GlobalVariableDeclaration, ","> ";"
-  GlobalVariableDeclaration = Type id
+  GlobalVariableDeclaration = TypeMapped? id
 
   Constants = "const" NonemptyListOf<ConstantDefinition, ","> ";"
-  ConstantDefinition = Type? id "=" Expression
+  ConstantDefinition = constantType? id "=" Expression
 
   //
   // Statements
   //
 
-  // TODO:
-  Statement = "TODO"
+  Statement = StatementReturn
+            | StatementBlock
+            | StatementEmpty
+            | StatementCondition
+            | StatementRepeat
+            | StatementUntil
+            | StatementWhile
+            | StatementTryCatch
+            | StatementExpression
 
-  // OK, this one is interesting
-  // And the following expressions one too!
+  StatementReturn = "return" Expression ";"
+  StatementBlock = "{" Statement* "}"
+  StatementEmpty = ";"
+  StatementCondition = ("if" | "ifnot") Expression "{" Statement* "}" --noElse
+                     | ("if" | "ifnot") Expression "{" Statement* "}" "else" "{" Statement* "}" --withElse
+                     | ("if" | "ifnot") Expression "{" Statement* "}" ("elseif" | "elseifnot") "{" Statement* "}" --withElseCondition
+  StatementRepeat = "repeat" Expression "{" Statement* "}"
+  StatementUntil = "do" "{" Statement* "}" "until" Expression ";"
+  StatementWhile = "while" Expression "{" Statement* "}"
+  StatementTryCatch = "try" "{" Statement* "}" "catch" "(" (unusedId | id) "," (unusedId | id) ")" "{" Statement* "}"
+  StatementExpression = Expression ";"
 
   //
-  // Expressions, ordered by precedence
+  // Expressions, ordered by precedence (from lowest to highest),
+  // with comments referencing exact function names in C++ code of FunC's parser:
+  // https://github.com/ton-blockchain/ton/blob/master/crypto/func/parse-func.cpp
+  //
+
   // NOTE: they should parse exactly as FunC 0.4.4 does it, including the issues with precedences of ^ | and similar
-  //
 
-  // TODO:
-  Expression = "TODO"
+  // parse_expr
+  Expression = ExpressionAssign
+
+  // parse_expr10
+  ExpressionAssign = ExpressionConditional "="    ExpressionAssign --assign
+                   | ExpressionConditional "+="   ExpressionAssign --addAssign
+                   | ExpressionConditional "-="   ExpressionAssign --subAssign
+                   | ExpressionConditional "*="   ExpressionAssign --mulAssign
+                   | ExpressionConditional "/="   ExpressionAssign --divAssign
+                   | ExpressionConditional "%="   ExpressionAssign --modAssign
+                   | ExpressionConditional "~/="  ExpressionAssign --divRoundAssign
+                   | ExpressionConditional "~%="  ExpressionAssign --modRoundAssign
+                   | ExpressionConditional "^/="  ExpressionAssign --divCeilAssign
+                   | ExpressionConditional "^%="  ExpressionAssign --modCeilAssign
+                   | ExpressionConditional "&="   ExpressionAssign --bitwiseAndAssign
+                   | ExpressionConditional "|="   ExpressionAssign --bitwiseOrAssign
+                   | ExpressionConditional "^="   ExpressionAssign --bitwiseXorAssign
+                   | ExpressionConditional "<<="  ExpressionAssign --shlAssign
+                   | ExpressionConditional ">>="  ExpressionAssign --shrAssign
+                   | ExpressionConditional "~>>=" ExpressionAssign --shrRoundAssign
+                   | ExpressionConditional "^>>=" ExpressionAssign --shrCeilAssign
+                   | ExpressionConditional
+
+  // parse_expr13
+  ExpressionConditional = ExpressionCompare "?" Expression ":" ExpressionConditional --ternary
+                        | ExpressionCompare
+
+  // parse_expr15
+  ExpressionCompare = ExpressionBitwiseShift "=="  ExpressionBitwiseShift --eq
+                    | ExpressionBitwiseShift "<"   ExpressionBitwiseShift --lt
+                    | ExpressionBitwiseShift ">"   ExpressionBitwiseShift --gt
+                    | ExpressionBitwiseShift "<="  ExpressionBitwiseShift --lte
+                    | ExpressionBitwiseShift ">="  ExpressionBitwiseShift --gte
+                    | ExpressionBitwiseShift "!="  ExpressionBitwiseShift --neq
+                    | ExpressionBitwiseShift "<=>" ExpressionBitwiseShift --spaceship
+                    | ExpressionBitwiseShift
+
+  // parse_expr17
+  ExpressionBitwiseShift = ExpressionAddBitwise "<<"  ExpressionAddBitwise --shl
+                         | ExpressionAddBitwise ">>"  ExpressionAddBitwise --shr
+                         | ExpressionAddBitwise "~>>" ExpressionAddBitwise --shrRound
+                         | ExpressionAddBitwise "^>>" ExpressionAddBitwise --shrCeil
+                         | ExpressionAddBitwise
+
+  // parse_expr20
+  ExpressionAddBitwise = "-"? ExpressionMulBitwise "+" ExpressionMulBitwise --add
+                       | "-"? ExpressionMulBitwise "-" ExpressionMulBitwise --sub
+                       | "-"? ExpressionMulBitwise "|" ExpressionMulBitwise --bitwiseOr
+                       | "-"? ExpressionMulBitwise "^" ExpressionMulBitwise --bitwiseXor
+                       | "-" ExpressionMulBitwise --minus
+                       | ExpressionMulBitwise
+
+  // parse_expr30
+  ExpressionMulBitwise = ExpressionUnary "*"  ExpressionUnary --mul
+                       | ExpressionUnary "/%" ExpressionUnary --divMod
+                       | ExpressionUnary "/"  ExpressionUnary --div
+                       | ExpressionUnary "%"  ExpressionUnary --mod
+                       | ExpressionUnary "~/" ExpressionUnary --divRound
+                       | ExpressionUnary "~%" ExpressionUnary --modRound
+                       | ExpressionUnary "^/" ExpressionUnary --divCeil
+                       | ExpressionUnary "^%" ExpressionUnary --modCeil
+                       | ExpressionUnary "&"  ExpressionUnary --bitwiseAnd
+                       | ExpressionUnary
+
+  // parse_expr75
+  ExpressionUnary = "~" ExpressionMethodCall --bitwiseNot
+                  | ExpressionMethodCall
+
+  // parse_expr80
+  ExpressionMethodCall = ExpressionSequence ("." | "~") id ExpressionPrimary --call
+                       | ExpressionSequence
+
+  // parse_expr90, FIXME: this is wrong and has to be re-made :)
+  // TODO: function call
+  // TODO: variable declaration
+  ExpressionSequence = ExpressionPrimary &"(" ExpressionPrimary --call
+                     | ExpressionPrimary &"[" ExpressionPrimary --access
+                     | ExpressionPrimary ~("." | "~") id ExpressionPrimary --id
+                     | ExpressionPrimary
+
+  // parse_expr100, order is important
+  ExpressionPrimary = ExpressionTuple
+                    | ExpressionTensor
+                    | integerLiteral
+                    | stringLiteral
+                    | hole
+                    | var
+                    | primitiveType // TODO: re-make this one.
+                    | id // includes true|false, null|Null
+                    // TODO: parens
+                    // TODO: unit
+                    // TODO: slice_string_ident?
+
+  // TODO: ...
+  ExpressionTuple = "(" "TODO:" ")"
+  ExpressionTensor = "[" "TODO:" "]"
 
   //
   // Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
   //
 
+  // Parameters TODO: check the type
   Parameters = "(" ListOf<Parameter, ","> ")"
   Parameter = Type id
 
-  Forall = forall NonemptyListOf<Type, ","> "->"
-  Type = id
+  // Arguments
+  // TODO:
+
+  // forall type1, ..., typeN ->
+  Forall = forall NonemptyListOf<ForallType, ","> "->"
+  ForallType = "type"? id
+
+  // TE ::= TA | TA -> TE
+  // TypeMapped = Type ("->" TypeMapped)?
+  TypeMapped = Type "->" TypeMapped --mapped
+             | Type --unmapped
+
+  // TA ::= int | ... | cont | var | _ | () | ( TE { , TE } ) | [ TE { , TE } ]
+  Type = "int"
+       | "cell"
+       | "slice"
+       | "builder"
+       | "cont"
+       | "tuple"
+       | hole
+       | unit
+       | Tensor
+       | Tuple
+
+  Tensor = "(" NonemptyListOf<TypeMapped, ","> ")"
+  Tuple = "[" NonemptyListOf<TypeMapped, ","> "]"
 
   //
   // Lexical rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
   //
 
+  // TODO: Move over the remaining keywords
   // TODO: Test if they can be names of variables, constants, functions
-  // Reserved keywords, order matters
+  // Reserved keywords, order matters (TODO: does it?)
   keyword = pragma
           | include
           | forall
+          | var
+          | primitiveType
 
-  pragma = "#pragma" ~idPart
-  include = "#include" ~idPart
-  forall = "forall" ~idPart
+  pragma = "#pragma" ~id
+  include = "#include" ~id
+  forall = "forall" ~id
+  var = "var" ~id
 
-  // TODO: pre-defined function names?
-  // main, recv_internal, recv_external, run_ticktock
+  // Types
+  hole = "_" | "var"
+  unit = "()"
+  constantType = "int" | "slice"
+  // TODO: ...
+  tuple = ""
+  // TODO: ...
+  tensor = ""
+
+  // Primitive types, FIXME: ...
+  primitiveType = "int" | "cell" | "slice" | "builder" | "cont" | "type" | "tuple"
+
+  // Function identifiers
+  functionId = ~("\"" | "{-") ("." | "~")? id
 
   // Identifiers
-  // TODO: Validate against https://docs.ton.org/develop/func/literals_identifiers#identifiers and https://github.com/ton-blockchain/ton/blob/master/crypto/func/parse-func.cpp
-  // They allow much more freedom it seems, which makes `funcId` in Tact's grammar.ohm invalid :/
-  functionId = ("." | "~")? id
-  id = ~keyword #idStart #(idPart*)
-  idStart = letterAscii | "_" | "'" | "?" | "!" | "::" | "&"
-  idPart = idStart | digit
+  id = ~keyword ~("\"" | "{-") (quotedId | plainId)
 
-  // Letters
-  letterAscii = letterAsciiLC | letterAsciiUC
-  letterAsciiLC = "a".."z"
-  letterAsciiUC = "A".."Z"
+  plainId = "_"? "-"? "0x"? hexDigit* ~hexDigit (~(whiteSpace | "(" | ")" | "," | "." | ";" | "~") any)+
+
+  quotedId = "`" (~("`" | "\n") any)+ "`"
+
+  unusedId = "_"
 
   // Version ranges
   versionRange = ("=" | "^" | "<" | "<=" | ">" | ">=")? integerLiteralDec ("." integerLiteralDec)? ("." integerLiteralDec)?
@@ -113,12 +264,12 @@ FunC {
   // Integers
   integerLiteral = "-"? integerLiteralNonNegative
   integerLiteralNonNegative = integerLiteralHex
-                         | integerLiteralDec
+                            | integerLiteralDec
 
-  // hexDigit defined in Ohm's built-in rules (otherwise: hexDigit = "0".."9" | "a".."f" | "A".."F")
+  // hexDigit is defined in Ohm's built-in rules as: hexDigit = "0".."9" | "a".."f" | "A".."F"
   integerLiteralHex = "0x" hexDigit+
 
-  // digit defined in Ohm's built-in rules (otherwise: digit = "0".."9")
+  // digit is defined in Ohm's built-in rules as: digit = "0".."9"
   integerLiteralDec = digit+
 
   // Strings
@@ -131,9 +282,11 @@ FunC {
              | "c" --intCrc32
   multiLineString = "\"\"\"" (~"\"\"\"" any)* "\"\"\""
 
-  // Comments
+  // Whitespace
   space += comment | lineTerminator
+  whiteSpace = "\t" | " " | lineTerminator
 
+  // Comments
   // For semantic actions comment_singleLine and comment_multiLine
   comment = ";;" (~lineTerminator any)* --singleLine
           | multiLineComment --multiLine
