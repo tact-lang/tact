@@ -65,6 +65,7 @@
     "struct",
     "structs",
     "subtyping",
+    "Tarjan",
     "testdata",
     "Topup",
     "typechecker",

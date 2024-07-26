@@ -424,6 +424,36 @@ Line 3, col 1:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for struct-decl-mutually-recursive 1`] = `
+"<unknown>:4:8: Mutually recursive types are not supported: types "A1", "A2" form a cycle
+Line 4, col 8:
+  3 | 
+> 4 | struct A1 {
+             ^~
+  5 |   a: Int;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for struct-decl-self-reference 1`] = `
+"<unknown>:4:8: Self-referencing types are not supported: type "A" refers to itself in its definition
+Line 4, col 8:
+  3 | 
+> 4 | struct A {
+             ^
+  5 |   a: Int;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for struct-decl-self-reference-map 1`] = `
+"<unknown>:4:8: Self-referencing types are not supported: type "A" refers to itself in its definition
+Line 4, col 8:
+  3 | 
+> 4 | struct A {
+             ^
+  5 |   a: Int;
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for trait-duplicates-in-trait-list 1`] = `
 "<unknown>:7:1: The list of inherited traits for trait "Test" has duplicates
 Line 7, col 1:

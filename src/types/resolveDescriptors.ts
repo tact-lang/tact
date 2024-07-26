@@ -1796,6 +1796,21 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // A pass that initializes constants and default field values
     ctx = initializeConstantsAndDefaultContractAndStructFields(ctx);
 
+    // detect self-referencing or mutually-recursive types
+    const cycle = recursiveTypesDetected(ctx);
+    if (cycle.length === 1) {
+        const tyId = cycle[0]!;
+        throwCompilationError(
+            `Self-referencing types are not supported: type ${idTextErr(tyId)} refers to itself in its definition`,
+            tyId.loc,
+        );
+    } else if (cycle.length > 1) {
+        const tyIds = cycle.map((tyId) => idTextErr(tyId)).join(", ");
+        throwCompilationError(
+            `Mutually recursive types are not supported: types ${tyIds} form a cycle`,
+            cycle[0]!.loc,
+        );
+    }
     return ctx;
 }
 
@@ -1989,4 +2004,98 @@ function initializeConstantsAndDefaultContractAndStructFields(
     ctx = initializeConstants(staticConstants, ctx);
 
     return ctx;
+}
+
+function recursiveTypesDetected(ctx: CompilerContext): AstId[] {
+    // the implementation is basically Tarjan's algorithm,
+    // which removes trivial SCCs, i.e. nodes (structs) that do not refer to themselves
+    // and terminates early if a non-trivial SCC is detected
+    // https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
+
+    const structs = Object.values(getAllTypes(ctx)).filter(
+        (aggregate) => aggregate.kind === "struct",
+    );
+    let index = 0;
+    const stack: AstId[] = [];
+    // `string` here means "struct name"
+    const indices: Map<string, number> = new Map();
+    const lowLinks: Map<string, number> = new Map();
+    const onStack: Set<string> = new Set();
+    const selfReferencingVertices: Set<string> = new Set();
+
+    for (const struct of structs) {
+        if (!indices.has(struct.name)) {
+            const cycle = strongConnect(struct);
+            if (cycle.length > 0) return cycle;
+        }
+    }
+
+    function strongConnect(struct: TypeDescription) {
+        // Set the depth index for v to the smallest unused index
+        indices.set(struct.name, index);
+        lowLinks.set(struct.name, index);
+        index += 1;
+        stack.push(struct.ast.name);
+        onStack.add(struct.name);
+
+        const processPossibleSuccessor = (successorName: string) => {
+            const fieldTy = getType(ctx, successorName);
+            if (fieldTy.name === struct.name) {
+                selfReferencingVertices.add(struct.name);
+            }
+            if (fieldTy.kind === "struct") {
+                // successor
+                if (!indices.has(fieldTy.name)) {
+                    strongConnect(fieldTy);
+                    lowLinks.set(
+                        struct.name,
+                        Math.min(
+                            lowLinks.get(struct.name)!,
+                            lowLinks.get(fieldTy.name)!,
+                        ),
+                    );
+                } else if (onStack.has(fieldTy.name)) {
+                    lowLinks.set(
+                        struct.name,
+                        Math.min(
+                            lowLinks.get(struct.name)!,
+                            indices.get(fieldTy.name)!,
+                        ),
+                    );
+                }
+            }
+        };
+
+        // process the successors of the current node
+        for (const field of struct.fields) {
+            switch (field.type.kind) {
+                case "ref":
+                case "ref_bounced":
+                    processPossibleSuccessor(field.type.name);
+                    break;
+                case "map":
+                    processPossibleSuccessor(field.type.value);
+                    break;
+                // do nothing
+                case "void":
+                case "null":
+                    break;
+            }
+        }
+
+        if (lowLinks.get(struct.name) === indices.get(struct.name)) {
+            // cycle detected
+            if (stack.length > 1) {
+                return stack;
+            } else if (stack.length === 1) {
+                if (selfReferencingVertices.has(struct.name)) {
+                    return stack;
+                }
+                stack.pop();
+                onStack.delete(struct.name);
+            }
+        }
+        return [];
+    }
+    return [];
 }

@@ -54,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Structs with more than 15 fields do not cause a FunC compilation error anymore: PR [#590](https://github.com/tact-lang/tact/pull/590)
 - Typechecking for constant and struct field initializers: PR [#621](https://github.com/tact-lang/tact/pull/621)
 - Constant evaluation for structures with default and optional fields: PR [#621](https://github.com/tact-lang/tact/pull/621)
+- Report error for self-referencing and mutually-recursive types: PR [#624](https://github.com/tact-lang/tact/pull/624)
 
 ## [1.4.0] - 2024-06-21
 
