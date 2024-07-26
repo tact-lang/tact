@@ -56,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Typechecking for constant and struct field initializers: PR [#621](https://github.com/tact-lang/tact/pull/621)
 - Constant evaluation for structures with default and optional fields: PR [#621](https://github.com/tact-lang/tact/pull/621)
 - Report error for self-referencing and mutually-recursive types: PR [#624](https://github.com/tact-lang/tact/pull/624)
+- Error reporting for bounced receivers with missing parameter types: PR [#626](https://github.com/tact-lang/tact/pull/626)
 
 ## [1.4.0] - 2024-06-21
 

@@ -1163,7 +1163,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         ast: d,
                                     });
                                 } else {
-                                    const type = types.get(idText(param.type))!;
+                                    const type = types.get(idText(param.type));
+                                    if (type === undefined) {
+                                        throwCompilationError(
+                                            `Unknown bounced receiver parameter type: ${idTextErr(param.type)}`,
+                                            param.type.loc,
+                                        );
+                                    }
                                     if (type.ast.kind !== "message_decl") {
                                         throwCompilationError(
                                             "Bounce receive function can only accept bounced message, message or Slice",
@@ -1212,7 +1218,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             ) {
                                 const t = types.get(
                                     idText(param.type.messageType),
-                                )!;
+                                );
+                                if (t === undefined) {
+                                    throwCompilationError(
+                                        `Unknown bounced receiver parameter type: ${idTextErr(param.type.messageType)}`,
+                                        param.type.loc,
+                                    );
+                                }
                                 if (t.kind !== "struct") {
                                     throwCompilationError(
                                         "Bounce receive function can only accept bounced<T> struct types",
