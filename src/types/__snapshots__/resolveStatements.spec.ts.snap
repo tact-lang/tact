@@ -239,7 +239,7 @@ Line 14, col 7:
 `;
 
 exports[`resolveStatements should fail statements for expr-field-does-not-exist-but-method-does 1`] = `
-"<unknown>:17:5: Type "Slice" does not have a field named "bits", did you mean to call method instead?
+"<unknown>:17:5: Type "Slice" does not have a field named "bits", did you mean "bits()" instead?
 Line 17, col 5:
   16 |     let s: Slice = "123".asSlice();
 > 17 |     s.bits;

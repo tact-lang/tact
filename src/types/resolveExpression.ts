@@ -416,18 +416,13 @@ function resolveFieldAccess(
 
         if (src.kind === "ref" && !src.optional) {
             // Check for struct methods
-            if (srcT.kind === "struct") {
-                if (StructFunctions.has(idText(exp.field))) {
-                    throwCompilationError(
-                        `Type ${typeStr} does not have a field named ${idTextErr(exp.field)}, did you mean to call method instead?`,
-                        exp.loc,
-                    );
-                }
-            }
-
-            if (srcT.functions.has(idText(exp.field))) {
+            if (
+                (srcT.kind === "struct" &&
+                    StructFunctions.has(idText(exp.field))) ||
+                srcT.functions.has(idText(exp.field))
+            ) {
                 throwCompilationError(
-                    `Type ${typeStr} does not have a field named ${idTextErr(exp.field)}, did you mean to call method instead?`,
+                    `Type ${typeStr} does not have a field named "${exp.field.text}", did you mean "${exp.field.text}()" instead?`,
                     exp.loc,
                 );
             }
