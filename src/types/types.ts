@@ -5,18 +5,15 @@ import {
     AstFunctionDef,
     AstContractInit,
     AstNativeFunctionDecl,
-    AstNode,
     AstReceiver,
     SrcInfo,
     AstTypeDecl,
     AstId,
     AstFunctionDecl,
     AstConstantDecl,
+    AstFieldDecl,
 } from "../grammar/ast";
 import { dummySrcInfo, ItemOrigin } from "../grammar/grammar";
-// import {
-//     Value
-// } from "../grammar/value";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";
@@ -115,7 +112,7 @@ export type FieldDescription = {
     as: string | null;
     default: Value | undefined;
     loc: SrcInfo;
-    ast: AstNode;
+    ast: AstFieldDecl;
     abi: ABIField;
 };
 

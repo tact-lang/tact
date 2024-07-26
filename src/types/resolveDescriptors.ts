@@ -15,6 +15,7 @@ import {
     isSlice,
     AstFunctionDecl,
     AstConstantDecl,
+    AstExpression,
 } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
 import {
@@ -46,6 +47,9 @@ import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
 import { ItemOrigin } from "../grammar/grammar";
+import { getExpType, resolveExpression } from "./resolveExpression";
+import { emptyContext } from "./resolveStatements";
+import { isAssignable } from "./subtyping";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -383,30 +387,26 @@ export function resolveDescriptors(ctx: CompilerContext) {
         src: AstFieldDecl,
         index: number,
     ): FieldDescription {
-        const tr = buildTypeRef(src.type, types);
+        const fieldTy = buildTypeRef(src.type, types);
 
         // Check if field is runtime type
-        if (isRuntimeType(tr)) {
+        if (isRuntimeType(fieldTy)) {
             throwCompilationError(
-                printTypeRef(tr) +
+                printTypeRef(fieldTy) +
                     " is a runtime only type and can't be used as field",
                 src.loc,
             );
         }
-
-        const d = src.initializer
-            ? evalConstantExpression(src.initializer, ctx)
-            : undefined;
 
         // Resolve abi type
         const type = resolveABIType(src);
 
         return {
             name: idText(src.name),
-            type: tr,
+            type: fieldTy,
             index,
             as: src.as !== null ? idText(src.as) : null,
-            default: d,
+            default: undefined, // initializer will be evaluated after typechecking
             loc: src.loc,
             ast: src,
             abi: { name: idText(src.name), type },
@@ -416,15 +416,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
     function buildConstantDescription(
         src: AstConstantDef | AstConstantDecl,
     ): ConstantDescription {
-        const tr = buildTypeRef(src.type, types);
-        const d =
-            src.kind === "constant_def"
-                ? evalConstantExpression(src.initializer, ctx)
-                : undefined;
+        const constDeclTy = buildTypeRef(src.type, types);
         return {
             name: idText(src.name),
-            type: tr,
-            value: d,
+            type: constDeclTy,
+            value: undefined, // initializer will be evaluated after typechecking
             loc: src.loc,
             ast: src,
         };
@@ -1797,6 +1793,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
         ctx = staticConstantsStore.set(ctx, k, t);
     }
 
+    // A pass that initializes constants and default field values
+    ctx = initializeConstantsAndDefaultContractAndStructFields(ctx);
+
     return ctx;
 }
 
@@ -1896,4 +1895,98 @@ function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
     }
 
     return partialFieldsCount;
+}
+
+function checkInitializerType(
+    name: string,
+    kind: "Constant" | "Struct field",
+    declTy: TypeRef,
+    initializer: AstExpression,
+    ctx: CompilerContext,
+): CompilerContext {
+    const stmtCtx = emptyContext(initializer.loc, declTy);
+    ctx = resolveExpression(initializer, stmtCtx, ctx);
+    const initTy = getExpType(ctx, initializer);
+    if (!isAssignable(initTy, declTy)) {
+        throwCompilationError(
+            `${kind} ${idTextErr(name)} has declared type "${printTypeRef(declTy)}", but its initializer has incompatible type "${printTypeRef(initTy)}"`,
+            initializer.loc,
+        );
+    }
+    return ctx;
+}
+
+function initializeConstants(
+    constants: ConstantDescription[],
+    ctx: CompilerContext,
+): CompilerContext {
+    for (const constant of constants) {
+        if (constant.ast.kind === "constant_def") {
+            ctx = checkInitializerType(
+                constant.name,
+                "Constant",
+                constant.type,
+                constant.ast.initializer,
+                ctx,
+            );
+            constant.value = evalConstantExpression(
+                constant.ast.initializer,
+                ctx,
+            );
+        }
+    }
+    return ctx;
+}
+
+function initializeConstantsAndDefaultContractAndStructFields(
+    ctx: CompilerContext,
+): CompilerContext {
+    for (const aggregateTy of Object.values(getAllTypes(ctx))) {
+        switch (aggregateTy.kind) {
+            case "primitive_type_decl":
+                break;
+            case "trait":
+            case "contract":
+            case "struct": {
+                {
+                    for (const field of aggregateTy.fields) {
+                        if (field.ast.initializer !== null) {
+                            ctx = checkInitializerType(
+                                field.name,
+                                "Struct field",
+                                field.type,
+                                field.ast.initializer,
+                                ctx,
+                            );
+                            field.default = evalConstantExpression(
+                                field.ast.initializer,
+                                ctx,
+                            );
+                        } else {
+                            // if a field has optional type and it is missing an explicit initializer
+                            // we consider it to be initialized with the null value
+
+                            field.default =
+                                field.type.kind === "ref" && field.type.optional
+                                    ? null
+                                    : undefined;
+                        }
+                    }
+
+                    // constants need to be processed after structs because
+                    // see more detail below
+                    ctx = initializeConstants(aggregateTy.constants, ctx);
+                }
+                break;
+            }
+        }
+    }
+
+    // constants need to be processed after structs because
+    // constants might use default field values: `const x: Int = S{}.f`, where `struct S {f: Int = 42}`
+    // and the default field values are filled in during struct field initializers processing
+    const staticConstants = Object.values(getAllStaticConstants(ctx));
+    ctx = initializeConstants(staticConstants, ctx);
+
+    return ctx;
 }
