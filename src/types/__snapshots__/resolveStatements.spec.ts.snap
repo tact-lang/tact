@@ -228,6 +228,26 @@ Line 6, col 19:
 "
 `;
 
+exports[`resolveStatements should fail statements for expr-field-does-not-exist 1`] = `
+"<unknown>:14:7: Type "Slice" does not have a field named "bits"
+Line 14, col 7:
+  13 |     let s: Slice = "123".asSlice();
+> 14 |     s.bits;
+             ^~~~
+  15 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-field-does-not-exist-but-method-does 1`] = `
+"<unknown>:17:5: Type "Slice" does not have a field named "bits", did you mean to call method instead?
+Line 17, col 5:
+  16 |     let s: Slice = "123".asSlice();
+> 17 |     s.bits;
+           ^~~~~~
+  18 | }
+"
+`;
+
 exports[`resolveStatements should fail statements for expr-internal-fun-call-bool-param.tact 1`] = `
 "<unknown>:20:27: Invalid type "Bool" for argument "b"
 Line 20, col 27:
@@ -869,11 +889,11 @@ Line 9, col 12:
 `;
 
 exports[`resolveStatements should fail statements for var-scope-missing-storage-var 1`] = `
-"<unknown>:5:9: Type "Test" does not have a field named "nonExistentField"
-Line 5, col 9:
+"<unknown>:5:14: Type "Test" does not have a field named "nonExistentField"
+Line 5, col 14:
   4 |     init() {
 > 5 |         self.nonExistentField = 42;
-              ^~~~~~~~~~~~~~~~~~~~~
+                   ^~~~~~~~~~~~~~~~
   6 |     }
 "
 `;

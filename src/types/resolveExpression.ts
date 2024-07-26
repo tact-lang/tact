@@ -409,17 +409,34 @@ function resolveFieldAccess(
     const field = fields.find((v) => eqNames(v.name, exp.field));
     const cst = srcT.constants.find((v) => eqNames(v.name, exp.field));
     if (!field && !cst) {
-        if (src.kind === "ref_bounced") {
-            throwCompilationError(
-                `Type bounced<${idTextErr(src.name)}> does not have a field named ${idTextErr(exp.field)}`,
-                exp.field.loc,
-            );
-        } else {
-            throwCompilationError(
-                `Type ${idTextErr(src.name)} does not have a field named ${idTextErr(exp.field)}`,
-                exp.loc,
-            );
+        const typeStr =
+            src.kind === "ref_bounced"
+                ? `bounced<${idTextErr(src.name)}>`
+                : idTextErr(src.name);
+
+        if (src.kind === "ref" && !src.optional) {
+            // Check for struct methods
+            if (srcT.kind === "struct") {
+                if (StructFunctions.has(idText(exp.field))) {
+                    throwCompilationError(
+                        `Type ${typeStr} does not have a field named ${idTextErr(exp.field)}, did you mean to call method instead?`,
+                        exp.loc,
+                    );
+                }
+            }
+
+            if (srcT.functions.has(idText(exp.field))) {
+                throwCompilationError(
+                    `Type ${typeStr} does not have a field named ${idTextErr(exp.field)}, did you mean to call method instead?`,
+                    exp.loc,
+                );
+            }
         }
+
+        throwCompilationError(
+            `Type ${typeStr} does not have a field named ${idTextErr(exp.field)}`,
+            exp.field.loc,
+        );
     }
 
     // Register result type
