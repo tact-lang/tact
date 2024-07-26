@@ -1,2 +1,2 @@
 @name(123)
-native idTest9();
+native idTest();

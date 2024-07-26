@@ -1,2 +1,2 @@
 @name(msg.sender)
-native idTest3();
+native idTest();

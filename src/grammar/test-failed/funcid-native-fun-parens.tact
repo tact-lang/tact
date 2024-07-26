@@ -1,2 +1,2 @@
 @name(take(first)Entry)
-native idTest1();
+native idTest();

@@ -1,2 +1,2 @@
 @name(pa;;in"`aaa`")
-native idTest6();
+native idTest();

@@ -264,11 +264,7 @@ Tact {
 
     // FunC identifiers, where `funcId` stands for FunC function identifier
     // The plain identifier cannot be a single underscore nor just a number
-
-    funcNumberInId = "-"? digit? digit* ~digit
-                   | "-"? ("0x" hexDigit+)? ~hexDigit
-    
-    funcPlainId = funcNumberInId "_"? (~(whiteSpace | "(" | ")" | "," | "." | ";" | "~") any)+
+    funcPlainId = "_"? "-"? "0x"? hexDigit* ~hexDigit (~(whiteSpace | "(" | ")" | "," | "." | ";" | "~") any)+
 
     funcQuotedId = "`" (~("`" | "\n") any)+ "`"
 

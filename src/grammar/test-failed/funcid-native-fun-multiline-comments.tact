@@ -1,2 +1,2 @@
 @name({-aaa-})
-native idTest7();
+native idTest();

@@ -22,29 +22,32 @@ native idTest7();
 @name(_+_)
 native idTest8();
 
-@name(fatal!)
+@name(__)
 native idTest9();
 
-@name(123validname)
+@name(fatal!)
 native idTest10();
 
-@name(2+2=2*2)
+@name(123validname)
 native idTest11();
 
-@name(-alsovalidname)
+@name(2+2=2*2)
 native idTest12();
 
-@name(0xefefefhahaha)
+@name(-alsovalidname)
 native idTest13();
 
-@name({hehehe})
+@name(0xefefefhahaha)
 native idTest14();
 
-@name(pa{--}in"`aaa`")
+@name({hehehe})
 native idTest15();
 
-@name(`I'm a function too`)
+@name(pa{--}in"`aaa`")
 native idTest16();
 
-@name(`any symbols ; ~ () are allowed here...`)
+@name(`I'm a function too`)
 native idTest17();
+
+@name(`any symbols ; ~ () are allowed here...`)
+native idTest18();

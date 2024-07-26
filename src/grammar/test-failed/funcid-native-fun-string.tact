@@ -1,2 +1,2 @@
 @name("not_a_string)
-native idTest2();
+native idTest();

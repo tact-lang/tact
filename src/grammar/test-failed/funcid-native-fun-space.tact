@@ -1,2 +1,2 @@
-@name(aa(bb)
+@name(foo foo)
 native idTest();

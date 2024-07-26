@@ -1,2 +1,2 @@
 @name(_)
-native idTest5();
+native idTest();
