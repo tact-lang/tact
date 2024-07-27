@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- The `exists` method for the `Map` type: PR [#581](https://github.com/tact-lang/tact/pull/581)
+
 ### Changed
 
 ### Fixed
