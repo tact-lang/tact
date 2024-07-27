@@ -278,6 +278,16 @@ Line 7, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for expr-map-exists-method-on-not-map 1`] = `
+"<unknown>:5:12: Type "Int" does not have a function named "exists"
+Line 5, col 12:
+  4 | fun test(): Bool {
+> 5 |     return 42.exists(1);
+                 ^~~~~~~~~~~~
+  6 | }
+"
+`;
+
 exports[`resolveStatements should fail statements for expr-method-does-not-exist-but-field-does 1`] = `
 "<unknown>:13:5: Type "S" does not have a function named "x()", did you mean field "x" instead?
 Line 13, col 5:
