@@ -44,9 +44,9 @@ import {
 } from "./grammar/ast";
 
 /**
- * PrettyPrinter class provides methods to format and indent Tact code.
+ * Formatter provides methods to format and indent Tact code.
  */
-class PrettyPrinter {
+export class Formatter {
     /**
      * @param indentLevel Initial level of indentation.
      * @param indentSpaces Number of spaces per indentation level.
@@ -650,7 +650,7 @@ class PrettyPrinter {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function formatAst(input: AstNode): string {
-    const pp = new PrettyPrinter();
+    const pp = new Formatter();
     switch (input.kind) {
         case "module":
             return pp.ppAstModule(input);
