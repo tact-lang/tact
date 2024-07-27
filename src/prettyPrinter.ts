@@ -644,12 +644,12 @@ export class PrettyPrinter {
 }
 
 /**
- * Formats an AST node into a pretty-printed string representation.
+ * Pretty-prints an AST node into a string representation.
  * @param input The AST node to format.
  * @returns A string that represents the formatted AST node.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function formatAst(input: AstNode): string {
+export function prettyPrint(input: AstNode): string {
     const pp = new PrettyPrinter();
     switch (input.kind) {
         case "module":
