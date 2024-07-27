@@ -260,8 +260,12 @@ contract StructsTester {
                self.t1.s.a == self.t2.s.a && self.t1.s.b == self.t2.s.b;
     }
 
-     get fun toCell1(s: MyStruct1): Cell {
+    get fun toCell1(s: MyStruct1): Cell {
         return s.toCell();
+    }
+
+    get fun toSlice1(s: MyStruct1): Slice {
+        return s.toSlice();
     }
 
     get fun fromCell1(src: Cell): MyStruct1 {

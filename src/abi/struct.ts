@@ -104,6 +104,51 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
         },
     ],
     [
+        "toSlice",
+        {
+            name: "toSlice",
+            resolve: (ctx, args, ref) => {
+                if (args.length !== 1) {
+                    throwCompilationError(
+                        "toSlice() expects no arguments",
+                        ref,
+                    );
+                }
+                const arg = args[0]!;
+                if (arg.kind !== "ref") {
+                    throwCompilationError(
+                        "toSlice() is implemented only a struct type",
+                        ref,
+                    );
+                }
+                const tp = getType(ctx, arg.name);
+                if (tp.kind !== "struct") {
+                    throwCompilationError(
+                        "toSlice() is implemented only a struct type",
+                        ref,
+                    );
+                }
+                return { kind: "ref", name: "Slice", optional: false };
+            },
+            generate: (ctx, args, resolved, ref) => {
+                if (resolved.length !== 1) {
+                    throwCompilationError(
+                        "toSlice() expects no arguments",
+                        ref,
+                    );
+                }
+                const arg = args[0]!;
+                if (arg.kind !== "ref") {
+                    throwCompilationError(
+                        "toSlice() is implemented only a struct type",
+                        ref,
+                    );
+                }
+                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}).begin_parse()`;
+            },
+        },
+    ],
+    [
         "fromSlice",
         {
             name: "fromSlice",
