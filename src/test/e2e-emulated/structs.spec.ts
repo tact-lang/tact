@@ -124,6 +124,10 @@ describe("structs", () => {
             c6.toString(),
         );
 
+        expect((await contract.getToSlice1(s1)).toString()).toEqual(
+            c1.toString(),
+        );
+
         expect(await contract.getFromCell1(c1)).toMatchObject<MyStruct1>(s1);
         expect(await contract.getFromCell1(c2)).toMatchObject<MyStruct1>(s2);
         expect(await contract.getFromCell2(c3)).toMatchSnapshot();
