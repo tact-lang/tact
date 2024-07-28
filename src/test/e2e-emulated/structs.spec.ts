@@ -321,7 +321,7 @@ describe("structs", () => {
             u255: (2n ** 255n) - 1n,
             u256: (2n ** 256n) - 1n,
         }
-        const mUintFieldsCell = beginCell()
+        const _mUintFieldsCell = beginCell()
             // Header
             .storeUint(0xea01f46a, 32)
             // Storing max values for each bit length
