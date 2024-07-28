@@ -23,6 +23,9 @@ extends native storeRef(self: Builder, cell: Cell): Builder;
 @name(store_slice)
 extends native storeSlice(self: Builder, cell: Slice): Builder;
 
+@name(store_builder)
+extends native storeBuilder(self: Builder, builder: Builder): Builder;
+
 @name(__tact_store_address)
 extends native storeAddress(self: Builder, address: Address): Builder;
 
