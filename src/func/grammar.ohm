@@ -5,7 +5,7 @@ FunC {
   // Compiler pragmas and includes
   //
 
-  Pragma = pragma ("allow-post-modification" | "compute-asm-ltr") ";" --string
+  Pragma = pragma ("allow-post-modification" | "compute-asm-ltr") ";" --literal
          | pragma ("version" | "not-version") versionRange ";" --versionRange
          | pragma "test-version-set" stringLiteral ";" --versionString
 
@@ -15,40 +15,35 @@ FunC {
   // Top-level, module items
   //
 
-  ModuleItem = FunctionDeclaration
-             | FunctionDefinition
-             | AsmFunctionDefinition
-             | GlobalVariables
+  ModuleItem = GlobalVariables
              | Constants
-
-  FunctionDeclaration = FunctionCommon ";"
-
-  FunctionDefinition = FunctionCommon "{" Statement* "}"
-
-  AsmFunctionDefinition = FunctionCommon "asm" ("(" AsmArrangement ")")? stringLiteral+ --singleLine
-                        | FunctionCommon "asm" ("(" AsmArrangement ")")? multiLineString --multiLine
-
-  AsmArrangement = "->" integerLiteralDec+ --returns
-                 | id+ ~"->" --arguments
-                 | id+ "->" integerLiteralDec+ --argumentsToReturns
-
-  // Common parts of function declarations and definitions
-  FunctionCommon = Forall? TypeMapped functionId Parameters FunctionAttribute*
-
-  // Called "specifiers" in https://docs.ton.org/develop/func/functions#specifiers
-  FunctionAttribute = "impure"
-                    | "inline"
-                    | "inline_ref"
-                    | "method_id"
-                    | MethodIdValue
-
-  MethodIdValue = "method_id" "(" integerLiteralNonNegative ")"
+             | AsmFunctionDefinition
+             | FunctionDeclaration
+             | FunctionDefinition
 
   GlobalVariables = "global" NonemptyListOf<GlobalVariableDeclaration, ","> ";"
   GlobalVariableDeclaration = TypeMapped? id
 
   Constants = "const" NonemptyListOf<ConstantDefinition, ","> ";"
-  ConstantDefinition = constantType? id "=" Expression
+  ConstantDefinition = TypeConstant? id "=" Expression
+
+  AsmFunctionDefinition = FunctionCommon "asm" ("(" AsmArrangement ")")? stringLiteral+ ";" --singleLine
+                        | FunctionCommon "asm" ("(" AsmArrangement ")")? multiLineString ";" --multiLine
+
+  AsmArrangement = "->" integerLiteralDec+ --returns
+                 | id+ ~"->" --arguments
+                 | id+ "->" integerLiteralDec+ --argumentsToReturns
+
+  FunctionDeclaration = FunctionCommon ";"
+
+  FunctionDefinition = FunctionCommon "{" Statement* "}"
+
+  // Common parts of function declarations and definitions
+  FunctionCommon = Forall? TypeMapped functionId Parameters FunctionAttribute*
+
+  // Called "specifiers" in https://docs.ton.org/develop/func/functions#specifiers
+  FunctionAttribute = "impure" | "inline_ref" | "inline" | MethodIdValue | "method_id"
+  MethodIdValue = "method_id" "(" integerLiteralNonNegative ")"
 
   //
   // Statements
@@ -187,7 +182,7 @@ FunC {
 
   // Parameters TODO: check the type
   Parameters = "(" ListOf<Parameter, ","> ")"
-  Parameter = Type id
+  Parameter = TypeMapped id
 
   // Arguments
   // TODO:
@@ -196,10 +191,12 @@ FunC {
   Forall = forall NonemptyListOf<ForallType, ","> "->"
   ForallType = "type"? id
 
+  // Allowed types of constants
+  TypeConstant = "int" | "slice"
+  
   // TE ::= TA | TA -> TE
-  // TypeMapped = Type ("->" TypeMapped)?
   TypeMapped = Type "->" TypeMapped --mapped
-             | Type --unmapped
+             | Type
 
   // TA ::= int | ... | cont | var | _ | () | ( TE { , TE } ) | [ TE { , TE } ]
   Type = "int"
@@ -221,7 +218,9 @@ FunC {
   //
 
   // TODO: Move over the remaining keywords
-  // TODO: Test if they can be names of variables, constants, functions
+  // TODO: Test if they can be names of variables, constants, functions -- yup, they cannot!!!
+  // Also, operators cannot too! And some other things!!!
+  // TODO: actually put everything from https://github.com/ton-blockchain/ton/blob/master/crypto/func/keywords.cpp
   // Reserved keywords, order matters (TODO: does it?)
   keyword = pragma
           | include
@@ -234,32 +233,53 @@ FunC {
   forall = "forall" ~id
   var = "var" ~id
 
-  // Types
+  // Special types
   hole = "_" | "var"
   unit = "()"
-  constantType = "int" | "slice"
-  // TODO: ...
-  tuple = ""
-  // TODO: ...
-  tensor = ""
 
-  // Primitive types, FIXME: ...
+  // Primitive types, FIXME: delete or something
   primitiveType = "int" | "cell" | "slice" | "builder" | "cont" | "type" | "tuple"
 
   // Function identifiers
   functionId = ~("\"" | "{-") ("." | "~")? id
 
   // Identifiers
-  id = ~keyword ~("\"" | "{-") (quotedId | plainId)
-
-  plainId = "_"? "-"? "0x"? hexDigit* ~hexDigit (~(whiteSpace | "(" | ")" | "," | "." | ";" | "~") any)+
+  id = ~("\"" | "{-") (quotedId | plainId)
 
   quotedId = "`" (~("`" | "\n") any)+ "`"
 
+  plainId = ~(reservedId ~idPart) idPart
+  // plainId = ~reservedId idPart
+
+  idPart = (~(whiteSpace | "(" | ")" | "," | "." | ";" | "~") any)+
+  // TODO: make tests for each of those individually ^^^
+
+  // Order matters
+  reservedId = "_"
+            | integerLiteral | "-=" | "->" |"-"
+            | "#include" | "#pragma"
+            | "!=" | "==" | "="
+            | "<<=" | "<<" | "<=>" | "<=" | "<" | ">>=" | ">>" | ">=" | ">"
+            | "~>>=" | "~>>" | "~/=" | "~/" | "~%=" | "~%" | "~"
+            | "^>>=" | "^>>" | "^/=" | "^/" | "^%=" | "^%" | "^=" | "^"
+            | "+=" | "+" | "*=" | "*" | "/=" | "/%" | "/" | "%=" | "%" | "&=" | "&" | "|=" | "|"
+            | "(" | ")" | "[" | "]" | "{" | "}" | "?" | ":" | "," | ";" | "." | "~"
+            | "asm" | "auto_apply" | "builder" | "catch" | "cell" | "const" | "cont" | "do"
+            | "elseifnot" | "elseif" | "else" | "extern" | "forall" | "global" | "ifnot" | "if"
+            | "impure" | "infixl" | "infixr" | "infix" | "inline_ref" | "inline" | "int"
+            | "method_id" | "operator" | "repeat" | "return" | "slice" | "then" | "try" | "tuple"
+            | "type" | "until" | "var" | "while"
+
   unusedId = "_"
 
+  /*
+    FunC can parse much more than Fift can handle. For example, _0x0 and _0 are valid identifiers in FunC, and using either of them compiles and is then interpreted fine by Fift. But if you use both, FunC still compiles, but Fift crashes.
+
+    Same goes for plain identifiers using hashes # or emojis — you can have one FunC function with any of those combinations of characters, but you (generally) cannot have two or more of such functions.
+  */
+
   // Version ranges
-  versionRange = ("=" | "^" | "<" | "<=" | ">" | ">=")? integerLiteralDec ("." integerLiteralDec)? ("." integerLiteralDec)?
+  versionRange = ("=" | "^" | "<=" | ">=" | "<" | ">")? integerLiteralDec ("." integerLiteralDec)? ("." integerLiteralDec)?
 
   // Integers
   integerLiteral = "-"? integerLiteralNonNegative

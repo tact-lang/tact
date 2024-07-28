@@ -1,0 +1,8 @@
+;; Inferred type
+const c1 = 42;
+
+;; Inferred type for multiple ones with using prior constants
+const c2 = 27, c3 = c1;
+
+;; int, inferred int or slice from a string
+const int c4 = 0, c5 = 0, slice c6 = "It's Zendaya"s;

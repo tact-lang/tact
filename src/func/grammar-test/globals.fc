@@ -1,0 +1,14 @@
+;; No type
+global glob1;
+
+;; Primitive type
+global int glob2;
+
+;; Mapped type
+global int -> int glob3;
+
+;; Convoluted example
+global ((int, (_, cont, cell, (), [int])) -> int) glob4;
+
+;; Multiple at once
+global int glob5, (builder, tuple) glob6, glob7;

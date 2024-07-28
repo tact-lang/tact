@@ -1,0 +1,30 @@
+;; Literals
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+;; Version ranges
+#pragma version 0;
+#pragma version 0.0;
+#pragma version 0.0.0;
+#pragma version =0;
+#pragma version =0.0;
+#pragma version =0.0.0;
+#pragma version ^0;
+#pragma version <0;
+#pragma version >0;
+#pragma version <=0;
+#pragma version >=0;
+#pragma not-version 0;
+#pragma not-version 0.0;
+#pragma not-version 0.0.0;
+#pragma not-version =0;
+#pragma not-version =0.0;
+#pragma not-version =0.0.0;
+#pragma not-version ^0;
+#pragma not-version <0;
+#pragma not-version >0;
+#pragma not-version <=0;
+#pragma not-version >=0;
+
+;; Used in internal tests of FunC in ton-blockchain/ton monorepo
+#pragma test-version-set "0.4.4";

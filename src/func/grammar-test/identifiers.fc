@@ -1,0 +1,44 @@
+;; Identifiers
+global query';
+global query'';
+global CHECK;
+global _internal_val;
+global message_found?;
+global get_pubkeys&signatures;
+global dict::udict_set_builder;
+global _+_;
+global __;
+global fatal!;
+global 123validname;
+global 2+2=2*2;
+global -alsovalidname;
+global 0xefefefhahaha;
+global {hehehe};
+global pa{--}in"`aaa`";
+global `I'm a function too`;
+global `any symbols ; ~ () are allowed here...`;
+global C4;
+global C4g;
+global 4C;
+global _0x0;
+global _0;
+global 0x_;
+global 0x0_;
+global 0_;
+global hash#256;
+global 💀💀💀0xDEADBEEF💀💀💀;
+global __tact_verify_address;
+global __tact_pow2;
+global randomize_lt;
+global fixed248::asin;
+global fixed248::nrand_fast;
+global atan_f261_inlined;
+global f̷̨͈͚́͌̀i̵̩͔̭̐͐̊n̸̟̝̻̩̎̓͋̕e̸̝̙̒̿͒̾̕;
+global ❤️❤️❤️thanks❤️❤️❤️;
+global intslice;
+global int2;
+
+;; Function identifiers, which can start with . or ~
+() ~impure_touch();
+() ~udict::delete_get_min();
+() .something();

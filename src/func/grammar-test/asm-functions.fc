@@ -1,0 +1,31 @@
+;; Single assembly string
+int inc_then_negate(int x) asm "INC NEGATE";
+
+;; Multiple assembly strings
+int inc_then_negate'(int x) asm "INC" "NEGATE";
+
+;; Multi-line strings
+
+int inc_then_negate''(int x) asm """INC NEGATE""";
+
+slice hello_world() asm """
+    "Hello"
+    " "
+    "World"
+    $+ $+ $>s
+    PUSHSLICE
+""";
+
+;; Arrangement of return values (and whitespaces check)
+                 (builder, int)
+store_uint_quiet (builder b, int x, int len)
+asm              (x b len)
+"STUXQ";
+
+;; Arrangement of arguments
+(int, builder) store_uint_quite(int x, builder b, int len)
+               asm( -> 1 0) "STUXQ";
+
+;; Arrangement of arguments mapped to return values
+(int, builder) store_uint_quite(builder b, int x, int len)
+               asm(x b len -> 1 0) "STUXQ";
