@@ -120,3 +120,9 @@ native idTest38();
 
 @name(❤️❤️❤️thanks❤️❤️❤️)
 native idTest39();
+
+@name(intslice)
+native idTest40();
+
+@name(int2)
+native idTest40();

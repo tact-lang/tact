@@ -3941,7 +3941,7 @@ native testFunc(): Bool;,
 
 exports[`grammar should parse items-native-fun-funcid 1`] = `
 {
-  "id": 118,
+  "id": 124,
   "imports": [],
   "items": [
     {
@@ -4759,6 +4759,48 @@ native idTest39();,
         "kind": "func_id",
         "loc": ❤️❤️❤️thanks❤️❤️❤️,
         "text": "❤️❤️❤️thanks❤️❤️❤️",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 120,
+      "kind": "native_function_decl",
+      "loc": @name(intslice)
+native idTest40();,
+      "name": {
+        "id": 118,
+        "kind": "id",
+        "loc": idTest40,
+        "text": "idTest40",
+      },
+      "nativeName": {
+        "id": 119,
+        "kind": "func_id",
+        "loc": intslice,
+        "text": "intslice",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 123,
+      "kind": "native_function_decl",
+      "loc": @name(int2)
+native idTest40();,
+      "name": {
+        "id": 121,
+        "kind": "id",
+        "loc": idTest40,
+        "text": "idTest40",
+      },
+      "nativeName": {
+        "id": 122,
+        "kind": "func_id",
+        "loc": int2,
+        "text": "int2",
       },
       "params": [],
       "return": null,
