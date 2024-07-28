@@ -71,12 +71,82 @@ Line 2, col 24:
 "
 `;
 
+exports[`grammar should fail funcid-native-fun-arith-operator 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(/)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-assign-operator 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(<<)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-bitwise-operator 1`] = `
+"<unknown>:1:8: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~") or "\`"
+
+Line 1, col 8:
+> 1 | @name(~)
+             ^
+  2 | native idTest();
+"
+`;
+
 exports[`grammar should fail funcid-native-fun-comma 1`] = `
 "<unknown>:1:19: Parse error: expected ")"
 
 Line 1, col 19:
 > 1 | @name(send_message,then_terminate)
                         ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-comparison-operator 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(<=>)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-control-keyword 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(elseifnot)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-delimiter 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name([)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-directive 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(#include)
+            ^
   2 | native idTest();
 "
 `;
@@ -91,18 +161,18 @@ Line 1, col 10:
 "
 `;
 
-exports[`grammar should fail funcid-native-fun-hash 1`] = `
-"<unknown>:1:7: Parse error: expected not ("\\"" or "{-" or "#")
+exports[`grammar should fail funcid-native-fun-keyword 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
 
 Line 1, col 7:
-> 1 | @name(#notInclude)
+> 1 | @name(global)
             ^
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-multiline-comments 1`] = `
-"<unknown>:1:7: Parse error: expected not ("\\"" or "{-" or "#")
+"<unknown>:1:7: Parse error: expected not ("\\"" or "{-")
 
 Line 1, col 7:
 > 1 | @name({-aaa-})
@@ -112,71 +182,71 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-number 1`] = `
-"<unknown>:1:10: Parse error: expected "_" or not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
 
-Line 1, col 10:
+Line 1, col 7:
 > 1 | @name(123)
-               ^
+            ^
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-number-decimal 1`] = `
-"<unknown>:1:8: Parse error: expected "_" or not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
 
-Line 1, col 8:
+Line 1, col 7:
 > 1 | @name(0)
-             ^
+            ^
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-number-hexadecimal 1`] = `
-"<unknown>:1:10: Parse error: expected "_" or not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
 
-Line 1, col 10:
+Line 1, col 7:
 > 1 | @name(0x0)
-               ^
+            ^
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-number-hexadecimal-2 1`] = `
-"<unknown>:1:17: Parse error: expected "_" or not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
 
-Line 1, col 17:
+Line 1, col 7:
 > 1 | @name(0xDEADBEEF)
-                      ^
+            ^
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-number-neg-decimal 1`] = `
-"<unknown>:1:9: Parse error: expected "_" or not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
 
-Line 1, col 9:
+Line 1, col 7:
 > 1 | @name(-1)
-              ^
+            ^
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-number-neg-hexadecimal 1`] = `
-"<unknown>:1:11: Parse error: expected "_" or not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
 
-Line 1, col 11:
+Line 1, col 7:
 > 1 | @name(-0x0)
-                ^
+            ^
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-only-underscore 1`] = `
-"<unknown>:1:8: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
 
-Line 1, col 8:
+Line 1, col 7:
 > 1 | @name(_)
-             ^
+            ^
   2 | native idTest();
 "
 `;
@@ -212,10 +282,20 @@ Line 1, col 11:
 `;
 
 exports[`grammar should fail funcid-native-fun-string 1`] = `
-"<unknown>:1:7: Parse error: expected not ("\\"" or "{-" or "#")
+"<unknown>:1:7: Parse error: expected not ("\\"" or "{-")
 
 Line 1, col 7:
 > 1 | @name("not_a_string)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-type-keyword 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(->)
             ^
   2 | native idTest();
 "

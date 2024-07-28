@@ -1,2 +1,0 @@
-@name(#notInclude)
-native idTest();
