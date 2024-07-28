@@ -114,3 +114,9 @@ native idTest36();
 
 @name(.something)
 native idTest37();
+
+@name(f̷̨͈͚́͌̀i̵̩͔̭̐͐̊n̸̟̝̻̩̎̓͋̕e̸̝̙̒̿͒̾̕)
+native idTest38();
+
+@name(❤️❤️❤️thanks❤️❤️❤️)
+native idTest39();

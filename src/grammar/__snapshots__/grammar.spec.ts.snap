@@ -3861,7 +3861,7 @@ native testFunc(): Bool;,
 
 exports[`grammar should parse items-native-fun-funcid 1`] = `
 {
-  "id": 112,
+  "id": 118,
   "imports": [],
   "items": [
     {
@@ -4637,6 +4637,48 @@ native idTest37();,
         "kind": "func_id",
         "loc": .something,
         "text": ".something",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 114,
+      "kind": "native_function_decl",
+      "loc": @name(f̷̨͈͚́͌̀i̵̩͔̭̐͐̊n̸̟̝̻̩̎̓͋̕e̸̝̙̒̿͒̾̕)
+native idTest38();,
+      "name": {
+        "id": 112,
+        "kind": "id",
+        "loc": idTest38,
+        "text": "idTest38",
+      },
+      "nativeName": {
+        "id": 113,
+        "kind": "func_id",
+        "loc": f̷̨͈͚́͌̀i̵̩͔̭̐͐̊n̸̟̝̻̩̎̓͋̕e̸̝̙̒̿͒̾̕,
+        "text": "f̷̨͈͚́͌̀i̵̩͔̭̐͐̊n̸̟̝̻̩̎̓͋̕e̸̝̙̒̿͒̾̕",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 117,
+      "kind": "native_function_decl",
+      "loc": @name(❤️❤️❤️thanks❤️❤️❤️)
+native idTest39();,
+      "name": {
+        "id": 115,
+        "kind": "id",
+        "loc": idTest39,
+        "text": "idTest39",
+      },
+      "nativeName": {
+        "id": 116,
+        "kind": "func_id",
+        "loc": ❤️❤️❤️thanks❤️❤️❤️,
+        "text": "❤️❤️❤️thanks❤️❤️❤️",
       },
       "params": [],
       "return": null,
