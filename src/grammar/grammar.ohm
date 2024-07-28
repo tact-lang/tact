@@ -273,8 +273,6 @@ Tact {
     funcId = ~("\"" | "{-" | "#") ("." | "~")? (funcQuotedId | funcPlainId)
 
     /*
-      NOTE(novusnota):
-
       FunC can parse much more than Fift can handle. For example, _0x0 and _0 are valid identifiers in FunC, and using either of them compiles and is then interpreted fine by Fift. But if you use both, FunC still compiles, but Fift crashes.
 
       Same goes for plain identifiers using hashes # or emojis — you can have one FunC function with any of those combinations of characters, but you (generally) cannot have two or more of such functions.
