@@ -112,7 +112,7 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-number 1`] = `
-"<unknown>:1:10: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:10: Parse error: expected "_" or not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
 
 Line 1, col 10:
 > 1 | @name(123)
@@ -122,7 +122,7 @@ Line 1, col 10:
 `;
 
 exports[`grammar should fail funcid-native-fun-number-decimal 1`] = `
-"<unknown>:1:8: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:8: Parse error: expected "_" or not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
 
 Line 1, col 8:
 > 1 | @name(0)
@@ -132,7 +132,7 @@ Line 1, col 8:
 `;
 
 exports[`grammar should fail funcid-native-fun-number-hexadecimal 1`] = `
-"<unknown>:1:10: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:10: Parse error: expected "_" or not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
 
 Line 1, col 10:
 > 1 | @name(0x0)
@@ -142,7 +142,7 @@ Line 1, col 10:
 `;
 
 exports[`grammar should fail funcid-native-fun-number-hexadecimal-2 1`] = `
-"<unknown>:1:17: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:17: Parse error: expected "_" or not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
 
 Line 1, col 17:
 > 1 | @name(0xDEADBEEF)
@@ -152,7 +152,7 @@ Line 1, col 17:
 `;
 
 exports[`grammar should fail funcid-native-fun-number-neg-decimal 1`] = `
-"<unknown>:1:9: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:9: Parse error: expected "_" or not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
 
 Line 1, col 9:
 > 1 | @name(-1)
@@ -162,7 +162,7 @@ Line 1, col 9:
 `;
 
 exports[`grammar should fail funcid-native-fun-number-neg-hexadecimal 1`] = `
-"<unknown>:1:11: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:11: Parse error: expected "_" or not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
 
 Line 1, col 11:
 > 1 | @name(-0x0)
@@ -3861,7 +3861,7 @@ native testFunc(): Bool;,
 
 exports[`grammar should parse items-native-fun-funcid 1`] = `
 {
-  "id": 76,
+  "id": 112,
   "imports": [],
   "items": [
     {
@@ -4351,7 +4351,7 @@ native idTest23();,
       "attributes": [],
       "id": 72,
       "kind": "native_function_decl",
-      "loc": @name(hash#256)
+      "loc": @name(0x_)
 native idTest24();,
       "name": {
         "id": 70,
@@ -4362,8 +4362,8 @@ native idTest24();,
       "nativeName": {
         "id": 71,
         "kind": "func_id",
-        "loc": hash#256,
-        "text": "hash#256",
+        "loc": 0x_,
+        "text": "0x_",
       },
       "params": [],
       "return": null,
@@ -4372,7 +4372,7 @@ native idTest24();,
       "attributes": [],
       "id": 75,
       "kind": "native_function_decl",
-      "loc": @name(💀💀💀0xDEADBEEF💀💀💀)
+      "loc": @name(0x0_)
 native idTest25();,
       "name": {
         "id": 73,
@@ -4383,8 +4383,260 @@ native idTest25();,
       "nativeName": {
         "id": 74,
         "kind": "func_id",
+        "loc": 0x0_,
+        "text": "0x0_",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 78,
+      "kind": "native_function_decl",
+      "loc": @name(0_)
+native idTest26();,
+      "name": {
+        "id": 76,
+        "kind": "id",
+        "loc": idTest26,
+        "text": "idTest26",
+      },
+      "nativeName": {
+        "id": 77,
+        "kind": "func_id",
+        "loc": 0_,
+        "text": "0_",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 81,
+      "kind": "native_function_decl",
+      "loc": @name(hash#256)
+native idTest27();,
+      "name": {
+        "id": 79,
+        "kind": "id",
+        "loc": idTest27,
+        "text": "idTest27",
+      },
+      "nativeName": {
+        "id": 80,
+        "kind": "func_id",
+        "loc": hash#256,
+        "text": "hash#256",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 84,
+      "kind": "native_function_decl",
+      "loc": @name(💀💀💀0xDEADBEEF💀💀💀)
+native idTest28();,
+      "name": {
+        "id": 82,
+        "kind": "id",
+        "loc": idTest28,
+        "text": "idTest28",
+      },
+      "nativeName": {
+        "id": 83,
+        "kind": "func_id",
         "loc": 💀💀💀0xDEADBEEF💀💀💀,
         "text": "💀💀💀0xDEADBEEF💀💀💀",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 87,
+      "kind": "native_function_decl",
+      "loc": @name(__tact_verify_address)
+native idTest29();,
+      "name": {
+        "id": 85,
+        "kind": "id",
+        "loc": idTest29,
+        "text": "idTest29",
+      },
+      "nativeName": {
+        "id": 86,
+        "kind": "func_id",
+        "loc": __tact_verify_address,
+        "text": "__tact_verify_address",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 90,
+      "kind": "native_function_decl",
+      "loc": @name(__tact_pow2)
+native idTest30();,
+      "name": {
+        "id": 88,
+        "kind": "id",
+        "loc": idTest30,
+        "text": "idTest30",
+      },
+      "nativeName": {
+        "id": 89,
+        "kind": "func_id",
+        "loc": __tact_pow2,
+        "text": "__tact_pow2",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 93,
+      "kind": "native_function_decl",
+      "loc": @name(randomize_lt)
+native idTest31();,
+      "name": {
+        "id": 91,
+        "kind": "id",
+        "loc": idTest31,
+        "text": "idTest31",
+      },
+      "nativeName": {
+        "id": 92,
+        "kind": "func_id",
+        "loc": randomize_lt,
+        "text": "randomize_lt",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 96,
+      "kind": "native_function_decl",
+      "loc": @name(fixed248::asin)
+native idTest32();,
+      "name": {
+        "id": 94,
+        "kind": "id",
+        "loc": idTest32,
+        "text": "idTest32",
+      },
+      "nativeName": {
+        "id": 95,
+        "kind": "func_id",
+        "loc": fixed248::asin,
+        "text": "fixed248::asin",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 99,
+      "kind": "native_function_decl",
+      "loc": @name(fixed248::nrand_fast)
+native idTest33();,
+      "name": {
+        "id": 97,
+        "kind": "id",
+        "loc": idTest33,
+        "text": "idTest33",
+      },
+      "nativeName": {
+        "id": 98,
+        "kind": "func_id",
+        "loc": fixed248::nrand_fast,
+        "text": "fixed248::nrand_fast",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 102,
+      "kind": "native_function_decl",
+      "loc": @name(atan_f261_inlined)
+native idTest34();,
+      "name": {
+        "id": 100,
+        "kind": "id",
+        "loc": idTest34,
+        "text": "idTest34",
+      },
+      "nativeName": {
+        "id": 101,
+        "kind": "func_id",
+        "loc": atan_f261_inlined,
+        "text": "atan_f261_inlined",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 105,
+      "kind": "native_function_decl",
+      "loc": @name(~impure_touch)
+native idTest35();,
+      "name": {
+        "id": 103,
+        "kind": "id",
+        "loc": idTest35,
+        "text": "idTest35",
+      },
+      "nativeName": {
+        "id": 104,
+        "kind": "func_id",
+        "loc": ~impure_touch,
+        "text": "~impure_touch",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 108,
+      "kind": "native_function_decl",
+      "loc": @name(~udict::delete_get_min)
+native idTest36();,
+      "name": {
+        "id": 106,
+        "kind": "id",
+        "loc": idTest36,
+        "text": "idTest36",
+      },
+      "nativeName": {
+        "id": 107,
+        "kind": "func_id",
+        "loc": ~udict::delete_get_min,
+        "text": "~udict::delete_get_min",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 111,
+      "kind": "native_function_decl",
+      "loc": @name(.something)
+native idTest37();,
+      "name": {
+        "id": 109,
+        "kind": "id",
+        "loc": idTest37,
+        "text": "idTest37",
+      },
+      "nativeName": {
+        "id": 110,
+        "kind": "func_id",
+        "loc": .something,
+        "text": ".something",
       },
       "params": [],
       "return": null,

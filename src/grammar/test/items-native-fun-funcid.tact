@@ -73,16 +73,44 @@ native idTest22();
 @name(_0)
 native idTest23();
 
-// NOTE(novusnota):
-// There is a only small set of cases related to the above that our parser won't parse, but C++ FunC's will:
-// The hexadecimal or decimal number, followed immediately by a single underscore.
-// It can look like: 0x0_, for example. Or like: 9000_.
-//
-// I decided not to fix these peculiar cases, as the RegEx gets absolutely wild. Also, these are super-weird identifiers,
-// which have a big chance of breaking once the Fift interpreter comes into play, as described in the "Fun fact" paragraph above.
-
-@name(hash#256)
+@name(0x_)
 native idTest24();
 
-@name(💀💀💀0xDEADBEEF💀💀💀)
+@name(0x0_)
 native idTest25();
+
+@name(0_)
+native idTest26();
+
+@name(hash#256)
+native idTest27();
+
+@name(💀💀💀0xDEADBEEF💀💀💀)
+native idTest28();
+
+@name(__tact_verify_address)
+native idTest29();
+
+@name(__tact_pow2)
+native idTest30();
+
+@name(randomize_lt)
+native idTest31();
+
+@name(fixed248::asin)
+native idTest32();
+
+@name(fixed248::nrand_fast)
+native idTest33();
+
+@name(atan_f261_inlined)
+native idTest34();
+
+@name(~impure_touch)
+native idTest35();
+
+@name(~udict::delete_get_min)
+native idTest36();
+
+@name(.something)
+native idTest37();
