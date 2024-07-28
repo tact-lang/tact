@@ -269,7 +269,7 @@ Tact {
     // Order of inner alternations matters
     funcInvalidId = "_" ")" --notUnderscore
                   | ("+" | "-" | "*" | "/%" | "/" | "%" | "~/" | "^/" | "~%" | "^%") ")" --notArithOperator
-                  | ("<=>" | "<=" | "<" | ">" | "=>" | "!=" | "==") ")" --notComparisonOperator
+                  | ("<=>" | "<=" | "<" | ">=" | ">" | "!=" | "==") ")" --notComparisonOperator
                   | ("~>>" | "~" | "^>>" | "^" | "&" | "|" | "<<" | ">>" ) ")" --notBitwiseOperator
                   | ("=" | "+=" | "-=" | "*=" | "/=" | "%="
                          | "~>>=" | "~/=" | "~%=" | "^>>=" | "^/=" | "^%=" | "^="
