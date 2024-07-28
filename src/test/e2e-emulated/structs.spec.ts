@@ -309,7 +309,9 @@ describe("structs", () => {
             .storeInt(-(2n ** 256n), 257)
             .endCell();
         expect(await contract.getIntFieldsStruct()).toEqual(sIntFields);
-        expect(await contract.getIntFieldsFromCell(sIntFieldsCell)).toEqual(sIntFields);
+        expect(await contract.getIntFieldsFromCell(sIntFieldsCell)).toEqual(
+            sIntFields,
+        );
 
         // uint serialization formats
         const mUintFields: UintFields = {
@@ -317,10 +319,10 @@ describe("structs", () => {
             u1: 1n,
             u2: 3n,
             u3: 7n,
-            u254: (2n ** 254n) - 1n,
-            u255: (2n ** 255n) - 1n,
-            u256: (2n ** 256n) - 1n,
-        }
+            u254: 2n ** 254n - 1n,
+            u255: 2n ** 255n - 1n,
+            u256: 2n ** 256n - 1n,
+        };
         const _mUintFieldsCell = beginCell()
             // Header
             .storeUint(0xea01f46a, 32)
@@ -328,9 +330,9 @@ describe("structs", () => {
             .storeUint(1n, 1)
             .storeUint(3n, 2)
             .storeUint(7n, 3)
-            .storeUint((2n ** 254n) - 1n, 254)
-            .storeUint((2n ** 255n) - 1n, 255)
-            .storeUint((2n ** 256n) - 1n, 256)
+            .storeUint(2n ** 254n - 1n, 254)
+            .storeUint(2n ** 255n - 1n, 255)
+            .storeUint(2n ** 256n - 1n, 256)
             .endCell();
 
         expect(await contract.getUintFieldsMessage()).toEqual(mUintFields);
