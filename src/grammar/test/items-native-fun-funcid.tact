@@ -64,6 +64,8 @@ native idTest21();
 // Fun fact:
 // Individually, _0x0 and _0 are totally valid identifiers in FunC, and the resulting Fift works fine too.
 // But if they're together, FunC still compiles, but Fift interpreter cannot deal with that and crashes.
+// Same goes for identifiers using hashes # or emojis.
+// I.e., you can have a function with any of those combinations of characters, but only one.
 
 @name(_0x0)
 native idTest22();
@@ -78,3 +80,9 @@ native idTest23();
 //
 // I decided not to fix these peculiar cases, as the RegEx gets absolutely wild. Also, these are super-weird identifiers,
 // which have a big chance of breaking once the Fift interpreter comes into play, as described in the "Fun fact" paragraph above.
+
+@name(hash#256)
+native idTest24();
+
+@name(💀💀💀0xDEADBEEF💀💀💀)
+native idTest25();
