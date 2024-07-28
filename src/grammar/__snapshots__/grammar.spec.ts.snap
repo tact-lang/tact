@@ -85,7 +85,7 @@ exports[`grammar should fail funcid-native-fun-assign-operator 1`] = `
 "<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
 
 Line 1, col 7:
-> 1 | @name(<<)
+> 1 | @name(^>>=)
             ^
   2 | native idTest();
 "
