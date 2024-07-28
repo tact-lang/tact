@@ -91,8 +91,18 @@ Line 1, col 10:
 "
 `;
 
+exports[`grammar should fail funcid-native-fun-hash 1`] = `
+"<unknown>:1:7: Parse error: expected not ("\\"" or "{-" or "#")
+
+Line 1, col 7:
+> 1 | @name(#notInclude)
+            ^
+  2 | native idTest();
+"
+`;
+
 exports[`grammar should fail funcid-native-fun-multiline-comments 1`] = `
-"<unknown>:1:7: Parse error: expected not ("\\"" or "{-")
+"<unknown>:1:7: Parse error: expected not ("\\"" or "{-" or "#")
 
 Line 1, col 7:
 > 1 | @name({-aaa-})
@@ -127,6 +137,36 @@ exports[`grammar should fail funcid-native-fun-number-hexadecimal 1`] = `
 Line 1, col 10:
 > 1 | @name(0x0)
                ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-number-hexadecimal-2 1`] = `
+"<unknown>:1:17: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+
+Line 1, col 17:
+> 1 | @name(0xDEADBEEF)
+                      ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-number-neg-decimal 1`] = `
+"<unknown>:1:9: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+
+Line 1, col 9:
+> 1 | @name(-1)
+              ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-number-neg-hexadecimal 1`] = `
+"<unknown>:1:11: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+
+Line 1, col 11:
+> 1 | @name(-0x0)
+                ^
   2 | native idTest();
 "
 `;
@@ -172,7 +212,7 @@ Line 1, col 11:
 `;
 
 exports[`grammar should fail funcid-native-fun-string 1`] = `
-"<unknown>:1:7: Parse error: expected not ("\\"" or "{-")
+"<unknown>:1:7: Parse error: expected not ("\\"" or "{-" or "#")
 
 Line 1, col 7:
 > 1 | @name("not_a_string)
@@ -182,7 +222,7 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-unclosed-parens 1`] = `
-"<unknown>:1:9: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~")
+"<unknown>:1:9: Parse error: expected ")"
 
 Line 1, col 9:
 > 1 | @name(aa(bb)
@@ -3821,7 +3861,7 @@ native testFunc(): Bool;,
 
 exports[`grammar should parse items-native-fun-funcid 1`] = `
 {
-  "id": 55,
+  "id": 70,
   "imports": [],
   "items": [
     {
@@ -4198,6 +4238,111 @@ native idTest18();,
         "kind": "func_id",
         "loc": \`any symbols ; ~ () are allowed here...\`,
         "text": "\`any symbols ; ~ () are allowed here...\`",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 57,
+      "kind": "native_function_decl",
+      "loc": @name(C4)
+native idTest19();,
+      "name": {
+        "id": 55,
+        "kind": "id",
+        "loc": idTest19,
+        "text": "idTest19",
+      },
+      "nativeName": {
+        "id": 56,
+        "kind": "func_id",
+        "loc": C4,
+        "text": "C4",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 60,
+      "kind": "native_function_decl",
+      "loc": @name(C4g)
+native idTest20();,
+      "name": {
+        "id": 58,
+        "kind": "id",
+        "loc": idTest20,
+        "text": "idTest20",
+      },
+      "nativeName": {
+        "id": 59,
+        "kind": "func_id",
+        "loc": C4g,
+        "text": "C4g",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 63,
+      "kind": "native_function_decl",
+      "loc": @name(4C)
+native idTest21();,
+      "name": {
+        "id": 61,
+        "kind": "id",
+        "loc": idTest21,
+        "text": "idTest21",
+      },
+      "nativeName": {
+        "id": 62,
+        "kind": "func_id",
+        "loc": 4C,
+        "text": "4C",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 66,
+      "kind": "native_function_decl",
+      "loc": @name(_0x0)
+native idTest22();,
+      "name": {
+        "id": 64,
+        "kind": "id",
+        "loc": idTest22,
+        "text": "idTest22",
+      },
+      "nativeName": {
+        "id": 65,
+        "kind": "func_id",
+        "loc": _0x0,
+        "text": "_0x0",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 69,
+      "kind": "native_function_decl",
+      "loc": @name(_0)
+native idTest23();,
+      "name": {
+        "id": 67,
+        "kind": "id",
+        "loc": idTest23,
+        "text": "idTest23",
+      },
+      "nativeName": {
+        "id": 68,
+        "kind": "func_id",
+        "loc": _0,
+        "text": "_0",
       },
       "params": [],
       "return": null,

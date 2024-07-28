@@ -51,3 +51,30 @@ native idTest17();
 
 @name(`any symbols ; ~ () are allowed here...`)
 native idTest18();
+
+@name(C4)
+native idTest19();
+
+@name(C4g)
+native idTest20();
+
+@name(4C)
+native idTest21();
+
+// Fun fact:
+// Individually, _0x0 and _0 are totally valid identifiers in FunC, and the resulting Fift works fine too.
+// But if they're together, FunC still compiles, but Fift interpreter cannot deal with that and crashes.
+
+@name(_0x0)
+native idTest22();
+
+@name(_0)
+native idTest23();
+
+// NOTE(novusnota):
+// There is a only small set of cases related to the above that our parser won't parse, but C++ FunC's will:
+// The hexadecimal or decimal number, followed immediately by a single underscore.
+// It can look like: 0x0_, for example. Or like: 9000_.
+//
+// I decided not to fix these peculiar cases, as the RegEx gets absolutely wild. Also, these are super-weird identifiers,
+// which have a big chance of breaking once the Fift interpreter comes into play, as described in the "Fun fact" paragraph above.
