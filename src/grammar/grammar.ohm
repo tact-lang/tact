@@ -284,7 +284,7 @@ Tact {
                   | ("-"? digit+) ")" --notDecimalNumber
                   | ("-"? "0x" hexDigit+) ")" --notHexadecimalNumber
 
-    funcPlainId = ~funcInvalidId (~(whiteSpace | "(" | ")" | "," | "." | ";" | "~") any)+
+    funcPlainId = ~funcInvalidId (~(whiteSpace | "(" | ")" | "[" | "]" | "," | "." | ";" | "~") any)+
 
     funcQuotedId = "`" (~("`" | "\n") any)+ "`"
 

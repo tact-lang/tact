@@ -92,7 +92,7 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-bitwise-operator 1`] = `
-"<unknown>:1:8: Parse error: expected not (a whiteSpace or "(" or ")" or "," or "." or ";" or "~") or "\`"
+"<unknown>:1:8: Parse error: expected not (a whiteSpace or "(" or ")" or "[" or "]" or "," or "." or ";" or "~") or "\`"
 
 Line 1, col 8:
 > 1 | @name(~)
@@ -276,6 +276,16 @@ exports[`grammar should fail funcid-native-fun-space 1`] = `
 
 Line 1, col 11:
 > 1 | @name(foo foo)
+                ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-square-brackets 1`] = `
+"<unknown>:1:11: Parse error: expected ")"
+
+Line 1, col 11:
+> 1 | @name(take[some]entry)
                 ^
   2 | native idTest();
 "
