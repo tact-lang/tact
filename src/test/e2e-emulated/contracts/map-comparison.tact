@@ -28,7 +28,7 @@ message CompareAddressAddress {
     m2: map<Address, Address>;
 }
 
-contract MapTraverseTestContract {
+contract MapComparisonTestContract {
     receive(msg: CompareIntInt) {
         require(msg.m1.deepEquals(msg.m2), "Maps are not equal");
     }
