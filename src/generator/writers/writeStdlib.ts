@@ -1428,7 +1428,7 @@ export function writeStdlib(ctx: WriterContext) {
             ctx.write(`
                 (slice key, slice value, int flag) = ${ctx.used("__tact_dict_min")}(a, kl);
                 while (flag) {
-                    (slice value_b, int flag_b) = ${ctx.used("__tact_dict_delete_get")}(b, kl, key);
+                    (slice value_b, int flag_b) = b~${ctx.used("__tact_dict_delete_get")}(kl, key);
                     ifnot (flag_b) {
                         return 0;
                     }
