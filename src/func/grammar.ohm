@@ -5,41 +5,42 @@ FunC {
   // Compiler pragmas and includes
   //
 
-  Pragma = pragma ("allow-post-modification" | "compute-asm-ltr") ";" --literal
-         | pragma ("version" | "not-version") versionRange ";" --versionRange
-         | pragma "test-version-set" stringLiteral ";" --versionString
+  Pragma = "#pragma" ("allow-post-modification" | "compute-asm-ltr") ";" --literal
+         | "#pragma" ("version" | "not-version") versionRange ";" --versionRange
+         | "#pragma" "test-version-set" stringLiteral ";" --versionString
 
-  Include = include stringLiteral ";"
+  Include = "#include" stringLiteral ";"
 
   //
   // Top-level, module items
   //
 
-  ModuleItem = GlobalVariables
-             | Constants
+  ModuleItem = GlobalVariablesDeclaration
+             | ConstantsDefinition
              | AsmFunctionDefinition
              | FunctionDeclaration
              | FunctionDefinition
 
-  GlobalVariables = "global" NonemptyListOf<GlobalVariableDeclaration, ","> ";"
-  GlobalVariableDeclaration = TypeMapped? id
+  GlobalVariablesDeclaration = "global" NonemptyListOf<GlobalVariableDeclaration, ","> ";"
+  GlobalVariableDeclaration = Type? id
 
-  Constants = "const" NonemptyListOf<ConstantDefinition, ","> ";"
+  ConstantsDefinition = "const" NonemptyListOf<ConstantDefinition, ","> ";"
   ConstantDefinition = TypeConstant? id "=" Expression
 
-  AsmFunctionDefinition = FunctionCommon "asm" ("(" AsmArrangement ")")? stringLiteral+ ";" --singleLine
-                        | FunctionCommon "asm" ("(" AsmArrangement ")")? multiLineString ";" --multiLine
+  AsmFunctionDefinition = FunctionCommonPrefix "asm" AsmArrangement? stringLiteral+ ";" --singleLine
+                        | FunctionCommonPrefix "asm" AsmArrangement? multiLineString+ ";" --multiLine
 
-  AsmArrangement = "->" integerLiteralDec+ --returns
-                 | id+ ~"->" --arguments
-                 | id+ "->" integerLiteralDec+ --argumentsToReturns
+  AsmArrangement = "(" "->" integerLiteralDec+ ")" --returns
+                 | "(" id+ ~"->" ")" --arguments
+                 | "(" id+ "->" integerLiteralDec+ ")" --argumentsToReturns
 
-  FunctionDeclaration = FunctionCommon ";"
 
-  FunctionDefinition = FunctionCommon "{" Statement* "}"
+  FunctionDeclaration = FunctionCommonPrefix ";"
 
-  // Common parts of function declarations and definitions
-  FunctionCommon = Forall? TypeMapped functionId Parameters FunctionAttribute*
+  FunctionDefinition = FunctionCommonPrefix "{" Statement* "}"
+
+  // Common prefix of function declarations and definitions
+  FunctionCommonPrefix = Forall? Type functionId Parameters FunctionAttribute*
 
   // Called "specifiers" in https://docs.ton.org/develop/func/functions#specifiers
   FunctionAttribute = "impure" | "inline_ref" | "inline" | MethodIdValue | "method_id"
@@ -80,7 +81,8 @@ FunC {
   // NOTE: they should parse exactly as FunC 0.4.4 does it, including the issues with precedences of ^ | and similar
 
   // parse_expr
-  Expression = ExpressionAssign
+  Expression = integerLiteral | stringLiteral | id // FIXME temporary, for tests prior to expressions
+  // Expression = ExpressionAssign
 
   // parse_expr10
   ExpressionAssign = ExpressionConditional "="    ExpressionAssign --assign
@@ -165,8 +167,7 @@ FunC {
                     | integerLiteral
                     | stringLiteral
                     | hole
-                    | var
-                    | primitiveType // TODO: re-make this one.
+                    // | primitiveType // TODO: re-make this one.
                     | id // includes true|false, null|Null
                     // TODO: parens
                     // TODO: unit
@@ -180,96 +181,63 @@ FunC {
   // Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
   //
 
+  // forall type1, ..., typeN ->
+  Forall = "forall" NonemptyListOf<TypeVar, ","> "->"
+  TypeVar = "type"? id
+
   // Parameters TODO: check the type
   Parameters = "(" ListOf<Parameter, ","> ")"
-  Parameter = TypeMapped id
+  Parameter = Type id --regular
+            | id id --typeVar
 
   // Arguments
-  // TODO:
+  Arguments = "(" ListOf<Argument, ","> ")"
+  Argument = id
 
-  // forall type1, ..., typeN ->
-  Forall = forall NonemptyListOf<ForallType, ","> "->"
-  ForallType = "type"? id
+  // Mapped or unmapped builtin types, where "mapped" refers to:
+  // https://docs.ton.org/develop/func/types#functional-type
+  Type = TypeBuiltin "->" Type --mapped
+       | TypeBuiltin
+
+  // Builtin types
+  TypeBuiltin = "int"
+                | "cell"
+                | "slice"
+                | "builder"
+                | "cont"
+                | "tuple"
+                | hole
+                | unit
+                | Tensor
+                | Tuple
+
+  // Non-functional composite builtin types
+  Tensor = "(" NonemptyListOf<Type, ","> ")"
+  Tuple = "[" NonemptyListOf<Type, ","> "]"
 
   // Allowed types of constants
   TypeConstant = "int" | "slice"
   
-  // TE ::= TA | TA -> TE
-  TypeMapped = Type "->" TypeMapped --mapped
-             | Type
-
-  // TA ::= int | ... | cont | var | _ | () | ( TE { , TE } ) | [ TE { , TE } ]
-  Type = "int"
-       | "cell"
-       | "slice"
-       | "builder"
-       | "cont"
-       | "tuple"
-       | hole
-       | unit
-       | Tensor
-       | Tuple
-
-  Tensor = "(" NonemptyListOf<TypeMapped, ","> ")"
-  Tuple = "[" NonemptyListOf<TypeMapped, ","> "]"
-
   //
   // Lexical rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
   //
-
-  // TODO: Move over the remaining keywords
-  // TODO: Test if they can be names of variables, constants, functions -- yup, they cannot!!!
-  // Also, operators cannot too! And some other things!!!
-  // TODO: actually put everything from https://github.com/ton-blockchain/ton/blob/master/crypto/func/keywords.cpp
-  // Reserved keywords, order matters (TODO: does it?)
-  keyword = pragma
-          | include
-          | forall
-          | var
-          | primitiveType
-
-  pragma = "#pragma" ~id
-  include = "#include" ~id
-  forall = "forall" ~id
-  var = "var" ~id
 
   // Special types
   hole = "_" | "var"
   unit = "()"
 
-  // Primitive types, FIXME: delete or something
-  primitiveType = "int" | "cell" | "slice" | "builder" | "cont" | "type" | "tuple"
-
   // Function identifiers
   functionId = ~("\"" | "{-") ("." | "~")? id
 
-  // Identifiers
+  // Identifiers, with validation during semantic analysis
+  // This makes this parser closer to the C++ one, and also improves error messages
+
   id = ~("\"" | "{-") (quotedId | plainId)
 
   quotedId = "`" (~("`" | "\n") any)+ "`"
+  plainId = (~(whiteSpace | "(" | ")" | "[ | ]" | "," | "." | ";" | "~") any)+
 
-  plainId = ~(reservedId ~idPart) idPart
-  // plainId = ~reservedId idPart
-
-  idPart = (~(whiteSpace | "(" | ")" | "," | "." | ";" | "~") any)+
-  // TODO: make tests for each of those individually ^^^
-
-  // Order matters
-  reservedId = "_"
-            | integerLiteral | "-=" | "->" |"-"
-            | "#include" | "#pragma"
-            | "!=" | "==" | "="
-            | "<<=" | "<<" | "<=>" | "<=" | "<" | ">>=" | ">>" | ">=" | ">"
-            | "~>>=" | "~>>" | "~/=" | "~/" | "~%=" | "~%" | "~"
-            | "^>>=" | "^>>" | "^/=" | "^/" | "^%=" | "^%" | "^=" | "^"
-            | "+=" | "+" | "*=" | "*" | "/=" | "/%" | "/" | "%=" | "%" | "&=" | "&" | "|=" | "|"
-            | "(" | ")" | "[" | "]" | "{" | "}" | "?" | ":" | "," | ";" | "." | "~"
-            | "asm" | "auto_apply" | "builder" | "catch" | "cell" | "const" | "cont" | "do"
-            | "elseifnot" | "elseif" | "else" | "extern" | "forall" | "global" | "ifnot" | "if"
-            | "impure" | "infixl" | "infixr" | "infix" | "inline_ref" | "inline" | "int"
-            | "method_id" | "operator" | "repeat" | "return" | "slice" | "then" | "try" | "tuple"
-            | "type" | "until" | "var" | "while"
-
+  // Unused identifiers
   unusedId = "_"
 
   /*

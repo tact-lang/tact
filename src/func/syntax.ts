@@ -30,6 +30,7 @@ export type FuncType =
     | { kind: "hole" } // hole type (`_`) filled in local type inference
     | { kind: "type" };
 
+// FIXME: there's no unary plus, and unary minus is handled separately from ~
 export type FuncAstUnaryOp = "-" | "~" | "+";
 
 export type FuncAstBinaryOp =

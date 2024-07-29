@@ -1,19 +1,18 @@
-import { match } from "./grammar";
+import { match, parseFile } from "./grammar";
 import { loadCases } from "../utils/loadCases";
 
 describe("FunC grammar and parser", () => {
     beforeEach(() => {});
+    const ext = "fc";
+    let matchedAll = true;
 
-    const target = "asm-functions";
-    // const target = "identifiers";
-
-    // Checking that FunC files match the grammar
-    for (const r of loadCases(__dirname + "/grammar-test/", "fc")) {
-        if (r.name !== target) continue;
+    // Checking that valid FunC files match the grammar
+    for (const r of loadCases(__dirname + "/grammar-test/", ext)) {
         it(r.name + " should match the grammar", () => {
             const res = match(r.code);
 
             if (res.ok === false) {
+                matchedAll = false;
                 console.log(res.message, res.interval.getLineAndColumn());
             }
 
@@ -21,12 +20,22 @@ describe("FunC grammar and parser", () => {
         });
     }
 
-    // Checking that certain FunC files DON'T match the grammar
-    for (const r of loadCases(__dirname + "/grammar-test-failed/", "fc")) {
-        it(r.name + " should not match the grammar", () => {
-            expect(match(r.code).ok).toStrictEqual(false);
-        });
-    }
+    // If didn't match the grammar, don't throw any more errors from full parse
+    if (!matchedAll) { return; }
 
-    // TODO: Tests with snapshots, once semantics and `parse` function are defined
+    // Checking that valid FunC files parse
+    // for (const r of loadCases(__dirname + "/grammar-test/", ext)) {
+    //     it("should parse " + r.name, () => {
+    //         expect(parseFile(r.code, r.name + `.${ext}`)).toMatchSnapshot();
+    //     });
+    // }
+
+    // Checking that invalid FunC files does NOT parse
+    // for (const r of loadCases(__dirname + "/grammar-test-failed/", ext)) {
+    //     it("should NOT parse " + r.name, () => {
+    //         expect(() =>
+    //             parseFile(r.code, r.name + `.${ext}`)
+    //         ).toThrowErrorMatchingSnapshot();
+    //     });
+    // }
 });
