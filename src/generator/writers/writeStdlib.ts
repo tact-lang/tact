@@ -1421,21 +1421,21 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun(`__tact_dict_eq`, () => {
-        ctx.signature(`int __tact_dict_eq(cell a, cell b, int kl)`);
+        ctx.signature(`int __tact_dict_eq(cell a, cell b)`);
         ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                (slice key, slice value, int flag) = ${ctx.used("__tact_dict_min")}(a, kl);
+                (slice key, slice value, int flag) = ${ctx.used("__tact_dict_min")}(a, 1023);
                 while (flag) {
-                    (slice value_b, int flag_b) = b~${ctx.used("__tact_dict_delete_get")}(kl, key);
+                    (slice value_b, int flag_b) = b~${ctx.used("__tact_dict_delete_get")}(1023, key);
                     ifnot (flag_b) {
                         return 0;
                     }
                     ifnot (value.slice_hash() == value_b.slice_hash()) {
                         return 0;
                     }
-                    (key, val, flag) = ${ctx.used("__tact_dict_next")}(a, kl, key);
+                    (key, value, flag) = ${ctx.used("__tact_dict_next")}(a, 1023, key);
                 }
                 return null?(b);
             `);
