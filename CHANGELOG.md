@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- FunC function identifiers with characters from hexadecimal set: PR [#636](https://github.com/tact-lang/tact/pull/636)
+
 ## [1.4.1] - 2024-07-26
 
 ### Added

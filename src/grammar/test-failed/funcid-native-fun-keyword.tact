@@ -1,0 +1,2 @@
+@name(global)
+native idTest();
