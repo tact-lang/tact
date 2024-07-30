@@ -42,11 +42,12 @@ import {
     AstFuncId,
     idText,
 } from "./grammar/ast";
+import JSONbig from "json-bigint";
 
 /**
- * PrettyPrinter class provides methods to format and indent Tact code.
+ * Provides methods to format and indent Tact code.
  */
-class PrettyPrinter {
+export class PrettyPrinter {
     /**
      * @param indentLevel Initial level of indentation.
      * @param indentSpaces Number of spaces per indentation level.
@@ -644,16 +645,15 @@ class PrettyPrinter {
 }
 
 /**
- * Formats an AST node into a pretty-printed string representation.
- * @param input The AST node to format.
+ * Pretty-prints an AST node into a string representation.
+ * @param node The AST node to format.
  * @returns A string that represents the formatted AST node.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function formatAst(input: AstNode): string {
+export function prettyPrint(node: AstNode): string {
     const pp = new PrettyPrinter();
-    switch (input.kind) {
+    switch (node.kind) {
         case "module":
-            return pp.ppAstModule(input);
+            return pp.ppAstModule(node);
         case "op_binary":
         case "op_unary":
         case "field_access":
@@ -667,18 +667,69 @@ export function formatAst(input: AstNode): string {
         case "boolean":
         case "string":
         case "null":
-            return pp.ppAstExpression(input);
+            return pp.ppAstExpression(node);
         case "struct_decl":
-            return pp.ppAstStruct(input);
+            return pp.ppAstStruct(node);
         case "constant_def":
-            return pp.ppAstConstant(input);
+            return pp.ppAstConstant(node);
+        case "constant_decl":
+            return pp.ppAstConstDecl(node);
         case "function_def":
-            return pp.ppAstFunctionDef(input);
+            return pp.ppAstFunctionDef(node);
         case "contract":
-            return pp.ppAstContract(input);
+            return pp.ppAstContract(node);
         case "trait":
-            return pp.ppAstTrait(input);
+            return pp.ppAstTrait(node);
+        case "type_id":
+        case "optional_type":
+        case "map_type":
+        case "bounced_message_type":
+            return pp.ppAstType(node);
+        case "primitive_type_decl":
+            return pp.ppAstPrimitiveTypeDecl(node);
+        case "message_decl":
+            return pp.ppAstMessage(node);
+        case "native_function_decl":
+            return pp.ppAstNativeFunction(node);
+        case "field_decl":
+            return pp.ppAstFieldDecl(node);
+        case "function_decl":
+            return pp.ppAstFunctionDecl(node);
+        case "receiver":
+            return pp.ppAstReceiver(node);
+        case "contract_init":
+            return pp.ppAstInitFunction(node);
+        case "statement_let":
+            return pp.ppAstStatementLet(node);
+        case "statement_return":
+            return pp.ppAstStatementReturn(node);
+        case "statement_expression":
+            return pp.ppAstStatementExpression(node);
+        case "statement_assign":
+            return pp.ppAstStatementAssign(node);
+        case "statement_augmentedassign":
+            return pp.ppAstStatementAugmentedAssign(node);
+        case "statement_condition":
+            return pp.ppAstCondition(node);
+        case "statement_while":
+            return pp.ppAstStatementWhile(node);
+        case "statement_until":
+            return pp.ppAstStatementUntil(node);
+        case "statement_repeat":
+            return pp.ppAstStatementRepeat(node);
+        case "statement_try":
+            return pp.ppAstStatementTry(node);
+        case "statement_try_catch":
+            return pp.ppAstStatementTryCatch(node);
+        case "statement_foreach":
+            return pp.ppAstStatementForEach(node);
+        case "struct_field_initializer":
+            return pp.ppAstStructFieldInit(node);
+        case "import":
+            return pp.ppAstImport(node);
         default:
-            throw new Error(`Unsupported AST type: ${input.kind}`);
+            throw new Error(
+                `Unsupported AST type: ${JSONbig.stringify(node, null, 2)}`,
+            );
     }
 }
