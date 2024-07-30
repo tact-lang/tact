@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Removed unsupported iterators API: PR [#633](https://github.com/tact-lang/tact/pull/633)
+
 ### Fixed
 
 ## [1.4.1] - 2024-07-26
