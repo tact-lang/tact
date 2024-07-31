@@ -10,6 +10,16 @@ Line 2, col 5:
 "
 `;
 
+exports[`grammar should fail const-abstract-abstract 1`] = `
+"Syntax error: <unknown>:4:10: Duplicate constant attribute "abstract"
+Line 4, col 10:
+  3 | 
+> 4 | abstract abstract const Foo: Int = 42;
+               ^~~~~~~~
+  5 | 
+"
+`;
+
 exports[`grammar should fail const-override 1`] = `
 "Syntax error: <unknown>:4:1: Module-level constants do not support attributes
 Line 4, col 1:
@@ -67,6 +77,16 @@ Line 4, col 9:
 > 4 | virtual virtual const Foo: Int = 42;
               ^~~~~~~
   5 | 
+"
+`;
+
+exports[`grammar should fail contract-const-abstract-abstract 1`] = `
+"Syntax error: <unknown>:5:12: Duplicate constant attribute "abstract"
+Line 5, col 12:
+  4 | contract TestContract {
+> 5 |   abstract abstract const Foo: Int = 42;
+                 ^~~~~~~~
+  6 | }
 "
 `;
 
