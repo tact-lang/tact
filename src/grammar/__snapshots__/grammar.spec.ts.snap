@@ -80,12 +80,33 @@ Line 4, col 9:
 "
 `;
 
+exports[`grammar should fail contract-const-abstract 1`] = `
+"<unknown>:5:26: Parse error: expected "="
+
+Line 5, col 26:
+  4 | contract TestContract {
+> 5 |   abstract const Foo: Int;
+                               ^
+  6 | }
+"
+`;
+
 exports[`grammar should fail contract-const-abstract-abstract 1`] = `
 "Syntax error: <unknown>:5:12: Duplicate constant attribute "abstract"
 Line 5, col 12:
   4 | contract TestContract {
 > 5 |   abstract abstract const Foo: Int = 42;
                  ^~~~~~~~
+  6 | }
+"
+`;
+
+exports[`grammar should fail contract-const-abstract-with-initializer 1`] = `
+"Syntax error: <unknown>:5:3: Non-abstract constant has abstract modifier
+Line 5, col 3:
+  4 | contract TestContract {
+> 5 |   abstract const Foo: Int = 42;
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   6 | }
 "
 `;
@@ -661,6 +682,16 @@ Line 2, col 24:
 > 2 | struct B { x: Int = 42 y: Int }
                              ^
   3 | 
+"
+`;
+
+exports[`grammar should fail trait-const-abstract-with-initializer 1`] = `
+"Syntax error: <unknown>:5:3: Non-abstract constant has abstract modifier
+Line 5, col 3:
+  4 | trait TestContract {
+> 5 |   abstract const Foo: Int = 42;
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  6 | }
 "
 `;
 
