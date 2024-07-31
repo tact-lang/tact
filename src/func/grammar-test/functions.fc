@@ -1,0 +1,20 @@
+;; Void
+() void();
+
+;; Regular parameters
+() params(int p1, cell p2, () p3, (slice) p4, [builder] p5);
+
+;; Parametric polymorphism with forall
+forall X -> () poly(X p1);
+forall X, Y -> (Y, X) poly'();
+
+;; Attributes (called specifiers in TON Docs)
+() attr() impure inline_ref inline method_id(0x2A);
+() attr'() method_id(42);
+() attr''() method_id;
+
+;; Empty body (note, that {} is an identifier, so there must be whitespace in-between)
+() body() { }
+
+;; Everything
+forall XXX -> XXX everything(XXX x) impure inline_ref inline method_id(0x2A) method_id { }

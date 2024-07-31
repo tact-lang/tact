@@ -1,0 +1,138 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FunC grammar and parser should NOT parse id-arith-operator 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-assign-operator 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-bitwise-operator 1`] = `
+"id-bitwise-operator.fc:1:5: Parse error: expected not (a whiteSpace or "(" or ")" or "[ | ]" or "," or "." or ";" or "~") or "\`"
+
+Line 1, col 5:
+> 1 | () ~();
+          ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-comma 1`] = `
+"id-comma.fc:1:16: Parse error: expected "("
+
+Line 1, col 16:
+> 1 | () send_message,then_terminate();
+                     ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-comparison-operator 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-control-keyword 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-delimiter 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-directive 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-dot 1`] = `
+"id-dot.fc:1:7: Parse error: expected "("
+
+Line 1, col 7:
+> 1 | () msg.sender();
+            ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-keyword 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-multiline-comments 1`] = `
+"id-multiline-comments.fc:1:11: Parse error: expected not (a whiteSpace or "(" or ")" or "[ | ]" or "," or "." or ";" or "~"), "\`", or "->"
+
+Line 1, col 11:
+> 1 | () {-aaa-}();
+                ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-number 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-number-decimal 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-number-hexadecimal 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-number-hexadecimal-2 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-number-neg-decimal 1`] = `
+"id-number-neg-decimal.fc:2:1: Parse error: expected end of input, "[", "(", "()", "var", "_", "tuple", "cont", "builder", "slice", "cell", "int", "const", or "global"
+
+Line 2, col 1:
+  1 | () -1();
+> 2 | native idTest();
+      ^
+  3 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-number-neg-hexadecimal 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-only-underscore 1`] = `"semantics(...).astOfModule is not a function"`;
+
+exports[`FunC grammar and parser should NOT parse id-parens 1`] = `
+"id-parens.fc:1:14: Parse error: expected not (a whiteSpace or "(" or ")" or "[ | ]" or "," or "." or ";" or "~") or "\`"
+
+Line 1, col 14:
+> 1 | () take(first)Entry();
+                   ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-semicolons 1`] = `
+"id-semicolons.fc:2:1: Parse error: expected "("
+
+Line 2, col 1:
+  1 | () pa;;in"\`aaa\`"();
+> 2 | 
+      ^
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-space 1`] = `
+"id-space.fc:1:8: Parse error: expected "("
+
+Line 1, col 8:
+> 1 | () foo foo();
+             ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-string 1`] = `
+"id-string.fc:1:4: Parse error: expected not ("\\"" or "{-") or "->"
+
+Line 1, col 4:
+> 1 | () "not_a_string();
+         ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-type-keyword 1`] = `
+"id-type-keyword.fc:1:8: Parse error: expected not (a whiteSpace or "(" or ")" or "[ | ]" or "," or "." or ";" or "~") or "\`"
+
+Line 1, col 8:
+> 1 | () ->();
+             ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-unclosed-parens 1`] = `
+"id-unclosed-parens.fc:1:9: Parse error: expected not (a whiteSpace or "(" or ")" or "[ | ]" or "," or "." or ";" or "~") or "\`"
+
+Line 1, col 9:
+> 1 | () aa(bb();
+              ^
+  2 | 
+"
+`;

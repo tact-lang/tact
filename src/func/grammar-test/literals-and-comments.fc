@@ -1,0 +1,61 @@
+;; Integer literals
+() integers() {
+    42;
+    0x2A;
+    0x2a;
+
+    -42;
+    -0x2A;
+    -0x2a;
+}
+
+;; String literals
+() strings() {
+    "slice";
+    "2A"s;
+    "EQAFmjUoZUqKFEBGYFEMbv-m61sFStgAfUR8J6hJDwUU09iT"a;
+    "int hex"u;
+    "int 32 bits of sha256"h;
+    "int 256 bits of sha256"H;
+    "int crc32"c;
+
+    """
+        multi
+        line
+    """;
+
+    """2A"""s;
+    """EQAFmjUoZUqKFEBGYFEMbv-m61sFStgAfUR8J6hJDwUU09iT"""a;
+    """
+        ...
+    """u;
+    """
+        ...
+    """h;
+    """
+        ...
+    """H;
+    """
+        ...
+    """c;
+}
+
+;; Single-line comment
+{- 
+    Multi-line comment
+    {-
+        Nested! "Not a string, part of the comment!"
+        ;; Also a part of the nested multi-line comment, not a single-line one
+    -}
+-}
+
+;; Comment madness
+forall    ;; ...
+X, Y      ;; ...
+->        ;; ...
+()     {-
+    ...
+-} ;; ...
+comments! ;; ...
+()        ;; ...
+{ {- ... -} return (); {- ... -} }

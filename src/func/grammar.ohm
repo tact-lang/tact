@@ -81,8 +81,8 @@ FunC {
   // NOTE: they should parse exactly as FunC 0.4.4 does it, including the issues with precedences of ^ | and similar
 
   // parse_expr
-  Expression = integerLiteral | stringLiteral | id // FIXME temporary, for tests prior to expressions
-  // Expression = ExpressionAssign
+  // Expression = integerLiteral | stringLiteral | id // FIXME temporary, for tests prior to expressions
+  Expression = ExpressionAssign
 
   // parse_expr10
   ExpressionAssign = ExpressionConditional "="    ExpressionAssign --assign
@@ -153,25 +153,29 @@ FunC {
   ExpressionMethodCall = ExpressionSequence ("." | "~") id ExpressionPrimary --call
                        | ExpressionSequence
 
+  // FIXME: Temporary definition for debugging purposes.
+  ExpressionSequence = integerLiteral | multiLineString | stringLiteral | id
+  ExpressionPrimary = integerLiteral | multiLineString | stringLiteral | id
+
   // parse_expr90, FIXME: this is wrong and has to be re-made :)
   // TODO: function call
   // TODO: variable declaration
-  ExpressionSequence = ExpressionPrimary &"(" ExpressionPrimary --call
-                     | ExpressionPrimary &"[" ExpressionPrimary --access
-                     | ExpressionPrimary ~("." | "~") id ExpressionPrimary --id
-                     | ExpressionPrimary
+  // ExpressionSequence = ExpressionPrimary &"(" ExpressionPrimary --call
+  //                    | ExpressionPrimary &"[" ExpressionPrimary --access
+  //                    | ExpressionPrimary ~("." | "~") id ExpressionPrimary --id
+  //                    | ExpressionPrimary
 
   // parse_expr100, order is important
-  ExpressionPrimary = ExpressionTuple
-                    | ExpressionTensor
-                    | integerLiteral
-                    | stringLiteral
-                    | hole
-                    // | primitiveType // TODO: re-make this one.
-                    | id // includes true|false, null|Null
-                    // TODO: parens
-                    // TODO: unit
-                    // TODO: slice_string_ident?
+  // ExpressionPrimary = ExpressionTuple
+  //                   | ExpressionTensor
+  //                   | integerLiteral
+  //                   | stringLiteral
+  //                   | hole
+  //                   | primitiveType // TODO: re-make this one.
+  //                   | id // includes true|false, null|Null
+  // TODO: parens!
+  // TODO: unit?
+  // TODO: slice_string_ident?
 
   // TODO: ...
   ExpressionTuple = "(" "TODO:" ")"
@@ -185,12 +189,12 @@ FunC {
   Forall = "forall" NonemptyListOf<TypeVar, ","> "->"
   TypeVar = "type"? id
 
-  // Parameters TODO: check the type
+  // Parameters, with type holes prohibited during syntax analysis
   Parameters = "(" ListOf<Parameter, ","> ")"
   Parameter = Type id --regular
             | id id --typeVar
 
-  // Arguments
+  // Arguments -- unused?
   Arguments = "(" ListOf<Argument, ","> ")"
   Argument = id
 
@@ -210,6 +214,8 @@ FunC {
                 | unit
                 | Tensor
                 | Tuple
+                // | id
+                // TODO: Use different type signatures in forall functions?
 
   // Non-functional composite builtin types
   Tensor = "(" NonemptyListOf<Type, ","> ")"
@@ -229,8 +235,8 @@ FunC {
   // Function identifiers
   functionId = ~("\"" | "{-") ("." | "~")? id
 
-  // Identifiers, with validation during semantic analysis
-  // This makes this parser closer to the C++ one, and also improves error messages
+  // Identifiers, with invalidation (keywords, numbers, etc.) during syntax analysis
+  // — this makes this parser closer to the C++ one, and also improves error messages
 
   id = ~("\"" | "{-") (quotedId | plainId)
 
@@ -275,7 +281,6 @@ FunC {
   whiteSpace = "\t" | " " | lineTerminator
 
   // Comments
-  // For semantic actions comment_singleLine and comment_multiLine
   comment = ";;" (~lineTerminator any)* --singleLine
           | multiLineComment --multiLine
 

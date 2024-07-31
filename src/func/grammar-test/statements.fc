@@ -1,0 +1,84 @@
+;; return
+() return_stmt() { return (); }
+int return_stmt'() { return 42; }
+
+;; Block
+() block_stmt() {
+    {
+        { return (); }
+    }
+}
+
+;; Empty
+() empty_stmt() { ;
+    ; ; ; ;
+}
+
+;; Condition
+() cond_stmt() {
+    if 1 { }
+    ifnot 0 { }
+
+    if 1 { ; ; }
+    ifnot 0 { ; ; }
+
+    if 0 { ; ; } else { ; ; }
+    ifnot 1 { ; ; } else { ; ; }
+
+    if 0 { } elseif 1 { }
+    if 0 { } elseifnot 0 { }
+    ifnot 1 { } elseif 1 { }
+    ifnot 1 { } elseifnot 0 { }
+
+    if 0 { ; ; } elseif 1 { ; ; }
+    if 0 { ; ; } elseifnot 0 { ; ; }
+    ifnot 1 { ; ; } elseif 1 { ; ; }
+    ifnot 1 { ; ; } elseifnot 0 { ; ; }
+}
+
+;; repeat
+() repeat_stmt() {
+    repeat 1 { }
+
+    repeat 1 {
+        ; ; ;
+    }
+}
+
+;; do...until
+() until_stmt() {
+    do { } until 0;
+
+    do {
+        ; ; ;
+        { repeat 1 { } }
+    } until 0;
+}
+
+;; while
+() while_stmt() {
+    while 0 { }
+
+    while 0 {
+        ; ; ;
+        { repeat 1 { } }
+    }
+}
+
+;; try...catch
+() try_catch_stmt() {
+    try {
+        ; ; ;
+        { }
+    } catch (_, _) {
+        ; ; ;
+        { }
+    }
+
+    try { } catch (exception, exit_code) { }
+}
+
+;; Expression (most of the related tests are in another file)
+() expression_stmt() {
+    42;
+}
