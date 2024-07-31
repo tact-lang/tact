@@ -480,7 +480,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             f.loc,
                         );
                     }
-                    if (f.attributes.find((v) => v.type !== "overrides")) {
+                    if (f.attributes.find((v) => v.type !== "override")) {
                         throwCompilationError(
                             `Constant can be only overridden`,
                             f.loc,
@@ -575,7 +575,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             f.loc,
                         );
                     }
-                    if (f.attributes.find((v) => v.type === "overrides")) {
+                    if (f.attributes.find((v) => v.type === "override")) {
                         throwCompilationError(
                             `Trait constant cannot be overridden`,
                             f.loc,
@@ -628,7 +628,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         const isMutating = a.attributes.find((a) => a.type === "mutates");
         const isExtends = a.attributes.find((a) => a.type === "extends");
         const isVirtual = a.attributes.find((a) => a.type === "virtual");
-        const isOverrides = a.attributes.find((a) => a.type === "overrides");
+        const isOverride = a.attributes.find((a) => a.type === "override");
         const isInline = a.attributes.find((a) => a.type === "inline");
         const isAbstract = a.attributes.find((a) => a.type === "abstract");
 
@@ -652,25 +652,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     isVirtual.loc,
                 );
             }
-            if (isOverrides) {
+            if (isOverride) {
                 throwCompilationError(
-                    "Native functions cannot be overrides",
-                    isOverrides.loc,
+                    "Native functions cannot be overridden",
+                    isOverride.loc,
                 );
             }
         }
 
-        // Check virtual and overrides
+        // Check virtual and override
         if (isVirtual && isExtends) {
             throwCompilationError(
                 "Extend functions cannot be virtual",
                 isVirtual.loc,
             );
         }
-        if (isOverrides && isExtends) {
+        if (isOverride && isExtends) {
             throwCompilationError(
-                "Extend functions cannot be overrides",
-                isOverrides.loc,
+                "Extend functions cannot be overridden",
+                isOverride.loc,
             );
         }
         if (isAbstract && isExtends) {
@@ -685,10 +685,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 isVirtual.loc,
             );
         }
-        if (!self && isOverrides) {
+        if (!self && isOverride) {
             throwCompilationError(
                 "Overrides functions must be defined within a contract or a trait",
-                isOverrides.loc,
+                isOverride.loc,
             );
         }
         if (!self && isAbstract) {
@@ -703,16 +703,16 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 isAbstract.loc,
             );
         }
-        if (isVirtual && isOverrides) {
+        if (isVirtual && isOverride) {
             throwCompilationError(
                 "Overrides functions cannot be virtual",
-                isOverrides.loc,
+                isOverride.loc,
             );
         }
-        if (isAbstract && isOverrides) {
+        if (isAbstract && isOverride) {
             throwCompilationError(
                 "Overrides functions cannot be abstract",
-                isOverrides.loc,
+                isOverride.loc,
             );
         }
 
@@ -738,13 +738,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
         }
 
-        // Check overrides
-        if (isOverrides) {
+        if (isOverride) {
             const t = types.get(self!)!;
             if (t.kind !== "contract") {
                 throwCompilationError(
                     "Overrides functions must be defined within a contract",
-                    isOverrides.loc,
+                    isOverride.loc,
                 );
             }
         }
@@ -866,7 +865,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             isMutating: !!isMutating || !!optSelf /* && !isGetter */, // Mark all contract functions as mutating
             isGetter: !!isGetter,
             isVirtual: !!isVirtual,
-            isOverrides: !!isOverrides,
+            isOverride: !!isOverride,
             isInline: !!isInline,
             isAbstract: !!isAbstract,
         };
@@ -1417,8 +1416,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     );
                 }
 
-                // Check overrides
-                if (funInContractOrTrait?.isOverrides) {
+                if (funInContractOrTrait?.isOverride) {
                     if (
                         traitFunction.isGetter &&
                         !funInContractOrTrait.isGetter
@@ -1509,10 +1507,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     );
                 }
 
-                // Check overrides
                 if (
                     constInContractOrTrait?.ast.attributes.find(
-                        (v) => v.type === "overrides",
+                        (v) => v.type === "override",
                     )
                 ) {
                     if (

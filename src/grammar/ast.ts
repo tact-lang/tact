@@ -573,7 +573,7 @@ export type AstValue = AstNumber | AstBoolean | AstNull | AstString;
 
 export type AstConstantAttribute =
     | { type: "virtual"; loc: SrcInfo }
-    | { type: "overrides"; loc: SrcInfo }
+    | { type: "override"; loc: SrcInfo }
     | { type: "abstract"; loc: SrcInfo };
 
 export type AstContractAttribute = {
@@ -588,7 +588,7 @@ export type AstFunctionAttribute =
     | { type: "extends"; loc: SrcInfo }
     | { type: "virtual"; loc: SrcInfo }
     | { type: "abstract"; loc: SrcInfo }
-    | { type: "overrides"; loc: SrcInfo }
+    | { type: "override"; loc: SrcInfo }
     | { type: "inline"; loc: SrcInfo };
 
 export type AstTypedParameter = {
