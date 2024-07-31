@@ -2254,7 +2254,7 @@ exports[`resolveAllocation should write program 1`] = `
           "isGetter": false,
           "isInline": false,
           "isMutating": true,
-          "isOverrides": false,
+          "isOverride": false,
           "isVirtual": false,
           "name": "main",
           "origin": "user",

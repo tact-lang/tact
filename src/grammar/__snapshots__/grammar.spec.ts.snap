@@ -1,12 +1,133 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`grammar should fail abstract-const-without-modifier 1`] = `
-"<unknown>:2:5: Abstract constant doesn't have abstract modifier
+"Syntax error: <unknown>:2:5: Abstract constant doesn't have abstract modifier
 Line 2, col 5:
   1 | trait t {
 > 2 |     const c: Int;
           ^~~~~~~~~~~~~
   3 | }
+"
+`;
+
+exports[`grammar should fail const-abstract-abstract 1`] = `
+"Syntax error: <unknown>:4:10: Duplicate constant attribute "abstract"
+Line 4, col 10:
+  3 | 
+> 4 | abstract abstract const Foo: Int = 42;
+               ^~~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail const-override 1`] = `
+"Syntax error: <unknown>:4:1: Module-level constants do not support attributes
+Line 4, col 1:
+  3 | 
+> 4 | override const Foo: Int = 42;
+      ^~~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail const-override-override 1`] = `
+"Syntax error: <unknown>:4:10: Duplicate constant attribute "override"
+Line 4, col 10:
+  3 | 
+> 4 | override override const Foo: Int = 42;
+               ^~~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail const-override-virtual 1`] = `
+"Syntax error: <unknown>:4:1: Module-level constants do not support attributes
+Line 4, col 1:
+  3 | 
+> 4 | override virtual const Foo: Int = 42;
+      ^~~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail const-virtual 1`] = `
+"Syntax error: <unknown>:4:1: Module-level constants do not support attributes
+Line 4, col 1:
+  3 | 
+> 4 | virtual const Foo: Int = 42;
+      ^~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail const-virtual-override 1`] = `
+"Syntax error: <unknown>:4:1: Module-level constants do not support attributes
+Line 4, col 1:
+  3 | 
+> 4 | virtual override const Foo: Int = 42;
+      ^~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail const-virtual-virtual 1`] = `
+"Syntax error: <unknown>:4:9: Duplicate constant attribute "virtual"
+Line 4, col 9:
+  3 | 
+> 4 | virtual virtual const Foo: Int = 42;
+              ^~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail contract-const-abstract 1`] = `
+"<unknown>:5:26: Parse error: expected "="
+
+Line 5, col 26:
+  4 | contract TestContract {
+> 5 |   abstract const Foo: Int;
+                               ^
+  6 | }
+"
+`;
+
+exports[`grammar should fail contract-const-abstract-abstract 1`] = `
+"Syntax error: <unknown>:5:12: Duplicate constant attribute "abstract"
+Line 5, col 12:
+  4 | contract TestContract {
+> 5 |   abstract abstract const Foo: Int = 42;
+                 ^~~~~~~~
+  6 | }
+"
+`;
+
+exports[`grammar should fail contract-const-abstract-with-initializer 1`] = `
+"Syntax error: <unknown>:5:3: Non-abstract constant has abstract modifier
+Line 5, col 3:
+  4 | contract TestContract {
+> 5 |   abstract const Foo: Int = 42;
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  6 | }
+"
+`;
+
+exports[`grammar should fail contract-const-override-override 1`] = `
+"Syntax error: <unknown>:5:12: Duplicate constant attribute "override"
+Line 5, col 12:
+  4 | contract TestContract {
+> 5 |   override override const Foo: Int = 42;
+                 ^~~~~~~~
+  6 | }
+"
+`;
+
+exports[`grammar should fail contract-const-virtual-virtual 1`] = `
+"Syntax error: <unknown>:5:11: Duplicate constant attribute "virtual"
+Line 5, col 11:
+  4 | contract TestContract {
+> 5 |   virtual virtual const Foo: Int = 42;
+                ^~~~~~~
+  6 | }
 "
 `;
 
@@ -21,7 +142,7 @@ Line 1, col 20:
 `;
 
 exports[`grammar should fail contract-init-trailing-comma-empty-params 1`] = `
-"<unknown>:2:10: Empty parameter list should not have a dangling comma.
+"Syntax error: <unknown>:2:10: Empty parameter list should not have a dangling comma.
 Line 2, col 10:
   1 | contract Name {
 > 2 |     init(,) {}
@@ -52,7 +173,7 @@ Line 6, col 1:
 `;
 
 exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
-"<unknown>:6:14: Empty argument list should not have a dangling comma.
+"Syntax error: <unknown>:6:14: Empty argument list should not have a dangling comma.
 Line 6, col 14:
   5 | fun b(): Int {
 > 6 |     return a(,);
@@ -62,7 +183,7 @@ Line 6, col 14:
 `;
 
 exports[`grammar should fail expr-method-call-trailing-comma-no-args 1`] = `
-"<unknown>:2:24: Empty argument list should not have a dangling comma.
+"Syntax error: <unknown>:2:24: Empty argument list should not have a dangling comma.
 Line 2, col 24:
   1 | fun another() {
 > 2 |     return 42.toString(,);
@@ -410,7 +531,7 @@ Line 1, col 8:
 `;
 
 exports[`grammar should fail item-fun-non-void-trailing-comma-no-params 1`] = `
-"<unknown>:1:14: Empty parameter list should not have a dangling comma.
+"Syntax error: <unknown>:1:14: Empty parameter list should not have a dangling comma.
 Line 1, col 14:
 > 1 | fun function(,) : Int {
                    ^
@@ -419,7 +540,7 @@ Line 1, col 14:
 `;
 
 exports[`grammar should fail item-fun-void-trailing-comma-no-params 1`] = `
-"<unknown>:1:14: Empty parameter list should not have a dangling comma.
+"Syntax error: <unknown>:1:14: Empty parameter list should not have a dangling comma.
 Line 1, col 14:
 > 1 | fun function(,) {}
                    ^
@@ -437,7 +558,7 @@ Line 1, col 20:
 `;
 
 exports[`grammar should fail item-native-fun-not-void-decl-trailing-comma-no-params 1`] = `
-"<unknown>:2:31: Empty parameter list should not have a dangling comma.
+"Syntax error: <unknown>:2:31: Empty parameter list should not have a dangling comma.
 Line 2, col 31:
   1 | @name(native_name_2)
 > 2 | native testNativeFuncWithType(,): Int;
@@ -446,7 +567,7 @@ Line 2, col 31:
 `;
 
 exports[`grammar should fail item-native-fun-void-decl-trailing-comma-no-params 1`] = `
-"<unknown>:2:23: Empty parameter list should not have a dangling comma.
+"Syntax error: <unknown>:2:23: Empty parameter list should not have a dangling comma.
 Line 2, col 23:
   1 | @name(native_name_1)
 > 2 | native testNativeFunc(,);
@@ -564,6 +685,16 @@ Line 2, col 24:
 "
 `;
 
+exports[`grammar should fail trait-const-abstract-with-initializer 1`] = `
+"Syntax error: <unknown>:5:3: Non-abstract constant has abstract modifier
+Line 5, col 3:
+  4 | trait TestContract {
+> 5 |   abstract const Foo: Int = 42;
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  6 | }
+"
+`;
+
 exports[`grammar should fail trait-empty-traits-list-with-keyword 1`] = `
 "<unknown>:1:17: Parse error: expected "_", "A".."Z", or "a".."z"
 
@@ -575,7 +706,7 @@ Line 1, col 17:
 `;
 
 exports[`grammar should fail trait-fun-non-void-trailing-comma-no-params 1`] = `
-"<unknown>:2:39: Empty parameter list should not have a dangling comma.
+"Syntax error: <unknown>:2:39: Empty parameter list should not have a dangling comma.
 Line 2, col 39:
   1 | trait Test {
 > 2 |     abstract fun testAbstractWithType(,): Int;
@@ -585,7 +716,7 @@ Line 2, col 39:
 `;
 
 exports[`grammar should fail trait-fun-void-trailing-comma-no-params 1`] = `
-"<unknown>:2:31: Empty parameter list should not have a dangling comma.
+"Syntax error: <unknown>:2:31: Empty parameter list should not have a dangling comma.
 Line 2, col 31:
   1 | trait Test {
 > 2 |     abstract fun testAbstract(,);
@@ -744,7 +875,7 @@ exports[`grammar should parse contract-with-const-override 1`] = `
           "attributes": [
             {
               "loc": override,
-              "type": "overrides",
+              "type": "override",
             },
           ],
           "id": 5,
@@ -1125,7 +1256,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
           "attributes": [
             {
               "loc": override,
-              "type": "overrides",
+              "type": "override",
             },
           ],
           "id": 21,
@@ -1311,7 +1442,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
           "attributes": [
             {
               "loc": override,
-              "type": "overrides",
+              "type": "override",
             },
           ],
           "id": 21,
