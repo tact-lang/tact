@@ -5,6 +5,7 @@
   "ignore": [
     "src/grammar/ast.ts",
     "src/prettyPrinter.ts",
+    "src/pipeline/build.ts",
     ".github/workflows/tact.yml"
   ],
   "ignoreDependencies": [
