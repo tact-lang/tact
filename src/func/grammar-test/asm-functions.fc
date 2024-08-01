@@ -16,6 +16,12 @@ slice hello_world() asm """
     PUSHSLICE
 """;
 
+;; Mix single-line and multi-line strings
+
+int inc_then_negate'''(int x) asn "INC" """
+    NEGATE
+""";
+
 ;; Arrangement of return values (and whitespaces check)
                  (builder, int)
 store_uint_quiet (builder b, int x, int len)

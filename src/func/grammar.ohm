@@ -22,13 +22,12 @@ FunC {
              | FunctionDefinition
 
   GlobalVariablesDeclaration = "global" NonemptyListOf<GlobalVariableDeclaration, ","> ";"
-  GlobalVariableDeclaration = TypeStatic? id
+  GlobalVariableDeclaration = TypeUniform? id
 
   ConstantsDefinition = "const" NonemptyListOf<ConstantDefinition, ","> ";"
   ConstantDefinition = TypeConstant? id "=" Expression
 
-  AsmFunctionDefinition = FunctionCommonPrefix "asm" AsmArrangement? stringLiteral+ ";" --singleLine
-                        | FunctionCommonPrefix "asm" AsmArrangement? multiLineStringLiteral+ ";" --multiLine
+  AsmFunctionDefinition = FunctionCommonPrefix "asm" AsmArrangement? (multiLineStringLiteral | stringLiteral)+ ";"
 
   AsmArrangement = "(" "->" integerLiteralDec+ ")" --returns
                  | "(" id+ ~"->" ")" --arguments
@@ -166,13 +165,16 @@ FunC {
   // parse_expr100, order is important
   ExpressionPrimary =
                     // TODO: parens?
-                    | integerLiteral | multiLineStringLiteral | stringLiteral | TypeStatic | id
+                    | integerLiteral | multiLineStringLiteral | stringLiteral | TypeUniform | id
 
   // ExpressionParens = "(" Expression ")"
 
   //
   // Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
   //
+
+  // Allowed types of constants
+  TypeConstant = "int" | "slice"
 
   // forall type1, ..., typeN ->
   Forall = "forall" NonemptyListOf<TypeVar, ","> "->"
@@ -193,19 +195,24 @@ FunC {
        | TypeBuiltin --builtin
        | id --var
 
-  // Non-polymorphic types
-  TypeStatic = TypeBuiltin "->" Type --mapped
-             | TypeBuiltin --builtin
-
   // Builtin types
-  TypeBuiltin = "int" | "cell" | "slice" | "builder" | "cont" | "tuple" | Tensor | Tuple | hole | unit
+  TypeBuiltin = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
+              | Tensor | Tuple | hole | unit
 
   // Non-functional composite builtin types
   Tensor = "(" NonemptyListOf<Type, ","> ")"
   Tuple = "[" NonemptyListOf<Type, ","> "]"
 
-  // Allowed types of constants
-  TypeConstant = "int" | "slice"
+  // Non-polymorphic, uniform types
+  TypeUniform = TypeBuiltinUniform "->" TypeUniform --mapped
+              | TypeBuiltinUniform --builtin
+
+  TypeBuiltinUniform = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
+                     | TensorUniform | TupleUniform | hole | unit
+
+  TensorUniform = "(" NonemptyListOf<TypeUniform, ","> ")"
+
+  TupleUniform = "[" NonemptyListOf<TypeUniform, ","> "]"
 
   //
   // Lexical rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
