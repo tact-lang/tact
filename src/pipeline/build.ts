@@ -28,7 +28,7 @@ export async function enableFeatures(
     config: ConfigProject,
 ): Promise<CompilerContext> {
     if (config.options === undefined) {
-        return Promise.resolve(ctx);
+        return ctx;
     }
     const features = [
         { option: config.options.debug, name: "debug" },
