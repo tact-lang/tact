@@ -30,124 +30,6 @@ Line 5, col 12:
 "
 `;
 
-exports[`resolveStatements should fail statements for expr-cmp-bounced 1`] = `
-"<unknown>:6:10: Expressions of "bounced<S>" type cannot be used for (non)equality operator "=="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 6, col 10:
-  5 | fun foo(b: bounced<S>): Bool {
-> 6 |   return b == b;
-               ^~~~~~
-  7 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-int-bool 1`] = `
-"<unknown>:5:12: Incompatible types "Int" and "Bool" for binary operator "=="
-Line 5, col 12:
-  4 | fun foo(x: Int): Bool {
-> 5 |     return x == true;
-                 ^~~~~~~~~
-  6 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-map-map 1`] = `
-"<unknown>:6:12: Incompatible types "map<Int, Address>" and "map<Address, Int>" for binary operator "=="
-Line 6, col 12:
-  5 | fun foo(m1: map<Int, Address>, m2: map<Address, Int>): Bool {
-> 6 |     return m1 == m2;
-                 ^~~~~~~~
-  7 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-null-1 1`] = `
-"<unknown>:18:13: Expressions of "S" type cannot be used for (non)equality operator "!="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 18, col 13:
-  17 |     get fun test(): Int {
-> 18 |         if (self.s != null) {
-                   ^~~~~~~~~~~~~~
-  19 |             return self.s.a;
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-null-2 1`] = `
-"<unknown>:18:13: Expressions of "S" type cannot be used for (non)equality operator "!="
-See https://docs.tact-lang.org/book/operators#binary-equality
-Line 18, col 13:
-  17 |     get fun test(): Int {
-> 18 |         if (null != self.s) {
-                   ^~~~~~~~~~~~~~
-  19 |             return self.s.a;
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-null-3 1`] = `
-"<unknown>:5:9: Incompatible types "<null>" and "Int" for binary operator "=="
-Line 5, col 9:
-  4 |     let x: Int = 42;
-> 5 |     if (null == x) { return }
-              ^~~~~~~~~
-  6 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-null-bounced 1`] = `
-"<unknown>:7:10: Expressions of "bounced<S>" type cannot be used for (non)equality operator "=="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 7, col 10:
-  6 | fun foo(b: bounced<S>): Bool {
-> 7 |   return b == null;
-               ^~~~~~~~~
-  8 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-optional-struct-null 1`] = `
-"<unknown>:7:16: Expressions of "S" type cannot be used for (non)equality operator "=="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 7, col 16:
-  6 |     if (s != null) {
-> 7 |         return s!! == null
-                     ^~~~~~~~~~~
-  8 |     }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-void-null 1`] = `
-"<unknown>:6:12: Expressions of "<void>" type cannot be used for (non)equality operator "=="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 6, col 12:
-  5 | fun baz(): Bool {
-> 6 |     return foo() == null
-                 ^~~~~~~~~~~~~
-  7 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-void1 1`] = `
-"<unknown>:7:12: Expressions of "<void>" type cannot be used for (non)equality operator "=="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 7, col 12:
-  6 | fun baz(): Bool {
-> 7 |     return foo() == bar()
-                 ^~~~~~~~~~~~~~
-  8 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-void2 1`] = `
-"<unknown>:7:12: Expressions of "<void>" type cannot be used for (non)equality operator "!="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 7, col 12:
-  6 | fun baz(): Bool {
-> 7 |     return foo() != bar()
-                 ^~~~~~~~~~~~~~
-  8 | }
-"
-`;
-
 exports[`resolveStatements should fail statements for expr-conditional-branch-mismatch 1`] = `
 "<unknown>:5:43: Non-matching types "Bool" and "Int" for ternary branches
 Line 5, col 43:
@@ -225,6 +107,201 @@ Line 6, col 19:
 > 6 |     let voidVar = true ? foo() : foo();
                         ^~~~~~~~~~~~~~~~~~~~
   7 |     return 42;
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-bounced 1`] = `
+"<unknown>:6:10: Expressions of "bounced<S>" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 6, col 10:
+  5 | fun foo(b: bounced<S>): Bool {
+> 6 |   return b == b;
+               ^~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-builder 1`] = `
+"<unknown>:7:16: Expressions of "Builder" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 16:
+  6 |     get fun foo(s: Builder): Bool {
+> 7 |         return s == s;
+                     ^~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-contract 1`] = `
+"<unknown>:10:16: Expressions of "Test" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 10, col 16:
+   9 |     get fun foo(): Bool {
+> 10 |         return self == self;
+                      ^~~~~~~~~~~~
+  11 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-int-bool 1`] = `
+"<unknown>:5:12: Incompatible types "Int" and "Bool" for binary operator "=="
+Line 5, col 12:
+  4 | fun foo(x: Int): Bool {
+> 5 |     return x == true;
+                 ^~~~~~~~~
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-map-map 1`] = `
+"<unknown>:6:12: Incompatible types "map<Int, Address>" and "map<Address, Int>" for binary operator "=="
+Line 6, col 12:
+  5 | fun foo(m1: map<Int, Address>, m2: map<Address, Int>): Bool {
+> 6 |     return m1 == m2;
+                 ^~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-null-1 1`] = `
+"<unknown>:18:13: Expressions of "S" type cannot be used for (non)equality operator "!="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 18, col 13:
+  17 |     get fun test(): Int {
+> 18 |         if (self.s != null) {
+                   ^~~~~~~~~~~~~~
+  19 |             return self.s.a;
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-null-2 1`] = `
+"<unknown>:18:13: Expressions of "S" type cannot be used for (non)equality operator "!="
+See https://docs.tact-lang.org/book/operators#binary-equality
+Line 18, col 13:
+  17 |     get fun test(): Int {
+> 18 |         if (null != self.s) {
+                   ^~~~~~~~~~~~~~
+  19 |             return self.s.a;
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-null-3 1`] = `
+"<unknown>:5:9: Incompatible types "<null>" and "Int" for binary operator "=="
+Line 5, col 9:
+  4 |     let x: Int = 42;
+> 5 |     if (null == x) { return }
+              ^~~~~~~~~
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-null-bounced 1`] = `
+"<unknown>:7:10: Expressions of "bounced<S>" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 10:
+  6 | fun foo(b: bounced<S>): Bool {
+> 7 |   return b == null;
+               ^~~~~~~~~
+  8 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-optional-builder 1`] = `
+"<unknown>:7:16: Expressions of "Builder?" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 16:
+  6 |     get fun foo(s: Builder?): Bool {
+> 7 |         return s == s;
+                     ^~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-optional-stringbuilder 1`] = `
+"<unknown>:7:16: Expressions of "StringBuilder?" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 16:
+  6 |     get fun foo(s: StringBuilder?): Bool {
+> 7 |         return s == s;
+                     ^~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-optional-struct 1`] = `
+"<unknown>:10:16: Expressions of "S?" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 10, col 16:
+   9 |         let s: S? = S {x: 42, y: 0};
+> 10 |         return s == s;
+                      ^~~~~~
+  11 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-optional-struct-null 1`] = `
+"<unknown>:7:16: Expressions of "S" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 16:
+  6 |     if (s != null) {
+> 7 |         return s!! == null
+                     ^~~~~~~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-stringbuilder 1`] = `
+"<unknown>:7:16: Expressions of "StringBuilder" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 16:
+  6 |     get fun foo(s: StringBuilder): Bool {
+> 7 |         return s == s;
+                     ^~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-struct 1`] = `
+"<unknown>:10:16: Expressions of "S" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 10, col 16:
+   9 |         let s: S = S {x: 42, y: 0};
+> 10 |         return s == s;
+                      ^~~~~~
+  11 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-void-null 1`] = `
+"<unknown>:6:12: Expressions of "<void>" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 6, col 12:
+  5 | fun baz(): Bool {
+> 6 |     return foo() == null
+                 ^~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-void1 1`] = `
+"<unknown>:7:12: Expressions of "<void>" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 12:
+  6 | fun baz(): Bool {
+> 7 |     return foo() == bar()
+                 ^~~~~~~~~~~~~~
+  8 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-void2 1`] = `
+"<unknown>:7:12: Expressions of "<void>" type cannot be used for (non)equality operator "!="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 12:
+  6 | fun baz(): Bool {
+> 7 |     return foo() != bar()
+                 ^~~~~~~~~~~~~~
+  8 | }
 "
 `;
 
@@ -1026,161 +1103,6 @@ exports[`resolveStatements should resolve statements for expr-arith-bool-cmp 1`]
 ]
 `;
 
-exports[`resolveStatements should resolve statements for expr-cmp-arith 1`] = `
-[
-  [
-    "123",
-    "Int",
-  ],
-  [
-    "10",
-    "Int",
-  ],
-  [
-    "123 + 10",
-    "Int",
-  ],
-  [
-    "x",
-    "Int",
-  ],
-  [
-    "123 + 10 == x",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-literal 1`] = `
-[
-  [
-    "x",
-    "Int",
-  ],
-  [
-    "0",
-    "Int",
-  ],
-  [
-    "x == 0",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-map-map 1`] = `
-[
-  [
-    "m1",
-    "map<Int, Address>",
-  ],
-  [
-    "m2",
-    "map<Int, Address>",
-  ],
-  [
-    "m1 == m2",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-map-null 1`] = `
-[
-  [
-    "m",
-    "map<Int, Address>",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "m == null",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-null-null 1`] = `
-[
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "null == null",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-optional-null 1`] = `
-[
-  [
-    "42",
-    "Int",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "x",
-    "Int?",
-  ],
-  [
-    "null == x",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-optional-struct-null 1`] = `
-[
-  [
-    "s",
-    "S?",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "s != null",
-    "Bool",
-  ],
-  [
-    "s",
-    "S?",
-  ],
-  [
-    "s!!",
-    "S",
-  ],
-  [
-    "s!!.f",
-    "Int",
-  ],
-  [
-    "42",
-    "Int",
-  ],
-  [
-    "s!!.f == 42",
-    "Bool",
-  ],
-  [
-    "false",
-    "Bool",
-  ],
-]
-`;
-
 exports[`resolveStatements should resolve statements for expr-conditional-with-subtyping 1`] = `
 [
   [
@@ -1364,6 +1286,173 @@ exports[`resolveStatements should resolve statements for expr-conditional-with-s
         a: cond ? Baz { b: 42 }.toCell() : x
     }",
     "Bar",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-arith 1`] = `
+[
+  [
+    "123",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "123 + 10",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "123 + 10 == x",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-literal 1`] = `
+[
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x == 0",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-map-map 1`] = `
+[
+  [
+    "m1",
+    "map<Int, Address>",
+  ],
+  [
+    "m2",
+    "map<Int, Address>",
+  ],
+  [
+    "m1 == m2",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-map-null 1`] = `
+[
+  [
+    "m",
+    "map<Int, Address>",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "m == null",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-null-null 1`] = `
+[
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "null == null",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-optional-int-null 1`] = `
+[
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "x == null",
+    "Bool",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "null == x",
+    "Bool",
+  ],
+  [
+    "x == null || null == x",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-optional-struct-null 1`] = `
+[
+  [
+    "s",
+    "S?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "s != null",
+    "Bool",
+  ],
+  [
+    "s",
+    "S?",
+  ],
+  [
+    "s!!",
+    "S",
+  ],
+  [
+    "s!!.f",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "s!!.f == 42",
+    "Bool",
+  ],
+  [
+    "false",
+    "Bool",
   ],
 ]
 `;
