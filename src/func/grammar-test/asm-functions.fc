@@ -31,4 +31,7 @@ asm              (x b len)
                asm(x b len -> 1 0) "STUXQ";
 
 ;; Parametric polymorphism with forall
+
 forall X, Y -> (X, Y) store_uint_quiet'''(builder b, int x, int len) asm(x b len -> 1 0) "STUXQ";
+
+forall X -> X unsingle([X] t) asm "UNSINGLE";

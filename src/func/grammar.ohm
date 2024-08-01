@@ -166,11 +166,7 @@ FunC {
   // parse_expr100, order is important
   ExpressionPrimary =
                     // TODO: parens?
-                    | integerLiteral
-                    | multiLineStringLiteral
-                    | stringLiteral
-                    | TypeStatic
-                    | id
+                    | integerLiteral | multiLineStringLiteral | stringLiteral | TypeStatic | id
 
   // ExpressionParens = "(" Expression ")"
 
@@ -202,16 +198,7 @@ FunC {
              | TypeBuiltin --builtin
 
   // Builtin types
-  TypeBuiltin = "int"
-                | "cell"
-                | "slice"
-                | "builder"
-                | "cont"
-                | "tuple"
-                | Tensor
-                | Tuple
-                | hole
-                | unit
+  TypeBuiltin = "int" | "cell" | "slice" | "builder" | "cont" | "tuple" | Tensor | Tuple | hole | unit
 
   // Non-functional composite builtin types
   Tensor = "(" NonemptyListOf<Type, ","> ")"
@@ -253,8 +240,7 @@ FunC {
 
   // Integers
   integerLiteral = "-"? integerLiteralNonNegative
-  integerLiteralNonNegative = integerLiteralHex
-                            | integerLiteralDec
+  integerLiteralNonNegative = integerLiteralHex | integerLiteralDec
 
   // hexDigit is defined in Ohm's built-in rules as: hexDigit = "0".."9" | "a".."f" | "A".."F"
   integerLiteralHex = "0x" hexDigit+
