@@ -1,4 +1,9 @@
-import { Interval as RawInterval, IterationNode, MatchResult, Node } from "ohm-js";
+import {
+    Interval as RawInterval,
+    IterationNode,
+    MatchResult,
+    Node,
+} from "ohm-js";
 import path from "path";
 import { cwd } from "process";
 import FuncGrammar from "./grammar.ohm-bundle";
@@ -103,9 +108,9 @@ export function inFile<T>(path: string, callback: () => T) {
 }
 
 /**
- * Creates a `FuncSrcInfo` reference to a Node and `currentFile`
+ * Creates a `FuncSrcInfo` reference to the Node `s` and `currentFile`
  */
-export function createRef(s: Node) {
+export function createSrcInfo(s: Node) {
     return new FuncSrcInfo(s.source, currentFile);
 }
 
@@ -127,19 +132,19 @@ function unwrapOptNode<T>(
 // FIXME: Would need help once parser is done on my side :)
 //
 
-type FuncAstNode = 
+type FuncAstNode =
     | FuncAstModule
     | FuncAstPragma
     | FuncAstInclude
     | FuncAstModuleItem
-    | FuncAstComment
-    ;
+    | FuncAstComment;
 
 type FuncAstModule = {
     kind: "module";
     pragmas: FuncAstPragma;
     includes: FuncAstInclude;
     items: FuncAstModuleItem;
+    loc: FuncSrcInfo;
 };
 
 //
@@ -152,8 +157,7 @@ type FuncAstModule = {
 type FuncAstPragma =
     | FuncAstPragmaLiteral
     | FuncAstPragmaVersionRange
-    | FuncAstPragmaVersionString
-    ;
+    | FuncAstPragmaVersionString;
 
 /**
  * #pragma something-something-something;
@@ -161,6 +165,7 @@ type FuncAstPragma =
 type FuncAstPragmaLiteral = {
     kind: "pragma_literal";
     literal: "allow-post-modification" | "compute-asm-ltr";
+    loc: FuncSrcInfo;
 };
 
 /**
@@ -173,6 +178,7 @@ type FuncAstPragmaVersionRange = {
     kind: "pragma_version_range";
     allow: boolean;
     range: FuncAstVersionRange;
+    loc: FuncSrcInfo;
 };
 
 /**
@@ -181,6 +187,7 @@ type FuncAstPragmaVersionRange = {
 type FuncAstPragmaVersionString = {
     kind: "pragma_version_string";
     version: string;
+    loc: FuncSrcInfo;
 };
 
 /**
@@ -189,31 +196,40 @@ type FuncAstPragmaVersionString = {
 type FuncAstInclude = {
     kind: "include";
     path: string;
+    loc: FuncSrcInfo;
 };
 
 //
 // Top-level, module items
 //
 
-type FuncAstModuleItem =
-    | {}
-    ;
+type FuncAstModuleItem = FuncAstGlobalVariablesDeclaration;
 
+/**
+ * global ..., ...;
+ */
 type FuncAstGlobalVariablesDeclaration = {
-    kind: "global_variables_declaration",
-    globals: FuncAstGlobalVariable,
+    kind: "global_variables_declaration";
+    globals: FuncAstGlobalVariable;
+    loc: FuncSrcInfo;
 };
 
+/**
+ * nonVarType? id
+ */
 type FuncAstGlobalVariable = {
-    kind: "global_variable",
-    type: FuncAstType | undefined;
+    kind: "global_variable";
+    type: FuncAstTypeUniform | undefined;
     name: FuncAstId;
+    loc: FuncSrcInfo;
 };
 
 //
 // Statements
 // TODO
 //
+
+type FuncAstStatement = {};
 
 //
 // Expressions
@@ -224,9 +240,106 @@ type FuncAstGlobalVariable = {
 // Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
 //
 
-// TODO:
-type FuncAstType =
-    | {};
+/**
+ * Allowed types of constants
+ */
+type FuncAstTypeConstant = "int" | "slice";
+
+/**
+ * forall type? typeName1, type? typeName2, ... ->
+ */
+type FuncAstForall = FuncAstTypeVar[];
+// TODO: or { kind: ..., etc. }
+
+/**
+ * "type"? id
+ */
+type FuncAstTypeVar = {
+    kind: "type_var";
+    keyword: boolean;
+    ident: FuncAstId;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * (type id, ...)
+ */
+type FuncAstParameters = FuncAstParameter[];
+// TODO: or { kind: ..., etc. }
+
+/**
+ * type id
+ */
+type FuncAstParameter = {
+    kind: "parameter";
+    ty: FuncAstType;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * Mapped or unmapped builtin types or type variables
+ */
+type FuncAstType = FuncAstTypeMapped | FuncAstTypeBuiltin | FuncAstTypeVar;
+
+type FuncAstTypeMapped = {
+    kind: "type_mapped";
+    left: FuncAstTypeBuiltin;
+    right: FuncAstType;
+};
+
+type FuncAstTypeBuiltin = {
+    kind: "type_builtin";
+    value:
+        | "int"
+        | "cell"
+        | "slice"
+        | "builder"
+        | "cont"
+        | "tuple"
+        | FuncAstTensor
+        | FuncAstTuple
+        | FuncAstHole
+        | FuncAstUnit;
+};
+
+/** (...) */
+type FuncAstTensor = FuncAstType[];
+
+/** [...] */
+type FuncAstTuple = FuncAstType[];
+
+/**
+ * Non-polymorphic, uniform types
+ */
+
+type FuncAstTypeUniform = FuncAstTypeUniformMapped | FuncAstTypeUniformBuiltin;
+
+type FuncAstTypeUniformMapped = {
+    kind: "type_uniform_mapped";
+    left: FuncAstTypeBuiltin;
+    right: FuncAstType;
+};
+
+type FuncAstTypeUniformBuiltin = {
+    kind: "type_uniform_builtin";
+    value:
+        | "int"
+        | "cell"
+        | "slice"
+        | "builder"
+        | "cont"
+        | "tuple"
+        | FuncAstTensorUniform
+        | FuncAstTupleUniform
+        | FuncAstHole
+        | FuncAstUnit;
+};
+
+/** (...) */
+type FuncAstTensorUniform = FuncAstTypeUniform[];
+
+/** [...] */
+type FuncAstTupleUniform = FuncAstTypeUniform[];
 
 //
 // Lexical rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
@@ -235,36 +348,39 @@ type FuncAstType =
 type FuncAstHole = {
     kind: "hole";
     value: "_" | "var";
+    loc: FuncSrcInfo;
 };
 
 type FuncAstUnit = {
     kind: "unit";
     value: "()";
+    loc: FuncSrcInfo;
 };
 
 type FuncAstFunctionId = {
     kind: "function_id";
     value: string;
+    loc: FuncSrcInfo;
 };
 
-type FuncAstId = 
-    | FuncAstIdQuoted
-    | FuncAstIdPlain
-    ;
+type FuncAstId = FuncAstIdQuoted | FuncAstIdPlain;
 
 type FuncAstIdQuoted = {
     kind: "id_quoted";
     value: string;
+    loc: FuncSrcInfo;
 };
 
 type FuncAstIdPlain = {
     kind: "id_plain";
     value: string;
+    loc: FuncSrcInfo;
 };
 
 type FuncAstUnusedId = {
     kind: "unused_id";
     value: "_";
+    loc: FuncSrcInfo;
 };
 
 type FuncAstVersionRange = {
@@ -273,6 +389,11 @@ type FuncAstVersionRange = {
     major: bigint;
     minor: bigint | undefined;
     patch: bigint | undefined;
+    loc: FuncSrcInfo;
+};
+
+type FuncAstIntegerLiteral = {
+    loc: FuncSrcInfo;
 };
 
 /**
@@ -282,22 +403,25 @@ type FuncAstStringLiteral = {
     kind: "string_literal";
     value: string;
     ty: undefined | FuncAstStringType;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * """ ... """ty?
+ */
+type FuncAstMultiLineStringLiteral = {
+    kind: "multiline_string";
+    value: string;
+    ty: undefined | FuncAstStringType;
+    // TODO: alignIndent: boolean;
+    // TODO: trim: boolean;
+    loc: FuncSrcInfo;
 };
 
 /**
  * An additional modifier. See: https://docs.ton.org/develop/func/literals_identifiers#string-literals
  */
 type FuncAstStringType = "s" | "a" | "u" | "h" | "H" | "c";
-
-/**
- * """ ... """
- */
-type FuncAstMultiLineString = {
-    kind: "multiline_string";
-    value: string;
-    // TODO: alignIndent: boolean;
-    // TODO: trim: boolean;
-};
 
 type FuncAstWhiteSpace = {
     kind: "whitespace";
@@ -309,10 +433,7 @@ type FuncAstWhiteSpace = {
  * or
  * {- ... -}
  */
-type FuncAstComment = 
-    | FuncAstCommentSingleLine
-    | FuncAstCommentMultiLine
-    ;
+type FuncAstComment = FuncAstCommentSingleLine | FuncAstCommentMultiLine;
 
 /**
  * Doesn't include the starting ;; characters
@@ -322,6 +443,7 @@ type FuncAstComment =
 type FuncAstCommentSingleLine = {
     kind: "comment_singleline";
     line: string;
+    loc: FuncSrcInfo;
 };
 
 /**
@@ -333,6 +455,7 @@ type FuncAstCommentMultiLine = {
     kind: "comment_multiline";
     contents: string;
     skipCR: boolean;
+    loc: FuncSrcInfo;
 };
 
 //
@@ -346,9 +469,10 @@ semantics.addOperation<FuncAstNode>("astOfModule", {
     Module(pragmas, includes, items) {
         return {
             kind: "module",
-            pragmas: pragmas.children.map(x => x.astOfPragma()),
-            includes: includes.children.map(x => x.astOfInclude()),
-            items: items.children.map(x => x.astOfModuleItem()),
+            pragmas: pragmas.children.map((x) => x.astOfPragma()),
+            includes: includes.children.map((x) => x.astOfInclude()),
+            items: items.children.map((x) => x.astOfModuleItem()),
+            loc: createSrcInfo(this),
         };
     },
     comment(cmt) {
@@ -358,20 +482,29 @@ semantics.addOperation<FuncAstNode>("astOfModule", {
         return {
             kind: "comment_singleline",
             line: lineContents.sourceString,
+            loc: createSrcInfo(this),
         };
     },
     comment_multiLine(cmt) {
         return cmt.astOfModule();
     },
-    multiLineComment(_commentStart, preInnerComment, innerComment, postInnerComment, _commentEnd) {
+    multiLineComment(
+        _commentStart,
+        preInnerComment,
+        innerComment,
+        postInnerComment,
+        _commentEnd,
+    ) {
         return {
             kind: "comment_multiline",
             contents: [
                 preInnerComment.sourceString,
-                (innerComment.children.map(x => x.astOfModule()).join("") ?? ""),
+                innerComment.children.map((x) => x.astOfModule()).join("") ??
+                    "",
                 postInnerComment.sourceString,
             ].join(""),
             skipCR: false,
+            loc: createSrcInfo(this),
         };
     },
 });
@@ -384,6 +517,7 @@ semantics.addOperation<FuncAstNode>("astOfPragma", {
         return {
             kind: "pragma_literal",
             literal: literal.sourceString,
+            loc: createSrcInfo(this),
         };
     },
     Pragma_versionRange(_pragmaKwd, literal, range, _semicolon) {
@@ -391,12 +525,14 @@ semantics.addOperation<FuncAstNode>("astOfPragma", {
             kind: "pragma_version_range",
             allow: literal.sourceString === "version" ? true : false,
             range: range.astOfVersionRange(),
+            loc: createSrcInfo(this),
         };
     },
     Pragma_versionString(_pragmaKwd, _literal, value, _semicolon) {
         return {
             kind: "pragma_version_string",
             version: value.astOfExpression(),
+            loc: createSrcInfo(this),
         };
     },
 });
@@ -406,6 +542,7 @@ semantics.addOperation<FuncAstNode>("astOfInclude", {
         return {
             kind: "include",
             path: path.astOfExpression(),
+            loc: createSrcInfo(this),
         };
     },
 });
@@ -417,24 +554,29 @@ semantics.addOperation<FuncAstNode>("astOfModuleItem", {
     GlobalVariablesDeclaration(_globalKwd, globals, _semicolon) {
         return {
             kind: "global_variables_declaration",
-            globals: globals.children.map(x => x.astOfGlobalVariable()),
+            globals: globals.children.map((x) => x.astOfGlobalVariable()),
+            loc: createSrcInfo(this),
         };
     },
     ConstantsDefinition(_constKwd, constants, _semicolon) {
         return {
             kind: "constants_definition",
-            constants: constants.children.map(x => x.astOfConstant()),
+            constants: constants.children.map((x) => x.astOfConstant()),
+            loc: createSrcInfo(this),
         };
     },
-    AsmFunctionDefinition_singleLine(fnCommonPrefix, _asmKwd, optArrangement, asmStrings, _semicolon) {
+    AsmFunctionDefinition(
+        fnCommonPrefix,
+        _asmKwd,
+        optArrangement,
+        asmStrings,
+        _semicolon,
+    ) {
         return {
             kind: "asm_function_definition",
             // TODO: fnCommonPrefix, optArrangement
         };
     },
-    // AsmFunctionDefinition_multiLine(fnCommon, _asmKwd, optArrangement, multilineAsmStrings, _semicolon) {
-    //     // TODO:
-    // },
     // FunctionDeclaration(arg0, arg1) {
     //     // TODO: ...
     // },
@@ -456,7 +598,7 @@ semantics.addOperation("astOfFunctionCommonPrefix", { });
 /** If the match wasn't successful, provides error message and interval */
 type GrammarMatch =
     | { ok: false; message: string; interval: RawInterval }
-    | { ok: true };
+    | { ok: true; res: MatchResult };
 
 /**
  * Checks if the given `src` string of FunC code matches the FunC grammar
@@ -473,7 +615,7 @@ export function match(src: string): GrammarMatch {
         };
     }
 
-    return { ok: true };
+    return { ok: true, res: matchResult };
 }
 
 /**
@@ -484,8 +626,13 @@ export function match(src: string): GrammarMatch {
 export function parse(src: string) {
     const matchResult = FuncGrammar.match(src);
 
-    if (matchResult.failed()) { throwFuncParseError(matchResult, undefined); }
-    try { return semantics(matchResult).astOfModule(); } finally {}
+    if (matchResult.failed()) {
+        throwFuncParseError(matchResult, undefined);
+    }
+    try {
+        return semantics(matchResult).astOfModule();
+    } finally {
+    }
 }
 
 /**
@@ -496,7 +643,12 @@ export function parseFile(src: string, path: string) {
     return inFile(path, () => {
         const matchResult = FuncGrammar.match(src);
 
-        if (matchResult.failed()) { throwFuncParseError(matchResult, path); }
-        try { return semantics(matchResult).astOfModule(); } finally {}
+        if (matchResult.failed()) {
+            throwFuncParseError(matchResult, path);
+        }
+        try {
+            return semantics(matchResult).astOfModule();
+        } finally {
+        }
     });
 }
