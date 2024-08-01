@@ -500,4 +500,81 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
         },
     ],
+    [
+        "exists",
+        {
+            name: "exists",
+            resolve(ctx, args, ref) {
+                // Check arguments
+                if (args.length !== 2) {
+                    throwCompilationError("exists expects one argument", ref); // Ignore self argument
+                }
+                const self = args[0]!;
+                const key = args[1]!;
+                if (self.kind !== "map") {
+                    throwCompilationError(
+                        "exists expects a map as self argument",
+                        ref,
+                    ); // Should not happen
+                }
+
+                // Check key type
+                if (key.kind !== "ref" || key.optional) {
+                    throwCompilationError(
+                        "exists expects a direct type as first argument",
+                        ref,
+                    );
+                }
+                if (key.name !== self.key) {
+                    throwCompilationError(
+                        `exists expects a "${self.key}" as first argument`,
+                        ref,
+                    );
+                }
+
+                // Returns boolean
+                return { kind: "ref", name: "Bool", optional: false };
+            },
+            generate: (ctx, args, exprs, ref) => {
+                if (args.length !== 2) {
+                    throwCompilationError("exists expects one argument", ref); // Ignore self argument
+                }
+                const self = args[0]!;
+                if (self.kind !== "map") {
+                    throwCompilationError(
+                        "exists expects a map as self argument",
+                        ref,
+                    ); // Should not happen
+                }
+
+                // Render expressions
+                const resolved = exprs.map((v) => writeExpression(v, ctx));
+
+                // Handle Int key
+                if (self.key === "Int") {
+                    let bits = 257;
+                    let kind = "int";
+                    if (self.keyAs?.startsWith("int")) {
+                        bits = parseInt(self.keyAs.slice(3), 10);
+                    } else if (self.keyAs?.startsWith("uint")) {
+                        bits = parseInt(self.keyAs.slice(4), 10);
+                        kind = "uint";
+                    }
+                    ctx.used(`__tact_dict_exists_${kind}`);
+                    return `__tact_dict_exists_${kind}(${resolved[0]}, ${bits}, ${resolved[1]})`;
+                }
+
+                // Handle Address key
+                if (self.key === "Address") {
+                    ctx.used(`__tact_dict_exists_slice`);
+                    return `__tact_dict_exists_slice(${resolved[0]}, 267, ${resolved[1]})`;
+                }
+
+                throwCompilationError(
+                    `exists expects a map with Int keys`,
+                    ref,
+                );
+            },
+        },
+    ],
 ]);

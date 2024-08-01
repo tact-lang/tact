@@ -957,4 +957,44 @@ contract MapTestContract {
         let m: map<Int, Int> = emptyMap();
         m.get(0)!!;
     }
+    
+    get fun intMap1Exists(key: Int): Bool {
+        return self.intMap1.exists(key);
+    }
+
+    get fun intMap2Exists(key: Int): Bool {
+        return self.intMap2.exists(key);
+    }
+
+    get fun intMap3Exists(key: Int): Bool {
+        return self.intMap3.exists(key);
+    }
+
+    get fun intMap4Exists(key: Int): Bool {
+        return self.intMap4.exists(key);
+    }
+
+    get fun intMap5Exists(key: Int): Bool {
+        return self.intMap5.exists(key);
+    }
+
+    get fun addrMap1Exists(key: Address): Bool {
+        return self.addrMap1.exists(key);
+    }
+
+    get fun addrMap2Exists(key: Address): Bool {
+        return self.addrMap2.exists(key);
+    }
+
+    get fun addrMap3Exists(key: Address): Bool {
+        return self.addrMap3.exists(key);
+    }
+
+    get fun addrMap4Exists(key: Address): Bool {
+        return self.addrMap4.exists(key);
+    }
+
+    get fun addrMap5Exists(key: Address): Bool {
+        return self.addrMap5.exists(key);
+    }
 }

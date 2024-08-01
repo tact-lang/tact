@@ -1964,4 +1964,44 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context("stdlib");
         ctx.asm(`asm "POW2"`);
     });
+
+    //
+    // Dict Exists
+    //
+
+    ctx.fun("__tact_dict_exists_int", () => {
+        ctx.signature(`int __tact_dict_exists_int(cell d, int kl, int k)`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (r, ok) = idict_get?(d, kl, k);
+                return ok;
+            `);
+        });
+    });
+
+    ctx.fun("__tact_dict_exists_uint", () => {
+        ctx.signature(`int __tact_dict_exists_uint(cell d, int kl, int k)`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (r, ok) = udict_get?(d, kl, k);
+                return ok;
+            `);
+        });
+    });
+
+    ctx.fun("__tact_dict_exists_slice", () => {
+        ctx.signature(`int __tact_dict_exists_slice(cell d, int kl, slice k)`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (r, ok) = ${ctx.used(`__tact_dict_get`)}(d, kl, k);
+                return ok;
+            `);
+        });
+    });
 }

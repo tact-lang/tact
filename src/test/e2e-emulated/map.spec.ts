@@ -1068,4 +1068,164 @@ describe("map", () => {
             throw e;
         }
     });
+
+    it("should implement map.exists correctly", async () => {
+        jest.setTimeout(2 * 60000);
+        try {
+            // Init contract
+            const system = await ContractSystem.create();
+            const treasure = system.treasure("treasure");
+            const contract = system.open(await MapTestContract.fromInit());
+            await contract.send(treasure, { value: toNano("10") }, null);
+            await system.run();
+
+            // Initial state
+            expect(await contract.getIntMap1Exists(1n)).toBe(false);
+            expect(await contract.getIntMap2Exists(1n)).toBe(false);
+            expect(await contract.getIntMap3Exists(1n)).toBe(false);
+            expect(await contract.getIntMap4Exists(1n)).toBe(false);
+            expect(
+                await contract.getAddrMap1Exists(randomAddress(0, "addr-1")),
+            ).toBe(false);
+            expect(
+                await contract.getAddrMap2Exists(randomAddress(0, "addr-1")),
+            ).toBe(false);
+            expect(
+                await contract.getAddrMap3Exists(randomAddress(0, "addr-1")),
+            ).toBe(false);
+            expect(
+                await contract.getAddrMap4Exists(randomAddress(0, "addr-1")),
+            ).toBe(false);
+
+            // Set keys
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetIntMap1", key: 1n, value: 1n },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetIntMap2", key: 1n, value: true },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                {
+                    $$type: "SetIntMap3",
+                    key: 1n,
+                    value: beginCell().storeUint(123123, 128).endCell(),
+                },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                {
+                    $$type: "SetIntMap4",
+                    key: 1n,
+                    value: { $$type: "SomeStruct", value: 10012312n },
+                },
+            );
+            const addr = randomAddress(0, "addr-1");
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetAddrMap1", key: addr, value: 1n },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetAddrMap2", key: addr, value: true },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                {
+                    $$type: "SetAddrMap3",
+                    key: addr,
+                    value: beginCell().storeUint(123123, 128).endCell(),
+                },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                {
+                    $$type: "SetAddrMap4",
+                    key: addr,
+                    value: { $$type: "SomeStruct", value: 10012312n },
+                },
+            );
+            await system.run();
+
+            // Check exists
+            expect(await contract.getIntMap1Exists(1n)).toBe(true);
+            expect(await contract.getIntMap2Exists(1n)).toBe(true);
+            expect(await contract.getIntMap3Exists(1n)).toBe(true);
+            expect(await contract.getIntMap4Exists(1n)).toBe(true);
+            expect(await contract.getAddrMap1Exists(addr)).toBe(true);
+            expect(await contract.getAddrMap2Exists(addr)).toBe(true);
+            expect(await contract.getAddrMap3Exists(addr)).toBe(true);
+            expect(await contract.getAddrMap4Exists(addr)).toBe(true);
+
+            // Clear keys
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetIntMap1", key: 1n, value: null },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetIntMap2", key: 1n, value: null },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetIntMap3", key: 1n, value: null },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetIntMap4", key: 1n, value: null },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetAddrMap1", key: addr, value: null },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetAddrMap2", key: addr, value: null },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetAddrMap3", key: addr, value: null },
+            );
+            await contract.send(
+                treasure,
+                { value: toNano(1) },
+                { $$type: "SetAddrMap4", key: addr, value: null },
+            );
+            await system.run();
+
+            // Check exists
+            expect(await contract.getIntMap1Exists(1n)).toBe(false);
+            expect(await contract.getIntMap2Exists(1n)).toBe(false);
+            expect(await contract.getIntMap3Exists(1n)).toBe(false);
+            expect(await contract.getIntMap4Exists(1n)).toBe(false);
+            expect(await contract.getAddrMap1Exists(addr)).toBe(false);
+            expect(await contract.getAddrMap2Exists(addr)).toBe(false);
+            expect(await contract.getAddrMap3Exists(addr)).toBe(false);
+            expect(await contract.getAddrMap4Exists(addr)).toBe(false);
+        } catch (e) {
+            if (e instanceof ComputeError) {
+                if (e.logs) {
+                    console.warn(e.logs);
+                }
+            }
+            throw e;
+        }
+    });
 });
