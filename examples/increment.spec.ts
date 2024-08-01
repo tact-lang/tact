@@ -1,29 +1,36 @@
 import { IncrementContract } from "./output/increment_IncrementContract";
-import { ContractSystem } from "@tact-lang/emulator";
+import { Blockchain } from "@ton/sandbox";
 import { toNano } from "@ton/core";
+import { Tracker } from "../src/tracker";
 
 describe("increment", () => {
     it("should deploy", async () => {
         // Create wallet
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await IncrementContract.fromInit());
-        const tracker = system.track(contract.address);
-        await contract.send(
-            treasure,
-            { value: toNano("10") },
-            { $$type: "Deploy", queryId: 0n },
+        const blockchain = await Blockchain.create();
+        const treasure = await blockchain.treasury("treasure");
+        const contract = blockchain.openContract(
+            await IncrementContract.fromInit(),
         );
-        await system.run();
+        const tracker = new Tracker();
+        tracker.track(contract);
+
+        tracker.parse(
+            await contract.send(
+                treasure.getSender(),
+                { value: toNano("10") },
+                { $$type: "Deploy", queryId: 0n },
+            ),
+        );
         expect(tracker.collect()).toMatchSnapshot();
 
         // Send internal message
-        await contract.send(
-            treasure,
-            { value: toNano("10") },
-            { $$type: "Increment", key: 0n, value: -1232n },
+        tracker.parse(
+            await contract.send(
+                treasure.getSender(),
+                { value: toNano("10") },
+                { $$type: "Increment", key: 0n, value: -1232n },
+            ),
         );
-        await system.run();
         expect(tracker.collect()).toMatchSnapshot();
     });
 });

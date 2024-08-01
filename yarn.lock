@@ -1273,15 +1273,6 @@
     teslabot "^1.5.0"
     zod "^3.20.2"
 
-"@tact-lang/emulator@^4.2.3":
-  version "4.2.3"
-  resolved "https://registry.npmjs.org/@tact-lang/emulator/-/emulator-4.2.3.tgz"
-  integrity sha512-uZF5cQUReToHNntiZjxP/Fc2kSO5lpO+rctuq/vFuGtpY/vdXVeT9pt8MpDgrWu6sR9emxjMDJUkRyEI0F4ROA==
-  dependencies:
-    prando "^6.0.1"
-    teslabot "^1.5.0"
-    zod "^3.20.2"
-
 "@tact-lang/opcode@^0.0.14":
   version "0.0.14"
   resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.0.14.tgz"
@@ -1324,6 +1315,11 @@
     "@ton/crypto-primitives" "2.1.0"
     jssha "3.2.0"
     tweetnacl "1.0.3"
+
+"@ton/sandbox@^0.20.0":
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/@ton/sandbox/-/sandbox-0.20.0.tgz#229ef12bd99b313b91003393890cdb01262189b5"
+  integrity sha512-uci6DRDZGW1eu+hHgbVzf4lDTi29PV+5XKPC8ZyYUJaoOtulkHDtgyrfZ1H5QSOVOmUIjHDQhPwLsn1kU51yHw==
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.11"
