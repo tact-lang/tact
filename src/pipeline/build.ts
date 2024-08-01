@@ -26,9 +26,9 @@ export async function enableFeatures(
     ctx: CompilerContext,
     logger: Logger,
     config: ConfigProject,
-): Promise<void> {
+): Promise<CompilerContext> {
     if (config.options === undefined) {
-        return;
+        return Promise.resolve(ctx);
     }
     const features = [
         { option: config.options.debug, name: "debug" },
@@ -38,12 +38,13 @@ export async function enableFeatures(
         { option: config.options.ipfsAbiGetter, name: "ipfsAbiGetter" },
         { option: config.options.interfacesGetter, name: "interfacesGetter" },
     ];
-    features.forEach(({ option, name }) => {
+    return features.reduce((currentCtx, { option, name }) => {
         if (option) {
             logger.error(`   > 👀 Enabling ${name}`);
-            ctx = featureEnable(ctx, name);
+            return featureEnable(currentCtx, name);
         }
-    });
+        return currentCtx;
+    }, ctx);
 }
 
 export async function build(args: {
