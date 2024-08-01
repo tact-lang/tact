@@ -22,11 +22,11 @@ import { getCompilerVersion } from "./version";
 import { idText } from "../grammar/ast";
 import { TactErrorCollection } from "../errors";
 
-export async function enableFeatures(
+export function enableFeatures(
     ctx: CompilerContext,
     logger: Logger,
     config: ConfigProject,
-): Promise<CompilerContext> {
+): CompilerContext {
     if (config.options === undefined) {
         return ctx;
     }
@@ -66,7 +66,7 @@ export async function build(args: {
         entrypoint: posixNormalize(config.path),
         options: config.options ?? {},
     });
-    ctx = await enableFeatures(ctx, logger, config);
+    ctx = enableFeatures(ctx, logger, config);
 
     // Precompile
     try {
