@@ -66,7 +66,7 @@ export async function build(args: {
         entrypoint: posixNormalize(config.path),
         options: config.options ?? {},
     });
-    enableFeatures(ctx, logger, config);
+    ctx = await enableFeatures(ctx, logger, config);
 
     // Precompile
     try {
