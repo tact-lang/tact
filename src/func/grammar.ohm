@@ -22,18 +22,17 @@ FunC {
              | FunctionDefinition
 
   GlobalVariablesDeclaration = "global" NonemptyListOf<GlobalVariableDeclaration, ","> ";"
-  GlobalVariableDeclaration = Type? id
+  GlobalVariableDeclaration = TypeStatic? id
 
   ConstantsDefinition = "const" NonemptyListOf<ConstantDefinition, ","> ";"
   ConstantDefinition = TypeConstant? id "=" Expression
 
   AsmFunctionDefinition = FunctionCommonPrefix "asm" AsmArrangement? stringLiteral+ ";" --singleLine
-                        | FunctionCommonPrefix "asm" AsmArrangement? multiLineString+ ";" --multiLine
+                        | FunctionCommonPrefix "asm" AsmArrangement? multiLineStringLiteral+ ";" --multiLine
 
   AsmArrangement = "(" "->" integerLiteralDec+ ")" --returns
                  | "(" id+ ~"->" ")" --arguments
                  | "(" id+ "->" integerLiteralDec+ ")" --argumentsToReturns
-
 
   FunctionDeclaration = FunctionCommonPrefix ";"
 
@@ -63,9 +62,9 @@ FunC {
   StatementReturn = "return" Expression ";"
   StatementBlock = "{" Statement* "}"
   StatementEmpty = ";"
-  StatementCondition = ("if" | "ifnot") Expression "{" Statement* "}" --noElse
-                     | ("if" | "ifnot") Expression "{" Statement* "}" "else" "{" Statement* "}" --withElse
-                     | ("if" | "ifnot") Expression "{" Statement* "}" ("elseif" | "elseifnot") "{" Statement* "}" --withElseCondition
+  StatementCondition = ("ifnot" | "if" ) Expression "{" Statement* "}" ("elseifnot" | "elseif") Expression "{" Statement* "}" --withElseCondition
+                     | ("ifnot" | "if" ) Expression "{" Statement* "}" "else" "{" Statement* "}" --withElse
+                     | ("ifnot" | "if" ) Expression "{" Statement* "}" --noElse
   StatementRepeat = "repeat" Expression "{" Statement* "}"
   StatementUntil = "do" "{" Statement* "}" "until" Expression ";"
   StatementWhile = "while" Expression "{" Statement* "}"
@@ -110,12 +109,12 @@ FunC {
 
   // parse_expr15
   ExpressionCompare = ExpressionBitwiseShift "=="  ExpressionBitwiseShift --eq
-                    | ExpressionBitwiseShift "<"   ExpressionBitwiseShift --lt
-                    | ExpressionBitwiseShift ">"   ExpressionBitwiseShift --gt
-                    | ExpressionBitwiseShift "<="  ExpressionBitwiseShift --lte
-                    | ExpressionBitwiseShift ">="  ExpressionBitwiseShift --gte
-                    | ExpressionBitwiseShift "!="  ExpressionBitwiseShift --neq
                     | ExpressionBitwiseShift "<=>" ExpressionBitwiseShift --spaceship
+                    | ExpressionBitwiseShift "<="  ExpressionBitwiseShift --lte
+                    | ExpressionBitwiseShift "<"   ExpressionBitwiseShift --lt
+                    | ExpressionBitwiseShift ">="  ExpressionBitwiseShift --gte
+                    | ExpressionBitwiseShift ">"   ExpressionBitwiseShift --gt
+                    | ExpressionBitwiseShift "!="  ExpressionBitwiseShift --neq
                     | ExpressionBitwiseShift
 
   // parse_expr17
@@ -154,8 +153,7 @@ FunC {
                        | ExpressionSequence
 
   // FIXME: Temporary definition for debugging purposes.
-  ExpressionSequence = integerLiteral | multiLineString | stringLiteral | id
-  ExpressionPrimary = integerLiteral | multiLineString | stringLiteral | id
+  ExpressionSequence = ExpressionPrimary
 
   // parse_expr90, FIXME: this is wrong and has to be re-made :)
   // TODO: function call
@@ -166,20 +164,15 @@ FunC {
   //                    | ExpressionPrimary
 
   // parse_expr100, order is important
-  // ExpressionPrimary = ExpressionTuple
-  //                   | ExpressionTensor
-  //                   | integerLiteral
-  //                   | stringLiteral
-  //                   | hole
-  //                   | primitiveType // TODO: re-make this one.
-  //                   | id // includes true|false, null|Null
-  // TODO: parens!
-  // TODO: unit?
-  // TODO: slice_string_ident?
+  ExpressionPrimary =
+                    // TODO: parens?
+                    | integerLiteral
+                    | multiLineStringLiteral
+                    | stringLiteral
+                    | TypeStatic
+                    | id
 
-  // TODO: ...
-  ExpressionTuple = "(" "TODO:" ")"
-  ExpressionTensor = "[" "TODO:" "]"
+  // ExpressionParens = "(" Expression ")"
 
   //
   // Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
@@ -191,17 +184,22 @@ FunC {
 
   // Parameters, with type holes prohibited during syntax analysis
   Parameters = "(" ListOf<Parameter, ","> ")"
-  Parameter = Type id --regular
-            | id id --typeVar
+  Parameter = Type id
 
-  // Arguments -- unused?
-  Arguments = "(" ListOf<Argument, ","> ")"
-  Argument = id
+  // Arguments -- TODO: unused, remove?
+  // Arguments = "(" ListOf<Argument, ","> ")"
+  // Argument = id
 
-  // Mapped or unmapped builtin types, where "mapped" refers to:
-  // https://docs.ton.org/develop/func/types#functional-type
+  // Mapped or unmapped builtin types or type variables,
+  // where "mapped" refers to: https://docs.ton.org/develop/func/types#functional-type
+  // and type variables refer to parametric polymorphism with `forall`
   Type = TypeBuiltin "->" Type --mapped
-       | TypeBuiltin
+       | TypeBuiltin --builtin
+       | id --var
+
+  // Non-polymorphic types
+  TypeStatic = TypeBuiltin "->" Type --mapped
+             | TypeBuiltin --builtin
 
   // Builtin types
   TypeBuiltin = "int"
@@ -210,12 +208,10 @@ FunC {
                 | "builder"
                 | "cont"
                 | "tuple"
-                | hole
-                | unit
                 | Tensor
                 | Tuple
-                // | id
-                // TODO: Use different type signatures in forall functions?
+                | hole
+                | unit
 
   // Non-functional composite builtin types
   Tensor = "(" NonemptyListOf<Type, ","> ")"
@@ -223,7 +219,7 @@ FunC {
 
   // Allowed types of constants
   TypeConstant = "int" | "slice"
-  
+
   //
   // Lexical rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
   //
@@ -268,13 +264,14 @@ FunC {
 
   // Strings
   stringLiteral = "\"" (~"\"" any)* "\"" stringType?
+  multiLineStringLiteral = "\"\"\"" (~"\"\"\"" any)* "\"\"\"" stringType?
+
   stringType = "s" --sliceHex
              | "a" --sliceInternalAddress
              | "u" --intHex
              | "h" --int32Sha256
              | "H" --int256Sha256
              | "c" --intCrc32
-  multiLineString = "\"\"\"" (~"\"\"\"" any)* "\"\"\""
 
   // Whitespace
   space += comment | lineTerminator
