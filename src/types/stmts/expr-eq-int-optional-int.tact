@@ -1,6 +1,6 @@
 primitive Int;
+primitive Bool;
 
-fun foo() {
-    let x: Int? = null;
-    let _ = x == 42;
+fun foo(x: Int?, y: Int): Bool {
+    return x == y || y == x || x == x;
 }
