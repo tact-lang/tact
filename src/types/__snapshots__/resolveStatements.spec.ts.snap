@@ -1315,6 +1315,27 @@ exports[`resolveStatements should resolve statements for expr-eq-arith 1`] = `
 ]
 `;
 
+exports[`resolveStatements should resolve statements for expr-eq-int-optional-int 1`] = `
+[
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "x == 42",
+    "Bool",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for expr-eq-literal 1`] = `
 [
   [
