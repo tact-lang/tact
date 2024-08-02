@@ -40,7 +40,7 @@ export function enableFeatures(
     ];
     return features.reduce((currentCtx, { option, name }) => {
         if (option) {
-            logger.error(`   > 👀 Enabling ${name}`);
+            logger.debug(`   > 👀 Enabling ${name}`);
             return featureEnable(currentCtx, name);
         }
         return currentCtx;
