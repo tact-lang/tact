@@ -1,6 +1,5 @@
 // This module includes rules involving associative rewrites of expressions
 
-import { evalBinaryOp } from "../constEval";
 import {
     AstBinaryOperation,
     AstExpression,
@@ -8,6 +7,7 @@ import {
     AstValue,
     isValue,
 } from "../grammar/ast";
+import { evalBinaryOp } from "../interpreter";
 import { Value } from "../types/types";
 import { ExpressionTransformer, Rule } from "./types";
 import {

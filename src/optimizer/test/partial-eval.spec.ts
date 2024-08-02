@@ -8,14 +8,11 @@ import {
 } from "../../grammar/ast";
 import { parseExpression } from "../../grammar/grammar";
 import { extractValue, makeValueExpression } from "../util";
-import {
-    evalBinaryOp,
-    evalUnaryOp,
-    partiallyEvalExpression,
-} from "../../constEval";
+import { partiallyEvalExpression } from "../../constEval";
 import { CompilerContext } from "../../context";
 import { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
+import { evalBinaryOp, evalUnaryOp } from "../../interpreter";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
