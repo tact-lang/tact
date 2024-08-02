@@ -164,7 +164,8 @@ type FuncAstPragma =
  */
 type FuncAstPragmaLiteral = {
     kind: "pragma_literal";
-    literal: "allow-post-modification" | "compute-asm-ltr";
+    literal: string;
+    // "allow-post-modification" | "compute-asm-ltr";
     loc: FuncSrcInfo;
 };
 
@@ -203,14 +204,16 @@ type FuncAstInclude = {
 // Top-level, module items
 //
 
-type FuncAstModuleItem = FuncAstGlobalVariablesDeclaration;
+type FuncAstModuleItem =
+    | FuncAstGlobalVariablesDeclaration
+    | FuncAstConstantsDefinition;
 
 /**
  * global ..., ...;
  */
 type FuncAstGlobalVariablesDeclaration = {
     kind: "global_variables_declaration";
-    globals: FuncAstGlobalVariable;
+    globals: FuncAstGlobalVariable[];
     loc: FuncSrcInfo;
 };
 
@@ -219,22 +222,47 @@ type FuncAstGlobalVariablesDeclaration = {
  */
 type FuncAstGlobalVariable = {
     kind: "global_variable";
-    type: FuncAstTypeUniform | undefined;
+    ty: FuncAstTypeUniform | undefined;
     name: FuncAstId;
     loc: FuncSrcInfo;
 };
+
+/**
+ * const ..., ...;
+ */
+type FuncAstConstantsDefinition = {
+    kind: "constants_definition";
+    constants: FuncAstConstant[];
+    loc: FuncSrcInfo;
+}
+
+/**
+ * (slice | int)? id = Expression
+ */
+type FuncAstConstant = {
+    kind: "constant";
+    ty: "slice" | "int" | undefined;
+    name: FuncAstId;
+    value: FuncAstExpression;
+    loc: FuncSrcInfo;
+}
 
 //
 // Statements
 // TODO
 //
 
-type FuncAstStatement = {};
+type FuncAstStatement =
+    | {};
+
 
 //
 // Expressions
 // TODO
 //
+
+type FuncAstExpression =
+    | {};
 
 //
 // Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
@@ -393,6 +421,8 @@ type FuncAstVersionRange = {
 };
 
 type FuncAstIntegerLiteral = {
+    kind: "integer_literal";
+    value: bigint;
     loc: FuncSrcInfo;
 };
 

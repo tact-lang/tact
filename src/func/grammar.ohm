@@ -25,7 +25,7 @@ FunC {
   GlobalVariableDeclaration = TypeUniform? id
 
   ConstantsDefinition = "const" NonemptyListOf<ConstantDefinition, ","> ";"
-  ConstantDefinition = TypeConstant? id "=" Expression
+  ConstantDefinition = ("slice" | "int")? id "=" Expression
 
   AsmFunctionDefinition = FunctionCommonPrefix "asm" AsmArrangement? (multiLineStringLiteral | stringLiteral)+ ";"
 
@@ -117,34 +117,34 @@ FunC {
                     | ExpressionBitwiseShift
 
   // parse_expr17
-  ExpressionBitwiseShift = ExpressionAddBitwise "<<"  ExpressionAddBitwise --shl
-                         | ExpressionAddBitwise ">>"  ExpressionAddBitwise --shr
-                         | ExpressionAddBitwise "~>>" ExpressionAddBitwise --shrRound
-                         | ExpressionAddBitwise "^>>" ExpressionAddBitwise --shrCeil
+  ExpressionBitwiseShift = ExpressionAddBitwise ("<<"  ExpressionAddBitwise)+ --shl
+                         | ExpressionAddBitwise (">>"  ExpressionAddBitwise)+ --shr
+                         | ExpressionAddBitwise ("~>>" ExpressionAddBitwise)+ --shrRound
+                         | ExpressionAddBitwise ("^>>" ExpressionAddBitwise)+ --shrCeil
                          | ExpressionAddBitwise
 
   // parse_expr20
-  ExpressionAddBitwise = "-"? ExpressionMulBitwise "+" ExpressionMulBitwise --add
-                       | "-"? ExpressionMulBitwise "-" ExpressionMulBitwise --sub
-                       | "-"? ExpressionMulBitwise "|" ExpressionMulBitwise --bitwiseOr
-                       | "-"? ExpressionMulBitwise "^" ExpressionMulBitwise --bitwiseXor
-                       | "-" ExpressionMulBitwise --minus
+  ExpressionAddBitwise = ("-" &whiteSpace)? ExpressionMulBitwise ("+" ExpressionMulBitwise)+ --add
+                       | ("-" &whiteSpace)? ExpressionMulBitwise ("-" ExpressionMulBitwise)+ --sub
+                       | ("-" &whiteSpace)? ExpressionMulBitwise ("|" ExpressionMulBitwise)+ --bitwiseOr
+                       | ("-" &whiteSpace)? ExpressionMulBitwise ("^" ExpressionMulBitwise)+ --bitwiseXor
+                       | ("-" &whiteSpace) ExpressionMulBitwise --minus
                        | ExpressionMulBitwise
 
   // parse_expr30
-  ExpressionMulBitwise = ExpressionUnary "*"  ExpressionUnary --mul
-                       | ExpressionUnary "/%" ExpressionUnary --divMod
-                       | ExpressionUnary "/"  ExpressionUnary --div
-                       | ExpressionUnary "%"  ExpressionUnary --mod
-                       | ExpressionUnary "~/" ExpressionUnary --divRound
-                       | ExpressionUnary "~%" ExpressionUnary --modRound
-                       | ExpressionUnary "^/" ExpressionUnary --divCeil
-                       | ExpressionUnary "^%" ExpressionUnary --modCeil
-                       | ExpressionUnary "&"  ExpressionUnary --bitwiseAnd
+  ExpressionMulBitwise = ExpressionUnary ("*"  ExpressionUnary)+ --mul
+                       | ExpressionUnary ("/%" ExpressionUnary)+ --divMod
+                       | ExpressionUnary ("/"  ExpressionUnary)+ --div
+                       | ExpressionUnary ("%"  ExpressionUnary)+ --mod
+                       | ExpressionUnary ("~/" ExpressionUnary)+ --divRound
+                       | ExpressionUnary ("~%" ExpressionUnary)+ --modRound
+                       | ExpressionUnary ("^/" ExpressionUnary)+ --divCeil
+                       | ExpressionUnary ("^%" ExpressionUnary)+ --modCeil
+                       | ExpressionUnary ("&"  ExpressionUnary)+ --bitwiseAnd
                        | ExpressionUnary
 
   // parse_expr75
-  ExpressionUnary = "~" ExpressionMethodCall --bitwiseNot
+  ExpressionUnary = "~" &whiteSpace ExpressionMethodCall --bitwiseNot
                   | ExpressionMethodCall
 
   // parse_expr80
@@ -172,9 +172,6 @@ FunC {
   //
   // Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
   //
-
-  // Allowed types of constants
-  TypeConstant = "int" | "slice"
 
   // forall type1, ..., typeN ->
   Forall = "forall" NonemptyListOf<TypeVar, ","> "->"
@@ -223,12 +220,12 @@ FunC {
   unit = "()"
 
   // Function identifiers
-  functionId = ~("\"" | "{-") ("." | "~")? id
+  functionId = ~("\"" | "{-") ("." | "~")? (quotedId | plainId)
 
   // Identifiers, with invalidation (keywords, numbers, etc.) during syntax analysis
   // — this makes this parser closer to the C++ one, and also improves error messages
 
-  id = ~("\"" | "{-") (quotedId | plainId)
+  id = ~("\"" | "{-" | "." | "~") (quotedId | plainId)
 
   quotedId = "`" (~("`" | "\n") any)+ "`"
   plainId = (~(whiteSpace | "(" | ")" | "[ | ]" | "," | "." | ";" | "~") any)+
