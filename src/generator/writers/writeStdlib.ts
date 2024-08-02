@@ -209,6 +209,14 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.asm(`asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT"`);
     });
 
+    ctx.fun("__tact_dict_delete_get", () => {
+        ctx.signature(
+            `(cell, (slice, int)) __tact_dict_delete_get(cell dict, int key_len, slice index)`,
+        );
+        ctx.context("stdlib");
+        ctx.asm(`asm(index dict key_len) "DICTDELGET" "NULLSWAPIFNOT2"`);
+    });
+
     ctx.fun("__tact_dict_get_ref", () => {
         ctx.signature(
             `(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index)`,
@@ -1404,6 +1412,32 @@ export function writeStdlib(ctx: WriterContext) {
                 var a_is_null = null?(a);
                 var b_is_null = null?(b);
                 return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );
+            `);
+        });
+    });
+
+    //
+    // Dictionary deep equality
+    //
+
+    ctx.fun(`__tact_dict_eq`, () => {
+        ctx.signature(`int __tact_dict_eq(cell a, cell b)`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                (slice key, slice value, int flag) = ${ctx.used("__tact_dict_min")}(a, 1023);
+                while (flag) {
+                    (slice value_b, int flag_b) = b~${ctx.used("__tact_dict_delete_get")}(1023, key);
+                    ifnot (flag_b) {
+                        return 0;
+                    }
+                    ifnot (value.slice_hash() == value_b.slice_hash()) {
+                        return 0;
+                    }
+                    (key, value, flag) = ${ctx.used("__tact_dict_next")}(a, 1023, key);
+                }
+                return null?(b);
             `);
         });
     });
