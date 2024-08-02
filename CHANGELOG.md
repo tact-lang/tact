@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - FunC function identifiers with characters from hexadecimal set: PR [#636](https://github.com/tact-lang/tact/pull/636)
 - Throw syntax error for module-level (top-level) constants with attributes: PR [#644](https://github.com/tact-lang/tact/pull/644)
+- Typechecking for optional types when the argument type is not an equality type: PR [#650](https://github.com/tact-lang/tact/pull/650)
 
 ## [1.4.1] - 2024-07-26
 
