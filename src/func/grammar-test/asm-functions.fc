@@ -18,7 +18,7 @@ slice hello_world() asm """
 
 ;; Mix single-line and multi-line strings
 
-int inc_then_negate'''(int x) asn "INC" """
+int inc_then_negate'''(int x) asm "INC" """
     NEGATE
 """;
 

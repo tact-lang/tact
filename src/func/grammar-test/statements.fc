@@ -38,7 +38,7 @@ int return_stmt'() { return 42; }
 
 ;; repeat
 () repeat_stmt() {
-    repeat 1 { }
+    repeat (1) { }
 
     repeat 1 {
         ; ; ;

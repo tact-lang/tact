@@ -27,7 +27,7 @@ FunC {
   ConstantsDefinition = "const" NonemptyListOf<ConstantDefinition, ","> ";"
   ConstantDefinition = ("slice" | "int")? id "=" Expression
 
-  AsmFunctionDefinition = FunctionCommonPrefix "asm" AsmArrangement? (multiLineStringLiteral | stringLiteral)+ ";"
+  AsmFunctionDefinition = FunctionCommonPrefix "asm" AsmArrangement? stringLiteral+ ";"
 
   AsmArrangement = "(" "->" integerLiteralDec+ ")" --returns
                  | "(" id+ ~"->" ")" --arguments
@@ -42,7 +42,8 @@ FunC {
 
   // Called "specifiers" in https://docs.ton.org/develop/func/functions#specifiers
   FunctionAttribute = "impure" | "inline_ref" | "inline" | MethodIdValue | "method_id"
-  MethodIdValue = "method_id" "(" integerLiteralNonNegative ")"
+  MethodIdValue = "method_id" "(" integerLiteral ")" --int
+                | "method_id" "(" stringLiteral ")" --string
 
   //
   // Statements
@@ -76,10 +77,7 @@ FunC {
   // https://github.com/ton-blockchain/ton/blob/master/crypto/func/parse-func.cpp
   //
 
-  // NOTE: they should parse exactly as FunC 0.4.4 does it, including the issues with precedences of ^ | and similar
-
   // parse_expr
-  // Expression = integerLiteral | stringLiteral | id // FIXME temporary, for tests prior to expressions
   Expression = ExpressionAssign
 
   // parse_expr10
@@ -144,30 +142,34 @@ FunC {
                        | ExpressionUnary
 
   // parse_expr75
-  ExpressionUnary = "~" &whiteSpace ExpressionMethodCall --bitwiseNot
-                  | ExpressionMethodCall
+  ExpressionUnary = "~" &whiteSpace ExpressionMethod --bitwiseNot
+                  | ExpressionMethod
 
   // parse_expr80
-  ExpressionMethodCall = ExpressionSequence ("." | "~") id ExpressionPrimary --call
-                       | ExpressionSequence
+  ExpressionMethod = ExpressionVarFun (&("." | "~") #functionId ExpressionPrimary)+ --call
+                   | ExpressionVarFun
 
-  // FIXME: Temporary definition for debugging purposes.
-  ExpressionSequence = ExpressionPrimary
+  // parse_expr90
+  ExpressionVarFun = (hole | Type) &("(" | "[" | ~("{" | "}") id) ExpressionPrimary --decl
+                   | ExpressionPrimary (&("(" | "[" | ~("{" | "}") id) ExpressionPrimary)+ --call
+                   | ExpressionPrimary
 
-  // parse_expr90, FIXME: this is wrong and has to be re-made :)
-  // TODO: function call
-  // TODO: variable declaration
-  // ExpressionSequence = ExpressionPrimary &"(" ExpressionPrimary --call
-  //                    | ExpressionPrimary &"[" ExpressionPrimary --access
-  //                    | ExpressionPrimary ~("." | "~") id ExpressionPrimary --id
-  //                    | ExpressionPrimary
 
-  // parse_expr100, order is important
-  ExpressionPrimary =
-                    // TODO: parens?
-                    | integerLiteral | multiLineStringLiteral | stringLiteral | TypeUniform | id
 
-  // ExpressionParens = "(" Expression ")"
+  // parse_expr100
+  ExpressionPrimary = stringLiteral
+                    | integerLiteral
+                    | unit
+                    | ExpressionTensor
+                    | ExpressionParens
+                    | tupleEmpty
+                    | ExpressionTuple
+                    | id
+
+  ExpressionParens = "(" Expression ")"
+  ExpressionTensor = "(" ListOf<Expression, ","> ")"
+  ExpressionTuple = "[" ListOf<Expression, ","> "]"
+
 
   //
   // Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
@@ -177,12 +179,10 @@ FunC {
   Forall = "forall" NonemptyListOf<TypeVar, ","> "->"
   TypeVar = "type"? id
 
-  // Parameters, with type holes prohibited during syntax analysis
+  // Parameters, with holes allowed for identifiers
   Parameters = "(" ListOf<Parameter, ","> ")"
-  Parameter = Type id
-
-  // Arguments -- TODO: unused, remove?
-  // Arguments = "(" ListOf<Argument, ","> ")"
+  Parameter = Type id --regular
+            | id --inferredType
   // Argument = id
 
   // Mapped or unmapped builtin types or type variables,
@@ -194,7 +194,8 @@ FunC {
 
   // Builtin types
   TypeBuiltin = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
-              | Tensor | Tuple | hole | unit
+              | unit | tupleEmpty | Tensor | Tuple
+
 
   // Non-functional composite builtin types
   Tensor = "(" NonemptyListOf<Type, ","> ")"
@@ -205,7 +206,7 @@ FunC {
               | TypeBuiltinUniform --builtin
 
   TypeBuiltinUniform = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
-                     | TensorUniform | TupleUniform | hole | unit
+                     | hole | unit | tupleEmpty | TensorUniform | TupleUniform
 
   TensorUniform = "(" NonemptyListOf<TypeUniform, ","> ")"
 
@@ -215,9 +216,11 @@ FunC {
   // Lexical rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
   //
 
-  // Special types
+  // Special types or values
   hole = "_" | "var"
   unit = "()"
+  tupleEmpty = "[]"
+
 
   // Function identifiers
   functionId = ~("\"" | "{-") ("." | "~")? (quotedId | plainId)
@@ -228,7 +231,7 @@ FunC {
   id = ~("\"" | "{-" | "." | "~") (quotedId | plainId)
 
   quotedId = "`" (~("`" | "\n") any)+ "`"
-  plainId = (~(whiteSpace | "(" | ")" | "[ | ]" | "," | "." | ";" | "~") any)+
+  plainId = (~(whiteSpace | "(" | ")" | "[" | "]" | "," | "." | ";" | "~") any)+
 
   // Unused identifiers
   unusedId = "_"
@@ -253,8 +256,8 @@ FunC {
   integerLiteralDec = digit+
 
   // Strings
-  stringLiteral = "\"" (~"\"" any)* "\"" stringType?
-  multiLineStringLiteral = "\"\"\"" (~"\"\"\"" any)* "\"\"\"" stringType?
+  stringLiteral = "\"\"\"" (~"\"\"\"" any)* "\"\"\"" stringType? --multiLine
+                | "\"" (~"\"" any)* "\"" stringType? --singleLine
 
   stringType = "s" --sliceHex
              | "a" --sliceInternalAddress
