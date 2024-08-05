@@ -40,6 +40,15 @@ FunC {
   // Common prefix of function declarations and definitions
   FunctionCommonPrefix = Forall? Type functionId Parameters FunctionAttribute*
 
+  // forall type1, ..., typeN ->
+  Forall = "forall" NonemptyListOf<TypeVar, ","> "->"
+  TypeVar = "type"? id
+
+  // Parameters, with holes allowed for identifiers
+  Parameters = "(" ListOf<Parameter, ","> ")"
+  Parameter = Type id --regular
+            | id --inferredType
+
   // Called "specifiers" in https://docs.ton.org/develop/func/functions#specifiers
   FunctionAttribute = "impure" | "inline_ref" | "inline" | MethodIdValue | "method_id"
   MethodIdValue = "method_id" "(" integerLiteral ")" --int
@@ -122,11 +131,11 @@ FunC {
                          | ExpressionAddBitwise
 
   // parse_expr20
-  ExpressionAddBitwise = ("-" &whiteSpace)? ExpressionMulBitwise ("+" ExpressionMulBitwise)+ --add
-                       | ("-" &whiteSpace)? ExpressionMulBitwise ("-" ExpressionMulBitwise)+ --sub
-                       | ("-" &whiteSpace)? ExpressionMulBitwise ("|" ExpressionMulBitwise)+ --bitwiseOr
-                       | ("-" &whiteSpace)? ExpressionMulBitwise ("^" ExpressionMulBitwise)+ --bitwiseXor
-                       | ("-" &whiteSpace) ExpressionMulBitwise --minus
+  ExpressionAddBitwise = ("-" &#whiteSpace)? ExpressionMulBitwise ("+" ExpressionMulBitwise)+ --add
+                       | ("-" &#whiteSpace)? ExpressionMulBitwise ("-" ExpressionMulBitwise)+ --sub
+                       | ("-" &#whiteSpace)? ExpressionMulBitwise ("|" ExpressionMulBitwise)+ --bitwiseOr
+                       | ("-" &#whiteSpace)? ExpressionMulBitwise ("^" ExpressionMulBitwise)+ --bitwiseXor
+                       | ("-" &#whiteSpace) ExpressionMulBitwise --minus
                        | ExpressionMulBitwise
 
   // parse_expr30
@@ -142,31 +151,34 @@ FunC {
                        | ExpressionUnary
 
   // parse_expr75
-  ExpressionUnary = "~" &whiteSpace ExpressionMethod --bitwiseNot
+  ExpressionUnary = "~" &#whiteSpace ExpressionMethod --bitwiseNot
                   | ExpressionMethod
 
   // parse_expr80
-  ExpressionMethod = ExpressionVarFun (&("." | "~") #functionId ExpressionPrimary)+ --call
+  ExpressionMethod = ExpressionVarFun (methodId &("(" | "[" | Id) ExpressionPrimary)+ --call
                    | ExpressionVarFun
 
   // parse_expr90
-  ExpressionVarFun = (hole | Type) &("(" | "[" | ~("{" | "}") id) ExpressionPrimary --decl
-                   | ExpressionPrimary (&("(" | "[" | ~("{" | "}") id) ExpressionPrimary)+ --call
-                   | ExpressionPrimary
+  ExpressionVarFun =
+    | ExpressionPrimary (&("(" | "[" | Id) ExpressionPrimary)+ --functionCall
+    | Type (&("(" | "[" | Id) ExpressionPrimary) --polymorphVarDecl
+    // hole in TypeUniform
+    | TypeUniform (&("(" | "[" | Id) ExpressionPrimary) --uniformVarDecl
+    | ExpressionPrimary
 
 
 
   // parse_expr100
   ExpressionPrimary = stringLiteral
                     | integerLiteral
-                    | unit
                     | ExpressionTensor
-                    | ExpressionParens
-                    | tupleEmpty
+                    | unit
                     | ExpressionTuple
-                    | id
+                    | tupleEmpty
+                    | FunctionId // id???
+  Id = ~(hole | integerLiteral | delimiter | operator) id
+  FunctionId =  ~(hole | integerLiteral | delimiter | operator) functionId
 
-  ExpressionParens = "(" Expression ")"
   ExpressionTensor = "(" ListOf<Expression, ","> ")"
   ExpressionTuple = "[" ListOf<Expression, ","> "]"
 
@@ -175,14 +187,6 @@ FunC {
   // Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
   //
 
-  // forall type1, ..., typeN ->
-  Forall = "forall" NonemptyListOf<TypeVar, ","> "->"
-  TypeVar = "type"? id
-
-  // Parameters, with holes allowed for identifiers
-  Parameters = "(" ListOf<Parameter, ","> ")"
-  Parameter = Type id --regular
-            | id --inferredType
   // Argument = id
 
   // Mapped or unmapped builtin types or type variables,
@@ -190,27 +194,27 @@ FunC {
   // and type variables refer to parametric polymorphism with `forall`
   Type = TypeBuiltin "->" Type --mapped
        | TypeBuiltin --builtin
-       | id --var
+       // | Id --var
 
   // Builtin types
   TypeBuiltin = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
-              | unit | tupleEmpty | Tensor | Tuple
+              | Tensor | Tuple | unit | tupleEmpty | Id
 
 
   // Non-functional composite builtin types
-  Tensor = "(" NonemptyListOf<Type, ","> ")"
-  Tuple = "[" NonemptyListOf<Type, ","> "]"
+  Tensor = "(" ListOf<Type, ","> ")"
+  Tuple = "[" ListOf<Type, ","> "]"
 
   // Non-polymorphic, uniform types
   TypeUniform = TypeBuiltinUniform "->" TypeUniform --mapped
               | TypeBuiltinUniform --builtin
 
   TypeBuiltinUniform = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
-                     | hole | unit | tupleEmpty | TensorUniform | TupleUniform
+                     | hole | TensorUniform | TupleUniform | unit | tupleEmpty
 
-  TensorUniform = "(" NonemptyListOf<TypeUniform, ","> ")"
+  TensorUniform = "(" ListOf<TypeUniform, ","> ")"
 
-  TupleUniform = "[" NonemptyListOf<TypeUniform, ","> "]"
+  TupleUniform = "[" ListOf<TypeUniform, ","> "]"
 
   //
   // Lexical rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
@@ -221,9 +225,20 @@ FunC {
   unit = "()"
   tupleEmpty = "[]"
 
+  // Operators and delimiters
+  operator = ("+" | "-" | "*" | "/%" | "/" | "%"
+                 | "~/" | "^/" | "~%" | "^%") --arithOperator
+           | ("<=>" | "<=" | "<" | ">=" | ">" | "!=" | "==") --comparisonOperator
+           | ("~>>" | "~" | "^>>" | "^" | "&" | "|" | "<<" | ">>") --bitwiseOperator
+           | ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "~>>="
+                  | "~/=" | "~%=" | "^>>=" | "^/=" | "^%=" | "^="
+                  | "<<=" | ">>=" | "&=" | "|=") --assignOperator
+  delimiter = "{" | "}" | "?" | ":"
+
 
   // Function identifiers
   functionId = ~("\"" | "{-") ("." | "~")? (quotedId | plainId)
+  methodId = ~("\"" | "{-") ("." | "~") (quotedId | plainId)
 
   // Identifiers, with invalidation (keywords, numbers, etc.) during syntax analysis
   // — this makes this parser closer to the C++ one, and also improves error messages
