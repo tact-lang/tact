@@ -6,7 +6,7 @@
 
 ;; Parametric polymorphism with forall
 forall X -> () poly(X p1);
-forall X, Y -> (Y, X) poly'();
+forall X, Y -> (Y, X) poly'(X p1, Y p2);
 
 ;; Attributes (called specifiers in TON Docs)
 () attr() impure inline_ref inline method_id(0x2A);

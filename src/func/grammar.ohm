@@ -21,33 +21,72 @@ FunC {
              | FunctionDeclaration
              | FunctionDefinition
 
+  //
+  // Declarations of global variables
+  //
+
   GlobalVariablesDeclaration = "global" NonemptyListOf<GlobalVariableDeclaration, ","> ";"
-  GlobalVariableDeclaration = TypeUniform? id
+  GlobalVariableDeclaration = TypeGlob? id
+
+  TypeGlob = TypeBuiltinGlob ("->" TypeGlob)?
+
+  TypeBuiltinGlob = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
+                  | "_" | unit | tupleEmpty | TensorGlob | TupleGlob
+
+  TensorGlob = "(" ListOf<TypeGlob, ","> ")"
+  TupleGlob = "[" ListOf<TypeGlob, ","> "]"
+
+  //
+  // Definitions of constants
+  //
 
   ConstantsDefinition = "const" NonemptyListOf<ConstantDefinition, ","> ";"
   ConstantDefinition = ("slice" | "int")? id "=" Expression
 
+  //
+  // Definitions of asm functions
+  //
+
   AsmFunctionDefinition = FunctionCommonPrefix "asm" AsmArrangement? stringLiteral+ ";"
 
-  AsmArrangement = "(" "->" integerLiteralDec+ ")" --returns
+  AsmArrangement = "(" "->" &#whiteSpace integerLiteralDec+ ")" --returns
                  | "(" id+ ~"->" ")" --arguments
-                 | "(" id+ "->" integerLiteralDec+ ")" --argumentsToReturns
+                 | "(" id+ &#whiteSpace "->" &#whiteSpace integerLiteralDec+ ")" --argumentsToReturns
+
+  //
+  // Function declarations, definitions and common prefix of their syntax
+  //
 
   FunctionDeclaration = FunctionCommonPrefix ";"
-
   FunctionDefinition = FunctionCommonPrefix "{" Statement* "}"
-
-  // Common prefix of function declarations and definitions
-  FunctionCommonPrefix = Forall? Type functionId Parameters FunctionAttribute*
+  FunctionCommonPrefix = Forall? TypeReturn functionId Parameters FunctionAttribute*
 
   // forall type1, ..., typeN ->
-  Forall = "forall" NonemptyListOf<TypeVar, ","> "->"
-  TypeVar = "type"? id
+  Forall = "forall" &#whiteSpace NonemptyListOf<TypeVar, ","> &#whiteSpace "->" &#whiteSpace
+  TypeVar = ("type" &#whiteSpace)? id
 
-  // Parameters, with holes allowed for identifiers
+  // Function return types
+  TypeReturn = TypeBuiltinReturn (&#whiteSpace "->" &#whiteSpace TypeReturn)?
+
+  TypeBuiltinReturn = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
+                    | "_" | unit | tupleEmpty | TensorReturn | TupleReturn | id
+
+  TensorReturn = "(" ListOf<TypeReturn, ","> ")"
+  TupleReturn = "[" ListOf<TypeReturn, ","> "]"
+
+  // Function parameters
   Parameters = "(" ListOf<Parameter, ","> ")"
-  Parameter = Type id --regular
-            | id --inferredType
+  Parameter = TypeParameter &#whiteSpace (hole | id) --regular
+            | (hole | id) --inferredType
+
+  // Function parameter types
+  TypeParameter = TypeBuiltinParameter (&#whiteSpace "->" &#whiteSpace TypeParameter)?
+
+  TypeBuiltinParameter = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
+                       | unit | tupleEmpty | TensorParameter | TupleParameter | id
+
+  TensorParameter = "(" ListOf<TypeParameter, ","> ")"
+  TupleParameter = "[" ListOf<TypeParameter, ","> "]"
 
   // Called "specifiers" in https://docs.ton.org/develop/func/functions#specifiers
   FunctionAttribute = "impure" | "inline_ref" | "inline" | MethodIdValue | "method_id"
@@ -55,7 +94,7 @@ FunC {
                 | "method_id" "(" stringLiteral ")" --string
 
   //
-  // Statements
+  // Statements (with mandatory whitespace padding in most places )
   //
 
   Statement = StatementReturn
@@ -68,17 +107,37 @@ FunC {
             | StatementTryCatch
             | StatementExpression
 
-  StatementReturn = "return" Expression ";"
-  StatementBlock = "{" Statement* "}"
-  StatementEmpty = ";"
-  StatementCondition = ("ifnot" | "if" ) Expression "{" Statement* "}" ("elseifnot" | "elseif") Expression "{" Statement* "}" --withElseCondition
-                     | ("ifnot" | "if" ) Expression "{" Statement* "}" "else" "{" Statement* "}" --withElse
-                     | ("ifnot" | "if" ) Expression "{" Statement* "}" --noElse
-  StatementRepeat = "repeat" Expression "{" Statement* "}"
-  StatementUntil = "do" "{" Statement* "}" "until" Expression ";"
-  StatementWhile = "while" Expression "{" Statement* "}"
-  StatementTryCatch = "try" "{" Statement* "}" "catch" "(" (unusedId | id) "," (unusedId | id) ")" "{" Statement* "}"
-  StatementExpression = Expression ";"
+  StatementReturn = "return" &#whiteSpace Expression ";"
+
+  StatementBlock = "{" &#whiteSpace Statement* &#whiteSpace "}"
+
+  StatementEmpty =  ";"
+
+  StatementCondition = ("ifnot" | "if") &#whiteSpace
+                       Expression &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}" &#whiteSpace
+                       ("elseifnot" | "elseif") &#whiteSpace
+                       Expression &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}" --withElseCondition
+
+                     | ("ifnot" | "if") &#whiteSpace
+                       Expression &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}" &#whiteSpace
+                       "else" &#whiteSpace
+                       "{" &#whiteSpace Statement* &#whiteSpace "}" --withElse
+
+                     | ("ifnot" | "if") &#whiteSpace
+                       Expression &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}" --noElse
+
+  StatementRepeat = "repeat" &#whiteSpace Expression  &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}"
+
+  StatementUntil = "do" &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}" &#whiteSpace "until" &#whiteSpace Expression ";"
+
+  StatementWhile = "while" &#whiteSpace Expression &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}"
+
+  StatementTryCatch = "try" &#whiteSpace
+                      "{" &#whiteSpace Statement* &#whiteSpace "}" &#whiteSpace
+                      "catch" &#whiteSpace "(" (unusedId | id) "," (unusedId | id) ")" &#whiteSpace
+                      "{" &#whiteSpace Statement* &#whiteSpace "}"
+
+  StatementExpression = Expression &#whiteSpace ";"
 
   //
   // Expressions, ordered by precedence (from lowest to highest),
@@ -90,64 +149,43 @@ FunC {
   Expression = ExpressionAssign
 
   // parse_expr10
-  ExpressionAssign = ExpressionConditional "="    ExpressionAssign --assign
-                   | ExpressionConditional "+="   ExpressionAssign --addAssign
-                   | ExpressionConditional "-="   ExpressionAssign --subAssign
-                   | ExpressionConditional "*="   ExpressionAssign --mulAssign
-                   | ExpressionConditional "/="   ExpressionAssign --divAssign
-                   | ExpressionConditional "%="   ExpressionAssign --modAssign
-                   | ExpressionConditional "~/="  ExpressionAssign --divRoundAssign
-                   | ExpressionConditional "~%="  ExpressionAssign --modRoundAssign
-                   | ExpressionConditional "^/="  ExpressionAssign --divCeilAssign
-                   | ExpressionConditional "^%="  ExpressionAssign --modCeilAssign
-                   | ExpressionConditional "&="   ExpressionAssign --bitwiseAndAssign
-                   | ExpressionConditional "|="   ExpressionAssign --bitwiseOrAssign
-                   | ExpressionConditional "^="   ExpressionAssign --bitwiseXorAssign
-                   | ExpressionConditional "<<="  ExpressionAssign --shlAssign
-                   | ExpressionConditional ">>="  ExpressionAssign --shrAssign
-                   | ExpressionConditional "~>>=" ExpressionAssign --shrRoundAssign
-                   | ExpressionConditional "^>>=" ExpressionAssign --shrCeilAssign
+  ExpressionAssign = ExpressionConditional
+                     &#whiteSpace ("=" | "+=" | "-=" | "*=" | "/=" | "%="
+                          | "~/=" | "~%=" | "^/=" | "^%=" | "&="
+                          | "|=" | "^=" | "<<=" | ">>=" | "~>>=" | "^>>=") &#whiteSpace
+                     ExpressionAssign --op
                    | ExpressionConditional
 
   // parse_expr13
-  ExpressionConditional = ExpressionCompare "?" Expression ":" ExpressionConditional --ternary
+  ExpressionConditional = ExpressionCompare
+                          &#whiteSpace "?" &#whiteSpace Expression
+                          &#whiteSpace ":" &#whiteSpace ExpressionConditional --ternary
                         | ExpressionCompare
 
   // parse_expr15
-  ExpressionCompare = ExpressionBitwiseShift "=="  ExpressionBitwiseShift --eq
-                    | ExpressionBitwiseShift "<=>" ExpressionBitwiseShift --spaceship
-                    | ExpressionBitwiseShift "<="  ExpressionBitwiseShift --lte
-                    | ExpressionBitwiseShift "<"   ExpressionBitwiseShift --lt
-                    | ExpressionBitwiseShift ">="  ExpressionBitwiseShift --gte
-                    | ExpressionBitwiseShift ">"   ExpressionBitwiseShift --gt
-                    | ExpressionBitwiseShift "!="  ExpressionBitwiseShift --neq
+  ExpressionCompare = ExpressionBitwiseShift
+                      &#whiteSpace ("==" | "<=>" | "<=" | "<" | ">=" | ">" | "!=") &#whiteSpace
+                      ExpressionBitwiseShift --op
                     | ExpressionBitwiseShift
 
   // parse_expr17
-  ExpressionBitwiseShift = ExpressionAddBitwise ("<<"  ExpressionAddBitwise)+ --shl
-                         | ExpressionAddBitwise (">>"  ExpressionAddBitwise)+ --shr
-                         | ExpressionAddBitwise ("~>>" ExpressionAddBitwise)+ --shrRound
-                         | ExpressionAddBitwise ("^>>" ExpressionAddBitwise)+ --shrCeil
+  ExpressionBitwiseShift = ExpressionAddBitwise
+                           (&#whiteSpace ("<<" | ">>" | "~>>" | "^>>") &#whiteSpace
+                            ExpressionAddBitwise)+ --ops
                          | ExpressionAddBitwise
 
   // parse_expr20
-  ExpressionAddBitwise = ("-" &#whiteSpace)? ExpressionMulBitwise ("+" ExpressionMulBitwise)+ --add
-                       | ("-" &#whiteSpace)? ExpressionMulBitwise ("-" ExpressionMulBitwise)+ --sub
-                       | ("-" &#whiteSpace)? ExpressionMulBitwise ("|" ExpressionMulBitwise)+ --bitwiseOr
-                       | ("-" &#whiteSpace)? ExpressionMulBitwise ("^" ExpressionMulBitwise)+ --bitwiseXor
-                       | ("-" &#whiteSpace) ExpressionMulBitwise --minus
+  ExpressionAddBitwise = ("-" &#whiteSpace)?
+                         ExpressionMulBitwise
+                         (&#whiteSpace ("+" | "-" | "|" | "^") &#whiteSpace
+                          ExpressionMulBitwise)+ --ops
                        | ExpressionMulBitwise
 
   // parse_expr30
-  ExpressionMulBitwise = ExpressionUnary ("*"  ExpressionUnary)+ --mul
-                       | ExpressionUnary ("/%" ExpressionUnary)+ --divMod
-                       | ExpressionUnary ("/"  ExpressionUnary)+ --div
-                       | ExpressionUnary ("%"  ExpressionUnary)+ --mod
-                       | ExpressionUnary ("~/" ExpressionUnary)+ --divRound
-                       | ExpressionUnary ("~%" ExpressionUnary)+ --modRound
-                       | ExpressionUnary ("^/" ExpressionUnary)+ --divCeil
-                       | ExpressionUnary ("^%" ExpressionUnary)+ --modCeil
-                       | ExpressionUnary ("&"  ExpressionUnary)+ --bitwiseAnd
+  ExpressionMulBitwise = ExpressionUnary
+                         (&#whiteSpace ("*" | "/%" | "/" | "%"
+                            | "~/" | "~%" | "^/" | "^%" | "&") &#whiteSpace
+                          ExpressionUnary)+ --ops
                        | ExpressionUnary
 
   // parse_expr75
@@ -155,7 +193,7 @@ FunC {
                   | ExpressionMethod
 
   // parse_expr80
-  ExpressionMethod = ExpressionVarFun (methodId &("(" | "[" | Id) ExpressionPrimary)+ --call
+  ExpressionMethod = ExpressionVarFun (methodId &("(" | "[" | id) ExpressionPrimary)+ --calls
                    | ExpressionVarFun
 
   // parse_expr90
@@ -169,16 +207,22 @@ FunC {
 
 
   // parse_expr100
-  ExpressionPrimary = stringLiteral
-                    | integerLiteral
-                    | ExpressionTensor
+  ExpressionPrimary =
                     | unit
-                    | ExpressionTuple
+                    | ExpressionTensor
                     | tupleEmpty
-                    | FunctionId // id???
-  Id = ~(hole | integerLiteral | delimiter | operator) id
-  FunctionId =  ~(hole | integerLiteral | delimiter | operator) functionId
+                    | ExpressionTuple
+                    | hole
+                    | typePrimitive
+                    | integerLiteral
+                    | booleanExpression
+                    | nilExpression
+                    | stringLiteral
+                    | id
 
+
+  restrictedId = ~((hole | integerLiteral | delimiter | operator) ~id) id
+  restrictedFunctionId =  ~((hole | integerLiteral | delimiter | operator) ~functionId) functionId
   ExpressionTensor = "(" ListOf<Expression, ","> ")"
   ExpressionTuple = "[" ListOf<Expression, ","> "]"
 
@@ -195,10 +239,13 @@ FunC {
   Type = TypeBuiltin "->" Type --mapped
        | TypeBuiltin --builtin
        // | Id --var
+  // builtin -> primitive
+  typePrimitive = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
 
   // Builtin types
   TypeBuiltin = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
-              | Tensor | Tuple | unit | tupleEmpty | Id
+              | Tensor | Tuple | unit | tupleEmpty | restrictedId
+              // | Id
 
 
   // Non-functional composite builtin types
@@ -221,7 +268,7 @@ FunC {
   //
 
   // Special types or values
-  hole = "_" | "var"
+  hole = "_" | "var" ~id
   unit = "()"
   tupleEmpty = "[]"
 
@@ -237,13 +284,16 @@ FunC {
 
 
   // Function identifiers
-  functionId = ~("\"" | "{-") ("." | "~")? (quotedId | plainId)
-  methodId = ~("\"" | "{-") ("." | "~") (quotedId | plainId)
+  functionId = ~("\"" | "{-") ("." | "~")? rawId
+  methodId = ~("\"" | "{-") ("." | "~") rawId
 
   // Identifiers, with invalidation (keywords, numbers, etc.) during syntax analysis
   // — this makes this parser closer to the C++ one, and also improves error messages
 
-  id = ~("\"" | "{-" | "." | "~") (quotedId | plainId)
+  // TODO: re-work everything here!!!! Literally everything!
+  rawId = quotedId | plainId
+
+  id = ~("\"" | "{-" | "." | "~") rawId
 
   quotedId = "`" (~("`" | "\n") any)+ "`"
   plainId = (~(whiteSpace | "(" | ")" | "[" | "]" | "," | "." | ";" | "~") any)+
@@ -269,6 +319,12 @@ FunC {
 
   // digit is defined in Ohm's built-in rules as: digit = "0".."9"
   integerLiteralDec = digit+
+
+  // Boolean expressions (builtins.cpp)
+  booleanExpression = "true" | "false"
+
+  // Nil expressions (builtins.cpp)
+  nilExpression = "nil" | "Nil"
 
   // Strings
   stringLiteral = "\"\"\"" (~"\"\"\"" any)* "\"\"\"" stringType? --multiLine

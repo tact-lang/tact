@@ -141,9 +141,9 @@ type FuncAstNode =
 
 type FuncAstModule = {
     kind: "module";
-    pragmas: FuncAstPragma;
-    includes: FuncAstInclude;
-    items: FuncAstModuleItem;
+    pragmas: FuncAstPragma[];
+    includes: FuncAstInclude[];
+    items: FuncAstModuleItem[];
     loc: FuncSrcInfo;
 };
 
@@ -269,15 +269,9 @@ type FuncAstExpression =
 //
 
 /**
- * Allowed types of constants
- */
-type FuncAstTypeConstant = "int" | "slice";
-
-/**
  * forall type? typeName1, type? typeName2, ... ->
  */
 type FuncAstForall = FuncAstTypeVar[];
-// TODO: or { kind: ..., etc. }
 
 /**
  * "type"? id
@@ -293,14 +287,30 @@ type FuncAstTypeVar = {
  * (type id, ...)
  */
 type FuncAstParameters = FuncAstParameter[];
-// TODO: or { kind: ..., etc. }
+
+/**
+ * Parameters
+ */
+type FuncAstParameter = 
+    | FuncAstParameterRegular
+    | FuncAstParameterInferredType;
 
 /**
  * type id
  */
-type FuncAstParameter = {
-    kind: "parameter";
+type FuncAstParameterRegular = {
+    kind: "parameter_regular";
     ty: FuncAstType;
+    ident: FuncAstId;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * id
+ */
+type FuncAstParameterInferredType = {
+    kind: "parameter_inferred_type";
+    ident: FuncAstId;
     loc: FuncSrcInfo;
 };
 
@@ -420,27 +430,34 @@ type FuncAstVersionRange = {
     loc: FuncSrcInfo;
 };
 
+/**
+ * -? dec | -? hex
+ */
 type FuncAstIntegerLiteral = {
     kind: "integer_literal";
     value: bigint;
     loc: FuncSrcInfo;
 };
 
+type FuncAstStringLiteral = 
+    | FuncAstStringLiteralSingleLine
+    | FuncAstStringLiteralMultiLine;
+
 /**
  * "..."ty?
  */
-type FuncAstStringLiteral = {
-    kind: "string_literal";
+type FuncAstStringLiteralSingleLine = {
+    kind: "string_singleline";
     value: string;
     ty: undefined | FuncAstStringType;
     loc: FuncSrcInfo;
 };
 
 /**
- * """ ... """ty?
+ * """ ... """ty? 
  */
-type FuncAstMultiLineStringLiteral = {
-    kind: "multiline_string";
+type FuncAstStringLiteralMultiLine = {
+    kind: "string_multiline";
     value: string;
     ty: undefined | FuncAstStringType;
     // TODO: alignIndent: boolean;
