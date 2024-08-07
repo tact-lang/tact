@@ -824,7 +824,7 @@ const map: Serializer<MapSerializerDescr> = {
                 break;
             case "struct":
                 {
-                    valueT = v.value.type;
+                    valueT = v.value.type + "_struct";
                 }
                 break;
         }
