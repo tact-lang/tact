@@ -41,7 +41,7 @@ function unwrapExternal(
 ) {
     if (type.kind === "ref") {
         const t = getType(ctx.ctx, type.name);
-        if (t.kind === "struct") {
+        if (t.kind === "struct" || t.kind === "contract") {
             if (type.optional) {
                 ctx.append(
                     `${resolveFuncType(type, ctx)} ${targetName} = ${ops.typeFromOptTuple(t.name, ctx)}(${sourceName});`,
