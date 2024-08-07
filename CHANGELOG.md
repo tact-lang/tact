@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Returning `self` from getters is now allowed: PR [#666](https://github.com/tact-lang/tact/pull/666)
+
 ### Fixed
 
 ## [1.4.3] - 2024-08-16
