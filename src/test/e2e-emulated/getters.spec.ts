@@ -3,7 +3,7 @@ import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { Test, Test_getterMapping } from "./contracts/output/getters_Test";
 
-describe("getter-names-conflict", () => {
+describe("getters", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
@@ -32,9 +32,6 @@ describe("getter-names-conflict", () => {
         expect(Test_getterMapping["test_getter"]).toBe("gettest_getter");
         expect(Test_getterMapping["Test_getter"]).toBe("getTest_getter");
 
-        // Returning `self` from getter
-        expect(await contract.getContractData()).toMatchSnapshot();
-
         // Passing `S` struct to getter
         expect(
             await contract.getStructAsInput({
@@ -43,6 +40,9 @@ describe("getter-names-conflict", () => {
                 b: 2n,
             }),
         ).toMatchSnapshot();
+
+        // Returning `self` from getter
+        expect(await contract.getContractData()).toMatchSnapshot();
 
         // Passing `Test` contract data to getter
         expect(
