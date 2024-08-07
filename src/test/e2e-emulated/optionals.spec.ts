@@ -2,14 +2,17 @@ import { randomAddress } from "../utils/randomAddress";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import {
     ContractWithOptionals,
-    SomeGenericStruct,
-    StructWithOptionals,
+    SomeGenericStruct_struct,
+    StructWithOptionals_struct,
 } from "./contracts/output/optionals_ContractWithOptionals";
 import { Opt4 } from "./contracts/output/optionals_Opt4";
 import { Address, beginCell, Cell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 
-function strEq2(a: StructWithOptionals | null, b: StructWithOptionals | null) {
+function strEq2(
+    a: StructWithOptionals_struct | null,
+    b: StructWithOptionals_struct | null,
+) {
     // Null checks
     if (a === null && b === null) {
         return true;
@@ -79,7 +82,10 @@ function strEq2(a: StructWithOptionals | null, b: StructWithOptionals | null) {
     return true;
 }
 
-function strEq(a: SomeGenericStruct | null, b: SomeGenericStruct | null) {
+function strEq(
+    a: SomeGenericStruct_struct | null,
+    b: SomeGenericStruct_struct | null,
+) {
     if (a === null && b === null) {
         return true;
     }
@@ -120,7 +126,7 @@ describe("features", () => {
         value4: 4n,
         value5: 5n,
     };
-    const ev2: StructWithOptionals = {
+    const ev2: StructWithOptionals_struct = {
         $$type: "StructWithOptionals" as const,
         a: 1n,
         b: true,
@@ -128,7 +134,7 @@ describe("features", () => {
         d: randomAddress(0, "address1"),
         e: eV,
     };
-    const ev3: StructWithOptionals = {
+    const ev3: StructWithOptionals_struct = {
         $$type: "StructWithOptionals" as const,
         a: 1n,
         b: true,
@@ -141,8 +147,8 @@ describe("features", () => {
         b: boolean | null;
         c: Cell | null;
         d: Address | null;
-        e: SomeGenericStruct | null;
-        f: StructWithOptionals | null;
+        e: SomeGenericStruct_struct | null;
+        f: StructWithOptionals_struct | null;
     }[] = [];
     cases.push({ a: null, b: null, c: null, d: null, e: null, f: null });
     cases.push({
