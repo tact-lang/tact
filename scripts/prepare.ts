@@ -25,18 +25,18 @@ void (async () => {
         }
 
         // Verify projects
-        // for (const pkgPath of glob.sync(
-        //     path.normalize(
-        //         path.resolve(__dirname, "..", "examples", "output", "*.pkg"),
-        //     ),
-        // )) {
-        //     const res = await verify({
-        //         pkg: fs.readFileSync(pkgPath, "utf-8"),
-        //     });
-        //     if (!res.ok) {
-        //         throw new Error(`Failed to verify ${pkgPath}: ${res.error}`);
-        //     }
-        // }
+        for (const pkgPath of glob.sync(
+            path.normalize(
+                path.resolve(__dirname, "..", "examples", "output", "*.pkg"),
+            ),
+        )) {
+            const res = await verify({
+                pkg: fs.readFileSync(pkgPath, "utf-8"),
+            });
+            if (!res.ok) {
+                throw new Error(`Failed to verify ${pkgPath}: ${res.error}`);
+            }
+        }
 
         // Compile func files
         for (const p of [{ path: path.join(__dirname, "..", "func") }]) {
