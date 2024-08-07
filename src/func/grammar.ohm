@@ -30,11 +30,11 @@ FunC {
 
   TypeGlob = TypeBuiltinGlob ("->" TypeGlob)?
 
-  TypeBuiltinGlob = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
-                  | "_" | unit | tupleEmpty | TensorGlob | TupleGlob
+  TypeBuiltinGlob = #("int" | "cell" | "slice" | "builder" | "cont" | "tuple" | "_") ~#rawId --simple
+                  | unit | tupleEmpty | TensorGlob | TupleGlob
 
-  TensorGlob = "(" ListOf<TypeGlob, ","> ")"
-  TupleGlob = "[" ListOf<TypeGlob, ","> "]"
+  TensorGlob = "(" NonemptyListOf<TypeGlob, ","> ")"
+  TupleGlob = "[" NonemptyListOf<TypeGlob, ","> "]"
 
   //
   // Definitions of constants
@@ -68,11 +68,12 @@ FunC {
   // Function return types
   TypeReturn = TypeBuiltinReturn (&#whiteSpace "->" &#whiteSpace TypeReturn)?
 
-  TypeBuiltinReturn = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
-                    | "_" | unit | tupleEmpty | TensorReturn | TupleReturn | id
+  TypeBuiltinReturn = id
+                    | "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
+                    | "_" | unit | tupleEmpty | TensorReturn | TupleReturn
 
-  TensorReturn = "(" ListOf<TypeReturn, ","> ")"
-  TupleReturn = "[" ListOf<TypeReturn, ","> "]"
+  TensorReturn = "(" NonemptyListOf<TypeReturn, ","> ")"
+  TupleReturn = "[" NonemptyListOf<TypeReturn, ","> "]"
 
   // Function parameters
   Parameters = "(" ListOf<Parameter, ","> ")"
@@ -82,11 +83,12 @@ FunC {
   // Function parameter types
   TypeParameter = TypeBuiltinParameter (&#whiteSpace "->" &#whiteSpace TypeParameter)?
 
-  TypeBuiltinParameter = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
-                       | unit | tupleEmpty | TensorParameter | TupleParameter | id
+  TypeBuiltinParameter = id
+                       | "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
+                       | unit | tupleEmpty | TensorParameter | TupleParameter
 
-  TensorParameter = "(" ListOf<TypeParameter, ","> ")"
-  TupleParameter = "[" ListOf<TypeParameter, ","> "]"
+  TensorParameter = "(" NonemptyListOf<TypeParameter, ","> ")"
+  TupleParameter = "[" NonemptyListOf<TypeParameter, ","> "]"
 
   // Called "specifiers" in https://docs.ton.org/develop/func/functions#specifiers
   FunctionAttribute = "impure" | "inline_ref" | "inline" | MethodIdValue | "method_id"
@@ -137,7 +139,7 @@ FunC {
                       "catch" &#whiteSpace "(" (unusedId | id) "," (unusedId | id) ")" &#whiteSpace
                       "{" &#whiteSpace Statement* &#whiteSpace "}"
 
-  StatementExpression = Expression &#whiteSpace ";"
+  StatementExpression = Expression ";"
 
   //
   // Expressions, ordered by precedence (from lowest to highest),
@@ -197,14 +199,25 @@ FunC {
                    | ExpressionVarFun
 
   // parse_expr90
-  ExpressionVarFun =
-    | ExpressionPrimary (&("(" | "[" | Id) ExpressionPrimary)+ --functionCall
-    | Type (&("(" | "[" | Id) ExpressionPrimary) --polymorphVarDecl
-    // hole in TypeUniform
-    | TypeUniform (&("(" | "[" | Id) ExpressionPrimary) --uniformVarDecl
-    | ExpressionPrimary
+  ExpressionVarFun = | ExpressionVarDecl | ExpressionFunCall | ExpressionPrimary
 
+  // Variable declarations
+  ExpressionVarDecl = TypeVarDecl ExpressionVarDeclPart
 
+  ExpressionVarDeclPart = id
+                        | unusedId
+                        | ExpressionTensor
+                        | ExpressionTuple
+
+  // Function calls
+  ExpressionFunCall = (functionId | ExpressionParens) ExpressionArgument+
+
+  ExpressionParens = "(" ExpressionFunCall ")"
+  ExpressionArgument = functionId
+                     | unit
+                     | ExpressionTensor
+                     | tupleEmpty
+                     | ExpressionTuple
 
   // parse_expr100
   ExpressionPrimary =
@@ -212,56 +225,24 @@ FunC {
                     | ExpressionTensor
                     | tupleEmpty
                     | ExpressionTuple
-                    | hole
-                    | typePrimitive
+                    | primitive
                     | integerLiteral
-                    | booleanExpression
-                    | nilExpression
                     | stringLiteral
-                    | id
+                    | functionId
+                    | unusedId
 
-
-  restrictedId = ~((hole | integerLiteral | delimiter | operator) ~id) id
-  restrictedFunctionId =  ~((hole | integerLiteral | delimiter | operator) ~functionId) functionId
   ExpressionTensor = "(" ListOf<Expression, ","> ")"
   ExpressionTuple = "[" ListOf<Expression, ","> "]"
 
+  // Variable declaration types
+  TypeVarDecl = TypeBuiltinVarDecl (&#whiteSpace "->" &#whiteSpace TypeVarDecl)?
 
-  //
-  // Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
-  //
+  TypeBuiltinVarDecl = #("int" | "cell" | "slice" | "builder" | "cont" | "tuple" | hole) ~#rawId --simple
+                     | unit | tupleEmpty | TensorVarDecl | TupleVarDecl
+  // TODO: return `| id`, differentiate between function calls and variable declarations during syntax analysis and AST construction (through careful use of declared type variables in `forall`)
 
-  // Argument = id
-
-  // Mapped or unmapped builtin types or type variables,
-  // where "mapped" refers to: https://docs.ton.org/develop/func/types#functional-type
-  // and type variables refer to parametric polymorphism with `forall`
-  Type = TypeBuiltin "->" Type --mapped
-       | TypeBuiltin --builtin
-       // | Id --var
-  // builtin -> primitive
-  typePrimitive = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
-
-  // Builtin types
-  TypeBuiltin = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
-              | Tensor | Tuple | unit | tupleEmpty | restrictedId
-              // | Id
-
-
-  // Non-functional composite builtin types
-  Tensor = "(" ListOf<Type, ","> ")"
-  Tuple = "[" ListOf<Type, ","> "]"
-
-  // Non-polymorphic, uniform types
-  TypeUniform = TypeBuiltinUniform "->" TypeUniform --mapped
-              | TypeBuiltinUniform --builtin
-
-  TypeBuiltinUniform = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
-                     | hole | TensorUniform | TupleUniform | unit | tupleEmpty
-
-  TensorUniform = "(" ListOf<TypeUniform, ","> ")"
-
-  TupleUniform = "[" ListOf<TypeUniform, ","> "]"
+  TensorVarDecl = "(" NonemptyListOf<TypeVarDecl, ","> ")"
+  TupleVarDecl = "[" NonemptyListOf<TypeVarDecl, ","> "]"
 
   //
   // Lexical rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
@@ -269,33 +250,44 @@ FunC {
 
   // Special types or values
   hole = "_" | "var" ~id
-  unit = "()"
-  tupleEmpty = "[]"
+  unit = "(" whiteSpace* ")"
+  tupleEmpty = "[" whiteSpace* "]"
+  primitive = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
 
-  // Operators and delimiters
-  operator = ("+" | "-" | "*" | "/%" | "/" | "%"
-                 | "~/" | "^/" | "~%" | "^%") --arithOperator
-           | ("<=>" | "<=" | "<" | ">=" | ">" | "!=" | "==") --comparisonOperator
-           | ("~>>" | "~" | "^>>" | "^" | "&" | "|" | "<<" | ">>") --bitwiseOperator
-           | ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "~>>="
-                  | "~/=" | "~%=" | "^>>=" | "^/=" | "^%=" | "^="
-                  | "<<=" | ">>=" | "&=" | "|=") --assignOperator
-  delimiter = "{" | "}" | "?" | ":"
-
+  // Operators and delimiters, order matters
+  operator =
+           | "!="
+           | "%=" | "%"
+           | "&=" | "&"
+           | "*=" | "*"
+           | "+=" | "+"
+           | "-=" | "-"
+           | "/%" | "/=" | "/"
+           | "<=>"
+           | "<<=" | "<<" | "<=" | "<"
+           | "==" | "="
+           | ">>=" | ">>" | ">=" | ">"
+           | "^>>=" | "^>>" | "^=" | "^/=" | "^/" | "^%=" | "^%" | "^"
+           | "|=" | "|"
+           | "~>>=" | "~>>" | "~/=" | "~/" | "~%" | "~"
+  delimiter = "->" | "{" | "}" | "?" | ":"
 
   // Function identifiers
-  functionId = ~("\"" | "{-") ("." | "~")? rawId
-  methodId = ~("\"" | "{-") ("." | "~") rawId
+  functionId = ~("\"" | "{-") ("." | "~")? ~((hole | integerLiteral | delimiter | operator | primitive) ~rawId) rawId
+
+  // Method identifiers
+  methodId = ~("\"" | "{-") ("." | "~") ~((hole | integerLiteral | delimiter | operator | primitive) ~rawId) rawId
 
   // Identifiers, with invalidation (keywords, numbers, etc.) during syntax analysis
   // — this makes this parser closer to the C++ one, and also improves error messages
+  id = ~("\"" | "{-" | "." | "~") ~((hole | integerLiteral | delimiter | operator | primitive) ~rawId) rawId
 
-  // TODO: re-work everything here!!!! Literally everything!
-  rawId = quotedId | plainId
+  // Contents of any identifiers
+  rawId = quotedId | operatorId | plainId
 
-  id = ~("\"" | "{-" | "." | "~") rawId
-
+  // Kinds
   quotedId = "`" (~("`" | "\n") any)+ "`"
+  operatorId = "_" plainId "_"
   plainId = (~(whiteSpace | "(" | ")" | "[" | "]" | "," | "." | ";" | "~") any)+
 
   // Unused identifiers
@@ -320,11 +312,9 @@ FunC {
   // digit is defined in Ohm's built-in rules as: digit = "0".."9"
   integerLiteralDec = digit+
 
-  // Boolean expressions (builtins.cpp)
-  booleanExpression = "true" | "false"
-
+  // TODO: put into syntax analysis
+  // Booleans (builtins.cpp)
   // Nil expressions (builtins.cpp)
-  nilExpression = "nil" | "Nil"
 
   // Strings
   stringLiteral = "\"\"\"" (~"\"\"\"" any)* "\"\"\"" stringType? --multiLine
