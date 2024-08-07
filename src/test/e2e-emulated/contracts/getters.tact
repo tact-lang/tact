@@ -5,12 +5,22 @@ struct S {
     b: Int;
 }
 
+message SetIdAndData {
+    id: Int;
+    data: Cell;
+}
+
 contract Test with Deployable {
     id: Int as uint32 = 0;
     anotherData: Cell;
 
     init() {
         self.anotherData = beginCell().endCell();
+    }
+
+    receive(msg: SetIdAndData) {
+        self.id = msg.id;
+        self.anotherData = msg.data;
     }
 
     get fun testGetter(): Int {
