@@ -506,6 +506,86 @@ ConstantTester {
       },
       {
         "arguments": [],
+        "name": "globalConst1",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "globalConst2",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "globalConst3",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "globalConst4",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "globalConst5",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "globalConst6",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "globalConst7",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "globalConst8",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
         "name": "minInt1",
         "returnType": {
           "format": 257,
@@ -727,7 +807,7 @@ ConstantTester {
       },
     ],
   },
-  "address": kQDwJyzsRgwsRGdj8gB-OfmaT8j8KC2LJ2cjG80aBxU-BUvF,
+  "address": kQD6TdOoe8Fa7rc1NfdWOO-83UenHKcDdnFoFELXbbK4tR8z,
   "init": {
     "code": x{FF00F4A413F4BCF2C80B}
  x{62_}
@@ -811,10 +891,15 @@ ConstantTester {
         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
          x{6D}
         x{85FF}
-      x{B3C3F6CF36CF0C6_}
-       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-        x{6D}
-       x{82F70000000000000000000000000000000000000000000000000000000000000001}
+      x{E9_}
+       x{B8FDB3CDB3C31}
+        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+         x{6D}
+        x{82F70000000000000000000000000000000000000000000000000000000000000001}
+       x{BF0DB3CDB3C31}
+        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+         x{6D}
+        x{72}
    x{2_}
     x{2_}
      x{2_}
@@ -833,10 +918,15 @@ ConstantTester {
          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
           x{6D}
          x{7F}
-       x{AAE0DB3CDB3C31}
-        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-         x{6D}
-        x{84FF}
+       x{6A_}
+        x{B9FDB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{801B}
+        x{BE0DB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{84FF}
       x{5}
        x{2_}
         x{2_}
@@ -852,10 +942,15 @@ ConstantTester {
          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
           x{6D}
          x{7F}
-       x{AAC1DB3CDB3C31}
-        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-         x{6D}
-        x{85FF}
+       x{6A_}
+        x{BBEDB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{801A}
+        x{BC1DB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{85FF}
      x{2_}
       x{5}
        x{2_}
@@ -872,10 +967,15 @@ ConstantTester {
          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
           x{6D}
          x{80FA}
-       x{AAA2DB3CDB3C31}
-        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-         x{6D}
-        x{8020}
+       x{6A_}
+        x{BDDDB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{800F}
+        x{BA2DB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{8020}
       x{5}
        x{2_}
         x{2_}
@@ -891,10 +991,15 @@ ConstantTester {
          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
           x{6D}
          x{70}
-       x{AA83DB3CDB3C31}
-        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-         x{6D}
-        x{8100F3}
+       x{6A_}
+        x{BFCDB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{800F}
+        x{B83DB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{8100F3}
     x{2_}
      x{2_}
       x{2_}
@@ -914,10 +1019,15 @@ ConstantTester {
           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
            x{6D}
           x{74}
-        x{AA64DB3CDB3C31}
-         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-          x{6D}
-         x{8058}
+        x{6A_}
+         x{BE4DB3CDB3C31}
+          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+           x{6D}
+          x{8058}
+         x{B9BDB3CDB3C31}
+          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+           x{6D}
+          x{74}
       x{5}
        x{2_}
         x{2_}
@@ -933,10 +1043,15 @@ ConstantTester {
          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
           x{6D}
          x{7C}
-       x{AA45DB3CDB3C31}
-        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-         x{6D}
-        x{80A6}
+       x{6A_}
+        x{BC5DB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{80A6}
+        x{BBADB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{72}
      x{2_}
       x{5}
        x{2_}
@@ -953,10 +1068,15 @@ ConstantTester {
          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
           x{6D}
          x{70}
-       x{AA26DB3CDB3C31}
-        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-         x{6D}
-        x{8058}
+       x{6A_}
+        x{BA6DB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{8058}
+        x{BD9DB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{71}
       x{5}
        x{2_}
         x{2_}
@@ -1061,10 +1181,15 @@ ConstantTester {
            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
             x{6D}
            x{85FF}
-         x{B3C3F6CF36CF0C6_}
-          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-           x{6D}
-          x{82F70000000000000000000000000000000000000000000000000000000000000001}
+         x{E9_}
+          x{B8FDB3CDB3C31}
+           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+            x{6D}
+           x{82F70000000000000000000000000000000000000000000000000000000000000001}
+          x{BF0DB3CDB3C31}
+           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+            x{6D}
+           x{72}
       x{2_}
        x{2_}
         x{2_}
@@ -1083,10 +1208,15 @@ ConstantTester {
             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
              x{6D}
             x{7F}
-          x{AAE0DB3CDB3C31}
-           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-            x{6D}
-           x{84FF}
+          x{6A_}
+           x{B9FDB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{801B}
+           x{BE0DB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{84FF}
          x{5}
           x{2_}
            x{2_}
@@ -1102,10 +1232,15 @@ ConstantTester {
             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
              x{6D}
             x{7F}
-          x{AAC1DB3CDB3C31}
-           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-            x{6D}
-           x{85FF}
+          x{6A_}
+           x{BBEDB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{801A}
+           x{BC1DB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{85FF}
         x{2_}
          x{5}
           x{2_}
@@ -1122,10 +1257,15 @@ ConstantTester {
             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
              x{6D}
             x{80FA}
-          x{AAA2DB3CDB3C31}
-           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-            x{6D}
-           x{8020}
+          x{6A_}
+           x{BDDDB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{800F}
+           x{BA2DB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{8020}
          x{5}
           x{2_}
            x{2_}
@@ -1141,10 +1281,15 @@ ConstantTester {
             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
              x{6D}
             x{70}
-          x{AA83DB3CDB3C31}
-           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-            x{6D}
-           x{8100F3}
+          x{6A_}
+           x{BFCDB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{800F}
+           x{B83DB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{8100F3}
        x{2_}
         x{2_}
          x{2_}
@@ -1164,10 +1309,15 @@ ConstantTester {
              x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
               x{6D}
              x{74}
-           x{AA64DB3CDB3C31}
-            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-             x{6D}
-            x{8058}
+           x{6A_}
+            x{BE4DB3CDB3C31}
+             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+              x{6D}
+             x{8058}
+            x{B9BDB3CDB3C31}
+             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+              x{6D}
+             x{74}
          x{5}
           x{2_}
            x{2_}
@@ -1183,10 +1333,15 @@ ConstantTester {
             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
              x{6D}
             x{7C}
-          x{AA45DB3CDB3C31}
-           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-            x{6D}
-           x{80A6}
+          x{6A_}
+           x{BC5DB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{80A6}
+           x{BBADB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{72}
         x{2_}
          x{5}
           x{2_}
@@ -1203,10 +1358,15 @@ ConstantTester {
             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
              x{6D}
             x{70}
-          x{AA26DB3CDB3C31}
-           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-            x{6D}
-           x{8058}
+          x{6A_}
+           x{BA6DB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{8058}
+           x{BD9DB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{71}
          x{5}
           x{2_}
            x{2_}

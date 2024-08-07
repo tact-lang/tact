@@ -1,5 +1,14 @@
 const someGlobalConst: Int = 100;
 
+const globalConst1: Int = 1;
+const globalConst2: Int = globalConst1 + 1;  // 2
+const globalConst3: Int = globalFunc1(globalConst1) + 1;  // 4
+const globalConst4: Int = globalFunc2(globalConst1) + globalConst3;  // 15
+const globalConst5: Int = globalFunc3(globalConst4);  // 15
+const globalConst6: Int = globalFunc4(globalConst5 + 10);  // 26
+const globalConst7: Int = globalFunc5(globalConst6 + 1, globalConst5 + 10);  // 27
+const globalConst8: Int = globalFunc6(globalConst6, globalConst7 + 1);  // 2
+
 struct S {
     a: Bool;
     b: Int;
@@ -8,6 +17,76 @@ struct S {
 struct T {
     a: Int;
     s: S;
+}
+
+// Global functions
+
+// Test assignments
+fun globalFunc1(v: Int): Int {
+    let i = v;
+    let j = 1;
+    let k = i + j;
+    k = k * 10;
+    k += 2;
+    k -= 1;
+    k /= 2;
+    k *= 5;
+    k %= 2;
+    k |= 9;
+    k &= 22;
+    k ^= 3;
+    return k;
+}
+
+// Test repeat
+fun globalFunc2(v: Int): Int {
+    let j = v;
+    repeat(10) {
+        let i = 1;
+        j += i;
+    }
+    return j;
+}
+
+// Test do..until
+fun globalFunc3(v: Int): Int {
+    let i = 20;
+    do {
+        i -= 1;
+    } until (i <= v);
+    return i;
+}
+
+// Test while
+fun globalFunc4(v: Int): Int {
+    let i = 20;
+    while (i <= v) {
+        i += 1;
+    }
+    return i;
+}
+
+// MAX, test conditionals
+fun globalFunc5(a: Int, b: Int): Int {
+    if (a <= b) {
+        return b;
+    } else {
+        return a;
+    }
+}
+
+// GCD for non-negative integers
+// test recursion
+fun globalFunc6(a: Int, b: Int): Int {
+    if (a < 0 || b < 0) {
+        return 0;
+    }
+
+    if (b == 0) {
+        return a;
+    } else {
+        return globalFunc6(b, a % b);
+    }
 }
 
 contract ConstantTester {
@@ -126,6 +205,15 @@ contract ConstantTester {
     get fun something42(): Address { return self.something42; }
     get fun something43(): Address { return self.something43; }
     get fun something44(): Address { return self.something44; }
+
+    get fun globalConst1(): Int { return globalConst1; }
+    get fun globalConst2(): Int { return globalConst2; }
+    get fun globalConst3(): Int { return globalConst3; }
+    get fun globalConst4(): Int { return globalConst4; }
+    get fun globalConst5(): Int { return globalConst5; }
+    get fun globalConst6(): Int { return globalConst6; }
+    get fun globalConst7(): Int { return globalConst7; }
+    get fun globalConst8(): Int { return globalConst8; }
 
     get fun minInt1(): Int {
         return -115792089237316195423570985008687907853269984665640564039457584007913129639936;

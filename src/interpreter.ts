@@ -133,7 +133,7 @@ function ensureRepeatInt(val: Value, source: SrcInfo): bigint {
         return val;
     } else {
         throwErrorConstEval(
-            `integer '${showValue(val)}' does not fit into the allowed range of repeat statement`,
+            `repeat argument must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)`,
             source,
         );
     }

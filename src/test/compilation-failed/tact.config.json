@@ -136,6 +136,56 @@
       "name": "func-function-does-not-exist",
       "path": "./contracts/func-function-does-not-exist.tact",
       "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-div-by-zero-in-func",
+      "path": "./contracts/const-eval-div-by-zero-in-func.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-add-in-func",
+      "path": "./contracts/const-eval-int-overflow-add-in-func.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-div-in-func",
+      "path": "./contracts/const-eval-int-overflow-div-in-func.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-mul1-in-func",
+      "path": "./contracts/const-eval-int-overflow-mul1-in-func.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-mul2-in-func",
+      "path": "./contracts/const-eval-int-overflow-mul2-in-func.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-positive-literal-in-func",
+      "path": "./contracts/const-eval-int-overflow-positive-literal-in-func.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-negative-literal-in-func",
+      "path": "./contracts/const-eval-int-overflow-negative-literal-in-func.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-int-overflow-struct-instance-in-func",
+      "path": "./contracts/const-eval-int-overflow-struct-instance-in-func.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-repeat-lower-bound",
+      "path": "./contracts/const-eval-repeat-lower-bound.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-repeat-upper-bound",
+      "path": "./contracts/const-eval-repeat-upper-bound.tact",
+      "output": "./contracts/output"
     }
   ]
 }

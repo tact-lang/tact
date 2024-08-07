@@ -101,5 +101,14 @@ describe("constants", () => {
         expect((await contract.getSomething44()).toRawString()).toEqual(
             "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
         );
+
+        expect(await contract.getGlobalConst1()).toEqual(1n);
+        expect(await contract.getGlobalConst2()).toEqual(2n);
+        expect(await contract.getGlobalConst3()).toEqual(4n);
+        expect(await contract.getGlobalConst4()).toEqual(15n);
+        expect(await contract.getGlobalConst5()).toEqual(15n);
+        expect(await contract.getGlobalConst6()).toEqual(26n);
+        expect(await contract.getGlobalConst7()).toEqual(27n);
+        expect(await contract.getGlobalConst8()).toEqual(2n);
     });
 });
