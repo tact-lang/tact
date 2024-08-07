@@ -257,6 +257,21 @@ exports[`strings should implement external fallbacks correctly 1`] = `
       "header": 2412401973,
       "name": "Add",
     },
+    {
+      "fields": [
+        {
+          "name": "a",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+      ],
+      "header": null,
+      "name": "ExternalFallbacksTester",
+    },
   ],
 }
 `;

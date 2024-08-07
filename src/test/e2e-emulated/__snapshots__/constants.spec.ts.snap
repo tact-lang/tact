@@ -725,6 +725,11 @@ ConstantTester {
         "header": null,
         "name": "T",
       },
+      {
+        "fields": [],
+        "header": null,
+        "name": "ConstantTester",
+      },
     ],
   },
   "address": kQDrQDJFeHEKbkV6TKFO-KhFpeMRJ3cEZgIrvDQYPUyzm4CN,
