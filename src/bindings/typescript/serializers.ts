@@ -558,9 +558,9 @@ const struct: Serializer<{ name: string; optional: boolean }> = {
     },
     tsType(v) {
         if (v.optional) {
-            return v.name + " | null";
+            return v.name + "_struct | null";
         } else {
-            return v.name;
+            return v.name + "_struct";
         }
     },
     tsLoad(v, slice, field, w) {
@@ -825,7 +825,7 @@ const map: Serializer<MapSerializerDescr> = {
                 break;
             case "struct":
                 {
-                    valueT = v.value.type;
+                    valueT = v.value.type + "_struct";
                 }
                 break;
         }

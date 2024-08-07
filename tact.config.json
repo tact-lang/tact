@@ -367,8 +367,8 @@
       }
     },
     {
-      "name": "getter-names-conflict",
-      "path": "./src/test/e2e-emulated/contracts/getter-names-conflict.tact",
+      "name": "getters",
+      "path": "./src/test/e2e-emulated/contracts/getters.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
     },
     {
