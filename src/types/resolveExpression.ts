@@ -243,13 +243,21 @@ function resolveBinaryOp(
         case "==":
         case "!=":
             {
-                if (!isEqualityType(le)) {
+                // any inhabitant of an optional type can be compared to null
+                if (
+                    (le.kind === "ref" && le.optional && re.kind === "null") ||
+                    (re.kind === "ref" && re.optional && le.kind === "null")
+                ) {
+                    resolved = { kind: "ref", name: "Bool", optional: false };
+                    break;
+                }
+                if (!isEqualityType(ctx, le)) {
                     throwCompilationError(
                         `Expressions of "${printTypeRef(le)}" type cannot be used for (non)equality operator "${exp.op}"\n See https://docs.tact-lang.org/book/operators#binary-equality`,
                         exp.loc,
                     );
                 }
-                if (!isEqualityType(re)) {
+                if (!isEqualityType(ctx, re)) {
                     throwCompilationError(
                         `Expressions of "${printTypeRef(re)}" type cannot be used for (non)equality operator "${exp.op}"\nSee https://docs.tact-lang.org/book/operators#binary-equality`,
                         exp.loc,
@@ -286,18 +294,22 @@ function resolveBinaryOp(
     return registerExpType(ctx, exp, resolved);
 }
 
-function isEqualityType(ty: TypeRef): boolean {
+function isEqualityType(ctx: CompilerContext, ty: TypeRef): boolean {
     switch (ty.kind) {
         case "ref": {
-            return (
-                ty.optional ||
-                ty.name === "Int" ||
-                ty.name === "Bool" ||
-                ty.name === "Address" ||
-                ty.name === "Cell" ||
-                ty.name === "Slice" ||
-                ty.name === "String"
-            );
+            const type = getType(ctx, ty.name);
+            if (type.kind === "primitive_type_decl") {
+                return (
+                    ty.name === "Int" ||
+                    ty.name === "Bool" ||
+                    ty.name === "Address" ||
+                    ty.name === "Cell" ||
+                    ty.name === "Slice" ||
+                    ty.name === "String"
+                );
+            } else {
+                return false;
+            }
         }
         case "null":
         case "map":

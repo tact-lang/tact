@@ -1,6 +1,6 @@
 import fs from "fs";
 import { __DANGER_resetNodeId } from "../grammar/ast";
-import { formatAst } from "../formatter";
+import { prettyPrint } from "../prettyPrinter";
 import { parse } from "../grammar/grammar";
 import { join } from "path";
 import JSONBig from "json-bigint";
@@ -12,7 +12,7 @@ describe("formatter", () => {
             const filePath = join(__dirname, "formatting", "proper", file);
             const src = fs.readFileSync(filePath, "utf-8");
             const ast = parse(src, filePath, "user");
-            const formatted = formatAst(ast);
+            const formatted = prettyPrint(ast);
             expect(formatted).toEqual(src);
         },
     );
@@ -27,7 +27,7 @@ describe("formatter", () => {
             //TODO: change for proper recursive removal
             const astStr = JSONBig.stringify(ast).replace(/"id":[0-9]+,/g, "");
 
-            const formatted = formatAst(ast);
+            const formatted = prettyPrint(ast);
             const fileName = join(outputDir, file);
             fs.openSync(fileName, "w");
             fs.writeFileSync(fileName, formatted, { flag: "w" });

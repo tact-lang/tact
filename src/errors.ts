@@ -18,6 +18,12 @@ export class TactParseError extends TactError {
     }
 }
 
+export class TactSyntaxError extends TactError {
+    constructor(message: string, loc: SrcInfo) {
+        super(message, loc);
+    }
+}
+
 /// This will be split at least into two categories: typechecking and codegen errors
 export class TactCompilationError extends TactError {
     constructor(message: string, loc: SrcInfo) {
@@ -67,6 +73,13 @@ export function throwParseError(
     );
 }
 
+export function throwSyntaxError(message: string, source: SrcInfo): never {
+    throw new TactSyntaxError(
+        `Syntax error: ${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`,
+        source,
+    );
+}
+
 export function throwCompilationError(message: string, source: SrcInfo): never {
     throw new TactCompilationError(
         `${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`,
@@ -108,6 +121,7 @@ export function idTextErr(
 export type TactErrorCollection =
     | Error
     | TactParseError
+    | TactSyntaxError
     | TactCompilationError
     | TactInternalCompilerError
     | TactConstEvalError;

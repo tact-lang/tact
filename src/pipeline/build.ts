@@ -22,6 +22,31 @@ import { getCompilerVersion } from "./version";
 import { idText } from "../grammar/ast";
 import { TactErrorCollection } from "../errors";
 
+export function enableFeatures(
+    ctx: CompilerContext,
+    logger: Logger,
+    config: ConfigProject,
+): CompilerContext {
+    if (config.options === undefined) {
+        return ctx;
+    }
+    const features = [
+        { option: config.options.debug, name: "debug" },
+        { option: config.options.masterchain, name: "masterchain" },
+        { option: config.options.external, name: "external" },
+        { option: config.options.experimental?.inline, name: "inline" },
+        { option: config.options.ipfsAbiGetter, name: "ipfsAbiGetter" },
+        { option: config.options.interfacesGetter, name: "interfacesGetter" },
+    ];
+    return features.reduce((currentCtx, { option, name }) => {
+        if (option) {
+            logger.debug(`   > 👀 Enabling ${name}`);
+            return featureEnable(currentCtx, name);
+        }
+        return currentCtx;
+    }, ctx);
+}
+
 export async function build(args: {
     config: ConfigProject;
     project: VirtualFileSystem;
@@ -41,32 +66,7 @@ export async function build(args: {
         entrypoint: posixNormalize(config.path),
         options: config.options ?? {},
     });
-    if (config.options) {
-        if (config.options.debug) {
-            logger.error("   > 👀 Enabling debug");
-            ctx = featureEnable(ctx, "debug");
-        }
-        if (config.options.masterchain) {
-            logger.error("   > 👀 Enabling masterchain");
-            ctx = featureEnable(ctx, "masterchain");
-        }
-        if (config.options.external) {
-            logger.error("   > 👀 Enabling external");
-            ctx = featureEnable(ctx, "external");
-        }
-        if (config.options.experimental?.inline) {
-            logger.error("   > 👀 Enabling inline");
-            ctx = featureEnable(ctx, "inline");
-        }
-        if (config.options.ipfsAbiGetter) {
-            logger.error("   > 👀 Enabling IPFS ABI getter");
-            ctx = featureEnable(ctx, "ipfsAbiGetter");
-        }
-        if (config.options.interfacesGetter) {
-            logger.error("   > 👀 Enabling contract interfaces getter");
-            ctx = featureEnable(ctx, "interfacesGetter");
-        }
-    }
+    ctx = enableFeatures(ctx, logger, config);
 
     // Precompile
     try {

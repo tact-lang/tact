@@ -12,8 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Removed unsupported iterators API: PR [#633](https://github.com/tact-lang/tact/pull/633)
+- Created a separate API function to enable compiler features: PR [#647](https://github.com/tact-lang/tact/pull/647)
 
 ### Fixed
+
+- FunC function identifiers with characters from hexadecimal set: PR [#636](https://github.com/tact-lang/tact/pull/636)
+- Throw syntax error for module-level (top-level) constants with attributes: PR [#644](https://github.com/tact-lang/tact/pull/644)
+- Typechecking for optional types when the argument type is not an equality type: PR [#650](https://github.com/tact-lang/tact/pull/650)
 
 ## [1.4.1] - 2024-07-26
 
