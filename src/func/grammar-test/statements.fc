@@ -34,6 +34,9 @@ int return_stmt'() { return 42; }
     if 0 { ; ; } elseifnot 0 { ; ; }
     ifnot 1 { ; ; } elseif 1 { ; ; }
     ifnot 1 { ; ; } elseifnot 0 { ; ; }
+
+    if 0 { ; ; } elseif 0 { ; ; } else { ; ; }
+    ifnot 1 { ; ; } elseifnot 1 { ; ; } else { ; ; }
 }
 
 ;; repeat

@@ -109,35 +109,28 @@ FunC {
             | StatementTryCatch
             | StatementExpression
 
-  StatementReturn = "return" &#whiteSpace Expression ";"
+  StatementReturn = "return" Expression ";"
 
-  StatementBlock = "{" &#whiteSpace Statement* &#whiteSpace "}"
+  StatementBlock = "{" Statement* "}"
 
   StatementEmpty =  ";"
 
-  StatementCondition = ("ifnot" | "if") &#whiteSpace
-                       Expression &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}" &#whiteSpace
-                       ("elseifnot" | "elseif") &#whiteSpace
-                       Expression &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}" --withElseCondition
+  StatementCondition = ("ifnot" | "if") Expression "{" Statement* "}"
+                       ("elseifnot" | "elseif") Expression "{" Statement* "}"
+                       ("else" "{" Statement* "}")? --elseif
+                     | ("ifnot" | "if") Expression "{" Statement* "}"
+                       ("else" "{" Statement* "}")? --if
 
-                     | ("ifnot" | "if") &#whiteSpace
-                       Expression &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}" &#whiteSpace
-                       "else" &#whiteSpace
-                       "{" &#whiteSpace Statement* &#whiteSpace "}" --withElse
+  StatementRepeat = "repeat" Expression  "{" Statement* "}"
 
-                     | ("ifnot" | "if") &#whiteSpace
-                       Expression &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}" --noElse
+  StatementUntil = "do" "{" Statement* "}" "until" Expression ";"
 
-  StatementRepeat = "repeat" &#whiteSpace Expression  &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}"
+  StatementWhile = "while" Expression "{" Statement* "}"
 
-  StatementUntil = "do" &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}" &#whiteSpace "until" &#whiteSpace Expression ";"
-
-  StatementWhile = "while" &#whiteSpace Expression &#whiteSpace "{" &#whiteSpace Statement* &#whiteSpace "}"
-
-  StatementTryCatch = "try" &#whiteSpace
-                      "{" &#whiteSpace Statement* &#whiteSpace "}" &#whiteSpace
-                      "catch" &#whiteSpace "(" (unusedId | id) "," (unusedId | id) ")" &#whiteSpace
-                      "{" &#whiteSpace Statement* &#whiteSpace "}"
+  StatementTryCatch = "try"
+                      "{" Statement* "}"
+                      "catch" "(" (unusedId | id) "," (unusedId | id) ")"
+                      "{" Statement* "}"
 
   StatementExpression = Expression ";"
 
@@ -225,7 +218,6 @@ FunC {
                     | ExpressionTensor
                     | tupleEmpty
                     | ExpressionTuple
-                    | primitive
                     | integerLiteral
                     | stringLiteral
                     | functionId
@@ -251,6 +243,7 @@ FunC {
   // Special types or values
   hole = "_" | "var" ~id
   unit = "(" whiteSpace* ")"
+  // (not a separate type, added purely for convenience)
   tupleEmpty = "[" whiteSpace* "]"
   primitive = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
 
@@ -275,7 +268,7 @@ FunC {
   // Function identifiers
   functionId = ~("\"" | "{-") ("." | "~")? ~((hole | integerLiteral | delimiter | operator | primitive) ~rawId) rawId
 
-  // Method identifiers
+  // Method identifiers (not a separate type, added purely for convenience)
   methodId = ~("\"" | "{-") ("." | "~") ~((hole | integerLiteral | delimiter | operator | primitive) ~rawId) rawId
 
   // Identifiers, with invalidation (keywords, numbers, etc.) during syntax analysis
@@ -311,10 +304,6 @@ FunC {
 
   // digit is defined in Ohm's built-in rules as: digit = "0".."9"
   integerLiteralDec = digit+
-
-  // TODO: put into syntax analysis
-  // Booleans (builtins.cpp)
-  // Nil expressions (builtins.cpp)
 
   // Strings
   stringLiteral = "\"\"\"" (~"\"\"\"" any)* "\"\"\"" stringType? --multiLine

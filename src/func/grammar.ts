@@ -128,18 +128,22 @@ function unwrapOptNode<T>(
 
 //
 // FIXME: Those are directly matching contents of the grammar.ohm
-// TODO: Unite with syntax.ts and refactor dependant files
+// FIXME: Unite with syntax.ts and refactor dependant files
 // FIXME: Would need help once parser is done on my side :)
 //
 
-type FuncAstNode =
+export type FuncAstNode =
     | FuncAstModule
     | FuncAstPragma
     | FuncAstInclude
     | FuncAstModuleItem
+    | FuncAstStatement
+    | FuncAstExpression
+    | FuncAstFunctionId
+    | FuncAstId
     | FuncAstComment;
 
-type FuncAstModule = {
+export type FuncAstModule = {
     kind: "module";
     pragmas: FuncAstPragma[];
     includes: FuncAstInclude[];
@@ -154,7 +158,7 @@ type FuncAstModule = {
 /**
  * #pragma ...
  */
-type FuncAstPragma =
+export type FuncAstPragma =
     | FuncAstPragmaLiteral
     | FuncAstPragmaVersionRange
     | FuncAstPragmaVersionString;
@@ -162,7 +166,7 @@ type FuncAstPragma =
 /**
  * #pragma something-something-something;
  */
-type FuncAstPragmaLiteral = {
+export type FuncAstPragmaLiteral = {
     kind: "pragma_literal";
     literal: string;
     // "allow-post-modification" | "compute-asm-ltr";
@@ -175,7 +179,7 @@ type FuncAstPragmaLiteral = {
  *
  * #pragma (version | not-version) semverRange;
  */
-type FuncAstPragmaVersionRange = {
+export type FuncAstPragmaVersionRange = {
     kind: "pragma_version_range";
     allow: boolean;
     range: FuncAstVersionRange;
@@ -185,7 +189,7 @@ type FuncAstPragmaVersionRange = {
 /**
  * #pragma test-version-set "exact.version.semver";
  */
-type FuncAstPragmaVersionString = {
+export type FuncAstPragmaVersionString = {
     kind: "pragma_version_string";
     version: string;
     loc: FuncSrcInfo;
@@ -194,7 +198,7 @@ type FuncAstPragmaVersionString = {
 /**
  * #include "path/to/file";
  */
-type FuncAstInclude = {
+export type FuncAstInclude = {
     kind: "include";
     path: string;
     loc: FuncSrcInfo;
@@ -204,14 +208,14 @@ type FuncAstInclude = {
 // Top-level, module items
 //
 
-type FuncAstModuleItem =
+export type FuncAstModuleItem =
     | FuncAstGlobalVariablesDeclaration
     | FuncAstConstantsDefinition;
 
 /**
  * global ..., ...;
  */
-type FuncAstGlobalVariablesDeclaration = {
+export type FuncAstGlobalVariablesDeclaration = {
     kind: "global_variables_declaration";
     globals: FuncAstGlobalVariable[];
     loc: FuncSrcInfo;
@@ -220,7 +224,7 @@ type FuncAstGlobalVariablesDeclaration = {
 /**
  * nonVarType? id
  */
-type FuncAstGlobalVariable = {
+export type FuncAstGlobalVariable = {
     kind: "global_variable";
     ty: FuncAstTypeUniform | undefined;
     name: FuncAstId;
@@ -230,39 +234,416 @@ type FuncAstGlobalVariable = {
 /**
  * const ..., ...;
  */
-type FuncAstConstantsDefinition = {
+export type FuncAstConstantsDefinition = {
     kind: "constants_definition";
     constants: FuncAstConstant[];
     loc: FuncSrcInfo;
-}
+};
 
 /**
  * (slice | int)? id = Expression
  */
-type FuncAstConstant = {
+export type FuncAstConstant = {
     kind: "constant";
     ty: "slice" | "int" | undefined;
     name: FuncAstId;
     value: FuncAstExpression;
     loc: FuncSrcInfo;
-}
+};
 
 //
 // Statements
-// TODO
 //
 
-type FuncAstStatement =
-    | {};
+export type FuncAstStatement =
+    | FuncAstStatementReturn
+    | FuncAstStatementBlock
+    | FuncAstStatementEmpty
+    | FuncAstStatementCondition
+    | FuncAstStatementRepeat
+    | FuncAstStatementUntil
+    | FuncAstStatementWhile
+    | FuncAstStatementTryCatch
+    | FuncAstStatementExpression;
 
+/**
+ * return Expression;
+ */
+export type FuncAstStatementReturn = {
+    kind: "statement_return";
+    expression: FuncAstExpression;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * { ... }
+ */
+export type FuncAstStatementBlock = {
+    kind: "statement_block";
+    statements: FuncAstStatement[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * ;
+ */
+export type FuncAstStatementEmpty = {
+    kind: "statement_empty";
+    loc: FuncSrcInfo;
+};
+
+/**
+ * (if | ifnot) Expression { ... }
+ * (else { ... })?
+ *
+ * or
+ *
+ * (if | ifnot) Expression { ... }
+ * (elseif | elseifnot) Expression { ... }
+ * (else { ... })?
+ */
+export type FuncAstStatementCondition =
+    | FuncAstStatementConditionIf
+    | FuncAstStatementConditionElseIf;
+
+/**
+ * (if | ifnot) Expression { ... } (else { ... })?
+ *
+ * @field positive If true, then it represents `if`. If false, it's an `ifnot`.
+ * @field condition Expression
+ * @field consequences Left branch (after `if`), truthy case (or falsy in case of `ifnot`)
+ * @field alternatives Optional right branch (after `else`), falsy case (or truthy in case of `ifnot`)
+ */
+export type FuncAstStatementConditionIf = {
+    kind: "statement_condition_if";
+    // if | ifnot
+    positive: boolean;
+    // expression
+    condition: FuncAstExpression;
+    // left branch { ... }
+    consequences: FuncAstStatement[];
+    // optional right branch { ... }
+    alternatives: undefined | FuncAstStatement[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * (if | ifnot) Expression { ... } (elseif | elseifnot) Expression { ... } (else { ... })?
+ *
+ * @field positiveIf If true, then it represents `if`. If false, it's an `ifnot`.
+ * @field conditionIf Expression
+ * @field consequencesIf Branch after `if`, truthy case (or falsy in case of `ifnot`)
+ * @field positiveElseif If true, then it represents `elseif`. If false, it's an `elseifnot`.
+ * @field consequencesElseif Branch after `elseif`, truthy case (or falsy in case of `elseifnot`)
+ * @field alternativesElseif Optional third branch (after `else`), falsy case (or truthy in case of `elseifnot`)
+ */
+export type FuncAstStatementConditionElseIf = {
+    kind: "statement_condition_elseif";
+    // if | ifnot
+    positiveIf: boolean;
+    // expression after if | ifnot
+    conditionIf: FuncAstExpression;
+    // branch after if | ifnot { ... }
+    consequencesIf: FuncAstStatement[];
+    // elseif | elseifnot
+    positiveElseif: boolean;
+    // branch after elseif | elseifnot { ... }
+    consequencesElseif: FuncAstStatement[];
+    // optional third branch after else { ... }
+    alternativesElseif: undefined | FuncAstStatement[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * repeat Expression { ... }
+ */
+export type FuncAstStatementRepeat = {
+    kind: "statement_repeat";
+    iterations: FuncAstExpression;
+    statements: FuncAstStatement[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * do { ... } until Expression;
+ */
+export type FuncAstStatementUntil = {
+    kind: "statement_until";
+    statements: FuncAstStatement[];
+    condition: FuncAstExpression;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * while Expression { ... }
+ */
+export type FuncAstStatementWhile = {
+    kind: "statement_while";
+    condition: FuncAstExpression;
+    statements: FuncAstStatement[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * try { ... } catch (id, id) { ... }
+ */
+export type FuncAstStatementTryCatch = {
+    kind: "statement_try_catch";
+    statementsTry: FuncAstStatement[];
+    statementsCatch: FuncAstStatement[];
+    catchExceptionName: FuncAstId;
+    catchExitCodeName: FuncAstId;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * Expression;
+ */
+export type FuncAstStatementExpression = {
+    kind: "statement_expression";
+    expression: FuncAstExpression;
+    loc: FuncSrcInfo;
+};
 
 //
-// Expressions
-// TODO
+// Expressions, ordered by precedence (from lowest to highest),
+// with comments referencing exact function names in C++ code of FunC's parser:
+// https://github.com/ton-blockchain/ton/blob/master/crypto/func/parse-func.cpp
 //
 
-type FuncAstExpression =
-    | {};
+/**
+ * parse_expr
+ */
+export type FuncAstExpression =
+    | FuncAstExpressionAssign
+    | FuncAstExpressionConditional
+    | FuncAstExpressionCompare
+    | FuncAstExpressionBitwiseShift
+    | FuncAstExpressionAddBitwise
+    | FuncAstExpressionMulBitwise
+    | FuncAstExpressionUnary
+    | FuncAstExpressionMethodCallChain
+    | FuncAstExpressionVarFun
+    | FuncAstExpressionPrimary;
+
+/**
+ * parse_expr10
+ */
+export type FuncAstExpressionAssign = {
+    kind: "expression_assign";
+    left: FuncAstExpressionConditional;
+    op:
+        | "="
+        | "+="
+        | "-="
+        | "*="
+        | "/="
+        | "%="
+        | "~/="
+        | "~%="
+        | "^/="
+        | "^%="
+        | "&="
+        | "|="
+        | "^="
+        | "<<="
+        | ">>="
+        | "~>>="
+        | "^>>=";
+    right: FuncAstExpressionConditional;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * parse_expr13
+ */
+export type FuncAstExpressionConditional = {
+    kind: "expression_conditional";
+    condition: FuncAstExpressionCompare;
+    consequence: FuncAstExpression;
+    alternative: FuncAstExpressionConditional;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * parse_expr15
+ */
+export type FuncAstExpressionCompare = {
+    kind: "expression_compare";
+    left: FuncAstExpressionBitwiseShift;
+    op: "==" | "<=>" | "<=" | "<" | ">=" | ">" | "!=";
+    right: FuncAstExpressionBitwiseShift;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * parse_expr17
+ */
+export type FuncAstExpressionBitwiseShift = {
+    kind: "expression_bitwise_shift";
+    left: FuncAstExpressionAddBitwise;
+    op: "<<" | ">>" | "~>>" | "^>>";
+    right: FuncAstExpressionAddBitwise;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * parse_expr20
+ */
+export type FuncAstExpressionAddBitwise = {
+    kind: "expression_add_bitwise";
+    negateLeft: boolean;
+    left: FuncAstExpressionMulBitwise;
+    op: "+" | "-" | "|" | "^";
+    right: FuncAstExpressionMulBitwise;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * parse_expr30
+ */
+export type FuncAstExpressionMulBitwise = {
+    kind: "expression_mul_bitwise";
+    left: FuncAstExpressionUnary;
+    op: "*" | "/%" | "/" | "%" | "~/" | "~%" | "^/" | "^%" | "&";
+    right: FuncAstExpressionUnary;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * parse_expr75
+ */
+export type FuncAstExpressionUnary = {
+    kind: "expression_unary";
+    op: "~";
+    operand: FuncAstExpressionMethodCallChain;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * parse_expr80
+ */
+export type FuncAstExpressionMethodCallChain = {
+    kind: "expression_method_call_chain";
+    object: FuncAstExpressionVarFun;
+    methods: FuncAstExpressionMethodCall[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * methodId ExpressionArgument
+ */
+export type FuncAstExpressionMethodCall = {
+    kind: "expression_method_call";
+    name: FuncAstFunctionId;
+    argument: FuncAstExpressionArgument;
+    loc: FuncSrcInfo;
+};
+
+export type FuncAstExpressionArgument =
+    | FuncAstFunctionId
+    | FuncAstUnit
+    | FuncAstExpressionTensor
+    | FuncAstExpressionTuple;
+
+/**
+ * ( ExpressionFunctionCall )
+ */
+export type FuncAstExpressionParens = FuncAstExpressionFunCall;
+
+/**
+ * parse_expr90
+ */
+export type FuncAstExpressionVarFun =
+    | FuncAstExpressionVarDecl
+    | FuncAstExpressionFunCall
+    | FuncAstExpressionPrimary;
+
+/**
+ * Variable declaration
+ *
+ * Type SingleOrMultipleIds
+ */
+export type FuncAstExpressionVarDecl = {
+    kind: "expression_var_decl";
+    ty: FuncAstType;
+    names: FuncAstExpressionVarDeclPart;
+    loc: FuncSrcInfo;
+};
+
+export type FuncAstExpressionVarDeclPart =
+    | FuncAstId
+    | FuncAstExpressionTensor
+    | FuncAstExpressionTuple;
+
+/**
+ * Function call
+ *
+ * (functionId | functionCallReturningFunction) Argument+
+ */
+export type FuncAstExpressionFunCall = {
+    kind: "expression_fun_call";
+    object: FuncAstFunctionId | FuncAstExpressionParens;
+    arguments: FuncAstExpressionArgument[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * parse_expr100
+ */
+export type FuncAstExpressionPrimary =
+    | FuncAstUnit
+    | FuncAstExpressionTensor
+    | FuncAstExpressionTuple
+    | FuncAstIntegerLiteral
+    | FuncAstStringLiteral
+    | FuncAstFunctionId
+    | FuncAstId;
+
+/**
+ * ( Expression, Expression, ... )
+ */
+export type FuncAstExpressionTensor = {
+    kind: "expression_tensor";
+    expressions: FuncAstExpression[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * [ Expression, Expression, ... ]
+ */
+export type FuncAstExpressionTuple = {
+    kind: "expression_tuple";
+    expressions: FuncAstExpression[];
+    loc: FuncSrcInfo;
+};
+
+//
+// Ternary, binary, unary expression utility sub-types
+//
+
+/**
+ * Expression ? Expression : Expression
+ */
+export type FuncAstTernaryExpression = FuncAstExpressionConditional;
+
+/**
+ * Expression op Expression
+ */
+export type FuncAstBinaryExpression =
+    | FuncAstExpressionAssign
+    | FuncAstExpressionConditional
+    | FuncAstExpressionCompare
+    | FuncAstExpressionBitwiseShift
+    | FuncAstExpressionAddBitwise
+    | FuncAstExpressionMulBitwise;
+
+/**
+ * op Expression
+ *
+ * Note, that there are no unary plus, and unary minus is handled elsewhere!
+ */
+export type FuncAstUnaryExpression = FuncAstExpressionUnary;
 
 //
 // Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
@@ -271,12 +652,12 @@ type FuncAstExpression =
 /**
  * forall type? typeName1, type? typeName2, ... ->
  */
-type FuncAstForall = FuncAstTypeVar[];
+export type FuncAstForall = FuncAstTypeVar[];
 
 /**
  * "type"? id
  */
-type FuncAstTypeVar = {
+export type FuncAstTypeVar = {
     kind: "type_var";
     keyword: boolean;
     ident: FuncAstId;
@@ -286,19 +667,19 @@ type FuncAstTypeVar = {
 /**
  * (type id, ...)
  */
-type FuncAstParameters = FuncAstParameter[];
+export type FuncAstParameters = FuncAstParameter[];
 
 /**
  * Parameters
  */
-type FuncAstParameter = 
+export type FuncAstParameter =
     | FuncAstParameterRegular
     | FuncAstParameterInferredType;
 
 /**
  * type id
  */
-type FuncAstParameterRegular = {
+export type FuncAstParameterRegular = {
     kind: "parameter_regular";
     ty: FuncAstType;
     ident: FuncAstId;
@@ -308,24 +689,18 @@ type FuncAstParameterRegular = {
 /**
  * id
  */
-type FuncAstParameterInferredType = {
+export type FuncAstParameterInferredType = {
     kind: "parameter_inferred_type";
     ident: FuncAstId;
     loc: FuncSrcInfo;
 };
 
 /**
- * Mapped or unmapped builtin types or type variables
+ * Builtin types or type variables
  */
-type FuncAstType = FuncAstTypeMapped | FuncAstTypeBuiltin | FuncAstTypeVar;
+export type FuncAstType = FuncAstTypeBuiltin | FuncAstTypeVar;
 
-type FuncAstTypeMapped = {
-    kind: "type_mapped";
-    left: FuncAstTypeBuiltin;
-    right: FuncAstType;
-};
-
-type FuncAstTypeBuiltin = {
+export type FuncAstTypeBuiltin = {
     kind: "type_builtin";
     value:
         | "int"
@@ -338,27 +713,30 @@ type FuncAstTypeBuiltin = {
         | FuncAstTuple
         | FuncAstHole
         | FuncAstUnit;
+    mapsTo: undefined | FuncAstType;
 };
 
 /** (...) */
-type FuncAstTensor = FuncAstType[];
+export type FuncAstTensor = FuncAstType[];
 
 /** [...] */
-type FuncAstTuple = FuncAstType[];
+export type FuncAstTuple = FuncAstType[];
 
 /**
  * Non-polymorphic, uniform types
  */
 
-type FuncAstTypeUniform = FuncAstTypeUniformMapped | FuncAstTypeUniformBuiltin;
+export type FuncAstTypeUniform =
+    | FuncAstTypeUniformMapped
+    | FuncAstTypeUniformBuiltin;
 
-type FuncAstTypeUniformMapped = {
+export type FuncAstTypeUniformMapped = {
     kind: "type_uniform_mapped";
     left: FuncAstTypeBuiltin;
     right: FuncAstType;
 };
 
-type FuncAstTypeUniformBuiltin = {
+export type FuncAstTypeUniformBuiltin = {
     kind: "type_uniform_builtin";
     value:
         | "int"
@@ -374,54 +752,86 @@ type FuncAstTypeUniformBuiltin = {
 };
 
 /** (...) */
-type FuncAstTensorUniform = FuncAstTypeUniform[];
+export type FuncAstTensorUniform = FuncAstTypeUniform[];
 
 /** [...] */
-type FuncAstTupleUniform = FuncAstTypeUniform[];
+export type FuncAstTupleUniform = FuncAstTypeUniform[];
 
 //
 // Lexical rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
 //
 
-type FuncAstHole = {
+export type FuncAstHole = {
     kind: "hole";
     value: "_" | "var";
     loc: FuncSrcInfo;
 };
 
-type FuncAstUnit = {
+export type FuncAstUnit = {
     kind: "unit";
     value: "()";
     loc: FuncSrcInfo;
 };
 
-type FuncAstFunctionId = {
+
+/**
+ * Identifier kinds, except for function names, which are a superset of those
+ */
+export type FuncAstId =
+    | FuncAstQuotedId
+    | FuncAstOperatorId
+    | FuncAstPlainId
+    | FuncAstUnusedId;
+
+/**
+ * Like identifier, but can start with . or ~
+ */
+export type FuncAstFunctionId = {
     kind: "function_id";
     value: string;
     loc: FuncSrcInfo;
 };
 
-type FuncAstId = FuncAstIdQuoted | FuncAstIdPlain;
-
-type FuncAstIdQuoted = {
-    kind: "id_quoted";
+/**
+ * `anything, except ` or new line`
+ */
+export type FuncAstQuotedId = {
+    kind: "quoted_id";
     value: string;
     loc: FuncSrcInfo;
 };
 
-type FuncAstIdPlain = {
-    kind: "id_plain";
+/**
+ * _+_, etc.
+ */
+export type FuncAstOperatorId = {
+    kind: "operator_id";
     value: string;
     loc: FuncSrcInfo;
 };
 
-type FuncAstUnusedId = {
+/**
+ * *magic*
+ */
+export type FuncAstPlainId = {
+    kind: "plain_id";
+    value: string;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * _
+ */
+export type FuncAstUnusedId = {
     kind: "unused_id";
     value: "_";
     loc: FuncSrcInfo;
 };
 
-type FuncAstVersionRange = {
+/**
+ * op? decNum (. decNum)? (. decNum)?
+ */
+export type FuncAstVersionRange = {
     kind: "version_range";
     op: string | undefined;
     major: bigint;
@@ -431,22 +841,29 @@ type FuncAstVersionRange = {
 };
 
 /**
- * -? dec | -? hex
+ * -? decNum
+ * or
+ * -? hexNum
  */
-type FuncAstIntegerLiteral = {
+export type FuncAstIntegerLiteral = {
     kind: "integer_literal";
     value: bigint;
     loc: FuncSrcInfo;
 };
 
-type FuncAstStringLiteral = 
+/**
+ * "..."ty?
+ * or
+ * """ ... """ty?
+ */
+export type FuncAstStringLiteral =
     | FuncAstStringLiteralSingleLine
     | FuncAstStringLiteralMultiLine;
 
 /**
  * "..."ty?
  */
-type FuncAstStringLiteralSingleLine = {
+export type FuncAstStringLiteralSingleLine = {
     kind: "string_singleline";
     value: string;
     ty: undefined | FuncAstStringType;
@@ -454,23 +871,23 @@ type FuncAstStringLiteralSingleLine = {
 };
 
 /**
- * """ ... """ty? 
+ * """ ... """ty?
  */
-type FuncAstStringLiteralMultiLine = {
+export type FuncAstStringLiteralMultiLine = {
     kind: "string_multiline";
     value: string;
     ty: undefined | FuncAstStringType;
-    // TODO: alignIndent: boolean;
-    // TODO: trim: boolean;
+    // Perhaps: alignIndent: boolean;
+    // Perhaps: trim: boolean;
     loc: FuncSrcInfo;
 };
 
 /**
  * An additional modifier. See: https://docs.ton.org/develop/func/literals_identifiers#string-literals
  */
-type FuncAstStringType = "s" | "a" | "u" | "h" | "H" | "c";
+export type FuncAstStringType = "s" | "a" | "u" | "h" | "H" | "c";
 
-type FuncAstWhiteSpace = {
+export type FuncAstWhiteSpace = {
     kind: "whitespace";
     value: `\t` | ` ` | `\n` | `\r` | `\u2028` | `\u2029`;
 };
@@ -480,25 +897,27 @@ type FuncAstWhiteSpace = {
  * or
  * {- ... -}
  */
-type FuncAstComment = FuncAstCommentSingleLine | FuncAstCommentMultiLine;
+export type FuncAstComment = FuncAstCommentSingleLine | FuncAstCommentMultiLine;
 
 /**
- * Doesn't include the starting ;; characters
- *
  * ;; ...
+ *
+ * Doesn't include the leading ;; characters TODO: rm
  */
-type FuncAstCommentSingleLine = {
+export type FuncAstCommentSingleLine = {
     kind: "comment_singleline";
     line: string;
     loc: FuncSrcInfo;
 };
 
 /**
- * `skipCR` — if set to true, skips CR before the next line
+ * {- ...can be nested... -}
  *
- * {- ... -}
+ * Doesn't include the leftmost {- and rightmost -} *ODO: rm
+ *
+ * @field skipCR If set to true, skips CR before the next line
  */
-type FuncAstCommentMultiLine = {
+export type FuncAstCommentMultiLine = {
     kind: "comment_multiline";
     contents: string;
     skipCR: boolean;
