@@ -1,4 +1,4 @@
-import { toNano } from "@ton/core";
+import { beginCell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { Test, Test_getterMapping } from "./contracts/output/getters_Test";
@@ -45,6 +45,12 @@ describe("getter-names-conflict", () => {
         ).toMatchSnapshot();
 
         // Passing `Test` contract data to getter
-        expect(await contract.getContractAsInput()).toMatchSnapshot();
+        expect(
+            await contract.getContractAsInput({
+                $$type: "Test",
+                id: 123n,
+                anotherData: beginCell().storeUint(123, 64).endCell(),
+            }),
+        ).toMatchSnapshot();
     });
 });
