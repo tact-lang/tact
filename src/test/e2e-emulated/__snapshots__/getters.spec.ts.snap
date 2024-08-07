@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getter-names-conflict should implement getters correctly 1`] = `
+exports[`getters should implement getters correctly 1`] = `
 Test {
   "abi": {
     "errors": {
@@ -421,7 +421,7 @@ Test {
       },
     ],
   },
-  "address": kQBJzzDQ5H5TCORVona7ggMuJgyrJx9ZuZrwFUXXjw7LLq9e,
+  "address": kQDsw-bnMiaamQaixpywXixwVG_wD1cNwPPg2aD_7ntomFNh,
   "init": {
     "code": x{FF00F4A413F4BCF2C80B}
  x{62_}
@@ -435,7 +435,7 @@ Test {
   x{2_}
    x{2_}
     x{66_}
-     x{AFD8ED9E6D9E36114_}
+     x{AFD8ED9E6D9E361137814_}
       x{ED44D0D401F863D2000196D31FD4596C12E030F828D70B0A8309BAF2E089DB3C}
        x{70C8C9}
       x{5C}
@@ -455,10 +455,10 @@ Test {
     x{2_}
      x{B457DDA89A1A40003_}
      x{2_}
-      x{B2D85BC8B6CF169B08A_}
+      x{B2D85BC8B6CF169B089BC0A_}
        x{ED44D0D401F863D2000196D31FD4596C12E030F828D70B0A8309BAF2E089DB3C}
         x{70C8C9}
-      x{B1B1DBC8B6CF169B08A_}
+      x{B1B1DBC8B6CF169B089BC0A_}
        x{ED44D0D401F863D2000196D31FD4596C12E030F828D70B0A8309BAF2E089DB3C}
         x{70C8C9},
     "data": x{4_}
@@ -476,7 +476,7 @@ Test {
      x{2_}
       x{2_}
        x{66_}
-        x{AFD8ED9E6D9E36114_}
+        x{AFD8ED9E6D9E361137814_}
          x{ED44D0D401F863D2000196D31FD4596C12E030F828D70B0A8309BAF2E089DB3C}
           x{70C8C9}
          x{5C}
@@ -496,25 +496,17 @@ Test {
        x{2_}
         x{B457DDA89A1A40003_}
         x{2_}
-         x{B2D85BC8B6CF169B08A_}
+         x{B2D85BC8B6CF169B089BC0A_}
           x{ED44D0D401F863D2000196D31FD4596C12E030F828D70B0A8309BAF2E089DB3C}
            x{70C8C9}
-         x{B1B1DBC8B6CF169B08A_}
+         x{B1B1DBC8B6CF169B089BC0A_}
           x{ED44D0D401F863D2000196D31FD4596C12E030F828D70B0A8309BAF2E089DB3C}
            x{70C8C9},
   },
 }
 `;
 
-exports[`getter-names-conflict should implement getters correctly 2`] = `
-{
-  "$$type": "Test",
-  "anotherData": x{},
-  "id": 0n,
-}
-`;
-
-exports[`getter-names-conflict should implement getters correctly 3`] = `
+exports[`getters should implement getters correctly 2`] = `
 {
   "$$type": "S",
   "a": 1n,
@@ -522,7 +514,15 @@ exports[`getter-names-conflict should implement getters correctly 3`] = `
 }
 `;
 
-exports[`getter-names-conflict should implement getters correctly 4`] = `
+exports[`getters should implement getters correctly 3`] = `
+{
+  "$$type": "Test",
+  "anotherData": x{},
+  "id": 0n,
+}
+`;
+
+exports[`getters should implement getters correctly 4`] = `
 {
   "$$type": "Test",
   "anotherData": x{000000000000007B},
