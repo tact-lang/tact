@@ -11,6 +11,8 @@ const globalConst8: Int = GCD_recursive(globalConst6, globalConst7 + 1);  // GCD
 const globalConst9: Int = GCD_iterative(globalConst6, globalConst7 + 1);  // 2
 const globalConst10: Int = factorial_recursive(globalConst3);  // 4! = 24
 const globalConst11: Int = factorial_iterative(globalConst3);  // 4! = 24
+const globalConst12: Int = fibonacci_recursive(globalConst3 + 2);  // fibonacci(6) = 8
+const globalConst13: Int = fibonacci_iterative(globalConst3 + 2);  // fibonacci(6) = 8
 
 struct S {
     a: Bool;
@@ -147,6 +149,45 @@ fun factorial_iterative(a: Int): Int {
     return result;
 }
 
+fun fibonacci_recursive(a: Int): Int {
+    if (a < 0) {
+        // there will be a throws error here once 
+        // try-catch is implemented in
+        // the interpreter
+        return 0;
+    }
+
+    if (a <= 1) {
+        return a;
+    } else {
+        return fibonacci_recursive(a - 2) + fibonacci_recursive(a - 1);
+    }
+}
+
+fun fibonacci_iterative(a: Int): Int {
+    if (a < 0) {
+        // there will be a throws error here once 
+        // try-catch is implemented in
+        // the interpreter
+        return 0;
+    }
+
+    if (a <= 1) {
+        return a;
+    }
+
+    let prev = 0;
+    let current = 1;
+
+    repeat (a - 1) {
+        let temp = current;
+        current += prev;
+        prev = temp;
+    }
+    return current;
+}
+
+
 contract ConstantTester {
     const something1: Int = 10 + 1;
     const something2: Int? = null;
@@ -275,6 +316,8 @@ contract ConstantTester {
     get fun globalConst9(): Int { return globalConst9; }
     get fun globalConst10(): Int { return globalConst10; }
     get fun globalConst11(): Int { return globalConst11; }
+    get fun globalConst12(): Int { return globalConst12; }
+    get fun globalConst13(): Int { return globalConst13; }
 
     get fun minInt1(): Int {
         return -115792089237316195423570985008687907853269984665640564039457584007913129639936;
