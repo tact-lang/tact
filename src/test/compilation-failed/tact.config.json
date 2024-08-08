@@ -138,8 +138,8 @@
       "output": "./contracts/output"
     },
     {
-      "name": "const-eval-div-by-zero-in-func",
-      "path": "./contracts/const-eval-div-by-zero-in-func.tact",
+      "name": "const-eval-div-by-zero-in-fun",
+      "path": "./contracts/const-eval-div-by-zero-in-fun.tact",
       "output": "./contracts/output"
     },
     {
