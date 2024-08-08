@@ -72,6 +72,10 @@ describe("map", () => {
             expect((await contract.getIntMap9_4()).size).toBe(0);
             expect((await contract.getIntMap9_5()).size).toBe(0);
             expect((await contract.getIntMap9_6()).size).toBe(0);
+            expect((await contract.getIntMap10_1()).size).toBe(0);
+            expect((await contract.getIntMap10_2()).size).toBe(0);
+            expect((await contract.getIntMap10_3()).size).toBe(0);
+            expect((await contract.getIntMap10_4()).size).toBe(0);
             expect((await contract.getAddrMap1()).size).toBe(0);
             expect((await contract.getAddrMap2()).size).toBe(0);
             expect((await contract.getAddrMap3()).size).toBe(0);
@@ -166,6 +170,15 @@ describe("map", () => {
                     treasure,
                     { value: toNano(1) },
                     { $$type: "SetUIntMap9", key: k, value: valueSmallAbs },
+                );
+                await contract.send(
+                    treasure,
+                    { value: toNano(1) },
+                    {
+                        $$type: "SetUIntMap10",
+                        key: keySmallAbs,
+                        value: valueSmallAbs,
+                    },
                 );
                 await contract.send(
                     treasure,
@@ -268,6 +281,18 @@ describe("map", () => {
                 expect(await contract.getIntMap9_4Value(k)).toBe(valueSmallAbs);
                 expect(await contract.getIntMap9_5Value(k)).toBe(valueSmallAbs);
                 expect(await contract.getIntMap9_6Value(k)).toBe(valueSmallAbs);
+                expect(await contract.getIntMap10_1Value(keySmallAbs)).toBe(
+                    valueSmallAbs,
+                );
+                expect(await contract.getIntMap10_2Value(keySmallAbs)).toBe(
+                    valueSmallAbs,
+                );
+                expect(await contract.getIntMap10_3Value(keySmallAbs)).toBe(
+                    valueSmallAbs,
+                );
+                expect(await contract.getIntMap10_4Value(keySmallAbs)).toBe(
+                    valueSmallAbs,
+                );
                 expect(
                     await contract.getIntMap10Value(keySmall, valueInt),
                 ).toBe(valueInt * 7n);
@@ -280,6 +305,9 @@ describe("map", () => {
                 expect(await contract.getIntMap13Value(k, valueSmallAbs)).toBe(
                     valueSmallAbs * 7n,
                 );
+                expect(
+                    await contract.getIntMap14Value(keySmallAbs, valueSmallAbs),
+                ).toBe(valueSmallAbs * 4n);
                 expect(await contract.getAddrMap1Value(addr)).toBe(valueInt);
                 expect((await contract.getAddrMap2Value(addr))!).toBe(
                     valueBool,
@@ -368,6 +396,10 @@ describe("map", () => {
                 expect((await contract.getIntMap9_4()).size).toBe(1);
                 expect((await contract.getIntMap9_5()).size).toBe(1);
                 expect((await contract.getIntMap9_6()).size).toBe(1);
+                expect((await contract.getIntMap10_1()).size).toBe(1);
+                expect((await contract.getIntMap10_2()).size).toBe(1);
+                expect((await contract.getIntMap10_3()).size).toBe(1);
+                expect((await contract.getIntMap10_4()).size).toBe(1);
                 expect((await contract.getAddrMap1()).size).toBe(1);
                 expect((await contract.getAddrMap2()).size).toBe(1);
                 expect((await contract.getAddrMap3()).size).toBe(1);
@@ -418,6 +450,11 @@ describe("map", () => {
                     treasure,
                     { value: toNano(1) },
                     { $$type: "SetUIntMap9", key: k, value: null },
+                );
+                await contract.send(
+                    treasure,
+                    { value: toNano(1) },
+                    { $$type: "SetUIntMap10", key: keySmallAbs, value: null },
                 );
                 await contract.send(
                     treasure,
@@ -500,6 +537,18 @@ describe("map", () => {
                 expect(await contract.getIntMap9_4Value(k)).toBe(null);
                 expect(await contract.getIntMap9_5Value(k)).toBe(null);
                 expect(await contract.getIntMap9_6Value(k)).toBe(null);
+                expect(await contract.getIntMap10_1Value(keySmallAbs)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap10_2Value(keySmallAbs)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap10_3Value(keySmallAbs)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap10_4Value(keySmallAbs)).toBe(
+                    null,
+                );
                 expect(await contract.getAddrMap1Value(addr)).toBeNull();
                 expect(await contract.getAddrMap2Value(addr)).toBeNull();
                 expect(await contract.getAddrMap3Value(addr)).toBeNull();
@@ -608,6 +657,10 @@ describe("map", () => {
             expect((await contract.getIntMap9_4()).size).toBe(0);
             expect((await contract.getIntMap9_5()).size).toBe(0);
             expect((await contract.getIntMap9_6()).size).toBe(0);
+            expect((await contract.getIntMap10_1()).size).toBe(0);
+            expect((await contract.getIntMap10_2()).size).toBe(0);
+            expect((await contract.getIntMap10_3()).size).toBe(0);
+            expect((await contract.getIntMap10_4()).size).toBe(0);
             expect((await contract.getAddrMap1()).size).toBe(0);
             expect((await contract.getAddrMap2()).size).toBe(0);
             expect((await contract.getAddrMap3()).size).toBe(0);
@@ -702,6 +755,15 @@ describe("map", () => {
                     treasure,
                     { value: toNano(1) },
                     { $$type: "SetUIntMap9", key: k, value: valueSmallAbs },
+                );
+                await contract.send(
+                    treasure,
+                    { value: toNano(1) },
+                    {
+                        $$type: "SetUIntMap10",
+                        key: keySmallAbs,
+                        value: valueSmallAbs,
+                    },
                 );
                 await contract.send(
                     treasure,
@@ -804,6 +866,18 @@ describe("map", () => {
                 expect(await contract.getIntMap9_4Value(k)).toBe(valueSmallAbs);
                 expect(await contract.getIntMap9_5Value(k)).toBe(valueSmallAbs);
                 expect(await contract.getIntMap9_6Value(k)).toBe(valueSmallAbs);
+                expect(await contract.getIntMap10_1Value(keySmallAbs)).toBe(
+                    valueSmallAbs,
+                );
+                expect(await contract.getIntMap10_2Value(keySmallAbs)).toBe(
+                    valueSmallAbs,
+                );
+                expect(await contract.getIntMap10_3Value(keySmallAbs)).toBe(
+                    valueSmallAbs,
+                );
+                expect(await contract.getIntMap10_4Value(keySmallAbs)).toBe(
+                    valueSmallAbs,
+                );
                 expect(
                     await contract.getIntMap10Value(keySmall, valueInt),
                 ).toBe(valueInt * 7n);
@@ -816,6 +890,12 @@ describe("map", () => {
                 expect(await contract.getIntMap13Value(k, valueSmallAbs)).toBe(
                     valueSmallAbs * 7n,
                 );
+                expect(
+                    await contract.getIntMap14Value(keySmallAbs, valueSmallAbs),
+                ).toBe(valueSmallAbs * 4n);
+                expect(
+                    await contract.getIntMap14Value(keySmallAbs, valueSmallAbs),
+                ).toBe(valueSmallAbs * 4n);
                 expect(await contract.getAddrMap1Value(addr)).toBe(valueInt);
                 expect((await contract.getAddrMap2Value(addr))!).toBe(
                     valueBool,
@@ -904,6 +984,10 @@ describe("map", () => {
                 expect((await contract.getIntMap9_4()).size).toBe(1);
                 expect((await contract.getIntMap9_5()).size).toBe(1);
                 expect((await contract.getIntMap9_6()).size).toBe(1);
+                expect((await contract.getIntMap10_1()).size).toBe(1);
+                expect((await contract.getIntMap10_2()).size).toBe(1);
+                expect((await contract.getIntMap10_3()).size).toBe(1);
+                expect((await contract.getIntMap10_4()).size).toBe(1);
                 expect((await contract.getAddrMap1()).size).toBe(1);
                 expect((await contract.getAddrMap2()).size).toBe(1);
                 expect((await contract.getAddrMap3()).size).toBe(1);
@@ -958,6 +1042,11 @@ describe("map", () => {
                     treasure,
                     { value: toNano(1) },
                     { $$type: "DelUIntMap9", key: k },
+                );
+                await contract.send(
+                    treasure,
+                    { value: toNano(1) },
+                    { $$type: "DelUIntMap10", key: keySmallAbs },
                 );
                 await contract.send(
                     treasure,
@@ -1040,6 +1129,18 @@ describe("map", () => {
                 expect(await contract.getIntMap9_4Value(k)).toBe(null);
                 expect(await contract.getIntMap9_5Value(k)).toBe(null);
                 expect(await contract.getIntMap9_6Value(k)).toBe(null);
+                expect(await contract.getIntMap10_1Value(keySmallAbs)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap10_2Value(keySmallAbs)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap10_3Value(keySmallAbs)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap10_4Value(keySmallAbs)).toBe(
+                    null,
+                );
                 expect(await contract.getAddrMap1Value(addr)).toBeNull();
                 expect(await contract.getAddrMap2Value(addr)).toBeNull();
                 expect(await contract.getAddrMap3Value(addr)).toBeNull();

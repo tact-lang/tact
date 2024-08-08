@@ -42,7 +42,7 @@ import { getRawAST } from "../grammar/store";
 import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
 import { evalConstantExpression } from "../constEval";
-import { resolveABIType } from "./resolveABITypeRef";
+import { resolveABIType, intMapFormats } from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
@@ -70,21 +70,8 @@ function verifyMapType(
     if (keyAs) {
         if (key === "Int") {
             if (
-                ![
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "int128",
-                    "int256",
-                    "int257",
-                    "uint8",
-                    "uint16",
-                    "uint32",
-                    "uint64",
-                    "uint128",
-                    "uint256",
-                ].includes(idText(keyAs))
+                idText(keyAs) === "coins" ||
+                !Object.keys(intMapFormats).includes(idText(keyAs))
             ) {
                 throwCompilationError("Invalid key type for map", loc);
             }
@@ -96,24 +83,7 @@ function verifyMapType(
     // valueAs
     if (valueAs) {
         if (value === "Int") {
-            if (
-                ![
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "int128",
-                    "int256",
-                    "int257",
-                    "uint8",
-                    "uint16",
-                    "uint32",
-                    "uint64",
-                    "uint128",
-                    "uint256",
-                    "coins",
-                ].includes(idText(valueAs))
-            ) {
+            if (!Object.keys(intMapFormats).includes(idText(valueAs))) {
                 throwCompilationError("Invalid value type for map", loc);
             }
         } else {

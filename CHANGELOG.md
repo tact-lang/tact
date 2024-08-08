@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Wider range of serialization types for integers — `uint1` through `uint256` and `int1` through `int257`: PR [#558](https://github.com/tact-lang/tact/pull/558)
+
 ### Changed
 
 - Removed unsupported iterators API: PR [#633](https://github.com/tact-lang/tact/pull/633)
