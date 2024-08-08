@@ -7,7 +7,7 @@ export function topologicalSort<T>(src: T[], references: (src: T) => T[]) {
     const visiting: Set<T> = new Set();
     const visit = (src: T) => {
         if (visiting.has(src)) {
-            throw Error("Cycle detected");
+            throwInternalCompilerError("Cycle detected");
         }
         if (!visited.has(src)) {
             visiting.add(src);
