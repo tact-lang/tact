@@ -1,12 +1,12 @@
 import { Config, verifyConfig } from "./config/parseConfig";
-import { Logger } from "./logger";
+import { ILogger } from "./logger";
 import { build } from "./pipeline/build";
 import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
 
 export async function run(args: {
     config: Config;
     files: Record<string, string>;
-    logger?: Logger;
+    logger?: ILogger;
 }) {
     // Verify config
     const config = verifyConfig(args.config);

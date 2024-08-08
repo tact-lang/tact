@@ -8,7 +8,7 @@ import { funcCompile } from "../func/funcCompile";
 import { writeReport } from "../generator/writeReport";
 import { getRawAST } from "../grammar/store";
 import files from "../imports/stdlib";
-import { Logger } from "../logger";
+import { ILogger, Logger } from "../logger";
 import { PackageFileFormat } from "../packaging/fileFormat";
 import { packageCode } from "../packaging/packageCode";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
@@ -24,7 +24,7 @@ import { TactErrorCollection } from "../errors";
 
 export function enableFeatures(
     ctx: CompilerContext,
-    logger: Logger,
+    logger: ILogger,
     config: ConfigProject,
 ): CompilerContext {
     if (config.options === undefined) {
@@ -51,14 +51,14 @@ export async function build(args: {
     config: ConfigProject;
     project: VirtualFileSystem;
     stdlib: string | VirtualFileSystem;
-    logger?: Logger;
+    logger?: ILogger;
 }): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
     const { config, project } = args;
     const stdlib =
         typeof args.stdlib === "string"
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
-    const logger: Logger = args.logger ?? new Logger();
+    const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
