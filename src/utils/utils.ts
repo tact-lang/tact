@@ -1,4 +1,5 @@
 import { crc16 } from "./crc16";
+import { throwInternalCompilerError } from "../errors";
 
 export function topologicalSort<T>(src: T[], references: (src: T) => T[]) {
     const result: T[] = [];

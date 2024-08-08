@@ -906,7 +906,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 if (d.kind === "function_def" || d.kind === "function_decl") {
                     const f = resolveFunctionDescriptor(s.name, d, s.origin);
                     if (f.self !== s.name) {
-                        throw Error("Function self must be " + s.name); // Impossible
+                        throwInternalCompilerError(
+                            `Function self must be ${s.name}`,
+                        ); // Impossible
                     }
                     if (s.functions.has(f.name)) {
                         throwCompilationError(
@@ -1818,7 +1820,7 @@ export function getType(
     const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
     if (!r) {
-        throw Error("Type " + name + " not found");
+        throwInternalCompilerError(`Type ${name} not found`);
     }
     return r;
 }
@@ -1839,7 +1841,7 @@ export function getStaticFunction(
 ): FunctionDescription {
     const r = staticFunctionsStore.get(ctx, name);
     if (!r) {
-        throw Error("Static function " + name + " not found");
+        throwInternalCompilerError(`Static function ${name} not found`);
     }
     return r;
 }
@@ -1854,7 +1856,7 @@ export function getStaticConstant(
 ): ConstantDescription {
     const r = staticConstantsStore.get(ctx, name);
     if (!r) {
-        throw Error("Static constant " + name + " not found");
+        throwInternalCompilerError(`Static constant ${name} not found`);
     }
     return r;
 }
