@@ -71,7 +71,7 @@ void (async () => {
                                 content: code,
                             },
                         ],
-                        logger: logger,
+                        logger,
                     });
                     if (!c.ok) {
                         logger.error(c.log);

@@ -13,14 +13,18 @@ export enum LogLevel {
 
 type messageType = string | Error;
 
-export interface LogMethods {
+/**
+ * Interface defining the logging methods used by the `Logger` class, enabling
+ * custom logger implementations.
+ */
+export interface ILogger {
     debug: (message: messageType) => void;
     info: (message: messageType) => void;
     warn: (message: messageType) => void;
     error: (message: messageType) => void;
 }
 
-const logLevelToMethodName: { [key in LogLevel]: keyof LogMethods | null } = {
+const logLevelToMethodName: { [key in LogLevel]: keyof ILogger | null } = {
     [LogLevel.NONE]: null,
     [LogLevel.ERROR]: "error",
     [LogLevel.WARN]: "warn",
@@ -28,13 +32,13 @@ const logLevelToMethodName: { [key in LogLevel]: keyof LogMethods | null } = {
     [LogLevel.DEBUG]: "debug",
 };
 
-function getLoggingMethod(level: LogLevel): keyof LogMethods | null {
+function getLoggingMethod(level: LogLevel): keyof ILogger | null {
     return logLevelToMethodName[level];
 }
 
 export class Logger {
     private level: LogLevel;
-    private logMethods: LogMethods;
+    private logMethods: ILogger;
 
     constructor(level: LogLevel = LogLevel.INFO) {
         this.level = level;
