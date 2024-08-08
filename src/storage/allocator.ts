@@ -302,6 +302,9 @@ export function getAllocationOperationFromField(
                 };
             }
         }
+        // NOTE: That's false positive in ESLint on how it handles nested if-else
+        // constructions: https://github.com/tact-lang/tact/pull/669/files#r1709420045
+        // eslint-disable-next-line no-fallthrough
         case "dict": {
             if (src.format !== null && src.format !== undefined) {
                 throwInternalCompilerError(
