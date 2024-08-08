@@ -1,4 +1,4 @@
-import { Logger } from "../logger";
+import { ILogger } from "../logger";
 
 // Wasm Imports
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -59,7 +59,7 @@ type CompileResult =
 export async function funcCompile(args: {
     entries: string[];
     sources: { path: string; content: string }[];
-    logger: Logger;
+    logger: ILogger;
 }): Promise<FuncCompilationResult> {
     // Parameters
     const files: string[] = args.entries;
