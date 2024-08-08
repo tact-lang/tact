@@ -13,6 +13,7 @@ import {
     writeTupleSerializer,
 } from "./typescript/writeStruct";
 import { AllocationCell } from "../storage/operation";
+import { throwInternalCompilerError } from "../errors";
 import { topologicalSort } from "../utils/utils";
 import {
     allocate,
@@ -31,7 +32,9 @@ function writeArguments(args: ABIArgument[]) {
                 continue outer;
             }
         }
-        throw Error("Unsupported type: " + JSON.stringify(f.type));
+        throwInternalCompilerError(
+            `Unsupported type: ${JSON.stringify(f.type)}`,
+        );
     }
 
     return res;
