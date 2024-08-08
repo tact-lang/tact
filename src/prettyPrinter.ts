@@ -42,6 +42,7 @@ import {
     AstFuncId,
     idText,
 } from "./grammar/ast";
+import { throwInternalCompilerError } from "./errors";
 import JSONbig from "json-bigint";
 
 /**
@@ -728,7 +729,7 @@ export function prettyPrint(node: AstNode): string {
         case "import":
             return pp.ppAstImport(node);
         default:
-            throw new Error(
+            throwInternalCompilerError(
                 `Unsupported AST type: ${JSONbig.stringify(node, null, 2)}`,
             );
     }

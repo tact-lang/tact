@@ -7,6 +7,7 @@ import {
     isValue,
 } from "../grammar/ast";
 import { dummySrcInfo } from "../grammar/grammar";
+import { throwInternalCompilerError } from "../errors";
 import { Value } from "../types/types";
 
 export function extractValue(ast: AstValue): Value {
@@ -56,7 +57,7 @@ export function makeValueExpression(value: Value): AstValue {
         });
         return result as AstValue;
     }
-    throw new Error(
+    throwInternalCompilerError(
         `structs, addresses, cells, and comment values are not supported at the moment.`,
     );
 }

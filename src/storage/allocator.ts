@@ -4,6 +4,7 @@ import {
     AllocationOperation,
     AllocationOperationType,
 } from "./operation";
+import { throwInternalCompilerError } from "../errors";
 
 const ALLOCATOR_RESERVE_BIT = 1;
 const ALLOCATOR_RESERVE_REF = 1;
@@ -36,7 +37,7 @@ function getOperationSize(src: AllocationOperationType): {
                     }
                     case "remainder": {
                         if (src.optional) {
-                            throw new Error(
+                            throwInternalCompilerError(
                                 "Remainder cell cannot be optional",
                             );
                         }
