@@ -2,12 +2,15 @@ const someGlobalConst: Int = 100;
 
 const globalConst1: Int = 1;
 const globalConst2: Int = globalConst1 + 1;  // 2
-const globalConst3: Int = globalFunc1(globalConst1) + 1;  // 4
-const globalConst4: Int = globalFunc2(globalConst1) + globalConst3;  // 15
-const globalConst5: Int = globalFunc3(globalConst4);  // 15
-const globalConst6: Int = globalFunc4(globalConst5 + 10);  // 26
-const globalConst7: Int = globalFunc5(globalConst6 + 1, globalConst5 + 10);  // 27
-const globalConst8: Int = globalFunc6(globalConst6, globalConst7 + 1);  // 2
+const globalConst3: Int = globalFun1(globalConst1) + 1;  // 4
+const globalConst4: Int = globalFun2(globalConst1) + globalConst3;  // 15
+const globalConst5: Int = globalFun3(globalConst4);  // 15
+const globalConst6: Int = globalFun4(globalConst5 + 10);  // 26
+const globalConst7: Int = globalFun5(globalConst6 + 1, globalConst5 + 10);  // 27
+const globalConst8: Int = GCD_recursive(globalConst6, globalConst7 + 1);  // GCD(26, 28) = 2
+const globalConst9: Int = GCD_iterative(globalConst6, globalConst7 + 1);  // 2
+const globalConst10: Int = factorial_recursive(globalConst3);  // 4! = 24
+const globalConst11: Int = factorial_iterative(globalConst3);  // 4! = 24
 
 struct S {
     a: Bool;
@@ -22,7 +25,7 @@ struct T {
 // Global functions
 
 // Test assignments
-fun globalFunc1(v: Int): Int {
+fun globalFun1(v: Int): Int {
     let i = v;
     let j = 1;
     let k = i + j;
@@ -39,7 +42,7 @@ fun globalFunc1(v: Int): Int {
 }
 
 // Test repeat
-fun globalFunc2(v: Int): Int {
+fun globalFun2(v: Int): Int {
     let j = v;
     repeat(10) {
         let i = 1;
@@ -49,7 +52,7 @@ fun globalFunc2(v: Int): Int {
 }
 
 // Test do..until
-fun globalFunc3(v: Int): Int {
+fun globalFun3(v: Int): Int {
     let i = 20;
     do {
         i -= 1;
@@ -58,7 +61,7 @@ fun globalFunc3(v: Int): Int {
 }
 
 // Test while
-fun globalFunc4(v: Int): Int {
+fun globalFun4(v: Int): Int {
     let i = 20;
     while (i <= v) {
         i += 1;
@@ -67,7 +70,7 @@ fun globalFunc4(v: Int): Int {
 }
 
 // MAX, test conditionals
-fun globalFunc5(a: Int, b: Int): Int {
+fun globalFun5(a: Int, b: Int): Int {
     if (a <= b) {
         return b;
     } else {
@@ -75,18 +78,73 @@ fun globalFunc5(a: Int, b: Int): Int {
     }
 }
 
-// GCD for non-negative integers
-// test recursion
-fun globalFunc6(a: Int, b: Int): Int {
+// Recursive GCD for non-negative integers
+fun GCD_recursive(a: Int, b: Int): Int {
     if (a < 0 || b < 0) {
+        // there will be a throws error here once 
+        // try-catch is implemented in
+        // the interpreter
         return 0;
     }
 
     if (b == 0) {
         return a;
     } else {
-        return globalFunc6(b, a % b);
+        return GCD_recursive(b, a % b);
     }
+}
+
+// Iterative GCD for non-negative integers
+fun GCD_iterative(a: Int, b: Int): Int {
+    if (a < 0 || b < 0) {
+        // there will be a throws error here once 
+        // try-catch is implemented in
+        // the interpreter
+        return 0;
+    }
+
+    let na = a;
+    let nb = b;
+    
+    while (nb != 0) {
+        let temp = nb;
+        nb = na % nb;
+        na = temp;
+    }
+    return na;
+}
+
+fun factorial_recursive(a: Int): Int {
+    if (a < 0) {
+        // there will be a throws error here once 
+        // try-catch is implemented in
+        // the interpreter
+        return 0;
+    }
+
+    if (a <= 1) {
+        return 1;
+    } else {
+        return a * factorial_recursive(a - 1);
+    }
+}
+
+fun factorial_iterative(a: Int): Int {
+    if (a < 0) {
+        // there will be a throws error here once 
+        // try-catch is implemented in
+        // the interpreter
+        return 0;
+    }
+
+    let result = 1;
+    let i = 2;
+
+    while (i <= a) {
+        result *= i;
+        i += 1;
+    }
+    return result;
 }
 
 contract ConstantTester {
@@ -214,6 +272,9 @@ contract ConstantTester {
     get fun globalConst6(): Int { return globalConst6; }
     get fun globalConst7(): Int { return globalConst7; }
     get fun globalConst8(): Int { return globalConst8; }
+    get fun globalConst9(): Int { return globalConst9; }
+    get fun globalConst10(): Int { return globalConst10; }
+    get fun globalConst11(): Int { return globalConst11; }
 
     get fun minInt1(): Int {
         return -115792089237316195423570985008687907853269984665640564039457584007913129639936;

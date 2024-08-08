@@ -586,6 +586,36 @@ ConstantTester {
       },
       {
         "arguments": [],
+        "name": "globalConst9",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "globalConst10",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
+        "name": "globalConst11",
+        "returnType": {
+          "format": 257,
+          "kind": "simple",
+          "optional": false,
+          "type": "int",
+        },
+      },
+      {
+        "arguments": [],
         "name": "minInt1",
         "returnType": {
           "format": 257,
@@ -807,7 +837,7 @@ ConstantTester {
       },
     ],
   },
-  "address": kQD6TdOoe8Fa7rc1NfdWOO-83UenHKcDdnFoFELXbbK4tR8z,
+  "address": kQC7AeeVxDA_3s5xLN7FcD4yUiTVIFqBpPWfAHHrcfn0sHnZ,
   "init": {
     "code": x{FF00F4A413F4BCF2C80B}
  x{62_}
@@ -887,10 +917,15 @@ ConstantTester {
         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
          x{6D}
         x{85FF}
-       x{AF976D9E6D9E18C_}
-        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-         x{6D}
-        x{85FF}
+       x{E7_}
+        x{BAEDB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{85FF}
+        x{BD1DB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{72}
       x{E9_}
        x{B8FDB3CDB3C31}
         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
@@ -1053,49 +1088,59 @@ ConstantTester {
           x{6D}
          x{72}
      x{2_}
-      x{5}
-       x{2_}
-        x{2_}
-         x{A20B6CF36CF1B04DBC09BC0A_}
-          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-           x{6D}
-          x{802A7F21}
-         x{A3C76CF36CF0C6_}
-          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-           x{6D}
-          x{6D}
-        x{A7A1B679B67863_}
-         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-          x{6D}
-         x{70}
-       x{6A_}
-        x{BA6DB3CDB3C31}
-         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-          x{6D}
-         x{8058}
-        x{BD9DB3CDB3C31}
-         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-          x{6D}
-         x{71}
-      x{5}
-       x{2_}
-        x{2_}
-         x{A28F6CF36CF1B049BC0A_}
-          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-           x{6D}
-          x{70802A}
-         x{A3436CF36CF0C6_}
-          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-           x{6D}
-          x{82181CA35F0E00}
-        x{A7E3B679B67863_}
-         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-          x{6D}
-         x{71}
-       x{AA07DB3CDB3C31}
+      x{2_}
+       x{ADC96D9E6D9E18C_}
         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
          x{6D}
-        x{8D086002540B846967BD8AD0D9B17DFB2440228EB4C230FA9782F8A2D9B60428BEBB439C},
+        x{8018}
+       x{2_}
+        x{2_}
+         x{2_}
+          x{A20B6CF36CF1B04DBC09BC0A_}
+           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+            x{6D}
+           x{802A7F21}
+          x{A3C76CF36CF0C6_}
+           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+            x{6D}
+           x{6D}
+         x{A7A1B679B67863_}
+          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+           x{6D}
+          x{70}
+        x{6A_}
+         x{BA6DB3CDB3C31}
+          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+           x{6D}
+          x{8058}
+         x{BD9DB3CDB3C31}
+          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+           x{6D}
+          x{71}
+      x{2_}
+       x{ADD9ED9E6D9E18C_}
+        x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+         x{6D}
+        x{8018}
+       x{2_}
+        x{2_}
+         x{2_}
+          x{A28F6CF36CF1B049BC0A_}
+           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+            x{6D}
+           x{70802A}
+          x{A3436CF36CF0C6_}
+           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+            x{6D}
+           x{82181CA35F0E00}
+         x{A7E3B679B67863_}
+          x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+           x{6D}
+          x{71}
+        x{AA07DB3CDB3C31}
+         x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+          x{6D}
+         x{8D086002540B846967BD8AD0D9B17DFB2440228EB4C230FA9782F8A2D9B60428BEBB439C},
     "data": x{4_}
  x{C_}
   x{A0F903_}
@@ -1177,10 +1222,15 @@ ConstantTester {
            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
             x{6D}
            x{85FF}
-          x{AF976D9E6D9E18C_}
-           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-            x{6D}
-           x{85FF}
+          x{E7_}
+           x{BAEDB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{85FF}
+           x{BD1DB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{72}
          x{E9_}
           x{B8FDB3CDB3C31}
            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
@@ -1343,49 +1393,59 @@ ConstantTester {
              x{6D}
             x{72}
         x{2_}
-         x{5}
-          x{2_}
-           x{2_}
-            x{A20B6CF36CF1B04DBC09BC0A_}
-             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-              x{6D}
-             x{802A7F21}
-            x{A3C76CF36CF0C6_}
-             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-              x{6D}
-             x{6D}
-           x{A7A1B679B67863_}
-            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-             x{6D}
-            x{70}
-          x{6A_}
-           x{BA6DB3CDB3C31}
-            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-             x{6D}
-            x{8058}
-           x{BD9DB3CDB3C31}
-            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-             x{6D}
-            x{71}
-         x{5}
-          x{2_}
-           x{2_}
-            x{A28F6CF36CF1B049BC0A_}
-             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-              x{6D}
-             x{70802A}
-            x{A3436CF36CF0C6_}
-             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-              x{6D}
-             x{82181CA35F0E00}
-           x{A7E3B679B67863_}
-            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
-             x{6D}
-            x{71}
-          x{AA07DB3CDB3C31}
+         x{2_}
+          x{ADC96D9E6D9E18C_}
            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
             x{6D}
-           x{8D086002540B846967BD8AD0D9B17DFB2440228EB4C230FA9782F8A2D9B60428BEBB439C},
+           x{8018}
+          x{2_}
+           x{2_}
+            x{2_}
+             x{A20B6CF36CF1B04DBC09BC0A_}
+              x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+               x{6D}
+              x{802A7F21}
+             x{A3C76CF36CF0C6_}
+              x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+               x{6D}
+              x{6D}
+            x{A7A1B679B67863_}
+             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+              x{6D}
+             x{70}
+           x{6A_}
+            x{BA6DB3CDB3C31}
+             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+              x{6D}
+             x{8058}
+            x{BD9DB3CDB3C31}
+             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+              x{6D}
+             x{71}
+         x{2_}
+          x{ADD9ED9E6D9E18C_}
+           x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+            x{6D}
+           x{8018}
+          x{2_}
+           x{2_}
+            x{2_}
+             x{A28F6CF36CF1B049BC0A_}
+              x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+               x{6D}
+              x{70802A}
+             x{A3436CF36CF0C6_}
+              x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+               x{6D}
+              x{82181CA35F0E00}
+            x{A7E3B679B67863_}
+             x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+              x{6D}
+             x{71}
+           x{AA07DB3CDB3C31}
+            x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+             x{6D}
+            x{8D086002540B846967BD8AD0D9B17DFB2440228EB4C230FA9782F8A2D9B60428BEBB439C},
   },
 }
 `;

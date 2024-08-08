@@ -1,4 +1,4 @@
-fun funcTest(): Int {
+fun functionTest(): Int {
     let result = 100;
     let i = 2;
     repeat(5) {
@@ -10,6 +10,6 @@ fun funcTest(): Int {
 
 contract ConstEvalNegativeTest {
     get fun something(): Int {
-        return funcTest();
+        return functionTest();
     }
 }

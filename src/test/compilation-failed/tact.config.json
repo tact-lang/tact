@@ -143,38 +143,38 @@
       "output": "./contracts/output"
     },
     {
-      "name": "const-eval-int-overflow-add-in-func",
-      "path": "./contracts/const-eval-int-overflow-add-in-func.tact",
+      "name": "const-eval-int-overflow-add-in-fun",
+      "path": "./contracts/const-eval-int-overflow-add-in-fun.tact",
       "output": "./contracts/output"
     },
     {
-      "name": "const-eval-int-overflow-div-in-func",
-      "path": "./contracts/const-eval-int-overflow-div-in-func.tact",
+      "name": "const-eval-int-overflow-div-in-fun",
+      "path": "./contracts/const-eval-int-overflow-div-in-fun.tact",
       "output": "./contracts/output"
     },
     {
-      "name": "const-eval-int-overflow-mul1-in-func",
-      "path": "./contracts/const-eval-int-overflow-mul1-in-func.tact",
+      "name": "const-eval-int-overflow-mul1-in-fun",
+      "path": "./contracts/const-eval-int-overflow-mul1-in-fun.tact",
       "output": "./contracts/output"
     },
     {
-      "name": "const-eval-int-overflow-mul2-in-func",
-      "path": "./contracts/const-eval-int-overflow-mul2-in-func.tact",
+      "name": "const-eval-int-overflow-mul2-in-fun",
+      "path": "./contracts/const-eval-int-overflow-mul2-in-fun.tact",
       "output": "./contracts/output"
     },
     {
-      "name": "const-eval-int-overflow-positive-literal-in-func",
-      "path": "./contracts/const-eval-int-overflow-positive-literal-in-func.tact",
+      "name": "const-eval-int-overflow-positive-literal-in-fun",
+      "path": "./contracts/const-eval-int-overflow-positive-literal-in-fun.tact",
       "output": "./contracts/output"
     },
     {
-      "name": "const-eval-int-overflow-negative-literal-in-func",
-      "path": "./contracts/const-eval-int-overflow-negative-literal-in-func.tact",
+      "name": "const-eval-int-overflow-negative-literal-in-fun",
+      "path": "./contracts/const-eval-int-overflow-negative-literal-in-fun.tact",
       "output": "./contracts/output"
     },
     {
-      "name": "const-eval-int-overflow-struct-instance-in-func",
-      "path": "./contracts/const-eval-int-overflow-struct-instance-in-func.tact",
+      "name": "const-eval-int-overflow-struct-instance-in-fun",
+      "path": "./contracts/const-eval-int-overflow-struct-instance-in-fun.tact",
       "output": "./contracts/output"
     },
     {

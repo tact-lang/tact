@@ -110,5 +110,8 @@ describe("constants", () => {
         expect(await contract.getGlobalConst6()).toEqual(26n);
         expect(await contract.getGlobalConst7()).toEqual(27n);
         expect(await contract.getGlobalConst8()).toEqual(2n);
+        expect(await contract.getGlobalConst9()).toEqual(2n);
+        expect(await contract.getGlobalConst10()).toEqual(24n);
+        expect(await contract.getGlobalConst11()).toEqual(24n);
     });
 });
