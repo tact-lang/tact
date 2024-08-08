@@ -425,22 +425,24 @@ class RuntimeEnvironment {
         this.enclosing = enclosing;
     }
 
-    private findBindingsMap(name: string): Map<string, Value> | undefined {
+    private findBindingMap(name: string): Map<string, Value> | undefined {
         if (this.values.has(name)) {
             return this.values;
         } else if (this.enclosing !== undefined) {
-            return this.enclosing.findBindingsMap(name);
+            return this.enclosing.findBindingMap(name);
         } else {
             return undefined;
         }
     }
 
-    public setBinding(name: string, val: Value) {
-        const bindings = this.findBindingsMap(name);
+    public setNewBinding(name: string, val: Value) {
+        this.values.set(name, val);
+    }
+
+    public updateBinding(name: string, val: Value) {
+        const bindings = this.findBindingMap(name);
         if (bindings !== undefined) {
             bindings.set(name, val);
-        } else {
-            this.values.set(name, val);
         }
     }
 
@@ -454,6 +456,10 @@ class RuntimeEnvironment {
                 return undefined;
             }
         }
+    }
+
+    public getParentEnvironment(): RuntimeEnvironment | undefined {
+        return this.enclosing;
     }
 }
 
@@ -485,16 +491,44 @@ export class Interpreter {
     private currentEnv: RuntimeEnvironment;
     private initialContext: CompilerContext;
     private config: InterpreterConfig;
-    private globalEnv: RuntimeEnvironment;
 
     constructor(
         initialContext: CompilerContext = new CompilerContext(),
         config: InterpreterConfig = defaultInterpreterConfig,
     ) {
-        this.globalEnv = new RuntimeEnvironment();
-        this.currentEnv = this.globalEnv;
+        this.currentEnv = new RuntimeEnvironment();
         this.initialContext = initialContext;
         this.config = config;
+    }
+
+    // Opens a new environment with the provided param names and
+    // values.
+    private openNewEnvironment(
+        args: { paramNames: string[]; values: Value[] } = {
+            paramNames: [],
+            values: [],
+        },
+    ) {
+        const paramNames = args.paramNames;
+        const values = args.values;
+
+        this.currentEnv = new RuntimeEnvironment(this.currentEnv);
+        paramNames.forEach((param, index) => {
+            this.currentEnv.setNewBinding(param, values[index]!);
+        }, this);
+    }
+
+    // Closes the current environment and returns to its
+    // parent environment
+    private closeCurrentEnvironment() {
+        const parentEnv = this.currentEnv.getParentEnvironment();
+        if (parentEnv === undefined) {
+            // This is a programmer's error, not even a compilation error.
+            throw new Error(
+                "Attempt to close an environment without a parent. Did you forget to previously call openNewEnvironment?",
+            );
+        }
+        this.currentEnv = parentEnv;
     }
 
     public interpretModuleItem(ast: AstModuleItem): void {
@@ -1047,16 +1081,15 @@ export class Interpreter {
         args: AstExpression[],
         returns: TypeRef,
     ): Value {
-        // Evaluate the arguments
+        // Evaluate the arguments in the current environment
         const argValues = args.map(this.interpretExpression, this);
-        // Create the new function environment
-        const oldEnv = this.currentEnv;
-        // Currently, we can only run functions declared at the top level
-        this.currentEnv = new RuntimeEnvironment(this.globalEnv);
-        // Add bindings for arguments
-        functionCode.params.forEach((param, index) => {
-            this.currentEnv.setBinding(idText(param.name), argValues[index]!);
-        }, this);
+        // Extract the parameter names
+        const paramNames = functionCode.params.map((param) =>
+            idText(param.name),
+        );
+        // Open a new environment for the function
+        this.openNewEnvironment({ paramNames: paramNames, values: argValues });
+
         // Interpret all the statements
         try {
             functionCode.statements.forEach(this.interpretStatement, this);
@@ -1072,8 +1105,8 @@ export class Interpreter {
                 throw e;
             }
         } finally {
-            // Restore the environment that was active before calling the function
-            this.currentEnv = oldEnv;
+            // Close the environment created before calling the function
+            this.closeCurrentEnvironment();
         }
         // If execution reaches this point, it means that
         // the function had no return statement or executed a return
@@ -1135,7 +1168,7 @@ export class Interpreter {
 
     public interpretLetStatement(ast: AstStatementLet) {
         const val = this.interpretExpression(ast.expression);
-        this.currentEnv.setBinding(idText(ast.name), val);
+        this.currentEnv.setNewBinding(idText(ast.name), val);
     }
 
     public interpretAssignStatement(ast: AstStatementAssign) {
@@ -1144,7 +1177,7 @@ export class Interpreter {
 
         if (path.kind === "id") {
             const val = this.interpretExpression(exp);
-            this.currentEnv.setBinding(idText(path), val);
+            this.currentEnv.updateBinding(idText(path), val);
         } else {
             throwNonFatalErrorConstEval(
                 `only identifiers are currently supported as path expressions`,
@@ -1173,7 +1206,7 @@ export class Interpreter {
                 exp.loc,
                 source,
             );
-            this.currentEnv.setBinding(idText(path), newVal);
+            this.currentEnv.updateBinding(idText(path), newVal);
         } else {
             throwNonFatalErrorConstEval(
                 `only identifiers are currently supported as path expressions`,
@@ -1188,26 +1221,20 @@ export class Interpreter {
             ast.condition.loc,
         );
         if (condition) {
-            // Create the scope for the new branch
-            const oldEnv = this.currentEnv;
-            this.currentEnv = new RuntimeEnvironment(oldEnv);
+            this.openNewEnvironment();
 
             try {
                 ast.trueStatements.forEach(this.interpretStatement, this);
             } finally {
-                // Restore the old environment
-                this.currentEnv = oldEnv;
+                this.closeCurrentEnvironment();
             }
         } else if (ast.falseStatements !== null) {
-            // Create the scope for the new branch
-            const oldEnv = this.currentEnv;
-            this.currentEnv = new RuntimeEnvironment(oldEnv);
+            this.openNewEnvironment();
 
             try {
                 ast.falseStatements.forEach(this.interpretStatement, this);
             } finally {
-                // Restore the old environment
-                this.currentEnv = oldEnv;
+                this.closeCurrentEnvironment();
             }
         }
     }
@@ -1226,16 +1253,19 @@ export class Interpreter {
             ast.iterations.loc,
         );
         if (iterations > 0) {
-            // Create the scope for the loop
-            const oldEnv = this.currentEnv;
-            this.currentEnv = new RuntimeEnvironment(oldEnv);
+            // We can create a single environment for all the iterations in the loop
+            // (instead of a fresh environment for each iteration)
+            // because the typechecker ensures that variables do not leak outside
+            // the loop. Also, the language requires that all declared variables inside the
+            // loop be initialized, which means that we can overwrite its value in the environment
+            // in each iteration.
+            this.openNewEnvironment();
             try {
                 for (let i = 1; i <= iterations; i++) {
                     ast.statements.forEach(this.interpretStatement, this);
                 }
             } finally {
-                // Restore the old environment
-                this.currentEnv = oldEnv;
+                this.closeCurrentEnvironment();
             }
         }
     }
@@ -1266,45 +1296,18 @@ export class Interpreter {
     public interpretUntilStatement(ast: AstStatementUntil) {
         let condition;
         let iterCount = 0;
-        do {
-            // Create scope for an iteration of the loop
-            const oldEnv = this.currentEnv;
-            this.currentEnv = new RuntimeEnvironment(oldEnv);
-            try {
-                ast.statements.forEach(this.interpretStatement, this);
-            } finally {
-                // Restore the old environment
-                this.currentEnv = oldEnv;
-            }
-            iterCount++;
-            if (iterCount >= this.config.maxLoopIterations) {
-                throwNonFatalErrorConstEval(`loop timeout reached`, ast.loc);
-            }
-            condition = ensureBoolean(
-                this.interpretExpression(ast.condition),
-                ast.condition.loc,
-            );
-        } while (!condition);
-    }
+        // We can create a single environment for all the iterations in the loop
+        // (instead of a fresh environment for each iteration)
+        // because the typechecker ensures that variables do not leak outside
+        // the loop. Also, the language requires that all declared variables inside the
+        // loop be initialized, which means that we can overwrite its value in the environment
+        // in each iteration.
+        this.openNewEnvironment();
 
-    public interpretWhileStatement(ast: AstStatementWhile) {
-        let condition;
-        let iterCount = 0;
-        do {
-            condition = ensureBoolean(
-                this.interpretExpression(ast.condition),
-                ast.condition.loc,
-            );
-            if (condition) {
-                // Create scope for an iteration of the loop
-                const oldEnv = this.currentEnv;
-                this.currentEnv = new RuntimeEnvironment(oldEnv);
-                try {
-                    ast.statements.forEach(this.interpretStatement, this);
-                } finally {
-                    // Restore the old environment
-                    this.currentEnv = oldEnv;
-                }
+        try {
+            do {
+                ast.statements.forEach(this.interpretStatement, this);
+
                 iterCount++;
                 if (iterCount >= this.config.maxLoopIterations) {
                     throwNonFatalErrorConstEval(
@@ -1312,7 +1315,51 @@ export class Interpreter {
                         ast.loc,
                     );
                 }
-            }
-        } while (condition);
+                // The typechecker ensures that the condition does not refer to
+                // variables declared inside the loop.
+                condition = ensureBoolean(
+                    this.interpretExpression(ast.condition),
+                    ast.condition.loc,
+                );
+            } while (!condition);
+        } finally {
+            this.closeCurrentEnvironment();
+        }
+    }
+
+    public interpretWhileStatement(ast: AstStatementWhile) {
+        let condition;
+        let iterCount = 0;
+        // We can create a single environment for all the iterations in the loop
+        // (instead of a fresh environment for each iteration)
+        // because the typechecker ensures that variables do not leak outside
+        // the loop. Also, the language requires that all declared variables inside the
+        // loop be initialized, which means that we can overwrite its value in the environment
+        // in each iteration.
+        this.openNewEnvironment();
+
+        try {
+            do {
+                // The typechecker ensures that the condition does not refer to
+                // variables declared inside the loop.
+                condition = ensureBoolean(
+                    this.interpretExpression(ast.condition),
+                    ast.condition.loc,
+                );
+                if (condition) {
+                    ast.statements.forEach(this.interpretStatement, this);
+
+                    iterCount++;
+                    if (iterCount >= this.config.maxLoopIterations) {
+                        throwNonFatalErrorConstEval(
+                            `loop timeout reached`,
+                            ast.loc,
+                        );
+                    }
+                }
+            } while (condition);
+        } finally {
+            this.closeCurrentEnvironment();
+        }
     }
 }
