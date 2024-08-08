@@ -54,9 +54,18 @@ export class FuncError extends Error {
 }
 
 /**
- * FunC parser error, which generally occurs when either the sources didn't match the grammar, or the AST couldn't be constructed
+ * FunC parse error, which generally occurs when either the sources didn't match the grammar, or the AST couldn't be constructed
  */
 export class FuncParseError extends FuncError {
+    constructor(message: string, loc: FuncSrcInfo) {
+        super(message, loc);
+    }
+}
+
+/**
+ * FunC syntax error, which occurs when the AST couldn't be constructed based on the obtained parse results
+ */
+export class FuncSyntaxError extends FuncError {
     constructor(message: string, loc: FuncSrcInfo) {
         super(message, loc);
     }
@@ -79,7 +88,7 @@ function locationStr(sourceInfo: FuncSrcInfo): string {
 }
 
 /**
- * Throws a FunC parse error of the given `path` file
+ * Throws a FunC parse error occured in the given `path` file
  */
 export function throwFuncParseError(
     matchResult: MatchResult,
@@ -92,6 +101,19 @@ export function throwFuncParseError(
     const message = `Parse error: expected ${(matchResult as any).getExpectedText()}\n`;
     throw new FuncParseError(
         `${locationStr(source)}${message}\n${interval.getLineAndColumnMessage()}`,
+        source,
+    );
+}
+
+/**
+ * Throws a FunC syntax error occcured with the given `source`
+ */
+export function throwFuncSyntaxError(
+    message: string,
+    source: FuncSrcInfo,
+): never {
+    throw new FuncSyntaxError(
+        `${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`,
         source,
     );
 }
@@ -121,14 +143,318 @@ export function createSrcInfo(s: Node) {
 function unwrapOptNode<T>(
     optional: IterationNode,
     f: (n: Node) => T,
-): T | null {
+): T | undefined {
     const optNode = optional.children[0] as Node | undefined;
-    return optNode !== undefined ? f(optNode) : null;
+    return optNode !== undefined ? f(optNode) : undefined;
+}
+
+
+const funcBuiltinOperatorFunctions = [
+    "_+_",
+    "_-_",
+    "-_",
+    "_*_",
+    "_/_",
+    "_~/_",
+    "_^/_",
+    "_%_",
+    "_~%_",
+    "_^%_",
+    "_/%_",
+    "_<<_",
+    "_>>_",
+    "_~>>_",
+    "_^>>_",
+    "_&_",
+    "_|_",
+    "_^_",
+    "~_",
+    "^_+=_",
+    "^_-=_",
+    "^_*=_",
+    "^_/=_",
+    "^_~/=_",
+    "^_^/=_",
+    "^_%=_",
+    "^_~%=_",
+    "^_^%=_",
+    "^_<<=_",
+    "^_>>=_",
+    "^_~>>=_",
+    "^_^>>=_",
+    "^_&=_",
+    "^_|=_",
+    "^_^=_",
+    "_==_",
+    "_!=_",
+    "_<_",
+    "_>_",
+    "_<=_",
+    "_>=_",
+    "_<=>_",
+];
+    
+const funcBuiltinFunctions = [
+    "divmod",
+    "moddiv",
+    "muldiv",
+    "muldivr",
+    "muldivc",
+    "muldivmod",
+    "null?",
+    "throw",
+    "throw_if",
+    "throw_unless",
+    "throw_arg",
+    "throw_arg_if",
+    "throw_arg_unless",
+    "load_int",
+    "load_uint",
+    "preload_int",
+    "preload_uint",
+    "store_int",
+    "store_uint",
+    "load_bits",
+    "preload_bits",
+    "int_at",
+    "cell_at",
+    "slice_at",
+    "tuple_at",
+    "at",
+    "touch",
+    "touch2",
+    "run_method0",
+    "run_method1",
+    "run_method2",
+    "run_method3",
+];
+
+const funcBuiltinMethods = [
+    "~divmod",
+    "~moddiv",
+    "~store_int",
+    "~store_uint",
+    "~touch",
+    "~touch2",
+    "~dump",
+    "~stdump",
+];
+
+const funcBuiltinConstants = ["true", "false", "nil", "Nil"];
+
+const funcKeywords = [
+    "extern",
+    "global",
+    "asm",
+    "impure",
+    "inline_ref",
+    "inline",
+    "auto_apply",
+    "method_id",
+    "operator",
+    "infixl",
+    "infixr",
+    "infix",
+    "const",
+];
+
+const funcControlKeywords = [
+    "return",
+    "var",
+    "repeat",
+    "do",
+    "while",
+    "until",
+    "try",
+    "catch",
+    "ifnot",
+    "if",
+    "then",
+    "elseifnot",
+    "elseif",
+    "else",
+];
+
+const funcTypeKeywords = [
+    "int",
+    "cell",
+    "slice",
+    "builder",
+    "cont",
+    "tuple",
+    "type",
+    "forall",
+];
+
+const funcDirectives = ["#include", "#pragma"];
+
+const funcDelimiters = ["->", "{", "}", ",", ".", ";"];
+
+const funcOperators = [
+    "!=",
+    "?",
+    ":",
+    "%=",
+    "%",
+    "&=",
+    "&",
+    "*=",
+    "*",
+    "+=",
+    "+",
+    "-=",
+    "-",
+    "/%",
+    "/=",
+    "/",
+    "<=>",
+    "<<=",
+    "<<",
+    "<=",
+    "<",
+    "==",
+    "=",
+    ">>=",
+    ">>",
+    ">=",
+    ">",
+    "^>>=",
+    "^>>",
+    "^=",
+    "^/=",
+    "^/",
+    "^%=",
+    "^%",
+    "^",
+    "|=",
+    "|",
+    "~>>=",
+    "~>>",
+    "~/=",
+    "~/",
+    "~%",
+    "~",
+];
+
+const funcDecIntRegex = /^\-?[0-9]+$/;
+
+const funcHexIntRegex = /^\-?0x[0-9a-fA-F]+$/;
+
+/**
+ * Checks that the given identifier (including the prefix in case of methodId)
+ * can be used in declarations/definitions, i.e. it's:
+ * - NOT a builtin operator function
+ * - NOT a builtin function
+ * - NOT a builtin method
+ * - NOT a builtin constant
+ * - NOT an underscore
+ */
+function checkDeclaredId(ident: string, loc: FuncSrcInfo, altPrefix?: string): void | never {
+    // not an operatorId
+    if (funcBuiltinOperatorFunctions.includes(ident)) {
+        throwFuncSyntaxError(
+            `${altPrefix ?? "Declared identifier"} cannot shadow or override a builtin operator function`,
+            loc,
+        );
+    }
+
+    if (funcBuiltinFunctions.includes(ident)) {
+        throwFuncSyntaxError(
+            `${altPrefix ?? "Declared identifier"} cannot shadow or override a builtin function`,
+            loc,
+        );
+    }
+
+    if (funcBuiltinMethods.includes(ident)) {
+        throwFuncSyntaxError(
+            `${altPrefix ?? "Declared identifier"} cannot shadow or override a builtin method`,
+            loc,
+        );
+    }
+
+    if (funcBuiltinConstants.includes(ident)) {
+        throwFuncSyntaxError(
+            `${altPrefix ?? "Declared identifier"} cannot shadow or override a builtin constant`,
+            loc,
+        );
+    }
+
+    // not an unusedId
+    if (ident === "_") {
+        throwFuncSyntaxError(
+            `${altPrefix ?? "Declared identifier"} cannot be an underscore`,
+            loc,
+        );
+    }
+}
+
+/**
+ * Checks that the given identifier is a valid operatorId, i.e. that it actually exists on the list of builtin operator functions
+ * Unlike other checking functions it doesn't throw, but returns `true`, if identifier is a valid operatorId, and `false` otherwise
+ */
+function checkOperatorId(ident: string, loc: FuncSrcInfo): boolean {
+    if (funcBuiltinOperatorFunctions.includes(ident)) {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Checks that the given identifier is a valid plainId, i.e. it's:
+ * - NOT a keyword
+ * - NOT a control keyword
+ * - NOT a type keyword
+ * - NOT a directive
+ * - NOT a delimiter
+ * - NOT an operator (without underscores, like operatorId)
+ * - NOT a number
+ */
+function checkPlainId(ident: string, loc: FuncSrcInfo, altPrefix?: string): void | never {
+    if (funcKeywords.includes(ident)) {
+        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be a keyword`, loc);
+    }
+
+    if (funcControlKeywords.includes(ident)) {
+        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be a control keyword`, loc);
+    }
+
+    if (funcTypeKeywords.includes(ident)) {
+        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be a type keyword`, loc);
+    }
+
+    if (funcDirectives.includes(ident)) {
+        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be a compiler directive`, loc);
+    }
+
+    if (funcDelimiters.includes(ident)) {
+        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be a delimiter`, loc);
+    }
+
+    if (funcOperators.includes(ident)) {
+        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be an operator`, loc);
+    }
+
+    if (ident.match(funcDecIntRegex) !== null || ident.match(funcHexIntRegex) !== null) {
+        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be an integer literal`, loc);
+    }
+}
+
+/**
+ * Checks that the given identifier is a valid methodId, i.e. it starts with either . or ~ and has some characters after
+ */
+function checkMethodId(ident: string, loc: FuncSrcInfo): void | never {
+    if (!(ident.startsWith(".") || ident.startsWith("~"))) {
+        throwFuncSyntaxError("Identifier doesn't start with ~ or .", loc);
+    }
+
+    if (ident.length === 1) {
+        throwFuncSyntaxError("Method identifier cannot be just ~ or .", loc);
+    }
 }
 
 //
-// FIXME: Those are directly matching contents of the grammar.ohm
-// FIXME: Unite with syntax.ts and refactor dependant files
+// FIXME: Those are matching contents of the grammar.ohm with some minor optimizations for clarity
+// FIXME: Pls, unite with syntax.ts and refactor dependent files
 // FIXME: Would need help once parser is done on my side :)
 //
 
@@ -139,7 +465,6 @@ export type FuncAstNode =
     | FuncAstModuleItem
     | FuncAstStatement
     | FuncAstExpression
-    | FuncAstFunctionId
     | FuncAstId
     | FuncAstComment;
 
@@ -156,7 +481,7 @@ export type FuncAstModule = {
 //
 
 /**
- * #pragma ...
+ * #pragma ...;
  */
 export type FuncAstPragma =
     | FuncAstPragmaLiteral
@@ -168,8 +493,7 @@ export type FuncAstPragma =
  */
 export type FuncAstPragmaLiteral = {
     kind: "pragma_literal";
-    literal: string;
-    // "allow-post-modification" | "compute-asm-ltr";
+    literal: "allow-post-modification" | "compute-asm-ltr";
     loc: FuncSrcInfo;
 };
 
@@ -191,7 +515,7 @@ export type FuncAstPragmaVersionRange = {
  */
 export type FuncAstPragmaVersionString = {
     kind: "pragma_version_string";
-    version: string;
+    version: FuncAstStringLiteral;
     loc: FuncSrcInfo;
 };
 
@@ -200,7 +524,7 @@ export type FuncAstPragmaVersionString = {
  */
 export type FuncAstInclude = {
     kind: "include";
-    path: string;
+    path: FuncAstStringLiteral;
     loc: FuncSrcInfo;
 };
 
@@ -210,7 +534,10 @@ export type FuncAstInclude = {
 
 export type FuncAstModuleItem =
     | FuncAstGlobalVariablesDeclaration
-    | FuncAstConstantsDefinition;
+    | FuncAstConstantsDefinition
+    | FuncAstAsmFunctionDefinition
+    | FuncAstFunctionDeclaration
+    | FuncAstFunctionDefinition;
 
 /**
  * global ..., ...;
@@ -222,12 +549,14 @@ export type FuncAstGlobalVariablesDeclaration = {
 };
 
 /**
- * nonVarType? id
+ * Note, that the type here cannot be polymorphic, i.e. a type variable
+ *
+ * nonVarType? (quotedId | plainId)
  */
 export type FuncAstGlobalVariable = {
     kind: "global_variable";
-    ty: FuncAstTypeUniform | undefined;
-    name: FuncAstId;
+    ty: FuncAstType | undefined;
+    name: FuncAstQuotedId | FuncAstPlainId;
     loc: FuncSrcInfo;
 };
 
@@ -241,15 +570,126 @@ export type FuncAstConstantsDefinition = {
 };
 
 /**
- * (slice | int)? id = Expression
+ * (slice | int)? (quotedId | plainId) = Expression
  */
 export type FuncAstConstant = {
     kind: "constant";
     ty: "slice" | "int" | undefined;
-    name: FuncAstId;
+    name: FuncAstQuotedId | FuncAstPlainId;
     value: FuncAstExpression;
     loc: FuncSrcInfo;
 };
+
+/**
+ * Note, that name cannot be an unusedId
+ *
+ * Forall? TypeReturn functionId Parameters FunctionAttribute* "asm" AsmArrangement? stringLiteral+;
+ */
+export type FuncAstAsmFunctionDefinition = {
+    kind: "asm_function_definition";
+    forall: FuncAstForall | undefined;
+    returnTy: FuncAstType;
+    name: FuncAstId;
+    parameters: FuncAstParameter[];
+    attributes: FuncAstFunctionAttribute[];
+    arrangement: FuncAstAsmArrangement | undefined;
+    asmStrings: FuncAstStringLiteral[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * Notice, that integers must be unsigned and decimal
+ * Notice, that either arguments, returns or both must be defined, i.e. () is prohibited
+ *
+ * (id+)
+ * or
+ * (-> integerLiteralDec+)
+ * or
+ * (id+ -> integerLiteralDec+)
+ */
+export type FuncAstAsmArrangement = {
+    kind: "asm_arrangement_arguments";
+    arguments: FuncAstId[] | undefined;
+    returns: FuncAstIntegerLiteral[] | undefined;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * Note, that name cannot be an unusedId
+ *
+ * Forall? TypeReturn functionId Parameters FunctionAttribute*;
+ */
+export type FuncAstFunctionDeclaration = {
+    kind: "function_declaration";
+    forall: FuncAstForall | undefined;
+    returnTy: FuncAstType;
+    name: FuncAstId;
+    parameters: FuncAstParameter[];
+    attributes: FuncAstFunctionAttribute[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * Note, that name cannot be an unusedId
+ *
+ * Forall? TypeReturn functionId Parameters FunctionAttribute* { ... }
+ */
+export type FuncAstFunctionDefinition = {
+    kind: "function_definition";
+    forall: FuncAstForall | undefined;
+    returnTy: FuncAstType;
+    name: FuncAstId;
+    parameters: FuncAstParameter[];
+    attributes: FuncAstFunctionAttribute[];
+    statements: FuncAstStatement[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * forall (type? typeName1, type? typeName2, ...) ->
+ */
+export type FuncAstForall = {
+    kind: "forall";
+    tyVars: FuncAstTypeVar[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * Note, that the "type" keyword prior to identifier can only occur in `forall` declarations
+ *
+ * "type"? id
+ */
+export type FuncAstTypeVar = {
+    kind: "type_var";
+    keyword: boolean;
+    name: FuncAstId;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * Type? Id
+ */
+export type FuncAstParameter = {
+    kind: "parameter";
+    ty: FuncAstType | undefined;
+    name: FuncAstId;
+    loc: FuncSrcInfo;
+};
+
+/**
+ * Called "specifiers" in https://docs.ton.org/develop/func/functions#specifiers
+ *
+ * impure | inline_ref | inline | method_id ("(" Integer | String ")")?
+ */
+export type FuncAstFunctionAttribute =
+    | { kind: "function_attribute_impure"; loc: FuncSrcInfo }
+    | { kind: "function_attribute_inline_ref"; loc: FuncSrcInfo }
+    | { kind: "function_attribute_inline"; loc: FuncSrcInfo }
+    | {
+          kind: "function_attribute_method_id";
+          value: FuncAstIntegerLiteral | FuncAstStringLiteral | undefined;
+          loc: FuncSrcInfo;
+      };
 
 //
 // Statements
@@ -323,7 +763,7 @@ export type FuncAstStatementConditionIf = {
     // left branch { ... }
     consequences: FuncAstStatement[];
     // optional right branch { ... }
-    alternatives: undefined | FuncAstStatement[];
+    alternatives: FuncAstStatement[] | undefined;
     loc: FuncSrcInfo;
 };
 
@@ -334,6 +774,7 @@ export type FuncAstStatementConditionIf = {
  * @field conditionIf Expression
  * @field consequencesIf Branch after `if`, truthy case (or falsy in case of `ifnot`)
  * @field positiveElseif If true, then it represents `elseif`. If false, it's an `elseifnot`.
+ * @field conditionElseif Expression
  * @field consequencesElseif Branch after `elseif`, truthy case (or falsy in case of `elseifnot`)
  * @field alternativesElseif Optional third branch (after `else`), falsy case (or truthy in case of `elseifnot`)
  */
@@ -347,10 +788,12 @@ export type FuncAstStatementConditionElseIf = {
     consequencesIf: FuncAstStatement[];
     // elseif | elseifnot
     positiveElseif: boolean;
+    // expression after elseif | elseifnot
+    conditionElseif: FuncAstExpression;
     // branch after elseif | elseifnot { ... }
     consequencesElseif: FuncAstStatement[];
     // optional third branch after else { ... }
-    alternativesElseif: undefined | FuncAstStatement[];
+    alternativesElseif: FuncAstStatement[] | undefined;
     loc: FuncSrcInfo;
 };
 
@@ -390,9 +833,9 @@ export type FuncAstStatementWhile = {
 export type FuncAstStatementTryCatch = {
     kind: "statement_try_catch";
     statementsTry: FuncAstStatement[];
-    statementsCatch: FuncAstStatement[];
     catchExceptionName: FuncAstId;
     catchExitCodeName: FuncAstId;
+    statementsCatch: FuncAstStatement[];
     loc: FuncSrcInfo;
 };
 
@@ -423,6 +866,10 @@ export type FuncAstExpression =
     | FuncAstExpressionMulBitwise
     | FuncAstExpressionUnary
     | FuncAstExpressionMethodCallChain
+    // | FuncAstExpressionMethodCall
+    // expressionparens
+    // varfunpart
+    // expressionargument
     | FuncAstExpressionVarFun
     | FuncAstExpressionPrimary;
 
@@ -535,13 +982,13 @@ export type FuncAstExpressionMethodCallChain = {
  */
 export type FuncAstExpressionMethodCall = {
     kind: "expression_method_call";
-    name: FuncAstFunctionId;
+    name: FuncAstMethodId;
     argument: FuncAstExpressionArgument;
     loc: FuncSrcInfo;
 };
 
 export type FuncAstExpressionArgument =
-    | FuncAstFunctionId
+    | FuncAstMethodId
     | FuncAstUnit
     | FuncAstExpressionTensor
     | FuncAstExpressionTuple;
@@ -556,8 +1003,7 @@ export type FuncAstExpressionParens = FuncAstExpressionFunCall;
  */
 export type FuncAstExpressionVarFun =
     | FuncAstExpressionVarDecl
-    | FuncAstExpressionFunCall
-    | FuncAstExpressionPrimary;
+    | FuncAstExpressionFunCall;
 
 /**
  * Variable declaration
@@ -579,11 +1025,11 @@ export type FuncAstExpressionVarDeclPart =
 /**
  * Function call
  *
- * (functionId | functionCallReturningFunction) Argument+
+ * (methodId | functionCallReturningFunction) Argument+
  */
 export type FuncAstExpressionFunCall = {
     kind: "expression_fun_call";
-    object: FuncAstFunctionId | FuncAstExpressionParens;
+    object: FuncAstMethodId | FuncAstExpressionParens;
     arguments: FuncAstExpressionArgument[];
     loc: FuncSrcInfo;
 };
@@ -597,7 +1043,6 @@ export type FuncAstExpressionPrimary =
     | FuncAstExpressionTuple
     | FuncAstIntegerLiteral
     | FuncAstStringLiteral
-    | FuncAstFunctionId
     | FuncAstId;
 
 /**
@@ -646,60 +1091,19 @@ export type FuncAstBinaryExpression =
 export type FuncAstUnaryExpression = FuncAstExpressionUnary;
 
 //
-// Miscellaneous syntactic rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
+// Types
 //
 
 /**
- * forall type? typeName1, type? typeName2, ... ->
- */
-export type FuncAstForall = FuncAstTypeVar[];
-
-/**
- * "type"? id
- */
-export type FuncAstTypeVar = {
-    kind: "type_var";
-    keyword: boolean;
-    ident: FuncAstId;
-    loc: FuncSrcInfo;
-};
-
-/**
- * (type id, ...)
- */
-export type FuncAstParameters = FuncAstParameter[];
-
-/**
- * Parameters
- */
-export type FuncAstParameter =
-    | FuncAstParameterRegular
-    | FuncAstParameterInferredType;
-
-/**
- * type id
- */
-export type FuncAstParameterRegular = {
-    kind: "parameter_regular";
-    ty: FuncAstType;
-    ident: FuncAstId;
-    loc: FuncSrcInfo;
-};
-
-/**
- * id
- */
-export type FuncAstParameterInferredType = {
-    kind: "parameter_inferred_type";
-    ident: FuncAstId;
-    loc: FuncSrcInfo;
-};
-
-/**
- * Builtin types or type variables
+ * Builtin types, type variables or combinations of, with optional mappings with ->
  */
 export type FuncAstType = FuncAstTypeBuiltin | FuncAstTypeVar;
 
+// TODO: re-org the types
+
+/**
+ * Builtin types, with optional mappings with ->
+ */
 export type FuncAstTypeBuiltin = {
     kind: "type_builtin";
     value:
@@ -713,87 +1117,72 @@ export type FuncAstTypeBuiltin = {
         | FuncAstTuple
         | FuncAstHole
         | FuncAstUnit;
-    mapsTo: undefined | FuncAstType;
+    mapsTo: FuncAstType | undefined;
+    loc: FuncSrcInfo;
 };
-
-/** (...) */
-export type FuncAstTensor = FuncAstType[];
-
-/** [...] */
-export type FuncAstTuple = FuncAstType[];
 
 /**
- * Non-polymorphic, uniform types
+ * (..., ...)
  */
-
-export type FuncAstTypeUniform =
-    | FuncAstTypeUniformMapped
-    | FuncAstTypeUniformBuiltin;
-
-export type FuncAstTypeUniformMapped = {
-    kind: "type_uniform_mapped";
-    left: FuncAstTypeBuiltin;
-    right: FuncAstType;
+export type FuncAstTensor = {
+    kind: "type_tensor";
+    types: FuncAstType[];
+    loc: FuncSrcInfo;
 };
 
-export type FuncAstTypeUniformBuiltin = {
-    kind: "type_uniform_builtin";
-    value:
-        | "int"
-        | "cell"
-        | "slice"
-        | "builder"
-        | "cont"
-        | "tuple"
-        | FuncAstTensorUniform
-        | FuncAstTupleUniform
-        | FuncAstHole
-        | FuncAstUnit;
+/**
+ * [..., ...]
+ */
+export type FuncAstTuple = {
+    kind: "type_tuple";
+    types: FuncAstType[];
+    loc: FuncSrcInfo;
 };
-
-/** (...) */
-export type FuncAstTensorUniform = FuncAstTypeUniform[];
-
-/** [...] */
-export type FuncAstTupleUniform = FuncAstTypeUniform[];
 
 //
 // Lexical rules, see: https://ohmjs.org/docs/syntax-reference#syntactic-lexical
 //
 
+/**
+ * _ | var
+ */
 export type FuncAstHole = {
     kind: "hole";
     value: "_" | "var";
     loc: FuncSrcInfo;
 };
 
+/**
+ * ()
+ */
 export type FuncAstUnit = {
     kind: "unit";
     value: "()";
     loc: FuncSrcInfo;
 };
 
-
 /**
- * Identifier kinds, except for function names, which are a superset of those
+ * Identifier variations
  */
 export type FuncAstId =
+    | FuncAstMethodId
     | FuncAstQuotedId
     | FuncAstOperatorId
     | FuncAstPlainId
     | FuncAstUnusedId;
 
 /**
- * Like identifier, but can start with . or ~
+ * Like quotedId, plainId or operatorId, but starts with . or ~
  */
-export type FuncAstFunctionId = {
-    kind: "function_id";
+export type FuncAstMethodId = {
+    kind: "method_id";
+    prefix: "." | "~";
     value: string;
     loc: FuncSrcInfo;
 };
 
 /**
- * `anything, except ` or new line`
+ * \`anything, except \` or new line\`
  */
 export type FuncAstQuotedId = {
     kind: "quoted_id";
@@ -866,7 +1255,7 @@ export type FuncAstStringLiteral =
 export type FuncAstStringLiteralSingleLine = {
     kind: "string_singleline";
     value: string;
-    ty: undefined | FuncAstStringType;
+    ty: FuncAstStringType | undefined;
     loc: FuncSrcInfo;
 };
 
@@ -876,7 +1265,7 @@ export type FuncAstStringLiteralSingleLine = {
 export type FuncAstStringLiteralMultiLine = {
     kind: "string_multiline";
     value: string;
-    ty: undefined | FuncAstStringType;
+    ty: FuncAstStringType | undefined;
     // Perhaps: alignIndent: boolean;
     // Perhaps: trim: boolean;
     loc: FuncSrcInfo;
@@ -982,7 +1371,7 @@ semantics.addOperation<FuncAstNode>("astOfPragma", {
     Pragma_literal(_pragmaKwd, literal, _semicolon) {
         return {
             kind: "pragma_literal",
-            literal: literal.sourceString,
+            literal: literal.sourceString as ("allow-post-modification" | "compute-asm-ltr"),
             loc: createSrcInfo(this),
         };
     },
@@ -995,9 +1384,26 @@ semantics.addOperation<FuncAstNode>("astOfPragma", {
         };
     },
     Pragma_versionString(_pragmaKwd, _literal, value, _semicolon) {
+        const versionString = value.astOfExpression() as FuncAstStringLiteral;
+
+        if (versionString.ty !== undefined) {
+            throwFuncSyntaxError(
+                "Version string cannot have a string type specified",
+                createSrcInfo(this),
+            );
+        }
+
+        if (
+            versionString.value.match(
+                /^\"{0,3}[0-9]+(?:\.[0-9]+)?(?:\.[0-9]+)?\"{0,3}$/,
+            ) === null
+        ) {
+            throwFuncSyntaxError("Invalid version string", createSrcInfo(this));
+        }
+
         return {
             kind: "pragma_version_string",
-            version: value.astOfExpression(),
+            version: versionString,
             loc: createSrcInfo(this),
         };
     },
@@ -1038,31 +1444,259 @@ semantics.addOperation<FuncAstNode>("astOfModuleItem", {
         asmStrings,
         _semicolon,
     ) {
+        const prefix = fnCommonPrefix.astOfFunctionCommonPrefix();
         return {
             kind: "asm_function_definition",
-            // TODO: fnCommonPrefix, optArrangement
+            forall: prefix.forall,
+            returnTy: prefix.returnTy,
+            name: prefix.name,
+            parameters: prefix.parameters,
+            attributes: prefix.attributes,
+            arrangement: unwrapOptNode(optArrangement, t => t.astOfAsmArrangement()),
+            asmStrings: asmStrings.children.map(x => x.astOfExpression()),
+            loc: createSrcInfo(this),
         };
     },
-    // FunctionDeclaration(arg0, arg1) {
-    //     // TODO: ...
-    // },
-    // FunctionDefinition(arg0, arg1, arg2, arg3) {
-    //     // TODO: ...
+    FunctionDeclaration(fnCommonPrefix, _semicolon) {
+        const prefix = fnCommonPrefix.astOfFunctionCommonPrefix();
+        return {
+            kind: "function_declaration",
+            forall: prefix.forall,
+            returnTy: prefix.returnTy,
+            name: prefix.name,
+            parameters: prefix.parameters,
+            attributes: prefix.attributes,
+            loc: createSrcInfo(this),
+        };
+        
+    },
+    FunctionDefinition(fnCommonPrefix, _lbrace, stmts, _rbrace) {
+        const prefix = fnCommonPrefix.astOfFunctionCommonPrefix();
+        return {
+            kind: "function_definition",
+            forall: prefix.forall,
+            returnTy: prefix.returnTy,
+            name: prefix.name,
+            parameters: prefix.parameters,
+            attributes: prefix.attributes,
+            statements: stmts.children.map(x => x.astOfStatement()),
+            loc: createSrcInfo(this),
+        };
+        
+    },
+});
+
+// Statements
+semantics.addOperation<FuncAstStatement>("astOfStatement", {
+    Statement(stmt) {
+        return stmt.astOfStatement();
+    },
+    StatementReturn(_returnKwd, expr, _semicolon) {
+        return {
+            kind: "statement_return",
+            expression: expr.astOfExpression(),
+            loc: createSrcInfo(this),
+        }
+    },
+    StatementBlock(_lbrace, statements, _rbrace) {
+        return {
+            kind: "statement_block",
+            statements: statements.children.map((x) => x.astOfStatement()),
+            loc: createSrcInfo(this),
+        };
+    },
+    StatementEmpty(_semicolon) {
+        return {
+            kind: "statement_empty",
+            loc: createSrcInfo(this),
+        }
+    },
+    StatementCondition(cond) {
+        return cond.astOfStatement();
+    },
+    StatementCondition_if(ifOr, cond, _lbrace, stmts, _rbrace, optElse) {
+        return {
+            kind: "statement_condition_if",
+            positive: ifOr.sourceString === "if" ? true : false,
+            condition: cond.astOfExpression(),
+            consequences: stmts.children.map(x => x.astOfStatement()),
+            alternatives: unwrapOptNode(optElse, t => t.astOfElseBlock()),
+            loc: createSrcInfo(this),
+        };
+    },
+    StatementCondition_elseif(ifOr, condIf, _lbrace, stmtsIf, _rbrace, elseifOr, condElseif, _lbrace2, stmtsElseif, _rbrace2, optElse) {
+        return {
+            kind: "statement_condition_elseif",
+            positiveIf: ifOr.sourceString === "if" ? true : false,
+            conditionIf: condIf.astOfExpression(),
+            consequencesIf: stmtsIf.children.map(x => x.astOfStatement()),
+            positiveElseif: elseifOr.sourceString === "elseif" ? true : false,
+            conditionElseif: condElseif.astOfExpression(),
+            consequencesElseif: stmtsElseif.children.map(x => x.astOfStatement()),
+            alternativesElseif: unwrapOptNode(optElse, t => t.astOfElseBlock()),
+            loc: createSrcInfo(this),
+        };
+    },
+    StatementRepeat(_repeatKwd, expr, _lbrace, stmts, _rbrace) {
+        return {
+            kind: "statement_repeat",
+            iterations: expr.astOfExpression(),
+            statements: stmts.children.map(x => x.astOfStatement()),
+            loc: createSrcInfo(this),
+        };
+    },
+    StatementUntil(_doKwd, _lbrace, stmts, _rbrace, _untilKwd, cond, _semicolon) {
+        return {
+            kind: "statement_until",
+            statements: stmts.children.map(x => x.astOfStatement()),
+            condition: cond.astOfExpression(),
+            loc: createSrcInfo(this),
+        };
+    },
+    StatementWhile(_whileKwd, cond, _lbrace, stmts, _rbrace) {
+        return {
+            kind: "statement_while",
+            condition: cond.astOfExpression(),
+            statements: stmts.children.map(x => x.astOfStatement()),
+            loc: createSrcInfo(this),
+        };
+    },
+    StatementTryCatch(_tryKwd, _lbrace, stmtsTry, _rbrace, _catchKwd, _lparen, exceptionName, _comma, exitCodeName, _rparen, _lbrace2, stmtsCatch, _rbrace2) {
+        return {
+            kind: "statement_try_catch",
+            statementsTry: stmtsTry.children.map(x => x.astOfStatement()),
+            catchExceptionName: exceptionName.astOfExpression(),
+            catchExitCodeName: exitCodeName.astOfExpression(),
+            statementsCatch: stmtsCatch.children.map(x => x.astOfStatement()),
+            loc: createSrcInfo(this),
+        };
+    },
+    StatementExpression(expr, _semicolon) {
+        return {
+            kind: "statement_expression",
+            expression: expr.astOfExpression(),
+            loc: createSrcInfo(this),
+        };
+    },
+});
+
+semantics.addOperation<FuncAstExpression>("astOfExpression", {
+});
+
+// Miscellaneous things
+// 
+// A couple of them don't even have their own dedicated TypeScript types,
+// and most were added purely for parsing convenience
+
+// nonVarType? (quotedId | plainId)
+semantics.addOperation<FuncAstGlobalVariable>("astOfGlobalVariable", {
+    GlobalVariableDeclaration(optGlobTy, globName) {
+        const name = globName.astOfExpression() as FuncAstId;
+
+        // if a plainId, then check for validity
+        if (name.kind === "plain_id") {
+            checkPlainId(name.value, createSrcInfo(this), "Name of the global variable");
+        }
+
+        // check that it can be declared (also excludes operatorId and unusedId)
+        checkDeclaredId(name.value, createSrcInfo(this), "Name of the global variable");
+
+        // and that it's not a methodId
+        if (name.kind === "method_id") {
+            throwFuncSyntaxError(
+                "Name of the global variable cannot start with ~ or .",
+                createSrcInfo(this),
+            );
+        }
+
+        // leaving only quotedId or plainId
+        return {
+            kind: "global_variable",
+            ty: unwrapOptNode(optGlobTy, t => t.astOfType()),
+            name: name as (FuncAstQuotedId | FuncAstPlainId),
+            loc: createSrcInfo(this),
+        };
+    },
+});
+
+// (slice | int)? id = Expression
+semantics.addOperation<FuncAstConstant>("astOfConstant", {
+    ConstantDefinition(optConstTy, constName, _eqSign, expr) {
+        const ty = unwrapOptNode(optConstTy, t => t.sourceString);
+        const name = constName.astOfExpression() as FuncAstId;
+
+        // if a plainId, then check for validity
+        if (name.kind === "plain_id") {
+            checkPlainId(name.value, createSrcInfo(this), "Name of the constant");
+        }
+
+        // check that it can be declared (also excludes operatorId and unusedId)
+        checkDeclaredId(name.value, createSrcInfo(this), "Name of the constant");
+
+        // and that it's not a methodId
+        if (name.kind === "method_id") {
+            throwFuncSyntaxError(
+                "Name of the constant cannot start with ~ or .",
+                createSrcInfo(this),
+            );
+        }
+
+        return {
+            kind: "constant",
+            ty: ty !== undefined ? ty as ("slice" | "int") : undefined,
+            name: name as (FuncAstQuotedId | FuncAstPlainId),
+            value: expr.astOfExpression(),
+            loc: createSrcInfo(this),
+        };
+    },
+});
+
+/** Not for export, purely for internal convenience reasons */
+type FuncFunctionCommonPrefix = {
+    forall: FuncAstForall | undefined;
+    returnTy: FuncAstType;
+    name: FuncAstId;
+    parameters: FuncAstParameter[];
+    attributes: FuncAstFunctionAttribute[];
+};
+
+// Common prefix of all function declarations/definitions
+semantics.addOperation<FuncFunctionCommonPrefix>("astOfFunctionCommonPrefix", {
+    // FunctionCommonPrefix(optForall, retTy, fnName, fnParams, fnAttributes) {
     // },
 });
 
-semantics.addOperation("astOfGlobalVariable", { });
+// forall (type? typeName1, type? typeName2, ...) ->
+semantics.addOperation<FuncAstForall>("astOfForall", {
+    Forall(_forallKwd, _space1, typeVars, _space2, _mapsToKwd, _space3) {
+        return {
+            kind: "forall",
+            tyVars: typeVars.children.map(x => x.astOfType()),
+            loc: createSrcInfo(this),
+        }
+    },
+});
 
-semantics.addOperation("astOfConstant", { });
+// All the types, united under FuncAstType
+semantics.addOperation<FuncAstType>("astOfType", {
 
-semantics.addOperation("astOfFunctionCommonPrefix", { });
+// Not a standalone statement, produces a list of statements instead
+semantics.addOperation<FuncAstStatement[]>("astOfElseBlock", {
+    ElseBlock(_elseKwd, _lbrace, stmts, _rbrace) {
+        return stmts.children.map(x => x.astOfStatement());
+    },
+});
+
+// semantics.addOperation("astOfSOMETHING", { });
+// semantics.addOperation("astOfSOMETHING", { });
+// semantics.addOperation("astOfSOMETHING", { });
 
 //
 // Utility parsing functions
 //
 
 /** If the match wasn't successful, provides error message and interval */
-type GrammarMatch =
+export type GrammarMatch =
     | { ok: false; message: string; interval: RawInterval }
     | { ok: true; res: MatchResult };
 

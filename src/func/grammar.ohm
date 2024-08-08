@@ -59,6 +59,8 @@ FunC {
 
   FunctionDeclaration = FunctionCommonPrefix ";"
   FunctionDefinition = FunctionCommonPrefix "{" Statement* "}"
+
+  // (not a separate thing, added purely for convenience)
   FunctionCommonPrefix = Forall? TypeReturn functionId Parameters FunctionAttribute*
 
   // forall type1, ..., typeN ->
@@ -96,7 +98,7 @@ FunC {
                 | "method_id" "(" stringLiteral ")" --string
 
   //
-  // Statements (with mandatory whitespace padding in most places )
+  // Statements (with mandatory whitespace padding in most places)
   //
 
   Statement = StatementReturn
@@ -117,9 +119,12 @@ FunC {
 
   StatementCondition = ("ifnot" | "if") Expression "{" Statement* "}"
                        ("elseifnot" | "elseif") Expression "{" Statement* "}"
-                       ("else" "{" Statement* "}")? --elseif
+                       ElseBlock? --elseif
                      | ("ifnot" | "if") Expression "{" Statement* "}"
-                       ("else" "{" Statement* "}")? --if
+                       ElseBlock? --if
+
+  // (not a separate statement, added purely for convenience)
+  ElseBlock = "else" "{" Statement* "}"
 
   StatementRepeat = "repeat" Expression  "{" Statement* "}"
 
@@ -213,8 +218,7 @@ FunC {
                      | ExpressionTuple
 
   // parse_expr100
-  ExpressionPrimary =
-                    | unit
+  ExpressionPrimary = unit
                     | ExpressionTensor
                     | tupleEmpty
                     | ExpressionTuple
@@ -241,15 +245,14 @@ FunC {
   //
 
   // Special types or values
-  hole = "_" | "var" ~id
+  hole = ("_" | "var") ~id
   unit = "(" whiteSpace* ")"
   // (not a separate type, added purely for convenience)
   tupleEmpty = "[" whiteSpace* "]"
   primitive = "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
 
   // Operators and delimiters, order matters
-  operator =
-           | "!="
+  operator = "!=" | "?" | ":"
            | "%=" | "%"
            | "&=" | "&"
            | "*=" | "*"
@@ -263,7 +266,7 @@ FunC {
            | "^>>=" | "^>>" | "^=" | "^/=" | "^/" | "^%=" | "^%" | "^"
            | "|=" | "|"
            | "~>>=" | "~>>" | "~/=" | "~/" | "~%" | "~"
-  delimiter = "->" | "{" | "}" | "?" | ":"
+  delimiter = "->" | "{" | "}"
 
   // Function identifiers
   functionId = ~("\"" | "{-") ("." | "~")? ~((hole | integerLiteral | delimiter | operator | primitive) ~rawId) rawId
@@ -280,7 +283,8 @@ FunC {
 
   // Kinds
   quotedId = "`" (~("`" | "\n") any)+ "`"
-  operatorId = "_" plainId "_"
+  operatorId = "^"? "_" operator "_" --common
+             | "~_" --not
   plainId = (~(whiteSpace | "(" | ")" | "[" | "]" | "," | "." | ";" | "~") any)+
 
   // Unused identifiers
