@@ -416,27 +416,29 @@ type InterpreterConfig = {
     maxLoopIterations: bigint;
 };
 
-class RuntimeEnvironment {
-    private values: Map<string, Value>;
-    private enclosing?: RuntimeEnvironment;
+type Environment = { values: Map<string, Value>; parent?: Environment };
 
-    constructor(enclosing?: RuntimeEnvironment) {
-        this.values = new Map();
-        this.enclosing = enclosing;
+class EnvironmentStack {
+    private currentEnv: Environment;
+
+    constructor() {
+        this.currentEnv = { values: new Map() };
     }
 
     private findBindingMap(name: string): Map<string, Value> | undefined {
-        if (this.values.has(name)) {
-            return this.values;
-        } else if (this.enclosing !== undefined) {
-            return this.enclosing.findBindingMap(name);
-        } else {
-            return undefined;
+        let env: Environment | undefined = this.currentEnv;
+        while (env !== undefined) {
+            if (env.values.has(name)) {
+                return env.values;
+            } else {
+                env = env.parent;
+            }
         }
+        return undefined;
     }
 
     public setNewBinding(name: string, val: Value) {
-        this.values.set(name, val);
+        this.currentEnv.values.set(name, val);
     }
 
     public updateBinding(name: string, val: Value) {
@@ -447,19 +449,36 @@ class RuntimeEnvironment {
     }
 
     public getBinding(name: string): Value | undefined {
-        if (this.values.has(name)) {
-            return this.values.get(name)!;
+        const bindings = this.findBindingMap(name);
+        if (bindings !== undefined) {
+            return bindings.get(name);
         } else {
-            if (this.enclosing !== undefined) {
-                return this.enclosing.getBinding(name);
-            } else {
-                return undefined;
-            }
+            return undefined;
         }
     }
 
-    public getParentEnvironment(): RuntimeEnvironment | undefined {
-        return this.enclosing;
+    public executeInNewEnvironment<T>(
+        code: () => T,
+        initialBindings: { names: string[]; values: Value[] } = {
+            names: [],
+            values: [],
+        },
+    ): T {
+        const names = initialBindings.names;
+        const values = initialBindings.values;
+
+        const oldEnv = this.currentEnv;
+        this.currentEnv = { values: new Map(), parent: oldEnv };
+
+        names.forEach((name, index) => {
+            this.setNewBinding(name, values[index]!);
+        }, this);
+
+        try {
+            return code();
+        } finally {
+            this.currentEnv = oldEnv;
+        }
     }
 }
 
@@ -488,7 +507,7 @@ const defaultInterpreterConfig: InterpreterConfig = {
 };
 
 export class Interpreter {
-    private currentEnv: RuntimeEnvironment;
+    private envStack: EnvironmentStack;
     private initialContext: CompilerContext;
     private config: InterpreterConfig;
 
@@ -496,39 +515,9 @@ export class Interpreter {
         initialContext: CompilerContext = new CompilerContext(),
         config: InterpreterConfig = defaultInterpreterConfig,
     ) {
-        this.currentEnv = new RuntimeEnvironment();
+        this.envStack = new EnvironmentStack();
         this.initialContext = initialContext;
         this.config = config;
-    }
-
-    // Opens a new environment with the provided param names and
-    // values.
-    private openNewEnvironment(
-        args: { paramNames: string[]; values: Value[] } = {
-            paramNames: [],
-            values: [],
-        },
-    ) {
-        const paramNames = args.paramNames;
-        const values = args.values;
-
-        this.currentEnv = new RuntimeEnvironment(this.currentEnv);
-        paramNames.forEach((param, index) => {
-            this.currentEnv.setNewBinding(param, values[index]!);
-        }, this);
-    }
-
-    // Closes the current environment and returns to its
-    // parent environment
-    private closeCurrentEnvironment() {
-        const parentEnv = this.currentEnv.getParentEnvironment();
-        if (parentEnv === undefined) {
-            // This is a programmer's error, not even a compilation error.
-            throw new Error(
-                "Attempt to close an environment without a parent. Did you forget to previously call openNewEnvironment?",
-            );
-        }
-        this.currentEnv = parentEnv;
     }
 
     public interpretModuleItem(ast: AstModuleItem): void {
@@ -662,7 +651,7 @@ export class Interpreter {
                 );
             }
         }
-        const letBinding = this.currentEnv.getBinding(idText(ast));
+        const letBinding = this.envStack.getBinding(idText(ast));
         if (letBinding !== undefined) {
             return letBinding;
         }
@@ -1087,42 +1076,45 @@ export class Interpreter {
         const paramNames = functionCode.params.map((param) =>
             idText(param.name),
         );
-        // Open a new environment for the function
-        this.openNewEnvironment({ paramNames: paramNames, values: argValues });
-
-        // Interpret all the statements
-        try {
-            functionCode.statements.forEach(this.interpretStatement, this);
-            // At this point, the function did not execute a return.
-        } catch (e) {
-            if (e instanceof ReturnSignal) {
-                const val = e.getValue();
-                if (val !== undefined) {
-                    return val;
+        // Call function inside a new environment
+        return this.envStack.executeInNewEnvironment(
+            () => {
+                // Interpret all the statements
+                try {
+                    functionCode.statements.forEach(
+                        this.interpretStatement,
+                        this,
+                    );
+                    // At this point, the function did not execute a return.
+                } catch (e) {
+                    if (e instanceof ReturnSignal) {
+                        const val = e.getValue();
+                        if (val !== undefined) {
+                            return val;
+                        }
+                        // The function executed a return without a value
+                    } else {
+                        throw e;
+                    }
                 }
-                // The function executed a return without a value
-            } else {
-                throw e;
-            }
-        } finally {
-            // Close the environment created before calling the function
-            this.closeCurrentEnvironment();
-        }
-        // If execution reaches this point, it means that
-        // the function had no return statement or executed a return
-        // without a value. This is an error only if the return type of the
-        // function is not void
-        if (returns.kind !== "void") {
-            throwErrorConstEval(
-                `function ${idText(functionCode.name)} must return a value`,
-                functionCode.loc,
-            );
-        } else {
-            // The function does not return a value.
-            // We rely on the typechecker so that the function is called as a statement.
-            // Hence, we can return a dummy null, since the null will be discarded anyway.
-            return null;
-        }
+                // If execution reaches this point, it means that
+                // the function had no return statement or executed a return
+                // without a value. This is an error only if the return type of the
+                // function is not void
+                if (returns.kind !== "void") {
+                    throwErrorConstEval(
+                        `function ${idText(functionCode.name)} must return a value`,
+                        functionCode.loc,
+                    );
+                } else {
+                    // The function does not return a value.
+                    // We rely on the typechecker so that the function is called as a statement.
+                    // Hence, we can return a dummy null, since the null will be discarded anyway.
+                    return null;
+                }
+            },
+            { names: paramNames, values: argValues },
+        );
     }
 
     public interpretStatement(ast: AstStatement): void {
@@ -1168,7 +1160,7 @@ export class Interpreter {
 
     public interpretLetStatement(ast: AstStatementLet) {
         const val = this.interpretExpression(ast.expression);
-        this.currentEnv.setNewBinding(idText(ast.name), val);
+        this.envStack.setNewBinding(idText(ast.name), val);
     }
 
     public interpretAssignStatement(ast: AstStatementAssign) {
@@ -1177,7 +1169,7 @@ export class Interpreter {
 
         if (path.kind === "id") {
             const val = this.interpretExpression(exp);
-            this.currentEnv.updateBinding(idText(path), val);
+            this.envStack.updateBinding(idText(path), val);
         } else {
             throwNonFatalErrorConstEval(
                 `only identifiers are currently supported as path expressions`,
@@ -1194,7 +1186,7 @@ export class Interpreter {
 
         if (path.kind === "id") {
             const updateVal = this.interpretExpression(exp);
-            const currentPathValue = this.currentEnv.getBinding(idText(path));
+            const currentPathValue = this.envStack.getBinding(idText(path));
             if (currentPathValue === undefined) {
                 throwNonFatalErrorConstEval(`undeclared identifier`, path.loc);
             }
@@ -1206,7 +1198,7 @@ export class Interpreter {
                 exp.loc,
                 source,
             );
-            this.currentEnv.updateBinding(idText(path), newVal);
+            this.envStack.updateBinding(idText(path), newVal);
         } else {
             throwNonFatalErrorConstEval(
                 `only identifiers are currently supported as path expressions`,
@@ -1221,21 +1213,13 @@ export class Interpreter {
             ast.condition.loc,
         );
         if (condition) {
-            this.openNewEnvironment();
-
-            try {
+            this.envStack.executeInNewEnvironment(() => {
                 ast.trueStatements.forEach(this.interpretStatement, this);
-            } finally {
-                this.closeCurrentEnvironment();
-            }
+            });
         } else if (ast.falseStatements !== null) {
-            this.openNewEnvironment();
-
-            try {
-                ast.falseStatements.forEach(this.interpretStatement, this);
-            } finally {
-                this.closeCurrentEnvironment();
-            }
+            this.envStack.executeInNewEnvironment(() => {
+                ast.falseStatements!.forEach(this.interpretStatement, this);
+            });
         }
     }
 
@@ -1259,14 +1243,11 @@ export class Interpreter {
             // the loop. Also, the language requires that all declared variables inside the
             // loop be initialized, which means that we can overwrite its value in the environment
             // in each iteration.
-            this.openNewEnvironment();
-            try {
+            this.envStack.executeInNewEnvironment(() => {
                 for (let i = 1; i <= iterations; i++) {
                     ast.statements.forEach(this.interpretStatement, this);
                 }
-            } finally {
-                this.closeCurrentEnvironment();
-            }
+            });
         }
     }
 
@@ -1302,9 +1283,7 @@ export class Interpreter {
         // the loop. Also, the language requires that all declared variables inside the
         // loop be initialized, which means that we can overwrite its value in the environment
         // in each iteration.
-        this.openNewEnvironment();
-
-        try {
+        this.envStack.executeInNewEnvironment(() => {
             do {
                 ast.statements.forEach(this.interpretStatement, this);
 
@@ -1322,9 +1301,7 @@ export class Interpreter {
                     ast.condition.loc,
                 );
             } while (!condition);
-        } finally {
-            this.closeCurrentEnvironment();
-        }
+        });
     }
 
     public interpretWhileStatement(ast: AstStatementWhile) {
@@ -1336,9 +1313,7 @@ export class Interpreter {
         // the loop. Also, the language requires that all declared variables inside the
         // loop be initialized, which means that we can overwrite its value in the environment
         // in each iteration.
-        this.openNewEnvironment();
-
-        try {
+        this.envStack.executeInNewEnvironment(() => {
             do {
                 // The typechecker ensures that the condition does not refer to
                 // variables declared inside the loop.
@@ -1358,8 +1333,6 @@ export class Interpreter {
                     }
                 }
             } while (condition);
-        } finally {
-            this.closeCurrentEnvironment();
-        }
+        });
     }
 }
