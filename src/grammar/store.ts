@@ -5,6 +5,7 @@ import {
     AstNativeFunctionDecl,
     AstTypeDecl,
 } from "./ast";
+import { throwInternalCompilerError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
 import { ItemOrigin, parse } from "./grammar";
 
@@ -40,7 +41,7 @@ const store = createContextStore<AstStore>();
 export function getRawAST(ctx: CompilerContext): AstStore {
     const r = store.get(ctx, "types");
     if (!r) {
-        throw Error("No AST found in context");
+        throwInternalCompilerError("No AST found in context");
     }
     return r;
 }

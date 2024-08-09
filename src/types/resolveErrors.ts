@@ -3,6 +3,7 @@ import { CompilerContext, createContextStore } from "../context";
 import { AstNode, isRequire } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
 import { evalConstantExpression } from "../constEval";
+import { throwInternalCompilerError } from "../errors";
 import {
     getAllStaticConstants,
     getAllStaticFunctions,
@@ -34,7 +35,9 @@ function resolveStringsInAST(ast: AstNode, ctx: CompilerContext) {
                 if (
                     Object.values(exceptions.all(ctx)).find((v) => v.id === id)
                 ) {
-                    throw new Error(`Duplicate error id: "${resolved}"`);
+                    throwInternalCompilerError(
+                        `Duplicate error id: "${resolved}"`,
+                    );
                 }
                 ctx = exceptions.set(ctx, resolved, { value: resolved, id });
             }
@@ -92,7 +95,7 @@ export function getAllErrors(ctx: CompilerContext) {
 export function getErrorId(value: string, ctx: CompilerContext) {
     const ex = exceptions.get(ctx, value);
     if (!ex) {
-        throw new Error(`Error not found: ${value}`);
+        throwInternalCompilerError(`Error not found: ${value}`);
     }
     return ex.id;
 }
