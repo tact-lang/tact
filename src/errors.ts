@@ -84,11 +84,11 @@ export function throwCompilationError(
     message: string,
     source?: SrcInfo,
 ): never {
-    const loc =
+    const msg =
         source === undefined
-            ? ""
+            ? message
             : `${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`;
-    throw new TactCompilationError(loc, source);
+    throw new TactCompilationError(msg, source);
 }
 
 export function throwInternalCompilerError(
