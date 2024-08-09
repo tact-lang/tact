@@ -1,4 +1,5 @@
 import { AstNode, cloneAstNode } from "./ast";
+import { throwInternalCompilerError } from "../errors";
 
 export function cloneNode<T extends AstNode>(src: T): T {
     if (src.kind === "boolean") {
@@ -174,5 +175,5 @@ export function cloneNode<T extends AstNode>(src: T): T {
         });
     }
 
-    throw Error("Not implemented for " + src.kind);
+    throwInternalCompilerError(`Not implemented for ${src.kind}`);
 }

@@ -7,6 +7,7 @@ import {
     Grammar,
 } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
+import { throwInternalCompilerError } from "../errors";
 import {
     AstAugmentedAssignOperation,
     AstConstantAttribute,
@@ -675,8 +676,8 @@ semantics.addOperation<AstNode>("astOfStatement", {
                     op = "^";
                     break;
                 default:
-                    throw Error(
-                        "Internal compiler error: unreachable augmented assignment operator. Please report at https://github.com/tact-lang/tact/issues",
+                    throwInternalCompilerError(
+                        "Unreachable augmented assignment operator.",
                     );
             }
             return createAstNode({

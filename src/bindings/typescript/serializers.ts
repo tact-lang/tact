@@ -1,5 +1,6 @@
 import { ABITypeRef } from "@ton/core";
 import { Writer } from "../../utils/Writer";
+import { throwInternalCompilerError } from "../../errors";
 
 const primitiveTypes = [
     "int",
@@ -519,7 +520,7 @@ const guard: Serializer<unknown> = {
     abiMatcher(src) {
         if (src.kind === "simple") {
             if (primitiveTypes.includes(src.type)) {
-                throw Error(
+                throwInternalCompilerError(
                     `Unable to resolve serializer for ${src.type} with ${src.format ? src.format : null} format`,
                 );
             }
@@ -527,19 +528,19 @@ const guard: Serializer<unknown> = {
         return null;
     },
     tsType(_v) {
-        throw Error("Unreachable");
+        throwInternalCompilerError("Unreachable");
     },
     tsLoad(_v, _slice, _field, _w) {
-        throw Error("Unreachable");
+        throwInternalCompilerError("Unreachable");
     },
     tsLoadTuple(_v, _reader, _field, _w) {
-        throw Error("Unreachable");
+        throwInternalCompilerError("Unreachable");
     },
     tsStore(_v, _builder, _field, _w) {
-        throw Error("Unreachable");
+        throwInternalCompilerError("Unreachable");
     },
     tsStoreTuple(_v, _to, _field, _w) {
-        throw Error("Unreachable");
+        throwInternalCompilerError("Unreachable");
     },
 };
 

@@ -5,8 +5,8 @@ import { AstFuncId, AstId, AstTypeId, SrcInfo } from "./grammar/ast";
 import { ItemOrigin } from "./grammar/grammar";
 
 export class TactError extends Error {
-    readonly loc: SrcInfo;
-    constructor(message: string, loc: SrcInfo) {
+    readonly loc?: SrcInfo;
+    constructor(message: string, loc?: SrcInfo) {
         super(message);
         this.loc = loc;
     }
@@ -26,13 +26,13 @@ export class TactSyntaxError extends TactError {
 
 /// This will be split at least into two categories: typechecking and codegen errors
 export class TactCompilationError extends TactError {
-    constructor(message: string, loc: SrcInfo) {
+    constructor(message: string, loc?: SrcInfo) {
         super(message, loc);
     }
 }
 
 export class TactInternalCompilerError extends TactError {
-    constructor(message: string, loc: SrcInfo) {
+    constructor(message: string, loc?: SrcInfo) {
         super(message, loc);
     }
 }
@@ -80,21 +80,28 @@ export function throwSyntaxError(message: string, source: SrcInfo): never {
     );
 }
 
-export function throwCompilationError(message: string, source: SrcInfo): never {
-    throw new TactCompilationError(
-        `${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`,
-        source,
-    );
+export function throwCompilationError(
+    message: string,
+    source?: SrcInfo,
+): never {
+    const msg =
+        source === undefined
+            ? message
+            : `${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`;
+    throw new TactCompilationError(msg, source);
 }
 
 export function throwInternalCompilerError(
     message: string,
-    source: SrcInfo,
+    source?: SrcInfo,
 ): never {
-    throw new TactInternalCompilerError(
-        `${locationStr(source)}\n[INTERNAL COMPILER ERROR]: ${message}\nPlease report at https://github.com/tact-lang/tact/issues\n${source.interval.getLineAndColumnMessage()}`,
-        source,
-    );
+    const msg = `[INTERNAL COMPILER ERROR]: ${message}\nPlease report at https://github.com/tact-lang/tact/issues`;
+    throw source === undefined
+        ? new TactInternalCompilerError(msg)
+        : new TactInternalCompilerError(
+              `${locationStr(source)}\n${msg}\n${source.interval.getLineAndColumnMessage()}`,
+              source,
+          );
 }
 
 export function throwConstEvalError(

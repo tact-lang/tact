@@ -408,7 +408,7 @@ export function createABITypeRefFromTypeRef(
             return { kind: "simple", type: "string", optional: src.optional };
         }
         if (src.name === "StringBuilder") {
-            throw Error(`Unsupported type "${src.name}"`);
+            throwInternalCompilerError(`Unsupported type "${src.name}"`);
         }
 
         // Structs
@@ -444,7 +444,7 @@ export function createABITypeRefFromTypeRef(
                 );
             }
         } else {
-            throw Error(`Unsupported map key type "${src.key}"`);
+            throwInternalCompilerError(`Unsupported map key type "${src.key}"`);
         }
 
         // Resolve value type
@@ -479,7 +479,9 @@ export function createABITypeRefFromTypeRef(
                 );
             }
         } else if (src.value === "Slice") {
-            throw Error(`Unsupported map value type "${src.value}"`);
+            throwInternalCompilerError(
+                `Unsupported map value type "${src.value}"`,
+            );
         } else if (src.value === "Address") {
             value = "address";
             if (src.valueAs) {
@@ -489,9 +491,13 @@ export function createABITypeRefFromTypeRef(
                 );
             }
         } else if (src.value === "String") {
-            throw Error(`Unsupported map value type "${src.value}"`);
+            throwInternalCompilerError(
+                `Unsupported map value type "${src.value}"`,
+            );
         } else if (src.value === "StringBuilder" || src.value === "Builder") {
-            throw Error(`Unsupported map value type "${src.value}"`);
+            throwInternalCompilerError(
+                `Unsupported map value type "${src.value}"`,
+            );
         } else {
             value = src.value;
             valueFormat = "ref";
@@ -507,8 +513,8 @@ export function createABITypeRefFromTypeRef(
     }
 
     if (src.kind === "ref_bounced") {
-        throw Error("Unexpected bounced reference");
+        throwInternalCompilerError("Unexpected bounced reference");
     }
 
-    throw Error(`Unsupported type`);
+    throwInternalCompilerError(`Unsupported type`);
 }

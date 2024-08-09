@@ -10,7 +10,11 @@ import {
     selfId,
 } from "../grammar/ast";
 import { isAssignable } from "./subtyping";
-import { idTextErr, throwCompilationError } from "../errors";
+import {
+    idTextErr,
+    throwCompilationError,
+    throwInternalCompilerError,
+} from "../errors";
 import {
     getAllStaticFunctions,
     getAllTypes,
@@ -52,7 +56,7 @@ function addRequiredVariables(
     src: StatementContext,
 ): StatementContext {
     if (src.requiredFields.find((v) => v === name)) {
-        throw Error("Variable already exists: " + name); // Should happen earlier
+        throwInternalCompilerError(`Variable already exists: ${name}`); // Should happen earlier
     }
     return {
         ...src,
@@ -65,7 +69,7 @@ function removeRequiredVariable(
     src: StatementContext,
 ): StatementContext {
     if (!src.requiredFields.find((v) => v === name)) {
-        throw Error("Variable is not required: " + name); // Should happen earlier
+        throwInternalCompilerError(`Variable is not required: ${name}`); // Should happen earlier
     }
     const filtered = src.requiredFields.filter((v) => v !== name);
     return {
@@ -132,11 +136,12 @@ function processCondition(
     ) {
         // if-else if
         const r = processCondition(condition.elseif, initialCtx, ctx);
+
         ctx = r.ctx;
         processedCtx.push(r.sctx);
         returnAlwaysReachableInAllBranches.push(r.returnAlwaysReachable);
     } else {
-        throw Error("Impossible");
+        throwInternalCompilerError("Impossible");
     }
 
     // Merge statement contexts

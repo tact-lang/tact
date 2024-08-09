@@ -35,6 +35,7 @@ import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
+import { throwInternalCompilerError } from "../errors";
 import { StructFunctions } from "../abi/struct";
 
 const store = createContextStore<{
@@ -45,7 +46,7 @@ const store = createContextStore<{
 export function getExpType(ctx: CompilerContext, exp: AstExpression) {
     const t = store.get(ctx, exp.id);
     if (!t) {
-        throw Error("Expression " + exp.id + " not found");
+        throwInternalCompilerError(`Expression ${exp.id} not found`);
     }
     return t.description;
 }
@@ -60,7 +61,7 @@ function registerExpType(
         if (typeRefEquals(ex.description, description)) {
             return ctx;
         }
-        throw Error("Expression " + exp.id + " already has a type");
+        throwInternalCompilerError(`Expression ${exp.id} already has a type`);
     }
     return store.set(ctx, exp.id, { ast: exp, description });
 }
