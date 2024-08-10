@@ -1,11 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FunC grammar and parser should NOT parse id-arith-operator 1`] = `"semantics(...).astOfModule is not a function"`;
+exports[`FunC grammar and parser should NOT parse id-arith-operator 1`] = `
+"id-arith-operator.fc:1:4: Parse error: expected not ((a hole or an integerLiteral or a delimiter or an operator or a primitive) not a rawId) or "->"
 
-exports[`FunC grammar and parser should NOT parse id-assign-operator 1`] = `"semantics(...).astOfModule is not a function"`;
+Line 1, col 4:
+> 1 | () /();
+         ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-assign-operator 1`] = `
+"id-assign-operator.fc:1:4: Parse error: expected not ((a hole or an integerLiteral or a delimiter or an operator or a primitive) not a rawId) or "->"
+
+Line 1, col 4:
+> 1 | () ^>>=();
+         ^
+  2 | 
+"
+`;
 
 exports[`FunC grammar and parser should NOT parse id-bitwise-operator 1`] = `
-"id-bitwise-operator.fc:1:5: Parse error: expected not (a whiteSpace or "(" or ")" or "[ | ]" or "," or "." or ";" or "~") or "\`"
+"id-bitwise-operator.fc:1:5: Parse error: expected not (a whiteSpace or "(" or ")" or "[" or "]" or "," or "." or ";" or "~"), "~_", "_", or "\`"
 
 Line 1, col 5:
 > 1 | () ~();
@@ -24,13 +40,43 @@ Line 1, col 16:
 "
 `;
 
-exports[`FunC grammar and parser should NOT parse id-comparison-operator 1`] = `"semantics(...).astOfModule is not a function"`;
+exports[`FunC grammar and parser should NOT parse id-comparison-operator 1`] = `
+"id-comparison-operator.fc:1:4: Parse error: expected not ((a hole or an integerLiteral or a delimiter or an operator or a primitive) not a rawId) or "->"
 
-exports[`FunC grammar and parser should NOT parse id-control-keyword 1`] = `"semantics(...).astOfModule is not a function"`;
+Line 1, col 4:
+> 1 | () <=>();
+         ^
+  2 | 
+"
+`;
 
-exports[`FunC grammar and parser should NOT parse id-delimiter 1`] = `"semantics(...).astOfModule is not a function"`;
+exports[`FunC grammar and parser should NOT parse id-control-keyword 1`] = `
+"id-control-keyword.fc:1:1: Name of the function cannot be a control keyword
+Line 1, col 1:
+> 1 | () elseifnot();
+      ^~~~~~~~~~~~~~
+  2 | 
+"
+`;
 
-exports[`FunC grammar and parser should NOT parse id-directive 1`] = `"semantics(...).astOfModule is not a function"`;
+exports[`FunC grammar and parser should NOT parse id-delimiter 1`] = `
+"id-delimiter.fc:1:4: Parse error: expected not (a whiteSpace or "(" or ")" or "[" or "]" or "," or "." or ";" or "~"), "~_", "_", "\`", or "->"
+
+Line 1, col 4:
+> 1 | () [();
+         ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-directive 1`] = `
+"id-directive.fc:1:1: Name of the function cannot be a compiler directive
+Line 1, col 1:
+> 1 | () #include();
+      ^~~~~~~~~~~~~
+  2 | 
+"
+`;
 
 exports[`FunC grammar and parser should NOT parse id-dot 1`] = `
 "id-dot.fc:1:7: Parse error: expected "("
@@ -42,10 +88,17 @@ Line 1, col 7:
 "
 `;
 
-exports[`FunC grammar and parser should NOT parse id-keyword 1`] = `"semantics(...).astOfModule is not a function"`;
+exports[`FunC grammar and parser should NOT parse id-keyword 1`] = `
+"id-keyword.fc:1:1: Name of the function cannot be a keyword
+Line 1, col 1:
+> 1 | () global();
+      ^~~~~~~~~~~
+  2 | 
+"
+`;
 
 exports[`FunC grammar and parser should NOT parse id-multiline-comments 1`] = `
-"id-multiline-comments.fc:1:11: Parse error: expected not (a whiteSpace or "(" or ")" or "[ | ]" or "," or "." or ";" or "~"), "\`", or "->"
+"id-multiline-comments.fc:1:11: Parse error: expected not (a whiteSpace or "(" or ")" or "[" or "]" or "," or "." or ";" or "~"), "~_", "_", "\`", or "->"
 
 Line 1, col 11:
 > 1 | () {-aaa-}();
@@ -54,35 +107,82 @@ Line 1, col 11:
 "
 `;
 
-exports[`FunC grammar and parser should NOT parse id-number 1`] = `"semantics(...).astOfModule is not a function"`;
+exports[`FunC grammar and parser should NOT parse id-number 1`] = `
+"id-number.fc:1:4: Parse error: expected not ((a hole or an integerLiteral or a delimiter or an operator or a primitive) not a rawId) or "->"
 
-exports[`FunC grammar and parser should NOT parse id-number-decimal 1`] = `"semantics(...).astOfModule is not a function"`;
-
-exports[`FunC grammar and parser should NOT parse id-number-hexadecimal 1`] = `"semantics(...).astOfModule is not a function"`;
-
-exports[`FunC grammar and parser should NOT parse id-number-hexadecimal-2 1`] = `"semantics(...).astOfModule is not a function"`;
-
-exports[`FunC grammar and parser should NOT parse id-number-neg-decimal 1`] = `
-"id-number-neg-decimal.fc:2:1: Parse error: expected end of input, "[", "(", "()", "var", "_", "tuple", "cont", "builder", "slice", "cell", "int", "const", or "global"
-
-Line 2, col 1:
-  1 | () -1();
-> 2 | native idTest();
-      ^
-  3 | 
+Line 1, col 4:
+> 1 | () 123();
+         ^
+  2 | 
 "
 `;
 
-exports[`FunC grammar and parser should NOT parse id-number-neg-hexadecimal 1`] = `"semantics(...).astOfModule is not a function"`;
+exports[`FunC grammar and parser should NOT parse id-number-decimal 1`] = `
+"id-number-decimal.fc:1:4: Parse error: expected not ((a hole or an integerLiteral or a delimiter or an operator or a primitive) not a rawId) or "->"
 
-exports[`FunC grammar and parser should NOT parse id-only-underscore 1`] = `"semantics(...).astOfModule is not a function"`;
+Line 1, col 4:
+> 1 | () 0();
+         ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-number-hexadecimal 1`] = `
+"id-number-hexadecimal.fc:1:4: Parse error: expected not ((a hole or an integerLiteral or a delimiter or an operator or a primitive) not a rawId) or "->"
+
+Line 1, col 4:
+> 1 | () 0x0();
+         ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-number-hexadecimal-2 1`] = `
+"id-number-hexadecimal-2.fc:1:4: Parse error: expected not ((a hole or an integerLiteral or a delimiter or an operator or a primitive) not a rawId) or "->"
+
+Line 1, col 4:
+> 1 | () 0xDEADBEEF();
+         ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-number-neg-decimal 1`] = `
+"id-number-neg-decimal.fc:1:4: Parse error: expected not ((a hole or an integerLiteral or a delimiter or an operator or a primitive) not a rawId) or "->"
+
+Line 1, col 4:
+> 1 | () -1();
+         ^
+  2 | native idTest();
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-number-neg-hexadecimal 1`] = `
+"id-number-neg-hexadecimal.fc:1:4: Parse error: expected not ((a hole or an integerLiteral or a delimiter or an operator or a primitive) not a rawId) or "->"
+
+Line 1, col 4:
+> 1 | () -0x0();
+         ^
+  2 | 
+"
+`;
+
+exports[`FunC grammar and parser should NOT parse id-only-underscore 1`] = `
+"id-only-underscore.fc:1:4: Parse error: expected not ((a hole or an integerLiteral or a delimiter or an operator or a primitive) not a rawId) or "->"
+
+Line 1, col 4:
+> 1 | () _();
+         ^
+  2 | 
+"
+`;
 
 exports[`FunC grammar and parser should NOT parse id-parens 1`] = `
-"id-parens.fc:1:14: Parse error: expected not (a whiteSpace or "(" or ")" or "[ | ]" or "," or "." or ";" or "~") or "\`"
+"id-parens.fc:1:15: Parse error: expected "{", ";", or "asm"
 
-Line 1, col 14:
+Line 1, col 15:
 > 1 | () take(first)Entry();
-                   ^
+                    ^
   2 | 
 "
 `;
@@ -118,21 +218,6001 @@ Line 1, col 4:
 `;
 
 exports[`FunC grammar and parser should NOT parse id-type-keyword 1`] = `
-"id-type-keyword.fc:1:8: Parse error: expected not (a whiteSpace or "(" or ")" or "[ | ]" or "," or "." or ";" or "~") or "\`"
+"id-type-keyword.fc:1:6: Parse error: expected " ", " ", "\\r", "\\n", " ", or "\\t"
 
-Line 1, col 8:
+Line 1, col 6:
 > 1 | () ->();
-             ^
+           ^
   2 | 
 "
 `;
 
 exports[`FunC grammar and parser should NOT parse id-unclosed-parens 1`] = `
-"id-unclosed-parens.fc:1:9: Parse error: expected not (a whiteSpace or "(" or ")" or "[ | ]" or "," or "." or ";" or "~") or "\`"
+"id-unclosed-parens.fc:1:9: Parse error: expected ")"
 
 Line 1, col 9:
 > 1 | () aa(bb();
               ^
   2 | 
 "
+`;
+
+exports[`FunC grammar and parser should parse __tact_crc16 1`] = `
+{
+  "includes": [
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "include_stdlib.fc",
+      },
+    },
+  ],
+  "items": [
+    {
+      "attributes": [
+        {
+          "kind": "inline_ref",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "__tact_crc16",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "data",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_tensor",
+        "loc": FuncSrcInfo {},
+        "types": [
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+        ],
+      },
+      "statements": [
+        {
+          "expression": {
+            "kind": "expression_assign",
+            "left": {
+              "kind": "expression_var_decl",
+              "loc": FuncSrcInfo {},
+              "names": {
+                "kind": "plain_id",
+                "loc": FuncSrcInfo {},
+                "value": "new_data",
+              },
+              "ty": {
+                "kind": "type_primitive",
+                "loc": FuncSrcInfo {},
+                "value": "slice",
+              },
+            },
+            "loc": FuncSrcInfo {},
+            "op": "=",
+            "right": {
+              "arguments": [
+                {
+                  "kind": "unit",
+                  "loc": FuncSrcInfo {},
+                  "value": "()",
+                },
+                {
+                  "kind": "method_id",
+                  "loc": FuncSrcInfo {},
+                  "prefix": ".",
+                  "value": "store_slice",
+                },
+                {
+                  "expressions": [
+                    {
+                      "kind": "plain_id",
+                      "loc": FuncSrcInfo {},
+                      "value": "data",
+                    },
+                  ],
+                  "kind": "expression_tensor",
+                  "loc": FuncSrcInfo {},
+                },
+                {
+                  "kind": "method_id",
+                  "loc": FuncSrcInfo {},
+                  "prefix": ".",
+                  "value": "store_slice",
+                },
+                {
+                  "expressions": [
+                    {
+                      "kind": "string_singleline",
+                      "loc": FuncSrcInfo {},
+                      "ty": "s",
+                      "value": "0000",
+                    },
+                  ],
+                  "kind": "expression_tensor",
+                  "loc": FuncSrcInfo {},
+                },
+                {
+                  "kind": "method_id",
+                  "loc": FuncSrcInfo {},
+                  "prefix": ".",
+                  "value": "end_cell",
+                },
+                {
+                  "kind": "unit",
+                  "loc": FuncSrcInfo {},
+                  "value": "()",
+                },
+                {
+                  "kind": "method_id",
+                  "loc": FuncSrcInfo {},
+                  "prefix": ".",
+                  "value": "begin_parse",
+                },
+                {
+                  "kind": "unit",
+                  "loc": FuncSrcInfo {},
+                  "value": "()",
+                },
+              ],
+              "kind": "expression_fun_call",
+              "loc": FuncSrcInfo {},
+              "object": {
+                "kind": "plain_id",
+                "loc": FuncSrcInfo {},
+                "value": "begin_cell",
+              },
+            },
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "expression_assign",
+            "left": {
+              "kind": "expression_var_decl",
+              "loc": FuncSrcInfo {},
+              "names": {
+                "kind": "plain_id",
+                "loc": FuncSrcInfo {},
+                "value": "reg",
+              },
+              "ty": {
+                "kind": "type_primitive",
+                "loc": FuncSrcInfo {},
+                "value": "int",
+              },
+            },
+            "loc": FuncSrcInfo {},
+            "op": "=",
+            "right": {
+              "kind": "integer_literal",
+              "loc": FuncSrcInfo {},
+              "value": 0n,
+            },
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "condition": {
+            "expressions": [
+              {
+                "kind": "expression_unary",
+                "loc": FuncSrcInfo {},
+                "op": "~",
+                "operand": {
+                  "arguments": [
+                    {
+                      "kind": "method_id",
+                      "loc": FuncSrcInfo {},
+                      "prefix": ".",
+                      "value": "slice_data_empty?",
+                    },
+                    {
+                      "kind": "unit",
+                      "loc": FuncSrcInfo {},
+                      "value": "()",
+                    },
+                  ],
+                  "kind": "expression_fun_call",
+                  "loc": FuncSrcInfo {},
+                  "object": {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "new_data",
+                  },
+                },
+              },
+            ],
+            "kind": "expression_tensor",
+            "loc": FuncSrcInfo {},
+          },
+          "kind": "statement_while",
+          "loc": FuncSrcInfo {},
+          "statements": [
+            {
+              "expression": {
+                "kind": "expression_assign",
+                "left": {
+                  "kind": "expression_var_decl",
+                  "loc": FuncSrcInfo {},
+                  "names": {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "byte",
+                  },
+                  "ty": {
+                    "kind": "type_primitive",
+                    "loc": FuncSrcInfo {},
+                    "value": "int",
+                  },
+                },
+                "loc": FuncSrcInfo {},
+                "op": "=",
+                "right": {
+                  "arguments": [
+                    {
+                      "kind": "method_id",
+                      "loc": FuncSrcInfo {},
+                      "prefix": "~",
+                      "value": "load_uint",
+                    },
+                    {
+                      "expressions": [
+                        {
+                          "kind": "integer_literal",
+                          "loc": FuncSrcInfo {},
+                          "value": 8n,
+                        },
+                      ],
+                      "kind": "expression_tensor",
+                      "loc": FuncSrcInfo {},
+                    },
+                  ],
+                  "kind": "expression_fun_call",
+                  "loc": FuncSrcInfo {},
+                  "object": {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "new_data",
+                  },
+                },
+              },
+              "kind": "statement_expression",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "expression": {
+                "kind": "expression_assign",
+                "left": {
+                  "kind": "expression_var_decl",
+                  "loc": FuncSrcInfo {},
+                  "names": {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "mask",
+                  },
+                  "ty": {
+                    "kind": "type_primitive",
+                    "loc": FuncSrcInfo {},
+                    "value": "int",
+                  },
+                },
+                "loc": FuncSrcInfo {},
+                "op": "=",
+                "right": {
+                  "kind": "integer_literal",
+                  "loc": FuncSrcInfo {},
+                  "value": 128n,
+                },
+              },
+              "kind": "statement_expression",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "condition": {
+                "expressions": [
+                  {
+                    "kind": "expression_compare",
+                    "left": {
+                      "kind": "plain_id",
+                      "loc": FuncSrcInfo {},
+                      "value": "mask",
+                    },
+                    "loc": FuncSrcInfo {},
+                    "op": ">",
+                    "right": {
+                      "kind": "integer_literal",
+                      "loc": FuncSrcInfo {},
+                      "value": 0n,
+                    },
+                  },
+                ],
+                "kind": "expression_tensor",
+                "loc": FuncSrcInfo {},
+              },
+              "kind": "statement_while",
+              "loc": FuncSrcInfo {},
+              "statements": [
+                {
+                  "expression": {
+                    "kind": "expression_assign",
+                    "left": {
+                      "kind": "plain_id",
+                      "loc": FuncSrcInfo {},
+                      "value": "reg",
+                    },
+                    "loc": FuncSrcInfo {},
+                    "op": "<<=",
+                    "right": {
+                      "kind": "integer_literal",
+                      "loc": FuncSrcInfo {},
+                      "value": 1n,
+                    },
+                  },
+                  "kind": "statement_expression",
+                  "loc": FuncSrcInfo {},
+                },
+                {
+                  "alternatives": undefined,
+                  "condition": {
+                    "expressions": [
+                      {
+                        "kind": "expression_mul_bitwise",
+                        "left": {
+                          "kind": "plain_id",
+                          "loc": FuncSrcInfo {},
+                          "value": "byte",
+                        },
+                        "loc": FuncSrcInfo {},
+                        "ops": [
+                          {
+                            "expr": {
+                              "kind": "plain_id",
+                              "loc": FuncSrcInfo {},
+                              "value": "mask",
+                            },
+                            "op": "&",
+                          },
+                        ],
+                      },
+                    ],
+                    "kind": "expression_tensor",
+                    "loc": FuncSrcInfo {},
+                  },
+                  "consequences": [
+                    {
+                      "expression": {
+                        "kind": "expression_assign",
+                        "left": {
+                          "kind": "plain_id",
+                          "loc": FuncSrcInfo {},
+                          "value": "reg",
+                        },
+                        "loc": FuncSrcInfo {},
+                        "op": "+=",
+                        "right": {
+                          "kind": "integer_literal",
+                          "loc": FuncSrcInfo {},
+                          "value": 1n,
+                        },
+                      },
+                      "kind": "statement_expression",
+                      "loc": FuncSrcInfo {},
+                    },
+                  ],
+                  "kind": "statement_condition_if",
+                  "loc": FuncSrcInfo {},
+                  "positive": true,
+                },
+                {
+                  "expression": {
+                    "kind": "expression_assign",
+                    "left": {
+                      "kind": "plain_id",
+                      "loc": FuncSrcInfo {},
+                      "value": "mask",
+                    },
+                    "loc": FuncSrcInfo {},
+                    "op": ">>=",
+                    "right": {
+                      "kind": "integer_literal",
+                      "loc": FuncSrcInfo {},
+                      "value": 1n,
+                    },
+                  },
+                  "kind": "statement_expression",
+                  "loc": FuncSrcInfo {},
+                },
+                {
+                  "alternatives": undefined,
+                  "condition": {
+                    "expressions": [
+                      {
+                        "kind": "expression_compare",
+                        "left": {
+                          "kind": "plain_id",
+                          "loc": FuncSrcInfo {},
+                          "value": "reg",
+                        },
+                        "loc": FuncSrcInfo {},
+                        "op": ">",
+                        "right": {
+                          "kind": "integer_literal",
+                          "loc": FuncSrcInfo {},
+                          "value": 65535n,
+                        },
+                      },
+                    ],
+                    "kind": "expression_tensor",
+                    "loc": FuncSrcInfo {},
+                  },
+                  "consequences": [
+                    {
+                      "expression": {
+                        "kind": "expression_assign",
+                        "left": {
+                          "kind": "plain_id",
+                          "loc": FuncSrcInfo {},
+                          "value": "reg",
+                        },
+                        "loc": FuncSrcInfo {},
+                        "op": "&=",
+                        "right": {
+                          "kind": "integer_literal",
+                          "loc": FuncSrcInfo {},
+                          "value": 65535n,
+                        },
+                      },
+                      "kind": "statement_expression",
+                      "loc": FuncSrcInfo {},
+                    },
+                    {
+                      "expression": {
+                        "kind": "expression_assign",
+                        "left": {
+                          "kind": "plain_id",
+                          "loc": FuncSrcInfo {},
+                          "value": "reg",
+                        },
+                        "loc": FuncSrcInfo {},
+                        "op": "^=",
+                        "right": {
+                          "kind": "integer_literal",
+                          "loc": FuncSrcInfo {},
+                          "value": 4129n,
+                        },
+                      },
+                      "kind": "statement_expression",
+                      "loc": FuncSrcInfo {},
+                    },
+                  ],
+                  "kind": "statement_condition_if",
+                  "loc": FuncSrcInfo {},
+                  "positive": true,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          "expression": {
+            "kind": "expression_assign",
+            "left": {
+              "expressions": [
+                {
+                  "kind": "expression_var_decl",
+                  "loc": FuncSrcInfo {},
+                  "names": {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "q",
+                  },
+                  "ty": {
+                    "kind": "type_primitive",
+                    "loc": FuncSrcInfo {},
+                    "value": "int",
+                  },
+                },
+                {
+                  "kind": "expression_var_decl",
+                  "loc": FuncSrcInfo {},
+                  "names": {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "r",
+                  },
+                  "ty": {
+                    "kind": "type_primitive",
+                    "loc": FuncSrcInfo {},
+                    "value": "int",
+                  },
+                },
+              ],
+              "kind": "expression_tensor",
+              "loc": FuncSrcInfo {},
+            },
+            "loc": FuncSrcInfo {},
+            "op": "=",
+            "right": {
+              "arguments": [
+                {
+                  "expressions": [
+                    {
+                      "kind": "plain_id",
+                      "loc": FuncSrcInfo {},
+                      "value": "reg",
+                    },
+                    {
+                      "kind": "integer_literal",
+                      "loc": FuncSrcInfo {},
+                      "value": 256n,
+                    },
+                  ],
+                  "kind": "expression_tensor",
+                  "loc": FuncSrcInfo {},
+                },
+              ],
+              "kind": "expression_fun_call",
+              "loc": FuncSrcInfo {},
+              "object": {
+                "kind": "plain_id",
+                "loc": FuncSrcInfo {},
+                "value": "divmod",
+              },
+            },
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "arguments": [
+              {
+                "kind": "unit",
+                "loc": FuncSrcInfo {},
+                "value": "()",
+              },
+              {
+                "kind": "method_id",
+                "loc": FuncSrcInfo {},
+                "prefix": ".",
+                "value": "store_uint",
+              },
+              {
+                "expressions": [
+                  {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "q",
+                  },
+                  {
+                    "kind": "integer_literal",
+                    "loc": FuncSrcInfo {},
+                    "value": 8n,
+                  },
+                ],
+                "kind": "expression_tensor",
+                "loc": FuncSrcInfo {},
+              },
+              {
+                "kind": "method_id",
+                "loc": FuncSrcInfo {},
+                "prefix": ".",
+                "value": "store_uint",
+              },
+              {
+                "expressions": [
+                  {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "r",
+                  },
+                  {
+                    "kind": "integer_literal",
+                    "loc": FuncSrcInfo {},
+                    "value": 8n,
+                  },
+                ],
+                "kind": "expression_tensor",
+                "loc": FuncSrcInfo {},
+              },
+              {
+                "kind": "method_id",
+                "loc": FuncSrcInfo {},
+                "prefix": ".",
+                "value": "end_cell",
+              },
+              {
+                "kind": "unit",
+                "loc": FuncSrcInfo {},
+                "value": "()",
+              },
+              {
+                "kind": "method_id",
+                "loc": FuncSrcInfo {},
+                "prefix": ".",
+                "value": "begin_parse",
+              },
+              {
+                "kind": "unit",
+                "loc": FuncSrcInfo {},
+                "value": "()",
+              },
+            ],
+            "kind": "expression_fun_call",
+            "loc": FuncSrcInfo {},
+            "object": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "begin_cell",
+            },
+          },
+          "kind": "statement_return",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse __tact_debug 1`] = `
+{
+  "includes": [
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "include_stdlib.fc",
+      },
+    },
+  ],
+  "items": [
+    {
+      "arrangement": undefined,
+      "asmStrings": [
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "STRDUMP",
+        },
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "DROP",
+        },
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "s0 DUMP",
+        },
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "DROP",
+        },
+      ],
+      "attributes": [
+        {
+          "kind": "impure",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+      "forall": {
+        "kind": "forall",
+        "loc": FuncSrcInfo {},
+        "tyVars": [
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "X",
+            },
+          },
+        ],
+      },
+      "kind": "asm_function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "__tact_debug",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "value",
+          },
+          "ty": {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "X",
+            },
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "debug_print",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse __tact_load_address 1`] = `
+{
+  "includes": [
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "include_stdlib.fc",
+      },
+    },
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "__tact_verify_address.fc",
+      },
+    },
+  ],
+  "items": [
+    {
+      "attributes": [
+        {
+          "kind": "inline",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "__tact_load_address",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "cs",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_tensor",
+        "loc": FuncSrcInfo {},
+        "types": [
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+        ],
+      },
+      "statements": [
+        {
+          "expression": {
+            "kind": "expression_assign",
+            "left": {
+              "kind": "expression_var_decl",
+              "loc": FuncSrcInfo {},
+              "names": {
+                "kind": "plain_id",
+                "loc": FuncSrcInfo {},
+                "value": "raw",
+              },
+              "ty": {
+                "kind": "type_primitive",
+                "loc": FuncSrcInfo {},
+                "value": "slice",
+              },
+            },
+            "loc": FuncSrcInfo {},
+            "op": "=",
+            "right": {
+              "arguments": [
+                {
+                  "kind": "method_id",
+                  "loc": FuncSrcInfo {},
+                  "prefix": "~",
+                  "value": "load_msg_addr",
+                },
+                {
+                  "kind": "unit",
+                  "loc": FuncSrcInfo {},
+                  "value": "()",
+                },
+              ],
+              "kind": "expression_fun_call",
+              "loc": FuncSrcInfo {},
+              "object": {
+                "kind": "plain_id",
+                "loc": FuncSrcInfo {},
+                "value": "cs",
+              },
+            },
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "expressions": [
+              {
+                "kind": "plain_id",
+                "loc": FuncSrcInfo {},
+                "value": "cs",
+              },
+              {
+                "arguments": [
+                  {
+                    "expressions": [
+                      {
+                        "kind": "plain_id",
+                        "loc": FuncSrcInfo {},
+                        "value": "raw",
+                      },
+                    ],
+                    "kind": "expression_tensor",
+                    "loc": FuncSrcInfo {},
+                  },
+                ],
+                "kind": "expression_fun_call",
+                "loc": FuncSrcInfo {},
+                "object": {
+                  "kind": "plain_id",
+                  "loc": FuncSrcInfo {},
+                  "value": "__tact_verify_address",
+                },
+              },
+            ],
+            "kind": "expression_tensor",
+            "loc": FuncSrcInfo {},
+          },
+          "kind": "statement_return",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse __tact_load_address_opt 1`] = `
+{
+  "includes": [
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "include_stdlib.fc",
+      },
+    },
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "__tact_verify_address.fc",
+      },
+    },
+  ],
+  "items": [
+    {
+      "attributes": [
+        {
+          "kind": "inline",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "__tact_load_address_opt",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "cs",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_tensor",
+        "loc": FuncSrcInfo {},
+        "types": [
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+        ],
+      },
+      "statements": [
+        {
+          "alternatives": [
+            {
+              "expression": {
+                "arguments": [
+                  {
+                    "kind": "method_id",
+                    "loc": FuncSrcInfo {},
+                    "prefix": "~",
+                    "value": "skip_bits",
+                  },
+                  {
+                    "expressions": [
+                      {
+                        "kind": "integer_literal",
+                        "loc": FuncSrcInfo {},
+                        "value": 2n,
+                      },
+                    ],
+                    "kind": "expression_tensor",
+                    "loc": FuncSrcInfo {},
+                  },
+                ],
+                "kind": "expression_fun_call",
+                "loc": FuncSrcInfo {},
+                "object": {
+                  "kind": "plain_id",
+                  "loc": FuncSrcInfo {},
+                  "value": "cs",
+                },
+              },
+              "kind": "statement_expression",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "expression": {
+                "expressions": [
+                  {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "cs",
+                  },
+                  {
+                    "arguments": [
+                      {
+                        "kind": "unit",
+                        "loc": FuncSrcInfo {},
+                        "value": "()",
+                      },
+                    ],
+                    "kind": "expression_fun_call",
+                    "loc": FuncSrcInfo {},
+                    "object": {
+                      "kind": "plain_id",
+                      "loc": FuncSrcInfo {},
+                      "value": "null",
+                    },
+                  },
+                ],
+                "kind": "expression_tensor",
+                "loc": FuncSrcInfo {},
+              },
+              "kind": "statement_return",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "condition": {
+            "expressions": [
+              {
+                "kind": "expression_compare",
+                "left": {
+                  "arguments": [
+                    {
+                      "kind": "method_id",
+                      "loc": FuncSrcInfo {},
+                      "prefix": ".",
+                      "value": "preload_uint",
+                    },
+                    {
+                      "expressions": [
+                        {
+                          "kind": "integer_literal",
+                          "loc": FuncSrcInfo {},
+                          "value": 2n,
+                        },
+                      ],
+                      "kind": "expression_tensor",
+                      "loc": FuncSrcInfo {},
+                    },
+                  ],
+                  "kind": "expression_fun_call",
+                  "loc": FuncSrcInfo {},
+                  "object": {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "cs",
+                  },
+                },
+                "loc": FuncSrcInfo {},
+                "op": "!=",
+                "right": {
+                  "kind": "integer_literal",
+                  "loc": FuncSrcInfo {},
+                  "value": 0n,
+                },
+              },
+            ],
+            "kind": "expression_tensor",
+            "loc": FuncSrcInfo {},
+          },
+          "consequences": [
+            {
+              "expression": {
+                "kind": "expression_assign",
+                "left": {
+                  "kind": "expression_var_decl",
+                  "loc": FuncSrcInfo {},
+                  "names": {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "raw",
+                  },
+                  "ty": {
+                    "kind": "type_primitive",
+                    "loc": FuncSrcInfo {},
+                    "value": "slice",
+                  },
+                },
+                "loc": FuncSrcInfo {},
+                "op": "=",
+                "right": {
+                  "arguments": [
+                    {
+                      "kind": "method_id",
+                      "loc": FuncSrcInfo {},
+                      "prefix": "~",
+                      "value": "load_msg_addr",
+                    },
+                    {
+                      "kind": "unit",
+                      "loc": FuncSrcInfo {},
+                      "value": "()",
+                    },
+                  ],
+                  "kind": "expression_fun_call",
+                  "loc": FuncSrcInfo {},
+                  "object": {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "cs",
+                  },
+                },
+              },
+              "kind": "statement_expression",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "expression": {
+                "expressions": [
+                  {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "cs",
+                  },
+                  {
+                    "arguments": [
+                      {
+                        "expressions": [
+                          {
+                            "kind": "plain_id",
+                            "loc": FuncSrcInfo {},
+                            "value": "raw",
+                          },
+                        ],
+                        "kind": "expression_tensor",
+                        "loc": FuncSrcInfo {},
+                      },
+                    ],
+                    "kind": "expression_fun_call",
+                    "loc": FuncSrcInfo {},
+                    "object": {
+                      "kind": "plain_id",
+                      "loc": FuncSrcInfo {},
+                      "value": "__tact_verify_address",
+                    },
+                  },
+                ],
+                "kind": "expression_tensor",
+                "loc": FuncSrcInfo {},
+              },
+              "kind": "statement_return",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "kind": "statement_condition_if",
+          "loc": FuncSrcInfo {},
+          "positive": true,
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse __tact_load_bool 1`] = `
+{
+  "includes": [
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "include_stdlib.fc",
+      },
+    },
+  ],
+  "items": [
+    {
+      "arrangement": {
+        "arguments": undefined,
+        "kind": "asm_arrangement",
+        "loc": FuncSrcInfo {},
+        "returns": [
+          {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+        ],
+      },
+      "asmStrings": [
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "1 LDI",
+        },
+      ],
+      "attributes": [],
+      "forall": undefined,
+      "kind": "asm_function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "__tact_load_bool",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "s",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_tensor",
+        "loc": FuncSrcInfo {},
+        "types": [
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        ],
+      },
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse __tact_store_address 1`] = `
+{
+  "includes": [
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "include_stdlib.fc",
+      },
+    },
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "__tact_verify_address.fc",
+      },
+    },
+  ],
+  "items": [
+    {
+      "attributes": [
+        {
+          "kind": "inline",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "__tact_store_address",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "b",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "builder",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "address",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_primitive",
+        "loc": FuncSrcInfo {},
+        "value": "builder",
+      },
+      "statements": [
+        {
+          "expression": {
+            "arguments": [
+              {
+                "kind": "method_id",
+                "loc": FuncSrcInfo {},
+                "prefix": ".",
+                "value": "store_slice",
+              },
+              {
+                "expressions": [
+                  {
+                    "arguments": [
+                      {
+                        "expressions": [
+                          {
+                            "kind": "plain_id",
+                            "loc": FuncSrcInfo {},
+                            "value": "address",
+                          },
+                        ],
+                        "kind": "expression_tensor",
+                        "loc": FuncSrcInfo {},
+                      },
+                    ],
+                    "kind": "expression_fun_call",
+                    "loc": FuncSrcInfo {},
+                    "object": {
+                      "kind": "plain_id",
+                      "loc": FuncSrcInfo {},
+                      "value": "__tact_verify_address",
+                    },
+                  },
+                ],
+                "kind": "expression_tensor",
+                "loc": FuncSrcInfo {},
+              },
+            ],
+            "kind": "expression_fun_call",
+            "loc": FuncSrcInfo {},
+            "object": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "b",
+            },
+          },
+          "kind": "statement_return",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse __tact_store_address_opt 1`] = `
+{
+  "includes": [
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "include_stdlib.fc",
+      },
+    },
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "__tact_store_address.fc",
+      },
+    },
+  ],
+  "items": [
+    {
+      "attributes": [
+        {
+          "kind": "inline",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "__tact_store_address_opt",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "b",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "builder",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "address",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_primitive",
+        "loc": FuncSrcInfo {},
+        "value": "builder",
+      },
+      "statements": [
+        {
+          "alternatives": [
+            {
+              "expression": {
+                "arguments": [
+                  {
+                    "expressions": [
+                      {
+                        "kind": "plain_id",
+                        "loc": FuncSrcInfo {},
+                        "value": "b",
+                      },
+                      {
+                        "kind": "plain_id",
+                        "loc": FuncSrcInfo {},
+                        "value": "address",
+                      },
+                    ],
+                    "kind": "expression_tensor",
+                    "loc": FuncSrcInfo {},
+                  },
+                ],
+                "kind": "expression_fun_call",
+                "loc": FuncSrcInfo {},
+                "object": {
+                  "kind": "plain_id",
+                  "loc": FuncSrcInfo {},
+                  "value": "__tact_store_address",
+                },
+              },
+              "kind": "statement_return",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "condition": {
+            "expressions": [
+              {
+                "arguments": [
+                  {
+                    "expressions": [
+                      {
+                        "kind": "plain_id",
+                        "loc": FuncSrcInfo {},
+                        "value": "address",
+                      },
+                    ],
+                    "kind": "expression_tensor",
+                    "loc": FuncSrcInfo {},
+                  },
+                ],
+                "kind": "expression_fun_call",
+                "loc": FuncSrcInfo {},
+                "object": {
+                  "kind": "plain_id",
+                  "loc": FuncSrcInfo {},
+                  "value": "null?",
+                },
+              },
+            ],
+            "kind": "expression_tensor",
+            "loc": FuncSrcInfo {},
+          },
+          "consequences": [
+            {
+              "expression": {
+                "kind": "expression_assign",
+                "left": {
+                  "kind": "plain_id",
+                  "loc": FuncSrcInfo {},
+                  "value": "b",
+                },
+                "loc": FuncSrcInfo {},
+                "op": "=",
+                "right": {
+                  "arguments": [
+                    {
+                      "kind": "method_id",
+                      "loc": FuncSrcInfo {},
+                      "prefix": ".",
+                      "value": "store_uint",
+                    },
+                    {
+                      "expressions": [
+                        {
+                          "kind": "integer_literal",
+                          "loc": FuncSrcInfo {},
+                          "value": 0n,
+                        },
+                        {
+                          "kind": "integer_literal",
+                          "loc": FuncSrcInfo {},
+                          "value": 2n,
+                        },
+                      ],
+                      "kind": "expression_tensor",
+                      "loc": FuncSrcInfo {},
+                    },
+                  ],
+                  "kind": "expression_fun_call",
+                  "loc": FuncSrcInfo {},
+                  "object": {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "b",
+                  },
+                },
+              },
+              "kind": "statement_expression",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "expression": {
+                "kind": "plain_id",
+                "loc": FuncSrcInfo {},
+                "value": "b",
+              },
+              "kind": "statement_return",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "kind": "statement_condition_if",
+          "loc": FuncSrcInfo {},
+          "positive": true,
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse __tact_verify_address 1`] = `
+{
+  "includes": [
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "include_stdlib.fc",
+      },
+    },
+  ],
+  "items": [
+    {
+      "constants": [
+        {
+          "kind": "constant",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "INVALID_ADDRESS",
+          },
+          "ty": "int",
+          "value": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 136n,
+          },
+        },
+      ],
+      "kind": "constants_definition",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "constants": [
+        {
+          "kind": "constant",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "MC_NOT_ENABLED",
+          },
+          "ty": "int",
+          "value": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 137n,
+          },
+        },
+      ],
+      "kind": "constants_definition",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "attributes": [
+        {
+          "kind": "inline",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "__tact_verify_address",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "address",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_primitive",
+        "loc": FuncSrcInfo {},
+        "value": "slice",
+      },
+      "statements": [
+        {
+          "expression": {
+            "arguments": [
+              {
+                "expressions": [
+                  {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "INVALID_ADDRESS",
+                  },
+                  {
+                    "kind": "expression_compare",
+                    "left": {
+                      "arguments": [
+                        {
+                          "kind": "method_id",
+                          "loc": FuncSrcInfo {},
+                          "prefix": ".",
+                          "value": "slice_bits",
+                        },
+                        {
+                          "kind": "unit",
+                          "loc": FuncSrcInfo {},
+                          "value": "()",
+                        },
+                      ],
+                      "kind": "expression_fun_call",
+                      "loc": FuncSrcInfo {},
+                      "object": {
+                        "kind": "plain_id",
+                        "loc": FuncSrcInfo {},
+                        "value": "address",
+                      },
+                    },
+                    "loc": FuncSrcInfo {},
+                    "op": "==",
+                    "right": {
+                      "kind": "integer_literal",
+                      "loc": FuncSrcInfo {},
+                      "value": 267n,
+                    },
+                  },
+                ],
+                "kind": "expression_tensor",
+                "loc": FuncSrcInfo {},
+              },
+            ],
+            "kind": "expression_fun_call",
+            "loc": FuncSrcInfo {},
+            "object": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "throw_unless",
+            },
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "expression_assign",
+            "left": {
+              "kind": "expression_var_decl",
+              "loc": FuncSrcInfo {},
+              "names": {
+                "kind": "plain_id",
+                "loc": FuncSrcInfo {},
+                "value": "h",
+              },
+              "ty": {
+                "kind": "hole",
+                "loc": FuncSrcInfo {},
+                "value": "var",
+              },
+            },
+            "loc": FuncSrcInfo {},
+            "op": "=",
+            "right": {
+              "arguments": [
+                {
+                  "kind": "method_id",
+                  "loc": FuncSrcInfo {},
+                  "prefix": ".",
+                  "value": "preload_uint",
+                },
+                {
+                  "expressions": [
+                    {
+                      "kind": "integer_literal",
+                      "loc": FuncSrcInfo {},
+                      "value": 11n,
+                    },
+                  ],
+                  "kind": "expression_tensor",
+                  "loc": FuncSrcInfo {},
+                },
+              ],
+              "kind": "expression_fun_call",
+              "loc": FuncSrcInfo {},
+              "object": {
+                "kind": "plain_id",
+                "loc": FuncSrcInfo {},
+                "value": "address",
+              },
+            },
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "arguments": [
+              {
+                "expressions": [
+                  {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "MC_NOT_ENABLED",
+                  },
+                  {
+                    "kind": "expression_compare",
+                    "left": {
+                      "kind": "plain_id",
+                      "loc": FuncSrcInfo {},
+                      "value": "h",
+                    },
+                    "loc": FuncSrcInfo {},
+                    "op": "==",
+                    "right": {
+                      "kind": "integer_literal",
+                      "loc": FuncSrcInfo {},
+                      "value": 1279n,
+                    },
+                  },
+                ],
+                "kind": "expression_tensor",
+                "loc": FuncSrcInfo {},
+              },
+            ],
+            "kind": "expression_fun_call",
+            "loc": FuncSrcInfo {},
+            "object": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "throw_if",
+            },
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "arguments": [
+              {
+                "expressions": [
+                  {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "INVALID_ADDRESS",
+                  },
+                  {
+                    "kind": "expression_compare",
+                    "left": {
+                      "kind": "plain_id",
+                      "loc": FuncSrcInfo {},
+                      "value": "h",
+                    },
+                    "loc": FuncSrcInfo {},
+                    "op": "==",
+                    "right": {
+                      "kind": "integer_literal",
+                      "loc": FuncSrcInfo {},
+                      "value": 1024n,
+                    },
+                  },
+                ],
+                "kind": "expression_tensor",
+                "loc": FuncSrcInfo {},
+              },
+            ],
+            "kind": "expression_fun_call",
+            "loc": FuncSrcInfo {},
+            "object": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "throw_unless",
+            },
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "address",
+          },
+          "kind": "statement_return",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+    },
+    {
+      "attributes": [
+        {
+          "kind": "inline",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "__tact_verify_address_masterchain",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "address",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "slice",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_primitive",
+        "loc": FuncSrcInfo {},
+        "value": "slice",
+      },
+      "statements": [
+        {
+          "expression": {
+            "arguments": [
+              {
+                "expressions": [
+                  {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "INVALID_ADDRESS",
+                  },
+                  {
+                    "kind": "expression_compare",
+                    "left": {
+                      "arguments": [
+                        {
+                          "kind": "method_id",
+                          "loc": FuncSrcInfo {},
+                          "prefix": ".",
+                          "value": "slice_bits",
+                        },
+                        {
+                          "kind": "unit",
+                          "loc": FuncSrcInfo {},
+                          "value": "()",
+                        },
+                      ],
+                      "kind": "expression_fun_call",
+                      "loc": FuncSrcInfo {},
+                      "object": {
+                        "kind": "plain_id",
+                        "loc": FuncSrcInfo {},
+                        "value": "address",
+                      },
+                    },
+                    "loc": FuncSrcInfo {},
+                    "op": "==",
+                    "right": {
+                      "kind": "integer_literal",
+                      "loc": FuncSrcInfo {},
+                      "value": 267n,
+                    },
+                  },
+                ],
+                "kind": "expression_tensor",
+                "loc": FuncSrcInfo {},
+              },
+            ],
+            "kind": "expression_fun_call",
+            "loc": FuncSrcInfo {},
+            "object": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "throw_unless",
+            },
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "expression_assign",
+            "left": {
+              "kind": "expression_var_decl",
+              "loc": FuncSrcInfo {},
+              "names": {
+                "kind": "plain_id",
+                "loc": FuncSrcInfo {},
+                "value": "h",
+              },
+              "ty": {
+                "kind": "hole",
+                "loc": FuncSrcInfo {},
+                "value": "var",
+              },
+            },
+            "loc": FuncSrcInfo {},
+            "op": "=",
+            "right": {
+              "arguments": [
+                {
+                  "kind": "method_id",
+                  "loc": FuncSrcInfo {},
+                  "prefix": ".",
+                  "value": "preload_uint",
+                },
+                {
+                  "expressions": [
+                    {
+                      "kind": "integer_literal",
+                      "loc": FuncSrcInfo {},
+                      "value": 11n,
+                    },
+                  ],
+                  "kind": "expression_tensor",
+                  "loc": FuncSrcInfo {},
+                },
+              ],
+              "kind": "expression_fun_call",
+              "loc": FuncSrcInfo {},
+              "object": {
+                "kind": "plain_id",
+                "loc": FuncSrcInfo {},
+                "value": "address",
+              },
+            },
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "arguments": [
+              {
+                "expressions": [
+                  {
+                    "kind": "plain_id",
+                    "loc": FuncSrcInfo {},
+                    "value": "INVALID_ADDRESS",
+                  },
+                  {
+                    "kind": "expression_add_bitwise",
+                    "left": {
+                      "expressions": [
+                        {
+                          "kind": "expression_compare",
+                          "left": {
+                            "kind": "plain_id",
+                            "loc": FuncSrcInfo {},
+                            "value": "h",
+                          },
+                          "loc": FuncSrcInfo {},
+                          "op": "==",
+                          "right": {
+                            "kind": "integer_literal",
+                            "loc": FuncSrcInfo {},
+                            "value": 1024n,
+                          },
+                        },
+                      ],
+                      "kind": "expression_tensor",
+                      "loc": FuncSrcInfo {},
+                    },
+                    "loc": FuncSrcInfo {},
+                    "negateLeft": false,
+                    "ops": [
+                      {
+                        "expr": {
+                          "expressions": [
+                            {
+                              "kind": "expression_compare",
+                              "left": {
+                                "kind": "plain_id",
+                                "loc": FuncSrcInfo {},
+                                "value": "h",
+                              },
+                              "loc": FuncSrcInfo {},
+                              "op": "==",
+                              "right": {
+                                "kind": "integer_literal",
+                                "loc": FuncSrcInfo {},
+                                "value": 1279n,
+                              },
+                            },
+                          ],
+                          "kind": "expression_tensor",
+                          "loc": FuncSrcInfo {},
+                        },
+                        "op": "|",
+                      },
+                    ],
+                  },
+                ],
+                "kind": "expression_tensor",
+                "loc": FuncSrcInfo {},
+              },
+            ],
+            "kind": "expression_fun_call",
+            "loc": FuncSrcInfo {},
+            "object": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "throw_unless",
+            },
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "address",
+          },
+          "kind": "statement_return",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse asm-functions 1`] = `
+{
+  "includes": [],
+  "items": [
+    {
+      "arrangement": undefined,
+      "asmStrings": [
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "INC NEGATE",
+        },
+      ],
+      "attributes": [],
+      "forall": undefined,
+      "kind": "asm_function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "inc_then_negate",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "x",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_primitive",
+        "loc": FuncSrcInfo {},
+        "value": "int",
+      },
+    },
+    {
+      "arrangement": undefined,
+      "asmStrings": [
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "INC",
+        },
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "NEGATE",
+        },
+      ],
+      "attributes": [],
+      "forall": undefined,
+      "kind": "asm_function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "inc_then_negate'",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "x",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_primitive",
+        "loc": FuncSrcInfo {},
+        "value": "int",
+      },
+    },
+    {
+      "arrangement": undefined,
+      "asmStrings": [
+        {
+          "kind": "string_multiline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "INC NEGATE",
+        },
+      ],
+      "attributes": [],
+      "forall": undefined,
+      "kind": "asm_function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "inc_then_negate''",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "x",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_primitive",
+        "loc": FuncSrcInfo {},
+        "value": "int",
+      },
+    },
+    {
+      "arrangement": undefined,
+      "asmStrings": [
+        {
+          "kind": "string_multiline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "
+    "Hello"
+    " "
+    "World"
+    $+ $+ $>s
+    PUSHSLICE
+",
+        },
+      ],
+      "attributes": [],
+      "forall": undefined,
+      "kind": "asm_function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "hello_world",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "type_primitive",
+        "loc": FuncSrcInfo {},
+        "value": "slice",
+      },
+    },
+    {
+      "arrangement": undefined,
+      "asmStrings": [
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "INC",
+        },
+        {
+          "kind": "string_multiline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "
+    NEGATE
+",
+        },
+      ],
+      "attributes": [],
+      "forall": undefined,
+      "kind": "asm_function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "inc_then_negate'''",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "x",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_primitive",
+        "loc": FuncSrcInfo {},
+        "value": "int",
+      },
+    },
+    {
+      "arrangement": {
+        "arguments": [
+          {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "x",
+          },
+          {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "b",
+          },
+          {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "len",
+          },
+        ],
+        "kind": "asm_arrangement",
+        "loc": FuncSrcInfo {},
+        "returns": undefined,
+      },
+      "asmStrings": [
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "STUXQ",
+        },
+      ],
+      "attributes": [],
+      "forall": undefined,
+      "kind": "asm_function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "store_uint_quiet",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "b",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "builder",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "x",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "len",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_tensor",
+        "loc": FuncSrcInfo {},
+        "types": [
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "builder",
+          },
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        ],
+      },
+    },
+    {
+      "arrangement": {
+        "arguments": undefined,
+        "kind": "asm_arrangement",
+        "loc": FuncSrcInfo {},
+        "returns": [
+          {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+        ],
+      },
+      "asmStrings": [
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "STUXQ",
+        },
+      ],
+      "attributes": [],
+      "forall": undefined,
+      "kind": "asm_function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "store_uint_quiet'",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "x",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "b",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "builder",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "len",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_tensor",
+        "loc": FuncSrcInfo {},
+        "types": [
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "builder",
+          },
+        ],
+      },
+    },
+    {
+      "arrangement": {
+        "arguments": [
+          {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "x",
+          },
+          {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "b",
+          },
+          {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "len",
+          },
+        ],
+        "kind": "asm_arrangement",
+        "loc": FuncSrcInfo {},
+        "returns": [
+          {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+        ],
+      },
+      "asmStrings": [
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "STUXQ",
+        },
+      ],
+      "attributes": [],
+      "forall": undefined,
+      "kind": "asm_function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "store_uint_quiet''",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "b",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "builder",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "x",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "len",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_tensor",
+        "loc": FuncSrcInfo {},
+        "types": [
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+          {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "builder",
+          },
+        ],
+      },
+    },
+    {
+      "arrangement": {
+        "arguments": [
+          {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "x",
+          },
+          {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "b",
+          },
+          {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "len",
+          },
+        ],
+        "kind": "asm_arrangement",
+        "loc": FuncSrcInfo {},
+        "returns": [
+          {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+        ],
+      },
+      "asmStrings": [
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "STUXQ",
+        },
+      ],
+      "attributes": [],
+      "forall": {
+        "kind": "forall",
+        "loc": FuncSrcInfo {},
+        "tyVars": [
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "X",
+            },
+          },
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "Y",
+            },
+          },
+        ],
+      },
+      "kind": "asm_function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "store_uint_quiet'''",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "b",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "builder",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "x",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "len",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_tensor",
+        "loc": FuncSrcInfo {},
+        "types": [
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "X",
+            },
+          },
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "Y",
+            },
+          },
+        ],
+      },
+    },
+    {
+      "arrangement": undefined,
+      "asmStrings": [
+        {
+          "kind": "string_singleline",
+          "loc": FuncSrcInfo {},
+          "ty": undefined,
+          "value": "UNSINGLE",
+        },
+      ],
+      "attributes": [],
+      "forall": {
+        "kind": "forall",
+        "loc": FuncSrcInfo {},
+        "tyVars": [
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "X",
+            },
+          },
+        ],
+      },
+      "kind": "asm_function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "unsingle",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "t",
+          },
+          "ty": {
+            "kind": "type_tuple",
+            "loc": FuncSrcInfo {},
+            "types": [
+              {
+                "keyword": false,
+                "kind": "type_var",
+                "loc": FuncSrcInfo {},
+                "name": {
+                  "kind": "plain_id",
+                  "loc": FuncSrcInfo {},
+                  "value": "X",
+                },
+              },
+            ],
+          },
+        },
+      ],
+      "returnTy": {
+        "keyword": false,
+        "kind": "type_var",
+        "loc": FuncSrcInfo {},
+        "name": {
+          "kind": "plain_id",
+          "loc": FuncSrcInfo {},
+          "value": "X",
+        },
+      },
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse constants 1`] = `
+{
+  "includes": [],
+  "items": [
+    {
+      "constants": [
+        {
+          "kind": "constant",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "c1",
+          },
+          "ty": undefined,
+          "value": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 42n,
+          },
+        },
+      ],
+      "kind": "constants_definition",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "constants": [
+        {
+          "kind": "constant",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "c2",
+          },
+          "ty": undefined,
+          "value": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 27n,
+          },
+        },
+        {
+          "kind": "constant",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "c3",
+          },
+          "ty": undefined,
+          "value": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "c1",
+          },
+        },
+      ],
+      "kind": "constants_definition",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "constants": [
+        {
+          "kind": "constant",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "c4",
+          },
+          "ty": "int",
+          "value": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+        },
+        {
+          "kind": "constant",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "c5",
+          },
+          "ty": undefined,
+          "value": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+        },
+        {
+          "kind": "constant",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "c6",
+          },
+          "ty": "slice",
+          "value": {
+            "kind": "string_singleline",
+            "loc": FuncSrcInfo {},
+            "ty": "s",
+            "value": "It's Zendaya",
+          },
+        },
+      ],
+      "kind": "constants_definition",
+      "loc": FuncSrcInfo {},
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse expressions 1`] = `
+{
+  "includes": [],
+  "items": [],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse functions 1`] = `
+{
+  "includes": [],
+  "items": [
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_declaration",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "void",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_declaration",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "params",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "p1",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "p2",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "cell",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "p3",
+          },
+          "ty": {
+            "kind": "unit",
+            "loc": FuncSrcInfo {},
+            "value": "()",
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "p4",
+          },
+          "ty": {
+            "kind": "type_tensor",
+            "loc": FuncSrcInfo {},
+            "types": [
+              {
+                "kind": "type_primitive",
+                "loc": FuncSrcInfo {},
+                "value": "slice",
+              },
+            ],
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "p5",
+          },
+          "ty": {
+            "kind": "type_tuple",
+            "loc": FuncSrcInfo {},
+            "types": [
+              {
+                "kind": "type_primitive",
+                "loc": FuncSrcInfo {},
+                "value": "builder",
+              },
+            ],
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+    },
+    {
+      "attributes": [],
+      "forall": {
+        "kind": "forall",
+        "loc": FuncSrcInfo {},
+        "tyVars": [
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "X",
+            },
+          },
+        ],
+      },
+      "kind": "function_declaration",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "poly",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "p1",
+          },
+          "ty": {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "X",
+            },
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+    },
+    {
+      "attributes": [],
+      "forall": {
+        "kind": "forall",
+        "loc": FuncSrcInfo {},
+        "tyVars": [
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "X",
+            },
+          },
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "Y",
+            },
+          },
+        ],
+      },
+      "kind": "function_declaration",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "poly'",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "p1",
+          },
+          "ty": {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "X",
+            },
+          },
+        },
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "p2",
+          },
+          "ty": {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "Y",
+            },
+          },
+        },
+      ],
+      "returnTy": {
+        "kind": "type_tensor",
+        "loc": FuncSrcInfo {},
+        "types": [
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "Y",
+            },
+          },
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "X",
+            },
+          },
+        ],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "kind": "impure",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "kind": "inline_ref",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "kind": "inline",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "kind": "method_id",
+          "loc": FuncSrcInfo {},
+          "value": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 42n,
+          },
+        },
+      ],
+      "forall": undefined,
+      "kind": "function_declaration",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "attr",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+    },
+    {
+      "attributes": [
+        {
+          "kind": "method_id",
+          "loc": FuncSrcInfo {},
+          "value": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 42n,
+          },
+        },
+      ],
+      "forall": undefined,
+      "kind": "function_declaration",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "attr'",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+    },
+    {
+      "attributes": [
+        {
+          "kind": "method_id",
+          "loc": FuncSrcInfo {},
+          "value": undefined,
+        },
+      ],
+      "forall": undefined,
+      "kind": "function_declaration",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "attr''",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "body",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [],
+    },
+    {
+      "attributes": [
+        {
+          "kind": "impure",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "kind": "inline_ref",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "kind": "inline",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "kind": "method_id",
+          "loc": FuncSrcInfo {},
+          "value": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 42n,
+          },
+        },
+        {
+          "kind": "method_id",
+          "loc": FuncSrcInfo {},
+          "value": undefined,
+        },
+      ],
+      "forall": {
+        "kind": "forall",
+        "loc": FuncSrcInfo {},
+        "tyVars": [
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "XXX",
+            },
+          },
+        ],
+      },
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "everything",
+      },
+      "parameters": [
+        {
+          "kind": "parameter",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "x",
+          },
+          "ty": {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "XXX",
+            },
+          },
+        },
+      ],
+      "returnTy": {
+        "keyword": false,
+        "kind": "type_var",
+        "loc": FuncSrcInfo {},
+        "name": {
+          "kind": "plain_id",
+          "loc": FuncSrcInfo {},
+          "value": "XXX",
+        },
+      },
+      "statements": [],
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse globals 1`] = `
+{
+  "includes": [],
+  "items": [
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "glob1",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "glob2",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "glob3",
+          },
+          "ty": {
+            "kind": "type_mapped",
+            "loc": FuncSrcInfo {},
+            "mapsTo": {
+              "kind": "type_primitive",
+              "loc": FuncSrcInfo {},
+              "value": "int",
+            },
+            "value": {
+              "kind": "type_primitive",
+              "loc": FuncSrcInfo {},
+              "value": "int",
+            },
+          },
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "glob4",
+          },
+          "ty": {
+            "kind": "type_tensor",
+            "loc": FuncSrcInfo {},
+            "types": [
+              {
+                "kind": "type_mapped",
+                "loc": FuncSrcInfo {},
+                "mapsTo": {
+                  "kind": "type_primitive",
+                  "loc": FuncSrcInfo {},
+                  "value": "int",
+                },
+                "value": {
+                  "kind": "type_tensor",
+                  "loc": FuncSrcInfo {},
+                  "types": [
+                    {
+                      "kind": "type_primitive",
+                      "loc": FuncSrcInfo {},
+                      "value": "int",
+                    },
+                    {
+                      "kind": "type_tensor",
+                      "loc": FuncSrcInfo {},
+                      "types": [
+                        {
+                          "kind": "hole",
+                          "loc": FuncSrcInfo {},
+                          "value": "_",
+                        },
+                        {
+                          "kind": "type_primitive",
+                          "loc": FuncSrcInfo {},
+                          "value": "cont",
+                        },
+                        {
+                          "kind": "type_primitive",
+                          "loc": FuncSrcInfo {},
+                          "value": "cell",
+                        },
+                        {
+                          "kind": "unit",
+                          "loc": FuncSrcInfo {},
+                          "value": "()",
+                        },
+                        {
+                          "kind": "type_tuple",
+                          "loc": FuncSrcInfo {},
+                          "types": [
+                            {
+                              "kind": "type_primitive",
+                              "loc": FuncSrcInfo {},
+                              "value": "int",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "glob5",
+          },
+          "ty": {
+            "kind": "type_primitive",
+            "loc": FuncSrcInfo {},
+            "value": "int",
+          },
+        },
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "glob6",
+          },
+          "ty": {
+            "kind": "type_tensor",
+            "loc": FuncSrcInfo {},
+            "types": [
+              {
+                "kind": "type_primitive",
+                "loc": FuncSrcInfo {},
+                "value": "builder",
+              },
+              {
+                "kind": "type_primitive",
+                "loc": FuncSrcInfo {},
+                "value": "tuple",
+              },
+            ],
+          },
+        },
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "glob7",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse identifiers 1`] = `
+{
+  "includes": [],
+  "items": [
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "query'",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "query''",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "CHECK",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "_internal_val",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "message_found?",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "get_pubkeys&signatures",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "dict::udict_set_builder",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "[semantics wrapper for FunC][semantics wrapper for FunC][semantics wrapper for FunC]",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "__",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "fatal!",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "123validname",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "2+2=2*2",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "-alsovalidname",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "0xefefefhahaha",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "{hehehe}",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "pa{--}in"\`aaa\`"",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "quoted_id",
+            "loc": FuncSrcInfo {},
+            "value": "[semantics wrapper for FunC]I'm a function too[semantics wrapper for FunC]",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "quoted_id",
+            "loc": FuncSrcInfo {},
+            "value": "[semantics wrapper for FunC]any symbols ; ~ () are allowed here...[semantics wrapper for FunC]",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "C4",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "C4g",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "4C",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "_0x0",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "_0",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "0x_",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "0x0_",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "0_",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "hash#256",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "💀💀💀0xDEADBEEF💀💀💀",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "__tact_verify_address",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "__tact_pow2",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "randomize_lt",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "fixed248::asin",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "fixed248::nrand_fast",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "atan_f261_inlined",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "f̷̨͈͚́͌̀i̵̩͔̭̐͐̊n̸̟̝̻̩̎̓͋̕e̸̝̙̒̿͒̾̕",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "❤️❤️❤️thanks❤️❤️❤️",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "intslice",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "globals": [
+        {
+          "kind": "global_variable",
+          "loc": FuncSrcInfo {},
+          "name": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "int2",
+          },
+          "ty": undefined,
+        },
+      ],
+      "kind": "global_variables_declaration",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_declaration",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "method_id",
+        "loc": FuncSrcInfo {},
+        "prefix": "~",
+        "value": "impure_touch",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_declaration",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "method_id",
+        "loc": FuncSrcInfo {},
+        "prefix": "~",
+        "value": "udict::delete_get_min",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_declaration",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "method_id",
+        "loc": FuncSrcInfo {},
+        "prefix": ".",
+        "value": "something",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse include_stdlib 1`] = `
+{
+  "includes": [
+    {
+      "kind": "include",
+      "loc": FuncSrcInfo {},
+      "path": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "../../../stdlib/stdlib.fc",
+      },
+    },
+  ],
+  "items": [],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse literals-and-comments 1`] = `
+{
+  "includes": [],
+  "items": [
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "integers",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [
+        {
+          "expression": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 42n,
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 42n,
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 42n,
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": -42n,
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": -42n,
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": -42n,
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "strings",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [
+        {
+          "expression": {
+            "kind": "string_singleline",
+            "loc": FuncSrcInfo {},
+            "ty": undefined,
+            "value": "slice",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_singleline",
+            "loc": FuncSrcInfo {},
+            "ty": "s",
+            "value": "2A",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_singleline",
+            "loc": FuncSrcInfo {},
+            "ty": "a",
+            "value": "EQAFmjUoZUqKFEBGYFEMbv-m61sFStgAfUR8J6hJDwUU09iT",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_singleline",
+            "loc": FuncSrcInfo {},
+            "ty": "u",
+            "value": "int hex",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_singleline",
+            "loc": FuncSrcInfo {},
+            "ty": "h",
+            "value": "int 32 bits of sha256",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_singleline",
+            "loc": FuncSrcInfo {},
+            "ty": "H",
+            "value": "int 256 bits of sha256",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_singleline",
+            "loc": FuncSrcInfo {},
+            "ty": "c",
+            "value": "int crc32",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_multiline",
+            "loc": FuncSrcInfo {},
+            "ty": undefined,
+            "value": "
+        multi
+        line
+    ",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_multiline",
+            "loc": FuncSrcInfo {},
+            "ty": "s",
+            "value": "2A",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_multiline",
+            "loc": FuncSrcInfo {},
+            "ty": "a",
+            "value": "EQAFmjUoZUqKFEBGYFEMbv-m61sFStgAfUR8J6hJDwUU09iT",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_multiline",
+            "loc": FuncSrcInfo {},
+            "ty": "u",
+            "value": "
+        ...
+    ",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_multiline",
+            "loc": FuncSrcInfo {},
+            "ty": "h",
+            "value": "
+        ...
+    ",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_multiline",
+            "loc": FuncSrcInfo {},
+            "ty": "H",
+            "value": "
+        ...
+    ",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "expression": {
+            "kind": "string_multiline",
+            "loc": FuncSrcInfo {},
+            "ty": "c",
+            "value": "
+        ...
+    ",
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "forall": {
+        "kind": "forall",
+        "loc": FuncSrcInfo {},
+        "tyVars": [
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "X",
+            },
+          },
+          {
+            "keyword": false,
+            "kind": "type_var",
+            "loc": FuncSrcInfo {},
+            "name": {
+              "kind": "plain_id",
+              "loc": FuncSrcInfo {},
+              "value": "Y",
+            },
+          },
+        ],
+      },
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "comments!",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [
+        {
+          "expression": {
+            "kind": "unit",
+            "loc": FuncSrcInfo {},
+            "value": "()",
+          },
+          "kind": "statement_return",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
+`;
+
+exports[`FunC grammar and parser should parse pragmas 1`] = `
+{
+  "includes": [],
+  "items": [],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [
+    {
+      "kind": "pragma_literal",
+      "literal": "allow-post-modification",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "kind": "pragma_literal",
+      "literal": "compute-asm-ltr",
+      "loc": FuncSrcInfo {},
+    },
+    {
+      "allow": true,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": undefined,
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": true,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": 0n,
+        "op": undefined,
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": true,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": 0n,
+        "op": undefined,
+        "patch": 0n,
+      },
+    },
+    {
+      "allow": true,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": "=",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": true,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": 0n,
+        "op": "=",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": true,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": 0n,
+        "op": "=",
+        "patch": 0n,
+      },
+    },
+    {
+      "allow": true,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": "^",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": true,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": "<",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": true,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": ">",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": true,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": "<=",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": true,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": ">=",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": false,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": undefined,
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": false,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": 0n,
+        "op": undefined,
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": false,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": 0n,
+        "op": undefined,
+        "patch": 0n,
+      },
+    },
+    {
+      "allow": false,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": "=",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": false,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": 0n,
+        "op": "=",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": false,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": 0n,
+        "op": "=",
+        "patch": 0n,
+      },
+    },
+    {
+      "allow": false,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": "^",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": false,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": "<",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": false,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": ">",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": false,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": "<=",
+        "patch": undefined,
+      },
+    },
+    {
+      "allow": false,
+      "kind": "pragma_version_range",
+      "loc": FuncSrcInfo {},
+      "range": {
+        "kind": "version_range",
+        "loc": FuncSrcInfo {},
+        "major": 0n,
+        "minor": undefined,
+        "op": ">=",
+        "patch": undefined,
+      },
+    },
+    {
+      "kind": "pragma_version_string",
+      "loc": FuncSrcInfo {},
+      "version": {
+        "kind": "string_singleline",
+        "loc": FuncSrcInfo {},
+        "ty": undefined,
+        "value": "0.4.4",
+      },
+    },
+  ],
+}
+`;
+
+exports[`FunC grammar and parser should parse statements 1`] = `
+{
+  "includes": [],
+  "items": [
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "return_stmt",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [
+        {
+          "expression": {
+            "kind": "unit",
+            "loc": FuncSrcInfo {},
+            "value": "()",
+          },
+          "kind": "statement_return",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "return_stmt'",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "type_primitive",
+        "loc": FuncSrcInfo {},
+        "value": "int",
+      },
+      "statements": [
+        {
+          "expression": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 42n,
+          },
+          "kind": "statement_return",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "block_stmt",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [
+        {
+          "kind": "statement_block",
+          "loc": FuncSrcInfo {},
+          "statements": [
+            {
+              "kind": "statement_block",
+              "loc": FuncSrcInfo {},
+              "statements": [
+                {
+                  "expression": {
+                    "kind": "unit",
+                    "loc": FuncSrcInfo {},
+                    "value": "()",
+                  },
+                  "kind": "statement_return",
+                  "loc": FuncSrcInfo {},
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "empty_stmt",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [
+        {
+          "kind": "statement_empty",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "kind": "statement_empty",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "kind": "statement_empty",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "kind": "statement_empty",
+          "loc": FuncSrcInfo {},
+        },
+        {
+          "kind": "statement_empty",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "cond_stmt",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [
+        {
+          "alternatives": undefined,
+          "condition": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "consequences": [],
+          "kind": "statement_condition_if",
+          "loc": FuncSrcInfo {},
+          "positive": true,
+        },
+        {
+          "alternatives": undefined,
+          "condition": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "consequences": [],
+          "kind": "statement_condition_if",
+          "loc": FuncSrcInfo {},
+          "positive": false,
+        },
+        {
+          "alternatives": undefined,
+          "condition": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "consequences": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "kind": "statement_condition_if",
+          "loc": FuncSrcInfo {},
+          "positive": true,
+        },
+        {
+          "alternatives": undefined,
+          "condition": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "consequences": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "kind": "statement_condition_if",
+          "loc": FuncSrcInfo {},
+          "positive": false,
+        },
+        {
+          "alternatives": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "condition": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "consequences": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "kind": "statement_condition_if",
+          "loc": FuncSrcInfo {},
+          "positive": true,
+        },
+        {
+          "alternatives": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "condition": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "consequences": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "kind": "statement_condition_if",
+          "loc": FuncSrcInfo {},
+          "positive": false,
+        },
+        {
+          "alternativesElseif": undefined,
+          "conditionElseif": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "conditionIf": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "consequencesElseif": [],
+          "consequencesIf": [],
+          "kind": "statement_condition_elseif",
+          "loc": FuncSrcInfo {},
+          "positiveElseif": true,
+          "positiveIf": true,
+        },
+        {
+          "alternativesElseif": undefined,
+          "conditionElseif": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "conditionIf": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "consequencesElseif": [],
+          "consequencesIf": [],
+          "kind": "statement_condition_elseif",
+          "loc": FuncSrcInfo {},
+          "positiveElseif": false,
+          "positiveIf": true,
+        },
+        {
+          "alternativesElseif": undefined,
+          "conditionElseif": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "conditionIf": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "consequencesElseif": [],
+          "consequencesIf": [],
+          "kind": "statement_condition_elseif",
+          "loc": FuncSrcInfo {},
+          "positiveElseif": true,
+          "positiveIf": false,
+        },
+        {
+          "alternativesElseif": undefined,
+          "conditionElseif": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "conditionIf": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "consequencesElseif": [],
+          "consequencesIf": [],
+          "kind": "statement_condition_elseif",
+          "loc": FuncSrcInfo {},
+          "positiveElseif": false,
+          "positiveIf": false,
+        },
+        {
+          "alternativesElseif": undefined,
+          "conditionElseif": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "conditionIf": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "consequencesElseif": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "consequencesIf": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "kind": "statement_condition_elseif",
+          "loc": FuncSrcInfo {},
+          "positiveElseif": true,
+          "positiveIf": true,
+        },
+        {
+          "alternativesElseif": undefined,
+          "conditionElseif": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "conditionIf": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "consequencesElseif": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "consequencesIf": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "kind": "statement_condition_elseif",
+          "loc": FuncSrcInfo {},
+          "positiveElseif": false,
+          "positiveIf": true,
+        },
+        {
+          "alternativesElseif": undefined,
+          "conditionElseif": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "conditionIf": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "consequencesElseif": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "consequencesIf": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "kind": "statement_condition_elseif",
+          "loc": FuncSrcInfo {},
+          "positiveElseif": true,
+          "positiveIf": false,
+        },
+        {
+          "alternativesElseif": undefined,
+          "conditionElseif": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "conditionIf": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "consequencesElseif": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "consequencesIf": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "kind": "statement_condition_elseif",
+          "loc": FuncSrcInfo {},
+          "positiveElseif": false,
+          "positiveIf": false,
+        },
+        {
+          "alternativesElseif": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "conditionElseif": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "conditionIf": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "consequencesElseif": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "consequencesIf": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "kind": "statement_condition_elseif",
+          "loc": FuncSrcInfo {},
+          "positiveElseif": true,
+          "positiveIf": true,
+        },
+        {
+          "alternativesElseif": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "conditionElseif": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "conditionIf": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "consequencesElseif": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "consequencesIf": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+          "kind": "statement_condition_elseif",
+          "loc": FuncSrcInfo {},
+          "positiveElseif": false,
+          "positiveIf": false,
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "repeat_stmt",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [
+        {
+          "iterations": {
+            "expressions": [
+              {
+                "kind": "integer_literal",
+                "loc": FuncSrcInfo {},
+                "value": 1n,
+              },
+            ],
+            "kind": "expression_tensor",
+            "loc": FuncSrcInfo {},
+          },
+          "kind": "statement_repeat",
+          "loc": FuncSrcInfo {},
+          "statements": [],
+        },
+        {
+          "iterations": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 1n,
+          },
+          "kind": "statement_repeat",
+          "loc": FuncSrcInfo {},
+          "statements": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+          ],
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "until_stmt",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [
+        {
+          "condition": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "kind": "statement_until",
+          "loc": FuncSrcInfo {},
+          "statements": [],
+        },
+        {
+          "condition": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "kind": "statement_until",
+          "loc": FuncSrcInfo {},
+          "statements": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_block",
+              "loc": FuncSrcInfo {},
+              "statements": [
+                {
+                  "iterations": {
+                    "kind": "integer_literal",
+                    "loc": FuncSrcInfo {},
+                    "value": 1n,
+                  },
+                  "kind": "statement_repeat",
+                  "loc": FuncSrcInfo {},
+                  "statements": [],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "while_stmt",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [
+        {
+          "condition": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "kind": "statement_while",
+          "loc": FuncSrcInfo {},
+          "statements": [],
+        },
+        {
+          "condition": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 0n,
+          },
+          "kind": "statement_while",
+          "loc": FuncSrcInfo {},
+          "statements": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_block",
+              "loc": FuncSrcInfo {},
+              "statements": [
+                {
+                  "iterations": {
+                    "kind": "integer_literal",
+                    "loc": FuncSrcInfo {},
+                    "value": 1n,
+                  },
+                  "kind": "statement_repeat",
+                  "loc": FuncSrcInfo {},
+                  "statements": [],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "try_catch_stmt",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [
+        {
+          "catchExceptionName": {
+            "kind": "unused_id",
+            "loc": FuncSrcInfo {},
+            "value": "_",
+          },
+          "catchExitCodeName": {
+            "kind": "unused_id",
+            "loc": FuncSrcInfo {},
+            "value": "_",
+          },
+          "kind": "statement_try_catch",
+          "loc": FuncSrcInfo {},
+          "statementsCatch": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_block",
+              "loc": FuncSrcInfo {},
+              "statements": [],
+            },
+          ],
+          "statementsTry": [
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_empty",
+              "loc": FuncSrcInfo {},
+            },
+            {
+              "kind": "statement_block",
+              "loc": FuncSrcInfo {},
+              "statements": [],
+            },
+          ],
+        },
+        {
+          "catchExceptionName": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "exception",
+          },
+          "catchExitCodeName": {
+            "kind": "plain_id",
+            "loc": FuncSrcInfo {},
+            "value": "exit_code",
+          },
+          "kind": "statement_try_catch",
+          "loc": FuncSrcInfo {},
+          "statementsCatch": [],
+          "statementsTry": [],
+        },
+      ],
+    },
+    {
+      "attributes": [],
+      "forall": undefined,
+      "kind": "function_definition",
+      "loc": FuncSrcInfo {},
+      "name": {
+        "kind": "plain_id",
+        "loc": FuncSrcInfo {},
+        "value": "expression_stmt",
+      },
+      "parameters": [],
+      "returnTy": {
+        "kind": "unit",
+        "loc": FuncSrcInfo {},
+        "value": "()",
+      },
+      "statements": [
+        {
+          "expression": {
+            "kind": "integer_literal",
+            "loc": FuncSrcInfo {},
+            "value": 42n,
+          },
+          "kind": "statement_expression",
+          "loc": FuncSrcInfo {},
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+  "loc": FuncSrcInfo {},
+  "pragmas": [],
+}
 `;

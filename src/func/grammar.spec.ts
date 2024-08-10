@@ -21,21 +21,23 @@ describe("FunC grammar and parser", () => {
     }
 
     // If didn't match the grammar, don't throw any more errors from full parse
-    if (!matchedAll) { return; }
+    if (!matchedAll) {
+        return;
+    }
 
     // Checking that valid FunC files parse
-    // for (const r of loadCases(__dirname + "/grammar-test/", ext)) {
-    //     it("should parse " + r.name, () => {
-    //         expect(parseFile(r.code, r.name + `.${ext}`)).toMatchSnapshot();
-    //     });
-    // }
+    for (const r of loadCases(__dirname + "/grammar-test/", ext)) {
+        it("should parse " + r.name, () => {
+            expect(parseFile(r.code, r.name + `.${ext}`)).toMatchSnapshot();
+        });
+    }
 
     // Checking that invalid FunC files does NOT parse
-    // for (const r of loadCases(__dirname + "/grammar-test-failed/", ext)) {
-    //     it("should NOT parse " + r.name, () => {
-    //         expect(() =>
-    //             parseFile(r.code, r.name + `.${ext}`)
-    //         ).toThrowErrorMatchingSnapshot();
-    //     });
-    // }
+    for (const r of loadCases(__dirname + "/grammar-test-failed/", ext)) {
+        it("should NOT parse " + r.name, () => {
+            expect(() =>
+                parseFile(r.code, r.name + `.${ext}`)
+            ).toThrowErrorMatchingSnapshot();
+        });
+    }
 });

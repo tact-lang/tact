@@ -79,8 +79,8 @@ FunC {
 
   // Function parameters
   Parameters = "(" ListOf<Parameter, ","> ")"
-  Parameter = TypeParameter &#whiteSpace (hole | id) --regular
-            | (hole | id) --inferredType
+  Parameter = TypeParameter &#whiteSpace (unusedId | id) --regular
+            | id --inferredType
 
   // Function parameter types
   TypeParameter = TypeBuiltinParameter (&#whiteSpace "->" &#whiteSpace TypeParameter)?
@@ -193,7 +193,7 @@ FunC {
                   | ExpressionMethod
 
   // parse_expr80
-  ExpressionMethod = ExpressionVarFun (methodId &("(" | "[" | id) ExpressionPrimary)+ --calls
+  ExpressionMethod = ExpressionVarFun (methodId &("(" | "[" | functionId) ExpressionArgument)+ --calls
                    | ExpressionVarFun
 
   // parse_expr90
@@ -202,15 +202,21 @@ FunC {
   // Variable declarations
   ExpressionVarDecl = TypeVarDecl ExpressionVarDeclPart
 
+  // (not a separate expression, added purely for convenience)
   ExpressionVarDeclPart = id
                         | unusedId
-                        | ExpressionTensor
-                        | ExpressionTuple
+                        | ExpressionTensorVarDecl
+                        | ExpressionTupleVarDecl
+
+  ExpressionTensorVarDecl = "(" NonemptyListOf<IdOrUnusedId, ","> ")"
+  ExpressionTupleVarDecl = "[" NonemptyListOf<IdOrUnusedId, ","> "]"
+  // (not a separate expression, added purely for convenience)
+  IdOrUnusedId = id | unusedId
 
   // Function calls
-  ExpressionFunCall = (functionId | ExpressionParens) ExpressionArgument+
+  ExpressionFunCall = &("(" | functionId) ExpressionPrimary ExpressionArgument+
 
-  ExpressionParens = "(" ExpressionFunCall ")"
+  // (not a separate expression, added purely for convenience)
   ExpressionArgument = functionId
                      | unit
                      | ExpressionTensor

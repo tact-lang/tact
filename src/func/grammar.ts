@@ -148,7 +148,6 @@ function unwrapOptNode<T>(
     return optNode !== undefined ? f(optNode) : undefined;
 }
 
-
 const funcBuiltinOperatorFunctions = [
     "_+_",
     "_-_",
@@ -347,9 +346,9 @@ const funcHexIntRegex = /^\-?0x[0-9a-fA-F]+$/;
  * - NOT a builtin function
  * - NOT a builtin method
  * - NOT a builtin constant
- * - NOT an underscore
+ * - NOT an underscore (unless it's a parameter or variable declaration)
  */
-function checkDeclaredId(ident: string, loc: FuncSrcInfo, altPrefix?: string): void | never {
+function checkDeclaredId(ident: string, loc: FuncSrcInfo, altPrefix?: string, allowUnused?: boolean): void | never {
     // not an operatorId
     if (funcBuiltinOperatorFunctions.includes(ident)) {
         throwFuncSyntaxError(
@@ -380,7 +379,7 @@ function checkDeclaredId(ident: string, loc: FuncSrcInfo, altPrefix?: string): v
     }
 
     // not an unusedId
-    if (ident === "_") {
+    if (allowUnused !== true && ident === "_") {
         throwFuncSyntaxError(
             `${altPrefix ?? "Declared identifier"} cannot be an underscore`,
             loc,
@@ -392,7 +391,7 @@ function checkDeclaredId(ident: string, loc: FuncSrcInfo, altPrefix?: string): v
  * Checks that the given identifier is a valid operatorId, i.e. that it actually exists on the list of builtin operator functions
  * Unlike other checking functions it doesn't throw, but returns `true`, if identifier is a valid operatorId, and `false` otherwise
  */
-function checkOperatorId(ident: string, loc: FuncSrcInfo): boolean {
+function checkOperatorId(ident: string): boolean {
     if (funcBuiltinOperatorFunctions.includes(ident)) {
         return true;
     }
@@ -589,7 +588,7 @@ export type FuncAstAsmFunctionDefinition = {
     kind: "asm_function_definition";
     forall: FuncAstForall | undefined;
     returnTy: FuncAstType;
-    name: FuncAstId;
+    name: FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId;
     parameters: FuncAstParameter[];
     attributes: FuncAstFunctionAttribute[];
     arrangement: FuncAstAsmArrangement | undefined;
@@ -608,7 +607,7 @@ export type FuncAstAsmFunctionDefinition = {
  * (id+ -> integerLiteralDec+)
  */
 export type FuncAstAsmArrangement = {
-    kind: "asm_arrangement_arguments";
+    kind: "asm_arrangement";
     arguments: FuncAstId[] | undefined;
     returns: FuncAstIntegerLiteral[] | undefined;
     loc: FuncSrcInfo;
@@ -623,7 +622,7 @@ export type FuncAstFunctionDeclaration = {
     kind: "function_declaration";
     forall: FuncAstForall | undefined;
     returnTy: FuncAstType;
-    name: FuncAstId;
+    name: FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId;
     parameters: FuncAstParameter[];
     attributes: FuncAstFunctionAttribute[];
     loc: FuncSrcInfo;
@@ -638,7 +637,7 @@ export type FuncAstFunctionDefinition = {
     kind: "function_definition";
     forall: FuncAstForall | undefined;
     returnTy: FuncAstType;
-    name: FuncAstId;
+    name: FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId;
     parameters: FuncAstParameter[];
     attributes: FuncAstFunctionAttribute[];
     statements: FuncAstStatement[];
@@ -667,12 +666,14 @@ export type FuncAstTypeVar = {
 };
 
 /**
- * Type? Id
+ * Note, that id can be an underscore only if type is defined
+ *
+ * Type? id
  */
 export type FuncAstParameter = {
     kind: "parameter";
     ty: FuncAstType | undefined;
-    name: FuncAstId;
+    name: FuncAstQuotedId | FuncAstPlainId | FuncAstUnusedId;
     loc: FuncSrcInfo;
 };
 
@@ -682,11 +683,11 @@ export type FuncAstParameter = {
  * impure | inline_ref | inline | method_id ("(" Integer | String ")")?
  */
 export type FuncAstFunctionAttribute =
-    | { kind: "function_attribute_impure"; loc: FuncSrcInfo }
-    | { kind: "function_attribute_inline_ref"; loc: FuncSrcInfo }
-    | { kind: "function_attribute_inline"; loc: FuncSrcInfo }
+    | { kind: "impure"; loc: FuncSrcInfo }
+    | { kind: "inline_ref"; loc: FuncSrcInfo }
+    | { kind: "inline"; loc: FuncSrcInfo }
     | {
-          kind: "function_attribute_method_id";
+          kind: "method_id";
           value: FuncAstIntegerLiteral | FuncAstStringLiteral | undefined;
           loc: FuncSrcInfo;
       };
@@ -865,11 +866,7 @@ export type FuncAstExpression =
     | FuncAstExpressionAddBitwise
     | FuncAstExpressionMulBitwise
     | FuncAstExpressionUnary
-    | FuncAstExpressionMethodCallChain
-    // | FuncAstExpressionMethodCall
-    // expressionparens
-    // varfunpart
-    // expressionargument
+    | FuncAstExpressionMethod
     | FuncAstExpressionVarFun
     | FuncAstExpressionPrimary;
 
@@ -879,28 +876,30 @@ export type FuncAstExpression =
 export type FuncAstExpressionAssign = {
     kind: "expression_assign";
     left: FuncAstExpressionConditional;
-    op:
-        | "="
-        | "+="
-        | "-="
-        | "*="
-        | "/="
-        | "%="
-        | "~/="
-        | "~%="
-        | "^/="
-        | "^%="
-        | "&="
-        | "|="
-        | "^="
-        | "<<="
-        | ">>="
-        | "~>>="
-        | "^>>=";
-    right: FuncAstExpressionConditional;
+    op: FuncOpAssign;
+    right: FuncAstExpressionAssign;
     loc: FuncSrcInfo;
 };
 
+export type FuncOpAssign =
+    | "="
+    | "+="
+    | "-="
+    | "*="
+    | "/="
+    | "%="
+    | "~/="
+    | "~%="
+    | "^/="
+    | "^%="
+    | "&="
+    | "|="
+    | "^="
+    | "<<="
+    | ">>="
+    | "~>>="
+    | "^>>=";
+        
 /**
  * parse_expr13
  */
@@ -918,10 +917,12 @@ export type FuncAstExpressionConditional = {
 export type FuncAstExpressionCompare = {
     kind: "expression_compare";
     left: FuncAstExpressionBitwiseShift;
-    op: "==" | "<=>" | "<=" | "<" | ">=" | ">" | "!=";
+    op: FuncOpCompare;
     right: FuncAstExpressionBitwiseShift;
     loc: FuncSrcInfo;
 };
+
+export type FuncOpCompare = "==" | "<=>" | "<=" | "<" | ">=" | ">" | "!=";
 
 /**
  * parse_expr17
@@ -929,10 +930,16 @@ export type FuncAstExpressionCompare = {
 export type FuncAstExpressionBitwiseShift = {
     kind: "expression_bitwise_shift";
     left: FuncAstExpressionAddBitwise;
-    op: "<<" | ">>" | "~>>" | "^>>";
-    right: FuncAstExpressionAddBitwise;
+    ops: FuncExpressionBitwiseShiftPart[];
     loc: FuncSrcInfo;
 };
+
+export type FuncExpressionBitwiseShiftPart = {
+    op: FuncOpBitwiseShift;
+    expr: FuncAstExpressionAddBitwise;
+};
+
+export type FuncOpBitwiseShift = "<<" | ">>" | "~>>" | "^>>";
 
 /**
  * parse_expr20
@@ -941,10 +948,16 @@ export type FuncAstExpressionAddBitwise = {
     kind: "expression_add_bitwise";
     negateLeft: boolean;
     left: FuncAstExpressionMulBitwise;
-    op: "+" | "-" | "|" | "^";
-    right: FuncAstExpressionMulBitwise;
+    ops: FuncExpressionAddBitwisePart[];
     loc: FuncSrcInfo;
 };
+
+export type FuncExpressionAddBitwisePart = {
+    op: FuncOpAddBitwise;
+    expr: FuncAstExpressionMulBitwise;
+};
+
+export type FuncOpAddBitwise = "+" | "-" | "|" | "^";
 
 /**
  * parse_expr30
@@ -952,51 +965,50 @@ export type FuncAstExpressionAddBitwise = {
 export type FuncAstExpressionMulBitwise = {
     kind: "expression_mul_bitwise";
     left: FuncAstExpressionUnary;
-    op: "*" | "/%" | "/" | "%" | "~/" | "~%" | "^/" | "^%" | "&";
-    right: FuncAstExpressionUnary;
+    ops: FuncExpressionMulBitwiseOp[];
     loc: FuncSrcInfo;
 };
+
+export type FuncExpressionMulBitwiseOp = {
+    op: FuncOpMulBitwise;
+    expr: FuncAstExpressionUnary;
+};
+
+export type FuncOpMulBitwise =
+    | "*" | "/%" | "/" | "%" | "~/" | "~%" | "^/" | "^%" | "&";
 
 /**
  * parse_expr75
  */
 export type FuncAstExpressionUnary = {
     kind: "expression_unary";
-    op: "~";
-    operand: FuncAstExpressionMethodCallChain;
+    op: FuncOpUnary;
+    operand: FuncAstExpressionMethod;
     loc: FuncSrcInfo;
 };
+
+export type FuncOpUnary = "~";
 
 /**
  * parse_expr80
  */
-export type FuncAstExpressionMethodCallChain = {
-    kind: "expression_method_call_chain";
+export type FuncAstExpressionMethod = {
+    kind: "expression_method";
     object: FuncAstExpressionVarFun;
-    methods: FuncAstExpressionMethodCall[];
+    calls: FuncExpressionMethodCall[];
     loc: FuncSrcInfo;
 };
 
-/**
- * methodId ExpressionArgument
- */
-export type FuncAstExpressionMethodCall = {
-    kind: "expression_method_call";
+export type FuncExpressionMethodCall = {
     name: FuncAstMethodId;
-    argument: FuncAstExpressionArgument;
-    loc: FuncSrcInfo;
+    argument: FuncAstExpressionPrimary;
 };
 
-export type FuncAstExpressionArgument =
+export type FuncArgument =
     | FuncAstMethodId
     | FuncAstUnit
     | FuncAstExpressionTensor
     | FuncAstExpressionTuple;
-
-/**
- * ( ExpressionFunctionCall )
- */
-export type FuncAstExpressionParens = FuncAstExpressionFunCall;
 
 /**
  * parse_expr90
@@ -1013,24 +1025,45 @@ export type FuncAstExpressionVarFun =
 export type FuncAstExpressionVarDecl = {
     kind: "expression_var_decl";
     ty: FuncAstType;
-    names: FuncAstExpressionVarDeclPart;
+    names: FuncVarDeclPart;
     loc: FuncSrcInfo;
 };
 
-export type FuncAstExpressionVarDeclPart =
+/**
+ * Note, that methodId and operatorId should be prohibited
+ */
+export type FuncVarDeclPart =
     | FuncAstId
-    | FuncAstExpressionTensor
-    | FuncAstExpressionTuple;
+    | FuncAstExpressionTensorVarDecl
+    | FuncAstExpressionTupleVarDecl;
+
+/**
+ * ( Id, Id, ... )
+ */
+export type FuncAstExpressionTensorVarDecl = {
+    kind: "expression_tensor_var_decl";
+    names: FuncAstId[];
+    loc: FuncSrcInfo;
+};
+
+/**
+ * [ Id, Id, ... ]
+ */
+export type FuncAstExpressionTupleVarDecl = {
+    kind: "expression_tuple_var_decl";
+    names: FuncAstId[];
+    loc: FuncSrcInfo;
+};
 
 /**
  * Function call
  *
- * (methodId | functionCallReturningFunction) Argument+
+ * (functionId | functionCallReturningFunction) Argument+
  */
 export type FuncAstExpressionFunCall = {
     kind: "expression_fun_call";
-    object: FuncAstMethodId | FuncAstExpressionParens;
-    arguments: FuncAstExpressionArgument[];
+    object: FuncAstExpressionPrimary;
+    arguments: FuncArgument[];
     loc: FuncSrcInfo;
 };
 
@@ -1095,36 +1128,48 @@ export type FuncAstUnaryExpression = FuncAstExpressionUnary;
 //
 
 /**
- * Builtin types, type variables or combinations of, with optional mappings with ->
+ * Mapped or unmapped types
  */
-export type FuncAstType = FuncAstTypeBuiltin | FuncAstTypeVar;
-
-// TODO: re-org the types
+export type FuncAstType =
+    | FuncAstTypePrimitive
+    | FuncAstTypeComposite
+    | FuncAstTypeVar
+    | FuncAstTypeMapped;
 
 /**
- * Builtin types, with optional mappings with ->
+ * TypeUnmapped -> Type
  */
-export type FuncAstTypeBuiltin = {
-    kind: "type_builtin";
-    value:
-        | "int"
-        | "cell"
-        | "slice"
-        | "builder"
-        | "cont"
-        | "tuple"
-        | FuncAstTensor
-        | FuncAstTuple
-        | FuncAstHole
-        | FuncAstUnit;
-    mapsTo: FuncAstType | undefined;
+export type FuncAstTypeMapped = {
+    kind: "type_mapped";
+    value: FuncAstTypePrimitive | FuncAstTypeComposite | FuncAstTypeVar;
+    mapsTo: FuncAstType;
     loc: FuncSrcInfo;
 };
 
 /**
+ * "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
+ */
+export type FuncAstTypePrimitive = {
+    kind: "type_primitive";
+    value: FuncTypePrimitive;
+    loc: FuncSrcInfo;
+};
+
+export type FuncTypePrimitive = "int" | "cell" | "slice" | "builder" | "cont" | "tuple";
+
+/**
+ * (..., ...) or [..., ...] or (_ | var) or ()
+ */
+export type FuncAstTypeComposite =
+    | FuncAstTypeTensor
+    | FuncAstTypeTuple
+    | FuncAstHole
+    | FuncAstUnit;
+
+/**
  * (..., ...)
  */
-export type FuncAstTensor = {
+export type FuncAstTypeTensor = {
     kind: "type_tensor";
     types: FuncAstType[];
     loc: FuncSrcInfo;
@@ -1133,7 +1178,7 @@ export type FuncAstTensor = {
 /**
  * [..., ...]
  */
-export type FuncAstTuple = {
+export type FuncAstTypeTuple = {
     kind: "type_tuple";
     types: FuncAstType[];
     loc: FuncSrcInfo;
@@ -1222,7 +1267,7 @@ export type FuncAstUnusedId = {
  */
 export type FuncAstVersionRange = {
     kind: "version_range";
-    op: string | undefined;
+    op: "=" | "^" | "<=" | ">=" | "<" | ">" | undefined;
     major: bigint;
     minor: bigint | undefined;
     patch: bigint | undefined;
@@ -1255,7 +1300,7 @@ export type FuncAstStringLiteral =
 export type FuncAstStringLiteralSingleLine = {
     kind: "string_singleline";
     value: string;
-    ty: FuncAstStringType | undefined;
+    ty: FuncStringType | undefined;
     loc: FuncSrcInfo;
 };
 
@@ -1265,7 +1310,7 @@ export type FuncAstStringLiteralSingleLine = {
 export type FuncAstStringLiteralMultiLine = {
     kind: "string_multiline";
     value: string;
-    ty: FuncAstStringType | undefined;
+    ty: FuncStringType | undefined;
     // Perhaps: alignIndent: boolean;
     // Perhaps: trim: boolean;
     loc: FuncSrcInfo;
@@ -1274,9 +1319,9 @@ export type FuncAstStringLiteralMultiLine = {
 /**
  * An additional modifier. See: https://docs.ton.org/develop/func/literals_identifiers#string-literals
  */
-export type FuncAstStringType = "s" | "a" | "u" | "h" | "H" | "c";
+export type FuncStringType = "s" | "a" | "u" | "h" | "H" | "c";
 
-export type FuncAstWhiteSpace = {
+export type FuncWhiteSpace = {
     kind: "whitespace";
     value: `\t` | ` ` | `\n` | `\r` | `\u2028` | `\u2029`;
 };
@@ -1291,7 +1336,7 @@ export type FuncAstComment = FuncAstCommentSingleLine | FuncAstCommentMultiLine;
 /**
  * ;; ...
  *
- * Doesn't include the leading ;; characters TODO: rm
+ * Doesn't include the leading ;; characters
  */
 export type FuncAstCommentSingleLine = {
     kind: "comment_singleline";
@@ -1302,7 +1347,7 @@ export type FuncAstCommentSingleLine = {
 /**
  * {- ...can be nested... -}
  *
- * Doesn't include the leftmost {- and rightmost -} *ODO: rm
+ * Doesn't include the leftmost {- and rightmost -}
  *
  * @field skipCR If set to true, skips CR before the next line
  */
@@ -1314,10 +1359,9 @@ export type FuncAstCommentMultiLine = {
 };
 
 //
-// Semantic analysis
+// AST generation through syntax analysis
 //
 
-// TODO: ids for nodes via a function wrapper like in Tact?
 const semantics = FuncGrammar.createSemantics();
 
 semantics.addOperation<FuncAstNode>("astOfModule", {
@@ -1426,14 +1470,14 @@ semantics.addOperation<FuncAstNode>("astOfModuleItem", {
     GlobalVariablesDeclaration(_globalKwd, globals, _semicolon) {
         return {
             kind: "global_variables_declaration",
-            globals: globals.children.map((x) => x.astOfGlobalVariable()),
+            globals: globals.asIteration().children.map((x) => x.astOfGlobalVariable()),
             loc: createSrcInfo(this),
         };
     },
     ConstantsDefinition(_constKwd, constants, _semicolon) {
         return {
             kind: "constants_definition",
-            constants: constants.children.map((x) => x.astOfConstant()),
+            constants: constants.asIteration().children.map((x) => x.astOfConstant()),
             loc: createSrcInfo(this),
         };
     },
@@ -1580,13 +1624,412 @@ semantics.addOperation<FuncAstStatement>("astOfStatement", {
     },
 });
 
+// Expressions
 semantics.addOperation<FuncAstExpression>("astOfExpression", {
+    // parse_expr
+    Expression(expr) {
+        return expr.astOfExpression();
+    },
+
+    // parse_expr10
+    ExpressionAssign(expr) {
+        return expr.astOfExpression();
+    },
+    ExpressionAssign_op(exprLeft, _space1, op, _space2, exprRight) {
+        return {
+            kind: "expression_assign",
+            left: exprLeft.astOfExpression(),
+            op: op.sourceString as FuncOpAssign,
+            right: exprRight.astOfExpression(),
+            loc: createSrcInfo(this),
+        };
+    },
+
+    // parse_expr13
+    ExpressionConditional(expr) {
+        return expr.astOfExpression();
+    },
+    ExpressionConditional_ternary(exprLeft, _space1, _qmark, _space2, exprMiddle, _space3, _colon, _space4, exprRight) {
+        return {
+            kind: "expression_conditional",
+            condition: exprLeft.astOfExpression(),
+            consequence: exprMiddle.astOfExpression(),
+            alternative: exprRight.astOfExpression(),
+            loc: createSrcInfo(this),
+        };
+    },
+
+    // parse_expr15
+    ExpressionCompare(expr) {
+        return expr.astOfExpression();
+    },
+    ExpressionCompare_op(exprLeft, _space1, op, _space2, exprRight) {
+        return {
+            kind: "expression_compare",
+            left: exprLeft.astOfExpression(),
+            op: op.sourceString as FuncOpCompare,
+            right: exprRight.astOfExpression(),
+            loc: createSrcInfo(this),
+        };
+    },
+
+    // parse_expr17
+    ExpressionBitwiseShift(expr) {
+        return expr.astOfExpression();
+    },
+    ExpressionBitwiseShift_ops(exprLeft, _space, ops, _spaces, exprs) {
+        const resolvedOps = ops.children.map(x => x.sourceString as FuncOpBitwiseShift);
+        const resolvedExprs = exprs.children.map(x => x.astOfExpression() as FuncAstExpressionAddBitwise);
+        const zipped = resolvedOps.map(
+            (resOp, i) => { return { op: resOp, expr: resolvedExprs[i]! } }
+        );
+        return {
+            kind: "expression_bitwise_shift",
+            left: exprLeft.astOfExpression(),
+            ops: zipped,
+            loc: createSrcInfo(this),
+        };
+    },
+
+    // parse_expr20
+    ExpressionAddBitwise(expr) {
+        return expr.astOfExpression();
+    },
+    ExpressionAddBitwise_ops(optNegate, _optSpace, exprLeft, _space, ops, _spaces,exprs) {
+        const negate = unwrapOptNode(optNegate, t => t.sourceString);
+        const resolvedOps = ops.children.map(x => x.sourceString as FuncOpAddBitwise);
+        const resolvedExprs = exprs.children.map(x => x.astOfExpression() as FuncAstExpressionMulBitwise);
+        const zipped = resolvedOps.map(
+            (resOp, i) => { return { op: resOp, expr: resolvedExprs[i]! } }
+        );
+        return {
+            kind: "expression_add_bitwise",
+            negateLeft: negate === undefined ? false : true,
+            left: exprLeft.astOfExpression(),
+            ops: zipped,
+            loc: createSrcInfo(this),
+        };
+    },
+
+    // parse_expr30
+    ExpressionMulBitwise(expr) {
+        return expr.astOfExpression();
+    },
+    ExpressionMulBitwise_ops(exprLeft, _space, ops, _spaces, exprs) {
+        const resolvedOps = ops.children.map(x => x.sourceString as FuncOpMulBitwise);
+        const resolvedExprs = exprs.children.map(x => x.astOfExpression() as FuncAstExpressionUnary);
+        const zipped = resolvedOps.map(
+            (resOp, i) => { return { op: resOp, expr: resolvedExprs[i]! } }
+        );
+        return {
+            kind: "expression_mul_bitwise",
+            left: exprLeft.astOfExpression(),
+            ops: zipped,
+            loc: createSrcInfo(this),
+        };
+    },
+
+    // parse_expr75
+    ExpressionUnary(expr) {
+        return expr.astOfExpression();
+    },
+    ExpressionUnary_bitwiseNot(notOp, _space, operand) {
+        return {
+            kind: "expression_unary",
+            op: notOp.sourceString as "~",
+            operand: operand.astOfExpression(),
+            loc: createSrcInfo(this),
+        }
+    },
+
+    // parse_expr80
+    ExpressionMethod(expr) {
+        return expr.astOfExpression();
+    },
+    ExpressionMethod_calls(exprLeft, methodIds, _lookahead, exprs) {
+        const resolvedIds = methodIds.children.map(x => x.astOfExpression() as FuncAstMethodId);
+        const resolvedExprs = exprs.children.map(x => x.astOfExpression() as FuncArgument);
+        const zipped = resolvedIds.map(
+            (resId, i) => { return { name: resId, argument: resolvedExprs[i]! } }
+        );
+        return {
+            kind: "expression_method",
+            object: exprLeft.astOfExpression(),
+            calls: zipped,
+            loc: createSrcInfo(this),
+        };
+    },
+    
+    // parse_expr90, and some inner things
+    ExpressionVarFun(expr) {
+        return expr.astOfExpression();
+    },
+    ExpressionVarDecl(varDeclTy, varNames) {
+        const names = varNames.astOfVarDeclPart() as FuncVarDeclPart;
+        const checkVarDeclName = (node: FuncAstId) => {
+            if (node.kind === "unused_id" || node.kind === "quoted_id") {
+                return;
+            }
+            if (node.kind === "method_id") {
+                throwFuncSyntaxError(
+                    "Name of the variable cannot start with . or ~",
+                    createSrcInfo(this)
+                );
+            }
+            if (node.kind === "plain_id") {
+                checkPlainId(node.value, createSrcInfo(this), "Name of the variable");
+            }
+            checkDeclaredId(node.value, createSrcInfo(this), "Name of the variable");
+        };
+
+        if (names.kind === "expression_tensor_var_decl"
+            || names.kind === "expression_tuple_var_decl") {
+            for (let i = 0; i < names.names.length; i += 1) {
+                checkVarDeclName(names.names[i]!);
+            }
+        } else {
+            checkVarDeclName(names);
+        }
+        
+        return {
+            kind: "expression_var_decl",
+            ty: varDeclTy.astOfType(),
+            names: names,
+            loc: createSrcInfo(this),
+        };
+    },
+    ExpressionVarDeclPart(expr) {
+        return expr.astOfExpression();
+    },
+    ExpressionFunCall(_lookahead, expr, args) {
+        return {
+            kind: "expression_fun_call",
+            object: expr.astOfExpression(),
+            arguments: args.children.map(x => x.astOfExpression()),
+            loc: createSrcInfo(this),
+        };
+    },
+    ExpressionArgument(expr) {
+        return expr.astOfExpression();
+    },
+    
+    // parse_expr100, and some inner things
+    ExpressionPrimary(expr) {
+        return expr.astOfExpression();
+    },
+    unit(_lparen, _space, _rparen) {
+        return {
+            kind: "unit",
+            value: "()",
+            loc: createSrcInfo(this),
+        };
+    },
+    ExpressionTensor(_lparen, exprs, _rparen) {
+        return {
+            kind: "expression_tensor",
+            expressions: exprs.asIteration().children.map(x => x.astOfExpression()),
+            loc: createSrcInfo(this),
+        };
+    },
+    tupleEmpty(_lparen, _spaces, _rparen) {
+        return {
+            kind: "expression_tuple",
+            expressions: [],
+            loc: createSrcInfo(this),
+        }
+    },
+    ExpressionTuple(_lparen, exprs, _rparen) {
+        return {
+            kind: "expression_tuple",
+            expressions: exprs.asIteration().children.map(x => x.astOfExpression()),
+            loc: createSrcInfo(this),
+        };
+    },
+    integerLiteral(optNegate, numLit) {
+        const negate = unwrapOptNode(optNegate, t => t.sourceString);
+        const value = (negate === undefined ? 1n : -1n) * BigInt(numLit.sourceString);
+        
+        return {
+            kind: "integer_literal",
+            value: value,
+            loc: createSrcInfo(this),
+        };
+    },
+    integerLiteralNonNegative(nonNegNumLit) {
+        return {
+            kind: "integer_literal",
+            value: BigInt(nonNegNumLit.sourceString),
+            loc: createSrcInfo(this),
+        };
+    },
+    integerLiteralDec(nonNegNumLit) {
+        return {
+            kind: "integer_literal",
+            value: BigInt(nonNegNumLit.sourceString),
+            loc: createSrcInfo(this),
+        };
+    },
+    integerLiteralHex(hexPrefix, nonNegNumLit) {
+        return {
+            kind: "integer_literal",
+            value: BigInt(hexPrefix.sourceString + nonNegNumLit.sourceString),
+            loc: createSrcInfo(this),
+        };
+    },
+    stringLiteral(strLit) {
+        return strLit.astOfExpression();
+    },
+    stringLiteral_singleLine(_lquote, contents, _rquote, optTy) {
+        return {
+            kind: "string_singleline",
+            value: contents.sourceString,
+            ty: unwrapOptNode(optTy, t => t.sourceString) as (FuncStringType | undefined),
+            loc: createSrcInfo(this),
+        }
+    },
+    stringLiteral_multiLine(_lquote, contents, _rquote, optTy) {
+        return {
+            kind: "string_multiline",
+            value: contents.sourceString,
+            ty: unwrapOptNode(optTy, t => t.sourceString) as (FuncStringType | undefined),
+            loc: createSrcInfo(this),
+        }
+    },
+    functionId(optPrefix, rawId) {
+        const prefix = unwrapOptNode(optPrefix, t => t.sourceString);
+
+        if (prefix === undefined) {
+            return rawId.astOfExpression();
+        }
+
+        return {
+            kind: "method_id",
+            prefix: prefix as ("." | "~"),
+            value: (rawId.astOfExpression() as FuncAstId).value,
+            loc: createSrcInfo(this),
+        };
+    },
+    methodId(prefix, rawId) {
+        return {
+            kind: "method_id",
+            prefix: prefix.sourceString as ("." | "~"),
+            value: (rawId.astOfExpression() as FuncAstId).value,
+            loc: createSrcInfo(this),
+        }
+    },
+    id(rawId) {
+        return rawId.astOfExpression();
+    },
+    rawId(someId) {
+        return someId.astOfExpression();
+    },
+    quotedId(ltick, idContents, rtick) {
+        return {
+            kind: "quoted_id",
+            value: [ltick, idContents.sourceString, rtick].join(""),
+            loc: createSrcInfo(this),
+        }
+    },
+    operatorId(opId) {
+        return opId.astOfExpression();
+    },
+    operatorId_common(optCaret, underscore1, op, underscore2) {
+        const value = [
+            unwrapOptNode(optCaret, t => t.sourceString) ?? "",
+            underscore1, op, underscore2,
+        ].join("");
+
+        return {
+            kind: checkOperatorId(value)
+                ? "operator_id"
+                : "plain_id",
+            value: value,
+            loc: createSrcInfo(this),
+        };
+    },
+    operatorId_not(notOp) {
+        return {
+            kind: "operator_id",
+            value: notOp.sourceString,
+            loc: createSrcInfo(this),
+        };
+    },
+    plainId(idContents) {
+        const value = idContents.sourceString;
+        if (value === "_") {
+            return {
+                kind: "unused_id",
+                value: "_",
+                loc: createSrcInfo(this),
+            };
+        }
+        return {
+            kind: "plain_id",
+            value: value,
+            loc: createSrcInfo(this),
+        }
+    },
+    unusedId(underscore) {
+        return {
+            kind: "unused_id",
+            value: underscore.sourceString as "_",
+            loc: createSrcInfo(this),
+        }
+    },
 });
 
-// Miscellaneous things
+// Some parts of expressions which do not produce FuncAstExpression node
+semantics.addOperation<FuncVarDeclPart>("astOfVarDeclPart", {
+    id(node) {
+        return node.astOfExpression();
+    },
+    unusedId(node) {
+        return node.astOfExpression();
+    },
+    ExpressionTensorVarDecl(_lparen, ids, _rparen) {
+        return {
+            kind: "expression_tensor_var_decl",
+            names: ids.asIteration().children.map(x => x.astOfIdOrUnusedId()),
+            loc: createSrcInfo(this),
+        };
+    },
+    ExpressionTupleVarDecl(_lbrack, ids, _rbrack) {
+        return {
+            kind: "expression_tuple_var_decl",
+            names: ids.asIteration().children.map(x => x.astOfIdOrUnusedId()),
+            loc: createSrcInfo(this),
+        };
+    },
+});
+semantics.addOperation<FuncAstId>("astOfIdOrUnusedId", {
+    IdOrUnusedId(node) {
+        return node.astOfExpression();
+    },
+});
+
+// Miscellaneous utility nodes, gathered together for convenience
 // 
 // A couple of them don't even have their own dedicated TypeScript types,
-// and most were added purely for parsing convenience
+// and most were introduced mostly for parsing convenience
+
+// op? decNum (. decNum)? (. decNum)?
+semantics.addOperation<FuncAstVersionRange>("astOfVersionRange", {
+    versionRange(optOp, majorVers, _optDot, optMinorVers, _optDot2, optPatchVers) {
+        const op = unwrapOptNode(optOp, t => t.sourceString) as ("=" | "^" | "<=" | ">=" | "<" | ">" | undefined);
+        const major = majorVers.astOfExpression() as FuncAstIntegerLiteral;
+        const minor = unwrapOptNode(optMinorVers, t => t.astOfExpression()) as (FuncAstIntegerLiteral | undefined);
+        const patch = unwrapOptNode(optPatchVers, t => t.astOfExpression()) as (FuncAstIntegerLiteral | undefined);
+
+        return {
+            kind: "version_range",
+            op: op,
+            major: major.value,
+            minor: minor?.value,
+            patch: patch?.value,
+            loc: createSrcInfo(this),
+        }
+    },
+});
 
 // nonVarType? (quotedId | plainId)
 semantics.addOperation<FuncAstGlobalVariable>("astOfGlobalVariable", {
@@ -1655,15 +2098,32 @@ semantics.addOperation<FuncAstConstant>("astOfConstant", {
 type FuncFunctionCommonPrefix = {
     forall: FuncAstForall | undefined;
     returnTy: FuncAstType;
-    name: FuncAstId;
+    name: FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId;
     parameters: FuncAstParameter[];
     attributes: FuncAstFunctionAttribute[];
 };
 
 // Common prefix of all function declarations/definitions
 semantics.addOperation<FuncFunctionCommonPrefix>("astOfFunctionCommonPrefix", {
-    // FunctionCommonPrefix(optForall, retTy, fnName, fnParams, fnAttributes) {
-    // },
+    FunctionCommonPrefix(optForall, retTy, fnName, fnParams, fnAttributes) {
+        const name = fnName.astOfExpression() as FuncAstId;
+        
+        // if a plainId, then check for validity
+        if (name.kind === "plain_id") {
+            checkPlainId(name.value, createSrcInfo(this), "Name of the function");
+        }
+
+        // check that it can be declared (also excludes operatorId and unusedId)
+        checkDeclaredId(name.value, createSrcInfo(this), "Name of the function");
+
+        return {
+            forall: unwrapOptNode(optForall, t => t.astOfForall()),
+            returnTy: retTy.astOfType(),
+            name: name as (FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId),
+            parameters: fnParams.astOfParameters(),
+            attributes: fnAttributes.children.map(x => x.astOfFunctionAttribute()),
+        };
+    },
 });
 
 // forall (type? typeName1, type? typeName2, ...) ->
@@ -1671,14 +2131,356 @@ semantics.addOperation<FuncAstForall>("astOfForall", {
     Forall(_forallKwd, _space1, typeVars, _space2, _mapsToKwd, _space3) {
         return {
             kind: "forall",
-            tyVars: typeVars.children.map(x => x.astOfType()),
+            tyVars: typeVars.asIteration().children.map(x => x.astOfType()),
             loc: createSrcInfo(this),
         }
     },
 });
 
+// (Type? Id, ...)
+semantics.addOperation<FuncAstParameter[]>("astOfParameters", {
+    Parameters(_lparen, params, _rparen) {
+        return params.asIteration().children.map(x => x.astOfParameter());
+    },
+});
+
+// Type? Id
+semantics.addOperation<FuncAstParameter>("astOfParameter", {
+    Parameter(param) {
+        return param.astOfParameter();
+    },
+    Parameter_regular(paramTy, _space, unusedIdOrId) {
+        const name = unusedIdOrId.astOfExpression() as FuncAstId;
+
+        // if a plainId, then check for validity
+        if (name.kind === "plain_id") {
+            checkPlainId(name.value, createSrcInfo(this), "Name of the parameter");
+        }
+
+        // check that it can be declared (also excludes operatorId, but not unusedId)
+        checkDeclaredId(name.value, createSrcInfo(this), "Name of the parameter", true);
+
+        // and that it's not a methodId
+        if (name.kind === "method_id") {
+            throwFuncSyntaxError(
+                "Name of the parameter cannot start with ~ or .",
+                createSrcInfo(this),
+            );
+        }
+
+        return {
+            kind: "parameter",
+            ty: paramTy.astOfType(),
+            name: name as (FuncAstQuotedId | FuncAstPlainId | FuncAstUnusedId),
+            loc: createSrcInfo(this),
+        };
+    },
+    Parameter_inferredType(paramName) {
+        const name = paramName.astOfExpression() as FuncAstId;
+        
+        // if a plainId, then check for validity
+        if (name.kind === "plain_id") {
+            checkPlainId(name.value, createSrcInfo(this), "Name of the parameter");
+        }
+
+        // check that it can be declared (also excludes operatorId and unusedId)
+        checkDeclaredId(name.value, createSrcInfo(this), "Name of the parameter");
+
+        // and that it's not a methodId
+        if (name.kind === "method_id") {
+            throwFuncSyntaxError(
+                "Name of the parameter cannot start with ~ or .",
+                createSrcInfo(this),
+            );
+        }
+
+        return {
+            kind: "parameter",
+            ty: undefined,
+            name: name as (FuncAstQuotedId | FuncAstPlainId),
+            loc: createSrcInfo(this),
+        };
+    },
+});
+
+// (id+) or (-> integerLiteralDec+) or (id+ -> integerLiteralDec+)
+semantics.addOperation<FuncAstAsmArrangement>("astOfAsmArrangement", {
+    AsmArrangement(asmArrangement) {
+        return asmArrangement.astOfAsmArrangement();
+    },
+    AsmArrangement_arguments(_lparen, args, _rparen) {
+        return {
+            kind: "asm_arrangement",
+            arguments: args.children.map(x => x.astOfExpression()),
+            returns: undefined,
+            loc: createSrcInfo(this),
+        };
+    },
+    AsmArrangement_returns(_lparen, _mapsTo, _space, rets, _rparen) {
+        return {
+            kind: "asm_arrangement",
+            arguments: undefined,
+            returns: rets.children.map(x => x.astOfExpression()),
+            loc: createSrcInfo(this),
+        };
+    },
+    AsmArrangement_argumentsToReturns(_lparen, args, _space, _mapsTo, _space1, rets, _rparen) {
+        return {
+            kind: "asm_arrangement",
+            arguments: args.children.map(x => x.astOfExpression()),
+            returns: rets.children.map(x => x.astOfExpression()),
+            loc: createSrcInfo(this),
+        };
+    },
+});
+
+// impure | inline_ref | inline | method_id ("(" Integer | String ")")?
+semantics.addOperation<FuncAstFunctionAttribute>("astOfFunctionAttribute", {
+    FunctionAttribute(attr) {
+        if (attr.isTerminal()) {
+            if (attr.sourceString === "method_id") {
+                return {
+                    kind: "method_id",
+                    value: undefined,
+                    loc: createSrcInfo(this),
+                }
+            }
+            return {
+                kind: attr.sourceString as ("impure" | "inline_ref" | "inline"),
+                loc: createSrcInfo(this),
+            };
+        }
+
+        return {
+            kind: "method_id",
+            value: attr.astOfMethodIdValue(),
+            loc: createSrcInfo(this),
+        };
+    },
+});
+
+// method_id "(" Integer | String ")"
+semantics.addOperation<FuncAstIntegerLiteral | FuncAstStringLiteral>("astOfMethodIdValue", {
+    MethodIdValue(mtd) {
+        return mtd.astOfMethodIdValue();
+    },
+    MethodIdValue_int(_methodIdKwd, _lparen, intLit, _rparen) {
+        return intLit.astOfExpression() as FuncAstIntegerLiteral;
+    },
+    MethodIdValue_string(_methodIdKwd, _lparen, strLit, _rparen) {
+        return strLit.astOfExpression() as FuncAstStringLiteral;
+    },
+});
+
 // All the types, united under FuncAstType
 semantics.addOperation<FuncAstType>("astOfType", {
+    id(rawId) {
+        return {
+            kind: "type_var",
+            keyword: false,
+            name: rawId.astOfExpression(),
+            loc: createSrcInfo(this),
+        };
+    },
+    unit(_lparen, _space, _rparen) {
+        return {
+            kind: "unit",
+            value: "()",
+            loc: createSrcInfo(this),
+        };
+    },
+    tupleEmpty(_lparen, _spaces, _rparen) {
+        return {
+            kind: "type_tuple",
+            types: [],
+            loc: createSrcInfo(this),
+        }
+    },
+    TypeGlob(globBiTy, _optMapsTo, optGlobTy) {
+        const mapsTo = unwrapOptNode(optGlobTy, t => t.astOfType());
+        if (mapsTo !== undefined) {
+            return {
+                kind: "type_mapped",
+                value: globBiTy.astOfType(),
+                mapsTo: mapsTo,
+                loc: createSrcInfo(this),
+            };
+        }
+        return globBiTy.astOfType();
+    },
+    TypeBuiltinGlob(globBiTy) {
+        return globBiTy.astOfType();
+    },
+    TypeBuiltinGlob_simple(globBiTy) {
+        const ty = globBiTy.sourceString;
+        if (ty === "_") {
+            return {
+                kind: "hole",
+                value: "_",
+                loc: createSrcInfo(this),
+            };
+        }
+        return {
+            kind: "type_primitive",
+            value: ty as FuncTypePrimitive,
+            loc: createSrcInfo(this),
+        };
+    },
+    TensorGlob(_lparen, globTys, _rparen) {
+        return {
+            kind: "type_tensor",
+            types: globTys.asIteration().children.map(x => x.astOfType()),
+            loc: createSrcInfo(this),
+        };
+    },
+    TupleGlob(_lbrack, globTys, _rbrack) {
+        return {
+            kind: "type_tuple",
+            types: globTys.asIteration().children.map(x => x.astOfType()),
+            loc: createSrcInfo(this),
+        };
+    },
+    TypeVar(optTypeKwd, _space, typeVar) {
+        const typeKwd = unwrapOptNode(optTypeKwd, t => t.sourceString);
+        return {
+            kind: "type_var",
+            keyword: typeKwd !== undefined ? true : false,
+            name: typeVar.astOfExpression(),
+            loc: createSrcInfo(this),
+        };
+    },
+    TypeReturn(retBiTy, _space1, _optMapsTo, _space2, optRetTy) {
+        const mapsTo = unwrapOptNode(optRetTy, t => t.astOfType());
+        if (mapsTo !== undefined) {
+            return {
+                kind: "type_mapped",
+                value: retBiTy.astOfType(),
+                mapsTo: mapsTo,
+                loc: createSrcInfo(this),
+            };
+        }
+        return retBiTy.astOfType();
+    },
+    TypeBuiltinReturn(retBiTy) {
+        if (retBiTy.isTerminal()) {
+            const ty = retBiTy.sourceString;
+            if (ty === "_") {
+                return {
+                    kind: "hole",
+                    value: "_",
+                    loc: createSrcInfo(this),
+                };
+            }
+            return {
+                kind: "type_primitive",
+                value: ty as FuncTypePrimitive,
+                loc: createSrcInfo(this),
+            };
+        }
+        return retBiTy.astOfType();
+    },
+    TensorReturn(_lparen, retTys, _rparen) {
+        return {
+            kind: "type_tensor",
+            types: retTys.asIteration().children.map(x => x.astOfType()),
+            loc: createSrcInfo(this),
+        };
+    },
+    TupleReturn(_lparen, retTys, _rparen) {
+        return {
+            kind: "type_tuple",
+            types: retTys.asIteration().children.map(x => x.astOfType()),
+            loc: createSrcInfo(this),
+        };
+    },
+    TypeParameter(paramBiTy, _space1, _optMapsTo, _space2, optRetTy) {
+        const mapsTo = unwrapOptNode(optRetTy, t => t.astOfType());
+        if (mapsTo !== undefined) {
+            return {
+                kind: "type_mapped",
+                value: paramBiTy.astOfType(),
+                mapsTo: mapsTo,
+                loc: createSrcInfo(this),
+            };
+        }
+        return paramBiTy.astOfType();
+    },
+    TypeBuiltinParameter(paramBiTy) {
+        if (paramBiTy.isTerminal()) {
+            const ty = paramBiTy.sourceString;
+            if (ty === "_") {
+                return {
+                    kind: "hole",
+                    value: "_",
+                    loc: createSrcInfo(this),
+                };
+            }
+            return {
+                kind: "type_primitive",
+                value: ty as FuncTypePrimitive,
+                loc: createSrcInfo(this),
+            };
+        }
+        return paramBiTy.astOfType();
+    },
+    TensorParameter(_lparen, retTys, _rparen) {
+        return {
+            kind: "type_tensor",
+            types: retTys.asIteration().children.map(x => x.astOfType()),
+            loc: createSrcInfo(this),
+        };
+    },
+    TupleParameter(_lparen, retTys, _rparen) {
+        return {
+            kind: "type_tuple",
+            types: retTys.asIteration().children.map(x => x.astOfType()),
+            loc: createSrcInfo(this),
+        };
+    },
+    TypeVarDecl(varDeclBiTy, _space1, _optMapsTo, _space2, optRetTy) {
+        const mapsTo = unwrapOptNode(optRetTy, t => t.astOfType());
+        if (mapsTo !== undefined) {
+            return {
+                kind: "type_mapped",
+                value: varDeclBiTy.astOfType(),
+                mapsTo: mapsTo,
+                loc: createSrcInfo(this),
+            };
+        }
+        return varDeclBiTy.astOfType();
+    },
+    TypeBuiltinVarDecl(varDeclBiTy) {
+        return varDeclBiTy.astOfType();
+    },
+    TypeBuiltinVarDecl_simple(varDeclBiTy) {
+        if (!varDeclBiTy.isTerminal()) {
+            return {
+                kind: "hole",
+                value: varDeclBiTy.sourceString as "_" | "var",
+                loc: createSrcInfo(this),
+            };
+        }
+        return {
+            kind: "type_primitive",
+            value: varDeclBiTy.sourceString as FuncTypePrimitive,
+            loc: createSrcInfo(this),
+        };
+    },
+    TensorVarDecl(_lparen, varDeclTys, _rparen) {
+        return {
+            kind: "type_tensor",
+            types: varDeclTys.asIteration().children.map(x => x.astOfType()),
+            loc: createSrcInfo(this),
+        };
+    },
+    TupleVarDecl(_lparen, varDeclTys, _rparen) {
+        return {
+            kind: "type_tuple",
+            types: varDeclTys.asIteration().children.map(x => x.astOfType()),
+            loc: createSrcInfo(this),
+        };
+    },
+});
 
 // Not a standalone statement, produces a list of statements instead
 semantics.addOperation<FuncAstStatement[]>("astOfElseBlock", {
@@ -1686,10 +2488,6 @@ semantics.addOperation<FuncAstStatement[]>("astOfElseBlock", {
         return stmts.children.map(x => x.astOfStatement());
     },
 });
-
-// semantics.addOperation("astOfSOMETHING", { });
-// semantics.addOperation("astOfSOMETHING", { });
-// semantics.addOperation("astOfSOMETHING", { });
 
 //
 // Utility parsing functions
