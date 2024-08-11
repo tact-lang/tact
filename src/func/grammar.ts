@@ -459,8 +459,6 @@ function checkMethodId(ident: string, loc: FuncSrcInfo): void | never {
 
 export type FuncAstNode =
     | FuncAstModule
-    | FuncAstPragma
-    | FuncAstInclude
     | FuncAstModuleItem
     | FuncAstStatement
     | FuncAstExpression
@@ -469,8 +467,6 @@ export type FuncAstNode =
 
 export type FuncAstModule = {
     kind: "module";
-    pragmas: FuncAstPragma[];
-    includes: FuncAstInclude[];
     items: FuncAstModuleItem[];
     loc: FuncSrcInfo;
 };
@@ -532,6 +528,8 @@ export type FuncAstInclude = {
 //
 
 export type FuncAstModuleItem =
+    | FuncAstPragma
+    | FuncAstInclude
     | FuncAstGlobalVariablesDeclaration
     | FuncAstConstantsDefinition
     | FuncAstAsmFunctionDefinition
@@ -668,12 +666,12 @@ export type FuncAstTypeVar = {
 /**
  * Note, that id can be an underscore only if type is defined
  *
- * Type? id
+ * Type id?
  */
 export type FuncAstParameter = {
     kind: "parameter";
     ty: FuncAstType | undefined;
-    name: FuncAstQuotedId | FuncAstPlainId | FuncAstUnusedId;
+    name: FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId | FuncAstUnusedId | undefined;
     loc: FuncSrcInfo;
 };
 
@@ -942,6 +940,8 @@ export type FuncExpressionBitwiseShiftPart = {
 export type FuncOpBitwiseShift = "<<" | ">>" | "~>>" | "^>>";
 
 /**
+ * Note, that sometimes `ops` can be an empty array, due to the unary minus (`negateLeft`)
+ *
  * parse_expr20
  */
 export type FuncAstExpressionAddBitwise = {
@@ -1365,11 +1365,9 @@ export type FuncAstCommentMultiLine = {
 const semantics = FuncGrammar.createSemantics();
 
 semantics.addOperation<FuncAstNode>("astOfModule", {
-    Module(pragmas, includes, items) {
+    Module(items) {
         return {
             kind: "module",
-            pragmas: pragmas.children.map((x) => x.astOfPragma()),
-            includes: includes.children.map((x) => x.astOfInclude()),
             items: items.children.map((x) => x.astOfModuleItem()),
             loc: createSrcInfo(this),
         };
@@ -1408,9 +1406,12 @@ semantics.addOperation<FuncAstNode>("astOfModule", {
     },
 });
 
-semantics.addOperation<FuncAstNode>("astOfPragma", {
+semantics.addOperation<FuncAstNode>("astOfModuleItem", {
+    ModuleItem(item) {
+        return item.astOfModuleItem();
+    },
     Pragma(pragma) {
-        return pragma.astOfPragma();
+        return pragma.astOfModuleItem();
     },
     Pragma_literal(_pragmaKwd, literal, _semicolon) {
         return {
@@ -1451,21 +1452,12 @@ semantics.addOperation<FuncAstNode>("astOfPragma", {
             loc: createSrcInfo(this),
         };
     },
-});
-
-semantics.addOperation<FuncAstNode>("astOfInclude", {
     Include(_includeKwd, path, _semicolon) {
         return {
             kind: "include",
             path: path.astOfExpression(),
             loc: createSrcInfo(this),
         };
-    },
-});
-
-semantics.addOperation<FuncAstNode>("astOfModuleItem", {
-    ModuleItem(item) {
-        return item.astOfModuleItem();
     },
     GlobalVariablesDeclaration(_globalKwd, globals, _semicolon) {
         return {
@@ -1709,6 +1701,15 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
             ops: zipped,
             loc: createSrcInfo(this),
         };
+    },
+    ExpressionAddBitwise_negate(_negateOp, _space, expr) {
+        return {
+            kind: "expression_add_bitwise",
+            negateLeft: true,
+            left: expr.astOfExpression(),
+            ops: [],
+            loc: createSrcInfo(this),
+        }
     },
 
     // parse_expr30
@@ -2019,7 +2020,6 @@ semantics.addOperation<FuncAstVersionRange>("astOfVersionRange", {
         const major = majorVers.astOfExpression() as FuncAstIntegerLiteral;
         const minor = unwrapOptNode(optMinorVers, t => t.astOfExpression()) as (FuncAstIntegerLiteral | undefined);
         const patch = unwrapOptNode(optPatchVers, t => t.astOfExpression()) as (FuncAstIntegerLiteral | undefined);
-
         return {
             kind: "version_range",
             op: op,
@@ -2035,15 +2035,12 @@ semantics.addOperation<FuncAstVersionRange>("astOfVersionRange", {
 semantics.addOperation<FuncAstGlobalVariable>("astOfGlobalVariable", {
     GlobalVariableDeclaration(optGlobTy, globName) {
         const name = globName.astOfExpression() as FuncAstId;
-
         // if a plainId, then check for validity
         if (name.kind === "plain_id") {
             checkPlainId(name.value, createSrcInfo(this), "Name of the global variable");
         }
-
         // check that it can be declared (also excludes operatorId and unusedId)
         checkDeclaredId(name.value, createSrcInfo(this), "Name of the global variable");
-
         // and that it's not a methodId
         if (name.kind === "method_id") {
             throwFuncSyntaxError(
@@ -2051,7 +2048,6 @@ semantics.addOperation<FuncAstGlobalVariable>("astOfGlobalVariable", {
                 createSrcInfo(this),
             );
         }
-
         // leaving only quotedId or plainId
         return {
             kind: "global_variable",
@@ -2067,15 +2063,12 @@ semantics.addOperation<FuncAstConstant>("astOfConstant", {
     ConstantDefinition(optConstTy, constName, _eqSign, expr) {
         const ty = unwrapOptNode(optConstTy, t => t.sourceString);
         const name = constName.astOfExpression() as FuncAstId;
-
         // if a plainId, then check for validity
         if (name.kind === "plain_id") {
             checkPlainId(name.value, createSrcInfo(this), "Name of the constant");
         }
-
         // check that it can be declared (also excludes operatorId and unusedId)
         checkDeclaredId(name.value, createSrcInfo(this), "Name of the constant");
-
         // and that it's not a methodId
         if (name.kind === "method_id") {
             throwFuncSyntaxError(
@@ -2083,7 +2076,6 @@ semantics.addOperation<FuncAstConstant>("astOfConstant", {
                 createSrcInfo(this),
             );
         }
-
         return {
             kind: "constant",
             ty: ty !== undefined ? ty as ("slice" | "int") : undefined,
@@ -2107,15 +2099,12 @@ type FuncFunctionCommonPrefix = {
 semantics.addOperation<FuncFunctionCommonPrefix>("astOfFunctionCommonPrefix", {
     FunctionCommonPrefix(optForall, retTy, fnName, fnParams, fnAttributes) {
         const name = fnName.astOfExpression() as FuncAstId;
-        
         // if a plainId, then check for validity
         if (name.kind === "plain_id") {
             checkPlainId(name.value, createSrcInfo(this), "Name of the function");
         }
-
         // check that it can be declared (also excludes operatorId and unusedId)
         checkDeclaredId(name.value, createSrcInfo(this), "Name of the function");
-
         return {
             forall: unwrapOptNode(optForall, t => t.astOfForall()),
             returnTy: retTy.astOfType(),
@@ -2149,55 +2138,53 @@ semantics.addOperation<FuncAstParameter>("astOfParameter", {
     Parameter(param) {
         return param.astOfParameter();
     },
-    Parameter_regular(paramTy, _space, unusedIdOrId) {
-        const name = unusedIdOrId.astOfExpression() as FuncAstId;
-
+    Parameter_regular(paramTy, optId) {
+        const name = unwrapOptNode(optId, t => t.astOfExpression() as FuncAstId);
+        if (name === undefined) {
+            return {
+                kind: "parameter",
+                ty: paramTy.astOfType(),
+                name: undefined,
+                loc: createSrcInfo(this),
+            };
+        }
         // if a plainId, then check for validity
         if (name.kind === "plain_id") {
             checkPlainId(name.value, createSrcInfo(this), "Name of the parameter");
         }
-
         // check that it can be declared (also excludes operatorId, but not unusedId)
         checkDeclaredId(name.value, createSrcInfo(this), "Name of the parameter", true);
-
-        // and that it's not a methodId
-        if (name.kind === "method_id") {
-            throwFuncSyntaxError(
-                "Name of the parameter cannot start with ~ or .",
-                createSrcInfo(this),
-            );
-        }
-
         return {
             kind: "parameter",
             ty: paramTy.astOfType(),
-            name: name as (FuncAstQuotedId | FuncAstPlainId | FuncAstUnusedId),
+            name: name as (FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId | FuncAstUnusedId | undefined),
             loc: createSrcInfo(this),
         };
     },
-    Parameter_inferredType(paramName) {
-        const name = paramName.astOfExpression() as FuncAstId;
-        
+    Parameter_inferredType(funId) {
+        const name = funId.astOfExpression() as FuncAstId;
         // if a plainId, then check for validity
         if (name.kind === "plain_id") {
             checkPlainId(name.value, createSrcInfo(this), "Name of the parameter");
         }
-
         // check that it can be declared (also excludes operatorId and unusedId)
         checkDeclaredId(name.value, createSrcInfo(this), "Name of the parameter");
-
-        // and that it's not a methodId
-        if (name.kind === "method_id") {
-            throwFuncSyntaxError(
-                "Name of the parameter cannot start with ~ or .",
-                createSrcInfo(this),
-            );
-        }
-
         return {
             kind: "parameter",
             ty: undefined,
-            name: name as (FuncAstQuotedId | FuncAstPlainId),
+            name: name as (FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId),
+            loc: createSrcInfo(this),
+        };
+    },
+    Parameter_hole(node) {
+        return {
+            kind: "parameter",
+            ty: {
+                kind: "hole",
+                value: "_",
+                loc: createSrcInfo(this),
+            },
+            name: undefined,
             loc: createSrcInfo(this),
         };
     },
@@ -2282,6 +2269,21 @@ semantics.addOperation<FuncAstType>("astOfType", {
             loc: createSrcInfo(this),
         };
     },
+    upperId(_lookahead, upperPlainId) {
+        return {
+            kind: "type_var",
+            keyword: false,
+            name: upperPlainId.astOfExpression(),
+            loc: createSrcInfo(this),
+        };
+    },
+    hole(node) {
+        return {
+            kind: "hole",
+            value: node.sourceString as ("var" | "_"),
+            loc: createSrcInfo(this),
+        };
+    },
     unit(_lparen, _space, _rparen) {
         return {
             kind: "unit",
@@ -2312,17 +2314,12 @@ semantics.addOperation<FuncAstType>("astOfType", {
         return globBiTy.astOfType();
     },
     TypeBuiltinGlob_simple(globBiTy) {
-        const ty = globBiTy.sourceString;
-        if (ty === "_") {
-            return {
-                kind: "hole",
-                value: "_",
-                loc: createSrcInfo(this),
-            };
+        if (!globBiTy.isTerminal()) {
+            return globBiTy.astOfType();
         }
         return {
             kind: "type_primitive",
-            value: ty as FuncTypePrimitive,
+            value: globBiTy.sourceString as FuncTypePrimitive,
             loc: createSrcInfo(this),
         };
     },
@@ -2407,17 +2404,9 @@ semantics.addOperation<FuncAstType>("astOfType", {
     },
     TypeBuiltinParameter(paramBiTy) {
         if (paramBiTy.isTerminal()) {
-            const ty = paramBiTy.sourceString;
-            if (ty === "_") {
-                return {
-                    kind: "hole",
-                    value: "_",
-                    loc: createSrcInfo(this),
-                };
-            }
             return {
                 kind: "type_primitive",
-                value: ty as FuncTypePrimitive,
+                value: paramBiTy.sourceString as FuncTypePrimitive,
                 loc: createSrcInfo(this),
             };
         }

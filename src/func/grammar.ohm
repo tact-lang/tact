@@ -1,5 +1,17 @@
 FunC {
-  Module = Pragma* Include* ModuleItem*
+  Module = ModuleItem*
+
+  //
+  // Top-level, module items (with compiler directives)
+  //
+
+  ModuleItem = Pragma
+             | Include
+             | GlobalVariablesDeclaration
+             | ConstantsDefinition
+             | AsmFunctionDefinition
+             | FunctionDeclaration
+             | FunctionDefinition
 
   //
   // Compiler pragmas and includes
@@ -12,16 +24,6 @@ FunC {
   Include = "#include" stringLiteral ";"
 
   //
-  // Top-level, module items
-  //
-
-  ModuleItem = GlobalVariablesDeclaration
-             | ConstantsDefinition
-             | AsmFunctionDefinition
-             | FunctionDeclaration
-             | FunctionDefinition
-
-  //
   // Declarations of global variables
   //
 
@@ -30,7 +32,7 @@ FunC {
 
   TypeGlob = TypeBuiltinGlob ("->" TypeGlob)?
 
-  TypeBuiltinGlob = #("int" | "cell" | "slice" | "builder" | "cont" | "tuple" | "_") ~#rawId --simple
+  TypeBuiltinGlob = #("int" | "cell" | "slice" | "builder" | "cont" | "tuple" | hole) ~#rawId --simple
                   | unit | tupleEmpty | TensorGlob | TupleGlob
 
   TensorGlob = "(" NonemptyListOf<TypeGlob, ","> ")"
@@ -77,17 +79,18 @@ FunC {
   TensorReturn = "(" NonemptyListOf<TypeReturn, ","> ")"
   TupleReturn = "[" NonemptyListOf<TypeReturn, ","> "]"
 
-  // Function parameters
+  // Function parameters (upper is defined in Ohm's built-in rules)
   Parameters = "(" ListOf<Parameter, ","> ")"
-  Parameter = TypeParameter &#whiteSpace (unusedId | id) --regular
-            | id --inferredType
+  Parameter = TypeParameter (unusedId | functionId)? --regular
+            | functionId --inferredType
+            | "_" --hole
 
   // Function parameter types
   TypeParameter = TypeBuiltinParameter (&#whiteSpace "->" &#whiteSpace TypeParameter)?
 
-  TypeBuiltinParameter = id
+  TypeBuiltinParameter = upperId
                        | "int" | "cell" | "slice" | "builder" | "cont" | "tuple"
-                       | unit | tupleEmpty | TensorParameter | TupleParameter
+                       | hole | unit | tupleEmpty | TensorParameter | TupleParameter
 
   TensorParameter = "(" NonemptyListOf<TypeParameter, ","> ")"
   TupleParameter = "[" NonemptyListOf<TypeParameter, ","> "]"
@@ -150,7 +153,7 @@ FunC {
 
   // parse_expr10
   ExpressionAssign = ExpressionConditional
-                     &#whiteSpace ("=" | "+=" | "-=" | "*=" | "/=" | "%="
+                     &#whiteSpace ("=" ~#"=" | "+=" | "-=" | "*=" | "/=" | "%="
                           | "~/=" | "~%=" | "^/=" | "^%=" | "&="
                           | "|=" | "^=" | "<<=" | ">>=" | "~>>=" | "^>>=") &#whiteSpace
                      ExpressionAssign --op
@@ -179,6 +182,7 @@ FunC {
                          ExpressionMulBitwise
                          (&#whiteSpace ("+" | "-" | "|" | "^") &#whiteSpace
                           ExpressionMulBitwise)+ --ops
+                       | "-" &#whiteSpace ExpressionMulBitwise --negate
                        | ExpressionMulBitwise
 
   // parse_expr30
@@ -242,6 +246,7 @@ FunC {
   TypeBuiltinVarDecl = #("int" | "cell" | "slice" | "builder" | "cont" | "tuple" | hole) ~#rawId --simple
                      | unit | tupleEmpty | TensorVarDecl | TupleVarDecl
   // TODO: return `| id`, differentiate between function calls and variable declarations during syntax analysis and AST construction (through careful use of declared type variables in `forall`)
+  // NOTE: this can be easily added using the same heuristic as in parameters -- upperId, because type variables are advised to be named starting with an uppercase letter.
 
   TensorVarDecl = "(" NonemptyListOf<TypeVarDecl, ","> ")"
   TupleVarDecl = "[" NonemptyListOf<TypeVarDecl, ","> "]"
@@ -251,7 +256,7 @@ FunC {
   //
 
   // Special types or values
-  hole = ("_" | "var") ~id
+  hole = ("_" | "var") ~rawId
   unit = "(" whiteSpace* ")"
   // (not a separate type, added purely for convenience)
   tupleEmpty = "[" whiteSpace* "]"
@@ -279,6 +284,9 @@ FunC {
 
   // Method identifiers (not a separate type, added purely for convenience)
   methodId = ~("\"" | "{-") ("." | "~") ~((hole | integerLiteral | delimiter | operator | primitive) ~rawId) rawId
+
+  // Uppercase plain identifiers (common for type variables)
+  upperId = ~("\"" | "{-" | "." | "~") ~((hole | integerLiteral | delimiter | operator | primitive) ~plainId) &upper plainId
 
   // Identifiers, with invalidation (keywords, numbers, etc.) during syntax analysis
   // — this makes this parser closer to the C++ one, and also improves error messages
