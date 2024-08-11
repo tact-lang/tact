@@ -88,7 +88,7 @@ function locationStr(sourceInfo: FuncSrcInfo): string {
 }
 
 /**
- * Throws a FunC parse error occured in the given `path` file
+ * Throws a FunC parse error occurred in the given `path` file
  */
 export function throwFuncParseError(
     matchResult: MatchResult,
@@ -106,7 +106,7 @@ export function throwFuncParseError(
 }
 
 /**
- * Throws a FunC syntax error occcured with the given `source`
+ * Throws a FunC syntax error occurred with the given `source`
  */
 export function throwFuncSyntaxError(
     message: string,
