@@ -192,7 +192,7 @@ const funcBuiltinOperatorFunctions = [
     "_>=_",
     "_<=>_",
 ];
-    
+
 const funcBuiltinFunctions = [
     "divmod",
     "moddiv",
@@ -348,7 +348,12 @@ const funcHexIntRegex = /^\-?0x[0-9a-fA-F]+$/;
  * - NOT a builtin constant
  * - NOT an underscore (unless it's a parameter or variable declaration)
  */
-function checkDeclaredId(ident: string, loc: FuncSrcInfo, altPrefix?: string, allowUnused?: boolean): void | never {
+function checkDeclaredId(
+    ident: string,
+    loc: FuncSrcInfo,
+    altPrefix?: string,
+    allowUnused?: boolean,
+): void | never {
     // not an operatorId
     if (funcBuiltinOperatorFunctions.includes(ident)) {
         throwFuncSyntaxError(
@@ -408,33 +413,61 @@ function checkOperatorId(ident: string): boolean {
  * - NOT an operator (without underscores, like operatorId)
  * - NOT a number
  */
-function checkPlainId(ident: string, loc: FuncSrcInfo, altPrefix?: string): void | never {
+function checkPlainId(
+    ident: string,
+    loc: FuncSrcInfo,
+    altPrefix?: string,
+): void | never {
     if (funcKeywords.includes(ident)) {
-        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be a keyword`, loc);
+        throwFuncSyntaxError(
+            `${altPrefix ?? "Identifier"} cannot be a keyword`,
+            loc,
+        );
     }
 
     if (funcControlKeywords.includes(ident)) {
-        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be a control keyword`, loc);
+        throwFuncSyntaxError(
+            `${altPrefix ?? "Identifier"} cannot be a control keyword`,
+            loc,
+        );
     }
 
     if (funcTypeKeywords.includes(ident)) {
-        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be a type keyword`, loc);
+        throwFuncSyntaxError(
+            `${altPrefix ?? "Identifier"} cannot be a type keyword`,
+            loc,
+        );
     }
 
     if (funcDirectives.includes(ident)) {
-        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be a compiler directive`, loc);
+        throwFuncSyntaxError(
+            `${altPrefix ?? "Identifier"} cannot be a compiler directive`,
+            loc,
+        );
     }
 
     if (funcDelimiters.includes(ident)) {
-        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be a delimiter`, loc);
+        throwFuncSyntaxError(
+            `${altPrefix ?? "Identifier"} cannot be a delimiter`,
+            loc,
+        );
     }
 
     if (funcOperators.includes(ident)) {
-        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be an operator`, loc);
+        throwFuncSyntaxError(
+            `${altPrefix ?? "Identifier"} cannot be an operator`,
+            loc,
+        );
     }
 
-    if (ident.match(funcDecIntRegex) !== null || ident.match(funcHexIntRegex) !== null) {
-        throwFuncSyntaxError(`${altPrefix ?? "Identifier"} cannot be an integer literal`, loc);
+    if (
+        ident.match(funcDecIntRegex) !== null ||
+        ident.match(funcHexIntRegex) !== null
+    ) {
+        throwFuncSyntaxError(
+            `${altPrefix ?? "Identifier"} cannot be an integer literal`,
+            loc,
+        );
     }
 }
 
@@ -670,7 +703,12 @@ export type FuncAstTypeVar = {
 export type FuncAstParameter = {
     kind: "parameter";
     ty: FuncAstType | undefined;
-    name: FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId | FuncAstUnusedId | undefined;
+    name:
+        | FuncAstMethodId
+        | FuncAstQuotedId
+        | FuncAstPlainId
+        | FuncAstUnusedId
+        | undefined;
     loc: FuncSrcInfo;
 };
 
@@ -896,7 +934,7 @@ export type FuncOpAssign =
     | ">>="
     | "~>>="
     | "^>>=";
-        
+
 /**
  * parse_expr13
  */
@@ -974,7 +1012,15 @@ export type FuncExpressionMulBitwiseOp = {
 };
 
 export type FuncOpMulBitwise =
-    | "*" | "/%" | "/" | "%" | "~/" | "~%" | "^/" | "^%" | "&";
+    | "*"
+    | "/%"
+    | "/"
+    | "%"
+    | "~/"
+    | "~%"
+    | "^/"
+    | "^%"
+    | "&";
 
 /**
  * parse_expr75
@@ -1154,7 +1200,13 @@ export type FuncAstTypePrimitive = {
     loc: FuncSrcInfo;
 };
 
-export type FuncTypePrimitive = "int" | "cell" | "slice" | "builder" | "cont" | "tuple";
+export type FuncTypePrimitive =
+    | "int"
+    | "cell"
+    | "slice"
+    | "builder"
+    | "cont"
+    | "tuple";
 
 /**
  * (..., ...) or [..., ...] or (_ | var) or ()
@@ -1415,7 +1467,9 @@ semantics.addOperation<FuncAstNode>("astOfModuleItem", {
     Pragma_literal(_pragmaKwd, literal, _semicolon) {
         return {
             kind: "pragma_literal",
-            literal: literal.sourceString as ("allow-post-modification" | "compute-asm-ltr"),
+            literal: literal.sourceString as
+                | "allow-post-modification"
+                | "compute-asm-ltr",
             loc: createSrcInfo(this),
         };
     },
@@ -1461,14 +1515,18 @@ semantics.addOperation<FuncAstNode>("astOfModuleItem", {
     GlobalVariablesDeclaration(_globalKwd, globals, _semicolon) {
         return {
             kind: "global_variables_declaration",
-            globals: globals.asIteration().children.map((x) => x.astOfGlobalVariable()),
+            globals: globals
+                .asIteration()
+                .children.map((x) => x.astOfGlobalVariable()),
             loc: createSrcInfo(this),
         };
     },
     ConstantsDefinition(_constKwd, constants, _semicolon) {
         return {
             kind: "constants_definition",
-            constants: constants.asIteration().children.map((x) => x.astOfConstant()),
+            constants: constants
+                .asIteration()
+                .children.map((x) => x.astOfConstant()),
             loc: createSrcInfo(this),
         };
     },
@@ -1487,8 +1545,10 @@ semantics.addOperation<FuncAstNode>("astOfModuleItem", {
             name: prefix.name,
             parameters: prefix.parameters,
             attributes: prefix.attributes,
-            arrangement: unwrapOptNode(optArrangement, t => t.astOfAsmArrangement()),
-            asmStrings: asmStrings.children.map(x => x.astOfExpression()),
+            arrangement: unwrapOptNode(optArrangement, (t) =>
+                t.astOfAsmArrangement(),
+            ),
+            asmStrings: asmStrings.children.map((x) => x.astOfExpression()),
             loc: createSrcInfo(this),
         };
     },
@@ -1503,7 +1563,6 @@ semantics.addOperation<FuncAstNode>("astOfModuleItem", {
             attributes: prefix.attributes,
             loc: createSrcInfo(this),
         };
-        
     },
     FunctionDefinition(fnCommonPrefix, _lbrace, stmts, _rbrace) {
         const prefix = fnCommonPrefix.astOfFunctionCommonPrefix();
@@ -1514,10 +1573,9 @@ semantics.addOperation<FuncAstNode>("astOfModuleItem", {
             name: prefix.name,
             parameters: prefix.parameters,
             attributes: prefix.attributes,
-            statements: stmts.children.map(x => x.astOfStatement()),
+            statements: stmts.children.map((x) => x.astOfStatement()),
             loc: createSrcInfo(this),
         };
-        
     },
 });
 
@@ -1531,7 +1589,7 @@ semantics.addOperation<FuncAstStatement>("astOfStatement", {
             kind: "statement_return",
             expression: expr.astOfExpression(),
             loc: createSrcInfo(this),
-        }
+        };
     },
     StatementBlock(_lbrace, statements, _rbrace) {
         return {
@@ -1544,7 +1602,7 @@ semantics.addOperation<FuncAstStatement>("astOfStatement", {
         return {
             kind: "statement_empty",
             loc: createSrcInfo(this),
-        }
+        };
     },
     StatementCondition(cond) {
         return cond.astOfStatement();
@@ -1554,21 +1612,37 @@ semantics.addOperation<FuncAstStatement>("astOfStatement", {
             kind: "statement_condition_if",
             positive: ifOr.sourceString === "if" ? true : false,
             condition: cond.astOfExpression(),
-            consequences: stmts.children.map(x => x.astOfStatement()),
-            alternatives: unwrapOptNode(optElse, t => t.astOfElseBlock()),
+            consequences: stmts.children.map((x) => x.astOfStatement()),
+            alternatives: unwrapOptNode(optElse, (t) => t.astOfElseBlock()),
             loc: createSrcInfo(this),
         };
     },
-    StatementCondition_elseif(ifOr, condIf, _lbrace, stmtsIf, _rbrace, elseifOr, condElseif, _lbrace2, stmtsElseif, _rbrace2, optElse) {
+    StatementCondition_elseif(
+        ifOr,
+        condIf,
+        _lbrace,
+        stmtsIf,
+        _rbrace,
+        elseifOr,
+        condElseif,
+        _lbrace2,
+        stmtsElseif,
+        _rbrace2,
+        optElse,
+    ) {
         return {
             kind: "statement_condition_elseif",
             positiveIf: ifOr.sourceString === "if" ? true : false,
             conditionIf: condIf.astOfExpression(),
-            consequencesIf: stmtsIf.children.map(x => x.astOfStatement()),
+            consequencesIf: stmtsIf.children.map((x) => x.astOfStatement()),
             positiveElseif: elseifOr.sourceString === "elseif" ? true : false,
             conditionElseif: condElseif.astOfExpression(),
-            consequencesElseif: stmtsElseif.children.map(x => x.astOfStatement()),
-            alternativesElseif: unwrapOptNode(optElse, t => t.astOfElseBlock()),
+            consequencesElseif: stmtsElseif.children.map((x) =>
+                x.astOfStatement(),
+            ),
+            alternativesElseif: unwrapOptNode(optElse, (t) =>
+                t.astOfElseBlock(),
+            ),
             loc: createSrcInfo(this),
         };
     },
@@ -1576,14 +1650,22 @@ semantics.addOperation<FuncAstStatement>("astOfStatement", {
         return {
             kind: "statement_repeat",
             iterations: expr.astOfExpression(),
-            statements: stmts.children.map(x => x.astOfStatement()),
+            statements: stmts.children.map((x) => x.astOfStatement()),
             loc: createSrcInfo(this),
         };
     },
-    StatementUntil(_doKwd, _lbrace, stmts, _rbrace, _untilKwd, cond, _semicolon) {
+    StatementUntil(
+        _doKwd,
+        _lbrace,
+        stmts,
+        _rbrace,
+        _untilKwd,
+        cond,
+        _semicolon,
+    ) {
         return {
             kind: "statement_until",
-            statements: stmts.children.map(x => x.astOfStatement()),
+            statements: stmts.children.map((x) => x.astOfStatement()),
             condition: cond.astOfExpression(),
             loc: createSrcInfo(this),
         };
@@ -1592,17 +1674,31 @@ semantics.addOperation<FuncAstStatement>("astOfStatement", {
         return {
             kind: "statement_while",
             condition: cond.astOfExpression(),
-            statements: stmts.children.map(x => x.astOfStatement()),
+            statements: stmts.children.map((x) => x.astOfStatement()),
             loc: createSrcInfo(this),
         };
     },
-    StatementTryCatch(_tryKwd, _lbrace, stmtsTry, _rbrace, _catchKwd, _lparen, exceptionName, _comma, exitCodeName, _rparen, _lbrace2, stmtsCatch, _rbrace2) {
+    StatementTryCatch(
+        _tryKwd,
+        _lbrace,
+        stmtsTry,
+        _rbrace,
+        _catchKwd,
+        _lparen,
+        exceptionName,
+        _comma,
+        exitCodeName,
+        _rparen,
+        _lbrace2,
+        stmtsCatch,
+        _rbrace2,
+    ) {
         return {
             kind: "statement_try_catch",
-            statementsTry: stmtsTry.children.map(x => x.astOfStatement()),
+            statementsTry: stmtsTry.children.map((x) => x.astOfStatement()),
             catchExceptionName: exceptionName.astOfExpression(),
             catchExitCodeName: exitCodeName.astOfExpression(),
-            statementsCatch: stmtsCatch.children.map(x => x.astOfStatement()),
+            statementsCatch: stmtsCatch.children.map((x) => x.astOfStatement()),
             loc: createSrcInfo(this),
         };
     },
@@ -1640,7 +1736,17 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
     ExpressionConditional(expr) {
         return expr.astOfExpression();
     },
-    ExpressionConditional_ternary(exprLeft, _space1, _qmark, _space2, exprMiddle, _space3, _colon, _space4, exprRight) {
+    ExpressionConditional_ternary(
+        exprLeft,
+        _space1,
+        _qmark,
+        _space2,
+        exprMiddle,
+        _space3,
+        _colon,
+        _space4,
+        exprRight,
+    ) {
         return {
             kind: "expression_conditional",
             condition: exprLeft.astOfExpression(),
@@ -1669,11 +1775,15 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
         return expr.astOfExpression();
     },
     ExpressionBitwiseShift_ops(exprLeft, _space, ops, _spaces, exprs) {
-        const resolvedOps = ops.children.map(x => x.sourceString as FuncOpBitwiseShift);
-        const resolvedExprs = exprs.children.map(x => x.astOfExpression() as FuncAstExpressionAddBitwise);
-        const zipped = resolvedOps.map(
-            (resOp, i) => { return { op: resOp, expr: resolvedExprs[i]! } }
+        const resolvedOps = ops.children.map(
+            (x) => x.sourceString as FuncOpBitwiseShift,
         );
+        const resolvedExprs = exprs.children.map(
+            (x) => x.astOfExpression() as FuncAstExpressionAddBitwise,
+        );
+        const zipped = resolvedOps.map((resOp, i) => {
+            return { op: resOp, expr: resolvedExprs[i]! };
+        });
         return {
             kind: "expression_bitwise_shift",
             left: exprLeft.astOfExpression(),
@@ -1686,13 +1796,25 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
     ExpressionAddBitwise(expr) {
         return expr.astOfExpression();
     },
-    ExpressionAddBitwise_ops(optNegate, _optSpace, exprLeft, _space, ops, _spaces,exprs) {
-        const negate = unwrapOptNode(optNegate, t => t.sourceString);
-        const resolvedOps = ops.children.map(x => x.sourceString as FuncOpAddBitwise);
-        const resolvedExprs = exprs.children.map(x => x.astOfExpression() as FuncAstExpressionMulBitwise);
-        const zipped = resolvedOps.map(
-            (resOp, i) => { return { op: resOp, expr: resolvedExprs[i]! } }
+    ExpressionAddBitwise_ops(
+        optNegate,
+        _optSpace,
+        exprLeft,
+        _space,
+        ops,
+        _spaces,
+        exprs,
+    ) {
+        const negate = unwrapOptNode(optNegate, (t) => t.sourceString);
+        const resolvedOps = ops.children.map(
+            (x) => x.sourceString as FuncOpAddBitwise,
         );
+        const resolvedExprs = exprs.children.map(
+            (x) => x.astOfExpression() as FuncAstExpressionMulBitwise,
+        );
+        const zipped = resolvedOps.map((resOp, i) => {
+            return { op: resOp, expr: resolvedExprs[i]! };
+        });
         return {
             kind: "expression_add_bitwise",
             negateLeft: negate === undefined ? false : true,
@@ -1708,7 +1830,7 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
             left: expr.astOfExpression(),
             ops: [],
             loc: createSrcInfo(this),
-        }
+        };
     },
 
     // parse_expr30
@@ -1716,11 +1838,15 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
         return expr.astOfExpression();
     },
     ExpressionMulBitwise_ops(exprLeft, _space, ops, _spaces, exprs) {
-        const resolvedOps = ops.children.map(x => x.sourceString as FuncOpMulBitwise);
-        const resolvedExprs = exprs.children.map(x => x.astOfExpression() as FuncAstExpressionUnary);
-        const zipped = resolvedOps.map(
-            (resOp, i) => { return { op: resOp, expr: resolvedExprs[i]! } }
+        const resolvedOps = ops.children.map(
+            (x) => x.sourceString as FuncOpMulBitwise,
         );
+        const resolvedExprs = exprs.children.map(
+            (x) => x.astOfExpression() as FuncAstExpressionUnary,
+        );
+        const zipped = resolvedOps.map((resOp, i) => {
+            return { op: resOp, expr: resolvedExprs[i]! };
+        });
         return {
             kind: "expression_mul_bitwise",
             left: exprLeft.astOfExpression(),
@@ -1739,7 +1865,7 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
             op: notOp.sourceString as "~",
             operand: operand.astOfExpression(),
             loc: createSrcInfo(this),
-        }
+        };
     },
 
     // parse_expr80
@@ -1747,11 +1873,15 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
         return expr.astOfExpression();
     },
     ExpressionMethod_calls(exprLeft, methodIds, _lookahead, exprs) {
-        const resolvedIds = methodIds.children.map(x => x.astOfExpression() as FuncAstMethodId);
-        const resolvedExprs = exprs.children.map(x => x.astOfExpression() as FuncArgument);
-        const zipped = resolvedIds.map(
-            (resId, i) => { return { name: resId, argument: resolvedExprs[i]! } }
+        const resolvedIds = methodIds.children.map(
+            (x) => x.astOfExpression() as FuncAstMethodId,
         );
+        const resolvedExprs = exprs.children.map(
+            (x) => x.astOfExpression() as FuncArgument,
+        );
+        const zipped = resolvedIds.map((resId, i) => {
+            return { name: resId, argument: resolvedExprs[i]! };
+        });
         return {
             kind: "expression_method",
             object: exprLeft.astOfExpression(),
@@ -1759,7 +1889,7 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
             loc: createSrcInfo(this),
         };
     },
-    
+
     // parse_expr90, and some inner things
     ExpressionVarFun(expr) {
         return expr.astOfExpression();
@@ -1773,24 +1903,34 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
             if (node.kind === "method_id") {
                 throwFuncSyntaxError(
                     "Name of the variable cannot start with . or ~",
-                    createSrcInfo(this)
+                    createSrcInfo(this),
                 );
             }
             if (node.kind === "plain_id") {
-                checkPlainId(node.value, createSrcInfo(this), "Name of the variable");
+                checkPlainId(
+                    node.value,
+                    createSrcInfo(this),
+                    "Name of the variable",
+                );
             }
-            checkDeclaredId(node.value, createSrcInfo(this), "Name of the variable");
+            checkDeclaredId(
+                node.value,
+                createSrcInfo(this),
+                "Name of the variable",
+            );
         };
 
-        if (names.kind === "expression_tensor_var_decl"
-            || names.kind === "expression_tuple_var_decl") {
+        if (
+            names.kind === "expression_tensor_var_decl" ||
+            names.kind === "expression_tuple_var_decl"
+        ) {
             for (let i = 0; i < names.names.length; i += 1) {
                 checkVarDeclName(names.names[i]!);
             }
         } else {
             checkVarDeclName(names);
         }
-        
+
         return {
             kind: "expression_var_decl",
             ty: varDeclTy.astOfType(),
@@ -1805,14 +1945,14 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
         return {
             kind: "expression_fun_call",
             object: expr.astOfExpression(),
-            arguments: args.children.map(x => x.astOfExpression()),
+            arguments: args.children.map((x) => x.astOfExpression()),
             loc: createSrcInfo(this),
         };
     },
     ExpressionArgument(expr) {
         return expr.astOfExpression();
     },
-    
+
     // parse_expr100, and some inner things
     ExpressionPrimary(expr) {
         return expr.astOfExpression();
@@ -1827,7 +1967,9 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
     ExpressionTensor(_lparen, exprs, _rparen) {
         return {
             kind: "expression_tensor",
-            expressions: exprs.asIteration().children.map(x => x.astOfExpression()),
+            expressions: exprs
+                .asIteration()
+                .children.map((x) => x.astOfExpression()),
             loc: createSrcInfo(this),
         };
     },
@@ -1836,19 +1978,22 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
             kind: "expression_tuple",
             expressions: [],
             loc: createSrcInfo(this),
-        }
+        };
     },
     ExpressionTuple(_lparen, exprs, _rparen) {
         return {
             kind: "expression_tuple",
-            expressions: exprs.asIteration().children.map(x => x.astOfExpression()),
+            expressions: exprs
+                .asIteration()
+                .children.map((x) => x.astOfExpression()),
             loc: createSrcInfo(this),
         };
     },
     integerLiteral(optNegate, numLit) {
-        const negate = unwrapOptNode(optNegate, t => t.sourceString);
-        const value = (negate === undefined ? 1n : -1n) * BigInt(numLit.sourceString);
-        
+        const negate = unwrapOptNode(optNegate, (t) => t.sourceString);
+        const value =
+            (negate === undefined ? 1n : -1n) * BigInt(numLit.sourceString);
+
         return {
             kind: "integer_literal",
             value: value,
@@ -1883,20 +2028,24 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
         return {
             kind: "string_singleline",
             value: contents.sourceString,
-            ty: unwrapOptNode(optTy, t => t.sourceString) as (FuncStringType | undefined),
+            ty: unwrapOptNode(optTy, (t) => t.sourceString) as
+                | FuncStringType
+                | undefined,
             loc: createSrcInfo(this),
-        }
+        };
     },
     stringLiteral_multiLine(_lquote, contents, _rquote, optTy) {
         return {
             kind: "string_multiline",
             value: contents.sourceString,
-            ty: unwrapOptNode(optTy, t => t.sourceString) as (FuncStringType | undefined),
+            ty: unwrapOptNode(optTy, (t) => t.sourceString) as
+                | FuncStringType
+                | undefined,
             loc: createSrcInfo(this),
-        }
+        };
     },
     functionId(optPrefix, rawId) {
-        const prefix = unwrapOptNode(optPrefix, t => t.sourceString);
+        const prefix = unwrapOptNode(optPrefix, (t) => t.sourceString);
 
         if (prefix === undefined) {
             return rawId.astOfExpression();
@@ -1904,7 +2053,7 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
 
         return {
             kind: "method_id",
-            prefix: prefix as ("." | "~"),
+            prefix: prefix as "." | "~",
             value: (rawId.astOfExpression() as FuncAstId).value,
             loc: createSrcInfo(this),
         };
@@ -1912,10 +2061,10 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
     methodId(prefix, rawId) {
         return {
             kind: "method_id",
-            prefix: prefix.sourceString as ("." | "~"),
+            prefix: prefix.sourceString as "." | "~",
             value: (rawId.astOfExpression() as FuncAstId).value,
             loc: createSrcInfo(this),
-        }
+        };
     },
     id(rawId) {
         return rawId.astOfExpression();
@@ -1928,21 +2077,21 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
             kind: "quoted_id",
             value: [ltick, idContents.sourceString, rtick].join(""),
             loc: createSrcInfo(this),
-        }
+        };
     },
     operatorId(opId) {
         return opId.astOfExpression();
     },
     operatorId_common(optCaret, underscore1, op, underscore2) {
         const value = [
-            unwrapOptNode(optCaret, t => t.sourceString) ?? "",
-            underscore1, op, underscore2,
+            unwrapOptNode(optCaret, (t) => t.sourceString) ?? "",
+            underscore1,
+            op,
+            underscore2,
         ].join("");
 
         return {
-            kind: checkOperatorId(value)
-                ? "operator_id"
-                : "plain_id",
+            kind: checkOperatorId(value) ? "operator_id" : "plain_id",
             value: value,
             loc: createSrcInfo(this),
         };
@@ -1967,14 +2116,14 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
             kind: "plain_id",
             value: value,
             loc: createSrcInfo(this),
-        }
+        };
     },
     unusedId(underscore) {
         return {
             kind: "unused_id",
             value: underscore.sourceString as "_",
             loc: createSrcInfo(this),
-        }
+        };
     },
 });
 
@@ -1989,14 +2138,14 @@ semantics.addOperation<FuncVarDeclPart>("astOfVarDeclPart", {
     ExpressionTensorVarDecl(_lparen, ids, _rparen) {
         return {
             kind: "expression_tensor_var_decl",
-            names: ids.asIteration().children.map(x => x.astOfIdOrUnusedId()),
+            names: ids.asIteration().children.map((x) => x.astOfIdOrUnusedId()),
             loc: createSrcInfo(this),
         };
     },
     ExpressionTupleVarDecl(_lbrack, ids, _rbrack) {
         return {
             kind: "expression_tuple_var_decl",
-            names: ids.asIteration().children.map(x => x.astOfIdOrUnusedId()),
+            names: ids.asIteration().children.map((x) => x.astOfIdOrUnusedId()),
             loc: createSrcInfo(this),
         };
     },
@@ -2008,17 +2157,35 @@ semantics.addOperation<FuncAstId>("astOfIdOrUnusedId", {
 });
 
 // Miscellaneous utility nodes, gathered together for convenience
-// 
+//
 // A couple of them don't even have their own dedicated TypeScript types,
 // and most were introduced mostly for parsing convenience
 
 // op? decNum (. decNum)? (. decNum)?
 semantics.addOperation<FuncAstVersionRange>("astOfVersionRange", {
-    versionRange(optOp, majorVers, _optDot, optMinorVers, _optDot2, optPatchVers) {
-        const op = unwrapOptNode(optOp, t => t.sourceString) as ("=" | "^" | "<=" | ">=" | "<" | ">" | undefined);
+    versionRange(
+        optOp,
+        majorVers,
+        _optDot,
+        optMinorVers,
+        _optDot2,
+        optPatchVers,
+    ) {
+        const op = unwrapOptNode(optOp, (t) => t.sourceString) as
+            | "="
+            | "^"
+            | "<="
+            | ">="
+            | "<"
+            | ">"
+            | undefined;
         const major = majorVers.astOfExpression() as FuncAstIntegerLiteral;
-        const minor = unwrapOptNode(optMinorVers, t => t.astOfExpression()) as (FuncAstIntegerLiteral | undefined);
-        const patch = unwrapOptNode(optPatchVers, t => t.astOfExpression()) as (FuncAstIntegerLiteral | undefined);
+        const minor = unwrapOptNode(optMinorVers, (t) =>
+            t.astOfExpression(),
+        ) as FuncAstIntegerLiteral | undefined;
+        const patch = unwrapOptNode(optPatchVers, (t) =>
+            t.astOfExpression(),
+        ) as FuncAstIntegerLiteral | undefined;
         return {
             kind: "version_range",
             op: op,
@@ -2026,7 +2193,7 @@ semantics.addOperation<FuncAstVersionRange>("astOfVersionRange", {
             minor: minor?.value,
             patch: patch?.value,
             loc: createSrcInfo(this),
-        }
+        };
     },
 });
 
@@ -2036,10 +2203,18 @@ semantics.addOperation<FuncAstGlobalVariable>("astOfGlobalVariable", {
         const name = globName.astOfExpression() as FuncAstId;
         // if a plainId, then check for validity
         if (name.kind === "plain_id") {
-            checkPlainId(name.value, createSrcInfo(this), "Name of the global variable");
+            checkPlainId(
+                name.value,
+                createSrcInfo(this),
+                "Name of the global variable",
+            );
         }
         // check that it can be declared (also excludes operatorId and unusedId)
-        checkDeclaredId(name.value, createSrcInfo(this), "Name of the global variable");
+        checkDeclaredId(
+            name.value,
+            createSrcInfo(this),
+            "Name of the global variable",
+        );
         // and that it's not a methodId
         if (name.kind === "method_id") {
             throwFuncSyntaxError(
@@ -2050,8 +2225,8 @@ semantics.addOperation<FuncAstGlobalVariable>("astOfGlobalVariable", {
         // leaving only quotedId or plainId
         return {
             kind: "global_variable",
-            ty: unwrapOptNode(optGlobTy, t => t.astOfType()),
-            name: name as (FuncAstQuotedId | FuncAstPlainId),
+            ty: unwrapOptNode(optGlobTy, (t) => t.astOfType()),
+            name: name as FuncAstQuotedId | FuncAstPlainId,
             loc: createSrcInfo(this),
         };
     },
@@ -2060,14 +2235,22 @@ semantics.addOperation<FuncAstGlobalVariable>("astOfGlobalVariable", {
 // (slice | int)? id = Expression
 semantics.addOperation<FuncAstConstant>("astOfConstant", {
     ConstantDefinition(optConstTy, constName, _eqSign, expr) {
-        const ty = unwrapOptNode(optConstTy, t => t.sourceString);
+        const ty = unwrapOptNode(optConstTy, (t) => t.sourceString);
         const name = constName.astOfExpression() as FuncAstId;
         // if a plainId, then check for validity
         if (name.kind === "plain_id") {
-            checkPlainId(name.value, createSrcInfo(this), "Name of the constant");
+            checkPlainId(
+                name.value,
+                createSrcInfo(this),
+                "Name of the constant",
+            );
         }
         // check that it can be declared (also excludes operatorId and unusedId)
-        checkDeclaredId(name.value, createSrcInfo(this), "Name of the constant");
+        checkDeclaredId(
+            name.value,
+            createSrcInfo(this),
+            "Name of the constant",
+        );
         // and that it's not a methodId
         if (name.kind === "method_id") {
             throwFuncSyntaxError(
@@ -2077,8 +2260,8 @@ semantics.addOperation<FuncAstConstant>("astOfConstant", {
         }
         return {
             kind: "constant",
-            ty: ty !== undefined ? ty as ("slice" | "int") : undefined,
-            name: name as (FuncAstQuotedId | FuncAstPlainId),
+            ty: ty !== undefined ? (ty as "slice" | "int") : undefined,
+            name: name as FuncAstQuotedId | FuncAstPlainId,
             value: expr.astOfExpression(),
             loc: createSrcInfo(this),
         };
@@ -2100,16 +2283,26 @@ semantics.addOperation<FuncFunctionCommonPrefix>("astOfFunctionCommonPrefix", {
         const name = fnName.astOfExpression() as FuncAstId;
         // if a plainId, then check for validity
         if (name.kind === "plain_id") {
-            checkPlainId(name.value, createSrcInfo(this), "Name of the function");
+            checkPlainId(
+                name.value,
+                createSrcInfo(this),
+                "Name of the function",
+            );
         }
         // check that it can be declared (also excludes operatorId and unusedId)
-        checkDeclaredId(name.value, createSrcInfo(this), "Name of the function");
+        checkDeclaredId(
+            name.value,
+            createSrcInfo(this),
+            "Name of the function",
+        );
         return {
-            forall: unwrapOptNode(optForall, t => t.astOfForall()),
+            forall: unwrapOptNode(optForall, (t) => t.astOfForall()),
             returnTy: retTy.astOfType(),
-            name: name as (FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId),
+            name: name as FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId,
             parameters: fnParams.astOfParameters(),
-            attributes: fnAttributes.children.map(x => x.astOfFunctionAttribute()),
+            attributes: fnAttributes.children.map((x) =>
+                x.astOfFunctionAttribute(),
+            ),
         };
     },
 });
@@ -2119,16 +2312,16 @@ semantics.addOperation<FuncAstForall>("astOfForall", {
     Forall(_forallKwd, _space1, typeVars, _space2, _mapsToKwd, _space3) {
         return {
             kind: "forall",
-            tyVars: typeVars.asIteration().children.map(x => x.astOfType()),
+            tyVars: typeVars.asIteration().children.map((x) => x.astOfType()),
             loc: createSrcInfo(this),
-        }
+        };
     },
 });
 
 // (Type? Id, ...)
 semantics.addOperation<FuncAstParameter[]>("astOfParameters", {
     Parameters(_lparen, params, _rparen) {
-        return params.asIteration().children.map(x => x.astOfParameter());
+        return params.asIteration().children.map((x) => x.astOfParameter());
     },
 });
 
@@ -2138,7 +2331,10 @@ semantics.addOperation<FuncAstParameter>("astOfParameter", {
         return param.astOfParameter();
     },
     Parameter_regular(paramTy, optId) {
-        const name = unwrapOptNode(optId, t => t.astOfExpression() as FuncAstId);
+        const name = unwrapOptNode(
+            optId,
+            (t) => t.astOfExpression() as FuncAstId,
+        );
         if (name === undefined) {
             return {
                 kind: "parameter",
@@ -2149,14 +2345,28 @@ semantics.addOperation<FuncAstParameter>("astOfParameter", {
         }
         // if a plainId, then check for validity
         if (name.kind === "plain_id") {
-            checkPlainId(name.value, createSrcInfo(this), "Name of the parameter");
+            checkPlainId(
+                name.value,
+                createSrcInfo(this),
+                "Name of the parameter",
+            );
         }
         // check that it can be declared (also excludes operatorId, but not unusedId)
-        checkDeclaredId(name.value, createSrcInfo(this), "Name of the parameter", true);
+        checkDeclaredId(
+            name.value,
+            createSrcInfo(this),
+            "Name of the parameter",
+            true,
+        );
         return {
             kind: "parameter",
             ty: paramTy.astOfType(),
-            name: name as (FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId | FuncAstUnusedId | undefined),
+            name: name as
+                | FuncAstMethodId
+                | FuncAstQuotedId
+                | FuncAstPlainId
+                | FuncAstUnusedId
+                | undefined,
             loc: createSrcInfo(this),
         };
     },
@@ -2164,14 +2374,22 @@ semantics.addOperation<FuncAstParameter>("astOfParameter", {
         const name = funId.astOfExpression() as FuncAstId;
         // if a plainId, then check for validity
         if (name.kind === "plain_id") {
-            checkPlainId(name.value, createSrcInfo(this), "Name of the parameter");
+            checkPlainId(
+                name.value,
+                createSrcInfo(this),
+                "Name of the parameter",
+            );
         }
         // check that it can be declared (also excludes operatorId and unusedId)
-        checkDeclaredId(name.value, createSrcInfo(this), "Name of the parameter");
+        checkDeclaredId(
+            name.value,
+            createSrcInfo(this),
+            "Name of the parameter",
+        );
         return {
             kind: "parameter",
             ty: undefined,
-            name: name as (FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId),
+            name: name as FuncAstMethodId | FuncAstQuotedId | FuncAstPlainId,
             loc: createSrcInfo(this),
         };
     },
@@ -2197,7 +2415,7 @@ semantics.addOperation<FuncAstAsmArrangement>("astOfAsmArrangement", {
     AsmArrangement_arguments(_lparen, args, _rparen) {
         return {
             kind: "asm_arrangement",
-            arguments: args.children.map(x => x.astOfExpression()),
+            arguments: args.children.map((x) => x.astOfExpression()),
             returns: undefined,
             loc: createSrcInfo(this),
         };
@@ -2206,15 +2424,23 @@ semantics.addOperation<FuncAstAsmArrangement>("astOfAsmArrangement", {
         return {
             kind: "asm_arrangement",
             arguments: undefined,
-            returns: rets.children.map(x => x.astOfExpression()),
+            returns: rets.children.map((x) => x.astOfExpression()),
             loc: createSrcInfo(this),
         };
     },
-    AsmArrangement_argumentsToReturns(_lparen, args, _space, _mapsTo, _space1, rets, _rparen) {
+    AsmArrangement_argumentsToReturns(
+        _lparen,
+        args,
+        _space,
+        _mapsTo,
+        _space1,
+        rets,
+        _rparen,
+    ) {
         return {
             kind: "asm_arrangement",
-            arguments: args.children.map(x => x.astOfExpression()),
-            returns: rets.children.map(x => x.astOfExpression()),
+            arguments: args.children.map((x) => x.astOfExpression()),
+            returns: rets.children.map((x) => x.astOfExpression()),
             loc: createSrcInfo(this),
         };
     },
@@ -2229,10 +2455,10 @@ semantics.addOperation<FuncAstFunctionAttribute>("astOfFunctionAttribute", {
                     kind: "method_id",
                     value: undefined,
                     loc: createSrcInfo(this),
-                }
+                };
             }
             return {
-                kind: attr.sourceString as ("impure" | "inline_ref" | "inline"),
+                kind: attr.sourceString as "impure" | "inline_ref" | "inline",
                 loc: createSrcInfo(this),
             };
         }
@@ -2246,17 +2472,20 @@ semantics.addOperation<FuncAstFunctionAttribute>("astOfFunctionAttribute", {
 });
 
 // method_id "(" Integer | String ")"
-semantics.addOperation<FuncAstIntegerLiteral | FuncAstStringLiteral>("astOfMethodIdValue", {
-    MethodIdValue(mtd) {
-        return mtd.astOfMethodIdValue();
+semantics.addOperation<FuncAstIntegerLiteral | FuncAstStringLiteral>(
+    "astOfMethodIdValue",
+    {
+        MethodIdValue(mtd) {
+            return mtd.astOfMethodIdValue();
+        },
+        MethodIdValue_int(_methodIdKwd, _lparen, intLit, _rparen) {
+            return intLit.astOfExpression() as FuncAstIntegerLiteral;
+        },
+        MethodIdValue_string(_methodIdKwd, _lparen, strLit, _rparen) {
+            return strLit.astOfExpression() as FuncAstStringLiteral;
+        },
     },
-    MethodIdValue_int(_methodIdKwd, _lparen, intLit, _rparen) {
-        return intLit.astOfExpression() as FuncAstIntegerLiteral;
-    },
-    MethodIdValue_string(_methodIdKwd, _lparen, strLit, _rparen) {
-        return strLit.astOfExpression() as FuncAstStringLiteral;
-    },
-});
+);
 
 // All the types, united under FuncAstType
 semantics.addOperation<FuncAstType>("astOfType", {
@@ -2279,7 +2508,7 @@ semantics.addOperation<FuncAstType>("astOfType", {
     hole(node) {
         return {
             kind: "hole",
-            value: node.sourceString as ("var" | "_"),
+            value: node.sourceString as "var" | "_",
             loc: createSrcInfo(this),
         };
     },
@@ -2295,10 +2524,10 @@ semantics.addOperation<FuncAstType>("astOfType", {
             kind: "type_tuple",
             types: [],
             loc: createSrcInfo(this),
-        }
+        };
     },
     TypeGlob(globBiTy, _optMapsTo, optGlobTy) {
-        const mapsTo = unwrapOptNode(optGlobTy, t => t.astOfType());
+        const mapsTo = unwrapOptNode(optGlobTy, (t) => t.astOfType());
         if (mapsTo !== undefined) {
             return {
                 kind: "type_mapped",
@@ -2325,19 +2554,19 @@ semantics.addOperation<FuncAstType>("astOfType", {
     TensorGlob(_lparen, globTys, _rparen) {
         return {
             kind: "type_tensor",
-            types: globTys.asIteration().children.map(x => x.astOfType()),
+            types: globTys.asIteration().children.map((x) => x.astOfType()),
             loc: createSrcInfo(this),
         };
     },
     TupleGlob(_lbrack, globTys, _rbrack) {
         return {
             kind: "type_tuple",
-            types: globTys.asIteration().children.map(x => x.astOfType()),
+            types: globTys.asIteration().children.map((x) => x.astOfType()),
             loc: createSrcInfo(this),
         };
     },
     TypeVar(optTypeKwd, _space, typeVar) {
-        const typeKwd = unwrapOptNode(optTypeKwd, t => t.sourceString);
+        const typeKwd = unwrapOptNode(optTypeKwd, (t) => t.sourceString);
         return {
             kind: "type_var",
             keyword: typeKwd !== undefined ? true : false,
@@ -2346,7 +2575,7 @@ semantics.addOperation<FuncAstType>("astOfType", {
         };
     },
     TypeReturn(retBiTy, _space1, _optMapsTo, _space2, optRetTy) {
-        const mapsTo = unwrapOptNode(optRetTy, t => t.astOfType());
+        const mapsTo = unwrapOptNode(optRetTy, (t) => t.astOfType());
         if (mapsTo !== undefined) {
             return {
                 kind: "type_mapped",
@@ -2378,19 +2607,19 @@ semantics.addOperation<FuncAstType>("astOfType", {
     TensorReturn(_lparen, retTys, _rparen) {
         return {
             kind: "type_tensor",
-            types: retTys.asIteration().children.map(x => x.astOfType()),
+            types: retTys.asIteration().children.map((x) => x.astOfType()),
             loc: createSrcInfo(this),
         };
     },
     TupleReturn(_lparen, retTys, _rparen) {
         return {
             kind: "type_tuple",
-            types: retTys.asIteration().children.map(x => x.astOfType()),
+            types: retTys.asIteration().children.map((x) => x.astOfType()),
             loc: createSrcInfo(this),
         };
     },
     TypeParameter(paramBiTy, _space1, _optMapsTo, _space2, optRetTy) {
-        const mapsTo = unwrapOptNode(optRetTy, t => t.astOfType());
+        const mapsTo = unwrapOptNode(optRetTy, (t) => t.astOfType());
         if (mapsTo !== undefined) {
             return {
                 kind: "type_mapped",
@@ -2414,19 +2643,19 @@ semantics.addOperation<FuncAstType>("astOfType", {
     TensorParameter(_lparen, retTys, _rparen) {
         return {
             kind: "type_tensor",
-            types: retTys.asIteration().children.map(x => x.astOfType()),
+            types: retTys.asIteration().children.map((x) => x.astOfType()),
             loc: createSrcInfo(this),
         };
     },
     TupleParameter(_lparen, retTys, _rparen) {
         return {
             kind: "type_tuple",
-            types: retTys.asIteration().children.map(x => x.astOfType()),
+            types: retTys.asIteration().children.map((x) => x.astOfType()),
             loc: createSrcInfo(this),
         };
     },
     TypeVarDecl(varDeclBiTy, _space1, _optMapsTo, _space2, optRetTy) {
-        const mapsTo = unwrapOptNode(optRetTy, t => t.astOfType());
+        const mapsTo = unwrapOptNode(optRetTy, (t) => t.astOfType());
         if (mapsTo !== undefined) {
             return {
                 kind: "type_mapped",
@@ -2457,14 +2686,14 @@ semantics.addOperation<FuncAstType>("astOfType", {
     TensorVarDecl(_lparen, varDeclTys, _rparen) {
         return {
             kind: "type_tensor",
-            types: varDeclTys.asIteration().children.map(x => x.astOfType()),
+            types: varDeclTys.asIteration().children.map((x) => x.astOfType()),
             loc: createSrcInfo(this),
         };
     },
     TupleVarDecl(_lparen, varDeclTys, _rparen) {
         return {
             kind: "type_tuple",
-            types: varDeclTys.asIteration().children.map(x => x.astOfType()),
+            types: varDeclTys.asIteration().children.map((x) => x.astOfType()),
             loc: createSrcInfo(this),
         };
     },
@@ -2473,7 +2702,7 @@ semantics.addOperation<FuncAstType>("astOfType", {
 // Not a standalone statement, produces a list of statements instead
 semantics.addOperation<FuncAstStatement[]>("astOfElseBlock", {
     ElseBlock(_elseKwd, _lbrace, stmts, _rbrace) {
-        return stmts.children.map(x => x.astOfStatement());
+        return stmts.children.map((x) => x.astOfStatement());
     },
 });
 

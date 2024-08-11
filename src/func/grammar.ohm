@@ -286,7 +286,7 @@ FunC {
   methodId = ~("\"" | "{-") ("." | "~") ~((hole | integerLiteral | delimiter | operator | primitive) ~rawId) rawId
 
   // Uppercase plain identifiers (common for type variables)
-  upperId = ~("\"" | "{-" | "." | "~") ~((hole | integerLiteral | delimiter | operator | primitive) ~plainId) &upper plainId
+  upperId = &upper plainId
 
   // Identifiers, with invalidation (keywords, numbers, etc.) during syntax analysis
   // — this makes this parser closer to the C++ one, and also improves error messages

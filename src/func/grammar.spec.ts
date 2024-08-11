@@ -36,7 +36,7 @@ describe("FunC grammar and parser", () => {
     for (const r of loadCases(__dirname + "/grammar-test-failed/", ext)) {
         it("should NOT parse " + r.name, () => {
             expect(() =>
-                parseFile(r.code, r.name + `.${ext}`)
+                parseFile(r.code, r.name + `.${ext}`),
             ).toThrowErrorMatchingSnapshot();
         });
     }
