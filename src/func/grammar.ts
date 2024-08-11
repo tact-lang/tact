@@ -452,9 +452,8 @@ function checkMethodId(ident: string, loc: FuncSrcInfo): void | never {
 }
 
 //
-// FIXME: Those are matching contents of the grammar.ohm with some minor optimizations for clarity
-// FIXME: Pls, unite with syntax.ts and refactor dependent files
-// FIXME: Would need help once parser is done on my side :)
+// Types used to construct the AST of FunC
+// Those mostly match the grammar.ohm, albeit with some minor optimizations for clarity and ease of use
 //
 
 export type FuncAstNode =
