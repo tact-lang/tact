@@ -1066,6 +1066,17 @@ export class Interpreter {
         const paramNames = functionCode.params.map((param) =>
             idText(param.name),
         );
+        // Check parameter names do not shadow constants
+        if (
+            paramNames.some((paramName) =>
+                hasStaticConstant(this.context, paramName),
+            )
+        ) {
+            throwInternalCompilerError(
+                `some parameter of function ${idText(functionCode.name)} shadows a constant with the same name`,
+                functionCode.loc,
+            );
+        }
         // Call function inside a new environment
         return this.envStack.executeInNewEnvironment(
             () => {

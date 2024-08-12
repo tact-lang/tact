@@ -169,4 +169,9 @@ describe("fail-const-eval", () => {
         errorMessage:
             "[INTERNAL COMPILER ERROR]: declaration of C shadows a constant with the same name",
     });
+    itShouldNotCompile({
+        testName: "const-eval-constant-shadowing-in-fun-argument",
+        errorMessage:
+            "[INTERNAL COMPILER ERROR]: some parameter of function shadowingFunction shadows a constant with the same name",
+    });
 });
