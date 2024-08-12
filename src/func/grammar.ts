@@ -525,12 +525,14 @@ export type FuncAstPragma =
     | FuncAstPragmaVersionRange
     | FuncAstPragmaVersionString;
 
+export type FuncAstPragmaLiteralValue = "allow-post-modification" | "compute-asm-ltr";
+
 /**
  * #pragma something-something-something;
  */
 export type FuncAstPragmaLiteral = {
     kind: "pragma_literal";
-    literal: "allow-post-modification" | "compute-asm-ltr";
+    literal: FuncAstPragmaLiteralValue;
     loc: FuncSrcInfo;
 };
 
