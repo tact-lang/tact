@@ -176,6 +176,20 @@ export function writeTupleParser(s: ABIType, w: Writer) {
     w.append();
 }
 
+export function writeGetterTupleParser(s: ABIType, w: Writer) {
+    w.append(`function loadGetterTuple${s.name}(source: TupleReader) {`);
+    w.inIndent(() => {
+        for (const f of s.fields) {
+            writeTupleFieldParser("_" + f.name, f.type, w, true);
+        }
+        w.append(
+            `return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ": _" + v.name)].join(", ")} };`,
+        );
+    });
+    w.append(`}`);
+    w.append();
+}
+
 export function writeGetParser(name: string, type: ABITypeRef, w: Writer) {
     writeTupleFieldParser(name, type, w, true);
 }
