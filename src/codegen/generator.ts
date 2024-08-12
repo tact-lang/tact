@@ -7,7 +7,11 @@ import { WriterContext, ModuleGen, WrittenFunction } from ".";
 import { getRawAST } from "../grammar/store";
 import { ContractABI } from "@ton/core";
 import { FuncFormatter } from "../func/formatter";
-import { FuncAstModule, FuncAstComment } from "../func/syntax";
+import {
+    FuncAstModule,
+    FuncAstFunctionDefinition,
+    FuncAstAsmFunction,
+} from "../func/syntax";
 import { deepCopy } from "../func/syntaxUtils";
 import {
     comment,
@@ -112,9 +116,7 @@ export class FuncGenerator {
         // TODO
 
         // Finalize and dump the main contract, as we have just obtained the structure of the project
-        m.entries.unshift(
-            ...generated.files.map((f) => include(f.name)),
-        );
+        m.entries.unshift(...generated.files.map((f) => include(f.name)));
         m.entries.unshift(
             ...[
                 `version =${CODEGEN_FUNC_VERSION}`,
@@ -168,6 +170,7 @@ export class FuncGenerator {
         functions.forEach((f) => {
             if (
                 f.kind === "generic" &&
+                f.definition !== undefined &&
                 f.definition.kind === "function_definition"
             ) {
                 m.entries.push(
@@ -214,7 +217,9 @@ export class FuncGenerator {
         if (stdlibFunctions) {
             generated.imported.push("stdlib");
         }
-        stdlibFunctions.forEach((f) => m.entries.push(f.definition));
+        stdlibFunctions.forEach((f) => {
+            if (f.definition !== undefined) m.entries.push(f.definition);
+        });
         generated.files.push({
             name: `${this.basename}.stdlib.fc`,
             code: new FuncFormatter().dump(m),
@@ -246,7 +251,19 @@ export class FuncGenerator {
             generated.files.push({
                 name: `${this.basename}.constants.fc`,
                 code: new FuncFormatter().dump(
-                    mod(...constantsFunctions.map((v) => v.definition)),
+                    mod(
+                        ...constantsFunctions.reduce(
+                            (acc, v) => {
+                                if (v.definition !== undefined)
+                                    acc.push(v.definition);
+                                return acc;
+                            },
+                            [] as (
+                                | FuncAstFunctionDefinition
+                                | FuncAstAsmFunction
+                            )[],
+                        ),
+                    ),
                 ),
             });
         }
@@ -299,7 +316,22 @@ export class FuncGenerator {
                 comments.push("");
             }
             generatedModules.push(
-                mod(...[comment(...comments), ...ffs.map((f) => f.definition)]),
+                mod(
+                    ...[
+                        comment(...comments),
+                        ...ffs.reduce(
+                            (acc, f) => {
+                                if (f.definition !== undefined)
+                                    acc.push(f.definition);
+                                return acc;
+                            },
+                            [] as (
+                                | FuncAstFunctionDefinition
+                                | FuncAstAsmFunction
+                            )[],
+                        ),
+                    ],
+                ),
             );
         }
         if (generatedModules.length > 0) {
