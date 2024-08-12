@@ -2,6 +2,8 @@ import {
     Interval as RawInterval,
     IterationNode,
     MatchResult,
+    grammar,
+    Grammar,
     Node,
 } from "ohm-js";
 import path from "path";
@@ -40,6 +42,14 @@ export class FuncSrcInfo {
         return this.#interval;
     }
 }
+
+// Dummy definitions needed to generate AST programmatically.
+const DummyGrammar: Grammar = grammar("Dummy { DummyRule = any }");
+const DUMMY_INTERVAL = DummyGrammar.match("").getInterval();
+export const dummySrcInfo: FuncSrcInfo = new FuncSrcInfo(
+    DUMMY_INTERVAL,
+    undefined,
+);
 
 /**
  * Generic FunC error in FunC parser
