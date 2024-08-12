@@ -6,6 +6,7 @@ import {
     TactParseError,
     idTextErr,
     throwConstEvalError,
+    throwInternalCompilerError,
 } from "./errors";
 import {
     AstBinaryOperation,
@@ -457,6 +458,10 @@ class EnvironmentStack {
         }
     }
 
+    public selfInEnvironment(): boolean {
+        return this.findBindingMap("self") !== undefined;
+    }
+
     public executeInNewEnvironment<T>(
         code: () => T,
         initialBindings: { names: string[]; values: Value[] } = {
@@ -508,15 +513,15 @@ const defaultInterpreterConfig: InterpreterConfig = {
 
 export class Interpreter {
     private envStack: EnvironmentStack;
-    private initialContext: CompilerContext;
+    private context: CompilerContext;
     private config: InterpreterConfig;
 
     constructor(
-        initialContext: CompilerContext = new CompilerContext(),
+        context: CompilerContext = new CompilerContext(),
         config: InterpreterConfig = defaultInterpreterConfig,
     ) {
         this.envStack = new EnvironmentStack();
-        this.initialContext = initialContext;
+        this.context = context;
         this.config = config;
     }
 
@@ -637,11 +642,8 @@ export class Interpreter {
     }
 
     public interpretName(ast: AstId): Value {
-        if (hasStaticConstant(this.initialContext, idText(ast))) {
-            const constant = getStaticConstant(
-                this.initialContext,
-                idText(ast),
-            );
+        if (hasStaticConstant(this.context, idText(ast))) {
+            const constant = getStaticConstant(this.context, idText(ast));
             if (constant.value !== undefined) {
                 return constant.value;
             } else {
@@ -651,32 +653,27 @@ export class Interpreter {
                 );
             }
         }
-        const letBinding = this.envStack.getBinding(idText(ast));
-        if (letBinding !== undefined) {
-            return letBinding;
+        const variableBinding = this.envStack.getBinding(idText(ast));
+        if (variableBinding !== undefined) {
+            return variableBinding;
         }
         throwNonFatalErrorConstEval("cannot evaluate a variable", ast.loc);
     }
 
     public interpretMethodCall(ast: AstMethodCall): Value {
-        const methodName = ast.method;
-        const args = ast.args;
-        const source = ast.loc;
-        const object = ast.self;
-
-        switch (idText(methodName)) {
+        switch (idText(ast.method)) {
             case "asComment": {
-                ensureMethodArity(0, args, source);
+                ensureMethodArity(0, ast.args, ast.loc);
                 const comment = ensureString(
-                    this.interpretExpression(object),
-                    object.loc,
+                    this.interpretExpression(ast.self),
+                    ast.self.loc,
                 );
                 return new CommentValue(comment);
             }
             default:
                 throwNonFatalErrorConstEval(
-                    `calls of ${idTextErr(methodName)} are not supported at this moment`,
-                    source,
+                    `calls of ${idTextErr(ast.method)} are not supported at this moment`,
+                    ast.loc,
                 );
         }
     }
@@ -708,58 +705,49 @@ export class Interpreter {
     }
 
     public interpretUnaryOp(ast: AstOpUnary): Value {
-        const operand = ast.operand;
-        const op = ast.op;
-        const source = ast.loc;
-
         // Tact grammar does not have negative integer literals,
         // so in order to avoid errors for `-115792089237316195423570985008687907853269984665640564039457584007913129639936`
         // which is `-(2**256)` we need to have a special case for it
 
-        if (operand.kind === "number" && op === "-") {
+        if (ast.operand.kind === "number" && ast.op === "-") {
             // emulating negative integer literals
-            return ensureInt(-operand.value, source);
+            return ensureInt(-ast.operand.value, ast.loc);
         }
 
-        const valOperand = this.interpretExpression(operand);
+        const valOperand = this.interpretExpression(ast.operand);
 
-        return evalUnaryOp(op, valOperand, operand.loc, source);
+        return evalUnaryOp(ast.op, valOperand, ast.operand.loc, ast.loc);
     }
 
     public interpretBinaryOp(ast: AstOpBinary): Value {
-        const left = ast.left;
-        const right = ast.right;
-        const op = ast.op;
-        const source = ast.loc;
+        const valLeft = this.interpretExpression(ast.left);
+        const valRight = this.interpretExpression(ast.right);
 
-        const valLeft = this.interpretExpression(left);
-        const valRight = this.interpretExpression(right);
-
-        return evalBinaryOp(op, valLeft, valRight, left.loc, right.loc, source);
+        return evalBinaryOp(
+            ast.op,
+            valLeft,
+            valRight,
+            ast.left.loc,
+            ast.right.loc,
+            ast.loc,
+        );
     }
 
     public interpretConditional(ast: AstConditional): Value {
-        const condition = ast.condition;
-        const thenBranch = ast.thenBranch;
-        const elseBranch = ast.elseBranch;
-
         // here we rely on the typechecker that both branches have the same type
         const valCond = ensureBoolean(
-            this.interpretExpression(condition),
-            condition.loc,
+            this.interpretExpression(ast.condition),
+            ast.condition.loc,
         );
         if (valCond) {
-            return this.interpretExpression(thenBranch);
+            return this.interpretExpression(ast.thenBranch);
         } else {
-            return this.interpretExpression(elseBranch);
+            return this.interpretExpression(ast.elseBranch);
         }
     }
 
     public interpretStructInstance(ast: AstStructInstance): StructValue {
-        const structTypeId = ast.type;
-        const structFields = ast.args;
-
-        const structTy = getType(this.initialContext, structTypeId);
+        const structTy = getType(this.context, ast.type);
 
         // initialize the resulting struct value with
         // the default values for fields with initializers
@@ -775,11 +763,11 @@ export class Interpreter {
                 }
                 return resObj;
             },
-            { $tactStruct: idText(structTypeId) } as StructValue,
+            { $tactStruct: idText(ast.type) } as StructValue,
         );
 
         // this will override default fields set above
-        return structFields.reduce((resObj, fieldWithInit) => {
+        return ast.args.reduce((resObj, fieldWithInit) => {
             resObj[idText(fieldWithInit.field)] = this.interpretExpression(
                 fieldWithInit.initializer,
             );
@@ -788,180 +776,183 @@ export class Interpreter {
     }
 
     public interpretFieldAccess(ast: AstFieldAccess): Value {
-        const structExpr = ast.aggregate;
-        const fieldId = ast.field;
-
         // special case for contract/trait constant accesses via `self.constant`
-        if (structExpr.kind === "id" && isSelfId(structExpr)) {
-            const selfTypeRef = getExpType(this.initialContext, structExpr);
-            if (selfTypeRef.kind == "ref") {
+        // interpret "self" as a contract/trait access only if "self"
+        // is not already assigned in the environment (this would mean
+        // we are executing inside an extends function)
+        if (
+            ast.aggregate.kind === "id" &&
+            isSelfId(ast.aggregate) &&
+            !this.envStack.selfInEnvironment()
+        ) {
+            const selfTypeRef = getExpType(this.context, ast.aggregate);
+            if (selfTypeRef.kind === "ref") {
                 const contractTypeDescription = getType(
-                    this.initialContext,
+                    this.context,
                     selfTypeRef.name,
                 );
                 const foundContractConst =
                     contractTypeDescription.constants.find((constId) =>
-                        eqNames(fieldId, constId.name),
+                        eqNames(ast.field, constId.name),
                     );
                 if (foundContractConst === undefined) {
                     // not a constant, e.g. `self.storageVariable`
                     throwNonFatalErrorConstEval(
-                        `cannot a evaluate non-constant self field access`,
-                        structExpr.loc,
+                        "cannot evaluate non-constant self field access",
+                        ast.aggregate.loc,
                     );
                 }
                 if (foundContractConst.value !== undefined) {
                     return foundContractConst.value;
                 } else {
                     throwErrorConstEval(
-                        `cannot evaluate declared contract/trait constant ${idTextErr(fieldId)} as it does not have a body`,
-                        fieldId.loc,
+                        `cannot evaluate declared contract/trait constant ${idTextErr(ast.field)} as it does not have a body`,
+                        ast.field.loc,
                     );
                 }
             }
         }
-        const valStruct = this.interpretExpression(structExpr);
+        const valStruct = this.interpretExpression(ast.aggregate);
         if (
-            valStruct == null ||
+            valStruct === null ||
             typeof valStruct !== "object" ||
             !("$tactStruct" in valStruct)
         ) {
             throwErrorConstEval(
                 `constant struct expected, but got ${showValue(valStruct)}`,
-                structExpr.loc,
+                ast.aggregate.loc,
             );
         }
-        if (idText(fieldId) in valStruct) {
-            return valStruct[idText(fieldId)]!;
+        if (idText(ast.field) in valStruct) {
+            return valStruct[idText(ast.field)]!;
         } else {
             // this cannot happen in a well-typed program
-            throwErrorConstEval(
-                `struct field ${idTextErr(fieldId)} is missing`,
-                structExpr.loc,
+            throwInternalCompilerError(
+                `struct field ${idTextErr(ast.field)} is missing`,
+                ast.aggregate.loc,
             );
         }
     }
 
     public interpretStaticCall(ast: AstStaticCall): Value {
-        const builtinName = ast.function;
-        const args = ast.args;
-        const source = ast.loc;
-
-        switch (idText(builtinName)) {
+        switch (idText(ast.function)) {
             case "ton": {
-                ensureFunArity(1, args, source);
+                ensureFunArity(1, ast.args, ast.loc);
                 const tons = ensureString(
-                    this.interpretExpression(args[0]!),
-                    args[0]!.loc,
+                    this.interpretExpression(ast.args[0]!),
+                    ast.args[0]!.loc,
                 );
                 try {
-                    return ensureInt(BigInt(toNano(tons).toString(10)), source);
+                    return ensureInt(
+                        BigInt(toNano(tons).toString(10)),
+                        ast.loc,
+                    );
                 } catch (e) {
                     if (e instanceof Error && e.message === "Invalid number") {
                         throwErrorConstEval(
-                            `invalid ${idTextErr(builtinName)} argument`,
-                            source,
+                            `invalid ${idTextErr(ast.function)} argument`,
+                            ast.loc,
                         );
                     }
                     throw e;
                 }
             }
             case "pow": {
-                ensureFunArity(2, args, source);
+                ensureFunArity(2, ast.args, ast.loc);
                 const valBase = ensureInt(
-                    this.interpretExpression(args[0]!),
-                    args[0]!.loc,
+                    this.interpretExpression(ast.args[0]!),
+                    ast.args[0]!.loc,
                 );
                 const valExp = ensureInt(
-                    this.interpretExpression(args[1]!),
-                    args[1]!.loc,
+                    this.interpretExpression(ast.args[1]!),
+                    ast.args[1]!.loc,
                 );
                 if (valExp < 0n) {
                     throwErrorConstEval(
-                        `${idTextErr(builtinName)} builtin called with negative exponent ${valExp}`,
-                        source,
+                        `${idTextErr(ast.function)} builtin called with negative exponent ${valExp}`,
+                        ast.loc,
                     );
                 }
                 try {
-                    return ensureInt(valBase ** valExp, source);
+                    return ensureInt(valBase ** valExp, ast.loc);
                 } catch (e) {
                     if (e instanceof RangeError) {
                         // even TS bigint type cannot hold it
                         throwErrorConstEval(
-                            `integer does not fit into TVM Int type`,
-                            source,
+                            "integer does not fit into TVM Int type",
+                            ast.loc,
                         );
                     }
                     throw e;
                 }
             }
             case "pow2": {
-                ensureFunArity(1, args, source);
+                ensureFunArity(1, ast.args, ast.loc);
                 const valExponent = ensureInt(
-                    this.interpretExpression(args[0]!),
-                    args[0]!.loc,
+                    this.interpretExpression(ast.args[0]!),
+                    ast.args[0]!.loc,
                 );
                 if (valExponent < 0n) {
                     throwErrorConstEval(
-                        `${idTextErr(builtinName)} builtin called with negative exponent ${valExponent}`,
-                        source,
+                        `${idTextErr(ast.function)} builtin called with negative exponent ${valExponent}`,
+                        ast.loc,
                     );
                 }
                 try {
-                    return ensureInt(2n ** valExponent, source);
+                    return ensureInt(2n ** valExponent, ast.loc);
                 } catch (e) {
                     if (e instanceof RangeError) {
                         // even TS bigint type cannot hold it
                         throwErrorConstEval(
-                            `integer does not fit into TVM Int type`,
-                            source,
+                            "integer does not fit into TVM Int type",
+                            ast.loc,
                         );
                     }
                     throw e;
                 }
             }
             case "sha256": {
-                ensureFunArity(1, args, source);
+                ensureFunArity(1, ast.args, ast.loc);
                 const str = ensureString(
-                    this.interpretExpression(args[0]!),
-                    args[0]!.loc,
+                    this.interpretExpression(ast.args[0]!),
+                    ast.args[0]!.loc,
                 );
                 const dataSize = Buffer.from(str).length;
                 if (dataSize > 128) {
                     throwErrorConstEval(
                         `data is too large for sha256 hash, expected up to 128 bytes, got ${dataSize}`,
-                        source,
+                        ast.loc,
                     );
                 }
                 return BigInt("0x" + sha256_sync(str).toString("hex"));
             }
             case "emptyMap": {
-                ensureFunArity(0, args, source);
+                ensureFunArity(0, ast.args, ast.loc);
                 return null;
             }
             case "cell":
                 {
-                    ensureFunArity(1, args, source);
+                    ensureFunArity(1, ast.args, ast.loc);
                     const str = ensureString(
-                        this.interpretExpression(args[0]!),
-                        args[0]!.loc,
+                        this.interpretExpression(ast.args[0]!),
+                        ast.args[0]!.loc,
                     );
                     try {
                         return Cell.fromBase64(str);
                     } catch (_) {
                         throwErrorConstEval(
                             `invalid base64 encoding for a cell: ${str}`,
-                            source,
+                            ast.loc,
                         );
                     }
                 }
                 break;
             case "address":
                 {
-                    ensureFunArity(1, args, source);
+                    ensureFunArity(1, ast.args, ast.loc);
                     const str = ensureString(
-                        this.interpretExpression(args[0]!),
-                        args[0]!.loc,
+                        this.interpretExpression(ast.args[0]!),
+                        ast.args[0]!.loc,
                     );
                     try {
                         const address = Address.parse(str);
@@ -971,35 +962,38 @@ export class Interpreter {
                         ) {
                             throwErrorConstEval(
                                 `${str} is invalid address`,
-                                source,
+                                ast.loc,
                             );
                         }
                         if (
-                            !enabledMasterchain(this.initialContext) &&
+                            !enabledMasterchain(this.context) &&
                             address.workChain !== 0
                         ) {
                             throwErrorConstEval(
                                 `address ${str} is from masterchain which is not enabled for this contract`,
-                                source,
+                                ast.loc,
                             );
                         }
                         return address;
                     } catch (_) {
                         throwErrorConstEval(
                             `invalid address encoding: ${str}`,
-                            source,
+                            ast.loc,
                         );
                     }
                 }
                 break;
             case "newAddress": {
-                ensureFunArity(2, args, source);
+                ensureFunArity(2, ast.args, ast.loc);
                 const wc = ensureInt(
-                    this.interpretExpression(args[0]!),
-                    args[0]!.loc,
+                    this.interpretExpression(ast.args[0]!),
+                    ast.args[0]!.loc,
                 );
                 const addr = Buffer.from(
-                    ensureInt(this.interpretExpression(args[1]!), args[1]!.loc)
+                    ensureInt(
+                        this.interpretExpression(ast.args[1]!),
+                        ast.args[1]!.loc,
+                    )
                         .toString(16)
                         .padStart(64, "0"),
                     "hex",
@@ -1007,59 +1001,55 @@ export class Interpreter {
                 if (wc !== 0n && wc !== -1n) {
                     throwErrorConstEval(
                         `expected workchain of an address to be equal 0 or -1, received: ${wc}`,
-                        source,
+                        ast.loc,
                     );
                 }
-                if (!enabledMasterchain(this.initialContext) && wc !== 0n) {
+                if (!enabledMasterchain(this.context) && wc !== 0n) {
                     throwErrorConstEval(
                         `${wc}:${addr.toString("hex")} address is from masterchain which is not enabled for this contract`,
-                        source,
+                        ast.loc,
                     );
                 }
                 return new Address(Number(wc), addr);
             }
             default:
-                if (
-                    hasStaticFunction(this.initialContext, idText(builtinName))
-                ) {
+                if (hasStaticFunction(this.context, idText(ast.function))) {
                     const functionDescription = getStaticFunction(
-                        this.initialContext,
-                        idText(builtinName),
+                        this.context,
+                        idText(ast.function),
                     );
-                    const functionCode = functionDescription.ast;
-                    const returns = functionDescription.returns;
-                    switch (functionCode.kind) {
+                    switch (functionDescription.ast.kind) {
                         case "function_def":
                             // Currently, no attribute is supported
-                            if (functionCode.attributes.length > 0) {
+                            if (functionDescription.ast.attributes.length > 0) {
                                 throwNonFatalErrorConstEval(
-                                    `calls to functions with attributes are currently not supported`,
-                                    source,
+                                    "calls to functions with attributes are currently not supported",
+                                    ast.loc,
                                 );
                             }
                             return this.evalStaticFunction(
-                                functionCode,
-                                args,
-                                returns,
+                                functionDescription.ast,
+                                ast.args,
+                                functionDescription.returns,
                             );
 
                         case "function_decl":
                             throwNonFatalErrorConstEval(
-                                `${idTextErr(builtinName)} cannot be interpreted because it does not have a body`,
-                                source,
+                                `${idTextErr(ast.function)} cannot be interpreted because it does not have a body`,
+                                ast.loc,
                             );
                             break;
                         case "native_function_decl":
                             throwNonFatalErrorConstEval(
-                                `native function calls are currently not supported`,
-                                source,
+                                "native function calls are currently not supported",
+                                ast.loc,
                             );
                             break;
                     }
                 } else {
                     throwNonFatalErrorConstEval(
-                        `unsupported builtin ${idTextErr(builtinName)}`,
-                        source,
+                        `function ${idTextErr(ast.function)} is not declared`,
+                        ast.loc,
                     );
                 }
         }
@@ -1086,13 +1076,15 @@ export class Interpreter {
                         this,
                     );
                     // At this point, the function did not execute a return.
+                    // Execution continues after the catch.
                 } catch (e) {
                     if (e instanceof ReturnSignal) {
                         const val = e.getValue();
                         if (val !== undefined) {
                             return val;
                         }
-                        // The function executed a return without a value
+                        // The function executed a return without a value.
+                        // Execution continues after the catch.
                     } else {
                         throw e;
                     }
@@ -1102,7 +1094,7 @@ export class Interpreter {
                 // without a value. This is an error only if the return type of the
                 // function is not void
                 if (returns.kind !== "void") {
-                    throwErrorConstEval(
+                    throwInternalCompilerError(
                         `function ${idText(functionCode.name)} must return a value`,
                         functionCode.loc,
                     );
@@ -1159,50 +1151,52 @@ export class Interpreter {
     }
 
     public interpretLetStatement(ast: AstStatementLet) {
+        if (hasStaticConstant(this.context, idText(ast.name))) {
+            // Attempt of shadowing a constant in a let declaration
+            throwInternalCompilerError(
+                `declaration of ${idText(ast.name)} shadows a constant with the same name`,
+                ast.loc,
+            );
+        }
         const val = this.interpretExpression(ast.expression);
         this.envStack.setNewBinding(idText(ast.name), val);
     }
 
     public interpretAssignStatement(ast: AstStatementAssign) {
-        const path = ast.path;
-        const exp = ast.expression;
-
-        if (path.kind === "id") {
-            const val = this.interpretExpression(exp);
-            this.envStack.updateBinding(idText(path), val);
+        if (ast.path.kind === "id") {
+            const val = this.interpretExpression(ast.expression);
+            this.envStack.updateBinding(idText(ast.path), val);
         } else {
             throwNonFatalErrorConstEval(
-                `only identifiers are currently supported as path expressions`,
-                path.loc,
+                "only identifiers are currently supported as path expressions",
+                ast.path.loc,
             );
         }
     }
 
     public interpretAugmentedAssignStatement(ast: AstStatementAugmentedAssign) {
-        const path = ast.path;
-        const exp = ast.expression;
-        const op = ast.op;
-        const source = ast.loc;
-
-        if (path.kind === "id") {
-            const updateVal = this.interpretExpression(exp);
-            const currentPathValue = this.envStack.getBinding(idText(path));
+        if (ast.path.kind === "id") {
+            const updateVal = this.interpretExpression(ast.expression);
+            const currentPathValue = this.envStack.getBinding(idText(ast.path));
             if (currentPathValue === undefined) {
-                throwNonFatalErrorConstEval(`undeclared identifier`, path.loc);
+                throwNonFatalErrorConstEval(
+                    "undeclared identifier",
+                    ast.path.loc,
+                );
             }
             const newVal = evalBinaryOp(
-                op,
+                ast.op,
                 currentPathValue,
                 updateVal,
-                path.loc,
-                exp.loc,
-                source,
+                ast.path.loc,
+                ast.expression.loc,
+                ast.loc,
             );
-            this.envStack.updateBinding(idText(path), newVal);
+            this.envStack.updateBinding(idText(ast.path), newVal);
         } else {
             throwNonFatalErrorConstEval(
-                `only identifiers are currently supported as path expressions`,
-                path.loc,
+                "only identifiers are currently supported as path expressions",
+                ast.path.loc,
             );
         }
     }
@@ -1228,7 +1222,7 @@ export class Interpreter {
     }
 
     public interpretForEachStatement(ast: AstStatementForEach) {
-        throwNonFatalErrorConstEval(`foreach currently not supported`, ast.loc);
+        throwNonFatalErrorConstEval("foreach currently not supported", ast.loc);
     }
 
     public interpretRepeatStatement(ast: AstStatementRepeat) {
@@ -1262,14 +1256,14 @@ export class Interpreter {
 
     public interpretTryStatement(ast: AstStatementTry) {
         throwNonFatalErrorConstEval(
-            `try statements currently not supported`,
+            "try statements currently not supported",
             ast.loc,
         );
     }
 
     public interpretTryCatchStatement(ast: AstStatementTryCatch) {
         throwNonFatalErrorConstEval(
-            `try-catch statements currently not supported`,
+            "try-catch statements currently not supported",
             ast.loc,
         );
     }
@@ -1290,7 +1284,7 @@ export class Interpreter {
                 iterCount++;
                 if (iterCount >= this.config.maxLoopIterations) {
                     throwNonFatalErrorConstEval(
-                        `loop timeout reached`,
+                        "loop timeout reached",
                         ast.loc,
                     );
                 }
@@ -1327,7 +1321,7 @@ export class Interpreter {
                     iterCount++;
                     if (iterCount >= this.config.maxLoopIterations) {
                         throwNonFatalErrorConstEval(
-                            `loop timeout reached`,
+                            "loop timeout reached",
                             ast.loc,
                         );
                     }
