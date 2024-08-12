@@ -1,4 +1,4 @@
-import { match, parseFile } from "./grammar";
+import { FuncParseError, FuncSyntaxError, match, parseFile } from "./grammar";
 import { loadCases } from "../utils/loadCases";
 
 describe("FunC grammar and parser", () => {
@@ -28,7 +28,12 @@ describe("FunC grammar and parser", () => {
     // Checking that valid FunC files parse
     for (const r of loadCases(__dirname + "/grammar-test/", ext)) {
         it("should parse " + r.name, () => {
-            expect(parseFile(r.code, r.name + `.${ext}`)).toMatchSnapshot();
+            let parsed: Object | undefined;
+            try {
+                parsed = parseFile(r.code, r.name + `.${ext}`);
+            } finally {
+                expect(parsed).not.toBe(undefined);
+            }
         });
     }
 

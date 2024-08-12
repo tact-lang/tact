@@ -525,16 +525,18 @@ export type FuncAstPragma =
     | FuncAstPragmaVersionRange
     | FuncAstPragmaVersionString;
 
-export type FuncAstPragmaLiteralValue = "allow-post-modification" | "compute-asm-ltr";
-
 /**
  * #pragma something-something-something;
  */
 export type FuncAstPragmaLiteral = {
     kind: "pragma_literal";
-    literal: FuncAstPragmaLiteralValue;
+    literal: FuncPragmaLiteralValue;
     loc: FuncSrcInfo;
 };
+
+export type FuncPragmaLiteralValue =
+    | "allow-post-modification"
+    | "compute-asm-ltr";
 
 /**
  * `allow` — if set to `true` corresponds to version enforcement
@@ -1479,9 +1481,7 @@ semantics.addOperation<FuncAstNode>("astOfModuleItem", {
     Pragma_literal(_pragmaKwd, literal, _semicolon) {
         return {
             kind: "pragma_literal",
-            literal: literal.sourceString as
-                | "allow-post-modification"
-                | "compute-asm-ltr",
+            literal: literal.sourceString as FuncPragmaLiteralValue,
             loc: createSrcInfo(this),
         };
     },
