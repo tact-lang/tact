@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+### Fixed
+
+## [1.4.2] - 2024-08-13
+
+### Changed
+
 - Removed unsupported iterators API: PR [#633](https://github.com/tact-lang/tact/pull/633)
 - Created a separate API function to enable compiler features: PR [#647](https://github.com/tact-lang/tact/pull/647)
 - Use the `ILogger` interface to enable API users implement their own loggers: PR [#668](https://github.com/tact-lang/tact/pull/668)
