@@ -915,6 +915,66 @@ Line 5, col 16:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-catch 1`] = `
+"<unknown>:7:12: Variable "foo" is trying to shadow an existing constant with the same name
+Line 7, col 12:
+  6 |     try { }
+> 7 |     catch (foo) {   // <-- \`foo\` shadows global const \`foo\`
+                 ^~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-external-param 1`] = `
+"<unknown>:9:15: Variable "foo" is trying to shadow an existing constant with the same name
+Line 9, col 15:
+   8 | contract Test {
+>  9 |     external (foo: Message) { // <-- \`foo\` shadows global const \`foo\`
+                     ^~~
+  10 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-foreach 1`] = `
+"<unknown>:7:14: Variable "foo" is trying to shadow an existing constant with the same name
+Line 7, col 14:
+  6 |     let m: map<Int, Int> = null;
+> 7 |     foreach (foo, _ in m) {  // <--- attempt to shadow \`foo\` const
+                   ^~~
+  8 |         // do nothing
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-fun-param 1`] = `
+"<unknown>:5:9: Variable "foo" is trying to shadow an existing constant with the same name
+Line 5, col 9:
+  4 | 
+> 5 | fun bar(foo: Int): Int {  // <-- fun param \`foo\` shadows global const \`foo\`
+              ^~~
+  6 |     return foo;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-let 1`] = `
+"<unknown>:6:9: Variable "foo" is trying to shadow an existing constant with the same name
+Line 6, col 9:
+  5 | fun bar(): Int {
+> 6 |     let foo = 43;  // <-- local var \`foo\` shadows global const \`foo\`
+              ^~~
+  7 |     return foo;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-receiver-param 1`] = `
+"<unknown>:9:14: Variable "foo" is trying to shadow an existing constant with the same name
+Line 9, col 14:
+   8 | contract Test {
+>  9 |     receive (foo: Message) { // <-- \`foo\` shadows global const \`foo\`
+                    ^~~
+  10 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-foreach-internal-var-does-not-escape 1`] = `
 "<unknown>:8:12: Unable to resolve id 'x'
 Line 8, col 12:

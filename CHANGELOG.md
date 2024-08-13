@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Throw syntax error for module-level (top-level) constants with attributes: PR [#644](https://github.com/tact-lang/tact/pull/644)
 - Typechecking for optional types when the argument type is not an equality type: PR [#650](https://github.com/tact-lang/tact/pull/650)
 - Getters now return flattened types for structs as before: PR [#679](https://github.com/tact-lang/tact/pull/679)
+- New bindings cannot shadow global constants: PR [#680](https://github.com/tact-lang/tact/pull/680)
 
 ## [1.4.1] - 2024-07-26
 
