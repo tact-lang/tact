@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Typechecking for optional types when the argument type is not an equality type: PR [#650](https://github.com/tact-lang/tact/pull/650)
 - Getters now return flattened types for structs as before: PR [#679](https://github.com/tact-lang/tact/pull/679)
 - New bindings cannot shadow global constants: PR [#680](https://github.com/tact-lang/tact/pull/680)
+- Disallow using assignment operators on constants: PR [#682](https://github.com/tact-lang/tact/pull/682)
 
 ## [1.4.1] - 2024-07-26
 
