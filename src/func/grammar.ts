@@ -1347,6 +1347,7 @@ export type FuncAstVersionRange = {
 export type FuncAstIntegerLiteral = {
     kind: "integer_literal";
     value: bigint;
+    isHex: boolean;
     loc: FuncSrcInfo;
 };
 
@@ -2009,6 +2010,7 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
         return {
             kind: "integer_literal",
             value: value,
+            isHex: false,
             loc: createSrcInfo(this),
         };
     },
@@ -2016,6 +2018,7 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
         return {
             kind: "integer_literal",
             value: BigInt(nonNegNumLit.sourceString),
+            isHex: false,
             loc: createSrcInfo(this),
         };
     },
@@ -2023,6 +2026,7 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
         return {
             kind: "integer_literal",
             value: BigInt(nonNegNumLit.sourceString),
+            isHex: false,
             loc: createSrcInfo(this),
         };
     },
@@ -2030,6 +2034,7 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
         return {
             kind: "integer_literal",
             value: BigInt(hexPrefix.sourceString + nonNegNumLit.sourceString),
+            isHex: true,
             loc: createSrcInfo(this),
         };
     },
