@@ -924,9 +924,9 @@ export type FuncAstExpression =
  */
 export type FuncAstExpressionAssign = {
     kind: "expression_assign";
-    left: FuncAstExpressionConditional;
+    left: FuncAstExpression;
     op: FuncOpAssign;
-    right: FuncAstExpressionAssign;
+    right: FuncAstExpression;
     loc: FuncSrcInfo;
 };
 
