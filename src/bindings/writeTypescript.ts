@@ -5,6 +5,7 @@ import {
     writeArgumentToStack,
     writeDictParser,
     writeGetParser,
+    writeGetterTupleParser,
     writeInitSerializer,
     writeParser,
     writeSerializer,
@@ -138,6 +139,7 @@ export function writeTypescript(
             writeSerializer(s, allocations[s.name]!.root, w);
             writeParser(s, allocations[s.name]!.root, w);
             writeTupleParser(s, w);
+            writeGetterTupleParser(s, w);
             writeTupleSerializer(s, w);
             writeDictParser(s, w);
         }
