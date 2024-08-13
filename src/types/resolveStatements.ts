@@ -18,6 +18,7 @@ import {
 import {
     getAllStaticFunctions,
     getAllTypes,
+    hasStaticConstant,
     resolveTypeRef,
 } from "./resolveDescriptors";
 import { getExpType, resolveExpression } from "./resolveExpression";
@@ -42,10 +43,20 @@ export function emptyContext(
     };
 }
 
-function checkVariableExists(ctx: StatementContext, name: AstId): void {
-    if (ctx.vars.has(idText(name))) {
+function checkVariableExists(
+    ctx: CompilerContext,
+    sctx: StatementContext,
+    name: AstId,
+): void {
+    if (sctx.vars.has(idText(name))) {
         throwCompilationError(
             `Variable already exists: ${idTextErr(name)}`,
+            name.loc,
+        );
+    }
+    if (hasStaticConstant(ctx, idText(name))) {
+        throwCompilationError(
+            `Variable ${idTextErr(name)} is trying to shadow an existing constant with the same name`,
             name.loc,
         );
     }
@@ -81,15 +92,16 @@ function removeRequiredVariable(
 function addVariable(
     name: AstId,
     ref: TypeRef,
-    src: StatementContext,
+    ctx: CompilerContext,
+    sctx: StatementContext,
 ): StatementContext {
-    checkVariableExists(src, name); // Should happen earlier
+    checkVariableExists(ctx, sctx, name); // Should happen earlier
     if (isWildcard(name)) {
-        return src;
+        return sctx;
     }
     return {
-        ...src,
-        vars: new Map(src.vars).set(idText(name), ref),
+        ...sctx,
+        vars: new Map(sctx.vars).set(idText(name), ref),
     };
 }
 
@@ -197,7 +209,7 @@ function processStatements(
                     ctx = resolveExpression(s.expression, sctx, ctx);
 
                     // Check variable name
-                    checkVariableExists(sctx, s.name);
+                    checkVariableExists(ctx, sctx, s.name);
 
                     // Check type
                     const expressionType = getExpType(ctx, s.expression);
@@ -209,7 +221,7 @@ function processStatements(
                                 s.loc,
                             );
                         }
-                        sctx = addVariable(s.name, variableType, sctx);
+                        sctx = addVariable(s.name, variableType, ctx, sctx);
                     } else {
                         if (expressionType.kind === "null") {
                             throwCompilationError(
@@ -223,7 +235,7 @@ function processStatements(
                                 s.loc,
                             );
                         }
-                        sctx = addVariable(s.name, expressionType, sctx);
+                        sctx = addVariable(s.name, expressionType, ctx, sctx);
                     }
                 }
                 break;
@@ -477,7 +489,7 @@ function processStatements(
                 break;
             case "statement_try_catch":
                 {
-                    let initialCtx = sctx;
+                    let initialSctx = sctx;
 
                     // Process inner statements
                     const r = processStatements(s.statements, sctx, ctx);
@@ -486,11 +498,12 @@ function processStatements(
                     let catchCtx = sctx;
 
                     // Process catchName variable for exit code
-                    checkVariableExists(initialCtx, s.catchName);
+                    checkVariableExists(ctx, initialSctx, s.catchName);
                     catchCtx = addVariable(
                         s.catchName,
                         { kind: "ref", name: "Int", optional: false },
-                        initialCtx,
+                        ctx,
+                        initialSctx,
                     );
 
                     // Process catch statements
@@ -508,18 +521,18 @@ function processStatements(
 
                     // Merge statement contexts
                     const removed: string[] = [];
-                    for (const f of initialCtx.requiredFields) {
+                    for (const f of initialSctx.requiredFields) {
                         if (!catchCtx.requiredFields.find((v) => v === f)) {
                             removed.push(f);
                         }
                     }
                     for (const r of removed) {
-                        initialCtx = removeRequiredVariable(r, initialCtx);
+                        initialSctx = removeRequiredVariable(r, initialSctx);
                     }
                 }
                 break;
             case "statement_foreach": {
-                let initialCtx = sctx; // Preserve initial context to use later for merging
+                let initialSctx = sctx; // Preserve initial context to use later for merging
 
                 // Resolve map expression
                 ctx = resolveExpression(s.map, sctx, ctx);
@@ -540,43 +553,45 @@ function processStatements(
                     );
                 }
 
-                let foreachCtx = sctx;
+                let foreachSctx = sctx;
 
                 // Add key and value to statement context
                 if (!isWildcard(s.keyName)) {
-                    checkVariableExists(initialCtx, s.keyName);
-                    foreachCtx = addVariable(
+                    checkVariableExists(ctx, initialSctx, s.keyName);
+                    foreachSctx = addVariable(
                         s.keyName,
                         { kind: "ref", name: mapType.key, optional: false },
-                        initialCtx,
+                        ctx,
+                        initialSctx,
                     );
                 }
                 if (!isWildcard(s.valueName)) {
-                    checkVariableExists(foreachCtx, s.valueName);
-                    foreachCtx = addVariable(
+                    checkVariableExists(ctx, foreachSctx, s.valueName);
+                    foreachSctx = addVariable(
                         s.valueName,
                         { kind: "ref", name: mapType.value, optional: false },
-                        foreachCtx,
+                        ctx,
+                        foreachSctx,
                     );
                 }
 
                 // Process inner statements
-                const r = processStatements(s.statements, foreachCtx, ctx);
+                const r = processStatements(s.statements, foreachSctx, ctx);
                 ctx = r.ctx;
-                foreachCtx = r.sctx;
+                foreachSctx = r.sctx;
 
                 // Merge statement contexts (similar to catch block merging)
                 const removed: string[] = [];
-                for (const f of initialCtx.requiredFields) {
-                    if (!foreachCtx.requiredFields.find((v) => v === f)) {
+                for (const f of initialSctx.requiredFields) {
+                    if (!foreachSctx.requiredFields.find((v) => v === f)) {
                         removed.push(f);
                     }
                 }
                 for (const r of removed) {
-                    initialCtx = removeRequiredVariable(r, initialCtx);
+                    initialSctx = removeRequiredVariable(r, initialSctx);
                 }
 
-                sctx = initialCtx; // Re-assign the modified initial context back to sctx after merging
+                sctx = initialSctx; // Re-assign the modified initial context back to sctx after merging
             }
         }
     }
@@ -624,7 +639,7 @@ export function resolveStatements(ctx: CompilerContext) {
             // Build statement context
             let sctx = emptyContext(f.ast.loc, f.returns);
             for (const p of f.params) {
-                sctx = addVariable(p.name, p.type, sctx);
+                sctx = addVariable(p.name, p.type, ctx, sctx);
             }
 
             ctx = processFunctionBody(f.ast.statements, sctx, ctx);
@@ -642,6 +657,7 @@ export function resolveStatements(ctx: CompilerContext) {
             sctx = addVariable(
                 selfId,
                 { kind: "ref", name: t.name, optional: false },
+                ctx,
                 sctx,
             );
 
@@ -659,7 +675,7 @@ export function resolveStatements(ctx: CompilerContext) {
 
             // Args
             for (const p of t.init.params) {
-                sctx = addVariable(p.name, p.type, sctx);
+                sctx = addVariable(p.name, p.type, ctx, sctx);
             }
 
             // Process
@@ -673,6 +689,7 @@ export function resolveStatements(ctx: CompilerContext) {
             sctx = addVariable(
                 selfId,
                 { kind: "ref", name: t.name, optional: false },
+                ctx,
                 sctx,
             );
             switch (f.selector.kind) {
@@ -686,6 +703,7 @@ export function resolveStatements(ctx: CompilerContext) {
                                 name: f.selector.type,
                                 optional: false,
                             },
+                            ctx,
                             sctx,
                         );
                     }
@@ -702,6 +720,7 @@ export function resolveStatements(ctx: CompilerContext) {
                         sctx = addVariable(
                             f.selector.name,
                             { kind: "ref", name: "String", optional: false },
+                            ctx,
                             sctx,
                         );
                     }
@@ -712,6 +731,7 @@ export function resolveStatements(ctx: CompilerContext) {
                         sctx = addVariable(
                             f.selector.name,
                             { kind: "ref", name: "Slice", optional: false },
+                            ctx,
                             sctx,
                         );
                     }
@@ -721,6 +741,7 @@ export function resolveStatements(ctx: CompilerContext) {
                         sctx = addVariable(
                             f.selector.name,
                             { kind: "ref", name: "Slice", optional: false },
+                            ctx,
                             sctx,
                         );
                     }
@@ -736,6 +757,7 @@ export function resolveStatements(ctx: CompilerContext) {
                                       name: f.selector.type,
                                       optional: false,
                                   },
+                            ctx,
                             sctx,
                         );
                     }
@@ -756,10 +778,11 @@ export function resolveStatements(ctx: CompilerContext) {
                 sctx = addVariable(
                     selfId,
                     { kind: "ref", name: t.name, optional: false },
+                    ctx,
                     sctx,
                 );
                 for (const a of f.params) {
-                    sctx = addVariable(a.name, a.type, sctx);
+                    sctx = addVariable(a.name, a.type, ctx, sctx);
                 }
 
                 ctx = processFunctionBody(f.ast.statements, sctx, ctx);
