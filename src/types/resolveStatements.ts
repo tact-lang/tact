@@ -8,6 +8,8 @@ import {
     idText,
     isWildcard,
     selfId,
+    isSelfId,
+    eqNames,
 } from "../grammar/ast";
 import { isAssignable } from "./subtyping";
 import {
@@ -18,6 +20,7 @@ import {
 import {
     getAllStaticFunctions,
     getAllTypes,
+    getType,
     hasStaticConstant,
     resolveTypeRef,
 } from "./resolveDescriptors";
@@ -183,6 +186,29 @@ function processCondition(
     };
 }
 
+// Precondition: `self` here means a contract or a trait,
+// and not a `self` parameter of a mutating method
+function isLvalue(path: AstId[], ctx: CompilerContext): boolean {
+    const headId = path[0]!;
+    if (isSelfId(headId) && path.length > 1) {
+        // we can be dealing with a contract/trait constant `self.constFoo`
+        const selfTypeRef = getExpType(ctx, headId);
+        if (selfTypeRef.kind == "ref") {
+            const contractTypeDescription = getType(ctx, selfTypeRef.name);
+            return (
+                contractTypeDescription.constants.findIndex((constDescr) =>
+                    eqNames(path[1]!, constDescr.name),
+                ) === -1
+            );
+        } else {
+            return true;
+        }
+    } else {
+        // if the head path symbol is a global constant, then the whole path expression is a constant
+        return !hasStaticConstant(ctx, idText(headId));
+    }
+}
+
 function processStatements(
     statements: AstStatement[],
     sctx: StatementContext,
@@ -251,6 +277,12 @@ function processStatements(
                             s.path.loc,
                         );
                     }
+                    if (!isLvalue(path, ctx)) {
+                        throwCompilationError(
+                            "Modifications of constant expressions are not allowed",
+                            s.path.loc,
+                        );
+                    }
 
                     // Process expression
                     ctx = resolveExpression(s.expression, sctx, ctx);
@@ -286,6 +318,12 @@ function processStatements(
                     if (path === null) {
                         throwCompilationError(
                             `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
+                            s.path.loc,
+                        );
+                    }
+                    if (!isLvalue(path, ctx)) {
+                        throwCompilationError(
+                            "Modifications of constant expressions are not allowed",
                             s.path.loc,
                         );
                     }

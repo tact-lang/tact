@@ -1,5 +1,85 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`resolveStatements should fail statements for assign-augmented-const-contract 1`] = `
+"<unknown>:8:9: Modifications of constant expressions are not allowed
+Line 8, col 9:
+  7 |     fun bar() {
+> 8 |         self.foo += 1 // <-- trying to assign to a constant
+              ^~~~~~~~
+  9 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-augmented-const-global 1`] = `
+"<unknown>:6:5: Modifications of constant expressions are not allowed
+Line 6, col 5:
+  5 | fun bar() {
+> 6 |     foo += 1 // <-- trying to assign to a constant
+          ^~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-augmented-const-struct-contract 1`] = `
+"<unknown>:12:9: Modifications of constant expressions are not allowed
+Line 12, col 9:
+  11 |         self.baz.x += 1; // ok
+> 12 |         self.foo.y -= 1 // <-- trying to assign to a constant
+               ^~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-augmented-const-struct-global 1`] = `
+"<unknown>:10:5: Modifications of constant expressions are not allowed
+Line 10, col 5:
+   9 |     baz.x += 1; // ok
+> 10 |     foo.y -= 1 // <-- trying to assign to a constant
+           ^~~~~
+  11 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-const-contract 1`] = `
+"<unknown>:8:9: Modifications of constant expressions are not allowed
+Line 8, col 9:
+  7 |     fun bar() {
+> 8 |         self.foo = 43 // <-- trying to assign to a constant
+              ^~~~~~~~
+  9 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-const-global 1`] = `
+"<unknown>:6:5: Modifications of constant expressions are not allowed
+Line 6, col 5:
+  5 | fun bar() {
+> 6 |     foo = 43 // <-- trying to assign to a constant
+          ^~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-const-struct-contract 1`] = `
+"<unknown>:12:9: Modifications of constant expressions are not allowed
+Line 12, col 9:
+  11 |         self.baz.x = 1; // ok
+> 12 |         self.foo.y = 42 // <-- trying to assign to a constant
+               ^~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-const-struct-global 1`] = `
+"<unknown>:10:5: Modifications of constant expressions are not allowed
+Line 10, col 5:
+   9 |     baz.x = 1; // ok
+> 10 |     foo.y = 42 // <-- trying to assign to a constant
+           ^~~~~
+  11 | }
+"
+`;
+
 exports[`resolveStatements should fail statements for bounced-type-is-smaller 1`] = `
 "<unknown>:23:22: Type bounced<"A"> does not have a field named "c"
 Line 23, col 22:
@@ -1083,6 +1163,31 @@ Line 9, col 12:
                   ^
   10 | }
 "
+`;
+
+exports[`resolveStatements should resolve statements for assign-self-mutating-method 1`] = `
+[
+  [
+    "self",
+    "IntWrapper",
+  ],
+  [
+    "self.x",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+]
 `;
 
 exports[`resolveStatements should resolve statements for contract-receiver-bounced 1`] = `
