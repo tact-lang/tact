@@ -188,7 +188,7 @@ function processCondition(
 
 // Precondition: `self` here means a contract or a trait,
 // and not a `self` parameter of a mutating method
-function isLvalue(path: AstId[], ctx: CompilerContext): boolean {
+export function isLvalue(path: AstId[], ctx: CompilerContext): boolean {
     const headId = path[0]!;
     if (isSelfId(headId) && path.length > 1) {
         // we can be dealing with a contract/trait constant `self.constFoo`

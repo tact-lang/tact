@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Getters now return flattened types for structs as before: PR [#679](https://github.com/tact-lang/tact/pull/679)
 - New bindings cannot shadow global constants: PR [#680](https://github.com/tact-lang/tact/pull/680)
 - Disallow using assignment operators on constants: PR [#682](https://github.com/tact-lang/tact/pull/682)
+- Fix code generation for some non-Lvalues that weren't turned into Lvalues by wrapping them in a function call: PR [#683](https://github.com/tact-lang/tact/pull/683)
 
 ## [1.4.1] - 2024-07-26
 
