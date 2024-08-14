@@ -417,6 +417,8 @@ type InterpreterConfig = {
     maxLoopIterations: bigint;
 };
 
+const WILDCARD_NAME: string = "_";
+
 type Environment = { values: Map<string, Value>; parent?: Environment };
 
 class EnvironmentStack {
@@ -438,18 +440,85 @@ class EnvironmentStack {
         return undefined;
     }
 
-    public setNewBinding(name: string, val: Value) {
-        this.currentEnv.values.set(name, val);
-    }
+    /*
+    Sets a binding for "name" in the **current** environment of the stack.
+    If a binding for "name" already exists in the current environment, it 
+    overwrites the binding with the provided value.
+    As a special case, name "_" is ignored.
 
-    public updateBinding(name: string, val: Value) {
-        const bindings = this.findBindingMap(name);
-        if (bindings !== undefined) {
-            bindings.set(name, val);
+    Note that this method does not check if binding "name" already exists in 
+    a parent environment.
+    This means that if binding "name" already exists in a parent environment, 
+    it will be shadowed by the provided value in the current environment.
+    This shadowing behavior is useful for modelling recursive function calls.
+    For example, consider the recursive implementation of factorial 
+    (for simplification purposes, it returns 1 for the factorial of 
+    negative numbers):
+
+    1  fun factorial(a: Int): Int {
+    2  if (a <= 1) {
+    3     return 1;
+    4  } else {
+    5     return a * factorial(a - 1);
+    6  }
+
+    Just before factorial(4) finishes its execution, the environment stack will
+    look as follows (the arrows point to their parent environment):
+
+    a = 4 <------- a = 3 <-------- a = 2 <------- a = 1
+
+    Note how each child environment shadows variable a, because each
+    recursive call to factorial at line 5 creates a child
+    environment with a new binding for a.
+
+    When factorial(1) = 1 finishes execution, the environment at the top
+    of the stack is popped:
+    
+    a = 4 <------- a = 3 <-------- a = 2
+
+    and execution resumes at line 5 in the environment where a = 2,
+    so that the return at line 5 is 2 * 1 = 2.
+
+    This in turn causes the stack to pop the environment at the top:
+
+    a = 4 <------- a = 3
+
+    so that the return at line 5 (now in the environment a = 3) will 
+    produce 3 * 2 = 6, and so on.
+    */
+    public setNewBinding(name: string, val: Value) {
+        if (name !== WILDCARD_NAME) {
+            this.currentEnv.values.set(name, val);
         }
     }
 
+    /*
+    Searches the binding "name" in the stack, starting at the current
+    environment and moving towards the parent environments. 
+    If it finds the binding, it updates its value
+    to "val". If it does not find "name", the stack is unchanged.
+    As a special case, name "_" is always ignored.
+    */
+    public updateBinding(name: string, val: Value) {
+        if (name !== WILDCARD_NAME) {
+            const bindings = this.findBindingMap(name);
+        if (bindings !== undefined) {
+            bindings.set(name, val);
+        }
+        }
+    }
+
+    /*
+    Searches the binding "name" in the stack, starting at the current
+    environment and moving towards the parent environments. 
+    If it finds "name", it returns its value.
+    If it does not find "name", it returns undefined.
+    As a special case, name "_" always returns undefined.
+    */
     public getBinding(name: string): Value | undefined {
+        if (name === WILDCARD_NAME) {
+            return undefined;
+        }
         const bindings = this.findBindingMap(name);
         if (bindings !== undefined) {
             return bindings.get(name);
@@ -462,6 +531,16 @@ class EnvironmentStack {
         return this.findBindingMap("self") !== undefined;
     }
 
+    /*
+    Executes "code" in a fresh environment that is placed at the top
+    of the environment stack. The fresh environment is initialized
+    with the bindings in "initialBindings". Once "code" finishes
+    execution, the new invironment is automatically popped from 
+    the stack. 
+    
+    This method is useful for starting a new local variables scope, 
+    like in a function call.
+    */
     public executeInNewEnvironment<T>(
         code: () => T,
         initialBindings: { names: string[]; values: Value[] } = {
@@ -511,6 +590,44 @@ const defaultInterpreterConfig: InterpreterConfig = {
     maxLoopIterations: maxRepeatStatement,
 };
 
+/*
+Interprets Tact AST trees. 
+The constructor receives an optional CompilerContext which includes 
+all external declarations that the interpreter will use during interpretation.
+If no CompilerContext is provided, the interpreter will use an empty 
+CompilerContext.
+
+**IMPORTANT**: if a custom CompilerContext is provided, it should be the 
+CompilerContext provided by the typechecker. 
+
+The reason for requiring a CompilerContext is that the interpreter should work 
+in the use case where the interpreter only knows part of the code.
+For example, consider the following code (I marked with brackets [ ] the places 
+where the interpreter gets called during expression simplification in the 
+compilation phase):
+
+const C: Int = [1];
+
+contract TestContract {
+
+   get fun test(): Int {
+      return [C + 1];
+   }
+}
+
+When the interpreter gets called inside the brackets, it does not know what 
+other code is surrounding those brackets, because the interpreter did not execute the 
+code outside the brackets. Hence, it relies on the typechecker to receive the 
+CompilerContext that includes the declarations in the code 
+(the constant C for example).
+
+Since the interpreter relies on the typechecker, it assumes that the given AST tree
+is already a valid Tact program.
+
+Internally, the interpreter uses a stack of environments to keep track of
+variables at different scopes. Each environment in the stack contains a map
+that binds a variable name to its corresponding value.
+*/
 export class Interpreter {
     private envStack: EnvironmentStack;
     private context: CompilerContext;
