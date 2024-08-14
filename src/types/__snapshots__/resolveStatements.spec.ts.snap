@@ -1,5 +1,85 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`resolveStatements should fail statements for assign-augmented-const-contract 1`] = `
+"<unknown>:8:9: Modifications of constant expressions are not allowed
+Line 8, col 9:
+  7 |     fun bar() {
+> 8 |         self.foo += 1 // <-- trying to assign to a constant
+              ^~~~~~~~
+  9 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-augmented-const-global 1`] = `
+"<unknown>:6:5: Modifications of constant expressions are not allowed
+Line 6, col 5:
+  5 | fun bar() {
+> 6 |     foo += 1 // <-- trying to assign to a constant
+          ^~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-augmented-const-struct-contract 1`] = `
+"<unknown>:12:9: Modifications of constant expressions are not allowed
+Line 12, col 9:
+  11 |         self.baz.x += 1; // ok
+> 12 |         self.foo.y -= 1 // <-- trying to assign to a constant
+               ^~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-augmented-const-struct-global 1`] = `
+"<unknown>:10:5: Modifications of constant expressions are not allowed
+Line 10, col 5:
+   9 |     baz.x += 1; // ok
+> 10 |     foo.y -= 1 // <-- trying to assign to a constant
+           ^~~~~
+  11 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-const-contract 1`] = `
+"<unknown>:8:9: Modifications of constant expressions are not allowed
+Line 8, col 9:
+  7 |     fun bar() {
+> 8 |         self.foo = 43 // <-- trying to assign to a constant
+              ^~~~~~~~
+  9 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-const-global 1`] = `
+"<unknown>:6:5: Modifications of constant expressions are not allowed
+Line 6, col 5:
+  5 | fun bar() {
+> 6 |     foo = 43 // <-- trying to assign to a constant
+          ^~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-const-struct-contract 1`] = `
+"<unknown>:12:9: Modifications of constant expressions are not allowed
+Line 12, col 9:
+  11 |         self.baz.x = 1; // ok
+> 12 |         self.foo.y = 42 // <-- trying to assign to a constant
+               ^~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-const-struct-global 1`] = `
+"<unknown>:10:5: Modifications of constant expressions are not allowed
+Line 10, col 5:
+   9 |     baz.x = 1; // ok
+> 10 |     foo.y = 42 // <-- trying to assign to a constant
+           ^~~~~
+  11 | }
+"
+`;
+
 exports[`resolveStatements should fail statements for bounced-type-is-smaller 1`] = `
 "<unknown>:23:22: Type bounced<"A"> does not have a field named "c"
 Line 23, col 22:
@@ -895,6 +975,26 @@ Line 9, col 9:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-catch-does-not-shadow-outer-const 1`] = `
+"<unknown>:10:13: Variable "e" is trying to shadow an existing constant with the same name
+Line 10, col 13:
+   9 |     } catch (err) {
+> 10 |         let e: String = "rty";
+                   ^
+  11 |         return e;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-catch-does-not-shadow-outer-var 1`] = `
+"<unknown>:9:13: Variable already exists: "e"
+Line 9, col 13:
+   8 |     } catch (err) {
+>  9 |         let e: String = "rty";
+                   ^
+  10 |         return "err";
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-catch-param-does-not-shadow-outer-var 1`] = `
 "<unknown>:8:14: Variable already exists: "e"
 Line 8, col 14:
@@ -915,6 +1015,76 @@ Line 5, col 16:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-catch 1`] = `
+"<unknown>:7:12: Variable "foo" is trying to shadow an existing constant with the same name
+Line 7, col 12:
+  6 |     try { }
+> 7 |     catch (foo) {   // <-- \`foo\` shadows global const \`foo\`
+                 ^~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-external-param 1`] = `
+"<unknown>:9:15: Variable "foo" is trying to shadow an existing constant with the same name
+Line 9, col 15:
+   8 | contract Test {
+>  9 |     external (foo: Message) { // <-- \`foo\` shadows global const \`foo\`
+                     ^~~
+  10 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-foreach 1`] = `
+"<unknown>:7:14: Variable "foo" is trying to shadow an existing constant with the same name
+Line 7, col 14:
+  6 |     let m: map<Int, Int> = null;
+> 7 |     foreach (foo, _ in m) {  // <--- attempt to shadow \`foo\` const
+                   ^~~
+  8 |         // do nothing
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-fun-param 1`] = `
+"<unknown>:5:9: Variable "foo" is trying to shadow an existing constant with the same name
+Line 5, col 9:
+  4 | 
+> 5 | fun bar(foo: Int): Int {  // <-- fun param \`foo\` shadows global const \`foo\`
+              ^~~
+  6 |     return foo;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-let 1`] = `
+"<unknown>:6:9: Variable "foo" is trying to shadow an existing constant with the same name
+Line 6, col 9:
+  5 | fun bar(): Int {
+> 6 |     let foo = 43;  // <-- local var \`foo\` shadows global const \`foo\`
+              ^~~
+  7 |     return foo;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-receiver-param 1`] = `
+"<unknown>:9:14: Variable "foo" is trying to shadow an existing constant with the same name
+Line 9, col 14:
+   8 | contract Test {
+>  9 |     receive (foo: Message) { // <-- \`foo\` shadows global const \`foo\`
+                    ^~~
+  10 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-do-until-shadows-outer-var 1`] = `
+"<unknown>:7:13: Variable already exists: "b"
+Line 7, col 13:
+  6 |     do {
+> 7 |         let b: Int = a + 3;
+                  ^
+  8 |     } until (false);
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-foreach-internal-var-does-not-escape 1`] = `
 "<unknown>:8:12: Unable to resolve id 'x'
 Line 8, col 12:
@@ -922,6 +1092,56 @@ Line 8, col 12:
 > 8 |     return x;
                  ^
   9 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-foreach-key-does-not-escape 1`] = `
+"<unknown>:8:12: Unable to resolve id 'k'
+Line 8, col 12:
+  7 |     }
+> 8 |     return k;
+                 ^
+  9 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-foreach-key-shadows-map 1`] = `
+"<unknown>:5:14: Variable already exists: "m"
+Line 5, col 14:
+  4 |     let m: map<Int, Int> = emptyMap();
+> 5 |     foreach (m, v in m) {
+                   ^
+  6 |         // something
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-foreach-key-shadows-outer-var 1`] = `
+"<unknown>:6:14: Variable already exists: "a"
+Line 6, col 14:
+  5 |     let a: Int = 4;
+> 6 |     foreach (a, v in m) {
+                   ^
+  7 |         // something
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-foreach-shadows-outer-map 1`] = `
+"<unknown>:7:13: Variable already exists: "m"
+Line 7, col 13:
+  6 |     foreach (k, v in m) {
+> 7 |         let m: map<Int, Int> = emptyMap();
+                  ^
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-foreach-shadows-outer-var 1`] = `
+"<unknown>:7:13: Variable already exists: "a"
+Line 7, col 13:
+  6 |     foreach (k, v in m) {
+> 7 |         let a: Int = 5;
+                  ^
+  8 |     }
 "
 `;
 
@@ -952,6 +1172,56 @@ Line 5, col 17:
 > 5 |     foreach (k, m in m) {
                       ^
   6 |         // something
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-foreach-val-shadows-outer-var 1`] = `
+"<unknown>:6:17: Variable already exists: "a"
+Line 6, col 17:
+  5 |     let a: Int = 4;
+> 6 |     foreach (k, a in m) {
+                      ^
+  7 |         // something
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-function-shadows-local-var 1`] = `
+"<unknown>:5:9: Variable already exists: "c"
+Line 5, col 9:
+  4 |     let c: Int = 456;
+> 5 |     let c: Int = 10;
+              ^
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-function-shadows-param 1`] = `
+"<unknown>:4:9: Variable already exists: "b"
+Line 4, col 9:
+  3 | fun testFunction(a: Int, b: Int): Int {
+> 4 |     let b: Int = 456;
+              ^
+  5 |     return b;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-if-else-shadows-outer-var 1`] = `
+"<unknown>:9:13: Variable already exists: "a"
+Line 9, col 13:
+   8 |     } else {
+>  9 |         let a: Int = 2;
+                   ^
+  10 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-if-then-shadows-outer-var 1`] = `
+"<unknown>:7:13: Variable already exists: "a"
+Line 7, col 13:
+  6 |     if (true) {
+> 7 |         let a: Int = 2;
+                  ^
+  8 |     } else {
 "
 `;
 
@@ -995,6 +1265,36 @@ Line 7, col 9:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-repeat-shadows-outer-var 1`] = `
+"<unknown>:7:13: Variable already exists: "b"
+Line 7, col 13:
+  6 |     repeat (a) {
+> 7 |         let b: Int = a + 3;
+                  ^
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-try-does-not-shadow-outer-var 1`] = `
+"<unknown>:7:13: Variable already exists: "e"
+Line 7, col 13:
+  6 |     try {
+> 7 |         let e: String = "rty";
+                  ^
+  8 |         return e;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-while-shadows-outer-var 1`] = `
+"<unknown>:7:13: Variable already exists: "b"
+Line 7, col 13:
+  6 |     while (true) {
+> 7 |         let b: Int = a + 3;
+                  ^
+  8 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for var-underscore-name-access 1`] = `
 "<unknown>:6:16: Wildcard variable name '_' cannot be accessed
 Line 6, col 16:
@@ -1023,6 +1323,31 @@ Line 9, col 12:
                   ^
   10 | }
 "
+`;
+
+exports[`resolveStatements should resolve statements for assign-self-mutating-method 1`] = `
+[
+  [
+    "self",
+    "IntWrapper",
+  ],
+  [
+    "self.x",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+]
 `;
 
 exports[`resolveStatements should resolve statements for contract-receiver-bounced 1`] = `

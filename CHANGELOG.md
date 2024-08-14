@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+### Fixed
+
+## [1.4.2] - 2024-08-13
+
+### Changed
+
 - Removed unsupported iterators API: PR [#633](https://github.com/tact-lang/tact/pull/633)
 - Created a separate API function to enable compiler features: PR [#647](https://github.com/tact-lang/tact/pull/647)
 - Use the `ILogger` interface to enable API users implement their own loggers: PR [#668](https://github.com/tact-lang/tact/pull/668)
@@ -21,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - FunC function identifiers with characters from hexadecimal set: PR [#636](https://github.com/tact-lang/tact/pull/636)
 - Throw syntax error for module-level (top-level) constants with attributes: PR [#644](https://github.com/tact-lang/tact/pull/644)
 - Typechecking for optional types when the argument type is not an equality type: PR [#650](https://github.com/tact-lang/tact/pull/650)
+- Getters now return flattened types for structs as before: PR [#679](https://github.com/tact-lang/tact/pull/679)
+- New bindings cannot shadow global constants: PR [#680](https://github.com/tact-lang/tact/pull/680)
+- Disallow using assignment operators on constants: PR [#682](https://github.com/tact-lang/tact/pull/682)
+- Fix code generation for some non-Lvalues that weren't turned into Lvalues by wrapping them in a function call: PR [#683](https://github.com/tact-lang/tact/pull/683)
 
 ## [1.4.1] - 2024-07-26
 

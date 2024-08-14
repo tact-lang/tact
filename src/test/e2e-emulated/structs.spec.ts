@@ -248,5 +248,28 @@ describe("structs", () => {
             await contract.getLongNestedStructWithOptsTest(),
         ).toMatchSnapshot();
         expect(await contract.getLongContractTest()).toEqual(210n);
+
+        // https://github.com/tact-lang/tact/issues/671
+
+        expect(
+            (await system.provider(contract).get("longStruct15Test", [])).stack,
+        ).toMatchSnapshot();
+        expect(
+            (await system.provider(contract).get("longStruct16Test", [])).stack,
+        ).toMatchSnapshot();
+        expect(
+            (await system.provider(contract).get("longStruct32Test", [])).stack,
+        ).toMatchSnapshot();
+        expect(
+            (await system.provider(contract).get("longNestedStructTest", []))
+                .stack,
+        ).toMatchSnapshot();
+        expect(
+            (
+                await system
+                    .provider(contract)
+                    .get("longNestedStructWithOptsTest", [])
+            ).stack,
+        ).toMatchSnapshot();
     });
 });

@@ -582,7 +582,7 @@ const struct: Serializer<{ name: string; optional: boolean }> = {
         } else {
             if (fromGet) {
                 w.append(
-                    `const ${field} = loadTuple${v.name}(${reader}.readTuple());`,
+                    `const ${field} = loadGetterTuple${v.name}(${reader});`,
                 );
             } else {
                 w.append(
