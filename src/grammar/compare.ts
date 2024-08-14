@@ -1,7 +1,7 @@
 import {
     AstConstantDef,
     AstReceiverKind,
-AstStructFieldInitializer,
+    AstStructFieldInitializer,
     AstFunctionAttribute,
     AstOpBinary,
     AstOpUnary,
@@ -171,10 +171,7 @@ export class AstComparator {
                     ) &&
                     this.compare(nativeName1, nativeName2) &&
                     this.compare(nativeFuncName1, nativeFuncName2) &&
-                    this.compareNullableNodes(
-                        returnTy1,
-                        returnTy2,
-                    ) &&
+                    this.compareNullableNodes(returnTy1, returnTy2) &&
                     this.compareArray(nativeParams1, nativeParams2)
                 );
             }
@@ -705,14 +702,20 @@ export class AstComparator {
             }
 
             case "struct_field_initializer": {
-                const { field: field1, initializer: initializer1 } = node1 as AstStructFieldInitializer;
-                const { field: field2, initializer: initializer2 } = node2 as AstStructFieldInitializer;
-                return this.compare(field1, field2) &&
-                       this.compare(initializer1, initializer2);
+                const { field: field1, initializer: initializer1 } =
+                    node1 as AstStructFieldInitializer;
+                const { field: field2, initializer: initializer2 } =
+                    node2 as AstStructFieldInitializer;
+                return (
+                    this.compare(field1, field2) &&
+                    this.compare(initializer1, initializer2)
+                );
             }
 
             default:
-                throwInternalCompilerError(`Unsupported node: ${JSONbig.stringify(node1)}`);
+                throwInternalCompilerError(
+                    `Unsupported node: ${JSONbig.stringify(node1)}`,
+                );
         }
     }
 
