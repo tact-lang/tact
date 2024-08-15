@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Constant evaluator now uses an interpreter, which can simplify expressions having calls to user-defined functions: PR [#664](https://github.com/tact-lang/tact/pull/664)
+
 ### Fixed
 
 ## [1.4.2] - 2024-08-13
