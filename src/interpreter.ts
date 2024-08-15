@@ -502,9 +502,9 @@ class EnvironmentStack {
     public updateBinding(name: string, val: Value) {
         if (name !== WILDCARD_NAME) {
             const bindings = this.findBindingMap(name);
-        if (bindings !== undefined) {
-            bindings.set(name, val);
-        }
+            if (bindings !== undefined) {
+                bindings.set(name, val);
+            }
         }
     }
 
@@ -535,7 +535,7 @@ class EnvironmentStack {
     Executes "code" in a fresh environment that is placed at the top
     of the environment stack. The fresh environment is initialized
     with the bindings in "initialBindings". Once "code" finishes
-    execution, the new invironment is automatically popped from 
+    execution, the new environment is automatically popped from 
     the stack. 
     
     This method is useful for starting a new local variables scope, 
