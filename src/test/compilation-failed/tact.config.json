@@ -136,6 +136,11 @@
       "name": "func-function-does-not-exist",
       "path": "./contracts/func-function-does-not-exist.tact",
       "output": "./contracts/output"
+    },
+    {
+      "name": "scope-const-shadows-stdlib-ident",
+      "path": "./contracts/scope-const-shadows-stdlib-ident.tact",
+      "output": "./contracts/output"
     }
   ]
 }

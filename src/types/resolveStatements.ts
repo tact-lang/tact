@@ -20,6 +20,7 @@ import {
 import {
     getAllStaticFunctions,
     getAllTypes,
+    getStaticConstant,
     getType,
     hasStaticConstant,
     resolveTypeRef,
@@ -68,10 +69,18 @@ function checkVariableExists(
         );
     }
     if (hasStaticConstant(ctx, idText(name))) {
-        throwCompilationError(
-            `Variable ${idTextErr(name)} is trying to shadow an existing constant with the same name`,
-            name.loc,
-        );
+        if (name.loc.origin === "stdlib") {
+            const constLoc = getStaticConstant(ctx, idText(name)).loc;
+            throwCompilationError(
+                `Constant ${idTextErr(name)} is shadowing an identifier defined in the Tact standard library: pick a different constant name`,
+                constLoc,
+            );
+        } else {
+            throwCompilationError(
+                `Variable ${idTextErr(name)} is trying to shadow an existing constant with the same name`,
+                name.loc,
+            );
+        }
     }
 }
 
