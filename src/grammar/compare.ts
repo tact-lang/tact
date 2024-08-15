@@ -1,6 +1,7 @@
 import {
     AstConstantDef,
     AstReceiverKind,
+    AstModuleItem,
     AstStructFieldInitializer,
     AstFunctionAttribute,
     AstOpBinary,
@@ -51,16 +52,20 @@ import {
     AstNode,
     AstFuncId,
 } from "./ast";
-import JSONbig from "json-bigint";
+import { AstRenamer } from "./rename";
 import { throwInternalCompilerError } from "../errors";
+import JSONbig from "json-bigint";
 
 /**
  * Provides an API to compare two AST nodes with extra options.
  */
 export class AstComparator {
     /**
-     * @param sort Topologically sort AST entries before comparing.
-     * @param canonialize Introduce de Brujin indicies for local bindings to handle duplicate code with different names.
+     * @param sort Topologically sort AST entries before comparing. Should be enabled
+     *        in order to handle duplicate entries shuffled in the source code.
+     * @param canonialize Introduce de Brujin indicies for local bindings to handle
+     *        duplicate code with different names. Should be enabled in order to
+     *        treat duplicate entries with different names as the same elements.
      */
     private constructor(
         private readonly sort: boolean,
@@ -77,6 +82,12 @@ export class AstComparator {
     public compare(node1: AstNode, node2: AstNode): boolean {
         if (node1.kind !== node2.kind) {
             return false;
+        }
+
+        if (this.canonialize === true) {
+            const renamer = AstRenamer.make({ sort: this.sort });
+            node1 = renamer.rename(node1);
+            node2 = renamer.rename(node2);
         }
 
         switch (node1.kind) {
