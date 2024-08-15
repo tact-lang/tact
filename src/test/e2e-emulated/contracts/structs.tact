@@ -165,6 +165,55 @@ struct LongNestedStructWithOpts {
     s3: LongStruct32?;
 }
 
+struct Point {
+    x: Int as int64;
+    y: Int as int64;
+}
+ 
+struct Line {
+    start: Point;
+    end: Point;
+}
+
+struct Location {
+    idx: Int;
+    line1: Line;
+    line2: Line?;
+}
+
+struct DoubleNestedStructOpt {
+    a: Int;
+    s: MyStruct1?;
+}
+
+struct TripleNestedStructOpt {
+    a: Int;
+    s: DoubleNestedStructOpt?;
+}
+
+struct LongAndDeepNestedStruct {
+    x1: Int;
+    x2: Int;
+    x3: Int;
+    x4: Int;
+    x5: Int;
+    x6: Int;
+    x7: Int;
+    x8: Int;
+    x9: Int;
+    x10: Int;
+    x11: Int;
+    x12: Int;
+    x13: Int;
+    x14: Int;
+    x15: Int;
+    x16: Int;
+    s1: TripleNestedStructOpt;
+    s2: TripleNestedStructOpt;
+    s3: TripleNestedStructOpt?;
+    s4: TripleNestedStructOpt?;
+}
+
 contract StructsTester {
     s1: S = S {a: false, b: 21 + 21};
     s2: S;
@@ -580,5 +629,225 @@ contract StructsTester {
     get fun longContractTest(): Int {
         return self.x1 + self.x2 + self.x3 + self.x4 + self.x5 + self.x6 + self.x7 + self.x8 + self.x9 + self.x10 +
                self.x11 + self.x12 + self.x13 + self.x14 + self.x15 + self.x16 + self.x17 + self.x18 + self.x19 + self.x20;
+    }
+
+    // https://github.com/tact-lang/tact/issues/690
+
+    get fun location1(): Location {
+        let start: Point = Point{ x: 1, y: 2};
+        let end: Point = Point{ x: 3, y: 4};
+
+        return Location {
+            idx: 1,
+            line1: Line {start: start, end: end},
+            line2: null
+        }
+    }
+
+    get fun location2(): Location {
+        let start: Point = Point{ x: 1, y: 2};
+        let end: Point = Point{ x: 3, y: 4};
+
+        return Location {
+            idx: 2,
+            line1: Line {start: start, end: end},
+            line2: Line {start: start, end: end}
+        }
+    }
+
+    get fun tripleNestedStructOpt1(): TripleNestedStructOpt {
+        return TripleNestedStructOpt {
+            a: 1,
+            s: DoubleNestedStructOpt {
+                a: 2,
+                s: MyStruct1 {
+                    a: 3,
+                    b: 4,
+                    c: 5
+                }
+            }
+        }
+    }
+
+    get fun tripleNestedStructOpt2(): TripleNestedStructOpt {
+        return TripleNestedStructOpt {
+            a: 1,
+            s: null
+        }
+    }
+
+    get fun tripleNestedStructOpt3(): TripleNestedStructOpt {
+        return TripleNestedStructOpt {
+            a: 1,
+            s: DoubleNestedStructOpt {
+                a: 2,
+                s: null
+            }
+        }
+    }
+
+    get fun longAndDeepNestedStruct1(): LongAndDeepNestedStruct {
+        return LongAndDeepNestedStruct {
+            x1: 1,
+            x2: 2,
+            x3: 3,
+            x4: 4,
+            x5: 5,
+            x6: 6,
+            x7: 7,
+            x8: 8,
+            x9: 9,
+            x10: 10,
+            x11: 11,
+            x12: 12,
+            x13: 13,
+            x14: 14,
+            x15: 15,
+            x16: 16,
+            s1: TripleNestedStructOpt {
+                a: 1,
+                s: DoubleNestedStructOpt {
+                    a: 2,
+                    s: MyStruct1 {
+                        a: 3,
+                        b: 4,
+                        c: 5
+                    }
+                }
+            },
+            s2: TripleNestedStructOpt {
+                a: 6,
+                s: DoubleNestedStructOpt {
+                    a: 7,
+                    s: MyStruct1 {
+                        a: 8,
+                        b: 9,
+                        c: 10
+                    }
+                }
+            },
+            s3: null,
+            s4: null
+        }
+    }
+
+    get fun longAndDeepNestedStruct2(): LongAndDeepNestedStruct {
+        return LongAndDeepNestedStruct {
+            x1: 1,
+            x2: 2,
+            x3: 3,
+            x4: 4,
+            x5: 5,
+            x6: 6,
+            x7: 7,
+            x8: 8,
+            x9: 9,
+            x10: 10,
+            x11: 11,
+            x12: 12,
+            x13: 13,
+            x14: 14,
+            x15: 15,
+            x16: 16,
+            s1: TripleNestedStructOpt {
+                a: 1,
+                s: DoubleNestedStructOpt {
+                    a: 2,
+                    s: MyStruct1 {
+                        a: 3,
+                        b: 4,
+                        c: 5
+                    }
+                }
+            },
+            s2: TripleNestedStructOpt {
+                a: 6,
+                s: DoubleNestedStructOpt {
+                    a: 7,
+                    s: MyStruct1 {
+                        a: 8,
+                        b: 9,
+                        c: 10
+                    }
+                }
+            },
+            s3: TripleNestedStructOpt {
+                a: 11,
+                s: DoubleNestedStructOpt {
+                    a: 12,
+                    s: MyStruct1 {
+                        a: 13,
+                        b: 14,
+                        c: 15
+                    }
+                }
+            },
+            s4: TripleNestedStructOpt {
+                a: 16,
+                s: DoubleNestedStructOpt {
+                    a: 17,
+                    s: MyStruct1 {
+                        a: 18,
+                        b: 19,
+                        c: 20
+                    }
+                }
+            }
+        }
+    }
+
+    get fun longAndDeepNestedStruct3(): LongAndDeepNestedStruct {
+        return LongAndDeepNestedStruct {
+            x1: 1,
+            x2: 2,
+            x3: 3,
+            x4: 4,
+            x5: 5,
+            x6: 6,
+            x7: 7,
+            x8: 8,
+            x9: 9,
+            x10: 10,
+            x11: 11,
+            x12: 12,
+            x13: 13,
+            x14: 14,
+            x15: 15,
+            x16: 16,
+            s1: TripleNestedStructOpt {
+                a: 1,
+                s: DoubleNestedStructOpt {
+                    a: 2,
+                    s: MyStruct1 {
+                        a: 3,
+                        b: 4,
+                        c: 5
+                    }
+                }
+            },
+            s2: TripleNestedStructOpt {
+                a: 6,
+                s: DoubleNestedStructOpt {
+                    a: 7,
+                    s: MyStruct1 {
+                        a: 8,
+                        b: 9,
+                        c: 10
+                    }
+                }
+            },
+            s3: null,
+            s4: TripleNestedStructOpt {
+                a: 16,
+                s: DoubleNestedStructOpt {
+                    a: 17,
+                    s: MyStruct1 {
+                        a: 18,
+                        b: 19,
+                        c: 20
+                    }
+                }
+            }
+        }
     }
 }
