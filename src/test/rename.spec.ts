@@ -2,11 +2,11 @@ import fs from "fs";
 import { __DANGER_resetNodeId } from "../grammar/ast";
 import { parse } from "../grammar/grammar";
 import { join } from "path";
-import { AstRenamer } from "./rename";
+import { AstRenamer } from "../grammar/rename";
 import { prettyPrint } from "../prettyPrinter";
 import * as assert from "assert";
 
-const TEST_DIR = join(__dirname, "..", "test", "contracts");
+const TEST_DIR = join(__dirname, "contracts");
 const EXPECTED_DIR = join(TEST_DIR, "renamer-expected");
 
 function trimTrailingCR(input: string): string {

@@ -2,10 +2,10 @@ import fs from "fs";
 import { __DANGER_resetNodeId } from "../grammar/ast";
 import { parse } from "../grammar/grammar";
 import { join } from "path";
-import { AstComparator } from "./compare";
+import { AstComparator } from "../grammar/compare";
 import * as assert from "assert";
 
-const TEST_DIR = join(__dirname, "..", "test", "contracts");
+const TEST_DIR = join(__dirname, "contracts");
 
 describe("comparator", () => {
     it.each(fs.readdirSync(TEST_DIR, { withFileTypes: true }))(
