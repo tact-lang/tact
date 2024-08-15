@@ -3,32 +3,50 @@ import { __DANGER_resetNodeId } from "../grammar/ast";
 import { prettyPrint } from "../prettyPrinter";
 import { parse } from "../grammar/grammar";
 import { join } from "path";
+import * as assert from "assert";
 import JSONBig from "json-bigint";
 
+const TEST_DIR = join(__dirname, "contracts");
+
+function trimTrailingCR(input: string): string {
+    return input.replace(/\n+$/, "");
+}
+
 describe("formatter", () => {
-    it.each(fs.readdirSync(join(__dirname, "formatting", "proper")))(
+    it.each(fs.readdirSync(TEST_DIR, { withFileTypes: true }))(
         "shouldn't change proper formatting",
-        (file) => {
-            const filePath = join(__dirname, "formatting", "proper", file);
-            const src = fs.readFileSync(filePath, "utf-8");
+        (dentry) => {
+            if (!dentry.isFile()) {
+                return;
+            }
+            const filePath = join(TEST_DIR, dentry.name);
+            const src = trimTrailingCR(fs.readFileSync(filePath, "utf-8"));
             const ast = parse(src, filePath, "user");
-            const formatted = prettyPrint(ast);
-            expect(formatted).toEqual(src);
+            const formatted = trimTrailingCR(prettyPrint(ast));
+            assert.strictEqual(
+                formatted,
+                src,
+                `The formatted AST comparison failed for ${dentry.name}`,
+            );
         },
     );
-    const outputDir = join(__dirname, "formatting", "output");
+
+    const outputDir = join(TEST_DIR, "pretty-printer-output");
     fs.mkdirSync(outputDir, { recursive: true });
-    it.each(fs.readdirSync(join(__dirname, "formatting", "proper")))(
+    it.each(fs.readdirSync(TEST_DIR, { withFileTypes: true }))(
         "shouldn't change AST",
-        (file) => {
-            const filePath = join(__dirname, "formatting", "proper", file);
+        (dentry) => {
+            if (!dentry.isFile()) {
+                return;
+            }
+            const filePath = join(TEST_DIR, dentry.name);
             const src = fs.readFileSync(filePath, "utf-8");
             const ast = parse(src, filePath, "user");
             //TODO: change for proper recursive removal
             const astStr = JSONBig.stringify(ast).replace(/"id":[0-9]+,/g, "");
 
             const formatted = prettyPrint(ast);
-            const fileName = join(outputDir, file);
+            const fileName = join(outputDir, dentry.name);
             fs.openSync(fileName, "w");
             fs.writeFileSync(fileName, formatted, { flag: "w" });
             const astFormatted = parse(formatted, fileName, "user");
