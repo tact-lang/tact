@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Parsing of optional nested struct fields does not cause the `Not a tuple` error anymore: PR [#692](https://github.com/tact-lang/tact/pull/692)
+- Disallow shadowing of recursive function names: PR [#693](https://github.com/tact-lang/tact/pull/693)
 
 ## [1.4.2] - 2024-08-13
 

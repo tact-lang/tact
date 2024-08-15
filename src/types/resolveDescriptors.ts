@@ -1918,7 +1918,7 @@ function checkInitializerType(
     initializer: AstExpression,
     ctx: CompilerContext,
 ): CompilerContext {
-    const stmtCtx = emptyContext(initializer.loc, declTy);
+    const stmtCtx = emptyContext(initializer.loc, null, declTy);
     ctx = resolveExpression(initializer, stmtCtx, ctx);
     const initTy = getExpType(ctx, initializer);
     if (!isAssignable(initTy, declTy)) {
