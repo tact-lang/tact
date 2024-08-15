@@ -3,23 +3,18 @@ import { __DANGER_resetNodeId } from "../grammar/ast";
 import { prettyPrint } from "../prettyPrinter";
 import { parse } from "../grammar/grammar";
 import { join } from "path";
+import { trimTrailingCR, CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
 import JSONBig from "json-bigint";
 
-const TEST_DIR = join(__dirname, "contracts");
-
-function trimTrailingCR(input: string): string {
-    return input.replace(/\n+$/, "");
-}
-
 describe("formatter", () => {
-    it.each(fs.readdirSync(TEST_DIR, { withFileTypes: true }))(
+    it.each(fs.readdirSync(CONTRACTS_DIR, { withFileTypes: true }))(
         "shouldn't change proper formatting",
         (dentry) => {
             if (!dentry.isFile()) {
                 return;
             }
-            const filePath = join(TEST_DIR, dentry.name);
+            const filePath = join(CONTRACTS_DIR, dentry.name);
             const src = trimTrailingCR(fs.readFileSync(filePath, "utf-8"));
             const ast = parse(src, filePath, "user");
             const formatted = trimTrailingCR(prettyPrint(ast));
@@ -31,15 +26,15 @@ describe("formatter", () => {
         },
     );
 
-    const outputDir = join(TEST_DIR, "pretty-printer-output");
+    const outputDir = join(CONTRACTS_DIR, "pretty-printer-output");
     fs.mkdirSync(outputDir, { recursive: true });
-    it.each(fs.readdirSync(TEST_DIR, { withFileTypes: true }))(
+    it.each(fs.readdirSync(CONTRACTS_DIR, { withFileTypes: true }))(
         "shouldn't change AST",
         (dentry) => {
             if (!dentry.isFile()) {
                 return;
             }
-            const filePath = join(TEST_DIR, dentry.name);
+            const filePath = join(CONTRACTS_DIR, dentry.name);
             const src = fs.readFileSync(filePath, "utf-8");
             const ast = parse(src, filePath, "user");
             //TODO: change for proper recursive removal

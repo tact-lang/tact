@@ -3,18 +3,17 @@ import { __DANGER_resetNodeId } from "../grammar/ast";
 import { parse } from "../grammar/grammar";
 import { join } from "path";
 import { AstComparator } from "../grammar/compare";
+import { CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
 
-const TEST_DIR = join(__dirname, "contracts");
-
 describe("comparator", () => {
-    it.each(fs.readdirSync(TEST_DIR, { withFileTypes: true }))(
+    it.each(fs.readdirSync(CONTRACTS_DIR, { withFileTypes: true }))(
         "AST modules of the same file must be equal",
         (dentry) => {
             if (!dentry.isFile()) {
                 return;
             }
-            const filePath = join(TEST_DIR, dentry.name);
+            const filePath = join(CONTRACTS_DIR, dentry.name);
             const src = fs.readFileSync(filePath, "utf-8");
             const ast1 = parse(src, filePath, "user");
             const ast2 = parse(src, filePath, "user");
