@@ -1075,6 +1075,16 @@ Line 9, col 14:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-do-until-shadows-outer-const 1`] = `
+"<unknown>:8:13: Variable "B" is trying to shadow an existing constant with the same name
+Line 8, col 13:
+  7 |     do {
+> 8 |         let B: Int = a + 3;
+                  ^
+  9 |     } until (false);
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-do-until-shadows-outer-var 1`] = `
 "<unknown>:7:13: Variable already exists: "b"
 Line 7, col 13:
@@ -1082,6 +1092,16 @@ Line 7, col 13:
 > 7 |         let b: Int = a + 3;
                   ^
   8 |     } until (false);
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-external-shadows-param 1`] = `
+"<unknown>:8:13: Variable already exists: "foo"
+Line 8, col 13:
+  7 |     external (foo: Message) {
+> 8 |         let foo: Int = 0;
+                  ^~~
+  9 |     }
 "
 `;
 
@@ -1125,6 +1145,16 @@ Line 6, col 14:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-foreach-shadows-outer-const 1`] = `
+"<unknown>:8:13: Variable "m" is trying to shadow an existing constant with the same name
+Line 8, col 13:
+  7 |     foreach (k, v in m) {
+> 8 |         let m: map<Int, Int> = emptyMap();
+                  ^
+  9 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-foreach-shadows-outer-map 1`] = `
 "<unknown>:7:13: Variable already exists: "m"
 Line 7, col 13:
@@ -1152,6 +1182,16 @@ Line 8, col 12:
 > 8 |     return v;
                  ^
   9 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-foreach-val-shadows-const-map 1`] = `
+"<unknown>:6:17: Variable "m" is trying to shadow an existing constant with the same name
+Line 6, col 17:
+  5 | fun test() {
+> 6 |     foreach (k, m in m) {
+                      ^
+  7 |         // something
 "
 `;
 
@@ -1205,6 +1245,16 @@ Line 4, col 9:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-if-else-shadows-outer-const 1`] = `
+"<unknown>:10:13: Variable "A" is trying to shadow an existing constant with the same name
+Line 10, col 13:
+   9 |     } else {
+> 10 |         let A: Int = 2;
+                   ^
+  11 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-if-else-shadows-outer-var 1`] = `
 "<unknown>:9:13: Variable already exists: "a"
 Line 9, col 13:
@@ -1212,6 +1262,16 @@ Line 9, col 13:
 >  9 |         let a: Int = 2;
                    ^
   10 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-if-then-shadows-outer-const 1`] = `
+"<unknown>:8:13: Variable "A" is trying to shadow an existing constant with the same name
+Line 8, col 13:
+  7 |     if (true) {
+> 8 |         let A: Int = 2;
+                  ^
+  9 |     } else {
 "
 `;
 
@@ -1265,6 +1325,26 @@ Line 7, col 9:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-receiver-shadows-param 1`] = `
+"<unknown>:8:13: Variable already exists: "foo"
+Line 8, col 13:
+  7 |     receive (foo: Message) {
+> 8 |         let foo: Int = 0;
+                  ^~~
+  9 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-repeat-shadows-outer-const 1`] = `
+"<unknown>:8:13: Variable "B" is trying to shadow an existing constant with the same name
+Line 8, col 13:
+  7 |     repeat (a) {
+> 8 |         let B: Int = a + 3;
+                  ^
+  9 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-repeat-shadows-outer-var 1`] = `
 "<unknown>:7:13: Variable already exists: "b"
 Line 7, col 13:
@@ -1275,6 +1355,16 @@ Line 7, col 13:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-try-does-not-shadow-outer-const 1`] = `
+"<unknown>:8:13: Variable "e" is trying to shadow an existing constant with the same name
+Line 8, col 13:
+  7 |     try {
+> 8 |         let e: String = "rty";
+                  ^
+  9 |         return e;
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-try-does-not-shadow-outer-var 1`] = `
 "<unknown>:7:13: Variable already exists: "e"
 Line 7, col 13:
@@ -1282,6 +1372,16 @@ Line 7, col 13:
 > 7 |         let e: String = "rty";
                   ^
   8 |         return e;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-while-shadows-outer-const 1`] = `
+"<unknown>:8:13: Variable "B" is trying to shadow an existing constant with the same name
+Line 8, col 13:
+  7 |     while (true) {
+> 8 |         let B: Int = a + 3;
+                  ^
+  9 |     }
 "
 `;
 
