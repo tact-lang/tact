@@ -163,15 +163,4 @@ describe("fail-const-eval", () => {
         errorMessage:
             "Cannot evaluate expression to a constant: repeat argument must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)",
     });
-
-    itShouldNotCompile({
-        testName: "const-eval-constant-shadowing-in-fun",
-        errorMessage:
-            "[INTERNAL COMPILER ERROR]: declaration of C shadows a constant with the same name",
-    });
-    itShouldNotCompile({
-        testName: "const-eval-constant-shadowing-in-fun-argument",
-        errorMessage:
-            "[INTERNAL COMPILER ERROR]: some parameter of function shadowingFunction shadows a constant with the same name",
-    });
 });

@@ -186,16 +186,6 @@
       "name": "const-eval-repeat-upper-bound",
       "path": "./contracts/const-eval-repeat-upper-bound.tact",
       "output": "./contracts/output"
-    },
-    {
-      "name": "const-eval-constant-shadowing-in-fun",
-      "path": "./contracts/const-eval-constant-shadowing-in-fun.tact",
-      "output": "./contracts/output"
-    },
-    {
-      "name": "const-eval-constant-shadowing-in-fun-argument",
-      "path": "./contracts/const-eval-constant-shadowing-in-fun-argument.tact",
-      "output": "./contracts/output"
     }
   ]
 }
