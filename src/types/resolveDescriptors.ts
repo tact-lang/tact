@@ -1818,7 +1818,7 @@ export function getType(
     ident: AstId | string,
 ): TypeDescription {
     const name = typeof ident === "string" ? ident : idText(ident);
-    const r = store.get(ctx, name);
+    const r = store.get(ctx, name.endsWith("$Data") ? name.slice(0, -5) : name);
     if (!r) {
         throwInternalCompilerError(`Type ${name} not found`);
     }

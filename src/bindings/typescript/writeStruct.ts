@@ -16,7 +16,7 @@ export function writeStruct(
     exp: boolean,
     w: Writer,
 ) {
-    w.append(`${exp ? "export " : " "}type ${name}_struct = {`);
+    w.append(`${exp ? "export " : " "}type ${name} = {`);
     w.inIndent(() => {
         w.append(`$$type: '${name}';`);
         outer: for (const f of fields) {
@@ -90,7 +90,7 @@ export function writeSerializer(
     allocation: AllocationCell,
     w: Writer,
 ) {
-    w.append(`export function store${s.name}(src: ${s.name}_struct) {`);
+    w.append(`export function store${s.name}(src: ${s.name}) {`);
     w.inIndent(() => {
         w.append(`return (builder: Builder) => {`);
         w.inIndent(() => {
@@ -111,7 +111,7 @@ export function writeInitSerializer(
     allocation: AllocationCell,
     w: Writer,
 ) {
-    w.append(`function init${name}(src: ${name}_struct) {`);
+    w.append(`function init${name}(src: ${name}) {`);
     w.inIndent(() => {
         w.append(`return (builder: Builder) => {`);
         w.inIndent(() => {
@@ -211,7 +211,7 @@ function writeTupleFieldParser(
 }
 
 export function writeTupleSerializer(s: ABIType, w: Writer) {
-    w.append(`function storeTuple${s.name}(source: ${s.name}_struct) {`);
+    w.append(`function storeTuple${s.name}(source: ${s.name}) {`);
     w.inIndent(() => {
         w.append(`let builder = new TupleBuilder();`);
         for (const f of s.fields) {
@@ -240,7 +240,7 @@ function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
 
 export function writeDictParser(s: ABIType, w: Writer) {
     w.write(`
-        function dictValueParser${s.name}(): DictionaryValue<${s.name}_struct> {
+        function dictValueParser${s.name}(): DictionaryValue<${s.name}> {
             return {
                 serialize: (src, builder) => {
                     builder.storeRef(beginCell().store(store${s.name}(src)).endCell());

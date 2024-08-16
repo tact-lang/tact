@@ -343,7 +343,7 @@ export function writeTypescript(
                         break;
                     case "typed":
                         {
-                            receivers.push(r.message.type + "_struct");
+                            receivers.push(r.message.type);
                         }
                         break;
                     case "text":
@@ -475,7 +475,7 @@ export function writeTypescript(
                         break;
                     case "typed":
                         {
-                            receivers.push(r.message.type + "_struct");
+                            receivers.push(r.message.type);
                         }
                         break;
                     case "text":

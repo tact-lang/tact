@@ -114,7 +114,7 @@ Test {
         "returnType": {
           "kind": "simple",
           "optional": false,
-          "type": "Test",
+          "type": "Test$Data",
         },
       },
       {
@@ -142,7 +142,7 @@ Test {
             "type": {
               "kind": "simple",
               "optional": false,
-              "type": "Test",
+              "type": "Test$Data",
             },
           },
         ],
@@ -150,7 +150,7 @@ Test {
         "returnType": {
           "kind": "simple",
           "optional": false,
-          "type": "Test",
+          "type": "Test$Data",
         },
       },
     ],
@@ -417,7 +417,7 @@ Test {
           },
         ],
         "header": null,
-        "name": "Test",
+        "name": "Test$Data",
       },
     ],
   },
@@ -516,7 +516,7 @@ exports[`getters should implement getters correctly 2`] = `
 
 exports[`getters should implement getters correctly 3`] = `
 {
-  "$$type": "Test",
+  "$$type": "Test$Data",
   "anotherData": x{},
   "id": 0n,
 }
@@ -524,7 +524,7 @@ exports[`getters should implement getters correctly 3`] = `
 
 exports[`getters should implement getters correctly 4`] = `
 {
-  "$$type": "Test",
+  "$$type": "Test$Data",
   "anotherData": x{000000000000007B},
   "id": 123n,
 }

@@ -47,7 +47,7 @@ describe("getters", () => {
         // Passing `Test` contract data to getter
         expect(
             await contract.getContractAsInput({
-                $$type: "Test",
+                $$type: "Test$Data",
                 id: 123n,
                 anotherData: beginCell().storeUint(123, 64).endCell(),
             }),
