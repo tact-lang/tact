@@ -4,6 +4,7 @@
   "project": ["src/**/*.ts", "bin/tact.js"],
   "ignore": [
     "src/grammar/ast.ts",
+    "src/grammar/sort.ts",
     "src/prettyPrinter.ts",
     ".github/workflows/tact.yml"
   ],
