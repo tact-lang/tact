@@ -62,20 +62,20 @@ export class AstComparator {
     /**
      * @param sort Topologically sort AST entries before comparing. Should be enabled
      *        in order to handle duplicate entries shuffled in the source code.
-     * @param canonialize Introduce de Brujin indices for local bindings to handle
+     * @param canonicalize Introduce de Brujin indices for local bindings to handle
      *        duplicate code with different names. Should be enabled in order to
      *        treat duplicate entries with different names as the same elements.
      */
     private constructor(
         private readonly sort: boolean,
-        private readonly canonialize: boolean,
+        private readonly canonicalize: boolean,
     ) {}
 
     public static make(
-        options: Partial<{ sort: boolean; canonialize: boolean }> = {},
+        options: Partial<{ sort: boolean; canonicalize: boolean }> = {},
     ): AstComparator {
-        const { sort = true, canonialize = true } = options;
-        return new AstComparator(sort, canonialize);
+        const { sort = true, canonicalize = true } = options;
+        return new AstComparator(sort, canonicalize);
     }
 
     public compare(node1: AstNode, node2: AstNode): boolean {
@@ -85,7 +85,7 @@ export class AstComparator {
 
         switch (node1.kind) {
             case "module": {
-                if (this.canonialize) {
+                if (this.canonicalize) {
                     const renamer = AstRenamer.make({ sort: this.sort });
                     node1 = renamer.renameModule(node1 as AstModule);
                     node2 = renamer.renameModule(node2 as AstModule);
