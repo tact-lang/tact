@@ -80,6 +80,11 @@
     "привет",
     "PUSHREF",
     "PUSHSLICE",
+    "renamer",
+    "canonizalize",
+    "Brujin",
+    "indicies",
+    "dentry",
     "SETINDEXVARQ"
   ],
   "flagWords": [],

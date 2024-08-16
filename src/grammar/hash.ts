@@ -40,7 +40,10 @@ export class AstHasher {
     }
 
     public hash(node: AstNode): AstHash {
-        const data = (node.kind === "id" || node.kind === "func_id") ? `${node.kind}_${node.text}` : this.getHashData(node);
+        const data =
+            node.kind === "id" || node.kind === "func_id"
+                ? `${node.kind}_${node.text}`
+                : this.getHashData(node);
         return createHash("sha256").update(data).digest("hex");
     }
 

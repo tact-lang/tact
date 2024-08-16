@@ -1,7 +1,6 @@
 import {
     AstConstantDef,
     AstReceiverKind,
-    AstModuleItem,
     AstStructFieldInitializer,
     AstFunctionAttribute,
     AstOpBinary,
@@ -63,7 +62,7 @@ export class AstComparator {
     /**
      * @param sort Topologically sort AST entries before comparing. Should be enabled
      *        in order to handle duplicate entries shuffled in the source code.
-     * @param canonialize Introduce de Brujin indicies for local bindings to handle
+     * @param canonialize Introduce de Brujin indices for local bindings to handle
      *        duplicate code with different names. Should be enabled in order to
      *        treat duplicate entries with different names as the same elements.
      */

@@ -1,66 +1,23 @@
 import {
     AstConstantDef,
-    AstReceiverKind,
     AstModuleItem,
     AstStatement,
     AstTraitDeclaration,
     AstContractDeclaration,
     AstExpression,
     AstStructFieldInitializer,
-    AstFunctionAttribute,
-    AstOpBinary,
-    AstOpUnary,
-    AstFieldAccess,
-    AstConditional,
-    AstMethodCall,
-    AstStaticCall,
-    AstNumber,
-    AstBoolean,
-    AstString,
-    AstStructInstance,
-    AstInitOf,
-    AstConstantAttribute,
-    AstContractAttribute,
-    AstTypedParameter,
-    AstImport,
-    AstNativeFunctionDecl,
-    AstReceiver,
-    AstStatementRepeat,
-    AstStatementUntil,
-    AstStatementWhile,
-    AstStatementForEach,
-    AstStatementTry,
-    AstStatementTryCatch,
     AstCondition,
-    AstStatementAugmentedAssign,
-    AstStatementAssign,
-    AstStatementExpression,
-    AstStatementReturn,
-    AstStatementLet,
     AstFunctionDef,
     AstContract,
     AstTrait,
     AstId,
-    AstModule,
-    AstStructDecl,
-    AstMessageDecl,
     AstFunctionDecl,
     AstConstantDecl,
-    AstContractInit,
-    AstPrimitiveTypeDecl,
-    AstTypeId,
-    AstMapType,
-    AstBouncedMessageType,
-    AstFieldDecl,
-    AstOptionalType,
     AstNode,
-    AstFuncId,
 } from "./ast";
 import { dummySrcInfo } from "./grammar";
 import { AstHasher, AstHash } from "./hash";
-import { topologicalSort } from "../utils/utils";
 import { throwInternalCompilerError } from "../errors";
-import JSONbig from "json-bigint";
 
 type GivenName = string;
 
@@ -70,7 +27,7 @@ function id(text: string): AstId {
 
 /**
  * An utility class that provides alpha-renaming and topological sort functionality
- * for the AST comparation.
+ * for the AST comparison.
  */
 export class AstRenamer {
     private constructor(
@@ -90,7 +47,6 @@ export class AstRenamer {
     public rename(node: AstNode): AstNode {
         switch (node.kind) {
             case "module":
-                // TODO: Sort imports. Does their order affect the behavior of transitive dependencies?
                 return { ...node, items: this.renameModuleItems(node.items) };
             default:
                 throwInternalCompilerError(
@@ -161,8 +117,6 @@ export class AstRenamer {
     public renameModuleItems(items: AstModuleItem[]): AstModuleItem[] {
         // Give new names to module-level elements.
         let renamedItems = items.map((item) => this.changeItemName(item));
-
-        // TODO: Collect dependencies for topsort.
 
         // Apply renaming to the contents of these elements.
         renamedItems = renamedItems.map((item) =>
