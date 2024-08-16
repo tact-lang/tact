@@ -468,6 +468,11 @@ exports[`local-type-inference should automatically set types for let statements 
       "header": null,
       "name": "MyStruct",
     },
+    {
+      "fields": [],
+      "header": null,
+      "name": "LocalTypeInferenceTester$Data",
+    },
   ],
 }
 `;

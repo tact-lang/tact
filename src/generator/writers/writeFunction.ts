@@ -41,7 +41,7 @@ function unwrapExternal(
 ) {
     if (type.kind === "ref") {
         const t = getType(ctx.ctx, type.name);
-        if (t.kind === "struct") {
+        if (t.kind === "struct" || t.kind === "contract") {
             if (type.optional) {
                 ctx.append(
                     `${resolveFuncType(type, ctx)} ${targetName} = ${ops.typeFromOptTuple(t.name, ctx)}(${sourceName});`,
@@ -658,7 +658,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
         // Pack if needed
         if (f.returns.kind === "ref") {
             const t = getType(ctx.ctx, f.returns.name);
-            if (t.kind === "struct") {
+            if (t.kind === "struct" || t.kind === "contract") {
                 if (f.returns.optional) {
                     ctx.append(
                         `return ${ops.typeToOptExternal(t.name, ctx)}(res);`,

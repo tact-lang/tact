@@ -80,7 +80,8 @@
     "привет",
     "PUSHREF",
     "PUSHSLICE",
-    "SETINDEXVARQ"
+    "SETINDEXVARQ",
+    "gettest"
   ],
   "flagWords": [],
   "ignorePaths": [
