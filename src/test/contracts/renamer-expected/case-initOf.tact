@@ -1,4 +1,4 @@
-contract A {
+contract contract_0 {
     a: Int;
     b: Bool;
 
@@ -8,7 +8,7 @@ contract A {
     }
 }
 
-contract B {
+contract contract_1 {
     init() {
         initOf A(1, false);
     }

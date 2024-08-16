@@ -1,4 +1,4 @@
-contract SampleContract {
+contract contract_0 {
     a: Int;
 
     init() {

@@ -1,35 +1,35 @@
-@interface("") trait B {
+@interface("") trait trait_0 {
 }
 
-trait C {
-    abstract get fun d(e: String): String;
+trait trait_1 {
+    abstract get fun function_decl_2(e: String): String;
 }
 
-trait Ownable with B {
+trait trait_3 with B {
     owner: Address;
     value: Int;
 
-    const someNum: Int = 2;
-    abstract const something: Int;
+    const constant_def_4: Int = 2;
+    abstract const constant_decl_5: Int;
 
     receive("message") {
 
     }
 
-    fun requireOwner() {
+    fun function_def_6() {
         nativeThrowUnless(132, context().sender == self.owner);
     }
 
-    get fun owner(): Address {
+    get fun function_def_7(): Address {
         return self.owner;
     }
 }
 
-@interface("a") contract Treasure with Ownable {
+@interface("a") contract contract_8 with Ownable {
     owner: Address;
     value: Int;
 
-    const something: Int = 2;
+    const constant_def_4: Int = 2;
 
     init(owner: Address) {
         self.owner = owner;

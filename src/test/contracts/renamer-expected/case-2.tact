@@ -1,13 +1,13 @@
-struct struct_0 {
+struct struct_decl_0 {
     a: Int;
     b: Int;
 }
 
-fun isZero(x: Int, y: Int, z: Bool, m: Source): Bool {
+fun function_def_1(x: Int, y: Int, z: Bool, m: Source): Bool {
     m.b = 10;
     return x + m.b > 0 && z;
 }
 
-contract Empty {
+contract contract_2 {
     init() {}
 }

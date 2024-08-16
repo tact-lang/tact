@@ -1,8 +1,8 @@
-message message_0 {
+message message_decl_0 {
     value: Int;
 }
 
-contract ReceiveTestContract {
+contract contract_1 {
     a: Int;
 
     init() {

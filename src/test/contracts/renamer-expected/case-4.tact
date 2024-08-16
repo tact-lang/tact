@@ -5,28 +5,28 @@ primitive NInt;
 @name(store_uint)
 native storeUint(s: Builder, value: Int, bits: Int): Builder;
 
-struct struct_0 {
+struct struct_decl_0 {
     a: Int;
     b: Int;
 }
 
-fun isZero(x: Int, y: Int, z: Bool, m: Source): Bool {
+const constant_def_2: Int = 0;
+const constant_def_3: String = "string";
+const constant_def_4: Bool = true;
+const constant_def_5: Bool = false;
+
+fun function_def_1(x: Int, y: Int, z: Bool, m: Source): Bool {
     m.b = 10;
     return x + m.b > 0 && z;
 }
 
-const a: Int = 0;
-const s: String = "string";
-const t: Bool = true;
-const f: Bool = false;
-
-contract SampleContract {
+contract contract_6 {
     a: Int;
     b: Int;
     c: Source;
     d: map<Int, Int>;
 
-    const e: Int = 42;
+    const constant_def_7: Int = 42;
 
     init() {
         self.a = 0;
@@ -34,7 +34,7 @@ contract SampleContract {
         self.c = Source{a: 0, b: 0};
     }
 
-    fun addStake() {
+    fun function_def_8() {
         let d: Int? = null;
         self.a = 10;
         d = a > 0 ? self.a : 0;
@@ -44,7 +44,7 @@ contract SampleContract {
         self.c = Source{a: 10, b: 20};
     }
 
-    get fun stake(): Int {
+    get fun function_def_9(): Int {
         self.addStake();
         return self.a;
     }

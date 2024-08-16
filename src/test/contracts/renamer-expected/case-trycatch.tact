@@ -1,11 +1,11 @@
-fun braveAndTrue() {
+fun function_def_0() {
     try {
         nativeThrow(42);
     }
     dump(42);
 }
 
-fun niceCatch() {
+fun function_def_1() {
     try {
         nativeThrow(42);
     } catch (err) {

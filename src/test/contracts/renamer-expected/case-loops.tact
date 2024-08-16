@@ -1,4 +1,4 @@
-contract SampleContract {
+contract contract_0 {
     x: Int;
     y: map<Int, Int>;
 
