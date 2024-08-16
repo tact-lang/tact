@@ -3,7 +3,7 @@ import "@stdlib/deploy";
 primitive NInt;
 
 @name(store_uint)
-native storeUint(s: Builder, value: Int, bits: Int): Builder;
+native native_store_uint(s: Builder, value: Int, bits: Int): Builder;
 
 struct struct_decl_0 {
     a: Int;

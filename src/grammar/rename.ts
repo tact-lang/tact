@@ -95,7 +95,7 @@ export class AstRenamer {
     /**
      * Sets new or an existent name based on node's hash.
      */
-    private setName(node: AstNode): GivenName {
+    private setName(node: AstNode, forceName?: string): GivenName {
         const hash = AstHasher.make({ sort: this.sort }).hash(node);
         const giveNewName = (newName: string) => {
             const name = this.getName(node);
@@ -108,7 +108,8 @@ export class AstRenamer {
             giveNewName(existentName);
             return existentName;
         }
-        const name = this.generateName(node);
+        const name =
+            forceName === undefined ? this.generateName(node) : forceName;
         this.renamed.set(hash, name);
         giveNewName(name);
         return name;
@@ -157,9 +158,14 @@ export class AstRenamer {
     >(item: T): T {
         switch (item.kind) {
             case "primitive_type_decl":
-            case "native_function_decl":
-                // Skip renaming for primitives and native functions
-                return item;
+                return item; // Skip renaming
+            case "native_function_decl": {
+                const newName = this.setName(
+                    item,
+                    `native_${item.nativeName.text}`,
+                );
+                return { ...item, name: id(newName) };
+            }
             case "contract": {
                 const newName = this.setName(item);
                 const declarations = item.declarations.map((decl) => {
