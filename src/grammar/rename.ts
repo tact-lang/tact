@@ -2,6 +2,7 @@ import {
     AstConstantDef,
     AstModuleItem,
     AstStatement,
+    AstModule,
     AstTraitDeclaration,
     AstContractDeclaration,
     AstExpression,
@@ -44,13 +45,16 @@ export class AstRenamer {
     /**
      * Renames the given node based on its AST.
      */
-    public rename(node: AstNode): AstNode {
-        switch (node.kind) {
+    public renameModule(module: AstModule): AstNode {
+        switch (module.kind) {
             case "module":
-                return { ...node, items: this.renameModuleItems(node.items) };
+                return {
+                    ...module,
+                    items: this.renameModuleItems(module.items),
+                };
             default:
                 throwInternalCompilerError(
-                    `Unsupported node kind: ${node.kind}`,
+                    `Unsupported node kind: ${module.kind}`,
                 );
         }
     }

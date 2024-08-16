@@ -83,14 +83,13 @@ export class AstComparator {
             return false;
         }
 
-        if (this.canonialize === true) {
-            const renamer = AstRenamer.make({ sort: this.sort });
-            node1 = renamer.rename(node1);
-            node2 = renamer.rename(node2);
-        }
-
         switch (node1.kind) {
             case "module": {
+                if (this.canonialize === true) {
+                    const renamer = AstRenamer.make({ sort: this.sort });
+                    node1 = renamer.renameModule(node1 as AstModule);
+                    node2 = renamer.renameModule(node2 as AstModule);
+                }
                 const { imports: imports1, items: items1 } = node1 as AstModule;
                 const { imports: imports2, items: items2 } = node2 as AstModule;
                 return (
