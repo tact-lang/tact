@@ -521,7 +521,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Do not write native functions
     if (f.ast.kind === "native_function_decl") {
-        if (f.isMutating) {
+        if (f.isMutating && !ctx.isRendered(idText(f.ast.nativeName))) {
             // Write same function in non-mutating form
             const nonMutName = ops.nonModifying(idText(f.ast.nativeName));
             ctx.fun(nonMutName, () => {
@@ -544,6 +544,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                     );
                 });
             });
+            ctx.markRendered(idText(f.ast.nativeName));
         }
         return;
     }
