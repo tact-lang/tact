@@ -165,6 +165,16 @@ export function resolveSignatures(ctx: CompilerContext) {
         if (t.kind !== "struct") {
             throwInternalCompilerError(`Unsupported type: ${name}`);
         }
+
+        // Check for no "remainder" in the middle of the struct
+        for (const field of t.fields.slice(0, -1)) {
+            if (field.as === "remaining") {
+                throwCompilationError(
+                    `The "remainder" field can only be the last field of the struct`,
+                );
+            }
+        }
+
         const fields = t.fields.map((v) => createTLBField(v.abi));
 
         // Calculate signature and method id
