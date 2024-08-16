@@ -21,7 +21,7 @@ describe("renamer", () => {
             const filePath = join(CONTRACTS_DIR, dentry.name);
             const src = fs.readFileSync(filePath, "utf-8");
             const inAst = parse(src, filePath, "user");
-            const outAst = AstRenamer.make().rename(inAst);
+            const outAst = AstRenamer.make().renameModule(inAst);
             const got = prettyPrint(outAst);
             assert.strictEqual(
                 trimTrailingCR(got),
