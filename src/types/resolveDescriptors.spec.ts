@@ -41,9 +41,10 @@ describe("resolveDescriptors", () => {
                 [],
             );
             ctx = featureEnable(ctx, "external");
-            expect(() =>
-                resolveDescriptors(ctx),
-            ).toThrowErrorMatchingSnapshot();
+            expect(() => {
+                ctx = resolveDescriptors(ctx);
+                ctx = resolveSignatures(ctx);
+            }).toThrowErrorMatchingSnapshot();
         });
     }
 });
