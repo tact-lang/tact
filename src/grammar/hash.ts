@@ -101,7 +101,7 @@ export class AstHasher {
                 return `${node.kind}|${this.hash(node.path)}|${this.hash(node.expression)}`;
             case "statement_augmentedassign":
                 return `${node.kind}|${node.op}|${this.hash(node.path)}|${this.hash(node.expression)}`;
-            case "statement_condition":
+            case "statement_condition": {
                 const trueStatementsHash = this.hashStatements(
                     node.trueStatements,
                 );
@@ -112,6 +112,7 @@ export class AstHasher {
                     ? this.hash(node.elseif)
                     : "null";
                 return `${node.kind}|${this.hash(node.condition)}|${trueStatementsHash}|${falseStatementsHash}|${elseifHash}`;
+            }
             case "statement_while":
                 return `${node.kind}|${this.hash(node.condition)}|${this.hashStatements(node.statements)}`;
             case "statement_until":
@@ -131,26 +132,30 @@ export class AstHasher {
                 return `${node.kind}|${node.op}|${this.hash(node.operand)}`;
             case "field_access":
                 return `${node.kind}|${this.hash(node.aggregate)}|${node.field.kind}`;
-            case "method_call":
+            case "method_call": {
                 const argsHash = node.args
                     .map((arg) => this.hash(arg))
                     .join("|");
                 return `${node.kind}|${argsHash}`;
-            case "static_call":
+            }
+            case "static_call": {
                 const staticArgsHash = node.args
                     .map((arg) => this.hash(arg))
                     .join("|");
                 return `${node.kind}|${staticArgsHash}`;
-            case "struct_instance":
+            }
+            case "struct_instance": {
                 const structArgsHash = node.args
                     .map((arg) => this.hashStructFieldInitializer(arg))
                     .join("|");
                 return `${node.kind}|${structArgsHash}`;
-            case "init_of":
+            }
+            case "init_of": {
                 const initArgsHash = node.args
                     .map((arg) => this.hash(arg))
                     .join("|");
                 return `${node.kind}|${initArgsHash}`;
+            }
             case "conditional":
                 return `${node.kind}|${this.hash(node.condition)}|${this.hash(node.thenBranch)}|${this.hash(node.elseBranch)}`;
             case "number":
@@ -160,13 +165,13 @@ export class AstHasher {
             case "string":
                 return `${node.kind}|${node.value}`;
             case "null":
-                return `${node.kind}`;
+                return node.kind;
             // Types
             case "type_id":
                 return `${node.kind}|${node.text}`;
             case "optional_type":
                 return `${node.kind}|${this.hash(node.typeArg)}`;
-            case "map_type":
+            case "map_type": {
                 const keyStorageHash = node.keyStorageType
                     ? this.hash(node.keyStorageType)
                     : "null";
@@ -174,6 +179,7 @@ export class AstHasher {
                     ? this.hash(node.valueStorageType)
                     : "null";
                 return `${node.kind}|${this.hash(node.keyType)}|${keyStorageHash}|${this.hash(node.valueType)}|${valueStorageHash}`;
+            }
             case "bounced_message_type":
                 return `${node.kind}|${this.hash(node.messageType)}`;
             default:

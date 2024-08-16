@@ -85,7 +85,7 @@ export class AstComparator {
 
         switch (node1.kind) {
             case "module": {
-                if (this.canonialize === true) {
+                if (this.canonialize) {
                     const renamer = AstRenamer.make({ sort: this.sort });
                     node1 = renamer.renameModule(node1 as AstModule);
                     node2 = renamer.renameModule(node2 as AstModule);

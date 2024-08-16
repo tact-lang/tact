@@ -18,7 +18,6 @@ import {
 } from "./ast";
 import { dummySrcInfo } from "./grammar";
 import { AstHasher, AstHash } from "./hash";
-import { throwInternalCompilerError } from "../errors";
 
 type GivenName = string;
 
@@ -46,17 +45,10 @@ export class AstRenamer {
      * Renames the given node based on its AST.
      */
     public renameModule(module: AstModule): AstNode {
-        switch (module.kind) {
-            case "module":
-                return {
-                    ...module,
-                    items: this.renameModuleItems(module.items),
-                };
-            default:
-                throwInternalCompilerError(
-                    `Unsupported node kind: ${module.kind}`,
-                );
-        }
+        return {
+            ...module,
+            items: this.renameModuleItems(module.items),
+        };
     }
 
     private nextIdx(): number {
@@ -112,8 +104,7 @@ export class AstRenamer {
             giveNewName(existentName);
             return existentName;
         }
-        const name =
-            forceName === undefined ? this.generateName(node) : forceName;
+        const name = forceName ?? this.generateName(node);
         this.renamed.set(hash, name);
         giveNewName(name);
         return name;
