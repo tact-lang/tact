@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Remainder fields in the middle of a struct are now forbidden: PR [#697](https://github.com/tact-lang/tact/pull/697)
+- Defining two native functions from the same FunC function now does not fail compilation: PR [#699](https://github.com/tact-lang/tact/pull/699)
 
 ## [1.4.3] - 2024-08-16
 
