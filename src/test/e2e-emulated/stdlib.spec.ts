@@ -22,5 +22,16 @@ describe("stdlib", () => {
         expect(await contract.getSliceRefs(slice)).toBe(1n);
         expect(await contract.getSliceEmpty(slice)).toBe(false);
         expect(await contract.getLoadBool(slice)).toBe(true);
+        expect(await contract.getLoadBit(slice)).toBe(true);
+        expect(
+            (await contract.getStoreBool(beginCell(), true))
+                .endCell()
+                .toString(),
+        ).toBe(beginCell().storeBit(true).endCell().toString());
+        expect(
+            (await contract.getStoreBit(beginCell(), true))
+                .endCell()
+                .toString(),
+        ).toBe(beginCell().storeBit(true).endCell().toString());
     });
 });
