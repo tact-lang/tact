@@ -17,6 +17,7 @@ import {
     AstNode,
 } from "./ast";
 import { dummySrcInfo } from "./grammar";
+import { AstSorter } from "./sort";
 import { AstHasher, AstHash } from "./hash";
 
 type GivenName = string;
@@ -113,6 +114,10 @@ export class AstRenamer {
     public renameModuleItems(items: AstModuleItem[]): AstModuleItem[] {
         // Give new names to module-level elements.
         let renamedItems = items.map((item) => this.changeItemName(item));
+
+        if (this.sort) {
+            renamedItems.map(item => this.sortAttributes(item));
+        }
 
         // Apply renaming to the contents of these elements.
         renamedItems = renamedItems.map((item) =>
@@ -218,6 +223,39 @@ export class AstRenamer {
                 return this.renameContractContents(item as AstContract);
             default:
                 return item; // No further renaming needed for other kinds
+        }
+    }
+
+    /**
+     * Sorts attributes within an item if available.
+     */
+    private sortAttributes<
+        T extends AstModuleItem | AstContractDeclaration | AstTraitDeclaration,
+    >(item: T): T {
+        switch (item.kind) {
+            case "trait":
+            case "contract":
+                return {
+                    ...item,
+                    attributes: AstSorter.sortAttributes(item.attributes),
+                    declarations: item.declarations.map((decl) =>
+                        this.sortAttributes(decl),
+                    ),
+                };
+            case "constant_decl":
+            case "constant_def":
+                return {
+                    ...item,
+                    attributes: AstSorter.sortAttributes(item.attributes),
+                };
+            case "function_decl":
+            case "function_def":
+                return {
+                    ...item,
+                    attributes: AstSorter.sortAttributes(item.attributes),
+                };
+            default:
+                return item;
         }
     }
 

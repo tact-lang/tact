@@ -1,4 +1,10 @@
-import { AstPrimitiveTypeDecl, AstNode } from "./ast";
+import {
+    AstPrimitiveTypeDecl,
+    AstFunctionAttribute,
+    AstConstantAttribute,
+    AstContractAttribute,
+    AstNode,
+} from "./ast";
 import { throwInternalCompilerError } from "../errors";
 
 /**
@@ -10,7 +16,7 @@ export class AstSorter {
         return new AstSorter();
     }
 
-    public sort<T extends AstNode>(items: T[]): T[] {
+    public static sort<T extends AstNode>(items: T[]): T[] {
         if (items.length === 0) {
             return items;
         }
@@ -25,7 +31,7 @@ export class AstSorter {
         }
     }
 
-    private sortPrimitiveTypeDecls(
+    private static sortPrimitiveTypeDecls(
         decls: AstPrimitiveTypeDecl[],
     ): AstPrimitiveTypeDecl[] {
         return decls.sort((a, b) => {
@@ -40,5 +46,14 @@ export class AstSorter {
             }
             return 0;
         });
+    }
+
+    public static sortAttributes<
+        T extends
+            | AstConstantAttribute
+            | AstContractAttribute
+            | AstFunctionAttribute,
+    >(attributes: T[]): T[] {
+        return attributes.sort((a, b) => a.type.localeCompare(b.type));
     }
 }
