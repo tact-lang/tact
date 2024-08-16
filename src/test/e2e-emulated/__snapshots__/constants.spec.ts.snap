@@ -728,7 +728,7 @@ ConstantTester {
       {
         "fields": [],
         "header": null,
-        "name": "ConstantTester",
+        "name": "ConstantTester$Data",
       },
     ],
   },

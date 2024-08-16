@@ -2,10 +2,10 @@ import { Dictionary, beginCell, toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import {
-    MyMessage1_struct,
-    MyStruct1_struct,
-    MyStruct2_struct,
-    MyStruct3_struct,
+    MyMessage1,
+    MyStruct1,
+    MyStruct2,
+    MyStruct3,
     StructsTester,
     loadMyMessage1,
     loadMyStruct1,
@@ -31,19 +31,19 @@ describe("structs", () => {
         expect(await contract.getStructInitializerTest()).toEqual(true);
 
         // Prepare test values
-        const s1: MyStruct1_struct = {
+        const s1: MyStruct1 = {
             $$type: "MyStruct1",
             a: 1n,
             b: 2n,
             c: 3n,
         };
-        const s2: MyStruct1_struct = {
+        const s2: MyStruct1 = {
             $$type: "MyStruct1",
             a: 1n,
             b: 2n,
             c: null,
         };
-        const s3: MyStruct2_struct = {
+        const s3: MyStruct2 = {
             $$type: "MyStruct2",
             m: Dictionary.empty(
                 Dictionary.Keys.BigInt(257),
@@ -51,7 +51,7 @@ describe("structs", () => {
             ),
             s: s1,
         };
-        const s4: MyStruct2_struct = {
+        const s4: MyStruct2 = {
             $$type: "MyStruct2",
             m: Dictionary.empty(
                 Dictionary.Keys.BigInt(257),
@@ -59,12 +59,12 @@ describe("structs", () => {
             ),
             s: null,
         };
-        const m1: MyMessage1_struct = {
+        const m1: MyMessage1 = {
             $$type: "MyMessage1",
             a: 1n,
             s: s3,
         };
-        const m2: MyMessage1_struct = {
+        const m2: MyMessage1 = {
             $$type: "MyMessage1",
             a: 2n,
             s: s4,
@@ -124,12 +124,8 @@ describe("structs", () => {
             c6.toString(),
         );
 
-        expect(await contract.getFromCell1(c1)).toMatchObject<MyStruct1_struct>(
-            s1,
-        );
-        expect(await contract.getFromCell1(c2)).toMatchObject<MyStruct1_struct>(
-            s2,
-        );
+        expect(await contract.getFromCell1(c1)).toMatchObject<MyStruct1>(s1);
+        expect(await contract.getFromCell1(c2)).toMatchObject<MyStruct1>(s2);
         expect(await contract.getFromCell2(c3)).toMatchSnapshot();
         expect(await contract.getFromCell2(c4)).toMatchSnapshot();
         expect(await contract.getFromCellMessage1(c5)).toMatchSnapshot();
@@ -137,10 +133,10 @@ describe("structs", () => {
 
         expect(
             await contract.getFromSlice1(c1.asSlice()),
-        ).toMatchObject<MyStruct1_struct>(s1);
+        ).toMatchObject<MyStruct1>(s1);
         expect(
             await contract.getFromSlice1(c2.asSlice()),
-        ).toMatchObject<MyStruct1_struct>(s2);
+        ).toMatchObject<MyStruct1>(s2);
         expect(await contract.getFromSlice2(c3.asSlice())).toMatchSnapshot();
         expect(await contract.getFromSlice2(c4.asSlice())).toMatchSnapshot();
         expect(
@@ -165,8 +161,8 @@ describe("structs", () => {
 
         // Test wrappers
 
-        expect(loadMyStruct1(c1.asSlice())).toMatchObject<MyStruct1_struct>(s1);
-        expect(loadMyStruct1(c2.asSlice())).toMatchObject<MyStruct1_struct>(s2);
+        expect(loadMyStruct1(c1.asSlice())).toMatchObject<MyStruct1>(s1);
+        expect(loadMyStruct1(c2.asSlice())).toMatchObject<MyStruct1>(s2);
         expect(loadMyStruct2(c3.asSlice())).toMatchSnapshot();
         expect(loadMyStruct2(c4.asSlice())).toMatchSnapshot();
         expect(loadMyMessage1(c5.asSlice())).toMatchSnapshot();
@@ -210,11 +206,11 @@ describe("structs", () => {
             loadMyStruct1(beginCell().storeUint(0, 123).endCell().asSlice()),
         ).toThrow();
 
-        const s5: MyStruct3_struct = {
+        const s5: MyStruct3 = {
             $$type: "MyStruct3",
             s: "contract const struct test",
         };
-        const s6: MyStruct3_struct = {
+        const s6: MyStruct3 = {
             $$type: "MyStruct3",
             s: "global const struct test",
         };

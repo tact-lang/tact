@@ -1,4 +1,4 @@
-import { storeTransfer, Transfer_struct, Wallet } from "./output/wallet_Wallet";
+import { storeTransfer, Transfer, Wallet } from "./output/wallet_Wallet";
 import { ContractSystem, testKey } from "@tact-lang/emulator";
 import { beginCell, toNano } from "@ton/core";
 import { sign } from "@ton/crypto";
@@ -25,7 +25,7 @@ describe("wallet", () => {
         expect(await contract.getSeqno()).toBe(0n);
 
         // Send transfer and check seqno
-        const transfer: Transfer_struct = {
+        const transfer: Transfer = {
             $$type: "Transfer",
             seqno: 0n,
             mode: 1n,

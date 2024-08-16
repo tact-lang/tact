@@ -270,7 +270,7 @@ exports[`strings should implement external fallbacks correctly 1`] = `
         },
       ],
       "header": null,
-      "name": "ExternalFallbacksTester",
+      "name": "ExternalFallbacksTester$Data",
     },
   ],
 }

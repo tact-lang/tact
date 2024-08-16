@@ -2,13 +2,13 @@ import { randomAddress } from "../utils/randomAddress";
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import {
     MapTestContract,
-    SomeStruct_struct,
+    SomeStruct,
 } from "./contracts/output/maps_MapTestContract";
 import { ContractSystem } from "@tact-lang/emulator";
 import { beginCell, toNano } from "@ton/core";
 import { ComputeError } from "@ton/core";
 
-function strEq(a: SomeStruct_struct | null, b: SomeStruct_struct | null) {
+function strEq(a: SomeStruct | null, b: SomeStruct | null) {
     if (a === null || b === null) {
         return a === b;
     }
@@ -109,7 +109,7 @@ describe("map", () => {
                 const valueBool = k < 0n;
                 const addr = randomAddress(0, "addr-" + k.toString(10));
                 const valueCell = beginCell().storeUint(123123, 128).endCell();
-                const valueStruct: SomeStruct_struct = {
+                const valueStruct: SomeStruct = {
                     $$type: "SomeStruct",
                     value: 10012312n,
                 };
@@ -645,7 +645,7 @@ describe("map", () => {
                 const valueBool = k < 0n;
                 const addr = randomAddress(0, "addr-" + k.toString(10));
                 const valueCell = beginCell().storeUint(123123, 128).endCell();
-                const valueStruct: SomeStruct_struct = {
+                const valueStruct: SomeStruct = {
                     $$type: "SomeStruct",
                     value: 10012312n,
                 };
