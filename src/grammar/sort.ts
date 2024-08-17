@@ -10,12 +10,8 @@ import { throwInternalCompilerError } from "../errors";
 /**
  * Provides utilities to sort lists of AST nodes.
  */
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class AstSorter {
-    private constructor() {}
-    public static make(): AstSorter {
-        return new AstSorter();
-    }
-
     public static sort<T extends AstNode>(items: T[]): T[] {
         if (items.length === 0) {
             return items;
