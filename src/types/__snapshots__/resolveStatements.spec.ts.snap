@@ -1135,6 +1135,46 @@ Line 7, col 9:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowing-catch 1`] = `
+"<unknown>:6:14: Variable cannot have the same name as its enclosing function: "rec"
+Line 6, col 14:
+  5 |         42/0;
+> 6 |     } catch (rec) {  // <-- shadowing
+                   ^~~
+  7 |         return rec;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowing-foreach 1`] = `
+"<unknown>:5:14: Variable cannot have the same name as its enclosing function: "rec"
+Line 5, col 14:
+  4 |     let m: map<Int, Int> = null;
+> 5 |     foreach (rec, _ in m) {   // shadowing error
+                   ^~~
+  6 |         42/0;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowing-fun-param 1`] = `
+"<unknown>:3:9: Variable cannot have the same name as its enclosing function: "rec"
+Line 3, col 9:
+  2 | 
+> 3 | fun rec(rec: Int): Int { // <-- shadowing
+              ^~~
+  4 |     return rec;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowing-let 1`] = `
+"<unknown>:4:9: Variable cannot have the same name as its enclosing function: "rec"
+Line 4, col 9:
+  3 | fun rec(): Int {
+> 4 |     let rec: Int = 42;  // shadowing error
+              ^~~
+  5 |     return rec;
+"
+`;
+
 exports[`resolveStatements should fail statements for var-underscore-name-access 1`] = `
 "<unknown>:6:16: Wildcard variable name '_' cannot be accessed
 Line 6, col 16:
@@ -1162,6 +1202,16 @@ Line 9, col 12:
 >  9 |     return _;
                   ^
   10 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for wf-type-let 1`] = `
+"<unknown>:5:16: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
+Line 5, col 16:
+  4 | fun foo() {
+> 5 |     let m: map<String, Int> = null;
+                     ^~~~~~
+  6 | }
 "
 `;
 

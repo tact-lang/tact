@@ -20,6 +20,7 @@ import {
 import {
     getAllStaticFunctions,
     getAllTypes,
+    getStaticConstant,
     getType,
     hasStaticConstant,
     resolveTypeRef,
@@ -29,6 +30,7 @@ import { printTypeRef, TypeRef } from "./types";
 
 export type StatementContext = {
     root: SrcInfo;
+    funName: string | null;
     returns: TypeRef;
     vars: Map<string, TypeRef>;
     requiredFields: string[];
@@ -36,10 +38,12 @@ export type StatementContext = {
 
 export function emptyContext(
     root: SrcInfo,
+    funName: string | null,
     returns: TypeRef,
 ): StatementContext {
     return {
         root,
+        funName,
         returns,
         vars: new Map(),
         requiredFields: [],
@@ -57,11 +61,26 @@ function checkVariableExists(
             name.loc,
         );
     }
-    if (hasStaticConstant(ctx, idText(name))) {
+    // Check if the user tries to shadow the current function name
+    if (sctx.funName === idText(name)) {
         throwCompilationError(
-            `Variable ${idTextErr(name)} is trying to shadow an existing constant with the same name`,
+            `Variable cannot have the same name as its enclosing function: ${idTextErr(name)}`,
             name.loc,
         );
+    }
+    if (hasStaticConstant(ctx, idText(name))) {
+        if (name.loc.origin === "stdlib") {
+            const constLoc = getStaticConstant(ctx, idText(name)).loc;
+            throwCompilationError(
+                `Constant ${idTextErr(name)} is shadowing an identifier defined in the Tact standard library: pick a different constant name`,
+                constLoc,
+            );
+        } else {
+            throwCompilationError(
+                `Variable ${idTextErr(name)} is trying to shadow an existing constant with the same name`,
+                name.loc,
+            );
+        }
     }
 }
 
@@ -675,7 +694,7 @@ export function resolveStatements(ctx: CompilerContext) {
     for (const f of Object.values(getAllStaticFunctions(ctx))) {
         if (f.ast.kind === "function_def") {
             // Build statement context
-            let sctx = emptyContext(f.ast.loc, f.returns);
+            let sctx = emptyContext(f.ast.loc, f.name, f.returns);
             for (const p of f.params) {
                 sctx = addVariable(p.name, p.type, ctx, sctx);
             }
@@ -689,7 +708,7 @@ export function resolveStatements(ctx: CompilerContext) {
         // Process init
         if (t.init) {
             // Build statement context
-            let sctx = emptyContext(t.init.ast.loc, { kind: "void" });
+            let sctx = emptyContext(t.init.ast.loc, null, { kind: "void" });
 
             // Self
             sctx = addVariable(
@@ -723,7 +742,7 @@ export function resolveStatements(ctx: CompilerContext) {
         // Process receivers
         for (const f of Object.values(t.receivers)) {
             // Build statement context
-            let sctx = emptyContext(f.ast.loc, { kind: "void" });
+            let sctx = emptyContext(f.ast.loc, null, { kind: "void" });
             sctx = addVariable(
                 selfId,
                 { kind: "ref", name: t.name, optional: false },
@@ -812,7 +831,7 @@ export function resolveStatements(ctx: CompilerContext) {
                 f.ast.kind !== "function_decl"
             ) {
                 // Build statement context
-                let sctx = emptyContext(f.ast.loc, f.returns);
+                let sctx = emptyContext(f.ast.loc, f.name, f.returns);
                 sctx = addVariable(
                     selfId,
                     { kind: "ref", name: t.name, optional: false },

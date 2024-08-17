@@ -4,7 +4,6 @@ import {
     AstContractInit,
     AstNativeFunctionDecl,
     AstNode,
-    SrcInfo,
     AstType,
     createAstNode,
     idText,
@@ -16,6 +15,8 @@ import {
     AstFunctionDecl,
     AstConstantDecl,
     AstExpression,
+    AstMapType,
+    AstTypeId,
 } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
 import {
@@ -55,48 +56,15 @@ const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
 const staticConstantsStore = createContextStore<ConstantDescription>();
 
-function verifyMapType(
-    key: string,
-    keyAs: AstId | null,
-    value: string,
-    valueAs: AstId | null,
-    loc: SrcInfo,
-) {
-    if (!keyAs && !valueAs) {
-        return;
-    }
-
-    // keyAs
-    if (keyAs) {
-        if (key === "Int") {
+// this function does not handle the case of structs
+function verifyMapAsAnnotationsForPrimitiveTypes(
+    type: AstTypeId,
+    asAnnotation: AstId | null,
+): void {
+    switch (idText(type)) {
+        case "Int": {
             if (
-                ![
-                    "int8",
-                    "int16",
-                    "int32",
-                    "int64",
-                    "int128",
-                    "int256",
-                    "int257",
-                    "uint8",
-                    "uint16",
-                    "uint32",
-                    "uint64",
-                    "uint128",
-                    "uint256",
-                ].includes(idText(keyAs))
-            ) {
-                throwCompilationError("Invalid key type for map", loc);
-            }
-        } else {
-            throwCompilationError("Invalid key type for map", loc);
-        }
-    }
-
-    // valueAs
-    if (valueAs) {
-        if (value === "Int") {
-            if (
+                asAnnotation !== null &&
                 ![
                     "int8",
                     "int16",
@@ -112,22 +80,71 @@ function verifyMapType(
                     "uint128",
                     "uint256",
                     "coins",
-                ].includes(idText(valueAs))
+                ].includes(idText(asAnnotation))
             ) {
-                throwCompilationError("Invalid value type for map", loc);
+                throwCompilationError(
+                    'Invalid `as`-annotation for type "Int" type',
+                    asAnnotation.loc,
+                );
             }
-        } else {
-            throwCompilationError("Invalid value type for map", loc);
+            return;
+        }
+        case "Address":
+        case "Bool":
+        case "Cell": {
+            if (asAnnotation !== null) {
+                throwCompilationError(
+                    `${idTextErr(type)} type cannot have as-annotation`,
+                    asAnnotation.loc,
+                );
+            }
+            return;
+        }
+        default: {
+            throwInternalCompilerError("Unsupported map type", type.loc);
         }
     }
 }
 
+function verifyMapTypes(
+    typeId: AstTypeId,
+    asAnnotation: AstId | null,
+    allowedTypeNames: string[],
+): void {
+    if (!allowedTypeNames.includes(idText(typeId))) {
+        throwCompilationError(
+            "Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types",
+            typeId.loc,
+        );
+    }
+    verifyMapAsAnnotationsForPrimitiveTypes(typeId, asAnnotation);
+}
+
+function verifyMapType(mapTy: AstMapType, isValTypeStruct: boolean) {
+    // optional and other compound key and value types are disallowed at the level of grammar
+
+    // check allowed key types
+    verifyMapTypes(mapTy.keyType, mapTy.keyStorageType, ["Int", "Address"]);
+
+    // check allowed value types
+    if (isValTypeStruct && mapTy.valueStorageType === null) {
+        return;
+    }
+    // the case for struct/message is already checked
+    verifyMapTypes(mapTy.valueType, mapTy.valueStorageType, [
+        "Int",
+        "Address",
+        "Bool",
+        "Cell",
+    ]);
+}
+
 export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 
-export function resolveTypeRef(ctx: CompilerContext, src: AstType): TypeRef {
-    switch (src.kind) {
+export function resolveTypeRef(ctx: CompilerContext, type: AstType): TypeRef {
+    switch (type.kind) {
         case "type_id": {
-            const t = getType(ctx, idText(src));
+            const t = getType(ctx, idText(type));
             return {
                 kind: "ref",
                 name: t.name,
@@ -135,13 +152,13 @@ export function resolveTypeRef(ctx: CompilerContext, src: AstType): TypeRef {
             };
         }
         case "optional_type": {
-            if (src.typeArg.kind !== "type_id") {
+            if (type.typeArg.kind !== "type_id") {
                 throwInternalCompilerError(
                     "Only optional type identifiers are supported now",
-                    src.typeArg.loc,
+                    type.typeArg.loc,
                 );
             }
-            const t = getType(ctx, idText(src.typeArg));
+            const t = getType(ctx, idText(type.typeArg));
             return {
                 kind: "ref",
                 name: t.name,
@@ -149,31 +166,25 @@ export function resolveTypeRef(ctx: CompilerContext, src: AstType): TypeRef {
             };
         }
         case "map_type": {
-            const k = getType(ctx, idText(src.keyType)).name;
-            const v = getType(ctx, idText(src.valueType)).name;
-            verifyMapType(
-                k,
-                src.keyStorageType,
-                v,
-                src.valueStorageType,
-                src.loc,
-            );
+            const keyTy = getType(ctx, idText(type.keyType));
+            const valTy = getType(ctx, idText(type.valueType));
+            verifyMapType(type, valTy.kind === "struct");
             return {
                 kind: "map",
-                key: k,
+                key: keyTy.name,
                 keyAs:
-                    src.keyStorageType !== null
-                        ? idText(src.keyStorageType)
+                    type.keyStorageType !== null
+                        ? idText(type.keyStorageType)
                         : null,
-                value: v,
+                value: valTy.name,
                 valueAs:
-                    src.valueStorageType !== null
-                        ? idText(src.valueStorageType)
+                    type.valueStorageType !== null
+                        ? idText(type.valueStorageType)
                         : null,
             };
         }
         case "bounced_message_type": {
-            const t = getType(ctx, idText(src.messageType));
+            const t = getType(ctx, idText(type.messageType));
             return {
                 kind: "ref_bounced",
                 name: t.name,
@@ -183,73 +194,75 @@ export function resolveTypeRef(ctx: CompilerContext, src: AstType): TypeRef {
 }
 
 function buildTypeRef(
-    src: AstType,
+    type: AstType,
     types: Map<string, TypeDescription>,
 ): TypeRef {
-    switch (src.kind) {
+    switch (type.kind) {
         case "type_id": {
-            if (!types.has(idText(src))) {
+            if (!types.has(idText(type))) {
                 throwCompilationError(
-                    `Type ${idTextErr(src)} not found`,
-                    src.loc,
+                    `Type ${idTextErr(type)} not found`,
+                    type.loc,
                 );
             }
             return {
                 kind: "ref",
-                name: idText(src),
+                name: idText(type),
                 optional: false,
             };
         }
         case "optional_type": {
-            if (src.typeArg.kind !== "type_id") {
+            if (type.typeArg.kind !== "type_id") {
                 throwInternalCompilerError(
                     "Only optional type identifiers are supported now",
-                    src.typeArg.loc,
+                    type.typeArg.loc,
                 );
             }
-            if (!types.has(idText(src.typeArg))) {
+            if (!types.has(idText(type.typeArg))) {
                 throwCompilationError(
-                    `Type ${idTextErr(src.typeArg)} not found`,
-                    src.loc,
+                    `Type ${idTextErr(type.typeArg)} not found`,
+                    type.loc,
                 );
             }
             return {
                 kind: "ref",
-                name: idText(src.typeArg),
+                name: idText(type.typeArg),
                 optional: true,
             };
         }
         case "map_type": {
-            if (!types.has(idText(src.keyType))) {
+            if (!types.has(idText(type.keyType))) {
                 throwCompilationError(
-                    `Type ${idTextErr(src.keyType)} not found`,
-                    src.loc,
+                    `Type ${idTextErr(type.keyType)} not found`,
+                    type.loc,
                 );
             }
-            if (!types.has(idText(src.valueType))) {
+            if (!types.has(idText(type.valueType))) {
                 throwCompilationError(
-                    `Type ${idTextErr(src.valueType)} not found`,
-                    src.loc,
+                    `Type ${idTextErr(type.valueType)} not found`,
+                    type.loc,
                 );
             }
+            const valTy = types.get(idText(type.valueType))!;
+            verifyMapType(type, valTy.kind === "struct");
             return {
                 kind: "map",
-                key: idText(src.keyType),
+                key: idText(type.keyType),
                 keyAs:
-                    src.keyStorageType !== null
-                        ? idText(src.keyStorageType)
+                    type.keyStorageType !== null
+                        ? idText(type.keyStorageType)
                         : null,
-                value: idText(src.valueType),
+                value: idText(type.valueType),
                 valueAs:
-                    src.valueStorageType !== null
-                        ? idText(src.valueStorageType)
+                    type.valueStorageType !== null
+                        ? idText(type.valueStorageType)
                         : null,
             };
         }
         case "bounced_message_type": {
             return {
                 kind: "ref_bounced",
-                name: idText(src.messageType),
+                name: idText(type.messageType),
             };
         }
     }
@@ -1815,7 +1828,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
 export function getType(
     ctx: CompilerContext,
-    ident: AstId | string,
+    ident: AstId | AstTypeId | string,
 ): TypeDescription {
     const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
@@ -1918,7 +1931,7 @@ function checkInitializerType(
     initializer: AstExpression,
     ctx: CompilerContext,
 ): CompilerContext {
-    const stmtCtx = emptyContext(initializer.loc, declTy);
+    const stmtCtx = emptyContext(initializer.loc, null, declTy);
     ctx = resolveExpression(initializer, stmtCtx, ctx);
     const initTy = getExpType(ctx, initializer);
     if (!isAssignable(initTy, declTy)) {

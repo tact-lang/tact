@@ -1,6 +1,6 @@
 {
   "name": "@tact-lang/compiler",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tact-lang/tact.git"

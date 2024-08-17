@@ -271,5 +271,16 @@ describe("structs", () => {
                     .get("longNestedStructWithOptsTest", [])
             ).stack,
         ).toMatchSnapshot();
+
+        // https://github.com/tact-lang/tact/issues/690
+
+        expect(await contract.getLocation1()).toMatchSnapshot();
+        expect(await contract.getLocation2()).toMatchSnapshot();
+        expect(await contract.getTripleNestedStructOpt1()).toMatchSnapshot();
+        expect(await contract.getTripleNestedStructOpt2()).toMatchSnapshot();
+        expect(await contract.getTripleNestedStructOpt3()).toMatchSnapshot();
+        expect(await contract.getLongAndDeepNestedStruct1()).toMatchSnapshot();
+        expect(await contract.getLongAndDeepNestedStruct2()).toMatchSnapshot();
+        expect(await contract.getLongAndDeepNestedStruct3()).toMatchSnapshot();
     });
 });
