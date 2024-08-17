@@ -1205,6 +1205,16 @@ Line 9, col 12:
 "
 `;
 
+exports[`resolveStatements should fail statements for wf-type-let 1`] = `
+"<unknown>:5:16: Invalid key type for map. Check https://docs.tact-lang.org/book/maps#allowed-types
+Line 5, col 16:
+  4 | fun foo() {
+> 5 |     let m: map<String, Int> = null;
+                     ^~~~~~
+  6 | }
+"
+`;
+
 exports[`resolveStatements should resolve statements for assign-self-mutating-method 1`] = `
 [
   [

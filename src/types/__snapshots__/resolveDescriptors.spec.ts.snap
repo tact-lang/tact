@@ -486,6 +486,56 @@ Line 7, col 1:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for wf-type-const 1`] = `
+"<unknown>:4:19: Invalid key type for map. Check https://docs.tact-lang.org/book/maps#allowed-types
+Line 4, col 19:
+  3 | 
+> 4 | const m: map<Int, String> = null;
+                        ^~~~~~
+  5 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-contract-const 1`] = `
+"<unknown>:6:23: Invalid key type for map. Check https://docs.tact-lang.org/book/maps#allowed-types
+Line 6, col 23:
+  5 | contract Test {
+> 6 |     const m: map<Int, String> = null;
+                            ^~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-contract-const-incorrect-annotation 1`] = `
+"<unknown>:6:34: "Address" type cannot have as-annotation
+Line 6, col 34:
+  5 | contract Test {
+> 6 |     const m: map<Int, Address as uint32> = null;
+                                       ^~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-contract-getter 1`] = `
+"<unknown>:6:29: Invalid key type for map. Check https://docs.tact-lang.org/book/maps#allowed-types
+Line 6, col 29:
+  5 | contract Test {
+> 6 |     get fun foo(): map<Int, String> {
+                                  ^~~~~~
+  7 |         let m: map<Int, String> = null;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-fun-param 1`] = `
+"<unknown>:4:16: Invalid key type for map. Check https://docs.tact-lang.org/book/maps#allowed-types
+Line 4, col 16:
+  3 | 
+> 4 | fun foo(m: map<Bool, Int>) { }
+                     ^~~~
+  5 | 
+"
+`;
+
 exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-default-field 1`] = `
 {
   "BaseTrait": {
