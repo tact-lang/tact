@@ -81,6 +81,9 @@
     "привет",
     "PUSHREF",
     "PUSHSLICE",
+    "renamer",
+    "Brujin",
+    "dentry",
     "SETINDEXVARQ",
     "gettest"
   ],
