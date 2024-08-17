@@ -116,7 +116,7 @@ export class AstRenamer {
         let renamedItems = items.map((item) => this.changeItemName(item));
 
         if (this.sort) {
-            renamedItems.map(item => this.sortAttributes(item));
+            renamedItems.map((item) => this.sortAttributes(item));
         }
 
         // Apply renaming to the contents of these elements.
