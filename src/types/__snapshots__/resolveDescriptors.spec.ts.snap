@@ -487,7 +487,7 @@ Line 7, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for wf-type-const 1`] = `
-"<unknown>:4:19: Invalid key type for map. Check https://docs.tact-lang.org/book/maps#allowed-types
+"<unknown>:4:19: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
 Line 4, col 19:
   3 | 
 > 4 | const m: map<Int, String> = null;
@@ -497,7 +497,7 @@ Line 4, col 19:
 `;
 
 exports[`resolveDescriptors should fail descriptors for wf-type-contract-const 1`] = `
-"<unknown>:6:23: Invalid key type for map. Check https://docs.tact-lang.org/book/maps#allowed-types
+"<unknown>:6:23: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
 Line 6, col 23:
   5 | contract Test {
 > 6 |     const m: map<Int, String> = null;
@@ -517,7 +517,7 @@ Line 6, col 34:
 `;
 
 exports[`resolveDescriptors should fail descriptors for wf-type-contract-getter 1`] = `
-"<unknown>:6:29: Invalid key type for map. Check https://docs.tact-lang.org/book/maps#allowed-types
+"<unknown>:6:29: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
 Line 6, col 29:
   5 | contract Test {
 > 6 |     get fun foo(): map<Int, String> {
@@ -527,7 +527,7 @@ Line 6, col 29:
 `;
 
 exports[`resolveDescriptors should fail descriptors for wf-type-fun-param 1`] = `
-"<unknown>:4:16: Invalid key type for map. Check https://docs.tact-lang.org/book/maps#allowed-types
+"<unknown>:4:16: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
 Line 4, col 16:
   3 | 
 > 4 | fun foo(m: map<Bool, Int>) { }

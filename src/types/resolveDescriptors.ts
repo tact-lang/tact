@@ -113,7 +113,7 @@ function verifyMapTypes(
 ): void {
     if (!allowedTypeNames.includes(idText(typeId))) {
         throwCompilationError(
-            "Invalid key type for map. Check https://docs.tact-lang.org/book/maps#allowed-types",
+            "Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types",
             typeId.loc,
         );
     }
