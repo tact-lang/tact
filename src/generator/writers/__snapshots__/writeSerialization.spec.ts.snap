@@ -300,6 +300,18 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "asm(index dict key_len) "DICTDELGET" "NULLSWAPIFNOT2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_get",
+    "signature": "(cell, (slice, int)) __tact_dict_delete_get(cell dict, int key_len, slice index)",
+  },
+  {
+    "code": {
       "code": "asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT"",
       "kind": "asm",
     },
@@ -1621,6 +1633,35 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
     },
     "name": "__tact_slice_eq_bits_nullable",
     "signature": "int __tact_slice_eq_bits_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "(slice key, slice value, int flag) = __tact_dict_min(a, 1023);
+while (flag) {
+    (slice value_b, int flag_b) = b~__tact_dict_delete_get(1023, key);
+    ifnot (flag_b) {
+        return 0;
+    }
+    ifnot (value.slice_hash() == value_b.slice_hash()) {
+        return 0;
+    }
+    (key, value, flag) = __tact_dict_next(a, 1023, key);
+}
+return null?(b);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+      "__tact_dict_delete_get",
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_eq",
+    "signature": "int __tact_dict_eq(cell a, cell b)",
   },
   {
     "code": {
@@ -3818,6 +3859,18 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "asm(index dict key_len) "DICTDELGET" "NULLSWAPIFNOT2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_get",
+    "signature": "(cell, (slice, int)) __tact_dict_delete_get(cell dict, int key_len, slice index)",
+  },
+  {
+    "code": {
       "code": "asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT"",
       "kind": "asm",
     },
@@ -5139,6 +5192,35 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
     },
     "name": "__tact_slice_eq_bits_nullable",
     "signature": "int __tact_slice_eq_bits_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "(slice key, slice value, int flag) = __tact_dict_min(a, 1023);
+while (flag) {
+    (slice value_b, int flag_b) = b~__tact_dict_delete_get(1023, key);
+    ifnot (flag_b) {
+        return 0;
+    }
+    ifnot (value.slice_hash() == value_b.slice_hash()) {
+        return 0;
+    }
+    (key, value, flag) = __tact_dict_next(a, 1023, key);
+}
+return null?(b);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+      "__tact_dict_delete_get",
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_eq",
+    "signature": "int __tact_dict_eq(cell a, cell b)",
   },
   {
     "code": {
@@ -7336,6 +7418,18 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "asm(index dict key_len) "DICTDELGET" "NULLSWAPIFNOT2"",
+      "kind": "asm",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_get",
+    "signature": "(cell, (slice, int)) __tact_dict_delete_get(cell dict, int key_len, slice index)",
+  },
+  {
+    "code": {
       "code": "asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT"",
       "kind": "asm",
     },
@@ -8657,6 +8751,35 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
     },
     "name": "__tact_slice_eq_bits_nullable",
     "signature": "int __tact_slice_eq_bits_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "(slice key, slice value, int flag) = __tact_dict_min(a, 1023);
+while (flag) {
+    (slice value_b, int flag_b) = b~__tact_dict_delete_get(1023, key);
+    ifnot (flag_b) {
+        return 0;
+    }
+    ifnot (value.slice_hash() == value_b.slice_hash()) {
+        return 0;
+    }
+    (key, value, flag) = __tact_dict_next(a, 1023, key);
+}
+return null?(b);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+      "__tact_dict_delete_get",
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_eq",
+    "signature": "int __tact_dict_eq(cell a, cell b)",
   },
   {
     "code": {
