@@ -90,6 +90,11 @@
       "output": "./src/test/e2e-emulated/contracts/output"
     },
     {
+      "name": "map-comparison",
+      "path": "./src/test/e2e-emulated/contracts/map-comparison.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
       "name": "mutating-method-chaining",
       "path": "./src/test/e2e-emulated/contracts/mutating-method-chaining.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
