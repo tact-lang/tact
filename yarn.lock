@@ -1294,12 +1294,12 @@
 
 "@tact-lang/ton-abi@^0.0.3":
   version "0.0.3"
-  resolved "https://registry.npmjs.org/@tact-lang/ton-abi/-/ton-abi-0.0.3.tgz"
+  resolved "https://registry.yarnpkg.com/@tact-lang/ton-abi/-/ton-abi-0.0.3.tgz#68aa8ecf8e14d91f37252773395753e4c623798e"
   integrity sha512-n3ecmlwJiRI+4YKodc2/I3OsI14kYuxjPgFSWdNfr+GRMSZ76OvDIzq8Qr8k8iA3mSE+1RIplpluNnO9HCtgXg==
 
 "@tact-lang/ton-jest@^0.0.4":
   version "0.0.4"
-  resolved "https://registry.npmjs.org/@tact-lang/ton-jest/-/ton-jest-0.0.4.tgz"
+  resolved "https://registry.yarnpkg.com/@tact-lang/ton-jest/-/ton-jest-0.0.4.tgz#c87604669ed0c6b4ba1a2e6f06616e267f7fc8ca"
   integrity sha512-FWjfiNvhMlE44ZLLL7tgmHbrszMTPMttmYiaTekf1vwFXV3uAOawM8xM9NldYaCVs9eh8840PjgISdMMUTCSCw==
 
 "@ton/core@0.56.3":
@@ -1424,11 +1424,6 @@
   dependencies:
     expect "^29.0.0"
     pretty-format "^29.0.0"
-
-"@types/json-bigint@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.npmjs.org/@types/json-bigint/-/json-bigint-1.0.4.tgz"
-  integrity sha512-ydHooXLbOmxBbubnA7Eh+RpBzuaIiQjh8WGJYQB50JFGFrdxW7JzVlyEV7fAXw0T2sqJ1ysTneJbiyNLqZRAag==
 
 "@types/json-schema@^7.0.15":
   version "7.0.15"
@@ -1850,11 +1845,6 @@ big-integer@^1.6.44:
   version "1.6.52"
   resolved "https://registry.npmjs.org/big-integer/-/big-integer-1.6.52.tgz"
   integrity sha512-QxD8cf2eVqJOOz63z6JIN9BzvVs/dlySa5HGSBH5xtR8dPteIRQnBxxKqkNTiT6jbDTF6jAfrd4oMcND9RGbQg==
-
-bignumber.js@^9.0.0:
-  version "9.1.2"
-  resolved "https://registry.npmjs.org/bignumber.js/-/bignumber.js-9.1.2.tgz"
-  integrity sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==
 
 bl@^4.1.0:
   version "4.1.0"
@@ -3330,7 +3320,7 @@ glob@^8.1.0:
 
 glob@^9.2.0, glob@^9.3.2:
   version "9.3.5"
-  resolved "https://registry.yarnpkg.com/glob/-/glob-9.3.5.tgz#ca2ed8ca452781a3009685607fdf025a899dfe21"
+  resolved "https://registry.npmjs.org/glob/-/glob-9.3.5.tgz"
   integrity sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==
   dependencies:
     fs.realpath "^1.0.0"
@@ -4501,13 +4491,6 @@ jsesc@^2.5.1:
   version "2.5.2"
   resolved "https://registry.npmjs.org/jsesc/-/jsesc-2.5.2.tgz"
   integrity sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==
-
-json-bigint@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/json-bigint/-/json-bigint-1.0.0.tgz"
-  integrity sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==
-  dependencies:
-    bignumber.js "^9.0.0"
 
 json-buffer@3.0.1:
   version "3.0.1"
