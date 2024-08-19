@@ -17,6 +17,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.4.4] - 2024-08-18
+
+### Added
+
+- Initial version of the API providing AST equivalence check: PR [#689](https://github.com/tact-lang/tact/pull/689)
+
+### Fixed
+
+- Returning `self` from getters is now allowed: PR [#666](https://github.com/tact-lang/tact/pull/666)
+- Remainder fields in the middle of a struct are now forbidden: PR [#697](https://github.com/tact-lang/tact/pull/697)
+- Defining two native functions from the same FunC function now does not fail compilation: PR [#699](https://github.com/tact-lang/tact/pull/699)
+- Map types are checked for well-formedness in all type ascriptions: PR [#704](https://github.com/tact-lang/tact/pull/704)
+
+## [1.4.3] - 2024-08-16
+
+### Fixed
+
+- Parsing of optional nested struct fields does not cause the `Not a tuple` error anymore: PR [#692](https://github.com/tact-lang/tact/pull/692)
+- Disallow shadowing of recursive function names: PR [#693](https://github.com/tact-lang/tact/pull/693)
+- Better error message for the case when a constant shadows an stdlib identifier: PR [#694](https://github.com/tact-lang/tact/pull/694)
+
 ## [1.4.2] - 2024-08-13
 
 ### Changed

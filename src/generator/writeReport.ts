@@ -20,7 +20,10 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     w.write("Total Types: " + abi.types!.length);
     w.append();
     for (const t of abi.types!) {
-        const tt = getType(ctx, t.name);
+        const tt = getType(
+            ctx,
+            t.name.endsWith("$Data") ? t.name.slice(0, -5) : t.name,
+        );
         w.write(`## ${t.name}`);
         w.write(`TLB: \`${tt.tlb!}\``);
         w.write(`Signature: \`${tt.signature!}\``);

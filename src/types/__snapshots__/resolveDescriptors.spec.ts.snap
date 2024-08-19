@@ -454,6 +454,8 @@ Line 4, col 8:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for struct-decl-remainder-in-the-middle 1`] = `"The "remainder" field can only be the last field of the struct"`;
+
 exports[`resolveDescriptors should fail descriptors for struct-decl-self-reference 1`] = `
 "<unknown>:4:8: Self-referencing types are not supported: type "A" refers to itself in its definition
 Line 4, col 8:
@@ -481,6 +483,56 @@ Line 7, col 1:
 > 7 | trait Test with Foo, Foo { }
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
   8 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-const 1`] = `
+"<unknown>:4:19: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
+Line 4, col 19:
+  3 | 
+> 4 | const m: map<Int, String> = null;
+                        ^~~~~~
+  5 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-contract-const 1`] = `
+"<unknown>:6:23: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
+Line 6, col 23:
+  5 | contract Test {
+> 6 |     const m: map<Int, String> = null;
+                            ^~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-contract-const-incorrect-annotation 1`] = `
+"<unknown>:6:34: "Address" type cannot have as-annotation
+Line 6, col 34:
+  5 | contract Test {
+> 6 |     const m: map<Int, Address as uint32> = null;
+                                       ^~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-contract-getter 1`] = `
+"<unknown>:6:29: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
+Line 6, col 29:
+  5 | contract Test {
+> 6 |     get fun foo(): map<Int, String> {
+                                  ^~~~~~
+  7 |         let m: map<Int, String> = null;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-fun-param 1`] = `
+"<unknown>:4:16: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
+Line 4, col 16:
+  3 | 
+> 4 | fun foo(m: map<Bool, Int>) { }
+                     ^~~~
+  5 | 
 "
 `;
 
@@ -8295,6 +8347,326 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
 `;
 
 exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-types 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder 1`] = `
+{
+  "BaseTrait": {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "trait",
+      "loc": trait BaseTrait { },
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  "Cell": {
+    "ast": {
+      "id": 6,
+      "kind": "primitive_type_decl",
+      "loc": primitive Cell;,
+      "name": {
+        "id": 5,
+        "kind": "type_id",
+        "loc": Cell,
+        "text": "Cell",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Cell",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 26294,
+  },
+  "Int": {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  "Test": {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 10,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": a: Int,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": null,
+          "id": 13,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": b: Int,
+          "name": {
+            "id": 11,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 12,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": {
+            "id": 16,
+            "kind": "id",
+            "loc": remaining,
+            "text": "remaining",
+          },
+          "id": 17,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": s: Cell as remaining,
+          "name": {
+            "id": 14,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": {
+            "id": 15,
+            "kind": "type_id",
+            "loc": Cell,
+            "text": "Cell",
+          },
+        },
+      ],
+      "id": 18,
+      "kind": "struct_decl",
+      "loc": struct Test {
+    a: Int;
+    b: Int;
+    s: Cell as remaining;
+},
+      "name": {
+        "id": 7,
+        "kind": "type_id",
+        "loc": Test,
+        "text": "Test",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "a",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 10,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": a: Int,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": a: Int,
+        "name": "a",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "b",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 13,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": b: Int,
+          "name": {
+            "id": 11,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 12,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 1,
+        "loc": b: Int,
+        "name": "b",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "s",
+          "type": {
+            "format": "remainder",
+            "kind": "simple",
+            "optional": false,
+            "type": "cell",
+          },
+        },
+        "as": "remaining",
+        "ast": {
+          "as": {
+            "id": 16,
+            "kind": "id",
+            "loc": remaining,
+            "text": "remaining",
+          },
+          "id": 17,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": s: Cell as remaining,
+          "name": {
+            "id": 14,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": {
+            "id": 15,
+            "kind": "type_id",
+            "loc": Cell,
+            "text": "Cell",
+          },
+        },
+        "default": undefined,
+        "index": 2,
+        "loc": s: Cell as remaining,
+        "name": "s",
+        "type": {
+          "kind": "ref",
+          "name": "Cell",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "Test",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "Test{a:int257,b:int257,s:remainder<cell>}",
+    "tlb": "_ a:int257 b:int257 s:remainder<cell> = Test",
+    "traits": [],
+    "uid": 44104,
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder 2`] = `{}`;
 
 exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
 {

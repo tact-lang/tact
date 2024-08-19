@@ -855,6 +855,11 @@ ConstantTester {
         "header": null,
         "name": "T",
       },
+      {
+        "fields": [],
+        "header": null,
+        "name": "ConstantTester$Data",
+      },
     ],
   },
   "address": kQDJ2R-ND0QInElQi5mSP8o20QgMyfveO7ee4gNIpHNDSWkA,

@@ -41,7 +41,7 @@ function unwrapExternal(
 ) {
     if (type.kind === "ref") {
         const t = getType(ctx.ctx, type.name);
-        if (t.kind === "struct") {
+        if (t.kind === "struct" || t.kind === "contract") {
             if (type.optional) {
                 ctx.append(
                     `${resolveFuncType(type, ctx)} ${targetName} = ${ops.typeFromOptTuple(t.name, ctx)}(${sourceName});`,
@@ -521,7 +521,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Do not write native functions
     if (f.ast.kind === "native_function_decl") {
-        if (f.isMutating) {
+        if (f.isMutating && !ctx.isRendered(idText(f.ast.nativeName))) {
             // Write same function in non-mutating form
             const nonMutName = ops.nonModifying(idText(f.ast.nativeName));
             ctx.fun(nonMutName, () => {
@@ -544,6 +544,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                     );
                 });
             });
+            ctx.markRendered(idText(f.ast.nativeName));
         }
         return;
     }
@@ -657,7 +658,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
         // Pack if needed
         if (f.returns.kind === "ref") {
             const t = getType(ctx.ctx, f.returns.name);
-            if (t.kind === "struct") {
+            if (t.kind === "struct" || t.kind === "contract") {
                 if (f.returns.optional) {
                     ctx.append(
                         `return ${ops.typeToOptExternal(t.name, ctx)}(res);`,

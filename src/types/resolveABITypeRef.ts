@@ -20,6 +20,8 @@ import {
     throwInternalCompilerError,
 } from "../errors";
 import { TypeRef } from "./types";
+import { CompilerContext } from "../context";
+import { getType } from "./resolveDescriptors";
 
 type FormatDef = Record<
     string,
@@ -376,6 +378,7 @@ export function resolveABIType(src: AstFieldDecl): ABITypeRef {
 }
 
 export function createABITypeRefFromTypeRef(
+    ctx: CompilerContext,
     src: TypeRef,
     loc: SrcInfo,
 ): ABITypeRef {
@@ -412,7 +415,16 @@ export function createABITypeRefFromTypeRef(
         }
 
         // Structs
-        return { kind: "simple", type: src.name, optional: src.optional };
+        const type = getType(ctx, src.name);
+        if (type.kind === "contract") {
+            return {
+                kind: "simple",
+                type: src.name + "$Data",
+                optional: src.optional,
+            };
+        } else {
+            return { kind: "simple", type: src.name, optional: src.optional };
+        }
     }
 
     if (src.kind === "map") {

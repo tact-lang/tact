@@ -186,6 +186,11 @@
       "name": "const-eval-repeat-upper-bound",
       "path": "./contracts/const-eval-repeat-upper-bound.tact",
       "output": "./contracts/output"
+    },
+    {
+      "name": "scope-const-shadows-stdlib-ident",
+      "path": "./contracts/scope-const-shadows-stdlib-ident.tact",
+      "output": "./contracts/output"
     }
   ]
 }

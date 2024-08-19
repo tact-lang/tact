@@ -23,6 +23,7 @@
     "elseifnot",
     "Fift",
     "forall",
+    "formedness",
     "funs",
     "funcfiftlib",
     "funcid",
@@ -80,7 +81,11 @@
     "привет",
     "PUSHREF",
     "PUSHSLICE",
-    "SETINDEXVARQ"
+    "renamer",
+    "Brujin",
+    "dentry",
+    "SETINDEXVARQ",
+    "gettest"
   ],
   "flagWords": [],
   "ignorePaths": [
