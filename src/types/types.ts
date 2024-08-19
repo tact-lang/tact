@@ -142,7 +142,7 @@ export type FunctionDescription = {
     origin: ItemOrigin;
     isGetter: boolean;
     isMutating: boolean;
-    isOverrides: boolean;
+    isOverride: boolean;
     isVirtual: boolean;
     isAbstract: boolean;
     isInline: boolean;

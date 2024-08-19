@@ -23,6 +23,7 @@
     "elseifnot",
     "Fift",
     "forall",
+    "formedness",
     "funs",
     "funcfiftlib",
     "funcid",
@@ -38,6 +39,7 @@
     "langle",
     "lparen",
     "lvalue",
+    "lvalues",
     "masterchain",
     "maxint",
     "minmax",
@@ -79,7 +81,11 @@
     "привет",
     "PUSHREF",
     "PUSHSLICE",
-    "SETINDEXVARQ"
+    "renamer",
+    "Brujin",
+    "dentry",
+    "SETINDEXVARQ",
+    "gettest"
   ],
   "flagWords": [],
   "ignorePaths": [

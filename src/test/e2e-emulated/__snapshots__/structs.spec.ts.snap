@@ -289,7 +289,7 @@ exports[`structs should implement structs correctly 13`] = `
     "events": [
       {
         "$type": "storage-charged",
-        "amount": "0.000000032",
+        "amount": "0.000000034",
       },
       {
         "$type": "received",
@@ -300,7 +300,7 @@ exports[`structs should implement structs correctly 13`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCRlaLU7leG74GKKEEICgZGzThqY2fCA4RLcjmrLB2Y3S7b",
+          "to": "kQA1LDdzadkUsxlM6-EvD2rMZ2-HuudKWuU-umho_Zw4Aoau",
           "type": "internal",
           "value": "10",
         },
@@ -318,7 +318,7 @@ exports[`structs should implement structs correctly 13`] = `
             "type": "cell",
           },
           "bounce": false,
-          "from": "kQCRlaLU7leG74GKKEEICgZGzThqY2fCA4RLcjmrLB2Y3S7b",
+          "from": "kQA1LDdzadkUsxlM6-EvD2rMZ2-HuudKWuU-umho_Zw4Aoau",
           "to": "@treasure(treasure)",
           "type": "internal",
           "value": "9.988015",
@@ -579,6 +579,1201 @@ exports[`structs should implement structs correctly 18`] = `
   "x19": 19n,
   "x2": 2n,
   "x20": 20n,
+  "x3": 3n,
+  "x4": 4n,
+  "x5": 5n,
+  "x6": 6n,
+  "x7": 7n,
+  "x8": 8n,
+  "x9": 9n,
+}
+`;
+
+exports[`structs should implement structs correctly 19`] = `
+TupleReader {
+  "items": [
+    {
+      "type": "int",
+      "value": 1n,
+    },
+    {
+      "type": "int",
+      "value": 2n,
+    },
+    {
+      "type": "int",
+      "value": 3n,
+    },
+    {
+      "type": "int",
+      "value": 4n,
+    },
+    {
+      "type": "int",
+      "value": 5n,
+    },
+    {
+      "type": "int",
+      "value": 6n,
+    },
+    {
+      "type": "int",
+      "value": 7n,
+    },
+    {
+      "type": "int",
+      "value": 8n,
+    },
+    {
+      "type": "int",
+      "value": 9n,
+    },
+    {
+      "type": "int",
+      "value": 10n,
+    },
+    {
+      "type": "int",
+      "value": 11n,
+    },
+    {
+      "type": "int",
+      "value": 12n,
+    },
+    {
+      "type": "int",
+      "value": 13n,
+    },
+    {
+      "type": "int",
+      "value": 14n,
+    },
+    {
+      "type": "int",
+      "value": 15n,
+    },
+  ],
+}
+`;
+
+exports[`structs should implement structs correctly 20`] = `
+TupleReader {
+  "items": [
+    {
+      "type": "int",
+      "value": 1n,
+    },
+    {
+      "type": "int",
+      "value": 2n,
+    },
+    {
+      "type": "int",
+      "value": 3n,
+    },
+    {
+      "type": "int",
+      "value": 4n,
+    },
+    {
+      "type": "int",
+      "value": 5n,
+    },
+    {
+      "type": "int",
+      "value": 6n,
+    },
+    {
+      "type": "int",
+      "value": 7n,
+    },
+    {
+      "type": "int",
+      "value": 8n,
+    },
+    {
+      "type": "int",
+      "value": 9n,
+    },
+    {
+      "type": "int",
+      "value": 10n,
+    },
+    {
+      "type": "int",
+      "value": 11n,
+    },
+    {
+      "type": "int",
+      "value": 12n,
+    },
+    {
+      "type": "int",
+      "value": 13n,
+    },
+    {
+      "type": "int",
+      "value": 14n,
+    },
+    {
+      "type": "int",
+      "value": 15n,
+    },
+    {
+      "type": "int",
+      "value": 16n,
+    },
+  ],
+}
+`;
+
+exports[`structs should implement structs correctly 21`] = `
+TupleReader {
+  "items": [
+    {
+      "type": "int",
+      "value": 1n,
+    },
+    {
+      "type": "int",
+      "value": 2n,
+    },
+    {
+      "type": "int",
+      "value": 3n,
+    },
+    {
+      "type": "int",
+      "value": 4n,
+    },
+    {
+      "type": "int",
+      "value": 5n,
+    },
+    {
+      "type": "int",
+      "value": 6n,
+    },
+    {
+      "type": "int",
+      "value": 7n,
+    },
+    {
+      "type": "int",
+      "value": 8n,
+    },
+    {
+      "type": "int",
+      "value": 9n,
+    },
+    {
+      "type": "int",
+      "value": 10n,
+    },
+    {
+      "type": "int",
+      "value": 11n,
+    },
+    {
+      "type": "int",
+      "value": 12n,
+    },
+    {
+      "type": "int",
+      "value": 13n,
+    },
+    {
+      "type": "int",
+      "value": 14n,
+    },
+    {
+      "type": "int",
+      "value": 15n,
+    },
+    {
+      "type": "int",
+      "value": 16n,
+    },
+    {
+      "type": "int",
+      "value": 17n,
+    },
+    {
+      "type": "int",
+      "value": 18n,
+    },
+    {
+      "type": "int",
+      "value": 19n,
+    },
+    {
+      "type": "int",
+      "value": 20n,
+    },
+    {
+      "type": "int",
+      "value": 21n,
+    },
+    {
+      "type": "int",
+      "value": 22n,
+    },
+    {
+      "type": "int",
+      "value": 23n,
+    },
+    {
+      "type": "int",
+      "value": 24n,
+    },
+    {
+      "type": "int",
+      "value": 25n,
+    },
+    {
+      "type": "int",
+      "value": 26n,
+    },
+    {
+      "type": "int",
+      "value": 27n,
+    },
+    {
+      "type": "int",
+      "value": 28n,
+    },
+    {
+      "type": "int",
+      "value": 29n,
+    },
+    {
+      "type": "int",
+      "value": 30n,
+    },
+    {
+      "type": "int",
+      "value": 31n,
+    },
+    {
+      "type": "int",
+      "value": 32n,
+    },
+  ],
+}
+`;
+
+exports[`structs should implement structs correctly 22`] = `
+TupleReader {
+  "items": [
+    {
+      "type": "int",
+      "value": 1n,
+    },
+    {
+      "type": "int",
+      "value": 2n,
+    },
+    {
+      "type": "int",
+      "value": 3n,
+    },
+    {
+      "type": "int",
+      "value": 4n,
+    },
+    {
+      "type": "int",
+      "value": 5n,
+    },
+    {
+      "type": "int",
+      "value": 6n,
+    },
+    {
+      "type": "int",
+      "value": 7n,
+    },
+    {
+      "type": "int",
+      "value": 8n,
+    },
+    {
+      "type": "int",
+      "value": 9n,
+    },
+    {
+      "type": "int",
+      "value": 10n,
+    },
+    {
+      "type": "int",
+      "value": 11n,
+    },
+    {
+      "type": "int",
+      "value": 12n,
+    },
+    {
+      "type": "int",
+      "value": 13n,
+    },
+    {
+      "type": "int",
+      "value": 14n,
+    },
+    {
+      "type": "int",
+      "value": 15n,
+    },
+    {
+      "type": "int",
+      "value": 16n,
+    },
+    {
+      "type": "int",
+      "value": 17n,
+    },
+    {
+      "type": "int",
+      "value": 18n,
+    },
+    {
+      "type": "int",
+      "value": 19n,
+    },
+    {
+      "type": "int",
+      "value": 20n,
+    },
+    {
+      "type": "int",
+      "value": 1n,
+    },
+    {
+      "type": "int",
+      "value": 2n,
+    },
+    {
+      "type": "int",
+      "value": 3n,
+    },
+    {
+      "type": "int",
+      "value": 4n,
+    },
+    {
+      "type": "int",
+      "value": 5n,
+    },
+    {
+      "type": "int",
+      "value": 6n,
+    },
+    {
+      "type": "int",
+      "value": 7n,
+    },
+    {
+      "type": "int",
+      "value": 8n,
+    },
+    {
+      "type": "int",
+      "value": 9n,
+    },
+    {
+      "type": "int",
+      "value": 10n,
+    },
+    {
+      "type": "int",
+      "value": 11n,
+    },
+    {
+      "type": "int",
+      "value": 12n,
+    },
+    {
+      "type": "int",
+      "value": 13n,
+    },
+    {
+      "type": "int",
+      "value": 14n,
+    },
+    {
+      "type": "int",
+      "value": 15n,
+    },
+    {
+      "type": "int",
+      "value": 1n,
+    },
+    {
+      "type": "int",
+      "value": 2n,
+    },
+    {
+      "type": "int",
+      "value": 3n,
+    },
+    {
+      "type": "int",
+      "value": 4n,
+    },
+    {
+      "type": "int",
+      "value": 5n,
+    },
+    {
+      "type": "int",
+      "value": 6n,
+    },
+    {
+      "type": "int",
+      "value": 7n,
+    },
+    {
+      "type": "int",
+      "value": 8n,
+    },
+    {
+      "type": "int",
+      "value": 9n,
+    },
+    {
+      "type": "int",
+      "value": 10n,
+    },
+    {
+      "type": "int",
+      "value": 11n,
+    },
+    {
+      "type": "int",
+      "value": 12n,
+    },
+    {
+      "type": "int",
+      "value": 13n,
+    },
+    {
+      "type": "int",
+      "value": 14n,
+    },
+    {
+      "type": "int",
+      "value": 15n,
+    },
+    {
+      "type": "int",
+      "value": 16n,
+    },
+    {
+      "type": "int",
+      "value": 1n,
+    },
+    {
+      "type": "int",
+      "value": 2n,
+    },
+    {
+      "type": "int",
+      "value": 3n,
+    },
+    {
+      "type": "int",
+      "value": 4n,
+    },
+    {
+      "type": "int",
+      "value": 5n,
+    },
+    {
+      "type": "int",
+      "value": 6n,
+    },
+    {
+      "type": "int",
+      "value": 7n,
+    },
+    {
+      "type": "int",
+      "value": 8n,
+    },
+    {
+      "type": "int",
+      "value": 9n,
+    },
+    {
+      "type": "int",
+      "value": 10n,
+    },
+    {
+      "type": "int",
+      "value": 11n,
+    },
+    {
+      "type": "int",
+      "value": 12n,
+    },
+    {
+      "type": "int",
+      "value": 13n,
+    },
+    {
+      "type": "int",
+      "value": 14n,
+    },
+    {
+      "type": "int",
+      "value": 15n,
+    },
+    {
+      "type": "int",
+      "value": 16n,
+    },
+    {
+      "type": "int",
+      "value": 17n,
+    },
+    {
+      "type": "int",
+      "value": 18n,
+    },
+    {
+      "type": "int",
+      "value": 19n,
+    },
+    {
+      "type": "int",
+      "value": 20n,
+    },
+    {
+      "type": "int",
+      "value": 21n,
+    },
+    {
+      "type": "int",
+      "value": 22n,
+    },
+    {
+      "type": "int",
+      "value": 23n,
+    },
+    {
+      "type": "int",
+      "value": 24n,
+    },
+    {
+      "type": "int",
+      "value": 25n,
+    },
+    {
+      "type": "int",
+      "value": 26n,
+    },
+    {
+      "type": "int",
+      "value": 27n,
+    },
+    {
+      "type": "int",
+      "value": 28n,
+    },
+    {
+      "type": "int",
+      "value": 29n,
+    },
+    {
+      "type": "int",
+      "value": 30n,
+    },
+    {
+      "type": "int",
+      "value": 31n,
+    },
+    {
+      "type": "int",
+      "value": 32n,
+    },
+  ],
+}
+`;
+
+exports[`structs should implement structs correctly 23`] = `
+TupleReader {
+  "items": [
+    {
+      "type": "int",
+      "value": 1n,
+    },
+    {
+      "type": "int",
+      "value": 2n,
+    },
+    {
+      "type": "int",
+      "value": 3n,
+    },
+    {
+      "type": "int",
+      "value": 4n,
+    },
+    {
+      "type": "int",
+      "value": 5n,
+    },
+    {
+      "type": "int",
+      "value": 6n,
+    },
+    {
+      "type": "int",
+      "value": 7n,
+    },
+    {
+      "type": "int",
+      "value": 8n,
+    },
+    {
+      "type": "int",
+      "value": 9n,
+    },
+    {
+      "type": "int",
+      "value": 10n,
+    },
+    {
+      "type": "int",
+      "value": 11n,
+    },
+    {
+      "type": "int",
+      "value": 12n,
+    },
+    {
+      "type": "int",
+      "value": 13n,
+    },
+    {
+      "type": "int",
+      "value": 14n,
+    },
+    {
+      "type": "int",
+      "value": 15n,
+    },
+    {
+      "type": "int",
+      "value": 16n,
+    },
+    {
+      "type": "int",
+      "value": 17n,
+    },
+    {
+      "type": "int",
+      "value": 18n,
+    },
+    {
+      "type": "int",
+      "value": 19n,
+    },
+    {
+      "type": "int",
+      "value": 20n,
+    },
+    {
+      "type": "null",
+    },
+    {
+      "type": "int",
+      "value": 1n,
+    },
+    {
+      "type": "int",
+      "value": 2n,
+    },
+    {
+      "type": "int",
+      "value": 3n,
+    },
+    {
+      "type": "int",
+      "value": 4n,
+    },
+    {
+      "type": "int",
+      "value": 5n,
+    },
+    {
+      "type": "int",
+      "value": 6n,
+    },
+    {
+      "type": "int",
+      "value": 7n,
+    },
+    {
+      "type": "int",
+      "value": 8n,
+    },
+    {
+      "type": "int",
+      "value": 9n,
+    },
+    {
+      "type": "int",
+      "value": 10n,
+    },
+    {
+      "type": "int",
+      "value": 11n,
+    },
+    {
+      "type": "int",
+      "value": 12n,
+    },
+    {
+      "type": "int",
+      "value": 13n,
+    },
+    {
+      "type": "int",
+      "value": 14n,
+    },
+    {
+      "type": "int",
+      "value": 15n,
+    },
+    {
+      "type": "int",
+      "value": 16n,
+    },
+    {
+      "items": [
+        {
+          "type": "int",
+          "value": 1n,
+        },
+        {
+          "type": "int",
+          "value": 2n,
+        },
+        {
+          "type": "int",
+          "value": 3n,
+        },
+        {
+          "type": "int",
+          "value": 4n,
+        },
+        {
+          "type": "int",
+          "value": 5n,
+        },
+        {
+          "type": "int",
+          "value": 6n,
+        },
+        {
+          "type": "int",
+          "value": 7n,
+        },
+        {
+          "type": "int",
+          "value": 8n,
+        },
+        {
+          "type": "int",
+          "value": 9n,
+        },
+        {
+          "type": "int",
+          "value": 10n,
+        },
+        {
+          "type": "int",
+          "value": 11n,
+        },
+        {
+          "type": "int",
+          "value": 12n,
+        },
+        {
+          "type": "int",
+          "value": 13n,
+        },
+        {
+          "type": "int",
+          "value": 14n,
+        },
+        {
+          "items": [
+            {
+              "type": "int",
+              "value": 15n,
+            },
+            {
+              "type": "int",
+              "value": 16n,
+            },
+            {
+              "type": "int",
+              "value": 17n,
+            },
+            {
+              "type": "int",
+              "value": 18n,
+            },
+            {
+              "type": "int",
+              "value": 19n,
+            },
+            {
+              "type": "int",
+              "value": 20n,
+            },
+            {
+              "type": "int",
+              "value": 21n,
+            },
+            {
+              "type": "int",
+              "value": 22n,
+            },
+            {
+              "type": "int",
+              "value": 23n,
+            },
+            {
+              "type": "int",
+              "value": 24n,
+            },
+            {
+              "type": "int",
+              "value": 25n,
+            },
+            {
+              "type": "int",
+              "value": 26n,
+            },
+            {
+              "type": "int",
+              "value": 27n,
+            },
+            {
+              "type": "int",
+              "value": 28n,
+            },
+            {
+              "items": [
+                {
+                  "type": "int",
+                  "value": 29n,
+                },
+                {
+                  "type": "int",
+                  "value": 30n,
+                },
+                {
+                  "type": "int",
+                  "value": 31n,
+                },
+                {
+                  "type": "int",
+                  "value": 32n,
+                },
+              ],
+              "type": "tuple",
+            },
+          ],
+          "type": "tuple",
+        },
+      ],
+      "type": "tuple",
+    },
+  ],
+}
+`;
+
+exports[`structs should implement structs correctly 24`] = `
+{
+  "$$type": "Location",
+  "idx": 1n,
+  "line1": {
+    "$$type": "Line",
+    "end": {
+      "$$type": "Point",
+      "x": 3n,
+      "y": 4n,
+    },
+    "start": {
+      "$$type": "Point",
+      "x": 1n,
+      "y": 2n,
+    },
+  },
+  "line2": null,
+}
+`;
+
+exports[`structs should implement structs correctly 25`] = `
+{
+  "$$type": "Location",
+  "idx": 2n,
+  "line1": {
+    "$$type": "Line",
+    "end": {
+      "$$type": "Point",
+      "x": 3n,
+      "y": 4n,
+    },
+    "start": {
+      "$$type": "Point",
+      "x": 1n,
+      "y": 2n,
+    },
+  },
+  "line2": {
+    "$$type": "Line",
+    "end": {
+      "$$type": "Point",
+      "x": 3n,
+      "y": 4n,
+    },
+    "start": {
+      "$$type": "Point",
+      "x": 1n,
+      "y": 2n,
+    },
+  },
+}
+`;
+
+exports[`structs should implement structs correctly 26`] = `
+{
+  "$$type": "TripleNestedStructOpt",
+  "a": 1n,
+  "s": {
+    "$$type": "DoubleNestedStructOpt",
+    "a": 2n,
+    "s": {
+      "$$type": "MyStruct1",
+      "a": 3n,
+      "b": 4n,
+      "c": 5n,
+    },
+  },
+}
+`;
+
+exports[`structs should implement structs correctly 27`] = `
+{
+  "$$type": "TripleNestedStructOpt",
+  "a": 1n,
+  "s": null,
+}
+`;
+
+exports[`structs should implement structs correctly 28`] = `
+{
+  "$$type": "TripleNestedStructOpt",
+  "a": 1n,
+  "s": {
+    "$$type": "DoubleNestedStructOpt",
+    "a": 2n,
+    "s": null,
+  },
+}
+`;
+
+exports[`structs should implement structs correctly 29`] = `
+{
+  "$$type": "LongAndDeepNestedStruct",
+  "s1": {
+    "$$type": "TripleNestedStructOpt",
+    "a": 1n,
+    "s": {
+      "$$type": "DoubleNestedStructOpt",
+      "a": 2n,
+      "s": {
+        "$$type": "MyStruct1",
+        "a": 3n,
+        "b": 4n,
+        "c": 5n,
+      },
+    },
+  },
+  "s2": {
+    "$$type": "TripleNestedStructOpt",
+    "a": 6n,
+    "s": {
+      "$$type": "DoubleNestedStructOpt",
+      "a": 7n,
+      "s": {
+        "$$type": "MyStruct1",
+        "a": 8n,
+        "b": 9n,
+        "c": 10n,
+      },
+    },
+  },
+  "s3": null,
+  "s4": null,
+  "x1": 1n,
+  "x10": 10n,
+  "x11": 11n,
+  "x12": 12n,
+  "x13": 13n,
+  "x14": 14n,
+  "x15": 15n,
+  "x16": 16n,
+  "x2": 2n,
+  "x3": 3n,
+  "x4": 4n,
+  "x5": 5n,
+  "x6": 6n,
+  "x7": 7n,
+  "x8": 8n,
+  "x9": 9n,
+}
+`;
+
+exports[`structs should implement structs correctly 30`] = `
+{
+  "$$type": "LongAndDeepNestedStruct",
+  "s1": {
+    "$$type": "TripleNestedStructOpt",
+    "a": 1n,
+    "s": {
+      "$$type": "DoubleNestedStructOpt",
+      "a": 2n,
+      "s": {
+        "$$type": "MyStruct1",
+        "a": 3n,
+        "b": 4n,
+        "c": 5n,
+      },
+    },
+  },
+  "s2": {
+    "$$type": "TripleNestedStructOpt",
+    "a": 6n,
+    "s": {
+      "$$type": "DoubleNestedStructOpt",
+      "a": 7n,
+      "s": {
+        "$$type": "MyStruct1",
+        "a": 8n,
+        "b": 9n,
+        "c": 10n,
+      },
+    },
+  },
+  "s3": {
+    "$$type": "TripleNestedStructOpt",
+    "a": 11n,
+    "s": {
+      "$$type": "DoubleNestedStructOpt",
+      "a": 12n,
+      "s": {
+        "$$type": "MyStruct1",
+        "a": 13n,
+        "b": 14n,
+        "c": 15n,
+      },
+    },
+  },
+  "s4": {
+    "$$type": "TripleNestedStructOpt",
+    "a": 16n,
+    "s": {
+      "$$type": "DoubleNestedStructOpt",
+      "a": 17n,
+      "s": {
+        "$$type": "MyStruct1",
+        "a": 18n,
+        "b": 19n,
+        "c": 20n,
+      },
+    },
+  },
+  "x1": 1n,
+  "x10": 10n,
+  "x11": 11n,
+  "x12": 12n,
+  "x13": 13n,
+  "x14": 14n,
+  "x15": 15n,
+  "x16": 16n,
+  "x2": 2n,
+  "x3": 3n,
+  "x4": 4n,
+  "x5": 5n,
+  "x6": 6n,
+  "x7": 7n,
+  "x8": 8n,
+  "x9": 9n,
+}
+`;
+
+exports[`structs should implement structs correctly 31`] = `
+{
+  "$$type": "LongAndDeepNestedStruct",
+  "s1": {
+    "$$type": "TripleNestedStructOpt",
+    "a": 1n,
+    "s": {
+      "$$type": "DoubleNestedStructOpt",
+      "a": 2n,
+      "s": {
+        "$$type": "MyStruct1",
+        "a": 3n,
+        "b": 4n,
+        "c": 5n,
+      },
+    },
+  },
+  "s2": {
+    "$$type": "TripleNestedStructOpt",
+    "a": 6n,
+    "s": {
+      "$$type": "DoubleNestedStructOpt",
+      "a": 7n,
+      "s": {
+        "$$type": "MyStruct1",
+        "a": 8n,
+        "b": 9n,
+        "c": 10n,
+      },
+    },
+  },
+  "s3": null,
+  "s4": {
+    "$$type": "TripleNestedStructOpt",
+    "a": 16n,
+    "s": {
+      "$$type": "DoubleNestedStructOpt",
+      "a": 17n,
+      "s": {
+        "$$type": "MyStruct1",
+        "a": 18n,
+        "b": 19n,
+        "c": 20n,
+      },
+    },
+  },
+  "x1": 1n,
+  "x10": 10n,
+  "x11": 11n,
+  "x12": 12n,
+  "x13": 13n,
+  "x14": 14n,
+  "x15": 15n,
+  "x16": 16n,
+  "x2": 2n,
   "x3": 3n,
   "x4": 4n,
   "x5": 5n,

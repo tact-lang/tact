@@ -20,6 +20,8 @@ import {
     throwInternalCompilerError,
 } from "../errors";
 import { TypeRef } from "./types";
+import { CompilerContext } from "../context";
+import { getType } from "./resolveDescriptors";
 
 type FormatDef = Record<
     string,
@@ -376,6 +378,7 @@ export function resolveABIType(src: AstFieldDecl): ABITypeRef {
 }
 
 export function createABITypeRefFromTypeRef(
+    ctx: CompilerContext,
     src: TypeRef,
     loc: SrcInfo,
 ): ABITypeRef {
@@ -408,11 +411,20 @@ export function createABITypeRefFromTypeRef(
             return { kind: "simple", type: "string", optional: src.optional };
         }
         if (src.name === "StringBuilder") {
-            throw Error(`Unsupported type "${src.name}"`);
+            throwInternalCompilerError(`Unsupported type "${src.name}"`);
         }
 
         // Structs
-        return { kind: "simple", type: src.name, optional: src.optional };
+        const type = getType(ctx, src.name);
+        if (type.kind === "contract") {
+            return {
+                kind: "simple",
+                type: src.name + "$Data",
+                optional: src.optional,
+            };
+        } else {
+            return { kind: "simple", type: src.name, optional: src.optional };
+        }
     }
 
     if (src.kind === "map") {
@@ -444,7 +456,7 @@ export function createABITypeRefFromTypeRef(
                 );
             }
         } else {
-            throw Error(`Unsupported map key type "${src.key}"`);
+            throwInternalCompilerError(`Unsupported map key type "${src.key}"`);
         }
 
         // Resolve value type
@@ -479,7 +491,9 @@ export function createABITypeRefFromTypeRef(
                 );
             }
         } else if (src.value === "Slice") {
-            throw Error(`Unsupported map value type "${src.value}"`);
+            throwInternalCompilerError(
+                `Unsupported map value type "${src.value}"`,
+            );
         } else if (src.value === "Address") {
             value = "address";
             if (src.valueAs) {
@@ -489,9 +503,13 @@ export function createABITypeRefFromTypeRef(
                 );
             }
         } else if (src.value === "String") {
-            throw Error(`Unsupported map value type "${src.value}"`);
+            throwInternalCompilerError(
+                `Unsupported map value type "${src.value}"`,
+            );
         } else if (src.value === "StringBuilder" || src.value === "Builder") {
-            throw Error(`Unsupported map value type "${src.value}"`);
+            throwInternalCompilerError(
+                `Unsupported map value type "${src.value}"`,
+            );
         } else {
             value = src.value;
             valueFormat = "ref";
@@ -507,8 +525,8 @@ export function createABITypeRefFromTypeRef(
     }
 
     if (src.kind === "ref_bounced") {
-        throw Error("Unexpected bounced reference");
+        throwInternalCompilerError("Unexpected bounced reference");
     }
 
-    throw Error(`Unsupported type`);
+    throwInternalCompilerError(`Unsupported type`);
 }

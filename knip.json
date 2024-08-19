@@ -1,8 +1,12 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "entry": ["src/main.ts", "src/node.ts", "bin/tact.js", "scripts/*.ts"],
+  "entry": ["src/index.ts", "src/main.ts", "src/node.ts", "bin/tact.js"],
   "project": ["src/**/*.ts", "bin/tact.js"],
-  "ignore": ["src/grammar/ast.ts", ".github/workflows/tact.yml"],
+  "ignore": [
+    "src/grammar/ast.ts",
+    "src/prettyPrinter.ts",
+    ".github/workflows/tact.yml"
+  ],
   "ignoreDependencies": [
     "@tact-lang/ton-abi",
     "@tact-lang/ton-jest",

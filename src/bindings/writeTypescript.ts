@@ -5,6 +5,7 @@ import {
     writeArgumentToStack,
     writeDictParser,
     writeGetParser,
+    writeGetterTupleParser,
     writeInitSerializer,
     writeParser,
     writeSerializer,
@@ -13,6 +14,7 @@ import {
     writeTupleSerializer,
 } from "./typescript/writeStruct";
 import { AllocationCell } from "../storage/operation";
+import { throwInternalCompilerError } from "../errors";
 import { topologicalSort } from "../utils/utils";
 import {
     allocate,
@@ -31,7 +33,9 @@ function writeArguments(args: ABIArgument[]) {
                 continue outer;
             }
         }
-        throw Error("Unsupported type: " + JSON.stringify(f.type));
+        throwInternalCompilerError(
+            `Unsupported type: ${JSON.stringify(f.type)}`,
+        );
     }
 
     return res;
@@ -135,6 +139,7 @@ export function writeTypescript(
             writeSerializer(s, allocations[s.name]!.root, w);
             writeParser(s, allocations[s.name]!.root, w);
             writeTupleParser(s, w);
+            writeGetterTupleParser(s, w);
             writeTupleSerializer(s, w);
             writeDictParser(s, w);
         }

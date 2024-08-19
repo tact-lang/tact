@@ -248,5 +248,39 @@ describe("structs", () => {
             await contract.getLongNestedStructWithOptsTest(),
         ).toMatchSnapshot();
         expect(await contract.getLongContractTest()).toEqual(210n);
+
+        // https://github.com/tact-lang/tact/issues/671
+
+        expect(
+            (await system.provider(contract).get("longStruct15Test", [])).stack,
+        ).toMatchSnapshot();
+        expect(
+            (await system.provider(contract).get("longStruct16Test", [])).stack,
+        ).toMatchSnapshot();
+        expect(
+            (await system.provider(contract).get("longStruct32Test", [])).stack,
+        ).toMatchSnapshot();
+        expect(
+            (await system.provider(contract).get("longNestedStructTest", []))
+                .stack,
+        ).toMatchSnapshot();
+        expect(
+            (
+                await system
+                    .provider(contract)
+                    .get("longNestedStructWithOptsTest", [])
+            ).stack,
+        ).toMatchSnapshot();
+
+        // https://github.com/tact-lang/tact/issues/690
+
+        expect(await contract.getLocation1()).toMatchSnapshot();
+        expect(await contract.getLocation2()).toMatchSnapshot();
+        expect(await contract.getTripleNestedStructOpt1()).toMatchSnapshot();
+        expect(await contract.getTripleNestedStructOpt2()).toMatchSnapshot();
+        expect(await contract.getTripleNestedStructOpt3()).toMatchSnapshot();
+        expect(await contract.getLongAndDeepNestedStruct1()).toMatchSnapshot();
+        expect(await contract.getLongAndDeepNestedStruct2()).toMatchSnapshot();
+        expect(await contract.getLongAndDeepNestedStruct3()).toMatchSnapshot();
     });
 });

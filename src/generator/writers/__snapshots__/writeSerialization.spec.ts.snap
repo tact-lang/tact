@@ -2914,19 +2914,17 @@ return $A$_as_optional($A$_from_tuple(v));",
   {
     "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v; 
-return $A$_to_tuple(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
+return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:A",
-    "depends": Set {
-      "$A$_to_tuple",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
     "name": "$A$_to_external",
-    "signature": "tuple $A$_to_external(((int, int, int, int, int, int, int)) v)",
+    "signature": "(int, int, int, int, int, int, int) $A$_to_external(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
@@ -3174,19 +3172,17 @@ return $B$_as_optional($B$_from_tuple(v));",
   {
     "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v; 
-return $B$_to_tuple(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
+return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:B",
-    "depends": Set {
-      "$B$_to_tuple",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
     "name": "$B$_to_external",
-    "signature": "tuple $B$_to_external(((int, int, int, int, int, int, int)) v)",
+    "signature": "(int, int, int, int, int, int, int) $B$_to_external(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
@@ -3450,19 +3446,17 @@ return $C$_as_optional($C$_from_tuple(v));",
   {
     "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v; 
-return $C$_to_tuple(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
+return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:C",
-    "depends": Set {
-      "$C$_to_tuple",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
     "name": "$C$_to_external",
-    "signature": "tuple $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v)",
+    "signature": "(cell, cell, slice, slice, int, int, int, slice) $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v)",
   },
   {
     "code": {
@@ -6438,19 +6432,17 @@ return $A$_as_optional($A$_from_tuple(v));",
   {
     "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v; 
-return $A$_to_tuple(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
+return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:A",
-    "depends": Set {
-      "$A$_to_tuple",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
     "name": "$A$_to_external",
-    "signature": "tuple $A$_to_external(((int, int, int, int, int, int, int)) v)",
+    "signature": "(int, int, int, int, int, int, int) $A$_to_external(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
@@ -6698,19 +6690,17 @@ return $B$_as_optional($B$_from_tuple(v));",
   {
     "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v; 
-return $B$_to_tuple(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
+return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:B",
-    "depends": Set {
-      "$B$_to_tuple",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
     "name": "$B$_to_external",
-    "signature": "tuple $B$_to_external(((int, int, int, int, int, int, int)) v)",
+    "signature": "(int, int, int, int, int, int, int) $B$_to_external(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
@@ -6974,19 +6964,17 @@ return $C$_as_optional($C$_from_tuple(v));",
   {
     "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v; 
-return $C$_to_tuple(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
+return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:C",
-    "depends": Set {
-      "$C$_to_tuple",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
     "name": "$C$_to_external",
-    "signature": "tuple $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v)",
+    "signature": "(cell, cell, slice, slice, int, int, int, slice) $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v)",
   },
   {
     "code": {
@@ -9965,19 +9953,17 @@ return $A$_as_optional($A$_from_tuple(v));",
   {
     "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v; 
-return $A$_to_tuple(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
+return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:A",
-    "depends": Set {
-      "$A$_to_tuple",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
     "name": "$A$_to_external",
-    "signature": "tuple $A$_to_external(((int, int, int, int, int, int, int)) v)",
+    "signature": "(int, int, int, int, int, int, int) $A$_to_external(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
@@ -10225,19 +10211,17 @@ return $B$_as_optional($B$_from_tuple(v));",
   {
     "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v; 
-return $B$_to_tuple(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
+return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:B",
-    "depends": Set {
-      "$B$_to_tuple",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
     "name": "$B$_to_external",
-    "signature": "tuple $B$_to_external(((int, int, int, int, int, int, int)) v)",
+    "signature": "(int, int, int, int, int, int, int) $B$_to_external(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
@@ -10501,19 +10485,17 @@ return $C$_as_optional($C$_from_tuple(v));",
   {
     "code": {
       "code": "var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v; 
-return $C$_to_tuple(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
+return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:C",
-    "depends": Set {
-      "$C$_to_tuple",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
     "name": "$C$_to_external",
-    "signature": "tuple $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v)",
+    "signature": "(cell, cell, slice, slice, int, int, int, slice) $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v)",
   },
   {
     "code": {

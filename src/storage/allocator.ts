@@ -4,6 +4,7 @@ import {
     AllocationOperation,
     AllocationOperationType,
 } from "./operation";
+import { throwInternalCompilerError } from "../errors";
 
 const ALLOCATOR_RESERVE_BIT = 1;
 const ALLOCATOR_RESERVE_REF = 1;
@@ -36,7 +37,7 @@ function getOperationSize(src: AllocationOperationType): {
                     }
                     case "remainder": {
                         if (src.optional) {
-                            throw new Error(
+                            throwInternalCompilerError(
                                 "Remainder cell cannot be optional",
                             );
                         }
@@ -118,7 +119,9 @@ export function getAllocationOperationFromField(
                         optional: src.optional ? src.optional : false,
                     };
                 } else if (src.format !== null && src.format !== undefined) {
-                    throw Error("Unsupported int format " + src.format);
+                    throwInternalCompilerError(
+                        `Unsupported int format: ${src.format}`,
+                    );
                 }
                 return {
                     kind: "int",
@@ -169,7 +172,9 @@ export function getAllocationOperationFromField(
                         optional: src.optional ? src.optional : false,
                     };
                 } else if (src.format !== null && src.format !== undefined) {
-                    throw Error("Unsupported int format " + src.format);
+                    throwInternalCompilerError(
+                        `Unsupported int format: ${src.format}`,
+                    );
                 }
                 return {
                     kind: "uint",
@@ -179,7 +184,9 @@ export function getAllocationOperationFromField(
             }
             if (src.type === "bool") {
                 if (src.format !== null && src.format !== undefined) {
-                    throw Error("Unsupported bool format " + src.format);
+                    throwInternalCompilerError(
+                        `Unsupported bool format: ${src.format}`,
+                    );
                 }
                 return {
                     kind: "boolean",
@@ -194,7 +201,9 @@ export function getAllocationOperationFromField(
                         format: "remainder",
                     };
                 } else if (src.format !== null && src.format !== undefined) {
-                    throw Error("Unsupported cell format " + src.format);
+                    throwInternalCompilerError(
+                        `Unsupported cell format: ${src.format}`,
+                    );
                 }
                 return {
                     kind: "cell",
@@ -210,7 +219,9 @@ export function getAllocationOperationFromField(
                         format: "remainder",
                     };
                 } else if (src.format !== null && src.format !== undefined) {
-                    throw Error("Unsupported slice format " + src.format);
+                    throwInternalCompilerError(
+                        `Unsupported slice format: ${src.format}`,
+                    );
                 }
                 return {
                     kind: "slice",
@@ -226,7 +237,9 @@ export function getAllocationOperationFromField(
                         format: "remainder",
                     };
                 } else if (src.format !== null && src.format !== undefined) {
-                    throw Error("Unsupported slice format " + src.format);
+                    throwInternalCompilerError(
+                        `Unsupported slice format: ${src.format}`,
+                    );
                 }
                 return {
                     kind: "builder",
@@ -248,12 +261,16 @@ export function getAllocationOperationFromField(
                         optional: src.optional ? src.optional : false,
                     };
                 } else {
-                    throw Error("Unsupported fixed-bytes format " + src.format);
+                    throwInternalCompilerError(
+                        `Unsupported fixed-bytes format: ${src.format}`,
+                    );
                 }
             }
             if (src.type === "string") {
                 if (src.format !== null && src.format !== undefined) {
-                    throw Error("Unsupported string format " + src.format);
+                    throwInternalCompilerError(
+                        `Unsupported string format: ${src.format}`,
+                    );
                 }
                 return {
                     kind: "string",
@@ -272,7 +289,9 @@ export function getAllocationOperationFromField(
                     size,
                 };
             } else if (src.format !== undefined && src.format !== null) {
-                throw Error("Unsupported struct format " + src.format);
+                throwInternalCompilerError(
+                    `Unsupported struct format: ${src.format}`,
+                );
             } else {
                 return {
                     kind: "struct",
@@ -283,9 +302,14 @@ export function getAllocationOperationFromField(
                 };
             }
         }
+        // NOTE: That's false positive in ESLint on how it handles nested if-else
+        // constructions: https://github.com/tact-lang/tact/pull/669/files#r1709420045
+        // eslint-disable-next-line no-fallthrough
         case "dict": {
             if (src.format !== null && src.format !== undefined) {
-                throw Error("Unsupported map format " + src.format);
+                throwInternalCompilerError(
+                    `Unsupported map format: ${src.format}`,
+                );
             }
             return { kind: "map" };
         }

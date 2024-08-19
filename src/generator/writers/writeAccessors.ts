@@ -278,7 +278,7 @@ export function writeAccessors(
 
     ctx.fun(ops.typeToExternal(type.name, ctx), () => {
         ctx.signature(
-            `tuple ${ops.typeToExternal(type.name, ctx)}((${resolveFuncType(type, ctx)}) v)`,
+            `(${type.fields.map((f) => resolveFuncType(f.type, ctx)).join(", ")}) ${ops.typeToExternal(type.name, ctx)}((${resolveFuncType(type, ctx)}) v)`,
         );
         ctx.flag("inline");
         ctx.context("type:" + type.name);
@@ -290,9 +290,7 @@ export function writeAccessors(
             for (const f of type.fields) {
                 vars.push(`v'${f.name}`);
             }
-            ctx.append(
-                `return ${ops.typeToTuple(type.name, ctx)}(${vars.join(", ")});`,
-            );
+            ctx.append(`return (${vars.join(", ")});`);
         });
     });
 

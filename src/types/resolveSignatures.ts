@@ -3,6 +3,7 @@ import { ABIField } from "@ton/core";
 import { CompilerContext } from "../context";
 import { idToHex } from "../utils/idToHex";
 import { newMessageId } from "../utils/newMessageId";
+import { throwInternalCompilerError } from "../errors";
 import { getAllTypes, getType } from "./resolveDescriptors";
 import {
     BinaryReceiverSelector,
@@ -27,7 +28,7 @@ export function resolveSignatures(ctx: CompilerContext) {
             if (typeof format === "number") {
                 return `int${format}`;
             } else if (format !== null) {
-                throw Error("Unsupported int format " + format);
+                throwInternalCompilerError(`Unsupported int format: ${format}`);
             }
             return `int`;
         } else if (type === "uint") {
@@ -36,17 +37,23 @@ export function resolveSignatures(ctx: CompilerContext) {
             } else if (format === "coins") {
                 return `coins`;
             } else if (format !== null) {
-                throw Error("Unsupported uint format " + format);
+                throwInternalCompilerError(
+                    `Unsupported uint format: ${format}`,
+                );
             }
             return `uint`;
         } else if (type === "bool") {
             if (format !== null) {
-                throw Error("Unsupported bool format " + format);
+                throwInternalCompilerError(
+                    `Unsupported bool format: ${format}`,
+                );
             }
             return "bool";
         } else if (type === "address") {
             if (format !== null) {
-                throw Error("Unsupported address format " + format);
+                throwInternalCompilerError(
+                    `Unsupported address format: ${format}`,
+                );
             }
             return "address";
         } else if (type === "cell") {
@@ -56,7 +63,9 @@ export function resolveSignatures(ctx: CompilerContext) {
                 return "^cell";
             }
             if (format !== null) {
-                throw Error("Unsupported cell format " + format);
+                throwInternalCompilerError(
+                    `Unsupported cell format: ${format}`,
+                );
             }
             return "^cell";
         } else if (type === "slice") {
@@ -65,7 +74,9 @@ export function resolveSignatures(ctx: CompilerContext) {
             } else if (format === "ref") {
                 return "^slice";
             } else if (format !== null) {
-                throw Error("Unsupported slice format " + format);
+                throwInternalCompilerError(
+                    `Unsupported slice format: ${format}`,
+                );
             }
             return "^slice";
         } else if (type === "builder") {
@@ -74,33 +85,39 @@ export function resolveSignatures(ctx: CompilerContext) {
             } else if (format === "ref") {
                 return "^slice";
             } else if (format !== null) {
-                throw Error("Unsupported builder format " + format);
+                throwInternalCompilerError(
+                    `Unsupported builder format: ${format}`,
+                );
             }
             return "^builder";
         } else if (type === "string") {
             if (format !== null) {
-                throw Error("Unsupported builder format " + format);
+                throwInternalCompilerError(
+                    `Unsupported builder format: ${format}`,
+                );
             }
             return "^string";
         } else if (type === "fixed-bytes") {
             if (typeof format === "number") {
                 return `fixed_bytes${format}`;
             } else if (format !== null) {
-                throw Error("Unsupported fixed-bytes format " + format);
+                throwInternalCompilerError(
+                    `Unsupported fixed-bytes format: ${format}`,
+                );
             }
-            throw Error("Missing fixed-bytes format");
+            throwInternalCompilerError("Missing fixed-bytes format");
         }
 
         // Struct types
         const t = getType(ctx, type);
         if (t.kind !== "struct") {
-            throw Error("Unsupported type " + type);
+            throwInternalCompilerError(`Unsupported type: ${type}`);
         }
         const s = createTupleSignature(type);
         if (format === "ref") {
             return `^${s.signature}`;
         } else if (format !== null) {
-            throw Error("Unsupported struct format " + format);
+            throwInternalCompilerError(`Unsupported struct format: ${format}`);
         }
         return s.signature;
     }
@@ -119,7 +136,9 @@ export function resolveSignatures(ctx: CompilerContext) {
             }
             case "dict": {
                 if (src.type.format !== null && src.type.format !== undefined) {
-                    throw Error("Unsupported map format " + src.type.format);
+                    throwInternalCompilerError(
+                        `Unsupported map format: ${src.type.format}`,
+                    );
                 }
                 const key = createTypeFormat(
                     src.type.key,
@@ -144,8 +163,18 @@ export function resolveSignatures(ctx: CompilerContext) {
         }
         const t = getType(ctx, name);
         if (t.kind !== "struct") {
-            throw Error("Unsupported type " + name);
+            throwInternalCompilerError(`Unsupported type: ${name}`);
         }
+
+        // Check for no "remainder" in the middle of the struct
+        for (const field of t.fields.slice(0, -1)) {
+            if (field.as === "remaining") {
+                throwCompilationError(
+                    `The "remainder" field can only be the last field of the struct`,
+                );
+            }
+        }
+
         const fields = t.fields.map((v) => createTLBField(v.abi));
 
         // Calculate signature and method id

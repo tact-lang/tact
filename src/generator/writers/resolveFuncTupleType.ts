@@ -46,7 +46,7 @@ export function resolveFuncTupleType(
         } else {
             throw Error("Unknown primitive type: " + descriptor.name);
         }
-    } else if (descriptor.kind === "struct") {
+    } else if (descriptor.kind === "struct" || descriptor.kind === "contract") {
         return "tuple";
     }
 

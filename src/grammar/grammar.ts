@@ -7,6 +7,7 @@ import {
     Grammar,
 } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
+import { throwInternalCompilerError } from "../errors";
 import {
     AstAugmentedAssignOperation,
     AstConstantAttribute,
@@ -20,8 +21,9 @@ import {
     AstType,
     createAstNode,
     AstImport,
+    AstConstantDef,
 } from "./ast";
-import { throwParseError, throwCompilationError } from "../errors";
+import { throwParseError, throwSyntaxError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
@@ -109,7 +111,7 @@ semantics.addOperation<AstNode>("astOfImport", {
     Import(_importKwd, path, _semicolon) {
         const pathAST = path.astOfExpression() as AstString;
         if (pathAST.value.includes("\\")) {
-            throwCompilationError(
+            throwSyntaxError(
                 'Import path can\'t contain "\\"',
                 createRef(path),
             );
@@ -243,7 +245,14 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
         return fun.astOfItem();
     },
     ModuleConstant(constant) {
-        return constant.astOfItem();
+        const astConstDef: AstConstantDef = constant.astOfItem();
+        if (astConstDef.attributes.length !== 0) {
+            throwSyntaxError(
+                `Module-level constants do not support attributes`,
+                astConstDef.attributes[0]!.loc,
+            );
+        }
+        return astConstDef;
     },
 });
 
@@ -467,7 +476,7 @@ semantics.addOperation<AstFunctionAttribute>("astOfFunctionAttributes", {
         return { type: "mutates", loc: createRef(this) };
     },
     FunctionAttribute_override(_) {
-        return { type: "overrides", loc: createRef(this) };
+        return { type: "override", loc: createRef(this) };
     },
     FunctionAttribute_inline(_) {
         return { type: "inline", loc: createRef(this) };
@@ -482,7 +491,7 @@ semantics.addOperation<AstFunctionAttribute>("astOfFunctionAttributes", {
 
 semantics.addOperation<AstConstantAttribute>("astOfConstAttribute", {
     ConstantAttribute_override(_) {
-        return { type: "overrides", loc: createRef(this) };
+        return { type: "override", loc: createRef(this) };
     },
     ConstantAttribute_virtual(_) {
         return { type: "virtual", loc: createRef(this) };
@@ -508,7 +517,7 @@ semantics.addOperation<AstNode[]>("astsOfList", {
             params.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwCompilationError(
+            throwSyntaxError(
                 "Empty parameter list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );
@@ -520,7 +529,7 @@ semantics.addOperation<AstNode[]>("astsOfList", {
             args.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwCompilationError(
+            throwSyntaxError(
                 "Empty argument list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );
@@ -667,8 +676,8 @@ semantics.addOperation<AstNode>("astOfStatement", {
                     op = "^";
                     break;
                 default:
-                    throw Error(
-                        "Internal compiler error: unreachable augmented assignment operator. Please report at https://github.com/tact-lang/tact/issues",
+                    throwInternalCompilerError(
+                        "Unreachable augmented assignment operator.",
                     );
             }
             return createAstNode({
@@ -1176,7 +1185,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
             structFields.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwCompilationError(
+            throwSyntaxError(
                 "Empty parameter list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );

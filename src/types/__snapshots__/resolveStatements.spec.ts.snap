@@ -1,5 +1,85 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`resolveStatements should fail statements for assign-augmented-const-contract 1`] = `
+"<unknown>:8:9: Modifications of constant expressions are not allowed
+Line 8, col 9:
+  7 |     fun bar() {
+> 8 |         self.foo += 1 // <-- trying to assign to a constant
+              ^~~~~~~~
+  9 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-augmented-const-global 1`] = `
+"<unknown>:6:5: Modifications of constant expressions are not allowed
+Line 6, col 5:
+  5 | fun bar() {
+> 6 |     foo += 1 // <-- trying to assign to a constant
+          ^~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-augmented-const-struct-contract 1`] = `
+"<unknown>:12:9: Modifications of constant expressions are not allowed
+Line 12, col 9:
+  11 |         self.baz.x += 1; // ok
+> 12 |         self.foo.y -= 1 // <-- trying to assign to a constant
+               ^~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-augmented-const-struct-global 1`] = `
+"<unknown>:10:5: Modifications of constant expressions are not allowed
+Line 10, col 5:
+   9 |     baz.x += 1; // ok
+> 10 |     foo.y -= 1 // <-- trying to assign to a constant
+           ^~~~~
+  11 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-const-contract 1`] = `
+"<unknown>:8:9: Modifications of constant expressions are not allowed
+Line 8, col 9:
+  7 |     fun bar() {
+> 8 |         self.foo = 43 // <-- trying to assign to a constant
+              ^~~~~~~~
+  9 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-const-global 1`] = `
+"<unknown>:6:5: Modifications of constant expressions are not allowed
+Line 6, col 5:
+  5 | fun bar() {
+> 6 |     foo = 43 // <-- trying to assign to a constant
+          ^~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-const-struct-contract 1`] = `
+"<unknown>:12:9: Modifications of constant expressions are not allowed
+Line 12, col 9:
+  11 |         self.baz.x = 1; // ok
+> 12 |         self.foo.y = 42 // <-- trying to assign to a constant
+               ^~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for assign-const-struct-global 1`] = `
+"<unknown>:10:5: Modifications of constant expressions are not allowed
+Line 10, col 5:
+   9 |     baz.x = 1; // ok
+> 10 |     foo.y = 42 // <-- trying to assign to a constant
+           ^~~~~
+  11 | }
+"
+`;
+
 exports[`resolveStatements should fail statements for bounced-type-is-smaller 1`] = `
 "<unknown>:23:22: Type bounced<"A"> does not have a field named "c"
 Line 23, col 22:
@@ -27,124 +107,6 @@ Line 5, col 12:
 > 5 |     return ~a;
                  ^~
   6 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-bounced 1`] = `
-"<unknown>:6:10: Expressions of "bounced<S>" type cannot be used for (non)equality operator "=="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 6, col 10:
-  5 | fun foo(b: bounced<S>): Bool {
-> 6 |   return b == b;
-               ^~~~~~
-  7 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-int-bool 1`] = `
-"<unknown>:5:12: Incompatible types "Int" and "Bool" for binary operator "=="
-Line 5, col 12:
-  4 | fun foo(x: Int): Bool {
-> 5 |     return x == true;
-                 ^~~~~~~~~
-  6 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-map-map 1`] = `
-"<unknown>:6:12: Incompatible types "map<Int, Address>" and "map<Address, Int>" for binary operator "=="
-Line 6, col 12:
-  5 | fun foo(m1: map<Int, Address>, m2: map<Address, Int>): Bool {
-> 6 |     return m1 == m2;
-                 ^~~~~~~~
-  7 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-null-1 1`] = `
-"<unknown>:18:13: Expressions of "S" type cannot be used for (non)equality operator "!="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 18, col 13:
-  17 |     get fun test(): Int {
-> 18 |         if (self.s != null) {
-                   ^~~~~~~~~~~~~~
-  19 |             return self.s.a;
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-null-2 1`] = `
-"<unknown>:18:13: Expressions of "S" type cannot be used for (non)equality operator "!="
-See https://docs.tact-lang.org/book/operators#binary-equality
-Line 18, col 13:
-  17 |     get fun test(): Int {
-> 18 |         if (null != self.s) {
-                   ^~~~~~~~~~~~~~
-  19 |             return self.s.a;
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-null-3 1`] = `
-"<unknown>:5:9: Incompatible types "<null>" and "Int" for binary operator "=="
-Line 5, col 9:
-  4 |     let x: Int = 42;
-> 5 |     if (null == x) { return }
-              ^~~~~~~~~
-  6 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-null-bounced 1`] = `
-"<unknown>:7:10: Expressions of "bounced<S>" type cannot be used for (non)equality operator "=="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 7, col 10:
-  6 | fun foo(b: bounced<S>): Bool {
-> 7 |   return b == null;
-               ^~~~~~~~~
-  8 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-optional-struct-null 1`] = `
-"<unknown>:7:16: Expressions of "S" type cannot be used for (non)equality operator "=="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 7, col 16:
-  6 |     if (s != null) {
-> 7 |         return s!! == null
-                     ^~~~~~~~~~~
-  8 |     }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-void-null 1`] = `
-"<unknown>:6:12: Expressions of "<void>" type cannot be used for (non)equality operator "=="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 6, col 12:
-  5 | fun baz(): Bool {
-> 6 |     return foo() == null
-                 ^~~~~~~~~~~~~
-  7 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-void1 1`] = `
-"<unknown>:7:12: Expressions of "<void>" type cannot be used for (non)equality operator "=="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 7, col 12:
-  6 | fun baz(): Bool {
-> 7 |     return foo() == bar()
-                 ^~~~~~~~~~~~~~
-  8 | }
-"
-`;
-
-exports[`resolveStatements should fail statements for expr-cmp-void2 1`] = `
-"<unknown>:7:12: Expressions of "<void>" type cannot be used for (non)equality operator "!="
- See https://docs.tact-lang.org/book/operators#binary-equality
-Line 7, col 12:
-  6 | fun baz(): Bool {
-> 7 |     return foo() != bar()
-                 ^~~~~~~~~~~~~~
-  8 | }
 "
 `;
 
@@ -225,6 +187,201 @@ Line 6, col 19:
 > 6 |     let voidVar = true ? foo() : foo();
                         ^~~~~~~~~~~~~~~~~~~~
   7 |     return 42;
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-bounced 1`] = `
+"<unknown>:6:10: Expressions of "bounced<S>" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 6, col 10:
+  5 | fun foo(b: bounced<S>): Bool {
+> 6 |   return b == b;
+               ^~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-builder 1`] = `
+"<unknown>:7:16: Expressions of "Builder" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 16:
+  6 |     get fun foo(s: Builder): Bool {
+> 7 |         return s == s;
+                     ^~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-contract 1`] = `
+"<unknown>:10:16: Expressions of "Test" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 10, col 16:
+   9 |     get fun foo(): Bool {
+> 10 |         return self == self;
+                      ^~~~~~~~~~~~
+  11 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-int-bool 1`] = `
+"<unknown>:5:12: Incompatible types "Int" and "Bool" for binary operator "=="
+Line 5, col 12:
+  4 | fun foo(x: Int): Bool {
+> 5 |     return x == true;
+                 ^~~~~~~~~
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-map-map 1`] = `
+"<unknown>:6:12: Incompatible types "map<Int, Address>" and "map<Address, Int>" for binary operator "=="
+Line 6, col 12:
+  5 | fun foo(m1: map<Int, Address>, m2: map<Address, Int>): Bool {
+> 6 |     return m1 == m2;
+                 ^~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-null-1 1`] = `
+"<unknown>:18:13: Expressions of "S" type cannot be used for (non)equality operator "!="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 18, col 13:
+  17 |     get fun test(): Int {
+> 18 |         if (self.s != null) {
+                   ^~~~~~~~~~~~~~
+  19 |             return self.s.a;
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-null-2 1`] = `
+"<unknown>:18:13: Expressions of "S" type cannot be used for (non)equality operator "!="
+See https://docs.tact-lang.org/book/operators#binary-equality
+Line 18, col 13:
+  17 |     get fun test(): Int {
+> 18 |         if (null != self.s) {
+                   ^~~~~~~~~~~~~~
+  19 |             return self.s.a;
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-null-3 1`] = `
+"<unknown>:5:9: Incompatible types "<null>" and "Int" for binary operator "=="
+Line 5, col 9:
+  4 |     let x: Int = 42;
+> 5 |     if (null == x) { return }
+              ^~~~~~~~~
+  6 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-null-bounced 1`] = `
+"<unknown>:7:10: Expressions of "bounced<S>" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 10:
+  6 | fun foo(b: bounced<S>): Bool {
+> 7 |   return b == null;
+               ^~~~~~~~~
+  8 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-optional-builder 1`] = `
+"<unknown>:7:16: Expressions of "Builder?" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 16:
+  6 |     get fun foo(s: Builder?): Bool {
+> 7 |         return s == s;
+                     ^~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-optional-stringbuilder 1`] = `
+"<unknown>:7:16: Expressions of "StringBuilder?" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 16:
+  6 |     get fun foo(s: StringBuilder?): Bool {
+> 7 |         return s == s;
+                     ^~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-optional-struct 1`] = `
+"<unknown>:10:16: Expressions of "S?" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 10, col 16:
+   9 |         let s: S? = S {x: 42, y: 0};
+> 10 |         return s == s;
+                      ^~~~~~
+  11 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-optional-struct-null 1`] = `
+"<unknown>:7:16: Expressions of "S" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 16:
+  6 |     if (s != null) {
+> 7 |         return s!! == null
+                     ^~~~~~~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-stringbuilder 1`] = `
+"<unknown>:7:16: Expressions of "StringBuilder" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 16:
+  6 |     get fun foo(s: StringBuilder): Bool {
+> 7 |         return s == s;
+                     ^~~~~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-struct 1`] = `
+"<unknown>:10:16: Expressions of "S" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 10, col 16:
+   9 |         let s: S = S {x: 42, y: 0};
+> 10 |         return s == s;
+                      ^~~~~~
+  11 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-void-null 1`] = `
+"<unknown>:6:12: Expressions of "<void>" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 6, col 12:
+  5 | fun baz(): Bool {
+> 6 |     return foo() == null
+                 ^~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-void1 1`] = `
+"<unknown>:7:12: Expressions of "<void>" type cannot be used for (non)equality operator "=="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 12:
+  6 | fun baz(): Bool {
+> 7 |     return foo() == bar()
+                 ^~~~~~~~~~~~~~
+  8 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-eq-void2 1`] = `
+"<unknown>:7:12: Expressions of "<void>" type cannot be used for (non)equality operator "!="
+ See https://docs.tact-lang.org/book/operators#binary-equality
+Line 7, col 12:
+  6 | fun baz(): Bool {
+> 7 |     return foo() != bar()
+                 ^~~~~~~~~~~~~~
+  8 | }
 "
 `;
 
@@ -858,6 +1015,66 @@ Line 5, col 16:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-catch 1`] = `
+"<unknown>:7:12: Variable "foo" is trying to shadow an existing constant with the same name
+Line 7, col 12:
+  6 |     try { }
+> 7 |     catch (foo) {   // <-- \`foo\` shadows global const \`foo\`
+                 ^~~
+  8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-external-param 1`] = `
+"<unknown>:9:15: Variable "foo" is trying to shadow an existing constant with the same name
+Line 9, col 15:
+   8 | contract Test {
+>  9 |     external (foo: Message) { // <-- \`foo\` shadows global const \`foo\`
+                     ^~~
+  10 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-foreach 1`] = `
+"<unknown>:7:14: Variable "foo" is trying to shadow an existing constant with the same name
+Line 7, col 14:
+  6 |     let m: map<Int, Int> = null;
+> 7 |     foreach (foo, _ in m) {  // <--- attempt to shadow \`foo\` const
+                   ^~~
+  8 |         // do nothing
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-fun-param 1`] = `
+"<unknown>:5:9: Variable "foo" is trying to shadow an existing constant with the same name
+Line 5, col 9:
+  4 | 
+> 5 | fun bar(foo: Int): Int {  // <-- fun param \`foo\` shadows global const \`foo\`
+              ^~~
+  6 |     return foo;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-let 1`] = `
+"<unknown>:6:9: Variable "foo" is trying to shadow an existing constant with the same name
+Line 6, col 9:
+  5 | fun bar(): Int {
+> 6 |     let foo = 43;  // <-- local var \`foo\` shadows global const \`foo\`
+              ^~~
+  7 |     return foo;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-const-shadowing-receiver-param 1`] = `
+"<unknown>:9:14: Variable "foo" is trying to shadow an existing constant with the same name
+Line 9, col 14:
+   8 | contract Test {
+>  9 |     receive (foo: Message) { // <-- \`foo\` shadows global const \`foo\`
+                    ^~~
+  10 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-foreach-internal-var-does-not-escape 1`] = `
 "<unknown>:8:12: Unable to resolve id 'x'
 Line 8, col 12:
@@ -938,6 +1155,46 @@ Line 7, col 9:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowing-catch 1`] = `
+"<unknown>:6:14: Variable cannot have the same name as its enclosing function: "rec"
+Line 6, col 14:
+  5 |         42/0;
+> 6 |     } catch (rec) {  // <-- shadowing
+                   ^~~
+  7 |         return rec;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowing-foreach 1`] = `
+"<unknown>:5:14: Variable cannot have the same name as its enclosing function: "rec"
+Line 5, col 14:
+  4 |     let m: map<Int, Int> = null;
+> 5 |     foreach (rec, _ in m) {   // shadowing error
+                   ^~~
+  6 |         42/0;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowing-fun-param 1`] = `
+"<unknown>:3:9: Variable cannot have the same name as its enclosing function: "rec"
+Line 3, col 9:
+  2 | 
+> 3 | fun rec(rec: Int): Int { // <-- shadowing
+              ^~~
+  4 |     return rec;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowing-let 1`] = `
+"<unknown>:4:9: Variable cannot have the same name as its enclosing function: "rec"
+Line 4, col 9:
+  3 | fun rec(): Int {
+> 4 |     let rec: Int = 42;  // shadowing error
+              ^~~
+  5 |     return rec;
+"
+`;
+
 exports[`resolveStatements should fail statements for var-underscore-name-access 1`] = `
 "<unknown>:6:16: Wildcard variable name '_' cannot be accessed
 Line 6, col 16:
@@ -966,6 +1223,41 @@ Line 9, col 12:
                   ^
   10 | }
 "
+`;
+
+exports[`resolveStatements should fail statements for wf-type-let 1`] = `
+"<unknown>:5:16: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
+Line 5, col 16:
+  4 | fun foo() {
+> 5 |     let m: map<String, Int> = null;
+                     ^~~~~~
+  6 | }
+"
+`;
+
+exports[`resolveStatements should resolve statements for assign-self-mutating-method 1`] = `
+[
+  [
+    "self",
+    "IntWrapper",
+  ],
+  [
+    "self.x",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+]
 `;
 
 exports[`resolveStatements should resolve statements for contract-receiver-bounced 1`] = `
@@ -1041,161 +1333,6 @@ exports[`resolveStatements should resolve statements for expr-arith-bool-cmp 1`]
   ],
   [
     "(123 + 10) / 10 == x && y > 0 || z",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-arith 1`] = `
-[
-  [
-    "123",
-    "Int",
-  ],
-  [
-    "10",
-    "Int",
-  ],
-  [
-    "123 + 10",
-    "Int",
-  ],
-  [
-    "x",
-    "Int",
-  ],
-  [
-    "123 + 10 == x",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-literal 1`] = `
-[
-  [
-    "x",
-    "Int",
-  ],
-  [
-    "0",
-    "Int",
-  ],
-  [
-    "x == 0",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-map-map 1`] = `
-[
-  [
-    "m1",
-    "map<Int, Address>",
-  ],
-  [
-    "m2",
-    "map<Int, Address>",
-  ],
-  [
-    "m1 == m2",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-map-null 1`] = `
-[
-  [
-    "m",
-    "map<Int, Address>",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "m == null",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-null-null 1`] = `
-[
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "null == null",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-optional-null 1`] = `
-[
-  [
-    "42",
-    "Int",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "x",
-    "Int?",
-  ],
-  [
-    "null == x",
-    "Bool",
-  ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-cmp-optional-struct-null 1`] = `
-[
-  [
-    "s",
-    "S?",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "s != null",
-    "Bool",
-  ],
-  [
-    "s",
-    "S?",
-  ],
-  [
-    "s!!",
-    "S",
-  ],
-  [
-    "s!!.f",
-    "Int",
-  ],
-  [
-    "42",
-    "Int",
-  ],
-  [
-    "s!!.f == 42",
-    "Bool",
-  ],
-  [
-    "false",
     "Bool",
   ],
 ]
@@ -1384,6 +1521,222 @@ exports[`resolveStatements should resolve statements for expr-conditional-with-s
         a: cond ? Baz { b: 42 }.toCell() : x
     }",
     "Bar",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-arith 1`] = `
+[
+  [
+    "123",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "123 + 10",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "123 + 10 == x",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-int-optional-int 1`] = `
+[
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "y",
+    "Int",
+  ],
+  [
+    "x == y",
+    "Bool",
+  ],
+  [
+    "y",
+    "Int",
+  ],
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "y == x",
+    "Bool",
+  ],
+  [
+    "x == y || y == x",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "x == x",
+    "Bool",
+  ],
+  [
+    "x == y || y == x || x == x",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-literal 1`] = `
+[
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x == 0",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-map-map 1`] = `
+[
+  [
+    "m1",
+    "map<Int, Address>",
+  ],
+  [
+    "m2",
+    "map<Int, Address>",
+  ],
+  [
+    "m1 == m2",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-map-null 1`] = `
+[
+  [
+    "m",
+    "map<Int, Address>",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "m == null",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-null-null 1`] = `
+[
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "null == null",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-optional-int-null 1`] = `
+[
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "x == null",
+    "Bool",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "null == x",
+    "Bool",
+  ],
+  [
+    "x == null || null == x",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-eq-optional-struct-null 1`] = `
+[
+  [
+    "s",
+    "S?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "s != null",
+    "Bool",
+  ],
+  [
+    "s",
+    "S?",
+  ],
+  [
+    "s!!",
+    "S",
+  ],
+  [
+    "s!!.f",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "s!!.f == 42",
+    "Bool",
+  ],
+  [
+    "false",
+    "Bool",
   ],
 ]
 `;

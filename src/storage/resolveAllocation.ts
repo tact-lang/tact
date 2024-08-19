@@ -7,6 +7,7 @@ import { AllocationOperation } from "./operation";
 import { allocate, getAllocationOperationFromField } from "./allocator";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { funcInitIdOf } from "../generator/writers/id";
+import { throwInternalCompilerError } from "../errors";
 import { idText } from "../grammar/ast";
 
 const store = createContextStore<StorageAllocation>();
@@ -14,7 +15,7 @@ const store = createContextStore<StorageAllocation>();
 export function getAllocation(ctx: CompilerContext, name: string) {
     const t = store.get(ctx, name);
     if (!t) {
-        throw Error("Allocation for " + name + " not found");
+        throwInternalCompilerError(`Allocation for ${name} not found`);
     }
     return t;
 }
@@ -142,7 +143,7 @@ export function resolveAllocations(ctx: CompilerContext) {
             // Resolve opts
             const ops: AllocationOperation[] = [];
             for (const f of s.init.params) {
-                const abiType = createABITypeRefFromTypeRef(f.type, f.loc);
+                const abiType = createABITypeRefFromTypeRef(ctx, f.type, f.loc);
                 ops.push({
                     name: idText(f.name),
                     type: abiType,

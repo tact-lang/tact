@@ -263,12 +263,38 @@ Tact {
     id = ~reservedWord #idStart #(idPart*)
 
     // FunC identifiers, where `funcId` stands for FunC function identifier
-    // The plain identifier cannot be a single underscore nor just a number
-    funcPlainId = "_"? "-"? "0x"? hexDigit* ~hexDigit (~(whiteSpace | "(" | ")" | "," | "." | ";" | "~") any)+
+    // A plain identifier cannot be a number, a single underscore, an operator, a keyword or a compiler directive
+    // See: https://github.com/ton-blockchain/ton/blob/master/crypto/func/keywords.cpp
+
+    // Order of inner alternations matters
+    funcInvalidId = "_" ")" --notUnderscore
+                  | ("+" | "-" | "*" | "/%" | "/" | "%" | "~/" | "^/" | "~%" | "^%") ")" --notArithOperator
+                  | ("<=>" | "<=" | "<" | ">=" | ">" | "!=" | "==") ")" --notComparisonOperator
+                  | ("~>>" | "~" | "^>>" | "^" | "&" | "|" | "<<" | ">>" ) ")" --notBitwiseOperator
+                  | ("=" | "+=" | "-=" | "*=" | "/=" | "%="
+                         | "~>>=" | "~/=" | "~%=" | "^>>=" | "^/=" | "^%=" | "^="
+                         | "<<=" | ">>=" | "&=" | "|=") ")" --notAssignOperator
+                  | ("[" | "]" | "{" | "}" | "?" | ":") ")" --notDelimiter
+                  | ("return" | "var" | "repeat" | "do" | "while" | "until" | "try" | "catch"
+                              | "ifnot" | "if" | "then" | "elseifnot" | "elseif" | "else") ")" --notControlKeyword
+                  | ("int" | "cell" | "builder" | "slice" | "cont" | "tuple" | "type" | "->" | "forall") ")" --notTypeKeyword
+                  | ("extern" | "global" | "asm" | "impure" | "inline_ref" | "inline" | "auto_apply" | "method_id"
+                              | "operator" | "infixl" | "infixr" | "infix" | "const") ")" --notKeyword
+                  | ("#include" | "#pragma") ")" --notDirective
+                  | ("-"? digit+) ")" --notDecimalNumber
+                  | ("-"? "0x" hexDigit+) ")" --notHexadecimalNumber
+
+    funcPlainId = ~funcInvalidId (~(whiteSpace | "(" | ")" | "[" | "]" | "," | "." | ";" | "~") any)+
 
     funcQuotedId = "`" (~("`" | "\n") any)+ "`"
 
     funcId = ~("\"" | "{-") ("." | "~")? (funcQuotedId | funcPlainId)
+
+    /*
+      FunC can parse much more than Fift can handle. For example, _0x0 and _0 are valid identifiers in FunC, and using either of them compiles and is then interpreted fine by Fift. But if you use both, FunC still compiles, but Fift crashes.
+
+      Same goes for plain identifiers using hashes # or emojis — you can have one FunC function with any of those combinations of characters, but you (generally) cannot have two or more of such functions.
+    */
 
     // Boolean literals
     boolLiteral = ("true" | "false") ~idPart

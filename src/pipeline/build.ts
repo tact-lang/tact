@@ -8,7 +8,7 @@ import { funcCompile } from "../func/funcCompile";
 import { writeReport } from "../generator/writeReport";
 import { getRawAST } from "../grammar/store";
 import files from "../imports/stdlib";
-import { Logger } from "../logger";
+import { ILogger, Logger } from "../logger";
 import { PackageFileFormat } from "../packaging/fileFormat";
 import { packageCode } from "../packaging/packageCode";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
@@ -22,18 +22,43 @@ import { getCompilerVersion } from "./version";
 import { idText } from "../grammar/ast";
 import { TactErrorCollection } from "../errors";
 
+export function enableFeatures(
+    ctx: CompilerContext,
+    logger: ILogger,
+    config: ConfigProject,
+): CompilerContext {
+    if (config.options === undefined) {
+        return ctx;
+    }
+    const features = [
+        { option: config.options.debug, name: "debug" },
+        { option: config.options.masterchain, name: "masterchain" },
+        { option: config.options.external, name: "external" },
+        { option: config.options.experimental?.inline, name: "inline" },
+        { option: config.options.ipfsAbiGetter, name: "ipfsAbiGetter" },
+        { option: config.options.interfacesGetter, name: "interfacesGetter" },
+    ];
+    return features.reduce((currentCtx, { option, name }) => {
+        if (option) {
+            logger.debug(`   > 👀 Enabling ${name}`);
+            return featureEnable(currentCtx, name);
+        }
+        return currentCtx;
+    }, ctx);
+}
+
 export async function build(args: {
     config: ConfigProject;
     project: VirtualFileSystem;
     stdlib: string | VirtualFileSystem;
-    logger?: Logger;
+    logger?: ILogger;
 }): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
     const { config, project } = args;
     const stdlib =
         typeof args.stdlib === "string"
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
-    const logger: Logger = args.logger ?? new Logger();
+    const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
@@ -41,32 +66,7 @@ export async function build(args: {
         entrypoint: posixNormalize(config.path),
         options: config.options ?? {},
     });
-    if (config.options) {
-        if (config.options.debug) {
-            logger.error("   > 👀 Enabling debug");
-            ctx = featureEnable(ctx, "debug");
-        }
-        if (config.options.masterchain) {
-            logger.error("   > 👀 Enabling masterchain");
-            ctx = featureEnable(ctx, "masterchain");
-        }
-        if (config.options.external) {
-            logger.error("   > 👀 Enabling external");
-            ctx = featureEnable(ctx, "external");
-        }
-        if (config.options.experimental?.inline) {
-            logger.error("   > 👀 Enabling inline");
-            ctx = featureEnable(ctx, "inline");
-        }
-        if (config.options.ipfsAbiGetter) {
-            logger.error("   > 👀 Enabling IPFS ABI getter");
-            ctx = featureEnable(ctx, "ipfsAbiGetter");
-        }
-        if (config.options.interfacesGetter) {
-            logger.error("   > 👀 Enabling contract interfaces getter");
-            ctx = featureEnable(ctx, "interfacesGetter");
-        }
-    }
+    ctx = enableFeatures(ctx, logger, config);
 
     // Precompile
     try {
@@ -297,7 +297,7 @@ export async function build(args: {
                 kind: "direct",
                 args: getType(ctx, contract).init!.params.map((v) => ({
                     name: idText(v.name),
-                    type: createABITypeRefFromTypeRef(v.type, v.loc),
+                    type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
                 })),
                 prefix: {
                     bits: 1,
