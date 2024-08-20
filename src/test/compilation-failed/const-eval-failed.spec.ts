@@ -112,4 +112,55 @@ describe("fail-const-eval", () => {
         errorMessage:
             "Cannot evaluate expression to a constant: invalid address encoding: FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N",
     });
+
+    itShouldNotCompile({
+        testName: "const-eval-div-by-zero-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: divisor expression must be non-zero",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-add-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '115792089237316195423570985008687907853269984665640564039457584007913129639936' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-div-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '115792089237316195423570985008687907853269984665640564039457584007913129639936' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-mul1-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '231584178474632390847141970017375815706539969331281128078915168015826259279870' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-mul2-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '-231584178474632390847141970017375815706539969331281128078915168015826259279872' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-positive-literal-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '115792089237316195423570985008687907853269984665640564039457584007913129639936' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-negative-literal-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '-115792089237316195423570985008687907853269984665640564039457584007913129639937' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-struct-instance-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '115792089237316195423570985008687907853269984665640564039457584007913129639936' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-repeat-lower-bound",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '-115792089237316195423570985008687907853269984665640564039457584007913129639937' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-repeat-upper-bound",
+        errorMessage:
+            "Cannot evaluate expression to a constant: repeat argument must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)",
+    });
 });
