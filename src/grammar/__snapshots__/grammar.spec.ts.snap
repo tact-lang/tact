@@ -863,6 +863,112 @@ exports[`grammar should parse case-35 1`] = `
 }
 `;
 
+exports[`grammar should parse contract-optional-semicolon-for-last-const-def 1`] = `
+{
+  "id": 7,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [],
+          "id": 5,
+          "initializer": {
+            "id": 4,
+            "kind": "number",
+            "loc": 42,
+            "value": 42n,
+          },
+          "kind": "constant_def",
+          "loc": const foo: Int = 42,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "type": {
+            "id": 3,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 6,
+      "kind": "contract",
+      "loc": contract Test { const foo: Int = 42 },
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1`] = `
+{
+  "id": 8,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 6,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": m: map<Int, Int>,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": m,
+            "text": "m",
+          },
+          "type": {
+            "id": 5,
+            "keyStorageType": null,
+            "keyType": {
+              "id": 3,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": null,
+            "valueType": {
+              "id": 4,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+      ],
+      "id": 7,
+      "kind": "contract",
+      "loc": contract Test { m: map<Int, Int> },
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
 exports[`grammar should parse contract-with-const-override 1`] = `
 {
   "id": 7,
@@ -8237,6 +8343,98 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         "text": "G",
       },
       "opcode": null,
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse trait-optional-semicolon-for-last-const-decl 1`] = `
+{
+  "id": 6,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 4,
+          "kind": "constant_decl",
+          "loc": abstract const foo: Int,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "type": {
+            "id": 3,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 5,
+      "kind": "trait",
+      "loc": trait Test { abstract const foo: Int },
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse trait-optional-semicolon-for-last-fun-decl 1`] = `
+{
+  "id": 5,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 3,
+          "kind": "function_decl",
+          "loc": abstract fun foo(),
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "params": [],
+          "return": null,
+        },
+      ],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait Test { abstract fun foo() },
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "traits": [],
     },
   ],
   "kind": "module",

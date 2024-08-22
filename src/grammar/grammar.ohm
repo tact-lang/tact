@@ -36,9 +36,9 @@ Tact {
                       | override   --override
                       | abstract   --abstract
 
-    ConstantDefinition = ConstantAttribute* const id ":" Type "=" Expression ";"
+    ConstantDefinition = ConstantAttribute* const id ":" Type "=" Expression (";" | &"}")
 
-    ConstantDeclaration = ConstantAttribute* const id ":" Type ";"
+    ConstantDeclaration = ConstantAttribute* const id ":" Type (";" | &"}")
 
     StructDecl = "struct" typeId "{" StructFields "}" --regular
                | "message" ("(" integerLiteral ")")? typeId "{" StructFields "}" --message
@@ -65,7 +65,7 @@ Tact {
                   | ConstantDefinition
                   | ConstantDeclaration
 
-    StorageVar = FieldDecl ";"
+    StorageVar = FieldDecl (";" | &"}")
 
     ContractInit = "init" Parameters "{" Statement* "}"
 
@@ -81,7 +81,7 @@ Tact {
 
     FunctionDefinition = FunctionAttribute* fun id Parameters (":" Type)? "{" Statement* "}"
 
-    FunctionDeclaration = FunctionAttribute* fun id Parameters (":" Type)? ";"
+    FunctionDeclaration = FunctionAttribute* fun id Parameters (":" Type)? (";" | &"}")
 
     Parameters = "(" ListOf<Parameter,","> ","? ")"
 
