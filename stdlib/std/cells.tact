@@ -14,6 +14,9 @@ extends native storeUint(self: Builder, value: Int, bits: Int): Builder;
 @name(__tact_store_bool)
 extends native storeBool(self: Builder, value: Bool): Builder;
 
+@name(__tact_store_bool)
+extends native storeBit(self: Builder, value: Bool): Builder;
+
 @name(store_coins)
 extends native storeCoins(self: Builder, value: Int): Builder;
 
@@ -68,6 +71,9 @@ extends native preloadUint(self: Slice, l: Int): Int;
 
 @name(__tact_load_bool)
 extends mutates native loadBool(self: Slice): Bool;
+
+@name(__tact_load_bool)
+extends mutates native loadBit(self: Slice): Bool;
 
 @name(load_coins)
 extends mutates native loadCoins(self: Slice): Int;
