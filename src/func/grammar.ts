@@ -617,11 +617,13 @@ export type FuncAstConstantsDefinition = {
  */
 export type FuncAstConstant = {
     kind: "constant";
-    ty: "slice" | "int" | undefined;
+    ty: FuncConstantType | undefined;
     name: FuncAstQuotedId | FuncAstPlainId;
     value: FuncAstExpression;
     loc: FuncSrcInfo;
 };
+
+export type FuncConstantType = "slice" | "int";
 
 /**
  * Note, that name cannot be an unusedId
@@ -761,7 +763,7 @@ export type FuncAstStatement =
  */
 export type FuncAstStatementReturn = {
     kind: "statement_return";
-    expression: FuncAstExpression;
+    expression: FuncAstExpression | undefined;
     loc: FuncSrcInfo;
 };
 
@@ -954,9 +956,9 @@ export type FuncOpAssign =
  */
 export type FuncAstExpressionConditional = {
     kind: "expression_conditional";
-    condition: FuncAstExpressionCompare;
+    condition: FuncAstExpression;
     consequence: FuncAstExpression;
-    alternative: FuncAstExpressionConditional;
+    alternative: FuncAstExpression;
     loc: FuncSrcInfo;
 };
 
@@ -965,30 +967,32 @@ export type FuncAstExpressionConditional = {
  */
 export type FuncAstExpressionCompare = {
     kind: "expression_compare";
-    left: FuncAstExpressionBitwiseShift;
+    left: FuncAstExpression;
     op: FuncOpCompare;
-    right: FuncAstExpressionBitwiseShift;
+    right: FuncAstExpression;
     loc: FuncSrcInfo;
 };
 
-export type FuncOpCompare = "==" | "<=>" | "<=" | "<" | ">=" | ">" | "!=";
+export const funcOpCompare = ["==", "<=>", "<=", "<", ">=", ">", "!="] as const;
+export type FuncOpCompare = (typeof funcOpCompare)[number];
 
 /**
  * parse_expr17
  */
 export type FuncAstExpressionBitwiseShift = {
     kind: "expression_bitwise_shift";
-    left: FuncAstExpressionAddBitwise;
+    left: FuncAstExpression;
     ops: FuncExpressionBitwiseShiftPart[];
     loc: FuncSrcInfo;
 };
 
 export type FuncExpressionBitwiseShiftPart = {
     op: FuncOpBitwiseShift;
-    expr: FuncAstExpressionAddBitwise;
+    expr: FuncAstExpression;
 };
 
-export type FuncOpBitwiseShift = "<<" | ">>" | "~>>" | "^>>";
+export const funcOpBitwiseShift = ["<<", ">>", "~>>", "^>>"] as const;
+export type FuncOpBitwiseShift = (typeof funcOpBitwiseShift)[number];
 
 /**
  * Note, that sometimes `ops` can be an empty array, due to the unary minus (`negateLeft`)
@@ -998,43 +1002,46 @@ export type FuncOpBitwiseShift = "<<" | ">>" | "~>>" | "^>>";
 export type FuncAstExpressionAddBitwise = {
     kind: "expression_add_bitwise";
     negateLeft: boolean;
-    left: FuncAstExpressionMulBitwise;
+    left: FuncAstExpression;
     ops: FuncExpressionAddBitwisePart[];
     loc: FuncSrcInfo;
 };
 
 export type FuncExpressionAddBitwisePart = {
     op: FuncOpAddBitwise;
-    expr: FuncAstExpressionMulBitwise;
+    expr: FuncAstExpression;
 };
 
-export type FuncOpAddBitwise = "+" | "-" | "|" | "^";
+export const funcOpAddBitwise = ["+", "-", "|", "^"] as const;
+export type FuncOpAddBitwise = (typeof funcOpAddBitwise)[number];
 
 /**
  * parse_expr30
  */
 export type FuncAstExpressionMulBitwise = {
     kind: "expression_mul_bitwise";
-    left: FuncAstExpressionUnary;
-    ops: FuncExpressionMulBitwiseOp[];
+    left: FuncAstExpression;
+    ops: FuncBitwiseExpressionPart[];
     loc: FuncSrcInfo;
 };
 
-export type FuncExpressionMulBitwiseOp = {
+export type FuncBitwiseExpressionPart = {
     op: FuncOpMulBitwise;
-    expr: FuncAstExpressionUnary;
+    expr: FuncAstExpression;
 };
 
-export type FuncOpMulBitwise =
-    | "*"
-    | "/%"
-    | "/"
-    | "%"
-    | "~/"
-    | "~%"
-    | "^/"
-    | "^%"
-    | "&";
+export const funcOpMulBitwise = [
+  "*",
+  "/%",
+  "/",
+  "%",
+  "~/",
+  "~%",
+  "^/",
+  "^%",
+  "&"
+] as const;
+export type FuncOpMulBitwise = (typeof funcOpMulBitwise)[number];
 
 /**
  * parse_expr75
@@ -1042,7 +1049,7 @@ export type FuncOpMulBitwise =
 export type FuncAstExpressionUnary = {
     kind: "expression_unary";
     op: FuncOpUnary;
-    operand: FuncAstExpressionMethod;
+    operand: FuncAstExpression;
     loc: FuncSrcInfo;
 };
 
@@ -1168,12 +1175,12 @@ export type FuncAstTernaryExpression = FuncAstExpressionConditional;
  * Expression op Expression
  */
 export type FuncAstBinaryExpression =
-    | FuncAstExpressionAssign
-    | FuncAstExpressionConditional
     | FuncAstExpressionCompare
     | FuncAstExpressionBitwiseShift
     | FuncAstExpressionAddBitwise
     | FuncAstExpressionMulBitwise;
+
+export type FuncBinaryOp = FuncOpCompare | FuncOpBitwiseShift | FuncOpAddBitwise | FuncOpMulBitwise
 
 /**
  * op Expression
@@ -1407,21 +1414,31 @@ export type FuncAstComment = FuncAstCommentSingleLine | FuncAstCommentMultiLine;
 export type FuncAstCommentSingleLine = {
     kind: "comment_singleline";
     line: string;
+    style: ";" | ";;";
     loc: FuncSrcInfo;
 };
 
 /**
  * {- ...can be nested... -}
+ * or
+ * ;; line1
+ * ;; line2
  *
- * Doesn't include the leftmost {- and rightmost -}
+ * Doesn't include the leftmost {- and rightmost -} or leading ;;
  *
  * @field skipCR If set to true, skips CR before the next line
  */
 export type FuncAstCommentMultiLine = {
     kind: "comment_multiline";
-    contents: string;
+    lines: string[];
     skipCR: boolean;
+    style: "{-" | ";" | ";;";
     loc: FuncSrcInfo;
+};
+
+export type FuncAstCR = {
+    kind: "cr",
+    lines: number,
 };
 
 //
@@ -1445,6 +1462,7 @@ semantics.addOperation<FuncAstNode>("astOfModule", {
         return {
             kind: "comment_singleline",
             line: lineContents.sourceString,
+            style: ";;",
             loc: createSrcInfo(this),
         };
     },
@@ -1460,12 +1478,13 @@ semantics.addOperation<FuncAstNode>("astOfModule", {
     ) {
         return {
             kind: "comment_multiline",
-            contents: [
+            lines: [
                 preInnerComment.sourceString,
                 innerComment.children.map((x) => x.astOfModule()).join("") ??
                     "",
                 postInnerComment.sourceString,
-            ].join(""),
+            ],
+            style: "{-",
             skipCR: false,
             loc: createSrcInfo(this),
         };
