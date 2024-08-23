@@ -16,14 +16,14 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 const arg = args[0]!;
                 if (arg.kind !== "ref") {
                     throwCompilationError(
-                        "toCell() is implemented only a struct type",
+                        `toCell() is not implemented for type '${arg.kind}'`,
                         ref,
                     );
                 }
                 const tp = getType(ctx, arg.name);
                 if (tp.kind !== "struct") {
                     throwCompilationError(
-                        "toCell() is implemented only a struct type",
+                        `toCell() is not implemented for type '${arg.kind}'`,
                         ref,
                     );
                 }
@@ -36,7 +36,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 const arg = args[0]!;
                 if (arg.kind !== "ref") {
                     throwCompilationError(
-                        "toCell() is implemented only a struct type",
+                        `toCell() is not implemented for type '${arg.kind}'`,
                         ref,
                     );
                 }
@@ -100,6 +100,51 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                     );
                 }
                 return `${ops.readerNonModifying(arg0.name, ctx)}(${writeExpression(resolved[1]!, ctx)}.begin_parse())`;
+            },
+        },
+    ],
+    [
+        "toSlice",
+        {
+            name: "toSlice",
+            resolve: (ctx, args, ref) => {
+                if (args.length !== 1) {
+                    throwCompilationError(
+                        "toSlice() expects no arguments",
+                        ref,
+                    );
+                }
+                const arg = args[0]!;
+                if (arg.kind !== "ref") {
+                    throwCompilationError(
+                        `toSlice() is not implemented for type '${arg.kind}'`,
+                        ref,
+                    );
+                }
+                const tp = getType(ctx, arg.name);
+                if (tp.kind !== "struct") {
+                    throwCompilationError(
+                        `toSlice() is not implemented for type '${arg.kind}'`,
+                        ref,
+                    );
+                }
+                return { kind: "ref", name: "Slice", optional: false };
+            },
+            generate: (ctx, args, resolved, ref) => {
+                if (resolved.length !== 1) {
+                    throwCompilationError(
+                        "toSlice() expects no arguments",
+                        ref,
+                    );
+                }
+                const arg = args[0]!;
+                if (arg.kind !== "ref") {
+                    throwCompilationError(
+                        `toSlice() is not implemented for type '${arg.kind}'`,
+                        ref,
+                    );
+                }
+                return `${ops.writerCell(arg.name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(", ")}).begin_parse()`;
             },
         },
     ],
