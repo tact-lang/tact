@@ -16,14 +16,14 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 const arg = args[0]!;
                 if (arg.kind !== "ref") {
                     throwCompilationError(
-                        "toCell() is implemented only a struct type",
+                        `toCell() is not implemented for type '${arg.kind}'`,
                         ref,
                     );
                 }
                 const tp = getType(ctx, arg.name);
                 if (tp.kind !== "struct") {
                     throwCompilationError(
-                        "toCell() is implemented only a struct type",
+                        `toCell() is not implemented for type '${arg.kind}'`,
                         ref,
                     );
                 }
@@ -36,7 +36,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 const arg = args[0]!;
                 if (arg.kind !== "ref") {
                     throwCompilationError(
-                        "toCell() is implemented only a struct type",
+                        `toCell() is not implemented for type '${arg.kind}'`,
                         ref,
                     );
                 }
@@ -117,14 +117,14 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 const arg = args[0]!;
                 if (arg.kind !== "ref") {
                     throwCompilationError(
-                        "toSlice() is implemented only a struct type",
+                        `toSlice() is not implemented for type '${arg.kind}'`,
                         ref,
                     );
                 }
                 const tp = getType(ctx, arg.name);
                 if (tp.kind !== "struct") {
                     throwCompilationError(
-                        "toSlice() is implemented only a struct type",
+                        `toSlice() is not implemented for type '${arg.kind}'`,
                         ref,
                     );
                 }
@@ -140,7 +140,7 @@ export const StructFunctions: Map<string, AbiFunction> = new Map([
                 const arg = args[0]!;
                 if (arg.kind !== "ref") {
                     throwCompilationError(
-                        "toSlice() is implemented only a struct type",
+                        `toSlice() is not implemented for type '${arg.kind}'`,
                         ref,
                     );
                 }
