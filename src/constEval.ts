@@ -18,12 +18,13 @@ import {
 import { ExpressionTransformer } from "./optimizer/types";
 import { StandardOptimizer } from "./optimizer/standardOptimizer";
 import {
-    Interpreter,
     ensureInt,
     evalBinaryOp,
     evalUnaryOp,
-    throwNonFatalErrorConstEval,
-} from "./interpreter";
+    StandardSemantics,
+} from "./interpreterSemantics/standardSemantics";
+import { Interpreter } from "./interpreter";
+import { throwNonFatalErrorConstEval } from "./interpreterSemantics/util";
 
 // The optimizer that applies the rewriting rules during partial evaluation.
 // For the moment we use an optimizer that respects overflows.
@@ -86,7 +87,7 @@ export function evalConstantExpression(
     ast: AstExpression,
     ctx: CompilerContext,
 ): Value {
-    const interpreter = new Interpreter(ctx);
+    const interpreter = new Interpreter(new StandardSemantics(ctx));
     const result = interpreter.interpretExpression(ast);
     return result;
 }
@@ -95,7 +96,7 @@ export function partiallyEvalExpression(
     ast: AstExpression,
     ctx: CompilerContext,
 ): AstExpression {
-    const interpreter = new Interpreter(ctx);
+    const interpreter = new Interpreter(new StandardSemantics(ctx));
     switch (ast.kind) {
         case "id":
             try {
