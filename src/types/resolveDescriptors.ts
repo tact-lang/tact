@@ -123,7 +123,7 @@ function verifyMapType(mapTy: AstMapType, isValTypeStruct: boolean) {
         "Cell",
     ]);
 }
-    
+
 export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 
 export function resolveTypeRef(ctx: CompilerContext, type: AstType): TypeRef {
