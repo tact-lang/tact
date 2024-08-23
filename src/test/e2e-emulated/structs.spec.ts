@@ -289,6 +289,8 @@ describe("structs", () => {
         expect(await contract.getLongAndDeepNestedStruct2()).toMatchSnapshot();
         expect(await contract.getLongAndDeepNestedStruct3()).toMatchSnapshot();
 
+        // https://github.com/tact-lang/tact/issues/374
+
         // int serialization formats
         const sIntFields: IntFields = {
             $$type: "IntFields",
@@ -336,7 +338,5 @@ describe("structs", () => {
             .endCell();
 
         expect(await contract.getUintFieldsMessage()).toEqual(mUintFields);
-        // This doesn't work for unknown (yet) reasons
-        // expect(await contract.getUintFieldsFromCell(mUintFieldsCell)).toEqual(mUintFields);
     });
 });
