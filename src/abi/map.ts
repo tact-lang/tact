@@ -271,7 +271,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                         return `__tact_dict_get_${kind}_${vKind}(${resolved[0]}, ${bits}, ${resolved[1]}, ${vBits})`;
                     } else if (self.value === "Bool") {
                         ctx.used(`__tact_dict_get_${kind}_int`);
-                        return `__tact_dict_get_int_int(${resolved[0]}, ${bits}, ${resolved[1]}, 1)`;
+                        return `__tact_dict_get_${kind}_int(${resolved[0]}, ${bits}, ${resolved[1]}, 1)`;
                     } else if (self.value === "Cell") {
                         ctx.used(`__tact_dict_get_${kind}_cell`);
                         return `__tact_dict_get_${kind}_cell(${resolved[0]}, ${bits}, ${resolved[1]})`;
