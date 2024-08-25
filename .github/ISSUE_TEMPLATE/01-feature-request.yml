@@ -1,0 +1,16 @@
+name: Feature Request
+description: File a feature request.
+title: ""
+labels: ["language feature", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+  - type: textarea
+    id: feature-request
+    attributes:
+      label: What kind of features would like to see supported in Tact?
+      description: Anything, expect floating-point numbers support :)
+    validations:
+      required: true
