@@ -1,6 +1,5 @@
 name: Other issue
 description: Other issue (except security reports, please file those in private!)
-title: ""
 labels: ["triage"]
 body:
   - type: markdown
