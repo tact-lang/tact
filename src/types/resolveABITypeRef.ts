@@ -28,43 +28,26 @@ type FormatDef = Record<
     { type: string; format: string | number } | undefined
 >;
 
+const uintOptions: FormatDef = Object.fromEntries(
+    [...Array(257).keys()]
+        .slice(1)
+        .map((key) => [`uint${key}`, { type: "uint", format: key }]),
+);
+
+const intOptions: FormatDef = Object.fromEntries(
+    [...Array(257).keys()]
+        .slice(1)
+        .map((key) => [`int${key}`, { type: "int", format: key }]),
+);
+
 const intFormats: FormatDef = {
-    int8: { type: "int", format: 8 },
-    int16: { type: "int", format: 16 },
-    int32: { type: "int", format: 32 },
-    int64: { type: "int", format: 64 },
-    int128: { type: "int", format: 128 },
-    int256: { type: "int", format: 256 },
-
-    uint8: { type: "uint", format: 8 },
-    uint16: { type: "uint", format: 16 },
-    uint32: { type: "uint", format: 32 },
-    uint64: { type: "uint", format: 64 },
-    uint128: { type: "uint", format: 128 },
-    uint256: { type: "uint", format: 256 },
-
+    ...uintOptions,
+    ...intOptions,
     int257: { type: "int", format: 257 },
     coins: { type: "uint", format: "coins" },
 };
 
-const intMapFormats: FormatDef = {
-    int8: { type: "int", format: 8 },
-    int16: { type: "int", format: 16 },
-    int32: { type: "int", format: 32 },
-    int64: { type: "int", format: 64 },
-    int128: { type: "int", format: 128 },
-    int256: { type: "int", format: 256 },
-
-    uint8: { type: "uint", format: 8 },
-    uint16: { type: "uint", format: 16 },
-    uint32: { type: "uint", format: 32 },
-    uint64: { type: "uint", format: 64 },
-    uint128: { type: "uint", format: 128 },
-    uint256: { type: "uint", format: 256 },
-
-    int257: { type: "int", format: 257 },
-    coins: { type: "uint", format: "coins" },
-};
+export const intMapFormats: FormatDef = { ...intFormats };
 
 const cellFormats: FormatDef = {
     remaining: { type: "cell", format: "remainder" },

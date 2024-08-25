@@ -35,6 +35,24 @@ struct Coin {
     second: Int as uint32;
 }
 
+struct IntFields {
+    i1: Int as int1;
+    i2: Int as int2;
+    i3: Int as int3;
+    i255: Int as int255;
+    i256: Int as int256;
+    i257: Int as int257;
+}
+
+message(0xea01f46a) UintFields {
+    u1: Int as uint1;
+    u2: Int as uint2;
+    u3: Int as uint3;
+    u254: Int as uint254;
+    u255: Int as uint255;
+    u256: Int as uint256;
+}
+
 fun directParse(payload: Cell): Coin {
     return Coin.fromCell(payload);
 }
@@ -169,7 +187,7 @@ struct Point {
     x: Int as int64;
     y: Int as int64;
 }
- 
+
 struct Line {
     start: Point;
     end: Point;
@@ -853,5 +871,35 @@ contract StructsTester {
                 }
             }
         }
+    }
+
+    get fun intFieldsStruct(): IntFields {
+        return IntFields{
+            i1: -1,
+            i2: -2,
+            i3: -4,
+            i255: -pow(2, 254),
+            i256: -pow(2, 255),
+            i257: -pow(2, 255) - pow(2, 255),
+        };
+    }
+
+    get fun intFieldsFromCell(src: Cell): IntFields {
+        return IntFields.fromCell(src);
+    }
+
+    get fun uintFieldsMessage(): UintFields {
+        return UintFields{
+            u1: 1,
+            u2: 3,
+            u3: 7,
+            u254: pow(2, 254) - 1,
+            u255: pow(2, 255) - 1,
+            u256: pow(2, 255) - 1 + pow(2, 255),
+        };
+    }
+
+    get fun uintFieldsFromCell(src: Cell): UintFields {
+        return UintFields.fromCell(src);
     }
 }

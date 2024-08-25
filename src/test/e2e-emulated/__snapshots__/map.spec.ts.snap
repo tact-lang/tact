@@ -3,11 +3,11 @@
 exports[`map should implement maps correctly 1`] = `
 [
   {
-    "$seq": 163,
+    "$seq": 173,
     "events": [
       {
         "$type": "storage-charged",
-        "amount": "0.000000108",
+        "amount": "0.000000123",
       },
       {
         "$type": "received",
@@ -18,7 +18,7 @@ exports[`map should implement maps correctly 1`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQD2HX3w4uRmCoe34-siEhRl5sEC6x8BSBZexutmtSOfYWoh",
+          "to": "kQB3MEsMEVBqn5m5-U9gWK8kE3oZHyWyY65DHGZB_94zLiUy",
           "type": "internal",
           "value": "1",
         },
@@ -36,10 +36,10 @@ exports[`map should implement maps correctly 1`] = `
             "type": "cell",
           },
           "bounce": false,
-          "from": "kQD2HX3w4uRmCoe34-siEhRl5sEC6x8BSBZexutmtSOfYWoh",
+          "from": "kQB3MEsMEVBqn5m5-U9gWK8kE3oZHyWyY65DHGZB_94zLiUy",
           "to": "@treasure(treasure)",
           "type": "internal",
-          "value": "0.982029",
+          "value": "0.981251",
         },
       },
     ],
