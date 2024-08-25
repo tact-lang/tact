@@ -375,6 +375,11 @@
       "name": "allocation",
       "path": "./src/test/e2e-emulated/contracts/allocation.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "traits",
+      "path": "./src/test/e2e-emulated/contracts/traits.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
     }
   ]
 }
