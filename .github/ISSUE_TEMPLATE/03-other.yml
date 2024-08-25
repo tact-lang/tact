@@ -1,0 +1,16 @@
+name: Other issue
+description: Other issue (except security reports, please file those in private!)
+title: ""
+labels: ["triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this form!
+  - type: textarea
+    id: other
+    attributes:
+      label: What is on your mind?
+      description: Compiler documentation, CI, testing, API, tooling, etc.
+    validations:
+      required: true

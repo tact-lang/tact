@@ -1,0 +1,63 @@
+name: Bug Report
+description: File a bug report.
+title: ""
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: checkboxes
+    attributes:
+      label: Are you using the latest released (or pre-released, a.k.a. "next") version?
+      description: "Please update your setup to the most recent Tact version: <https://github.com/tact-lang/tact/releases>"
+      options:
+        - label: I'm using the latest Tact version
+          required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Tact source code
+      description: Please copy and paste your Tact source code here (or fill out the form below explaining the steps to reproduce the issue). This will be automatically formatted into code, so no need for backticks.
+      render: tact
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Tact/build system log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened?
+      description: Current behavior
+      placeholder: See the error message above
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+      description: Expected behavior
+      placeholder: I expected
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Instructions other than a minimal Tact source code example to reproduce your issue
+      placeholder: "Here is the link to a repo with my Tact project: <https://github.com/example/prj>. You can find the build instructions in its `README.md` file."
+  - type: dropdown
+    id: build-system
+    attributes:
+      label: How do you run Tact?
+      multiple: true
+      options:
+        - Blueprint
+        - tact-template
+        - Tact CLI
+        - Other
+  - type: textarea
+    id: other
+    attributes:
+      label: Anything else?
+      description: Any other relevant info you might want to add
