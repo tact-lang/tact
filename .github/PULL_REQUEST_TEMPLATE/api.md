@@ -10,7 +10,7 @@ Closes issue #number.
 ## Checklist
 
 - [ ] I have updated CHANGELOG.md
-- [ ] This part of API is exported from `src/index.ts`
+- [ ] This part of API is exported from the corresponding `index.ts`
 - [ ] I have run all the tests locally and no test failure was reported
 - [ ] I have run the linter, formatter and spellchecker
 - [ ] I did not do unrelated and/or undiscussed refactorings
