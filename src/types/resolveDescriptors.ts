@@ -753,9 +753,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         if (isOverride) {
             const t = types.get(self!)!;
-            if (t.kind !== "contract") {
+            if (!["contract", "trait"].includes(t.kind)) {
                 throwCompilationError(
-                    "Overrides functions must be defined within a contract",
+                    "Overridden functions must be defined within a contract or a trait",
                     isOverride.loc,
                 );
             }

@@ -1,0 +1,326 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`traits should implement traits correctly 1`] = `
+LaikaContract {
+  "abi": {
+    "errors": {
+      "10": {
+        "message": "Dictionary error",
+      },
+      "128": {
+        "message": "Null reference exception",
+      },
+      "129": {
+        "message": "Invalid serialization prefix",
+      },
+      "13": {
+        "message": "Out of gas error",
+      },
+      "130": {
+        "message": "Invalid incoming message",
+      },
+      "131": {
+        "message": "Constraints error",
+      },
+      "132": {
+        "message": "Access denied",
+      },
+      "133": {
+        "message": "Contract stopped",
+      },
+      "134": {
+        "message": "Invalid argument",
+      },
+      "135": {
+        "message": "Code of a contract was not found",
+      },
+      "136": {
+        "message": "Invalid address",
+      },
+      "137": {
+        "message": "Masterchain support is not enabled for this contract",
+      },
+      "2": {
+        "message": "Stack underflow",
+      },
+      "3": {
+        "message": "Stack overflow",
+      },
+      "32": {
+        "message": "Method ID not found",
+      },
+      "34": {
+        "message": "Action is invalid or not supported",
+      },
+      "37": {
+        "message": "Not enough TON",
+      },
+      "38": {
+        "message": "Not enough extra-currencies",
+      },
+      "4": {
+        "message": "Integer overflow",
+      },
+      "5": {
+        "message": "Integer out of expected range",
+      },
+      "6": {
+        "message": "Invalid opcode",
+      },
+      "7": {
+        "message": "Type check error",
+      },
+      "8": {
+        "message": "Cell overflow",
+      },
+      "9": {
+        "message": "Cell underflow",
+      },
+    },
+    "getters": [
+      {
+        "arguments": [],
+        "name": "say",
+        "returnType": {
+          "kind": "simple",
+          "optional": false,
+          "type": "string",
+        },
+      },
+    ],
+    "receivers": [
+      {
+        "message": {
+          "kind": "empty",
+        },
+        "receiver": "internal",
+      },
+      {
+        "message": {
+          "kind": "text",
+          "text": "make sound",
+        },
+        "receiver": "internal",
+      },
+    ],
+    "types": [
+      {
+        "fields": [
+          {
+            "name": "code",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "cell",
+            },
+          },
+          {
+            "name": "data",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "cell",
+            },
+          },
+        ],
+        "header": null,
+        "name": "StateInit",
+      },
+      {
+        "fields": [
+          {
+            "name": "bounced",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "bool",
+            },
+          },
+          {
+            "name": "sender",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "address",
+            },
+          },
+          {
+            "name": "value",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "raw",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "slice",
+            },
+          },
+        ],
+        "header": null,
+        "name": "Context",
+      },
+      {
+        "fields": [
+          {
+            "name": "bounce",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "bool",
+            },
+          },
+          {
+            "name": "to",
+            "type": {
+              "kind": "simple",
+              "optional": false,
+              "type": "address",
+            },
+          },
+          {
+            "name": "value",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "mode",
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
+          },
+          {
+            "name": "body",
+            "type": {
+              "kind": "simple",
+              "optional": true,
+              "type": "cell",
+            },
+          },
+          {
+            "name": "code",
+            "type": {
+              "kind": "simple",
+              "optional": true,
+              "type": "cell",
+            },
+          },
+          {
+            "name": "data",
+            "type": {
+              "kind": "simple",
+              "optional": true,
+              "type": "cell",
+            },
+          },
+        ],
+        "header": null,
+        "name": "SendParameters",
+      },
+      {
+        "fields": [],
+        "header": null,
+        "name": "LaikaContract$Data",
+      },
+    ],
+  },
+  "address": kQAjurWP3texUIUiFstTbFkPnXnAolBMHl2OW8-4KD7k0j6I,
+  "init": {
+    "code": x{FF00F4A413F4BCF2C80B}
+ x{62_}
+  x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+   x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+    x{6D}
+   x{EDA2EDFB0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE0C0008FB8F90182F06F4CB1650158718F5605E05921130E8BF333A1063BFCED1819B4CAF946A26382BA8F9020DB3C31DB3CF842017F6DDB3C7FDB31E09130E270}
+    x{20C86F00016F8C6D6F8C8B74920616D2061208DB3C02DB3C13DB3C8BB20616E64204920736179208}
+     x{DB3C}
+      x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+     x{8B54C61696B618}
+     x{DB3C}
+      x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+     x{DB3C02DB3C3112DB3C6F2201C993216EB396016F2259CCC9E831D0}
+      x{DB3C}
+       x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+      x{8B4576F6F668}
+      x{DB3C}
+       x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+    x{C87001CB1F6F00016F8C6D6F8C01DB3C6F2201C993216EB396016F2259CCC9E831}
+     x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+    x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+     x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+      x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+  x{2_}
+   x{BEB7EED9E6D9E18C_}
+    x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+     x{6D}
+    x{20C86F00016F8C6D6F8C8B74920616D2061208DB3C02DB3C13DB3C8BB20616E64204920736179208}
+     x{DB3C}
+      x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+     x{8B54C61696B618}
+     x{DB3C}
+      x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+     x{DB3C02DB3C3112DB3C6F2201C993216EB396016F2259CCC9E831D0}
+      x{DB3C}
+       x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+      x{8B4576F6F668}
+      x{DB3C}
+       x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+   x{BE15F76A268690000C_},
+    "data": x{4_}
+ x{C_}
+  x{A1F81D_}
+   x{FF00F4A413F4BCF2C80B}
+    x{62_}
+     x{D001D0D3030171B0A301FA400120D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088545053036F04F86102F862DB3C59DB3CF2E08230C8F84301CC7F01CA00C9ED54}
+      x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+       x{6D}
+      x{EDA2EDFB0192307FE07021D749C21F953020D70B1FDE20C00022D749C121B0925B7FE0C0008FB8F90182F06F4CB1650158718F5605E05921130E8BF333A1063BFCED1819B4CAF946A26382BA8F9020DB3C31DB3CF842017F6DDB3C7FDB31E09130E270}
+       x{20C86F00016F8C6D6F8C8B74920616D2061208DB3C02DB3C13DB3C8BB20616E64204920736179208}
+        x{DB3C}
+         x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+        x{8B54C61696B618}
+        x{DB3C}
+         x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+        x{DB3C02DB3C3112DB3C6F2201C993216EB396016F2259CCC9E831D0}
+         x{DB3C}
+          x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+         x{8B4576F6F668}
+         x{DB3C}
+          x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+       x{C87001CB1F6F00016F8C6D6F8C01DB3C6F2201C993216EB396016F2259CCC9E831}
+        x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+       x{6D6D226EB3995B206EF2D0806F22019132E2102470030480425023DB3C}
+        x{C87101CA01500701CA007001CA02500520D74981010BBAF2E08820D70B0A208104FFBAF2D0898309BAF2E088CF165003FA027001CA68236EB3917F93246EB3E2973333017001CA00E30D216EB39C7F01CA0001206EF2D08001CC95317001CA00E2C901FB00}
+         x{7F01CA00C87001CA007001CA00246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E2246EB39D7F01CA0004206EF2D0805004CC9634037001CA00E27001CA00027F01CA0002C958CC}
+     x{2_}
+      x{BEB7EED9E6D9E18C_}
+       x{ED44D0D401F863D20030916DE0F828D70B0A8309BAF2E089DB3C}
+        x{6D}
+       x{20C86F00016F8C6D6F8C8B74920616D2061208DB3C02DB3C13DB3C8BB20616E64204920736179208}
+        x{DB3C}
+         x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+        x{8B54C61696B618}
+        x{DB3C}
+         x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+        x{DB3C02DB3C3112DB3C6F2201C993216EB396016F2259CCC9E831D0}
+         x{DB3C}
+          x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+         x{8B4576F6F668}
+         x{DB3C}
+          x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
+      x{BE15F76A268690000C_},
+  },
+}
+`;
