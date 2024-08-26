@@ -10,13 +10,14 @@ import { FuncFormatter } from "../func/formatter";
 import {
     FuncAstModule,
     FuncAstFunctionDefinition,
-    FuncAstAsmFunction,
-} from "../func/syntax";
+    FuncAstAsmFunctionDefinition,
+} from "../func/grammar";
 import { deepCopy } from "../func/syntaxUtils";
 import {
     comment,
     mod,
     pragma,
+version,
     Type,
     include,
     global,
@@ -116,14 +117,10 @@ export class FuncGenerator {
         // TODO
 
         // Finalize and dump the main contract, as we have just obtained the structure of the project
-        m.entries.unshift(...generated.files.map((f) => include(f.name)));
-        m.entries.unshift(
-            ...[
-                `version =${CODEGEN_FUNC_VERSION}`,
-                "allow-post-modification",
-                "compute-asm-ltr",
-            ].map(pragma),
-        );
+        m.items.unshift(...generated.files.map((f) => include(f.name)));
+        m.items.push(version("=", CODEGEN_FUNC_VERSION));
+        m.items.push(pragma("allow-post-modification"));
+        m.items.push(pragma("compute-asm-ltr"));
         generated.files.push({
             name: `${this.basename}.code.fc`,
             code: new FuncFormatter().dump(m),
@@ -159,7 +156,7 @@ export class FuncGenerator {
     ): void {
         // FIXME: We should add only contract methods and special methods here => add attribute and register them in the context
         const m = mod();
-        m.entries.push(
+        m.items.push(
             comment(
                 "",
                 `Header files for ${this.abiSrc.name}`,
@@ -173,19 +170,19 @@ export class FuncGenerator {
                 f.definition !== undefined &&
                 f.definition.kind === "function_definition"
             ) {
-                m.entries.push(
+                m.items.push(
                     comment(f.definition.name.value, { skipCR: true }),
                 );
                 const copiedDefinition = deepCopy(f.definition);
                 if (
-                    copiedDefinition.attrs.find(
+                    copiedDefinition.attributes.find(
                         (attr) =>
                             attr.kind !== "impure" && attr.kind !== "inline",
                     )
                 ) {
-                    copiedDefinition.attrs.push(FunAttr.inline_ref());
+                    copiedDefinition.attributes.push(FunAttr.inline_ref());
                 }
-                m.entries.push(toDeclaration(copiedDefinition));
+                m.items.push(toDeclaration(copiedDefinition));
             }
         });
         generated.files.push({
@@ -199,15 +196,15 @@ export class FuncGenerator {
         functions: WrittenFunction[],
     ): void {
         const m = mod();
-        m.entries.push(
+        m.items.push(
             global(
                 Type.tensor(Type.int(), Type.slice(), Type.int(), Type.slice()),
                 "__tact_context",
             ),
         );
-        m.entries.push(global(Type.slice(), "__tact_context_sender"));
-        m.entries.push(global(Type.cell(), "__tact_context_sys"));
-        m.entries.push(global(Type.int(), "__tact_randomized"));
+        m.items.push(global(Type.slice(), "__tact_context_sender"));
+        m.items.push(global(Type.cell(), "__tact_context_sys"));
+        m.items.push(global(Type.int(), "__tact_randomized"));
 
         const stdlibFunctions = this.tryExtractModule(
             functions,
@@ -218,7 +215,7 @@ export class FuncGenerator {
             generated.imported.push("stdlib");
         }
         stdlibFunctions.forEach((f) => {
-            if (f.definition !== undefined) m.entries.push(f.definition);
+            if (f.definition !== undefined) m.items.push(f.definition);
         });
         generated.files.push({
             name: `${this.basename}.stdlib.fc`,
@@ -260,7 +257,7 @@ export class FuncGenerator {
                             },
                             [] as (
                                 | FuncAstFunctionDefinition
-                                | FuncAstAsmFunction
+                                | FuncAstAsmFunctionDefinition
                             )[],
                         ),
                     ),
@@ -327,7 +324,7 @@ export class FuncGenerator {
                             },
                             [] as (
                                 | FuncAstFunctionDefinition
-                                | FuncAstAsmFunction
+                                | FuncAstAsmFunctionDefinition
                             )[],
                         ),
                     ],

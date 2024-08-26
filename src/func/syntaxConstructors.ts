@@ -3,6 +3,9 @@ import {
     funcOpBitwiseShift,
     funcOpAddBitwise,
     funcOpMulBitwise,
+    FuncAstHole,
+    FuncAstVersionRange,
+    FuncAstPragmaVersionRange,
     FuncAstStatementExpression,
     FuncPragmaLiteralValue,
     FuncAstConstantsDefinition,
@@ -27,7 +30,6 @@ import {
     FuncOpAssign,
     FuncAstId,
     FuncAstStringLiteral,
-    FuncArgument,
     FuncAstPlainId,
     FuncAstStatementReturn,
     FuncAstStatementBlock,
@@ -99,6 +101,10 @@ export class Type {
     public static tuple_values(...types: FuncAstType[]): FuncAstType {
         return { kind: "type_tuple", types, loc: dummySrcInfo };
     }
+
+    public static hole(): FuncAstHole {
+        return { kind: "hole", value: "_", loc: dummySrcInfo };
+    }
 }
 
 export class FunAttr {
@@ -145,7 +151,15 @@ export function int(num: bigint | number): FuncAstIntegerLiteral {
     return integerLiteral(num, false);
 }
 
-export function hex(num: bigint | number): FuncAstIntegerLiteral {
+function hexToBigInt(hexString: string): bigint {
+    if (hexString.startsWith("0x")) {
+        hexString = hexString.slice(2);
+    }
+    return BigInt(`0x${hexString}`);
+}
+
+export function hex(value: string | bigint | number): FuncAstIntegerLiteral {
+    const num = typeof value === "string" ? hexToBigInt(value) : value;
     return integerLiteral(num, true);
 }
 
@@ -188,7 +202,7 @@ export function id(value: string): FuncAstId {
 
 export function call(
     fun: FuncAstExpression | string,
-    args: FuncArgument[],
+    args: FuncAstExpression[],
     // TODO: doesn't support method calls
     params: Partial<{ receiver: FuncAstExpression }> = {},
 ): FuncAstExpressionFunCall {
@@ -612,6 +626,33 @@ export function include(path: string): FuncAstInclude {
     return {
         kind: "include",
         path: string(path),
+        loc: dummySrcInfo,
+    };
+}
+
+export function version(
+    op: FuncAstVersionRange["op"],
+    versionString: string,
+): FuncAstPragmaVersionRange {
+    const versionNumbers = versionString.split(".").map(BigInt);
+    if (versionNumbers.length < 1) {
+        throwInternalCompilerError(
+            `Incorrect version: ${versionString}. Expected format: "1.2.3"`,
+            tactDummySrcInfo,
+        );
+    }
+    const range: FuncAstVersionRange = {
+        kind: "version_range",
+        op,
+        major: versionNumbers[0]!,
+        minor: versionNumbers[1],
+        patch: versionNumbers[2],
+        loc: dummySrcInfo,
+    };
+    return {
+        kind: "pragma_version_range",
+        allow: true,
+        range,
         loc: dummySrcInfo,
     };
 }

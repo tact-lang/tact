@@ -4,17 +4,16 @@ import { ops, funcIdOf } from "./util";
 import { TypeDescription, FunctionDescription, TypeRef } from "../types/types";
 import {
     FuncAstFunctionDefinition,
-    FuncAstStmt,
+    FuncAstStatement,
     FuncAstFunctionAttribute,
-    FuncAstExpr,
-    FuncType,
-} from "../func/syntax";
+    FuncAstExpression,
+    FuncAstType,
+} from "../func/grammar";
 import {
     id,
     call,
     ret,
     FunAttr,
-    fun,
     vardef,
     Type,
     tensor,
@@ -112,7 +111,7 @@ export class FunctionGen {
             // returnsStr = resolveFuncTypeUnpack(ctx, self, funcIdOf("self"));
         }
 
-        const params: [string, FuncType][] = tactFun.params.reduce(
+        const params: [string, FuncAstType][] = tactFun.params.reduce(
             (acc, a) => {
                 acc.push([
                     funcIdOf(a.name),
@@ -142,7 +141,7 @@ export class FunctionGen {
         // }
 
         // Write function body
-        const body: FuncAstStmt[] = [];
+        const body: FuncAstStatement[] = [];
 
         // Add arguments
         if (self) {
@@ -151,8 +150,8 @@ export class FunctionGen {
                 self,
                 funcIdOf("self"),
             );
-            const init: FuncAstExpr = id(funcIdOf("self"));
-            body.push(vardef(undefined, varName, init));
+            const init: FuncAstExpression = id(funcIdOf("self"));
+            body.push(vardef('_', varName, init));
         }
         for (const a of tactFun.ast.params) {
             if (
@@ -163,8 +162,8 @@ export class FunctionGen {
                     resolveTypeRef(this.ctx.ctx, a.type),
                     funcIdOf(a.name),
                 );
-                const init: FuncAstExpr = id(funcIdOf(a.name));
-                body.push(vardef(undefined, name, init));
+                const init: FuncAstExpression = id(funcIdOf(a.name));
+                body.push(vardef('_', name, init));
             }
         }
 
@@ -214,7 +213,7 @@ export class FunctionGen {
         // is a perfectly fine Tact structure, but its constructor would
         // have the wrong parameter name: `$Foo$_constructor_type(int type)`
         const avoidFunCKeywordNameClash = (p: string) => `$${p}`;
-        const params: [string, FuncType][] = args.map((arg: string) => [
+        const params: [string, FuncAstType][] = args.map((arg: string) => [
             avoidFunCKeywordNameClash(arg),
             resolveFuncType(
                 this.ctx.ctx,
@@ -222,7 +221,7 @@ export class FunctionGen {
             ),
         ]);
         // Create expressions used in actual arguments
-        const values: FuncAstExpr[] = type.fields.map((v) => {
+        const values: FuncAstExpression[] = type.fields.map((v) => {
             const arg = args.find((v2) => v2 === v.name);
             if (arg) {
                 return id(avoidFunCKeywordNameClash(arg));

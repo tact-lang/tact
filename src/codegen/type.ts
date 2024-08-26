@@ -1,8 +1,8 @@
 import { CompilerContext } from "../context";
 import { TypeDescription, TypeRef } from "../types/types";
 import { getType } from "../types/resolveDescriptors";
-import { FuncType, UNIT_TYPE } from "../func/syntax";
-import { Type } from "../func/syntaxConstructors";
+import { FuncAstType } from "../func/grammar";
+import { Type, unit } from "../func/syntaxConstructors";
 
 /**
  * Unpacks string representation of a user-defined Tact type from its type description.
@@ -112,7 +112,7 @@ export function resolveFuncType(
     descriptor: TypeRef | TypeDescription | string,
     optional: boolean = false,
     usePartialFields: boolean = false,
-): FuncType {
+): FuncAstType {
     // String
     if (typeof descriptor === "string") {
         return resolveFuncType(
@@ -139,7 +139,7 @@ export function resolveFuncType(
         return resolveFuncType(ctx, getType(ctx, descriptor.name), false, true);
     }
     if (descriptor.kind === "void") {
-        return UNIT_TYPE;
+        return unit();
     }
 
     // TypeDescription
@@ -195,7 +195,7 @@ export function resolveFuncType(
 export function resolveFuncTupleType(
     ctx: CompilerContext,
     descriptor: TypeRef | TypeDescription | string,
-): FuncType {
+): FuncAstType {
     // String
     if (typeof descriptor === "string") {
         return resolveFuncTupleType(ctx, getType(ctx, descriptor));

@@ -1,7 +1,7 @@
 import { getType } from "../types/resolveDescriptors";
 import { CompilerContext } from "../context";
 import { TypeRef } from "../types/types";
-import { FuncAstExpr } from "../func/syntax";
+import { FuncAstExpression } from "../func/grammar";
 import { id, call } from "../func/syntaxConstructors";
 import { AstId, idText } from "../grammar/ast";
 
@@ -66,8 +66,8 @@ export function cast(
     ctx: CompilerContext,
     from: TypeRef,
     to: TypeRef,
-    expr: FuncAstExpr,
-): FuncAstExpr {
+    expr: FuncAstExpression,
+): FuncAstExpression {
     if (from.kind === "ref" && to.kind === "ref") {
         if (from.name !== to.name) {
             throw Error(`Impossible: ${from.name} != ${to.name}`);

@@ -23,7 +23,7 @@ import {
     eqNames,
     tryExtractPath,
 } from "../grammar/ast";
-import { FuncAstExpr, FuncAstUnaryOp, FuncAstIdExpr } from "../func/syntax";
+import { FuncAstExpression, FuncOpUnary, FuncAstId } from "../func/grammar";
 import {
     id,
     call,
@@ -37,11 +37,11 @@ function isNull(f: AstExpression): boolean {
     return f.kind === "null";
 }
 
-function addUnary(op: FuncAstUnaryOp, expr: FuncAstExpr): FuncAstExpr {
+function addUnary(op: FuncOpUnary, expr: FuncAstExpression): FuncAstExpression {
     return unop(op, expr);
 }
 
-function negate(expr: FuncAstExpr): FuncAstExpr {
+function negate(expr: FuncAstExpression): FuncAstExpression {
     return addUnary("~", expr);
 }
 
@@ -49,7 +49,7 @@ function negate(expr: FuncAstExpr): FuncAstExpr {
  * Creates a Func identifier in the following format: a'b'c.
  * TODO: make it a static method
  */
-export function writePathExpression(path: AstId[]): FuncAstIdExpr {
+export function writePathExpression(path: AstId[]): FuncAstId {
     return id(
         [funcIdOf(idText(path[0]!)), ...path.slice(1).map(idText)].join(`'`),
     );
@@ -74,7 +74,7 @@ export class ExpressionGen {
         return new ExpressionGen(ctx, tactExpr);
     }
 
-    public writeExpression(): FuncAstExpr {
+    public writeExpression(): FuncAstExpression {
         // literals and constant expressions are covered here
         try {
             const value = evalConstantExpression(this.tactExpr, this.ctx.ctx);
@@ -106,6 +106,7 @@ export class ExpressionGen {
             if (t.kind === "ref_bounced") {
                 const tt = getType(this.ctx.ctx, t.name);
                 if (tt.kind === "struct") {
+                    // TODO: ?
                     const value = resolveFuncTypeUnpack(
                         this.ctx.ctx,
                         t,
@@ -593,7 +594,7 @@ export class ExpressionGen {
                         this.tactExpr.self.kind === "id" ||
                         this.tactExpr.self.kind === "field_access"
                     ) {
-                        if (selfExpr.kind !== "id_expr") {
+                        if (selfExpr.kind !== "plain_id") {
                             throw new Error(
                                 `Impossible self kind: ${selfExpr.kind}`,
                             );
@@ -671,20 +672,20 @@ export class ExpressionGen {
         throw Error(`Unknown expression: ${this.tactExpr.kind}`);
     }
 
-    private makeValue(val: Value): FuncAstExpr {
+    private makeValue(val: Value): FuncAstExpression {
         return LiteralGen.fromTact(this.ctx, val).writeValue();
     }
 
-    private makeExpr(src: AstExpression): FuncAstExpr {
+    private makeExpr(src: AstExpression): FuncAstExpression {
         return ExpressionGen.fromTact(this.ctx, src).writeExpression();
     }
 
-    public writeCastedExpression(to: TypeRef): FuncAstExpr {
+    public writeCastedExpression(to: TypeRef): FuncAstExpression {
         const expr = getExpType(this.ctx.ctx, this.tactExpr);
         return cast(this.ctx.ctx, expr, to, this.writeExpression());
     }
 
-    private makeCastedExpr(src: AstExpression, to: TypeRef): FuncAstExpr {
+    private makeCastedExpr(src: AstExpression, to: TypeRef): FuncAstExpression {
         return ExpressionGen.fromTact(this.ctx, src).writeCastedExpression(to);
     }
 }

@@ -13,10 +13,10 @@ import {
 import { ExpressionGen, writePathExpression, WriterContext } from ".";
 import { resolveFuncTypeUnpack, resolveFuncType } from "./type";
 import {
-    FuncAstStmt,
-    FuncAstConditionStmt,
-    FuncAstExpr,
-} from "../func/syntax";
+    FuncAstStatement,
+    FuncAstStatementCondition,
+    FuncAstExpression,
+} from "../func/grammar";
 import {
     id,
     expr,
@@ -57,18 +57,18 @@ export class StatementGen {
     /**
      * Translates an expression in the current context.
      */
-    private makeExpr(expr: AstExpression): FuncAstExpr {
+    private makeExpr(expr: AstExpression): FuncAstExpression {
         return ExpressionGen.fromTact(this.ctx, expr).writeExpression();
     }
 
-    private makeCastedExpr(expr: AstExpression, to: TypeRef): FuncAstExpr {
+    private makeCastedExpr(expr: AstExpression, to: TypeRef): FuncAstExpression {
         return ExpressionGen.fromTact(this.ctx, expr).writeCastedExpression(to);
     }
 
     /**
      * Tranforms the Tact conditional statement to the Func one.
      */
-    private writeCondition(f: AstCondition): FuncAstConditionStmt {
+    private writeCondition(f: AstCondition): FuncAstStatementCondition {
         const writeStmt = (stmt: AstStatement) =>
             StatementGen.fromTact(
                 this.ctx,
@@ -78,7 +78,7 @@ export class StatementGen {
             ).writeStatement();
         const cond = this.makeExpr(f.condition);
         const thenBlock = f.trueStatements.map(writeStmt);
-        const elseStmt: FuncAstConditionStmt | undefined =
+        const elseStmt: FuncAstStatementCondition | undefined =
             f.falseStatements !== null && f.falseStatements.length > 0
                 ? condition(undefined, f.falseStatements.map(writeStmt))
                 : f.elseif
@@ -87,11 +87,11 @@ export class StatementGen {
         return condition(cond, thenBlock, false, elseStmt);
     }
 
-    public writeStatement(): FuncAstStmt {
+    public writeStatement(): FuncAstStatement {
         switch (this.tactStmt.kind) {
             case "statement_return": {
                 const selfVar = this.selfName ? id(this.selfName) : undefined;
-                const getValue = (expr: FuncAstExpr): FuncAstExpr =>
+                const getValue = (expr: FuncAstExpression): FuncAstExpression =>
                     this.selfName ? tensor(selfVar!, expr) : expr;
                 if (this.tactStmt.expression) {
                     const castedReturns = this.makeCastedExpr(
@@ -135,7 +135,7 @@ export class StatementGen {
                                 this.tactStmt.expression,
                                 t,
                             );
-                            return vardef(undefined, name, init);
+                            return vardef("_", name, init);
                         }
                     }
                 }

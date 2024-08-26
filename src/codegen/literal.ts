@@ -1,13 +1,12 @@
 import { WriterContext, FunctionGen, Location } from ".";
-import { FuncAstExpr } from "../func/syntax";
+import { FuncAstExpression } from "../func/grammar";
 import { Address, beginCell, Cell } from "@ton/core";
 import { Value, CommentValue } from "../types/types";
 import {
     call,
     Type,
-    number,
+    int,
     id,
-    asmfun,
     nil,
     bool,
 } from "../func/syntaxConstructors";
@@ -38,7 +37,7 @@ export class LiteralGen {
         prefix: string,
         comment: string,
         cell: Cell,
-    ): FuncAstExpr {
+    ): FuncAstExpression {
         const h = cell.hash().toString("hex");
         const t = cell.toBoc({ idx: false }).toString("hex");
         const funName = `__gen_slice_${prefix}_${h}`;
@@ -62,12 +61,12 @@ export class LiteralGen {
     /**
      * Returns a function name used to access the string value.
      */
-    private writeString(str: string): FuncAstExpr {
+    private writeString(str: string): FuncAstExpression {
         const cell = beginCell().storeStringTail(str).endCell();
         return this.writeRawSlice("string", `String "${str}"`, cell);
     }
 
-    private writeComment(str: string): FuncAstExpr {
+    private writeComment(str: string): FuncAstExpression {
         const cell = beginCell()
             .storeUint(0, 32)
             .storeStringTail(str)
@@ -78,7 +77,7 @@ export class LiteralGen {
     /**
      * Returns a function name used to access the address value.
      */
-    private writeAddress(address: Address): FuncAstExpr {
+    private writeAddress(address: Address): FuncAstExpression {
         return this.writeRawSlice(
             "address",
             address.toString(),
@@ -89,7 +88,7 @@ export class LiteralGen {
     /**
      * Returns a function name used to access the cell value.
      */
-    private writeCell(cell: Cell): FuncAstExpr {
+    private writeCell(cell: Cell): FuncAstExpression {
         return this.writeRawCell(
             "cell",
             `Cell ${cell.hash().toString("base64")}`,
@@ -104,7 +103,7 @@ export class LiteralGen {
         prefix: string,
         comment: string,
         cell: Cell,
-    ): FuncAstExpr {
+    ): FuncAstExpression {
         const h = cell.hash().toString("hex");
         const t = cell.toBoc({ idx: false }).toString("hex");
         const funName = `__gen_cell_${prefix}_${h}`;
@@ -128,10 +127,10 @@ export class LiteralGen {
     /**
      * Generates FunC literals from Tact ones.
      */
-    public writeValue(): FuncAstExpr {
+    public writeValue(): FuncAstExpression {
         const val = this.tactValue;
         if (typeof val === "bigint") {
-            return number(val);
+            return int(val);
         }
         if (typeof val === "string") {
             return call(this.writeString(val), []);
@@ -176,7 +175,7 @@ export class LiteralGen {
         throw Error(`Invalid value: ${JSONbig.stringify(val, null, 2)}`);
     }
 
-    private makeValue(val: Value): FuncAstExpr {
+    private makeValue(val: Value): FuncAstExpression {
         return LiteralGen.fromTact(this.ctx, val).writeValue();
     }
 }

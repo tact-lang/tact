@@ -574,6 +574,7 @@ export type FuncAstInclude = {
 //
 
 export type FuncAstModuleItem =
+    | FuncAstComment
     | FuncAstPragma
     | FuncAstInclude
     | FuncAstGlobalVariablesDeclaration
@@ -756,7 +757,9 @@ export type FuncAstStatement =
     | FuncAstStatementUntil
     | FuncAstStatementWhile
     | FuncAstStatementTryCatch
-    | FuncAstStatementExpression;
+    | FuncAstStatementExpression
+    | FuncAstCR
+    | FuncAstComment;
 
 /**
  * return Expression;
@@ -1053,7 +1056,7 @@ export type FuncAstExpressionUnary = {
     loc: FuncSrcInfo;
 };
 
-export type FuncOpUnary = "~";
+export type FuncOpUnary = "~" | "-" | "+";
 
 /**
  * parse_expr80
@@ -1071,8 +1074,9 @@ export type FuncExpressionMethodCall = {
 };
 
 export type FuncArgument =
-    | FuncAstMethodId
+    | FuncAstId
     | FuncAstUnit
+    | FuncAstExpression
     | FuncAstExpressionTensor
     | FuncAstExpressionTuple;
 

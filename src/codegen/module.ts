@@ -1,5 +1,5 @@
 import { getAllTypes, getType } from "../types/resolveDescriptors";
-import { enabledInline, enabledMasterchain } from "../config/features";
+import { enabledInline } from "../config/features";
 import { LiteralGen, Location } from ".";
 import {
     ReceiverDescription,
@@ -23,15 +23,13 @@ import { resolveFuncPrimitive } from "./primitive";
 import { getSupportedInterfaces } from "../types/getSupportedInterfaces";
 import { funcIdOf, funcInitIdOf, ops } from "./util";
 import {
-    UNIT_TYPE,
     FuncAstModule,
-    FuncAstStmt,
+    FuncAstStatement,
+    FuncAstExpression,
     FuncAstFunctionAttribute,
-    FuncType,
-    FuncAstVarDefStmt,
+    FuncAstType,
     FuncAstFunctionDefinition,
-    FuncAstExpr,
-} from "../func/syntax";
+} from "../func/grammar";
 import {
     cr,
     unop,
@@ -43,10 +41,9 @@ import {
     call,
     binop,
     bool,
-    number,
-    hexnumber,
+    int,
+    hex,
     string,
-    fun,
     ret,
     tensor,
     Type,
@@ -76,7 +73,7 @@ export function unwrapExternal(
     targetName: string,
     sourceName: string,
     type: TypeRef,
-): FuncAstVarDefStmt {
+): FuncAstStatement {
     if (type.kind === "ref") {
         const t = getType(ctx, type.name);
         if (t.kind === "struct") {
@@ -180,8 +177,8 @@ export class ModuleGen {
         const supported: string[] = [];
         supported.push("org.ton.introspection.v0");
         supported.push(...getSupportedInterfaces(type, this.ctx.ctx));
-        const shiftExprs: FuncAstExpr[] = supported.map((item) =>
-            binop(string(item, "H"), ">>", number(128)),
+        const shiftExprs: FuncAstExpression[] = supported.map((item) =>
+            binop(string(item, "H"), ">>", int(128)),
         );
         return this.ctx.fun(
             [FunAttr.method_id()],
@@ -207,14 +204,14 @@ export class ModuleGen {
                 resolveFuncType(this.ctx.ctx, v.type),
             ]);
             const attrs = [FunAttr.impure()];
-            const body: FuncAstStmt[] = [];
+            const body: FuncAstStatement[] = [];
 
             // Unpack parameters
             for (const a of init.params) {
                 if (!resolveFuncPrimitive(this.ctx.ctx, a.type)) {
                     body.push(
                         vardef(
-                            undefined,
+                            "_",
                             resolveFuncTypeUnpack(
                                 this.ctx.ctx,
                                 a.type,
@@ -227,7 +224,7 @@ export class ModuleGen {
             }
 
             // Generate self initial tensor
-            const initValues: FuncAstExpr[] = t.fields.map((tField) =>
+            const initValues: FuncAstExpression[] = t.fields.map((tField) =>
                 tField.default === undefined
                     ? call("null", [])
                     : LiteralGen.fromTact(
@@ -239,7 +236,7 @@ export class ModuleGen {
                 // Special case for empty contracts
                 body.push(
                     vardef(
-                        undefined,
+                        "_",
                         resolveFuncTypeUnpack(
                             this.ctx.ctx,
                             t,
@@ -298,7 +295,7 @@ export class ModuleGen {
             const attrs = [
                 ...(enabledInline(this.ctx.ctx) ? [FunAttr.inline()] : []),
             ];
-            const body: FuncAstStmt[] = [];
+            const body: FuncAstStatement[] = [];
 
             // slice sc' = sys'.begin_parse();
             // cell source = sc'~load_dict();
@@ -322,7 +319,7 @@ export class ModuleGen {
                 vardef(
                     Type.cell(),
                     "mine",
-                    call("__tact_dict_get_code", [id("source"), number(t.uid)]),
+                    call("__tact_dict_get_code", [id("source"), int(t.uid)]),
                 ),
             );
             body.push(
@@ -331,7 +328,7 @@ export class ModuleGen {
                         id("contracts"),
                         call("__tact_dict_set_code", [
                             id("contracts"),
-                            number(t.uid),
+                            int(t.uid),
                             id("mine"),
                         ]),
                     ),
@@ -351,7 +348,7 @@ export class ModuleGen {
                         `code_${c.uid}`,
                         call("__tact_dict_get_code", [
                             id("source"),
-                            number(c.uid),
+                            int(c.uid),
                         ]),
                     ),
                 );
@@ -361,7 +358,7 @@ export class ModuleGen {
                             id("contracts"),
                             call("__tact_dict_set_code", [
                                 id("contracts"),
-                                number(c.uid),
+                                int(c.uid),
                                 id(`code_${c.uid}`),
                             ]),
                         ),
@@ -399,7 +396,7 @@ export class ModuleGen {
                 expr(
                     assign(
                         id("b"),
-                        call("store_int", [bool(false), number(1)], {
+                        call("store_int", [bool(false), int(1)], {
                             receiver: id("b"),
                         }),
                     ),
@@ -442,7 +439,7 @@ export class ModuleGen {
      * TODO: Why do we need function from *all* the contracts?
      */
     private addContractFunctions(m: FuncAstModule, c: TypeDescription): void {
-        m.entries.push(comment("", `Contract ${c.name} functions`, ""));
+        m.items.push(comment("", `Contract ${c.name} functions`, ""));
 
         if (c.init) {
             this.writeInit(c, c.init);
@@ -453,7 +450,7 @@ export class ModuleGen {
                 tactFun,
             );
             // TODO: Should we really put them here?
-            m.entries.push(funcFun);
+            m.items.push(funcFun);
         }
     }
 
@@ -484,7 +481,7 @@ export class ModuleGen {
             resolveFuncType(this.ctx.ctx, type),
             Type.int(),
         );
-        const paramValues: [string, FuncType][] = internal
+        const paramValues: [string, FuncAstType][] = internal
             ? [
                   ["self", resolveFuncType(this.ctx.ctx, type)],
                   ["msg_bounced", Type.int()],
@@ -494,7 +491,7 @@ export class ModuleGen {
                   ["self", resolveFuncType(this.ctx.ctx, type)],
                   ["in_msg", Type.slice()],
               ];
-        const functionBody: FuncAstStmt[] = [];
+        const functionBody: FuncAstStatement[] = [];
 
         // ;; Handle bounced messages
         // if (msg_bounced) {
@@ -502,7 +499,7 @@ export class ModuleGen {
         // }
         if (internal) {
             functionBody.push(comment("Handle bounced messages"));
-            const body: FuncAstStmt[] = [];
+            const body: FuncAstStatement[] = [];
             const bounceReceivers = type.receivers.filter((r) => {
                 return r.selector.kind === "bounce-binary";
             });
@@ -511,12 +508,12 @@ export class ModuleGen {
                 return r.selector.kind === "bounce-fallback";
             });
 
-            const condBody: FuncAstStmt[] = [];
+            const condBody: FuncAstStatement[] = [];
             if (fallbackReceiver ?? bounceReceivers.length > 0) {
                 // ;; Skip 0xFFFFFFFF
                 // in_msg~skip_bits(32);
                 condBody.push(comment("Skip 0xFFFFFFFF"));
-                condBody.push(expr(call("in_msg~skip_bits", [number(32)])));
+                condBody.push(expr(call("in_msg~skip_bits", [int(32)])));
             }
 
             if (bounceReceivers.length > 0) {
@@ -526,21 +523,19 @@ export class ModuleGen {
                 //   op = in_msg.preload_uint(32);
                 // }
                 condBody.push(comment("Parse op"));
-                condBody.push(vardef(Type.int(), "op", number(0)));
+                condBody.push(vardef(Type.int(), "op", int(0)));
                 condBody.push(
                     condition(
                         binop(
                             call("slice_bits", [id("in_msg")]),
                             ">=",
-                            number(30),
+                            int(30),
                         ),
                         [
                             expr(
                                 assign(
                                     id("op"),
-                                    call(id("in_msg.preload_uint"), [
-                                        number(32),
-                                    ]),
+                                    call(id("in_msg.preload_uint"), [int(32)]),
                                 ),
                             ),
                         ],
@@ -561,13 +556,11 @@ export class ModuleGen {
                         binop(
                             id("op"),
                             "==",
-                            number(
-                                getType(this.ctx.ctx, selector.type).header!,
-                            ),
+                            int(getType(this.ctx.ctx, selector.type).header!),
                         ),
                         [
                             vardef(
-                                undefined,
+                                "_",
                                 "msg",
                                 call(
                                     id(
@@ -617,15 +610,15 @@ export class ModuleGen {
         //   op = in_msg.preload_uint(32);
         // }
         functionBody.push(comment("Parse incoming message"));
-        functionBody.push(vardef(Type.int(), "op", number(0)));
+        functionBody.push(vardef(Type.int(), "op", int(0)));
         functionBody.push(
             condition(
-                binop(call(id("slice_bits"), [id("in_msg")]), ">=", number(32)),
+                binop(call(id("slice_bits"), [id("in_msg")]), ">=", int(32)),
                 [
                     expr(
                         assign(
                             id("op"),
-                            call("in_msg.preload_uint", [number(32)]),
+                            call("in_msg.preload_uint", [int(32)]),
                         ),
                     ),
                 ],
@@ -648,22 +641,19 @@ export class ModuleGen {
                 }
                 functionBody.push(comment(`Receive ${selector.type} message`));
                 functionBody.push(
-                    condition(
-                        binop(id("op"), "==", number(allocation.header)),
-                        [
-                            vardef(
-                                undefined,
-                                "msg",
-                                call(`in_msg~${ops.reader(selector.type)}`, []),
+                    condition(binop(id("op"), "==", int(allocation.header)), [
+                        vardef(
+                            "_",
+                            "msg",
+                            call(`in_msg~${ops.reader(selector.type)}`, []),
+                        ),
+                        expr(
+                            call(
+                                `self~${ops.receiveType(type.name, kind, selector.type)}`,
+                                [id("msg")],
                             ),
-                            expr(
-                                call(
-                                    `self~${ops.receiveType(type.name, kind, selector.type)}`,
-                                    [id("msg")],
-                                ),
-                            ),
-                        ],
-                    ),
+                        ),
+                    ]),
                 );
             }
 
@@ -680,12 +670,12 @@ export class ModuleGen {
                 functionBody.push(
                     condition(
                         binop(
-                            binop(id("op"), "==", number(0)),
+                            binop(id("op"), "==", int(0)),
                             "&",
                             binop(
                                 call("slice_bits", [id("in_msg")]),
                                 "<=",
-                                number(32),
+                                int(32),
                             ),
                         ),
                         [
@@ -717,8 +707,8 @@ export class ModuleGen {
             //   ...
             // }
             functionBody.push(comment("Text Receivers"));
-            const cond = binop(id("op"), "==", number(0));
-            const condBody: FuncAstStmt[] = [];
+            const cond = binop(id("op"), "==", int(0));
+            const condBody: FuncAstStatement[] = [];
             if (
                 type.receivers.find(
                     (v) =>
@@ -729,7 +719,7 @@ export class ModuleGen {
                 // var text_op = slice_hash(in_msg);
                 condBody.push(
                     vardef(
-                        undefined,
+                        "_",
                         "text_op",
                         call("slice_hash", [id("in_msg")]),
                     ),
@@ -752,11 +742,7 @@ export class ModuleGen {
                         );
                         condBody.push(
                             condition(
-                                binop(
-                                    id("text_op"),
-                                    "==",
-                                    hexnumber(`0x${hash}`),
-                                ),
+                                binop(id("text_op"), "==", hex(hash)),
                                 [
                                     expr(
                                         call(
@@ -786,7 +772,7 @@ export class ModuleGen {
                         binop(
                             call("slice_bits", [id("in_msg")]),
                             ">=",
-                            number(32),
+                            int(32),
                         ),
                         [
                             expr(
@@ -794,7 +780,7 @@ export class ModuleGen {
                                     id(
                                         `self~${ops.receiveAnyText(type.name, kind)}`,
                                     ),
-                                    [call("in_msg.skip_bits", [number(32)])],
+                                    [call("in_msg.skip_bits", [int(32)])],
                                 ),
                             ),
                             ret(tensor(id("self"), bool(true))),
@@ -847,7 +833,7 @@ export class ModuleGen {
         );
         const selfType = resolveFuncType(this.ctx.ctx, self);
         const selfUnpack = vardef(
-            undefined,
+            '_',
             resolveFuncTypeUnpack(this.ctx.ctx, self, funcIdOf("self")),
             id(funcIdOf("self")),
         );
@@ -857,7 +843,7 @@ export class ModuleGen {
             selector.kind === "internal-binary" ||
             selector.kind === "external-binary"
         ) {
-            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const returnTy = Type.tensor(selfType, unit());
             const funName = ops.receiveType(
                 self.name,
                 selector.kind === "internal-binary" ? "internal" : "external",
@@ -874,10 +860,10 @@ export class ModuleGen {
                 FunAttr.impure(),
                 FunAttr.inline(),
             ];
-            const body: FuncAstStmt[] = [selfUnpack];
+            const body: FuncAstStatement[] = [selfUnpack];
             body.push(
                 vardef(
-                    undefined,
+                    '_',
                     resolveFuncTypeUnpack(
                         this.ctx.ctx,
                         selector.type,
@@ -912,7 +898,7 @@ export class ModuleGen {
             selector.kind === "internal-empty" ||
             selector.kind === "external-empty"
         ) {
-            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const returnTy = Type.tensor(selfType, unit());
             const funName = ops.receiveEmpty(
                 self.name,
                 selector.kind === "internal-empty" ? "internal" : "external",
@@ -922,7 +908,7 @@ export class ModuleGen {
                 FunAttr.impure(),
                 FunAttr.inline(),
             ];
-            const body: FuncAstStmt[] = [selfUnpack];
+            const body: FuncAstStatement[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
                     StatementGen.fromTact(
@@ -950,7 +936,7 @@ export class ModuleGen {
             selector.kind === "external-comment"
         ) {
             const hash = commentPseudoOpcode(selector.comment);
-            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const returnTy = Type.tensor(selfType, unit());
             const funName = ops.receiveText(
                 self.name,
                 selector.kind === "internal-comment" ? "internal" : "external",
@@ -961,7 +947,7 @@ export class ModuleGen {
                 FunAttr.impure(),
                 FunAttr.inline(),
             ];
-            const body: FuncAstStmt[] = [selfUnpack];
+            const body: FuncAstStatement[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
                     StatementGen.fromTact(
@@ -988,7 +974,7 @@ export class ModuleGen {
             selector.kind === "internal-comment-fallback" ||
             selector.kind === "external-comment-fallback"
         ) {
-            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const returnTy = Type.tensor(selfType, unit());
             const funName = ops.receiveAnyText(
                 self.name,
                 selector.kind === "internal-comment-fallback"
@@ -1003,7 +989,7 @@ export class ModuleGen {
                 FunAttr.impure(),
                 FunAttr.inline(),
             ];
-            const body: FuncAstStmt[] = [selfUnpack];
+            const body: FuncAstStatement[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
                     StatementGen.fromTact(
@@ -1027,7 +1013,7 @@ export class ModuleGen {
 
         // Fallback
         if (selector.kind === "internal-fallback") {
-            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const returnTy = Type.tensor(selfType, unit());
             const funName = ops.receiveAny(self.name, "internal");
             const paramValues: FunParamValue[] = [
                 [funcIdOf("self"), selfType],
@@ -1037,7 +1023,7 @@ export class ModuleGen {
                 FunAttr.impure(),
                 FunAttr.inline(),
             ];
-            const body: FuncAstStmt[] = [selfUnpack];
+            const body: FuncAstStatement[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
                     StatementGen.fromTact(
@@ -1061,7 +1047,7 @@ export class ModuleGen {
 
         // Bounced
         if (selector.kind === "bounce-fallback") {
-            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const returnTy = Type.tensor(selfType, unit());
             const funName = ops.receiveBounceAny(self.name);
             const paramValues: FunParamValue[] = [
                 [funcIdOf("self"), selfType],
@@ -1071,7 +1057,7 @@ export class ModuleGen {
                 FunAttr.impure(),
                 FunAttr.inline(),
             ];
-            const body: FuncAstStmt[] = [selfUnpack];
+            const body: FuncAstStatement[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
                     StatementGen.fromTact(
@@ -1094,7 +1080,7 @@ export class ModuleGen {
         }
 
         if (selector.kind === "bounce-binary") {
-            const returnTy = Type.tensor(selfType, UNIT_TYPE);
+            const returnTy = Type.tensor(selfType, unit());
             const funName = ops.receiveTypeBounce(self.name, selector.type);
             const paramValues: FunParamValue[] = [
                 [funcIdOf("self"), selfType],
@@ -1112,10 +1098,10 @@ export class ModuleGen {
                 FunAttr.impure(),
                 FunAttr.inline(),
             ];
-            const body: FuncAstStmt[] = [selfUnpack];
+            const body: FuncAstStatement[] = [selfUnpack];
             body.push(
                 vardef(
-                    undefined,
+                    '_',
                     resolveFuncTypeUnpack(
                         this.ctx.ctx,
                         selector.type,
@@ -1166,7 +1152,7 @@ export class ModuleGen {
         ]);
         const attrs = [FunAttr.method_id(getMethodId(f.name))];
 
-        const body: FuncAstStmt[] = [];
+        const body: FuncAstStatement[] = [];
         // Unpack parameters
         for (const param of f.params) {
             unwrapExternal(
@@ -1178,12 +1164,12 @@ export class ModuleGen {
         }
         // Load contract state
         body.push(
-            vardef(undefined, "self", call(ops.contractLoad(self.name), [])),
+            vardef('_', "self", call(ops.contractLoad(self.name), [])),
         );
         // Execute get method
         body.push(
             vardef(
-                undefined,
+                '_',
                 "res",
                 call(
                     `self~${ops.extension(self.name, f.name)}`,
@@ -1225,7 +1211,7 @@ export class ModuleGen {
         type: TypeDescription,
     ): FuncAstFunctionDefinition {
         // () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure
-        const returnTy = UNIT_TYPE;
+        const returnTy = unit();
         const funName = "recv_internal";
         const paramValues: FunParamValue[] = [
             ["msg_value", Type.int()],
@@ -1233,31 +1219,31 @@ export class ModuleGen {
             ["in_msg", Type.slice()],
         ];
         const attrs = [FunAttr.impure()];
-        const body: FuncAstStmt[] = [];
+        const body: FuncAstStatement[] = [];
 
         // Load context
         body.push(comment("Context"));
         body.push(
             vardef(
-                undefined,
+                '_',
                 "cs",
                 call("begin_parse", [], { receiver: id("in_msg_cell") }),
             ),
         );
         body.push(
-            vardef(undefined, "msg_flags", call("cs~load_uint", [number(4)])),
+            vardef('_', "msg_flags", call("cs~load_uint", [int(4)])),
         ); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
         body.push(
             vardef(
-                undefined,
+                '_',
                 "msg_bounced",
-                unop("-", binop(id("msg_flags"), "&", number(1))),
+                unop("-", binop(id("msg_flags"), "&", int(1))),
             ),
         );
         body.push(
             vardef(
                 Type.slice(),
-                id("msg_sender_addr"),
+                "msg_sender_addr",
                 call("__tact_verify_address", [call("cs~load_msg_addr", [])]),
             ),
         );
@@ -1282,7 +1268,7 @@ export class ModuleGen {
         // Load self
         body.push(comment("Load contract data"));
         body.push(
-            vardef(undefined, "self", call(ops.contractLoad(type.name), [])),
+            vardef('_', "self", call(ops.contractLoad(type.name), [])),
         );
         body.push(cr());
 
@@ -1291,7 +1277,7 @@ export class ModuleGen {
         body.push(
             vardef(
                 Type.int(),
-                id("handled"),
+                "handled",
                 call(`self~${ops.contractRouter(type.name, "internal")}`, [
                     id("msg_bounced"),
                     id("in_msg"),
@@ -1305,7 +1291,7 @@ export class ModuleGen {
         body.push(
             expr(
                 call("throw_unless", [
-                    number(contractErrors.invalidMessage.id),
+                    int(contractErrors.invalidMessage.id),
                     id("handled"),
                 ]),
             ),
@@ -1325,7 +1311,7 @@ export class ModuleGen {
         type: TypeDescription,
     ): FuncAstFunctionDefinition {
         // () recv_external(slice in_msg) impure
-        const returnTy = UNIT_TYPE;
+        const returnTy = unit();
         const funName = "recv_internal";
         const paramValues: FunParamValue[] = [
             ["msg_value", Type.int()],
@@ -1333,12 +1319,12 @@ export class ModuleGen {
             ["in_msg", Type.slice()],
         ];
         const attrs = [FunAttr.impure()];
-        const body: FuncAstStmt[] = [];
+        const body: FuncAstStatement[] = [];
 
         // Load self
         body.push(comment("Load contract data"));
         body.push(
-            vardef(undefined, "self", call(ops.contractLoad(type.name), [])),
+            vardef('_', "self", call(ops.contractLoad(type.name), [])),
         );
         body.push(cr());
 
@@ -1347,7 +1333,7 @@ export class ModuleGen {
         body.push(
             vardef(
                 Type.int(),
-                id("handled"),
+                "handled",
                 call(`self~${ops.contractRouter(type.name, "external")}`, [
                     id("in_msg"),
                 ]),
@@ -1360,7 +1346,7 @@ export class ModuleGen {
         body.push(
             expr(
                 call("throw_unless", [
-                    number(contractErrors.invalidMessage.id),
+                    int(contractErrors.invalidMessage.id),
                     id("handled"),
                 ]),
             ),
@@ -1377,7 +1363,7 @@ export class ModuleGen {
     }
 
     /**
-     * Adds entries from the main Tact contract creating a program containing the entrypoint.
+     * Adds items from the main Tact contract creating a program containing the entrypoint.
      *
      * XXX: In the old backend, they simply push multiply functions here, creating an entry
      * for a non-existent `$main` function.
@@ -1386,34 +1372,34 @@ export class ModuleGen {
         m: FuncAstModule,
         contractTy: TypeDescription,
     ): void {
-        m.entries.push(
+        m.items.push(
             comment("", `Receivers of a Contract ${contractTy.name}`, ""),
         );
 
         // Write receivers
         for (const r of Object.values(contractTy.receivers)) {
-            m.entries.push(this.writeReceiver(contractTy, r));
+            m.items.push(this.writeReceiver(contractTy, r));
         }
 
-        m.entries.push(
+        m.items.push(
             comment("", `Get methods of a Contract ${contractTy.name}`, ""),
         );
 
         // Getters
         for (const f of contractTy.functions.values()) {
             if (f.isGetter) {
-                m.entries.push(this.writeGetter(f));
+                m.items.push(this.writeGetter(f));
             }
         }
 
         // Interfaces
-        m.entries.push(this.writeInterfaces(contractTy));
+        m.items.push(this.writeInterfaces(contractTy));
 
         // ABI:
         // _ get_abi_ipfs() method_id {
         //   return "${abiLink}";
         // }
-        m.entries.push(
+        m.items.push(
             this.ctx.fun(
                 [FunAttr.method_id()],
                 "get_abi_ipfs",
@@ -1428,7 +1414,7 @@ export class ModuleGen {
         //_ lazy_deployment_completed() method_id {
         //   return get_data().begin_parse().load_int(1);
         // }
-        m.entries.push(
+        m.items.push(
             this.ctx.fun(
                 [FunAttr.method_id()],
                 "lazy_deployment_completed",
@@ -1436,7 +1422,7 @@ export class ModuleGen {
                 Type.hole(),
                 [
                     ret(
-                        call("load_int", [number(1)], {
+                        call("load_int", [int(1)], {
                             receiver: call("begin_parse", [], {
                                 receiver: call("get_data", []),
                             }),
@@ -1447,22 +1433,22 @@ export class ModuleGen {
             ),
         );
 
-        m.entries.push(
+        m.items.push(
             comment("", `Routing of a Contract ${contractTy.name}`, ""),
         );
         const hasExternal = contractTy.receivers.find((v) =>
             v.selector.kind.startsWith("external-"),
         );
-        m.entries.push(this.writeRouter(contractTy, "internal"));
+        m.items.push(this.writeRouter(contractTy, "internal"));
         if (hasExternal) {
-            m.entries.push(this.writeRouter(contractTy, "external"));
+            m.items.push(this.writeRouter(contractTy, "external"));
         }
 
         // Render internal receiver
-        m.entries.push(this.makeInternalReceiver(contractTy));
+        m.items.push(this.makeInternalReceiver(contractTy));
         if (hasExternal) {
             // Render external receiver
-            m.entries.push(this.makeExternalReceiver(contractTy));
+            m.items.push(this.makeExternalReceiver(contractTy));
         }
     }
 

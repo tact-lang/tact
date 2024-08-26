@@ -1,7 +1,7 @@
 import { AstExpression, SrcInfo } from "../grammar/ast";
 import { CompilerContext } from "../context";
 import { TypeRef } from "../types/types";
-import { FuncAstExpr } from "../func/syntax";
+import { FuncAstExpression } from "../func/grammar";
 
 /**
  * A static map of functions defining Func expressions for Tact ABI functions and methods.
@@ -13,7 +13,7 @@ export type AbiFunction = {
         args: TypeRef[],
         resolved: AstExpression[],
         loc: SrcInfo,
-    ) => FuncAstExpr;
+    ) => FuncAstExpression;
 };
 
 // TODO

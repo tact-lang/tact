@@ -2,12 +2,12 @@ import { CompilerContext } from "../context";
 import { topologicalSort } from "../utils/utils";
 import {
     FuncAstFunctionDefinition,
-    FuncAstAsmFunction,
+    FuncAstAsmFunctionDefinition ,
     FuncAstFunctionAttribute,
-    FuncAstIdExpr,
-    FuncType,
-    FuncAstStmt,
-} from "../func/syntax";
+    FuncAstId,
+    FuncAstType,
+    FuncAstStatement,
+} from "../func/grammar";
 import { asmfun, fun, FunParamValue } from "../func/syntaxConstructors";
 import { forEachExpression } from "../func/iterators";
 
@@ -70,7 +70,7 @@ export class Location {
 
 export type WrittenFunction = {
     name: string;
-    definition: FuncAstFunctionDefinition | FuncAstAsmFunction | undefined;
+    definition: FuncAstFunctionDefinition | FuncAstAsmFunctionDefinition | undefined;
     kind: BodyKind;
     context: LocationContext | undefined;
     depends: Set<string>;
@@ -116,7 +116,7 @@ export class WriterContext {
     public save(
         value:
             | FuncAstFunctionDefinition
-            | FuncAstAsmFunction
+            | FuncAstAsmFunctionDefinition
             | { name: string; kind: "name_only" },
         params: Partial<FunctionInfo> = {},
     ): void {
@@ -128,7 +128,7 @@ export class WriterContext {
         let name: string;
         let definition:
             | FuncAstFunctionDefinition
-            | FuncAstAsmFunction
+            | FuncAstAsmFunctionDefinition
             | undefined;
         if (value.kind === "name_only") {
             name = value.name;
@@ -136,7 +136,7 @@ export class WriterContext {
         } else {
             const defValue = value as
                 | FuncAstFunctionDefinition
-                | FuncAstAsmFunction;
+                | FuncAstAsmFunctionDefinition;
             name = defValue.name.value;
             definition = defValue;
         }
@@ -160,13 +160,13 @@ export class WriterContext {
      */
     public fun(
         attrs: FuncAstFunctionAttribute[],
-        name: string | FuncAstIdExpr,
+        name: string | FuncAstId,
         paramValues: FunParamValue[],
-        returnTy: FuncType,
-        body: FuncAstStmt[],
+        returnTy: FuncAstType,
+        body: FuncAstStatement[],
         params: Partial<FunctionInfo> = {},
     ): FuncAstFunctionDefinition {
-        const f = fun(attrs, name, paramValues, returnTy, body);
+        const f = fun(name, paramValues, attrs, returnTy, body);
         this.save(f, params);
         return f;
     }
@@ -185,13 +185,13 @@ export class WriterContext {
      */
     public asm(
         attrs: FuncAstFunctionAttribute[],
-        name: string | FuncAstIdExpr,
+        name: string | FuncAstId,
         paramValues: FunParamValue[],
-        returnTy: FuncType,
+        returnTy: FuncAstType,
         rawAsm: string,
         params: Partial<FunctionInfo> = {},
-    ): FuncAstAsmFunction {
-        const f = asmfun(attrs, name, paramValues, returnTy, rawAsm);
+    ): FuncAstAsmFunctionDefinition {
+        const f = asmfun(name, paramValues, attrs, returnTy, [rawAsm]);
         this.save(f, params);
         return f;
     }
