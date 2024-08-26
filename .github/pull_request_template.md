@@ -1,15 +1,14 @@
-Closes #number
+Click the `Preview` tab and select a PR template:
 
-<!--
-IMPORTANT:
-If your PR doesn't close a particular issue, please, create the issue first and describe the whole context: what you're adding/changing and why you're doing so. And only then open the Pull Request, which would close that issue!
-
-In case you are adding a new language feature, a standard library function or introducing other user-facing changes, you need to document them via a new PR to tact-docs.
--->
-
-- [ ] I have updated CHANGELOG.md
-- [ ] I have documented my contribution in Tact Docs: https://github.com/tact-lang/tact-docs/pull/PR-NUMBER
-- [ ] I have added tests to demonstrate the contribution is correctly implemented: this usually includes both positive and negative tests, showing the happy path(s) and featuring intentionally broken cases
-- [ ] I have run all the tests locally and no test failure was reported
-- [ ] I have run the linter, formatter and spellchecker
-- [ ] I did not do unrelated and/or undiscussed refactorings
+- [New language feature](?expand=1&template=language-feature.md)
+- [Bugfix](?expand=1&template=bugfix.md)
+- [Optimization of generated code](?expand=1&template=codegen.md)
+- [API for third-party tools](?expand=1&template=api.md)
+- [Project dependencies: updating, porting to another library, etc.](?expand=1&template=dependencies.md)
+- [CI](?expand=1&template=CI.md)
+- [Linters: adding more lints or changing the existing ones](?expand=1&template=linters.md)
+- [Compiler documentation](?expand=1&template=compiler-documentation.md)
+- [Improve compiler tests by adding new ones or modifying the existing tests](?expand=1&template=tests.md)
+- [Tact release](?expand=1&template=release.md)
+- [Project policies](?expand=1&template=policies.md)
+- [Code quality improvement](?expand=1&code-quality.md)
