@@ -77,7 +77,7 @@ describe("writeSerialization", () => {
                 "user",
                 wCtx,
             );
-            for (const t of Object.values(getAllTypes(ctx))) {
+            for (const t of getAllTypes(ctx)) {
                 if (t.kind === "contract" || t.kind === "struct") {
                     writeAccessors(t, "user", wCtx);
                 }

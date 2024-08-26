@@ -1,5 +1,5 @@
 import { CompilerContext, createContextStore } from "../context";
-import { getAllTypes, getType, toBounced } from "../types/resolveDescriptors";
+import { getType, toBounced, getAllTypes } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { topologicalSort } from "../utils/utils";
 import { StorageAllocation } from "./StorageAllocation";
@@ -12,7 +12,10 @@ import { idText } from "../grammar/ast";
 
 const store = createContextStore<StorageAllocation>();
 
-export function getAllocation(ctx: CompilerContext, name: string) {
+export function getAllocation(
+    ctx: CompilerContext,
+    name: string,
+): StorageAllocation {
     const t = store.get(ctx, name);
     if (!t) {
         throwInternalCompilerError(`Allocation for ${name} not found`);
@@ -20,15 +23,18 @@ export function getAllocation(ctx: CompilerContext, name: string) {
     return t;
 }
 
-export function getAllocations(ctx: CompilerContext) {
+export function getAllocations(ctx: CompilerContext): {
+    allocation: StorageAllocation;
+    type: TypeDescription;
+}[] {
     return getSortedTypes(ctx).map((v) => ({
         allocation: getAllocation(ctx, v.name),
         type: v,
     }));
 }
 
-export function getSortedTypes(ctx: CompilerContext) {
-    const types = Object.values(getAllTypes(ctx)).filter(
+export function getSortedTypes(ctx: CompilerContext): TypeDescription[] {
+    const types = getAllTypes(ctx).filter(
         (v) => v.kind === "struct" || v.kind === "contract",
     );
     let structs = types.filter((t) => t.kind === "struct");
@@ -54,7 +60,7 @@ export function getSortedTypes(ctx: CompilerContext) {
     return structs;
 }
 
-export function resolveAllocations(ctx: CompilerContext) {
+export function resolveAllocations(ctx: CompilerContext): CompilerContext {
     // Load topological order of structs and contracts
     const types = getSortedTypes(ctx);
 

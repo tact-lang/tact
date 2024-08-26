@@ -537,8 +537,37 @@ Line 4, col 16:
 `;
 
 exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-default-field 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -570,36 +599,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
     "traits": [],
     "uid": 1020,
   },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "S": {
+  {
     "ast": {
       "fields": [
         {
@@ -700,14 +700,43 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
     "traits": [],
     "uid": 27286,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-default-field 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-default-field 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-optional-field 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -739,36 +768,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
     "traits": [],
     "uid": 1020,
   },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "S": {
+  {
     "ast": {
       "fields": [
         {
@@ -869,14 +869,106 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
     "traits": [],
     "uid": 27286,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-optional-field 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-optional-field 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for contract-bounced-slice 1`] = `
-{
-  "A": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Slice;,
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Slice,
+        "text": "Slice",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Slice",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 35456,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 6,
+      "kind": "trait",
+      "loc": trait BaseTrait {
+    
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
     "ast": {
       "fields": [
         {
@@ -980,99 +1072,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "traits": [],
     "uid": 22757,
   },
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 6,
-      "kind": "trait",
-      "loc": trait BaseTrait {
-    
-},
-      "name": {
-        "id": 5,
-        "kind": "id",
-        "loc": BaseTrait,
-        "text": "BaseTrait",
-      },
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "Slice": {
-    "ast": {
-      "id": 4,
-      "kind": "primitive_type_decl",
-      "loc": primitive Slice;,
-      "name": {
-        "id": 3,
-        "kind": "type_id",
-        "loc": Slice,
-        "text": "Slice",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Slice",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 35456,
-  },
-  "Test": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -1301,14 +1301,106 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     ],
     "uid": 44104,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-bounced-slice 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for contract-bounced-slice 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-small-not-detected 1`] = `
-{
-  "A": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 6,
+      "kind": "trait",
+      "loc": trait BaseTrait {
+    
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
     "ast": {
       "fields": [
         {
@@ -1541,99 +1633,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "traits": [],
     "uid": 22757,
   },
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 6,
-      "kind": "trait",
-      "loc": trait BaseTrait {
-    
-},
-      "name": {
-        "id": 5,
-        "kind": "id",
-        "loc": BaseTrait,
-        "text": "BaseTrait",
-      },
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Bool": {
-    "ast": {
-      "id": 4,
-      "kind": "primitive_type_decl",
-      "loc": primitive Bool;,
-      "name": {
-        "id": 3,
-        "kind": "type_id",
-        "loc": Bool,
-        "text": "Bool",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "Test": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -1944,14 +1944,43 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     ],
     "uid": 44104,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-small-not-detected 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-small-not-detected 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for contract-const-override-abstract 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -1983,36 +2012,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "traits": [],
     "uid": 1020,
   },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "T": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -2137,7 +2137,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     ],
     "uid": 6769,
   },
-  "TestContract": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -2417,14 +2417,43 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     ],
     "uid": 63070,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-const-override-abstract 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for contract-const-override-abstract 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for contract-const-override-virtual 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -2456,36 +2485,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "traits": [],
     "uid": 1020,
   },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "T": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -2622,7 +2622,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     ],
     "uid": 6769,
   },
-  "TestContract": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -2914,14 +2914,77 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     ],
     "uid": 63070,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-const-override-virtual 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for contract-const-override-virtual 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 1`] = `
-{
-  "A": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {
+    
+},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
     "ast": {
       "fields": [
         {
@@ -3025,70 +3088,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     "traits": [],
     "uid": 22757,
   },
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 4,
-      "kind": "trait",
-      "loc": trait BaseTrait {
-    
-},
-      "name": {
-        "id": 3,
-        "kind": "id",
-        "loc": BaseTrait,
-        "text": "BaseTrait",
-      },
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "Test": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -3325,14 +3325,43 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     ],
     "uid": 44104,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for contract-getter-override-abstract 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -3364,36 +3393,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "traits": [],
     "uid": 1020,
   },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "T": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -3535,7 +3535,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     ],
     "uid": 6769,
   },
-  "TestContract": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -3863,14 +3863,43 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     ],
     "uid": 63070,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-getter-override-abstract 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for contract-getter-override-abstract 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for contract-getter-override-virtual 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -3902,36 +3931,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "traits": [],
     "uid": 1020,
   },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "T": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -4099,7 +4099,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     ],
     "uid": 6769,
   },
-  "TestContract": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -4453,14 +4453,72 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     ],
     "uid": 63070,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for contract-getter-override-virtual 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for contract-getter-override-virtual 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-uninit-storage-vars 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -4494,36 +4552,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     "traits": [],
     "uid": 1020,
   },
-  "Bool": {
-    "ast": {
-      "id": 4,
-      "kind": "primitive_type_decl",
-      "loc": primitive Bool;,
-      "name": {
-        "id": 3,
-        "kind": "type_id",
-        "loc": Bool,
-        "text": "Bool",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "HelloWorld": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -4843,7 +4872,14 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     ],
     "uid": 31498,
   },
-  "Int": {
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-uninit-storage-vars 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies1 1`] = `
+[
+  {
     "ast": {
       "id": 2,
       "kind": "primitive_type_decl",
@@ -4872,14 +4908,36 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     "traits": [],
     "uid": 38154,
   },
-}
-`;
-
-exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-uninit-storage-vars 2`] = `{}`;
-
-exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies1 1`] = `
-{
-  "BaseTrait": {
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -4913,70 +4971,12 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "traits": [],
     "uid": 1020,
   },
-  "Bool": {
-    "ast": {
-      "id": 4,
-      "kind": "primitive_type_decl",
-      "loc": primitive Bool;,
-      "name": {
-        "id": 3,
-        "kind": "type_id",
-        "loc": Bool,
-        "text": "Bool",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-}
+]
 `;
 
 exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies1 2`] = `
-{
-  "testFunc": {
+[
+  {
     "ast": {
       "attributes": [],
       "id": 11,
@@ -5027,7 +5027,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     },
     "self": null,
   },
-  "testFunc2": {
+  {
     "ast": {
       "attributes": [],
       "id": 15,
@@ -5071,7 +5071,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     },
     "self": null,
   },
-  "testFunc3": {
+  {
     "ast": {
       "attributes": [],
       "id": 25,
@@ -5179,12 +5179,70 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     },
     "self": null,
   },
-}
+]
 `;
 
 exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies2 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -5218,65 +5276,100 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "traits": [],
     "uid": 1020,
   },
-  "Bool": {
+  {
     "ast": {
-      "id": 4,
-      "kind": "primitive_type_decl",
-      "loc": primitive Bool;,
+      "fields": [
+        {
+          "as": null,
+          "id": 10,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": p: Int,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": p,
+            "text": "p",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 11,
+      "kind": "struct_decl",
+      "loc": struct Point {
+    p: Int;
+},
       "name": {
-        "id": 3,
+        "id": 7,
         "kind": "type_id",
-        "loc": Bool,
-        "text": "Bool",
+        "loc": Point,
+        "text": "Point",
       },
     },
     "constants": [],
     "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
+    "fields": [
+      {
+        "abi": {
+          "name": "p",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 10,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": p: Int,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": p,
+            "text": "p",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": p: Int,
+        "name": "p",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
       },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
+    ],
     "functions": Map {},
     "header": null,
     "init": null,
     "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
+    "kind": "struct",
+    "name": "Point",
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Point{p:int257}",
+    "tlb": "_ p:int257 = Point",
     "traits": [],
-    "uid": 38154,
+    "uid": 35778,
   },
-  "Main": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -5737,170 +5830,14 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     ],
     "uid": 51099,
   },
-  "Point": {
-    "ast": {
-      "fields": [
-        {
-          "as": null,
-          "id": 10,
-          "initializer": null,
-          "kind": "field_decl",
-          "loc": p: Int,
-          "name": {
-            "id": 8,
-            "kind": "id",
-            "loc": p,
-            "text": "p",
-          },
-          "type": {
-            "id": 9,
-            "kind": "type_id",
-            "loc": Int,
-            "text": "Int",
-          },
-        },
-      ],
-      "id": 11,
-      "kind": "struct_decl",
-      "loc": struct Point {
-    p: Int;
-},
-      "name": {
-        "id": 7,
-        "kind": "type_id",
-        "loc": Point,
-        "text": "Point",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [
-      {
-        "abi": {
-          "name": "p",
-          "type": {
-            "format": 257,
-            "kind": "simple",
-            "optional": false,
-            "type": "int",
-          },
-        },
-        "as": null,
-        "ast": {
-          "as": null,
-          "id": 10,
-          "initializer": null,
-          "kind": "field_decl",
-          "loc": p: Int,
-          "name": {
-            "id": 8,
-            "kind": "id",
-            "loc": p,
-            "text": "p",
-          },
-          "type": {
-            "id": 9,
-            "kind": "type_id",
-            "loc": Int,
-            "text": "Int",
-          },
-        },
-        "default": undefined,
-        "index": 0,
-        "loc": p: Int,
-        "name": "p",
-        "type": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false,
-        },
-      },
-    ],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "struct",
-    "name": "Point",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": "Point{p:int257}",
-    "tlb": "_ p:int257 = Point",
-    "traits": [],
-    "uid": 35778,
-  },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies2 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors-in-bodies2 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
-{
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 6,
-      "kind": "trait",
-      "loc": trait BaseTrait {
-    
-},
-      "name": {
-        "id": 5,
-        "kind": "id",
-        "loc": BaseTrait,
-        "text": "BaseTrait",
-      },
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Bool": {
-    "ast": {
-      "id": 4,
-      "kind": "primitive_type_decl",
-      "loc": primitive Bool;,
-      "name": {
-        "id": 3,
-        "kind": "type_id",
-        "loc": Bool,
-        "text": "Bool",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
+[
+  {
     "ast": {
       "id": 2,
       "kind": "primitive_type_decl",
@@ -6016,14 +5953,36 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
     "traits": [],
     "uid": 38154,
   },
-}
-`;
-
-exports[`resolveDescriptors should resolve descriptors for item-method 2`] = `{}`;
-
-exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] = `
-{
-  "BaseTrait": {
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -6057,36 +6016,14 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
     "traits": [],
     "uid": 1020,
   },
-  "Bool": {
-    "ast": {
-      "id": 4,
-      "kind": "primitive_type_decl",
-      "loc": primitive Bool;,
-      "name": {
-        "id": 3,
-        "kind": "type_id",
-        "loc": Bool,
-        "text": "Bool",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for item-method 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] = `
+[
+  {
     "ast": {
       "id": 2,
       "kind": "primitive_type_decl",
@@ -6115,12 +6052,75 @@ exports[`resolveDescriptors should resolve descriptors for item-native-decl 1`] 
     "traits": [],
     "uid": 38154,
   },
-}
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 6,
+      "kind": "trait",
+      "loc": trait BaseTrait {
+    
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+]
 `;
 
 exports[`resolveDescriptors should resolve descriptors for item-native-decl 2`] = `
-{
-  "sample": {
+[
+  {
     "ast": {
       "attributes": [],
       "id": 13,
@@ -6196,75 +6196,12 @@ native sample(a: Int): Int;,
     },
     "self": null,
   },
-}
+]
 `;
 
 exports[`resolveDescriptors should resolve descriptors for item-native-mutating-method 1`] = `
-{
-  "BaseTrait": {
-    "ast": {
-      "attributes": [],
-      "declarations": [],
-      "id": 6,
-      "kind": "trait",
-      "loc": trait BaseTrait {
-    
-},
-      "name": {
-        "id": 5,
-        "kind": "id",
-        "loc": BaseTrait,
-        "text": "BaseTrait",
-      },
-      "traits": [],
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "trait",
-    "name": "BaseTrait",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 1020,
-  },
-  "Bool": {
-    "ast": {
-      "id": 4,
-      "kind": "primitive_type_decl",
-      "loc": primitive Bool;,
-      "name": {
-        "id": 3,
-        "kind": "type_id",
-        "loc": Bool,
-        "text": "Bool",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
+[
+  {
     "ast": {
       "id": 2,
       "kind": "primitive_type_decl",
@@ -6364,14 +6301,106 @@ mutates extends native inc(self: Int): Int;,
     "traits": [],
     "uid": 38154,
   },
-}
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 6,
+      "kind": "trait",
+      "loc": trait BaseTrait {
+    
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for item-native-mutating-method 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for item-native-mutating-method 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -6405,36 +6434,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
     "traits": [],
     "uid": 1020,
   },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "Main": {
+  {
     "ast": {
       "attributes": [],
       "declarations": [
@@ -7112,16 +7112,307 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
     ],
     "uid": 51099,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 2`] = `[]`;
 
-exports[`resolveDescriptors should resolve descriptors for scope-loops 1`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for scope-loops 1`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
-{
-  "scopeIf": {
+[
+  {
+    "ast": {
+      "attributes": [],
+      "id": 12,
+      "kind": "function_def",
+      "loc": fun scopeUntil() {
+    do {
+        let a: Int = 0;
+    } until (true);
+    let a: String = "abc";
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": scopeUntil,
+        "text": "scopeUntil",
+      },
+      "params": [],
+      "return": null,
+      "statements": [
+        {
+          "condition": {
+            "id": 2,
+            "kind": "boolean",
+            "loc": true,
+            "value": true,
+          },
+          "id": 7,
+          "kind": "statement_until",
+          "loc": do {
+        let a: Int = 0;
+    } until (true);,
+          "statements": [
+            {
+              "expression": {
+                "id": 5,
+                "kind": "number",
+                "loc": 0,
+                "value": 0n,
+              },
+              "id": 6,
+              "kind": "statement_let",
+              "loc": let a: Int = 0;,
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              "type": {
+                "id": 4,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+        },
+        {
+          "expression": {
+            "id": 10,
+            "kind": "string",
+            "loc": "abc",
+            "value": "abc",
+          },
+          "id": 11,
+          "kind": "statement_let",
+          "loc": let a: String = "abc";,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": String,
+            "text": "String",
+          },
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverride": false,
+    "isVirtual": false,
+    "name": "scopeUntil",
+    "origin": "user",
+    "params": [],
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "id": 24,
+      "kind": "function_def",
+      "loc": fun scopeRepeat() {
+    repeat (1) {
+        let a: Int = 0;
+    }
+    let a: String = "abc";
+},
+      "name": {
+        "id": 13,
+        "kind": "id",
+        "loc": scopeRepeat,
+        "text": "scopeRepeat",
+      },
+      "params": [],
+      "return": null,
+      "statements": [
+        {
+          "id": 19,
+          "iterations": {
+            "id": 14,
+            "kind": "number",
+            "loc": 1,
+            "value": 1n,
+          },
+          "kind": "statement_repeat",
+          "loc": repeat (1) {
+        let a: Int = 0;
+    },
+          "statements": [
+            {
+              "expression": {
+                "id": 17,
+                "kind": "number",
+                "loc": 0,
+                "value": 0n,
+              },
+              "id": 18,
+              "kind": "statement_let",
+              "loc": let a: Int = 0;,
+              "name": {
+                "id": 15,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              "type": {
+                "id": 16,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+        },
+        {
+          "expression": {
+            "id": 22,
+            "kind": "string",
+            "loc": "abc",
+            "value": "abc",
+          },
+          "id": 23,
+          "kind": "statement_let",
+          "loc": let a: String = "abc";,
+          "name": {
+            "id": 20,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 21,
+            "kind": "type_id",
+            "loc": String,
+            "text": "String",
+          },
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverride": false,
+    "isVirtual": false,
+    "name": "scopeRepeat",
+    "origin": "user",
+    "params": [],
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "id": 36,
+      "kind": "function_def",
+      "loc": fun scopeWhile() {
+    while (true) {
+        let a: Int = 0;
+    }
+    let a: String = "abc";
+},
+      "name": {
+        "id": 25,
+        "kind": "id",
+        "loc": scopeWhile,
+        "text": "scopeWhile",
+      },
+      "params": [],
+      "return": null,
+      "statements": [
+        {
+          "condition": {
+            "id": 26,
+            "kind": "boolean",
+            "loc": true,
+            "value": true,
+          },
+          "id": 31,
+          "kind": "statement_while",
+          "loc": while (true) {
+        let a: Int = 0;
+    },
+          "statements": [
+            {
+              "expression": {
+                "id": 29,
+                "kind": "number",
+                "loc": 0,
+                "value": 0n,
+              },
+              "id": 30,
+              "kind": "statement_let",
+              "loc": let a: Int = 0;,
+              "name": {
+                "id": 27,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              "type": {
+                "id": 28,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+        },
+        {
+          "expression": {
+            "id": 34,
+            "kind": "string",
+            "loc": "abc",
+            "value": "abc",
+          },
+          "id": 35,
+          "kind": "statement_let",
+          "loc": let a: String = "abc";,
+          "name": {
+            "id": 32,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 33,
+            "kind": "type_id",
+            "loc": String,
+            "text": "String",
+          },
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverride": false,
+    "isVirtual": false,
+    "name": "scopeWhile",
+    "origin": "user",
+    "params": [],
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+  {
     "ast": {
       "attributes": [],
       "id": 48,
@@ -7220,303 +7511,41 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     },
     "self": null,
   },
-  "scopeRepeat": {
-    "ast": {
-      "attributes": [],
-      "id": 24,
-      "kind": "function_def",
-      "loc": fun scopeRepeat() {
-    repeat (1) {
-        let a: Int = 0;
-    }
-    let a: String = "abc";
-},
-      "name": {
-        "id": 13,
-        "kind": "id",
-        "loc": scopeRepeat,
-        "text": "scopeRepeat",
-      },
-      "params": [],
-      "return": null,
-      "statements": [
-        {
-          "id": 19,
-          "iterations": {
-            "id": 14,
-            "kind": "number",
-            "loc": 1,
-            "value": 1n,
-          },
-          "kind": "statement_repeat",
-          "loc": repeat (1) {
-        let a: Int = 0;
-    },
-          "statements": [
-            {
-              "expression": {
-                "id": 17,
-                "kind": "number",
-                "loc": 0,
-                "value": 0n,
-              },
-              "id": 18,
-              "kind": "statement_let",
-              "loc": let a: Int = 0;,
-              "name": {
-                "id": 15,
-                "kind": "id",
-                "loc": a,
-                "text": "a",
-              },
-              "type": {
-                "id": 16,
-                "kind": "type_id",
-                "loc": Int,
-                "text": "Int",
-              },
-            },
-          ],
-        },
-        {
-          "expression": {
-            "id": 22,
-            "kind": "string",
-            "loc": "abc",
-            "value": "abc",
-          },
-          "id": 23,
-          "kind": "statement_let",
-          "loc": let a: String = "abc";,
-          "name": {
-            "id": 20,
-            "kind": "id",
-            "loc": a,
-            "text": "a",
-          },
-          "type": {
-            "id": 21,
-            "kind": "type_id",
-            "loc": String,
-            "text": "String",
-          },
-        },
-      ],
-    },
-    "isAbstract": false,
-    "isGetter": false,
-    "isInline": false,
-    "isMutating": false,
-    "isOverride": false,
-    "isVirtual": false,
-    "name": "scopeRepeat",
-    "origin": "user",
-    "params": [],
-    "returns": {
-      "kind": "void",
-    },
-    "self": null,
-  },
-  "scopeUntil": {
-    "ast": {
-      "attributes": [],
-      "id": 12,
-      "kind": "function_def",
-      "loc": fun scopeUntil() {
-    do {
-        let a: Int = 0;
-    } until (true);
-    let a: String = "abc";
-},
-      "name": {
-        "id": 1,
-        "kind": "id",
-        "loc": scopeUntil,
-        "text": "scopeUntil",
-      },
-      "params": [],
-      "return": null,
-      "statements": [
-        {
-          "condition": {
-            "id": 2,
-            "kind": "boolean",
-            "loc": true,
-            "value": true,
-          },
-          "id": 7,
-          "kind": "statement_until",
-          "loc": do {
-        let a: Int = 0;
-    } until (true);,
-          "statements": [
-            {
-              "expression": {
-                "id": 5,
-                "kind": "number",
-                "loc": 0,
-                "value": 0n,
-              },
-              "id": 6,
-              "kind": "statement_let",
-              "loc": let a: Int = 0;,
-              "name": {
-                "id": 3,
-                "kind": "id",
-                "loc": a,
-                "text": "a",
-              },
-              "type": {
-                "id": 4,
-                "kind": "type_id",
-                "loc": Int,
-                "text": "Int",
-              },
-            },
-          ],
-        },
-        {
-          "expression": {
-            "id": 10,
-            "kind": "string",
-            "loc": "abc",
-            "value": "abc",
-          },
-          "id": 11,
-          "kind": "statement_let",
-          "loc": let a: String = "abc";,
-          "name": {
-            "id": 8,
-            "kind": "id",
-            "loc": a,
-            "text": "a",
-          },
-          "type": {
-            "id": 9,
-            "kind": "type_id",
-            "loc": String,
-            "text": "String",
-          },
-        },
-      ],
-    },
-    "isAbstract": false,
-    "isGetter": false,
-    "isInline": false,
-    "isMutating": false,
-    "isOverride": false,
-    "isVirtual": false,
-    "name": "scopeUntil",
-    "origin": "user",
-    "params": [],
-    "returns": {
-      "kind": "void",
-    },
-    "self": null,
-  },
-  "scopeWhile": {
-    "ast": {
-      "attributes": [],
-      "id": 36,
-      "kind": "function_def",
-      "loc": fun scopeWhile() {
-    while (true) {
-        let a: Int = 0;
-    }
-    let a: String = "abc";
-},
-      "name": {
-        "id": 25,
-        "kind": "id",
-        "loc": scopeWhile,
-        "text": "scopeWhile",
-      },
-      "params": [],
-      "return": null,
-      "statements": [
-        {
-          "condition": {
-            "id": 26,
-            "kind": "boolean",
-            "loc": true,
-            "value": true,
-          },
-          "id": 31,
-          "kind": "statement_while",
-          "loc": while (true) {
-        let a: Int = 0;
-    },
-          "statements": [
-            {
-              "expression": {
-                "id": 29,
-                "kind": "number",
-                "loc": 0,
-                "value": 0n,
-              },
-              "id": 30,
-              "kind": "statement_let",
-              "loc": let a: Int = 0;,
-              "name": {
-                "id": 27,
-                "kind": "id",
-                "loc": a,
-                "text": "a",
-              },
-              "type": {
-                "id": 28,
-                "kind": "type_id",
-                "loc": Int,
-                "text": "Int",
-              },
-            },
-          ],
-        },
-        {
-          "expression": {
-            "id": 34,
-            "kind": "string",
-            "loc": "abc",
-            "value": "abc",
-          },
-          "id": 35,
-          "kind": "statement_let",
-          "loc": let a: String = "abc";,
-          "name": {
-            "id": 32,
-            "kind": "id",
-            "loc": a,
-            "text": "a",
-          },
-          "type": {
-            "id": 33,
-            "kind": "type_id",
-            "loc": String,
-            "text": "String",
-          },
-        },
-      ],
-    },
-    "isAbstract": false,
-    "isGetter": false,
-    "isInline": false,
-    "isMutating": false,
-    "isOverride": false,
-    "isVirtual": false,
-    "name": "scopeWhile",
-    "origin": "user",
-    "params": [],
-    "returns": {
-      "kind": "void",
-    },
-    "self": null,
-  },
-}
+]
 `;
 
 exports[`resolveDescriptors should resolve descriptors for struct-decl-default-field 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -7548,36 +7577,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
     "traits": [],
     "uid": 1020,
   },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "S": {
+  {
     "ast": {
       "fields": [
         {
@@ -7678,14 +7678,72 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
     "traits": [],
     "uid": 27286,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for struct-decl-default-field 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for struct-decl-default-field 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -7719,65 +7777,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
     "traits": [],
     "uid": 1020,
   },
-  "Bool": {
-    "ast": {
-      "id": 4,
-      "kind": "primitive_type_decl",
-      "loc": primitive Bool;,
-      "name": {
-        "id": 3,
-        "kind": "type_id",
-        "loc": Bool,
-        "text": "Bool",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "Struct1": {
+  {
     "ast": {
       "fields": [
         {
@@ -7929,7 +7929,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
     "traits": [],
     "uid": 63177,
   },
-  "Struct2": {
+  {
     "ast": {
       "fields": [
         {
@@ -8021,14 +8021,43 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
     "traits": [],
     "uid": 50858,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-types 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -8060,36 +8089,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
     "traits": [],
     "uid": 1020,
   },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-  "SetIntMap4": {
+  {
     "ast": {
       "fields": [
         {
@@ -8252,7 +8252,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
     "traits": [],
     "uid": 24351,
   },
-  "SomeStruct": {
+  {
     "ast": {
       "fields": [
         {
@@ -8343,14 +8343,14 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
     "traits": [],
     "uid": 61480,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-types 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-types 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder 1`] = `
-{
-  "BaseTrait": {
+[
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -8382,36 +8382,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
     "traits": [],
     "uid": 1020,
   },
-  "Cell": {
-    "ast": {
-      "id": 6,
-      "kind": "primitive_type_decl",
-      "loc": primitive Cell;,
-      "name": {
-        "id": 5,
-        "kind": "type_id",
-        "loc": Cell,
-        "text": "Cell",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Cell",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 26294,
-  },
-  "Int": {
+  {
     "ast": {
       "id": 4,
       "kind": "primitive_type_decl",
@@ -8440,7 +8411,36 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
     "traits": [],
     "uid": 38154,
   },
-  "Test": {
+  {
+    "ast": {
+      "id": 6,
+      "kind": "primitive_type_decl",
+      "loc": primitive Cell;,
+      "name": {
+        "id": 5,
+        "kind": "type_id",
+        "loc": Cell,
+        "text": "Cell",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Cell",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 26294,
+  },
+  {
     "ast": {
       "fields": [
         {
@@ -8663,14 +8663,72 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
     "traits": [],
     "uid": 44104,
   },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
-{
-  "BaseTrait": {
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
     "ast": {
       "attributes": [],
       "declarations": [],
@@ -8704,65 +8762,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-base 1`] = `
     "traits": [],
     "uid": 1020,
   },
-  "Bool": {
-    "ast": {
-      "id": 4,
-      "kind": "primitive_type_decl",
-      "loc": primitive Bool;,
-      "name": {
-        "id": 3,
-        "kind": "type_id",
-        "loc": Bool,
-        "text": "Bool",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Bool",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 33424,
-  },
-  "Int": {
-    "ast": {
-      "id": 2,
-      "kind": "primitive_type_decl",
-      "loc": primitive Int;,
-      "name": {
-        "id": 1,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    "constants": [],
-    "dependsOn": [],
-    "fields": [],
-    "functions": Map {},
-    "header": null,
-    "init": null,
-    "interfaces": [],
-    "kind": "primitive_type_decl",
-    "name": "Int",
-    "origin": "user",
-    "partialFieldCount": 0,
-    "receivers": [],
-    "signature": null,
-    "tlb": null,
-    "traits": [],
-    "uid": 38154,
-  },
-}
+]
 `;
 
-exports[`resolveDescriptors should resolve descriptors for trait-base 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for trait-base 2`] = `[]`;

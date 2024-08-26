@@ -8,7 +8,7 @@ import { getAllTypes } from "../types/resolveDescriptors";
 import { getAllErrors } from "../types/resolveErrors";
 
 export function createABI(ctx: CompilerContext, name: string): ContractABI {
-    const allTypes = Object.values(getAllTypes(ctx));
+    const allTypes = getAllTypes(ctx);
 
     // Contract
     const contract = allTypes.find((v) => v.name === name);
@@ -39,7 +39,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
 
     // // Receivers
     const receivers: ABIReceiver[] = [];
-    for (const r of Object.values(contract.receivers)) {
+    for (const r of contract.receivers) {
         if (r.selector.kind === "internal-binary") {
             receivers.push({
                 receiver: "internal",

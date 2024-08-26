@@ -24,7 +24,7 @@ import {
     throwCompilationError,
     throwInternalCompilerError,
 } from "../errors";
-import { CompilerContext, createContextStore } from "../context";
+import { CompilerContext, Store, createContextStore } from "../context";
 import {
     ConstantDescription,
     FieldDescription,
@@ -1823,12 +1823,16 @@ export function getType(
     return r;
 }
 
-export function getAllTypes(ctx: CompilerContext) {
+function getTypeStore(ctx: CompilerContext): Store<TypeDescription> {
     return store.all(ctx);
 }
 
-export function getContracts(ctx: CompilerContext) {
-    return Object.values(getAllTypes(ctx))
+export function getAllTypes(ctx: CompilerContext): TypeDescription[] {
+    return Array.from(getTypeStore(ctx).values());
+}
+
+export function getContracts(ctx: CompilerContext): string[] {
+    return getAllTypes(ctx)
         .filter((v) => v.kind === "contract")
         .map((v) => v.name);
 }
@@ -1863,12 +1867,28 @@ export function hasStaticConstant(ctx: CompilerContext, name: string) {
     return !!staticConstantsStore.get(ctx, name);
 }
 
-export function getAllStaticFunctions(ctx: CompilerContext) {
+function getStaticFunctionStore(
+    ctx: CompilerContext,
+): Store<FunctionDescription> {
     return staticFunctionsStore.all(ctx);
 }
 
-export function getAllStaticConstants(ctx: CompilerContext) {
+export function getAllStaticFunctions(
+    ctx: CompilerContext,
+): FunctionDescription[] {
+    return Array.from(getStaticFunctionStore(ctx).values());
+}
+
+function getStaticConstantStore(
+    ctx: CompilerContext,
+): Store<ConstantDescription> {
     return staticConstantsStore.all(ctx);
+}
+
+export function getAllStaticConstants(
+    ctx: CompilerContext,
+): ConstantDescription[] {
+    return Array.from(getStaticConstantStore(ctx).values());
 }
 
 function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
@@ -1953,7 +1973,7 @@ function initializeConstants(
 function initializeConstantsAndDefaultContractAndStructFields(
     ctx: CompilerContext,
 ): CompilerContext {
-    for (const aggregateTy of Object.values(getAllTypes(ctx))) {
+    for (const aggregateTy of getAllTypes(ctx)) {
         switch (aggregateTy.kind) {
             case "primitive_type_decl":
                 break;
@@ -1997,8 +2017,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
     // constants need to be processed after structs because
     // constants might use default field values: `const x: Int = S{}.f`, where `struct S {f: Int = 42}`
     // and the default field values are filled in during struct field initializers processing
-    const staticConstants = Object.values(getAllStaticConstants(ctx));
-    ctx = initializeConstants(staticConstants, ctx);
+    ctx = initializeConstants(getAllStaticConstants(ctx), ctx);
 
     return ctx;
 }
@@ -2009,7 +2028,7 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
     // and terminates early if a non-trivial SCC is detected
     // https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
 
-    const structs = Object.values(getAllTypes(ctx)).filter(
+    const structs = getAllTypes(ctx).filter(
         (aggregate) => aggregate.kind === "struct",
     );
     let index = 0;

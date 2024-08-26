@@ -61,7 +61,7 @@ export async function build(args: {
     const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context
-    let ctx: CompilerContext = new CompilerContext({ shared: {} });
+    let ctx: CompilerContext = new CompilerContext();
     const cfg: string = JSON.stringify({
         entrypoint: posixNormalize(config.path),
         options: config.options ?? {},
