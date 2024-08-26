@@ -235,7 +235,7 @@ export function writeMainContract(
         ctx.append(``);
 
         // Write receivers
-        for (const r of Object.values(type.receivers)) {
+        for (const r of type.receivers) {
             writeReceiver(type, r, ctx);
         }
 

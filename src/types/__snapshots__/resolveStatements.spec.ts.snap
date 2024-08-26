@@ -1335,13 +1335,33 @@ Line 5, col 14:
 "
 `;
 
-exports[`resolveStatements should fail statements for var-scope-no-toString-global-fun 1`] = `
+exports[`resolveStatements should fail statements for var-scope-no-toString-global-fun1 1`] = `
 "<unknown>:7:9: Static function "toString" does not exist
 Line 7, col 9:
   6 |     init() {
 > 7 |         toString(); // non-existent function
               ^~~~~~~~~~
   8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-no-toString-global-fun2 1`] = `
+"<unknown>:6:12: Static function "toString" does not exist. Perhaps you meant to call ".toString(...)" extension function?
+Line 6, col 12:
+  5 | extends fun toString(self: WrappedInt): Int {
+> 6 |     return toString(self.x);
+                 ^~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-no-valueOf-global-fun 1`] = `
+"<unknown>:4:5: Static function "valueOf" does not exist
+Line 4, col 5:
+  3 | fun foo(x: Int) {
+> 4 |     valueOf(x);
+          ^~~~~~~~~~
+  5 | }
 "
 `;
 
@@ -1499,10 +1519,6 @@ exports[`resolveStatements should resolve statements for assign-self-mutating-me
 [
   [
     "self",
-    "IntWrapper",
-  ],
-  [
-    "self.x",
     "Int",
   ],
   [
@@ -1511,6 +1527,10 @@ exports[`resolveStatements should resolve statements for assign-self-mutating-me
   ],
   [
     "self",
+    "IntWrapper",
+  ],
+  [
+    "self.x",
     "Int",
   ],
   [

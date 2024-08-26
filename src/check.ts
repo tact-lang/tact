@@ -30,7 +30,7 @@ export function check(args: {
 }): CheckResult {
     // Create context
     const stdlib = createVirtualFileSystem("@stdlib/", files);
-    let ctx: CompilerContext = new CompilerContext({ shared: {} });
+    let ctx: CompilerContext = new CompilerContext();
     ctx = featureEnable(ctx, "debug"); // Enable debug flag (does not affect type checking in practice)
     ctx = featureEnable(ctx, "masterchain"); // Enable masterchain flag to avoid masterchain-specific errors
     ctx = featureEnable(ctx, "external"); // Enable external messages flag to avoid external-specific errors

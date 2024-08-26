@@ -19,11 +19,11 @@ import {
 } from "../errors";
 import {
     getAllStaticFunctions,
-    getAllTypes,
     getStaticConstant,
     getType,
     hasStaticConstant,
     resolveTypeRef,
+    getAllTypes,
 } from "./resolveDescriptors";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { printTypeRef, TypeRef } from "./types";
@@ -691,7 +691,7 @@ function processFunctionBody(
 
 export function resolveStatements(ctx: CompilerContext) {
     // Process all static functions
-    for (const f of Object.values(getAllStaticFunctions(ctx))) {
+    for (const f of getAllStaticFunctions(ctx)) {
         if (f.ast.kind === "function_def") {
             // Build statement context
             let sctx = emptyContext(f.ast.loc, f.name, f.returns);
@@ -704,7 +704,7 @@ export function resolveStatements(ctx: CompilerContext) {
     }
 
     // Process all types
-    for (const t of Object.values(getAllTypes(ctx))) {
+    for (const t of getAllTypes(ctx)) {
         // Process init
         if (t.init) {
             // Build statement context
@@ -740,7 +740,7 @@ export function resolveStatements(ctx: CompilerContext) {
         }
 
         // Process receivers
-        for (const f of Object.values(t.receivers)) {
+        for (const f of t.receivers) {
             // Build statement context
             let sctx = emptyContext(f.ast.loc, null, { kind: "void" });
             sctx = addVariable(

@@ -19,6 +19,7 @@ import {
 import { idTextErr, throwCompilationError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
 import {
+    getAllTypes,
     getStaticConstant,
     getStaticFunction,
     getType,
@@ -486,6 +487,18 @@ function resolveStaticCall(
 
     // Check if function exists
     if (!hasStaticFunction(ctx, idText(exp.function))) {
+        // check if there is a method with the same name
+        if (
+            getAllTypes(ctx).find(
+                (ty) => ty.functions.get(idText(exp.function)) !== undefined,
+            ) !== undefined
+        ) {
+            throwCompilationError(
+                `Static function ${idTextErr(exp.function)} does not exist. Perhaps you meant to call ".${idText(exp.function)}(...)" extension function?`,
+                exp.loc,
+            );
+        }
+
         throwCompilationError(
             `Static function ${idTextErr(exp.function)} does not exist`,
             exp.loc,
@@ -830,7 +843,7 @@ export function resolveExpression(
 
 export function getAllExpressionTypes(ctx: CompilerContext) {
     const res: [string, string][] = [];
-    Object.values(store.all(ctx)).forEach((val) => {
+    store.all(ctx).forEach((val, _key) => {
         res.push([val.ast.loc.contents, printTypeRef(val.description)]);
     });
     return res;

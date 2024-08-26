@@ -299,7 +299,7 @@ function writeAll(
     abiLink: string,
 ) {
     // Load all types
-    const allTypes = Object.values(getAllTypes(ctx));
+    const allTypes = getAllTypes(ctx);
     const contracts = allTypes.filter((v) => v.kind === "contract");
     const c = contracts.find((v) => v.name === name);
     if (!c) {
@@ -377,8 +377,7 @@ function writeAll(
     }
 
     // Static functions
-    const sf = getAllStaticFunctions(ctx);
-    Object.values(sf).forEach((f) => {
+    getAllStaticFunctions(ctx).forEach((f) => {
         writeFunction(f, wCtx);
     });
 

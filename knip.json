@@ -10,7 +10,6 @@
   "ignoreDependencies": [
     "@tact-lang/ton-abi",
     "@tact-lang/ton-jest",
-    "@types/jest",
-    "dist"
+    "@types/jest"
   ]
 }

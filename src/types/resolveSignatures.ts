@@ -4,7 +4,7 @@ import { CompilerContext } from "../context";
 import { idToHex } from "../utils/idToHex";
 import { newMessageId } from "../utils/newMessageId";
 import { throwInternalCompilerError } from "../errors";
-import { getAllTypes, getType } from "./resolveDescriptors";
+import { getType, getAllTypes } from "./resolveDescriptors";
 import {
     BinaryReceiverSelector,
     CommentReceiverSelector,
@@ -15,7 +15,6 @@ import { AstReceiver } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 
 export function resolveSignatures(ctx: CompilerContext) {
-    const types = getAllTypes(ctx);
     const signatures: Map<
         string,
         { signature: string; tlb: string; id: number | null }
@@ -197,7 +196,7 @@ export function resolveSignatures(ctx: CompilerContext) {
         return { signature, id, tlb };
     }
 
-    Object.values(types).forEach((t) => {
+    getAllTypes(ctx).forEach((t) => {
         if (t.kind === "struct") {
             const r = createTupleSignature(t.name);
             t.tlb = r.tlb;
@@ -311,8 +310,7 @@ function checkMessageOpcodesUniqueInContractOrTrait(
 }
 
 function checkMessageOpcodesUnique(ctx: CompilerContext) {
-    const allTypes = getAllTypes(ctx);
-    Object.values(allTypes).forEach((aggregate) => {
+    getAllTypes(ctx).forEach((aggregate) => {
         switch (aggregate.kind) {
             case "contract":
             case "trait":
