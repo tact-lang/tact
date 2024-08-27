@@ -46,7 +46,7 @@
     "@ton/crypto": "^3.2.0",
     "blockstore-core": "1.0.5",
     "change-case": "^4.1.2",
-    "ipfs-unixfs-importer": "9.0.10",
+    "ipfs-unixfs-importer": "15.2.5",
     "json-bigint": "^1.0.0",
     "meow": "^13.2.0",
     "mkdirp": "^2.1.3",
