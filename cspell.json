@@ -86,7 +86,9 @@
     "Brujin",
     "dentry",
     "SETINDEXVARQ",
-    "gettest"
+    "gettest",
+    "русский",
+    "عربي"
   ],
   "flagWords": [],
   "ignorePaths": [

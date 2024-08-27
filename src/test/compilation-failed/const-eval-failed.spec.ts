@@ -165,7 +165,7 @@ describe("fail-const-eval", () => {
     });
     itShouldNotCompile({
         testName: 'const-eval-file-not-found',
-        errorMessage: "Cannot read file \"./nonfound-file.bob\": No such file or directory",
+        errorMessage: "Cannot read file \"./notfound-file.bob\": No such file or directory",
     })
     itShouldNotCompile({
         testName: 'const-eval-file-invalid-encoding',

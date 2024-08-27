@@ -14,7 +14,7 @@ trait AbstractConstsHex{
     const TEXT_HEX: String = readFile("./reading-files-text.txt", "hex");
 
     get fun isHex(): Bool{
-        require(self.TEXT_HEX == "d180d183d181d181d0bad0b8d0b920e697a5e69cace8aa9e20e4b8ade59bbde4baba20d8b9d8b1d8a8d98a20456e676c697368", "Readed with invalid encoding");
+        require(self.TEXT_HEX == "d180d183d181d181d0bad0b8d0b920e697a5e69cace8aa9e20e4b8ade59bbde4baba20d8b9d8b1d8a8d98a20456e676c697368", "Reads with invalid encoding");
         return true;
     }
 }
