@@ -232,6 +232,22 @@ describe("map-comparison", () => {
                 to: contract.address,
                 success: true,
             });
+
+            // Just to make sure:
+            const m1 = Dictionary.loadDirect(
+                Dictionary.Keys.Uint(8),
+                Dictionary.Values.Bool(),
+                d1,
+            );
+            const m2 = Dictionary.loadDirect(
+                Dictionary.Keys.Uint(8),
+                Dictionary.Values.Bool(),
+                d2,
+            );
+            expect(m1.size).toBe(1);
+            expect(m2.size).toBe(1);
+            expect(m1.get(1)).toBe(true);
+            expect(m2.get(1)).toBe(true);
         }
     });
 });
