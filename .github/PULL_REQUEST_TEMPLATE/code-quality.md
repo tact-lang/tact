@@ -8,7 +8,7 @@ In general, the Tact team does not accept refactorings from external contributor
 
 ## Issue
 
-Closes issue #number.
+Closes #number.
 
 ## Checklist
 

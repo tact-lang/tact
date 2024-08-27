@@ -8,7 +8,5 @@ body:
         Thanks for taking the time to fill out this feature request!
   - type: textarea
     id: feature-request
-    attributes:
-      description: What kind of features would like to see supported? It can be a language feature, new API, tooling proposal, etc.
     validations:
       required: true

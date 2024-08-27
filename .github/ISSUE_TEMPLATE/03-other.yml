@@ -8,7 +8,5 @@ body:
         Thanks for taking the time to fill out this form!
   - type: textarea
     id: other
-    attributes:
-      description: Compiler documentation, CI, testing, etc.
     validations:
       required: true

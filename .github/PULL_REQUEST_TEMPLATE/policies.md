@@ -1,6 +1,6 @@
 ## Issue
 
-Closes issue #number.
+Closes #number.
 
 ## Checklist
 
