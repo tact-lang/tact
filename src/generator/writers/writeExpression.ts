@@ -34,6 +34,7 @@ import { resolveFuncType } from "./resolveFuncType";
 import { Address, Cell } from "@ton/core";
 import {
     writeAddress,
+    writeBuffer,
     writeCell,
     writeComment,
     writeString,
@@ -118,6 +119,11 @@ export function writeValue(val: Value, wCtx: WriterContext): string {
         const res = writeCell(val, wCtx);
         wCtx.used(res);
         return `${res}()`;
+    }
+    if(val instanceof Buffer){
+        const id = writeBuffer(val, wCtx);
+        wCtx.used(id);
+        return `${id}()`;
     }
     if (val === null) {
         return "null()";

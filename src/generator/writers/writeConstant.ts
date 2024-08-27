@@ -1,10 +1,39 @@
-import { Address, beginCell, Cell } from "@ton/core";
+import { Address, beginCell, Cell, Builder } from "@ton/core";
 import { WriterContext } from "../Writer";
 
 export function writeString(str: string, ctx: WriterContext) {
     const cell = beginCell().storeStringTail(str).endCell();
     return writeRawSlice("string", `String "${str}"`, cell, ctx);
 }
+export function writeBuffer(buf: Buffer, ctx: WriterContext) {
+    const cell = beginCell();
+    writeBufferRec(buf, cell);
+    return writeRawSlice("string", `Binary "${buf.toString('base64')}"`, cell.endCell(), ctx);
+}
+
+/**
+ * Stores buffer in cell recursively, by storing max amount of data in current
+ * cell, and rest in the reference
+ * @param src - original buffer to store
+ * @param builder - cell builder, where to store
+ */
+function writeBufferRec(src: Buffer, builder: Builder) {
+    if (src.length > 0) {
+        const bytes = Math.floor(builder.availableBits / 8);
+        if (src.length > bytes) {
+            const a = src.subarray(0, bytes);
+            const t = src.subarray(bytes);
+            builder = builder.storeBuffer(a);
+            const bb = beginCell();
+            writeBufferRec(t, bb);
+            builder = builder.storeRef(bb.endCell());
+        } else {
+            builder = builder.storeBuffer(src);
+        }
+    }
+}
+
+
 
 export function writeComment(str: string, ctx: WriterContext) {
     const cell = beginCell().storeUint(0, 32).storeStringTail(str).endCell();

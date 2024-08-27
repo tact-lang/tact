@@ -74,6 +74,7 @@ export type Value =
     | bigint
     | boolean
     | string
+    | Buffer
     | Address
     | Cell
     | null
@@ -95,6 +96,8 @@ export function showValue(val: Value): string {
         return "null";
     } else if (val instanceof CommentValue) {
         return val.comment;
+    } else if(val instanceof Buffer){
+        return val.toString('hex');
     } else if (typeof val === "object" && "$tactStruct" in val) {
         const assocList = Object.entries(val).map(([key, value]) => {
             return `${key}: ${showValue(value)}`;

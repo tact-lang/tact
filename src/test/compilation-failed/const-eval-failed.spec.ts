@@ -163,4 +163,12 @@ describe("fail-const-eval", () => {
         errorMessage:
             "Cannot evaluate expression to a constant: repeat argument must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)",
     });
+    itShouldNotCompile({
+        testName: 'const-eval-file-not-found',
+        errorMessage: "Cannot read file \"./nonfound-file.bob\": No such file or directory",
+    })
+    itShouldNotCompile({
+        testName: 'const-eval-file-invalid-encoding',
+        errorMessage: "Unknown encoding found: utf-195",
+    })
 });

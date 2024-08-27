@@ -191,6 +191,16 @@
       "name": "scope-const-shadows-stdlib-ident",
       "path": "./contracts/scope-const-shadows-stdlib-ident.tact",
       "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-file-not-found",
+      "path": "./contracts/const-eval-file-not-found.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-file-invalid-encoding",
+      "path": "./contracts/const-eval-file-invalid-encoding.tact",
+      "output": "./contracts/output"
     }
   ]
 }

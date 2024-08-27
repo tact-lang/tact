@@ -398,4 +398,37 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             },
         },
     ],
+    [
+        "readFile",
+        {
+            name: "readFile",
+            resolve: (_ctx, args, ref) => {
+                if (args.length !== 2) {
+                    throwCompilationError(
+                        "readFile(file, encoding) expects 2 arguments",
+                        ref,
+                    );
+                }
+                const arg0 = args[0]!;
+                if (arg0.kind !== "ref" || arg0.name !== "String") {
+                    throwCompilationError(
+                        "readFile(file, ...) expects string argument",
+                        ref,
+                    );
+                }
+                const arg1 = args[0]!;
+                if (arg1.kind !== "ref" || arg1.name !== "String") {
+                    throwCompilationError(
+                        "readFile(..., encoding) expects string argument",
+                        ref,
+                    );
+                }
+                return { kind: "ref", name: "String", optional: false };
+            },
+            generate: (_, _args, _resolved, _ref) => {
+                //TODO: implement
+                throw new Error("Not implemented");
+            },
+        }
+    ]
 ]);

@@ -380,6 +380,11 @@
       "name": "traits",
       "path": "./src/test/e2e-emulated/contracts/traits.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "reading-files",
+      "path": "./src/test/e2e-emulated/contracts/reading-files.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
     }
   ]
 }
