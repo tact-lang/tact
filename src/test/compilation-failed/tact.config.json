@@ -201,6 +201,11 @@
       "name": "const-eval-file-invalid-encoding",
       "path": "./contracts/const-eval-file-invalid-encoding.tact",
       "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-file-loaded-dynamically",
+      "path": "./contracts/const-eval-file-loaded-dynamically.tact",
+      "output": "./contracts/output"
     }
   ]
 }

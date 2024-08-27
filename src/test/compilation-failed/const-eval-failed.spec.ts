@@ -171,4 +171,8 @@ describe("fail-const-eval", () => {
         testName: 'const-eval-file-invalid-encoding',
         errorMessage: "Unknown encoding found: utf-195",
     })
+    itShouldNotCompile({
+        testName: 'const-eval-file-loaded-dynamically',
+        errorMessage: 'readFile() could not contain dynamic variables'
+    })
 });

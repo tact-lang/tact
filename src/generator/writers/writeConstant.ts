@@ -17,7 +17,7 @@ export function writeBuffer(buf: Buffer, ctx: WriterContext) {
  * @param src - original buffer to store
  * @param builder - cell builder, where to store
  */
-function writeBufferRec(src: Buffer, builder: Builder) {
+export function writeBufferRec(src: Buffer, builder: Builder) {
     if (src.length > 0) {
         const bytes = Math.floor(builder.availableBits / 8);
         if (src.length > bytes) {
@@ -35,9 +35,16 @@ function writeBufferRec(src: Buffer, builder: Builder) {
 
 
 
-export function writeComment(str: string, ctx: WriterContext) {
-    const cell = beginCell().storeUint(0, 32).storeStringTail(str).endCell();
-    return writeRawCell("comment", `Comment "${str}"`, cell, ctx);
+export function writeComment(str: string|Buffer, ctx: WriterContext) {
+    const builder =  beginCell().storeUint(0, 32);
+    let cell: Cell;
+    if(str instanceof Buffer) {
+        writeBufferRec(str, builder);
+        cell = builder.endCell();
+    }
+    else cell = builder.storeStringTail(str).endCell();
+    //                                            .toString('base64') for string would return the same string
+    return writeRawCell("comment", `Comment "${str.toString('base64')}"`, cell, ctx);
 }
 
 export function writeAddress(address: Address, ctx: WriterContext) {

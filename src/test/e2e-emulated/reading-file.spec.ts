@@ -1,8 +1,10 @@
 import {__DANGER_resetNodeId} from "../../grammar/ast";
 import {ReadingFiles} from "./contracts/output/reading-files_ReadingFiles";
-import {Slice, toNano} from "@ton/core";
+import {beginCell, Slice, toNano} from "@ton/core";
 import {readFile} from "node:fs/promises";
 import {Blockchain} from "@ton/sandbox";
+import {writeBufferRec} from "../../generator/writers/writeConstant";
+import "@ton/test-utils";
 
 function readBuffer(slice: Slice) {
     // Check consistency
@@ -28,6 +30,7 @@ function readBuffer(slice: Slice) {
 
     return res;
 }
+
 describe('file reading', () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
@@ -62,5 +65,17 @@ describe('file reading', () => {
         expect(data).toBe(testDataBinary.toString('base64url'));
         //check loaded from file cell
         expect(binaryCell.asSlice().loadStringTail()).toBe('Hello world!');
+
+        //check compile-time comments
+        const {transactions} = await contract.send(treasure.getSender(), {value: toNano('1')}, 'comment');
+        const commentCell = beginCell().storeUint(0, 32);
+        writeBufferRec(pngDataBinary, commentCell);
+        const commentCell2 = commentCell.endCell();
+        expect(transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasure.address,
+            success: true,
+            body: commentCell2
+        })
     })
 });

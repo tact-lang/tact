@@ -825,8 +825,9 @@ export class Interpreter {
         switch (idText(ast.method)) {
             case "asComment": {
                 ensureMethodArity(0, ast.args, ast.loc);
-                const comment = ensureString(
-                    this.interpretExpression(ast.self),
+                const evaluated = this.interpretExpression(ast.self);
+                const comment = evaluated instanceof Buffer ? evaluated : ensureString(
+                    evaluated,
                     ast.self.loc,
                 );
                 return new CommentValue(comment);

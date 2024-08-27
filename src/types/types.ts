@@ -67,7 +67,7 @@ export type StructValue = {
 };
 
 export class CommentValue {
-    constructor(public readonly comment: string) {}
+    constructor(public readonly comment: string | Buffer) {}
 }
 
 export type Value =
@@ -95,7 +95,7 @@ export function showValue(val: Value): string {
     } else if (val === null) {
         return "null";
     } else if (val instanceof CommentValue) {
-        return val.comment;
+        return val.comment.toString('base64');
     } else if(val instanceof Buffer){
         return val.toString('hex');
     } else if (typeof val === "object" && "$tactStruct" in val) {

@@ -43,6 +43,14 @@ trait AbstractStructureWithData{
         return InitialData{alice: 129299912, bob: true};
     }
 }
+trait FileContentAsComment{
+    receive("comment"){
+        //should evaluate in compile-time
+        let responseImageComment = readFile("./reading-files-image.png", "binary").asComment();
+        self.reply(responseImageComment);
+    }
+
+}
 
 trait Hashes{
     //should be predicated in compile-time
@@ -51,9 +59,10 @@ trait Hashes{
         //                     echo "0x$(cat ./reading-files-raw.raw | sha256sum)"
         return self.DataRawSha512 == 0x36511e8f1822cee9fe287deb58a03c5fb53907592901deee88eeda2b1a39b56b;
     }
+
 }
 
-contract ReadingFiles with AbstractConstsHex, AbstractConstUtf8, AbstractImageBinary, AbstractStructureWithData, Hashes, Deployable{
+contract ReadingFiles with AbstractConstsHex, AbstractConstUtf8, AbstractImageBinary, AbstractStructureWithData, Hashes, Deployable, FileContentAsComment{
     //empty
 }
 
