@@ -1,33 +1,36 @@
 import { beginCell, toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { SampleJetton } from "./contracts/output/sample-jetton_SampleJetton";
 import { JettonDefaultWallet } from "./contracts/output/sample-jetton_JettonDefaultWallet";
+import "@ton/test-utils";
 
 describe("bugs", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-    it("should deploy sample jetton correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<SampleJetton>;
+    let target: SandboxContract<JettonDefaultWallet>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(
             await SampleJetton.fromInit(
                 treasure.address,
                 beginCell().endCell(),
                 toNano("100"),
             ),
         );
-        const target = system.open(
+
+        target = blockchain.openContract(
             await JettonDefaultWallet.fromInit(
                 contract.address,
                 treasure.address,
             ),
         );
-        const tracker = system.track(target.address);
-        await contract.send(
-            treasure,
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
             { value: toNano("10") },
             {
                 $$type: "Mint",
@@ -35,8 +38,40 @@ describe("bugs", () => {
                 amount: toNano("10"),
             },
         );
-        await system.run();
 
-        expect(tracker.collect()).toMatchSnapshot();
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should deploy sample jetton correctly", async () => {
+        // Ensure that the Mint operation was successful and the transaction was correct
+        const mintResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            {
+                $$type: "Mint",
+                receiver: treasure.address,
+                amount: toNano("10"),
+            },
+        );
+
+        expect(mintResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+        });
+        expect(mintResult.transactions).toHaveTransaction({
+            from: contract.address,
+            op: 0x178d4519,
+            success: true,
+        });
+        expect(mintResult.transactions).toHaveTransaction({
+            to: treasure.address,
+            op: 0xd53276db,
+        });
     });
 });

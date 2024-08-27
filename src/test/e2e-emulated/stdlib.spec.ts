@@ -1,33 +1,54 @@
 import { beginCell, toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { StdlibTest } from "./contracts/output/stdlib_StdlibTest";
+import "@ton/test-utils";
 
 describe("stdlib", () => {
-    it("should execute slice methods correctly", async () => {
-        // Create and deploy contract
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await StdlibTest.fromInit());
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<StdlibTest>;
 
-        // Execute slice methods
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await StdlibTest.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should execute slice methods correctly", async () => {
         const slice = beginCell()
             .storeBit(1)
             .storeBit(1)
             .storeRef(beginCell().storeBit(1).endCell())
             .endCell()
             .asSlice();
+
+        // Execute and verify slice methods
         expect(await contract.getSliceBits(slice)).toBe(2n);
         expect(await contract.getSliceRefs(slice)).toBe(1n);
         expect(await contract.getSliceEmpty(slice)).toBe(false);
         expect(await contract.getLoadBool(slice)).toBe(true);
         expect(await contract.getLoadBit(slice)).toBe(true);
+
         expect(
             (await contract.getStoreBool(beginCell(), true))
                 .endCell()
                 .toString(),
         ).toBe(beginCell().storeBit(true).endCell().toString());
+
         expect(
             (await contract.getStoreBit(beginCell(), true))
                 .endCell()

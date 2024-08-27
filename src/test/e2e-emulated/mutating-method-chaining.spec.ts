@@ -1,23 +1,48 @@
 import { toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Tester } from "./contracts/output/mutating-method-chaining_Tester";
+import "@ton/test-utils";
 
 describe("bugs", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<Tester>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await Tester.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
     });
+
     it("should implement mutating method chaining correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await Tester.fromInit());
-        const tracker = system.track(contract.address);
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
+        // Ensure initial transaction works as expected
+        const initialResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("1") },
+            null,
+        );
 
-        expect(tracker.collect()).toMatchSnapshot();
+        expect(initialResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+        });
 
+        // Check contract methods
         expect(await contract.getTest1()).toBe(0n);
         expect(await contract.getTest2()).toBe(0n);
         expect(await contract.getTest3()).toBe(6n);
