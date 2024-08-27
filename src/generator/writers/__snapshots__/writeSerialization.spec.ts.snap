@@ -1636,16 +1636,16 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
   },
   {
     "code": {
-      "code": "(slice key, slice value, int flag) = __tact_dict_min(a, 1023);
+      "code": "(slice key, slice value, int flag) = __tact_dict_min(a, kl);
 while (flag) {
-    (slice value_b, int flag_b) = b~__tact_dict_delete_get(1023, key);
+    (slice value_b, int flag_b) = b~__tact_dict_delete_get(kl, key);
     ifnot (flag_b) {
         return 0;
     }
     ifnot (value.slice_hash() == value_b.slice_hash()) {
         return 0;
     }
-    (key, value, flag) = __tact_dict_next(a, 1023, key);
+    (key, value, flag) = __tact_dict_next(a, kl, key);
 }
 return null?(b);",
       "kind": "generic",
@@ -1661,7 +1661,7 @@ return null?(b);",
       "inline",
     },
     "name": "__tact_dict_eq",
-    "signature": "int __tact_dict_eq(cell a, cell b)",
+    "signature": "int __tact_dict_eq(cell a, cell b, int kl)",
   },
   {
     "code": {
@@ -5195,16 +5195,16 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
   },
   {
     "code": {
-      "code": "(slice key, slice value, int flag) = __tact_dict_min(a, 1023);
+      "code": "(slice key, slice value, int flag) = __tact_dict_min(a, kl);
 while (flag) {
-    (slice value_b, int flag_b) = b~__tact_dict_delete_get(1023, key);
+    (slice value_b, int flag_b) = b~__tact_dict_delete_get(kl, key);
     ifnot (flag_b) {
         return 0;
     }
     ifnot (value.slice_hash() == value_b.slice_hash()) {
         return 0;
     }
-    (key, value, flag) = __tact_dict_next(a, 1023, key);
+    (key, value, flag) = __tact_dict_next(a, kl, key);
 }
 return null?(b);",
       "kind": "generic",
@@ -5220,7 +5220,7 @@ return null?(b);",
       "inline",
     },
     "name": "__tact_dict_eq",
-    "signature": "int __tact_dict_eq(cell a, cell b)",
+    "signature": "int __tact_dict_eq(cell a, cell b, int kl)",
   },
   {
     "code": {
@@ -8754,16 +8754,16 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
   },
   {
     "code": {
-      "code": "(slice key, slice value, int flag) = __tact_dict_min(a, 1023);
+      "code": "(slice key, slice value, int flag) = __tact_dict_min(a, kl);
 while (flag) {
-    (slice value_b, int flag_b) = b~__tact_dict_delete_get(1023, key);
+    (slice value_b, int flag_b) = b~__tact_dict_delete_get(kl, key);
     ifnot (flag_b) {
         return 0;
     }
     ifnot (value.slice_hash() == value_b.slice_hash()) {
         return 0;
     }
-    (key, value, flag) = __tact_dict_next(a, 1023, key);
+    (key, value, flag) = __tact_dict_next(a, kl, key);
 }
 return null?(b);",
       "kind": "generic",
@@ -8779,7 +8779,7 @@ return null?(b);",
       "inline",
     },
     "name": "__tact_dict_eq",
-    "signature": "int __tact_dict_eq(cell a, cell b)",
+    "signature": "int __tact_dict_eq(cell a, cell b, int kl)",
   },
   {
     "code": {
