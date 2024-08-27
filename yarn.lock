@@ -1321,6 +1321,13 @@
   resolved "https://registry.yarnpkg.com/@ton/sandbox/-/sandbox-0.20.0.tgz#229ef12bd99b313b91003393890cdb01262189b5"
   integrity sha512-uci6DRDZGW1eu+hHgbVzf4lDTi29PV+5XKPC8ZyYUJaoOtulkHDtgyrfZ1H5QSOVOmUIjHDQhPwLsn1kU51yHw==
 
+"@ton/test-utils@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.npmjs.org/@ton/test-utils/-/test-utils-0.4.2.tgz#965429aaf3258a49cc8ba0ef6623867f2c8b8e27"
+  integrity sha512-fthY8Nrlmy8jnOl/vx6yjeKzzu62ZXMe7ej9Xg7rb4d3511V7dVQK+nw4YLSW5+dD/6WT03dFuNZXnuMYy5fHw==
+  dependencies:
+    node-inspect-extracted "^2.0.0"
+
 "@tsconfig/node10@^1.0.7":
   version "1.0.11"
   resolved "https://registry.npmjs.org/@tsconfig/node10/-/node10-1.0.11.tgz"
@@ -4956,6 +4963,11 @@ node-fetch@^2.6.1, node-fetch@^2.6.7:
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
   dependencies:
     whatwg-url "^5.0.0"
+
+node-inspect-extracted@^2.0.0:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/node-inspect-extracted/-/node-inspect-extracted-2.0.2.tgz#e5500e79f6bc03517175881c991f3bfaea67115a"
+  integrity sha512-8qm9+tu/GmbA/uWQRs6ad8KstyhH94a0pXpRVGHaJ9wHlJbetCYoCwXbKILaaMcE+wgbgpOpzcCnipkL8vTqxA==
 
 node-int64@^0.4.0:
   version "0.4.0"

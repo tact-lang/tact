@@ -1,36 +1,49 @@
 import { IncrementContract } from "./output/increment_IncrementContract";
-import { Blockchain } from "@ton/sandbox";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { toNano } from "@ton/core";
-import { Tracker } from "../src/tracker";
+import "@ton/test-utils";
 
 describe("increment", () => {
-    it("should deploy", async () => {
-        // Create wallet
-        const blockchain = await Blockchain.create();
-        const treasure = await blockchain.treasury("treasure");
-        const contract = blockchain.openContract(
-            await IncrementContract.fromInit(),
-        );
-        const tracker = new Tracker();
-        tracker.track(contract);
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<IncrementContract>;
 
-        tracker.parse(
-            await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "Deploy", queryId: 0n },
-            ),
-        );
-        expect(tracker.collect()).toMatchSnapshot();
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        treasure = await blockchain.treasury("treasure");
+        contract = blockchain.openContract(await IncrementContract.fromInit());
 
-        // Send internal message
-        tracker.parse(
-            await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "Increment", key: 0n, value: -1232n },
-            ),
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            { $$type: "Deploy", queryId: 0n },
         );
-        expect(tracker.collect()).toMatchSnapshot();
+
+        expect(result.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should deploy", async () => {});
+
+    it("should increment", async () => {
+        await contract.send(
+            treasure.getSender(),
+            {
+                value: toNano("10"),
+            },
+            {
+                $$type: "Increment",
+                key: 0n,
+                value: -1232n,
+            },
+        );
+
+        const counters = await contract.getCounters();
+        expect(counters.size).toEqual(1);
+        expect(counters.get(0n)).toEqual(-1232n);
     });
 });

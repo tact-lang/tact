@@ -62,6 +62,7 @@
     "@tact-lang/ton-abi": "^0.0.3",
     "@tact-lang/ton-jest": "^0.0.4",
     "@ton/sandbox": "^0.20.0",
+    "@ton/test-utils": "^0.4.2",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.12",
     "@types/json-bigint": "^1.0.4",

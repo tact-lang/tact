@@ -324,27 +324,6 @@ export function writeTypescript(
         w.append("}");
         w.append();
 
-        // Message parser
-        if (abi.types) {
-            w.append("parseMessage(slice: Slice) {");
-            w.inIndent(() => {
-                // loop through all message types and try loading them
-                for (const t of abi.types!) {
-                    if (t.header) {
-                        w.append("try {");
-                        w.inIndent(() => {
-                            w.append(`return load${t.name}(slice.clone());`);
-                        });
-                        w.append("} catch (e) {}");
-                    }
-                }
-                // throw error if no type was found
-                w.append(`throw new Error('Unknown message type');`);
-            });
-            w.append("}");
-            w.append();
-        }
-
         // Internal receivers
         if (
             abi.receivers &&
