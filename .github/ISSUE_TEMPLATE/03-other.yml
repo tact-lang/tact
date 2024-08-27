@@ -9,7 +9,6 @@ body:
   - type: textarea
     id: other
     attributes:
-      label: What is on your mind?
-      description: Compiler documentation, CI, testing, API, tooling, etc.
+      description: Compiler documentation, CI, testing, etc.
     validations:
       required: true
