@@ -1,6 +1,6 @@
 name: Feature Request
 description: File a feature request.
-labels: ["language feature", "triage"]
+labels: ["enhancement", "triage"]
 body:
   - type: markdown
     attributes:
@@ -9,7 +9,6 @@ body:
   - type: textarea
     id: feature-request
     attributes:
-      label: What kind of features would like to see supported in Tact?
-      description: Anything, expect floating-point numbers support :)
+      description: What kind of features would like to see supported? It can be a language feature, new API, tooling proposal, etc.
     validations:
       required: true
