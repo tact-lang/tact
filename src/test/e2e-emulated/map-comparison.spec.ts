@@ -1,26 +1,38 @@
 import { Address, beginCell, Cell, Dictionary, toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { MapComparisonTestContract } from "./contracts/output/map-comparison_MapComparisonTestContract";
+import "@ton/test-utils";
 
 describe("map-comparison", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-    it("should implement map comparison correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<MapComparisonTestContract>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(
             await MapComparisonTestContract.fromInit(),
         );
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
 
-        // Test
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
 
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should implement map comparison correctly", async () => {
+        // Test Int Int - Equal
         {
-            // Int Int - Equal
             const m1: Dictionary<bigint, bigint> = Dictionary.empty(
                 Dictionary.Keys.BigInt(256),
                 Dictionary.Values.BigInt(256),
@@ -36,8 +48,8 @@ describe("map-comparison", () => {
             expect(await contract.getCompareIntInt(m1, m2)).toBe(true);
         }
 
+        // Test Int Int - Not Equal
         {
-            // Int Int - Not Equal
             const m1: Dictionary<bigint, bigint> = Dictionary.empty(
                 Dictionary.Keys.BigInt(256),
                 Dictionary.Values.BigInt(256),
@@ -53,8 +65,8 @@ describe("map-comparison", () => {
             expect(await contract.getCompareIntInt(m1, m2)).toBe(false);
         }
 
+        // Test Int Cell - Equal
         {
-            // Int Cell - Equal
             const m1: Dictionary<bigint, Cell> = Dictionary.empty(
                 Dictionary.Keys.BigInt(256),
                 Dictionary.Values.Cell(),
@@ -70,8 +82,8 @@ describe("map-comparison", () => {
             expect(await contract.getCompareIntCell(m1, m2)).toBe(true);
         }
 
+        // Test Int Cell - Not Equal
         {
-            // Int Cell - Not Equal
             const m1: Dictionary<bigint, Cell> = Dictionary.empty(
                 Dictionary.Keys.BigInt(256),
                 Dictionary.Values.Cell(),
@@ -87,8 +99,8 @@ describe("map-comparison", () => {
             expect(await contract.getCompareIntCell(m1, m2)).toBe(false);
         }
 
+        // Test Int Address - Equal
         {
-            // Int Address - Equal
             const m1: Dictionary<bigint, Address> = Dictionary.empty(
                 Dictionary.Keys.BigInt(256),
                 Dictionary.Values.Address(),
@@ -124,8 +136,8 @@ describe("map-comparison", () => {
             expect(await contract.getCompareIntAddress(m1, m2)).toBe(true);
         }
 
+        // Test Int Address - Not Equal
         {
-            // Int Address - Not Equal
             const m1: Dictionary<bigint, Address> = Dictionary.empty(
                 Dictionary.Keys.BigInt(256),
                 Dictionary.Values.Address(),
