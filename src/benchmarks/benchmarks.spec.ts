@@ -1,4 +1,8 @@
-import { toNano } from "@ton/core";
+import {
+    toNano,
+    TransactionComputeVm,
+    TransactionDescriptionGeneric,
+} from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Functions } from "./contracts/output/benchmark_functions_Functions";
 import { Functions as FunctionsInline } from "./contracts/output/benchmark_functions_inline_Functions";
@@ -22,16 +26,12 @@ describe("benchmarks", () => {
             { $$type: "Add", value: 10n },
         );
 
-        // Calculate gas used
-        const gasUsed = sendResult.transactions.reduce((totalGas, txn) => {
-            if (
-                txn.description.type === "generic" &&
-                txn.description.computePhase.type === "vm"
-            ) {
-                return totalGas + txn.description.computePhase.gasUsed;
-            }
-            return totalGas;
-        }, 0n);
+        const gasUsed = (
+            (
+                sendResult.transactions[1]!
+                    .description as TransactionDescriptionGeneric
+            ).computePhase as TransactionComputeVm
+        ).gasUsed;
         expect(gasUsed).toMatchInlineSnapshot(`3648n`);
 
         // Verify code size
@@ -50,16 +50,12 @@ describe("benchmarks", () => {
             { $$type: "Add", value: 10n },
         );
 
-        // Calculate gas used
-        const gasUsed = sendResult.transactions.reduce((totalGas, txn) => {
-            if (
-                txn.description.type === "generic" &&
-                txn.description.computePhase.type === "vm"
-            ) {
-                return totalGas + txn.description.computePhase.gasUsed;
-            }
-            return totalGas;
-        }, 0n);
+        const gasUsed = (
+            (
+                sendResult.transactions[1]!
+                    .description as TransactionDescriptionGeneric
+            ).computePhase as TransactionComputeVm
+        ).gasUsed;
         expect(gasUsed).toMatchInlineSnapshot(`3517n`);
 
         // Verify code size
