@@ -73,5 +73,7 @@ describe("bugs", () => {
             to: treasure.address,
             op: 0xd53276db,
         });
+
+        expect((await target.getGetWalletData()).balance).toBe(toNano("20"));
     });
 });
