@@ -8,7 +8,12 @@ export function writeString(str: string, ctx: WriterContext) {
 export function writeBuffer(buf: Buffer, ctx: WriterContext) {
     const cell = beginCell();
     writeBufferRec(buf, cell);
-    return writeRawSlice("string", `Binary "${buf.toString('base64')}"`, cell.endCell(), ctx);
+    return writeRawSlice(
+        "string",
+        `Binary "${buf.toString("base64")}"`,
+        cell.endCell(),
+        ctx,
+    );
 }
 
 /**
@@ -33,18 +38,20 @@ export function writeBufferRec(src: Buffer, builder: Builder) {
     }
 }
 
-
-
-export function writeComment(str: string|Buffer, ctx: WriterContext) {
-    const builder =  beginCell().storeUint(0, 32);
+export function writeComment(str: string | Buffer, ctx: WriterContext) {
+    const builder = beginCell().storeUint(0, 32);
     let cell: Cell;
-    if(str instanceof Buffer) {
+    if (str instanceof Buffer) {
         writeBufferRec(str, builder);
         cell = builder.endCell();
-    }
-    else cell = builder.storeStringTail(str).endCell();
+    } else cell = builder.storeStringTail(str).endCell();
     //                                            .toString('base64') for string would return the same string
-    return writeRawCell("comment", `Comment "${str.toString('base64')}"`, cell, ctx);
+    return writeRawCell(
+        "comment",
+        `Comment "${str.toString("base64")}"`,
+        cell,
+        ctx,
+    );
 }
 
 export function writeAddress(address: Address, ctx: WriterContext) {

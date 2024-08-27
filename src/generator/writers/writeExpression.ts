@@ -120,7 +120,7 @@ export function writeValue(val: Value, wCtx: WriterContext): string {
         wCtx.used(res);
         return `${res}()`;
     }
-    if(val instanceof Buffer){
+    if (val instanceof Buffer) {
         const id = writeBuffer(val, wCtx);
         wCtx.used(id);
         return `${id}()`;

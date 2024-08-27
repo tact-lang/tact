@@ -427,8 +427,11 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             },
             generate: (ctx, args, resolved, ref) => {
                 // This actually shouldn't be called, because readFile should be evaluated as a constant
-                throwCompilationError('readFile() could not contain dynamic variables', ref);
+                throwCompilationError(
+                    "readFile() could not contain dynamic variables",
+                    ref,
+                );
             },
-        }
-    ]
+        },
+    ],
 ]);

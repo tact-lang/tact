@@ -168,15 +168,12 @@ function ensureString(val: Value, source: SrcInfo): string {
  * @param source {SrcInfo} - source info
  */
 function ensureFilename(val: Value, source: SrcInfo): string {
-    const getError = (msg: string) => `Cannot read file ${JSON.stringify(val)}: ${msg}`;
-    const filename = resolve(dirname(source.file!), ensureString(val, source))
+    const getError = (msg: string) =>
+        `Cannot read file ${JSON.stringify(val)}: ${msg}`;
+    const filename = resolve(dirname(source.file!), ensureString(val, source));
     if (!existsSync(filename)) {
-        throwErrorConstEval(
-            getError('No such file or directory'),
-            source,
-        );
+        throwErrorConstEval(getError("No such file or directory"), source);
     }
-
 
     return filename;
 }
@@ -190,7 +187,10 @@ function ensureFunArity(arity: number, args: AstExpression[], source: SrcInfo) {
     }
 }
 
-function ensureEncoding(encoding: Value, source: SrcInfo): BufferEncoding|undefined {
+function ensureEncoding(
+    encoding: Value,
+    source: SrcInfo,
+): BufferEncoding | undefined {
     encoding = ensureString(encoding, source);
     const allEncodings: Set<BufferEncoding> = new Set([
         "ascii",
@@ -204,12 +204,15 @@ function ensureEncoding(encoding: Value, source: SrcInfo): BufferEncoding|undefi
         "base64url",
         "latin1",
         "binary",
-        "hex"
+        "hex",
     ]);
     if (!allEncodings.has(encoding! as BufferEncoding)) {
-        throwErrorConstEval(`Unknown encoding found: ${encoding}.\nValid values: ${Array.from(allEncodings).join(', ')}`, source);
+        throwErrorConstEval(
+            `Unknown encoding found: ${encoding}.\nValid values: ${Array.from(allEncodings).join(", ")}`,
+            source,
+        );
     }
-    if(encoding === 'binary') return undefined;
+    if (encoding === "binary") return undefined;
     return encoding as BufferEncoding;
 }
 
@@ -826,10 +829,10 @@ export class Interpreter {
             case "asComment": {
                 ensureMethodArity(0, ast.args, ast.loc);
                 const evaluated = this.interpretExpression(ast.self);
-                const comment = evaluated instanceof Buffer ? evaluated : ensureString(
-                    evaluated,
-                    ast.self.loc,
-                );
+                const comment =
+                    evaluated instanceof Buffer
+                        ? evaluated
+                        : ensureString(evaluated, ast.self.loc);
                 return new CommentValue(comment);
             }
             default:
@@ -1077,12 +1080,12 @@ export class Interpreter {
                 ensureFunArity(1, ast.args, ast.loc);
                 const evaluated = this.interpretExpression(ast.args[0]!);
                 // Under the hood, sha256_sync uses buffers, if one converted string to buffer once, lets pass it to sha256_sync
-                const bytes = evaluated instanceof Buffer ? evaluated : Buffer.from(
-                    ensureString(
-                        evaluated,
-                        ast.args[0]!.loc,
-                    )
-                );
+                const bytes =
+                    evaluated instanceof Buffer
+                        ? evaluated
+                        : Buffer.from(
+                              ensureString(evaluated, ast.args[0]!.loc),
+                          );
                 if (bytes.length > 128) {
                     throwErrorConstEval(
                         `data is too large for sha256 hash, expected up to 128 bytes, got ${bytes.length}`,
@@ -1096,96 +1099,95 @@ export class Interpreter {
                 return null;
             }
             case "cell":
-            {
-                ensureFunArity(1, ast.args, ast.loc);
-                const evaluated = this.interpretExpression(ast.args[0]!);
-                if (evaluated instanceof Buffer) {
-                    //if this is a binary string - lets try to decode it without base64 (for base64 one should use 'utf-8' or ascii encoding)
+                {
+                    ensureFunArity(1, ast.args, ast.loc);
+                    const evaluated = this.interpretExpression(ast.args[0]!);
+                    if (evaluated instanceof Buffer) {
+                        //if this is a binary string - lets try to decode it without base64 (for base64 one should use 'utf-8' or ascii encoding)
+                        try {
+                            return Cell.fromBoc(evaluated)[0]!;
+                        } catch (_) {
+                            throwErrorConstEval(
+                                `invalid boc encoding for a cell: ${evaluated.toString("base64")}`,
+                                ast.loc,
+                            );
+                        }
+                    }
+                    const str = ensureString(evaluated, ast.args[0]!.loc);
                     try {
-                        return Cell.fromBoc(evaluated)[0]!;
-                    } catch (_){
+                        return Cell.fromBase64(str);
+                    } catch (_) {
                         throwErrorConstEval(
-                            `invalid boc encoding for a cell: ${evaluated.toString("base64")}`,
+                            `invalid base64 encoding for a cell: ${str}`,
                             ast.loc,
-                        )
+                        );
                     }
                 }
-                const str = ensureString(
-                    evaluated,
-                    ast.args[0]!.loc,
-                );
-                try {
-                    return Cell.fromBase64(str);
-                } catch (_) {
-                    throwErrorConstEval(
-                        `invalid base64 encoding for a cell: ${str}`,
-                        ast.loc,
-                    );
-                }
-            }
                 break;
             case "readFile":
-            {
-                ensureFunArity(2, ast.args, ast.loc);
-                //original filename, as user provided
-                const original = this.interpretExpression(ast.args[0]!);
-                const filename = ensureFilename(
-                    original,
-                    ast.args[0]!.loc,
-                );
-                const encoding = ensureEncoding(
-                    this.interpretExpression(ast.args[1]!),
-                    ast.args[1]!.loc,
-                );
-                const getError = (msg: string) => `Cannot read file ${JSON.stringify(original)}: ${msg}`;
-
-                let dataString: string|Buffer;
-                try {
-                    dataString = readFileSync(filename, {encoding});
-                    return dataString;
-                } catch (e: unknown) {
-                    throwErrorConstEval(
-                        getError( (e instanceof Error ? e.message : (e as string) + "")),
-                        ast.loc,
+                {
+                    ensureFunArity(2, ast.args, ast.loc);
+                    //original filename, as user provided
+                    const original = this.interpretExpression(ast.args[0]!);
+                    const filename = ensureFilename(original, ast.args[0]!.loc);
+                    const encoding = ensureEncoding(
+                        this.interpretExpression(ast.args[1]!),
+                        ast.args[1]!.loc,
                     );
+                    const getError = (msg: string) =>
+                        `Cannot read file ${JSON.stringify(original)}: ${msg}`;
+
+                    let dataString: string | Buffer;
+                    try {
+                        dataString = readFileSync(filename, { encoding });
+                        return dataString;
+                    } catch (e: unknown) {
+                        throwErrorConstEval(
+                            getError(
+                                e instanceof Error
+                                    ? e.message
+                                    : (e as string) + "",
+                            ),
+                            ast.loc,
+                        );
+                    }
                 }
-            }
                 break;
             case "address":
-            {
-                ensureFunArity(1, ast.args, ast.loc);
-                const str = ensureString(
-                    this.interpretExpression(ast.args[0]!),
-                    ast.args[0]!.loc,
-                );
-                try {
-                    const address = Address.parse(str);
-                    if (
-                        address.workChain !== 0 &&
-                        address.workChain !== -1
-                    ) {
-                        throwErrorConstEval(
-                            `${str} is invalid address`,
-                            ast.loc,
-                        );
-                    }
-                    if (
-                        !enabledMasterchain(this.context) &&
-                        address.workChain !== 0
-                    ) {
-                        throwErrorConstEval(
-                            `address ${str} is from masterchain which is not enabled for this contract`,
-                            ast.loc,
-                        );
-                    }
-                    return address;
-                } catch (_) {
-                    throwErrorConstEval(
-                        `invalid address encoding: ${str}`,
-                        ast.loc,
+                {
+                    ensureFunArity(1, ast.args, ast.loc);
+                    const str = ensureString(
+                        this.interpretExpression(ast.args[0]!),
+                        ast.args[0]!.loc,
                     );
+                    try {
+                        const address = Address.parse(str);
+                        if (
+                            address.workChain !== 0 &&
+                            address.workChain !== -1
+                        ) {
+                            throwErrorConstEval(
+                                `${str} is invalid address`,
+                                ast.loc,
+                            );
+                        }
+                        if (
+                            !enabledMasterchain(this.context) &&
+                            address.workChain !== 0
+                        ) {
+                            throwErrorConstEval(
+                                `address ${str} is from masterchain which is not enabled for this contract`,
+                                ast.loc,
+                            );
+                        }
+                        return address;
+                    } catch (_) {
+                        throwErrorConstEval(
+                            `invalid address encoding: ${str}`,
+                            ast.loc,
+                        );
+                    }
                 }
-            }
                 break;
             case "newAddress": {
                 ensureFunArity(2, ast.args, ast.loc);

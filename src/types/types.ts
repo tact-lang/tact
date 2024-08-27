@@ -95,9 +95,9 @@ export function showValue(val: Value): string {
     } else if (val === null) {
         return "null";
     } else if (val instanceof CommentValue) {
-        return val.comment.toString('base64');
-    } else if(val instanceof Buffer){
-        return val.toString('hex');
+        return val.comment.toString("base64");
+    } else if (val instanceof Buffer) {
+        return val.toString("hex");
     } else if (typeof val === "object" && "$tactStruct" in val) {
         const assocList = Object.entries(val).map(([key, value]) => {
             return `${key}: ${showValue(value)}`;

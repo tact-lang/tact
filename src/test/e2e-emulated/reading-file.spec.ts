@@ -1,9 +1,9 @@
-import {__DANGER_resetNodeId} from "../../grammar/ast";
-import {ReadingFiles} from "./contracts/output/reading-files_ReadingFiles";
-import {beginCell, Slice, toNano} from "@ton/core";
-import {readFile} from "node:fs/promises";
-import {Blockchain} from "@ton/sandbox";
-import {writeBufferRec} from "../../generator/writers/writeConstant";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { ReadingFiles } from "./contracts/output/reading-files_ReadingFiles";
+import { beginCell, Slice, toNano } from "@ton/core";
+import { readFile } from "node:fs/promises";
+import { Blockchain } from "@ton/sandbox";
+import { writeBufferRec } from "../../generator/writers/writeConstant";
 import "@ton/test-utils";
 
 function readBuffer(slice: Slice) {
@@ -16,7 +16,7 @@ function readBuffer(slice: Slice) {
     }
 
     // Read string
-    let res: Buffer
+    let res: Buffer;
     if (slice.remainingBits === 0) {
         res = Buffer.alloc(0);
     } else {
@@ -31,24 +31,24 @@ function readBuffer(slice: Slice) {
     return res;
 }
 
-describe('file reading', () => {
+describe("file reading", () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
 
-    it('should read a file', async () => {
+    it("should read a file", async () => {
         const [pngDataBinary, testDataBinary, blockchain] = await Promise.all([
             readFile(__dirname + "/contracts/reading-files-image.png"),
             readFile(__dirname + "/contracts/reading-files-text.txt"),
-            await Blockchain.create()
+            await Blockchain.create(),
         ]);
 
         const contract = blockchain.openContract(await ReadingFiles.fromInit());
         const treasure = await blockchain.treasury("treasure");
         await contract.send(
             treasure.getSender(),
-            {value: toNano("10")},
-            {$$type: "Deploy", queryId: 0n},
+            { value: toNano("10") },
+            { $$type: "Deploy", queryId: 0n },
         );
 
         expect(await contract.getIsHex()).toBe(true);
@@ -56,18 +56,21 @@ describe('file reading', () => {
         expect(await contract.getValidateHash()).toBe(true);
 
         const dataString = await contract.getImage();
-        expect(dataString).toBe(pngDataBinary.toString('utf-8'));
+        expect(dataString).toBe(pngDataBinary.toString("utf-8"));
         const bufferData = readBuffer(await contract.getImageBlob());
-        expect(bufferData.equals(pngDataBinary)).toBeTruthy()
+        expect(bufferData.equals(pngDataBinary)).toBeTruthy();
 
-
-        const {data, binaryCell} = await contract.getInitialData();
-        expect(data).toBe(testDataBinary.toString('base64url'));
+        const { data, binaryCell } = await contract.getInitialData();
+        expect(data).toBe(testDataBinary.toString("base64url"));
         //check loaded from file cell
-        expect(binaryCell.asSlice().loadStringTail()).toBe('Hello world!');
+        expect(binaryCell.asSlice().loadStringTail()).toBe("Hello world!");
 
         //check compile-time comments
-        const {transactions} = await contract.send(treasure.getSender(), {value: toNano('1')}, 'comment');
+        const { transactions } = await contract.send(
+            treasure.getSender(),
+            { value: toNano("1") },
+            "comment",
+        );
         const commentCell = beginCell().storeUint(0, 32);
         writeBufferRec(pngDataBinary, commentCell);
         const commentCell2 = commentCell.endCell();
@@ -75,7 +78,7 @@ describe('file reading', () => {
             from: contract.address,
             to: treasure.address,
             success: true,
-            body: commentCell2
-        })
-    })
+            body: commentCell2,
+        });
+    });
 });
