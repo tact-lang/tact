@@ -631,8 +631,15 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 // 257 for int, 267 for address
                 const keyLength =
                     self.key === "Int"
-                        ? self.keyAs?.startsWith("int")
-                            ? parseInt(self.keyAs.slice(3), 10)
+                        ? self.keyAs
+                            ? self.keyAs.startsWith("int")
+                                ? parseInt(self.keyAs.slice(3))
+                                : self.keyAs.startsWith("uint")
+                                  ? parseInt(self.keyAs.slice(4))
+                                  : throwCompilationError(
+                                        "Invalid key serialization type", // Should not happen
+                                        ref,
+                                    )
                             : 257
                         : 267;
 
