@@ -1,8 +1,7 @@
-// eslint-disable rule-name
-import { OpenedContract, beginCell, toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { beginCell, toNano } from "@ton/core";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { DNSTester } from "./contracts/output/dns_DNSTester";
+import "@ton/test-utils";
 
 function convertToInternal(src: string) {
     if (src === ".") {
@@ -18,34 +17,31 @@ function convertToInternal(src: string) {
     }
     res = Buffer.concat([res, Buffer.from([0])]);
     return res;
-    // let res = Buffer.alloc(0);
-    // for (let s of src) {
-    //     if (s === '.') {
-    //         res = Buffer.concat([res, Buffer.from([0])]);
-    //     } else {
-    //         res = Buffer.concat([res, Buffer.from(s, 'latin1')]);
-    //     }
-    // }
-    // if (!src.endsWith('.')) {
-    //     res = Buffer.concat([res, Buffer.from([0])]);
-    // }
-    // return res;
 }
 
 describe("dns", () => {
-    let contract: OpenedContract<DNSTester>;
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<DNSTester>;
 
     beforeEach(async () => {
-        __DANGER_resetNodeId();
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        contract = system.open(await DNSTester.fromInit());
-        await contract.send(
-            treasure,
+        blockchain = await Blockchain.create();
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await DNSTester.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
             { value: toNano("10") },
             { $$type: "Deploy", queryId: 0n },
         );
-        await system.run();
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
     });
 
     const invalidNames = [
@@ -114,7 +110,7 @@ describe("dns", () => {
 
     for (const validName of validNames) {
         if (validName !== ".") {
-            it(`should convert valid name: ${validName}`, async () => {
+            it(`should verify DNS internal structure for valid name: ${validName}`, async () => {
                 const data = (await contract.getStringToInternal(validName))!;
                 expect(await contract.getDnsInternalVerify(data)).toBe(true);
             });
@@ -141,6 +137,7 @@ describe("dns", () => {
             expect(received1.length).toBe(received2.length);
         });
     }
+
     for (const notEqualNormalizedElem of notEqualNormalized) {
         it(`should convert not equal normalized names: ${notEqualNormalizedElem[0]!} ${notEqualNormalizedElem[1]!}`, async () => {
             let data1 = (await contract.getStringToInternal(

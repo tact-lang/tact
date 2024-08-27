@@ -1,45 +1,71 @@
 import { toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { ExternalFallbacksTester } from "./contracts/output/external-fallbacks_ExternalFallbacksTester";
+import "@ton/test-utils";
 
-describe("strings", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-    it("should implement external fallbacks correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await ExternalFallbacksTester.fromInit());
+describe("external fallbacks", () => {
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<ExternalFallbacksTester>;
 
-        // Deploy
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
-        expect(contract.abi).toMatchSnapshot();
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(
+            await ExternalFallbacksTester.fromInit(),
+        );
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
 
         expect(await contract.getGetA()).toBe(100n);
+    });
 
-        await contract.send(
-            treasure,
+    it("should implement external fallbacks correctly", async () => {
+        // Test the `Add` function via internal message
+        const addResultInternal = await contract.send(
+            treasure.getSender(),
             { value: toNano("10") },
             {
                 $$type: "Add",
                 x: 10n,
             },
         );
-        await system.run();
+        expect(addResultInternal.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+        });
         expect(await contract.getGetA()).toBe(110n);
 
-        await contract.sendExternal({
+        // Test the `Add` function via external message
+        const addResultExternal = await contract.sendExternal({
             $$type: "Add",
             x: 10n,
         });
-        await system.run();
+        expect(addResultExternal.transactions).toHaveTransaction({
+            to: contract.address,
+            success: true,
+        });
         expect(await contract.getGetA()).toBe(120n);
 
-        await contract.sendExternal(null);
-        await system.run();
+        // Test the external fallback handling (null external message)
+        const fallbackResult = await contract.sendExternal(null);
+        expect(fallbackResult.transactions).toHaveTransaction({
+            to: contract.address,
+            success: true,
+        });
         expect(await contract.getGetA()).toBe(220n);
     });
 });

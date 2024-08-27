@@ -1,28 +1,37 @@
 import { beginCell, toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Test, Test_getterMapping } from "./contracts/output/getters_Test";
+import "@ton/test-utils";
 
 describe("getters", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-    it("should implement getters correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await Test.fromInit());
-        await contract.send(
-            treasure,
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<Test>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await Test.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
             { value: toNano("10") },
             {
                 $$type: "Deploy",
                 queryId: 0n,
             },
         );
-        await system.run();
-        expect(contract).toMatchSnapshot();
 
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should implement getters correctly", async () => {
         // Getter name conflicts
         expect(await contract.getTestGetter()).toBe(1n);
         expect(await contract.gettest_getter()).toBe(2n);
