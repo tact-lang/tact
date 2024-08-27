@@ -1,20 +1,34 @@
 import { toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { TernaryTester } from "./contracts/output/ternary_TernaryTester";
+import "@ton/test-utils";
 
 describe("ternary", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-    it("should implement ternary operator correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await TernaryTester.fromInit());
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<TernaryTester>;
 
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await TernaryTester.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should implement ternary operator correctly", async () => {
         // Check methods
         expect(await contract.getTest1(123n)).toEqual(1n);
         expect(await contract.getTest1(5n)).toEqual(2n);

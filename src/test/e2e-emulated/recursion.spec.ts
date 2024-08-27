@@ -1,28 +1,41 @@
 import { toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { RecursionTester } from "./contracts/output/recursion_RecursionTester";
+import "@ton/test-utils";
 
 describe("recursion", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-    it("should perform recursive operations correctly", async () => {
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await RecursionTester.fromInit());
-        await contract.send(
-            treasure,
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<RecursionTester>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await RecursionTester.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
             { value: toNano("10") },
             { $$type: "Deploy", queryId: 0n },
         );
-        await system.run();
 
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should perform recursive operations correctly", async () => {
+        // Check Fibonacci sequence
         expect(await contract.getFib(0n)).toBe(0n);
         expect(await contract.getFib(1n)).toBe(1n);
         expect(await contract.getFib(2n)).toBe(1n);
         expect(await contract.getFib(3n)).toBe(2n);
 
+        // Check Factorial calculations
         expect(await contract.getFact(0n)).toBe(1n);
         expect(await contract.getFact(1n)).toBe(1n);
         expect(await contract.getFact(2n)).toBe(2n);

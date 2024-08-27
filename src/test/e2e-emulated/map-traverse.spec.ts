@@ -1,20 +1,36 @@
 import { toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { MapTraverseTestContract } from "./contracts/output/map-traverse_MapTraverseTestContract";
+import "@ton/test-utils";
 
 describe("map-traversal", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-    it("should implement map traversal correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await MapTraverseTestContract.fromInit());
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<MapTraverseTestContract>;
 
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(
+            await MapTraverseTestContract.fromInit(),
+        );
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should implement map traversal correctly", async () => {
         // Check methods
         expect(await contract.getTestIntInt()).toEqual(1010n);
         expect(await contract.getTestIntBool()).toEqual(12n);
@@ -34,13 +50,11 @@ describe("map-traversal", () => {
         expect(await contract.getTestMapModificationDuringTraversal1()).toEqual(
             808n,
         );
+
         // XXX works on my macOS instance, but fails in CI for some reason
-        // await expect(
-        //     contract.getTestMapModificationDuringTraversal2(),
-        // ).rejects.toMatchObject(Error("Exit code: -14"));
+        // await expect(contract.getTestMapModificationDuringTraversal2()).rejects.toMatchObject(Error("Exit code: -14"));
 
         expect(await contract.getTestMapSize()).toEqual(4n);
-
         expect(await contract.getTestMapAsField()).toEqual(606n);
         expect(await contract.getTestMapAsStructField()).toEqual(606n);
     });
