@@ -5,7 +5,7 @@ If your PR doesn't close a particular issue, please, create the issue first and 
 
 ## Issue
 
-Closes issue #number.
+Closes #number.
 
 ## Checklist
 
