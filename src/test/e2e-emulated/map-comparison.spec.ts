@@ -172,5 +172,66 @@ describe("map-comparison", () => {
             );
             expect(await contract.getCompareIntAddress(m1, m2)).toBe(false);
         }
+
+        // Test edge case (https://github.com/tact-lang/tact/issues/196#issuecomment-2075088934)
+        {
+            const d1 = beginCell()
+                .storeUint(2, 2) // long label
+                .storeUint(8, 4) // key length
+                .storeUint(1, 8) // key
+                .storeBit(true) // value
+                .endCell();
+
+            const d2 = beginCell()
+                .storeUint(0, 1) // short label
+                .storeUint(0b111111110, 9) // key length
+                .storeUint(1, 8) // key
+                .storeBit(true) // value
+                .endCell();
+
+            let result = await treasure.send({
+                to: contract.address,
+                value: toNano("0.1"),
+                body: beginCell()
+                    .storeUint(
+                        contract.abi.types!.find((t) => t.name === "Compare")!
+                            .header!,
+                        32,
+                    )
+                    .storeMaybeRef(d1)
+                    .storeMaybeRef(d2)
+                    .endCell(),
+                init: contract.init,
+            });
+
+            expect(result.transactions).toHaveTransaction({
+                from: treasure.address,
+                to: contract.address,
+                success: false,
+                exitCode: 53111,
+            });
+
+            result = await treasure.send({
+                to: contract.address,
+                value: toNano("0.1"),
+                body: beginCell()
+                    .storeUint(
+                        contract.abi.types!.find(
+                            (t) => t.name === "CompareDeep",
+                        )!.header!,
+                        32,
+                    )
+                    .storeMaybeRef(d1)
+                    .storeMaybeRef(d2)
+                    .endCell(),
+                init: contract.init,
+            });
+
+            expect(result.transactions).toHaveTransaction({
+                from: treasure.address,
+                to: contract.address,
+                success: true,
+            });
+        }
     });
 });
