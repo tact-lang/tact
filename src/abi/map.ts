@@ -577,4 +577,74 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
         },
     ],
+    [
+        "deepEquals",
+        {
+            name: "deepEquals",
+            resolve(ctx, args, ref) {
+                // Check arguments
+                if (args.length !== 2) {
+                    throwCompilationError(
+                        "deepEquals expects two arguments",
+                        ref,
+                    ); // Ignore self argument
+                }
+                const self = args[0]!;
+                const other = args[1]!;
+                if (self.kind !== "map") {
+                    throwCompilationError(
+                        "deepEquals expects a map as self argument",
+                        ref,
+                    ); // Should not happen
+                }
+                if (other.kind !== "map") {
+                    throwCompilationError(
+                        "deepEquals expects a map as other argument",
+                        ref,
+                    ); // Should not happen
+                }
+
+                return { kind: "ref", name: "Bool", optional: false };
+            },
+            generate: (ctx, args, exprs, ref) => {
+                if (args.length !== 2) {
+                    throwCompilationError(
+                        "deepEquals expects two arguments",
+                        ref,
+                    ); // Ignore self argument
+                }
+                const self = args[0]!;
+                const other = args[1]!;
+                if (self.kind !== "map") {
+                    throwCompilationError(
+                        "deepEquals expects a map as self argument",
+                        ref,
+                    ); // Should not happen
+                }
+                if (other.kind !== "map") {
+                    throwCompilationError(
+                        "deepEquals expects a map as other argument",
+                        ref,
+                    ); // Should not happen
+                }
+
+                // 257 for int, 267 for address
+                const keyLength =
+                    self.key === "Int"
+                        ? self.keyAs
+                            ? self.keyAs.startsWith("int")
+                                ? parseInt(self.keyAs.slice(3))
+                                : self.keyAs.startsWith("uint")
+                                  ? parseInt(self.keyAs.slice(4))
+                                  : throwCompilationError(
+                                        "Invalid key serialization type", // Should not happen
+                                        ref,
+                                    )
+                            : 257
+                        : 267;
+
+                return `${ctx.used("__tact_dict_eq")}(${writeExpression(exprs[0]!, ctx)}, ${writeExpression(exprs[1]!, ctx)}, ${keyLength})`;
+            },
+        },
+    ],
 ]);
