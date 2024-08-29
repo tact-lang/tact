@@ -12,7 +12,10 @@ import { partiallyEvalExpression } from "../../constEval";
 import { CompilerContext } from "../../context";
 import { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
-import { evalBinaryOp, evalUnaryOp } from "../../interpreter";
+import {
+    evalBinaryOp,
+    evalUnaryOp,
+} from "../../interpreterSemantics/standardSemantics";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
