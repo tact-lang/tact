@@ -6,7 +6,7 @@ import { LocationContext, Location, locEquals, locValue } from ".";
 import { WriterContext, ModuleGen, WrittenFunction } from ".";
 import { getRawAST } from "../grammar/store";
 import { ContractABI } from "@ton/core";
-import { FuncFormatter } from "../func/formatter";
+import { FuncPrettyPrinter } from "../func/prettyPrinter";
 import {
     FuncAstModule,
     FuncAstFunctionDefinition,
@@ -17,7 +17,7 @@ import {
     comment,
     mod,
     pragma,
-version,
+    version,
     Type,
     include,
     global,
@@ -123,7 +123,7 @@ export class FuncGenerator {
         m.items.push(pragma("compute-asm-ltr"));
         generated.files.push({
             name: `${this.basename}.code.fc`,
-            code: new FuncFormatter().dump(m),
+            code: new FuncPrettyPrinter().prettyPrint(m),
         });
 
         // header.push("");
@@ -187,7 +187,7 @@ export class FuncGenerator {
         });
         generated.files.push({
             name: `${this.basename}.headers.fc`,
-            code: new FuncFormatter().dump(m),
+            code: new FuncPrettyPrinter().prettyPrint(m),
         });
     }
 
@@ -219,7 +219,7 @@ export class FuncGenerator {
         });
         generated.files.push({
             name: `${this.basename}.stdlib.fc`,
-            code: new FuncFormatter().dump(m),
+            code: new FuncPrettyPrinter().prettyPrint(m),
         });
     }
 
@@ -247,7 +247,7 @@ export class FuncGenerator {
             generated.imported.push("constants");
             generated.files.push({
                 name: `${this.basename}.constants.fc`,
-                code: new FuncFormatter().dump(
+                code: new FuncPrettyPrinter().prettyPrint(
                     mod(
                         ...constantsFunctions.reduce(
                             (acc, v) => {
@@ -335,7 +335,7 @@ export class FuncGenerator {
             generated.files.push({
                 name: `${this.basename}.storage.fc`,
                 code: generatedModules
-                    .map((m) => new FuncFormatter().dump(m))
+                    .map((m) => new FuncPrettyPrinter().prettyPrint(m))
                     .join("\n\n"),
             });
         }

@@ -118,6 +118,7 @@ export function throwFuncParseError(
 /**
  * Throws a FunC syntax error occurred with the given `source`
  */
+// TODO(jubnzv): Move to `errors.ts` for consistency
 export function throwFuncSyntaxError(
     message: string,
     source: FuncSrcInfo,
@@ -1034,15 +1035,15 @@ export type FuncBitwiseExpressionPart = {
 };
 
 export const funcOpMulBitwise = [
-  "*",
-  "/%",
-  "/",
-  "%",
-  "~/",
-  "~%",
-  "^/",
-  "^%",
-  "&"
+    "*",
+    "/%",
+    "/",
+    "%",
+    "~/",
+    "~%",
+    "^/",
+    "^%",
+    "&",
 ] as const;
 export type FuncOpMulBitwise = (typeof funcOpMulBitwise)[number];
 
@@ -1184,7 +1185,11 @@ export type FuncAstBinaryExpression =
     | FuncAstExpressionAddBitwise
     | FuncAstExpressionMulBitwise;
 
-export type FuncBinaryOp = FuncOpCompare | FuncOpBitwiseShift | FuncOpAddBitwise | FuncOpMulBitwise
+export type FuncBinaryOp =
+    | FuncOpCompare
+    | FuncOpBitwiseShift
+    | FuncOpAddBitwise
+    | FuncOpMulBitwise;
 
 /**
  * op Expression
@@ -1440,8 +1445,8 @@ export type FuncAstCommentMultiLine = {
 };
 
 export type FuncAstCR = {
-    kind: "cr",
-    lines: number,
+    kind: "cr";
+    lines: number;
 };
 
 //
@@ -1921,7 +1926,7 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
             object: exprLeft.astOfExpression(),
             calls: zipped,
             loc: createSrcInfo(this),
-        };
+        } as FuncAstExpression;
     },
 
     // parse_expr90, and some inner things
