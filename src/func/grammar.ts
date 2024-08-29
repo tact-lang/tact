@@ -1418,7 +1418,6 @@ export type FuncAstComment = FuncAstCommentSingleLine | FuncAstCommentMultiLine;
 export type FuncAstCommentSingleLine = {
     kind: "comment_singleline";
     line: string;
-    style: ";" | ";;";
     loc: FuncSrcInfo;
 };
 
@@ -1436,7 +1435,7 @@ export type FuncAstCommentMultiLine = {
     kind: "comment_multiline";
     lines: string[];
     skipCR: boolean;
-    style: "{-" | ";" | ";;";
+    style: "{-" | ";;";
     loc: FuncSrcInfo;
 };
 
@@ -1466,7 +1465,6 @@ semantics.addOperation<FuncAstNode>("astOfModule", {
         return {
             kind: "comment_singleline",
             line: lineContents.sourceString,
-            style: ";;",
             loc: createSrcInfo(this),
         };
     },
