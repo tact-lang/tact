@@ -56,6 +56,6 @@ describe("stdlib", () => {
         ).toBe(beginCell().storeBit(true).endCell().toString());
 
         expect(await contract.getTvm_2023_07Upgrade()).toEqual(1255n);
-        expect(await contract.getTvm_2024_04Upgrade()).toEqual(123n);
+        expect(await contract.getTvm_2024_04Upgrade()).toEqual(82009144n);
     });
 });
