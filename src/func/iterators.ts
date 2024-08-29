@@ -1,6 +1,5 @@
 import { FuncAstNode, FuncAstExpression } from "./grammar";
-
-import JSONbig from "json-bigint";
+import { throwUnsupportedNodeError } from "./syntaxUtils";
 
 /**
  * Recursively executes `callback` on each nested expression.
@@ -179,6 +178,6 @@ export function forEachExpression(
             break;
 
         default:
-            throw new Error(`Unsupported node: ${JSON.stringify(node)}`);
+            throwUnsupportedNodeError(node);
     }
 }
