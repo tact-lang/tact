@@ -34,6 +34,22 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
                 traverse(e, callback);
             });
             break;
+        case "asm_function_def":
+            node.shuffle.args.forEach((e) => {
+                traverse(e, callback);
+            });
+            node.shuffle.ret.forEach((e) => {
+                traverse(e, callback);
+            });
+            traverse(node.name, callback);
+            if (node.return) traverse(node.return, callback);
+            node.params.forEach((e) => {
+                traverse(e, callback);
+            });
+            node.instructions.forEach((e) => {
+                traverse(e, callback);
+            });
+            break;
         case "function_decl":
             traverse(node.name, callback);
             if (node.return) traverse(node.return, callback);

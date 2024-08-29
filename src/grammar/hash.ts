@@ -22,6 +22,9 @@ import {
     AstContractInit,
     AstFieldDecl,
     AstNode,
+    AstAsmFunctionDef,
+    AstAsmInstruction,
+    idText,
 } from "./ast";
 import { createHash } from "crypto";
 import { throwInternalCompilerError } from "../errors";
@@ -60,6 +63,8 @@ export class AstHasher {
                 return this.hashMessageDecl(node);
             case "function_def":
                 return this.hashFunctionDef(node);
+            case "asm_function_def":
+                return this.hashAsmFunctionDef(node);
             case "constant_def":
                 return this.hashConstantDef(node);
             case "trait":
@@ -207,6 +212,15 @@ export class AstHasher {
         return `function|${attributesHash}|${returnHash}|${paramsHash}|${statementsHash}`;
     }
 
+    private hashAsmFunctionDef(node: AstAsmFunctionDef): string {
+        const asmAttributeHash = `asm|${this.hashIds(node.shuffle.args)}|->|${node.shuffle.ret.map((num) => num.value.toString()).join("|")}`;
+        const attributesHash = this.hashAttributes(node.attributes);
+        const returnHash = node.return ? this.hash(node.return) : "void";
+        const paramsHash = this.hashParams(node.params);
+        const instructionsHash = this.hashInstructions(node.instructions);
+        return `function|${asmAttributeHash}|${attributesHash}|${returnHash}|${paramsHash}|${instructionsHash}`;
+    }
+
     private hashConstantDef(node: AstConstantDef): string {
         const attributesHash = this.hashAttributes(node.attributes);
         const typeHash = this.hash(node.type);
@@ -288,6 +302,19 @@ export class AstHasher {
             hashedStatements = hashedStatements.sort();
         }
         return hashedStatements.join("|");
+    }
+
+    private hashInstructions(instructions: AstAsmInstruction[]): string {
+        return instructions
+            .map((instruction) => {
+                switch (instruction.kind) {
+                    case "number":
+                        return instruction.value.toString();
+                    case "id":
+                        return idText(instruction);
+                }
+            })
+            .join("|");
     }
 
     private hashStructFieldInitializer(

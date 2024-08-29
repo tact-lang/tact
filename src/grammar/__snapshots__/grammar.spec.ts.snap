@@ -162,7 +162,7 @@ Line 1, col 19:
 `;
 
 exports[`grammar should fail contract-with-imports 1`] = `
-"<unknown>:6:1: Parse error: expected end of input, "trait", "contract", "message", "struct", "const", "@name", "fun", or "primitive"
+"<unknown>:6:1: Parse error: expected end of input, "trait", "contract", "message", "struct", "const", "@name", "asm", "fun", or "primitive"
 
 Line 6, col 1:
   5 | // all imports must be at the very top of the file
@@ -572,6 +572,57 @@ Line 2, col 23:
   1 | @name(native_name_1)
 > 2 | native testNativeFunc(,);
                             ^
+"
+`;
+
+exports[`grammar should fail items-asm-fun-1 1`] = `
+"<unknown>:2:5: Parse error: expected "0X", "0x", "0", "1".."9", "_", "A".."Z", or "a".."z"
+
+Line 2, col 5:
+  1 | asm fun keccak256(s: Slice): Int {
+> 2 |     +
+          ^
+  3 |     INT
+"
+`;
+
+exports[`grammar should fail items-asm-fun-2 1`] = `
+"<unknown>:1:5: Parse error: expected ")"
+
+Line 1, col 5:
+> 1 | asm(1 0) extends fun loadCoins(self: Slice): Int {
+          ^
+  2 |     LDVARUINT16
+"
+`;
+
+exports[`grammar should fail items-asm-fun-3 1`] = `
+"<unknown>:1:9: Parse error: expected ")", "->", "_", "A".."Z", or "a".."z"
+
+Line 1, col 9:
+> 1 | asm(c b 42) extends fun storeDict(b: Builder, c: Cell) {
+              ^
+  2 |     STDICT
+"
+`;
+
+exports[`grammar should fail items-asm-fun-4 1`] = `
+"<unknown>:1:14: Parse error: expected "0" or "1".."9"
+
+Line 1, col 14:
+> 1 | asm(s len -> len 1 0) extends fun loadInt(self: Slice, len: Int): Int {
+                   ^
+  2 |     LDIX
+"
+`;
+
+exports[`grammar should fail items-asm-fun-5 1`] = `
+"<unknown>:1:7: Parse error: expected "0" or "1".."9"
+
+Line 1, col 7:
+> 1 | asm(->) extends fun loadInt(self: Slice, len: Int): Int {
+            ^
+  2 |     LDIX
 "
 `;
 
@@ -3236,6 +3287,330 @@ exports[`grammar should parse expr-with-var 1`] = `
           "loc": return (0 + 1) * 10 / 20 != 10 * someId;,
         },
       ],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse items-asm-funs 1`] = `
+{
+  "id": 44,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 9,
+      "instructions": [
+        {
+          "id": 6,
+          "kind": "number",
+          "loc": 1,
+          "value": 1n,
+        },
+        {
+          "id": 7,
+          "kind": "id",
+          "loc": INT,
+          "text": "INT",
+        },
+        {
+          "id": 8,
+          "kind": "id",
+          "loc": HASHEXT_KECCAK256,
+          "text": "HASHEXT_KECCAK256",
+        },
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun keccak256(s: Slice): Int {
+    1
+    INT
+    HASHEXT_KECCAK256
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": keccak256,
+        "text": "keccak256",
+      },
+      "params": [
+        {
+          "id": 5,
+          "kind": "typed_parameter",
+          "loc": s: Slice,
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": {
+            "id": 4,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+      ],
+      "return": {
+        "id": 2,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "loc": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 18,
+      "instructions": [
+        {
+          "id": 17,
+          "kind": "id",
+          "loc": LDVARUINT16,
+          "text": "LDVARUINT16",
+        },
+      ],
+      "kind": "asm_function_def",
+      "loc": asm( -> 1 0) extends fun loadCoins(self: Slice): Int {
+    LDVARUINT16
+},
+      "name": {
+        "id": 12,
+        "kind": "id",
+        "loc": loadCoins,
+        "text": "loadCoins",
+      },
+      "params": [
+        {
+          "id": 16,
+          "kind": "typed_parameter",
+          "loc": self: Slice,
+          "name": {
+            "id": 14,
+            "kind": "id",
+            "loc": self,
+            "text": "self",
+          },
+          "type": {
+            "id": 15,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+      ],
+      "return": {
+        "id": 13,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [
+          {
+            "id": 10,
+            "kind": "number",
+            "loc": 1,
+            "value": 1n,
+          },
+          {
+            "id": 11,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+        ],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "loc": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 29,
+      "instructions": [
+        {
+          "id": 28,
+          "kind": "id",
+          "loc": STDICT,
+          "text": "STDICT",
+        },
+      ],
+      "kind": "asm_function_def",
+      "loc": asm(c b) extends fun storeDict(b: Builder, c: Cell) {
+    STDICT
+},
+      "name": {
+        "id": 21,
+        "kind": "id",
+        "loc": storeDict,
+        "text": "storeDict",
+      },
+      "params": [
+        {
+          "id": 24,
+          "kind": "typed_parameter",
+          "loc": b: Builder,
+          "name": {
+            "id": 22,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 23,
+            "kind": "type_id",
+            "loc": Builder,
+            "text": "Builder",
+          },
+        },
+        {
+          "id": 27,
+          "kind": "typed_parameter",
+          "loc": c: Cell,
+          "name": {
+            "id": 25,
+            "kind": "id",
+            "loc": c,
+            "text": "c",
+          },
+          "type": {
+            "id": 26,
+            "kind": "type_id",
+            "loc": Cell,
+            "text": "Cell",
+          },
+        },
+      ],
+      "return": null,
+      "shuffle": {
+        "args": [
+          {
+            "id": 19,
+            "kind": "id",
+            "loc": c,
+            "text": "c",
+          },
+          {
+            "id": 20,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+        ],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "loc": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 43,
+      "instructions": [
+        {
+          "id": 42,
+          "kind": "id",
+          "loc": LDIX,
+          "text": "LDIX",
+        },
+      ],
+      "kind": "asm_function_def",
+      "loc": asm(s len -> 1 0) extends fun loadInt(self: Slice, len: Int): Int {
+    LDIX
+},
+      "name": {
+        "id": 34,
+        "kind": "id",
+        "loc": loadInt,
+        "text": "loadInt",
+      },
+      "params": [
+        {
+          "id": 38,
+          "kind": "typed_parameter",
+          "loc": self: Slice,
+          "name": {
+            "id": 36,
+            "kind": "id",
+            "loc": self,
+            "text": "self",
+          },
+          "type": {
+            "id": 37,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+        {
+          "id": 41,
+          "kind": "typed_parameter",
+          "loc": len: Int,
+          "name": {
+            "id": 39,
+            "kind": "id",
+            "loc": len,
+            "text": "len",
+          },
+          "type": {
+            "id": 40,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "return": {
+        "id": 35,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [
+          {
+            "id": 30,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          {
+            "id": 31,
+            "kind": "id",
+            "loc": len,
+            "text": "len",
+          },
+        ],
+        "ret": [
+          {
+            "id": 32,
+            "kind": "number",
+            "loc": 1,
+            "value": 1n,
+          },
+          {
+            "id": 33,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+        ],
+      },
     },
   ],
   "kind": "module",

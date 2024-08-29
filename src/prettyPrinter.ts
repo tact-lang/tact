@@ -41,6 +41,11 @@ import {
     AstNode,
     AstFuncId,
     idText,
+    AstAsmFunctionDef,
+    AstFunctionAttribute,
+    AstTypedParameter,
+    AstAsmInstruction,
+    AstAsmShuffle,
 } from "./grammar/ast";
 import { throwInternalCompilerError } from "./errors";
 import JSONbig from "json-bigint";
@@ -266,6 +271,8 @@ export class PrettyPrinter {
                 return this.ppAstPrimitiveTypeDecl(item);
             case "function_def":
                 return this.ppAstFunctionDef(item);
+            case "asm_function_def":
+                return this.ppAstAsmFunctionDef(item);
             case "native_function_decl":
                 return this.ppAstNativeFunction(item);
             case "trait":
@@ -344,6 +351,8 @@ export class PrettyPrinter {
                 return this.ppAstFieldDecl(item);
             case "function_def":
                 return this.ppAstFunctionDef(item);
+            case "asm_function_def":
+                return this.ppAstAsmFunctionDef(item);
             case "receiver":
                 return this.ppAstReceiver(item);
             case "constant_def":
@@ -416,6 +425,8 @@ export class PrettyPrinter {
                 return this.ppAstFieldDecl(declaration);
             case "function_def":
                 return this.ppAstFunctionDef(declaration);
+            case "asm_function_def":
+                return this.ppAstAsmFunctionDef(declaration);
             case "contract_init":
                 return this.ppAstInitFunction(declaration);
             case "receiver":
@@ -425,35 +436,37 @@ export class PrettyPrinter {
         }
     }
 
-    public ppAstFunctionDef(func: AstFunctionDef): string {
-        const argsFormatted = func.params
-            .map(
-                (arg) =>
-                    `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`,
-            )
-            .join(", ");
-        const attrsRaw = func.attributes.map((attr) => attr.type).join(" ");
-        const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
-        const returnType = func.return
-            ? `: ${this.ppAstType(func.return)}`
-            : "";
-        const body = ` ${this.ppStatementBlock(func.statements)}`;
-        return `${this.indent()}${attrsFormatted}fun ${this.ppAstId(func.name)}(${argsFormatted})${returnType}${body}`;
+    public ppAstFunctionDef(f: AstFunctionDef): string {
+        const body = this.ppStatementBlock(f.statements);
+        return `${this.indent()}${this.ppAstFunctionSignature(f.attributes, f.name, f.return, f.params)} ${body}`;
     }
 
-    ppAstFunctionDecl(func: AstFunctionDecl): string {
-        const argsFormatted = func.params
+    public ppAstAsmFunctionDef(f: AstAsmFunctionDef): string {
+        const asmAttr = `asm${prettyPrintAsmShuffle(f.shuffle)}`;
+        const body = this.ppAsmInstructionsBlock(f.instructions);
+        return `${this.indent()}${asmAttr} ${this.ppAstFunctionSignature(f.attributes, f.name, f.return, f.params)} ${body}`;
+    }
+
+    ppAstFunctionDecl(f: AstFunctionDecl): string {
+        return `${this.indent()}${this.ppAstFunctionSignature(f.attributes, f.name, f.return, f.params)};`;
+    }
+
+    ppAstFunctionSignature(
+        attributes: AstFunctionAttribute[],
+        name: AstId,
+        retTy: AstType | null,
+        params: AstTypedParameter[],
+    ): string {
+        const argsFormatted = params
             .map(
                 (arg) =>
                     `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`,
             )
             .join(", ");
-        const attrsRaw = func.attributes.map((attr) => attr.type).join(" ");
+        const attrsRaw = attributes.map((attr) => attr.type).join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
-        const returnType = func.return
-            ? `: ${this.ppAstType(func.return)}`
-            : "";
-        return `${this.indent()}${attrsFormatted}fun ${this.ppAstId(func.name)}(${argsFormatted})${returnType};`;
+        const returnType = retTy ? `: ${this.ppAstType(retTy)}` : "";
+        return `${attrsFormatted}fun ${this.ppAstId(name)}(${argsFormatted})${returnType}`;
     }
 
     ppAstReceiver(receive: AstReceiver): string {
@@ -564,6 +577,24 @@ export class PrettyPrinter {
         this.decreaseIndent();
         const result = `{\n${stmtsFormatted}\n${this.indent()}}`;
         return result;
+    }
+
+    ppAsmInstructionsBlock(instructions: AstAsmInstruction[]): string {
+        this.increaseIndent();
+        const instructionsFormatted = instructions
+            .map((instr) => this.ppAstAsmInstruction(instr))
+            .join("\n");
+        this.decreaseIndent();
+        return `{\n${instructionsFormatted}\n${this.indent()}}`;
+    }
+
+    ppAstAsmInstruction(instruction: AstAsmInstruction): string {
+        switch (instruction.kind) {
+            case "number":
+                return `${this.indent()}${instruction.value.toString()}`;
+            case "id":
+                return `${this.indent()}${idText(instruction)}`;
+        }
     }
 
     ppAstStatementLet(statement: AstStatementLet): string {
@@ -733,4 +764,15 @@ export function prettyPrint(node: AstNode): string {
                 `Unsupported AST type: ${JSONbig.stringify(node, null, 2)}`,
             );
     }
+}
+
+export function prettyPrintAsmShuffle(shuffle: AstAsmShuffle): string {
+    const ppArgShuffle = shuffle.args.map((id) => idText(id)).join(" ");
+    const ppRetShuffle =
+        shuffle.ret.length === 0
+            ? ""
+            : ` -> ${shuffle.ret.map((num) => num.value.toString()).join(" ")}`;
+    return shuffle.args.length === 0 && shuffle.ret.length === 0
+        ? ""
+        : `(${ppArgShuffle}${ppRetShuffle})`;
 }

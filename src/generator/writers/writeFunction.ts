@@ -1,9 +1,10 @@
 import { enabledInline } from "../../config/features";
 import {
+    AstAsmShuffle,
     AstCondition,
     AstExpression,
-    AstNativeFunctionDecl,
     AstStatement,
+    idOfText,
     idText,
     isWildcard,
     tryExtractPath,
@@ -23,6 +24,7 @@ import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { ops } from "./ops";
 import { freshIdentifier } from "./freshIdentifier";
 import { idTextErr, throwInternalCompilerError } from "../../errors";
+import { prettyPrint, prettyPrintAsmShuffle } from "../../prettyPrinter";
 
 export function writeCastedExpression(
     expression: AstExpression,
@@ -492,8 +494,6 @@ function writeCondition(
 }
 
 export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
-    const fd = f.ast;
-
     // Resolve self
     const self = f.self ? getType(ctx.ctx, f.self) : null;
 
@@ -519,15 +519,66 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
         params.push(resolveFuncType(a.type, ctx) + " " + funcIdOf(a.name));
     }
 
-    // Do not write native functions
-    if (f.ast.kind === "native_function_decl") {
-        if (f.isMutating && !ctx.isRendered(idText(f.ast.nativeName))) {
-            // Write same function in non-mutating form
-            const nonMutName = ops.nonModifying(idText(f.ast.nativeName));
-            ctx.fun(nonMutName, () => {
-                ctx.signature(
-                    `${returnsOriginal} ${nonMutName}(${params.join(", ")})`,
+    const fAst = f.ast;
+    switch (fAst.kind) {
+        case "native_function_decl": {
+            const name = idText(fAst.nativeName);
+            if (f.isMutating && !ctx.isRendered(name)) {
+                writeNonMutatingFunction(
+                    f,
+                    name,
+                    params,
+                    returnsOriginal,
+                    false,
+                    ctx,
                 );
+                ctx.markRendered(name);
+            }
+            return;
+        }
+
+        case "asm_function_def": {
+            const name = self
+                ? ops.extension(self.name, f.name)
+                : ops.global(f.name);
+            ctx.fun(name, () => {
+                ctx.signature(`${returns} ${name}(${params.join(", ")})`);
+                ctx.flag("impure");
+                if (f.origin === "stdlib") {
+                    ctx.context("stdlib");
+                }
+                // we need to do some renames (prepending $ to identifiers)
+                const asmShuffleEscaped: AstAsmShuffle = {
+                    ...fAst.shuffle,
+                    args: fAst.shuffle.args.map((id) => idOfText(funcIdOf(id))),
+                };
+                ctx.asm(
+                    prettyPrintAsmShuffle(asmShuffleEscaped),
+                    fAst.instructions
+                        .map((instruction) => prettyPrint(instruction))
+                        .join(" "),
+                );
+            });
+            if (f.isMutating) {
+                writeNonMutatingFunction(
+                    f,
+                    name,
+                    params,
+                    returnsOriginal,
+                    true,
+                    ctx,
+                );
+            }
+            return;
+        }
+
+        case "function_def": {
+            const name = self
+                ? ops.extension(self.name, f.name)
+                : ops.global(f.name);
+
+            ctx.fun(name, () => {
+                ctx.signature(`${returns} ${name}(${params.join(", ")})`);
                 ctx.flag("impure");
                 if (enabledInline(ctx.ctx) || f.isInline) {
                     ctx.flag("inline");
@@ -536,29 +587,76 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                     ctx.context("stdlib");
                 }
                 ctx.body(() => {
-                    ctx.append(
-                        `return ${funcIdOf("self")}~${idText((f.ast as AstNativeFunctionDecl).nativeName)}(${fd.params
-                            .slice(1)
-                            .map((arg) => funcIdOf(arg.name))
-                            .join(", ")});`,
-                    );
+                    // Unpack self
+                    if (self) {
+                        ctx.append(
+                            `var (${resolveFuncTypeUnpack(self, funcIdOf("self"), ctx)}) = ${funcIdOf("self")};`,
+                        );
+                    }
+                    for (const a of f.ast.params) {
+                        if (
+                            !resolveFuncPrimitive(
+                                resolveTypeRef(ctx.ctx, a.type),
+                                ctx,
+                            )
+                        ) {
+                            ctx.append(
+                                `var (${resolveFuncTypeUnpack(resolveTypeRef(ctx.ctx, a.type), funcIdOf(a.name), ctx)}) = ${funcIdOf(a.name)};`,
+                            );
+                        }
+                    }
+
+                    // Process statements
+                    for (const s of fAst.statements) {
+                        writeStatement(s, returnsStr, f.returns, ctx);
+                    }
+
+                    // Auto append return
+                    if (f.self && f.returns.kind === "void" && f.isMutating) {
+                        if (
+                            fAst.statements.length === 0 ||
+                            fAst.statements[fAst.statements.length - 1]!
+                                .kind !== "statement_return"
+                        ) {
+                            ctx.append(`return (${returnsStr}, ());`);
+                        }
+                    }
                 });
             });
-            ctx.markRendered(idText(f.ast.nativeName));
+
+            if (f.isMutating) {
+                writeNonMutatingFunction(
+                    f,
+                    name,
+                    params,
+                    returnsOriginal,
+                    true,
+                    ctx,
+                );
+            }
+            return;
         }
-        return;
+        default: {
+            throwInternalCompilerError(
+                `Unknown function kind: ${idTextErr(fAst.name)}`,
+                fAst.loc,
+            );
+        }
     }
+}
 
-    if (fd.kind !== "function_def") {
-        // should never happen, just to satisfy typescript
-        throw new Error("Unknown function kind");
-    }
-
-    const name = self ? ops.extension(self.name, f.name) : ops.global(f.name);
-
-    // Write function body
-    ctx.fun(name, () => {
-        ctx.signature(`${returns} ${name}(${params.join(", ")})`);
+// Write a function in non-mutating form
+function writeNonMutatingFunction(
+    f: FunctionDescription,
+    name: string,
+    params: string[],
+    returnsOriginal: string,
+    markUsedName: boolean,
+    ctx: WriterContext,
+) {
+    const nonMutName = ops.nonModifying(name);
+    ctx.fun(nonMutName, () => {
+        ctx.signature(`${returnsOriginal} ${nonMutName}(${params.join(", ")})`);
         ctx.flag("impure");
         if (enabledInline(ctx.ctx) || f.isInline) {
             ctx.flag("inline");
@@ -567,64 +665,14 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             ctx.context("stdlib");
         }
         ctx.body(() => {
-            // Unpack self
-            if (self) {
-                ctx.append(
-                    `var (${resolveFuncTypeUnpack(self, funcIdOf("self"), ctx)}) = ${funcIdOf("self")};`,
-                );
-            }
-            for (const a of fd.params) {
-                if (
-                    !resolveFuncPrimitive(resolveTypeRef(ctx.ctx, a.type), ctx)
-                ) {
-                    ctx.append(
-                        `var (${resolveFuncTypeUnpack(resolveTypeRef(ctx.ctx, a.type), funcIdOf(a.name), ctx)}) = ${funcIdOf(a.name)};`,
-                    );
-                }
-            }
-
-            // Process statements
-            for (const s of fd.statements) {
-                writeStatement(s, returnsStr, f.returns, ctx);
-            }
-
-            // Auto append return
-            if (f.self && f.returns.kind === "void" && f.isMutating) {
-                if (
-                    fd.statements.length === 0 ||
-                    fd.statements[fd.statements.length - 1]!.kind !==
-                        "statement_return"
-                ) {
-                    ctx.append(`return (${returnsStr}, ());`);
-                }
-            }
+            ctx.append(
+                `return ${funcIdOf("self")}~${markUsedName ? ctx.used(name) : name}(${f.ast.params
+                    .slice(1)
+                    .map((arg) => funcIdOf(arg.name))
+                    .join(", ")});`,
+            );
         });
     });
-
-    if (f.isMutating) {
-        // Write same function in non-mutating form
-        const nonMutName = ops.nonModifying(name);
-        ctx.fun(nonMutName, () => {
-            ctx.signature(
-                `${returnsOriginal} ${nonMutName}(${params.join(", ")})`,
-            );
-            ctx.flag("impure");
-            if (enabledInline(ctx.ctx) || f.isInline) {
-                ctx.flag("inline");
-            }
-            if (f.origin === "stdlib") {
-                ctx.context("stdlib");
-            }
-            ctx.body(() => {
-                ctx.append(
-                    `return ${funcIdOf("self")}~${ctx.used(name)}(${fd.params
-                        .slice(1)
-                        .map((arg) => funcIdOf(arg.name))
-                        .join(", ")});`,
-                );
-            });
-        });
-    }
 }
 
 export function writeGetter(f: FunctionDescription, ctx: WriterContext) {

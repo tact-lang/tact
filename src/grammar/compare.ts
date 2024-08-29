@@ -50,6 +50,7 @@ import {
     AstOptionalType,
     AstNode,
     AstFuncId,
+    AstAsmFunctionDef,
 } from "./ast";
 import { AstRenamer } from "./rename";
 import { throwInternalCompilerError } from "../errors";
@@ -134,6 +135,33 @@ export class AstComparator {
                 );
             }
 
+            case "asm_function_def": {
+                const {
+                    shuffle: shuffle1,
+                    attributes: attributes1,
+                    name: funcName1,
+                    return: returnType1,
+                    params: params1,
+                    instructions: instructions1,
+                } = node1 as AstAsmFunctionDef;
+                const {
+                    shuffle: shuffle2,
+                    attributes: attributes2,
+                    name: funcName2,
+                    return: returnType2,
+                    params: params2,
+                    instructions: instructions2,
+                } = node2 as AstAsmFunctionDef;
+                return (
+                    this.compareArray(shuffle1.args, shuffle2.args) &&
+                    this.compareArray(shuffle1.ret, shuffle2.ret) &&
+                    this.compareAttributes(attributes1, attributes2) &&
+                    this.compare(funcName1, funcName2) &&
+                    this.compareNullableNodes(returnType1, returnType2) &&
+                    this.compareArray(params1, params2) &&
+                    this.compareArray(instructions1, instructions2)
+                );
+            }
             case "function_decl": {
                 const {
                     attributes: declAttributes1,

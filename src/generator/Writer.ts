@@ -12,6 +12,7 @@ type Body =
       }
     | {
           kind: "asm";
+          shuffle: string;
           code: string;
       }
     | {
@@ -212,10 +213,11 @@ export class WriterContext {
         });
     }
 
-    asm(code: string) {
+    asm(shuffle: string, code: string) {
         if (this.#pendingName) {
             this.#pendingCode = {
                 kind: "asm",
+                shuffle,
                 code,
             };
         } else {

@@ -650,6 +650,12 @@ export class Interpreter {
             case "function_def":
                 this.interpretFunctionDef(ast);
                 break;
+            case "asm_function_def":
+                throwNonFatalErrorConstEval(
+                    "Asm functions are currently not supported.",
+                    ast.loc,
+                );
+                break;
             case "struct_decl":
                 this.interpretStructDecl(ast);
                 break;
@@ -1150,6 +1156,12 @@ export class Interpreter {
                                 functionDescription.returns,
                             );
 
+                        case "asm_function_def":
+                            throwNonFatalErrorConstEval(
+                                `${idTextErr(ast.function)} cannot be interpreted because it's an asm-function`,
+                                ast.loc,
+                            );
+                            break;
                         case "function_decl":
                             throwNonFatalErrorConstEval(
                                 `${idTextErr(ast.function)} cannot be interpreted because it does not have a body`,

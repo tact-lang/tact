@@ -53,7 +53,7 @@ export function writeAccessors(
             `(${resolveFuncType(type, ctx)}) ${ops.typeTensorCast(type.name, ctx)}(${resolveFuncType(type, ctx)} v)`,
         );
         ctx.context("type:" + type.name);
-        ctx.asm('asm "NOP"');
+        ctx.asm("", "NOP");
     });
 
     // Not null
