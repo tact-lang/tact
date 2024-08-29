@@ -1366,7 +1366,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return equal_slice_bits(a, b);
+                return equal_slices_bits(a, b);
             `);
         });
     });
@@ -1379,7 +1379,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return (null?(a)) ? (false) : (equal_slice_bits(a, b));
+                return (null?(a)) ? (false) : (equal_slices_bits(a, b));
             `);
         });
     });
@@ -1392,7 +1392,7 @@ export function writeStdlib(ctx: WriterContext) {
             ctx.write(`
                 var a_is_null = null?(a);
                 var b_is_null = null?(b);
-                return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );
+                return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slices_bits(a, b) ) : ( false ) );
             `);
         });
     });

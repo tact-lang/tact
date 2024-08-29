@@ -632,7 +632,7 @@ int get_seed() impure asm "RANDSEED";
 () randomize_lt() impure asm "LTIME" "ADDRAND";
 
 ;;; Checks whether the data parts of two slices coinside
-int equal_slice_bits(slice a, slice b) asm "SDEQ";
+int equal_slices_bits(slice a, slice b) asm "SDEQ";
 ;;; Checks whether b is a null. Note, that FunC also has polymorphic null? built-in.
 int builder_null?(builder b) asm "ISNULL";
 ;;; Concatenates two builders
