@@ -20,7 +20,7 @@ struct SendParameters {
     data: Cell? = null;
 }
 
-fun send(params: SendParameters): Int {
+fun send(params: SendParameters): Int { // returns forward fee
     let b: Builder = beginCell();
     b = b.storeInt(1, 2); // internal_message + ihd_disabled
     b = b.storeBool(params.bounce); // bounce
