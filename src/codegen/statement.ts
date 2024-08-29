@@ -25,6 +25,7 @@ import {
     assign,
     unit,
     condition,
+    conditionElseif,
     vardef,
     Type,
 } from "../func/syntaxConstructors";
@@ -61,7 +62,10 @@ export class StatementGen {
         return ExpressionGen.fromTact(this.ctx, expr).writeExpression();
     }
 
-    private makeCastedExpr(expr: AstExpression, to: TypeRef): FuncAstExpression {
+    private makeCastedExpr(
+        expr: AstExpression,
+        to: TypeRef,
+    ): FuncAstExpression {
         return ExpressionGen.fromTact(this.ctx, expr).writeCastedExpression(to);
     }
 
@@ -78,20 +82,27 @@ export class StatementGen {
             ).writeStatement();
         const cond = this.makeExpr(f.condition);
         const thenBlock = f.trueStatements.map(writeStmt);
-        const elseStmt: FuncAstStatementCondition | undefined =
-            f.falseStatements !== null && f.falseStatements.length > 0
-                ? condition(undefined, f.falseStatements.map(writeStmt))
-                : f.elseif
-                  ? this.writeCondition(f.elseif)
-                  : undefined;
-        return condition(cond, thenBlock, false, elseStmt);
+        const elseBlock = f.falseStatements?.map(writeStmt);
+        if (f.elseif) {
+            return conditionElseif(
+                cond,
+                thenBlock,
+                this.makeExpr(f.elseif.condition),
+                f.elseif.trueStatements.map(writeStmt),
+                elseBlock,
+            );
+        } else {
+            return condition(cond, thenBlock, elseBlock);
+        }
     }
 
     public writeStatement(): FuncAstStatement {
         switch (this.tactStmt.kind) {
             case "statement_return": {
                 const selfVar = this.selfName ? id(this.selfName) : undefined;
-                const getValue = (expr: FuncAstExpression): FuncAstExpression =>
+                const getValue = (
+                    expr: FuncAstExpression,
+                ): FuncAstExpression =>
                     this.selfName ? tensor(selfVar!, expr) : expr;
                 if (this.tactStmt.expression) {
                     const castedReturns = this.makeCastedExpr(

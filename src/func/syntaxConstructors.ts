@@ -403,7 +403,7 @@ export function repeat(
 
 export function condition(
     condition: FuncAstExpression,
-    body: FuncAstStatement[],
+    bodyStmts: FuncAstStatement[],
     elseStmts?: FuncAstStatement[],
     params: Partial<{ positive: boolean }> = {},
 ): FuncAstStatementCondition {
@@ -412,8 +412,30 @@ export function condition(
         kind: "statement_condition_if",
         condition,
         positive,
-        consequences: body,
+        consequences: bodyStmts,
         alternatives: elseStmts,
+        loc: dummySrcInfo,
+    };
+}
+
+export function conditionElseif(
+    conditionIf: FuncAstExpression,
+    bodyStmts: FuncAstStatement[],
+    conditionElseif: FuncAstExpression,
+    elseifStmts: FuncAstStatement[],
+    elseStmts?: FuncAstStatement[],
+    params: Partial<{ positiveIf: boolean; positiveElseif: boolean }> = {},
+): FuncAstStatementCondition {
+    const { positiveIf = false, positiveElseif = false } = params;
+    return {
+        kind: "statement_condition_elseif",
+        positiveIf,
+        conditionIf,
+        consequencesIf: bodyStmts,
+        positiveElseif,
+        conditionElseif,
+        consequencesElseif: elseifStmts,
+        alternativesElseif: elseStmts,
         loc: dummySrcInfo,
     };
 }

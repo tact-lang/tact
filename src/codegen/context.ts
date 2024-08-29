@@ -103,8 +103,8 @@ export class WriterContext {
     ): void {
         forEachExpression(fun, (expr) => {
             // TODO: It doesn't save receivers. But should it?
-            if (expr.kind === "call_expr" && expr.fun.kind === "id_expr") {
-                depends.add(expr.fun.value);
+            if (expr.kind === "expression_fun_call" && expr.object.kind === "plain_id") {
+                depends.add(expr.object.value);
             }
         });
     }

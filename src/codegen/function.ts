@@ -234,7 +234,7 @@ export class FunctionGen {
             }
         });
         const body =
-            values.length === 0 && returnTy.kind === "tuple"
+            values.length === 0 && returnTy.kind === "type_tuple"
                 ? [ret(call("empty_tuple", []))]
                 : [ret(tensor(...values))];
         const constructor = this.ctx.fun(attrs, name, params, returnTy, body);
