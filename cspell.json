@@ -120,7 +120,15 @@
     "SBITS",
     "SEMPTY",
     "SDEMPTY",
-    "SREMPTY"
+    "SREMPTY",
+    "CONFIGOPTPARAM",
+    "MYADDR",
+    "HASHCU",
+    "HASHSU",
+    "CHKSIGNU",
+    "CHKSIGNS",
+    "RAWRESERVE",
+    "SENDRAWMSG"
   ],
   "flagWords": [],
   "ignorePaths": [
