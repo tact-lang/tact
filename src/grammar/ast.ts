@@ -119,7 +119,7 @@ export type AstStructDecl = {
 export type AstMessageDecl = {
     kind: "message_decl";
     name: AstId;
-    opcode: number | null;
+    opcode: AstNumber | null;
     fields: AstFieldDecl[];
     id: number;
     loc: SrcInfo;
@@ -571,10 +571,26 @@ export const selfId: AstId = {
 
 export type AstNumber = {
     kind: "number";
+    base: AstNumberBase;
     value: bigint;
     id: number;
     loc: SrcInfo;
 };
+
+export type AstNumberBase = 2 | 8 | 10 | 16;
+
+export function astNumToString(n: AstNumber): string {
+    switch (n.base) {
+        case 2:
+            return `0b${n.value.toString(n.base)}`;
+        case 8:
+            return `0o${n.value.toString(n.base)}`;
+        case 10:
+            return n.value.toString(n.base);
+        case 16:
+            return `0x${n.value.toString(n.base)}`;
+    }
+}
 
 export type AstBoolean = {
     kind: "boolean";

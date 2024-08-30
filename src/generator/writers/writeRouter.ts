@@ -7,6 +7,7 @@ import { ops } from "./ops";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeStatement } from "./writeFunction";
+import { AstNumber } from "../../grammar/ast";
 
 export function commentPseudoOpcode(comment: string): string {
     return beginCell()
@@ -72,7 +73,9 @@ export function writeRouter(
                     ctx.append(
                         `;; Bounced handler for ${selector.type} message`,
                     );
-                    ctx.append(`if (op == ${allocation.header}) {`);
+                    ctx.append(
+                        `if (op == ${messageOpcode(allocation.header!)}) {`,
+                    );
                     ctx.inIndent(() => {
                         // Read message
                         ctx.append(
@@ -138,7 +141,7 @@ export function writeRouter(
                 }
                 ctx.append();
                 ctx.append(`;; Receive ${selector.type} message`);
-                ctx.append(`if (op == ${allocation.header}) {`);
+                ctx.append(`if (op == ${messageOpcode(allocation.header)}) {`);
                 ctx.inIndent(() => {
                     // Read message
                     ctx.append(
@@ -270,6 +273,18 @@ export function writeRouter(
     });
     ctx.append(`}`);
     ctx.append();
+}
+
+function messageOpcode(n: AstNumber): string {
+    // FunC does not support binary and octal numerals
+    switch (n.base) {
+        case 10:
+            return n.value.toString(n.base);
+        case 2:
+        case 8:
+        case 16:
+            return `0x${n.value.toString(n.base)}`;
+    }
 }
 
 export function writeReceiver(

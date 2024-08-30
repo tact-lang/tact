@@ -22,6 +22,7 @@ import {
     createAstNode,
     AstImport,
     AstConstantDef,
+    AstNumberBase,
 } from "./ast";
 import { throwParseError, throwSyntaxError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
@@ -190,7 +191,7 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
             name: typeId.astOfType(),
             fields: fields.astsOfList(),
             opcode: unwrapOptNode(optIntMsgId, (number) =>
-                Number(bigintOfIntLiteral(number)),
+                number.astOfExpression(),
             ),
             loc: createRef(this),
         });
@@ -948,9 +949,24 @@ function bigintOfIntLiteral(litString: NonterminalNode): bigint {
     return BigInt(litString.sourceString.replaceAll("_", ""));
 }
 
+function baseOfIntLiteral(node: NonterminalNode): AstNumberBase {
+    const basePrefix = node.sourceString.slice(0, 2).toLowerCase();
+    switch (basePrefix) {
+        case "0x":
+            return 16;
+        case "0o":
+            return 8;
+        case "0b":
+            return 2;
+        default:
+            return 10;
+    }
+}
+
 function astOfNumber(node: Node): AstNode {
     return createAstNode({
         kind: "number",
+        base: baseOfIntLiteral(node),
         value: bigintOfIntLiteral(node),
         loc: createRef(node),
     });

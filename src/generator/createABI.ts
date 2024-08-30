@@ -25,13 +25,13 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
         if (t.kind === "struct") {
             types.push({
                 name: t.name,
-                header: t.header,
+                header: Number(t.header?.value),
                 fields: t.fields.map((v) => v.abi),
             });
         } else if (t.kind === "contract") {
             types.push({
                 name: t.name + "$Data",
-                header: t.header,
+                header: Number(t.header?.value),
                 fields: t.fields.map((v) => v.abi),
             });
         }

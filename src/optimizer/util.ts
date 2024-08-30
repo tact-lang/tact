@@ -44,6 +44,7 @@ export function makeValueExpression(value: Value): AstValue {
     if (typeof value === "bigint") {
         const result = createAstNode({
             kind: "number",
+            base: 10,
             value: value,
             loc: dummySrcInfo,
         });

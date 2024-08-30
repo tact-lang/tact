@@ -182,7 +182,7 @@ export async function writeProgram(
             header.push(";;");
             header.push(`;; Type: ${t.name}`);
             if (t.header !== null) {
-                header.push(`;; Header: 0x${idToHex(t.header)}`);
+                header.push(`;; Header: 0x${idToHex(Number(t.header.value))}`);
             }
             if (t.tlb) {
                 header.push(`;; TLB: ${t.tlb}`);
