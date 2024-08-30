@@ -2628,19 +2628,6 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "DUP 5 THROWIFNOT UBITSIZE DEC",
-      "kind": "asm",
-      "shuffle": "",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_log2",
-    "signature": "int __tact_log2(int num)",
-  },
-  {
-    "code": {
       "code": "throw_unless(5, num > 0);
 throw_unless(5, base > 1);
 if (num < base) {
@@ -2681,19 +2668,6 @@ return result;",
     },
     "name": "__tact_pow",
     "signature": "int __tact_pow(int base, int exp)",
-  },
-  {
-    "code": {
-      "code": "POW2",
-      "kind": "asm",
-      "shuffle": "",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_pow2",
-    "signature": "int __tact_pow2(int exp)",
   },
   {
     "code": {
@@ -6240,19 +6214,6 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "DUP 5 THROWIFNOT UBITSIZE DEC",
-      "kind": "asm",
-      "shuffle": "",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_log2",
-    "signature": "int __tact_log2(int num)",
-  },
-  {
-    "code": {
       "code": "throw_unless(5, num > 0);
 throw_unless(5, base > 1);
 if (num < base) {
@@ -6293,19 +6254,6 @@ return result;",
     },
     "name": "__tact_pow",
     "signature": "int __tact_pow(int base, int exp)",
-  },
-  {
-    "code": {
-      "code": "POW2",
-      "kind": "asm",
-      "shuffle": "",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_pow2",
-    "signature": "int __tact_pow2(int exp)",
   },
   {
     "code": {
@@ -9852,19 +9800,6 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "DUP 5 THROWIFNOT UBITSIZE DEC",
-      "kind": "asm",
-      "shuffle": "",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_log2",
-    "signature": "int __tact_log2(int num)",
-  },
-  {
-    "code": {
       "code": "throw_unless(5, num > 0);
 throw_unless(5, base > 1);
 if (num < base) {
@@ -9905,19 +9840,6 @@ return result;",
     },
     "name": "__tact_pow",
     "signature": "int __tact_pow(int base, int exp)",
-  },
-  {
-    "code": {
-      "code": "POW2",
-      "kind": "asm",
-      "shuffle": "",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_pow2",
-    "signature": "int __tact_pow2(int exp)",
   },
   {
     "code": {

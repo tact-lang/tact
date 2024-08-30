@@ -1948,12 +1948,6 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun(`__tact_log2`, () => {
-        ctx.signature(`int __tact_log2(int num)`);
-        ctx.context("stdlib");
-        ctx.asm("", "DUP 5 THROWIFNOT UBITSIZE DEC");
-    });
-
     ctx.fun(`__tact_log`, () => {
         ctx.signature(`int __tact_log(int num, int base)`);
         ctx.flag("inline");
@@ -1989,12 +1983,6 @@ export function writeStdlib(ctx: WriterContext) {
                 return result;
             `);
         });
-    });
-
-    ctx.fun(`__tact_pow2`, () => {
-        ctx.signature(`int __tact_pow2(int exp)`);
-        ctx.context("stdlib");
-        ctx.asm("", "POW2");
     });
 
     //
