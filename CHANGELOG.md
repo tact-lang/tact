@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - References to declared global constants.
 - Allow omitting semicolons in contract/trait declarations and definitions: PR [#718](https://github.com/tact-lang/tact/pull/718)
 - Compiler Tests are now using `@ton/sandbox` instead of `@tact-lang/emulator`: PR [#651](https://github.com/tact-lang/tact/pull/651)
+- The required node.js version is bumped to 22: PR [#769](https://github.com/tact-lang/tact/pull/769)
 
 ### Fixed
 
