@@ -1,3 +1,6 @@
+// these are builtin functions, these get special treatment from FunC
+// hence, no asm here
+
 @name(throw)
 native nativeThrow(code: Int);
 
