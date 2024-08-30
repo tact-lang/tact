@@ -1,5 +1,4 @@
-@name(send_raw_message)
-native nativeSendMessage(cell: Cell, mode: Int);
+asm fun nativeSendMessage(cell: Cell, mode: Int) { SENDRAWMSG }
 
 const SendRemainingBalance: Int = 128;
 const SendRemainingValue: Int = 64;
@@ -79,8 +78,6 @@ inline fun emit(body: Cell) {
     nativeSendMessage(c, 0);
 }
 
-@name(accept_message)
-native acceptMessage();
+asm fun acceptMessage() { ACCEPT }
 
-@name(commit)
-native commit();
+asm fun commit() { COMMIT }
