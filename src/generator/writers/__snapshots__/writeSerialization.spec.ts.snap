@@ -199,20 +199,6 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "return pair_first(get_balance());",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_my_balance",
-    "signature": "int __tact_my_balance()",
-  },
-  {
-    "code": {
       "code": "throw_if(128, null?(x)); return x;",
       "kind": "generic",
     },
@@ -3772,20 +3758,6 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "return pair_first(get_balance());",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_my_balance",
-    "signature": "int __tact_my_balance()",
-  },
-  {
-    "code": {
       "code": "throw_if(128, null?(x)); return x;",
       "kind": "generic",
     },
@@ -7342,20 +7314,6 @@ return __tact_create_address(chain, hash);",
     },
     "name": "__tact_compute_contract_address",
     "signature": "slice __tact_compute_contract_address(int chain, cell code, cell data)",
-  },
-  {
-    "code": {
-      "code": "return pair_first(get_balance());",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_my_balance",
-    "signature": "int __tact_my_balance()",
   },
   {
     "code": {

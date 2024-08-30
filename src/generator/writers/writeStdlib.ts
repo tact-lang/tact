@@ -140,17 +140,6 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun(`__tact_my_balance`, () => {
-        ctx.signature(`int __tact_my_balance()`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                return pair_first(get_balance());
-            `);
-        });
-    });
-
     ctx.fun("__tact_not_null", () => {
         ctx.signature(`forall X -> X __tact_not_null(X x)`);
         ctx.flag("impure");

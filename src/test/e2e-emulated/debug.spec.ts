@@ -69,6 +69,9 @@ File ${filePath}:17:9:
 dump(newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8))
 ${Address.parseRaw(
     "0:83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8",
-).toString()}`);
+).toString()}
+File ${filePath}:18:9:
+dump(myBalance())
+10000000000`);
     });
 });
