@@ -636,14 +636,9 @@ exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] =
               "type": "mutates",
             },
           ],
-          "id": 13,
+          "id": 12,
           "instructions": [
-            {
-              "id": 12,
-              "kind": "id",
-              "loc": LDREF,
-              "text": "LDREF",
-            },
+            "LDREF",
           ],
           "kind": "asm_function_def",
           "loc": asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF },
@@ -799,14 +794,9 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffl
   {
     "ast": {
       "attributes": [],
-      "id": 10,
+      "id": 9,
       "instructions": [
-        {
-          "id": 9,
-          "kind": "id",
-          "loc": NOP,
-          "text": "NOP",
-        },
+        "NOP",
       ],
       "kind": "asm_function_def",
       "loc": asm(-> 0) fun foo(x: Int): Int {
@@ -928,20 +918,10 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffl
   {
     "ast": {
       "attributes": [],
-      "id": 14,
+      "id": 12,
       "instructions": [
-        {
-          "id": 12,
-          "kind": "id",
-          "loc": DROP,
-          "text": "DROP",
-        },
-        {
-          "id": 13,
-          "kind": "id",
-          "loc": DROP,
-          "text": "DROP",
-        },
+        "DROP",
+        "DROP",
       ],
       "kind": "asm_function_def",
       "loc": asm(y x) fun foo(x: Int, y: Int) {
@@ -1094,14 +1074,9 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 2`
   {
     "ast": {
       "attributes": [],
-      "id": 8,
+      "id": 7,
       "instructions": [
-        {
-          "id": 7,
-          "kind": "id",
-          "loc": DROP,
-          "text": "DROP",
-        },
+        "DROP",
       ],
       "kind": "asm_function_def",
       "loc": asm fun foo(x: Int) {
@@ -1359,14 +1334,9 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
   {
     "ast": {
       "attributes": [],
-      "id": 22,
+      "id": 21,
       "instructions": [
-        {
-          "id": 21,
-          "kind": "id",
-          "loc": SWAP,
-          "text": "SWAP",
-        },
+        "SWAP",
       ],
       "kind": "asm_function_def",
       "loc": asm(-> 1 0) fun foo(x: Int, y: Int): Pair {

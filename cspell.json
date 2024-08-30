@@ -128,7 +128,8 @@
     "CHKSIGNU",
     "CHKSIGNS",
     "RAWRESERVE",
-    "SENDRAWMSG"
+    "SENDRAWMSG",
+    "SDBEGINSQ"
   ],
   "flagWords": [],
   "ignorePaths": [

@@ -1,6 +1,4 @@
-asm fun keccak256(s: Slice): Int {
-    +
-    INT
-    HASHEXT_KECCAK256
+asm(1 0) extends fun loadCoins(self: Slice): Int {
+    LDVARUINT16
 }
 

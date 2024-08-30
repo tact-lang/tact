@@ -24,7 +24,6 @@ import {
     AstNode,
     AstAsmFunctionDef,
     AstAsmInstruction,
-    idText,
 } from "./ast";
 import { createHash } from "crypto";
 import { throwInternalCompilerError } from "../errors";
@@ -305,16 +304,7 @@ export class AstHasher {
     }
 
     private hashInstructions(instructions: AstAsmInstruction[]): string {
-        return instructions
-            .map((instruction) => {
-                switch (instruction.kind) {
-                    case "number":
-                        return instruction.value.toString();
-                    case "id":
-                        return idText(instruction);
-                }
-            })
-            .join("|");
+        return instructions.join("|");
     }
 
     private hashStructFieldInitializer(

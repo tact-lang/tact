@@ -361,9 +361,7 @@ semantics.addOperation<AstNode>("astOfItem", {
             name: funId.astOfExpression(),
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             params: funParameters.astsOfList(),
-            instructions: asmInstructions.children.map((s) =>
-                s.astOfExpression(),
-            ),
+            instructions: asmInstructions.children.map((s) => s.sourceString),
             loc: createRef(this),
         });
     },

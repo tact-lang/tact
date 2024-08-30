@@ -589,12 +589,7 @@ export class PrettyPrinter {
     }
 
     ppAstAsmInstruction(instruction: AstAsmInstruction): string {
-        switch (instruction.kind) {
-            case "number":
-                return `${this.indent()}${instruction.value.toString()}`;
-            case "id":
-                return `${this.indent()}${idText(instruction)}`;
-        }
+        return `${this.indent()}${instruction}`;
     }
 
     ppAstStatementLet(statement: AstStatementLet): string {

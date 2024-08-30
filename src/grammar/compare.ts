@@ -51,6 +51,7 @@ import {
     AstNode,
     AstFuncId,
     AstAsmFunctionDef,
+    AstAsmInstruction,
 } from "./ast";
 import { AstRenamer } from "./rename";
 import { throwInternalCompilerError } from "../errors";
@@ -159,7 +160,7 @@ export class AstComparator {
                     this.compare(funcName1, funcName2) &&
                     this.compareNullableNodes(returnType1, returnType2) &&
                     this.compareArray(params1, params2) &&
-                    this.compareArray(instructions1, instructions2)
+                    this.compareAsmInstructions(instructions1, instructions2)
                 );
             }
             case "function_decl": {
@@ -786,6 +787,16 @@ export class AstComparator {
             return nodes1 === nodes2;
         }
         return this.compareArray(nodes1, nodes2);
+    }
+
+    private compareAsmInstructions(
+        instructions1: AstAsmInstruction[],
+        instructions2: AstAsmInstruction[],
+    ): boolean {
+        if (instructions1.length !== instructions2.length) {
+            return false;
+        }
+        return instructions1.every((val1, i1) => val1 === instructions2[i1]);
     }
 
     private compareAttributes<

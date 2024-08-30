@@ -46,9 +46,6 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             node.params.forEach((e) => {
                 traverse(e, callback);
             });
-            node.instructions.forEach((e) => {
-                traverse(e, callback);
-            });
             break;
         case "function_decl":
             traverse(node.name, callback);

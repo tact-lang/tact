@@ -15,3 +15,11 @@ asm(c b) extends fun storeDict(b: Builder, c: Cell) {
 asm(s len -> 1 0) extends fun loadInt(self: Slice, len: Int): Int {
     LDIX
 }
+
+asm fun checkAndRemoveAddExtensionPrefix(self: Slice): Int {
+    x{02} SDBEGINSQ
+}
+
+asm fun checkAndRemoveAddExtensionPrefix() {
+    -ROT
+}

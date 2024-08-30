@@ -22,7 +22,7 @@ Tact {
     ModuleFunction = FunctionDefinition
                    | AsmFunction
 
-    AsmFunction = "asm" AsmShuffle? FunctionAttribute* fun id Parameters (":" Type)? "{" AsmInstruction+ "}"
+    AsmFunction = "asm" AsmShuffle? FunctionAttribute* fun id Parameters (":" Type)? "{" asmInstruction+ "}"
 
     ModuleConstant = ConstantDefinition
 
@@ -98,9 +98,8 @@ Tact {
              | external "(" Parameter? ")" "{" Statement* "}" --externalRegular
              | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
 
-    AsmInstruction = id
-                   | integerLiteralDec
-                   | integerLiteralHex
+    asmInstruction = ("x" | "X" | "b" | "B") "{" hexDigit* "}" --data
+                   | ~comment (~space ~"}" any)+ --any
 
     Statement = StatementLet
               | StatementBlock

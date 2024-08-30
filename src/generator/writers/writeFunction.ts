@@ -24,7 +24,7 @@ import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { ops } from "./ops";
 import { freshIdentifier } from "./freshIdentifier";
 import { idTextErr, throwInternalCompilerError } from "../../errors";
-import { prettyPrint, prettyPrintAsmShuffle } from "../../prettyPrinter";
+import { prettyPrintAsmShuffle } from "../../prettyPrinter";
 
 export function writeCastedExpression(
     expression: AstExpression,
@@ -554,9 +554,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 };
                 ctx.asm(
                     prettyPrintAsmShuffle(asmShuffleEscaped),
-                    fAst.instructions
-                        .map((instruction) => prettyPrint(instruction))
-                        .join(" "),
+                    fAst.instructions.join(" "),
                 );
             });
             if (f.isMutating) {

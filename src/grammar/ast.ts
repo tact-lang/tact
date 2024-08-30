@@ -62,7 +62,7 @@ export type AstAsmFunctionDef = {
     loc: SrcInfo;
 };
 
-export type AstAsmInstruction = AstId | AstNumber;
+export type AstAsmInstruction = string;
 export type AstAsmShuffle = {
     args: AstId[];
     ret: AstNumber[];
@@ -661,7 +661,6 @@ export type AstNode =
     | AstFuncId
     | AstExpression
     | AstStatement
-    | AstAsmInstruction
     | AstTypeDecl
     | AstFieldDecl
     | AstTypedParameter
