@@ -78,19 +78,6 @@ return address;",
   },
   {
     "code": {
-      "code": "1 LDI",
-      "kind": "asm",
-      "shuffle": "( -> 1 0)",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_load_bool",
-    "signature": "(slice, int) __tact_load_bool(slice s)",
-  },
-  {
-    "code": {
       "code": "slice raw = cs~load_msg_addr();
 return (cs, __tact_verify_address(raw));",
       "kind": "generic",
@@ -3664,19 +3651,6 @@ return address;",
   },
   {
     "code": {
-      "code": "1 LDI",
-      "kind": "asm",
-      "shuffle": "( -> 1 0)",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_load_bool",
-    "signature": "(slice, int) __tact_load_bool(slice s)",
-  },
-  {
-    "code": {
       "code": "slice raw = cs~load_msg_addr();
 return (cs, __tact_verify_address(raw));",
       "kind": "generic",
@@ -7247,19 +7221,6 @@ return address;",
     },
     "name": "__tact_verify_address",
     "signature": "slice __tact_verify_address(slice address)",
-  },
-  {
-    "code": {
-      "code": "1 LDI",
-      "kind": "asm",
-      "shuffle": "( -> 1 0)",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_load_bool",
-    "signature": "(slice, int) __tact_load_bool(slice s)",
   },
   {
     "code": {
