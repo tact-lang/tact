@@ -1,5 +1,4 @@
-@name(raw_reserve)
-native nativeReserve(amount: Int, mode: Int);
+asm fun nativeReserve(amount: Int, mode: Int) { RAWRESERVE }
 
 const ReserveExact: Int = 0;
 const ReserveAllExcept: Int = 1;
