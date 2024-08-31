@@ -2060,6 +2060,7 @@ exports[`resolveAllocation should write program 1`] = `
             "as": null,
             "id": 91,
             "initializer": {
+              "base": 10,
               "id": 90,
               "kind": "number",
               "loc": SrcInfo {},
@@ -2167,6 +2168,7 @@ exports[`resolveAllocation should write program 1`] = `
             "as": null,
             "id": 91,
             "initializer": {
+              "base": 10,
               "id": 90,
               "kind": "number",
               "loc": SrcInfo {},

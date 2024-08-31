@@ -200,7 +200,7 @@ export class AstHasher {
 
     private hashMessageDecl(node: AstMessageDecl): string {
         const fieldsHash = this.hashFields(node.fields);
-        return `message|${fieldsHash}|${node.opcode}`;
+        return `message|${fieldsHash}|${node.opcode?.value}`;
     }
 
     private hashFunctionDef(node: AstFunctionDef): string {

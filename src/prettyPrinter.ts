@@ -46,6 +46,7 @@ import {
     AstTypedParameter,
     AstAsmInstruction,
     AstAsmShuffle,
+    astNumToString,
 } from "./grammar/ast";
 import { throwInternalCompilerError } from "./errors";
 import JSONbig from "json-bigint";
@@ -201,7 +202,7 @@ export class PrettyPrinter {
                 result = `${this.ppAstExpression(expr.condition, currentPrecedence)} ? ${this.ppAstExpression(expr.thenBranch, currentPrecedence)} : ${this.ppAstExpression(expr.elseBranch, currentPrecedence)}`;
                 break;
             case "number":
-                result = expr.value.toString();
+                result = astNumToString(expr);
                 break;
             case "id":
                 result = expr.text;
@@ -301,13 +302,13 @@ export class PrettyPrinter {
 
     ppAstMessage(struct: AstMessageDecl): string {
         const prefixFormatted =
-            struct.opcode !== null ? `(${struct.opcode}) ` : "";
+            struct.opcode !== null ? `(${astNumToString(struct.opcode)})` : "";
         this.increaseIndent();
         const fieldsFormatted = struct.fields
             .map((field) => this.ppAstFieldDecl(field))
             .join("\n");
         this.decreaseIndent();
-        return `${this.indent()}message ${prefixFormatted}${this.ppAstId(struct.name)} {\n${fieldsFormatted}\n}`;
+        return `${this.indent()}message${prefixFormatted} ${this.ppAstId(struct.name)} {\n${fieldsFormatted}\n}`;
     }
 
     ppAstTrait(trait: AstTrait): string {

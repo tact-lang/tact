@@ -338,6 +338,15 @@ Line 8, col 1:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for message-opcode-too-large 1`] = `
+"<unknown>:1:9: Opcode of message "Foo" is too large: it must fit into 32 bits
+Line 1, col 9:
+> 1 | message(0x1_FFFFF_FFFF) Foo { }
+              ^~~~~~~~~~~~~~
+  2 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for method-first-param-not-self1 1`] = `
 "<unknown>:8:17: Extend function must have first parameter named "self"
 Line 8, col 17:
@@ -677,12 +686,14 @@ exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] =
             "args": [],
             "ret": [
               {
+                "base": 10,
                 "id": 5,
                 "kind": "number",
                 "loc": 1,
                 "value": 1n,
               },
               {
+                "base": 10,
                 "id": 6,
                 "kind": "number",
                 "loc": 0,
@@ -837,6 +848,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffl
         "args": [],
         "ret": [
           {
+            "base": 10,
             "id": 3,
             "kind": "number",
             "loc": 0,
@@ -1394,12 +1406,14 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
         "args": [],
         "ret": [
           {
+            "base": 10,
             "id": 11,
             "kind": "number",
             "loc": 1,
             "value": 1n,
           },
           {
+            "base": 10,
             "id": 12,
             "kind": "number",
             "loc": 0,
@@ -1526,6 +1540,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
           "as": null,
           "id": 9,
           "initializer": {
+            "base": 10,
             "id": 8,
             "kind": "number",
             "loc": 42,
@@ -1575,6 +1590,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
           "as": null,
           "id": 9,
           "initializer": {
+            "base": 10,
             "id": 8,
             "kind": "number",
             "loc": 42,
@@ -1979,7 +1995,13 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       },
     ],
     "functions": Map {},
-    "header": 3746466057,
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 3746466057n,
+    },
     "init": null,
     "interfaces": [],
     "kind": "struct",
@@ -2540,7 +2562,13 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       },
     ],
     "functions": Map {},
-    "header": 2219696518,
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 2219696518n,
+    },
     "init": null,
     "interfaces": [],
     "kind": "struct",
@@ -3070,6 +3098,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           ],
           "id": 14,
           "initializer": {
+            "base": 10,
             "id": 13,
             "kind": "number",
             "loc": 42,
@@ -3122,6 +3151,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           ],
           "id": 14,
           "initializer": {
+            "base": 10,
             "id": 13,
             "kind": "number",
             "loc": 42,
@@ -3418,6 +3448,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           ],
           "id": 9,
           "initializer": {
+            "base": 10,
             "id": 8,
             "kind": "number",
             "loc": 41,
@@ -3463,6 +3494,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           ],
           "id": 9,
           "initializer": {
+            "base": 10,
             "id": 8,
             "kind": "number",
             "loc": 41,
@@ -3555,6 +3587,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           ],
           "id": 15,
           "initializer": {
+            "base": 10,
             "id": 14,
             "kind": "number",
             "loc": 42,
@@ -3607,6 +3640,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           ],
           "id": 15,
           "initializer": {
+            "base": 10,
             "id": 14,
             "kind": "number",
             "loc": 42,
@@ -3707,6 +3741,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               ],
               "id": 9,
               "initializer": {
+                "base": 10,
                 "id": 8,
                 "kind": "number",
                 "loc": 41,
@@ -3752,6 +3787,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               ],
               "id": 9,
               "initializer": {
+                "base": 10,
                 "id": 8,
                 "kind": "number",
                 "loc": 41,
@@ -3995,7 +4031,13 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       },
     ],
     "functions": Map {},
-    "header": 3746466057,
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 3746466057n,
+    },
     "init": null,
     "interfaces": [],
     "kind": "struct",
@@ -4041,6 +4083,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 15,
                 "kind": "number",
                 "loc": 42,
@@ -4064,6 +4107,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 18,
                 "kind": "number",
                 "loc": 42,
@@ -4154,6 +4198,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 15,
                 "kind": "number",
                 "loc": 42,
@@ -4189,6 +4234,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 18,
                 "kind": "number",
                 "loc": 42,
@@ -4489,6 +4535,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 13,
                 "kind": "number",
                 "loc": 0,
@@ -4556,6 +4603,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 13,
                 "kind": "number",
                 "loc": 0,
@@ -4885,6 +4933,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 8,
                 "kind": "number",
                 "loc": 42,
@@ -4945,6 +4994,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 8,
                 "kind": "number",
                 "loc": 42,
@@ -5053,6 +5103,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 15,
                 "kind": "number",
                 "loc": 43,
@@ -5120,6 +5171,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 15,
                 "kind": "number",
                 "loc": 43,
@@ -5236,6 +5288,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "statements": [
                 {
                   "expression": {
+                    "base": 10,
                     "id": 8,
                     "kind": "number",
                     "loc": 42,
@@ -5296,6 +5349,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "statements": [
                 {
                   "expression": {
+                    "base": 10,
                     "id": 8,
                     "kind": "number",
                     "loc": 42,
@@ -5920,6 +5974,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 9,
             "kind": "number",
             "loc": 0,
@@ -5966,6 +6021,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 13,
             "kind": "number",
             "loc": 0,
@@ -6045,6 +6101,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 23,
             "kind": "number",
             "loc": 0,
@@ -6396,6 +6453,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 27,
                 "kind": "number",
                 "loc": 0,
@@ -6435,6 +6493,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 32,
                 "kind": "number",
                 "loc": 0,
@@ -6544,6 +6603,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 27,
                 "kind": "number",
                 "loc": 0,
@@ -6600,6 +6660,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 32,
                 "kind": "number",
                 "loc": 0,
@@ -6831,6 +6892,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
                 "loc": self + 1,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 13,
                   "kind": "number",
                   "loc": 1,
@@ -7475,12 +7537,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
+                    "base": 10,
                     "id": 24,
                     "kind": "number",
                     "loc": 1,
                     "value": 1n,
                   },
                   {
+                    "base": 10,
                     "id": 25,
                     "kind": "number",
                     "loc": 2,
@@ -7511,12 +7575,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
+                    "base": 10,
                     "id": 32,
                     "kind": "number",
                     "loc": 1,
                     "value": 1n,
                   },
                   {
+                    "base": 10,
                     "id": 33,
                     "kind": "number",
                     "loc": 2,
@@ -7561,6 +7627,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "left": {
                   "args": [
                     {
+                      "base": 10,
                       "id": 38,
                       "kind": "number",
                       "loc": 1,
@@ -7588,6 +7655,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "right": {
                   "args": [
                     {
+                      "base": 10,
                       "id": 44,
                       "kind": "number",
                       "loc": 1,
@@ -7796,12 +7864,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
+                    "base": 10,
                     "id": 24,
                     "kind": "number",
                     "loc": 1,
                     "value": 1n,
                   },
                   {
+                    "base": 10,
                     "id": 25,
                     "kind": "number",
                     "loc": 2,
@@ -7832,12 +7902,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
+                    "base": 10,
                     "id": 32,
                     "kind": "number",
                     "loc": 1,
                     "value": 1n,
                   },
                   {
+                    "base": 10,
                     "id": 33,
                     "kind": "number",
                     "loc": 2,
@@ -7882,6 +7954,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "left": {
                   "args": [
                     {
+                      "base": 10,
                       "id": 38,
                       "kind": "number",
                       "loc": 1,
@@ -7909,6 +7982,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "right": {
                   "args": [
                     {
+                      "base": 10,
                       "id": 44,
                       "kind": "number",
                       "loc": 1,
@@ -8076,6 +8150,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 5,
                 "kind": "number",
                 "loc": 0,
@@ -8161,6 +8236,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         {
           "id": 19,
           "iterations": {
+            "base": 10,
             "id": 14,
             "kind": "number",
             "loc": 1,
@@ -8173,6 +8249,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 17,
                 "kind": "number",
                 "loc": 0,
@@ -8270,6 +8347,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 29,
                 "kind": "number",
                 "loc": 0,
@@ -8369,6 +8447,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
           "trueStatements": [
             {
               "expression": {
+                "base": 10,
                 "id": 41,
                 "kind": "number",
                 "loc": 0,
@@ -8504,6 +8583,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
           "as": null,
           "id": 9,
           "initializer": {
+            "base": 10,
             "id": 8,
             "kind": "number",
             "loc": 42,
@@ -8553,6 +8633,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
           "as": null,
           "id": 9,
           "initializer": {
+            "base": 10,
             "id": 8,
             "kind": "number",
             "loc": 42,
@@ -9159,7 +9240,13 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
       },
     ],
     "functions": Map {},
-    "header": 383013829,
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 383013829n,
+    },
     "init": null,
     "interfaces": [],
     "kind": "struct",

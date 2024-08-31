@@ -11,13 +11,13 @@ import {
     ReceiverDescription,
 } from "./types";
 import { throwCompilationError } from "../errors";
-import { AstReceiver } from "../grammar/ast";
+import { AstNumber, AstReceiver } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 
 export function resolveSignatures(ctx: CompilerContext) {
     const signatures: Map<
         string,
-        { signature: string; tlb: string; id: number | null }
+        { signature: string; tlb: string; id: AstNumber | null }
     > = new Map();
     function createTypeFormat(
         type: string,
@@ -155,7 +155,7 @@ export function resolveSignatures(ctx: CompilerContext) {
     function createTupleSignature(name: string): {
         signature: string;
         tlb: string;
-        id: number | null;
+        id: AstNumber | null;
     } {
         if (signatures.has(name)) {
             return signatures.get(name)!;
@@ -178,7 +178,7 @@ export function resolveSignatures(ctx: CompilerContext) {
 
         // Calculate signature and method id
         const signature = name + "{" + fields.join(",") + "}";
-        let id: number | null = null;
+        let id: AstNumber | null = null;
         if (t.ast.kind === "message_decl") {
             if (t.ast.opcode !== null) {
                 id = t.ast.opcode;
@@ -189,7 +189,9 @@ export function resolveSignatures(ctx: CompilerContext) {
 
         // Calculate TLB
         const tlbHeader =
-            id !== null ? changeCase.snakeCase(name) + "#" + idToHex(id) : "_";
+            id !== null
+                ? `${changeCase.snakeCase(name)}#${idToHex(Number(id.value))}`
+                : "_";
         const tlb = tlbHeader + " " + fields.join(" ") + " = " + name;
 
         signatures.set(name, { signature, id, tlb });
@@ -221,13 +223,13 @@ function checkBinaryMessageReceiver(
 ) {
     const msgType = getType(ctx, rcv.type);
     const opcode = msgType.header!;
-    if (usedOpcodes.has(opcode)) {
+    if (usedOpcodes.has(Number(opcode.value))) {
         throwCompilationError(
-            `Receive functions of a contract or trait cannot process messages with the same opcode: opcodes of message types "${rcv.type}" and "${usedOpcodes.get(opcode)}" are equal`,
+            `Receive functions of a contract or trait cannot process messages with the same opcode: opcodes of message types "${rcv.type}" and "${usedOpcodes.get(Number(opcode.value))}" are equal`,
             rcvAst.loc,
         );
     } else {
-        usedOpcodes.set(opcode, rcv.type);
+        usedOpcodes.set(Number(opcode.value), rcv.type);
     }
 }
 

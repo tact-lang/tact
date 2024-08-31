@@ -13,6 +13,7 @@ import {
     AstConstantDecl,
     AstFieldDecl,
     AstAsmFunctionDef,
+    AstNumber,
 } from "../grammar/ast";
 import { dummySrcInfo, ItemOrigin } from "../grammar/grammar";
 
@@ -21,7 +22,7 @@ export type TypeDescription = {
     origin: ItemOrigin;
     name: string;
     uid: number;
-    header: number | null;
+    header: AstNumber | null;
     tlb: string | null;
     signature: string | null;
     fields: FieldDescription[];
