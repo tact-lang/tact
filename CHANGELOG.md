@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Traits can override inherited abstract functions: PR [#724](https://github.com/tact-lang/tact/pull/724)
 - Fix code generation bug for maps from unsigned integers to Boolean values: PR [#725](https://github.com/tact-lang/tact/pull/725)
 - Compiler failure when `toString` gets called as a static function and not a method: PR [#745](https://github.com/tact-lang/tact/pull/745)
+- Tact AST keeps the original format of integer literals (hex/dec/oct/bin): PR [#771](https://github.com/tact-lang/tact/pull/771)
 
 ## [1.4.4] - 2024-08-18
 
