@@ -162,7 +162,7 @@ Line 1, col 19:
 `;
 
 exports[`grammar should fail contract-with-imports 1`] = `
-"<unknown>:6:1: Parse error: expected end of input, "trait", "contract", "message", "struct", "const", "@name", "fun", or "primitive"
+"<unknown>:6:1: Parse error: expected end of input, "trait", "contract", "message", "struct", "const", "@name", "asm", "fun", or "primitive"
 
 Line 6, col 1:
   5 | // all imports must be at the very top of the file
@@ -572,6 +572,46 @@ Line 2, col 23:
   1 | @name(native_name_1)
 > 2 | native testNativeFunc(,);
                             ^
+"
+`;
+
+exports[`grammar should fail items-asm-fun-1 1`] = `
+"<unknown>:1:5: Parse error: expected ")"
+
+Line 1, col 5:
+> 1 | asm(1 0) extends fun loadCoins(self: Slice): Int {
+          ^
+  2 |     LDVARUINT16
+"
+`;
+
+exports[`grammar should fail items-asm-fun-2 1`] = `
+"<unknown>:1:9: Parse error: expected ")", "->", "_", "A".."Z", or "a".."z"
+
+Line 1, col 9:
+> 1 | asm(c b 42) extends fun storeDict(b: Builder, c: Cell) {
+              ^
+  2 |     STDICT
+"
+`;
+
+exports[`grammar should fail items-asm-fun-3 1`] = `
+"<unknown>:1:14: Parse error: expected "0" or "1".."9"
+
+Line 1, col 14:
+> 1 | asm(s len -> len 1 0) extends fun loadInt(self: Slice, len: Int): Int {
+                   ^
+  2 |     LDIX
+"
+`;
+
+exports[`grammar should fail items-asm-fun-4 1`] = `
+"<unknown>:1:7: Parse error: expected "0" or "1".."9"
+
+Line 1, col 7:
+> 1 | asm(->) extends fun loadInt(self: Slice, len: Int): Int {
+            ^
+  2 |     LDIX
 "
 `;
 
@@ -3236,6 +3276,370 @@ exports[`grammar should parse expr-with-var 1`] = `
           "loc": return (0 + 1) * 10 / 20 != 10 * someId;,
         },
       ],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse items-asm-funs 1`] = `
+{
+  "id": 46,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 6,
+      "instructions": [
+        "1",
+        "INT",
+        "HASHEXT_KECCAK256",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun keccak256(s: Slice): Int {
+    1
+    INT
+    HASHEXT_KECCAK256
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": keccak256,
+        "text": "keccak256",
+      },
+      "params": [
+        {
+          "id": 5,
+          "kind": "typed_parameter",
+          "loc": s: Slice,
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": {
+            "id": 4,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+      ],
+      "return": {
+        "id": 2,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "loc": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 14,
+      "instructions": [
+        "LDVARUINT16",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm( -> 1 0) extends fun loadCoins(self: Slice): Int {
+    LDVARUINT16
+},
+      "name": {
+        "id": 9,
+        "kind": "id",
+        "loc": loadCoins,
+        "text": "loadCoins",
+      },
+      "params": [
+        {
+          "id": 13,
+          "kind": "typed_parameter",
+          "loc": self: Slice,
+          "name": {
+            "id": 11,
+            "kind": "id",
+            "loc": self,
+            "text": "self",
+          },
+          "type": {
+            "id": 12,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+      ],
+      "return": {
+        "id": 10,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [
+          {
+            "id": 7,
+            "kind": "number",
+            "loc": 1,
+            "value": 1n,
+          },
+          {
+            "id": 8,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+        ],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "loc": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 24,
+      "instructions": [
+        "STDICT",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm(c b) extends fun storeDict(b: Builder, c: Cell) {
+    STDICT
+},
+      "name": {
+        "id": 17,
+        "kind": "id",
+        "loc": storeDict,
+        "text": "storeDict",
+      },
+      "params": [
+        {
+          "id": 20,
+          "kind": "typed_parameter",
+          "loc": b: Builder,
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 19,
+            "kind": "type_id",
+            "loc": Builder,
+            "text": "Builder",
+          },
+        },
+        {
+          "id": 23,
+          "kind": "typed_parameter",
+          "loc": c: Cell,
+          "name": {
+            "id": 21,
+            "kind": "id",
+            "loc": c,
+            "text": "c",
+          },
+          "type": {
+            "id": 22,
+            "kind": "type_id",
+            "loc": Cell,
+            "text": "Cell",
+          },
+        },
+      ],
+      "return": null,
+      "shuffle": {
+        "args": [
+          {
+            "id": 15,
+            "kind": "id",
+            "loc": c,
+            "text": "c",
+          },
+          {
+            "id": 16,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+        ],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "loc": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 37,
+      "instructions": [
+        "LDIX",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm(s len -> 1 0) extends fun loadInt(self: Slice, len: Int): Int {
+    LDIX
+},
+      "name": {
+        "id": 29,
+        "kind": "id",
+        "loc": loadInt,
+        "text": "loadInt",
+      },
+      "params": [
+        {
+          "id": 33,
+          "kind": "typed_parameter",
+          "loc": self: Slice,
+          "name": {
+            "id": 31,
+            "kind": "id",
+            "loc": self,
+            "text": "self",
+          },
+          "type": {
+            "id": 32,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+        {
+          "id": 36,
+          "kind": "typed_parameter",
+          "loc": len: Int,
+          "name": {
+            "id": 34,
+            "kind": "id",
+            "loc": len,
+            "text": "len",
+          },
+          "type": {
+            "id": 35,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "return": {
+        "id": 30,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [
+          {
+            "id": 25,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          {
+            "id": 26,
+            "kind": "id",
+            "loc": len,
+            "text": "len",
+          },
+        ],
+        "ret": [
+          {
+            "id": 27,
+            "kind": "number",
+            "loc": 1,
+            "value": 1n,
+          },
+          {
+            "id": 28,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+        ],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 43,
+      "instructions": [
+        "x{02}",
+        "SDBEGINSQ",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun checkAndRemoveAddExtensionPrefix(self: Slice): Int {
+    x{02} SDBEGINSQ
+},
+      "name": {
+        "id": 38,
+        "kind": "id",
+        "loc": checkAndRemoveAddExtensionPrefix,
+        "text": "checkAndRemoveAddExtensionPrefix",
+      },
+      "params": [
+        {
+          "id": 42,
+          "kind": "typed_parameter",
+          "loc": self: Slice,
+          "name": {
+            "id": 40,
+            "kind": "id",
+            "loc": self,
+            "text": "self",
+          },
+          "type": {
+            "id": 41,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+      ],
+      "return": {
+        "id": 39,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 45,
+      "instructions": [
+        "-ROT",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun checkAndRemoveAddExtensionPrefix() {
+    -ROT
+},
+      "name": {
+        "id": 44,
+        "kind": "id",
+        "loc": checkAndRemoveAddExtensionPrefix,
+        "text": "checkAndRemoveAddExtensionPrefix",
+      },
+      "params": [],
+      "return": null,
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
     },
   ],
   "kind": "module",

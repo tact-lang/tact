@@ -12,6 +12,7 @@ import {
     AstFunctionDecl,
     AstConstantDecl,
     AstFieldDecl,
+    AstAsmFunctionDef,
 } from "../grammar/ast";
 import { dummySrcInfo, ItemOrigin } from "../grammar/grammar";
 
@@ -149,7 +150,11 @@ export type FunctionDescription = {
     self: string | null;
     returns: TypeRef;
     params: FunctionParameter[];
-    ast: AstFunctionDef | AstNativeFunctionDecl | AstFunctionDecl;
+    ast:
+        | AstFunctionDef
+        | AstNativeFunctionDecl
+        | AstFunctionDecl
+        | AstAsmFunctionDef;
 };
 
 export type BinaryReceiverSelector =

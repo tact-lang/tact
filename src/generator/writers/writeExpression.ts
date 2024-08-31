@@ -583,7 +583,8 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
             let name = ops.extension(selfTyRef.name, idText(f.method));
             if (
                 methodDescr.ast.kind === "function_def" ||
-                methodDescr.ast.kind === "function_decl"
+                methodDescr.ast.kind === "function_decl" ||
+                methodDescr.ast.kind === "asm_function_def"
             ) {
                 wCtx.used(name);
             } else {

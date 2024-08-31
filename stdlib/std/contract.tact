@@ -16,8 +16,6 @@ extends native asSlice(self: Address): Slice;
 @name(__tact_create_address)
 native newAddress(chain: Int, hash: Int): Address;
 
-@name(my_address)
-native myAddress(): Address;
+asm fun myAddress(): Address { MYADDR }
 
-@name(__tact_my_balance)
-native myBalance(): Int;
+asm fun myBalance(): Int { BALANCE FIRST }

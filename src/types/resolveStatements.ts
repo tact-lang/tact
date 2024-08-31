@@ -828,7 +828,8 @@ export function resolveStatements(ctx: CompilerContext) {
         for (const f of t.functions.values()) {
             if (
                 f.ast.kind !== "native_function_decl" &&
-                f.ast.kind !== "function_decl"
+                f.ast.kind !== "function_decl" &&
+                f.ast.kind !== "asm_function_def"
             ) {
                 // Build statement context
                 let sctx = emptyContext(f.ast.loc, f.name, f.returns);

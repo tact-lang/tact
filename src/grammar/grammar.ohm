@@ -20,6 +20,9 @@ Tact {
     PrimitiveTypeDecl = primitive typeId ";"
 
     ModuleFunction = FunctionDefinition
+                   | AsmFunction
+
+    AsmFunction = "asm" AsmShuffle? FunctionAttribute* fun id Parameters (":" Type)? "{" asmInstruction+ "}"
 
     ModuleConstant = ConstantDefinition
 
@@ -79,6 +82,8 @@ Tact {
                       | inline    --inline
                       | abstract  --abstract
 
+    AsmShuffle = "(" id* ("->" integerLiteralDec+)? ")"
+
     FunctionDefinition = FunctionAttribute* fun id Parameters (":" Type)? "{" Statement* "}"
 
     FunctionDeclaration = FunctionAttribute* fun id Parameters (":" Type)? (";" | &"}")
@@ -92,6 +97,9 @@ Tact {
              | "bounced" "(" Parameter ")" "{" Statement* "}" --bounced            // cannot be a reserved word because there a 'bounced' field in stdlib's 'Context' structure
              | external "(" Parameter? ")" "{" Statement* "}" --externalRegular
              | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
+
+    asmInstruction = ("x" | "X" | "b" | "B") "{" hexDigit* "}" --data
+                   | ~comment (~space ~"}" any)+ --any
 
     Statement = StatementLet
               | StatementBlock

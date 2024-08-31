@@ -45,12 +45,6 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun("__tact_load_bool", () => {
-        ctx.signature(`(slice, int) __tact_load_bool(slice s)`);
-        ctx.context("stdlib");
-        ctx.asm(`asm( -> 1 0) "1 LDI"`);
-    });
-
     ctx.fun("__tact_load_address", () => {
         ctx.signature(`(slice, slice) __tact_load_address(slice cs)`);
         ctx.flag("inline");
@@ -146,17 +140,6 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun(`__tact_my_balance`, () => {
-        ctx.signature(`int __tact_my_balance()`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                return pair_first(get_balance());
-            `);
-        });
-    });
-
     ctx.fun("__tact_not_null", () => {
         ctx.signature(`forall X -> X __tact_not_null(X x)`);
         ctx.flag("impure");
@@ -174,7 +157,7 @@ export function writeStdlib(ctx: WriterContext) {
             `(cell, int) __tact_dict_delete(cell dict, int key_len, slice index)`,
         );
         ctx.context("stdlib");
-        ctx.asm(`asm(index dict key_len) "DICTDEL"`);
+        ctx.asm("(index dict key_len)", "DICTDEL");
     });
 
     ctx.fun("__tact_dict_delete_int", () => {
@@ -182,7 +165,7 @@ export function writeStdlib(ctx: WriterContext) {
             `(cell, int) __tact_dict_delete_int(cell dict, int key_len, int index)`,
         );
         ctx.context("stdlib");
-        ctx.asm(`asm(index dict key_len) "DICTIDEL"`);
+        ctx.asm("(index dict key_len)", "DICTIDEL");
     });
 
     ctx.fun("__tact_dict_delete_uint", () => {
@@ -190,7 +173,7 @@ export function writeStdlib(ctx: WriterContext) {
             `(cell, int) __tact_dict_delete_uint(cell dict, int key_len, int index)`,
         );
         ctx.context("stdlib");
-        ctx.asm(`asm(index dict key_len) "DICTUDEL"`);
+        ctx.asm("(index dict key_len)", "DICTUDEL");
     });
 
     ctx.fun("__tact_dict_set_ref", () => {
@@ -198,7 +181,7 @@ export function writeStdlib(ctx: WriterContext) {
             `((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value)`,
         );
         ctx.context("stdlib");
-        ctx.asm(`asm(value index dict key_len) "DICTSETREF"`);
+        ctx.asm("(value index dict key_len)", "DICTSETREF");
     });
 
     ctx.fun("__tact_dict_get", () => {
@@ -206,7 +189,7 @@ export function writeStdlib(ctx: WriterContext) {
             `(slice, int) __tact_dict_get(cell dict, int key_len, slice index)`,
         );
         ctx.context("stdlib");
-        ctx.asm(`asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT"`);
+        ctx.asm("(index dict key_len)", "DICTGET NULLSWAPIFNOT");
     });
 
     ctx.fun("__tact_dict_delete_get", () => {
@@ -214,7 +197,7 @@ export function writeStdlib(ctx: WriterContext) {
             `(cell, (slice, int)) __tact_dict_delete_get(cell dict, int key_len, slice index)`,
         );
         ctx.context("stdlib");
-        ctx.asm(`asm(index dict key_len) "DICTDELGET" "NULLSWAPIFNOT2"`);
+        ctx.asm("(index dict key_len)", "DICTDELGET NULLSWAPIFNOT2");
     });
 
     ctx.fun("__tact_dict_get_ref", () => {
@@ -222,7 +205,7 @@ export function writeStdlib(ctx: WriterContext) {
             `(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index)`,
         );
         ctx.context("stdlib");
-        ctx.asm(`asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT"`);
+        ctx.asm("(index dict key_len)", "DICTGETREF NULLSWAPIFNOT");
     });
 
     ctx.fun("__tact_dict_min", () => {
@@ -230,7 +213,7 @@ export function writeStdlib(ctx: WriterContext) {
             `(slice, slice, int) __tact_dict_min(cell dict, int key_len)`,
         );
         ctx.context("stdlib");
-        ctx.asm(`asm(dict key_len -> 1 0 2) "DICTMIN" "NULLSWAPIFNOT2"`);
+        ctx.asm("(dict key_len -> 1 0 2)", "DICTMIN  NULLSWAPIFNOT2");
     });
 
     ctx.fun("__tact_dict_min_ref", () => {
@@ -238,7 +221,7 @@ export function writeStdlib(ctx: WriterContext) {
             `(slice, cell, int) __tact_dict_min_ref(cell dict, int key_len)`,
         );
         ctx.context("stdlib");
-        ctx.asm(`asm(dict key_len -> 1 0 2) "DICTMINREF" "NULLSWAPIFNOT2"`);
+        ctx.asm("(dict key_len -> 1 0 2)", "DICTMINREF NULLSWAPIFNOT2");
     });
 
     ctx.fun("__tact_dict_next", () => {
@@ -246,9 +229,7 @@ export function writeStdlib(ctx: WriterContext) {
             `(slice, slice, int) __tact_dict_next(cell dict, int key_len, slice pivot)`,
         );
         ctx.context("stdlib");
-        ctx.asm(
-            `asm(pivot dict key_len -> 1 0 2) "DICTGETNEXT" "NULLSWAPIFNOT2"`,
-        );
+        ctx.asm("(pivot dict key_len -> 1 0 2)", "DICTGETNEXT NULLSWAPIFNOT2");
     });
 
     ctx.fun("__tact_dict_next_ref", () => {
@@ -274,7 +255,7 @@ export function writeStdlib(ctx: WriterContext) {
         );
         ctx.flag("impure");
         ctx.context("stdlib");
-        ctx.asm(`asm "STRDUMP" "DROP" "STRDUMP" "DROP" "s0 DUMP" "DROP"`);
+        ctx.asm("", "STRDUMP DROP STRDUMP DROP s0 DUMP DROP");
     });
 
     ctx.fun("__tact_debug_str", () => {
@@ -283,7 +264,7 @@ export function writeStdlib(ctx: WriterContext) {
         );
         ctx.flag("impure");
         ctx.context("stdlib");
-        ctx.asm(`asm "STRDUMP" "DROP" "STRDUMP" "DROP" "STRDUMP" "DROP"`);
+        ctx.asm("", "STRDUMP DROP STRDUMP DROP STRDUMP DROP");
     });
 
     ctx.fun("__tact_debug_bool", () => {
@@ -309,7 +290,7 @@ export function writeStdlib(ctx: WriterContext) {
         );
         ctx.flag("inline");
         ctx.context("stdlib");
-        ctx.asm(`asm "SDSUBSTR"`);
+        ctx.asm("", "SDSUBSTR");
     });
 
     ctx.fun("__tact_crc16", () => {
@@ -415,7 +396,7 @@ export function writeStdlib(ctx: WriterContext) {
         );
         ctx.flag("impure");
         ctx.context("stdlib");
-        ctx.asm(`asm "STRDUMP" "DROP" "STRDUMP" "DROP" "DUMPSTK"`);
+        ctx.asm("", "STRDUMP DROP STRDUMP DROP DUMPSTK");
     });
 
     ctx.fun("__tact_context_get", () => {
@@ -465,13 +446,13 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun("__tact_to_tuple", () => {
         ctx.signature(`forall X -> tuple __tact_to_tuple(X x)`);
         ctx.context("stdlib");
-        ctx.asm(`asm "NOP"`);
+        ctx.asm("", "NOP");
     });
 
     ctx.fun("__tact_from_tuple", () => {
         ctx.signature(`forall X -> X __tact_from_tuple(tuple x)`);
         ctx.context("stdlib");
-        ctx.asm(`asm "NOP"`);
+        ctx.asm("", "NOP");
     });
 
     //
@@ -1679,7 +1660,7 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun(`__tact_tuple_create_0`, () => {
         ctx.signature(`tuple __tact_tuple_create_0()`);
         ctx.context("stdlib");
-        ctx.asm(`asm "NIL"`);
+        ctx.asm("", "NIL");
     });
     ctx.fun(`__tact_tuple_destroy_0`, () => {
         ctx.signature(`() __tact_tuple_destroy_0()`);
@@ -1700,7 +1681,7 @@ export function writeStdlib(ctx: WriterContext) {
                 `forall ${args.join(", ")} -> tuple __tact_tuple_create_${i}((${args.join(", ")}) v)`,
             );
             ctx.context("stdlib");
-            ctx.asm(`asm "${i} TUPLE"`);
+            ctx.asm("", `${i} TUPLE`);
         });
         ctx.fun(`__tact_tuple_destroy_${i}`, () => {
             const args: string[] = [];
@@ -1711,7 +1692,7 @@ export function writeStdlib(ctx: WriterContext) {
                 `forall ${args.join(", ")} -> (${args.join(", ")}) __tact_tuple_destroy_${i}(tuple v)`,
             );
             ctx.context("stdlib");
-            ctx.asm(`asm "${i} UNTUPLE"`);
+            ctx.asm("", `${i} UNTUPLE`);
         });
     }
 
@@ -1950,12 +1931,6 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun(`__tact_log2`, () => {
-        ctx.signature(`int __tact_log2(int num)`);
-        ctx.context("stdlib");
-        ctx.asm(`asm "DUP 5 THROWIFNOT UBITSIZE DEC"`);
-    });
-
     ctx.fun(`__tact_log`, () => {
         ctx.signature(`int __tact_log(int num, int base)`);
         ctx.flag("inline");
@@ -1991,12 +1966,6 @@ export function writeStdlib(ctx: WriterContext) {
                 return result;
             `);
         });
-    });
-
-    ctx.fun(`__tact_pow2`, () => {
-        ctx.signature(`int __tact_pow2(int exp)`);
-        ctx.context("stdlib");
-        ctx.asm(`asm "POW2"`);
     });
 
     //

@@ -17,6 +17,7 @@ export type AstImport = {
 export type AstModuleItem =
     | AstPrimitiveTypeDecl
     | AstFunctionDef
+    | AstAsmFunctionDef
     | AstNativeFunctionDecl
     | AstConstantDef
     | AstStructDecl
@@ -47,6 +48,24 @@ export type AstFunctionDef = {
     statements: AstStatement[];
     id: number;
     loc: SrcInfo;
+};
+
+export type AstAsmFunctionDef = {
+    kind: "asm_function_def";
+    shuffle: AstAsmShuffle;
+    attributes: AstFunctionAttribute[];
+    name: AstId;
+    return: AstType | null;
+    params: AstTypedParameter[];
+    instructions: AstAsmInstruction[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstAsmInstruction = string;
+export type AstAsmShuffle = {
+    args: AstId[];
+    ret: AstNumber[];
 };
 
 export type AstFunctionDecl = {
@@ -129,6 +148,7 @@ export type AstTrait = {
 export type AstContractDeclaration =
     | AstFieldDecl
     | AstFunctionDef
+    | AstAsmFunctionDef
     | AstContractInit
     | AstReceiver
     | AstConstantDef;
@@ -136,6 +156,7 @@ export type AstContractDeclaration =
 export type AstTraitDeclaration =
     | AstFieldDecl
     | AstFunctionDef
+    | AstAsmFunctionDef
     | AstFunctionDecl
     | AstReceiver
     | AstConstantDef
@@ -532,6 +553,15 @@ export function eqNames(
     }
 }
 
+export function idOfText(text: string): AstId {
+    return {
+        kind: "id",
+        text,
+        id: 0,
+        loc: dummySrcInfo,
+    };
+}
+
 export const selfId: AstId = {
     kind: "id",
     text: "self",
@@ -635,6 +665,7 @@ export type AstNode =
     | AstFieldDecl
     | AstTypedParameter
     | AstFunctionDef
+    | AstAsmFunctionDef
     | AstFunctionDecl
     | AstModule
     | AstNativeFunctionDecl

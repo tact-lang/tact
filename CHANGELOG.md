@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `toSlice` method for structs and messages: PR [#630](https://github.com/tact-lang/tact/pull/630)
 - Wider range of serialization options for integers — `uint1` through `uint256` and `int1` through `int257`: PR [#558](https://github.com/tact-lang/tact/pull/558)
 - The `deepEquals` method for the `Map` type: PR [#637](https://github.com/tact-lang/tact/pull/637)
+- `asm` bodies for module-level functions: PR [#769](https://github.com/tact-lang/tact/pull/769)
 
 ### Changed
 
@@ -22,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - References to declared global constants.
 - Allow omitting semicolons in contract/trait declarations and definitions: PR [#718](https://github.com/tact-lang/tact/pull/718)
 - Compiler Tests are now using `@ton/sandbox` instead of `@tact-lang/emulator`: PR [#651](https://github.com/tact-lang/tact/pull/651)
+- The required node.js version is bumped to 22: PR [#769](https://github.com/tact-lang/tact/pull/769)
 
 ### Fixed
 
