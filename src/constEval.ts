@@ -24,6 +24,9 @@ import {
     evalUnaryOp,
     throwNonFatalErrorConstEval,
 } from "./interpreter";
+import { StatementContext } from "./types/resolveStatements";
+
+export type CompilerEnvironment = {ctx: CompilerContext, sctx?: StatementContext};
 
 // The optimizer that applies the rewriting rules during partial evaluation.
 // For the moment we use an optimizer that respects overflows.
@@ -33,14 +36,14 @@ function partiallyEvalUnaryOp(
     op: AstUnaryOperation,
     operand: AstExpression,
     source: SrcInfo,
-    ctx: CompilerContext,
+    compEnv: CompilerEnvironment
 ): AstExpression {
     if (operand.kind === "number" && op === "-") {
         // emulating negative integer literals
         return makeValueExpression(ensureInt(-operand.value, source));
     }
 
-    const simplOperand = partiallyEvalExpression(operand, ctx);
+    const simplOperand = partiallyEvalExpression(operand, compEnv);
 
     if (isValue(simplOperand)) {
         const valueOperand = extractValue(simplOperand as AstValue);
@@ -58,10 +61,10 @@ function partiallyEvalBinaryOp(
     left: AstExpression,
     right: AstExpression,
     source: SrcInfo,
-    ctx: CompilerContext,
+    compEnv: CompilerEnvironment
 ): AstExpression {
-    const leftOperand = partiallyEvalExpression(left, ctx);
-    const rightOperand = partiallyEvalExpression(right, ctx);
+    const leftOperand = partiallyEvalExpression(left, compEnv);
+    const rightOperand = partiallyEvalExpression(right, compEnv);
 
     if (isValue(leftOperand) && isValue(rightOperand)) {
         const valueLeftOperand = extractValue(leftOperand as AstValue);
@@ -84,18 +87,18 @@ function partiallyEvalBinaryOp(
 
 export function evalConstantExpression(
     ast: AstExpression,
-    ctx: CompilerContext,
+    compEnv: CompilerEnvironment,
 ): Value {
-    const interpreter = new Interpreter(ctx);
+    const interpreter = new Interpreter(compEnv);
     const result = interpreter.interpretExpression(ast);
     return result;
 }
 
 export function partiallyEvalExpression(
     ast: AstExpression,
-    ctx: CompilerContext,
+    compEnv: CompilerEnvironment
 ): AstExpression {
-    const interpreter = new Interpreter(ctx);
+    const interpreter = new Interpreter(compEnv);
     switch (ast.kind) {
         case "id":
             try {
@@ -127,14 +130,14 @@ export function partiallyEvalExpression(
         case "string":
             return makeValueExpression(interpreter.interpretString(ast));
         case "op_unary":
-            return partiallyEvalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
+            return partiallyEvalUnaryOp(ast.op, ast.operand, ast.loc, compEnv);
         case "op_binary":
             return partiallyEvalBinaryOp(
                 ast.op,
                 ast.left,
                 ast.right,
                 ast.loc,
-                ctx,
+                compEnv,
             );
         case "conditional":
             // Does not partially evaluate at the moment. Will attempt to fully evaluate

@@ -1,5 +1,5 @@
 import { Address, Cell, toNano } from "@ton/core";
-import { evalConstantExpression } from "./constEval";
+import { CompilerEnvironment, evalConstantExpression } from "./constEval";
 import { CompilerContext } from "./context";
 import {
     TactConstEvalError,
@@ -52,7 +52,7 @@ import {
     isSelfId,
 } from "./grammar/ast";
 import { SrcInfo, dummySrcInfo, parseExpression } from "./grammar/grammar";
-import { divFloor, modFloor } from "./optimizer/util";
+import { divFloor, extractValue, modFloor } from "./optimizer/util";
 import {
     getStaticConstant,
     getStaticFunction,
@@ -70,6 +70,7 @@ import {
 } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
 import { enabledMasterchain } from "./config/features";
+import { emptyContext, lookupVariable, StatementContext } from "./types/resolveStatements";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -95,7 +96,7 @@ export function throwNonFatalErrorConstEval(
 
 // Throws a fatal const-eval, meaning this is a meaningless program,
 // so compilation should be aborted in all cases
-function throwErrorConstEval(msg: string, source: SrcInfo): never {
+export function throwErrorConstEval(msg: string, source: SrcInfo): never {
     throwConstEvalError(
         `Cannot evaluate expression to a constant: ${msg}`,
         true,
@@ -571,7 +572,7 @@ export function parseAndEvalExpression(sourceCode: string): EvalResult {
         const ast = parseExpression(sourceCode);
         const constEvalResult = evalConstantExpression(
             ast,
-            new CompilerContext(),
+            {ctx: new CompilerContext()}
         );
         return { kind: "ok", value: constEvalResult };
     } catch (error) {
@@ -630,15 +631,15 @@ that binds a variable name to its corresponding value.
 */
 export class Interpreter {
     private envStack: EnvironmentStack;
-    private context: CompilerContext;
+    private compEnv: CompilerEnvironment;
     private config: InterpreterConfig;
 
     constructor(
-        context: CompilerContext = new CompilerContext(),
+        compEnv: CompilerEnvironment,
         config: InterpreterConfig = defaultInterpreterConfig,
     ) {
         this.envStack = new EnvironmentStack();
-        this.context = context;
+        this.compEnv = compEnv;
         this.config = config;
     }
 
@@ -759,8 +760,8 @@ export class Interpreter {
     }
 
     public interpretName(ast: AstId): Value {
-        if (hasStaticConstant(this.context, idText(ast))) {
-            const constant = getStaticConstant(this.context, idText(ast));
+        if (hasStaticConstant(this.compEnv.ctx, idText(ast))) {
+            const constant = getStaticConstant(this.compEnv.ctx, idText(ast));
             if (constant.value !== undefined) {
                 return constant.value;
             } else {
@@ -774,6 +775,17 @@ export class Interpreter {
         if (variableBinding !== undefined) {
             return variableBinding;
         }
+
+        // It is not a variable in the interpreter's environment. So, attempt
+        // to look it up in the statement environment provided by the compiler, 
+        // which is working as the global enclosing environment for the interpreter's execution.
+        if (this.compEnv.sctx !== undefined) {
+            const val = lookupVariable(ast, this.compEnv.sctx);
+            if (val !== undefined) {
+                return val;
+            }
+        }
+        
         throwNonFatalErrorConstEval("cannot evaluate a variable", ast.loc);
     }
 
@@ -864,7 +876,7 @@ export class Interpreter {
     }
 
     public interpretStructInstance(ast: AstStructInstance): StructValue {
-        const structTy = getType(this.context, ast.type);
+        const structTy = getType(this.compEnv.ctx, ast.type);
 
         // initialize the resulting struct value with
         // the default values for fields with initializers
@@ -902,10 +914,10 @@ export class Interpreter {
             isSelfId(ast.aggregate) &&
             !this.envStack.selfInEnvironment()
         ) {
-            const selfTypeRef = getExpType(this.context, ast.aggregate);
+            const selfTypeRef = getExpType(this.compEnv.ctx, ast.aggregate);
             if (selfTypeRef.kind === "ref") {
                 const contractTypeDescription = getType(
-                    this.context,
+                    this.compEnv.ctx,
                     selfTypeRef.name,
                 );
                 const foundContractConst =
@@ -1083,7 +1095,7 @@ export class Interpreter {
                             );
                         }
                         if (
-                            !enabledMasterchain(this.context) &&
+                            !enabledMasterchain(this.compEnv.ctx) &&
                             address.workChain !== 0
                         ) {
                             throwErrorConstEval(
@@ -1121,7 +1133,7 @@ export class Interpreter {
                         ast.loc,
                     );
                 }
-                if (!enabledMasterchain(this.context) && wc !== 0n) {
+                if (!enabledMasterchain(this.compEnv.ctx) && wc !== 0n) {
                     throwErrorConstEval(
                         `${wc}:${addr.toString("hex")} address is from masterchain which is not enabled for this contract`,
                         ast.loc,
@@ -1130,9 +1142,9 @@ export class Interpreter {
                 return new Address(Number(wc), addr);
             }
             default:
-                if (hasStaticFunction(this.context, idText(ast.function))) {
+                if (hasStaticFunction(this.compEnv.ctx, idText(ast.function))) {
                     const functionDescription = getStaticFunction(
-                        this.context,
+                        this.compEnv.ctx,
                         idText(ast.function),
                     );
                     switch (functionDescription.ast.kind) {
@@ -1186,7 +1198,7 @@ export class Interpreter {
         // Check parameter names do not shadow constants
         if (
             paramNames.some((paramName) =>
-                hasStaticConstant(this.context, paramName),
+                hasStaticConstant(this.compEnv.ctx, paramName),
             )
         ) {
             throwInternalCompilerError(
@@ -1279,7 +1291,7 @@ export class Interpreter {
     }
 
     public interpretLetStatement(ast: AstStatementLet) {
-        if (hasStaticConstant(this.context, idText(ast.name))) {
+        if (hasStaticConstant(this.compEnv.ctx, idText(ast.name))) {
             // Attempt of shadowing a constant in a let declaration
             throwInternalCompilerError(
                 `declaration of ${idText(ast.name)} shadows a constant with the same name`,
@@ -1339,9 +1351,14 @@ export class Interpreter {
                 ast.trueStatements.forEach(this.interpretStatement, this);
             });
         } else if (ast.falseStatements !== null) {
+            // We are in an else branch. The typechecker ensures that 
+            // the elseif branch does not exist.
             this.envStack.executeInNewEnvironment(() => {
                 ast.falseStatements!.forEach(this.interpretStatement, this);
             });
+        } else if (ast.elseif !== null) {
+            // We are in an elseif branch 
+            this.interpretConditionStatement(ast.elseif);
         }
     }
 

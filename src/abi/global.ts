@@ -50,7 +50,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
                 const str = evalConstantExpression(
                     resolved[0]!,
-                    ctx.ctx,
+                    {ctx: ctx.ctx},
                 ) as string;
                 return toNano(str).toString(10);
             },
@@ -104,7 +104,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
                 const str = evalConstantExpression(
                     resolved[1]!,
-                    ctx.ctx,
+                    {ctx: ctx.ctx},
                 ) as string;
                 return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0]!, ctx)})`;
             },
@@ -145,7 +145,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
                 const str = evalConstantExpression(
                     resolved[0]!,
-                    ctx.ctx,
+                    {ctx: ctx.ctx},
                 ) as string;
                 let address: Address;
                 try {
@@ -206,7 +206,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 // Load cell data
                 const str = evalConstantExpression(
                     resolved[0]!,
-                    ctx.ctx,
+                    {ctx: ctx.ctx},
                 ) as string;
                 let c: Cell;
                 try {
@@ -367,7 +367,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     try {
                         const str = evalConstantExpression(
                             resolved[0]!,
-                            ctx.ctx,
+                            {ctx: ctx.ctx},
                         ) as string;
                         if (Buffer.from(str).length > 128) {
                             throwCompilationError(

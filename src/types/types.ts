@@ -105,6 +105,35 @@ export function showValue(val: Value): string {
     }
 }
 
+export function eqValues(val1: Value, val2: Value): boolean {
+    if (val1 === null) {
+        return val2 === null;
+    } else if (val1 instanceof CommentValue) {
+        return val2 instanceof CommentValue ? val1.comment === val2.comment : false;
+    } else if (typeof val1 === "object" && "$tactStruct" in val1) {
+        if (typeof val2 === "object" && val2 !== null && "$tactStruct" in val2) {
+        
+            const keys1 = Object.keys(val1);
+            const keys2 = Object.keys(val2);
+        
+        if (!(keys1.length === keys2.length && keys1.every(key => key in keys2))) {
+            return false;
+        }
+
+        const entries2 = new Map(Object.entries(val2));
+        return Object.entries(val1).every(([key, value]) => eqValues(value, entries2.get(key)!));
+       } else {
+        return false;
+       }
+    } else if (Address.isAddress(val1)) {
+        return Address.isAddress(val2) ? val1.equals(val2) : false;
+    } else if (val1 instanceof Cell) {
+        return val2 instanceof Cell ? val1.equals(val2) : false;
+    } else {
+        return val1 === val2;
+    }
+}
+
 export type FieldDescription = {
     name: string;
     index: number;

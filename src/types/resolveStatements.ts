@@ -10,10 +10,14 @@ import {
     selfId,
     isSelfId,
     eqNames,
+    AstExpression,
+    isValue,
+    AstValue,
 } from "../grammar/ast";
 import { isAssignable } from "./subtyping";
 import {
     idTextErr,
+    TactConstEvalError,
     throwCompilationError,
     throwInternalCompilerError,
 } from "../errors";
@@ -26,7 +30,11 @@ import {
     getAllTypes,
 } from "./resolveDescriptors";
 import { getExpType, resolveExpression } from "./resolveExpression";
-import { printTypeRef, TypeRef } from "./types";
+import { CommentValue, eqValues, printTypeRef, TypeRef, Value } from "./types";
+import { evalConstantExpression, partiallyEvalExpression } from "../constEval";
+import { extractValue, makeBinaryExpression, makeValueExpression } from "../optimizer/util";
+import { evalBinaryOp } from "../interpreter";
+import { Address, Cell } from "@ton/core";
 
 export type StatementContext = {
     root: SrcInfo;
@@ -34,6 +42,16 @@ export type StatementContext = {
     returns: TypeRef;
     vars: Map<string, TypeRef>;
     requiredFields: string[];
+    // The compiler will keep track of local assignments to variables for analysis
+    varBindings: Map<string, Value>;
+    // The compiler will also track those variables that become "undetermined".
+    // A variable is undetermined when it has conflicting values in different branches of the program.
+    // Remember that the compiler DOES not execute the program, it only keeps track
+    // of variable values for analysis at compile time. So, if the same variable gets assigned
+    // two different values in, say, two branches of a conditional, the compiler will mark it
+    // as undetermined.
+    undeterminedVars: Set<string>;
+
 };
 
 export function emptyContext(
@@ -47,6 +65,8 @@ export function emptyContext(
         returns,
         vars: new Map(),
         requiredFields: [],
+        varBindings: new Map(),
+        undeterminedVars: new Set(),
     };
 }
 
@@ -116,6 +136,7 @@ function addVariable(
     ref: TypeRef,
     ctx: CompilerContext,
     sctx: StatementContext,
+    varValue?: Value
 ): StatementContext {
     checkVariableExists(ctx, sctx, name); // Should happen earlier
     if (isWildcard(name)) {
@@ -124,6 +145,34 @@ function addVariable(
     return {
         ...sctx,
         vars: new Map(sctx.vars).set(idText(name), ref),
+        varBindings: varValue !== undefined ? new Map(sctx.varBindings).set(idText(name), varValue) : sctx.varBindings,
+    };
+}
+
+export function lookupVariable(name: AstId, sctx: StatementContext): Value | undefined {
+    if (isWildcard(name)) {
+        return undefined;
+    }
+    // We should return a variable only if it is NOT marked as undetermined.
+    if (!sctx.undeterminedVars.has(idText(name))) {
+        return sctx.varBindings.get(idText(name));
+    }
+
+    return undefined;
+}
+
+export function assignVariable(name: AstId, value: Value, sctx: StatementContext): StatementContext {
+    if (isWildcard(name)) {
+        return sctx;
+    }
+    // Whenever we assign a variable with a value, it becomes determined.
+    // So, remove it from the set of undetermined variables.
+    const r = new Set(sctx.undeterminedVars);
+    r.delete(idText(name));
+    return {
+        ...sctx,
+        varBindings: new Map(sctx.varBindings).set(idText(name), value),
+        undeterminedVars: r,
     };
 }
 
@@ -138,12 +187,38 @@ function processCondition(
 } {
     // Process expression
     ctx = resolveExpression(condition.condition, sctx, ctx);
+
+    // Evaluate the condition in the current context
+    const rawConditionValue = callExpressionEvaluation(condition.condition, ctx, sctx);
+    let conditionValue: boolean | undefined = undefined;
+
+    if (rawConditionValue !== undefined && typeof rawConditionValue === 'boolean') {
+        conditionValue = rawConditionValue;
+    }
+
     let initialCtx = sctx;
 
     // Simple if
     if (condition.falseStatements === null && condition.elseif === null) {
         const r = processStatements(condition.trueStatements, initialCtx, ctx);
         ctx = r.ctx;
+
+        // Since there is no alternative branch, we only need to check if the condition
+        // can be determined 
+        if (conditionValue !== undefined) {
+            if (conditionValue) {
+                // Copy the latest updates to all variables in initialCtx as found in r.sctx
+                initialCtx = synchronizeVariableContexts(initialCtx, r.sctx);
+            } 
+            // If the condition does not hold, then we ignore any updates to variables
+            // in r.sctx, and leave initialCtx as is.
+        } else {
+            // The condition cannot be determined. We need to mark variables in initialCtx as
+            // undetermined only if they have conflicting values in r.sctx.
+            // Note we need to add initialCtx in the updatedCtxs because it is the implicit 
+            // "else" branch.
+            initialCtx = markConflictingVariables(initialCtx, r.sctx, initialCtx);
+        }
         return { ctx, sctx: initialCtx, returnAlwaysReachable: false };
     }
 
@@ -164,6 +239,7 @@ function processCondition(
         ctx = r.ctx;
         processedCtx.push(r.sctx);
         returnAlwaysReachableInAllBranches.push(r.returnAlwaysReachable);
+
     } else if (
         condition.falseStatements === null &&
         condition.elseif !== null
@@ -196,6 +272,23 @@ function processCondition(
         initialCtx = removeRequiredVariable(r, initialCtx);
     }
 
+    // Now merge the assignments in the different contexts according to the condition value 
+        if (conditionValue !== undefined) {
+            if (conditionValue) {
+                // Copy the latest updates to all variables in initialCtx as found in 
+                // processedCtx[0] (i.e., the context from the true branch)
+                initialCtx = synchronizeVariableContexts(initialCtx, processedCtx[0]!);
+            } else {
+                // If the condition does not hold, take the updates from processedCtx[1]
+                // i.e., whatever branch executed as else or elseif
+                initialCtx = synchronizeVariableContexts(initialCtx, processedCtx[1]!);
+            }
+        } else {
+            // The condition cannot be determined. We need to mark variables in initialCtx as
+            // undetermined only if they have conflicting values in the updated contexts.
+            initialCtx = markConflictingVariables(initialCtx, ...processedCtx);
+        }
+
     return {
         ctx,
         sctx: initialCtx,
@@ -225,6 +318,25 @@ export function isLvalue(path: AstId[], ctx: CompilerContext): boolean {
     } else {
         // if the head path symbol is a global constant, then the whole path expression is a constant
         return !hasStaticConstant(ctx, idText(headId));
+    }
+}
+
+function callExpressionEvaluation(ast: AstExpression, ctx: CompilerContext, sctx: StatementContext): Value | undefined {
+    try {
+        const expr = partiallyEvalExpression(ast, {ctx: ctx, sctx: sctx});
+        if (isValue(expr)) {
+            return extractValue(expr as AstValue);
+        }
+        return undefined;
+    } catch (e) {
+        if (e instanceof TactConstEvalError) {
+            if (!e.fatal) {
+                // If a non-fatal error occurs during expression evaluation
+                // return the original expression.
+                return undefined;
+            }
+        }
+        throw e;
     }
 }
 
@@ -266,7 +378,9 @@ function processStatements(
                                 s.loc,
                             );
                         }
-                        sctx = addVariable(s.name, variableType, ctx, sctx);
+
+                        const varDef = callExpressionEvaluation(s.expression, ctx, sctx);
+                        sctx = addVariable(s.name, variableType, ctx, sctx, varDef);
                     } else {
                         if (expressionType.kind === "null") {
                             throwCompilationError(
@@ -280,7 +394,10 @@ function processStatements(
                                 s.loc,
                             );
                         }
-                        sctx = addVariable(s.name, expressionType, ctx, sctx);
+
+                        const varDef = callExpressionEvaluation(s.expression, ctx, sctx);
+                        sctx = addVariable(s.name, expressionType, ctx, sctx, varDef);
+                        
                     }
                 }
                 break;
@@ -326,6 +443,12 @@ function processStatements(
                             sctx = removeRequiredVariable(field, sctx);
                         }
                     }
+
+                    const exprVal = callExpressionEvaluation(s.expression, ctx, sctx);
+
+                    if (path.length === 1 && exprVal !== undefined) {
+                        sctx = assignVariable(path[0]!, exprVal, sctx);
+                    }
                 }
                 break;
             case "statement_augmentedassign":
@@ -367,6 +490,19 @@ function processStatements(
                             s.loc,
                         );
                     }
+
+                    const exprVal = callExpressionEvaluation(s.expression, ctx, sctx);
+
+                    if (path.length === 1 && exprVal !== undefined) {
+                        const currVal = lookupVariable(path[0]!, sctx);
+                        if (currVal !== undefined) {
+                            const finalVal = evalBinaryOp(
+                                s.op, 
+                                currVal, 
+                                exprVal);
+                            sctx = assignVariable(path[0]!, finalVal, sctx);    
+                        }
+                    }
                 }
                 break;
             case "statement_expression":
@@ -383,6 +519,9 @@ function processStatements(
                     ) {
                         returnAlwaysReachable = true;
                     }
+
+                    // Evaluate the expression just in case there are errors
+                    callExpressionEvaluation(s.expression, ctx, sctx);
                 }
                 break;
             case "statement_condition":
@@ -849,3 +988,96 @@ export function resolveStatements(ctx: CompilerContext) {
 
     return ctx;
 }
+
+function synchronizeVariableContexts(initialCtx: StatementContext, updatedCtx: StatementContext): StatementContext {
+    // The updated context must contain the variables in the initial context
+    for (let key of initialCtx.varBindings.keys()) {
+        if (!updatedCtx.varBindings.has(key)) {
+            throwInternalCompilerError("One updated StatementContext must contain the variables in the initial context.");
+        }
+    }
+
+    const newBindings = new Map(initialCtx.varBindings);
+    const newUndetermined = new Set<string>();
+
+    for (let key of initialCtx.varBindings.keys()) {
+        newBindings.set(key, updatedCtx.varBindings.get(key)!);
+    }
+
+    // Now, mark those variables in initialCtx that became undetermined 
+    // in updatedCtx
+    
+    for (let key of initialCtx.varBindings.keys()) {
+        if (updatedCtx.undeterminedVars.has(key)) {
+            newUndetermined.add(key);
+        }
+    }
+
+    return {...initialCtx,
+        varBindings: newBindings,
+        undeterminedVars: newUndetermined
+    };
+}
+
+function markConflictingVariables(initialCtx: StatementContext, ...updatedCtxs: StatementContext[]): StatementContext {
+    
+    // There must be at least one updatedCtx in the list.
+    if (updatedCtxs.length === 0) {
+        throwInternalCompilerError("One updated StatementContext must be provided.");
+    }
+
+    // Each updated context must contain the variables in the initial context
+    updatedCtxs.forEach(sctx => {
+        for (let key of initialCtx.varBindings.keys()) {
+            if (!sctx.varBindings.has(key)) {
+                throwInternalCompilerError("Each updated StatementContext must contain the variables in the initial context.");
+            }
+        }
+    });
+
+    const newBindings = new Map(initialCtx.varBindings);
+    const newUndetermined = new Set<string>();
+
+    // A conflicting variable is one that does not have the same value in all the updated contexts.
+
+    // Iinitially, the undetermined vars are those that became undetermined in at least one of 
+    // the updated contexts.
+
+    for (let key of initialCtx.varBindings.keys()) {
+        if (updatedCtxs.some(sctx => sctx.undeterminedVars.has(key))) {
+            newUndetermined.add(key);
+        }
+    }
+
+    // From the initial undetermined vars, we need to add those that have different values in 
+    // the updated contexts.
+
+    // Pick the first augmented context as pivot for comparison.
+    const firstCtx = updatedCtxs[0]!;
+
+    for (let key of initialCtx.varBindings.keys()) {
+        // Only check variables not marked as undetermined already
+        if (!newUndetermined.has(key)) {
+            const allEqual = updatedCtxs.every(stcx => 
+                eqValues(stcx.varBindings.get(key)!, firstCtx.varBindings.get(key)!)
+            );
+    
+            if (allEqual) {
+                // The variable has the same value in all the updated contexts. 
+                // Set its new value to be the common value.
+                newBindings.set(key, firstCtx.varBindings.get(key)!);
+            } else {
+                // The variable has conflicting values in the updated contexts.
+                // Mark it as undetermined.
+                newUndetermined.add(key);
+            }
+        }
+    }
+
+    return {...initialCtx,
+        varBindings: newBindings,
+        undeterminedVars: newUndetermined
+    };
+}
+
+

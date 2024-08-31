@@ -164,7 +164,7 @@ export function writePathExpression(path: AstId[]): string {
 export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
     // literals and constant expressions are covered here
     try {
-        const value = evalConstantExpression(f, wCtx.ctx);
+        const value = evalConstantExpression(f, {ctx: wCtx.ctx});
         return writeValue(value, wCtx);
     } catch (error) {
         if (!(error instanceof TactConstEvalError) || error.fatal) throw error;
