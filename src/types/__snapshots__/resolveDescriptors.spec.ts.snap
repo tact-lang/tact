@@ -338,6 +338,15 @@ Line 8, col 1:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for message-opcode-too-large 1`] = `
+"<unknown>:1:9: Opcode of message "Foo" is too large: it must fit into 32 bits
+Line 1, col 9:
+> 1 | message(0x1_FFFFF_FFFF) Foo { }
+              ^~~~~~~~~~~~~~
+  2 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for method-first-param-not-self1 1`] = `
 "<unknown>:8:17: Extend function must have first parameter named "self"
 Line 8, col 17:

@@ -520,6 +520,16 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     a.loc,
                 );
             }
+            if (
+                a.kind === "message_decl" &&
+                a.opcode &&
+                a.opcode.value > 0xffff_ffff
+            ) {
+                throwCompilationError(
+                    `Opcode of message ${idTextErr(a.name)} is too large: it must fit into 32 bits`,
+                    a.opcode.loc,
+                );
+            }
         }
 
         // Trait
