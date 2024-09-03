@@ -52,7 +52,7 @@
     "ipfs-unixfs-importer": "9.0.10",
     "json-bigint": "^1.0.0",
     "meow": "^13.2.0",
-    "mkdirp": "^2.1.3",
+    "mkdirp": "^3.0.1",
     "ohm-js": "^17.1.0",
     "path-normalize": "^6.0.13",
     "prando": "^6.0.1",
