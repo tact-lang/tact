@@ -9,6 +9,7 @@ const SendIgnoreErrors: Int = 2;
 const SendPayGasSeparately: Int = 1;
 const SendDestroyIfZero: Int = 32;
 const SendBounceIfActionFail: Int = 16;
+const SendOnlyEstimateFee: Int = 1024;
 
 struct SendParameters {
     bounce: Bool = true;
