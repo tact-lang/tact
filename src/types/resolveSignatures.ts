@@ -1,9 +1,8 @@
 import * as changeCase from "change-case";
-import { ABIField } from "@ton/core";
+import { ABIField, beginCell } from "@ton/core";
 import { CompilerContext } from "../context";
 import { idToHex } from "../utils/idToHex";
-import { newMessageId } from "../utils/newMessageId";
-import { throwInternalCompilerError } from "../errors";
+import { idTextErr, throwInternalCompilerError } from "../errors";
 import { getType, getAllTypes } from "./resolveDescriptors";
 import {
     BinaryReceiverSelector,
@@ -13,6 +12,8 @@ import {
 import { throwCompilationError } from "../errors";
 import { AstNumber, AstReceiver } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
+import { sha256_sync } from "@ton/crypto";
+import { dummySrcInfo } from "../grammar/grammar";
 
 export function resolveSignatures(ctx: CompilerContext) {
     const signatures: Map<
@@ -183,7 +184,13 @@ export function resolveSignatures(ctx: CompilerContext) {
             if (t.ast.opcode !== null) {
                 id = t.ast.opcode;
             } else {
-                id = newMessageId(signature);
+                id = newMessageOpcode(signature);
+                if (id.value === 0n) {
+                    throwCompilationError(
+                        `Auto-generated opcode for message "${idTextErr(t.ast.name)}" is zero which is reserved for text comments.\nTry changing names of the message type or its fields to get a non-zero opcode.\nOr consider specifying the opcode explicitly.`,
+                        t.ast.loc,
+                    );
+                }
             }
         }
 
@@ -210,6 +217,22 @@ export function resolveSignatures(ctx: CompilerContext) {
     checkMessageOpcodesUnique(ctx);
 
     return ctx;
+}
+
+function newMessageOpcode(signature: string): AstNumber {
+    return {
+        kind: "number",
+        base: 10,
+        value: BigInt(
+            beginCell()
+                .storeBuffer(sha256_sync(signature))
+                .endCell()
+                .beginParse()
+                .loadUint(32),
+        ),
+        id: 0,
+        loc: dummySrcInfo,
+    };
 }
 
 type messageType = string;
