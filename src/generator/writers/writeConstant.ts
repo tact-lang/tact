@@ -1,4 +1,4 @@
-import { Address, beginCell, Cell } from "@ton/core";
+import { Address, beginCell, Cell, Slice } from "@ton/core";
 import { WriterContext } from "../Writer";
 
 export function writeString(str: string, ctx: WriterContext) {
@@ -24,6 +24,16 @@ export function writeCell(cell: Cell, ctx: WriterContext) {
     return writeRawCell(
         "cell",
         "Cell " + cell.hash().toString("base64"),
+        cell,
+        ctx,
+    );
+}
+
+export function writeSlice(slice: Slice, ctx: WriterContext) {
+    const cell = slice.asCell();
+    return writeRawSlice(
+        "slice",
+        "Slice " + cell.hash().toString("base64"),
         cell,
         ctx,
     );

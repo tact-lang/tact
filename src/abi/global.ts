@@ -1,6 +1,10 @@
-import { Address, Cell, toNano } from "@ton/core";
+import { Address, beginCell, Cell, toNano } from "@ton/core";
 import { enabledDebug, enabledMasterchain } from "../config/features";
-import { writeAddress, writeCell } from "../generator/writers/writeConstant";
+import {
+    writeAddress,
+    writeCell,
+    writeSlice,
+} from "../generator/writers/writeConstant";
 import {
     writeExpression,
     writeValue,
@@ -395,6 +399,187 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     "sha256 expects string or slice argument",
                     ref,
                 );
+            },
+        },
+    ],
+    [
+        "slice",
+        {
+            name: "slice",
+            resolve: (ctx, args, ref) => {
+                if (args.length !== 1) {
+                    throwCompilationError("slice() expects one argument", ref);
+                }
+                const arg0 = args[0]!;
+                if (arg0.kind !== "ref") {
+                    throwCompilationError(
+                        "slice() expects string argument",
+                        ref,
+                    );
+                }
+                if (arg0.name !== "String") {
+                    throwCompilationError(
+                        "slice() expects string argument",
+                        ref,
+                    );
+                }
+                return { kind: "ref", name: "Slice", optional: false };
+            },
+            generate: (ctx, args, resolved, ref) => {
+                if (resolved.length !== 1) {
+                    throwCompilationError("slice() expects one argument", ref);
+                }
+
+                // Load slice data
+                const str = evalConstantExpression(
+                    resolved[0]!,
+                    ctx.ctx,
+                ) as string;
+                let c: Cell;
+                try {
+                    c = Cell.fromBase64(str);
+                } catch (e) {
+                    throwCompilationError(`Invalid slice ${str}`, ref);
+                }
+
+                const res = writeSlice(c.asSlice(), ctx);
+                ctx.used(res);
+                return `${res}()`;
+            },
+        },
+    ],
+    [
+        "rawSlice",
+        {
+            name: "rawSlice",
+            resolve: (ctx, args, ref) => {
+                if (args.length !== 1) {
+                    throwCompilationError(
+                        "rawSlice() expects one argument",
+                        ref,
+                    );
+                }
+                const arg0 = args[0]!;
+                if (arg0.kind !== "ref") {
+                    throwCompilationError(
+                        "rawSlice() expects string argument",
+                        ref,
+                    );
+                }
+                if (arg0.name !== "String") {
+                    throwCompilationError(
+                        "rawSlice() expects string argument",
+                        ref,
+                    );
+                }
+                return { kind: "ref", name: "Slice", optional: false };
+            },
+            generate: (ctx, args, resolved, ref) => {
+                if (resolved.length !== 1) {
+                    throwCompilationError(
+                        "rawSlice() expects one argument",
+                        ref,
+                    );
+                }
+
+                // Load slice data
+                const str = evalConstantExpression(
+                    resolved[0]!,
+                    ctx.ctx,
+                ) as string;
+                let c: Cell;
+                try {
+                    c = beginCell().storeBuffer(Buffer.from(str)).endCell();
+                } catch (e) {
+                    throwCompilationError(`Invalid slice data ${str}`, ref);
+                }
+
+                const res = writeSlice(c.asSlice(), ctx);
+                ctx.used(res);
+                return `${res}()`;
+            },
+        },
+    ],
+    [
+        "ascii",
+        {
+            name: "ascii",
+            resolve: (ctx, args, ref) => {
+                if (args.length !== 1) {
+                    throwCompilationError("ascii() expects one argument", ref);
+                }
+                const arg0 = args[0]!;
+                if (arg0.kind !== "ref") {
+                    throwCompilationError(
+                        "ascii() expects string argument",
+                        ref,
+                    );
+                }
+                if (arg0.name !== "String") {
+                    throwCompilationError(
+                        "ascii() expects string argument",
+                        ref,
+                    );
+                }
+                return { kind: "ref", name: "Int", optional: false };
+            },
+            generate: (ctx, args, resolved, ref) => {
+                if (resolved.length !== 1) {
+                    throwCompilationError("ascii() expects one argument", ref);
+                }
+
+                // Load slice data
+                const str = evalConstantExpression(
+                    resolved[0]!,
+                    ctx.ctx,
+                ) as string;
+
+                if (str.length > 32) {
+                    throwCompilationError(
+                        `ascii() expects string argument with length <= 32`,
+                        ref,
+                    );
+                }
+
+                return `"${str}"u`;
+            },
+        },
+    ],
+    [
+        "crc32",
+        {
+            name: "crc32",
+            resolve: (ctx, args, ref) => {
+                if (args.length !== 1) {
+                    throwCompilationError("crc32() expects one argument", ref);
+                }
+                const arg0 = args[0]!;
+                if (arg0.kind !== "ref") {
+                    throwCompilationError(
+                        "crc32() expects string argument",
+                        ref,
+                    );
+                }
+                if (arg0.name !== "String") {
+                    throwCompilationError(
+                        "crc32() expects string argument",
+                        ref,
+                    );
+                }
+                return { kind: "ref", name: "Int", optional: false };
+            },
+            generate: (ctx, args, resolved, ref) => {
+                if (resolved.length !== 1) {
+                    throwCompilationError("crc32() expects one argument", ref);
+                }
+
+                // Load slice data
+                const str = evalConstantExpression(
+                    resolved[0]!,
+                    ctx.ctx,
+                ) as string;
+
+                return `"${str}"c`;
             },
         },
     ],

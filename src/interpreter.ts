@@ -1,4 +1,5 @@
-import { Address, Cell, toNano } from "@ton/core";
+import { Address, beginCell, Cell, toNano } from "@ton/core";
+import * as crc32 from "crc-32";
 import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "./context";
 import {
@@ -1068,6 +1069,71 @@ export class Interpreter {
                             ast.loc,
                         );
                     }
+                }
+                break;
+            case "slice":
+                {
+                    ensureFunArity(1, ast.args, ast.loc);
+                    const str = ensureString(
+                        this.interpretExpression(ast.args[0]!),
+                        ast.args[0]!.loc,
+                    );
+                    try {
+                        return Cell.fromBase64(str).asSlice();
+                    } catch (_) {
+                        throwErrorConstEval(
+                            `invalid base64 encoding for a cell: ${str}`,
+                            ast.loc,
+                        );
+                    }
+                }
+                break;
+            case "rawSlice":
+                {
+                    ensureFunArity(1, ast.args, ast.loc);
+                    const str = ensureString(
+                        this.interpretExpression(ast.args[0]!),
+                        ast.args[0]!.loc,
+                    );
+                    try {
+                        return beginCell()
+                            .storeBuffer(Buffer.from(str))
+                            .endCell()
+                            .asSlice();
+                    } catch (_) {
+                        throwErrorConstEval(
+                            `invalid slice data: ${str}`,
+                            ast.loc,
+                        );
+                    }
+                }
+                break;
+            case "ascii":
+                {
+                    ensureFunArity(1, ast.args, ast.loc);
+                    const str = ensureString(
+                        this.interpretExpression(ast.args[0]!),
+                        ast.args[0]!.loc,
+                    );
+                    if (str.length > 32) {
+                        throwErrorConstEval(
+                            `ascii string is too long, expected up to 32 characters, got ${str.length}`,
+                            ast.loc,
+                        );
+                    }
+                    return BigInt(
+                        "0x" + Buffer.from(str, "ascii").toString("hex"),
+                    );
+                }
+                break;
+            case "crc32":
+                {
+                    ensureFunArity(1, ast.args, ast.loc);
+                    const str = ensureString(
+                        this.interpretExpression(ast.args[0]!),
+                        ast.args[0]!.loc,
+                    );
+                    return BigInt(crc32.str(str));
                 }
                 break;
             case "address":

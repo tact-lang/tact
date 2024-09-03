@@ -6,6 +6,10 @@ contract IntrinsicsTester {
     d: Cell = cell("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
     e: Int = pow(2, 9);
     f: Int = sha256("hello world");
+    g: Slice = slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
+    h: Slice = rawSlice("hello world");
+    i: Int = ascii("hello world");
+    j: Int = crc32("hello world");
     
     init() {
 
@@ -77,5 +81,37 @@ contract IntrinsicsTester {
 
     receive("emit_1") {
         emit("Hello world".asComment());
+    }
+
+    get fun getSlice(): Slice {
+        return slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
+    }
+
+    get fun getSlice2(): Slice {
+        return self.g;
+    }
+
+    get fun getRawSlice(): Slice {
+        return rawSlice("hello world");
+    }
+
+    get fun getRawSlice2(): Slice {
+        return self.h;
+    }
+
+    get fun getAscii(): Int {
+        return ascii("hello world");
+    }
+
+    get fun getAscii2(): Int {
+        return self.i;
+    }
+
+    get fun getCrc32(): Int {
+        return crc32("hello world");
+    }
+
+    get fun getCrc32_2(): Int {
+        return self.j;
     }
 }
