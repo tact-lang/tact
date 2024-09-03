@@ -385,6 +385,11 @@
       "name": "traits",
       "path": "./src/test/e2e-emulated/contracts/traits.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "receiver-empty",
+      "path": "./src/test/e2e-emulated/contracts/receiver-empty.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
     }
   ]
 }
