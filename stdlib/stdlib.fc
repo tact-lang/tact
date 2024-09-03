@@ -645,22 +645,3 @@ builder store_builder(builder to, builder from) asm "STBR";
 
 ;;; Retrieves code of smart-contract from c7
 cell my_code() asm "MYCODE";
-
-;;; Creates an output action and returns a fee for creating a message. Mode has the same effect as in the case of SENDRAWMSG
-int send_message(cell msg, int mode) impure asm "SENDMSG";
-
-int gas_consumed() asm "GASCONSUMED";
-
-;; TVM V6 https://github.com/ton-blockchain/ton/blob/testnet/doc/GlobalVersions.md#version-6
-
-int get_compute_fee(int workchain, int gas_used) asm(gas_used workchain) "GETGASFEE";
-int get_storage_fee(int workchain, int seconds, int bits, int cells) asm(cells bits seconds workchain) "GETSTORAGEFEE";
-int get_forward_fee(int workchain, int bits, int cells) asm(cells bits workchain) "GETFORWARDFEE";
-int get_precompiled_gas_consumption() asm "GETPRECOMPILEDGAS";
-
-int get_simple_compute_fee(int workchain, int gas_used) asm(gas_used workchain) "GETGASFEESIMPLE";
-int get_simple_forward_fee(int workchain, int bits, int cells) asm(cells bits workchain) "GETFORWARDFEESIMPLE";
-int get_original_fwd_fee(int workchain, int fwd_fee) asm(fwd_fee workchain) "GETORIGINALFWDFEE";
-int my_storage_due() asm "DUEPAYMENT";
-
-tuple get_fee_cofigs() asm "UNPACKEDCONFIGTUPLE";

@@ -1,7 +1,6 @@
 asm fun nativeSendMessage(cell: Cell, mode: Int) { SENDRAWMSG }
 
-@name(send_message)
-native nativeSendMessageReturnForwardFee(cell: Cell, mode: Int): Int;
+asm fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
 
 const SendRemainingBalance: Int = 128;
 const SendRemainingValue: Int = 64;

@@ -20,26 +20,20 @@ asm fun myAddress(): Address { MYADDR }
 
 asm fun myBalance(): Int { BALANCE FIRST }
 
-@name(gas_consumed)
-native gasConsumed(): Int;
+asm fun sendMessage(msg: Cell, mode: Int): Int { SENDMSG }
 
-@name(get_compute_fee)
-native getComputeFee(workchain: Int, gas_used: Int): Int;
+asm fun gasConsumed(): Int { GASCONSUMED }
 
-@name(get_storage_fee)
-native getStorageFee(workchain: Int, seconds: Int, bits: Int, cells: Int): Int;
+asm(gas_used workchain) fun getComputeFee(workchain: Int, gas_used: Int): Int { GETGASFEE }
 
-@name(get_forward_fee)
-native getForwardFee(workchain: Int, bits: Int, cells: Int): Int;
+asm(cells bits seconds workchain) fun getStorageFee(workchain: Int, seconds: Int, bits: Int, cells: Int): Int { GETSTORAGEFEE }
 
-@name(get_simple_compute_fee)
-native getSimpleComputeFee(workchain: Int, gas_used: Int): Int;
+asm(cells bits workchain) fun getForwardFee(workchain: Int, bits: Int, cells: Int): Int { GETFORWARDFEE }
 
-@name(get_simple_forward_fee)
-native getSimpleForwardFee(workchain: Int, bits: Int, cells: Int): Int;
+asm(gas_used workchain) fun getSimpleComputeFee(workchain: Int, gas_used: Int): Int { GETGASFEESIMPLE }
 
-@name(get_original_fwd_fee)
-native getOriginalFwdFee(workchain: Int, fwd_fee: Int): Int;
+asm(cells bits workchain) fun getSimpleForwardFee(workchain: Int, bits: Int, cells: Int): Int { GETFORWARDFEESIMPLE }
 
-@name(my_storage_due)
-native myStorageDue(): Int;
+asm(fwd_fee workchain) fun getOriginalFwdFee(workchain: Int, fwd_fee: Int): Int { GETORIGINALFWDFEE }
+
+asm fun myStorageDue(): Int { DUEPAYMENT }
