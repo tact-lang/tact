@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@ohm-js/cli": "^2.0.0",
-    "@release-it/keep-a-changelog": "^3.1.0",
+    "@release-it/keep-a-changelog": "^5.0.0",
     "@tact-lang/coverage": "^0.0.8",
     "@tact-lang/ton-abi": "^0.0.3",
     "@tact-lang/ton-jest": "^0.0.4",
@@ -82,7 +82,7 @@
     "knip": "^5.24.1",
     "pinst": "^3.0.0",
     "prettier": "^3.2.5",
-    "release-it": "^15.5.1",
+    "release-it": "^17.6.0",
     "rimraf": "^4.1.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
