@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `deepEquals` method for the `Map` type: PR [#637](https://github.com/tact-lang/tact/pull/637)
 - `asm` bodies for module-level functions: PR [#769](https://github.com/tact-lang/tact/pull/769)
 - Corresponding stdlib functions for new TVM instructions from 2023.07 and 2024.04 upgrades: PR [#331](https://github.com/tact-lang/tact/pull/331)
+- `slice`, `rawSlcie`, `ascii` and `crc32` built-in functions: PR [#787](https://github.com/tact-lang/tact/pull/787)
 
 ### Changed
 
