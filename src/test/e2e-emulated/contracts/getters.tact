@@ -43,6 +43,10 @@ contract Test with Deployable {
         return s;
     }
 
+    get fun messageAsInput(m: SetIdAndData): Int {
+        return m.id;
+    }
+
     get fun contractAsInput(test: Test): Test {
         return test;
     }
