@@ -347,6 +347,16 @@ Line 1, col 9:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for message-opcode-zero 1`] = `
+"<unknown>:4:9: Zero opcodes are reserved for text comments and cannot be used for message structs
+Line 4, col 9:
+  3 | // zero opcodes are reserved for string comments
+> 4 | message(0) ZeroOpcode { }
+              ^
+  5 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for method-first-param-not-self1 1`] = `
 "<unknown>:8:17: Extend function must have first parameter named "self"
 Line 8, col 17:
