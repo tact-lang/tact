@@ -196,7 +196,7 @@
       "name": "const-eval-rawslice-not-hex",
       "path": "./contracts/const-eval-rawslice-not-hex.tact",
       "output": "./contracts/output"
-    },  
+    },
     {
       "name": "scope-const-shadows-stdlib-ident",
       "path": "./contracts/scope-const-shadows-stdlib-ident.tact",
