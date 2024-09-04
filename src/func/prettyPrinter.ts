@@ -218,6 +218,8 @@ export class FuncPrettyPrinter {
                 return this.prettyPrintPlainId(node as FuncAstPlainId);
             case "unused_id":
                 return this.prettyPrintUnusedId(node as FuncAstUnusedId);
+            case "unit":
+                return "()";
             default:
                 throwUnsupportedNodeError(node);
         }
