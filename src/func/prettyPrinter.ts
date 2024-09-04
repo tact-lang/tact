@@ -281,7 +281,7 @@ export class FuncPrettyPrinter {
     }
 
     private prettyPrintGlobalVariable(node: FuncAstGlobalVariable): string {
-        const typeStr = node.ty ? node.ty : "var";
+        const typeStr = node.ty ? this.ppTy(node.ty) : "var";
         const nameStr = this.prettyPrint(node.name);
         return `${typeStr} ${nameStr};`;
     }
