@@ -1130,7 +1130,7 @@ export class Interpreter {
                         ast.args[0]!.loc,
                     );
                     const hex = Buffer.from(str).toString("hex");
-                    if (hex.length > 32) {
+                    if (hex.length > 64) {
                         throwErrorConstEval(
                             `ascii string is too long, expected up to 32 bytes, got ${Math.floor(hex.length / 2)}`,
                             ast.loc,
