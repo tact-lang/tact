@@ -55,12 +55,19 @@ describe("getters", () => {
 
         // Passing `SetIdAndData` message to getter
         expect(
-            await contract.getMessageAsInput({
+            await contract.getMessageAsInput1({
                 $$type: "SetIdAndData",
                 id: 42n,
                 data: beginCell().endCell(),
             }),
         ).toBe(42n);
+        expect(
+            await contract.getMessageAsInput2({
+                $$type: "SetIdAndData",
+                id: 42n,
+                data: beginCell().endCell(),
+            }),
+        ).toMatchSnapshot();
 
         // Passing `Test` contract data to getter
         expect(
