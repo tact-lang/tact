@@ -323,7 +323,7 @@ cell preload_ref(slice s) asm "PLDREF";
 ;;; Preloads the first `0 ≤ len ≤ 1023` bits from slice [s] into a separate `slice s''`.
 ;; slice preload_bits(slice s, int len) asm "PLDSLICEX";
 
-;;; Loads serialized amount of TonCoins (any unsigned integer up to `2^128 - 1`).
+;;; Loads serialized amount of TonCoins (any unsigned integer up to `2^120 - 1`).
 (slice, int) load_grams(slice s) asm(-> 1 0) "LDGRAMS";
 (slice, int) load_coins(slice s) asm(-> 1 0) "LDVARUINT16";
 
