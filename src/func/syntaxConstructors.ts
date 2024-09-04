@@ -124,9 +124,11 @@ export class FunAttr {
         value?: bigint | number | string,
     ): FuncAstFunctionAttribute {
         const literal =
-            typeof value === "string"
-                ? string(value)
-                : int(value as bigint | number);
+            value === undefined
+                ? undefined
+                : typeof value === "string"
+                  ? string(value)
+                  : int(value as bigint | number);
         return { kind: "method_id", value: literal, loc: dummySrcInfo };
     }
 }
