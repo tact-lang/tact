@@ -142,7 +142,7 @@ describe("intrinsics", () => {
         );
 
         // Check `crc32`
-        expect(await contract.getGetCrc32()).toBe(BigInt(0xd4a1185));
-        expect(await contract.getGetCrc32_2()).toBe(BigInt(0xd4a1185));
+        expect(await contract.getGetCrc32()).toBe(BigInt(2235694568));
+        expect(await contract.getGetCrc32_2()).toBe(BigInt(2235694568));
     });
 });
