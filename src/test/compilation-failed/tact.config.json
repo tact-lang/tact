@@ -198,6 +198,11 @@
       "output": "./contracts/output"
     },
     {
+      "name": "const-eval-ascii-empty",
+      "path": "./contracts/const-eval-ascii-empty.tact",
+      "output": "./contracts/output"
+    },  
+    {
       "name": "scope-const-shadows-stdlib-ident",
       "path": "./contracts/scope-const-shadows-stdlib-ident.tact",
       "output": "./contracts/output"

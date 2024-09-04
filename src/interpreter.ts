@@ -1135,6 +1135,12 @@ export class Interpreter {
                             ast.loc,
                         );
                     }
+                    if (str.length == 0) {
+                        throwErrorConstEval(
+                            `ascii string cannot be empty`,
+                            ast.loc,
+                        );
+                    }
                     return BigInt(
                         "0x" + Buffer.from(str, "ascii").toString("hex"),
                     );

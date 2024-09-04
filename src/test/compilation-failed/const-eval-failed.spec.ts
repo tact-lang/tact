@@ -173,4 +173,9 @@ describe("fail-const-eval", () => {
         errorMessage:
             "Cannot evaluate expression to a constant: invalid hex string: hello world",
     });
+    itShouldNotCompile({
+        testName: "const-eval-ascii-empty",
+        errorMessage:
+            "Cannot evaluate expression to a constant: ascii string cannot be empty",
+    });
 });
