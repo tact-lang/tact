@@ -1582,7 +1582,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "return equal_slice_bits(a, b);",
+      "code": "return equal_slices_bits(a, b);",
       "kind": "generic",
     },
     "comment": null,
@@ -1596,7 +1596,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "return (null?(a)) ? (false) : (equal_slice_bits(a, b));",
+      "code": "return (null?(a)) ? (false) : (equal_slices_bits(a, b));",
       "kind": "generic",
     },
     "comment": null,
@@ -1612,7 +1612,7 @@ if (flag) {
     "code": {
       "code": "var a_is_null = null?(a);
 var b_is_null = null?(b);
-return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );",
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slices_bits(a, b) ) : ( false ) );",
       "kind": "generic",
     },
     "comment": null,
@@ -5141,7 +5141,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "return equal_slice_bits(a, b);",
+      "code": "return equal_slices_bits(a, b);",
       "kind": "generic",
     },
     "comment": null,
@@ -5155,7 +5155,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "return (null?(a)) ? (false) : (equal_slice_bits(a, b));",
+      "code": "return (null?(a)) ? (false) : (equal_slices_bits(a, b));",
       "kind": "generic",
     },
     "comment": null,
@@ -5171,7 +5171,7 @@ if (flag) {
     "code": {
       "code": "var a_is_null = null?(a);
 var b_is_null = null?(b);
-return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );",
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slices_bits(a, b) ) : ( false ) );",
       "kind": "generic",
     },
     "comment": null,
@@ -8700,7 +8700,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "return equal_slice_bits(a, b);",
+      "code": "return equal_slices_bits(a, b);",
       "kind": "generic",
     },
     "comment": null,
@@ -8714,7 +8714,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "return (null?(a)) ? (false) : (equal_slice_bits(a, b));",
+      "code": "return (null?(a)) ? (false) : (equal_slices_bits(a, b));",
       "kind": "generic",
     },
     "comment": null,
@@ -8730,7 +8730,7 @@ if (flag) {
     "code": {
       "code": "var a_is_null = null?(a);
 var b_is_null = null?(b);
-return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );",
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slices_bits(a, b) ) : ( false ) );",
       "kind": "generic",
     },
     "comment": null,

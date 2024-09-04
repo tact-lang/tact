@@ -28,7 +28,7 @@ describe("stdlib", () => {
         });
     });
 
-    it("should execute slice methods correctly", async () => {
+    it("should execute stdlib methods correctly", async () => {
         const slice = beginCell()
             .storeBit(1)
             .storeBit(1)
@@ -54,5 +54,8 @@ describe("stdlib", () => {
                 .endCell()
                 .toString(),
         ).toBe(beginCell().storeBit(true).endCell().toString());
+
+        expect(await contract.getTvm_2023_07Upgrade()).toEqual(1255n);
+        expect(await contract.getTvm_2024_04Upgrade()).toEqual(82009144n);
     });
 });

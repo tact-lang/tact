@@ -24,6 +24,8 @@ asm(cell self) extends fun storeRef(self: Builder, cell: Cell): Builder { STREF 
 
 asm extends fun storeSlice(self: Builder, cell: Slice): Builder { STSLICER }
 
+asm extends fun storeBuilder(self: Builder, cell: Builder): Builder { STBR }
+
 @name(__tact_store_address)
 extends native storeAddress(self: Builder, address: Address): Builder;
 

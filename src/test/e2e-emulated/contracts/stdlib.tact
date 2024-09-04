@@ -37,4 +37,13 @@ contract StdlibTest {
     get fun loadBit(sc: Slice): Bool {
         return sc.loadBit();
     }
+
+    
+    get fun tvm_2023_07_upgrade(): Int {
+        return gasConsumed();
+    }
+
+    get fun tvm_2024_04_upgrade(): Int {
+        return getComputeFee(1000, false) + getStorageFee(1000, 1000, 1000, false) + getForwardFee(1000, 1000, false) + getSimpleComputeFee(1000, false) + getSimpleForwardFee(1000, 1000, false) + getOriginalFwdFee(1000, false) + myStorageDue();
+    }
 }
