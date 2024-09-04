@@ -163,4 +163,9 @@ describe("fail-const-eval", () => {
         errorMessage:
             "Cannot evaluate expression to a constant: repeat argument must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)",
     });
+    itShouldNotCompile({
+        testName: "const-eval-ascii-overflow",
+        errorMessage:
+            "Cannot evaluate expression to a constant: ascii string is too long, expected up to 32 characters, got 33",
+    });
 });
