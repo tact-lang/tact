@@ -140,6 +140,12 @@ describe("intrinsics", () => {
                         .endCell(),
                 ),
         ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice3()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice4()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
 
         // Check `ascii`
         expect(await contract.getGetAscii()).toBe(
