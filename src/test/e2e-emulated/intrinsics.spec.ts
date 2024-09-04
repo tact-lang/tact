@@ -148,9 +148,21 @@ describe("intrinsics", () => {
         expect(await contract.getGetAscii2()).toBe(
             BigInt("0x68656c6c6f20776f726c64"),
         );
+        expect(await contract.getGetAscii3()).toBe(
+            BigInt(
+                "1563963554659859369353828835329962428465513941646011501275668087180532385",
+            ),
+        );
+        expect(await contract.getGetAscii4()).toBe(
+            BigInt(
+                "1563963554659859369353828835329962428465513941646011501275668087180532385",
+            ),
+        );
 
         // Check `crc32`
         expect(await contract.getGetCrc32()).toBe(BigInt(2235694568));
         expect(await contract.getGetCrc32_2()).toBe(BigInt(2235694568));
+        expect(await contract.getGetCrc32_3()).toBe(0n);
+        expect(await contract.getGetCrc32_4()).toBe(0n);
     });
 });

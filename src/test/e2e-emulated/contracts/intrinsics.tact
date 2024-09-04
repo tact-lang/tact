@@ -10,6 +10,8 @@ contract IntrinsicsTester {
     h: Slice = rawSlice("abcdef");
     i: Int = ascii("hello world");
     j: Int = crc32("transfer(slice, int)");
+    k: Int = crc32("");
+    l: Int = ascii("⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡");
     
     init() {
 
@@ -107,11 +109,27 @@ contract IntrinsicsTester {
         return self.i;
     }
 
+    get fun getAscii3(): Int {
+        return ascii("⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡");
+    }
+
+    get fun getAscii4(): Int {
+        return self.l;
+    }
+
     get fun getCrc32(): Int {
         return crc32("transfer(slice, int)");
     }
 
     get fun getCrc32_2(): Int {
         return self.j;
+    }
+
+    get fun getCrc32_3(): Int {
+        return self.k;
+    }
+
+    get fun getCrc32_4(): Int {
+        return crc32("");
     }
 }
