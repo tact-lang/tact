@@ -179,6 +179,11 @@ describe("fail-const-eval", () => {
             "Cannot evaluate expression to a constant: invalid hex string: hello world",
     });
     itShouldNotCompile({
+        testName: "const-eval-rawslice-overflow",
+        errorMessage:
+            "Cannot evaluate expression to a constant: hex string is too long, expected up to 255 characters, got 256",
+    });
+    itShouldNotCompile({
         testName: "const-eval-ascii-empty",
         errorMessage:
             "Cannot evaluate expression to a constant: ascii string cannot be empty",
