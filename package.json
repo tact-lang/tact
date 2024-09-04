@@ -12,7 +12,7 @@
     "gen:compiler": "ts-node ./scripts/prepare.ts",
     "gen": "yarn gen:grammar && yarn gen:pack && yarn gen:compiler",
     "clean": "rm -fr dist",
-    "build": "tsc && cp ./src/grammar/grammar.ohm* ./dist/grammar/ && cp ./src/func/funcfiftlib.* ./dist/func",
+    "build": "tsc && cp ./src/grammar/grammar.ohm* ./dist/grammar/  && cp ./src/func/grammar.ohm* ./dist/func/ && cp ./src/func/funcfiftlib.* ./dist/func",
     "test": "jest",
     "test:func": "yarn gen:grammar && jest -t 'FunC grammar and parser'",
     "coverage": "cross-env COVERAGE=true jest",
