@@ -1129,21 +1129,20 @@ export class Interpreter {
                         this.interpretExpression(ast.args[0]!),
                         ast.args[0]!.loc,
                     );
-                    if (str.length > 32) {
+                    const hex = Buffer.from(str).toString("hex");
+                    if (hex.length > 32) {
                         throwErrorConstEval(
-                            `ascii string is too long, expected up to 32 characters, got ${str.length}`,
+                            `ascii string is too long, expected up to 32 bytes, got ${Math.floor(hex.length / 2)}`,
                             ast.loc,
                         );
                     }
-                    if (str.length == 0) {
+                    if (hex.length == 0) {
                         throwErrorConstEval(
                             `ascii string cannot be empty`,
                             ast.loc,
                         );
                     }
-                    return BigInt(
-                        "0x" + Buffer.from(str, "ascii").toString("hex"),
-                    );
+                    return BigInt("0x" + hex);
                 }
                 break;
             case "crc32":

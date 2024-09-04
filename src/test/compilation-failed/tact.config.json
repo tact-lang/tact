@@ -193,6 +193,11 @@
       "output": "./contracts/output"
     },
     {
+      "name": "const-eval-ascii-overflow-2",
+      "path": "./contracts/const-eval-ascii-overflow-2.tact",
+      "output": "./contracts/output"
+    },
+    {
       "name": "const-eval-rawslice-not-hex",
       "path": "./contracts/const-eval-rawslice-not-hex.tact",
       "output": "./contracts/output"

@@ -166,7 +166,12 @@ describe("fail-const-eval", () => {
     itShouldNotCompile({
         testName: "const-eval-ascii-overflow",
         errorMessage:
-            "Cannot evaluate expression to a constant: ascii string is too long, expected up to 32 characters, got 33",
+            "Cannot evaluate expression to a constant: ascii string is too long, expected up to 32 bytes, got 33",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-ascii-overflow-2",
+        errorMessage:
+            "Cannot evaluate expression to a constant: ascii string is too long, expected up to 32 bytes, got 33",
     });
     itShouldNotCompile({
         testName: "const-eval-rawslice-not-hex",
