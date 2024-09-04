@@ -390,6 +390,11 @@
       "name": "receiver-empty",
       "path": "./src/test/e2e-emulated/contracts/receiver-empty.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "init-of-message",
+      "path": "./src/test/e2e-emulated/contracts/init-of-message.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
     }
   ]
 }
