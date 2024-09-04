@@ -1133,7 +1133,8 @@ export class Interpreter {
                         this.interpretExpression(ast.args[0]!),
                         ast.args[0]!.loc,
                     );
-                    return BigInt(crc32.str(str));
+                    const c = BigInt(crc32.str(str));
+                    return c < 0 ? c + 4294967296n : c;
                 }
                 break;
             case "address":
