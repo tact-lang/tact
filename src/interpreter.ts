@@ -1095,9 +1095,23 @@ export class Interpreter {
                         this.interpretExpression(ast.args[0]!),
                         ast.args[0]!.loc,
                     );
+
+                    if (str.length > 255) {
+                        throwErrorConstEval(
+                            `hex string is too long, expected up to 255 characters, got ${str.length}`,
+                            ast.loc,
+                        );
+                    }
+                    if (!/^[0-9a-fA-F]*$/.test(str)) {
+                        throwErrorConstEval(
+                            `invalid hex string: ${str}`,
+                            ast.loc,
+                        );
+                    }
+
                     try {
                         return beginCell()
-                            .storeBuffer(Buffer.from(str))
+                            .storeBuffer(Buffer.from(str, "hex"))
                             .endCell()
                             .asSlice();
                     } catch (_) {

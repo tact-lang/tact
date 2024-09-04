@@ -7,7 +7,7 @@ contract IntrinsicsTester {
     e: Int = pow(2, 9);
     f: Int = sha256("hello world");
     g: Slice = slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
-    h: Slice = rawSlice("hello world");
+    h: Slice = rawSlice("abcdef");
     i: Int = ascii("hello world");
     j: Int = crc32("transfer(slice, int)");
     
@@ -92,7 +92,7 @@ contract IntrinsicsTester {
     }
 
     get fun getRawSlice(): Slice {
-        return rawSlice("hello world");
+        return rawSlice("abcdef");
     }
 
     get fun getRawSlice2(): Slice {

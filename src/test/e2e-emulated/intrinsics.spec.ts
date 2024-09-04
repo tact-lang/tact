@@ -125,12 +125,20 @@ describe("intrinsics", () => {
         expect(
             (await contract.getGetRawSlice())
                 .asCell()
-                .equals(beginCell().storeStringTail("hello world").endCell()),
+                .equals(
+                    beginCell()
+                        .storeBuffer(Buffer.from("abcdef", "hex"))
+                        .endCell(),
+                ),
         ).toBe(true);
         expect(
             (await contract.getGetRawSlice2())
                 .asCell()
-                .equals(beginCell().storeStringTail("hello world").endCell()),
+                .equals(
+                    beginCell()
+                        .storeBuffer(Buffer.from("abcdef", "hex"))
+                        .endCell(),
+                ),
         ).toBe(true);
 
         // Check `ascii`

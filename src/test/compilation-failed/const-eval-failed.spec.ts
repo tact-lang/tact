@@ -168,4 +168,9 @@ describe("fail-const-eval", () => {
         errorMessage:
             "Cannot evaluate expression to a constant: ascii string is too long, expected up to 32 characters, got 33",
     });
+    itShouldNotCompile({
+        testName: "const-eval-rawslice-not-hex",
+        errorMessage:
+            "Cannot evaluate expression to a constant: invalid hex string: hello world",
+    });
 });
