@@ -400,6 +400,11 @@
       "name": "init-return",
       "path": "./src/test/e2e-emulated/contracts/init-return.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "repeat-range",
+      "path": "./src/test/exit-codes/contracts/repeat-range.tact",
+      "output": "./src/test/exit-codes/contracts/output"
     }
   ]
 }
