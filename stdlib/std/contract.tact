@@ -45,12 +45,12 @@ asm fun getOriginalFwdFee(fwd_fee: Int, is_masterchain: Bool): Int { GETORIGINAL
 asm fun myStorageDue(): Int { DUEPAYMENT }
 
 struct StdAddress {
-    workchain: Int;
-    address: Int;
+    workchain: Int as int8;
+    address: Int as uint256;
 }
 
 struct VarAddress {
-    workchain: Int;
+    workchain: Int as int32;
     address: Slice;
 }
 

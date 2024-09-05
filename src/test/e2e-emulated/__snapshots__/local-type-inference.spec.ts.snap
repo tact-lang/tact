@@ -293,7 +293,7 @@ exports[`local-type-inference should automatically set types for let statements 
         {
           "name": "workchain",
           "type": {
-            "format": 257,
+            "format": 8,
             "kind": "simple",
             "optional": false,
             "type": "int",
@@ -302,10 +302,10 @@ exports[`local-type-inference should automatically set types for let statements 
         {
           "name": "address",
           "type": {
-            "format": 257,
+            "format": 256,
             "kind": "simple",
             "optional": false,
-            "type": "int",
+            "type": "uint",
           },
         },
       ],
@@ -317,7 +317,7 @@ exports[`local-type-inference should automatically set types for let statements 
         {
           "name": "workchain",
           "type": {
-            "format": 257,
+            "format": 32,
             "kind": "simple",
             "optional": false,
             "type": "int",
