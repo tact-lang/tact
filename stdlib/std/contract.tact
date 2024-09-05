@@ -43,3 +43,17 @@ asm fun getOriginalFwdFee(fwd_fee: Int, is_masterchain: Bool): Int { GETORIGINAL
 
 // Current debt for storage fee in nanotons.
 asm fun myStorageDue(): Int { DUEPAYMENT }
+
+struct StdAddress {
+    workchain: Int as int8;
+    address: Int as uint256;
+}
+
+struct VarAddress {
+    workchain: Int as int32;
+    address: Slice;
+}
+
+asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
+
+asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }

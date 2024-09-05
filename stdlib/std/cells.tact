@@ -29,6 +29,8 @@ asm extends fun storeBuilder(self: Builder, cell: Builder): Builder { STBR }
 @name(__tact_store_address)
 extends native storeAddress(self: Builder, address: Address): Builder;
 
+asm(cell self) extends fun storeMaybeRef(self: Builder, cell: Cell?): Builder { STOPTREF }
+
 asm extends fun endCell(self: Builder): Cell { ENDC }
 
 asm extends fun refs(self: Builder): Int { BREFS }
