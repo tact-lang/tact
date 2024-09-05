@@ -131,7 +131,7 @@ export class ModuleGen {
     /**
      * Adds stdlib definitions to the generated module.
      */
-    private writeStdlib(m: FuncAstModule): void {
+    private writeStdlib(): void {
         writeStdlib(this.ctx);
     }
 
@@ -1462,7 +1462,7 @@ export class ModuleGen {
             throw Error(`Contract "${this.contractName}" not found`);
         }
 
-        this.writeStdlib(m);
+        this.writeStdlib();
         this.addSerializers(m);
         this.addAccessors(m);
         this.addInitSerializer(m);
