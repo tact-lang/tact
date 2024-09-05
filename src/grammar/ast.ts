@@ -324,6 +324,7 @@ export type AstType =
     | AstTypeId
     | AstOptionalType
     | AstMapType
+    | AstExoticType
     | AstBouncedMessageType;
 
 export type AstTypeId = {
@@ -346,6 +347,14 @@ export type AstMapType = {
     keyStorageType: AstId | null;
     valueType: AstTypeId;
     valueStorageType: AstId | null;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstExoticType = {
+    kind: "exotic_type";
+    name: string;
+    struct: AstTypeId;
     id: number;
     loc: SrcInfo;
 };

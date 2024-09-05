@@ -1665,6 +1665,195 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
 }
 `;
 
+exports[`grammar should parse exotic-cells 1`] = `
+{
+  "id": 29,
+  "imports": [],
+  "items": [
+    {
+      "fields": [
+        {
+          "as": {
+            "id": 4,
+            "kind": "id",
+            "loc": uint32,
+            "text": "uint32",
+          },
+          "id": 5,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": x: Int as uint32,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": x,
+            "text": "x",
+          },
+          "type": {
+            "id": 3,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": null,
+          "id": 8,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": y: Int,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": y,
+            "text": "y",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": null,
+          "id": 13,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": z: map<Int, Int>,
+          "name": {
+            "id": 9,
+            "kind": "id",
+            "loc": z,
+            "text": "z",
+          },
+          "type": {
+            "id": 12,
+            "keyStorageType": null,
+            "keyType": {
+              "id": 10,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": null,
+            "valueType": {
+              "id": 11,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+      ],
+      "id": 14,
+      "kind": "struct_decl",
+      "loc": struct S {
+    x: Int as uint32;
+    y: Int;
+    z: map<Int, Int>;
+},
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": S,
+        "text": "S",
+      },
+    },
+    {
+      "attributes": [],
+      "id": 28,
+      "kind": "function_def",
+      "loc": fun test(p: merkleProof<S>, u: merkleUpdate<S>, l: libraryReference<S>) {
+    
+},
+      "name": {
+        "id": 15,
+        "kind": "id",
+        "loc": test,
+        "text": "test",
+      },
+      "params": [
+        {
+          "id": 19,
+          "kind": "typed_parameter",
+          "loc": p: merkleProof<S>,
+          "name": {
+            "id": 16,
+            "kind": "id",
+            "loc": p,
+            "text": "p",
+          },
+          "type": {
+            "id": 18,
+            "kind": "exotic_type",
+            "loc": merkleProof<S>,
+            "name": "merkleProof",
+            "struct": {
+              "id": 17,
+              "kind": "type_id",
+              "loc": S,
+              "text": "S",
+            },
+          },
+        },
+        {
+          "id": 23,
+          "kind": "typed_parameter",
+          "loc": u: merkleUpdate<S>,
+          "name": {
+            "id": 20,
+            "kind": "id",
+            "loc": u,
+            "text": "u",
+          },
+          "type": {
+            "id": 22,
+            "kind": "exotic_type",
+            "loc": merkleUpdate<S>,
+            "name": "merkleUpdate",
+            "struct": {
+              "id": 21,
+              "kind": "type_id",
+              "loc": S,
+              "text": "S",
+            },
+          },
+        },
+        {
+          "id": 27,
+          "kind": "typed_parameter",
+          "loc": l: libraryReference<S>,
+          "name": {
+            "id": 24,
+            "kind": "id",
+            "loc": l,
+            "text": "l",
+          },
+          "type": {
+            "id": 26,
+            "kind": "exotic_type",
+            "loc": libraryReference<S>,
+            "name": "libraryReference",
+            "struct": {
+              "id": 25,
+              "kind": "type_id",
+              "loc": S,
+              "text": "S",
+            },
+          },
+        },
+      ],
+      "return": null,
+      "statements": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
 exports[`grammar should parse expr-arith 1`] = `
 {
   "id": 12,

@@ -51,6 +51,17 @@ export type TypeRef =
           valueAs: string | null;
       }
     | {
+          kind: "exotic";
+          name: "merkleProof";
+          struct: string;
+      }
+    // TODO:
+    // | {
+    //       kind: "exotic";
+    //       name: "merkleUpdate";
+    //       struct: string;
+    //   }
+    | {
           kind: "ref_bounced";
           name: string;
       }
@@ -262,6 +273,8 @@ export function printTypeRef(src: TypeRef): string {
             return `${src.name}${src.optional ? "?" : ""}`;
         case "map":
             return `map<${src.key + (src.keyAs ? " as " + src.keyAs : "")}, ${src.value + (src.valueAs ? " as " + src.valueAs : "")}>`;
+        case "exotic":
+            return `${src.name}<${src.struct}>`;
         case "void":
             return "<void>";
         case "null":

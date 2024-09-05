@@ -176,6 +176,21 @@ export function resolveTypeRef(ctx: CompilerContext, type: AstType): TypeRef {
                 name: t.name,
             };
         }
+        case "exotic_type": {
+            const s = getType(ctx, idText(src.struct));
+            if (src.name !== "merkleProof") {
+                // Should never happen because of grammar
+                throwCompilationError(
+                    `Unknown exotic type ${src.name}`,
+                    src.loc,
+                );
+            }
+            return {
+                kind: "exotic",
+                name: src.name,
+                struct: s.name,
+            };
+        }
     }
 }
 
@@ -249,6 +264,26 @@ function buildTypeRef(
             return {
                 kind: "ref_bounced",
                 name: idText(type.messageType),
+            };
+        }
+        case "exotic_type": {
+            if (!types.has(idText(src.struct))) {
+                throwCompilationError(
+                    `Type ${idTextErr(src.struct)} not found`,
+                    src.loc,
+                );
+            }
+            if (src.name !== "merkleProof") {
+                // Should never happen because of grammar
+                throwCompilationError(
+                    `Unknown exotic type ${src.name}`,
+                    src.loc,
+                );
+            }
+            return {
+                kind: "exotic",
+                name: src.name,
+                struct: idText(src.struct),
             };
         }
     }

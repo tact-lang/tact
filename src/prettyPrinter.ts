@@ -47,6 +47,7 @@ import {
     AstAsmInstruction,
     AstAsmShuffle,
     astNumToString,
+    AstExoticType,
 } from "./grammar/ast";
 import { throwInternalCompilerError } from "./errors";
 import JSONbig from "json-bigint";
@@ -94,6 +95,8 @@ export class PrettyPrinter {
                 return this.ppAstBouncedMessageType(typeRef);
             case "optional_type":
                 return this.ppAstOptionalType(typeRef);
+            case "exotic_type":
+                return this.ppAstExoticType(typeRef);
         }
     }
 
@@ -113,6 +116,10 @@ export class PrettyPrinter {
             ? ` as ${this.ppAstId(typeRef.valueStorageType)}`
             : "";
         return `map<${this.ppAstTypeId(typeRef.keyType)}${keyAlias}, ${this.ppAstTypeId(typeRef.valueType)}${valueAlias}>`;
+    }
+
+    ppAstExoticType(typeRef: AstExoticType): string {
+        return `${typeRef.name}<${this.ppAstTypeId(typeRef.struct)}>`;
     }
 
     ppAstBouncedMessageType(typeRef: AstBouncedMessageType): string {

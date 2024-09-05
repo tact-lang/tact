@@ -935,6 +935,14 @@ semantics.addOperation<AstNode>("astOfType", {
             loc: createRef(this),
         });
     },
+    Type_exotic(name, _langle, structName, _rangle) {
+        return createAstNode({
+            kind: "exotic_type",
+            name: name.sourceString,
+            struct: structName.astOfType(),
+            loc: createRef(this),
+        });
+    },
     Type_bounced(_bouncedKwd, _langle, typeId, _rangle) {
         return createAstNode({
             kind: "bounced_message_type",

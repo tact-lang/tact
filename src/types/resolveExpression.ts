@@ -315,6 +315,7 @@ function isEqualityType(ctx: CompilerContext, ty: TypeRef): boolean {
         }
         case "null":
         case "map":
+        case "exotic":
             return true;
         case "void":
         case "ref_bounced":
