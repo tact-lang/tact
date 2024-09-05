@@ -10,6 +10,7 @@ describe("multisig-3", () => {
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
         treasure = await blockchain.treasury("treasure");
 
         const key1 = 1n;

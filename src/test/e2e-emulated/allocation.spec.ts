@@ -10,6 +10,7 @@ describe("allocation", () => {
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
         owner = await blockchain.treasury("owner");
 
         contract = blockchain.openContract(
