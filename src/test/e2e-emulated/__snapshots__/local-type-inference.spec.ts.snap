@@ -291,6 +291,53 @@ exports[`local-type-inference should automatically set types for let statements 
     {
       "fields": [
         {
+          "name": "workchain",
+          "type": {
+            "format": 8,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "address",
+          "type": {
+            "format": 256,
+            "kind": "simple",
+            "optional": false,
+            "type": "uint",
+          },
+        },
+      ],
+      "header": null,
+      "name": "StdAddress",
+    },
+    {
+      "fields": [
+        {
+          "name": "workchain",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "address",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "slice",
+          },
+        },
+      ],
+      "header": null,
+      "name": "VarAddress",
+    },
+    {
+      "fields": [
+        {
           "name": "bounced",
           "type": {
             "kind": "simple",
