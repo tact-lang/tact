@@ -10,6 +10,7 @@ describe("map-comparison", () => {
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
         treasure = await blockchain.treasury("treasure");
 
         contract = blockchain.openContract(
