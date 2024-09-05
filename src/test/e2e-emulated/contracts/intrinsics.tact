@@ -6,6 +6,13 @@ contract IntrinsicsTester {
     d: Cell = cell("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
     e: Int = pow(2, 9);
     f: Int = sha256("hello world");
+    g: Slice = slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
+    h: Slice = rawSlice("abcdef");
+    i: Int = ascii("hello world");
+    j: Int = crc32("transfer(slice, int)");
+    k: Int = crc32("");
+    l: Int = ascii("⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡");
+    m: Slice = rawSlice("");
     
     init() {
 
@@ -77,5 +84,61 @@ contract IntrinsicsTester {
 
     receive("emit_1") {
         emit("Hello world".asComment());
+    }
+
+    get fun getSlice(): Slice {
+        return slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
+    }
+
+    get fun getSlice2(): Slice {
+        return self.g;
+    }
+
+    get fun getRawSlice(): Slice {
+        return rawSlice("abcdef");
+    }
+
+    get fun getRawSlice2(): Slice {
+        return self.h;
+    }
+
+    get fun getRawSlice3(): Slice {
+        return rawSlice("");
+    }
+
+    get fun getRawSlice4(): Slice {
+        return self.m;
+    }
+
+    get fun getAscii(): Int {
+        return ascii("hello world");
+    }
+
+    get fun getAscii2(): Int {
+        return self.i;
+    }
+
+    get fun getAscii3(): Int {
+        return ascii("⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡");
+    }
+
+    get fun getAscii4(): Int {
+        return self.l;
+    }
+
+    get fun getCrc32(): Int {
+        return crc32("transfer(slice, int)");
+    }
+
+    get fun getCrc32_2(): Int {
+        return self.j;
+    }
+
+    get fun getCrc32_3(): Int {
+        return self.k;
+    }
+
+    get fun getCrc32_4(): Int {
+        return crc32("");
     }
 }

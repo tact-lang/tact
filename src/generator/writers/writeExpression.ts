@@ -31,11 +31,12 @@ import { GlobalFunctions } from "../../abi/global";
 import { funcIdOf } from "./id";
 import { StructFunctions } from "../../abi/struct";
 import { resolveFuncType } from "./resolveFuncType";
-import { Address, Cell } from "@ton/core";
+import { Address, Cell, Slice } from "@ton/core";
 import {
     writeAddress,
     writeCell,
     writeComment,
+    writeSlice,
     writeString,
 } from "./writeConstant";
 import { ops } from "./ops";
@@ -116,6 +117,11 @@ export function writeValue(val: Value, wCtx: WriterContext): string {
     }
     if (val instanceof Cell) {
         const res = writeCell(val, wCtx);
+        wCtx.used(res);
+        return `${res}()`;
+    }
+    if (val instanceof Slice) {
+        const res = writeSlice(val, wCtx);
         wCtx.used(res);
         return `${res}()`;
     }

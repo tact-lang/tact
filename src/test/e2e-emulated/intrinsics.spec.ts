@@ -104,5 +104,71 @@ describe("intrinsics", () => {
             ),
         ).toBe(sha256("sometest"));
         expect(await contract.getGetHash4("wallet")).toBe(sha256("wallet"));
+
+        // Check `slice`
+        expect(
+            (await contract.getGetSlice())
+                .asCell()
+                .equals(
+                    Cell.fromBase64("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="),
+                ),
+        ).toBe(true);
+        expect(
+            (await contract.getGetSlice2())
+                .asCell()
+                .equals(
+                    Cell.fromBase64("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="),
+                ),
+        ).toBe(true);
+
+        // Check `rawSlice`
+        expect(
+            (await contract.getGetRawSlice())
+                .asCell()
+                .equals(
+                    beginCell()
+                        .storeBuffer(Buffer.from("abcdef", "hex"))
+                        .endCell(),
+                ),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice2())
+                .asCell()
+                .equals(
+                    beginCell()
+                        .storeBuffer(Buffer.from("abcdef", "hex"))
+                        .endCell(),
+                ),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice3()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice4()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
+
+        // Check `ascii`
+        expect(await contract.getGetAscii()).toBe(
+            BigInt("0x68656c6c6f20776f726c64"),
+        );
+        expect(await contract.getGetAscii2()).toBe(
+            BigInt("0x68656c6c6f20776f726c64"),
+        );
+        expect(await contract.getGetAscii3()).toBe(
+            BigInt(
+                "1563963554659859369353828835329962428465513941646011501275668087180532385",
+            ),
+        );
+        expect(await contract.getGetAscii4()).toBe(
+            BigInt(
+                "1563963554659859369353828835329962428465513941646011501275668087180532385",
+            ),
+        );
+
+        // Check `crc32`
+        expect(await contract.getGetCrc32()).toBe(BigInt(2235694568));
+        expect(await contract.getGetCrc32_2()).toBe(BigInt(2235694568));
+        expect(await contract.getGetCrc32_3()).toBe(0n);
+        expect(await contract.getGetCrc32_4()).toBe(0n);
     });
 });

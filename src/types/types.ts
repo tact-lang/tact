@@ -1,4 +1,4 @@
-import { ABIField, Address, Cell } from "@ton/core";
+import { ABIField, Address, Cell, Slice } from "@ton/core";
 import { throwInternalCompilerError } from "../errors";
 import {
     AstConstantDef,
@@ -78,6 +78,7 @@ export type Value =
     | string
     | Address
     | Cell
+    | Slice
     | null
     | CommentValue
     | StructValue;
@@ -91,7 +92,7 @@ export function showValue(val: Value): string {
         return val ? "true" : "false";
     } else if (Address.isAddress(val)) {
         return val.toRawString();
-    } else if (val instanceof Cell) {
+    } else if (val instanceof Cell || val instanceof Slice) {
         return val.toString();
     } else if (val === null) {
         return "null";

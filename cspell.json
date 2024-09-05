@@ -102,6 +102,7 @@
     "RANDU",
     "rangle",
     "RAWRESERVE",
+    "rawslice",
     "renamer",
     "rparen",
     "rugpull",
@@ -144,7 +145,8 @@
     "unixfs",
     "workchain",
     "xffff",
-    "привет"
+    "привет",
+    "abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd"
   ],
   "flagWords": [],
   "ignorePaths": [
