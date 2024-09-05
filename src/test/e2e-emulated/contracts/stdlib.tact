@@ -50,4 +50,12 @@ contract StdlibTest {
     get fun storeMaybeRef(bl: Builder, c: Cell?): Builder {
         return bl.storeMaybeRef(c);
     }
+
+    get fun parseStdAddress(slice: Slice): StdAddress {
+        return parseStdAddress(slice);
+    }
+
+    get fun parseVarAddress(slice: Slice): VarAddress {
+        return parseVarAddress(slice);
+    }
 }
