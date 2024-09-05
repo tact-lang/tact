@@ -46,4 +46,8 @@ contract StdlibTest {
     get fun tvm_2024_04_upgrade(): Int {
         return getComputeFee(1000, false) + getStorageFee(1000, 1000, 1000, false) + getForwardFee(1000, 1000, false) + getSimpleComputeFee(1000, false) + getSimpleForwardFee(1000, 1000, false) + getOriginalFwdFee(1000, false) + myStorageDue();
     }
+
+    get fun storeMaybeRef(bl: Builder, c: Cell?): Builder {
+        return bl.storeMaybeRef(c);
+    }
 }

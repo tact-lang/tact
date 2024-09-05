@@ -55,7 +55,24 @@ describe("stdlib", () => {
                 .toString(),
         ).toBe(beginCell().storeBit(true).endCell().toString());
 
-        expect(await contract.getTvm_2023_07Upgrade()).toEqual(1255n);
+        expect(await contract.getTvm_2023_07Upgrade()).toEqual(1355n);
         expect(await contract.getTvm_2024_04Upgrade()).toEqual(82009144n);
+
+        expect(
+            (
+                await contract.getStoreMaybeRef(
+                    beginCell(),
+                    beginCell().storeUint(123, 64).endCell(),
+                )
+            ).endCell(),
+        ).toEqualCell(
+            beginCell()
+                .storeMaybeRef(beginCell().storeUint(123, 64).endCell())
+                .endCell(),
+        );
+
+        expect(
+            (await contract.getStoreMaybeRef(beginCell(), null)).endCell(),
+        ).toEqualCell(beginCell().storeMaybeRef(null).endCell());
     });
 });
