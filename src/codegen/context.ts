@@ -2,14 +2,18 @@ import { CompilerContext } from "../context";
 import { topologicalSort } from "../utils/utils";
 import {
     FuncAstFunctionDefinition,
-    FuncAstAsmFunctionDefinition ,
+    FuncAstAsmFunctionDefinition,
     FuncAstFunctionAttribute,
     FuncAstId,
+    FuncAstModule,
     FuncAstType,
     FuncAstStatement,
 } from "../func/grammar";
 import { asmfun, fun, FunParamValue } from "../func/syntaxConstructors";
+import { parse } from "../func/grammar";
 import { forEachExpression } from "../func/iterators";
+
+import JSONbig from "json-bigint";
 
 /**
  * An additional information on how to handle the function definition.
@@ -70,7 +74,10 @@ export class Location {
 
 export type WrittenFunction = {
     name: string;
-    definition: FuncAstFunctionDefinition | FuncAstAsmFunctionDefinition | undefined;
+    definition:
+        | FuncAstFunctionDefinition
+        | FuncAstAsmFunctionDefinition
+        | undefined;
     kind: BodyKind;
     context: LocationContext | undefined;
     depends: Set<string>;
@@ -103,7 +110,10 @@ export class WriterContext {
     ): void {
         forEachExpression(fun, (expr) => {
             // TODO: It doesn't save receivers. But should it?
-            if (expr.kind === "expression_fun_call" && expr.object.kind === "plain_id") {
+            if (
+                expr.kind === "expression_fun_call" &&
+                expr.object.kind === "plain_id"
+            ) {
                 depends.add(expr.object.value);
             }
         });
@@ -152,6 +162,29 @@ export class WriterContext {
             depends,
             inMainContract,
         });
+    }
+
+    /**
+     * Parses the Func source code to the definition of function.
+     * @throws If the given code cannot be parsed as a simple function/asm function definition.
+     */
+    public parse<
+        T extends FuncAstFunctionDefinition | FuncAstAsmFunctionDefinition,
+    >(code: string, params: Partial<FunctionInfo> = {}): T | never {
+        const mod = parse(code) as FuncAstModule;
+        if (
+            mod.items.length === 1 &&
+            (mod.items[0]!.kind === "function_definition" ||
+                mod.items[0]!.kind === "asm_function_definition")
+        ) {
+            const fun = mod.items[0] as T;
+            this.save(fun, params);
+            return fun;
+        }
+        // TODO(jubnzv): Add a custom error when merging w/ main
+        throw new Error(
+            `Incorrect function structure: ${JSONbig.stringify(mod)}`,
+        );
     }
 
     /**
@@ -225,7 +258,10 @@ export class WriterContext {
             }
         };
         this.mainFunctions().forEach((f) => visit(f.name));
-        all = all.filter((v) => used.has(v.name));
+        all = all.filter((v) => {
+            console.log(v.name, used.has(v.name));
+            return used.has(v.name);
+        });
 
         // Sort functions
         const sorted = topologicalSort(all, (f) => {
