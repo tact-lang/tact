@@ -3,6 +3,9 @@ import { contractErrors } from "../abi/errors";
 import { enabledMasterchain } from "../config/features";
 
 export function writeStdlib(ctx: WriterContext) {
+    const parse = (code: string) =>
+        ctx.parse(code, { context: Location.stdlib() });
+
     //
     // stdlib extension functions
     //
@@ -17,7 +20,7 @@ export function writeStdlib(ctx: WriterContext) {
     // Addresses
     //
 
-    ctx.parse(
+    parse(
         `slice __tact_verify_address(slice address) inline {
         throw_unless(${contractErrors.invalidAddress.id}, address.slice_bits() == 267);
         var h = address.preload_uint(11);
@@ -35,22 +38,18 @@ export function writeStdlib(ctx: WriterContext) {
 
         return address;
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(`(slice, int) __tact_load_bool(slice s) asm(s -> 1 0) "1 LDI";`, {
-        context: Location.stdlib(),
-    });
+    parse(`(slice, int) __tact_load_bool(slice s) asm(s -> 1 0) "1 LDI";`);
 
-    ctx.parse(
+    parse(
         `(slice, slice) __tact_load_address(slice cs) inline {
         slice raw = cs~load_msg_addr();
         return (cs, __tact_verify_address(raw));
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, slice) __tact_load_address_opt(slice cs) inline {
         if (cs.preload_uint(2) != 0) {
             slice raw = cs~load_msg_addr();
@@ -60,17 +59,15 @@ export function writeStdlib(ctx: WriterContext) {
             return (cs, null());
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `builder __tact_store_address(builder b, slice address) inline {
         return b.store_slice(__tact_verify_address(address));
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `builder __tact_store_address_opt(builder b, slice address) inline {
         if (null?(address)) {
             b = b.store_uint(0, 2);
@@ -79,10 +76,9 @@ export function writeStdlib(ctx: WriterContext) {
             return __tact_store_address(b, address);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `slice __tact_create_address(int chain, int hash) inline {
         var b = begin_cell();
         b = b.store_uint(2, 2);
@@ -92,10 +88,9 @@ export function writeStdlib(ctx: WriterContext) {
         var addr = b.end_cell().begin_parse();
         return __tact_verify_address(addr);
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
         var b = begin_cell();
         b = b.store_uint(0, 2);
@@ -106,70 +101,58 @@ export function writeStdlib(ctx: WriterContext) {
         var hash = cell_hash(b.end_cell());
         return __tact_create_address(chain, hash);
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_my_balance() inline {
         return pair_first(get_balance());
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `forall X -> X __tact_not_null(X x) inline {
         throw_if(${contractErrors.null.id}, null?(x));
         return x;
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(cell, int) __tact_dict_delete_int(cell dict, int key_len, int index) asm(index dict key_len) "DICTIDEL";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(cell, int) __tact_dict_delete_uint(cell dict, int key_len, int index) asm(index dict key_len) "DICTUDEL";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, slice, int) __tact_dict_min(cell dict, int key_len) asm(dict key_len -> 1 0 2) "DICTMIN" "NULLSWAPIFNOT2";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, cell, int) __tact_dict_min_ref(cell dict, int key_len) asm(dict key_len -> 1 0 2) "DICTMINREF" "NULLSWAPIFNOT2";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, slice, int) __tact_dict_next(cell dict, int key_len, slice pivot) asm(pivot dict key_len -> 1 0 2) "DICTGETNEXT" "NULLSWAPIFNOT2";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, cell, int) __tact_dict_next_ref(cell dict, int key_len, slice pivot) inline {
         var (key, value, flag) = __tact_dict_next(dict, key_len, pivot);
         if (flag) {
@@ -178,20 +161,17 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `forall X -> () __tact_debug(X value, slice debug_print) impure asm "STRDUMP" "DROP" "s0 DUMP" "DROP";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `() __tact_debug_str(slice value, slice debug_print) impure asm "STRDUMP" "DROP" "STRDUMP" "DROP";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `() __tact_debug_bool(int value, slice debug_print) impure {
         if (value) {
             __tact_debug_str("true", debug_print);
@@ -199,15 +179,13 @@ export function writeStdlib(ctx: WriterContext) {
             __tact_debug_str("false", debug_print);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice) __tact_preload_offset(slice s, int offset, int bits) inline asm "SDSUBSTR";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice) __tact_crc16(slice data) inline_ref {
         slice new_data = begin_cell()
             .store_slice(data)
@@ -235,10 +213,9 @@ export function writeStdlib(ctx: WriterContext) {
             .store_uint(r, 8)
             .end_cell().begin_parse();
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice) __tact_base64_encode(slice data) inline {
         slice chars = "4142434445464748494A4B4C4D4E4F505152535455565758595A6162636465666768696A6B6C6D6E6F707172737475767778797A303132333435363738392D5F"s;
         builder res = begin_cell();
@@ -257,10 +234,9 @@ export function writeStdlib(ctx: WriterContext) {
 
         return res.end_cell().begin_parse();
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice) __tact_address_to_user_friendly(slice address) inline {
         (int wc, int hash) = address.parse_std_addr();
 
@@ -278,65 +254,54 @@ export function writeStdlib(ctx: WriterContext) {
 
         return __tact_base64_encode(user_friendly_address_with_checksum);
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `() __tact_debug_address(slice address, slice debug_print) impure {
         __tact_debug_str(__tact_address_to_user_friendly(address), debug_print);
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `() __tact_debug_stack(slice debug_print) impure asm "STRDUMP" "DROP" "DUMPSTK";`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, slice, int, slice) __tact_context_get() inline {
         return __tact_context;
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `slice __tact_context_get_sender() inline {
         return __tact_context_sender;
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `() __tact_prepare_random() impure inline {
         if (null?(__tact_randomized)) {
             randomize_lt();
             __tact_randomized = true;
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `builder __tact_store_bool(builder b, int v) inline {
         return b.store_int(v, 1);
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(`forall X -> tuple __tact_to_tuple(X x) asm "NOP";`, {
-        context: Location.stdlib(),
-    });
+    parse(`forall X -> tuple __tact_to_tuple(X x) asm "NOP";`);
 
-    ctx.parse(`forall X -> X __tact_from_tuple(tuple x) asm "NOP";`, {
-        context: Location.stdlib(),
-    });
+    parse(`forall X -> X __tact_from_tuple(tuple x) asm "NOP";`);
 
     //
     // Dict Int -> Int
     //
 
-    ctx.parse(
+    parse(
         `(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
         if (null?(v)) {
             var (r, ok) = idict_delete?(d, kl, k);
@@ -345,10 +310,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
         var (r, ok) = idict_get?(d, kl, k);
         if (ok) {
@@ -357,10 +321,9 @@ export function writeStdlib(ctx: WriterContext) {
             return null();
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, int, int) __tact_dict_min_int_int(cell d, int kl, int vl) inline {
         var (key, value, flag) = idict_get_min?(d, kl);
         if (flag) {
@@ -369,10 +332,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, int, int) __tact_dict_next_int_int(cell d, int kl, int pivot, int vl) inline {
         var (key, value, flag) = idict_get_next?(d, kl, pivot);
         if (flag) {
@@ -381,14 +343,13 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Dict Int -> Uint
     //
 
-    ctx.parse(
+    parse(
         `(cell, ()) __tact_dict_set_uint_int(cell d, int kl, int k, int v, int vl) inline {
         if (null?(v)) {
             var (r, ok) = udict_delete?(d, kl, k);
@@ -397,10 +358,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (udict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_dict_get_uint_int(cell d, int kl, int k, int vl) inline {
         var (r, ok) = udict_get?(d, kl, k);
         if (ok) {
@@ -409,10 +369,9 @@ export function writeStdlib(ctx: WriterContext) {
             return null();
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, int, int) __tact_dict_min_uint_int(cell d, int kl, int vl) inline {
         var (key, value, flag) = udict_get_min?(d, kl);
         if (flag) {
@@ -421,10 +380,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, int, int) __tact_dict_next_uint_int(cell d, int kl, int pivot, int vl) inline {
         var (key, value, flag) = udict_get_next?(d, kl, pivot);
         if (flag) {
@@ -433,14 +391,13 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Dict Uint -> Uint
     //
 
-    ctx.parse(
+    parse(
         `(cell, ()) __tact_dict_set_uint_uint(cell d, int kl, int k, int v, int vl) inline {
         if (null?(v)) {
             var (r, ok) = udict_delete?(d, kl, k);
@@ -449,10 +406,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (udict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ());
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_dict_get_uint_uint(cell d, int kl, int k, int vl) inline {
         var (r, ok) = udict_get?(d, kl, k);
         if (ok) {
@@ -461,10 +417,9 @@ export function writeStdlib(ctx: WriterContext) {
             return null();
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, int, int) __tact_dict_min_uint_uint(cell d, int kl, int vl) inline {
         var (key, value, flag) = udict_get_min?(d, kl);
         if (flag) {
@@ -473,10 +428,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, int, int) __tact_dict_next_uint_uint(cell d, int kl, int pivot, int vl) inline {
         var (key, value, flag) = udict_get_next?(d, kl, pivot);
         if (flag) {
@@ -485,14 +439,13 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Dict Int -> Cell
     //
 
-    ctx.parse(
+    parse(
         `(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline {
         if (null?(v)) {
             var (r, ok) = idict_delete?(d, kl, k);
@@ -501,10 +454,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (idict_set_ref(d, kl, k, v), ());
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `cell __tact_dict_get_int_cell(cell d, int kl, int k) inline {
         var (r, ok) = idict_get_ref?(d, kl, k);
         if (ok) {
@@ -513,10 +465,9 @@ export function writeStdlib(ctx: WriterContext) {
             return null();
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, cell, int) __tact_dict_min_int_cell(cell d, int kl) inline {
         var (key, value, flag) = idict_get_min_ref?(d, kl);
         if (flag) {
@@ -525,10 +476,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, cell, int) __tact_dict_next_int_cell(cell d, int kl, int pivot) inline {
         var (key, value, flag) = idict_get_next?(d, kl, pivot);
         if (flag) {
@@ -537,14 +487,13 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Dict Uint -> Cell
     //
 
-    ctx.parse(
+    parse(
         `(cell, ()) __tact_dict_set_uint_cell(cell d, int kl, int k, cell v) inline {
         if (null?(v)) {
             var (r, ok) = udict_delete?(d, kl, k);
@@ -553,10 +502,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (udict_set_ref(d, kl, k, v), ());
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `cell __tact_dict_get_uint_cell(cell d, int kl, int k) inline {
         var (r, ok) = udict_get_ref?(d, kl, k);
         if (ok) {
@@ -565,10 +513,9 @@ export function writeStdlib(ctx: WriterContext) {
             return null();
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, cell, int) __tact_dict_min_uint_cell(cell d, int kl) inline {
         var (key, value, flag) = udict_get_min_ref?(d, kl);
         if (flag) {
@@ -577,10 +524,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, cell, int) __tact_dict_next_uint_cell(cell d, int kl, int pivot) inline {
         var (key, value, flag) = udict_get_next?(d, kl, pivot);
         if (flag) {
@@ -589,14 +535,13 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Dict Int -> Slice
     //
 
-    ctx.parse(
+    parse(
         `(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
         if (null?(v)) {
             var (r, ok) = idict_delete?(d, kl, k);
@@ -605,10 +550,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (idict_set(d, kl, k, v), ());
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
         var (r, ok) = idict_get?(d, kl, k);
         if (ok) {
@@ -617,10 +561,9 @@ export function writeStdlib(ctx: WriterContext) {
             return null();
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, slice, int) __tact_dict_min_int_slice(cell d, int kl) inline {
         var (key, value, flag) = idict_get_min?(d, kl);
         if (flag) {
@@ -629,10 +572,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, slice, int) __tact_dict_next_int_slice(cell d, int kl, int pivot) inline {
         var (key, value, flag) = idict_get_next?(d, kl, pivot);
         if (flag) {
@@ -641,14 +583,13 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Dict Uint -> Slice
     //
 
-    ctx.parse(
+    parse(
         `(cell, ()) __tact_dict_set_uint_slice(cell d, int kl, int k, slice v) inline {
         if (null?(v)) {
             var (r, ok) = udict_delete?(d, kl, k);
@@ -657,10 +598,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (udict_set(d, kl, k, v), ());
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `slice __tact_dict_get_uint_slice(cell d, int kl, int k) inline {
         var (r, ok) = udict_get?(d, kl, k);
         if (ok) {
@@ -669,10 +609,9 @@ export function writeStdlib(ctx: WriterContext) {
             return null();
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, slice, int) __tact_dict_min_uint_slice(cell d, int kl) inline {
         var (key, value, flag) = udict_get_min?(d, kl);
         if (flag) {
@@ -681,10 +620,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(int, slice, int) __tact_dict_next_uint_slice(cell d, int kl, int pivot) inline {
         var (key, value, flag) = udict_get_next?(d, kl, pivot);
         if (flag) {
@@ -693,14 +631,13 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Dict Slice -> Int
     //
 
-    ctx.parse(
+    parse(
         `(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline {
         if (null?(v)) {
             var (r, ok) = __tact_dict_delete(d, kl, k);
@@ -709,10 +646,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
         var (r, ok) = __tact_dict_get(d, kl, k);
         if (ok) {
@@ -721,10 +657,9 @@ export function writeStdlib(ctx: WriterContext) {
             return null();
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, int, int) __tact_dict_min_slice_int(cell d, int kl, int vl) inline {
         var (key, value, flag) = __tact_dict_min(d, kl);
         if (flag) {
@@ -733,10 +668,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, int, int) __tact_dict_next_slice_int(cell d, int kl, slice pivot, int vl) inline {
         var (key, value, flag) = __tact_dict_next(d, kl, pivot);
         if (flag) {
@@ -745,14 +679,13 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Dict Slice -> UInt
     //
 
-    ctx.parse(
+    parse(
         `(cell, ()) __tact_dict_set_slice_uint(cell d, int kl, slice k, int v, int vl) inline {
         if (null?(v)) {
             var (r, ok) = __tact_dict_delete(d, kl, k);
@@ -761,10 +694,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (dict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ());
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_dict_get_slice_uint(cell d, int kl, slice k, int vl) inline {
         var (r, ok) = __tact_dict_get(d, kl, k);
         if (ok) {
@@ -773,10 +705,9 @@ export function writeStdlib(ctx: WriterContext) {
             return null();
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, int, int) __tact_dict_min_slice_uint(cell d, int kl, int vl) inline {
         var (key, value, flag) = __tact_dict_min(d, kl);
         if (flag) {
@@ -785,10 +716,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, int, int) __tact_dict_next_slice_uint(cell d, int kl, slice pivot, int vl) inline {
         var (key, value, flag) = __tact_dict_next(d, kl, pivot);
         if (flag) {
@@ -797,14 +727,13 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Dict Slice -> Cell
     //
 
-    ctx.parse(
+    parse(
         `(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) inline {
         if (null?(v)) {
             var (r, ok) = __tact_dict_delete(d, kl, k);
@@ -813,10 +742,9 @@ export function writeStdlib(ctx: WriterContext) {
             return __tact_dict_set_ref(d, kl, k, v);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `cell __tact_dict_get_slice_cell(cell d, int kl, slice k) inline {
         var (r, ok) = __tact_dict_get_ref(d, kl, k);
         if (ok) {
@@ -825,10 +753,9 @@ export function writeStdlib(ctx: WriterContext) {
             return null();
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, cell, int) __tact_dict_min_slice_cell(cell d, int kl) inline {
         var (key, value, flag) = __tact_dict_min_ref(d, kl);
         if (flag) {
@@ -837,10 +764,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, cell, int) __tact_dict_next_slice_cell(cell d, int kl, slice pivot) inline {
         var (key, value, flag) = __tact_dict_next(d, kl, pivot);
         if (flag) {
@@ -849,14 +775,13 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Dict Slice -> Slice
     //
 
-    ctx.parse(
+    parse(
         `(cell, ()) __tact_dict_set_slice_slice(cell d, int kl, slice k, slice v) inline {
         if (null?(v)) {
             var (r, ok) = __tact_dict_delete(d, kl, k);
@@ -865,10 +790,9 @@ export function writeStdlib(ctx: WriterContext) {
             return (dict_set_builder(d, kl, k, begin_cell().store_slice(v)), ());
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `slice __tact_dict_get_slice_slice(cell d, int kl, slice k) inline {
         var (r, ok) = __tact_dict_get(d, kl, k);
         if (ok) {
@@ -877,10 +801,9 @@ export function writeStdlib(ctx: WriterContext) {
             return null();
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, slice, int) __tact_dict_min_slice_slice(cell d, int kl) inline {
         var (key, value, flag) = __tact_dict_min(d, kl);
         if (flag) {
@@ -889,212 +812,186 @@ export function writeStdlib(ctx: WriterContext) {
             return (null(), null(), flag);
         }
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(slice, slice, int) __tact_dict_next_slice_slice(cell d, int kl, slice pivot) inline {
         return __tact_dict_next(d, kl, pivot);
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Address
     //
 
-    ctx.parse(
+    parse(
         `int __tact_slice_eq_bits(slice a, slice b) inline {
         return equal_slice_bits(a, b);
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_slice_eq_bits_nullable_one(slice a, slice b) inline {
         return (null?(a)) ? (false) : (equal_slice_bits(a, b));
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_slice_eq_bits_nullable(slice a, slice b) inline {
         var a_is_null = null?(a);
         var b_is_null = null?(b);
         return (a_is_null & b_is_null) ? (true) : ((~a_is_null) & (~b_is_null)) ? (equal_slice_bits(a, b)) : (false);
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Int Eq
     //
 
-    ctx.parse(
+    parse(
         `int __tact_int_eq_nullable_one(int a, int b) inline {
         return (null?(a)) ? (false) : (a == b);
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_int_neq_nullable_one(int a, int b) inline {
         return (null?(a)) ? (true) : (a != b);
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_int_eq_nullable(int a, int b) inline {
         var a_is_null = null?(a);
         var b_is_null = null?(b);
         return (a_is_null & b_is_null) ? (true) : ((~a_is_null) & (~b_is_null)) ? (a == b) : (false);
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_int_neq_nullable(int a, int b) inline {
         var a_is_null = null?(a);
         var b_is_null = null?(b);
         return (a_is_null & b_is_null) ? (false) : ((~a_is_null) & (~b_is_null)) ? (a != b) : (true);
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Cell Eq
     //
 
-    ctx.parse(
+    parse(
         `int __tact_cell_eq(cell a, cell b) inline {
         return (a.cell_hash() == b.cell_hash());
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_cell_neq(cell a, cell b) inline {
         return (a.cell_hash() != b.cell_hash());
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_cell_eq_nullable_one(cell a, cell b) inline {
         return (null?(a)) ? (false) : (a.cell_hash() == b.cell_hash());
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_cell_neq_nullable_one(cell a, cell b) inline {
         return (null?(a)) ? (true) : (a.cell_hash() != b.cell_hash());
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_cell_eq_nullable(cell a, cell b) inline {
         var a_is_null = null?(a);
         var b_is_null = null?(b);
         return (a_is_null & b_is_null) ? (true) : ((~a_is_null) & (~b_is_null)) ? (a.cell_hash() == b.cell_hash()) : (false);
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_cell_neq_nullable(cell a, cell b) inline {
         var a_is_null = null?(a);
         var b_is_null = null?(b);
         return (a_is_null & b_is_null) ? (false) : ((~a_is_null) & (~b_is_null)) ? (a.cell_hash() != b.cell_hash()) : (true);
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Slice Eq
     //
 
-    ctx.parse(
+    parse(
         `int __tact_slice_eq(slice a, slice b) inline {
         return (a.slice_hash() == b.slice_hash());
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_slice_neq(slice a, slice b) inline {
         return (a.slice_hash() != b.slice_hash());
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_slice_eq_nullable_one(slice a, slice b) inline {
         return (null?(a)) ? (false) : (a.slice_hash() == b.slice_hash());
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_slice_neq_nullable_one(slice a, slice b) inline {
         return (null?(a)) ? (true) : (a.slice_hash() != b.slice_hash());
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_slice_eq_nullable(slice a, slice b) inline {
         var a_is_null = null?(a);
         var b_is_null = null?(b);
         return (a_is_null & b_is_null) ? (true) : ((~a_is_null) & (~b_is_null)) ? (a.slice_hash() == b.slice_hash()) : (false);
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_slice_neq_nullable(slice a, slice b) inline {
         var a_is_null = null?(a);
         var b_is_null = null?(b);
         return (a_is_null & b_is_null) ? (false) : ((~a_is_null) & (~b_is_null)) ? (a.slice_hash() != b.slice_hash()) : (true);
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Sys Dict
     //
 
-    ctx.parse(
+    parse(
         `cell __tact_dict_set_code(cell dict, int id, cell code) inline {
         return udict_set_ref(dict, 16, id, code);
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `cell __tact_dict_get_code(cell dict, int id) inline {
         var (data, ok) = udict_get_ref?(dict, 16, id);
         throw_unless(${contractErrors.codeNotFound.id}, ok);
         return data;
     }`,
-        { context: Location.stdlib() },
     );
 
     //
     // Tuples
     //
 
-    ctx.parse(`tuple __tact_tuple_create_0() asm "NIL";`, {
-        context: Location.stdlib(),
-    });
+    parse(`tuple __tact_tuple_create_0() asm "NIL";`);
 
-    ctx.parse(
+    parse(
         `() __tact_tuple_destroy_0() inline {
         return ();
     }`,
-        { context: Location.stdlib() },
     );
 
     for (let i = 1; i < 64; i++) {
@@ -1103,14 +1000,12 @@ export function writeStdlib(ctx: WriterContext) {
             args.push(`X${j}`);
         }
 
-        ctx.parse(
+        parse(
             `forall ${args.join(", ")} -> tuple __tact_tuple_create_${i}((${args.join(", ")}) v) asm "${i} TUPLE";`,
-            { context: Location.stdlib() },
         );
 
-        ctx.parse(
+        parse(
             `forall ${args.join(", ")} -> (${args.join(", ")}) __tact_tuple_destroy_${i}(tuple v) asm "${i} UNTUPLE";`,
-            { context: Location.stdlib() },
         );
     }
 
@@ -1118,35 +1013,31 @@ export function writeStdlib(ctx: WriterContext) {
     // Strings
     //
 
-    ctx.parse(
+    parse(
         `tuple __tact_string_builder_start_comment() inline {
         return __tact_string_builder_start(begin_cell().store_uint(0, 32));
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `tuple __tact_string_builder_start_tail_string() inline {
         return __tact_string_builder_start(begin_cell().store_uint(0, 8));
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `tuple __tact_string_builder_start_string() inline {
         return __tact_string_builder_start(begin_cell());
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `tuple __tact_string_builder_start(builder b) inline {
         return tpush(tpush(empty_tuple(), b), null());
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `cell __tact_string_builder_end(tuple builders) inline {
         (builder b, tuple tail) = uncons(builders);
         cell c = b.end_cell();
@@ -1156,17 +1047,15 @@ export function writeStdlib(ctx: WriterContext) {
         }
         return c;
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `slice __tact_string_builder_end_slice(tuple builders) inline {
         return __tact_string_builder_end(builders).begin_parse();
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
         int sliceRefs = slice_refs(sc);
         int sliceBits = slice_bits(sc);
@@ -1204,18 +1093,16 @@ export function writeStdlib(ctx: WriterContext) {
 
         return ((builders), ());
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc) {
         builders~__tact_string_builder_append(sc);
         return builders;
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `slice __tact_int_to_string(int src) {
         var b = begin_cell();
         if (src < 0) {
@@ -1254,10 +1141,9 @@ export function writeStdlib(ctx: WriterContext) {
         }
         return b.end_cell().begin_parse();
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `slice __tact_float_to_string(int src, int digits) {
         throw_if(${contractErrors.invalidArgument.id}, (digits <= 0) | (digits > 77));
         builder b = begin_cell();
@@ -1305,14 +1191,11 @@ export function writeStdlib(ctx: WriterContext) {
         ;; Result
         return b.end_cell().begin_parse();
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(`int __tact_log2(int num) asm "DUP 5 THROWIFNOT UBITSIZE DEC";`, {
-        context: Location.stdlib(),
-    });
+    parse(`int __tact_log2(int num) asm "DUP 5 THROWIFNOT UBITSIZE DEC";`);
 
-    ctx.parse(
+    parse(
         `int __tact_log(int num, int base) {
         throw_unless(5, num > 0);
         throw_unless(5, base > 1);
@@ -1326,10 +1209,9 @@ export function writeStdlib(ctx: WriterContext) {
         }
         return result;
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(
+    parse(
         `int __tact_pow(int base, int exp) {
         throw_unless(5, exp >= 0);
         int result = 1;
@@ -1338,10 +1220,7 @@ export function writeStdlib(ctx: WriterContext) {
         }
         return result;
     }`,
-        { context: Location.stdlib() },
     );
 
-    ctx.parse(`int __tact_pow2(int exp) asm "POW2";`, {
-        context: Location.stdlib(),
-    });
+    parse(`int __tact_pow2(int exp) asm "POW2";`);
 }
