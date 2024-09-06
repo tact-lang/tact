@@ -743,6 +743,7 @@ export function writeStdlib(ctx: WriterContext) {
             return (key, value~load_int(vl), flag);
         } else {
             return (null(), null(), flag);
+        }
     }`,
         { context: Location.stdlib() },
     );
@@ -794,6 +795,7 @@ export function writeStdlib(ctx: WriterContext) {
             return (key, value~load_uint(vl), flag);
         } else {
             return (null(), null(), flag);
+        }
     }`,
         { context: Location.stdlib() },
     );
