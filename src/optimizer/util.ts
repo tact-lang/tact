@@ -5,11 +5,17 @@ import {
     createAstNode,
     AstValue,
     isValue,
+    AstStructFieldInitializer,
+    AstId,
+    idText,
 } from "../grammar/ast";
 import { dummySrcInfo } from "../grammar/grammar";
 import { throwInternalCompilerError } from "../errors";
-import { Value } from "../types/types";
+import { StructValue, Value } from "../types/types";
 
+// This function assumes that the parameter is already a value.
+// i.e., that the user called the isValue function to check
+// if the parameter is a value.
 export function extractValue(ast: AstValue): Value {
     switch (
         ast.kind // Missing structs
@@ -22,6 +28,13 @@ export function extractValue(ast: AstValue): Value {
             return ast.value;
         case "string":
             return ast.value;
+        case "struct_instance":
+            return ast.args.reduce((resObj, fieldWithInit) => {
+                resObj[idText(fieldWithInit.field)] = extractValue(
+                    fieldWithInit.initializer as AstValue
+                );
+                return resObj;
+            }, { $tactStruct: idText(ast.type) } as StructValue);
     }
 }
 
@@ -57,9 +70,37 @@ export function makeValueExpression(value: Value): AstValue {
         });
         return result as AstValue;
     }
+    if (typeof value === "object" && "$tactStruct" in value) {
+        const fields = Object.entries(value).filter(
+            ([name, _]) => name !== "$tactStruct"
+        ).map(([name, val]) => {
+            return createAstNode({
+                kind: "struct_field_initializer",
+                field: makeIdExpression(name),
+                initializer: makeValueExpression(val),
+                loc: dummySrcInfo,
+            }) as AstStructFieldInitializer;
+        });
+        const result = createAstNode({
+            kind: "struct_instance",
+            type: makeIdExpression(value["$tactStruct"] as string),
+            args: fields,
+            loc: dummySrcInfo,
+        });
+        return result as AstValue;
+    }
     throwInternalCompilerError(
-        `structs, addresses, cells, and comment values are not supported at the moment.`,
+        `addresses, cells, and comment values are not supported at the moment.`,
     );
+}
+
+function makeIdExpression(name: string): AstId {
+    const result = createAstNode({
+        kind: "id",
+        text: name,
+        loc: dummySrcInfo,
+    });
+    return result as AstId;   
 }
 
 export function makeUnaryExpression(

@@ -50,6 +50,7 @@ import {
     eqNames,
     idText,
     isSelfId,
+    tryExtractPath,
 } from "./grammar/ast";
 import { SrcInfo, dummySrcInfo, parseExpression } from "./grammar/grammar";
 import { divFloor, extractValue, modFloor } from "./optimizer/util";
@@ -124,7 +125,7 @@ export function ensureInt(val: Value, source: SrcInfo): bigint {
     }
 }
 
-function ensureRepeatInt(val: Value, source: SrcInfo): bigint {
+export function ensureRepeatInt(val: Value, source: SrcInfo): bigint {
     if (typeof val !== "bigint") {
         throwErrorConstEval(
             `integer expected, but got '${showValue(val)}'`,
@@ -780,7 +781,7 @@ export class Interpreter {
         // to look it up in the statement environment provided by the compiler, 
         // which is working as the global enclosing environment for the interpreter's execution.
         if (this.compEnv.sctx !== undefined) {
-            const val = lookupVariable(ast, this.compEnv.sctx);
+            const val = lookupVariable([ast], this.compEnv.sctx);
             if (val !== undefined) {
                 return val;
             }
@@ -926,6 +927,25 @@ export class Interpreter {
                     );
                 if (foundContractConst === undefined) {
                     // not a constant, e.g. `self.storageVariable`
+                    
+                    const path = tryExtractPath(ast.aggregate);
+                    if (path !== null) {
+                        // At this moment, the interpreter does not lookup field accesses in the interpreter's 
+                        // environment. Once this is implemented, the operation of looking up in the 
+                        // interpreter's environment should occur before looking up in the 
+                        // statement context.
+                    
+                        // Now, lookup in the statement context, because such context stores the variable bindings 
+                        // found by the compiler.
+                        if (this.compEnv.sctx !== undefined) {
+                            const value = lookupVariable([...path, ast.field], this.compEnv.sctx);
+                            if (value !== undefined) {
+                                return value;
+                            }
+                        }
+                        
+                    }
+
                     throwNonFatalErrorConstEval(
                         "cannot evaluate non-constant self field access",
                         ast.aggregate.loc,
@@ -955,8 +975,30 @@ export class Interpreter {
         if (idText(ast.field) in valStruct) {
             return valStruct[idText(ast.field)]!;
         } else {
-            // this cannot happen in a well-typed program
-            throwInternalCompilerError(
+            // this cannot be an internal compiler error, because during 
+            // variable tracing, partial StructValues are needed.
+            // For example, consider this program:
+            
+            // fun FOO(x: TestStruct): Int {
+            //    x.a = 0;
+            //    return 1 / x.a;
+            // }
+
+            // Suppose TestStruct has only two fields: a and b.
+
+            // The program only sets field a. This means that during
+            // variable tracing analysis, x.b is undefined.
+            // Hence, when evaluating the return expression 1 / x.a, the 
+            // StructValue corresponding to x will only include field a.
+
+            // If the interpreter reaches a point where it attempts to access
+            // a non-existent field in a StructValue, it simply should give up
+            // and let the component that called the interpreter make a decision
+            // regarding the error: recall that the interpreter is called 
+            // embedded in the type checking process, so, it will have only partial
+            // information.
+
+            throwNonFatalErrorConstEval(
                 `struct field ${idTextErr(ast.field)} is missing`,
                 ast.aggregate.loc,
             );
