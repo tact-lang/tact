@@ -1272,7 +1272,7 @@ export function writeStdlib(ctx: WriterContext) {
         tuple t = empty_tuple();
         repeat(digits) {
             (src, rem) = src.divmod(10);
-            if (~(skip & (rem == 0))) {
+            if (~ (skip & (rem == 0))) {
                 skip = false;
                 t~tpush(rem + 48);
                 len = len + 1;
