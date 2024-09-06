@@ -48,7 +48,7 @@ export class AddZero extends Rule {
                     const op = topLevelNode.op;
 
                     if (op === "-") {
-                        return makeUnaryExpression("-", x);
+                        return makeUnaryExpression("-", x, ast.loc);
                     } else {
                         return x;
                     }
@@ -78,7 +78,7 @@ export class MultiplyZero extends Rule {
                     // The tree has this form:
                     // x * 0, where x is an identifier or a value
 
-                    return makeValueExpression(0n);
+                    return makeValueExpression(0n, ast.loc);
                 } else if (
                     checkIsNumber(topLevelNode.left, 0n) &&
                     (checkIsName(topLevelNode.right) ||
@@ -87,7 +87,7 @@ export class MultiplyZero extends Rule {
                     // The tree has this form:
                     // 0 * x, where x is an identifier or a value
 
-                    return makeValueExpression(0n);
+                    return makeValueExpression(0n, ast.loc);
                 }
             }
         }
@@ -156,7 +156,7 @@ export class SubtractSelf extends Rule {
                     const y = topLevelNode.right;
 
                     if (eqExpressions(x, y)) {
-                        return makeValueExpression(0n);
+                        return makeValueExpression(0n, ast.loc);
                     }
                 }
             }
@@ -187,7 +187,8 @@ export class AddSelf extends Rule {
                         const res = makeBinaryExpression(
                             "*",
                             x,
-                            makeValueExpression(2n),
+                            makeValueExpression(2n, ast.loc),
+                            ast.loc
                         );
                         // Since we joined the tree, there is further opportunity
                         // for simplification
@@ -247,12 +248,12 @@ export class OrTrue extends Rule {
                     // The tree has this form:
                     // x || true, where x is an identifier or a value
 
-                    return makeValueExpression(true);
+                    return makeValueExpression(true, ast.loc);
                 } else if (checkIsBoolean(topLevelNode.left, true)) {
                     // The tree has this form:
                     // true || x
 
-                    return makeValueExpression(true);
+                    return makeValueExpression(true, ast.loc);
                 }
             }
         }
@@ -279,12 +280,12 @@ export class AndFalse extends Rule {
                     // The tree has this form:
                     // x && false, where x is an identifier or a value
 
-                    return makeValueExpression(false);
+                    return makeValueExpression(false, ast.loc);
                 } else if (checkIsBoolean(topLevelNode.left, false)) {
                     // The tree has this form:
                     // false && x
 
-                    return makeValueExpression(false);
+                    return makeValueExpression(false, ast.loc);
                 }
             }
         }
@@ -436,7 +437,7 @@ export class ExcludedMiddle extends Rule {
                             (checkIsName(x) || isValue(x)) &&
                             eqExpressions(x, y)
                         ) {
-                            return makeValueExpression(true);
+                            return makeValueExpression(true, ast.loc);
                         }
                     }
                 } else if (checkIsUnaryOpNode(topLevelNode.left)) {
@@ -454,7 +455,7 @@ export class ExcludedMiddle extends Rule {
                             (checkIsName(x) || isValue(x)) &&
                             eqExpressions(x, y)
                         ) {
-                            return makeValueExpression(true);
+                            return makeValueExpression(true, ast.loc);
                         }
                     }
                 }
@@ -490,7 +491,7 @@ export class Contradiction extends Rule {
                             (checkIsName(x) || isValue(x)) &&
                             eqExpressions(x, y)
                         ) {
-                            return makeValueExpression(false);
+                            return makeValueExpression(false, ast.loc);
                         }
                     }
                 } else if (checkIsUnaryOpNode(topLevelNode.left)) {
@@ -508,7 +509,7 @@ export class Contradiction extends Rule {
                             (checkIsName(x) || isValue(x)) &&
                             eqExpressions(x, y)
                         ) {
-                            return makeValueExpression(false);
+                            return makeValueExpression(false, ast.loc);
                         }
                     }
                 }
@@ -561,7 +562,7 @@ export class NegateTrue extends Rule {
                     // The tree has this form
                     // !true
 
-                    return makeValueExpression(false);
+                    return makeValueExpression(false, ast.loc);
                 }
             }
         }
@@ -584,7 +585,7 @@ export class NegateFalse extends Rule {
                     // The tree has this form
                     // !false
 
-                    return makeValueExpression(true);
+                    return makeValueExpression(true, ast.loc);
                 }
             }
         }

@@ -8,8 +8,8 @@ import {
     AstStructFieldInitializer,
     AstId,
     idText,
+    SrcInfo,
 } from "../grammar/ast";
-import { dummySrcInfo } from "../grammar/grammar";
 import { throwInternalCompilerError } from "../errors";
 import { StructValue, Value } from "../types/types";
 
@@ -38,11 +38,11 @@ export function extractValue(ast: AstValue): Value {
     }
 }
 
-export function makeValueExpression(value: Value): AstValue {
+export function makeValueExpression(value: Value, loc: SrcInfo): AstValue {
     if (value === null) {
         const result = createAstNode({
             kind: "null",
-            loc: dummySrcInfo,
+            loc: loc,
         });
         return result as AstValue;
     }
@@ -50,7 +50,7 @@ export function makeValueExpression(value: Value): AstValue {
         const result = createAstNode({
             kind: "string",
             value: value,
-            loc: dummySrcInfo,
+            loc: loc,
         });
         return result as AstValue;
     }
@@ -58,7 +58,7 @@ export function makeValueExpression(value: Value): AstValue {
         const result = createAstNode({
             kind: "number",
             value: value,
-            loc: dummySrcInfo,
+            loc: loc,
         });
         return result as AstValue;
     }
@@ -66,7 +66,7 @@ export function makeValueExpression(value: Value): AstValue {
         const result = createAstNode({
             kind: "boolean",
             value: value,
-            loc: dummySrcInfo,
+            loc: loc,
         });
         return result as AstValue;
     }
@@ -76,16 +76,16 @@ export function makeValueExpression(value: Value): AstValue {
         ).map(([name, val]) => {
             return createAstNode({
                 kind: "struct_field_initializer",
-                field: makeIdExpression(name),
-                initializer: makeValueExpression(val),
-                loc: dummySrcInfo,
+                field: makeIdExpression(name, loc),
+                initializer: makeValueExpression(val, loc),
+                loc: loc,
             }) as AstStructFieldInitializer;
         });
         const result = createAstNode({
             kind: "struct_instance",
-            type: makeIdExpression(value["$tactStruct"] as string),
+            type: makeIdExpression(value["$tactStruct"] as string, loc),
             args: fields,
-            loc: dummySrcInfo,
+            loc: loc,
         });
         return result as AstValue;
     }
@@ -94,11 +94,11 @@ export function makeValueExpression(value: Value): AstValue {
     );
 }
 
-function makeIdExpression(name: string): AstId {
+function makeIdExpression(name: string, loc: SrcInfo): AstId {
     const result = createAstNode({
         kind: "id",
         text: name,
-        loc: dummySrcInfo,
+        loc: loc,
     });
     return result as AstId;   
 }
@@ -106,12 +106,13 @@ function makeIdExpression(name: string): AstId {
 export function makeUnaryExpression(
     op: AstUnaryOperation,
     operand: AstExpression,
+    loc: SrcInfo
 ): AstExpression {
     const result = createAstNode({
         kind: "op_unary",
         op: op,
         operand: operand,
-        loc: dummySrcInfo,
+        loc: loc,
     });
     return result as AstExpression;
 }
@@ -120,13 +121,14 @@ export function makeBinaryExpression(
     op: AstBinaryOperation,
     left: AstExpression,
     right: AstExpression,
+    loc: SrcInfo
 ): AstExpression {
     const result = createAstNode({
         kind: "op_binary",
         op: op,
         left: left,
         right: right,
-        loc: dummySrcInfo,
+        loc: loc,
     });
     return result as AstExpression;
 }
