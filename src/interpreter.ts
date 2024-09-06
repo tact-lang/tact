@@ -954,7 +954,24 @@ export class Interpreter {
                 if (foundContractConst.value !== undefined) {
                     return foundContractConst.value;
                 } else {
-                    throwErrorConstEval(
+                    // this cannot be a fatal error.
+                    // For example, consider this program (found in examples/inheritance.tact):
+            
+                    // trait AbstractTrait {
+                    //    const c: Int = 30;
+                    //    abstract const c2: Int;
+                    //    abstract fun executeAbs(): Int;
+
+                    //    fun loadC2(): Int {
+                    //       return self.c2;
+                    //    }
+                    // }
+
+                    // Field c2 does not have a body. So, when the variable tracing analysis 
+                    // reaches function loadC2, it should be able to continue after determining that
+                    // self.c2 is undefined at compilation time.
+
+                    throwNonFatalErrorConstEval(
                         `cannot evaluate declared contract/trait constant ${idTextErr(ast.field)} as it does not have a body`,
                         ast.field.loc,
                     );

@@ -91,6 +91,7 @@ export function makeValueExpression(value: Value, loc: SrcInfo): AstValue {
     }
     throwInternalCompilerError(
         `addresses, cells, and comment values are not supported at the moment.`,
+        loc
     );
 }
 

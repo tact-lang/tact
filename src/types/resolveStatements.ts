@@ -903,15 +903,12 @@ function processStatements(
 
                 // Process inner statements
                 const r = processStatements(s.statements, foreachSctx, ctx);
-                ctx = r.ctx;
-                foreachSctx = r.sctx;
-
 
                 // Repeat the analysis of the loop body, but this time simulating an arbitrary
                     // iteration of the loop. To simulate such thing, it is enough to make all 
-                    // assigned variables in the loop undetermined in initialSctx, and then
+                    // assigned variables in the loop undetermined in foreachSctx, and then
                     // execute processStatements in such statement context.
-                    const loopSctx = processStatements(s.statements, undetermineAssignedVariables(s.statements, initialSctx), ctx).sctx;
+                    const loopSctx = processStatements(s.statements, undetermineAssignedVariables(s.statements, foreachSctx), ctx).sctx;
 
                     // Evaluate the map in the initial context
                     const mapValue = callExpressionEvaluation(s.map, ctx, initialSctx);
@@ -932,6 +929,9 @@ function processStatements(
                         // the context when the loop does not execute.
                         initialSctx = markConflictingVariables(initialSctx, [initialSctx, loopSctx]);
                     }
+
+                    ctx = r.ctx;
+                    foreachSctx = r.sctx;
 
                 // Merge statement contexts (similar to catch block merging)
                 const removed: string[] = [];
