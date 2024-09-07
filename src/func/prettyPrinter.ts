@@ -281,7 +281,7 @@ export class FuncPrettyPrinter {
     }
 
     private prettyPrintGlobalVariable(node: FuncAstGlobalVariable): string {
-        const typeStr = node.ty ? this.ppTy(node.ty) : "var";
+        const typeStr = node.ty ? this.prettyPrintType(node.ty) : "var";
         const nameStr = this.prettyPrint(node.name);
         return `${typeStr} ${nameStr};`;
     }
@@ -350,7 +350,7 @@ export class FuncPrettyPrinter {
         parameters: FuncAstParameter[],
         attributes: FuncAstFunctionAttribute[],
     ): string {
-        const returnTypeStr = this.ppTy(returnType);
+        const returnTypeStr = this.prettyPrintType(returnType);
         const nameStr = this.prettyPrint(name);
         const paramsStr = parameters
             .map((param) => this.prettyPrintParameter(param))
@@ -363,7 +363,7 @@ export class FuncPrettyPrinter {
     }
 
     private prettyPrintParameter(param: FuncAstParameter): string {
-        const typeStr = param.ty ? this.ppTy(param.ty) : "var";
+        const typeStr = param.ty ? this.prettyPrintType(param.ty) : "var";
         const nameStr = param.name ? this.prettyPrint(param.name) : "";
         return `${typeStr} ${nameStr}`.trim();
     }
@@ -549,7 +549,7 @@ export class FuncPrettyPrinter {
     private prettyPrintExpressionVarDecl(
         node: FuncAstExpressionVarDecl,
     ): string {
-        const type = this.ppTy(node.ty);
+        const type = this.prettyPrintType(node.ty);
         const names = this.prettyPrintVarDeclPart(node.names);
         return `${type} ${names}`;
     }
@@ -645,7 +645,7 @@ export class FuncPrettyPrinter {
         return indentedContent;
     }
 
-    private ppTy(ty: FuncAstType): string {
+    public prettyPrintType(ty: FuncAstType): string {
         switch (ty.kind) {
             case "type_primitive":
                 return this.prettyPrintTypePrimitive(
@@ -667,11 +667,11 @@ export class FuncPrettyPrinter {
     }
 
     private prettyPrintTypeTensor(node: FuncAstTypeTensor): string {
-        return `(${node.types.map((type) => this.ppTy(type)).join(", ")})`;
+        return `(${node.types.map((type) => this.prettyPrintType(type)).join(", ")})`;
     }
 
     private prettyPrintTypeTuple(node: FuncAstTypeTuple): string {
-        return `[${node.types.map((type) => this.ppTy(type)).join(", ")}]`;
+        return `[${node.types.map((type) => this.prettyPrintType(type)).join(", ")}]`;
     }
 
     private prettyPrintTypeHole(node: FuncAstHole): string {
@@ -679,8 +679,8 @@ export class FuncPrettyPrinter {
     }
 
     private prettyPrintTypeMapped(node: FuncAstTypeMapped): string {
-        const value = this.ppTy(node.value);
-        const mapsTo = this.ppTy(node.mapsTo);
+        const value = this.prettyPrintType(node.value);
+        const mapsTo = this.prettyPrintType(node.mapsTo);
         return `${value} -> ${mapsTo}`;
     }
 
