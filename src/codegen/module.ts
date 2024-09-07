@@ -14,6 +14,7 @@ import { getMethodId } from "../utils/utils";
 import { idTextErr } from "../errors";
 import { contractErrors } from "../abi/errors";
 import { writeStdlib } from "./stdlib";
+import { writeAccessors } from "./accessors";
 import {
     resolveFuncTypeUnpack,
     resolveFuncType,
@@ -139,10 +140,6 @@ export class ModuleGen {
         const sortedTypes = getSortedTypes(this.ctx.ctx);
         for (const t of sortedTypes) {
         }
-    }
-
-    private addAccessors(_m: FuncAstModule): void {
-        // TODO
     }
 
     private addInitSerializer(_m: FuncAstModule): void {
@@ -718,11 +715,7 @@ export class ModuleGen {
             ) {
                 // var text_op = slice_hash(in_msg);
                 condBody.push(
-                    vardef(
-                        "_",
-                        "text_op",
-                        call("slice_hash", [id("in_msg")]),
-                    ),
+                    vardef("_", "text_op", call("slice_hash", [id("in_msg")])),
                 );
                 for (const r of type.receivers) {
                     if (
@@ -741,18 +734,15 @@ export class ModuleGen {
                             comment(`Receive "${r.selector.comment}" message`),
                         );
                         condBody.push(
-                            condition(
-                                binop(id("text_op"), "==", hex(hash)),
-                                [
-                                    expr(
-                                        call(
-                                            `self~${ops.receiveText(type.name, kind, hash)}`,
-                                            [],
-                                        ),
+                            condition(binop(id("text_op"), "==", hex(hash)), [
+                                expr(
+                                    call(
+                                        `self~${ops.receiveText(type.name, kind, hash)}`,
+                                        [],
                                     ),
-                                    ret(tensor(id("self"), bool(true))),
-                                ],
-                            ),
+                                ),
+                                ret(tensor(id("self"), bool(true))),
+                            ]),
                         );
                     }
                 }
@@ -833,7 +823,7 @@ export class ModuleGen {
         );
         const selfType = resolveFuncType(this.ctx.ctx, self);
         const selfUnpack = vardef(
-            '_',
+            "_",
             resolveFuncTypeUnpack(this.ctx.ctx, self, funcIdOf("self")),
             id(funcIdOf("self")),
         );
@@ -863,7 +853,7 @@ export class ModuleGen {
             const body: FuncAstStatement[] = [selfUnpack];
             body.push(
                 vardef(
-                    '_',
+                    "_",
                     resolveFuncTypeUnpack(
                         this.ctx.ctx,
                         selector.type,
@@ -1101,7 +1091,7 @@ export class ModuleGen {
             const body: FuncAstStatement[] = [selfUnpack];
             body.push(
                 vardef(
-                    '_',
+                    "_",
                     resolveFuncTypeUnpack(
                         this.ctx.ctx,
                         selector.type,
@@ -1163,13 +1153,11 @@ export class ModuleGen {
             );
         }
         // Load contract state
-        body.push(
-            vardef('_', "self", call(ops.contractLoad(self.name), [])),
-        );
+        body.push(vardef("_", "self", call(ops.contractLoad(self.name), [])));
         // Execute get method
         body.push(
             vardef(
-                '_',
+                "_",
                 "res",
                 call(
                     `self~${ops.extension(self.name, f.name)}`,
@@ -1225,17 +1213,15 @@ export class ModuleGen {
         body.push(comment("Context"));
         body.push(
             vardef(
-                '_',
+                "_",
                 "cs",
                 call("begin_parse", [], { receiver: id("in_msg_cell") }),
             ),
         );
-        body.push(
-            vardef('_', "msg_flags", call("cs~load_uint", [int(4)])),
-        ); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
+        body.push(vardef("_", "msg_flags", call("cs~load_uint", [int(4)]))); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
         body.push(
             vardef(
-                '_',
+                "_",
                 "msg_bounced",
                 unop("-", binop(id("msg_flags"), "&", int(1))),
             ),
@@ -1267,9 +1253,7 @@ export class ModuleGen {
 
         // Load self
         body.push(comment("Load contract data"));
-        body.push(
-            vardef('_', "self", call(ops.contractLoad(type.name), [])),
-        );
+        body.push(vardef("_", "self", call(ops.contractLoad(type.name), [])));
         body.push(cr());
 
         // Process operation
@@ -1323,9 +1307,7 @@ export class ModuleGen {
 
         // Load self
         body.push(comment("Load contract data"));
-        body.push(
-            vardef('_', "self", call(ops.contractLoad(type.name), [])),
-        );
+        body.push(vardef("_", "self", call(ops.contractLoad(type.name), [])));
         body.push(cr());
 
         // Process operation
@@ -1464,7 +1446,11 @@ export class ModuleGen {
 
         this.writeStdlib();
         this.addSerializers(m);
-        this.addAccessors(m);
+        for (const t of allTypes) {
+            if (t.kind === "contract" || t.kind === "struct") {
+                writeAccessors(t, this.ctx);
+            }
+        }
         this.addInitSerializer(m);
         this.addStorageFunctions(m);
         this.addStaticFunctions(m);

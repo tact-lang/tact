@@ -259,7 +259,6 @@ export class WriterContext {
         };
         this.mainFunctions().forEach((f) => visit(f.name));
         all = all.filter((v) => {
-            console.log(v.name, used.has(v.name));
             return used.has(v.name);
         });
 

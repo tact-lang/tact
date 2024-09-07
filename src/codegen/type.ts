@@ -243,3 +243,111 @@ export function resolveFuncTupleType(
     // Unreachable
     throw Error(`Unknown type: ${descriptor.kind}`);
 }
+
+export function resolveFuncFlatPack(
+    ctx: CompilerContext,
+    descriptor: TypeRef | TypeDescription | string,
+    name: string,
+    optional: boolean = false,
+): string[] {
+    // String
+    if (typeof descriptor === "string") {
+        return resolveFuncFlatPack(ctx, getType(ctx, descriptor), name);
+    }
+
+    // TypeRef
+    if (descriptor.kind === "ref") {
+        return resolveFuncFlatPack(
+            ctx,
+            getType(ctx, descriptor.name),
+            name,
+            descriptor.optional,
+        );
+    }
+    if (descriptor.kind === "map") {
+        return [name];
+    }
+    if (descriptor.kind === "ref_bounced") {
+        throw Error("Unimplemented");
+    }
+    if (descriptor.kind === "void") {
+        throw Error("Void type is not allowed in function arguments: " + name);
+    }
+
+    // TypeDescription
+    if (descriptor.kind === "primitive_type_decl") {
+        return [name];
+    } else if (descriptor.kind === "struct") {
+        if (optional || descriptor.fields.length === 0) {
+            return [name];
+        } else {
+            return descriptor.fields.flatMap((v) =>
+                resolveFuncFlatPack(ctx, v.type, name + `'` + v.name),
+            );
+        }
+    } else if (descriptor.kind === "contract") {
+        if (optional || descriptor.fields.length === 0) {
+            return [name];
+        } else {
+            return descriptor.fields.flatMap((v) =>
+                resolveFuncFlatPack(ctx, v.type, name + `'` + v.name),
+            );
+        }
+    }
+
+    // Unreachable
+    throw Error("Unknown type: " + descriptor.kind);
+}
+
+export function resolveFuncFlatTypes(
+    ctx: CompilerContext,
+    descriptor: TypeRef | TypeDescription | string,
+    optional: boolean = false,
+): FuncAstType[] {
+    // String
+    if (typeof descriptor === "string") {
+        return resolveFuncFlatTypes(ctx, getType(ctx, descriptor));
+    }
+
+    // TypeRef
+    if (descriptor.kind === "ref") {
+        return resolveFuncFlatTypes(
+            ctx,
+            getType(ctx, descriptor.name),
+            descriptor.optional,
+        );
+    }
+    if (descriptor.kind === "map") {
+        return [Type.cell()];
+    }
+    if (descriptor.kind === "ref_bounced") {
+        throw Error("Unimplemented");
+    }
+    if (descriptor.kind === "void") {
+        throw Error("Void type is not allowed in function arguments");
+    }
+
+    // TypeDescription
+    if (descriptor.kind === "primitive_type_decl") {
+        return [resolveFuncType(ctx, descriptor)];
+    } else if (descriptor.kind === "struct") {
+        if (optional || descriptor.fields.length === 0) {
+            return [Type.tuple()];
+        } else {
+            return descriptor.fields.flatMap((v) =>
+                resolveFuncFlatTypes(ctx, v.type),
+            );
+        }
+    } else if (descriptor.kind === "contract") {
+        if (optional || descriptor.fields.length === 0) {
+            return [Type.tuple()];
+        } else {
+            return descriptor.fields.flatMap((v) =>
+                resolveFuncFlatTypes(ctx, v.type),
+            );
+        }
+    }
+
+    // Unreachable
+    throw Error("Unknown type: " + descriptor.kind);
+}
