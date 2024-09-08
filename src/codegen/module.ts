@@ -219,16 +219,20 @@ export class ModuleGen {
         const sf = getAllStaticFunctions(this.ctx.ctx);
         Object.values(sf).forEach((f) => {
             const gen = FunctionGen.fromTact(this.ctx);
-            if (f.ast.kind === "native_function_decl") {
-                gen.writeNativeFunction(f);
-            } else {
-                gen.writeFunction(f);
-            }
+            gen.writeFunction(f);
         });
     }
 
-    private addExtensions(_m: FuncAstModule): void {
-        // TODO
+    private addExtensions(allTypes: TypeDescription[]): void {
+        for (const c of allTypes) {
+            if (c.kind !== "contract" && c.kind !== "trait") {
+                // We are rendering contract functions separately
+                for (const f of c.functions.values()) {
+                    const gen = FunctionGen.fromTact(this.ctx);
+                    gen.writeFunction(f);
+                }
+            }
+        }
     }
 
     /**
@@ -516,7 +520,7 @@ export class ModuleGen {
         }
 
         for (const tactFun of c.functions.values()) {
-            const funcFun = FunctionGen.fromTact(this.ctx).writeFunction(
+            const funcFun = FunctionGen.fromTact(this.ctx).writeFunctionDefinition(
                 tactFun,
             );
             // TODO: Should we really put them here?
@@ -1526,7 +1530,7 @@ export class ModuleGen {
         this.addInitSerializer(sortedTypes);
         this.addStorageFunctions(sortedTypes);
         this.addStaticFunctions();
-        this.addExtensions(m);
+        this.addExtensions(allTypes);
         contracts.forEach((c) => this.addContractFunctions(m, c));
         this.writeMainContract(m, contract);
 

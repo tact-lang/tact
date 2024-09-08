@@ -96,13 +96,13 @@ export class FunctionGen {
             throw new Error(`Unsupported function kind: ${f.ast.kind}`);
         }
         if (f.isMutating) {
+            const ppty = (ty: FuncAstType): string =>
+                new FuncPrettyPrinter().prettyPrintType(ty);
             const nonMutName = ops.nonModifying(idText(f.ast.nativeName));
-            const returns = new FuncPrettyPrinter().prettyPrintType(
-                resolveFuncType(this.ctx.ctx, f.returns),
-            );
+            const returns = ppty(resolveFuncType(this.ctx.ctx, f.returns));
             const params = this.getFunParams(f);
             const code = `
-                ${returns} ${nonMutName}(${params.join(", ")}) impure ${enabledInline(this.ctx.ctx) || f.isInline ? "inline" : ""} {
+                ${returns} ${nonMutName}(${params.map(([name, ty]) => `${ppty(ty)} ${name}`).join(", ")}) impure ${enabledInline(this.ctx.ctx) || f.isInline ? "inline" : ""} {
             return ${funcIdOf("self")}~${idText((f.ast as AstNativeFunctionDecl).nativeName)}(${f.ast.params
                 .slice(1)
                 .map((arg) => funcIdOf(arg.name))
@@ -139,7 +139,7 @@ export class FunctionGen {
      *
      * @return The generated function or `undefined` if no function was generated.
      */
-    public writeFunction(
+    public writeFunctionDefinition(
         f: FunctionDescription,
     ): FuncAstFunctionDefinition | never {
         let returnTy = resolveFuncType(this.ctx.ctx, f.returns);
@@ -215,6 +215,19 @@ export class FunctionGen {
         });
 
         return this.ctx.fun(attrs, name, params, returnTy, body);
+    }
+
+    public writeFunction(f: FunctionDescription): void | never {
+        switch (f.ast.kind) {
+            case "native_function_decl":
+                this.writeNativeFunction(f);
+                return;
+            case "function_def":
+                this.writeFunctionDefinition(f);
+                return;
+            default:
+                throw new Error(`Unsupported function kind: ${f.ast.kind}`);
+        }
     }
 
     /**
