@@ -86,5 +86,7 @@ export function funcIdOf(ident: AstId | string): string {
     return typeof ident === "string" ? `$${ident}` : `$${idText(ident)}`;
 }
 export function funcInitIdOf(ident: AstId | string): string {
-    return typeof ident === "string" ? `$${ident}` : `$init`;
+    return typeof ident === "string"
+        ? `${ident}$init`
+        : idText(ident) + "$init";
 }
