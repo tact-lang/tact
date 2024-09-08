@@ -183,8 +183,24 @@ export class ModuleGen {
         }
     }
 
-    private addInitSerializer(_m: FuncAstModule): void {
-        // TODO
+    private addInitSerializer(sortedTypes: TypeDescription[]): void {
+    for (const t of sortedTypes) {
+        if (t.kind === "contract" && t.init) {
+            const allocation = getAllocation(this.ctx.ctx, funcInitIdOf(t.name));
+            writeSerializer(
+                funcInitIdOf(t.name),
+                true,
+                allocation,
+                this.ctx,
+            );
+            writeParser(
+                funcInitIdOf(t.name),
+                false,
+                allocation,
+                this.ctx,
+            );
+        }
+    }
     }
 
     private addStorageFunctions(_m: FuncAstModule): void {
@@ -1491,7 +1507,7 @@ export class ModuleGen {
 
         this.addSerializers(sortedTypes);
         this.addAccessors(allTypes);
-        this.addInitSerializer(m);
+        this.addInitSerializer(sortedTypes);
         this.addStorageFunctions(m);
         this.addStaticFunctions(m);
         this.addExtensions(m);
