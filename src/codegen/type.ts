@@ -3,6 +3,7 @@ import { TypeDescription, TypeRef } from "../types/types";
 import { getType } from "../types/resolveDescriptors";
 import { FuncAstType } from "../func/grammar";
 import { Type, unit } from "../func/syntaxConstructors";
+import { ABITypeRef } from "@ton/core";
 
 /**
  * Unpacks string representation of a user-defined Tact type from its type description.
@@ -350,4 +351,114 @@ export function resolveFuncFlatTypes(
 
     // Unreachable
     throw Error("Unknown type: " + descriptor.kind);
+}
+
+export function resolveFuncTypeFromAbi(
+    ctx: CompilerContext,
+    fields: ABITypeRef[],
+): string {
+    if (fields.length === 0) {
+        return "tuple";
+    }
+    const res: string[] = [];
+    for (const f of fields) {
+        switch (f.kind) {
+            case "dict":
+                {
+                    res.push("cell");
+                }
+                break;
+            case "simple": {
+                if (
+                    f.type === "int" ||
+                    f.type === "uint" ||
+                    f.type === "bool"
+                ) {
+                    res.push("int");
+                } else if (f.type === "cell") {
+                    res.push("cell");
+                } else if (f.type === "slice") {
+                    res.push("slice");
+                } else if (f.type === "builder") {
+                    res.push("builder");
+                } else if (f.type === "address") {
+                    res.push("slice");
+                } else if (f.type === "fixed-bytes") {
+                    res.push("slice");
+                } else if (f.type === "string") {
+                    res.push("slice");
+                } else {
+                    const t = getType(ctx, f.type);
+                    if (t.kind !== "struct") {
+                        throw Error("Unsupported type: " + t.kind);
+                    }
+                    if (f.optional ?? t.fields.length === 0) {
+                        res.push("tuple");
+                    } else {
+                        const loaded = t.fields.map((v) => v.abi.type);
+                        res.push(resolveFuncTypeFromAbi(ctx, loaded));
+                    }
+                }
+            }
+        }
+    }
+    return `(${res.join(", ")})`;
+}
+
+export function resolveFuncTypeFromAbiUnpack(
+    ctx: CompilerContext,
+    name: string,
+    fields: { name: string; type: ABITypeRef }[],
+): string {
+    if (fields.length === 0) {
+        return name;
+    }
+    const res: string[] = [];
+    for (const f of fields) {
+        switch (f.type.kind) {
+            case "dict":
+                {
+                    res.push(`${name}'${f.name}`);
+                }
+                break;
+            case "simple":
+                {
+                    if (
+                        f.type.type === "int" ||
+                        f.type.type === "uint" ||
+                        f.type.type === "bool"
+                    ) {
+                        res.push(`${name}'${f.name}`);
+                    } else if (f.type.type === "cell") {
+                        res.push(`${name}'${f.name}`);
+                    } else if (f.type.type === "slice") {
+                        res.push(`${name}'${f.name}`);
+                    } else if (f.type.type === "builder") {
+                        res.push(`${name}'${f.name}`);
+                    } else if (f.type.type === "address") {
+                        res.push(`${name}'${f.name}`);
+                    } else if (f.type.type === "fixed-bytes") {
+                        res.push(`${name}'${f.name}`);
+                    } else if (f.type.type === "string") {
+                        res.push(`${name}'${f.name}`);
+                    } else {
+                        const t = getType(ctx, f.type.type);
+                        if (f.type.optional ?? t.fields.length === 0) {
+                            res.push(`${name}'${f.name}`);
+                        } else {
+                            const loaded = t.fields.map((v) => v.abi);
+                            res.push(
+                                resolveFuncTypeFromAbiUnpack(
+                                    ctx,
+                                    `${name}'${f.name}`,
+                                    loaded,
+                                ),
+                            );
+                        }
+                    }
+                }
+                break;
+        }
+    }
+    return `(${res.join(", ")})`;
 }

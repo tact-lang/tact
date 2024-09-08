@@ -1,4 +1,4 @@
-import { getAllTypes, getType } from "../types/resolveDescriptors";
+import { getAllTypes, getType, toBounced } from "../types/resolveDescriptors";
 import { enabledInline } from "../config/features";
 import { LiteralGen, Location } from ".";
 import {
@@ -8,8 +8,15 @@ import {
     TypeRef,
     FunctionDescription,
 } from "../types/types";
+import {
+    writeBouncedParser,
+    writeOptionalParser,
+    writeOptionalSerializer,
+    writeParser,
+    writeSerializer,
+} from "./serializers";
 import { CompilerContext } from "../context";
-import { getSortedTypes } from "../storage/resolveAllocation";
+import { getSortedTypes, getAllocation } from "../storage/resolveAllocation";
 import { getMethodId } from "../utils/utils";
 import { idTextErr } from "../errors";
 import { contractErrors } from "../abi/errors";
@@ -136,9 +143,43 @@ export class ModuleGen {
         writeStdlib(this.ctx);
     }
 
-    private addSerializers(_m: FuncAstModule): void {
-        const sortedTypes = getSortedTypes(this.ctx.ctx);
+    private addSerializers(sortedTypes: TypeDescription[]): void {
         for (const t of sortedTypes) {
+            if (t.kind === "contract" || t.kind === "struct") {
+                const allocation = getAllocation(this.ctx.ctx, t.name);
+                const allocationBounced = getAllocation(
+                    this.ctx.ctx,
+                    toBounced(t.name),
+                );
+                writeSerializer(
+                    t.name,
+                    t.kind === "contract",
+                    allocation,
+                    this.ctx,
+                );
+                writeOptionalSerializer(t.name, this.ctx);
+                writeParser(
+                    t.name,
+                    t.kind === "contract",
+                    allocation,
+                    this.ctx,
+                );
+                writeOptionalParser(t.name, this.ctx);
+                writeBouncedParser(
+                    t.name,
+                    t.kind === "contract",
+                    allocationBounced,
+                    this.ctx,
+                );
+            }
+        }
+    }
+
+    private addAccessors(allTypes: TypeDescription[]): void {
+        for (const t of allTypes) {
+            if (t.kind === "contract" || t.kind === "struct") {
+                writeAccessors(t, this.ctx);
+            }
         }
     }
 
@@ -1445,12 +1486,11 @@ export class ModuleGen {
         }
 
         this.writeStdlib();
-        this.addSerializers(m);
-        for (const t of allTypes) {
-            if (t.kind === "contract" || t.kind === "struct") {
-                writeAccessors(t, this.ctx);
-            }
-        }
+
+        const sortedTypes = getSortedTypes(this.ctx.ctx);
+
+        this.addSerializers(sortedTypes);
+        this.addAccessors(allTypes);
         this.addInitSerializer(m);
         this.addStorageFunctions(m);
         this.addStaticFunctions(m);
