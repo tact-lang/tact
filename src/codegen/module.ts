@@ -8,6 +8,7 @@ import {
     TypeRef,
     FunctionDescription,
 } from "../types/types";
+import {writeStorageOps} from "./storage";
 import {
     writeBouncedParser,
     writeOptionalParser,
@@ -203,8 +204,12 @@ export class ModuleGen {
     }
     }
 
-    private addStorageFunctions(_m: FuncAstModule): void {
-        // TODO
+    private addStorageFunctions(sortedTypes: TypeDescription[]): void {
+    for (const t of sortedTypes) {
+        if (t.kind === "contract") {
+            writeStorageOps(t, this.ctx);
+        }
+    }
     }
 
     private addStaticFunctions(_m: FuncAstModule): void {
@@ -1508,7 +1513,7 @@ export class ModuleGen {
         this.addSerializers(sortedTypes);
         this.addAccessors(allTypes);
         this.addInitSerializer(sortedTypes);
-        this.addStorageFunctions(m);
+        this.addStorageFunctions(sortedTypes);
         this.addStaticFunctions(m);
         this.addExtensions(m);
         contracts.forEach((c) => this.addContractFunctions(m, c));
