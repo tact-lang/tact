@@ -1,6 +1,7 @@
 import { enabledInline } from "../config/features";
 import { getType, resolveTypeRef } from "../types/resolveDescriptors";
 import { ops, funcIdOf } from "./util";
+import { FuncPrettyPrinter } from "../func/prettyPrinter";
 import { TypeDescription, FunctionDescription, TypeRef } from "../types/types";
 import {
     FuncAstFunctionDefinition,
@@ -9,6 +10,7 @@ import {
     FuncAstExpression,
     FuncAstType,
 } from "../func/grammar";
+import { idText, AstNativeFunctionDecl } from "../grammar/ast";
 import {
     id,
     call,
@@ -89,29 +91,32 @@ export class FunctionGen {
         throw Error(`Unknown type: ${descriptor.kind}`);
     }
 
-    /**
-     * Generates Func function from the Tact funciton description.
-     */
-    public writeFunction(
-        tactFun: FunctionDescription,
-    ): FuncAstFunctionDefinition {
-        if (tactFun.ast.kind !== "function_def") {
-            throw new Error(`Unknown function kind: ${tactFun.ast.kind}`);
+    public writeNativeFunction(f: FunctionDescription): void | never {
+        if (f.ast.kind !== "native_function_decl") {
+            throw new Error(`Unsupported function kind: ${f.ast.kind}`);
         }
-
-        let returnTy = resolveFuncType(this.ctx.ctx, tactFun.returns);
-        // let returnsStr: string | null;
-        const self: TypeDescription | undefined = tactFun.self
-            ? getType(this.ctx.ctx, tactFun.self)
-            : undefined;
-        if (self !== undefined && tactFun.isMutating) {
-            // Add `self` to the method signature as it is mutating in the body.
-            const selfTy = resolveFuncType(this.ctx.ctx, self);
-            returnTy = Type.tensor(selfTy, returnTy);
-            // returnsStr = resolveFuncTypeUnpack(ctx, self, funcIdOf("self"));
+        if (f.isMutating) {
+            const nonMutName = ops.nonModifying(idText(f.ast.nativeName));
+            const returns = new FuncPrettyPrinter().prettyPrintType(
+                resolveFuncType(this.ctx.ctx, f.returns),
+            );
+            const params = this.getFunParams(f);
+            const code = `
+                ${returns} ${nonMutName}(${params.join(", ")}) impure ${enabledInline(this.ctx.ctx) || f.isInline ? "inline" : ""} {
+            return ${funcIdOf("self")}~${idText((f.ast as AstNativeFunctionDecl).nativeName)}(${f.ast.params
+                .slice(1)
+                .map((arg) => funcIdOf(arg.name))
+                .join(", ")});
+                    }`;
+            f.origin === "stdlib"
+                ? this.ctx.parse(code, { context: Location.stdlib() })
+                : this.ctx.parse(code);
         }
+    }
 
-        const params: [string, FuncAstType][] = tactFun.params.reduce(
+    private getFunParams(f: FunctionDescription): [string, FuncAstType][] {
+        const self = this.getSelf(f);
+        return f.params.reduce(
             (acc, a) => {
                 acc.push([
                     funcIdOf(a.name),
@@ -123,16 +128,43 @@ export class FunctionGen {
                 ? [[funcIdOf("self"), resolveFuncType(this.ctx.ctx, self)]]
                 : [],
         );
+    }
+
+    private getSelf(f: FunctionDescription): TypeDescription | undefined {
+        return f.self ? getType(this.ctx.ctx, f.self) : undefined;
+    }
+
+    /**
+     * Generates Func function from the Tact funciton description.
+     *
+     * @return The generated function or `undefined` if no function was generated.
+     */
+    public writeFunction(
+        f: FunctionDescription,
+    ): FuncAstFunctionDefinition | never {
+        let returnTy = resolveFuncType(this.ctx.ctx, f.returns);
+        const self = this.getSelf(f);
+        if (self !== undefined && f.isMutating) {
+            // Add `self` to the method signature as it is mutating in the body.
+            const selfTy = resolveFuncType(this.ctx.ctx, self);
+            returnTy = Type.tensor(selfTy, returnTy);
+        }
+
+        const params: [string, FuncAstType][] = this.getFunParams(f);
+
+        if (f.ast.kind !== "function_def") {
+            throw new Error(`Unknown function kind: ${f.ast.kind}`);
+        }
 
         // TODO: handle native functions delcs. should be in a separatre funciton
 
         const name = self
-            ? ops.extension(self.name, tactFun.name)
-            : ops.global(tactFun.name);
+            ? ops.extension(self.name, f.name)
+            : ops.global(f.name);
 
         // Prepare function attributes
         let attrs: FuncAstFunctionAttribute[] = [FunAttr.impure()];
-        if (enabledInline(this.ctx.ctx) || tactFun.isInline) {
+        if (enabledInline(this.ctx.ctx) || f.isInline) {
             attrs.push(FunAttr.inline());
         }
         // TODO: handle stdlib
@@ -151,9 +183,9 @@ export class FunctionGen {
                 funcIdOf("self"),
             );
             const init: FuncAstExpression = id(funcIdOf("self"));
-            body.push(vardef('_', varName, init));
+            body.push(vardef("_", varName, init));
         }
-        for (const a of tactFun.ast.params) {
+        for (const a of f.ast.params) {
             if (
                 !this.resolveFuncPrimitive(resolveTypeRef(this.ctx.ctx, a.type))
             ) {
@@ -163,7 +195,7 @@ export class FunctionGen {
                     funcIdOf(a.name),
                 );
                 const init: FuncAstExpression = id(funcIdOf(a.name));
-                body.push(vardef('_', name, init));
+                body.push(vardef("_", name, init));
             }
         }
 
@@ -172,12 +204,12 @@ export class FunctionGen {
                 ? resolveFuncTypeUnpack(this.ctx.ctx, self, funcIdOf("self"))
                 : undefined;
         // Process statements
-        tactFun.ast.statements.forEach((stmt) => {
+        f.ast.statements.forEach((stmt) => {
             const funcStmt = StatementGen.fromTact(
                 this.ctx,
                 stmt,
                 selfName,
-                tactFun.returns,
+                f.returns,
             ).writeStatement();
             body.push(funcStmt);
         });

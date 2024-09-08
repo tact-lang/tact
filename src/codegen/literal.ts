@@ -2,14 +2,7 @@ import { WriterContext, FunctionGen, Location } from ".";
 import { FuncAstExpression } from "../func/grammar";
 import { Address, beginCell, Cell } from "@ton/core";
 import { Value, CommentValue } from "../types/types";
-import {
-    call,
-    Type,
-    int,
-    id,
-    nil,
-    bool,
-} from "../func/syntaxConstructors";
+import { call, Type, int, id, nil, bool } from "../func/syntaxConstructors";
 import { getType } from "../types/resolveDescriptors";
 
 import JSONbig from "json-bigint";

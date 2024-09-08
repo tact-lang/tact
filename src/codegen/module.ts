@@ -1,4 +1,9 @@
-import { getAllTypes, getType, toBounced } from "../types/resolveDescriptors";
+import {
+    getAllTypes,
+    getAllStaticFunctions,
+    getType,
+    toBounced,
+} from "../types/resolveDescriptors";
 import { enabledInline } from "../config/features";
 import { LiteralGen, Location } from ".";
 import {
@@ -8,7 +13,7 @@ import {
     TypeRef,
     FunctionDescription,
 } from "../types/types";
-import {writeStorageOps} from "./storage";
+import { writeStorageOps } from "./storage";
 import {
     writeBouncedParser,
     writeOptionalParser,
@@ -185,35 +190,41 @@ export class ModuleGen {
     }
 
     private addInitSerializer(sortedTypes: TypeDescription[]): void {
-    for (const t of sortedTypes) {
-        if (t.kind === "contract" && t.init) {
-            const allocation = getAllocation(this.ctx.ctx, funcInitIdOf(t.name));
-            writeSerializer(
-                funcInitIdOf(t.name),
-                true,
-                allocation,
-                this.ctx,
-            );
-            writeParser(
-                funcInitIdOf(t.name),
-                false,
-                allocation,
-                this.ctx,
-            );
+        for (const t of sortedTypes) {
+            if (t.kind === "contract" && t.init) {
+                const allocation = getAllocation(
+                    this.ctx.ctx,
+                    funcInitIdOf(t.name),
+                );
+                writeSerializer(
+                    funcInitIdOf(t.name),
+                    true,
+                    allocation,
+                    this.ctx,
+                );
+                writeParser(funcInitIdOf(t.name), false, allocation, this.ctx);
+            }
         }
-    }
     }
 
     private addStorageFunctions(sortedTypes: TypeDescription[]): void {
-    for (const t of sortedTypes) {
-        if (t.kind === "contract") {
-            writeStorageOps(t, this.ctx);
+        for (const t of sortedTypes) {
+            if (t.kind === "contract") {
+                writeStorageOps(t, this.ctx);
+            }
         }
     }
-    }
 
-    private addStaticFunctions(_m: FuncAstModule): void {
-        // TODO
+    private addStaticFunctions(): void {
+        const sf = getAllStaticFunctions(this.ctx.ctx);
+        Object.values(sf).forEach((f) => {
+            const gen = FunctionGen.fromTact(this.ctx);
+            if (f.ast.kind === "native_function_decl") {
+                gen.writeNativeFunction(f);
+            } else {
+                gen.writeFunction(f);
+            }
+        });
     }
 
     private addExtensions(_m: FuncAstModule): void {
@@ -1514,7 +1525,7 @@ export class ModuleGen {
         this.addAccessors(allTypes);
         this.addInitSerializer(sortedTypes);
         this.addStorageFunctions(sortedTypes);
-        this.addStaticFunctions(m);
+        this.addStaticFunctions();
         this.addExtensions(m);
         contracts.forEach((c) => this.addContractFunctions(m, c));
         this.writeMainContract(m, contract);
