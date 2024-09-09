@@ -10,8 +10,8 @@ import {
     idText,
     SrcInfo,
 } from "../grammar/ast";
-import { throwInternalCompilerError } from "../errors";
 import { StructValue, Value } from "../types/types";
+import { throwNonFatalErrorConstEval } from "../interpreter";
 
 // This function assumes that the parameter is already a value.
 // i.e., that the user called the isValue function to check
@@ -29,12 +29,15 @@ export function extractValue(ast: AstValue): Value {
         case "string":
             return ast.value;
         case "struct_instance":
-            return ast.args.reduce((resObj, fieldWithInit) => {
-                resObj[idText(fieldWithInit.field)] = extractValue(
-                    fieldWithInit.initializer as AstValue
-                );
-                return resObj;
-            }, { $tactStruct: idText(ast.type) } as StructValue);
+            return ast.args.reduce(
+                (resObj, fieldWithInit) => {
+                    resObj[idText(fieldWithInit.field)] = extractValue(
+                        fieldWithInit.initializer as AstValue,
+                    );
+                    return resObj;
+                },
+                { $tactStruct: idText(ast.type) } as StructValue,
+            );
     }
 }
 
@@ -71,16 +74,16 @@ export function makeValueExpression(value: Value, loc: SrcInfo): AstValue {
         return result as AstValue;
     }
     if (typeof value === "object" && "$tactStruct" in value) {
-        const fields = Object.entries(value).filter(
-            ([name, _]) => name !== "$tactStruct"
-        ).map(([name, val]) => {
-            return createAstNode({
-                kind: "struct_field_initializer",
-                field: makeIdExpression(name, loc),
-                initializer: makeValueExpression(val, loc),
-                loc: loc,
-            }) as AstStructFieldInitializer;
-        });
+        const fields = Object.entries(value)
+            .filter(([name, _]) => name !== "$tactStruct")
+            .map(([name, val]) => {
+                return createAstNode({
+                    kind: "struct_field_initializer",
+                    field: makeIdExpression(name, loc),
+                    initializer: makeValueExpression(val, loc),
+                    loc: loc,
+                }) as AstStructFieldInitializer;
+            });
         const result = createAstNode({
             kind: "struct_instance",
             type: makeIdExpression(value["$tactStruct"] as string, loc),
@@ -89,9 +92,9 @@ export function makeValueExpression(value: Value, loc: SrcInfo): AstValue {
         });
         return result as AstValue;
     }
-    throwInternalCompilerError(
-        `addresses, cells, and comment values are not supported at the moment.`,
-        loc
+    throwNonFatalErrorConstEval(
+        `addresses, cells, and comment values cannot be transformed into AST nodes.`,
+        loc,
     );
 }
 
@@ -101,13 +104,13 @@ function makeIdExpression(name: string, loc: SrcInfo): AstId {
         text: name,
         loc: loc,
     });
-    return result as AstId;   
+    return result as AstId;
 }
 
 export function makeUnaryExpression(
     op: AstUnaryOperation,
     operand: AstExpression,
-    loc: SrcInfo
+    loc: SrcInfo,
 ): AstExpression {
     const result = createAstNode({
         kind: "op_unary",
@@ -122,7 +125,7 @@ export function makeBinaryExpression(
     op: AstBinaryOperation,
     left: AstExpression,
     right: AstExpression,
-    loc: SrcInfo
+    loc: SrcInfo,
 ): AstExpression {
     const result = createAstNode({
         kind: "op_binary",

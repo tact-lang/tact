@@ -48,10 +48,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    {ctx: ctx.ctx},
-                ) as string;
+                const str = evalConstantExpression(resolved[0]!, {
+                    ctx: ctx.ctx,
+                }) as string;
                 return toNano(str).toString(10);
             },
         },
@@ -102,10 +101,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                const str = evalConstantExpression(
-                    resolved[1]!,
-                    {ctx: ctx.ctx},
-                ) as string;
+                const str = evalConstantExpression(resolved[1]!, {
+                    ctx: ctx.ctx,
+                }) as string;
                 return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0]!, ctx)})`;
             },
         },
@@ -143,10 +141,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    {ctx: ctx.ctx},
-                ) as string;
+                const str = evalConstantExpression(resolved[0]!, {
+                    ctx: ctx.ctx,
+                }) as string;
                 let address: Address;
                 try {
                     address = Address.parse(str);
@@ -204,10 +201,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load cell data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    {ctx: ctx.ctx},
-                ) as string;
+                const str = evalConstantExpression(resolved[0]!, {
+                    ctx: ctx.ctx,
+                }) as string;
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
@@ -365,10 +361,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 // String case
                 if (arg0.name === "String") {
                     try {
-                        const str = evalConstantExpression(
-                            resolved[0]!,
-                            {ctx: ctx.ctx},
-                        ) as string;
+                        const str = evalConstantExpression(resolved[0]!, {
+                            ctx: ctx.ctx,
+                        }) as string;
                         if (Buffer.from(str).length > 128) {
                             throwCompilationError(
                                 "sha256 expects string argument with byte length <= 128",

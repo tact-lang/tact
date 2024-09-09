@@ -31,11 +31,10 @@ import {
     getAllTypes,
 } from "./resolveDescriptors";
 import { getExpType, resolveExpression } from "./resolveExpression";
-import { CommentValue, eqValues, printTypeRef, StructValue, TypeDescription, TypeRef, Value } from "./types";
-import { evalConstantExpression, partiallyEvalExpression } from "../constEval";
-import { extractValue, makeBinaryExpression, makeValueExpression } from "../optimizer/util";
+import { eqValues, printTypeRef, StructValue, TypeRef, Value } from "./types";
+import { partiallyEvalExpression } from "../constEval";
+import { extractValue } from "../optimizer/util";
 import { ensureRepeatInt, evalBinaryOp } from "../interpreter";
-import { Address, Cell } from "@ton/core";
 
 export type StatementContext = {
     root: SrcInfo;
@@ -133,7 +132,7 @@ function addVariable(
     name: AstId,
     ref: TypeRef,
     ctx: CompilerContext,
-    sctx: StatementContext
+    sctx: StatementContext,
 ): StatementContext {
     checkVariableExists(ctx, sctx, name); // Should happen earlier
     if (isWildcard(name)) {
@@ -145,13 +144,16 @@ function addVariable(
     };
 }
 
-export function lookupVariable(name: AstId[], sctx: StatementContext): Value | undefined {
+export function lookupVariable(
+    name: AstId[],
+    sctx: StatementContext,
+): Value | undefined {
     const varFullName = name.map(idText).join(".");
 
-    let children: Map<string, Value> = new Map();
+    const children: Map<string, Value> = new Map();
 
     // Get all the bindings having varFullName as prefix
-    for (let [key, value] of sctx.varBindings.entries()) {
+    for (const [key, value] of sctx.varBindings.entries()) {
         if (key.startsWith(varFullName)) {
             // Include the child only if its value is defined
             if (value !== undefined) {
@@ -161,7 +163,7 @@ export function lookupVariable(name: AstId[], sctx: StatementContext): Value | u
     }
 
     // If the children map is empty, it means that there are no defined bindings
-    // havig "name" as prefix, which means that "name" is currently
+    // having "name" as prefix, which means that "name" is currently
     // undefined
 
     if (children.size === 0) {
@@ -171,22 +173,53 @@ export function lookupVariable(name: AstId[], sctx: StatementContext): Value | u
     return inflateToValue(children);
 }
 
-export function setVariableBinding(name: AstId[], value: Value | undefined, sctx: StatementContext): StatementContext {
-    const varFullName = name.map(idText).join(".");
+function setVariableBinding(
+    path: AstId[],
+    value: Value | undefined,
+    varType: TypeRef,
+    ctx: CompilerContext,
+    sctx: StatementContext,
+    parentType: string[],
+): StatementContext {
+    const varFullName = path.map(idText).join(".");
 
-    let result = new Map(sctx.varBindings);
+    const result = new Map(sctx.varBindings);
 
+    // For the analyzer, it is enough to treat contracts, traits and struct uniformly as structs
+    // so, register the type of the variable's parent, so that expressions can reconstruct
+    // the struct later.
+    for (let i = 1; i < path.length; i++) {
+        const parentName = path.slice(0, i).map(idText).join(".");
+        result.set(`${parentName}.$tactStruct`, parentType[i - 1]);
+    }
+
+    // First, attach to the result all fields declared in the type of the value, in case the value is a struct.
+    let flattenedType: Map<string, string | undefined> = new Map();
+    if (varType.kind === "ref") {
+        flattenedType = new Map(
+            flattenType(getType(ctx, varType.name).ast, ctx),
+        );
+        for (const [key, val] of flattenedType) {
+            result.set(`${varFullName}.${key}`, val);
+        }
+    }
+
+    // Now assign the actual value. In case the value is a struct, flatten the struct.
     if (value !== undefined) {
         const flattened = flattenValue(value);
         if (flattened instanceof Map) {
-            for (let [key, value] of flattened.entries()) {
-                result.set(`${varFullName}.${key}`, value);
+            for (const [key, val] of flattened.entries()) {
+                result.set(`${varFullName}.${key}`, val);
             }
         } else {
             result.set(varFullName, flattened);
         }
     } else {
-        result.set(varFullName, undefined);
+        // In case the type of the value is a struct (i.e., map flattenedType is not empty),
+        // do not add the variable to the map, since the flattened tree is already in the bindings.
+        if (flattenedType.size === 0) {
+            result.set(varFullName, undefined);
+        }
     }
 
     return {
@@ -208,10 +241,17 @@ function processCondition(
     ctx = resolveExpression(condition.condition, sctx, ctx);
 
     // Evaluate the condition in the current context
-    const rawConditionValue = callExpressionEvaluation(condition.condition, ctx, sctx);
+    const rawConditionValue = callExpressionEvaluation(
+        condition.condition,
+        ctx,
+        sctx,
+    );
     let conditionValue: boolean | undefined = undefined;
 
-    if (rawConditionValue !== undefined && typeof rawConditionValue === 'boolean') {
+    if (
+        rawConditionValue !== undefined &&
+        typeof rawConditionValue === "boolean"
+    ) {
         conditionValue = rawConditionValue;
     }
 
@@ -223,7 +263,7 @@ function processCondition(
         ctx = r.ctx;
 
         // Since there is no alternative branch, we only need to check if the condition
-        // can be determined 
+        // can be determined
         if (conditionValue !== undefined) {
             if (conditionValue) {
                 // Copy the latest updates to all variables in initialCtx as found in r.sctx
@@ -234,9 +274,12 @@ function processCondition(
         } else {
             // The condition cannot be determined. We need to mark variables in initialCtx as
             // undetermined only if they have conflicting values in r.sctx.
-            // Note we need to add initialCtx in the updatedCtxs because it is the implicit 
+            // Note we need to add initialCtx in the updatedCtxs because it is the implicit
             // "else" branch.
-            initialCtx = markConflictingVariables(initialCtx, [r.sctx, initialCtx]);
+            initialCtx = markConflictingVariables(initialCtx, [
+                r.sctx,
+                initialCtx,
+            ]);
         }
         return { ctx, sctx: initialCtx, returnAlwaysReachable: false };
     }
@@ -258,7 +301,6 @@ function processCondition(
         ctx = r.ctx;
         processedCtx.push(r.sctx);
         returnAlwaysReachableInAllBranches.push(r.returnAlwaysReachable);
-
     } else if (
         condition.falseStatements === null &&
         condition.elseif !== null
@@ -291,16 +333,22 @@ function processCondition(
         initialCtx = removeRequiredVariable(r, initialCtx);
     }
 
-    // Now merge the assignments in the different contexts according to the condition value 
+    // Now merge the assignments in the different contexts according to the condition value
     if (conditionValue !== undefined) {
         if (conditionValue) {
-            // Copy the latest updates to all variables in initialCtx as found in 
+            // Copy the latest updates to all variables in initialCtx as found in
             // processedCtx[0] (i.e., the context from the true branch)
-            initialCtx = synchronizeVariableContexts(initialCtx, processedCtx[0]!);
+            initialCtx = synchronizeVariableContexts(
+                initialCtx,
+                processedCtx[0]!,
+            );
         } else {
             // If the condition does not hold, take the updates from processedCtx[1]
             // i.e., whatever branch executed as else or elseif
-            initialCtx = synchronizeVariableContexts(initialCtx, processedCtx[1]!);
+            initialCtx = synchronizeVariableContexts(
+                initialCtx,
+                processedCtx[1]!,
+            );
         }
     } else {
         // The condition cannot be determined. We need to mark variables in initialCtx as
@@ -340,7 +388,11 @@ export function isLvalue(path: AstId[], ctx: CompilerContext): boolean {
     }
 }
 
-function callExpressionEvaluation(ast: AstExpression, ctx: CompilerContext, sctx: StatementContext): Value | undefined {
+function callExpressionEvaluation(
+    ast: AstExpression,
+    ctx: CompilerContext,
+    sctx: StatementContext,
+): Value | undefined {
     try {
         const expr = partiallyEvalExpression(ast, { ctx: ctx, sctx: sctx });
         if (isValue(expr)) {
@@ -398,9 +450,20 @@ function processStatements(
                             );
                         }
 
-                        const varDef = callExpressionEvaluation(s.expression, ctx, sctx);
+                        const varDef = callExpressionEvaluation(
+                            s.expression,
+                            ctx,
+                            sctx,
+                        );
                         sctx = addVariable(s.name, variableType, ctx, sctx);
-                        sctx = setVariableBinding([s.name], varDef, sctx);
+                        sctx = setVariableBinding(
+                            [s.name],
+                            varDef,
+                            variableType,
+                            ctx,
+                            sctx,
+                            [],
+                        );
                     } else {
                         if (expressionType.kind === "null") {
                             throwCompilationError(
@@ -415,10 +478,20 @@ function processStatements(
                             );
                         }
 
-                        const varDef = callExpressionEvaluation(s.expression, ctx, sctx);
+                        const varDef = callExpressionEvaluation(
+                            s.expression,
+                            ctx,
+                            sctx,
+                        );
                         sctx = addVariable(s.name, expressionType, ctx, sctx);
-                        sctx = setVariableBinding([s.name], varDef, sctx);
-
+                        sctx = setVariableBinding(
+                            [s.name],
+                            varDef,
+                            expressionType,
+                            ctx,
+                            sctx,
+                            [],
+                        );
                     }
                 }
                 break;
@@ -465,8 +538,19 @@ function processStatements(
                         }
                     }
 
-                    const exprVal = callExpressionEvaluation(s.expression, ctx, sctx);
-                    sctx = setVariableBinding(path, exprVal, sctx);
+                    const exprVal = callExpressionEvaluation(
+                        s.expression,
+                        ctx,
+                        sctx,
+                    );
+                    sctx = setVariableBinding(
+                        path,
+                        exprVal,
+                        tailType,
+                        ctx,
+                        sctx,
+                        extractAncestorTypes(s.path, ctx),
+                    );
                 }
                 break;
             case "statement_augmentedassign":
@@ -509,20 +593,47 @@ function processStatements(
                         );
                     }
 
-                    const exprVal = callExpressionEvaluation(s.expression, ctx, sctx);
+                    const ancestorTypes = extractAncestorTypes(s.path, ctx);
+                    const exprVal = callExpressionEvaluation(
+                        s.expression,
+                        ctx,
+                        sctx,
+                    );
                     if (exprVal !== undefined) {
                         const currVal = lookupVariable(path, sctx);
                         if (currVal !== undefined) {
                             const finalVal = evalBinaryOp(
                                 s.op,
                                 currVal,
-                                exprVal);
-                            sctx = setVariableBinding(path, finalVal, sctx);
+                                exprVal,
+                            );
+                            sctx = setVariableBinding(
+                                path,
+                                finalVal,
+                                tailType,
+                                ctx,
+                                sctx,
+                                ancestorTypes,
+                            );
                         } else {
-                            sctx = setVariableBinding(path, undefined, sctx);
+                            sctx = setVariableBinding(
+                                path,
+                                undefined,
+                                tailType,
+                                ctx,
+                                sctx,
+                                ancestorTypes,
+                            );
                         }
                     } else {
-                        sctx = setVariableBinding(path, undefined, sctx);
+                        sctx = setVariableBinding(
+                            path,
+                            undefined,
+                            tailType,
+                            ctx,
+                            sctx,
+                            ancestorTypes,
+                        );
                     }
                 }
                 break;
@@ -595,7 +706,6 @@ function processStatements(
 
                         // Evaluate the return argument, just to check for errors.
                         callExpressionEvaluation(s.expression, ctx, sctx);
-
                     } else {
                         if (sctx.returns.kind !== "void") {
                             throwCompilationError(
@@ -629,12 +739,19 @@ function processStatements(
                     ctx = resolveExpression(s.iterations, sctx, ctx);
 
                     // Evaluate the iterations expressions to determine how many iterations
-                    const rawIterationsValue = callExpressionEvaluation(s.iterations, ctx, sctx);
+                    const rawIterationsValue = callExpressionEvaluation(
+                        s.iterations,
+                        ctx,
+                        sctx,
+                    );
 
                     let iterationsValue: bigint | undefined = undefined;
 
                     if (rawIterationsValue !== undefined) {
-                        iterationsValue = ensureRepeatInt(rawIterationsValue, s.iterations.loc);
+                        iterationsValue = ensureRepeatInt(
+                            rawIterationsValue,
+                            s.iterations.loc,
+                        );
                     }
 
                     const initialSctx = sctx;
@@ -657,10 +774,17 @@ function processStatements(
                     }
 
                     // Repeat the analysis of the loop body, but this time simulating an arbitrary
-                    // iteration of the loop. To simulate such thing, it is enough to make all 
+                    // iteration of the loop. To simulate such thing, it is enough to make all
                     // assigned variables in the loop undetermined in initialSctx, and then
                     // execute processStatements in such statement context.
-                    const loopSctx = processStatements(s.statements, undetermineAssignedVariables(s.statements, initialSctx), ctx).sctx;
+                    const loopSctx = processStatements(
+                        s.statements,
+                        makeAssignedVariablesUndetermined(
+                            s.statements,
+                            initialSctx,
+                        ),
+                        ctx,
+                    ).sctx;
 
                     // Now merge the assignments in the different contexts according to the iterations value
                     if (iterationsValue !== undefined) {
@@ -671,14 +795,20 @@ function processStatements(
                         } else {
                             // The loop iterates at least once, take the updates from loopSctx
                             // i.e., whatever branch executed as else or elseif
-                            sctx = synchronizeVariableContexts(initialSctx, loopSctx);
+                            sctx = synchronizeVariableContexts(
+                                initialSctx,
+                                loopSctx,
+                            );
                         }
                     } else {
                         // The number of iterations cannot be determined. We need to mark variables in initial context as
                         // undetermined only if they have conflicting values in the updated contexts.
                         // We need to include initialSctx in the updated context, because it represents
                         // the context when the loop does not execute.
-                        sctx = markConflictingVariables(initialSctx, [initialSctx, loopSctx]);
+                        sctx = markConflictingVariables(initialSctx, [
+                            initialSctx,
+                            loopSctx,
+                        ]);
                     }
                 }
                 break;
@@ -712,29 +842,52 @@ function processStatements(
                     }
 
                     // Repeat the analysis of the loop body, but this time simulating an arbitrary
-                    // iteration of the loop. To simulate such thing, it is enough to make all 
+                    // iteration of the loop. To simulate such thing, it is enough to make all
                     // assigned variables in the loop undetermined in initialSctx, and then
                     // execute processStatements in such statement context.
-                    const loopSctx = processStatements(s.statements, undetermineAssignedVariables(s.statements, initialSctx), ctx).sctx;
+                    const loopSctx = processStatements(
+                        s.statements,
+                        makeAssignedVariablesUndetermined(
+                            s.statements,
+                            initialSctx,
+                        ),
+                        ctx,
+                    ).sctx;
 
                     // Evaluate the condition in the context after executing one iteration
-                    const conditionValue = callExpressionEvaluation(s.condition, ctx, oneIterSctx);
+                    const conditionValue = callExpressionEvaluation(
+                        s.condition,
+                        ctx,
+                        oneIterSctx,
+                    );
 
-                    if (conditionValue !== undefined && typeof conditionValue === 'boolean') {
+                    if (
+                        conditionValue !== undefined &&
+                        typeof conditionValue === "boolean"
+                    ) {
                         if (conditionValue) {
                             // The loop does not execute again.
                             // The final statement context is simply the context after one iteration.
-                            sctx = synchronizeVariableContexts(initialSctx, oneIterSctx);
+                            sctx = synchronizeVariableContexts(
+                                initialSctx,
+                                oneIterSctx,
+                            );
                         } else {
                             // The loop iterates at least twice, take the updates from loopSctx
-                            sctx = synchronizeVariableContexts(initialSctx, loopSctx);
+                            sctx = synchronizeVariableContexts(
+                                initialSctx,
+                                loopSctx,
+                            );
                         }
                     } else {
                         // The loop condition cannot be determined. We need to mark variables in initial context as
                         // undetermined only if they have conflicting values in the updated contexts.
                         // We need to include oneIterSctx in the updated contexts, because it represents
                         // the context when the loop executes exactly once.
-                        sctx = markConflictingVariables(initialSctx, [oneIterSctx, loopSctx]);
+                        sctx = markConflictingVariables(initialSctx, [
+                            oneIterSctx,
+                            loopSctx,
+                        ]);
                     }
                 }
                 break;
@@ -766,18 +919,35 @@ function processStatements(
                     }
 
                     // Repeat the analysis of the loop body, but this time simulating an arbitrary
-                    // iteration of the loop. To simulate such thing, it is enough to make all 
+                    // iteration of the loop. To simulate such thing, it is enough to make all
                     // assigned variables in the loop undetermined in initialSctx, and then
                     // execute processStatements in such statement context.
-                    const loopSctx = processStatements(s.statements, undetermineAssignedVariables(s.statements, initialSctx), ctx).sctx;
+                    const loopSctx = processStatements(
+                        s.statements,
+                        makeAssignedVariablesUndetermined(
+                            s.statements,
+                            initialSctx,
+                        ),
+                        ctx,
+                    ).sctx;
 
                     // Evaluate the condition in the initial context
-                    const conditionValue = callExpressionEvaluation(s.condition, ctx, initialSctx);
+                    const conditionValue = callExpressionEvaluation(
+                        s.condition,
+                        ctx,
+                        initialSctx,
+                    );
 
-                    if (conditionValue !== undefined && typeof conditionValue === 'boolean') {
+                    if (
+                        conditionValue !== undefined &&
+                        typeof conditionValue === "boolean"
+                    ) {
                         if (conditionValue) {
                             // The loop iterates at least once, take the updates from loopSctx
-                            sctx = synchronizeVariableContexts(initialSctx, loopSctx);
+                            sctx = synchronizeVariableContexts(
+                                initialSctx,
+                                loopSctx,
+                            );
                         } else {
                             // The loop does not execute.
                             // The final statement context is simply the initial context
@@ -788,7 +958,10 @@ function processStatements(
                         // undetermined only if they have conflicting values in the updated contexts.
                         // We need to include initialSctx in the updated contexts, because it represents
                         // the context when the loop does not execute.
-                        sctx = markConflictingVariables(initialSctx, [initialSctx, loopSctx]);
+                        sctx = markConflictingVariables(initialSctx, [
+                            initialSctx,
+                            loopSctx,
+                        ]);
                     }
                 }
                 break;
@@ -803,9 +976,12 @@ function processStatements(
                     // try-statement might not return from the current function
                     // because the control flow can go to the empty catch block
 
-                    // Mark variables that would have conflicting values if the try block 
+                    // Mark variables that would have conflicting values if the try block
                     // were to be executed or not.
-                    sctx = markConflictingVariables(initialSctx, [initialSctx, sctx]);
+                    sctx = markConflictingVariables(initialSctx, [
+                        initialSctx,
+                        sctx,
+                    ]);
                 }
                 break;
             case "statement_try_catch":
@@ -840,7 +1016,7 @@ function processStatements(
                     // we mark the whole try-catch statement as always returning
                     returnAlwaysReachable ||=
                         r.returnAlwaysReachable && rCatch.returnAlwaysReachable;
-                    
+
                     // Merge statement contexts
                     const removed: string[] = [];
                     for (const f of initialSctx.requiredFields) {
@@ -852,9 +1028,12 @@ function processStatements(
                         initialSctx = removeRequiredVariable(r, initialSctx);
                     }
 
-                    // Mark variables that would have conflicting values if the try block 
+                    // Mark variables that would have conflicting values if the try block
                     // were to be executed or the catch block were to be executed.
-                    sctx = markConflictingVariables(initialSctx, [trySctx, catchCtx]);
+                    sctx = markConflictingVariables(initialSctx, [
+                        trySctx,
+                        catchCtx,
+                    ]);
                 }
                 break;
             case "statement_foreach": {
@@ -905,33 +1084,51 @@ function processStatements(
                 const r = processStatements(s.statements, foreachSctx, ctx);
 
                 // Repeat the analysis of the loop body, but this time simulating an arbitrary
-                    // iteration of the loop. To simulate such thing, it is enough to make all 
-                    // assigned variables in the loop undetermined in foreachSctx, and then
-                    // execute processStatements in such statement context.
-                    const loopSctx = processStatements(s.statements, undetermineAssignedVariables(s.statements, foreachSctx), ctx).sctx;
+                // iteration of the loop. To simulate such thing, it is enough to make all
+                // assigned variables in the loop undetermined in foreachSctx, and then
+                // execute processStatements.
+                const loopSctx = processStatements(
+                    s.statements,
+                    makeAssignedVariablesUndetermined(
+                        s.statements,
+                        foreachSctx,
+                    ),
+                    ctx,
+                ).sctx;
 
-                    // Evaluate the map in the initial context
-                    const mapValue = callExpressionEvaluation(s.map, ctx, initialSctx);
+                /*
+                    At the moment it is not possible to check if a foreach will execute or not
+                    because there is no tracking of mutation of maps. 
+                    In other words, there is no tracking of assignments of key-value pairs in the map
+                    using the set function.
 
-                    if (mapValue !== undefined) {
-                        if (mapValue !== null) {
-                            // The loop iterates at least once, take the updates from loopSctx
-                            initialSctx = synchronizeVariableContexts(initialSctx, loopSctx);
-                        } else {
-                            // The loop does not execute.
-                            // The initial context remains unaffected.
-                        }
-                    } else {
-                        // The number of iterations of the loop cannot be determined. 
-                        // We need to mark variables in initial context as
-                        // undetermined only if they have conflicting values in the updated contexts.
-                        // We need to include initialSctx in the updated contexts, because it represents
-                        // the context when the loop does not execute.
-                        initialSctx = markConflictingVariables(initialSctx, [initialSctx, loopSctx]);
-                    }
+                    In an assignment statement like,
 
-                    ctx = r.ctx;
-                    foreachSctx = r.sctx;
+                    a = exp
+
+                    it is always possible to know the identifier ("a" in this case).
+                    Instead, in a map assignment,
+
+                    map.set(k, val)
+
+                    the key k could come from calling a function that cannot be determined at compile-time.
+                    Moreover, the interpreter does not support producing maps as values at the moment.
+
+                    So, for the analysis, treat foreach loops as if the number of iterations is always 
+                    undetermined.
+                    
+                    For this, mark variables in the initial context as
+                    undetermined only if they have conflicting values in the updated contexts.
+                    We need to include initialSctx in the updated contexts, because it represents
+                    the context when the loop does not execute.
+                    */
+                initialSctx = markConflictingVariables(initialSctx, [
+                    initialSctx,
+                    loopSctx,
+                ]);
+
+                ctx = r.ctx;
+                foreachSctx = r.sctx;
 
                 // Merge statement contexts (similar to catch block merging)
                 const removed: string[] = [];
@@ -945,8 +1142,6 @@ function processStatements(
                 }
 
                 sctx = initialSctx; // Re-assign the modified initial context back to sctx after merging
-
-
             }
         }
     }
@@ -994,9 +1189,6 @@ export function resolveStatements(ctx: CompilerContext) {
             // Build statement context
             let sctx = emptyContext(f.ast.loc, f.name, f.returns);
             for (const p of f.params) {
-                if (p.type.kind === "ref") {
-                    sctx = addInitialFieldBindings(idText(p.name), getType(ctx, p.type.name).ast, ctx, sctx);
-                }
                 sctx = addVariable(p.name, p.type, ctx, sctx);
             }
 
@@ -1034,19 +1226,20 @@ export function resolveStatements(ctx: CompilerContext) {
             // Initialize variable bindings for the statement context.
             // It should include all fields in the contract.
             for (const f of t.fields) {
-                if (f.type.kind === "ref") {
-                    sctx = addInitialFieldBindings(`${idText(selfId)}.${f.name}`, getType(ctx, f.type.name).ast, ctx, sctx);
-                }
                 if (f.default !== undefined) {
-                    sctx = setVariableBinding([selfId, f.ast.name], f.default, sctx);
+                    sctx = setVariableBinding(
+                        [selfId, f.ast.name],
+                        f.default,
+                        f.type,
+                        ctx,
+                        sctx,
+                        [t.name],
+                    );
                 }
             }
 
             // Args
             for (const p of t.init.params) {
-                if (p.type.kind === "ref") {
-                    sctx = addInitialFieldBindings(idText(p.name), getType(ctx, p.type.name).ast, ctx, sctx);
-                }
                 sctx = addVariable(p.name, p.type, ctx, sctx);
             }
 
@@ -1125,10 +1318,10 @@ export function resolveStatements(ctx: CompilerContext) {
                             f.selector.bounced
                                 ? { kind: "ref_bounced", name: f.selector.type }
                                 : {
-                                    kind: "ref",
-                                    name: f.selector.type,
-                                    optional: false,
-                                },
+                                      kind: "ref",
+                                      name: f.selector.type,
+                                      optional: false,
+                                  },
                             ctx,
                             sctx,
                         );
@@ -1154,9 +1347,6 @@ export function resolveStatements(ctx: CompilerContext) {
                     sctx,
                 );
                 for (const a of f.params) {
-                    if (a.type.kind === "ref") {
-                        sctx = addInitialFieldBindings(idText(a.name), getType(ctx, a.type.name).ast, ctx, sctx);
-                    }
                     sctx = addVariable(a.name, a.type, ctx, sctx);
                 }
 
@@ -1168,17 +1358,22 @@ export function resolveStatements(ctx: CompilerContext) {
     return ctx;
 }
 
-function synchronizeVariableContexts(initialCtx: StatementContext, updatedCtx: StatementContext): StatementContext {
+function synchronizeVariableContexts(
+    initialCtx: StatementContext,
+    updatedCtx: StatementContext,
+): StatementContext {
     // The updated context must contain the variables in the initial context
-    for (let key of initialCtx.varBindings.keys()) {
+    for (const key of initialCtx.varBindings.keys()) {
         if (!updatedCtx.varBindings.has(key)) {
-            throwInternalCompilerError("The updated StatementContext must contain the variables in the initial context.");
+            throwInternalCompilerError(
+                "The updated StatementContext must contain the variables in the initial context.",
+            );
         }
     }
 
     const newBindings = new Map(initialCtx.varBindings);
 
-    for (let key of initialCtx.varBindings.keys()) {
+    for (const key of initialCtx.varBindings.keys()) {
         newBindings.set(key, updatedCtx.varBindings.get(key));
     }
 
@@ -1188,18 +1383,24 @@ function synchronizeVariableContexts(initialCtx: StatementContext, updatedCtx: S
     };
 }
 
-function markConflictingVariables(initialCtx: StatementContext, updatedCtxs: StatementContext[]): StatementContext {
-
+function markConflictingVariables(
+    initialCtx: StatementContext,
+    updatedCtxs: StatementContext[],
+): StatementContext {
     // There must be at least one updatedCtx in the list.
     if (updatedCtxs.length === 0) {
-        throwInternalCompilerError("One updated StatementContext must be provided.");
+        throwInternalCompilerError(
+            "One updated StatementContext must be provided.",
+        );
     }
 
     // Each updated context must contain the variables in the initial context
-    updatedCtxs.forEach(sctx => {
-        for (let key of initialCtx.varBindings.keys()) {
+    updatedCtxs.forEach((sctx) => {
+        for (const key of initialCtx.varBindings.keys()) {
             if (!sctx.varBindings.has(key)) {
-                throwInternalCompilerError("Each updated StatementContext must contain the variables in the initial context.");
+                throwInternalCompilerError(
+                    "Each updated StatementContext must contain the variables in the initial context.",
+                );
             }
         }
     });
@@ -1212,11 +1413,11 @@ function markConflictingVariables(initialCtx: StatementContext, updatedCtxs: Sta
     // Pick the first augmented context as pivot for comparison.
     const firstCtx = updatedCtxs[0]!;
 
-    for (let key of initialCtx.varBindings.keys()) {
+    for (const key of initialCtx.varBindings.keys()) {
         const val1 = firstCtx.varBindings.get(key);
 
-        const allEqual = updatedCtxs.every(stcx => {
-            const val2 = stcx.varBindings.get(key);
+        const allEqual = updatedCtxs.every((statementCtx) => {
+            const val2 = statementCtx.varBindings.get(key);
             if (val1 === undefined && val2 === undefined) {
                 return true;
             }
@@ -1224,11 +1425,10 @@ function markConflictingVariables(initialCtx: StatementContext, updatedCtxs: Sta
                 return eqValues(val1, val2);
             }
             return false;
-        }
-        );
+        });
 
         if (allEqual) {
-            // The variable has the same value in all the updated contexts. 
+            // The variable has the same value in all the updated contexts.
             // Set its new value to be the common value.
             newBindings.set(key, firstCtx.varBindings.get(key));
         } else {
@@ -1244,71 +1444,98 @@ function markConflictingVariables(initialCtx: StatementContext, updatedCtxs: Sta
     };
 }
 
-
-function undetermineAssignedVariables(statements: AstStatement[], initialSctx: StatementContext): StatementContext {
-
+function makeAssignedVariablesUndetermined(
+    statements: AstStatement[],
+    initialSctx: StatementContext,
+): StatementContext {
     const newBindings = new Map(initialSctx.varBindings);
 
     // Now, undefine each of the found variables
     // This means that their values are undetermined.
 
-    for (let varName of extractAssignedVariables(statements, initialSctx)) {
+    for (const varName of extractAssignedVariables(statements, initialSctx)) {
         newBindings.set(varName, undefined);
     }
 
     return {
         ...initialSctx,
-        varBindings: newBindings
+        varBindings: newBindings,
     };
 }
 
-function extractAssignedVariables(statements: AstStatement[], initialSctx: StatementContext): Set<string> {
+function extractAssignedVariables(
+    statements: AstStatement[],
+    initialSctx: StatementContext,
+): Set<string> {
     let varNames: Set<string> = new Set();
 
     // Fist, extract all variables assigned inside the statements,
     // as long as those variables occur in the initial context.
-    for (let stmt of statements) {
+    for (const stmt of statements) {
         switch (stmt.kind) {
             case "statement_assign":
-            case "statement_augmentedassign":
-                {
-                    const path = tryExtractPath(stmt.path)?.map(idText).join(".");
-                    if (path !== undefined) {
-                        // Include all children of the path as found in the initial context
-                        for (let key of initialSctx.varBindings.keys()) {
-                            if (key.startsWith(path)) {
-                                varNames.add(key);
-                            }
+            case "statement_augmentedassign": {
+                const path = tryExtractPath(stmt.path)?.map(idText).join(".");
+                if (path !== undefined) {
+                    // Include all children of the path as found in the initial context
+                    for (const key of initialSctx.varBindings.keys()) {
+                        if (key.startsWith(path)) {
+                            varNames.add(key);
                         }
                     }
-                    break;
                 }
-            case "statement_condition": 
-            {
-                varNames = new Set([...varNames, ...extractAssignedVariables(stmt.trueStatements, initialSctx)]);
+                break;
+            }
+            case "statement_condition": {
+                varNames = new Set([
+                    ...varNames,
+                    ...extractAssignedVariables(
+                        stmt.trueStatements,
+                        initialSctx,
+                    ),
+                ]);
                 if (stmt.falseStatements !== null) {
-                    varNames = new Set([...varNames, ...extractAssignedVariables(stmt.falseStatements, initialSctx)]);
+                    varNames = new Set([
+                        ...varNames,
+                        ...extractAssignedVariables(
+                            stmt.falseStatements,
+                            initialSctx,
+                        ),
+                    ]);
                 }
                 if (stmt.elseif !== null) {
-                    varNames = new Set([...varNames, ...extractAssignedVariables([stmt.elseif], initialSctx)]);
+                    varNames = new Set([
+                        ...varNames,
+                        ...extractAssignedVariables([stmt.elseif], initialSctx),
+                    ]);
                 }
                 break;
             }
             case "statement_foreach":
-            case "statement_repeat": 
+            case "statement_repeat":
             case "statement_until":
             case "statement_while":
-            case "statement_try":
-                {
-                varNames = new Set([...varNames, ...extractAssignedVariables(stmt.statements, initialSctx)]);
+            case "statement_try": {
+                varNames = new Set([
+                    ...varNames,
+                    ...extractAssignedVariables(stmt.statements, initialSctx),
+                ]);
                 break;
-                }
-            case "statement_try_catch":
-                {
-                    varNames = new Set([...varNames, ...extractAssignedVariables(stmt.statements, initialSctx)]);
-                    varNames = new Set([...varNames, ...extractAssignedVariables(stmt.catchStatements, initialSctx)]);
-                    break;
-                }
+            }
+            case "statement_try_catch": {
+                varNames = new Set([
+                    ...varNames,
+                    ...extractAssignedVariables(stmt.statements, initialSctx),
+                ]);
+                varNames = new Set([
+                    ...varNames,
+                    ...extractAssignedVariables(
+                        stmt.catchStatements,
+                        initialSctx,
+                    ),
+                ]);
+                break;
+            }
             default:
                 break;
         }
@@ -1318,14 +1545,17 @@ function extractAssignedVariables(statements: AstStatement[], initialSctx: State
 }
 
 function flattenValue(varValue: Value): Value | Map<string, Value> {
-    if (varValue !== null && typeof varValue === "object" && "$tactStruct" in varValue) {
-
+    if (
+        varValue !== null &&
+        typeof varValue === "object" &&
+        "$tactStruct" in varValue
+    ) {
         const result: Map<string, Value> = new Map();
 
-        for (let [parent, parentVal] of Object.entries(varValue)) {
+        for (const [parent, parentVal] of Object.entries(varValue)) {
             const children = flattenValue(parentVal);
             if (children instanceof Map) {
-                for (let [child, childVal] of children) {
+                for (const [child, childVal] of children) {
                     result.set(`${parent}.${child}`, childVal);
                 }
             } else {
@@ -1350,45 +1580,64 @@ function inflateToValue(entries: Map<string, Value>): Value {
     const result: StructValue = {};
     const parents: Set<string> = new Set();
 
-    for (let [key, value] of entries) {
+    for (const [key, value] of entries) {
         const parentIndex = key.indexOf(".");
         if (parentIndex === -1) {
             // Top level variable without children, add to results.
-            result[key] = value; 
+            result[key] = value;
         } else {
             // Top level variable with children, remember it for later computation
-            parents.add(key.substring(0, parentIndex)); 
+            parents.add(key.substring(0, parentIndex));
         }
     }
 
     // Now, compute the children of each parent
-    for (let parent of parents) {
+    for (const parent of parents) {
         const children: Map<string, Value> = new Map();
 
-        for (let [child, childVal] of entries) {
+        for (const [child, childVal] of entries) {
             if (child.startsWith(parent)) {
                 children.set(child.slice(parent.length + 1), childVal);
             }
         }
-        
-        result[parent] = inflateToValue(children); 
+
+        result[parent] = inflateToValue(children);
     }
-    
 
     return result;
 }
 
-function flattenType(typeDecl: AstTypeDecl, ctx: CompilerContext): Map<string, string | undefined> {
+function flattenType(
+    typeDecl: AstTypeDecl,
+    ctx: CompilerContext,
+): Map<string, string | undefined> {
     const result: Map<string, string | undefined> = new Map();
 
     if (typeDecl.kind === "struct_decl") {
-        for (let field of typeDecl.fields) {
+        for (const field of typeDecl.fields) {
             if (field.type.kind === "type_id") {
                 const children = flattenType(getType(ctx, field.type).ast, ctx);
                 if (children.size === 0) {
                     result.set(idText(field.name), undefined);
                 } else {
-                    for (let [child, val] of children) {
+                    for (const [child, val] of children) {
+                        result.set(`${idText(field.name)}.${child}`, val);
+                    }
+                }
+            }
+        }
+        result.set("$tactStruct", idText(typeDecl.name));
+    }
+
+    // From the point of view of the analyzer, treat contracts and traits as if they were structs
+    if (typeDecl.kind === "contract") {
+        for (const field of typeDecl.declarations) {
+            if (field.kind === "field_decl" && field.type.kind === "type_id") {
+                const children = flattenType(getType(ctx, field.type).ast, ctx);
+                if (children.size === 0) {
+                    result.set(idText(field.name), undefined);
+                } else {
+                    for (const [child, val] of children) {
                         result.set(`${idText(field.name)}.${child}`, val);
                     }
                 }
@@ -1400,17 +1649,18 @@ function flattenType(typeDecl: AstTypeDecl, ctx: CompilerContext): Map<string, s
     return result;
 }
 
-function addInitialFieldBindings(parent: string, typeDecl: AstTypeDecl, ctx: CompilerContext, sctx: StatementContext): StatementContext {
-
-    const newBindings: Map<string, Value | undefined> = new Map(sctx.varBindings);
-
-    for (let [child, value] of flattenType(typeDecl, ctx)) {
-        newBindings.set(`${parent}.${child}`, value);
+function extractAncestorTypes(
+    path: AstExpression,
+    ctx: CompilerContext,
+): string[] {
+    if (path.kind === "field_access") {
+        const parentType = getExpType(ctx, path.aggregate);
+        if (parentType.kind === "ref") {
+            return [
+                ...extractAncestorTypes(path.aggregate, ctx),
+                parentType.name,
+            ];
+        }
     }
-
-    return {
-        ...sctx,
-        varBindings: newBindings
-    };
+    return [];
 }
-

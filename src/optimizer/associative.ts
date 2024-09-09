@@ -27,7 +27,12 @@ type TransformData = {
     safetyCondition: boolean;
 };
 
-type Transform = (x1: AstExpression, c1: Value, c2: Value, loc: SrcInfo) => TransformData;
+type Transform = (
+    x1: AstExpression,
+    c1: Value,
+    c2: Value,
+    loc: SrcInfo,
+) => TransformData;
 
 abstract class AssociativeRewriteRule extends Rule {
     // An entry (op, S) in the map means "operator op associates with all operators in set S",
@@ -169,7 +174,12 @@ export class AssociativeRule1 extends AllowableOpRule {
                             makeBinaryExpression(op1, x1, x2, ast.loc),
                         );
                         const newRight = makeValueExpression(val, ast.loc);
-                        return makeBinaryExpression(op, newLeft, newRight, ast.loc);
+                        return makeBinaryExpression(
+                            op,
+                            newLeft,
+                            newRight,
+                            ast.loc,
+                        );
                     } catch (e) {
                         // Do nothing: will exit rule without modifying tree
                     }
@@ -333,7 +343,12 @@ export class AssociativeRule1 extends AllowableOpRule {
                             makeBinaryExpression(op2, x1, x2, ast.loc),
                         );
                         const newLeft = makeValueExpression(val, ast.loc);
-                        return makeBinaryExpression(op, newLeft, newRight, ast.loc);
+                        return makeBinaryExpression(
+                            op,
+                            newLeft,
+                            newRight,
+                            ast.loc,
+                        );
                     } catch (e) {
                         // Do nothing: will exit rule without modifying tree
                     }
@@ -625,7 +640,7 @@ export class AssociativeRule3 extends Rule {
                                 "+",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
                                 c1 as bigint,
@@ -648,7 +663,7 @@ export class AssociativeRule3 extends Rule {
                                 "+",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
                                 c1 as bigint,
@@ -676,7 +691,7 @@ export class AssociativeRule3 extends Rule {
                                 "-",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
                                 c1 as bigint,
@@ -699,7 +714,7 @@ export class AssociativeRule3 extends Rule {
                                 "-",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
                                 c1 as bigint,
@@ -727,7 +742,7 @@ export class AssociativeRule3 extends Rule {
                                 "*",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             ),
                             safetyCondition:
                                 this.standardMultiplicativeCondition(
@@ -755,7 +770,7 @@ export class AssociativeRule3 extends Rule {
                                 "&&",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             ),
                             safetyCondition: true,
                         };
@@ -779,7 +794,7 @@ export class AssociativeRule3 extends Rule {
                                 "||",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             ),
                             safetyCondition: true,
                         };
@@ -817,7 +832,7 @@ export class AssociativeRule3 extends Rule {
                                 "+",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
                                 c1 as bigint,
@@ -840,7 +855,7 @@ export class AssociativeRule3 extends Rule {
                                 "-",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
                                 c1 as bigint,
@@ -868,7 +883,7 @@ export class AssociativeRule3 extends Rule {
                                 "-",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.oppositeAdditiveCondition(
                                 c1 as bigint,
@@ -891,7 +906,7 @@ export class AssociativeRule3 extends Rule {
                                 "+",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.oppositeAdditiveCondition(
                                 c1 as bigint,
@@ -920,7 +935,7 @@ export class AssociativeRule3 extends Rule {
                                 "*",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition:
                                 this.standardMultiplicativeCondition(
@@ -949,7 +964,7 @@ export class AssociativeRule3 extends Rule {
                                 "&&",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition: true,
                         };
@@ -974,7 +989,7 @@ export class AssociativeRule3 extends Rule {
                                 "||",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition: true,
                         };
@@ -1012,7 +1027,7 @@ export class AssociativeRule3 extends Rule {
                                 "+",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
                                 c1 as bigint,
@@ -1035,7 +1050,7 @@ export class AssociativeRule3 extends Rule {
                                 "-",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
                                 c1 as bigint,
@@ -1063,7 +1078,7 @@ export class AssociativeRule3 extends Rule {
                                 "-",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.oppositeAdditiveCondition(
                                 c1 as bigint,
@@ -1086,7 +1101,7 @@ export class AssociativeRule3 extends Rule {
                                 "-",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.shiftedAdditiveCondition(
                                 c1 as bigint,
@@ -1115,7 +1130,7 @@ export class AssociativeRule3 extends Rule {
                             "*",
                             x1,
                             val_node,
-                            loc
+                            loc,
                         ),
                         safetyCondition: this.standardMultiplicativeCondition(
                             c1 as bigint,
@@ -1143,7 +1158,7 @@ export class AssociativeRule3 extends Rule {
                                 "&&",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             );
                         } else {
                             // Final expression (c2 && c1) && x1
@@ -1154,7 +1169,7 @@ export class AssociativeRule3 extends Rule {
                                 "&&",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             );
                         }
                         return {
@@ -1182,7 +1197,7 @@ export class AssociativeRule3 extends Rule {
                                 "||",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             );
                         } else {
                             // Final expression (c2 || c1) || x1
@@ -1193,7 +1208,7 @@ export class AssociativeRule3 extends Rule {
                                 "||",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             );
                         }
                         return {
@@ -1233,7 +1248,7 @@ export class AssociativeRule3 extends Rule {
                                 "+",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
                                 c1 as bigint,
@@ -1256,7 +1271,7 @@ export class AssociativeRule3 extends Rule {
                                 "+",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
                                 c1 as bigint,
@@ -1284,7 +1299,7 @@ export class AssociativeRule3 extends Rule {
                                 "-",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
                                 c1 as bigint,
@@ -1307,7 +1322,7 @@ export class AssociativeRule3 extends Rule {
                                 "-",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
                                 c1 as bigint,
@@ -1335,7 +1350,7 @@ export class AssociativeRule3 extends Rule {
                                 "*",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             ),
                             safetyCondition:
                                 this.standardMultiplicativeCondition(
@@ -1364,7 +1379,7 @@ export class AssociativeRule3 extends Rule {
                                 "&&",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             );
                         } else {
                             // Final expression x1 && (c1 && c2)
@@ -1375,7 +1390,7 @@ export class AssociativeRule3 extends Rule {
                                 "&&",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             );
                         }
                         return {
@@ -1403,7 +1418,7 @@ export class AssociativeRule3 extends Rule {
                                 "||",
                                 val_node,
                                 x1,
-                                loc
+                                loc,
                             );
                         } else {
                             // Final expression x1 || (c1 || c2)
@@ -1414,7 +1429,7 @@ export class AssociativeRule3 extends Rule {
                                 "||",
                                 x1,
                                 val_node,
-                                loc
+                                loc,
                             );
                         }
                         return {
@@ -1509,7 +1524,7 @@ export class AssociativeRule3 extends Rule {
                         x1,
                         c1,
                         c2,
-                        ast.loc
+                        ast.loc,
                     );
                     if (data.safetyCondition) {
                         // Since the tree is simpler now, there is further
@@ -1543,7 +1558,7 @@ export class AssociativeRule3 extends Rule {
                         x1,
                         c1,
                         c2,
-                        ast.loc
+                        ast.loc,
                     );
                     if (data.safetyCondition) {
                         // Since the tree is simpler now, there is further
@@ -1577,7 +1592,7 @@ export class AssociativeRule3 extends Rule {
                         x1,
                         c1,
                         c2,
-                        ast.loc
+                        ast.loc,
                     );
                     if (data.safetyCondition) {
                         // Since the tree is simpler now, there is further
@@ -1611,7 +1626,7 @@ export class AssociativeRule3 extends Rule {
                         x1,
                         c1,
                         c2,
-                        ast.loc
+                        ast.loc,
                     );
                     if (data.safetyCondition) {
                         // Since the tree is simpler now, there is further

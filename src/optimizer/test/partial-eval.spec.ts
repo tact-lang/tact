@@ -317,10 +317,9 @@ function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
         expect(
             eqExpressions(
-                partiallyEvalExpression(
-                    parseExpression(original),
-                    {ctx: new CompilerContext()},
-                ),
+                partiallyEvalExpression(parseExpression(original), {
+                    ctx: new CompilerContext(),
+                }),
                 dummyEval(parseExpression(simplified)),
             ),
         ).toBe(true);
@@ -378,7 +377,7 @@ function dummyEval(ast: AstExpression): AstExpression {
                         ast.op,
                         extractValue(newNode.operand as AstValue),
                     ),
-                    dummySrcInfo
+                    dummySrcInfo,
                 );
             }
             return newNode;
@@ -393,7 +392,7 @@ function dummyEval(ast: AstExpression): AstExpression {
                         extractValue(newNode.left as AstValue),
                         extractValue(newNode.right as AstValue),
                     ),
-                    dummySrcInfo
+                    dummySrcInfo,
                 );
             }
             return newNode;

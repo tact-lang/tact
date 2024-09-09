@@ -1961,10 +1961,9 @@ function initializeConstants(
                 constant.ast.initializer,
                 ctx,
             );
-            constant.value = evalConstantExpression(
-                constant.ast.initializer,
-                {ctx: ctx},
-            );
+            constant.value = evalConstantExpression(constant.ast.initializer, {
+                ctx: ctx,
+            });
         }
     }
     return ctx;
@@ -1992,7 +1991,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
                             );
                             field.default = evalConstantExpression(
                                 field.ast.initializer,
-                                {ctx: ctx},
+                                { ctx: ctx },
                             );
                         } else {
                             // if a field has optional type and it is missing an explicit initializer

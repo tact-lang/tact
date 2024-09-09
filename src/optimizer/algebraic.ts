@@ -29,18 +29,14 @@ export class AddZero extends Rule {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as AstOpBinary;
             if (this.additiveOperators.includes(topLevelNode.op)) {
-                if (
-                    checkIsNumber(topLevelNode.right, 0n)
-                ) {
+                if (checkIsNumber(topLevelNode.right, 0n)) {
                     // The tree has this form:
                     // x op 0
 
                     const x = topLevelNode.left;
 
                     return x;
-                } else if (
-                    checkIsNumber(topLevelNode.left, 0n)
-                ) {
+                } else if (checkIsNumber(topLevelNode.left, 0n)) {
                     // The tree has this form:
                     // 0 op x
 
@@ -106,18 +102,14 @@ export class MultiplyOne extends Rule {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as AstOpBinary;
             if (topLevelNode.op === "*") {
-                if (
-                    checkIsNumber(topLevelNode.right, 1n)
-                ) {
+                if (checkIsNumber(topLevelNode.right, 1n)) {
                     // The tree has this form:
                     // x * 1
 
                     const x = topLevelNode.left;
 
                     return x;
-                } else if (
-                    checkIsNumber(topLevelNode.left, 1n)
-                ) {
+                } else if (checkIsNumber(topLevelNode.left, 1n)) {
                     // The tree has this form:
                     // 1 * x
 
@@ -145,7 +137,7 @@ export class SubtractSelf extends Rule {
                 if (
                     (checkIsName(topLevelNode.left) ||
                         isValue(topLevelNode.left)) &&
-                        (checkIsName(topLevelNode.right) ||
+                    (checkIsName(topLevelNode.right) ||
                         isValue(topLevelNode.right))
                 ) {
                     // The tree has this form:
@@ -176,24 +168,24 @@ export class AddSelf extends Rule {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as AstOpBinary;
             if (topLevelNode.op === "+") {
-                    // The tree has this form:
-                    // x + y
-                    // We need to check that x and y are equal
+                // The tree has this form:
+                // x + y
+                // We need to check that x and y are equal
 
-                    const x = topLevelNode.left;
-                    const y = topLevelNode.right;
+                const x = topLevelNode.left;
+                const y = topLevelNode.right;
 
-                    if (eqExpressions(x, y)) {
-                        const res = makeBinaryExpression(
-                            "*",
-                            x,
-                            makeValueExpression(2n, ast.loc),
-                            ast.loc
-                        );
-                        // Since we joined the tree, there is further opportunity
-                        // for simplification
-                        return optimizer.applyRules(res);
-                    }
+                if (eqExpressions(x, y)) {
+                    const res = makeBinaryExpression(
+                        "*",
+                        x,
+                        makeValueExpression(2n, ast.loc),
+                        ast.loc,
+                    );
+                    // Since we joined the tree, there is further opportunity
+                    // for simplification
+                    return optimizer.applyRules(res);
+                }
             }
         }
 
@@ -204,7 +196,6 @@ export class AddSelf extends Rule {
 }
 
 export class DivByZero extends Rule {
-
     public applyRule(
         ast: AstExpression,
         _optimizer: ExpressionTransformer,
@@ -212,16 +203,11 @@ export class DivByZero extends Rule {
         if (checkIsBinaryOpNode(ast)) {
             const topLevelNode = ast as AstOpBinary;
             if (topLevelNode.op === "/") {
-                if (
-                    checkIsNumber(topLevelNode.right, 0n)
-                ) {
+                if (checkIsNumber(topLevelNode.right, 0n)) {
                     // The tree has this form:
                     // x / 0
 
-                    throwErrorConstEval(
-                        "divisor expression evaluates to zero: it must be non-zero",
-                        ast.loc,
-                    );
+                    throwErrorConstEval("divisor must be non-zero", ast.loc);
                 }
             }
         }

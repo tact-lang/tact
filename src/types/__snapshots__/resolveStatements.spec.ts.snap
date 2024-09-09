@@ -886,11 +886,11 @@ Line 10, col 5:
 `;
 
 exports[`resolveStatements should fail statements for stmt-repeat-bool 1`] = `
-"<unknown>:9:5: Type mismatch: "Bool" is not assignable to "Int"
-Line 9, col 5:
+"<unknown>:9:12: Cannot evaluate expression: integer expected, but got 'true'
+Line 9, col 12:
    8 | fun isZero(x: Int): Bool {
 >  9 |     repeat(true) {
-           ^~~~~~~~~~~~~~
+                  ^~~~
   10 |         x = x + 1;
 "
 `;
@@ -1366,12 +1366,12 @@ Line 4, col 5:
 `;
 
 exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowing-catch 1`] = `
-"<unknown>:6:14: Variable cannot have the same name as its enclosing function: "rec"
-Line 6, col 14:
-  5 |         42/0;
-> 6 |     } catch (rec) {  // <-- shadowing
-                   ^~~
-  7 |         return rec;
+"<unknown>:5:12: Cannot evaluate expression: divisor must be non-zero
+Line 5, col 12:
+  4 |     try {
+> 5 |         42/0;
+                 ^
+  6 |     } catch (rec) {  // <-- shadowing
 "
 `;
 
@@ -1472,6 +1472,386 @@ Line 7, col 13:
 > 7 |         let b: Int = a + 3;
                   ^
   8 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-assignments 1`] = `
+"<unknown>:12:14: Cannot evaluate expression: divisor must be non-zero
+Line 12, col 14:
+  11 |         b += a + 3;              // 9
+> 12 |         1 / (b - 9);             // Division by zero
+                    ^~~~~
+  13 |         return 0;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-init 1`] = `
+"<unknown>:34:13: Cannot evaluate expression: divisor must be non-zero
+Line 34, col 13:
+  33 |         self.g.Bb = 0;
+> 34 |         1 / self.g.Bb;                // Division by zero.
+                   ^~~~~~~~~
+  35 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-inside-do-until 1`] = `
+"<unknown>:10:25: Cannot evaluate expression: divisor must be non-zero
+Line 10, col 25:
+   9 |         do {                             
+> 10 |             return 1 / (a - 5);          // Since the loop executes at least once, and a = 5,
+                               ^~~~~
+  11 |         } until (x > 0);                 // a division by zero will occur.                        
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-inside-foreach 1`] = `
+"<unknown>:10:25: Cannot evaluate expression: divisor must be non-zero
+Line 10, col 25:
+   9 |         foreach (k, val in xMap) {             // Currently, the analyzer cannot determine if a map is empty or not           
+> 10 |             return 1 / (a - 5);                // because it does not track map mutations using the set function.  
+                               ^~~~~
+  11 |         }                                      // So, it will treat foreach loops as if their number of iterations is undetermined.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-inside-if 1`] = `
+"<unknown>:9:25: Cannot evaluate expression: divisor must be non-zero
+Line 9, col 25:
+   8 |         if (a > 5) {                 // Even though runtime execution will not enter the if,
+>  9 |             return 1 / (a - 5);      // we still need to report a division by zero inside the if, because 
+                               ^~~~~
+  10 |         }                            // the error would occur IF the conditional was executed: i.e.,
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-inside-if-else-false-branch 1`] = `
+"<unknown>:11:25: Cannot evaluate expression: divisor must be non-zero
+Line 11, col 25:
+  10 |         } else {                     // the error would occur IF the branch was executed: i.e.,
+> 11 |             return 1 / (a - 5);      // it is a potential division by zero. 
+                               ^~~~~
+  12 |         }                            // Also, we need to imitate the behavior of FunC, which actually 
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-inside-if-else-true-branch 1`] = `
+"<unknown>:9:25: Cannot evaluate expression: divisor must be non-zero
+Line 9, col 25:
+   8 |         if (a > 5) {                 // Even though runtime execution will not enter the true branch,
+>  9 |             return 1 / (a - 5);      // we still need to report a division by zero inside, because 
+                               ^~~~~
+  10 |         } else {                     // the error would occur IF the branch was executed: i.e.,
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-inside-repeat 1`] = `
+"<unknown>:10:25: Cannot evaluate expression: divisor must be non-zero
+Line 10, col 25:
+   9 |         repeat (x) {                     // Even though runtime execution will not enter the loop body,
+> 10 |             return 1 / (a - 5);          // we still need to report a division by zero inside, because 
+                               ^~~~~
+  11 |         }                                // the error would occur IF the loop was executed: i.e.,
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-inside-try 1`] = `
+"<unknown>:11:25: Cannot evaluate expression: divisor must be non-zero
+Line 11, col 25:
+  10 |             x += v;                  
+> 11 |             return 1 / (a - 5);          // If try reaches the end, it would produce a division by zero
+                               ^~~~~
+  12 |         }                                
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-inside-try-catch 1`] = `
+"<unknown>:13:25: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 25:
+  12 |         } catch (e) {
+> 13 |             return 1 / (a - 5);     // If an error occurs during the try (for example, if v = 0),
+                               ^~~~~
+  14 |         }                           // the catch would produce a division by zero.                        
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-inside-while 1`] = `
+"<unknown>:10:25: Cannot evaluate expression: divisor must be non-zero
+Line 10, col 25:
+   9 |         while (x > 0) {                  // Even though runtime execution will not enter the loop body,
+> 10 |             return 1 / (a - 5);          // we still need to report a division by zero inside, because 
+                               ^~~~~
+  11 |         }                                // the error would occur IF the loop was executed: i.e.,
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-do-until-no-iterations 1`] = `
+"<unknown>:12:21: Cannot evaluate expression: divisor must be non-zero
+Line 12, col 21:
+  11 |         } until (x >= 0);                                
+> 12 |         return 1 / (a - 6);        // Loop does not execute more than once. Hence, after the loop, a = 6,
+                           ^~~~~
+  13 |     }                              // which means division by zero.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-do-until-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         } until (v > 0);   // v does not have a value at compile time                     
+> 13 |         return 1 / (a - 5);         // Unknown if loop executes. But if it does or not, all paths lead to a = 5,
+                           ^~~~~
+  14 |     }                               // which means division by zero after the loop.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-do-until-with-iterations 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         } until (x > 0);                                
+> 14 |         return 1 / (a - 10);        // Loop executes more than once. Hence, but after each loop iteration, a = 10,
+                           ^~~~~~
+  15 |     }                               // which means division by zero.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-foreach-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }                             
+> 13 |         return 1 / (a - 5);           // If loop executes or not, all possible paths assign a = 5. Hence, there is a division by zero.
+                           ^~~~~
+  14 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-else-false-branch 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }
+> 13 |         return 1 / (a - 3);   // Division by zero, because condition in the if is false at compile time,                             
+                           ^~~~~
+  14 |     }                         // which means that a = 3 after the conditional.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-else-true-branch 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }
+> 13 |         return 1 / (a - 10);   // Division by zero, because condition in the if is true at compile time,                             
+                           ^~~~~~
+  14 |     }                          // which means that a = 10 after the conditional.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-else-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }
+> 13 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  14 |     }                        // all branches inside the if also assign a = 5.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-else-undetermined-no-assign-false-branch 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }
+> 14 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  15 |     }                         // all paths before the return lead to a = 5.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-else-undetermined-no-assign-true-branch 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }
+> 14 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  15 |     }                         // all paths before the return lead to a = 5.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-elseif-false-branch 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }
+> 13 |         return 1 / (a - 3);   // Division by zero, because conditions can be determined at compile time,                             
+                           ^~~~~
+  14 |     }                         // which means that a = 3 after the conditional.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-elseif-true-branch 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }
+> 13 |         return 1 / (a - 10);   // Division by zero, because conditions can be determined at compile time,                              
+                           ^~~~~~
+  14 |     }                          // which means that a = 10 after the conditional.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-elseif-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }
+> 13 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  14 |     }                         // all branches inside the if also assign a = 5.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-elseif-undetermined-no-assign-false-branch 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }
+> 14 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  15 |     }                         // all paths before the return lead to a = 5.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-elseif-undetermined-no-assign-true-branch 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }
+> 14 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  15 |     }                         // all paths before the return lead to a = 5.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-false 1`] = `
+"<unknown>:11:21: Cannot evaluate expression: divisor must be non-zero
+Line 11, col 21:
+  10 |         }
+> 11 |         return 1 / (a - 5);   // Division by zero, because condition in the if is false at compile time,                             
+                           ^~~~~
+  12 |     }                         // which means that a = 5 after the conditional.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-true 1`] = `
+"<unknown>:11:21: Cannot evaluate expression: divisor must be non-zero
+Line 11, col 21:
+  10 |         }
+> 11 |         return 1 / (a - 10);   // Division by zero, because condition in the if is true at compile time,                             
+                           ^~~~~~
+  12 |     }                          // which means that a = 10 after the conditional.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-if-undetermined 1`] = `
+"<unknown>:11:21: Cannot evaluate expression: divisor must be non-zero
+Line 11, col 21:
+  10 |         }
+> 11 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  12 |     }                        // the branch inside the if also assigns a = 5.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-repeat-no-iterations 1`] = `
+"<unknown>:12:21: Cannot evaluate expression: divisor must be non-zero
+Line 12, col 21:
+  11 |         }                                
+> 12 |         return 1 / (a - 5);         // Loop does not execute. Hence, after the loop, a = 5,
+                           ^~~~~
+  13 |     }                               // which means division by zero.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-repeat-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }                                
+> 13 |         return 1 / (a - 5);         // Unknown if loop executes. But if it does or not, all paths lead to a = 5,
+                           ^~~~~
+  14 |     }                               // which means division by zero after the loop.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-repeat-with-iterations 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }                                
+> 13 |         return 1 / (a - 3);         // Loop executes. After each iteration, a = 3,
+                           ^~~~~
+  14 |     }                               // which means division by zero after the loop.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-try-catch-undetermined 1`] = `
+"<unknown>:15:21: Cannot evaluate expression: divisor must be non-zero
+Line 15, col 21:
+  14 |         }                           
+> 15 |         return 1 / (a - 5);    // Independently if the try successfully executes or not, all paths lead to a = 5.
+                           ^~~~~
+  16 |     }                          // Hence, division by zero. Note that if the catch executes, it also assigns a = 5.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-try-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }                                
+> 13 |         return 1 / (a - 5);    // Independently if the try successfully executes or not, all paths lead to a = 5.
+                           ^~~~~
+  14 |     }                          // Hence, division by zero. Note that the catch is empty, which means that variable
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-while-no-iterations 1`] = `
+"<unknown>:12:21: Cannot evaluate expression: divisor must be non-zero
+Line 12, col 21:
+  11 |         }                                
+> 12 |         return 1 / (a - 5);         // Loop does not execute. Hence, after the loop, a = 5,
+                           ^~~~~
+  13 |     }                               // which means division by zero.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-while-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }                                
+> 13 |         return 1 / (a - 5);         // Unknown if loop executes. But if it does or not, all paths lead to a = 5,
+                           ^~~~~
+  14 |     }                               // which means division by zero after the loop.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-outside-while-with-iterations 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }                                
+> 14 |         return 1 / (a - 3);         // Loop executes. After each iteration, a = 3,
+                           ^~~~~
+  15 |     }                               // which means division by zero after the loop.
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-structs 1`] = `
+"<unknown>:35:13: Cannot evaluate expression: divisor must be non-zero
+Line 35, col 13:
+  34 |         1 / a.Ab.Bc;                  // OK.
+> 35 |         1 / a.Ab.Bb;                  // Division by zero.
+                   ^~~~~~~
+  36 |         return 0;
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-structs-in-parameter 1`] = `
+"<unknown>:30:20: Cannot evaluate expression: divisor must be non-zero
+Line 30, col 20:
+  29 |         let b = self;              // The only determined field in b is b.f.Ca.Ab.Bc
+> 30 |         return 1 / b.f.Ca.Ab.Bc;   // Division by zero.
+                          ^~~~~~~~~~~~
+  31 |     }
 "
 `;
 

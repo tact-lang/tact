@@ -26,7 +26,7 @@ struct A {
     b: Int;
 }
 
-fun main() {
+fun main(x: Int?) {
     let a: Int = 1;
     let b: Int = 2;
     let c: Int = a + b;
@@ -42,7 +42,7 @@ fun main() {
     let m: Int = -j.b + a;
     let n: Int = -j.b + a + (+b);
     let o: Int? = null;
-    let p: Int? = o!! + 1;
+    let p: Int? = x!! + 1;
     let q: Cell = j.toCell();
 }
 `;
@@ -63,7 +63,7 @@ const golden: string[] = [
     `((- $j'b) + $a)`,
     `(((- $j'b) + $a) + (+ $b))`,
     "null()",
-    "(__tact_not_null($o) + 1)",
+    "(__tact_not_null($x) + 1)",
     `$A$_store_cell(($j'a, $j'b))`,
 ];
 
