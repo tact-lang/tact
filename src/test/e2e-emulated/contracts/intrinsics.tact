@@ -13,6 +13,12 @@ contract IntrinsicsTester {
     k: Int = crc32("");
     l: Int = ascii("⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡");
     m: Slice = rawSlice("");
+    n: Slice = rawSlice("4a_");
+    o: Slice = rawSlice("0_");
+    p: Slice = rawSlice("1_");
+    q: Slice = rawSlice("_");
+    r: Slice = rawSlice("7");
+    s: Slice = rawSlice("abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcf_");
     
     init() {
 
@@ -140,5 +146,53 @@ contract IntrinsicsTester {
 
     get fun getCrc32_4(): Int {
         return crc32("");
+    }
+
+    get fun getRawSlice5(): Slice {
+        return rawSlice("4a_");
+    }
+
+    get fun getRawSlice6(): Slice {
+        return self.n;
+    }
+
+    get fun getRawSlice7(): Slice {
+        return rawSlice("0_");
+    }
+
+    get fun getRawSlice8(): Slice {
+        return self.o;
+    }
+
+    get fun getRawSlice9(): Slice {
+        return rawSlice("1_");
+    }
+
+    get fun getRawSlice10(): Slice {
+        return self.p;
+    }
+
+    get fun getRawSlice11(): Slice {
+        return rawSlice("_");
+    }
+
+    get fun getRawSlice12(): Slice {
+        return self.q;
+    }
+
+    get fun getRawSlice13(): Slice {
+        return rawSlice("7");
+    }
+
+    get fun getRawSlice14(): Slice {
+        return self.r;
+    }
+
+    get fun getRawSlice15(): Slice {
+        return rawSlice("abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcf_");
+    }
+
+    get fun getRawSlice16(): Slice {
+        return self.s;
     }
 }

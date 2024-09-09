@@ -1,4 +1,5 @@
-import { Address, beginCell, Cell, toNano } from "@ton/core";
+import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
+import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 import * as crc32 from "crc-32";
 import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "./context";
@@ -1096,30 +1097,60 @@ export class Interpreter {
                         ast.args[0]!.loc,
                     );
 
-                    if (str.length > 255) {
-                        throwErrorConstEval(
-                            `hex string is too long, expected up to 255 characters, got ${str.length}`,
-                            ast.loc,
-                        );
-                    }
-                    if (!/^[0-9a-fA-F]*$/.test(str)) {
+                    if (!/^[0-9a-fA-F]*_?$/.test(str)) {
                         throwErrorConstEval(
                             `invalid hex string: ${str}`,
                             ast.loc,
                         );
                     }
 
-                    try {
-                        return beginCell()
-                            .storeBuffer(Buffer.from(str, "hex"))
-                            .endCell()
-                            .asSlice();
-                    } catch (_) {
+                    // Remove underscores from the hex string
+                    const hex = str.replace("_", "");
+                    const paddedHex = hex.length % 2 === 0 ? hex : "0" + hex;
+                    const buffer = Buffer.from(paddedHex, "hex");
+
+                    // Initialize the BitString
+                    let bits = new BitString(
+                        buffer,
+                        hex.length % 2 === 0 ? 0 : 4,
+                        hex.length * 4,
+                    );
+
+                    // Handle the case where the string ends with an underscore
+                    if (str.endsWith("_")) {
+                        const paddedBits = paddedBufferToBits(buffer);
+
+                        console.log({
+                            originalHex: hex,
+                            paddedHex,
+                            bufferLength: buffer.length,
+                            paddedBitsLength: paddedBits.length,
+                            bitStringLength: bits.length,
+                            offset: hex.length % 2 === 0 ? 0 : 4,
+                        });
+
+                        // Ensure there's enough length to apply the offset
+                        const offset = hex.length % 2 === 0 ? 0 : 4;
+                        if (paddedBits.length >= offset) {
+                            bits = paddedBits.substring(
+                                offset,
+                                paddedBits.length - offset,
+                            );
+                        } else {
+                            bits = new BitString(Buffer.from(""), 0, 0);
+                        }
+                    }
+
+                    // Ensure the bit length is within acceptable limits
+                    if (bits.length > 1023) {
                         throwErrorConstEval(
-                            `invalid slice data: ${str}`,
+                            `slice constant is too long, expected up to 1023 bits, got ${bits.length}`,
                             ast.loc,
                         );
                     }
+
+                    // Return the constructed slice
+                    return beginCell().storeBits(bits).endCell().asSlice();
                 }
                 break;
             case "ascii":

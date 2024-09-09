@@ -3,6 +3,7 @@ import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { IntrinsicsTester } from "./contracts/output/intrinsics_IntrinsicsTester";
 import { sha256_sync } from "@ton/crypto";
 import "@ton/test-utils";
+import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 
 describe("intrinsics", () => {
     let blockchain: Blockchain;
@@ -146,6 +147,76 @@ describe("intrinsics", () => {
         ).toBe(true);
         expect(
             (await contract.getGetRawSlice4()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice5())
+                .asCell()
+                .equals(beginCell().storeUint(18, 6).endCell()),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice6())
+                .asCell()
+                .equals(beginCell().storeUint(18, 6).endCell()),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice7()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice8()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice9())
+                .asCell()
+                .equals(beginCell().storeUint(0, 3).endCell()),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice10())
+                .asCell()
+                .equals(beginCell().storeUint(0, 3).endCell()),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice11()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice12()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice13())
+                .asCell()
+                .equals(beginCell().storeUint(7, 4).endCell()),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice14())
+                .asCell()
+                .equals(beginCell().storeUint(7, 4).endCell()),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice15()).asCell().equals(
+                beginCell()
+                    .storeBits(
+                        paddedBufferToBits(
+                            Buffer.from(
+                                "abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcf",
+                                "hex",
+                            ),
+                        ),
+                    )
+                    .endCell(),
+            ),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice16()).asCell().equals(
+                beginCell()
+                    .storeBits(
+                        paddedBufferToBits(
+                            Buffer.from(
+                                "abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcf",
+                                "hex",
+                            ),
+                        ),
+                    )
+                    .endCell(),
+            ),
         ).toBe(true);
 
         // Check `ascii`
