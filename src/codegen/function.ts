@@ -205,13 +205,13 @@ export class FunctionGen {
                 : undefined;
         // Process statements
         f.ast.statements.forEach((stmt) => {
-            const funcStmt = StatementGen.fromTact(
+            const funcStmts = StatementGen.fromTact(
                 this.ctx,
                 stmt,
                 selfName,
                 f.returns,
             ).writeStatement();
-            body.push(funcStmt);
+            body.push(...funcStmts);
         });
 
         return this.ctx.fun(attrs, name, params, returnTy, body);

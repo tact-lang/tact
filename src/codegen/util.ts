@@ -90,3 +90,10 @@ export function funcInitIdOf(ident: AstId | string): string {
         ? `${ident}$init`
         : idText(ident) + "$init";
 }
+
+let NEXT_IDENTIFIER = 0;
+export function freshIdentifier(prefix: string): string {
+    const fresh = `fresh$${prefix}_${NEXT_IDENTIFIER}`;
+    NEXT_IDENTIFIER += 1;
+    return funcIdOf(fresh);
+}

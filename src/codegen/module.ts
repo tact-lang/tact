@@ -333,7 +333,7 @@ export class ModuleGen {
             );
             for (const s of init.ast.statements) {
                 body.push(
-                    StatementGen.fromTact(
+                    ...StatementGen.fromTact(
                         this.ctx,
                         s,
                         returns,
@@ -941,7 +941,7 @@ export class ModuleGen {
             );
             f.ast.statements.forEach((s) =>
                 body.push(
-                    StatementGen.fromTact(
+                    ...StatementGen.fromTact(
                         this.ctx,
                         s,
                         selfRes,
@@ -978,7 +978,7 @@ export class ModuleGen {
             const body: FuncAstStatement[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
-                    StatementGen.fromTact(
+                    ...StatementGen.fromTact(
                         this.ctx,
                         s,
                         selfRes,
@@ -1017,7 +1017,7 @@ export class ModuleGen {
             const body: FuncAstStatement[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
-                    StatementGen.fromTact(
+                    ...StatementGen.fromTact(
                         this.ctx,
                         s,
                         selfRes,
@@ -1059,7 +1059,7 @@ export class ModuleGen {
             const body: FuncAstStatement[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
-                    StatementGen.fromTact(
+                    ...StatementGen.fromTact(
                         this.ctx,
                         s,
                         selfRes,
@@ -1093,7 +1093,7 @@ export class ModuleGen {
             const body: FuncAstStatement[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
-                    StatementGen.fromTact(
+                    ...StatementGen.fromTact(
                         this.ctx,
                         s,
                         selfRes,
@@ -1127,7 +1127,7 @@ export class ModuleGen {
             const body: FuncAstStatement[] = [selfUnpack];
             f.ast.statements.forEach((s) =>
                 body.push(
-                    StatementGen.fromTact(
+                    ...StatementGen.fromTact(
                         this.ctx,
                         s,
                         selfRes,
@@ -1181,7 +1181,7 @@ export class ModuleGen {
             );
             f.ast.statements.forEach((s) =>
                 body.push(
-                    StatementGen.fromTact(
+                    ...StatementGen.fromTact(
                         this.ctx,
                         s,
                         selfRes,
