@@ -883,14 +883,20 @@ export type FuncAstStatementWhile = {
     loc: FuncSrcInfo;
 };
 
+/** (id, id) */
+export type FuncCatchDefintions = {
+    exceptionName: FuncAstId;
+    exitCodeName: FuncAstId;
+};
+
 /**
  * try { ... } catch (id, id) { ... }
+ * try { ... } catch (_) { ... }
  */
 export type FuncAstStatementTryCatch = {
     kind: "statement_try_catch";
     statementsTry: FuncAstStatement[];
-    catchExceptionName: FuncAstId;
-    catchExitCodeName: FuncAstId;
+    catchDefinitions: FuncCatchDefintions | "_";
     statementsCatch: FuncAstStatement[];
     loc: FuncSrcInfo;
 };
@@ -1735,8 +1741,10 @@ semantics.addOperation<FuncAstStatement>("astOfStatement", {
         return {
             kind: "statement_try_catch",
             statementsTry: stmtsTry.children.map((x) => x.astOfStatement()),
-            catchExceptionName: exceptionName.astOfExpression(),
-            catchExitCodeName: exitCodeName.astOfExpression(),
+            catchDefinitions: {
+                exceptionName: exceptionName.astOfExpression(),
+                exitCodeName: exitCodeName.astOfExpression(),
+            },
             statementsCatch: stmtsCatch.children.map((x) => x.astOfStatement()),
             loc: createSrcInfo(this),
         };

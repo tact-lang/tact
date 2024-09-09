@@ -462,11 +462,17 @@ export class FuncPrettyPrinter {
         const tryBlock = this.prettyPrintIndentedBlock(
             node.statementsTry.map(this.prettyPrint.bind(this)).join("\n"),
         );
+        const catchStr =
+            node.catchDefinitions === "_"
+                ? "_"
+                : [
+                      this.prettyPrint(node.catchDefinitions.exceptionName),
+                      this.prettyPrint(node.catchDefinitions.exitCodeName),
+                  ].join(", ");
         const catchBlock = this.prettyPrintIndentedBlock(
             node.statementsCatch.map(this.prettyPrint.bind(this)).join("\n"),
         );
-        const catchVar = `${this.prettyPrint(node.catchExceptionName)}, ${this.prettyPrint(node.catchExitCodeName)}`;
-        return `try {\n${tryBlock}\n} catch (${catchVar}) {\n${catchBlock}\n}`;
+        return `try {\n${tryBlock}\n} catch (${catchStr}) {\n${catchBlock}\n}`;
     }
 
     private prettyPrintStatementExpression(

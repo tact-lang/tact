@@ -52,6 +52,7 @@ import {
     FuncAstModuleItem,
     FuncAstModule,
     FuncAstGlobalVariablesDeclaration,
+    FuncCatchDefintions,
     dummySrcInfo,
 } from "./grammar";
 import { dummySrcInfo as tactDummySrcInfo } from "../grammar/grammar";
@@ -476,17 +477,27 @@ export function expr(
     };
 }
 
+export function try_(
+    statementsTry: FuncAstStatement[],
+): FuncAstStatementTryCatch {
+    return {
+        kind: "statement_try_catch",
+        statementsTry,
+        catchDefinitions: "_",
+        statementsCatch: [],
+        loc: dummySrcInfo,
+    };
+}
+
 export function tryCatch(
     statementsTry: FuncAstStatement[],
-    catchExceptionName: string | FuncAstId,
-    catchExitCodeName: string | FuncAstId,
+    catchDefinitions: "_" | FuncCatchDefintions,
     statementsCatch: FuncAstStatement[],
 ): FuncAstStatementTryCatch {
     return {
         kind: "statement_try_catch",
         statementsTry,
-        catchExceptionName: wrapToId(catchExceptionName),
-        catchExitCodeName: wrapToId(catchExitCodeName),
+        catchDefinitions,
         statementsCatch,
         loc: dummySrcInfo,
     };
