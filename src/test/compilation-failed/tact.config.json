@@ -208,6 +208,16 @@
       "output": "./contracts/output"
     },
     {
+      "name": "const-eval-rawslice-overflow-padded",
+      "path": "./contracts/const-eval-rawslice-overflow-padded.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-rawslice-invalid",
+      "path": "./contracts/const-eval-rawslice-invalid.tact",
+      "output": "./contracts/output"
+    },
+    {
       "name": "const-eval-ascii-empty",
       "path": "./contracts/const-eval-ascii-empty.tact",
       "output": "./contracts/output"
