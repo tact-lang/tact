@@ -405,6 +405,11 @@
       "name": "repeat-range",
       "path": "./src/test/exit-codes/contracts/repeat-range.tact",
       "output": "./src/test/exit-codes/contracts/output"
+    },
+    {
+      "name": "semantics",
+      "path": "./src/test/e2e-emulated/contracts/semantics.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
     }
   ]
 }
