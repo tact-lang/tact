@@ -1,2 +1,1 @@
-@name(config_param)
-native getConfigParam(id: Int): Cell?;
+asm fun getConfigParam(id: Int): Cell? { CONFIGOPTPARAM }

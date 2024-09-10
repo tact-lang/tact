@@ -1,7 +1,14 @@
 import { ABIType, ABITypeRef } from "@ton/core";
 import { serializers } from "./serializers";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
+import { throwInternalCompilerError } from "../../errors";
 import { Writer } from "../../utils/Writer";
+
+export const maxTupleSize = 15;
+
+function throwUnsupportedType(type: ABITypeRef): never {
+    throwInternalCompilerError(`Unsupported type: ${JSON.stringify(type)}`);
+}
 
 export function writeStruct(
     name: string,
@@ -20,8 +27,7 @@ export function writeStruct(
                     continue outer;
                 }
             }
-
-            throw Error("Unsupported type: " + JSON.stringify(f.type));
+            throwUnsupportedType(f.type);
         }
     });
     w.append(`}`);
@@ -76,7 +82,7 @@ function writeParserField(
             return;
         }
     }
-    throw Error("Unsupported type");
+    throwUnsupportedType(type);
 }
 
 export function writeSerializer(
@@ -139,14 +145,42 @@ function writeSerializerField(gen: number, s: AllocationOperation, w: Writer) {
             return;
         }
     }
-    throw Error("Unsupported field type: " + JSON.stringify(type));
+    throwUnsupportedType(type);
 }
 
 export function writeTupleParser(s: ABIType, w: Writer) {
     w.append(`function loadTuple${s.name}(source: TupleReader) {`);
     w.inIndent(() => {
+        if (s.fields.length <= maxTupleSize) {
+            for (const f of s.fields) {
+                writeTupleFieldParser("_" + f.name, f.type, w);
+            }
+        } else {
+            const fields = [...s.fields];
+            while (fields.length >= maxTupleSize) {
+                const batch = fields.splice(0, maxTupleSize - 1);
+                for (const f of batch) {
+                    writeTupleFieldParser("_" + f.name, f.type, w);
+                }
+                w.append(`source = source.readTuple();`);
+            }
+            for (const f of fields) {
+                writeTupleFieldParser("_" + f.name, f.type, w);
+            }
+        }
+        w.append(
+            `return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ": _" + v.name)].join(", ")} };`,
+        );
+    });
+    w.append(`}`);
+    w.append();
+}
+
+export function writeGetterTupleParser(s: ABIType, w: Writer) {
+    w.append(`function loadGetterTuple${s.name}(source: TupleReader) {`);
+    w.inIndent(() => {
         for (const f of s.fields) {
-            writeTupleFieldParser("_" + f.name, f.type, w);
+            writeTupleFieldParser("_" + f.name, f.type, w, true);
         }
         w.append(
             `return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ": _" + v.name)].join(", ")} };`,
@@ -173,7 +207,7 @@ function writeTupleFieldParser(
             return;
         }
     }
-    throw Error("Unsupported field type: " + JSON.stringify(type));
+    throwUnsupportedType(type);
 }
 
 export function writeTupleSerializer(s: ABIType, w: Writer) {
@@ -201,7 +235,7 @@ function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
             return;
         }
     }
-    throw Error("Unsupported field type: " + JSON.stringify(type));
+    throwUnsupportedType(type);
 }
 
 export function writeDictParser(s: ABIType, w: Writer) {

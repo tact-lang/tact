@@ -1,23 +1,9 @@
 import { __DANGER_resetNodeId } from "../../grammar/ast";
-import { consoleLogger } from "../../logger";
 import { itShouldNotCompile } from "./util";
 
 describe("fail-const-eval", () => {
-    beforeAll(() => {
-        jest.spyOn(consoleLogger, "error").mockImplementation(() => {});
-        jest.spyOn(consoleLogger, "log").mockImplementation(() => {});
-    });
-
     beforeEach(() => {
         __DANGER_resetNodeId();
-    });
-
-    afterAll(() => {
-        jest.restoreAllMocks();
-    });
-
-    afterEach(() => {
-        jest.clearAllMocks();
     });
 
     itShouldNotCompile({
@@ -125,5 +111,81 @@ describe("fail-const-eval", () => {
         testName: "const-eval-invalid-address",
         errorMessage:
             "Cannot evaluate expression to a constant: invalid address encoding: FQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N",
+    });
+
+    itShouldNotCompile({
+        testName: "const-eval-div-by-zero-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: divisor expression must be non-zero",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-add-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '115792089237316195423570985008687907853269984665640564039457584007913129639936' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-div-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '115792089237316195423570985008687907853269984665640564039457584007913129639936' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-mul1-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '231584178474632390847141970017375815706539969331281128078915168015826259279870' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-mul2-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '-231584178474632390847141970017375815706539969331281128078915168015826259279872' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-positive-literal-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '115792089237316195423570985008687907853269984665640564039457584007913129639936' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-negative-literal-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '-115792089237316195423570985008687907853269984665640564039457584007913129639937' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-int-overflow-struct-instance-in-fun",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '115792089237316195423570985008687907853269984665640564039457584007913129639936' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-repeat-lower-bound",
+        errorMessage:
+            "Cannot evaluate expression to a constant: integer '-115792089237316195423570985008687907853269984665640564039457584007913129639937' does not fit into TVM Int type",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-repeat-upper-bound",
+        errorMessage:
+            "Cannot evaluate expression to a constant: repeat argument must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-ascii-overflow",
+        errorMessage:
+            "Cannot evaluate expression to a constant: ascii string is too long, expected up to 32 bytes, got 33",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-ascii-overflow-2",
+        errorMessage:
+            "Cannot evaluate expression to a constant: ascii string is too long, expected up to 32 bytes, got 33",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-rawslice-not-hex",
+        errorMessage:
+            "Cannot evaluate expression to a constant: invalid hex string: hello world",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-rawslice-overflow",
+        errorMessage:
+            "Cannot evaluate expression to a constant: hex string is too long, expected up to 255 characters, got 256",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-ascii-empty",
+        errorMessage:
+            "Cannot evaluate expression to a constant: ascii string cannot be empty",
     });
 });

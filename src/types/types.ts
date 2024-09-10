@@ -1,30 +1,28 @@
-import { ABIField, Address, Cell } from "@ton/core";
+import { ABIField, Address, Cell, Slice } from "@ton/core";
 import { throwInternalCompilerError } from "../errors";
 import {
     AstConstantDef,
     AstFunctionDef,
     AstContractInit,
     AstNativeFunctionDecl,
-    AstNode,
     AstReceiver,
     SrcInfo,
-    AstStatement,
     AstTypeDecl,
     AstId,
     AstFunctionDecl,
     AstConstantDecl,
+    AstFieldDecl,
+    AstAsmFunctionDef,
+    AstNumber,
 } from "../grammar/ast";
 import { dummySrcInfo, ItemOrigin } from "../grammar/grammar";
-// import {
-//     Value
-// } from "../grammar/value";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";
     origin: ItemOrigin;
     name: string;
     uid: number;
-    header: number | null;
+    header: AstNumber | null;
     tlb: string | null;
     signature: string | null;
     fields: FieldDescription[];
@@ -80,6 +78,7 @@ export type Value =
     | string
     | Address
     | Cell
+    | Slice
     | null
     | CommentValue
     | StructValue;
@@ -93,7 +92,7 @@ export function showValue(val: Value): string {
         return val ? "true" : "false";
     } else if (Address.isAddress(val)) {
         return val.toRawString();
-    } else if (val instanceof Cell) {
+    } else if (val instanceof Cell || val instanceof Slice) {
         return val.toString();
     } else if (val === null) {
         return "null";
@@ -116,7 +115,7 @@ export type FieldDescription = {
     as: string | null;
     default: Value | undefined;
     loc: SrcInfo;
-    ast: AstNode;
+    ast: AstFieldDecl;
     abi: ABIField;
 };
 
@@ -146,24 +145,19 @@ export type FunctionDescription = {
     origin: ItemOrigin;
     isGetter: boolean;
     isMutating: boolean;
-    isOverrides: boolean;
+    isOverride: boolean;
     isVirtual: boolean;
     isAbstract: boolean;
     isInline: boolean;
     self: string | null;
     returns: TypeRef;
     params: FunctionParameter[];
-    ast: AstFunctionDef | AstNativeFunctionDecl | AstFunctionDecl;
+    ast:
+        | AstFunctionDef
+        | AstNativeFunctionDecl
+        | AstFunctionDecl
+        | AstAsmFunctionDef;
 };
-
-export type StatementDescription =
-    | {
-          kind: "native";
-          src: AstStatement;
-      }
-    | {
-          kind: "intrinsic";
-      };
 
 export type BinaryReceiverSelector =
     | {
@@ -193,7 +187,7 @@ export type CommentReceiverSelector =
           comment: string;
       };
 
-export type EmptyReceiverSelector =
+type EmptyReceiverSelector =
     | {
           kind: "internal-empty";
       }
@@ -201,7 +195,7 @@ export type EmptyReceiverSelector =
           kind: "external-empty";
       };
 
-export type FallbackReceiverSelector =
+type FallbackReceiverSelector =
     | {
           kind: "internal-comment-fallback";
           name: AstId;

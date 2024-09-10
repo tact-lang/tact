@@ -20,49 +20,34 @@ import {
     throwInternalCompilerError,
 } from "../errors";
 import { TypeRef } from "./types";
+import { CompilerContext } from "../context";
+import { getType } from "./resolveDescriptors";
 
 type FormatDef = Record<
     string,
     { type: string; format: string | number } | undefined
 >;
 
+const uintOptions: FormatDef = Object.fromEntries(
+    [...Array(257).keys()]
+        .slice(1)
+        .map((key) => [`uint${key}`, { type: "uint", format: key }]),
+);
+
+const intOptions: FormatDef = Object.fromEntries(
+    [...Array(257).keys()]
+        .slice(1)
+        .map((key) => [`int${key}`, { type: "int", format: key }]),
+);
+
 const intFormats: FormatDef = {
-    int8: { type: "int", format: 8 },
-    int16: { type: "int", format: 16 },
-    int32: { type: "int", format: 32 },
-    int64: { type: "int", format: 64 },
-    int128: { type: "int", format: 128 },
-    int256: { type: "int", format: 256 },
-
-    uint8: { type: "uint", format: 8 },
-    uint16: { type: "uint", format: 16 },
-    uint32: { type: "uint", format: 32 },
-    uint64: { type: "uint", format: 64 },
-    uint128: { type: "uint", format: 128 },
-    uint256: { type: "uint", format: 256 },
-
+    ...uintOptions,
+    ...intOptions,
     int257: { type: "int", format: 257 },
     coins: { type: "uint", format: "coins" },
 };
 
-const intMapFormats: FormatDef = {
-    int8: { type: "int", format: 8 },
-    int16: { type: "int", format: 16 },
-    int32: { type: "int", format: 32 },
-    int64: { type: "int", format: 64 },
-    int128: { type: "int", format: 128 },
-    int256: { type: "int", format: 256 },
-
-    uint8: { type: "uint", format: 8 },
-    uint16: { type: "uint", format: 16 },
-    uint32: { type: "uint", format: 32 },
-    uint64: { type: "uint", format: 64 },
-    uint128: { type: "uint", format: 128 },
-    uint256: { type: "uint", format: 256 },
-
-    int257: { type: "int", format: 257 },
-    coins: { type: "uint", format: "coins" },
-};
+export const intMapFormats: FormatDef = { ...intFormats };
 
 const cellFormats: FormatDef = {
     remaining: { type: "cell", format: "remainder" },
@@ -376,6 +361,7 @@ export function resolveABIType(src: AstFieldDecl): ABITypeRef {
 }
 
 export function createABITypeRefFromTypeRef(
+    ctx: CompilerContext,
     src: TypeRef,
     loc: SrcInfo,
 ): ABITypeRef {
@@ -408,11 +394,20 @@ export function createABITypeRefFromTypeRef(
             return { kind: "simple", type: "string", optional: src.optional };
         }
         if (src.name === "StringBuilder") {
-            throw Error(`Unsupported type "${src.name}"`);
+            throwInternalCompilerError(`Unsupported type "${src.name}"`);
         }
 
         // Structs
-        return { kind: "simple", type: src.name, optional: src.optional };
+        const type = getType(ctx, src.name);
+        if (type.kind === "contract") {
+            return {
+                kind: "simple",
+                type: src.name + "$Data",
+                optional: src.optional,
+            };
+        } else {
+            return { kind: "simple", type: src.name, optional: src.optional };
+        }
     }
 
     if (src.kind === "map") {
@@ -444,7 +439,7 @@ export function createABITypeRefFromTypeRef(
                 );
             }
         } else {
-            throw Error(`Unsupported map key type "${src.key}"`);
+            throwInternalCompilerError(`Unsupported map key type "${src.key}"`);
         }
 
         // Resolve value type
@@ -479,7 +474,9 @@ export function createABITypeRefFromTypeRef(
                 );
             }
         } else if (src.value === "Slice") {
-            throw Error(`Unsupported map value type "${src.value}"`);
+            throwInternalCompilerError(
+                `Unsupported map value type "${src.value}"`,
+            );
         } else if (src.value === "Address") {
             value = "address";
             if (src.valueAs) {
@@ -489,9 +486,13 @@ export function createABITypeRefFromTypeRef(
                 );
             }
         } else if (src.value === "String") {
-            throw Error(`Unsupported map value type "${src.value}"`);
+            throwInternalCompilerError(
+                `Unsupported map value type "${src.value}"`,
+            );
         } else if (src.value === "StringBuilder" || src.value === "Builder") {
-            throw Error(`Unsupported map value type "${src.value}"`);
+            throwInternalCompilerError(
+                `Unsupported map value type "${src.value}"`,
+            );
         } else {
             value = src.value;
             valueFormat = "ref";
@@ -507,8 +508,8 @@ export function createABITypeRefFromTypeRef(
     }
 
     if (src.kind === "ref_bounced") {
-        throw Error("Unexpected bounced reference");
+        throwInternalCompilerError("Unexpected bounced reference");
     }
 
-    throw Error(`Unsupported type`);
+    throwInternalCompilerError(`Unsupported type`);
 }

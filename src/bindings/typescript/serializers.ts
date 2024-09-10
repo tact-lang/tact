@@ -1,5 +1,6 @@
 import { ABITypeRef } from "@ton/core";
 import { Writer } from "../../utils/Writer";
+import { throwInternalCompilerError } from "../../errors";
 
 const primitiveTypes = [
     "int",
@@ -13,7 +14,7 @@ const primitiveTypes = [
     "fixed-bytes",
 ];
 
-export type Serializer<T> = {
+type Serializer<T> = {
     // Typescript
     tsType: (v: T) => string;
     tsLoad: (v: T, slice: string, field: string, w: Writer) => void;
@@ -279,49 +280,77 @@ const addressSerializer: Serializer<{ optional: boolean }> = {
     },
 };
 
+function getCellLikeTsType(v: {
+    kind: "cell" | "slice" | "builder";
+    optional?: boolean;
+}) {
+    return v.kind == "cell" ? "Cell" : v.kind == "slice" ? "Slice" : "Builder";
+}
+
+function getCellLikeTsAsMethod(v: {
+    kind: "cell" | "slice" | "builder";
+    optional?: boolean;
+}) {
+    if (v.optional) {
+        return `?.as${getCellLikeTsType(v)}() ?? null`;
+    } else {
+        return `.as${getCellLikeTsType(v)}()`;
+    }
+}
+
 const cellSerializer: Serializer<{
     kind: "cell" | "slice" | "builder";
     optional: boolean;
 }> = {
     tsType(v) {
         if (v.optional) {
-            return "Cell | null";
+            return `${getCellLikeTsType(v)} | null`;
         } else {
-            return "Cell";
+            return getCellLikeTsType(v);
         }
     },
     tsLoad(v, slice, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${slice}.loadBit() ? ${slice}.loadRef() : null;`,
+                `let ${field} = ${slice}.loadBit() ? ${slice}.loadRef()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""} : null;`,
             );
         } else {
-            w.append(`let ${field} = ${slice}.loadRef();`);
+            w.append(
+                `let ${field} = ${slice}.loadRef()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
+            );
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${reader}.readCellOpt();`);
+            w.append(
+                `let ${field} = ${reader}.readCellOpt()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
+            );
         } else {
-            w.append(`let ${field} = ${reader}.readCell();`);
+            w.append(
+                `let ${field} = ${reader}.readCell()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
+            );
         }
     },
     tsStore(v, builder, field, w) {
         if (v.optional) {
             w.append(
-                `if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true).storeRef(${field}); } else { ${builder}.storeBit(false); }`,
+                `if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true).storeRef(${field}${v.kind !== "cell" ? ".asCell()" : ""}); } else { ${builder}.storeBit(false); }`,
             );
         } else {
-            w.append(`${builder}.storeRef(${field});`);
+            w.append(
+                `${builder}.storeRef(${field}${v.kind !== "cell" ? ".asCell()" : ""});`,
+            );
         }
     },
     tsStoreTuple(v, to, field, w) {
-        if (v.kind === "cell") {
-            w.append(`${to}.writeCell(${field});`);
-        } else if (v.kind === "slice") {
-            w.append(`${to}.writeSlice(${field});`);
+        if (v.optional) {
+            w.append(
+                `${to}.write${getCellLikeTsType(v)}(${field}${v.kind !== "cell" ? "?.asCell()" : ""});`,
+            );
         } else {
-            w.append(`${to}.writeBuilder(${field});`);
+            w.append(
+                `${to}.write${getCellLikeTsType(v)}(${field}${v.kind !== "cell" ? ".asCell()" : ""});`,
+            );
         }
     },
     abiMatcher(src) {
@@ -349,26 +378,28 @@ const cellSerializer: Serializer<{
 
 const remainderSerializer: Serializer<{ kind: "cell" | "slice" | "builder" }> =
     {
-        tsType(_v) {
-            return "Cell";
+        tsType(v) {
+            return getCellLikeTsType(v);
         },
         tsLoad(v, slice, field, w) {
-            w.append(`let ${field} = ${slice}.asCell();`);
+            w.append(
+                `let ${field} = ${slice}${v.kind !== "slice" ? getCellLikeTsAsMethod(v) : ""};`,
+            );
         },
         tsLoadTuple(v, reader, field, w) {
-            w.append(`let ${field} = ${reader}.readCell();`);
+            w.append(
+                `let ${field} = ${reader}.readCell()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
+            );
         },
         tsStore(v, builder, field, w) {
-            w.append(`${builder}.storeBuilder(${field}.asBuilder());`);
+            w.append(
+                `${builder}.storeBuilder(${field}${v.kind !== "builder" ? ".asBuilder()" : ""});`,
+            );
         },
         tsStoreTuple(v, to, field, w) {
-            if (v.kind === "cell") {
-                w.append(`${to}.writeCell(${field});`);
-            } else if (v.kind === "slice") {
-                w.append(`${to}.writeSlice(${field});`);
-            } else {
-                w.append(`${to}.writeBuilder(${field});`);
-            }
+            w.append(
+                `${to}.write${getCellLikeTsType(v)}(${field}${v.kind !== "cell" ? ".asCell()" : ""});`,
+            );
         },
         abiMatcher(src) {
             if (src.kind === "simple") {
@@ -489,7 +520,7 @@ const guard: Serializer<unknown> = {
     abiMatcher(src) {
         if (src.kind === "simple") {
             if (primitiveTypes.includes(src.type)) {
-                throw Error(
+                throwInternalCompilerError(
                     `Unable to resolve serializer for ${src.type} with ${src.format ? src.format : null} format`,
                 );
             }
@@ -497,19 +528,19 @@ const guard: Serializer<unknown> = {
         return null;
     },
     tsType(_v) {
-        throw Error("Unreachable");
+        throwInternalCompilerError("Unreachable");
     },
     tsLoad(_v, _slice, _field, _w) {
-        throw Error("Unreachable");
+        throwInternalCompilerError("Unreachable");
     },
     tsLoadTuple(_v, _reader, _field, _w) {
-        throw Error("Unreachable");
+        throwInternalCompilerError("Unreachable");
     },
     tsStore(_v, _builder, _field, _w) {
-        throw Error("Unreachable");
+        throwInternalCompilerError("Unreachable");
     },
     tsStoreTuple(_v, _to, _field, _w) {
-        throw Error("Unreachable");
+        throwInternalCompilerError("Unreachable");
     },
 };
 
@@ -550,11 +581,11 @@ const struct: Serializer<{ name: string; optional: boolean }> = {
             );
         } else {
             if (fromGet) {
-                w.append(`const ${field} = loadTuple${v.name}(${reader});`);
-            } else {
                 w.append(
-                    `const ${field} = loadTuple${v.name}(${reader}.readTuple());`,
+                    `const ${field} = loadGetterTuple${v.name}(${reader});`,
                 );
+            } else {
+                w.append(`const ${field} = loadTuple${v.name}(${reader});`);
             }
         }
     },

@@ -5,6 +5,7 @@ import { __DANGER_resetNodeId } from "../grammar/ast";
 import { openContext } from "../grammar/store";
 import { resolveStatements } from "./resolveStatements";
 import { CompilerContext } from "../context";
+import { featureEnable } from "../config/features";
 
 describe("resolveStatements", () => {
     beforeEach(() => {
@@ -17,6 +18,7 @@ describe("resolveStatements", () => {
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
             );
+            ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx);
             ctx = resolveStatements(ctx);
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
@@ -29,6 +31,7 @@ describe("resolveStatements", () => {
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
             );
+            ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx);
             expect(() => resolveStatements(ctx)).toThrowErrorMatchingSnapshot();
         });

@@ -1,5 +1,10 @@
 import { contractErrors } from "../../abi/errors";
-import { enabledInline, enabledMasterchain } from "../../config/features";
+import {
+    enabledInline,
+    enabledInterfacesGetter,
+    enabledIpfsAbiGetter,
+    enabledMasterchain,
+} from "../../config/features";
 import { ItemOrigin } from "../../grammar/grammar";
 import { InitDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
@@ -141,7 +146,11 @@ export function writeInit(
             // Generate statements
             const returns = resolveFuncTypeUnpack(t, funcIdOf("self"), ctx);
             for (const s of init.ast.statements) {
-                writeStatement(s, returns, null, ctx);
+                if (s.kind === "statement_return") {
+                    ctx.append(`return ${returns};`);
+                } else {
+                    writeStatement(s, returns, null, ctx);
+                }
             }
 
             // Return result
@@ -230,7 +239,7 @@ export function writeMainContract(
         ctx.append(``);
 
         // Write receivers
-        for (const r of Object.values(type.receivers)) {
+        for (const r of type.receivers) {
             writeReceiver(type, r, ctx);
         }
 
@@ -248,15 +257,19 @@ export function writeMainContract(
         }
 
         // Interfaces
-        writeInterfaces(type, ctx);
+        if (enabledInterfacesGetter(ctx.ctx)) {
+            writeInterfaces(type, ctx);
+        }
 
         // ABI
-        ctx.append(`_ get_abi_ipfs() method_id {`);
-        ctx.inIndent(() => {
-            ctx.append(`return "${abiLink}";`);
-        });
-        ctx.append(`}`);
-        ctx.append();
+        if (enabledIpfsAbiGetter(ctx.ctx)) {
+            ctx.append(`_ get_abi_ipfs() method_id {`);
+            ctx.inIndent(() => {
+                ctx.append(`return "${abiLink}";`);
+            });
+            ctx.append(`}`);
+            ctx.append();
+        }
 
         // Deployed
         ctx.append(`_ lazy_deployment_completed() method_id {`);
@@ -346,7 +359,7 @@ export function writeMainContract(
                 // Throw if not handled
                 ctx.append(`;; Throw if not handled`);
                 ctx.append(
-                    `throw_unless(handled, ${contractErrors.invalidMessage.id});`,
+                    `throw_unless(${contractErrors.invalidMessage.id}, handled);`,
                 );
                 ctx.append();
 

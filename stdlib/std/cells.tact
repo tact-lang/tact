@@ -2,103 +2,101 @@
 // Builder
 //
 
-@name(begin_cell)
-native beginCell(): Builder;
+asm fun beginCell(): Builder { NEWC }
 
+// special treatment in Func compiler, so not replaced with asm "STIX"
 @name(store_int)
 extends native storeInt(self: Builder, value: Int, bits: Int): Builder;
 
+// special treatment in Func compiler, so not replaced with asm "STUX"
 @name(store_uint)
 extends native storeUint(self: Builder, value: Int, bits: Int): Builder;
 
 @name(__tact_store_bool)
 extends native storeBool(self: Builder, value: Bool): Builder;
 
-@name(store_coins)
-extends native storeCoins(self: Builder, value: Int): Builder;
+@name(__tact_store_bool)
+extends native storeBit(self: Builder, value: Bool): Builder;
 
-@name(store_ref)
-extends native storeRef(self: Builder, cell: Cell): Builder;
+asm extends fun storeCoins(self: Builder, value: Int): Builder { STVARUINT16 }
 
-@name(store_slice)
-extends native storeSlice(self: Builder, cell: Slice): Builder;
+asm(cell self) extends fun storeRef(self: Builder, cell: Cell): Builder { STREF }
+
+asm extends fun storeSlice(self: Builder, cell: Slice): Builder { STSLICER }
+
+asm extends fun storeBuilder(self: Builder, cell: Builder): Builder { STBR }
 
 @name(__tact_store_address)
 extends native storeAddress(self: Builder, address: Address): Builder;
 
-@name(end_cell)
-extends native endCell(self: Builder): Cell;
+asm(cell self) extends fun storeMaybeRef(self: Builder, cell: Cell?): Builder { STOPTREF }
 
-@name(builder_refs)
-extends native refs(self: Builder): Int;
+asm extends fun endCell(self: Builder): Cell { ENDC }
 
-@name(builder_bits)
-extends native bits(self: Builder): Int;
+asm extends fun refs(self: Builder): Int { BREFS }
+
+asm extends fun bits(self: Builder): Int { BBITS }
 
 //
 // Slice
 //
 
-@name(begin_parse)
-extends native beginParse(self: Cell): Slice;
+asm extends fun beginParse(self: Cell): Slice { CTOS }
 
-@name(load_ref)
-extends mutates native loadRef(self: Slice): Cell;
+asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 
-@name(preload_ref)
-extends native preloadRef(self: Slice): Cell;
+asm extends fun preloadRef(self: Slice): Cell { PLDREF }
 
+// special treatment in Func compiler, so not replaced with asm "LDSLICEX"
 @name(load_bits)
 extends mutates native loadBits(self: Slice, l: Int): Slice;
 
+// special treatment in Func compiler, so not replaced with asm "PLDSLICEX"
 @name(preload_bits)
 extends native preloadBits(self: Slice, l: Int): Slice;
 
+// special treatment in Func compiler, so not replaced with asm "LDIX"
 @name(load_int)
 extends mutates native loadInt(self: Slice, l: Int): Int;
 
+// special treatment in Func compiler, so not replaced with asm "PLDIX"
 @name(preload_int)
 extends native preloadInt(self: Slice, l: Int): Int;
 
+// special treatment in Func compiler, so not replaced with asm "LDUX"
 @name(load_uint)
 extends mutates native loadUint(self: Slice, l: Int): Int;
 
+// special treatment in Func compiler, so not replaced with asm "PLDUX"
 @name(preload_uint)
 extends native preloadUint(self: Slice, l: Int): Int;
 
-@name(__tact_load_bool)
-extends mutates native loadBool(self: Slice): Bool;
+asm(-> 1 0) extends mutates fun loadBool(self: Slice): Bool { 1 LDI }
 
-@name(load_coins)
-extends mutates native loadCoins(self: Slice): Int;
+asm(-> 1 0) extends mutates fun loadBit(self: Slice): Bool { 1 LDI }
+
+asm( -> 1 0) extends mutates fun loadCoins(self: Slice): Int { LDVARUINT16 }
 
 @name(__tact_load_address)
 extends mutates native loadAddress(self: Slice): Address;
 
-@name(skip_bits)
-extends mutates native skipBits(self: Slice, l: Int);
+asm extends mutates fun skipBits(self: Slice, l: Int) { SDSKIPFIRST }
 
-@name(end_parse)
-extends native endParse(self: Slice);
+asm extends fun endParse(self: Slice) { ENDS }
 
 //
 // Slice size
 //
 
-@name(slice_refs)
-extends native refs(self: Slice): Int;
+asm extends fun refs(self: Slice): Int { SREFS }
 
-@name(slice_bits)
-extends native bits(self: Slice): Int;
+asm extends fun bits(self: Slice): Int { SBITS }
 
-@name(slice_empty?)
-extends native empty(self: Slice): Bool;
+asm extends fun empty(self: Slice): Bool { SEMPTY }
 
-@name(slice_data_empty?)
-extends native dataEmpty(self: Slice): Bool;
+asm extends fun dataEmpty(self: Slice): Bool { SDEMPTY }
 
-@name(slice_refs_empty?)
-extends native refsEmpty(self: Slice): Bool;
+asm extends fun refsEmpty(self: Slice): Bool { SREMPTY }
 
 //
 // Conversions

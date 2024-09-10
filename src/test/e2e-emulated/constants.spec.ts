@@ -1,21 +1,34 @@
 import { toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { ConstantTester } from "./contracts/output/constants_ConstantTester";
+import "@ton/test-utils";
 
 describe("constants", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-    it("should implement constants correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await ConstantTester.fromInit());
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
-        expect(contract).toMatchSnapshot();
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<ConstantTester>;
 
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await ConstantTester.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should implement constants correctly", async () => {
         // Check methods
         expect(await contract.getSomething1()).toEqual(11n);
         expect(await contract.getSomething2()).toBeNull();
@@ -101,5 +114,19 @@ describe("constants", () => {
         expect((await contract.getSomething44()).toRawString()).toEqual(
             "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
         );
+
+        expect(await contract.getGlobalConst1()).toEqual(1n);
+        expect(await contract.getGlobalConst2()).toEqual(2n);
+        expect(await contract.getGlobalConst3()).toEqual(4n);
+        expect(await contract.getGlobalConst4()).toEqual(15n);
+        expect(await contract.getGlobalConst5()).toEqual(15n);
+        expect(await contract.getGlobalConst6()).toEqual(26n);
+        expect(await contract.getGlobalConst7()).toEqual(27n);
+        expect(await contract.getGlobalConst8()).toEqual(2n);
+        expect(await contract.getGlobalConst9()).toEqual(2n);
+        expect(await contract.getGlobalConst10()).toEqual(24n);
+        expect(await contract.getGlobalConst11()).toEqual(24n);
+        expect(await contract.getGlobalConst12()).toEqual(8n);
+        expect(await contract.getGlobalConst13()).toEqual(8n);
     });
 });

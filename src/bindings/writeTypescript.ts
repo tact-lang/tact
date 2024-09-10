@@ -5,6 +5,7 @@ import {
     writeArgumentToStack,
     writeDictParser,
     writeGetParser,
+    writeGetterTupleParser,
     writeInitSerializer,
     writeParser,
     writeSerializer,
@@ -13,6 +14,7 @@ import {
     writeTupleSerializer,
 } from "./typescript/writeStruct";
 import { AllocationCell } from "../storage/operation";
+import { throwInternalCompilerError } from "../errors";
 import { topologicalSort } from "../utils/utils";
 import {
     allocate,
@@ -31,7 +33,9 @@ function writeArguments(args: ABIArgument[]) {
                 continue outer;
             }
         }
-        throw Error("Unsupported type: " + JSON.stringify(f.type));
+        throwInternalCompilerError(
+            `Unsupported type: ${JSON.stringify(f.type)}`,
+        );
     }
 
     return res;
@@ -135,6 +139,7 @@ export function writeTypescript(
             writeSerializer(s, allocations[s.name]!.root, w);
             writeParser(s, allocations[s.name]!.root, w);
             writeTupleParser(s, w);
+            writeGetterTupleParser(s, w);
             writeTupleSerializer(s, w);
             writeDictParser(s, w);
         }
@@ -214,16 +219,38 @@ export function writeTypescript(
     w.append(`]`);
     w.append();
 
+    const getterNames: Map<string, string> = new Map();
+
     // Getters
     w.append(`const ${abi.name}_getters: ABIGetter[] = [`);
     w.inIndent(() => {
         if (abi.getters) {
             for (const t of abi.getters) {
                 w.append(JSON.stringify(t) + ",");
+
+                let getterName = changeCase.pascalCase(t.name);
+                if (Array.from(getterNames.values()).includes(getterName)) {
+                    getterName = t.name;
+                }
+                getterNames.set(t.name, getterName);
             }
         }
     });
     w.append(`]`);
+    w.append();
+
+    // Getter mapping
+    w.append(
+        `export const ${abi.name}_getterMapping: { [key: string]: string } = {`,
+    );
+    w.inIndent(() => {
+        if (abi.getters) {
+            for (const t of abi.getters) {
+                w.append(`'${t.name}': 'get${getterNames.get(t.name)}',`);
+            }
+        }
+    });
+    w.append(`}`);
     w.append();
 
     // Receivers
@@ -564,7 +591,7 @@ export function writeTypescript(
         if (abi.getters) {
             for (const g of abi.getters) {
                 w.append(
-                    `async get${changeCase.pascalCase(g.name)}(${["provider: ContractProvider", ...writeArguments(g.arguments ? g.arguments : [])].join(", ")}) {`,
+                    `async get${getterNames.get(g.name)}(${["provider: ContractProvider", ...writeArguments(g.arguments ? g.arguments : [])].join(", ")}) {`,
                 );
                 w.inIndent(() => {
                     w.append(`let builder = new TupleBuilder();`);

@@ -1,0 +1,2 @@
+@name(_)
+native idTest();

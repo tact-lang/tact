@@ -3,3 +3,7 @@ import "./large-contract.tact";
 import "./struct-field-storage-annotation.tact";
 import "./struct-field-func-keywords-name-clash";
 import "./message-opcode-parsing.tact";
+import "./struct-with-default-and-optional-fields";
+import "./mutating-method-on-non-lvalues";
+import "./var-scope-global-fun-shadowing-allowed";
+import "./map-uint-bool-get";

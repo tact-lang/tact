@@ -1,8 +1,7 @@
-// eslint-disable rule-name
-import { OpenedContract, beginCell, toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { beginCell, toNano } from "@ton/core";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { DNSTester } from "./contracts/output/dns_DNSTester";
+import "@ton/test-utils";
 
 function convertToInternal(src: string) {
     if (src === ".") {
@@ -18,34 +17,32 @@ function convertToInternal(src: string) {
     }
     res = Buffer.concat([res, Buffer.from([0])]);
     return res;
-    // let res = Buffer.alloc(0);
-    // for (let s of src) {
-    //     if (s === '.') {
-    //         res = Buffer.concat([res, Buffer.from([0])]);
-    //     } else {
-    //         res = Buffer.concat([res, Buffer.from(s, 'latin1')]);
-    //     }
-    // }
-    // if (!src.endsWith('.')) {
-    //     res = Buffer.concat([res, Buffer.from([0])]);
-    // }
-    // return res;
 }
 
 describe("dns", () => {
-    let contract: OpenedContract<DNSTester>;
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<DNSTester>;
 
     beforeEach(async () => {
-        __DANGER_resetNodeId();
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        contract = system.open(await DNSTester.fromInit());
-        await contract.send(
-            treasure,
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await DNSTester.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
             { value: toNano("10") },
             { $$type: "Deploy", queryId: 0n },
         );
-        await system.run();
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
     });
 
     const invalidNames = [
@@ -87,7 +84,10 @@ describe("dns", () => {
             const internalAddress = convertToInternal(invalidName);
             expect(
                 await contract.getDnsInternalVerify(
-                    beginCell().storeBuffer(internalAddress).endCell(),
+                    beginCell()
+                        .storeBuffer(internalAddress)
+                        .endCell()
+                        .asSlice(),
                 ),
             ).toBe(false);
         });
@@ -97,8 +97,7 @@ describe("dns", () => {
         it(`should convert valid name: ${validName}`, async () => {
             const data = (await contract.getStringToInternal(validName))!;
             const received = data
-                .beginParse()
-                .loadBuffer(data.bits.length / 8)
+                .loadBuffer(data.remainingBits / 8)
                 .toString("hex");
             expect(received).toBe(
                 convertToInternal(
@@ -112,7 +111,7 @@ describe("dns", () => {
 
     for (const validName of validNames) {
         if (validName !== ".") {
-            it(`should convert valid name: ${validName}`, async () => {
+            it(`should verify DNS internal structure for valid name: ${validName}`, async () => {
                 const data = (await contract.getStringToInternal(validName))!;
                 expect(await contract.getDnsInternalVerify(data)).toBe(true);
             });
@@ -126,21 +125,20 @@ describe("dns", () => {
             ))!;
             data1 = await contract.getInternalNormalize(data1);
             const received1 = data1
-                .beginParse()
-                .loadBuffer(data1.bits.length / 8)
+                .loadBuffer(data1.remainingBits / 8)
                 .toString("hex");
             let data2 = (await contract.getStringToInternal(
                 equalNormalizedElem[1]!,
             ))!;
             data2 = await contract.getInternalNormalize(data2);
             const received2 = data2
-                .beginParse()
-                .loadBuffer(data2.bits.length / 8)
+                .loadBuffer(data2.remainingBits / 8)
                 .toString("hex");
             expect(received1).toBe(received2);
             expect(received1.length).toBe(received2.length);
         });
     }
+
     for (const notEqualNormalizedElem of notEqualNormalized) {
         it(`should convert not equal normalized names: ${notEqualNormalizedElem[0]!} ${notEqualNormalizedElem[1]!}`, async () => {
             let data1 = (await contract.getStringToInternal(
@@ -148,16 +146,14 @@ describe("dns", () => {
             ))!;
             data1 = await contract.getInternalNormalize(data1);
             const received1 = data1
-                .beginParse()
-                .loadBuffer(data1.bits.length / 8)
+                .loadBuffer(data1.remainingBits / 8)
                 .toString("hex");
             let data2 = (await contract.getStringToInternal(
                 notEqualNormalizedElem[1]!,
             ))!;
             data2 = await contract.getInternalNormalize(data2);
             const received2 = data2
-                .beginParse()
-                .loadBuffer(data2.bits.length / 8)
+                .loadBuffer(data2.remainingBits / 8)
                 .toString("hex");
             expect(received1).not.toBe(received2);
             expect(received1.length).toBe(received2.length);
@@ -168,7 +164,7 @@ describe("dns", () => {
         it("should resolve name " + validName, async () => {
             const internalAddress = convertToInternal(validName);
             const resolved = (await contract.getDnsresolve(
-                beginCell().storeBuffer(internalAddress).endCell(),
+                beginCell().storeBuffer(internalAddress).endCell().asSlice(),
                 1n,
             ))!;
             expect(resolved.prefix).toBe(BigInt(internalAddress.length * 8));
@@ -198,7 +194,10 @@ describe("dns", () => {
             const internalAddress = convertToInternal(invalidName);
             await expect(
                 contract.getDnsresolve(
-                    beginCell().storeBuffer(internalAddress).endCell(),
+                    beginCell()
+                        .storeBuffer(internalAddress)
+                        .endCell()
+                        .asSlice(),
                     1n,
                 ),
             ).rejects.toThrowError();
@@ -216,7 +215,8 @@ describe("dns", () => {
                     .storeBuffer(
                         Buffer.concat([Buffer.alloc(1, 0), internalAddress]),
                     )
-                    .endCell(),
+                    .endCell()
+                    .asSlice(),
                 1n,
             ))!;
             expect(resolved.prefix).toBe(

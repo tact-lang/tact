@@ -9,7 +9,83 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- The `exists` method for the `Map` type: PR [#581](https://github.com/tact-lang/tact/pull/581)
+- The `storeBit` method for `Builder` type and the `loadBit` method for `Slice` type: PR [#699](https://github.com/tact-lang/tact/pull/699)
+- The `toSlice` method for structs and messages: PR [#630](https://github.com/tact-lang/tact/pull/630)
+- Wider range of serialization options for integers — `uint1` through `uint256` and `int1` through `int257`: PR [#558](https://github.com/tact-lang/tact/pull/558)
+- The `deepEquals` method for the `Map` type: PR [#637](https://github.com/tact-lang/tact/pull/637)
+- `asm` bodies for module-level functions: PR [#769](https://github.com/tact-lang/tact/pull/769)
+- Corresponding stdlib functions for new TVM instructions from 2023.07 and 2024.04 upgrades: PR [#331](https://github.com/tact-lang/tact/pull/331)
+- `slice`, `rawSlice`, `ascii` and `crc32` built-in functions: PR [#787](https://github.com/tact-lang/tact/pull/787)
+- `Builder.storeMaybeRef`, `parseStdAddress` and `parseVarAddress` stdlib functions: PR [#793](https://github.com/tact-lang/tact/pull/793)
+
+### Changed
+
+- Constant evaluator now uses an interpreter: PR [#664](https://github.com/tact-lang/tact/pull/664). This increases the expression simplification capabilities of the constant evaluator to expressions that include:
+  - Calls to user-defined functions.
+  - References to declared global constants.
+- Allow omitting semicolons in contract/trait declarations and definitions: PR [#718](https://github.com/tact-lang/tact/pull/718)
+- Compiler Tests are now using `@ton/sandbox` instead of `@tact-lang/emulator`: PR [#651](https://github.com/tact-lang/tact/pull/651)
+- The required node.js version is bumped to 22: PR [#769](https://github.com/tact-lang/tact/pull/769)
+
+### Fixed
+
+- Traits can override inherited abstract functions: PR [#724](https://github.com/tact-lang/tact/pull/724)
+- Fix code generation bug for maps from unsigned integers to Boolean values: PR [#725](https://github.com/tact-lang/tact/pull/725)
+- Compiler failure when `toString` gets called as a static function and not a method: PR [#745](https://github.com/tact-lang/tact/pull/745)
+- Tact AST keeps the original format of integer literals (hex/dec/oct/bin): PR [#771](https://github.com/tact-lang/tact/pull/771)
+- Message opcodes are now checked if they fit into 32 bits: PR [#771](https://github.com/tact-lang/tact/pull/771)
+- Disallow zero binary message opcodes as those are reserved for text messages: PR [#786](https://github.com/tact-lang/tact/pull/786)
+- Return-statements in `init()` function do not cause FunC compilation error anymore: PR [#794](https://github.com/tact-lang/tact/pull/794)
+
+## [1.4.4] - 2024-08-18
+
+### Added
+
+- Initial version of the API providing AST equivalence check: PR [#689](https://github.com/tact-lang/tact/pull/689)
+
+### Fixed
+
+- Returning `self` from getters is now allowed: PR [#666](https://github.com/tact-lang/tact/pull/666)
+- Remainder fields in the middle of a struct are now forbidden: PR [#697](https://github.com/tact-lang/tact/pull/697)
+- Defining two native functions from the same FunC function now does not fail compilation: PR [#699](https://github.com/tact-lang/tact/pull/699)
+- Map types are checked for well-formedness in all type ascriptions: PR [#704](https://github.com/tact-lang/tact/pull/704)
+
+## [1.4.3] - 2024-08-16
+
+### Fixed
+
+- Parsing of optional nested struct fields does not cause the `Not a tuple` error anymore: PR [#692](https://github.com/tact-lang/tact/pull/692)
+- Disallow shadowing of recursive function names: PR [#693](https://github.com/tact-lang/tact/pull/693)
+- Better error message for the case when a constant shadows an stdlib identifier: PR [#694](https://github.com/tact-lang/tact/pull/694)
+
+## [1.4.2] - 2024-08-13
+
+### Changed
+
+- Removed unsupported iterators API: PR [#633](https://github.com/tact-lang/tact/pull/633)
+- Created a separate API function to enable compiler features: PR [#647](https://github.com/tact-lang/tact/pull/647)
+- Use the `ILogger` interface to enable API users implement their own loggers: PR [#668](https://github.com/tact-lang/tact/pull/668)
+- Use specific Internal or Compiler errors when throwing exceptions: PR [#669](https://github.com/tact-lang/tact/pull/669)
+
+### Fixed
+
+- FunC function identifiers with characters from hexadecimal set: PR [#636](https://github.com/tact-lang/tact/pull/636)
+- Throw syntax error for module-level (top-level) constants with attributes: PR [#644](https://github.com/tact-lang/tact/pull/644)
+- Typechecking for optional types when the argument type is not an equality type: PR [#650](https://github.com/tact-lang/tact/pull/650)
+- Getters now return flattened types for structs as before: PR [#679](https://github.com/tact-lang/tact/pull/679)
+- New bindings cannot shadow global constants: PR [#680](https://github.com/tact-lang/tact/pull/680)
+- Disallow using assignment operators on constants: PR [#682](https://github.com/tact-lang/tact/pull/682)
+- Fix code generation for some non-Lvalues that weren't turned into Lvalues by wrapping them in a function call: PR [#683](https://github.com/tact-lang/tact/pull/683)
+
+## [1.4.1] - 2024-07-26
+
+### Added
+
 - `-e` / `--eval` CLI flags to evaluate constant Tact expressions: PR [#462](https://github.com/tact-lang/tact/pull/462)
+- `-q` / `--quiet` CLI flags to suppress compiler log output: PR [#509](https://github.com/tact-lang/tact/pull/509)
+- Markdown report for compiled contracts now includes Mermaid diagrams for trait inheritance and contract dependencies: PR [#560](https://github.com/tact-lang/tact/pull/560)
+- Documentation comments to Zod schema of `tact.config.json` for descriptive hover pop-ups in editors: PR [#575](https://github.com/tact-lang/tact/pull/575)
 
 ### Changed
 
@@ -18,6 +94,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - External receivers are enabled for single file compilation: PR [#495](https://github.com/tact-lang/tact/pull/495)
 - `[DEBUG]` prefix was removed from debug prints because a similar prefix was already present: PR [#506](https://github.com/tact-lang/tact/pull/506)
 - File paths in debug prints always use POSIX file paths (even on Windows): PR [#523](https://github.com/tact-lang/tact/pull/523)
+- The IPFS ABI and supported interfaces getters are not generated by default; to generate those, set to `true` the two newly introduced per-project options in `tact.config.json`: `ipfsAbiGetter` and `interfacesGetter`: PR [#534](https://github.com/tact-lang/tact/pull/534)
+- Values of `Slice` and `Builder` types are not converted to `Cell` in Typescript bindings anymore: PR [#562](https://github.com/tact-lang/tact/pull/562)
+- Debug prints now include line content for better debugging experience: PR [#563](https://github.com/tact-lang/tact/pull/563)
+- Error messages now suggest to add the `self` prefix if there is an attempt to access a missing variable when the contract storage has a variable with the same name: PR [#568](https://github.com/tact-lang/tact/pull/568)
+- Error messages now suggest to add or remove parentheses if there is an attempt to access a missing field when there is a method with the same name (and vice versa): PR [#622](https://github.com/tact-lang/tact/pull/622)
 
 ### Fixed
 
@@ -34,6 +115,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Error message for duplicate receiver definitions inherited from traits: PR [#519](https://github.com/tact-lang/tact/issues/519)
 - Usage of `initOf` inside of `init()` does not cause error `135` anymore: PR [#521](https://github.com/tact-lang/tact/issues/521)
 - Usage of `newAddress` with hash parts shorter than 64 hexadecimal digits does not cause constant evaluation error `Invalid address hash length` anymore: PR [#525](https://github.com/tact-lang/tact/pull/525)
+- Introduced a streamlined error logger for compilation pipeline to support third-party tools: PR [#509](https://github.com/tact-lang/tact/pull/509)
+- Collisions of PascalCase getter names in generated wrappers are now checked: PR [#556](https://github.com/tact-lang/tact/pull/556)
+- Display a clearer error in case the source code file is missing when using the Tact CLI: PR [#561](https://github.com/tact-lang/tact/pull/561)
+- Error messages for unicode code points outside of valid range: PR [#535](https://github.com/tact-lang/tact/pull/535)
+- Correct regex for unicode code points and escaping of control codes in generated comments: PR [#535](https://github.com/tact-lang/tact/pull/535)
+- Add `impure` specifier to some stdlib functions that are expected to throw errors: PR [#565](https://github.com/tact-lang/tact/pull/565)
+- Defining non-existing native FunC functions now throws an understandable compilation error: PR [#585](https://github.com/tact-lang/tact/pull/585)
+- Bump used `@tact-lang/opcode` version to `0.0.16` which fixes the issue with `DIV` instructions: PR [#589](https://github.com/tact-lang/tact/pull/589)
+- Code generation for `recv_external` now correctly throws exit code `130` when processing an unexpected message: PR [#604](https://github.com/tact-lang/tact/pull/604)
+- Allocator bug resulting in cell overflows for some contract data layouts: PR [#615](https://github.com/tact-lang/tact/pull/615)
+- Structs with more than 15 fields do not cause a FunC compilation error anymore: PR [#590](https://github.com/tact-lang/tact/pull/590)
+- Typechecking for constant and struct field initializers: PR [#621](https://github.com/tact-lang/tact/pull/621)
+- Constant evaluation for structures with default and optional fields: PR [#621](https://github.com/tact-lang/tact/pull/621)
+- Report error for self-referencing and mutually-recursive types: PR [#624](https://github.com/tact-lang/tact/pull/624)
+- Error reporting for bounced receivers with missing parameter types: PR [#626](https://github.com/tact-lang/tact/pull/626)
+- Allowed range of FunC function identifiers in `grammar.ohm`: PR [#628](https://github.com/tact-lang/tact/pull/628)
 
 ## [1.4.0] - 2024-06-21
 
@@ -88,6 +185,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All identifiers in error messages are now quoted for consistency: PR [#363](https://github.com/tact-lang/tact/pull/363)
 - The Tact grammar has been refactored for better readability: PR [#365](https://github.com/tact-lang/tact/pull/365)
 - Error messages now use relative file paths: PR [#456](https://github.com/tact-lang/tact/pull/456)
+- Comparison between `null` and non-optionals now throws a compilation error: PR [#571](https://github.com/tact-lang/tact/pull/571)
 
 ### Fixed
 

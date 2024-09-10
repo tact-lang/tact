@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getters should implement getters correctly 1`] = `
+{
+  "$$type": "S",
+  "a": 1n,
+  "b": 2n,
+}
+`;
+
+exports[`getters should implement getters correctly 2`] = `
+{
+  "$$type": "Test$Data",
+  "anotherData": x{},
+  "id": 0n,
+}
+`;
+
+exports[`getters should implement getters correctly 3`] = `
+{
+  "$$type": "SetIdAndData",
+  "data": x{},
+  "id": 42n,
+}
+`;
+
+exports[`getters should implement getters correctly 4`] = `
+{
+  "$$type": "Test$Data",
+  "anotherData": x{000000000000007B},
+  "id": 123n,
+}
+`;

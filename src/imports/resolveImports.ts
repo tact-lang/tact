@@ -1,5 +1,6 @@
 import { ItemOrigin, parseImports } from "../grammar/grammar";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
+import { throwCompilationError } from "../errors";
 import { resolveLibrary } from "./resolveLibrary";
 
 export function resolveImports(args: {
@@ -15,9 +16,17 @@ export function resolveImports(args: {
     // const stdlibFunc = args.stdlib.readFile(stdlibFuncPath).toString();
 
     const stdlibTactPath = args.stdlib.resolve("stdlib.tact");
+    if (!args.stdlib.exists(stdlibTactPath)) {
+        throwCompilationError(
+            `Could not find stdlib.tact at ${stdlibTactPath}`,
+        );
+    }
     const stdlibTact = args.stdlib.readFile(stdlibTactPath).toString();
 
     const codePath = args.project.resolve(args.entrypoint);
+    if (!args.project.exists(codePath)) {
+        throwCompilationError(`Could not find entrypoint ${args.entrypoint}`);
+    }
     const code = args.project.readFile(codePath).toString();
 
     //
@@ -41,7 +50,9 @@ export function resolveImports(args: {
                 stdlib: args.stdlib,
             });
             if (!resolved.ok) {
-                throw new Error(`Could not resolve import "${i}" in ${path}`);
+                throwCompilationError(
+                    `Could not resolve import "${i}" in ${path}`,
+                );
             }
 
             // Check if already imported
@@ -58,6 +69,11 @@ export function resolveImports(args: {
             // Load code
             const vfs =
                 resolved.source === "project" ? args.project : args.stdlib;
+            if (!vfs.exists(resolved.path)) {
+                throwCompilationError(
+                    `Could not find source file ${resolved.path}`,
+                );
+            }
             const code: string = vfs.readFile(resolved.path).toString();
 
             // Add to imports

@@ -43,6 +43,11 @@ message SetUIntMap9 {
     value: Int?;
 }
 
+message SetUIntMap10 {
+    key: Int;
+    value: Int?;
+}
+
 message SetAddrMap1 {
     key: Address;
     value: Int?;
@@ -118,6 +123,10 @@ message DelUIntMap9 {
     key: Int;
 }
 
+message DelUIntMap10 {
+    key: Int;
+}
+
 message DelAddrMap1 {
     key: Address;
 }
@@ -145,6 +154,8 @@ message DelAddrMap6 {
 message DelAddrMap7 {
     key: Address;
 }
+
+message CheckNullReference {}
 
 contract MapTestContract {
 
@@ -194,6 +205,11 @@ contract MapTestContract {
     intMap9_4: map<Int, Int as uint64>;
     intMap9_5: map<Int, Int as uint128>;
     intMap9_6: map<Int, Int as uint256>;
+
+    intMap10_1: map<Int as int42, Int as int27>;
+    intMap10_2: map<Int as int29, Int as uint31>;
+    intMap10_3: map<Int as uint33, Int as int34>;
+    intMap10_4: map<Int as uint35, Int as uint36>;
 
     receive(msg: SetIntMap1) {
         self.intMap1.set(msg.key, msg.value);
@@ -253,6 +269,13 @@ contract MapTestContract {
         self.intMap9_6.set(msg.key, msg.value);
     }
 
+    receive(msg: SetUIntMap10) {
+        self.intMap10_1.set(msg.key, msg.value);
+        self.intMap10_2.set(msg.key, msg.value);
+        self.intMap10_3.set(msg.key, msg.value);
+        self.intMap10_4.set(msg.key, msg.value);
+    }
+
     receive(msg: DelIntMap1) {
         self.intMap1.del(msg.key);
     }
@@ -310,6 +333,13 @@ contract MapTestContract {
         self.intMap9_4.del(msg.key);
         self.intMap9_5.del(msg.key);
         self.intMap9_6.del(msg.key);
+    }
+
+    receive(msg: DelUIntMap10) {
+        self.intMap10_1.del(msg.key);
+        self.intMap10_2.del(msg.key);
+        self.intMap10_3.del(msg.key);
+        self.intMap10_4.del(msg.key);
     }
 
     get fun intMap1(): map<Int, Int> {
@@ -560,6 +590,38 @@ contract MapTestContract {
         return self.intMap9_6.get(key);
     }
 
+    get fun intMap10_1(): map<Int as int42, Int as int27> {
+        return self.intMap10_1;
+    }
+
+    get fun intMap10_1Value(key: Int): Int? {
+        return self.intMap10_1.get(key);
+    }
+
+    get fun intMap10_2(): map<Int as int29, Int as uint31> {
+        return self.intMap10_2;
+    }
+
+    get fun intMap10_2Value(key: Int): Int? {
+        return self.intMap10_2.get(key);
+    }
+
+    get fun intMap10_3(): map<Int as uint33, Int as int34> {
+        return self.intMap10_3;
+    }
+
+    get fun intMap10_3Value(key: Int): Int? {
+        return self.intMap10_3.get(key);
+    }
+
+    get fun intMap10_4(): map<Int as uint35, Int as uint36> {
+        return self.intMap10_4;
+    }
+
+    get fun intMap10_4Value(key: Int): Int? {
+        return self.intMap10_4.get(key);
+    }
+
     //
     // Int as Key inside the code (not storage)
     //
@@ -591,7 +653,7 @@ contract MapTestContract {
 
         return value1 + value2 + value3 + value4 + value5 + value6 + value7;
     }
-    
+
     get fun intMap11Value(key: Int, value: Int): Int {
         let map1: map<Int as uint8, Int> = emptyMap();
         let map2: map<Int as uint16, Int> = emptyMap();
@@ -669,8 +731,27 @@ contract MapTestContract {
         let value5: Int = map5.get(key)!!;
         let value6: Int = map6.get(key)!!;
         let value7: Int = map7.get(key)!!;
-        
+
         return value1 + value2 + value3 + value4 + value5 + value6 + value7;
+    }
+
+    get fun intMap14Value(key: Int, value: Int): Int {
+        let map1: map<Int as int42, Int as int27> = emptyMap();
+        let map2: map<Int as int29, Int as uint31> = emptyMap();
+        let map3: map<Int as uint33, Int as int34> = emptyMap();
+        let map4: map<Int as uint35, Int as uint36> = emptyMap();
+
+        map1.set(key, value);
+        map2.set(key, value);
+        map3.set(key, value);
+        map4.set(key, value);
+
+        let value1: Int = map1.get(key)!!;
+        let value2: Int = map2.get(key)!!;
+        let value3: Int = map3.get(key)!!;
+        let value4: Int = map4.get(key)!!;
+
+        return value1 + value2 + value3 + value4;
     }
 
     //
@@ -793,7 +874,7 @@ contract MapTestContract {
     get fun addrMap1(): map<Address, Int> {
         return self.addrMap1;
     }
-    
+
     get fun addrMap1Value(key: Address): Int? {
         return self.addrMap1.get(key);
     }
@@ -944,5 +1025,55 @@ contract MapTestContract {
 
     get fun intMap1Del(key: Int): Bool {
         return self.intMap1.del(key);
+    }
+
+    get fun checkNullReference(): Int {
+        let m: map<Int, Int> = emptyMap();
+        return m.get(0)!!;
+    }
+
+    receive(msg: CheckNullReference) {
+        let m: map<Int, Int> = emptyMap();
+        m.get(0)!!;
+    }
+    
+    get fun intMap1Exists(key: Int): Bool {
+        return self.intMap1.exists(key);
+    }
+
+    get fun intMap2Exists(key: Int): Bool {
+        return self.intMap2.exists(key);
+    }
+
+    get fun intMap3Exists(key: Int): Bool {
+        return self.intMap3.exists(key);
+    }
+
+    get fun intMap4Exists(key: Int): Bool {
+        return self.intMap4.exists(key);
+    }
+
+    get fun intMap5Exists(key: Int): Bool {
+        return self.intMap5.exists(key);
+    }
+
+    get fun addrMap1Exists(key: Address): Bool {
+        return self.addrMap1.exists(key);
+    }
+
+    get fun addrMap2Exists(key: Address): Bool {
+        return self.addrMap2.exists(key);
+    }
+
+    get fun addrMap3Exists(key: Address): Bool {
+        return self.addrMap3.exists(key);
+    }
+
+    get fun addrMap4Exists(key: Address): Bool {
+        return self.addrMap4.exists(key);
+    }
+
+    get fun addrMap5Exists(key: Address): Bool {
+        return self.addrMap5.exists(key);
     }
 }

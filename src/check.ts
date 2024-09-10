@@ -7,7 +7,7 @@ import { precompile } from "./pipeline/precompile";
 export type CheckResultItem = {
     type: "error" | "warning";
     message: string;
-    location: {
+    location?: {
         file: string;
         line: number;
         column: number;
@@ -30,7 +30,7 @@ export function check(args: {
 }): CheckResult {
     // Create context
     const stdlib = createVirtualFileSystem("@stdlib/", files);
-    let ctx: CompilerContext = new CompilerContext({ shared: {} });
+    let ctx: CompilerContext = new CompilerContext();
     ctx = featureEnable(ctx, "debug"); // Enable debug flag (does not affect type checking in practice)
     ctx = featureEnable(ctx, "masterchain"); // Enable masterchain flag to avoid masterchain-specific errors
     ctx = featureEnable(ctx, "external"); // Enable external messages flag to avoid external-specific errors
@@ -44,20 +44,25 @@ export function check(args: {
             items.push({
                 type: "error",
                 message: e.message,
-                location: e.loc.file
-                    ? {
-                          file: e.loc.file,
-                          line: e.loc.interval.getLineAndColumn().lineNum,
-                          column: e.loc.interval.getLineAndColumn().colNum,
-                          length:
-                              e.loc.interval.endIdx - e.loc.interval.startIdx,
-                      }
-                    : {
-                          file: args.entrypoint,
-                          line: 0,
-                          column: 0,
-                          length: 0,
-                      },
+                location:
+                    e.loc === undefined
+                        ? undefined
+                        : e.loc.file
+                          ? {
+                                file: e.loc.file,
+                                line: e.loc.interval.getLineAndColumn().lineNum,
+                                column: e.loc.interval.getLineAndColumn()
+                                    .colNum,
+                                length:
+                                    e.loc.interval.endIdx -
+                                    e.loc.interval.startIdx,
+                            }
+                          : {
+                                file: args.entrypoint,
+                                line: 0,
+                                column: 0,
+                                length: 0,
+                            },
             });
         } else {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

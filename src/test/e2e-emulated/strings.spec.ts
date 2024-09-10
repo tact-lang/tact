@@ -1,20 +1,35 @@
 import { beginCell, toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { StringsTester } from "./contracts/output/strings_StringsTester";
+import "@ton/test-utils";
 
 describe("strings", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-    it("should implement strings correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await StringsTester.fromInit());
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<StringsTester>;
 
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await StringsTester.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should implement strings correctly", async () => {
         expect(contract.abi.errors!["31733"]!.message).toStrictEqual(
             "condition can`t be...",
         );
@@ -63,12 +78,9 @@ describe("strings", () => {
         expect(await contract.getStringWithFloat()).toEqual("9.5");
 
         const base = await contract.getBase64();
-        expect(
-            base
-                .beginParse()
-                .loadBuffer(base.bits.length / 8)
-                .toString(),
-        ).toEqual("Many hands make light work.");
+        expect(base.loadBuffer(base.remainingBits / 8).toString()).toEqual(
+            "Many hands make light work.",
+        );
 
         const b64cases = [
             "SGVsbG8gV29ybGQ=",
@@ -79,7 +91,7 @@ describe("strings", () => {
         for (const b of b64cases) {
             const s = Buffer.from(b, "base64");
             const r = await contract.getProcessBase64(b);
-            const d = r.beginParse().loadBuffer(r.bits.length / 8);
+            const d = r.loadBuffer(r.remainingBits / 8);
             expect(d.toString("hex")).toEqual(s.toString("hex"));
         }
 
@@ -94,6 +106,12 @@ describe("strings", () => {
         );
         expect(await contract.getStringWithEscapedChars4()).toEqual(
             "\u{2028}\u{2029} \u0044 \x41\x42\x43",
+        );
+        expect(await contract.getStringWithEscapedChars5()).toEqual(
+            "\u{0} \u{00} \u{000} \u{0000} \u{00000} \u{000000} \u0000 \x00",
+        );
+        expect(await contract.getStringWithEscapedChars6()).toEqual(
+            `\x7F\x1F\x0A\x00 TACT`,
         );
 
         expect(await contract.getStringWithAddress()).toEqual(

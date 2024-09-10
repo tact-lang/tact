@@ -1,14 +1,18 @@
 import { sha256_sync } from "@ton/crypto";
 import { CompilerContext, createContextStore } from "../context";
-import { AstNode, isRequire, traverse } from "../grammar/ast";
+import { AstNode, isRequire } from "../grammar/ast";
+import { traverse } from "../grammar/iterators";
 import { evalConstantExpression } from "../constEval";
+import { throwInternalCompilerError } from "../errors";
 import {
-    getAllStaticConstants,
     getAllStaticFunctions,
     getAllTypes,
+    getAllStaticConstants,
 } from "./resolveDescriptors";
 
-const exceptions = createContextStore<{ value: string; id: number }>();
+type Exception = { value: string; id: number };
+
+const exceptions = createContextStore<Exception>();
 
 function stringId(src: string): number {
     return sha256_sync(src).readUInt32BE(0);
@@ -31,9 +35,13 @@ function resolveStringsInAST(ast: AstNode, ctx: CompilerContext) {
             if (!exceptions.get(ctx, resolved)) {
                 const id = exceptionId(resolved);
                 if (
-                    Object.values(exceptions.all(ctx)).find((v) => v.id === id)
+                    Array.from(exceptions.all(ctx).values()).find(
+                        (v) => v.id === id,
+                    )
                 ) {
-                    throw new Error(`Duplicate error id: "${resolved}"`);
+                    throwInternalCompilerError(
+                        `Duplicate error id: "${resolved}"`,
+                    );
                 }
                 ctx = exceptions.set(ctx, resolved, { value: resolved, id });
             }
@@ -44,24 +52,24 @@ function resolveStringsInAST(ast: AstNode, ctx: CompilerContext) {
 
 export function resolveErrors(ctx: CompilerContext) {
     // Process all static functions
-    for (const f of Object.values(getAllStaticFunctions(ctx))) {
+    for (const f of getAllStaticFunctions(ctx)) {
         ctx = resolveStringsInAST(f.ast, ctx);
     }
 
     // Process all static constants
-    for (const f of Object.values(getAllStaticConstants(ctx))) {
+    for (const f of getAllStaticConstants(ctx)) {
         ctx = resolveStringsInAST(f.ast, ctx);
     }
 
     // Process all types
-    for (const t of Object.values(getAllTypes(ctx))) {
+    for (const t of getAllTypes(ctx)) {
         // Process fields
-        for (const f of Object.values(t.fields)) {
+        for (const f of t.fields) {
             ctx = resolveStringsInAST(f.ast, ctx);
         }
 
         // Process constants
-        for (const f of Object.values(t.constants)) {
+        for (const f of t.constants) {
             ctx = resolveStringsInAST(f.ast, ctx);
         }
 
@@ -71,7 +79,7 @@ export function resolveErrors(ctx: CompilerContext) {
         }
 
         // Process receivers
-        for (const f of Object.values(t.receivers)) {
+        for (const f of t.receivers) {
             ctx = resolveStringsInAST(f.ast, ctx);
         }
 
@@ -84,14 +92,14 @@ export function resolveErrors(ctx: CompilerContext) {
     return ctx;
 }
 
-export function getAllErrors(ctx: CompilerContext) {
-    return Object.values(exceptions.all(ctx));
+export function getAllErrors(ctx: CompilerContext): Exception[] {
+    return Array.from(exceptions.all(ctx).values());
 }
 
 export function getErrorId(value: string, ctx: CompilerContext) {
     const ex = exceptions.get(ctx, value);
     if (!ex) {
-        throw new Error(`Error not found: ${value}`);
+        throwInternalCompilerError(`Error not found: ${value}`);
     }
     return ex.id;
 }

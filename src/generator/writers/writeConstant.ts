@@ -1,14 +1,9 @@
-import { Address, beginCell, Cell } from "@ton/core";
+import { Address, beginCell, Cell, Slice } from "@ton/core";
 import { WriterContext } from "../Writer";
 
 export function writeString(str: string, ctx: WriterContext) {
     const cell = beginCell().storeStringTail(str).endCell();
     return writeRawSlice("string", `String "${str}"`, cell, ctx);
-}
-
-export function writeStringCell(str: string, ctx: WriterContext) {
-    const cell = beginCell().storeStringTail(str).endCell();
-    return writeRawCell("string", `String "${str}"`, cell, ctx);
 }
 
 export function writeComment(str: string, ctx: WriterContext) {
@@ -34,6 +29,16 @@ export function writeCell(cell: Cell, ctx: WriterContext) {
     );
 }
 
+export function writeSlice(slice: Slice, ctx: WriterContext) {
+    const cell = slice.asCell();
+    return writeRawSlice(
+        "slice",
+        "Slice " + cell.hash().toString("base64"),
+        cell,
+        ctx,
+    );
+}
+
 function writeRawSlice(
     prefix: string,
     comment: string,
@@ -51,7 +56,7 @@ function writeRawSlice(
         ctx.signature(`slice __gen_slice_${prefix}_${h}()`);
         ctx.comment(comment);
         ctx.context("constants");
-        ctx.asm(`asm "B{${t}} B>boc <s PUSHSLICE"`);
+        ctx.asm("", `B{${t}} B>boc <s PUSHSLICE`);
     });
     return `__gen_slice_${prefix}_${h}`;
 }
@@ -73,7 +78,7 @@ function writeRawCell(
         ctx.signature(`cell __gen_cell_${prefix}_${h}()`);
         ctx.comment(comment);
         ctx.context("constants");
-        ctx.asm(`asm "B{${t}} B>boc PUSHREF"`);
+        ctx.asm("", `B{${t}} B>boc PUSHREF`);
     });
     return `__gen_cell_${prefix}_${h}`;
 }

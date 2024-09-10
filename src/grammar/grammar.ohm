@@ -20,6 +20,9 @@ Tact {
     PrimitiveTypeDecl = primitive typeId ";"
 
     ModuleFunction = FunctionDefinition
+                   | AsmFunction
+
+    AsmFunction = "asm" AsmShuffle? FunctionAttribute* fun id Parameters (":" Type)? "{" asmInstruction+ "}"
 
     ModuleConstant = ConstantDefinition
 
@@ -36,9 +39,9 @@ Tact {
                       | override   --override
                       | abstract   --abstract
 
-    ConstantDefinition = ConstantAttribute* const id ":" Type "=" Expression ";"
+    ConstantDefinition = ConstantAttribute* const id ":" Type "=" Expression (";" | &"}")
 
-    ConstantDeclaration = ConstantAttribute* const id ":" Type ";"
+    ConstantDeclaration = ConstantAttribute* const id ":" Type (";" | &"}")
 
     StructDecl = "struct" typeId "{" StructFields "}" --regular
                | "message" ("(" integerLiteral ")")? typeId "{" StructFields "}" --message
@@ -65,7 +68,7 @@ Tact {
                   | ConstantDefinition
                   | ConstantDeclaration
 
-    StorageVar = FieldDecl ";"
+    StorageVar = FieldDecl (";" | &"}")
 
     ContractInit = "init" Parameters "{" Statement* "}"
 
@@ -79,9 +82,11 @@ Tact {
                       | inline    --inline
                       | abstract  --abstract
 
+    AsmShuffle = "(" id* ("->" integerLiteralDec+)? ")"
+
     FunctionDefinition = FunctionAttribute* fun id Parameters (":" Type)? "{" Statement* "}"
 
-    FunctionDeclaration = FunctionAttribute* fun id Parameters (":" Type)? ";"
+    FunctionDeclaration = FunctionAttribute* fun id Parameters (":" Type)? (";" | &"}")
 
     Parameters = "(" ListOf<Parameter,","> ","? ")"
 
@@ -92,6 +97,9 @@ Tact {
              | "bounced" "(" Parameter ")" "{" Statement* "}" --bounced            // cannot be a reserved word because there a 'bounced' field in stdlib's 'Context' structure
              | external "(" Parameter? ")" "{" Statement* "}" --externalRegular
              | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
+
+    asmInstruction = ("x" | "X" | "b" | "B") "{" hexDigit* "}" --data
+                   | ~comment (~space ~"}" any)+ --any
 
     Statement = StatementLet
               | StatementBlock
@@ -253,7 +261,7 @@ Tact {
 
     letterAscii = letterAsciiLC | letterAsciiUC
 
-    letterComment = letterAsciiLC | letterAsciiUC | digit | "_"
+    letterDigitUnderscore = letterAsciiLC | letterAsciiUC | digit | "_"
 
     // Tact identifiers
     idStart = letterAscii | "_"
@@ -262,10 +270,39 @@ Tact {
 
     id = ~reservedWord #idStart #(idPart*)
 
-    // FunC identifiers
-    funcLetter = letterAscii | "_" | "'" | "?" | "!" | "::" | "&"
+    // FunC identifiers, where `funcId` stands for FunC function identifier
+    // A plain identifier cannot be a number, a single underscore, an operator, a keyword or a compiler directive
+    // See: https://github.com/ton-blockchain/ton/blob/master/crypto/func/keywords.cpp
 
-    funcId = funcLetter #(funcLetter | digit)*
+    // Order of inner alternations matters
+    funcInvalidId = "_" ")" --notUnderscore
+                  | ("+" | "-" | "*" | "/%" | "/" | "%" | "~/" | "^/" | "~%" | "^%") ")" --notArithOperator
+                  | ("<=>" | "<=" | "<" | ">=" | ">" | "!=" | "==") ")" --notComparisonOperator
+                  | ("~>>" | "~" | "^>>" | "^" | "&" | "|" | "<<" | ">>" ) ")" --notBitwiseOperator
+                  | ("=" | "+=" | "-=" | "*=" | "/=" | "%="
+                         | "~>>=" | "~/=" | "~%=" | "^>>=" | "^/=" | "^%=" | "^="
+                         | "<<=" | ">>=" | "&=" | "|=") ")" --notAssignOperator
+                  | ("[" | "]" | "{" | "}" | "?" | ":") ")" --notDelimiter
+                  | ("return" | "var" | "repeat" | "do" | "while" | "until" | "try" | "catch"
+                              | "ifnot" | "if" | "then" | "elseifnot" | "elseif" | "else") ")" --notControlKeyword
+                  | ("int" | "cell" | "builder" | "slice" | "cont" | "tuple" | "type" | "->" | "forall") ")" --notTypeKeyword
+                  | ("extern" | "global" | "asm" | "impure" | "inline_ref" | "inline" | "auto_apply" | "method_id"
+                              | "operator" | "infixl" | "infixr" | "infix" | "const") ")" --notKeyword
+                  | ("#include" | "#pragma") ")" --notDirective
+                  | ("-"? digit+) ")" --notDecimalNumber
+                  | ("-"? "0x" hexDigit+) ")" --notHexadecimalNumber
+
+    funcPlainId = ~funcInvalidId (~(whiteSpace | "(" | ")" | "[" | "]" | "," | "." | ";" | "~") any)+
+
+    funcQuotedId = "`" (~("`" | "\n") any)+ "`"
+
+    funcId = ~("\"" | "{-") ("." | "~")? (funcQuotedId | funcPlainId)
+
+    /*
+      FunC can parse much more than Fift can handle. For example, _0x0 and _0 are valid identifiers in FunC, and using either of them compiles and is then interpreted fine by Fift. But if you use both, FunC still compiles, but Fift crashes.
+
+      Same goes for plain identifiers using hashes # or emojis — you can have one FunC function with any of those combinations of characters, but you (generally) cannot have two or more of such functions.
+    */
 
     // Boolean literals
     boolLiteral = ("true" | "false") ~idPart
@@ -360,6 +397,8 @@ Tact {
     reservedWord = keyword
 
     // Comments
+    whiteSpace = "\t" | " " | lineTerminator
+
     space += comment | lineTerminator
 
     comment = multiLineComment | singleLineComment

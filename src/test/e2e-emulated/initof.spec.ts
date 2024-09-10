@@ -1,85 +1,80 @@
 import { toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Self } from "./contracts/output/initof_Self";
 import { Parent } from "./contracts/output/initof_Parent";
-import { consoleLogger } from "../../logger";
 import { TestInit } from "./contracts/output/initof-2_TestInit";
 import { A } from "./contracts/output/initof-3_A";
+import "@ton/test-utils";
 
 describe("initOf", () => {
-    beforeAll(() => {
-        jest.spyOn(consoleLogger, "error").mockImplementation(() => {});
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        treasure = await blockchain.treasury("treasure");
     });
 
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-
-    afterAll(() => {
-        (consoleLogger.error as jest.Mock).mockRestore();
-    });
-
-    afterEach(() => {
-        (consoleLogger.error as jest.Mock).mockClear();
-    });
     it("should implement initOf correctly - 1", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await Self.fromInit());
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
+        const contract = blockchain.openContract(await Self.fromInit());
 
-        const addr1 = (await contract.getTestInitOfAddress()).toRawString();
-        const addr2 = (await contract.getTestMyAddress()).toRawString();
-        expect(addr1).toEqual(addr2);
-    });
-    it("should implement initOf correctly - 2", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await Parent.fromInit());
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
-        const addrChildInitOf = (
-            await contract.getTestInitOfAddressChild()
-        ).toRawString();
-        const addrChildMyAddress = (
-            await contract.getTestMyAddressChild()
-        ).toRawString();
-        expect(addrChildInitOf).toEqual(addrChildMyAddress);
-    });
-    it("should implement initof correctly - 3", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await TestInit.fromInit());
-        const logger = system.log(contract.address);
         await contract.send(
-            treasure,
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(await contract.getTestInitOfAddress()).toEqualAddress(
+            await contract.getTestMyAddress(),
+        );
+    });
+
+    it("should implement initOf correctly - 2", async () => {
+        const contract = blockchain.openContract(await Parent.fromInit());
+
+        await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(await contract.getTestInitOfAddressChild()).toEqualAddress(
+            await contract.getTestMyAddressChild(),
+        );
+    });
+
+    it("should implement initOf correctly - 3", async () => {
+        const contract = blockchain.openContract(await TestInit.fromInit());
+
+        const result = await contract.send(
+            treasure.getSender(),
             { value: toNano("10") },
             {
                 $$type: "Deploy",
                 queryId: 0n,
             },
         );
-        await system.run();
 
-        const res = logger.collect();
+        const logs = result.transactions[1]!.debugLogs;
 
-        expect(res.includes("init@TestInit-SUCCESS")).toBe(true);
-        expect(res.includes("ERROR@TestInit")).toBe(false);
+        expect(logs).toContain("init@TestInit-SUCCESS");
+        expect(logs).not.toContain("ERROR@TestInit");
     });
-    it("should implement initof correctly - 4", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await A.fromInit());
-        const tracker = system.track(contract.address);
-        await contract.send(treasure, { value: toNano("10") }, "aa");
-        await system.run();
 
-        expect(tracker.collect()).toMatchSnapshot();
+    it("should implement initOf correctly - 4", async () => {
+        const contract = blockchain.openContract(await A.fromInit());
+
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            "aa",
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+        });
     });
 });

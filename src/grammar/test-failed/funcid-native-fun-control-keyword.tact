@@ -1,0 +1,2 @@
+@name(elseifnot)
+native idTest();

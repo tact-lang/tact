@@ -90,6 +90,11 @@
       "output": "./src/test/e2e-emulated/contracts/output"
     },
     {
+      "name": "map-comparison",
+      "path": "./src/test/e2e-emulated/contracts/map-comparison.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
       "name": "mutating-method-chaining",
       "path": "./src/test/e2e-emulated/contracts/mutating-method-chaining.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
@@ -365,6 +370,41 @@
       "options": {
         "debug": true
       }
+    },
+    {
+      "name": "getters",
+      "path": "./src/test/e2e-emulated/contracts/getters.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "allocation",
+      "path": "./src/test/e2e-emulated/contracts/allocation.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "traits",
+      "path": "./src/test/e2e-emulated/contracts/traits.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "receiver-empty",
+      "path": "./src/test/e2e-emulated/contracts/receiver-empty.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "init-of-message",
+      "path": "./src/test/e2e-emulated/contracts/init-of-message.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "init-return",
+      "path": "./src/test/e2e-emulated/contracts/init-return.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "repeat-range",
+      "path": "./src/test/exit-codes/contracts/repeat-range.tact",
+      "output": "./src/test/exit-codes/contracts/output"
     }
   ]
 }

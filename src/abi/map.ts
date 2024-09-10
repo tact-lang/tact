@@ -271,7 +271,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                         return `__tact_dict_get_${kind}_${vKind}(${resolved[0]}, ${bits}, ${resolved[1]}, ${vBits})`;
                     } else if (self.value === "Bool") {
                         ctx.used(`__tact_dict_get_${kind}_int`);
-                        return `__tact_dict_get_int_int(${resolved[0]}, ${bits}, ${resolved[1]}, 1)`;
+                        return `__tact_dict_get_${kind}_int(${resolved[0]}, ${bits}, ${resolved[1]}, 1)`;
                     } else if (self.value === "Cell") {
                         ctx.used(`__tact_dict_get_${kind}_cell`);
                         return `__tact_dict_get_${kind}_cell(${resolved[0]}, ${bits}, ${resolved[1]})`;
@@ -497,6 +497,153 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 return `null?(${writeExpression(exprs[0]!, ctx)})`;
+            },
+        },
+    ],
+    [
+        "exists",
+        {
+            name: "exists",
+            resolve(ctx, args, ref) {
+                // Check arguments
+                if (args.length !== 2) {
+                    throwCompilationError("exists expects one argument", ref); // Ignore self argument
+                }
+                const self = args[0]!;
+                const key = args[1]!;
+                if (self.kind !== "map") {
+                    throwCompilationError(
+                        "exists expects a map as self argument",
+                        ref,
+                    ); // Should not happen
+                }
+
+                // Check key type
+                if (key.kind !== "ref" || key.optional) {
+                    throwCompilationError(
+                        "exists expects a direct type as first argument",
+                        ref,
+                    );
+                }
+                if (key.name !== self.key) {
+                    throwCompilationError(
+                        `exists expects a "${self.key}" as first argument`,
+                        ref,
+                    );
+                }
+
+                // Returns boolean
+                return { kind: "ref", name: "Bool", optional: false };
+            },
+            generate: (ctx, args, exprs, ref) => {
+                if (args.length !== 2) {
+                    throwCompilationError("exists expects one argument", ref); // Ignore self argument
+                }
+                const self = args[0]!;
+                if (self.kind !== "map") {
+                    throwCompilationError(
+                        "exists expects a map as self argument",
+                        ref,
+                    ); // Should not happen
+                }
+
+                // Render expressions
+                const resolved = exprs.map((v) => writeExpression(v, ctx));
+
+                // Handle Int key
+                if (self.key === "Int") {
+                    let bits = 257;
+                    let kind = "int";
+                    if (self.keyAs?.startsWith("int")) {
+                        bits = parseInt(self.keyAs.slice(3), 10);
+                    } else if (self.keyAs?.startsWith("uint")) {
+                        bits = parseInt(self.keyAs.slice(4), 10);
+                        kind = "uint";
+                    }
+                    ctx.used(`__tact_dict_exists_${kind}`);
+                    return `__tact_dict_exists_${kind}(${resolved[0]}, ${bits}, ${resolved[1]})`;
+                }
+
+                // Handle Address key
+                if (self.key === "Address") {
+                    ctx.used(`__tact_dict_exists_slice`);
+                    return `__tact_dict_exists_slice(${resolved[0]}, 267, ${resolved[1]})`;
+                }
+
+                throwCompilationError(
+                    `exists expects a map with Int keys`,
+                    ref,
+                );
+            },
+        },
+    ],
+    [
+        "deepEquals",
+        {
+            name: "deepEquals",
+            resolve(ctx, args, ref) {
+                // Check arguments
+                if (args.length !== 2) {
+                    throwCompilationError(
+                        "deepEquals expects two arguments",
+                        ref,
+                    ); // Ignore self argument
+                }
+                const self = args[0]!;
+                const other = args[1]!;
+                if (self.kind !== "map") {
+                    throwCompilationError(
+                        "deepEquals expects a map as self argument",
+                        ref,
+                    ); // Should not happen
+                }
+                if (other.kind !== "map") {
+                    throwCompilationError(
+                        "deepEquals expects a map as other argument",
+                        ref,
+                    ); // Should not happen
+                }
+
+                return { kind: "ref", name: "Bool", optional: false };
+            },
+            generate: (ctx, args, exprs, ref) => {
+                if (args.length !== 2) {
+                    throwCompilationError(
+                        "deepEquals expects two arguments",
+                        ref,
+                    ); // Ignore self argument
+                }
+                const self = args[0]!;
+                const other = args[1]!;
+                if (self.kind !== "map") {
+                    throwCompilationError(
+                        "deepEquals expects a map as self argument",
+                        ref,
+                    ); // Should not happen
+                }
+                if (other.kind !== "map") {
+                    throwCompilationError(
+                        "deepEquals expects a map as other argument",
+                        ref,
+                    ); // Should not happen
+                }
+
+                // 257 for int, 267 for address
+                const keyLength =
+                    self.key === "Int"
+                        ? self.keyAs
+                            ? self.keyAs.startsWith("int")
+                                ? parseInt(self.keyAs.slice(3))
+                                : self.keyAs.startsWith("uint")
+                                  ? parseInt(self.keyAs.slice(4))
+                                  : throwCompilationError(
+                                        "Invalid key serialization type", // Should not happen
+                                        ref,
+                                    )
+                            : 257
+                        : 267;
+
+                return `${ctx.used("__tact_dict_eq")}(${writeExpression(exprs[0]!, ctx)}, ${writeExpression(exprs[1]!, ctx)}, ${keyLength})`;
             },
         },
     ],

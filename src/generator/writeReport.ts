@@ -3,6 +3,7 @@ import { CompilerContext } from "../context";
 import { PackageFileFormat } from "../packaging/fileFormat";
 import { getType } from "../types/resolveDescriptors";
 import { Writer } from "../utils/Writer";
+import { TypeDescription } from "../types/types";
 
 export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     const w = new Writer();
@@ -19,7 +20,10 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     w.write("Total Types: " + abi.types!.length);
     w.append();
     for (const t of abi.types!) {
-        const tt = getType(ctx, t.name);
+        const tt = getType(
+            ctx,
+            t.name.endsWith("$Data") ? t.name.slice(0, -5) : t.name,
+        );
         w.write(`## ${t.name}`);
         w.write(`TLB: \`${tt.tlb!}\``);
         w.write(`Signature: \`${tt.signature!}\``);
@@ -43,6 +47,54 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     Object.entries(abi.errors!).forEach(([t, abiError]) => {
         w.write(`${t}: ${abiError.message}`);
     });
+    w.append();
+
+    const t = getType(ctx, pkg.name);
+    const writtenEdges: Set<string> = new Set();
+
+    // Trait Inheritance Diagram
+    w.write(`# Trait Inheritance Diagram`);
+    w.append();
+    w.write("```mermaid");
+    w.write("graph TD");
+    function writeTraits(t: TypeDescription) {
+        for (const trait of t.traits) {
+            const edge = `${t.name} --> ${trait.name}`;
+            if (writtenEdges.has(edge)) {
+                continue;
+            }
+            writtenEdges.add(edge);
+            w.write(edge);
+            writeTraits(trait);
+        }
+    }
+    w.write(t.name);
+    writeTraits(t);
+    w.write("```");
+    w.append();
+
+    writtenEdges.clear();
+
+    // Contract Dependency Diagram
+    w.write(`# Contract Dependency Diagram`);
+    w.append();
+    w.write("```mermaid");
+    w.write("graph TD");
+    function writeDependencies(t: TypeDescription) {
+        for (const dep of t.dependsOn) {
+            const edge = `${t.name} --> ${dep.name}`;
+            if (writtenEdges.has(edge)) {
+                continue;
+            }
+            writtenEdges.add(edge);
+            w.write(edge);
+            writeDependencies(dep);
+        }
+    }
+    writtenEdges.clear();
+    w.write(t.name);
+    writeDependencies(t);
+    w.write("```");
 
     return w.end();
 }

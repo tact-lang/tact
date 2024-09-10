@@ -1,5 +1,5 @@
 import { CompilerContext, createContextStore } from "../context";
-import { getAllTypes, getType, toBounced } from "../types/resolveDescriptors";
+import { getType, toBounced, getAllTypes } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { topologicalSort } from "../utils/utils";
 import { StorageAllocation } from "./StorageAllocation";
@@ -7,27 +7,34 @@ import { AllocationOperation } from "./operation";
 import { allocate, getAllocationOperationFromField } from "./allocator";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { funcInitIdOf } from "../generator/writers/id";
+import { throwInternalCompilerError } from "../errors";
 import { idText } from "../grammar/ast";
 
 const store = createContextStore<StorageAllocation>();
 
-export function getAllocation(ctx: CompilerContext, name: string) {
+export function getAllocation(
+    ctx: CompilerContext,
+    name: string,
+): StorageAllocation {
     const t = store.get(ctx, name);
     if (!t) {
-        throw Error("Allocation for " + name + " not found");
+        throwInternalCompilerError(`Allocation for ${name} not found`);
     }
     return t;
 }
 
-export function getAllocations(ctx: CompilerContext) {
+export function getAllocations(ctx: CompilerContext): {
+    allocation: StorageAllocation;
+    type: TypeDescription;
+}[] {
     return getSortedTypes(ctx).map((v) => ({
         allocation: getAllocation(ctx, v.name),
         type: v,
     }));
 }
 
-export function getSortedTypes(ctx: CompilerContext) {
-    const types = Object.values(getAllTypes(ctx)).filter(
+export function getSortedTypes(ctx: CompilerContext): TypeDescription[] {
+    const types = getAllTypes(ctx).filter(
         (v) => v.kind === "struct" || v.kind === "contract",
     );
     let structs = types.filter((t) => t.kind === "struct");
@@ -53,7 +60,7 @@ export function getSortedTypes(ctx: CompilerContext) {
     return structs;
 }
 
-export function resolveAllocations(ctx: CompilerContext) {
+export function resolveAllocations(ctx: CompilerContext): CompilerContext {
     // Load topological order of structs and contracts
     const types = getSortedTypes(ctx);
 
@@ -64,7 +71,7 @@ export function resolveAllocations(ctx: CompilerContext) {
         let header: { value: number; bits: number } | null = null;
         if (s.header !== null) {
             reserveBits += 32; // Header size
-            header = { value: s.header, bits: 32 };
+            header = { value: Number(s.header.value), bits: 32 };
         }
 
         // Reserver refs
@@ -142,7 +149,7 @@ export function resolveAllocations(ctx: CompilerContext) {
             // Resolve opts
             const ops: AllocationOperation[] = [];
             for (const f of s.init.params) {
-                const abiType = createABITypeRefFromTypeRef(f.type, f.loc);
+                const abiType = createABITypeRefFromTypeRef(ctx, f.type, f.loc);
                 ops.push({
                     name: idText(f.name),
                     type: abiType,

@@ -19,6 +19,7 @@ import {
 import { idTextErr, throwCompilationError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
 import {
+    getAllTypes,
     getStaticConstant,
     getStaticFunction,
     getType,
@@ -35,6 +36,7 @@ import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
+import { throwInternalCompilerError } from "../errors";
 import { StructFunctions } from "../abi/struct";
 
 const store = createContextStore<{
@@ -45,7 +47,7 @@ const store = createContextStore<{
 export function getExpType(ctx: CompilerContext, exp: AstExpression) {
     const t = store.get(ctx, exp.id);
     if (!t) {
-        throw Error("Expression " + exp.id + " not found");
+        throwInternalCompilerError(`Expression ${exp.id} not found`);
     }
     return t.description;
 }
@@ -60,7 +62,7 @@ function registerExpType(
         if (typeRefEquals(ex.description, description)) {
             return ctx;
         }
-        throw Error("Expression " + exp.id + " already has a type");
+        throwInternalCompilerError(`Expression ${exp.id} already has a type`);
     }
     return store.set(ctx, exp.id, { ast: exp, description });
 }
@@ -152,7 +154,7 @@ function resolveStructNew(
         const expressionType = getExpType(ctx, e.initializer);
         if (!isAssignable(expressionType, f.type)) {
             throwCompilationError(
-                `Invalid type "${printTypeRef(expressionType)}" for fields ${idTextErr(e.field)} with type "${printTypeRef(f.type)}" in type "${tp.name}"`,
+                `Invalid type "${printTypeRef(expressionType)}" for field ${idTextErr(e.field)} with type "${printTypeRef(f.type)}" in type "${tp.name}"`,
                 e.loc,
             );
         }
@@ -160,9 +162,13 @@ function resolveStructNew(
 
     // Check missing fields
     for (const f of tp.fields) {
-        if (f.default === undefined && !processed.has(f.name)) {
+        if (
+            !processed.has(f.name) &&
+            f.ast.initializer === null &&
+            !(f.type.kind === "ref" && f.type.optional)
+        ) {
             throwCompilationError(
-                `Missing fields "${f.name}" in type "${tp.name}"`,
+                `Missing field "${f.name}" in type "${tp.name}"`,
                 exp.loc,
             );
         }
@@ -239,67 +245,32 @@ function resolveBinaryOp(
         case "==":
         case "!=":
             {
-                // Check if types are compatible
-                if (le.kind !== "null" && re.kind !== "null") {
-                    const l = le;
-                    const r = re;
-
-                    if (l.kind === "map" && r.kind === "map") {
-                        if (
-                            l.key !== r.key ||
-                            l.value !== r.value ||
-                            l.keyAs !== r.keyAs ||
-                            l.valueAs !== r.valueAs
-                        ) {
-                            throwCompilationError(
-                                `Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`,
-                                exp.loc,
-                            );
-                        }
-                    } else {
-                        if (
-                            l.kind === "ref_bounced" ||
-                            r.kind === "ref_bounced"
-                        ) {
-                            throwCompilationError(
-                                "Bounced types are not supported in binary operators",
-                                exp.loc,
-                            );
-                        }
-                        if (l.kind == "void" || r.kind == "void") {
-                            throwCompilationError(
-                                `Expressions of "<void>" type cannot be used for (non)equality operator "${exp.op}"`,
-                                exp.loc,
-                            );
-                        }
-                        if (l.kind !== "ref" || r.kind !== "ref") {
-                            throwCompilationError(
-                                `Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`,
-                                exp.loc,
-                            );
-                        }
-                        if (l.name !== r.name) {
-                            throwCompilationError(
-                                `Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`,
-                                exp.loc,
-                            );
-                        }
-                        if (
-                            r.name !== "Int" &&
-                            r.name !== "Bool" &&
-                            r.name !== "Address" &&
-                            r.name !== "Cell" &&
-                            r.name !== "Slice" &&
-                            r.name !== "String"
-                        ) {
-                            throwCompilationError(
-                                `Invalid type "${r.name}" for binary operator "${exp.op}"`,
-                                exp.loc,
-                            );
-                        }
-                    }
+                // any inhabitant of an optional type can be compared to null
+                if (
+                    (le.kind === "ref" && le.optional && re.kind === "null") ||
+                    (re.kind === "ref" && re.optional && le.kind === "null")
+                ) {
+                    resolved = { kind: "ref", name: "Bool", optional: false };
+                    break;
                 }
-
+                if (!isEqualityType(ctx, le)) {
+                    throwCompilationError(
+                        `Expressions of "${printTypeRef(le)}" type cannot be used for (non)equality operator "${exp.op}"\n See https://docs.tact-lang.org/book/operators#binary-equality`,
+                        exp.loc,
+                    );
+                }
+                if (!isEqualityType(ctx, re)) {
+                    throwCompilationError(
+                        `Expressions of "${printTypeRef(re)}" type cannot be used for (non)equality operator "${exp.op}"\nSee https://docs.tact-lang.org/book/operators#binary-equality`,
+                        exp.loc,
+                    );
+                }
+                if (!isAssignable(le, re) && !isAssignable(re, le)) {
+                    throwCompilationError(
+                        `Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`,
+                        exp.loc,
+                    );
+                }
                 resolved = { kind: "ref", name: "Bool", optional: false };
             }
             break;
@@ -323,6 +294,32 @@ function resolveBinaryOp(
 
     // Register result
     return registerExpType(ctx, exp, resolved);
+}
+
+function isEqualityType(ctx: CompilerContext, ty: TypeRef): boolean {
+    switch (ty.kind) {
+        case "ref": {
+            const type = getType(ctx, ty.name);
+            if (type.kind === "primitive_type_decl") {
+                return (
+                    ty.name === "Int" ||
+                    ty.name === "Bool" ||
+                    ty.name === "Address" ||
+                    ty.name === "Cell" ||
+                    ty.name === "Slice" ||
+                    ty.name === "String"
+                );
+            } else {
+                return false;
+            }
+        }
+        case "null":
+        case "map":
+            return true;
+        case "void":
+        case "ref_bounced":
+            return false;
+    }
 }
 
 function resolveUnaryOp(
@@ -430,17 +427,29 @@ function resolveFieldAccess(
     const field = fields.find((v) => eqNames(v.name, exp.field));
     const cst = srcT.constants.find((v) => eqNames(v.name, exp.field));
     if (!field && !cst) {
-        if (src.kind === "ref_bounced") {
-            throwCompilationError(
-                `Type bounced<${idTextErr(src.name)}> does not have a field named ${idTextErr(exp.field)}`,
-                exp.field.loc,
-            );
-        } else {
-            throwCompilationError(
-                `Type ${idTextErr(src.name)} does not have a field named ${idTextErr(exp.field)}`,
-                exp.loc,
-            );
+        const typeStr =
+            src.kind === "ref_bounced"
+                ? `bounced<${idTextErr(src.name)}>`
+                : idTextErr(src.name);
+
+        if (src.kind === "ref" && !src.optional) {
+            // Check for struct methods
+            if (
+                (srcT.kind === "struct" &&
+                    StructFunctions.has(idText(exp.field))) ||
+                srcT.functions.has(idText(exp.field))
+            ) {
+                throwCompilationError(
+                    `Type ${typeStr} does not have a field named "${exp.field.text}", did you mean "${exp.field.text}()" instead?`,
+                    exp.loc,
+                );
+            }
         }
+
+        throwCompilationError(
+            `Type ${typeStr} does not have a field named ${idTextErr(exp.field)}`,
+            exp.field.loc,
+        );
     }
 
     // Register result type
@@ -478,6 +487,18 @@ function resolveStaticCall(
 
     // Check if function exists
     if (!hasStaticFunction(ctx, idText(exp.function))) {
+        // check if there is a method with the same name
+        if (
+            getAllTypes(ctx).find(
+                (ty) => ty.functions.get(idText(exp.function)) !== undefined,
+            ) !== undefined
+        ) {
+            throwCompilationError(
+                `Static function ${idTextErr(exp.function)} does not exist. Perhaps you meant to call ".${idText(exp.function)}(...)" extension function?`,
+                exp.loc,
+            );
+        }
+
         throwCompilationError(
             `Static function ${idTextErr(exp.function)} does not exist`,
             exp.loc,
@@ -565,32 +586,41 @@ function resolveCall(
         }
 
         const f = srcT.functions.get(idText(exp.method));
-        if (!f) {
-            throwCompilationError(
-                `Type "${src.name}" does not have a function named ${idTextErr(exp.method)}`,
-                exp.loc,
-            );
-        }
-
-        // Check arguments
-        if (f.params.length !== exp.args.length) {
-            throwCompilationError(
-                `Function ${idTextErr(exp.method)} expects ${f.params.length} arguments, got ${exp.args.length}`,
-                exp.loc,
-            );
-        }
-        for (const [i, a] of f.params.entries()) {
-            const e = exp.args[i]!;
-            const t = getExpType(ctx, e);
-            if (!isAssignable(t, a.type)) {
+        if (f) {
+            // Check arguments
+            if (f.params.length !== exp.args.length) {
                 throwCompilationError(
-                    `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}`,
-                    e.loc,
+                    `Function ${idTextErr(exp.method)} expects ${f.params.length} arguments, got ${exp.args.length}`,
+                    exp.loc,
                 );
             }
+            for (const [i, a] of f.params.entries()) {
+                const e = exp.args[i]!;
+                const t = getExpType(ctx, e);
+                if (!isAssignable(t, a.type)) {
+                    throwCompilationError(
+                        `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}`,
+                        e.loc,
+                    );
+                }
+            }
+
+            return registerExpType(ctx, exp, f.returns);
         }
 
-        return registerExpType(ctx, exp, f.returns);
+        // Check if a field with the same name exists
+        const field = srcT.fields.find((v) => eqNames(v.name, exp.method));
+        if (field) {
+            throwCompilationError(
+                `Type "${src.name}" does not have a function named "${exp.method.text}()", did you mean field "${exp.method.text}" instead?`,
+                exp.loc,
+            );
+        }
+
+        throwCompilationError(
+            `Type "${src.name}" does not have a function named ${idTextErr(exp.method)}`,
+            exp.loc,
+        );
     }
 
     // Handle map
@@ -620,7 +650,7 @@ function resolveCall(
     );
 }
 
-export function resolveInitOf(
+function resolveInitOf(
     ast: AstInitOf,
     sctx: StatementContext,
     ctx: CompilerContext,
@@ -671,7 +701,7 @@ export function resolveInitOf(
     });
 }
 
-export function resolveConditional(
+function resolveConditional(
     ast: AstConditional,
     sctx: StatementContext,
     ctx: CompilerContext,
@@ -749,6 +779,7 @@ export function resolveExpression(
                             exp.loc,
                         );
                     }
+
                     // Handle static struct method calls
                     try {
                         const t = getType(ctx, exp.text);
@@ -763,8 +794,25 @@ export function resolveExpression(
                         // Ignore
                     }
 
+                    // Handle possible field access and suggest to use self.field instead
+                    const self = sctx.vars.get("self");
+                    if (self && self.kind === "ref") {
+                        const t = getType(ctx, self.name);
+                        if (t.kind === "contract" || t.kind === "trait") {
+                            const field = t.fields.find(
+                                (f) => f.name == exp.text,
+                            );
+                            if (field) {
+                                throwCompilationError(
+                                    `Unable to resolve id '${exp.text}', did you mean 'self.${exp.text}'?`,
+                                    exp.loc,
+                                );
+                            }
+                        }
+                    }
+
                     throwCompilationError(
-                        "Unable to resolve id " + exp.text,
+                        `Unable to resolve id '${exp.text}'`,
                         exp.loc,
                     );
                 } else {
@@ -795,7 +843,7 @@ export function resolveExpression(
 
 export function getAllExpressionTypes(ctx: CompilerContext) {
     const res: [string, string][] = [];
-    Object.values(store.all(ctx)).forEach((val) => {
+    store.all(ctx).forEach((val, _key) => {
         res.push([val.ast.loc.contents, printTypeRef(val.description)]);
     });
     return res;

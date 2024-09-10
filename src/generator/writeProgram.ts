@@ -182,7 +182,7 @@ export async function writeProgram(
             header.push(";;");
             header.push(`;; Type: ${t.name}`);
             if (t.header !== null) {
-                header.push(`;; Header: 0x${idToHex(t.header)}`);
+                header.push(`;; Header: 0x${idToHex(Number(t.header.value))}`);
             }
             if (t.tlb) {
                 header.push(`;; TLB: ${t.tlb}`);
@@ -299,7 +299,7 @@ function writeAll(
     abiLink: string,
 ) {
     // Load all types
-    const allTypes = Object.values(getAllTypes(ctx));
+    const allTypes = getAllTypes(ctx);
     const contracts = allTypes.filter((v) => v.kind === "contract");
     const c = contracts.find((v) => v.name === name);
     if (!c) {
@@ -377,8 +377,7 @@ function writeAll(
     }
 
     // Static functions
-    const sf = getAllStaticFunctions(ctx);
-    Object.values(sf).forEach((f) => {
+    getAllStaticFunctions(ctx).forEach((f) => {
         writeFunction(f, wCtx);
     });
 

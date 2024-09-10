@@ -17,6 +17,7 @@ export type AstImport = {
 export type AstModuleItem =
     | AstPrimitiveTypeDecl
     | AstFunctionDef
+    | AstAsmFunctionDef
     | AstNativeFunctionDecl
     | AstConstantDef
     | AstStructDecl
@@ -47,6 +48,24 @@ export type AstFunctionDef = {
     statements: AstStatement[];
     id: number;
     loc: SrcInfo;
+};
+
+export type AstAsmFunctionDef = {
+    kind: "asm_function_def";
+    shuffle: AstAsmShuffle;
+    attributes: AstFunctionAttribute[];
+    name: AstId;
+    return: AstType | null;
+    params: AstTypedParameter[];
+    instructions: AstAsmInstruction[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstAsmInstruction = string;
+export type AstAsmShuffle = {
+    args: AstId[];
+    ret: AstNumber[];
 };
 
 export type AstFunctionDecl = {
@@ -100,7 +119,7 @@ export type AstStructDecl = {
 export type AstMessageDecl = {
     kind: "message_decl";
     name: AstId;
-    opcode: number | null;
+    opcode: AstNumber | null;
     fields: AstFieldDecl[];
     id: number;
     loc: SrcInfo;
@@ -129,6 +148,7 @@ export type AstTrait = {
 export type AstContractDeclaration =
     | AstFieldDecl
     | AstFunctionDef
+    | AstAsmFunctionDef
     | AstContractInit
     | AstReceiver
     | AstConstantDef;
@@ -136,6 +156,7 @@ export type AstContractDeclaration =
 export type AstTraitDeclaration =
     | AstFieldDecl
     | AstFunctionDef
+    | AstAsmFunctionDef
     | AstFunctionDecl
     | AstReceiver
     | AstConstantDef
@@ -532,6 +553,15 @@ export function eqNames(
     }
 }
 
+export function idOfText(text: string): AstId {
+    return {
+        kind: "id",
+        text,
+        id: 0,
+        loc: dummySrcInfo,
+    };
+}
+
 export const selfId: AstId = {
     kind: "id",
     text: "self",
@@ -541,10 +571,26 @@ export const selfId: AstId = {
 
 export type AstNumber = {
     kind: "number";
+    base: AstNumberBase;
     value: bigint;
     id: number;
     loc: SrcInfo;
 };
+
+export type AstNumberBase = 2 | 8 | 10 | 16;
+
+export function astNumToString(n: AstNumber): string {
+    switch (n.base) {
+        case 2:
+            return `0b${n.value.toString(n.base)}`;
+        case 8:
+            return `0o${n.value.toString(n.base)}`;
+        case 10:
+            return n.value.toString(n.base);
+        case 16:
+            return `0x${n.value.toString(n.base)}`;
+    }
+}
 
 export type AstBoolean = {
     kind: "boolean";
@@ -569,9 +615,11 @@ export type AstNull = {
     loc: SrcInfo;
 };
 
+export type AstValue = AstNumber | AstBoolean | AstNull | AstString;
+
 export type AstConstantAttribute =
     | { type: "virtual"; loc: SrcInfo }
-    | { type: "overrides"; loc: SrcInfo }
+    | { type: "override"; loc: SrcInfo }
     | { type: "abstract"; loc: SrcInfo };
 
 export type AstContractAttribute = {
@@ -586,7 +634,7 @@ export type AstFunctionAttribute =
     | { type: "extends"; loc: SrcInfo }
     | { type: "virtual"; loc: SrcInfo }
     | { type: "abstract"; loc: SrcInfo }
-    | { type: "overrides"; loc: SrcInfo }
+    | { type: "override"; loc: SrcInfo }
     | { type: "inline"; loc: SrcInfo };
 
 export type AstTypedParameter = {
@@ -633,6 +681,7 @@ export type AstNode =
     | AstFieldDecl
     | AstTypedParameter
     | AstFunctionDef
+    | AstAsmFunctionDef
     | AstFunctionDecl
     | AstModule
     | AstNativeFunctionDecl
@@ -679,185 +728,149 @@ export function __DANGER_resetNodeId() {
     nextId = 1;
 }
 
-export function traverse(node: AstNode, callback: (node: AstNode) => void) {
-    callback(node);
-
-    if (node.kind === "module") {
-        for (const e of node.items) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "contract") {
-        for (const e of node.declarations) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "struct_decl") {
-        for (const e of node.fields) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "message_decl") {
-        for (const e of node.fields) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "trait") {
-        for (const e of node.declarations) {
-            traverse(e, callback);
-        }
+// Test equality of AstExpressions.
+export function eqExpressions(
+    ast1: AstExpression,
+    ast2: AstExpression,
+): boolean {
+    if (ast1.kind !== ast2.kind) {
+        return false;
     }
 
-    //
-    // Functions
-    //
-
-    if (node.kind === "function_def") {
-        for (const e of node.params) {
-            traverse(e, callback);
-        }
-        for (const e of node.statements) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "function_decl") {
-        for (const e of node.params) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "contract_init") {
-        for (const e of node.params) {
-            traverse(e, callback);
-        }
-        for (const e of node.statements) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "receiver") {
-        for (const e of node.statements) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "native_function_decl") {
-        for (const e of node.params) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "field_decl") {
-        if (node.initializer) {
-            traverse(node.initializer, callback);
-        }
-    }
-    if (node.kind === "constant_def") {
-        traverse(node.initializer, callback);
-    }
-
-    //
-    // Statements
-    //
-
-    if (node.kind === "statement_let") {
-        traverse(node.expression, callback);
-    }
-    if (node.kind === "statement_return") {
-        if (node.expression) {
-            traverse(node.expression, callback);
-        }
-    }
-    if (node.kind === "statement_expression") {
-        traverse(node.expression, callback);
-    }
-    if (node.kind === "statement_assign") {
-        traverse(node.path, callback);
-        traverse(node.expression, callback);
-    }
-    if (node.kind === "statement_augmentedassign") {
-        traverse(node.path, callback);
-        traverse(node.expression, callback);
-    }
-    if (node.kind === "statement_condition") {
-        traverse(node.condition, callback);
-        for (const e of node.trueStatements) {
-            traverse(e, callback);
-        }
-        if (node.falseStatements) {
-            for (const e of node.falseStatements) {
-                traverse(e, callback);
-            }
-        }
-        if (node.elseif) {
-            traverse(node.elseif, callback);
-        }
-    }
-    if (node.kind === "statement_while") {
-        traverse(node.condition, callback);
-        for (const e of node.statements) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "statement_until") {
-        traverse(node.condition, callback);
-        for (const e of node.statements) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "statement_repeat") {
-        traverse(node.iterations, callback);
-        for (const e of node.statements) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "statement_try") {
-        for (const e of node.statements) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "statement_try_catch") {
-        for (const e of node.statements) {
-            traverse(e, callback);
-        }
-        for (const e of node.catchStatements) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "statement_foreach") {
-        for (const e of node.statements) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "op_binary") {
-        traverse(node.left, callback);
-        traverse(node.right, callback);
-    }
-    if (node.kind === "op_unary") {
-        traverse(node.operand, callback);
-    }
-    if (node.kind === "field_access") {
-        traverse(node.aggregate, callback);
-    }
-    if (node.kind === "method_call") {
-        traverse(node.self, callback);
-        for (const e of node.args) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "static_call") {
-        for (const e of node.args) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "struct_instance") {
-        for (const e of node.args) {
-            traverse(e, callback);
-        }
-    }
-    if (node.kind === "struct_field_initializer") {
-        traverse(node.initializer, callback);
-    }
-    if (node.kind === "conditional") {
-        traverse(node.condition, callback);
-        traverse(node.thenBranch, callback);
-        traverse(node.elseBranch, callback);
+    switch (ast1.kind) {
+        case "null":
+            return true;
+        case "boolean":
+            return ast1.value === (ast2 as AstBoolean).value;
+        case "number":
+            return ast1.value === (ast2 as AstNumber).value;
+        case "string":
+            return ast1.value === (ast2 as AstString).value;
+        case "id":
+            return eqNames(ast1, ast2 as AstId);
+        case "method_call":
+            return (
+                eqNames(ast1.method, (ast2 as AstMethodCall).method) &&
+                eqExpressions(ast1.self, (ast2 as AstMethodCall).self) &&
+                eqExpressionArrays(ast1.args, (ast2 as AstMethodCall).args)
+            );
+        case "init_of":
+            return (
+                eqNames(ast1.contract, (ast2 as AstInitOf).contract) &&
+                eqExpressionArrays(ast1.args, (ast2 as AstInitOf).args)
+            );
+        case "op_unary":
+            return (
+                ast1.op === (ast2 as AstOpUnary).op &&
+                eqExpressions(ast1.operand, (ast2 as AstOpUnary).operand)
+            );
+        case "op_binary":
+            return (
+                ast1.op === (ast2 as AstOpBinary).op &&
+                eqExpressions(ast1.left, (ast2 as AstOpBinary).left) &&
+                eqExpressions(ast1.right, (ast2 as AstOpBinary).right)
+            );
+        case "conditional":
+            return (
+                eqExpressions(
+                    ast1.condition,
+                    (ast2 as AstConditional).condition,
+                ) &&
+                eqExpressions(
+                    ast1.thenBranch,
+                    (ast2 as AstConditional).thenBranch,
+                ) &&
+                eqExpressions(
+                    ast1.elseBranch,
+                    (ast2 as AstConditional).elseBranch,
+                )
+            );
+        case "struct_instance":
+            return (
+                eqNames(ast1.type, (ast2 as AstStructInstance).type) &&
+                eqParameterArrays(ast1.args, (ast2 as AstStructInstance).args)
+            );
+        case "field_access":
+            return (
+                eqNames(ast1.field, (ast2 as AstFieldAccess).field) &&
+                eqExpressions(
+                    ast1.aggregate,
+                    (ast2 as AstFieldAccess).aggregate,
+                )
+            );
+        case "static_call":
+            return (
+                eqNames(ast1.function, (ast2 as AstStaticCall).function) &&
+                eqExpressionArrays(ast1.args, (ast2 as AstStaticCall).args)
+            );
     }
 }
+
+function eqParameters(
+    arg1: AstStructFieldInitializer,
+    arg2: AstStructFieldInitializer,
+): boolean {
+    return (
+        eqNames(arg1.field, arg2.field) &&
+        eqExpressions(arg1.initializer, arg2.initializer)
+    );
+}
+
+function eqParameterArrays(
+    arr1: AstStructFieldInitializer[],
+    arr2: AstStructFieldInitializer[],
+): boolean {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
+    for (let i = 0; i < arr1.length; i++) {
+        if (!eqParameters(arr1[i]!, arr2[i]!)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function eqExpressionArrays(
+    arr1: AstExpression[],
+    arr2: AstExpression[],
+): boolean {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
+    for (let i = 0; i < arr1.length; i++) {
+        if (!eqExpressions(arr1[i]!, arr2[i]!)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+export function isValue(ast: AstExpression): boolean {
+    switch (ast.kind) {
+        case "null":
+        case "boolean":
+        case "number":
+        case "string":
+            return true;
+
+        case "struct_instance":
+            return ast.args.every((arg) => isValue(arg.initializer));
+
+        case "id":
+        case "method_call":
+        case "init_of":
+        case "op_unary":
+        case "op_binary":
+        case "conditional":
+        case "field_access":
+        case "static_call":
+            return false;
+    }
+}
+
 export { SrcInfo };

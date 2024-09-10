@@ -1,5 +1,5 @@
 import { CompilerContext } from "../context";
-import { trimIndent } from "../utils/text";
+import { escapeUnicodeControlCodes, trimIndent } from "../utils/text";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";
 
@@ -12,6 +12,7 @@ type Body =
       }
     | {
           kind: "asm";
+          shuffle: string;
           code: string;
       }
     | {
@@ -206,10 +207,11 @@ export class WriterContext {
         });
     }
 
-    asm(code: string) {
+    asm(shuffle: string, code: string) {
         if (this.pendingName) {
             this.pendingCode = {
                 kind: "asm",
+                shuffle,
                 code,
             };
         } else {
@@ -262,7 +264,7 @@ export class WriterContext {
 
     comment(src: string) {
         if (this.pendingName) {
-            this.pendingComment = trimIndent(src);
+            this.pendingComment = escapeUnicodeControlCodes(trimIndent(src));
         } else {
             throw new Error(`Comment can be set only inside function`);
         }

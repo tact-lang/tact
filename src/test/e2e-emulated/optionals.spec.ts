@@ -1,5 +1,4 @@
 import { randomAddress } from "../utils/randomAddress";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
 import {
     ContractWithOptionals,
     SomeGenericStruct,
@@ -7,7 +6,8 @@ import {
 } from "./contracts/output/optionals_ContractWithOptionals";
 import { Opt4 } from "./contracts/output/optionals_Opt4";
 import { Address, beginCell, Cell, toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import "@ton/test-utils";
 
 function strEq2(a: StructWithOptionals | null, b: StructWithOptionals | null) {
     // Null checks
@@ -108,8 +108,13 @@ function strEq(a: SomeGenericStruct | null, b: SomeGenericStruct | null) {
 }
 
 describe("features", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        treasure = await blockchain.treasury("treasure");
     });
 
     const eV = {
@@ -174,10 +179,7 @@ describe("features", () => {
         it("should handle case #" + i, async () => {
             const cs = cases[i]!;
 
-            // Init contract
-            const system = await ContractSystem.create();
-            const treasure = system.treasure("treasure");
-            const contract = system.open(
+            const contract = blockchain.openContract(
                 await ContractWithOptionals.fromInit(
                     cs.a,
                     cs.b,
@@ -187,50 +189,58 @@ describe("features", () => {
                     cs.f,
                 ),
             );
-            await contract.send(treasure, { value: toNano("10") }, null);
-            await system.run();
 
-            // Check inputs
+            const deployResult = await contract.send(
+                treasure.getSender(),
+                { value: toNano("10") },
+                null,
+            );
+            expect(deployResult.transactions).toHaveTransaction({
+                from: treasure.address,
+                to: contract.address,
+                success: true,
+            });
+
             if (cs.a !== null) {
                 expect(await contract.getNotNullA()).toBe(cs.a);
             } else {
                 await expect(() => contract.getNotNullA()).rejects.toThrowError(
-                    "Null reference exception",
+                    "Unable to execute get method. Got exit_code: 128",
                 );
             }
             if (cs.b !== null) {
                 expect((await contract.getNotNullB()) === cs.b).toBe(true);
             } else {
                 await expect(() => contract.getNotNullB()).rejects.toThrowError(
-                    "Null reference exception",
+                    "Unable to execute get method. Got exit_code: 128",
                 );
             }
             if (cs.c !== null) {
                 expect((await contract.getNotNullC()).equals(cs.c)).toBe(true);
             } else {
                 await expect(() => contract.getNotNullC()).rejects.toThrowError(
-                    "Null reference exception",
+                    "Unable to execute get method. Got exit_code: 128",
                 );
             }
             if (cs.d !== null) {
                 expect((await contract.getNotNullD()).equals(cs.d)).toBe(true);
             } else {
                 await expect(() => contract.getNotNullD()).rejects.toThrowError(
-                    "Null reference exception",
+                    "Unable to execute get method. Got exit_code: 128",
                 );
             }
             if (cs.e !== null) {
                 expect(strEq(await contract.getNotNullE(), cs.e)).toBe(true);
             } else {
                 await expect(() => contract.getNotNullE()).rejects.toThrowError(
-                    "Null reference exception",
+                    "Unable to execute get method. Got exit_code: 128",
                 );
             }
             if (cs.f !== null) {
                 expect(strEq2(await contract.getNotNullF(), cs.f)).toBe(true);
             } else {
                 await expect(() => contract.getNotNullF()).rejects.toThrowError(
-                    "Null reference exception",
+                    "Unable to execute get method. Got exit_code: 128",
                 );
             }
 
@@ -243,15 +253,23 @@ describe("features", () => {
             expect(await contract.getIsNotNullF()).toBe(cs.f !== null);
         });
     }
-    it("Optional address should load correctly", async () => {
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await Opt4.fromInit());
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
 
-        await contract.send(
-            treasure,
+    it("Optional address should load correctly", async () => {
+        const contract = blockchain.openContract(await Opt4.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+        });
+
+        const sendResult = await contract.send(
+            treasure.getSender(),
             { value: toNano(1) },
             {
                 $$type: "OptAddr",
@@ -260,7 +278,11 @@ describe("features", () => {
                 z: BigInt(12345),
             },
         );
-        await system.run();
+        expect(sendResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+        });
 
         expect(await contract.getZ()).toEqual(12345n);
     });

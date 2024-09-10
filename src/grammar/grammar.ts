@@ -7,6 +7,7 @@ import {
     Grammar,
 } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
+import { throwInternalCompilerError } from "../errors";
 import {
     AstAugmentedAssignOperation,
     AstConstantAttribute,
@@ -20,8 +21,10 @@ import {
     AstType,
     createAstNode,
     AstImport,
+    AstConstantDef,
+    AstNumberBase,
 } from "./ast";
-import { throwParseError, throwCompilationError } from "../errors";
+import { throwParseError, throwSyntaxError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
@@ -72,14 +75,14 @@ export const dummySrcInfo: SrcInfo = new SrcInfo(DUMMY_INTERVAL, null, "user");
 
 let currentFile: string | null = null;
 
-export function inFile<T>(path: string, callback: () => T) {
+function inFile<T>(path: string, callback: () => T) {
     currentFile = path;
     const r = callback();
     currentFile = null;
     return r;
 }
 
-export function createRef(s: Node): SrcInfo {
+function createRef(s: Node): SrcInfo {
     return new SrcInfo(s.source, currentFile, ctx!.origin);
 }
 
@@ -109,7 +112,7 @@ semantics.addOperation<AstNode>("astOfImport", {
     Import(_importKwd, path, _semicolon) {
         const pathAST = path.astOfExpression() as AstString;
         if (pathAST.value.includes("\\")) {
-            throwCompilationError(
+            throwSyntaxError(
                 'Import path can\'t contain "\\"',
                 createRef(path),
             );
@@ -188,7 +191,7 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
             name: typeId.astOfType(),
             fields: fields.astsOfList(),
             opcode: unwrapOptNode(optIntMsgId, (number) =>
-                Number(bigintOfIntLiteral(number)),
+                number.astOfExpression(),
             ),
             loc: createRef(this),
         });
@@ -243,7 +246,14 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
         return fun.astOfItem();
     },
     ModuleConstant(constant) {
-        return constant.astOfItem();
+        const astConstDef: AstConstantDef = constant.astOfItem();
+        if (astConstDef.attributes.length !== 0) {
+            throwSyntaxError(
+                `Module-level constants do not support attributes`,
+                astConstDef.attributes[0]!.loc,
+            );
+        }
+        return astConstDef;
     },
 });
 
@@ -320,6 +330,39 @@ semantics.addOperation<AstNode>("astOfItem", {
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             params: funParameters.astsOfList(),
             statements: funBody.children.map((s) => s.astOfStatement()),
+            loc: createRef(this),
+        });
+    },
+    AsmFunction(
+        _asmKwd,
+        optAsmShuffle,
+        funAttributes,
+        _funKwd,
+        funId,
+        funParameters,
+        _optColon,
+        optReturnType,
+        _lbrace,
+        asmInstructions,
+        _rbrace,
+    ) {
+        const shuffle = optAsmShuffle.children[0]?.astsOfAsmShuffle() ?? {
+            args: [],
+            ret: [],
+        };
+        const attributes = funAttributes.children.map((a) =>
+            a.astOfFunctionAttributes(),
+        ) as AstFunctionAttribute[];
+        checkVariableName(funId.sourceString, createRef(funId));
+        checkFunctionAttributes(false, attributes, createRef(this));
+        return createAstNode({
+            kind: "asm_function_def",
+            shuffle,
+            attributes,
+            name: funId.astOfExpression(),
+            return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
+            params: funParameters.astsOfList(),
+            instructions: asmInstructions.children.map((s) => s.sourceString),
             loc: createRef(this),
         });
     },
@@ -467,7 +510,7 @@ semantics.addOperation<AstFunctionAttribute>("astOfFunctionAttributes", {
         return { type: "mutates", loc: createRef(this) };
     },
     FunctionAttribute_override(_) {
-        return { type: "overrides", loc: createRef(this) };
+        return { type: "override", loc: createRef(this) };
     },
     FunctionAttribute_inline(_) {
         return { type: "inline", loc: createRef(this) };
@@ -480,9 +523,24 @@ semantics.addOperation<AstFunctionAttribute>("astOfFunctionAttributes", {
     },
 });
 
+semantics.addOperation<{ args: AstNode[]; ret: AstNode[] }>(
+    "astsOfAsmShuffle",
+    {
+        AsmShuffle(_lparen, argsShuffle, _optArrow, optRetShuffle, _rparen) {
+            return {
+                args: argsShuffle.children.map((id) => id.astOfExpression()),
+                ret:
+                    optRetShuffle.children[0]?.children.map((num) =>
+                        num.astOfExpression(),
+                    ) ?? [],
+            };
+        },
+    },
+);
+
 semantics.addOperation<AstConstantAttribute>("astOfConstAttribute", {
     ConstantAttribute_override(_) {
-        return { type: "overrides", loc: createRef(this) };
+        return { type: "override", loc: createRef(this) };
     },
     ConstantAttribute_virtual(_) {
         return { type: "virtual", loc: createRef(this) };
@@ -508,7 +566,7 @@ semantics.addOperation<AstNode[]>("astsOfList", {
             params.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwCompilationError(
+            throwSyntaxError(
                 "Empty parameter list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );
@@ -520,7 +578,7 @@ semantics.addOperation<AstNode[]>("astsOfList", {
             args.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwCompilationError(
+            throwSyntaxError(
                 "Empty argument list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );
@@ -667,8 +725,8 @@ semantics.addOperation<AstNode>("astOfStatement", {
                     op = "^";
                     break;
                 default:
-                    throw Error(
-                        "Internal compiler error: unreachable augmented assignment operator. Please report at https://github.com/tact-lang/tact/issues",
+                    throwInternalCompilerError(
+                        "Unreachable augmented assignment operator.",
                     );
             }
             return createAstNode({
@@ -891,15 +949,41 @@ function bigintOfIntLiteral(litString: NonterminalNode): bigint {
     return BigInt(litString.sourceString.replaceAll("_", ""));
 }
 
+function baseOfIntLiteral(node: NonterminalNode): AstNumberBase {
+    const basePrefix = node.sourceString.slice(0, 2).toLowerCase();
+    switch (basePrefix) {
+        case "0x":
+            return 16;
+        case "0o":
+            return 8;
+        case "0b":
+            return 2;
+        default:
+            return 10;
+    }
+}
+
+function astOfNumber(node: Node): AstNode {
+    return createAstNode({
+        kind: "number",
+        base: baseOfIntLiteral(node),
+        value: bigintOfIntLiteral(node),
+        loc: createRef(node),
+    });
+}
+
 // Expressions
 semantics.addOperation<AstNode>("astOfExpression", {
     // Literals
-    integerLiteral(number) {
-        return createAstNode({
-            kind: "number",
-            value: bigintOfIntLiteral(number),
-            loc: createRef(this),
-        }); // Parses dec, hex, and bin numbers
+    integerLiteral(_) {
+        // Parses dec, hex, and bin numbers
+        return astOfNumber(this);
+    },
+    integerLiteralDec(_) {
+        return astOfNumber(this);
+    },
+    integerLiteralHex(_0x, _digit, _1, _2) {
+        return astOfNumber(this);
     },
     boolLiteral(boolValue) {
         return createAstNode({
@@ -1176,7 +1260,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
             structFields.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwCompilationError(
+            throwSyntaxError(
                 "Empty parameter list should not have a dangling comma.",
                 createRef(optTrailingComma),
             );

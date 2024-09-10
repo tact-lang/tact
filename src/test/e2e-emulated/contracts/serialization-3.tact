@@ -7,7 +7,7 @@ message Update {
     f: String;
 }
 
-contract SerializationTester {
+contract SerializationTester3 {
 
     a: Int;
     b: Bool;

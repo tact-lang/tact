@@ -1,12 +1,13 @@
 import { Dictionary, beginCell, toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import {
+    IntFields,
     MyMessage1,
     MyStruct1,
     MyStruct2,
     MyStruct3,
     StructsTester,
+    UintFields,
     loadMyMessage1,
     loadMyStruct1,
     loadMyStruct2,
@@ -14,20 +15,35 @@ import {
     storeMyStruct1,
     storeMyStruct2,
 } from "./contracts/output/structs_StructsTester";
+import "@ton/test-utils";
 
 describe("structs", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-    it("should implement structs correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await StructsTester.fromInit());
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
-        const tracker = system.track(contract.address);
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<StructsTester>;
 
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await StructsTester.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should implement structs correctly", async () => {
         expect(await contract.getStructInitializerTest()).toEqual(true);
 
         // Prepare test values
@@ -124,6 +140,10 @@ describe("structs", () => {
             c6.toString(),
         );
 
+        expect((await contract.getToSlice1(s1)).toString()).toEqual(
+            c1.toString(),
+        );
+
         expect(await contract.getFromCell1(c1)).toMatchObject<MyStruct1>(s1);
         expect(await contract.getFromCell1(c2)).toMatchObject<MyStruct1>(s2);
         expect(await contract.getFromCell2(c3)).toMatchSnapshot();
@@ -131,12 +151,20 @@ describe("structs", () => {
         expect(await contract.getFromCellMessage1(c5)).toMatchSnapshot();
         expect(await contract.getFromCellMessage1(c6)).toMatchSnapshot();
 
-        expect(await contract.getFromSlice1(c1)).toMatchObject<MyStruct1>(s1);
-        expect(await contract.getFromSlice1(c2)).toMatchObject<MyStruct1>(s2);
-        expect(await contract.getFromSlice2(c3)).toMatchSnapshot();
-        expect(await contract.getFromSlice2(c4)).toMatchSnapshot();
-        expect(await contract.getFromSliceMessage1(c5)).toMatchSnapshot();
-        expect(await contract.getFromSliceMessage1(c6)).toMatchSnapshot();
+        expect(
+            await contract.getFromSlice1(c1.asSlice()),
+        ).toMatchObject<MyStruct1>(s1);
+        expect(
+            await contract.getFromSlice1(c2.asSlice()),
+        ).toMatchObject<MyStruct1>(s2);
+        expect(await contract.getFromSlice2(c3.asSlice())).toMatchSnapshot();
+        expect(await contract.getFromSlice2(c4.asSlice())).toMatchSnapshot();
+        expect(
+            await contract.getFromSliceMessage1(c5.asSlice()),
+        ).toMatchSnapshot();
+        expect(
+            await contract.getFromSliceMessage1(c6.asSlice()),
+        ).toMatchSnapshot();
 
         expect((await contract.getTest1(s1, s3)).toString()).toEqual(
             beginCell().storeRef(c1).storeRef(c3).endCell().toString(),
@@ -182,7 +210,7 @@ describe("structs", () => {
 
         await expect(
             contract.getFromCell1(beginCell().storeUint(0, 123).endCell()),
-        ).rejects.toThrow("Cell underflow");
+        ).rejects.toThrow("Unable to execute get method. Got exit_code: 9");
 
         await expect(
             contract.getFromCell1(
@@ -192,7 +220,7 @@ describe("structs", () => {
                     )
                     .endCell(),
             ),
-        ).rejects.toThrow("Cell underflow");
+        ).rejects.toThrow("Unable to execute get method. Got exit_code: 9");
 
         expect(() =>
             loadMyStruct1(beginCell().storeUint(0, 123).endCell().asSlice()),
@@ -228,8 +256,124 @@ describe("structs", () => {
 
         // https://github.com/tact-lang/tact/issues/472
 
-        await contract.send(treasure, { value: toNano("10") }, "example");
-        await system.run();
-        expect(tracker.collect()).toMatchSnapshot();
+        const sendResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            "example",
+        );
+        expect(sendResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: false,
+            exitCode: 9,
+        });
+
+        expect(await contract.getLongStruct15Test()).toMatchSnapshot();
+        expect(await contract.getLongStruct16Test()).toMatchSnapshot();
+        expect(await contract.getLongStruct32Test()).toMatchSnapshot();
+        expect(await contract.getLongNestedStructTest()).toMatchSnapshot();
+        expect(
+            await contract.getLongNestedStructWithOptsTest(),
+        ).toMatchSnapshot();
+        expect(await contract.getLongContractTest()).toEqual(210n);
+
+        // https://github.com/tact-lang/tact/issues/671
+
+        expect(
+            (
+                await blockchain
+                    .provider(contract.address)
+                    .get("longStruct15Test", [])
+            ).stack,
+        ).toMatchSnapshot();
+        expect(
+            (
+                await blockchain
+                    .provider(contract.address)
+                    .get("longStruct16Test", [])
+            ).stack,
+        ).toMatchSnapshot();
+        expect(
+            (
+                await blockchain
+                    .provider(contract.address)
+                    .get("longStruct32Test", [])
+            ).stack,
+        ).toMatchSnapshot();
+        expect(
+            (
+                await blockchain
+                    .provider(contract.address)
+                    .get("longNestedStructTest", [])
+            ).stack,
+        ).toMatchSnapshot();
+        expect(
+            (
+                await blockchain
+                    .provider(contract.address)
+                    .get("longNestedStructWithOptsTest", [])
+            ).stack,
+        ).toMatchSnapshot();
+
+        // https://github.com/tact-lang/tact/issues/690
+
+        expect(await contract.getLocation1()).toMatchSnapshot();
+        expect(await contract.getLocation2()).toMatchSnapshot();
+        expect(await contract.getTripleNestedStructOpt1()).toMatchSnapshot();
+        expect(await contract.getTripleNestedStructOpt2()).toMatchSnapshot();
+        expect(await contract.getTripleNestedStructOpt3()).toMatchSnapshot();
+        expect(await contract.getLongAndDeepNestedStruct1()).toMatchSnapshot();
+        expect(await contract.getLongAndDeepNestedStruct2()).toMatchSnapshot();
+        expect(await contract.getLongAndDeepNestedStruct3()).toMatchSnapshot();
+
+        // https://github.com/tact-lang/tact/issues/374
+
+        // int serialization formats
+        const sIntFields: IntFields = {
+            $$type: "IntFields",
+            i1: -1n,
+            i2: -2n,
+            i3: -4n,
+            i255: -(2n ** 254n),
+            i256: -(2n ** 255n),
+            i257: -(2n ** 256n),
+        };
+        const sIntFieldsCell = beginCell()
+            // Storing min values for each bit length
+            .storeInt(-1n, 1)
+            .storeInt(-2n, 2)
+            .storeInt(-4n, 3)
+            .storeInt(-(2n ** 254n), 255)
+            .storeInt(-(2n ** 255n), 256)
+            .storeInt(-(2n ** 256n), 257)
+            .endCell();
+        expect(await contract.getIntFieldsStruct()).toEqual(sIntFields);
+        expect(await contract.getIntFieldsFromCell(sIntFieldsCell)).toEqual(
+            sIntFields,
+        );
+
+        // uint serialization formats
+        const mUintFields: UintFields = {
+            $$type: "UintFields",
+            u1: 1n,
+            u2: 3n,
+            u3: 7n,
+            u254: 2n ** 254n - 1n,
+            u255: 2n ** 255n - 1n,
+            u256: 2n ** 256n - 1n,
+        };
+        const _mUintFieldsCell = beginCell()
+            // Header
+            .storeUint(0xea01f46a, 32)
+            // Storing max values for each bit length
+            .storeUint(1n, 1)
+            .storeUint(3n, 2)
+            .storeUint(7n, 3)
+            .storeUint(2n ** 254n - 1n, 254)
+            .storeUint(2n ** 255n - 1n, 255)
+            .storeUint(2n ** 256n - 1n, 256)
+            .endCell();
+
+        expect(await contract.getUintFieldsMessage()).toEqual(mUintFields);
     });
 });

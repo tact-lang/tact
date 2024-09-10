@@ -1,4 +1,5 @@
 import { contractErrors } from "../../abi/errors";
+import { maxTupleSize } from "../../bindings/typescript/writeStruct";
 import { ItemOrigin } from "../../grammar/grammar";
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription } from "../../types/types";
@@ -6,9 +7,23 @@ import { WriterContext } from "../Writer";
 import { ops } from "./ops";
 import { resolveFuncFlatPack } from "./resolveFuncFlatPack";
 import { resolveFuncFlatTypes } from "./resolveFuncFlatTypes";
-import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
+
+function chainVars(vars: string[]): string[] {
+    // let's say we have vars = ['v1', 'v2, ..., 'v32']
+    // we need to split it into chunks of size maxTupleSize - 1
+    const chunks: string[][] = [];
+    while (vars.length > 0) {
+        chunks.push(vars.splice(0, maxTupleSize - 1));
+    }
+    // and now chain them into a string like this: [v1, v2, ..., v14, [v15, v16, ..., v28, [v29, v30, ..., v32]]
+    while (chunks.length > 1) {
+        const a = chunks.pop()!;
+        chunks[chunks.length - 1]!.push(`[${a.join(", ")}]`);
+    }
+    return chunks[0]!;
+}
 
 export function writeAccessors(
     type: TypeDescription,
@@ -38,7 +53,7 @@ export function writeAccessors(
             `(${resolveFuncType(type, ctx)}) ${ops.typeTensorCast(type.name, ctx)}(${resolveFuncType(type, ctx)} v)`,
         );
         ctx.context("type:" + type.name);
-        ctx.asm('asm "NOP"');
+        ctx.asm("", "NOP");
     });
 
     // Not null
@@ -55,10 +70,30 @@ export function writeAccessors(
             if (flatPack.length !== flatTypes.length)
                 throw Error("Flat pack and flat types length mismatch");
             const pairs = flatPack.map((v, i) => `${flatTypes[i]} ${v}`);
-            ctx.used(`__tact_tuple_destroy_${flatPack.length}`);
-            ctx.append(
-                `var (${pairs.join(", ")}) = __tact_tuple_destroy_${flatPack.length}(v);`,
-            );
+            if (flatPack.length <= maxTupleSize) {
+                ctx.used(`__tact_tuple_destroy_${flatPack.length}`);
+                ctx.append(
+                    `var (${pairs.join(", ")}) = __tact_tuple_destroy_${flatPack.length}(v);`,
+                );
+            } else {
+                flatPack.splice(0, maxTupleSize - 1);
+                const pairsBatch = pairs.splice(0, maxTupleSize - 1);
+                ctx.used(`__tact_tuple_destroy_${maxTupleSize}`);
+                ctx.append(
+                    `var (${pairsBatch.join(", ")}, next) = __tact_tuple_destroy_${maxTupleSize}(v);`,
+                );
+                while (flatPack.length >= maxTupleSize) {
+                    flatPack.splice(0, maxTupleSize - 1);
+                    const pairsBatch = pairs.splice(0, maxTupleSize - 1);
+                    ctx.append(
+                        `var (${pairsBatch.join(", ")}, next) = __tact_tuple_destroy_${maxTupleSize}(next);`,
+                    );
+                }
+                ctx.used(`__tact_tuple_destroy_${flatPack.length}`);
+                ctx.append(
+                    `var (${pairs.join(", ")}) = __tact_tuple_destroy_${flatPack.length}(next);`,
+                );
+            }
             ctx.append(`return ${resolveFuncTypeUnpack(type, "vvv", ctx)};`);
         });
     });
@@ -73,10 +108,18 @@ export function writeAccessors(
         ctx.body(() => {
             ctx.append(`var ${resolveFuncTypeUnpack(type, "v", ctx)} = v;`);
             const flatPack = resolveFuncFlatPack(type, "v", ctx);
-            ctx.used(`__tact_tuple_create_${flatPack.length}`);
-            ctx.append(
-                `return __tact_tuple_create_${flatPack.length}(${flatPack.join(", ")});`,
-            );
+            if (flatPack.length <= maxTupleSize) {
+                ctx.used(`__tact_tuple_create_${flatPack.length}`);
+                ctx.append(
+                    `return __tact_tuple_create_${flatPack.length}(${flatPack.join(", ")});`,
+                );
+            } else {
+                const longTupleFlatPack = chainVars(flatPack);
+                ctx.used(`__tact_tuple_create_${longTupleFlatPack.length}`);
+                ctx.append(
+                    `return __tact_tuple_create_${longTupleFlatPack.length}(${longTupleFlatPack.join(", ")});`,
+                );
+            }
         });
     });
 
@@ -113,10 +156,18 @@ export function writeAccessors(
                 }
                 vars.push(`v'${f.name}`);
             }
-            ctx.used(`__tact_tuple_create_${vars.length}`);
-            ctx.append(
-                `return __tact_tuple_create_${vars.length}(${vars.join(", ")});`,
-            );
+            if (vars.length <= maxTupleSize) {
+                ctx.used(`__tact_tuple_create_${vars.length}`);
+                ctx.append(
+                    `return __tact_tuple_create_${vars.length}(${vars.join(", ")});`,
+                );
+            } else {
+                const longTupleVars = chainVars(vars);
+                ctx.used(`__tact_tuple_create_${longTupleVars.length}`);
+                ctx.append(
+                    `return __tact_tuple_create_${longTupleVars.length}(${longTupleVars.join(", ")});`,
+                );
+            }
         });
     });
 
@@ -182,10 +233,29 @@ export function writeAccessors(
                 vars.push(`${resolveFuncType(f.type, ctx)} v'${f.name}`);
                 out.push(`v'${f.name}`);
             }
-            ctx.used(`__tact_tuple_destroy_${vars.length}`);
-            ctx.append(
-                `var (${vars.join(", ")}) = __tact_tuple_destroy_${vars.length}(v);`,
-            );
+            if (vars.length <= maxTupleSize) {
+                ctx.used(`__tact_tuple_destroy_${vars.length}`);
+                ctx.append(
+                    `var (${vars.join(", ")}) = __tact_tuple_destroy_${vars.length}(v);`,
+                );
+            } else {
+                const batch = vars.splice(0, maxTupleSize - 1);
+                ctx.used(`__tact_tuple_destroy_${maxTupleSize}`);
+                ctx.append(
+                    `var (${batch.join(", ")}, next) = __tact_tuple_destroy_${maxTupleSize}(v);`,
+                );
+                while (vars.length >= maxTupleSize) {
+                    const batch = vars.splice(0, maxTupleSize - 1);
+                    ctx.used(`__tact_tuple_destroy_${maxTupleSize}`);
+                    ctx.append(
+                        `var (${batch.join(", ")}, next) = __tact_tuple_destroy_${maxTupleSize}(next);`,
+                    );
+                }
+                ctx.used(`__tact_tuple_destroy_${vars.length}`);
+                ctx.append(
+                    `var (${batch.join(", ")}) = __tact_tuple_destroy_${vars.length}(next);`,
+                );
+            }
             ctx.append(`return (${out.join(", ")});`);
         });
     });
@@ -208,7 +278,7 @@ export function writeAccessors(
 
     ctx.fun(ops.typeToExternal(type.name, ctx), () => {
         ctx.signature(
-            `(${type.fields.map((v) => resolveFuncTupleType(v.type, ctx)).join(", ")}) ${ops.typeToExternal(type.name, ctx)}((${resolveFuncType(type, ctx)}) v)`,
+            `(${type.fields.map((f) => resolveFuncType(f.type, ctx)).join(", ")}) ${ops.typeToExternal(type.name, ctx)}((${resolveFuncType(type, ctx)}) v)`,
         );
         ctx.flag("inline");
         ctx.context("type:" + type.name);
@@ -218,21 +288,6 @@ export function writeAccessors(
             );
             const vars: string[] = [];
             for (const f of type.fields) {
-                if (f.type.kind === "ref") {
-                    const t = getType(ctx.ctx, f.type.name);
-                    if (t.kind === "struct") {
-                        if (f.type.optional) {
-                            vars.push(
-                                `${ops.typeToOptTuple(f.type.name, ctx)}(v'${f.name})`,
-                            );
-                        } else {
-                            vars.push(
-                                `${ops.typeToTuple(f.type.name, ctx)}(v'${f.name})`,
-                            );
-                        }
-                        continue;
-                    }
-                }
                 vars.push(`v'${f.name}`);
             }
             ctx.append(`return (${vars.join(", ")});`);

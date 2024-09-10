@@ -1,12 +1,133 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`grammar should fail abstract-const-without-modifier 1`] = `
-"<unknown>:2:5: Abstract constant doesn't have abstract modifier
+"Syntax error: <unknown>:2:5: Abstract constant doesn't have abstract modifier
 Line 2, col 5:
   1 | trait t {
 > 2 |     const c: Int;
           ^~~~~~~~~~~~~
   3 | }
+"
+`;
+
+exports[`grammar should fail const-abstract-abstract 1`] = `
+"Syntax error: <unknown>:4:10: Duplicate constant attribute "abstract"
+Line 4, col 10:
+  3 | 
+> 4 | abstract abstract const Foo: Int = 42;
+               ^~~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail const-override 1`] = `
+"Syntax error: <unknown>:4:1: Module-level constants do not support attributes
+Line 4, col 1:
+  3 | 
+> 4 | override const Foo: Int = 42;
+      ^~~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail const-override-override 1`] = `
+"Syntax error: <unknown>:4:10: Duplicate constant attribute "override"
+Line 4, col 10:
+  3 | 
+> 4 | override override const Foo: Int = 42;
+               ^~~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail const-override-virtual 1`] = `
+"Syntax error: <unknown>:4:1: Module-level constants do not support attributes
+Line 4, col 1:
+  3 | 
+> 4 | override virtual const Foo: Int = 42;
+      ^~~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail const-virtual 1`] = `
+"Syntax error: <unknown>:4:1: Module-level constants do not support attributes
+Line 4, col 1:
+  3 | 
+> 4 | virtual const Foo: Int = 42;
+      ^~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail const-virtual-override 1`] = `
+"Syntax error: <unknown>:4:1: Module-level constants do not support attributes
+Line 4, col 1:
+  3 | 
+> 4 | virtual override const Foo: Int = 42;
+      ^~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail const-virtual-virtual 1`] = `
+"Syntax error: <unknown>:4:9: Duplicate constant attribute "virtual"
+Line 4, col 9:
+  3 | 
+> 4 | virtual virtual const Foo: Int = 42;
+              ^~~~~~~
+  5 | 
+"
+`;
+
+exports[`grammar should fail contract-const-abstract 1`] = `
+"<unknown>:5:26: Parse error: expected "="
+
+Line 5, col 26:
+  4 | contract TestContract {
+> 5 |   abstract const Foo: Int;
+                               ^
+  6 | }
+"
+`;
+
+exports[`grammar should fail contract-const-abstract-abstract 1`] = `
+"Syntax error: <unknown>:5:12: Duplicate constant attribute "abstract"
+Line 5, col 12:
+  4 | contract TestContract {
+> 5 |   abstract abstract const Foo: Int = 42;
+                 ^~~~~~~~
+  6 | }
+"
+`;
+
+exports[`grammar should fail contract-const-abstract-with-initializer 1`] = `
+"Syntax error: <unknown>:5:3: Non-abstract constant has abstract modifier
+Line 5, col 3:
+  4 | contract TestContract {
+> 5 |   abstract const Foo: Int = 42;
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  6 | }
+"
+`;
+
+exports[`grammar should fail contract-const-override-override 1`] = `
+"Syntax error: <unknown>:5:12: Duplicate constant attribute "override"
+Line 5, col 12:
+  4 | contract TestContract {
+> 5 |   override override const Foo: Int = 42;
+                 ^~~~~~~~
+  6 | }
+"
+`;
+
+exports[`grammar should fail contract-const-virtual-virtual 1`] = `
+"Syntax error: <unknown>:5:11: Duplicate constant attribute "virtual"
+Line 5, col 11:
+  4 | contract TestContract {
+> 5 |   virtual virtual const Foo: Int = 42;
+                ^~~~~~~
+  6 | }
 "
 `;
 
@@ -21,7 +142,7 @@ Line 1, col 20:
 `;
 
 exports[`grammar should fail contract-init-trailing-comma-empty-params 1`] = `
-"<unknown>:2:10: Empty parameter list should not have a dangling comma.
+"Syntax error: <unknown>:2:10: Empty parameter list should not have a dangling comma.
 Line 2, col 10:
   1 | contract Name {
 > 2 |     init(,) {}
@@ -41,7 +162,7 @@ Line 1, col 19:
 `;
 
 exports[`grammar should fail contract-with-imports 1`] = `
-"<unknown>:6:1: Parse error: expected end of input, "trait", "contract", "message", "struct", "const", "@name", "fun", or "primitive"
+"<unknown>:6:1: Parse error: expected end of input, "trait", "contract", "message", "struct", "const", "@name", "asm", "fun", or "primitive"
 
 Line 6, col 1:
   5 | // all imports must be at the very top of the file
@@ -52,7 +173,7 @@ Line 6, col 1:
 `;
 
 exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
-"<unknown>:6:14: Empty argument list should not have a dangling comma.
+"Syntax error: <unknown>:6:14: Empty argument list should not have a dangling comma.
 Line 6, col 14:
   5 | fun b(): Int {
 > 6 |     return a(,);
@@ -62,12 +183,262 @@ Line 6, col 14:
 `;
 
 exports[`grammar should fail expr-method-call-trailing-comma-no-args 1`] = `
-"<unknown>:2:24: Empty argument list should not have a dangling comma.
+"Syntax error: <unknown>:2:24: Empty argument list should not have a dangling comma.
 Line 2, col 24:
   1 | fun another() {
 > 2 |     return 42.toString(,);
                              ^
   3 | }
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-arith-operator 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(/)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-assign-operator 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(^>>=)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-bitwise-operator 1`] = `
+"<unknown>:1:8: Parse error: expected not (a whiteSpace or "(" or ")" or "[" or "]" or "," or "." or ";" or "~") or "\`"
+
+Line 1, col 8:
+> 1 | @name(~)
+             ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-comma 1`] = `
+"<unknown>:1:19: Parse error: expected ")"
+
+Line 1, col 19:
+> 1 | @name(send_message,then_terminate)
+                        ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-comparison-operator 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(<=>)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-control-keyword 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(elseifnot)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-delimiter 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name([)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-directive 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(#include)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-dot 1`] = `
+"<unknown>:1:10: Parse error: expected ")"
+
+Line 1, col 10:
+> 1 | @name(msg.sender)
+               ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-keyword 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(global)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-multiline-comments 1`] = `
+"<unknown>:1:7: Parse error: expected not ("\\"" or "{-")
+
+Line 1, col 7:
+> 1 | @name({-aaa-})
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-number 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(123)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-number-decimal 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(0)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-number-hexadecimal 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(0x0)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-number-hexadecimal-2 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(0xDEADBEEF)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-number-neg-decimal 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(-1)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-number-neg-hexadecimal 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(-0x0)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-only-underscore 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(_)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-parens 1`] = `
+"<unknown>:1:11: Parse error: expected ")"
+
+Line 1, col 11:
+> 1 | @name(take(first)Entry)
+                ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-semicolons 1`] = `
+"<unknown>:1:9: Parse error: expected ")"
+
+Line 1, col 9:
+> 1 | @name(pa;;in"\`aaa\`")
+              ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-space 1`] = `
+"<unknown>:1:11: Parse error: expected ")"
+
+Line 1, col 11:
+> 1 | @name(foo foo)
+                ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-square-brackets 1`] = `
+"<unknown>:1:11: Parse error: expected ")"
+
+Line 1, col 11:
+> 1 | @name(take[some]entry)
+                ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-string 1`] = `
+"<unknown>:1:7: Parse error: expected not ("\\"" or "{-")
+
+Line 1, col 7:
+> 1 | @name("not_a_string)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-type-keyword 1`] = `
+"<unknown>:1:7: Parse error: expected not a funcInvalidId or "\`"
+
+Line 1, col 7:
+> 1 | @name(->)
+            ^
+  2 | native idTest();
+"
+`;
+
+exports[`grammar should fail funcid-native-fun-unclosed-parens 1`] = `
+"<unknown>:1:9: Parse error: expected ")"
+
+Line 1, col 9:
+> 1 | @name(aa(bb)
+              ^
+  2 | native idTest();
 "
 `;
 
@@ -160,7 +531,7 @@ Line 1, col 8:
 `;
 
 exports[`grammar should fail item-fun-non-void-trailing-comma-no-params 1`] = `
-"<unknown>:1:14: Empty parameter list should not have a dangling comma.
+"Syntax error: <unknown>:1:14: Empty parameter list should not have a dangling comma.
 Line 1, col 14:
 > 1 | fun function(,) : Int {
                    ^
@@ -169,7 +540,7 @@ Line 1, col 14:
 `;
 
 exports[`grammar should fail item-fun-void-trailing-comma-no-params 1`] = `
-"<unknown>:1:14: Empty parameter list should not have a dangling comma.
+"Syntax error: <unknown>:1:14: Empty parameter list should not have a dangling comma.
 Line 1, col 14:
 > 1 | fun function(,) {}
                    ^
@@ -186,8 +557,8 @@ Line 1, col 20:
 "
 `;
 
-exports[`grammar should fail item-native-fun-not-void-decl-trailing-comma-no-params.tact 1`] = `
-"<unknown>:2:31: Empty parameter list should not have a dangling comma.
+exports[`grammar should fail item-native-fun-not-void-decl-trailing-comma-no-params 1`] = `
+"Syntax error: <unknown>:2:31: Empty parameter list should not have a dangling comma.
 Line 2, col 31:
   1 | @name(native_name_2)
 > 2 | native testNativeFuncWithType(,): Int;
@@ -196,11 +567,51 @@ Line 2, col 31:
 `;
 
 exports[`grammar should fail item-native-fun-void-decl-trailing-comma-no-params 1`] = `
-"<unknown>:2:23: Empty parameter list should not have a dangling comma.
+"Syntax error: <unknown>:2:23: Empty parameter list should not have a dangling comma.
 Line 2, col 23:
   1 | @name(native_name_1)
 > 2 | native testNativeFunc(,);
                             ^
+"
+`;
+
+exports[`grammar should fail items-asm-fun-1 1`] = `
+"<unknown>:1:5: Parse error: expected ")"
+
+Line 1, col 5:
+> 1 | asm(1 0) extends fun loadCoins(self: Slice): Int {
+          ^
+  2 |     LDVARUINT16
+"
+`;
+
+exports[`grammar should fail items-asm-fun-2 1`] = `
+"<unknown>:1:9: Parse error: expected ")", "->", "_", "A".."Z", or "a".."z"
+
+Line 1, col 9:
+> 1 | asm(c b 42) extends fun storeDict(b: Builder, c: Cell) {
+              ^
+  2 |     STDICT
+"
+`;
+
+exports[`grammar should fail items-asm-fun-3 1`] = `
+"<unknown>:1:14: Parse error: expected "0" or "1".."9"
+
+Line 1, col 14:
+> 1 | asm(s len -> len 1 0) extends fun loadInt(self: Slice, len: Int): Int {
+                   ^
+  2 |     LDIX
+"
+`;
+
+exports[`grammar should fail items-asm-fun-4 1`] = `
+"<unknown>:1:7: Parse error: expected "0" or "1".."9"
+
+Line 1, col 7:
+> 1 | asm(->) extends fun loadInt(self: Slice, len: Int): Int {
+            ^
+  2 |     LDIX
 "
 `;
 
@@ -281,6 +692,16 @@ Line 2, col 13:
 "
 `;
 
+exports[`grammar should fail message-negative-opcode 1`] = `
+"<unknown>:1:9: Parse error: expected "0", "1".."9", "0O", "0o", "0B", "0b", "0X", or "0x"
+
+Line 1, col 9:
+> 1 | message(-1) Foo { }
+              ^
+  2 | 
+"
+`;
+
 exports[`grammar should fail struct-double-semicolon 1`] = `
 "<unknown>:2:19: Parse error: expected "}"
 
@@ -314,6 +735,16 @@ Line 2, col 24:
 "
 `;
 
+exports[`grammar should fail trait-const-abstract-with-initializer 1`] = `
+"Syntax error: <unknown>:5:3: Non-abstract constant has abstract modifier
+Line 5, col 3:
+  4 | trait TestContract {
+> 5 |   abstract const Foo: Int = 42;
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  6 | }
+"
+`;
+
 exports[`grammar should fail trait-empty-traits-list-with-keyword 1`] = `
 "<unknown>:1:17: Parse error: expected "_", "A".."Z", or "a".."z"
 
@@ -324,8 +755,8 @@ Line 1, col 17:
 "
 `;
 
-exports[`grammar should fail trait-fun-non-void-trailing-comma-no-params.tact 1`] = `
-"<unknown>:2:39: Empty parameter list should not have a dangling comma.
+exports[`grammar should fail trait-fun-non-void-trailing-comma-no-params 1`] = `
+"Syntax error: <unknown>:2:39: Empty parameter list should not have a dangling comma.
 Line 2, col 39:
   1 | trait Test {
 > 2 |     abstract fun testAbstractWithType(,): Int;
@@ -335,7 +766,7 @@ Line 2, col 39:
 `;
 
 exports[`grammar should fail trait-fun-void-trailing-comma-no-params 1`] = `
-"<unknown>:2:31: Empty parameter list should not have a dangling comma.
+"Syntax error: <unknown>:2:31: Empty parameter list should not have a dangling comma.
 Line 2, col 31:
   1 | trait Test {
 > 2 |     abstract fun testAbstract(,);
@@ -424,6 +855,171 @@ exports[`grammar should parse abstract-const 1`] = `
 }
 `;
 
+exports[`grammar should parse case-35 1`] = `
+{
+  "id": 7,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 5,
+          "kind": "receiver",
+          "loc": external() {
+        acceptMessage();
+    },
+          "selector": {
+            "kind": "external-fallback",
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 2,
+                  "kind": "id",
+                  "loc": acceptMessage,
+                  "text": "acceptMessage",
+                },
+                "id": 3,
+                "kind": "static_call",
+                "loc": acceptMessage(),
+              },
+              "id": 4,
+              "kind": "statement_expression",
+              "loc": acceptMessage();,
+            },
+          ],
+        },
+      ],
+      "id": 6,
+      "kind": "contract",
+      "loc": contract ReceiveTestContract {
+    external() {
+        acceptMessage();
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": ReceiveTestContract,
+        "text": "ReceiveTestContract",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse contract-optional-semicolon-for-last-const-def 1`] = `
+{
+  "id": 7,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [],
+          "id": 5,
+          "initializer": {
+            "base": 10,
+            "id": 4,
+            "kind": "number",
+            "loc": 42,
+            "value": 42n,
+          },
+          "kind": "constant_def",
+          "loc": const foo: Int = 42,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "type": {
+            "id": 3,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 6,
+      "kind": "contract",
+      "loc": contract Test { const foo: Int = 42 },
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1`] = `
+{
+  "id": 8,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 6,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": m: map<Int, Int>,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": m,
+            "text": "m",
+          },
+          "type": {
+            "id": 5,
+            "keyStorageType": null,
+            "keyType": {
+              "id": 3,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int>,
+            "valueStorageType": null,
+            "valueType": {
+              "id": 4,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+      ],
+      "id": 7,
+      "kind": "contract",
+      "loc": contract Test { m: map<Int, Int> },
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
 exports[`grammar should parse contract-with-const-override 1`] = `
 {
   "id": 7,
@@ -436,11 +1032,12 @@ exports[`grammar should parse contract-with-const-override 1`] = `
           "attributes": [
             {
               "loc": override,
-              "type": "overrides",
+              "type": "override",
             },
           ],
           "id": 5,
           "initializer": {
+            "base": 10,
             "id": 4,
             "kind": "number",
             "loc": 0,
@@ -817,7 +1414,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
           "attributes": [
             {
               "loc": override,
-              "type": "overrides",
+              "type": "override",
             },
           ],
           "id": 21,
@@ -1003,7 +1600,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
           "attributes": [
             {
               "loc": override,
-              "type": "overrides",
+              "type": "override",
             },
           ],
           "id": 21,
@@ -1105,6 +1702,7 @@ exports[`grammar should parse expr-arith 1`] = `
                 "id": 5,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 3,
                   "kind": "number",
                   "loc": 0,
@@ -1113,6 +1711,7 @@ exports[`grammar should parse expr-arith 1`] = `
                 "loc": 0 + 1,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 4,
                   "kind": "number",
                   "loc": 1,
@@ -1122,6 +1721,7 @@ exports[`grammar should parse expr-arith 1`] = `
               "loc": (0 + 1) * 10,
               "op": "*",
               "right": {
+                "base": 10,
                 "id": 6,
                 "kind": "number",
                 "loc": 10,
@@ -1131,6 +1731,7 @@ exports[`grammar should parse expr-arith 1`] = `
             "loc": (0 + 1) * 10 / 20,
             "op": "/",
             "right": {
+              "base": 10,
               "id": 8,
               "kind": "number",
               "loc": 20,
@@ -1188,6 +1789,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
                   "id": 5,
                   "kind": "op_binary",
                   "left": {
+                    "base": 10,
                     "id": 3,
                     "kind": "number",
                     "loc": 0,
@@ -1196,6 +1798,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
                   "loc": 0 + 1,
                   "op": "+",
                   "right": {
+                    "base": 10,
                     "id": 4,
                     "kind": "number",
                     "loc": 1,
@@ -1205,6 +1808,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
                 "loc": (0 + 1) * 10,
                 "op": "*",
                 "right": {
+                  "base": 10,
                   "id": 6,
                   "kind": "number",
                   "loc": 10,
@@ -1214,6 +1818,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
               "loc": (0 + 1) * 10 / 20,
               "op": "/",
               "right": {
+                "base": 10,
                 "id": 8,
                 "kind": "number",
                 "loc": 20,
@@ -1223,6 +1828,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
             "loc": (0 + 1) * 10 / 20 != 10,
             "op": "!=",
             "right": {
+              "base": 10,
               "id": 10,
               "kind": "number",
               "loc": 10,
@@ -1283,6 +1889,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                     "id": 5,
                     "kind": "op_binary",
                     "left": {
+                      "base": 10,
                       "id": 3,
                       "kind": "number",
                       "loc": 0,
@@ -1291,6 +1898,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                     "loc": 0 + 1,
                     "op": "+",
                     "right": {
+                      "base": 10,
                       "id": 4,
                       "kind": "number",
                       "loc": 1,
@@ -1300,6 +1908,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                   "loc": (0 + 1) * 10,
                   "op": "*",
                   "right": {
+                    "base": 10,
                     "id": 6,
                     "kind": "number",
                     "loc": 10,
@@ -1309,6 +1918,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                 "loc": (0 + 1) * 10 / 20,
                 "op": "/",
                 "right": {
+                  "base": 10,
                   "id": 8,
                   "kind": "number",
                   "loc": 20,
@@ -1321,6 +1931,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                 "id": 12,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 10,
                   "kind": "number",
                   "loc": 10,
@@ -1353,6 +1964,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                 "loc": some2 > 10,
                 "op": ">",
                 "right": {
+                  "base": 10,
                   "id": 15,
                   "kind": "number",
                   "loc": 10,
@@ -1375,6 +1987,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                 "right": {
                   "args": [
                     {
+                      "base": 10,
                       "id": 20,
                       "kind": "number",
                       "loc": 10,
@@ -1391,6 +2004,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                     "text": "add",
                   },
                   "self": {
+                    "base": 10,
                     "id": 18,
                     "kind": "number",
                     "loc": 123,
@@ -1454,6 +2068,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                     "id": 5,
                     "kind": "op_binary",
                     "left": {
+                      "base": 10,
                       "id": 3,
                       "kind": "number",
                       "loc": 0,
@@ -1462,6 +2077,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                     "loc": 0 + 1,
                     "op": "+",
                     "right": {
+                      "base": 10,
                       "id": 4,
                       "kind": "number",
                       "loc": 1,
@@ -1471,6 +2087,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                   "loc": (0 + 1) * 10,
                   "op": "*",
                   "right": {
+                    "base": 10,
                     "id": 6,
                     "kind": "number",
                     "loc": 10,
@@ -1480,6 +2097,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                 "loc": (0 + 1) * 10 / 20,
                 "op": "/",
                 "right": {
+                  "base": 10,
                   "id": 8,
                   "kind": "number",
                   "loc": 20,
@@ -1492,6 +2110,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                 "id": 12,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 10,
                   "kind": "number",
                   "loc": 10,
@@ -1524,6 +2143,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                 "loc": some2 > 10,
                 "op": ">",
                 "right": {
+                  "base": 10,
                   "id": 15,
                   "kind": "number",
                   "loc": 10,
@@ -1544,6 +2164,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                 "loc": some3 < 10,
                 "op": "<",
                 "right": {
+                  "base": 10,
                   "id": 18,
                   "kind": "number",
                   "loc": 10,
@@ -1729,6 +2350,7 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
                 "loc": a == 123,
                 "op": "==",
                 "right": {
+                  "base": 10,
                   "id": 7,
                   "kind": "number",
                   "loc": 123,
@@ -1749,6 +2371,7 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
                 "loc": a == 456,
                 "op": "==",
                 "right": {
+                  "base": 10,
                   "id": 10,
                   "kind": "number",
                   "loc": 456,
@@ -1768,6 +2391,7 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
               "loc": a + 2,
               "op": "+",
               "right": {
+                "base": 10,
                 "id": 17,
                 "kind": "number",
                 "loc": 2,
@@ -1789,6 +2413,7 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
               "loc": a + 1,
               "op": "+",
               "right": {
+                "base": 10,
                 "id": 14,
                 "kind": "number",
                 "loc": 1,
@@ -1865,6 +2490,7 @@ exports[`grammar should parse expr-conditional 1`] = `
               "loc": a == 123,
               "op": "==",
               "right": {
+                "base": 10,
                 "id": 7,
                 "kind": "number",
                 "loc": 123,
@@ -1872,6 +2498,7 @@ exports[`grammar should parse expr-conditional 1`] = `
               },
             },
             "elseBranch": {
+              "base": 10,
               "id": 10,
               "kind": "number",
               "loc": 2,
@@ -1881,6 +2508,7 @@ exports[`grammar should parse expr-conditional 1`] = `
             "kind": "conditional",
             "loc": a == 123 ? 1 : 2,
             "thenBranch": {
+              "base": 10,
               "id": 9,
               "kind": "number",
               "loc": 1,
@@ -1957,6 +2585,7 @@ exports[`grammar should parse expr-conditional-with-let 1`] = `
               "loc": a == 123,
               "op": "==",
               "right": {
+                "base": 10,
                 "id": 9,
                 "kind": "number",
                 "loc": 123,
@@ -1964,6 +2593,7 @@ exports[`grammar should parse expr-conditional-with-let 1`] = `
               },
             },
             "elseBranch": {
+              "base": 10,
               "id": 12,
               "kind": "number",
               "loc": 2,
@@ -1973,6 +2603,7 @@ exports[`grammar should parse expr-conditional-with-let 1`] = `
             "kind": "conditional",
             "loc": a == 123 ? 1 : 2,
             "thenBranch": {
+              "base": 10,
               "id": 11,
               "kind": "number",
               "loc": 1,
@@ -2056,6 +2687,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                     "id": 5,
                     "kind": "op_binary",
                     "left": {
+                      "base": 10,
                       "id": 3,
                       "kind": "number",
                       "loc": 0,
@@ -2064,6 +2696,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                     "loc": 0 + 1,
                     "op": "+",
                     "right": {
+                      "base": 10,
                       "id": 4,
                       "kind": "number",
                       "loc": 1,
@@ -2073,6 +2706,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                   "loc": (0 + 1) * 10,
                   "op": "*",
                   "right": {
+                    "base": 10,
                     "id": 6,
                     "kind": "number",
                     "loc": 10,
@@ -2082,6 +2716,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                 "loc": (0 + 1) * 10 / 20,
                 "op": "/",
                 "right": {
+                  "base": 10,
                   "id": 8,
                   "kind": "number",
                   "loc": 20,
@@ -2094,6 +2729,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                 "id": 12,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 10,
                   "kind": "number",
                   "loc": 10,
@@ -2126,6 +2762,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                 "loc": some2 > 10,
                 "op": ">",
                 "right": {
+                  "base": 10,
                   "id": 15,
                   "kind": "number",
                   "loc": 10,
@@ -2150,6 +2787,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                     {
                       "args": [
                         {
+                          "base": 10,
                           "id": 21,
                           "kind": "number",
                           "loc": 10,
@@ -2166,6 +2804,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                         "text": "add",
                       },
                       "self": {
+                        "base": 10,
                         "id": 19,
                         "kind": "number",
                         "loc": 123,
@@ -2225,6 +2864,7 @@ exports[`grammar should parse expr-int-literal 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 3,
             "kind": "number",
             "loc": 0,
@@ -2302,6 +2942,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
                 "loc": a == 123,
                 "op": "==",
                 "right": {
+                  "base": 10,
                   "id": 7,
                   "kind": "number",
                   "loc": 123,
@@ -2322,6 +2963,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
                 "loc": a == 456,
                 "op": "==",
                 "right": {
+                  "base": 10,
                   "id": 10,
                   "kind": "number",
                   "loc": 456,
@@ -2341,6 +2983,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
               "loc": a + 2,
               "op": "+",
               "right": {
+                "base": 10,
                 "id": 22,
                 "kind": "number",
                 "loc": 2,
@@ -2363,6 +3006,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
                 "loc": a == 10,
                 "op": "==",
                 "right": {
+                  "base": 10,
                   "id": 14,
                   "kind": "number",
                   "loc": 10,
@@ -2381,6 +3025,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
                 "loc": a * 2,
                 "op": "*",
                 "right": {
+                  "base": 10,
                   "id": 18,
                   "kind": "number",
                   "loc": 2,
@@ -2446,6 +3091,7 @@ exports[`grammar should parse expr-parens 1`] = `
                 "id": 5,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 3,
                   "kind": "number",
                   "loc": 1,
@@ -2454,6 +3100,7 @@ exports[`grammar should parse expr-parens 1`] = `
                 "loc": 1 + 2,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 4,
                   "kind": "number",
                   "loc": 2,
@@ -2471,6 +3118,7 @@ exports[`grammar should parse expr-parens 1`] = `
                   "id": 8,
                   "kind": "op_binary",
                   "left": {
+                    "base": 10,
                     "id": 6,
                     "kind": "number",
                     "loc": 123,
@@ -2479,6 +3127,7 @@ exports[`grammar should parse expr-parens 1`] = `
                   "loc": 123 + 3,
                   "op": "+",
                   "right": {
+                    "base": 10,
                     "id": 7,
                     "kind": "number",
                     "loc": 3,
@@ -2490,6 +3139,7 @@ exports[`grammar should parse expr-parens 1`] = `
             "loc": 1 + 2 + (123 + 3)!! > 123,
             "op": ">",
             "right": {
+              "base": 10,
               "id": 11,
               "kind": "number",
               "loc": 123,
@@ -2544,6 +3194,7 @@ exports[`grammar should parse expr-with-unbox 1`] = `
                 "id": 5,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 3,
                   "kind": "number",
                   "loc": 1,
@@ -2552,6 +3203,7 @@ exports[`grammar should parse expr-with-unbox 1`] = `
                 "loc": 1 + 2,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 4,
                   "kind": "number",
                   "loc": 2,
@@ -2566,6 +3218,7 @@ exports[`grammar should parse expr-with-unbox 1`] = `
                 "loc": 3!!,
                 "op": "!!",
                 "operand": {
+                  "base": 10,
                   "id": 6,
                   "kind": "number",
                   "loc": 3,
@@ -2576,6 +3229,7 @@ exports[`grammar should parse expr-with-unbox 1`] = `
             "loc": 1 + 2 + 3!! > 123,
             "op": ">",
             "right": {
+              "base": 10,
               "id": 9,
               "kind": "number",
               "loc": 123,
@@ -2633,6 +3287,7 @@ exports[`grammar should parse expr-with-var 1`] = `
                   "id": 5,
                   "kind": "op_binary",
                   "left": {
+                    "base": 10,
                     "id": 3,
                     "kind": "number",
                     "loc": 0,
@@ -2641,6 +3296,7 @@ exports[`grammar should parse expr-with-var 1`] = `
                   "loc": 0 + 1,
                   "op": "+",
                   "right": {
+                    "base": 10,
                     "id": 4,
                     "kind": "number",
                     "loc": 1,
@@ -2650,6 +3306,7 @@ exports[`grammar should parse expr-with-var 1`] = `
                 "loc": (0 + 1) * 10,
                 "op": "*",
                 "right": {
+                  "base": 10,
                   "id": 6,
                   "kind": "number",
                   "loc": 10,
@@ -2659,6 +3316,7 @@ exports[`grammar should parse expr-with-var 1`] = `
               "loc": (0 + 1) * 10 / 20,
               "op": "/",
               "right": {
+                "base": 10,
                 "id": 8,
                 "kind": "number",
                 "loc": 20,
@@ -2671,6 +3329,7 @@ exports[`grammar should parse expr-with-var 1`] = `
               "id": 12,
               "kind": "op_binary",
               "left": {
+                "base": 10,
                 "id": 10,
                 "kind": "number",
                 "loc": 10,
@@ -2691,6 +3350,374 @@ exports[`grammar should parse expr-with-var 1`] = `
           "loc": return (0 + 1) * 10 / 20 != 10 * someId;,
         },
       ],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse items-asm-funs 1`] = `
+{
+  "id": 46,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 6,
+      "instructions": [
+        "1",
+        "INT",
+        "HASHEXT_KECCAK256",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun keccak256(s: Slice): Int {
+    1
+    INT
+    HASHEXT_KECCAK256
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": keccak256,
+        "text": "keccak256",
+      },
+      "params": [
+        {
+          "id": 5,
+          "kind": "typed_parameter",
+          "loc": s: Slice,
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": {
+            "id": 4,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+      ],
+      "return": {
+        "id": 2,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "loc": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 14,
+      "instructions": [
+        "LDVARUINT16",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm( -> 1 0) extends fun loadCoins(self: Slice): Int {
+    LDVARUINT16
+},
+      "name": {
+        "id": 9,
+        "kind": "id",
+        "loc": loadCoins,
+        "text": "loadCoins",
+      },
+      "params": [
+        {
+          "id": 13,
+          "kind": "typed_parameter",
+          "loc": self: Slice,
+          "name": {
+            "id": 11,
+            "kind": "id",
+            "loc": self,
+            "text": "self",
+          },
+          "type": {
+            "id": 12,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+      ],
+      "return": {
+        "id": 10,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [
+          {
+            "base": 10,
+            "id": 7,
+            "kind": "number",
+            "loc": 1,
+            "value": 1n,
+          },
+          {
+            "base": 10,
+            "id": 8,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+        ],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "loc": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 24,
+      "instructions": [
+        "STDICT",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm(c b) extends fun storeDict(b: Builder, c: Cell) {
+    STDICT
+},
+      "name": {
+        "id": 17,
+        "kind": "id",
+        "loc": storeDict,
+        "text": "storeDict",
+      },
+      "params": [
+        {
+          "id": 20,
+          "kind": "typed_parameter",
+          "loc": b: Builder,
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 19,
+            "kind": "type_id",
+            "loc": Builder,
+            "text": "Builder",
+          },
+        },
+        {
+          "id": 23,
+          "kind": "typed_parameter",
+          "loc": c: Cell,
+          "name": {
+            "id": 21,
+            "kind": "id",
+            "loc": c,
+            "text": "c",
+          },
+          "type": {
+            "id": 22,
+            "kind": "type_id",
+            "loc": Cell,
+            "text": "Cell",
+          },
+        },
+      ],
+      "return": null,
+      "shuffle": {
+        "args": [
+          {
+            "id": 15,
+            "kind": "id",
+            "loc": c,
+            "text": "c",
+          },
+          {
+            "id": 16,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+        ],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "loc": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 37,
+      "instructions": [
+        "LDIX",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm(s len -> 1 0) extends fun loadInt(self: Slice, len: Int): Int {
+    LDIX
+},
+      "name": {
+        "id": 29,
+        "kind": "id",
+        "loc": loadInt,
+        "text": "loadInt",
+      },
+      "params": [
+        {
+          "id": 33,
+          "kind": "typed_parameter",
+          "loc": self: Slice,
+          "name": {
+            "id": 31,
+            "kind": "id",
+            "loc": self,
+            "text": "self",
+          },
+          "type": {
+            "id": 32,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+        {
+          "id": 36,
+          "kind": "typed_parameter",
+          "loc": len: Int,
+          "name": {
+            "id": 34,
+            "kind": "id",
+            "loc": len,
+            "text": "len",
+          },
+          "type": {
+            "id": 35,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "return": {
+        "id": 30,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [
+          {
+            "id": 25,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          {
+            "id": 26,
+            "kind": "id",
+            "loc": len,
+            "text": "len",
+          },
+        ],
+        "ret": [
+          {
+            "base": 10,
+            "id": 27,
+            "kind": "number",
+            "loc": 1,
+            "value": 1n,
+          },
+          {
+            "base": 10,
+            "id": 28,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+        ],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 43,
+      "instructions": [
+        "x{02}",
+        "SDBEGINSQ",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun checkAndRemoveAddExtensionPrefix(self: Slice): Int {
+    x{02} SDBEGINSQ
+},
+      "name": {
+        "id": 38,
+        "kind": "id",
+        "loc": checkAndRemoveAddExtensionPrefix,
+        "text": "checkAndRemoveAddExtensionPrefix",
+      },
+      "params": [
+        {
+          "id": 42,
+          "kind": "typed_parameter",
+          "loc": self: Slice,
+          "name": {
+            "id": 40,
+            "kind": "id",
+            "loc": self,
+            "text": "self",
+          },
+          "type": {
+            "id": 41,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+      ],
+      "return": {
+        "id": 39,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 45,
+      "instructions": [
+        "-ROT",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun checkAndRemoveAddExtensionPrefix() {
+    -ROT
+},
+      "name": {
+        "id": 44,
+        "kind": "id",
+        "loc": checkAndRemoveAddExtensionPrefix,
+        "text": "checkAndRemoveAddExtensionPrefix",
+      },
+      "params": [],
+      "return": null,
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
     },
   ],
   "kind": "module",
@@ -2797,6 +3824,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
                 "id": 15,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 13,
                   "kind": "number",
                   "loc": 32,
@@ -2917,6 +3945,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
                 "id": 34,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 32,
                   "kind": "number",
                   "loc": 32,
@@ -3118,6 +4147,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
                 "text": "b",
               },
               {
+                "base": 10,
                 "id": 68,
                 "kind": "number",
                 "loc": 4,
@@ -3400,12 +4430,14 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
           "expression": {
             "args": [
               {
+                "base": 10,
                 "id": 106,
                 "kind": "number",
                 "loc": 2,
                 "value": 2n,
               },
               {
+                "base": 10,
                 "id": 107,
                 "kind": "number",
                 "loc": 3,
@@ -3474,6 +4506,7 @@ exports[`grammar should parse items-multi-funs 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 2,
             "kind": "number",
             "loc": 0,
@@ -3508,6 +4541,7 @@ exports[`grammar should parse items-multi-funs 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 7,
             "kind": "number",
             "loc": 0,
@@ -3542,6 +4576,7 @@ exports[`grammar should parse items-multi-funs 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 12,
             "kind": "number",
             "loc": 0,
@@ -3641,6 +4676,877 @@ native testFunc(): Bool;,
 }
 `;
 
+exports[`grammar should parse items-native-fun-funcid 1`] = `
+{
+  "id": 124,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 3,
+      "kind": "native_function_decl",
+      "loc": @name(query')
+native idTest1();,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": idTest1,
+        "text": "idTest1",
+      },
+      "nativeName": {
+        "id": 2,
+        "kind": "func_id",
+        "loc": query',
+        "text": "query'",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 6,
+      "kind": "native_function_decl",
+      "loc": @name(query'')
+native idTest2();,
+      "name": {
+        "id": 4,
+        "kind": "id",
+        "loc": idTest2,
+        "text": "idTest2",
+      },
+      "nativeName": {
+        "id": 5,
+        "kind": "func_id",
+        "loc": query'',
+        "text": "query''",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 9,
+      "kind": "native_function_decl",
+      "loc": @name(CHECK)
+native idTest3();,
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "loc": idTest3,
+        "text": "idTest3",
+      },
+      "nativeName": {
+        "id": 8,
+        "kind": "func_id",
+        "loc": CHECK,
+        "text": "CHECK",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 12,
+      "kind": "native_function_decl",
+      "loc": @name(_internal_val)
+native idTest4();,
+      "name": {
+        "id": 10,
+        "kind": "id",
+        "loc": idTest4,
+        "text": "idTest4",
+      },
+      "nativeName": {
+        "id": 11,
+        "kind": "func_id",
+        "loc": _internal_val,
+        "text": "_internal_val",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 15,
+      "kind": "native_function_decl",
+      "loc": @name(message_found?)
+native idTest5();,
+      "name": {
+        "id": 13,
+        "kind": "id",
+        "loc": idTest5,
+        "text": "idTest5",
+      },
+      "nativeName": {
+        "id": 14,
+        "kind": "func_id",
+        "loc": message_found?,
+        "text": "message_found?",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 18,
+      "kind": "native_function_decl",
+      "loc": @name(get_pubkeys&signatures)
+native idTest6();,
+      "name": {
+        "id": 16,
+        "kind": "id",
+        "loc": idTest6,
+        "text": "idTest6",
+      },
+      "nativeName": {
+        "id": 17,
+        "kind": "func_id",
+        "loc": get_pubkeys&signatures,
+        "text": "get_pubkeys&signatures",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 21,
+      "kind": "native_function_decl",
+      "loc": @name(dict::udict_set_builder)
+native idTest7();,
+      "name": {
+        "id": 19,
+        "kind": "id",
+        "loc": idTest7,
+        "text": "idTest7",
+      },
+      "nativeName": {
+        "id": 20,
+        "kind": "func_id",
+        "loc": dict::udict_set_builder,
+        "text": "dict::udict_set_builder",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 24,
+      "kind": "native_function_decl",
+      "loc": @name(_+_)
+native idTest8();,
+      "name": {
+        "id": 22,
+        "kind": "id",
+        "loc": idTest8,
+        "text": "idTest8",
+      },
+      "nativeName": {
+        "id": 23,
+        "kind": "func_id",
+        "loc": _+_,
+        "text": "_+_",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 27,
+      "kind": "native_function_decl",
+      "loc": @name(__)
+native idTest9();,
+      "name": {
+        "id": 25,
+        "kind": "id",
+        "loc": idTest9,
+        "text": "idTest9",
+      },
+      "nativeName": {
+        "id": 26,
+        "kind": "func_id",
+        "loc": __,
+        "text": "__",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 30,
+      "kind": "native_function_decl",
+      "loc": @name(fatal!)
+native idTest10();,
+      "name": {
+        "id": 28,
+        "kind": "id",
+        "loc": idTest10,
+        "text": "idTest10",
+      },
+      "nativeName": {
+        "id": 29,
+        "kind": "func_id",
+        "loc": fatal!,
+        "text": "fatal!",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 33,
+      "kind": "native_function_decl",
+      "loc": @name(123validname)
+native idTest11();,
+      "name": {
+        "id": 31,
+        "kind": "id",
+        "loc": idTest11,
+        "text": "idTest11",
+      },
+      "nativeName": {
+        "id": 32,
+        "kind": "func_id",
+        "loc": 123validname,
+        "text": "123validname",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 36,
+      "kind": "native_function_decl",
+      "loc": @name(2+2=2*2)
+native idTest12();,
+      "name": {
+        "id": 34,
+        "kind": "id",
+        "loc": idTest12,
+        "text": "idTest12",
+      },
+      "nativeName": {
+        "id": 35,
+        "kind": "func_id",
+        "loc": 2+2=2*2,
+        "text": "2+2=2*2",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 39,
+      "kind": "native_function_decl",
+      "loc": @name(-alsovalidname)
+native idTest13();,
+      "name": {
+        "id": 37,
+        "kind": "id",
+        "loc": idTest13,
+        "text": "idTest13",
+      },
+      "nativeName": {
+        "id": 38,
+        "kind": "func_id",
+        "loc": -alsovalidname,
+        "text": "-alsovalidname",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 42,
+      "kind": "native_function_decl",
+      "loc": @name(0xefefefhahaha)
+native idTest14();,
+      "name": {
+        "id": 40,
+        "kind": "id",
+        "loc": idTest14,
+        "text": "idTest14",
+      },
+      "nativeName": {
+        "id": 41,
+        "kind": "func_id",
+        "loc": 0xefefefhahaha,
+        "text": "0xefefefhahaha",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 45,
+      "kind": "native_function_decl",
+      "loc": @name({hehehe})
+native idTest15();,
+      "name": {
+        "id": 43,
+        "kind": "id",
+        "loc": idTest15,
+        "text": "idTest15",
+      },
+      "nativeName": {
+        "id": 44,
+        "kind": "func_id",
+        "loc": {hehehe},
+        "text": "{hehehe}",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 48,
+      "kind": "native_function_decl",
+      "loc": @name(pa{--}in"\`aaa\`")
+native idTest16();,
+      "name": {
+        "id": 46,
+        "kind": "id",
+        "loc": idTest16,
+        "text": "idTest16",
+      },
+      "nativeName": {
+        "id": 47,
+        "kind": "func_id",
+        "loc": pa{--}in"\`aaa\`",
+        "text": "pa{--}in"\`aaa\`"",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 51,
+      "kind": "native_function_decl",
+      "loc": @name(\`I'm a function too\`)
+native idTest17();,
+      "name": {
+        "id": 49,
+        "kind": "id",
+        "loc": idTest17,
+        "text": "idTest17",
+      },
+      "nativeName": {
+        "id": 50,
+        "kind": "func_id",
+        "loc": \`I'm a function too\`,
+        "text": "\`I'm a function too\`",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 54,
+      "kind": "native_function_decl",
+      "loc": @name(\`any symbols ; ~ () are allowed here...\`)
+native idTest18();,
+      "name": {
+        "id": 52,
+        "kind": "id",
+        "loc": idTest18,
+        "text": "idTest18",
+      },
+      "nativeName": {
+        "id": 53,
+        "kind": "func_id",
+        "loc": \`any symbols ; ~ () are allowed here...\`,
+        "text": "\`any symbols ; ~ () are allowed here...\`",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 57,
+      "kind": "native_function_decl",
+      "loc": @name(C4)
+native idTest19();,
+      "name": {
+        "id": 55,
+        "kind": "id",
+        "loc": idTest19,
+        "text": "idTest19",
+      },
+      "nativeName": {
+        "id": 56,
+        "kind": "func_id",
+        "loc": C4,
+        "text": "C4",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 60,
+      "kind": "native_function_decl",
+      "loc": @name(C4g)
+native idTest20();,
+      "name": {
+        "id": 58,
+        "kind": "id",
+        "loc": idTest20,
+        "text": "idTest20",
+      },
+      "nativeName": {
+        "id": 59,
+        "kind": "func_id",
+        "loc": C4g,
+        "text": "C4g",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 63,
+      "kind": "native_function_decl",
+      "loc": @name(4C)
+native idTest21();,
+      "name": {
+        "id": 61,
+        "kind": "id",
+        "loc": idTest21,
+        "text": "idTest21",
+      },
+      "nativeName": {
+        "id": 62,
+        "kind": "func_id",
+        "loc": 4C,
+        "text": "4C",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 66,
+      "kind": "native_function_decl",
+      "loc": @name(_0x0)
+native idTest22();,
+      "name": {
+        "id": 64,
+        "kind": "id",
+        "loc": idTest22,
+        "text": "idTest22",
+      },
+      "nativeName": {
+        "id": 65,
+        "kind": "func_id",
+        "loc": _0x0,
+        "text": "_0x0",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 69,
+      "kind": "native_function_decl",
+      "loc": @name(_0)
+native idTest23();,
+      "name": {
+        "id": 67,
+        "kind": "id",
+        "loc": idTest23,
+        "text": "idTest23",
+      },
+      "nativeName": {
+        "id": 68,
+        "kind": "func_id",
+        "loc": _0,
+        "text": "_0",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 72,
+      "kind": "native_function_decl",
+      "loc": @name(0x_)
+native idTest24();,
+      "name": {
+        "id": 70,
+        "kind": "id",
+        "loc": idTest24,
+        "text": "idTest24",
+      },
+      "nativeName": {
+        "id": 71,
+        "kind": "func_id",
+        "loc": 0x_,
+        "text": "0x_",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 75,
+      "kind": "native_function_decl",
+      "loc": @name(0x0_)
+native idTest25();,
+      "name": {
+        "id": 73,
+        "kind": "id",
+        "loc": idTest25,
+        "text": "idTest25",
+      },
+      "nativeName": {
+        "id": 74,
+        "kind": "func_id",
+        "loc": 0x0_,
+        "text": "0x0_",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 78,
+      "kind": "native_function_decl",
+      "loc": @name(0_)
+native idTest26();,
+      "name": {
+        "id": 76,
+        "kind": "id",
+        "loc": idTest26,
+        "text": "idTest26",
+      },
+      "nativeName": {
+        "id": 77,
+        "kind": "func_id",
+        "loc": 0_,
+        "text": "0_",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 81,
+      "kind": "native_function_decl",
+      "loc": @name(hash#256)
+native idTest27();,
+      "name": {
+        "id": 79,
+        "kind": "id",
+        "loc": idTest27,
+        "text": "idTest27",
+      },
+      "nativeName": {
+        "id": 80,
+        "kind": "func_id",
+        "loc": hash#256,
+        "text": "hash#256",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 84,
+      "kind": "native_function_decl",
+      "loc": @name(💀💀💀0xDEADBEEF💀💀💀)
+native idTest28();,
+      "name": {
+        "id": 82,
+        "kind": "id",
+        "loc": idTest28,
+        "text": "idTest28",
+      },
+      "nativeName": {
+        "id": 83,
+        "kind": "func_id",
+        "loc": 💀💀💀0xDEADBEEF💀💀💀,
+        "text": "💀💀💀0xDEADBEEF💀💀💀",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 87,
+      "kind": "native_function_decl",
+      "loc": @name(__tact_verify_address)
+native idTest29();,
+      "name": {
+        "id": 85,
+        "kind": "id",
+        "loc": idTest29,
+        "text": "idTest29",
+      },
+      "nativeName": {
+        "id": 86,
+        "kind": "func_id",
+        "loc": __tact_verify_address,
+        "text": "__tact_verify_address",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 90,
+      "kind": "native_function_decl",
+      "loc": @name(__tact_pow2)
+native idTest30();,
+      "name": {
+        "id": 88,
+        "kind": "id",
+        "loc": idTest30,
+        "text": "idTest30",
+      },
+      "nativeName": {
+        "id": 89,
+        "kind": "func_id",
+        "loc": __tact_pow2,
+        "text": "__tact_pow2",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 93,
+      "kind": "native_function_decl",
+      "loc": @name(randomize_lt)
+native idTest31();,
+      "name": {
+        "id": 91,
+        "kind": "id",
+        "loc": idTest31,
+        "text": "idTest31",
+      },
+      "nativeName": {
+        "id": 92,
+        "kind": "func_id",
+        "loc": randomize_lt,
+        "text": "randomize_lt",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 96,
+      "kind": "native_function_decl",
+      "loc": @name(fixed248::asin)
+native idTest32();,
+      "name": {
+        "id": 94,
+        "kind": "id",
+        "loc": idTest32,
+        "text": "idTest32",
+      },
+      "nativeName": {
+        "id": 95,
+        "kind": "func_id",
+        "loc": fixed248::asin,
+        "text": "fixed248::asin",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 99,
+      "kind": "native_function_decl",
+      "loc": @name(fixed248::nrand_fast)
+native idTest33();,
+      "name": {
+        "id": 97,
+        "kind": "id",
+        "loc": idTest33,
+        "text": "idTest33",
+      },
+      "nativeName": {
+        "id": 98,
+        "kind": "func_id",
+        "loc": fixed248::nrand_fast,
+        "text": "fixed248::nrand_fast",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 102,
+      "kind": "native_function_decl",
+      "loc": @name(atan_f261_inlined)
+native idTest34();,
+      "name": {
+        "id": 100,
+        "kind": "id",
+        "loc": idTest34,
+        "text": "idTest34",
+      },
+      "nativeName": {
+        "id": 101,
+        "kind": "func_id",
+        "loc": atan_f261_inlined,
+        "text": "atan_f261_inlined",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 105,
+      "kind": "native_function_decl",
+      "loc": @name(~impure_touch)
+native idTest35();,
+      "name": {
+        "id": 103,
+        "kind": "id",
+        "loc": idTest35,
+        "text": "idTest35",
+      },
+      "nativeName": {
+        "id": 104,
+        "kind": "func_id",
+        "loc": ~impure_touch,
+        "text": "~impure_touch",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 108,
+      "kind": "native_function_decl",
+      "loc": @name(~udict::delete_get_min)
+native idTest36();,
+      "name": {
+        "id": 106,
+        "kind": "id",
+        "loc": idTest36,
+        "text": "idTest36",
+      },
+      "nativeName": {
+        "id": 107,
+        "kind": "func_id",
+        "loc": ~udict::delete_get_min,
+        "text": "~udict::delete_get_min",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 111,
+      "kind": "native_function_decl",
+      "loc": @name(.something)
+native idTest37();,
+      "name": {
+        "id": 109,
+        "kind": "id",
+        "loc": idTest37,
+        "text": "idTest37",
+      },
+      "nativeName": {
+        "id": 110,
+        "kind": "func_id",
+        "loc": .something,
+        "text": ".something",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 114,
+      "kind": "native_function_decl",
+      "loc": @name(f̷̨͈͚́͌̀i̵̩͔̭̐͐̊n̸̟̝̻̩̎̓͋̕e̸̝̙̒̿͒̾̕)
+native idTest38();,
+      "name": {
+        "id": 112,
+        "kind": "id",
+        "loc": idTest38,
+        "text": "idTest38",
+      },
+      "nativeName": {
+        "id": 113,
+        "kind": "func_id",
+        "loc": f̷̨͈͚́͌̀i̵̩͔̭̐͐̊n̸̟̝̻̩̎̓͋̕e̸̝̙̒̿͒̾̕,
+        "text": "f̷̨͈͚́͌̀i̵̩͔̭̐͐̊n̸̟̝̻̩̎̓͋̕e̸̝̙̒̿͒̾̕",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 117,
+      "kind": "native_function_decl",
+      "loc": @name(❤️❤️❤️thanks❤️❤️❤️)
+native idTest39();,
+      "name": {
+        "id": 115,
+        "kind": "id",
+        "loc": idTest39,
+        "text": "idTest39",
+      },
+      "nativeName": {
+        "id": 116,
+        "kind": "func_id",
+        "loc": ❤️❤️❤️thanks❤️❤️❤️,
+        "text": "❤️❤️❤️thanks❤️❤️❤️",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 120,
+      "kind": "native_function_decl",
+      "loc": @name(intslice)
+native idTest40();,
+      "name": {
+        "id": 118,
+        "kind": "id",
+        "loc": idTest40,
+        "text": "idTest40",
+      },
+      "nativeName": {
+        "id": 119,
+        "kind": "func_id",
+        "loc": intslice,
+        "text": "intslice",
+      },
+      "params": [],
+      "return": null,
+    },
+    {
+      "attributes": [],
+      "id": 123,
+      "kind": "native_function_decl",
+      "loc": @name(int2)
+native idTest40();,
+      "name": {
+        "id": 121,
+        "kind": "id",
+        "loc": idTest40,
+        "text": "idTest40",
+      },
+      "nativeName": {
+        "id": 122,
+        "kind": "func_id",
+        "loc": int2,
+        "text": "int2",
+      },
+      "params": [],
+      "return": null,
+    },
+  ],
+  "kind": "module",
+}
+`;
+
 exports[`grammar should parse items-struct-msg-fun-const 1`] = `
 {
   "id": 60,
@@ -3714,6 +5620,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
             },
             "id": 14,
             "initializer": {
+              "base": 10,
               "id": 13,
               "kind": "number",
               "loc": 1,
@@ -3784,6 +5691,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
                 },
                 "id": 22,
                 "initializer": {
+                  "base": 10,
                   "id": 21,
                   "kind": "number",
                   "loc": 1,
@@ -3801,6 +5709,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
                 },
                 "id": 25,
                 "initializer": {
+                  "base": 10,
                   "id": 24,
                   "kind": "number",
                   "loc": 2,
@@ -3901,6 +5810,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
             },
             "id": 42,
             "initializer": {
+              "base": 10,
               "id": 41,
               "kind": "number",
               "loc": 2,
@@ -3918,6 +5828,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
             },
             "id": 45,
             "initializer": {
+              "base": 10,
               "id": 44,
               "kind": "number",
               "loc": 3,
@@ -3991,6 +5902,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
                 },
                 "id": 53,
                 "initializer": {
+                  "base": 10,
                   "id": 52,
                   "kind": "number",
                   "loc": 1,
@@ -4008,6 +5920,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
                 },
                 "id": 56,
                 "initializer": {
+                  "base": 10,
                   "id": 55,
                   "kind": "number",
                   "loc": 5,
@@ -4078,6 +5991,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 5,
             "kind": "number",
             "loc": 123,
@@ -4106,6 +6020,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
             "loc": -123,
             "op": "-",
             "operand": {
+              "base": 10,
               "id": 9,
               "kind": "number",
               "loc": 123,
@@ -4130,6 +6045,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 14,
             "kind": "number",
             "loc": 1_0123_00_000,
@@ -4153,6 +6069,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 16,
             "id": 18,
             "kind": "number",
             "loc": 0x123,
@@ -4181,6 +6098,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
             "loc": -0x123,
             "op": "-",
             "operand": {
+              "base": 16,
               "id": 22,
               "kind": "number",
               "loc": 0x123,
@@ -4205,6 +6123,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 16,
             "id": 27,
             "kind": "number",
             "loc": 0x1_0123_00_000,
@@ -4228,6 +6147,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 2,
             "id": 31,
             "kind": "number",
             "loc": 0b101010,
@@ -4256,6 +6176,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
             "loc": -0b101010,
             "op": "-",
             "operand": {
+              "base": 2,
               "id": 35,
               "kind": "number",
               "loc": 0b101010,
@@ -4280,6 +6201,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 2,
             "id": 40,
             "kind": "number",
             "loc": 0b1_0101_00_000,
@@ -4303,6 +6225,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 8,
             "id": 44,
             "kind": "number",
             "loc": 0o123,
@@ -4331,6 +6254,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
             "loc": -0o123,
             "op": "-",
             "operand": {
+              "base": 8,
               "id": 48,
               "kind": "number",
               "loc": 0o123,
@@ -4355,6 +6279,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 8,
             "id": 53,
             "kind": "number",
             "loc": 0o1_0123_00_000,
@@ -4572,6 +6497,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 5,
             "kind": "number",
             "loc": 1,
@@ -4595,6 +6521,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 9,
             "kind": "number",
             "loc": 2,
@@ -4654,6 +6581,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 18,
             "kind": "number",
             "loc": 3,
@@ -4683,6 +6611,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
             "loc": b + 4,
             "op": "+",
             "right": {
+              "base": 10,
               "id": 22,
               "kind": "number",
               "loc": 4,
@@ -4702,6 +6631,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 26,
             "kind": "number",
             "loc": 1,
@@ -4749,6 +6679,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
             "loc": b - 1,
             "op": "-",
             "right": {
+              "base": 10,
               "id": 33,
               "kind": "number",
               "loc": 1,
@@ -4768,6 +6699,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 37,
             "kind": "number",
             "loc": 2,
@@ -4815,6 +6747,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
             "loc": b * 2,
             "op": "*",
             "right": {
+              "base": 10,
               "id": 44,
               "kind": "number",
               "loc": 2,
@@ -4834,6 +6767,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 48,
             "kind": "number",
             "loc": 2,
@@ -4881,6 +6815,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
             "loc": b / 2,
             "op": "/",
             "right": {
+              "base": 10,
               "id": 55,
               "kind": "number",
               "loc": 2,
@@ -4900,6 +6835,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 59,
             "kind": "number",
             "loc": 2,
@@ -4947,6 +6883,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
             "loc": b % 2,
             "op": "%",
             "right": {
+              "base": 10,
               "id": 66,
               "kind": "number",
               "loc": 2,
@@ -5024,6 +6961,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 5,
             "kind": "number",
             "loc": 1,
@@ -5047,6 +6985,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 9,
             "kind": "number",
             "loc": 2,
@@ -5106,6 +7045,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 18,
             "kind": "number",
             "loc": 3,
@@ -5135,6 +7075,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
             "loc": b | 4,
             "op": "|",
             "right": {
+              "base": 10,
               "id": 22,
               "kind": "number",
               "loc": 4,
@@ -5154,6 +7095,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 26,
             "kind": "number",
             "loc": 1,
@@ -5219,6 +7161,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
             "loc": b & 1,
             "op": "&",
             "right": {
+              "base": 10,
               "id": 36,
               "kind": "number",
               "loc": 1,
@@ -5238,6 +7181,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 40,
             "kind": "number",
             "loc": 2,
@@ -5303,6 +7247,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
             "loc": b ^ 2,
             "op": "^",
             "right": {
+              "base": 10,
               "id": 50,
               "kind": "number",
               "loc": 2,
@@ -5431,6 +7376,7 @@ exports[`grammar should parse stmt-if 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 13,
             "kind": "number",
             "loc": 0,
@@ -5522,6 +7468,7 @@ exports[`grammar should parse stmt-if-else 1`] = `
           "falseStatements": [
             {
               "expression": {
+                "base": 10,
                 "id": 12,
                 "kind": "number",
                 "loc": 10,
@@ -5585,6 +7532,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 4,
             "kind": "number",
             "loc": 1,
@@ -5622,6 +7570,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
               "loc": i >= 10,
               "op": ">=",
               "right": {
+                "base": 10,
                 "id": 7,
                 "kind": "number",
                 "loc": 10,
@@ -5642,6 +7591,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
               "loc": i <= 100,
               "op": "<=",
               "right": {
+                "base": 10,
                 "id": 10,
                 "kind": "number",
                 "loc": 100,
@@ -5655,6 +7605,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 14,
                 "kind": "number",
                 "loc": 1,
@@ -5675,6 +7626,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 18,
             "kind": "number",
             "loc": 42,
@@ -5736,6 +7688,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 26,
             "kind": "number",
             "loc": 42,
@@ -5796,6 +7749,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
                 "id": 36,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 34,
                   "kind": "number",
                   "loc": 21,
@@ -5804,6 +7758,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
                 "loc": 21 + 21,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 35,
                   "kind": "number",
                   "loc": 21,
@@ -5849,6 +7804,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 4,
             "kind": "number",
             "loc": 1,
@@ -5886,6 +7842,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
               "loc": i >= 10,
               "op": ">=",
               "right": {
+                "base": 10,
                 "id": 7,
                 "kind": "number",
                 "loc": 10,
@@ -5906,6 +7863,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
               "loc": i <= 100,
               "op": "<=",
               "right": {
+                "base": 10,
                 "id": 10,
                 "kind": "number",
                 "loc": 100,
@@ -5932,6 +7890,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
                 "loc": i + 1,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 15,
                   "kind": "number",
                   "loc": 1,
@@ -5989,6 +7948,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 4,
             "kind": "number",
             "loc": 1,
@@ -6036,6 +7996,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
                 "loc": i + 1,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 9,
                   "kind": "number",
                   "loc": 1,
@@ -6057,6 +8018,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
         {
           "id": 19,
           "iterations": {
+            "base": 10,
             "id": 13,
             "kind": "number",
             "loc": 10,
@@ -6080,6 +8042,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
                 "loc": i * 10,
                 "op": "*",
                 "right": {
+                  "base": 10,
                   "id": 16,
                   "kind": "number",
                   "loc": 10,
@@ -6124,6 +8087,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
                 "loc": i - 1,
                 "op": "-",
                 "right": {
+                  "base": 10,
                   "id": 23,
                   "kind": "number",
                   "loc": 1,
@@ -6212,6 +8176,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
       "attributes": [],
       "id": 12,
       "initializer": {
+        "base": 10,
         "id": 11,
         "kind": "number",
         "loc": 5,
@@ -6236,6 +8201,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
       "attributes": [],
       "id": 16,
       "initializer": {
+        "base": 10,
         "id": 15,
         "kind": "number",
         "loc": 6,
@@ -6421,6 +8387,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
           "as": null,
           "id": 5,
           "initializer": {
+            "base": 10,
             "id": 4,
             "kind": "number",
             "loc": 1000,
@@ -6465,6 +8432,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
           },
           "id": 12,
           "initializer": {
+            "base": 10,
             "id": 11,
             "kind": "number",
             "loc": 1000,
@@ -6642,6 +8610,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 21,
           "initializer": {
+            "base": 10,
             "id": 20,
             "kind": "number",
             "loc": 42,
@@ -6679,6 +8648,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 27,
           "initializer": {
+            "base": 10,
             "id": 26,
             "kind": "number",
             "loc": 42,
@@ -6839,6 +8809,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 52,
           "initializer": {
+            "base": 10,
             "id": 51,
             "kind": "number",
             "loc": 42,
@@ -6877,6 +8848,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 58,
           "initializer": {
+            "base": 10,
             "id": 57,
             "kind": "number",
             "loc": 42,
@@ -6927,6 +8899,98 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         "text": "G",
       },
       "opcode": null,
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse trait-optional-semicolon-for-last-const-decl 1`] = `
+{
+  "id": 6,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 4,
+          "kind": "constant_decl",
+          "loc": abstract const foo: Int,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "type": {
+            "id": 3,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 5,
+      "kind": "trait",
+      "loc": trait Test { abstract const foo: Int },
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse trait-optional-semicolon-for-last-fun-decl 1`] = `
+{
+  "id": 5,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "loc": abstract,
+              "type": "abstract",
+            },
+          ],
+          "id": 3,
+          "kind": "function_decl",
+          "loc": abstract fun foo(),
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": foo,
+            "text": "foo",
+          },
+          "params": [],
+          "return": null,
+        },
+      ],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait Test { abstract fun foo() },
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "traits": [],
     },
   ],
   "kind": "module",
@@ -7241,6 +9305,7 @@ exports[`grammar should parse types-optional 1`] = `
                 "id": 9,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 7,
                   "kind": "number",
                   "loc": 1,
@@ -7249,6 +9314,7 @@ exports[`grammar should parse types-optional 1`] = `
                 "loc": 1 + 2,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 8,
                   "kind": "number",
                   "loc": 2,
@@ -7266,6 +9332,7 @@ exports[`grammar should parse types-optional 1`] = `
                   "id": 12,
                   "kind": "op_binary",
                   "left": {
+                    "base": 10,
                     "id": 10,
                     "kind": "number",
                     "loc": 123,
@@ -7274,6 +9341,7 @@ exports[`grammar should parse types-optional 1`] = `
                   "loc": 123 + 3,
                   "op": "+",
                   "right": {
+                    "base": 10,
                     "id": 11,
                     "kind": "number",
                     "loc": 3,
@@ -7285,6 +9353,7 @@ exports[`grammar should parse types-optional 1`] = `
             "loc": 1 + 2 + (123 + 3)!! > 123,
             "op": ">",
             "right": {
+              "base": 10,
               "id": 15,
               "kind": "number",
               "loc": 123,

@@ -1,23 +1,24 @@
 import * as changeCase from "change-case";
-import { ABIField } from "@ton/core";
+import { ABIField, beginCell } from "@ton/core";
 import { CompilerContext } from "../context";
 import { idToHex } from "../utils/idToHex";
-import { newMessageId } from "../utils/newMessageId";
-import { getAllTypes, getType } from "./resolveDescriptors";
+import { idTextErr, throwInternalCompilerError } from "../errors";
+import { getType, getAllTypes } from "./resolveDescriptors";
 import {
     BinaryReceiverSelector,
     CommentReceiverSelector,
     ReceiverDescription,
 } from "./types";
 import { throwCompilationError } from "../errors";
-import { AstReceiver } from "../grammar/ast";
+import { AstNumber, AstReceiver } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
+import { sha256_sync } from "@ton/crypto";
+import { dummySrcInfo } from "../grammar/grammar";
 
 export function resolveSignatures(ctx: CompilerContext) {
-    const types = getAllTypes(ctx);
     const signatures: Map<
         string,
-        { signature: string; tlb: string; id: number | null }
+        { signature: string; tlb: string; id: AstNumber | null }
     > = new Map();
     function createTypeFormat(
         type: string,
@@ -27,7 +28,7 @@ export function resolveSignatures(ctx: CompilerContext) {
             if (typeof format === "number") {
                 return `int${format}`;
             } else if (format !== null) {
-                throw Error("Unsupported int format " + format);
+                throwInternalCompilerError(`Unsupported int format: ${format}`);
             }
             return `int`;
         } else if (type === "uint") {
@@ -36,17 +37,23 @@ export function resolveSignatures(ctx: CompilerContext) {
             } else if (format === "coins") {
                 return `coins`;
             } else if (format !== null) {
-                throw Error("Unsupported uint format " + format);
+                throwInternalCompilerError(
+                    `Unsupported uint format: ${format}`,
+                );
             }
             return `uint`;
         } else if (type === "bool") {
             if (format !== null) {
-                throw Error("Unsupported bool format " + format);
+                throwInternalCompilerError(
+                    `Unsupported bool format: ${format}`,
+                );
             }
             return "bool";
         } else if (type === "address") {
             if (format !== null) {
-                throw Error("Unsupported address format " + format);
+                throwInternalCompilerError(
+                    `Unsupported address format: ${format}`,
+                );
             }
             return "address";
         } else if (type === "cell") {
@@ -56,7 +63,9 @@ export function resolveSignatures(ctx: CompilerContext) {
                 return "^cell";
             }
             if (format !== null) {
-                throw Error("Unsupported cell format " + format);
+                throwInternalCompilerError(
+                    `Unsupported cell format: ${format}`,
+                );
             }
             return "^cell";
         } else if (type === "slice") {
@@ -65,7 +74,9 @@ export function resolveSignatures(ctx: CompilerContext) {
             } else if (format === "ref") {
                 return "^slice";
             } else if (format !== null) {
-                throw Error("Unsupported slice format " + format);
+                throwInternalCompilerError(
+                    `Unsupported slice format: ${format}`,
+                );
             }
             return "^slice";
         } else if (type === "builder") {
@@ -74,33 +85,39 @@ export function resolveSignatures(ctx: CompilerContext) {
             } else if (format === "ref") {
                 return "^slice";
             } else if (format !== null) {
-                throw Error("Unsupported builder format " + format);
+                throwInternalCompilerError(
+                    `Unsupported builder format: ${format}`,
+                );
             }
             return "^builder";
         } else if (type === "string") {
             if (format !== null) {
-                throw Error("Unsupported builder format " + format);
+                throwInternalCompilerError(
+                    `Unsupported builder format: ${format}`,
+                );
             }
             return "^string";
         } else if (type === "fixed-bytes") {
             if (typeof format === "number") {
                 return `fixed_bytes${format}`;
             } else if (format !== null) {
-                throw Error("Unsupported fixed-bytes format " + format);
+                throwInternalCompilerError(
+                    `Unsupported fixed-bytes format: ${format}`,
+                );
             }
-            throw Error("Missing fixed-bytes format");
+            throwInternalCompilerError("Missing fixed-bytes format");
         }
 
         // Struct types
         const t = getType(ctx, type);
         if (t.kind !== "struct") {
-            throw Error("Unsupported type " + type);
+            throwInternalCompilerError(`Unsupported type: ${type}`);
         }
         const s = createTupleSignature(type);
         if (format === "ref") {
             return `^${s.signature}`;
         } else if (format !== null) {
-            throw Error("Unsupported struct format " + format);
+            throwInternalCompilerError(`Unsupported struct format: ${format}`);
         }
         return s.signature;
     }
@@ -119,7 +136,9 @@ export function resolveSignatures(ctx: CompilerContext) {
             }
             case "dict": {
                 if (src.type.format !== null && src.type.format !== undefined) {
-                    throw Error("Unsupported map format " + src.type.format);
+                    throwInternalCompilerError(
+                        `Unsupported map format: ${src.type.format}`,
+                    );
                 }
                 const key = createTypeFormat(
                     src.type.key,
@@ -137,38 +156,56 @@ export function resolveSignatures(ctx: CompilerContext) {
     function createTupleSignature(name: string): {
         signature: string;
         tlb: string;
-        id: number | null;
+        id: AstNumber | null;
     } {
         if (signatures.has(name)) {
             return signatures.get(name)!;
         }
         const t = getType(ctx, name);
         if (t.kind !== "struct") {
-            throw Error("Unsupported type " + name);
+            throwInternalCompilerError(`Unsupported type: ${name}`);
         }
+
+        // Check for no "remainder" in the middle of the struct
+        for (const field of t.fields.slice(0, -1)) {
+            if (field.as === "remaining") {
+                throwCompilationError(
+                    `The "remainder" field can only be the last field of the struct`,
+                );
+            }
+        }
+
         const fields = t.fields.map((v) => createTLBField(v.abi));
 
         // Calculate signature and method id
         const signature = name + "{" + fields.join(",") + "}";
-        let id: number | null = null;
+        let id: AstNumber | null = null;
         if (t.ast.kind === "message_decl") {
             if (t.ast.opcode !== null) {
                 id = t.ast.opcode;
             } else {
-                id = newMessageId(signature);
+                id = newMessageOpcode(signature);
+                if (id.value === 0n) {
+                    throwCompilationError(
+                        `Auto-generated opcode for message "${idTextErr(t.ast.name)}" is zero which is reserved for text comments.\nTry changing names of the message type or its fields to get a non-zero opcode.\nOr consider specifying the opcode explicitly.`,
+                        t.ast.loc,
+                    );
+                }
             }
         }
 
         // Calculate TLB
         const tlbHeader =
-            id !== null ? changeCase.snakeCase(name) + "#" + idToHex(id) : "_";
+            id !== null
+                ? `${changeCase.snakeCase(name)}#${idToHex(Number(id.value))}`
+                : "_";
         const tlb = tlbHeader + " " + fields.join(" ") + " = " + name;
 
         signatures.set(name, { signature, id, tlb });
         return { signature, id, tlb };
     }
 
-    Object.values(types).forEach((t) => {
+    getAllTypes(ctx).forEach((t) => {
         if (t.kind === "struct") {
             const r = createTupleSignature(t.name);
             t.tlb = r.tlb;
@@ -182,6 +219,22 @@ export function resolveSignatures(ctx: CompilerContext) {
     return ctx;
 }
 
+function newMessageOpcode(signature: string): AstNumber {
+    return {
+        kind: "number",
+        base: 10,
+        value: BigInt(
+            beginCell()
+                .storeBuffer(sha256_sync(signature))
+                .endCell()
+                .beginParse()
+                .loadUint(32),
+        ),
+        id: 0,
+        loc: dummySrcInfo,
+    };
+}
+
 type messageType = string;
 type binOpcode = number;
 
@@ -193,13 +246,13 @@ function checkBinaryMessageReceiver(
 ) {
     const msgType = getType(ctx, rcv.type);
     const opcode = msgType.header!;
-    if (usedOpcodes.has(opcode)) {
+    if (usedOpcodes.has(Number(opcode.value))) {
         throwCompilationError(
-            `Receive functions of a contract or trait cannot process messages with the same opcode: opcodes of message types "${rcv.type}" and "${usedOpcodes.get(opcode)}" are equal`,
+            `Receive functions of a contract or trait cannot process messages with the same opcode: opcodes of message types "${rcv.type}" and "${usedOpcodes.get(Number(opcode.value))}" are equal`,
             rcvAst.loc,
         );
     } else {
-        usedOpcodes.set(opcode, rcv.type);
+        usedOpcodes.set(Number(opcode.value), rcv.type);
     }
 }
 
@@ -282,8 +335,7 @@ function checkMessageOpcodesUniqueInContractOrTrait(
 }
 
 function checkMessageOpcodesUnique(ctx: CompilerContext) {
-    const allTypes = getAllTypes(ctx);
-    Object.values(allTypes).forEach((aggregate) => {
+    getAllTypes(ctx).forEach((aggregate) => {
         switch (aggregate.kind) {
             case "contract":
             case "trait":
