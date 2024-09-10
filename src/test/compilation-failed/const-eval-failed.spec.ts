@@ -181,7 +181,17 @@ describe("fail-const-eval", () => {
     itShouldNotCompile({
         testName: "const-eval-rawslice-overflow",
         errorMessage:
-            "Cannot evaluate expression to a constant: hex string is too long, expected up to 255 characters, got 256",
+            "Cannot evaluate expression to a constant: slice constant is too long, expected up to 1023 bits, got 1024",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-rawslice-overflow-padded",
+        errorMessage:
+            "Cannot evaluate expression to a constant: slice constant is too long, expected up to 1023 bits, got 1024",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-rawslice-invalid",
+        errorMessage:
+            "Cannot evaluate expression to a constant: invalid hex string: 4a__",
     });
     itShouldNotCompile({
         testName: "const-eval-ascii-empty",
