@@ -228,6 +228,8 @@ export class FuncPrettyPrinter {
 
     public prettyPrintType(ty: FuncAstType): string {
         switch (ty.kind) {
+            case "type_var":
+                return this.prettyPrint(ty.name as FuncAstId);
             case "type_primitive":
                 return this.prettyPrintTypePrimitive(
                     ty as FuncAstTypePrimitive,
