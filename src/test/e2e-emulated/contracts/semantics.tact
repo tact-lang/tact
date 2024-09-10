@@ -13,14 +13,14 @@ struct SC {
     c1: Int;
 }
 
-fun structParamChanged1(s: SA): SA {
+fun getNewStruct(s: SA): SA {
     // Reassign the parameter value
     // This does not change the struct passed as parameter to the function
     s = SA {a1: 0, a2: SB {b1: false, b2: SC {c1: 0}, b3: 0}};
     return s;
 }
 
-fun structParamChanged2(s: SA): SA {
+fun copyAndModify(s: SA): SA {
     // Change some fields in the struct given as parameter
     // Since structs are passed by value, this does not change the struct passed as parameter to the function
     s.a1 += 100;
@@ -28,12 +28,12 @@ fun structParamChanged2(s: SA): SA {
     return s;
 }
 
-extends mutates fun mutatingStructParamChanged1(self: SA) {
+extends mutates fun reassignStruct(self: SA) {
     // Reassigning the parameter will change the struct given as parameter
     self = SA {a1: 0, a2: SB {b1: false, b2: SC {c1: 0}, b3: 0}};
 }
 
-extends mutates fun mutatingStructParamChanged2(self: SA) {
+extends mutates fun changeSomeFields(self: SA) {
     // Change some fields in the struct given as parameter
     // This will change the struct passed as parameter to the function
     self.a1 += 100;
@@ -167,7 +167,7 @@ contract SemanticsTester {
         
         // This should not modify self.sA.
 
-        let s = structParamChanged1(self.sA);
+        let s = getNewStruct(self.sA);
 
         return self.sA.a1 == 20 && 
                self.sA.a2.b1 == true &&
@@ -183,7 +183,7 @@ contract SemanticsTester {
         
         // This should not modify self.sA.
 
-        let s = structParamChanged2(self.sA);
+        let s = copyAndModify(self.sA);
 
         return self.sA.a1 == 20 && 
                self.sA.a2.b1 == true &&
@@ -201,7 +201,7 @@ contract SemanticsTester {
 
         // This should reassign s, but leave self.A unchanged.
 
-        s.mutatingStructParamChanged1();
+        s.reassignStruct();
 
         return self.sA.a1 == 20 && 
                self.sA.a2.b1 == true &&
@@ -219,7 +219,7 @@ contract SemanticsTester {
 
         // This should mutate some fields of s, but leave self.A unchanged.
         
-        s.mutatingStructParamChanged2();
+        s.changeSomeFields();
 
         return self.sA.a1 == 20 && 
                self.sA.a2.b1 == true &&
