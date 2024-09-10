@@ -1,5 +1,6 @@
 import {
     FuncAstNode,
+    FuncAstStatement,
     FuncAstModule,
     FuncAstVersionRange,
     FuncAstParameter,
@@ -225,6 +226,51 @@ export class FuncPrettyPrinter {
         }
     }
 
+    public prettyPrintType(ty: FuncAstType): string {
+        switch (ty.kind) {
+            case "type_primitive":
+                return this.prettyPrintTypePrimitive(
+                    ty as FuncAstTypePrimitive,
+                );
+            case "type_tensor":
+                return this.prettyPrintTypeTensor(ty as FuncAstTypeTensor);
+            case "type_tuple":
+                return this.prettyPrintTypeTuple(ty as FuncAstTypeTuple);
+            case "hole":
+                return this.prettyPrintTypeHole(ty as FuncAstHole);
+            case "unit":
+                return "()";
+            case "type_mapped":
+                return this.prettyPrintTypeMapped(ty as FuncAstTypeMapped);
+            default:
+                throwUnsupportedNodeError(ty);
+        }
+    }
+
+    public prettyPrintFunctionSignature(
+        returnType: FuncAstType,
+        name: FuncAstId,
+        parameters: FuncAstParameter[],
+        attributes: FuncAstFunctionAttribute[],
+    ): string {
+        const returnTypeStr = this.prettyPrintType(returnType);
+        const nameStr = this.prettyPrint(name);
+        const paramsStr = parameters
+            .map((param) => this.prettyPrintParameter(param))
+            .join(", ");
+        const attrsStr =
+            attributes.length > 0
+                ? ` ${attributes.map((attr) => this.prettyPrintFunctionAttribute(attr)).join(" ")}`
+                : "";
+        return `${returnTypeStr} ${nameStr}(${paramsStr})${attrsStr}`;
+    }
+
+    public prettyPrintStatements(stmts: FuncAstStatement[]): string {
+        return this.prettyPrintIndentedBlock(
+            stmts.map(this.prettyPrint.bind(this)).join("\n"),
+        );
+    }
+
     private prettyPrintModule(node: FuncAstModule): string {
         return node.items
             .map((item, index) => {
@@ -302,6 +348,11 @@ export class FuncPrettyPrinter {
         return `${typeStr} ${nameStr} = ${valueStr};`;
     }
 
+    prettyPrintAsmStrings(asmStrings: FuncAstStringLiteral[]): string {
+            return asmStrings.map(this.prettyPrint.bind(this))
+            .join("\n")
+    }
+
     private prettyPrintAsmFunctionDefinition(
         node: FuncAstAsmFunctionDefinition,
     ): string {
@@ -311,9 +362,7 @@ export class FuncPrettyPrinter {
             node.parameters,
             node.attributes,
         );
-        const asmBody = node.asmStrings
-            .map(this.prettyPrint.bind(this))
-            .join("\n");
+        const asmBody = this.prettyPrintAsmStrings(node.asmStrings);
         return `${signature} asm ${asmBody};`;
     }
 
@@ -338,28 +387,7 @@ export class FuncPrettyPrinter {
             node.parameters,
             node.attributes,
         );
-        const body = this.prettyPrintIndentedBlock(
-            node.statements.map(this.prettyPrint.bind(this)).join("\n"),
-        );
-        return `${signature} {\n${body}\n}`;
-    }
-
-    private prettyPrintFunctionSignature(
-        returnType: FuncAstType,
-        name: FuncAstId,
-        parameters: FuncAstParameter[],
-        attributes: FuncAstFunctionAttribute[],
-    ): string {
-        const returnTypeStr = this.prettyPrintType(returnType);
-        const nameStr = this.prettyPrint(name);
-        const paramsStr = parameters
-            .map((param) => this.prettyPrintParameter(param))
-            .join(", ");
-        const attrsStr =
-            attributes.length > 0
-                ? ` ${attributes.map((attr) => this.prettyPrintFunctionAttribute(attr)).join(" ")}`
-                : "";
-        return `${returnTypeStr} ${nameStr}(${paramsStr})${attrsStr}`;
+        return `${signature} ${this.prettyPrintStatementBlock(node)}`;
     }
 
     private prettyPrintParameter(param: FuncAstParameter): string {
@@ -392,11 +420,10 @@ export class FuncPrettyPrinter {
         return `return${value};`;
     }
 
-    private prettyPrintStatementBlock(node: FuncAstStatementBlock): string {
-        const body = this.prettyPrintIndentedBlock(
-            node.statements.map(this.prettyPrint.bind(this)).join("\n"),
-        );
-        return `{\n${body}\n}`;
+    private prettyPrintStatementBlock<
+        T extends { statements: FuncAstStatement[] },
+    >(node: T): string {
+        return `{\n${this.prettyPrintStatements(node.statements)}\n}`;
     }
 
     private prettyPrintStatementConditionIf(
@@ -649,27 +676,6 @@ export class FuncPrettyPrinter {
             .join("\n");
         this.currentIndent -= this.indent;
         return indentedContent;
-    }
-
-    public prettyPrintType(ty: FuncAstType): string {
-        switch (ty.kind) {
-            case "type_primitive":
-                return this.prettyPrintTypePrimitive(
-                    ty as FuncAstTypePrimitive,
-                );
-            case "type_tensor":
-                return this.prettyPrintTypeTensor(ty as FuncAstTypeTensor);
-            case "type_tuple":
-                return this.prettyPrintTypeTuple(ty as FuncAstTypeTuple);
-            case "hole":
-                return this.prettyPrintTypeHole(ty as FuncAstHole);
-            case "unit":
-                return "()";
-            case "type_mapped":
-                return this.prettyPrintTypeMapped(ty as FuncAstTypeMapped);
-            default:
-                throwUnsupportedNodeError(ty);
-        }
     }
 
     private prettyPrintTypeTensor(node: FuncAstTypeTensor): string {
