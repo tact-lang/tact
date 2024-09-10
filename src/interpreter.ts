@@ -1120,15 +1120,6 @@ export class Interpreter {
                     if (str.endsWith("_")) {
                         const paddedBits = paddedBufferToBits(buffer);
 
-                        console.log({
-                            originalHex: hex,
-                            paddedHex,
-                            bufferLength: buffer.length,
-                            paddedBitsLength: paddedBits.length,
-                            bitStringLength: bits.length,
-                            offset: hex.length % 2 === 0 ? 0 : 4,
-                        });
-
                         // Ensure there's enough length to apply the offset
                         const offset = hex.length % 2 === 0 ? 0 : 4;
                         if (paddedBits.length >= offset) {
