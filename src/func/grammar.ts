@@ -204,7 +204,7 @@ const funcBuiltinOperatorFunctions = [
     "_<=>_",
 ];
 
-const funcBuiltinFunctions = [
+export const funcBuiltinFunctions = [
     "divmod",
     "moddiv",
     "muldiv",
