@@ -19,7 +19,11 @@ contract IntrinsicsTester {
     q: Slice = rawSlice("_");
     r: Slice = rawSlice("7");
     s: Slice = rawSlice("abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcf_");
-    
+    t: Slice = rawSlice("8a_");
+    u: Slice = rawSlice("8a0_");
+    w: Slice = rawSlice("8_");
+    v: Slice = rawSlice("00_");
+
     init() {
 
     }
@@ -194,5 +198,37 @@ contract IntrinsicsTester {
 
     get fun getRawSlice16(): Slice {
         return self.s;
+    }
+
+    get fun getRawSlice17(): Slice {
+        return rawSlice("8a_");
+    }
+
+    get fun getRawSlice18(): Slice {
+        return self.t;
+    }
+
+    get fun getRawSlice19(): Slice {
+        return rawSlice("8a0_");
+    }
+
+    get fun getRawSlice20(): Slice {
+        return self.u;
+    }
+
+    get fun getRawSlice21(): Slice {
+        return rawSlice("8_");
+    }
+
+    get fun getRawSlice22(): Slice {
+        return self.w;
+    }
+
+    get fun getRawSlice23(): Slice {
+        return rawSlice("00_");
+    }
+
+    get fun getRawSlice24(): Slice {
+        return self.v;
     }
 }

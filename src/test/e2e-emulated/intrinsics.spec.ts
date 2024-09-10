@@ -218,6 +218,38 @@ describe("intrinsics", () => {
                     .endCell(),
             ),
         ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice17())
+                .asCell()
+                .equals(beginCell().storeUint(0b100010, 6).endCell()),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice18())
+                .asCell()
+                .equals(beginCell().storeUint(0b100010, 6).endCell()),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice19())
+                .asCell()
+                .equals(beginCell().storeUint(0b100010, 6).endCell()),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice20())
+                .asCell()
+                .equals(beginCell().storeUint(0b100010, 6).endCell()),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice21()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice22()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice23()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
+        expect(
+            (await contract.getGetRawSlice24()).asCell().equals(Cell.EMPTY),
+        ).toBe(true);
 
         // Check `ascii`
         expect(await contract.getGetAscii()).toBe(
