@@ -52,7 +52,7 @@ import {
     FuncAstModuleItem,
     FuncAstModule,
     FuncAstGlobalVariablesDeclaration,
-    FuncCatchDefintions,
+    FuncCatchDefinitions,
     dummySrcInfo,
 } from "./grammar";
 import { dummySrcInfo as tactDummySrcInfo } from "../grammar/grammar";
@@ -491,7 +491,7 @@ export function try_(
 
 export function tryCatch(
     statementsTry: FuncAstStatement[],
-    catchDefinitions: "_" | FuncCatchDefintions,
+    catchDefinitions: "_" | FuncCatchDefinitions,
     statementsCatch: FuncAstStatement[],
 ): FuncAstStatementTryCatch {
     return {

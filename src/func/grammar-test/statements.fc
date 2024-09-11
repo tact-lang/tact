@@ -78,6 +78,7 @@ int return_stmt'() { return 42; }
         { }
     }
 
+    try { } catch (_) { }
     try { } catch (exception, exit_code) { }
 }
 

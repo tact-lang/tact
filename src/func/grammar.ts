@@ -884,7 +884,7 @@ export type FuncAstStatementWhile = {
 };
 
 /** (id, id) */
-export type FuncCatchDefintions = {
+export type FuncCatchDefinitions = {
     exceptionName: FuncAstId;
     exitCodeName: FuncAstId;
 };
@@ -896,7 +896,7 @@ export type FuncCatchDefintions = {
 export type FuncAstStatementTryCatch = {
     kind: "statement_try_catch";
     statementsTry: FuncAstStatement[];
-    catchDefinitions: FuncCatchDefintions | "_";
+    catchDefinitions: FuncCatchDefinitions | "_";
     statementsCatch: FuncAstStatement[];
     loc: FuncSrcInfo;
 };
@@ -1730,9 +1730,7 @@ semantics.addOperation<FuncAstStatement>("astOfStatement", {
         _rbrace,
         _catchKwd,
         _lparen,
-        exceptionName,
-        _comma,
-        exitCodeName,
+        catchClauseContents,
         _rparen,
         _lbrace2,
         stmtsCatch,
@@ -1741,10 +1739,7 @@ semantics.addOperation<FuncAstStatement>("astOfStatement", {
         return {
             kind: "statement_try_catch",
             statementsTry: stmtsTry.children.map((x) => x.astOfStatement()),
-            catchDefinitions: {
-                exceptionName: exceptionName.astOfExpression(),
-                exitCodeName: exitCodeName.astOfExpression(),
-            },
+            catchDefinitions: catchClauseContents.astOfCatchClauseContents(),
             statementsCatch: stmtsCatch.children.map((x) => x.astOfStatement()),
             loc: createSrcInfo(this),
         };
@@ -2444,7 +2439,7 @@ semantics.addOperation<FuncAstParameter>("astOfParameter", {
             loc: createSrcInfo(this),
         };
     },
-    Parameter_hole(node) {
+    Parameter_hole(_node) {
         return {
             kind: "parameter",
             ty: {
@@ -2754,6 +2749,22 @@ semantics.addOperation<FuncAstType>("astOfType", {
 semantics.addOperation<FuncAstStatement[]>("astOfElseBlock", {
     ElseBlock(_elseKwd, _lbrace, stmts, _rbrace) {
         return stmts.children.map((x) => x.astOfStatement());
+    },
+});
+
+// Not a standalone statement
+semantics.addOperation<FuncCatchDefinitions | "_">("astOfCatchClauseContents", {
+    CatchClauseContents(node) {
+        return node.astOfCatchClauseContents();
+    },
+    CatchClauseContents_unused(_underscore) {
+        return "_";
+    },
+    CatchClauseContents_both(exceptionName, _comma, exitCodeName) {
+        return {
+            exceptionName: exceptionName.astOfExpression(),
+            exitCodeName: exitCodeName.astOfExpression(),
+        };
     },
 });
 

@@ -137,8 +137,12 @@ FunC {
 
   StatementTryCatch = "try"
                       "{" Statement* "}"
-                      "catch" "(" (unusedId | id) "," (unusedId | id) ")"
+                      "catch" "(" CatchClauseContents ")"
                       "{" Statement* "}"
+
+  // (not a separate thing, added purely for convenience)
+  CatchClauseContents = (unusedId | id) "," (unusedId | id) --both
+                      | unusedId --unused
 
   StatementExpression = Expression ";"
 
