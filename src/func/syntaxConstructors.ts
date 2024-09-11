@@ -410,7 +410,7 @@ export function condition(
     elseStmts?: FuncAstStatement[],
     params: Partial<{ positive: boolean }> = {},
 ): FuncAstStatementCondition {
-    const { positive = false } = params;
+    const { positive = true } = params;
     return {
         kind: "statement_condition_if",
         condition,
