@@ -29,6 +29,7 @@ export function emit(args: {
                 }
                 if (f.code.kind === "generic") {
                     let sig = f.signature;
+                    if (!f.parsed) {
                     if (f.flags.has("impure")) {
                         sig = `${sig} impure`;
                     }
@@ -37,11 +38,12 @@ export function emit(args: {
                     } else {
                         sig = `${sig} inline_ref`;
                     }
+                        }
 
                     res += `${sig} {\n${createPadded(f.code.code)}\n}`;
                 } else if (f.code.kind === "asm") {
                     let sig = f.signature;
-                    if (f.flags.has("impure")) {
+                    if (!f.parsed && f.flags.has("impure")) {
                         sig = `${sig} impure`;
                     }
                     res += `${sig} asm${f.code.shuffle} "${f.code.code}";`;

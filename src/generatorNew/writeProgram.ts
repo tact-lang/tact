@@ -72,6 +72,7 @@ export async function writeProgram(
         if (f.code.kind === "generic" && f.signature) {
             headers.push(`;; ${f.name}`);
             let sig = f.signature;
+            if (!f.parsed) {
             if (f.flags.has("impure")) {
                 sig = sig + " impure";
             }
@@ -80,6 +81,7 @@ export async function writeProgram(
             } else {
                 sig = sig + " inline_ref";
             }
+                }
             headers.push(sig + ";");
             headers.push("");
         }
