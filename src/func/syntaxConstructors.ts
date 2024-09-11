@@ -205,14 +205,14 @@ export function id(value: string): FuncAstId {
 
 export function call(
     fun: FuncAstExpression | string,
-    args: FuncAstExpression[],
+    arg: FuncAstExpressionTensor,
     // TODO: doesn't support method calls
     params: Partial<{ receiver: FuncAstExpression }> = {},
 ): FuncAstExpressionFunCall {
     return {
         kind: "expression_fun_call",
         object: wrapToId(fun) as FuncAstId,
-        arguments: args,
+        argument: arg,
         loc: dummySrcInfo,
     };
 }

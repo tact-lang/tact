@@ -575,7 +575,7 @@ export class FuncPrettyPrinter {
         const calls = node.calls
             .map(
                 (call) =>
-                    `.${this.prettyPrint(call.name)}(${this.prettyPrint(call.argument)})`,
+                    `.${this.prettyPrint(call.name)}${this.prettyPrint(call.argument)}`,
             )
             .join("");
         return `${object}${calls}`;
@@ -618,10 +618,8 @@ export class FuncPrettyPrinter {
         node: FuncAstExpressionFunCall,
     ): string {
         const object = this.prettyPrint(node.object);
-        const args = node.arguments
-            .map((arg) => this.prettyPrint(arg))
-            .join(", ");
-        return `${object}(${args})`;
+        const tensor = this.prettyPrint(node.argument);
+        return `${object}${tensor}`;
     }
 
     private prettyPrintExpressionTensor(node: FuncAstExpressionTensor): string {

@@ -201,7 +201,7 @@ FunC {
                   | ExpressionMethod
 
   // parse_expr80
-  ExpressionMethod = ExpressionVarFun (methodId &("(" | "[" | functionId) ExpressionArgument)+ --calls
+  ExpressionMethod = ExpressionVarFun (methodId ExpressionTensor)+ --calls
                    | ExpressionVarFun
 
   // parse_expr90
@@ -222,14 +222,7 @@ FunC {
   IdOrUnusedId = id | unusedId
 
   // Function calls
-  ExpressionFunCall = &("(" | functionId) ExpressionPrimary ExpressionArgument+
-
-  // (not a separate expression, added purely for convenience)
-  ExpressionArgument = functionId
-                     | unit
-                     | ExpressionTensor
-                     | tupleEmpty
-                     | ExpressionTuple
+  ExpressionFunCall = &("(" | functionId) ExpressionPrimary ExpressionTensor
 
   // parse_expr100
   ExpressionPrimary = unit

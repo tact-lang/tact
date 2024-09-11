@@ -1077,15 +1077,8 @@ export type FuncAstExpressionMethod = {
 
 export type FuncExpressionMethodCall = {
     name: FuncAstMethodId;
-    argument: FuncAstExpressionPrimary;
+    argument: FuncAstExpressionTensor;
 };
-
-export type FuncArgument =
-    | FuncAstId
-    | FuncAstUnit
-    | FuncAstExpression
-    | FuncAstExpressionTensor
-    | FuncAstExpressionTuple;
 
 /**
  * parse_expr90
@@ -1135,12 +1128,12 @@ export type FuncAstExpressionTupleVarDecl = {
 /**
  * Function call
  *
- * (functionId | functionCallReturningFunction) Argument+
+ * (functionId | functionCallReturningFunction) ExpressionTensor
  */
 export type FuncAstExpressionFunCall = {
     kind: "expression_fun_call";
     object: FuncAstExpressionPrimary;
-    arguments: FuncArgument[];
+    argument: FuncAstExpressionTensor;
     loc: FuncSrcInfo;
 };
 
@@ -1914,12 +1907,12 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
     ExpressionMethod(expr) {
         return expr.astOfExpression();
     },
-    ExpressionMethod_calls(exprLeft, methodIds, _lookahead, exprs) {
+    ExpressionMethod_calls(exprLeft, methodIds, exprs) {
         const resolvedIds = methodIds.children.map(
             (x) => x.astOfExpression() as FuncAstMethodId,
         );
         const resolvedExprs = exprs.children.map(
-            (x) => x.astOfExpression() as FuncArgument,
+            (x) => x.astOfExpression() as FuncAstExpressionTensor,
         );
         const zipped = resolvedIds.map((resId, i) => {
             return { name: resId, argument: resolvedExprs[i]! };
@@ -1983,16 +1976,13 @@ semantics.addOperation<FuncAstExpression>("astOfExpression", {
     ExpressionVarDeclPart(expr) {
         return expr.astOfExpression();
     },
-    ExpressionFunCall(_lookahead, expr, args) {
+    ExpressionFunCall(_lookahead, expr, arg) {
         return {
             kind: "expression_fun_call",
             object: expr.astOfExpression(),
-            arguments: args.children.map((x) => x.astOfExpression()),
+            argument: arg.astOfExpression(),
             loc: createSrcInfo(this),
         };
-    },
-    ExpressionArgument(expr) {
-        return expr.astOfExpression();
     },
 
     // parse_expr100, and some inner things

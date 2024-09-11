@@ -62,7 +62,7 @@ export function forEachExpression(
         case "expression_fun_call":
             callback(node);
             forEachExpression(node.object, callback);
-            node.arguments.forEach((arg) => forEachExpression(arg, callback));
+            forEachExpression(node.argument, callback);
             break;
         case "expression_tensor":
         case "expression_tuple":

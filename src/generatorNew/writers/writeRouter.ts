@@ -85,7 +85,7 @@ export function writeRouter(
             // ;; Skip 0xFFFFFFFF
             // in_msg~skip_bits(32);
             condBody.push(comment("Skip 0xFFFFFFFF"));
-            condBody.push(expr(call("in_msg~skip_bits", [int(32)])));
+            condBody.push(expr(call("in_msg~skip_bits", tensor(int(32)))));
         }
 
         if (bounceReceivers.length > 0) {
@@ -99,7 +99,7 @@ export function writeRouter(
             condBody.push(
                 condition(
                     binop(
-                        call("slice_bits", [id("in_msg")]),
+                        call("slice_bits", tensor(id("in_msg"))),
                         ">=",
                         int(30),
                     ),
@@ -107,7 +107,7 @@ export function writeRouter(
                         expr(
                             assign(
                                 id("op"),
-                                call(id("in_msg.preload_uint"), [int(32)]),
+                                call(id("in_msg.preload_uint"), tensor(int(32))),
                             ),
                         ),
                     ],
@@ -138,7 +138,7 @@ export function writeRouter(
                                 id(
                                     `in_msg~${selector.bounced ? ops.readerBounced(selector.type, ctx) : ops.reader(selector.type, ctx)}`,
                                 ),
-                                [],
+                                tensor(),
                             ),
                         ),
                         expr(
@@ -146,7 +146,7 @@ export function writeRouter(
                                 id(
                                     `self~${ops.receiveTypeBounce(type.name, selector.type)}`,
                                 ),
-                                [id("msg")],
+                                tensor(id("msg")),
                             ),
                         ),
                         ret(tensor(id("self"), bool(true))),
@@ -162,9 +162,9 @@ export function writeRouter(
             body.push(comment("Fallback bounce receiver"));
             body.push(
                 expr(
-                    call(id(`self~${ops.receiveBounceAny(type.name)}`), [
+                    call(id(`self~${ops.receiveBounceAny(type.name)}`), tensor(
                         id("in_msg"),
-                    ]),
+                    )),
                 ),
             );
             body.push(ret(tensor(id("self"), bool(true))));
@@ -185,12 +185,12 @@ export function writeRouter(
     functionBody.push(vardef(Type.int(), "op", int(0)));
     functionBody.push(
         condition(
-            binop(call(id("slice_bits"), [id("in_msg")]), ">=", int(32)),
+            binop(call(id("slice_bits"), tensor(id("in_msg"))), ">=", int(32)),
             [
                 expr(
                     assign(
                         id("op"),
-                        call("in_msg.preload_uint", [int(32)]),
+                        call("in_msg.preload_uint", tensor(int(32))),
                     ),
                 ),
             ],
@@ -217,12 +217,12 @@ export function writeRouter(
                     vardef(
                         "_",
                         "msg",
-                        call(`in_msg~${ops.reader(selector.type, ctx)}`, []),
+                        call(`in_msg~${ops.reader(selector.type, ctx)}`, tensor()),
                     ),
                     expr(
                         call(
                             `self~${ops.receiveType(type.name, kind, selector.type)}`,
-                            [id("msg")],
+                            tensor(id("msg")),
                         ),
                     ),
                 ]),
@@ -245,7 +245,7 @@ export function writeRouter(
                         binop(id("op"), "==", int(0)),
                         "&",
                         binop(
-                            call("slice_bits", [id("in_msg")]),
+                            call("slice_bits", tensor(id("in_msg"))),
                             "<=",
                             int(32),
                         ),
@@ -254,7 +254,7 @@ export function writeRouter(
                         expr(
                             call(
                                 `self~${ops.receiveEmpty(type.name, kind)}`,
-                                [],
+                                tensor(),
                             ),
                         ),
                         ret(tensor(id("self"), bool(true))),
@@ -290,7 +290,7 @@ export function writeRouter(
         ) {
             // var text_op = slice_hash(in_msg);
             condBody.push(
-                vardef("_", "text_op", call("slice_hash", [id("in_msg")])),
+                vardef("_", "text_op", call("slice_hash", tensor(id("in_msg")))),
             );
             for (const r of type.receivers) {
                 if (
@@ -313,7 +313,7 @@ export function writeRouter(
                             expr(
                                 call(
                                     `self~${ops.receiveText(type.name, kind, hash)}`,
-                                    [],
+                                    tensor(),
                                 ),
                             ),
                             ret(tensor(id("self"), bool(true))),
@@ -335,7 +335,7 @@ export function writeRouter(
             condBody.push(
                 condition(
                     binop(
-                        call("slice_bits", [id("in_msg")]),
+                        call("slice_bits", tensor(id("in_msg"))),
                         ">=",
                         int(32),
                     ),
@@ -345,7 +345,7 @@ export function writeRouter(
                                 id(
                                     `self~${ops.receiveAnyText(type.name, kind)}`,
                                 ),
-                                [call("in_msg.skip_bits", [int(32)])],
+                                tensor(call("in_msg.skip_bits", tensor(int(32)))),
                             ),
                         ),
                         ret(tensor(id("self"), bool(true))),
@@ -370,9 +370,9 @@ export function writeRouter(
         functionBody.push(comment("Receiver fallback"));
         functionBody.push(
             expr(
-                call(`self~${ops.receiveAny(type.name, kind)}`, [
+                call(`self~${ops.receiveAny(type.name, kind)}`, tensor(
                     id("in_msg"),
-                ]),
+                )),
             ),
         );
         functionBody.push(ret(tensor(id("self"), bool(true))));
