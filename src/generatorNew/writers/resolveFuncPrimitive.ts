@@ -1,19 +1,19 @@
-import { CompilerContext } from "../context";
-import { getType } from "../types/resolveDescriptors";
-import { TypeDescription, TypeRef } from "../types/types";
+import { getType } from "../../types/resolveDescriptors";
+import { TypeDescription, TypeRef } from "../../types/types";
+import { WriterContext } from "../Writer";
 
 export function resolveFuncPrimitive(
-    ctx: CompilerContext,
     descriptor: TypeRef | TypeDescription | string,
+    ctx: WriterContext,
 ): boolean {
     // String
     if (typeof descriptor === "string") {
-        return resolveFuncPrimitive(ctx, getType(ctx, descriptor));
+        return resolveFuncPrimitive(getType(ctx.ctx, descriptor), ctx);
     }
 
     // TypeRef
     if (descriptor.kind === "ref") {
-        return resolveFuncPrimitive(ctx, getType(ctx, descriptor.name));
+        return resolveFuncPrimitive(getType(ctx.ctx, descriptor.name), ctx);
     }
     if (descriptor.kind === "map") {
         return true;
@@ -44,7 +44,7 @@ export function resolveFuncPrimitive(
         } else if (descriptor.name === "StringBuilder") {
             return true;
         } else {
-            throw Error(`Unknown primitive type: ${descriptor.name}`);
+            throw Error("Unknown primitive type: " + descriptor.name);
         }
     } else if (descriptor.kind === "struct") {
         return false;
@@ -53,5 +53,5 @@ export function resolveFuncPrimitive(
     }
 
     // Unreachable
-    throw Error(`Unknown type: ${descriptor.kind}`);
+    throw Error("Unknown type: " + descriptor.kind);
 }

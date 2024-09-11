@@ -1,12 +1,13 @@
-import { contractErrors } from "../abi/errors";
-import { throwInternalCompilerError } from "../errors";
-import { dummySrcInfo } from "../grammar/grammar";
-import { AllocationCell, AllocationOperation } from "../storage/operation";
-import { StorageAllocation } from "../storage/StorageAllocation";
-import { getType } from "../types/resolveDescriptors";
-import { WriterContext, Location } from "./context";
-import { ops } from "./util";
-import { resolveFuncTypeFromAbiUnpack, resolveFuncTypeFromAbi } from "./type";
+import { contractErrors } from "../../abi/errors";
+import { throwInternalCompilerError } from "../../errors";
+import { dummySrcInfo, ItemOrigin } from "../../grammar/grammar";
+import { AllocationCell, AllocationOperation } from "../../storage/operation";
+import { StorageAllocation } from "../../storage/StorageAllocation";
+import { getType } from "../../types/resolveDescriptors";
+import { WriterContext } from "../Writer";
+import { ops } from "./ops";
+import { resolveFuncTypeFromAbi } from "./resolveFuncTypeFromAbi";
+import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 
 const SMALL_STRUCT_MAX_FIELDS = 5;
 
@@ -18,149 +19,178 @@ export function writeSerializer(
     name: string,
     forceInline: boolean,
     allocation: StorageAllocation,
+    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
-    const parse = (code: string) =>
-        ctx.parse(code, { context: Location.type(name) });
     const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     // Write to builder
-    parse(`builder ${ops.writer(name)}(builder build_0, ${resolveFuncTypeFromAbi(
-        ctx.ctx,
-        allocation.ops.map((v) => v.type),
-    )} v) ${forceInline || isSmall ? "inline" : ""} {
-        ${allocation.ops.length > 0 ? `${resolveFuncTypeFromAbiUnpack(ctx.ctx, "v", allocation.ops)} = v;` : ""}
-        ${allocation.header ? `build_0 = store_uint(build_0, ${allocation.header.value}, ${allocation.header.bits});` : ""}
-        ${writeSerializerCell(allocation.root, 0, ctx)};
-        return build_0;
-    }
-`);
+    ctx.fun(ops.writer(name, ctx), () => {
+        ctx.signature(
+            `builder ${ops.writer(name, ctx)}(builder build_0, ${resolveFuncTypeFromAbi(
+                allocation.ops.map((v) => v.type),
+                ctx,
+            )} v)`,
+        );
+        if (forceInline || isSmall) {
+            ctx.flag("inline");
+        }
+        ctx.context("type:" + name);
+        ctx.body(() => {
+            if (allocation.ops.length > 0) {
+                ctx.append(
+                    `var ${resolveFuncTypeFromAbiUnpack(`v`, allocation.ops, ctx)} = v;`,
+                );
+            }
+            if (allocation.header) {
+                ctx.append(
+                    `build_0 = store_uint(build_0, ${allocation.header.value}, ${allocation.header.bits});`,
+                );
+            }
+            writeSerializerCell(allocation.root, 0, ctx);
+            ctx.append(`return build_0;`);
+        });
+    });
 
     // Write to cell
-    parse(`cell ${ops.writerCell(name)}(${resolveFuncTypeFromAbi(
-        ctx.ctx,
-        allocation.ops.map((v) => v.type),
-    )} v) inline {
-            return ${ops.writer(name)}(begin_cell(), v).end_cell();
-        }
-    `);
+    ctx.fun(ops.writerCell(name, ctx), () => {
+        ctx.signature(
+            `cell ${ops.writerCell(name, ctx)}(${resolveFuncTypeFromAbi(
+                allocation.ops.map((v) => v.type),
+                ctx,
+            )} v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("type:" + name);
+        ctx.body(() => {
+            ctx.append(
+                `return ${ops.writer(name, ctx)}(begin_cell(), v).end_cell();`,
+            );
+        });
+    });
 }
 
-export function writeOptionalSerializer(name: string, ctx: WriterContext) {
-    const parse = (code: string) =>
-        ctx.parse(code, { context: Location.type(name) });
-    parse(`cell ${ops.writerCellOpt(name)}(tuple v) inline {
-        if (null?(v)) {
-            return null();
-        }
-        return ${ops.writerCell(name)}(${ops.typeNotNull(name)}(v));
-    }`);
+export function writeOptionalSerializer(
+    name: string,
+    origin: ItemOrigin,
+    ctx: WriterContext,
+) {
+    ctx.fun(ops.writerCellOpt(name, ctx), () => {
+        ctx.signature(`cell ${ops.writerCellOpt(name, ctx)}(tuple v)`);
+        ctx.flag("inline");
+        ctx.context("type:" + name);
+        ctx.body(() => {
+            ctx.write(`
+                if (null?(v)) {
+                    return null();
+                }
+                return ${ops.writerCell(name, ctx)}(${ops.typeNotNull(name, ctx)}(v));
+            `);
+        });
+    });
 }
 
 function writeSerializerCell(
     cell: AllocationCell,
     gen: number,
     ctx: WriterContext,
-): string {
-    const result = [];
-
+) {
     // Write fields
     for (const f of cell.ops) {
-        result.push(writeSerializerField(f, gen, ctx));
+        writeSerializerField(f, gen, ctx);
     }
 
     // Tail
     if (cell.next) {
-        result.push(`var build_${gen + 1} = begin_cell();`);
-        result.push(writeSerializerCell(cell.next, gen + 1, ctx));
-        result.push(
+        ctx.append(`var build_${gen + 1} = begin_cell();`);
+        writeSerializerCell(cell.next, gen + 1, ctx);
+        ctx.append(
             `build_${gen} = store_ref(build_${gen}, build_${gen + 1}.end_cell());`,
         );
     }
-
-    return result.join("\n");
 }
 
 function writeSerializerField(
     f: AllocationOperation,
     gen: number,
     ctx: WriterContext,
-): string {
-    const result: string[] = [];
+) {
     const fieldName = `v'${f.name}`;
     const op = f.op;
 
     switch (op.kind) {
         case "int": {
             if (op.optional) {
-                result.push(
+                ctx.append(
                     `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_int(${fieldName}, ${op.bits}) : build_${gen}.store_int(false, 1);`,
                 );
             } else {
-                result.push(
+                ctx.append(
                     `build_${gen} = build_${gen}.store_int(${fieldName}, ${op.bits});`,
                 );
             }
-            return result.join("\n");
+            return;
         }
         case "uint": {
             if (op.optional) {
-                result.push(
+                ctx.append(
                     `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_uint(${fieldName}, ${op.bits}) : build_${gen}.store_int(false, 1);`,
                 );
             } else {
-                result.push(
+                ctx.append(
                     `build_${gen} = build_${gen}.store_uint(${fieldName}, ${op.bits});`,
                 );
             }
-            return result.join("\n");
+            return;
         }
         case "coins": {
             if (op.optional) {
-                result.push(
+                ctx.append(
                     `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_coins(${fieldName}) : build_${gen}.store_int(false, 1);`,
                 );
             } else {
-                result.push(
+                ctx.append(
                     `build_${gen} = build_${gen}.store_coins(${fieldName});`,
                 );
             }
-            return result.join("\n");
+            return;
         }
         case "boolean": {
             if (op.optional) {
-                result.push(
+                ctx.append(
                     `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_int(${fieldName}, 1) : build_${gen}.store_int(false, 1);`,
                 );
             } else {
-                result.push(
+                ctx.append(
                     `build_${gen} = build_${gen}.store_int(${fieldName}, 1);`,
                 );
             }
-            return result.join("\n");
+            return;
         }
         case "address": {
             if (op.optional) {
-                result.push(
+                ctx.used(`__tact_store_address_opt`);
+                ctx.append(
                     `build_${gen} = __tact_store_address_opt(build_${gen}, ${fieldName});`,
                 );
             } else {
-                result.push(
+                ctx.used(`__tact_store_address`);
+                ctx.append(
                     `build_${gen} = __tact_store_address(build_${gen}, ${fieldName});`,
                 );
             }
-            return result.join("\n");
+            return;
         }
         case "cell": {
             switch (op.format) {
                 case "default":
                     {
                         if (op.optional) {
-                            result.push(
+                            ctx.append(
                                 `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(${fieldName}) : build_${gen}.store_int(false, 1);`,
                             );
                         } else {
-                            result.push(
+                            ctx.append(
                                 `build_${gen} = build_${gen}.store_ref(${fieldName});`,
                             );
                         }
@@ -171,24 +201,24 @@ function writeSerializerField(
                         if (op.optional) {
                             throw Error("Impossible");
                         }
-                        result.push(
+                        ctx.append(
                             `build_${gen} = build_${gen}.store_slice(${fieldName}.begin_parse());`,
                         );
                     }
                     break;
             }
-            return result.join("\n");
+            return;
         }
         case "slice": {
             switch (op.format) {
                 case "default":
                     {
                         if (op.optional) {
-                            result.push(
+                            ctx.append(
                                 `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(begin_cell().store_slice(${fieldName}).end_cell()) : build_${gen}.store_int(false, 1);`,
                             );
                         } else {
-                            result.push(
+                            ctx.append(
                                 `build_${gen} = build_${gen}.store_ref(begin_cell().store_slice(${fieldName}).end_cell());`,
                             );
                         }
@@ -198,23 +228,23 @@ function writeSerializerField(
                     if (op.optional) {
                         throw Error("Impossible");
                     }
-                    result.push(
+                    ctx.append(
                         `build_${gen} = build_${gen}.store_slice(${fieldName});`,
                     );
                 }
             }
-            return result.join("\n");
+            return;
         }
         case "builder": {
             switch (op.format) {
                 case "default":
                     {
                         if (op.optional) {
-                            result.push(
+                            ctx.append(
                                 `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(begin_cell().store_slice(${fieldName}.end_cell().begin_parse()).end_cell()) : build_${gen}.store_int(false, 1);`,
                             );
                         } else {
-                            result.push(
+                            ctx.append(
                                 `build_${gen} = build_${gen}.store_ref(begin_cell().store_slice(${fieldName}.end_cell().begin_parse()).end_cell());`,
                             );
                         }
@@ -224,58 +254,56 @@ function writeSerializerField(
                     if (op.optional) {
                         throw Error("Impossible");
                     }
-                    result.push(
+                    ctx.append(
                         `build_${gen} = build_${gen}.store_slice(${fieldName}.end_cell().begin_parse());`,
                     );
                 }
             }
-            return result.join("\n");
+            return;
         }
         case "string": {
             if (op.optional) {
-                result.push(
+                ctx.append(
                     `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(begin_cell().store_slice(${fieldName}).end_cell()) : build_${gen}.store_int(false, 1);`,
                 );
             } else {
-                result.push(
+                ctx.append(
                     `build_${gen} = build_${gen}.store_ref(begin_cell().store_slice(${fieldName}).end_cell());`,
                 );
             }
-            return result.join("\n");
+            return;
         }
         case "fixed-bytes": {
             if (op.optional) {
-                result.push(
+                ctx.append(
                     `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_slice(${fieldName}) : build_${gen}.store_int(false, 1);`,
                 );
             } else {
-                result.push(
+                ctx.append(
                     `build_${gen} = build_${gen}.store_slice(${fieldName});`,
                 );
             }
-            return result.join("\n");
+            return;
         }
         case "map": {
-            result.push(
-                `build_${gen} = build_${gen}.store_dict(${fieldName});`,
-            );
-            return result.join("\n");
+            ctx.append(`build_${gen} = build_${gen}.store_dict(${fieldName});`);
+            return;
         }
         case "struct": {
             if (op.ref) {
                 throw Error("Not implemented");
             }
             if (op.optional) {
-                result.push(
-                    `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).${ops.writer(op.type)}(${ops.typeNotNull(op.type)}(${fieldName})) : build_${gen}.store_int(false, 1);`,
+                ctx.append(
+                    `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).${ops.writer(op.type, ctx)}(${ops.typeNotNull(op.type, ctx)}(${fieldName})) : build_${gen}.store_int(false, 1);`,
                 );
             } else {
                 const ff = getType(ctx.ctx, op.type).fields.map((f) => f.abi);
-                result.push(
-                    `build_${gen} = ${ops.writer(op.type)}(build_${gen}, ${resolveFuncTypeFromAbiUnpack(ctx.ctx, fieldName, ff)});`,
+                ctx.append(
+                    `build_${gen} = ${ops.writer(op.type, ctx)}(build_${gen}, ${resolveFuncTypeFromAbiUnpack(fieldName, ff, ctx)});`,
                 );
             }
-            return result.join("\n");
+            return;
         }
     }
 
@@ -290,298 +318,330 @@ export function writeParser(
     name: string,
     forceInline: boolean,
     allocation: StorageAllocation,
+    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
-    const parse = (code: string) =>
-        ctx.parse(code, { context: Location.type(name) });
 
-    {
-        const result = [];
-        result.push(
+    ctx.fun(ops.reader(name, ctx), () => {
+        ctx.signature(
             `(slice, (${resolveFuncTypeFromAbi(
-                ctx.ctx,
                 allocation.ops.map((v) => v.type),
-            )})) ${ops.reader(name)}(slice sc_0) ${forceInline || isSmall ? "inline" : ""} {`,
+                ctx,
+            )})) ${ops.reader(name, ctx)}(slice sc_0)`,
         );
-        if (allocation.header) {
-            result.push(`
-                throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(${allocation.header.bits}) == ${allocation.header.value});
-            `);
+        if (forceInline || isSmall) {
+            ctx.flag("inline");
         }
-        result.push(writeCellParser(allocation.root, 0, ctx));
-        if (allocation.ops.length === 0) {
-            result.push("return (sc_0, null());");
-        } else {
-            result.push(`
-                return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(", ")}));
-            `);
-        }
-        result.push("}");
-        parse(result.join("\n"));
-    }
+        ctx.context("type:" + name);
+        ctx.body(() => {
+            // Check prefix
+            if (allocation.header) {
+                ctx.append(
+                    `throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(${allocation.header.bits}) == ${allocation.header.value});`,
+                );
+            }
+
+            // Write cell parser
+            writeCellParser(allocation.root, 0, ctx);
+
+            // Compile tuple
+            if (allocation.ops.length === 0) {
+                ctx.append(`return (sc_0, null());`);
+            } else {
+                ctx.append(
+                    `return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(", ")}));`,
+                );
+            }
+        });
+    });
 
     // Write non-modifying variant
-    parse(`${resolveFuncTypeFromAbi(
-        ctx.ctx,
-        allocation.ops.map((v) => v.type),
-    )} ${ops.readerNonModifying(name)}(slice sc_0) ${forceInline || isSmall ? "inline" : ""} {
-            var r = sc_0~${ops.reader(name)}();
-            sc_0.end_parse();
-            return r;
-        }`);
+
+    ctx.fun(ops.readerNonModifying(name, ctx), () => {
+        ctx.signature(
+            `(${resolveFuncTypeFromAbi(
+                allocation.ops.map((v) => v.type),
+                ctx,
+            )}) ${ops.readerNonModifying(name, ctx)}(slice sc_0)`,
+        );
+        if (forceInline || isSmall) {
+            ctx.flag("inline");
+        }
+        ctx.context("type:" + name);
+        ctx.body(() => {
+            ctx.append(`var r = sc_0~${ops.reader(name, ctx)}();`);
+            ctx.append(`sc_0.end_parse();`);
+            ctx.append(`return r;`);
+        });
+    });
 }
 
 export function writeBouncedParser(
     name: string,
     forceInline: boolean,
     allocation: StorageAllocation,
+    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
-    const parse = (code: string) =>
-        ctx.parse(code, { context: Location.type(name) });
 
-    {
-        const result = [];
-        result.push(
+    ctx.fun(ops.readerBounced(name, ctx), () => {
+        ctx.signature(
             `(slice, (${resolveFuncTypeFromAbi(
-                ctx.ctx,
                 allocation.ops.map((v) => v.type),
-            )})) ${ops.readerBounced(name)}(slice sc_0) ${forceInline || isSmall ? "inline" : ""} {`,
+                ctx,
+            )})) ${ops.readerBounced(name, ctx)}(slice sc_0)`,
         );
-        if (allocation.header) {
-            result.push(
-                `throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(${allocation.header.bits}) == ${allocation.header.value});`,
-            );
+        if (forceInline || isSmall) {
+            ctx.flag("inline");
         }
-        result.push(writeCellParser(allocation.root, 0, ctx));
-        if (allocation.ops.length === 0) {
-            result.push("return (sc_0, null());");
-        } else {
-            result.push(
-                `return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(", ")}));`,
-            );
-        }
-        result.push("}");
-        parse(result.join("\n"));
-    }
+        ctx.context("type:" + name);
+        ctx.body(() => {
+            // Check prefix
+            if (allocation.header) {
+                ctx.append(
+                    `throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(${allocation.header.bits}) == ${allocation.header.value});`,
+                );
+            }
+
+            // Write cell parser
+            writeCellParser(allocation.root, 0, ctx);
+
+            // Compile tuple
+            if (allocation.ops.length === 0) {
+                ctx.append(`return (sc_0, null());`);
+            } else {
+                ctx.append(
+                    `return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(", ")}));`,
+                );
+            }
+        });
+    });
 }
 
-export function writeOptionalParser(name: string, ctx: WriterContext) {
-    const parse = (code: string) =>
-        ctx.parse(code, { context: Location.type(name) });
-    parse(`tuple ${ops.readerOpt(name)}(cell cl) inline {
-        if (null?(cl)) {
-            return null();
-        }
-        var sc = cl.begin_parse();
-        return ${ops.typeAsOptional(name)}(sc~${ops.reader(name)}());
-    }`);
+export function writeOptionalParser(
+    name: string,
+    origin: ItemOrigin,
+    ctx: WriterContext,
+) {
+    ctx.fun(ops.readerOpt(name, ctx), () => {
+        ctx.signature(`tuple ${ops.readerOpt(name, ctx)}(cell cl)`);
+        ctx.flag("inline");
+        ctx.context("type:" + name);
+        ctx.body(() => {
+            ctx.write(`
+                if (null?(cl)) {
+                    return null();
+                }
+                var sc = cl.begin_parse();
+                return ${ops.typeAsOptional(name, ctx)}(sc~${ops.reader(name, ctx)}());
+            `);
+        });
+    });
 }
 
 function writeCellParser(
     cell: AllocationCell,
     gen: number,
     ctx: WriterContext,
-): string {
-    const result: string[] = [];
-
+): number {
     // Write current fields
     for (const f of cell.ops) {
-        result.push(writeFieldParser(f, gen));
+        writeFieldParser(f, gen, ctx);
     }
 
     // Handle next cell
     if (cell.next) {
-        result.push(
-            `slice sc_${gen + 1} = sc_${gen}~load_ref().begin_parse();\n`,
-        );
-        result.push(writeCellParser(cell.next, gen + 1, ctx));
+        ctx.append(`slice sc_${gen + 1} = sc_${gen}~load_ref().begin_parse();`);
+        return writeCellParser(cell.next, gen + 1, ctx);
+    } else {
+        return gen;
     }
-
-    return result.join("\n");
 }
 
-function writeFieldParser(f: AllocationOperation, gen: number): string {
-    const result: string[] = [];
+function writeFieldParser(
+    f: AllocationOperation,
+    gen: number,
+    ctx: WriterContext,
+) {
     const op = f.op;
     const varName = `var v'${f.name}`;
 
     switch (op.kind) {
         case "int": {
             if (op.optional) {
-                result.push(
+                ctx.append(
                     `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_int(${op.bits}) : null();`,
                 );
             } else {
-                result.push(`${varName} = sc_${gen}~load_int(${op.bits});`);
+                ctx.append(`${varName} = sc_${gen}~load_int(${op.bits});`);
             }
-            return result.join("\n");
+            return;
         }
         case "uint": {
             if (op.optional) {
-                result.push(
+                ctx.append(
                     `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_uint(${op.bits}) : null();`,
                 );
             } else {
-                result.push(`${varName} = sc_${gen}~load_uint(${op.bits});`);
+                ctx.append(`${varName} = sc_${gen}~load_uint(${op.bits});`);
             }
-            return result.join("\n");
+            return;
         }
         case "coins": {
             if (op.optional) {
-                result.push(
+                ctx.append(
                     `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_coins() : null();`,
                 );
             } else {
-                result.push(`${varName} = sc_${gen}~load_coins();`);
+                ctx.append(`${varName} = sc_${gen}~load_coins();`);
             }
-            return result.join("\n");
+            return;
         }
         case "boolean": {
             if (op.optional) {
-                result.push(
+                ctx.append(
                     `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_int(1) : null();`,
                 );
             } else {
-                result.push(`${varName} = sc_${gen}~load_int(1);`);
+                ctx.append(`${varName} = sc_${gen}~load_int(1);`);
             }
-            return result.join("\n");
+            return;
         }
         case "address": {
             if (op.optional) {
-                result.push(
-                    `${varName} = sc_${gen}~__tact_load_address_opt();`,
-                );
+                ctx.used(`__tact_load_address_opt`);
+                ctx.append(`${varName} = sc_${gen}~__tact_load_address_opt();`);
             } else {
-                result.push(`${varName} = sc_${gen}~__tact_load_address();`);
+                ctx.used(`__tact_load_address`);
+                ctx.append(`${varName} = sc_${gen}~__tact_load_address();`);
             }
-            return result.join("\n");
+            return;
         }
         case "cell": {
             if (op.optional) {
                 if (op.format !== "default") {
                     throw new Error(`Impossible`);
                 }
-                result.push(
+                ctx.append(
                     `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref() : null();`,
                 );
             } else {
                 switch (op.format) {
                     case "default":
                         {
-                            result.push(`${varName} = sc_${gen}~load_ref();`);
+                            ctx.append(`${varName} = sc_${gen}~load_ref();`);
                         }
                         break;
                     case "remainder": {
-                        result.push(
+                        ctx.append(
                             `${varName} = begin_cell().store_slice(sc_${gen}).end_cell();`,
                         );
                     }
                 }
             }
-            return result.join("\n");
+            return;
         }
         case "slice": {
             if (op.optional) {
                 if (op.format !== "default") {
                     throw new Error(`Impossible`);
                 }
-                result.push(
+                ctx.append(
                     `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref().begin_parse() : null();`,
                 );
             } else {
                 switch (op.format) {
                     case "default":
                         {
-                            result.push(
+                            ctx.append(
                                 `${varName} = sc_${gen}~load_ref().begin_parse();`,
                             );
                         }
                         break;
                     case "remainder":
                         {
-                            result.push(`${varName} = sc_${gen};`);
+                            ctx.append(`${varName} = sc_${gen};`);
                         }
                         break;
                 }
             }
-            return result.join("\n");
+            return;
         }
         case "builder": {
             if (op.optional) {
                 if (op.format !== "default") {
                     throw new Error(`Impossible`);
                 }
-                result.push(
+                ctx.append(
                     `${varName} = sc_${gen}~load_int(1) ? begin_cell().store_slice(sc_${gen}~load_ref().begin_parse()) : null();`,
                 );
             } else {
                 switch (op.format) {
                     case "default":
                         {
-                            result.push(
+                            ctx.append(
                                 `${varName} = begin_cell().store_slice(sc_${gen}~load_ref().begin_parse());`,
                             );
                         }
                         break;
                     case "remainder":
                         {
-                            result.push(
+                            ctx.append(
                                 `${varName} = begin_cell().store_slice(sc_${gen});`,
                             );
                         }
                         break;
                 }
             }
-            return result.join("\n");
+            return;
         }
         case "string": {
             if (op.optional) {
-                result.push(
+                ctx.append(
                     `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref().begin_parse() : null();`,
                 );
             } else {
-                result.push(`${varName} = sc_${gen}~load_ref().begin_parse();`);
+                ctx.append(`${varName} = sc_${gen}~load_ref().begin_parse();`);
             }
-            return result.join("\n");
+            return;
         }
         case "fixed-bytes": {
             if (op.optional) {
-                result.push(
+                ctx.append(
                     `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_bits(${op.bytes * 8}) : null();`,
                 );
             } else {
-                result.push(
+                ctx.append(
                     `${varName} = sc_${gen}~load_bits(${op.bytes * 8});`,
                 );
             }
-            return result.join("\n");
+            return;
         }
         case "map": {
-            result.push(`${varName} = sc_${gen}~load_dict();`);
-            return result.join("\n");
+            ctx.append(`${varName} = sc_${gen}~load_dict();`);
+            return;
         }
         case "struct": {
             if (op.optional) {
                 if (op.ref) {
                     throw Error("Not implemented");
                 } else {
-                    result.push(
-                        `${varName} = sc_${gen}~load_int(1) ? ${ops.typeAsOptional(op.type)}(sc_${gen}~${ops.reader(op.type)}()) : null();`,
+                    ctx.append(
+                        `${varName} = sc_${gen}~load_int(1) ? ${ops.typeAsOptional(op.type, ctx)}(sc_${gen}~${ops.reader(op.type, ctx)}()) : null();`,
                     );
                 }
             } else {
                 if (op.ref) {
                     throw Error("Not implemented");
                 } else {
-                    result.push(
-                        `${varName} = sc_${gen}~${ops.reader(op.type)}();`,
+                    ctx.append(
+                        `${varName} = sc_${gen}~${ops.reader(op.type, ctx)}();`,
                     );
                 }
             }
-            return result.join("\n");
+            return;
         }
     }
 }

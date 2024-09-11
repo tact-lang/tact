@@ -1,10 +1,10 @@
-import { WriterContext, Location } from "./context";
-import { contractErrors } from "../abi/errors";
-import { enabledMasterchain } from "../config/features";
+import { WriterContext } from "../Writer";
+import { contractErrors } from "../../abi/errors";
+import { enabledMasterchain } from "../../config/features";
 
-export function writeStdlib(ctx: WriterContext) {
+export function writeStdlib(ctx: WriterContext): void {
     const parse = (code: string) =>
-        ctx.parse(code, { context: Location.stdlib() });
+        ctx.parse(code, { context: "stdlib" });
 
     //
     // stdlib extension functions
@@ -21,7 +21,7 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     parse(
-        `slice __tact_verify_address(slice address) inline {
+        `slice __tact_verify_address(slice address) impure inline {
         throw_unless(${contractErrors.invalidAddress.id}, address.slice_bits() == 267);
         var h = address.preload_uint(11);
 

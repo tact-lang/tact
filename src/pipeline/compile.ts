@@ -1,7 +1,7 @@
 import { CompilerContext } from "../context";
 import { createABI } from "../generator/createABI";
 import { writeProgram } from "../generator/writeProgram";
-import { FuncGenerator } from "../codegen";
+import { writeProgram as writeProgramNew } from "../generatorNew/writeProgram";
 
 export type CompilationOutput = {
     entrypoint: string;
@@ -36,14 +36,11 @@ export async function compile(
 ): Promise<CompilationResults> {
     const abi = createABI(ctx, contractName);
     let output: CompilationOutput;
+    const debug = process.env.DEBUG === "1";
     if (backend === "new" || process.env.NEW_CODEGEN === "1") {
-        output = await FuncGenerator.fromTactProject(
-            ctx,
-            abi,
-            abiName,
-        ).writeProgram();
+        output = await writeProgramNew(ctx, abi, abiName, debug);
     } else {
-        output = await writeProgram(ctx, abi, abiName);
+        output = await writeProgram(ctx, abi, abiName, debug);
     }
     if (process.env.PRINT_FUNC === "1") {
         printOutput(contractName, output);
