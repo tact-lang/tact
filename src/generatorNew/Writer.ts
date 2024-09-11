@@ -7,6 +7,7 @@ import {
     FuncAstFunctionDefinition,
     FuncAstAsmFunctionDefinition,
     FuncAstModule,
+    FuncAstNode,
     funcBuiltinFunctions,
     parse,
 } from "../func/grammar";
@@ -164,6 +165,12 @@ export class WriterContext {
             parsed: true,
         });
         return fundef;
+    }
+
+    // The same as `append`, but adds AST entries.
+    appendNode(node: FuncAstNode) {
+        const pp = new FuncPrettyPrinter();
+        this.pendingWriter!.append(pp.prettyPrint(node) + "\n");
     }
 
     //
