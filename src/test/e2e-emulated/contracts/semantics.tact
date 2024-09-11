@@ -85,6 +85,16 @@ contract SemanticsTester {
     // field of both structs manually.
 
 
+    // Utility function that checks that the fields of self.sA 
+    // are exactly as those in its initialization
+    fun checkSAUnchanged(): Bool {
+        return self.sA.a1 == 20 && 
+               self.sA.a2.b1 == true &&
+               self.sA.a2.b2.c1 == 5 &&
+               self.sA.a2.b3 == 10;
+    }
+
+
     // Assigning a struct to a variable preserves fields
 
     get fun structAssign1(): Bool { 
@@ -99,10 +109,7 @@ contract SemanticsTester {
                s.a2.b1 == true &&
                s.a2.b2.c1 == 5 &&
                s.a2.b3 == 10 &&
-               self.sA.a1 == 20 && 
-               self.sA.a2.b1 == true &&
-               self.sA.a2.b2.c1 == 5 &&
-               self.sA.a2.b3 == 10;
+               self.checkSAUnchanged();
     }
 
     // Assignment of structs is done by value
@@ -124,10 +131,7 @@ contract SemanticsTester {
         // self.sA remains unchanged,
         // the copy t inherits the value b2.c1 = 70 modified by s,
         // the copy s does not change its b3 field.
-        return self.sA.a1 == 20 && 
-               self.sA.a2.b1 == true &&
-               self.sA.a2.b2.c1 == 5 &&
-               self.sA.a2.b3 == 10 &&
+        return self.checkSAUnchanged() &&
                s.a1 == 50 && 
                s.a2.b1 == true &&
                s.a2.b2.c1 == 70 &&
@@ -147,10 +151,7 @@ contract SemanticsTester {
 
                // init does not modify default value of self.sA
                
-               self.sA.a1 == 20 && 
-               self.sA.a2.b1 == true &&
-               self.sA.a2.b2.c1 == 5 &&
-               self.sA.a2.b3 == 10 &&
+               self.checkSAUnchanged() &&
 
                // init modifies default value of self.sB
 
@@ -169,10 +170,7 @@ contract SemanticsTester {
 
         let s = getNewStruct(self.sA);
 
-        return self.sA.a1 == 20 && 
-               self.sA.a2.b1 == true &&
-               self.sA.a2.b2.c1 == 5 &&
-               self.sA.a2.b3 == 10 &&
+        return self.checkSAUnchanged() &&
                s.a1 == 0 && 
                s.a2.b1 == false &&
                s.a2.b2.c1 == 0 &&
@@ -185,10 +183,7 @@ contract SemanticsTester {
 
         let s = copyAndModify(self.sA);
 
-        return self.sA.a1 == 20 && 
-               self.sA.a2.b1 == true &&
-               self.sA.a2.b2.c1 == 5 &&
-               self.sA.a2.b3 == 10 &&
+        return self.checkSAUnchanged() &&
                s.a1 == 120 && 
                s.a2.b1 == true &&
                s.a2.b2.c1 == 6 &&
@@ -203,10 +198,7 @@ contract SemanticsTester {
 
         s.reassignStruct();
 
-        return self.sA.a1 == 20 && 
-               self.sA.a2.b1 == true &&
-               self.sA.a2.b2.c1 == 5 &&
-               self.sA.a2.b3 == 10 &&
+        return self.checkSAUnchanged() &&
                s.a1 == 0 && 
                s.a2.b1 == false &&
                s.a2.b2.c1 == 0 &&
@@ -221,10 +213,7 @@ contract SemanticsTester {
         
         s.changeSomeFields();
 
-        return self.sA.a1 == 20 && 
-               self.sA.a2.b1 == true &&
-               self.sA.a2.b2.c1 == 5 &&
-               self.sA.a2.b3 == 10 &&
+        return self.checkSAUnchanged() &&
                s.a1 == 120 && 
                s.a2.b1 == true &&
                s.a2.b2.c1 == 6 &&
