@@ -68,10 +68,13 @@ async function compileContract(
     );
 }
 
-function compareCompilationOutputs(
+/**
+ * @returns True iff compilation outputs are the same.
+ */
+function compilationOutputsEq(
     newOut: CompilationOutput,
     oldOut: CompilationOutput,
-): void {
+): boolean {
     const errors: string[] = [];
 
     if (newOut === undefined || oldOut === undefined) {
@@ -131,8 +134,10 @@ function compareCompilationOutputs(
     }
 
     if (errors.length > 0) {
-        throw new Error(errors.join("\n"));
+        console.error(errors.join("\n"));
+        return false;
     }
+    return true;
 }
 
 describe("codegen", () => {
@@ -150,22 +155,20 @@ describe("codegen", () => {
             Promise.all([
                 compileContract("new", contractName),
                 compileContract("old", contractName),
-            ])
-                .then(([resultsNew, resultsOld]) => {
-                    if (resultsNew.length !== resultsOld.length) {
-                        throw new Error("Not all contracts have been compiled");
-                    }
-                    const zipped = resultsNew.map((value, idx) => [
-                        value,
-                        resultsOld[idx],
-                    ]);
-                    zipped.forEach(([newRes, oldRes]) => {
-                        expect(() => compareCompilationOutputs(
-                            newRes!.output,
-                            oldRes!.output,
-                        )).not.toThrow();
-                    });
-                })
+            ]).then(([resultsNew, resultsOld]) => {
+                if (resultsNew.length !== resultsOld.length) {
+                    throw new Error("Not all contracts have been compiled");
+                }
+                const zipped = resultsNew.map((value, idx) => [
+                    value,
+                    resultsOld[idx],
+                ]);
+                zipped.forEach(([newRes, oldRes]) => {
+                    expect(
+                        compilationOutputsEq(newRes!.output, oldRes!.output),
+                    ).toBe(true);
+                });
+            });
         });
     });
 });
