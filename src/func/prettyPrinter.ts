@@ -667,7 +667,11 @@ export class FuncPrettyPrinter {
     }
 
     private prettyPrintCR(node: FuncAstCR): string {
-        return "\n".repeat(node.lines);
+        // Remove an extra newline, since PrettyPrinter adds newlines between AST entries
+        if (node.lines === 1) {
+            return "";
+        }
+        return "\n".repeat(node.lines - 1);
     }
 
     private prettyPrintIndentedBlock(content: string): string {
