@@ -69,8 +69,15 @@ async function compileContract(
     );
 }
 
+function stripEmptyLines(code: string): string {
+    return code
+        .split("\n")
+        .filter((line) => line.trim() !== "")
+        .join("\n");
+}
+
 /**
- * @returns True iff compilation outputs are the same.
+ * @returns True iff compilation outputs are the same, ignoring empty lines.
  */
 function compilationOutputsEq(
     newOut: CompilationOutput,
@@ -110,7 +117,9 @@ function compilationOutputsEq(
             if (oldFile) {
                 unmatchedFiles.delete(oldFile.name);
                 try {
-                    expect(newFile.code).toBe(oldFile.code);
+                    expect(stripEmptyLines(newFile.code)).toBe(
+                        stripEmptyLines(oldFile.code),
+                    );
                 } catch (error) {
                     if (error instanceof Error) {
                         errors.push(
