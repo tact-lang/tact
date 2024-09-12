@@ -146,11 +146,30 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     errors["8"] = { message: "Cell overflow" };
     errors["9"] = { message: "Cell underflow" };
     errors["10"] = { message: "Dictionary error" };
+    errors["11"] = { message: "'Unknown' error" };
+    errors["12"] = { message: "Fatal error" };
     errors["13"] = { message: "Out of gas error" };
-    errors["32"] = { message: "Method ID not found" };
+    errors["14"] = { message: "Virtualization error" };
+    errors["32"] = { message: "Action list is invalid" };
+    errors["33"] = { message: "Action list is too long" };
     errors["34"] = { message: "Action is invalid or not supported" };
+    errors["35"] = { message: "Invalid source address in outbound message" };
+    errors["36"] = {
+        message: "Invalid destination address in outbound message",
+    };
     errors["37"] = { message: "Not enough TON" };
     errors["38"] = { message: "Not enough extra-currencies" };
+    errors["39"] = {
+        message: "Outbound message does not fit into a cell after rewriting",
+    };
+    errors["40"] = { message: "Cannot process a message" };
+    errors["41"] = { message: "Library reference is null" };
+    errors["42"] = { message: "Library change action error" };
+    errors["43"] = {
+        message:
+            "Exceeded maximum number of cells in the library or the maximum depth of the Merkle tree",
+    };
+    errors["50"] = { message: "Account state size exceeded limits" };
     for (const e of Object.values(contractErrors)) {
         errors[e.id] = { message: e.message };
     }

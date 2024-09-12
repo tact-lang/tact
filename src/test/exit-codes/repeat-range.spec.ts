@@ -1,12 +1,12 @@
 import { toNano } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { RepeatRange } from "./contracts/output/repeat-range_RepeatRange";
+import { RepeatRangeTester as TestContract } from "./contracts/output/repeat-range_RepeatRangeTester";
 import "@ton/test-utils";
 
 describe("repeat range", () => {
     let blockchain: Blockchain;
     let treasure: SandboxContract<TreasuryContract>;
-    let contract: SandboxContract<RepeatRange>;
+    let contract: SandboxContract<TestContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
@@ -15,7 +15,7 @@ describe("repeat range", () => {
             resetBalanceIfZero: true,
         });
 
-        contract = blockchain.openContract(await RepeatRange.fromInit());
+        contract = blockchain.openContract(await TestContract.fromInit());
 
         const deployResult = await contract.send(
             treasure.getSender(),
