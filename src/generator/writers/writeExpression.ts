@@ -44,8 +44,8 @@ import { writeCastedExpression } from "./writeFunction";
 import { evalConstantExpression } from "../../constEval";
 import { isLvalue } from "../../types/resolveStatements";
 
-function isNull(f: AstExpression): boolean {
-    return f.kind === "null";
+function isNull(wCtx: WriterContext, expr: AstExpression): boolean {
+    return getExpType(wCtx.ctx, expr).kind === "null";
 }
 
 function writeStructConstructor(
@@ -213,23 +213,23 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
         return funcIdOf(f.text);
     }
 
-    // NOTE: We always wrap in parentheses to avoid operator precedence issues
+    // NOTE: We always wrap expressions in parentheses to avoid operator precedence issues
     if (f.kind === "op_binary") {
         // Special case for non-integer types and nullable
         if (f.op === "==" || f.op === "!=") {
-            if (isNull(f.left) && isNull(f.right)) {
+            if (isNull(wCtx, f.left) && isNull(wCtx, f.right)) {
                 if (f.op === "==") {
                     return "true";
                 } else {
                     return "false";
                 }
-            } else if (isNull(f.left) && !isNull(f.right)) {
+            } else if (isNull(wCtx, f.left) && !isNull(wCtx, f.right)) {
                 if (f.op === "==") {
                     return `null?(${writeExpression(f.right, wCtx)})`;
                 } else {
                     return `(~ null?(${writeExpression(f.right, wCtx)}))`;
                 }
-            } else if (!isNull(f.left) && isNull(f.right)) {
+            } else if (!isNull(wCtx, f.left) && isNull(wCtx, f.right)) {
                 if (f.op === "==") {
                     return `null?(${writeExpression(f.left, wCtx)})`;
                 } else {
@@ -384,7 +384,7 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
 
     //
     // Unary operations: !, -, +, !!
-    // NOTE: We always wrap in parenthesis to avoid operator precedence issues
+    // NOTE: We always wrap expressions in parentheses to avoid operator precedence issues
     //
 
     if (f.kind === "op_unary") {
