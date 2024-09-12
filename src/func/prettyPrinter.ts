@@ -575,7 +575,7 @@ export class FuncPrettyPrinter {
         const calls = node.calls
             .map(
                 (call) =>
-                    `.${this.prettyPrint(call.name)}${this.prettyPrint(call.argument)}`,
+                    `${this.prettyPrint(call.name)}${this.prettyPrint(call.argument)}`,
             )
             .join("");
         return `${object}${calls}`;
