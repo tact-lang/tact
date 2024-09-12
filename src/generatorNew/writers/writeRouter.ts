@@ -8,6 +8,7 @@ import { resolveFuncType } from "./resolveFuncTypeNew";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeStatement } from "./writeFunction";
 import { AstNumber } from "../../grammar/ast";
+import { prettyPrintType } from "../../func/prettyPrinter";
 import {
     cr,
     comment,
@@ -404,7 +405,7 @@ export function writeReceiver(
 ) {
     const selector = f.selector;
     const selfRes = resolveFuncTypeUnpack(self, funcIdOf("self"), ctx);
-    const selfType = resolveFuncType(self, false, false, ctx);
+    const selfType = prettyPrintType(resolveFuncType(self, false, false, ctx));
     const selfUnpack = `var ${resolveFuncTypeUnpack(self, funcIdOf("self"), ctx)} = ${funcIdOf("self")};`;
 
     // Binary receiver
@@ -414,7 +415,7 @@ export function writeReceiver(
     ) {
         const args = [
             selfType + " " + funcIdOf("self"),
-            resolveFuncType(selector.type, false, false, ctx) + " " + funcIdOf(selector.name),
+            prettyPrintType(resolveFuncType(selector.type, false, false, ctx)) + " " + funcIdOf(selector.name),
         ];
         ctx.append(
             `((${selfType}), ()) ${ops.receiveType(self.name, selector.kind === "internal-binary" ? "internal" : "external", selector.type)}(${args.join(", ")}) impure inline {`,
@@ -580,7 +581,7 @@ export function writeReceiver(
     if (selector.kind === "bounce-binary") {
         const args = [
             selfType + " " + funcIdOf("self"),
-            resolveFuncType(selector.type,false, selector.bounced, ctx) +
+            prettyPrintType(resolveFuncType(selector.type,false, selector.bounced, ctx)) +
                 " " +
                 funcIdOf(selector.name),
         ];
