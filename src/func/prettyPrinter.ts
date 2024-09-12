@@ -720,3 +720,11 @@ export class FuncPrettyPrinter {
         return node.value;
     }
 }
+
+export function prettyPrint(node: FuncAstNode): string | never {
+    return (new FuncPrettyPrinter()).prettyPrint(node);
+}
+
+export function prettyPrintType(ty: FuncAstType): string | never {
+    return (new FuncPrettyPrinter()).prettyPrintType(ty);
+}
