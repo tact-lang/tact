@@ -19,12 +19,12 @@ function capitalize(str: string): string {
  * Generates a Tact configuration file for the given contract (imported from Misti).
  * @returns Path to entrypoint
  */
-export function generateConfig(contractName: string): string {
+export function generateConfig(contractPath: string, contractName: string): string {
     const config = {
         projects: [
             {
                 name: `${contractName}`,
-                path: `./${contractName}.tact`,
+                path: contractPath,
                 output: `./output`,
                 options: {},
             },
@@ -43,9 +43,10 @@ export function generateConfig(contractName: string): string {
  */
 async function compileContract(
     backend: "new" | "old",
+    contractPath: string,
     contractName: string,
 ): Promise<CompilationResults[]> {
-    const entrypointPath = generateConfig(contractName);
+    const entrypointPath = generateConfig(contractPath, contractName);
 
     // see: pipeline/build.ts
     const project = createNodeFileSystem(CONTRACTS_DIR, false);
@@ -163,8 +164,8 @@ describe("codegen", () => {
         // Differential tests with the old backend
         it(`Should compile the ${file} contract`, async () => {
             Promise.all([
-                compileContract("new", contractName),
-                compileContract("old", contractName),
+                compileContract("new", file, contractName),
+                compileContract("old", file, contractName),
             ]).then(([resultsNew, resultsOld]) => {
                 if (resultsNew.length !== resultsOld.length) {
                     throw new Error("Not all contracts have been compiled");
