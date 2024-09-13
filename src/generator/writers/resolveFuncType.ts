@@ -1,3 +1,4 @@
+import { deserialize } from "node:v8";
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
@@ -94,6 +95,17 @@ export function resolveFuncType(
                 ")"
             );
         }
+    } else if (descriptor.kind === "exotic") {
+        const t = getType(ctx.ctx, descriptor.struct);
+        return (
+            "(int, int, " +
+            t.fields
+                .map((v) =>
+                    resolveFuncType(v.type, ctx, false, usePartialFields),
+                )
+                .join(", ") +
+            ")"
+        );
     }
 
     // Unreachable

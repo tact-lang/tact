@@ -432,13 +432,28 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
         const src = getExpType(wCtx.ctx, f.aggregate);
         if (
             (src.kind !== "ref" || src.optional) &&
-            src.kind !== "ref_bounced"
+            src.kind !== "ref_bounced" &&
+            src.kind !== "exotic"
         ) {
             throwCompilationError(
                 `Cannot access field of non-struct type: "${printTypeRef(src)}"`,
                 f.loc,
             );
         }
+
+        if (src.kind === "exotic") {
+            // exotics have fields `rootHash` (int), `depth` (int) and `data` (arbitrary struct)
+            // they are accessed exactly the same as struct fields
+            const path = tryExtractPath(f);
+            if (path) {
+                return writePathExpression(path);
+            }
+            throwCompilationError(
+                `Cannot access field of exotic type: "${printTypeRef(src)}"`,
+                f.loc,
+            );
+        }
+
         const srcT = getType(wCtx.ctx, src.name);
 
         // Resolve field

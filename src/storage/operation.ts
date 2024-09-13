@@ -63,4 +63,8 @@ export type AllocationOperationType =
           kind: "fixed-bytes";
           bytes: number;
           optional: boolean;
+      }
+    | {
+          kind: "merkle-proof";
+          struct: string;
       };

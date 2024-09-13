@@ -305,9 +305,11 @@ function writeSerializerField(
             }
             return;
         }
+        case "merkle-proof": {
+            ctx.append(`build_${gen} = build_${gen}.store_ref(${fieldName});`);
+            return;
+        }
     }
-
-    throwInternalCompilerError(`Unsupported field kind`, dummySrcInfo);
 }
 
 //
@@ -641,6 +643,25 @@ function writeFieldParser(
                     );
                 }
             }
+            return;
+        }
+        case "merkle-proof": {
+            const name = `v'${f.name}`;
+            ctx.append(
+                `var (${name}, exotic?) = sc_${gen}~load_ref().begin_parse_exotic();`,
+            );
+            ctx.append(
+                `throw_unless(${contractErrors.expectedExoticCell.id}, exotic?);`,
+            );
+            ctx.append(
+                `throw_unless(${contractErrors.invalidExoticCellType.id}, ${name}~load_uint(8) == 3);`,
+            );
+            ctx.append(`var ${name}'rootHash = ${name}~load_uint(256);`);
+            ctx.append(`var ${name}'depth = ${name}~load_uint(16);`);
+            ctx.append(`var sc = ${name}~load_ref().begin_parse();`);
+            ctx.append(
+                `var ${name}'data = sc~${ops.reader(op.struct, ctx)}();`,
+            );
             return;
         }
     }

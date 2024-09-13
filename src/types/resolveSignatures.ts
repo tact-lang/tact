@@ -106,6 +106,13 @@ export function resolveSignatures(ctx: CompilerContext) {
                 );
             }
             throwInternalCompilerError("Missing fixed-bytes format");
+        } else if (type === "merkleProof") {
+            if (typeof format !== "string") {
+                throwInternalCompilerError(
+                    `Unsupported merkleProof format: ${format}`,
+                );
+            }
+            return `^merkle_proof<${format}>`;
         }
 
         // Struct types

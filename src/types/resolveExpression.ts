@@ -394,7 +394,11 @@ function resolveFieldAccess(
     // Find target type and check for type
     const src = getExpType(ctx, exp.aggregate);
 
-    if ((src.kind !== "ref" || src.optional) && src.kind !== "ref_bounced") {
+    if (
+        (src.kind !== "ref" || src.optional) &&
+        src.kind !== "ref_bounced" &&
+        src.kind !== "exotic"
+    ) {
         throwCompilationError(
             `Invalid type "${printTypeRef(src)}" for field access`,
             exp.loc,
@@ -413,6 +417,33 @@ function resolveFieldAccess(
                 exp.field.loc,
             );
         }
+    }
+
+    if (src.kind === "exotic") {
+        if (eqNames(exp.field, "rootHash")) {
+            return registerExpType(ctx, exp, {
+                kind: "ref",
+                name: "Int",
+                optional: false,
+            });
+        }
+        if (eqNames(exp.field, "depth")) {
+            return registerExpType(ctx, exp, {
+                kind: "ref",
+                name: "Int",
+                optional: false,
+            });
+        }
+        if (eqNames(exp.field, "data")) {
+            return registerExpType(ctx, exp, {
+                kind: "ref",
+                name: src.struct,
+                optional: false,
+            });
+        }
+        throwCompilationError(
+            `Type ${src.name} does not have a field named ${idTextErr(exp.field)}`,
+        );
     }
 
     // Find field

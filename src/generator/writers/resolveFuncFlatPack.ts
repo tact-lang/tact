@@ -51,6 +51,8 @@ export function resolveFuncFlatPack(
                 resolveFuncFlatPack(v.type, name + `'` + v.name, ctx),
             );
         }
+    } else if (descriptor.kind === "exotic") {
+        return ["int", "int", "cell"];
     }
 
     // Unreachable

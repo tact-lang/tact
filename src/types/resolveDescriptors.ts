@@ -177,17 +177,17 @@ export function resolveTypeRef(ctx: CompilerContext, type: AstType): TypeRef {
             };
         }
         case "exotic_type": {
-            const s = getType(ctx, idText(src.struct));
-            if (src.name !== "merkleProof") {
+            const s = getType(ctx, idText(type.struct));
+            if (type.name !== "merkleProof") {
                 // Should never happen because of grammar
                 throwCompilationError(
-                    `Unknown exotic type ${src.name}`,
-                    src.loc,
+                    `Unknown exotic type ${type.name}`,
+                    type.loc,
                 );
             }
             return {
                 kind: "exotic",
-                name: src.name,
+                name: type.name,
                 struct: s.name,
             };
         }
@@ -267,23 +267,23 @@ function buildTypeRef(
             };
         }
         case "exotic_type": {
-            if (!types.has(idText(src.struct))) {
+            if (!types.has(idText(type.struct))) {
                 throwCompilationError(
-                    `Type ${idTextErr(src.struct)} not found`,
-                    src.loc,
+                    `Type ${idTextErr(type.struct)} not found`,
+                    type.loc,
                 );
             }
-            if (src.name !== "merkleProof") {
+            if (type.name !== "merkleProof") {
                 // Should never happen because of grammar
                 throwCompilationError(
-                    `Unknown exotic type ${src.name}`,
-                    src.loc,
+                    `Unknown exotic type ${type.name}`,
+                    type.loc,
                 );
             }
             return {
                 kind: "exotic",
-                name: src.name,
-                struct: idText(src.struct),
+                name: type.name,
+                struct: idText(type.struct),
             };
         }
     }
@@ -968,6 +968,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     );
                             }
                         }
+                        break;
+                    case "exotic":
+                        retTupleSize = 1;
                         break;
                     case "null":
                     case "map":
@@ -2256,6 +2259,9 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
                     break;
                 case "map":
                     processPossibleSuccessor(field.type.value);
+                    break;
+                case "exotic":
+                    processPossibleSuccessor(field.type.struct);
                     break;
                 // do nothing
                 case "void":
