@@ -375,5 +375,32 @@ describe("structs", () => {
             .endCell();
 
         expect(await contract.getUintFieldsMessage()).toEqual(mUintFields);
+
+        // https://github.com/tact-lang/tact/issues/767
+
+        const m = Dictionary.empty(
+            Dictionary.Keys.Uint(8),
+            Dictionary.Values.BigVarUint(4),
+        );
+        m.set(1, 1n);
+        m.set(2, 2n);
+        m.set(3, 3n);
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            {
+                $$type: "Foo",
+                s: beginCell().storeDict(m).endCell().asSlice(),
+            },
+        );
+        expect(result.transactions).toHaveTransaction({
+            on: contract.address,
+            success: true,
+        });
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasure.address,
+            body: beginCell().storeDict(m).endCell(),
+        });
     });
 });

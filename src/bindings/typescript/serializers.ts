@@ -738,6 +738,8 @@ const map: Serializer<MapSerializerDescr> = {
                     src.valueFormat === undefined
                 ) {
                     value = { kind: "uint", bits: 256 };
+                } else if (src.valueFormat === "coins") {
+                    value = { kind: "uint", bits: 124 };
                 }
             }
             if (src.value === "address") {
