@@ -140,6 +140,11 @@ export function resolveSignatures(ctx: CompilerContext) {
                         `Unsupported map format: ${src.type.format}`,
                     );
                 }
+                if (src.type.keyFormat === "coins") {
+                    throwCompilationError(
+                        `Unsupported format ${src.type.keyFormat} for map key`,
+                    );
+                }
                 const key = createTypeFormat(
                     src.type.key,
                     src.type.keyFormat ? src.type.keyFormat : null,
