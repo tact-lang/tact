@@ -410,6 +410,16 @@
       "name": "semantics",
       "path": "./src/test/e2e-emulated/contracts/semantics.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "map-size-limits",
+      "path": "./src/test/size-limits/contracts/map-size-limits.tact",
+      "output": "./src/test/size-limits/contracts/output"
+    },
+    {
+      "name": "cell-number-limits",
+      "path": "./src/test/size-limits/contracts/cell-number-limits.tact",
+      "output": "./src/test/size-limits/contracts/output"
     }
   ]
 }
