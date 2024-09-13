@@ -43,5 +43,11 @@ describe("semantics", () => {
         expect(await contract.getMapAssign2()).toEqual(true);
         expect(await contract.getParamMap1()).toEqual(true);
         expect(await contract.getParamMap2()).toEqual(true);
+        expect(await contract.getMutateParamMap1()).toEqual(true);
+        expect(await contract.getMutateParamMap2()).toEqual(true);
+        expect(await contract.getParamContract1()).toEqual(true);
+        expect(await contract.getParamContract2()).toEqual(true);
+        expect(await contract.getMutateParamContract1()).toEqual(true);
+        expect(await contract.getMutateParamContract2()).toEqual(true);
     });
 });
