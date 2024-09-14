@@ -446,6 +446,25 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
             // they are accessed exactly the same as struct fields
             const path = tryExtractPath(f);
             if (path) {
+                // if we are accessing `data` field, we need to unpack the struct
+                if (path[path.length - 1]?.text === "data") {
+                    const idd = writePathExpression(path);
+                    const t = getType(wCtx.ctx, src.struct);
+                    return (
+                        "(" +
+                        t.fields
+                            .map((v) =>
+                                resolveFuncTypeUnpack(
+                                    v.type,
+                                    `${idd}'${v.name}`,
+                                    wCtx,
+                                    false,
+                                ),
+                            )
+                            .join(", ") +
+                        ")"
+                    );
+                }
                 return writePathExpression(path);
             }
             throwCompilationError(

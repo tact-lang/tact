@@ -281,14 +281,18 @@ const addressSerializer: Serializer<{ optional: boolean }> = {
 };
 
 function getCellLikeTsType(v: {
-    kind: "cell" | "slice" | "builder";
+    kind: "cell" | "slice" | "builder" | "merkleProof";
     optional?: boolean;
 }) {
-    return v.kind == "cell" ? "Cell" : v.kind == "slice" ? "Slice" : "Builder";
+    return v.kind === "cell" || v.kind === "merkleProof"
+        ? "Cell"
+        : v.kind === "slice"
+          ? "Slice"
+          : "Builder";
 }
 
 function getCellLikeTsAsMethod(v: {
-    kind: "cell" | "slice" | "builder";
+    kind: "cell" | "slice" | "builder" | "merkleProof";
     optional?: boolean;
 }) {
     if (v.optional) {
@@ -299,7 +303,7 @@ function getCellLikeTsAsMethod(v: {
 }
 
 const cellSerializer: Serializer<{
-    kind: "cell" | "slice" | "builder";
+    kind: "cell" | "slice" | "builder" | "merkleProof";
     optional: boolean;
 }> = {
     tsType(v) {
@@ -358,12 +362,14 @@ const cellSerializer: Serializer<{
             if (
                 src.type === "cell" ||
                 src.type === "slice" ||
-                src.type === "builder"
+                src.type === "builder" ||
+                src.type === "merkleProof"
             ) {
                 if (
                     src.format === null ||
                     src.format === undefined ||
-                    src.format === "ref"
+                    src.format === "ref" ||
+                    src.type === "merkleProof"
                 ) {
                     return {
                         optional: src.optional ? src.optional : false,

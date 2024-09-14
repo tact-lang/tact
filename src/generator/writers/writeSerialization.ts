@@ -352,7 +352,15 @@ export function writeParser(
                 ctx.append(`return (sc_0, null());`);
             } else {
                 ctx.append(
-                    `return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(", ")}));`,
+                    `return (sc_0, (${allocation.ops
+                        .map((v) => {
+                            if (v.op.kind == "merkle-proof") {
+                                return `v'${v.name}'rootHash, v'${v.name}'depth, v'${v.name}'data`;
+                            } else {
+                                return `v'${v.name}`;
+                            }
+                        })
+                        .join(", ")}));`,
                 );
             }
         });

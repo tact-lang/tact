@@ -95,17 +95,17 @@ export function resolveFuncTypeUnpack(
     } else if (descriptor.kind === "exotic") {
         const t = getType(ctx.ctx, descriptor.struct);
         return (
-            "(int, int, " +
+            `${name}'rootHash, ${name}'depth, (` +
             t.fields
-                .map((v) =>
-                    resolveFuncTypeUnpack(
+                .map((v) => {
+                    return resolveFuncTypeUnpack(
                         v.type,
-                        name + `'` + v.name,
+                        name + `'data'` + v.name,
                         ctx,
                         false,
                         usePartialFields,
-                    ),
-                )
+                    );
+                })
                 .join(", ") +
             ")"
         );
