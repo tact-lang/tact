@@ -100,7 +100,11 @@ describe("compute phase errors", () => {
         const sendResult = await contract.send(
             treasure.getSender(),
             { value: toNano("10") },
-            "4",
+            {
+                $$type: "ExitCode4",
+                val0: BigInt(0),
+                val1: BigInt(1),
+            },
         );
 
         expect(sendResult.transactions).toHaveTransaction({

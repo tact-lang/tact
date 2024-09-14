@@ -2,7 +2,7 @@ import "./compute-phase-errors.fc";
 
 contract ComputePhaseErrorsTester {
     // Used for storing temporary values
-    tmpI: Int as uint8 = 0;
+    tmpI: Int = 0;
     tmpC: Cell = cell("te6cckEBAQEAAgAAAEysuc0="); // empty cell
 
     /// To handle deployment
@@ -32,25 +32,77 @@ contract ComputePhaseErrorsTester {
     }
 
     /// Exit code 4
-    receive("4") {
-        // TODO: integer overflow
+    receive(msg: ExitCode4) {
+        // Setup
+        let targetCode = 4;
+        let failed = true;
 
         // Addition
+        try {
+            self.tmpI = pow(2, 255) - 1 + pow(2, 255) + msg.val1;
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed == true, "Addition didn't cause an integer overflow");
 
         // Subtraction
+        try {
+            self.tmpI = -pow(2, 255) - pow(2, 255) - msg.val1;
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed == true, "Subtraction didn't cause an integer overflow");
 
         // Negation
+        try {
+            self.tmpI = -(-pow(2, 255) - pow(2, 255) + msg.val0);
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed == true, "Negation didn't cause an integer overflow");
 
         // Multiplication
+        try {
+            self.tmpI = pow(2, 255) * (msg.val1 + 1);
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed == true, "Multiplication didn't cause an integer overflow");
 
         // Division
+        try {
+            self.tmpI = (-pow(2, 255) - pow(2, 255)) / (-msg.val1);
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed == true, "Division didn't cause an integer overflow");
 
         // Division by zero
+        try {
+            self.tmpI = 1 / msg.val0;
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed == true, "Division by zero didn't cause an integer overflow");
 
         // Modulo by zero
+        try {
+            self.tmpI = 1 % msg.val0;
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed == true, "Modulo by zero didn't cause an integer overflow");
 
-        // FIXME:
-        throw(4);
+        // As we got here, everything above caused the target exit code,
+        // so let's throw it explicitly now for the tests on Blueprint's side
+        throw(targetCode);
     }
 
     /// Exit code 5
@@ -72,22 +124,72 @@ contract ComputePhaseErrorsTester {
 
     /// Exit code 8
     receive("8") {
-        // TODO:
-        // - [ ] cell overflow (data)
-        // - [ ] cell overflow (refs)
+        // Setup
+        let targetCode = 8;
+        let failed = true;
 
-        // FIXME:
-        throw(8);
+        // Cell overflow (data)
+        try {
+            self.tmpC = beginCell()
+                .storeInt(0, 250)
+                .storeInt(0, 250)
+                .storeInt(0, 250)
+                .storeInt(0, 250)
+                .storeInt(0, 24) // 1024 bits!
+                .endCell();
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed == true, "1024 bits didn't cause the cell overflow");
+
+        // Cell overflow (refs)
+        try {
+            self.tmpC = beginCell()
+                .storeRef(emptyCell())
+                .storeRef(emptyCell())
+                .storeRef(emptyCell())
+                .storeRef(emptyCell())
+                .storeRef(emptyCell()) // 5 refs!
+                .endCell();
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed == true, "5 refs didn't cause the cell overflow");
+
+        // As we got here, everything above caused the target exit code,
+        // so let's throw it explicitly now for the tests on Blueprint's side
+        throw(targetCode);
     }
 
     /// Exit code 9
     receive("9") {
-        // TODO:
-        // - [ ] cell underflow (data)
-        // - [ ] cell underflow (refs)
+        // Setup
+        let targetCode = 9;
+        let failed = true;
 
-        // FIXME:
-        throw(9);
+        // Cell underflow (data)
+        try {
+            self.tmpI = emptySlice().loadInt(1);
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed == true, "Loading 1 bit from an empty Slice didn't cause the cell underflow");
+
+        // Cell underflow (refs)
+        try {
+            self.tmpC = emptySlice().loadRef();
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed == true, "Loading 1 ref from an empty Slice didn't cause the cell underflow");
+
+        // As we got here, everything above caused the target exit code,
+        // so let's throw it explicitly now for the tests on Blueprint's side
+        throw(targetCode);
     }
 
     /// Exit code 10
@@ -113,6 +215,12 @@ contract ComputePhaseErrorsTester {
             counter += 1;
         }
     }
+}
+
+/// Exit code 4
+message(4) ExitCode4 {
+    val0: Int as uint2 = 0;
+    val1: Int as uint2 = 1;
 }
 
 /// Pre-computed Int to Int dictionary with two entries — 0: 0 and 1: 1
