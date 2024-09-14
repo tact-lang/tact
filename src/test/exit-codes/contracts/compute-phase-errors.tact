@@ -2,8 +2,8 @@ import "./compute-phase-errors.fc";
 
 contract ComputePhaseErrorsTester {
     // Used for storing temporary values
-    tmpI: Int? as uint8 = 0;
-    tmpC: Cell? = cell("te6cckEBAQEAAgAAAEysuc0="); // empty cell
+    tmpI: Int as uint8 = 0;
+    tmpC: Cell = cell("te6cckEBAQEAAgAAAEysuc0="); // empty cell
 
     /// To handle deployment
     receive() {}
@@ -50,41 +50,14 @@ contract ComputePhaseErrorsTester {
         // Modulo by zero
 
         // FIXME:
-        throw(9);
+        throw(4);
     }
 
     /// Exit code 5
     receive("5") {
-        // Setup
-        let targetCode = 5;
-        let failed = true;
-
-        // Storing too much
-        try {
-            // uint8 can only store numbers up to 255,
-            // so 512 is too much
-            self.tmpI = 512;
-            failed = false;
-        } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
-        }
-        require(failed == true, "Storing too much didn't cause an error");
-
-        // Specifying an out-of-bounds value
-        failed = true;
-        try {
-            // Builder.storeUint() function can only use up to 256 bits,
-            // so 512 is too much
-            let s: Slice = beginCell().storeUint(0, 512).asSlice();
-            failed = false;
-        } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
-        }
-        require(failed == true, "Specifying an out-of-bounds value didn't cause an error");
-
-        // As we got here, everything above caused the target exit code,
-        // so let's throw it explicitly now for the tests on Blueprint's side
-        throw(targetCode);
+        // Builder.storeUint() function can only use up to 256 bits,
+        // so 512 is too much and the negative value cannot be stored either
+        self.tmpC = beginCell().storeUint(-1, 512).endCell();
     }
 
     // Exit code 6
@@ -94,11 +67,7 @@ contract ComputePhaseErrorsTester {
 
     /// Exit code 7
     receive("7") {
-        // Map with two entries — 0: 0 and 1: 1
-        let m: map<Int, Int> = toMapIntInt(cellWithDictIntInt.beginParse());
-
-        // And accessing the third (2nd index) would cause the error
-        self.tmpI = m.get(2);
+        typeCheckError().get(0)!!;
     }
 
     /// Exit code 8
@@ -127,7 +96,7 @@ contract ComputePhaseErrorsTester {
         let m: map<Int, Cell> = toMapIntCell(cellWithDictIntInt.beginParse());
 
         // And the error happens only when we touch it
-        self.tmpC = m.get(0);
+        self.tmpC = m.get(0)!!;
     }
 
     /// Exit code 11
@@ -164,3 +133,6 @@ asm fun drop() { DROP }
 /// Stack overflow
 @name(stack_overflow)
 native stackOverflow();
+
+/// Type check error
+asm fun typeCheckError(): map<Int, Int> { 42 PUSHINT }

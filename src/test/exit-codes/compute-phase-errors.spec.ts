@@ -19,7 +19,7 @@ describe("compute phase errors", () => {
 
         const deployResult = await contract.send(
             treasure.getSender(),
-            { value: toNano("100000") },
+            { value: toNano("10000") },
             null,
         );
 
@@ -225,7 +225,7 @@ describe("compute phase errors", () => {
     });
 
     // 12: Fatal error
-    // NOTE: thrown by TVM in situations deemed impossible)
+    // NOTE: thrown by TVM in situations deemed impossible
 
     // 13 (actually, -14): Out of gas
     it("should test exit code 13", async () => {
