@@ -8,7 +8,7 @@ struct AirdropEntry {
 struct ProvableData {
     justForTestPurposes: Int;
     entries: map<Int as uint16, AirdropEntry>;
-    anoterOne: Int as uint32;
+    anotherOne: Int as uint32;
 }
 
 message ProcessClaim {

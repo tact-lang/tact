@@ -13,8 +13,8 @@ import "@ton/test-utils";
 import { randomAddress } from "@ton/test-utils";
 
 const airdropEntryValue = {
-    serialize: (src: AirdropEntry, buidler: Builder) => {
-        buidler.storeAddress(src.address).storeCoins(src.amount);
+    serialize: (src: AirdropEntry, builder: Builder) => {
+        builder.storeAddress(src.address).storeCoins(src.amount);
     },
     parse: (src: Slice) => {
         return {

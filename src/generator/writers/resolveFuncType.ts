@@ -1,4 +1,3 @@
-import { deserialize } from "node:v8";
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";

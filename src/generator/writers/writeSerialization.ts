@@ -1,6 +1,5 @@
 import { contractErrors } from "../../abi/errors";
-import { throwInternalCompilerError } from "../../errors";
-import { dummySrcInfo, ItemOrigin } from "../../grammar/grammar";
+import { ItemOrigin } from "../../grammar/grammar";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { StorageAllocation } from "../../storage/StorageAllocation";
 import { getType } from "../../types/resolveDescriptors";
