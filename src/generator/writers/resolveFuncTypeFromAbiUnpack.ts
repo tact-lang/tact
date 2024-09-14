@@ -38,6 +38,8 @@ export function resolveFuncTypeFromAbiUnpack(
                         res.push(`${name}'${f.name}`);
                     } else if (f.type.type === "string") {
                         res.push(`${name}'${f.name}`);
+                    } else if (f.type.type === "merkleProof") {
+                        res.push(`${name}'${f.name}`);
                     } else {
                         const t = getType(ctx.ctx, f.type.type);
                         if (f.type.optional ?? t.fields.length === 0) {

@@ -176,6 +176,21 @@ export function resolveTypeRef(ctx: CompilerContext, type: AstType): TypeRef {
                 name: t.name,
             };
         }
+        case "exotic_type": {
+            const s = getType(ctx, idText(type.struct));
+            if (type.name !== "merkleProof") {
+                // Should never happen because of grammar
+                throwCompilationError(
+                    `Unknown exotic type ${type.name}`,
+                    type.loc,
+                );
+            }
+            return {
+                kind: "exotic",
+                name: type.name,
+                struct: s.name,
+            };
+        }
     }
 }
 
@@ -249,6 +264,26 @@ function buildTypeRef(
             return {
                 kind: "ref_bounced",
                 name: idText(type.messageType),
+            };
+        }
+        case "exotic_type": {
+            if (!types.has(idText(type.struct))) {
+                throwCompilationError(
+                    `Type ${idTextErr(type.struct)} not found`,
+                    type.loc,
+                );
+            }
+            if (type.name !== "merkleProof") {
+                // Should never happen because of grammar
+                throwCompilationError(
+                    `Unknown exotic type ${type.name}`,
+                    type.loc,
+                );
+            }
+            return {
+                kind: "exotic",
+                name: type.name,
+                struct: idText(type.struct),
             };
         }
     }
@@ -933,6 +968,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                     );
                             }
                         }
+                        break;
+                    case "exotic":
+                        retTupleSize = 1;
                         break;
                     case "null":
                     case "map":
@@ -2221,6 +2259,9 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
                     break;
                 case "map":
                     processPossibleSuccessor(field.type.value);
+                    break;
+                case "exotic":
+                    processPossibleSuccessor(field.type.struct);
                     break;
                 // do nothing
                 case "void":

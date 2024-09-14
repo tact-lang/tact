@@ -357,6 +357,25 @@ export function resolveABIType(src: AstFieldDecl): ABITypeRef {
         return { kind: "dict", key, keyFormat, value, valueFormat };
     }
 
+    //
+    // Exotics
+    //
+
+    if (src.type.kind === "exotic_type") {
+        switch (src.type.name) {
+            case "merkleProof":
+                return {
+                    kind: "simple",
+                    type: "merkleProof",
+                    format: src.type.struct.text,
+                };
+        }
+        throwCompilationError(
+            `Unsupported exotic type '${idTextErr(src.type.name)}'`,
+            src.loc,
+        ); // should never happen
+    }
+
     throwCompilationError(`Unsupported type`, src.loc);
 }
 
@@ -509,6 +528,21 @@ export function createABITypeRefFromTypeRef(
 
     if (src.kind === "ref_bounced") {
         throwInternalCompilerError("Unexpected bounced reference");
+    }
+
+    //
+    // Exotics
+    //
+
+    if (src.kind === "exotic") {
+        switch (src.name) {
+            case "merkleProof":
+                return {
+                    kind: "simple",
+                    type: "merkleProof",
+                    format: src.struct,
+                };
+        }
     }
 
     throwInternalCompilerError(`Unsupported type`);

@@ -244,5 +244,8 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             traverse(node.name, callback);
             traverse(node.type, callback);
             break;
+        case "exotic_type":
+            traverse(node.struct, callback);
+            break;
     }
 }

@@ -92,6 +92,23 @@ export function resolveFuncTypeUnpack(
                 ")"
             );
         }
+    } else if (descriptor.kind === "exotic") {
+        const t = getType(ctx.ctx, descriptor.struct);
+        return (
+            `${name}'rootHash, ${name}'depth, (` +
+            t.fields
+                .map((v) => {
+                    return resolveFuncTypeUnpack(
+                        v.type,
+                        name + `'data'` + v.name,
+                        ctx,
+                        false,
+                        usePartialFields,
+                    );
+                })
+                .join(", ") +
+            ")"
+        );
     }
 
     // Unreachable

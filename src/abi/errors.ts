@@ -14,4 +14,12 @@ export const contractErrors = {
         id: 137,
         message: "Masterchain support is not enabled for this contract",
     },
+    expectedExoticCell: {
+        id: 138,
+        message: "Expected exotic cell, got regular cell",
+    },
+    invalidExoticCellType: {
+        id: 139,
+        message: "Invalid exotic cell type",
+    },
 };

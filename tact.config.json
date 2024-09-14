@@ -410,6 +410,11 @@
       "name": "semantics",
       "path": "./src/test/e2e-emulated/contracts/semantics.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "exotics",
+      "path": "./src/test/e2e-emulated/contracts/exotics.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
     }
   ]
 }

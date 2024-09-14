@@ -1,6 +1,7 @@
 import { ABITypeRef } from "@ton/core";
 import { getType } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
+import { throwInternalCompilerError } from "../../errors";
 
 export function resolveFuncTypeFromAbi(
     fields: ABITypeRef[],
@@ -36,6 +37,17 @@ export function resolveFuncTypeFromAbi(
                     res.push("slice");
                 } else if (f.type === "string") {
                     res.push("slice");
+                } else if (f.type === "merkleProof") {
+                    if (typeof f.format !== "string") {
+                        throwInternalCompilerError(
+                            "Expected string format for merkleProof",
+                        ); // should never happen
+                    }
+                    const t = getType(ctx.ctx, f.format);
+                    res.push("int");
+                    res.push("int");
+                    const loaded = t.fields.map((v) => v.abi.type);
+                    res.push(resolveFuncTypeFromAbi(loaded, ctx));
                 } else {
                     const t = getType(ctx.ctx, f.type);
                     if (t.kind !== "struct") {

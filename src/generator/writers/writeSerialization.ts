@@ -1,6 +1,5 @@
 import { contractErrors } from "../../abi/errors";
-import { throwInternalCompilerError } from "../../errors";
-import { dummySrcInfo, ItemOrigin } from "../../grammar/grammar";
+import { ItemOrigin } from "../../grammar/grammar";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { StorageAllocation } from "../../storage/StorageAllocation";
 import { getType } from "../../types/resolveDescriptors";
@@ -305,9 +304,11 @@ function writeSerializerField(
             }
             return;
         }
+        case "merkle-proof": {
+            ctx.append(`build_${gen} = build_${gen}.store_ref(${fieldName});`);
+            return;
+        }
     }
-
-    throwInternalCompilerError(`Unsupported field kind`, dummySrcInfo);
 }
 
 //
@@ -350,7 +351,15 @@ export function writeParser(
                 ctx.append(`return (sc_0, null());`);
             } else {
                 ctx.append(
-                    `return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(", ")}));`,
+                    `return (sc_0, (${allocation.ops
+                        .map((v) => {
+                            if (v.op.kind == "merkle-proof") {
+                                return `v'${v.name}'rootHash, v'${v.name}'depth, v'${v.name}'data`;
+                            } else {
+                                return `v'${v.name}`;
+                            }
+                        })
+                        .join(", ")}));`,
                 );
             }
         });
@@ -641,6 +650,25 @@ function writeFieldParser(
                     );
                 }
             }
+            return;
+        }
+        case "merkle-proof": {
+            const name = `v'${f.name}`;
+            ctx.append(
+                `var (${name}, exotic?) = sc_${gen}~load_ref().begin_parse_exotic();`,
+            );
+            ctx.append(
+                `throw_unless(${contractErrors.expectedExoticCell.id}, exotic?);`,
+            );
+            ctx.append(
+                `throw_unless(${contractErrors.invalidExoticCellType.id}, ${name}~load_uint(8) == 3);`,
+            );
+            ctx.append(`var ${name}'rootHash = ${name}~load_uint(256);`);
+            ctx.append(`var ${name}'depth = ${name}~load_uint(16);`);
+            ctx.append(`var sc = ${name}~load_ref().begin_parse();`);
+            ctx.append(
+                `var ${name}'data = sc~${ops.reader(op.struct, ctx)}();`,
+            );
             return;
         }
     }

@@ -31,7 +31,10 @@ Tact {
     Type = typeId "?" --optional
          | typeId --regular
          | map "<" typeId (as id)? "," typeId (as id)? ">" --map
+         | exoticType "<" typeId ">" --exotic
          | "bounced" "<" typeId ">" --bounced
+    
+    exoticType = "merkleProof" | "merkleUpdate" | "libraryReference"
 
     FieldDecl = id ":" Type (as id)? ("=" Expression)?
 

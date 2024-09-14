@@ -65,6 +65,9 @@ function getOperationSize(src: AllocationOperationType): {
         case "fixed-bytes": {
             return { bits: src.bytes * 8 + (src.optional ? 1 : 0), refs: 0 };
         }
+        case "merkle-proof": {
+            return { bits: 0, refs: 1 };
+        }
     }
 }
 
@@ -220,6 +223,22 @@ export function getAllocationOperationFromField(
                 return {
                     kind: "string",
                     optional: src.optional ? src.optional : false,
+                };
+            }
+            if (src.type === "merkleProof") {
+                if (src.optional) {
+                    throwInternalCompilerError(
+                        "Merkle proof cannot be optional",
+                    );
+                }
+                if (typeof src.format !== "string") {
+                    throwInternalCompilerError(
+                        "Expected string format for merkleProof",
+                    );
+                }
+                return {
+                    kind: "merkle-proof",
+                    struct: src.format,
                 };
             }
 
