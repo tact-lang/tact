@@ -7,7 +7,7 @@ struct AirdropEntry {
 
 struct ProvableData {
     justForTestPurposes: Int;
-    entries: map<Int, AirdropEntry>;
+    entries: map<Int as uint16, AirdropEntry>;
     anoterOne: Int as uint32;
 }
 

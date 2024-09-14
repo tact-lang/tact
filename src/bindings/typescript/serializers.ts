@@ -280,11 +280,15 @@ const addressSerializer: Serializer<{ optional: boolean }> = {
     },
 };
 
+function isCellType(vKind: string) {
+    return vKind === "cell" || vKind === "merkleProof";
+}
+
 function getCellLikeTsType(v: {
     kind: "cell" | "slice" | "builder" | "merkleProof";
     optional?: boolean;
 }) {
-    return v.kind === "cell" || v.kind === "merkleProof"
+    return isCellType(v.kind)
         ? "Cell"
         : v.kind === "slice"
           ? "Slice"
@@ -316,44 +320,44 @@ const cellSerializer: Serializer<{
     tsLoad(v, slice, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${slice}.loadBit() ? ${slice}.loadRef()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""} : null;`,
+                `let ${field} = ${slice}.loadBit() ? ${slice}.loadRef()${!isCellType(v.kind) ? getCellLikeTsAsMethod(v) : ""} : null;`,
             );
         } else {
             w.append(
-                `let ${field} = ${slice}.loadRef()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
+                `let ${field} = ${slice}.loadRef()${!isCellType(v.kind) ? getCellLikeTsAsMethod(v) : ""};`,
             );
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${reader}.readCellOpt()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
+                `let ${field} = ${reader}.readCellOpt()${!isCellType(v.kind) ? getCellLikeTsAsMethod(v) : ""};`,
             );
         } else {
             w.append(
-                `let ${field} = ${reader}.readCell()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
+                `let ${field} = ${reader}.readCell()${!isCellType(v.kind) ? getCellLikeTsAsMethod(v) : ""};`,
             );
         }
     },
     tsStore(v, builder, field, w) {
         if (v.optional) {
             w.append(
-                `if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true).storeRef(${field}${v.kind !== "cell" ? ".asCell()" : ""}); } else { ${builder}.storeBit(false); }`,
+                `if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true).storeRef(${field}${!isCellType(v.kind) ? ".asCell()" : ""}); } else { ${builder}.storeBit(false); }`,
             );
         } else {
             w.append(
-                `${builder}.storeRef(${field}${v.kind !== "cell" ? ".asCell()" : ""});`,
+                `${builder}.storeRef(${field}${!isCellType(v.kind) ? ".asCell()" : ""});`,
             );
         }
     },
     tsStoreTuple(v, to, field, w) {
         if (v.optional) {
             w.append(
-                `${to}.write${getCellLikeTsType(v)}(${field}${v.kind !== "cell" ? "?.asCell()" : ""});`,
+                `${to}.write${getCellLikeTsType(v)}(${field}${!isCellType(v.kind) ? "?.asCell()" : ""});`,
             );
         } else {
             w.append(
-                `${to}.write${getCellLikeTsType(v)}(${field}${v.kind !== "cell" ? ".asCell()" : ""});`,
+                `${to}.write${getCellLikeTsType(v)}(${field}${!isCellType(v.kind) ? ".asCell()" : ""});`,
             );
         }
     },
@@ -394,7 +398,7 @@ const remainderSerializer: Serializer<{ kind: "cell" | "slice" | "builder" }> =
         },
         tsLoadTuple(v, reader, field, w) {
             w.append(
-                `let ${field} = ${reader}.readCell()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
+                `let ${field} = ${reader}.readCell()${!isCellType(v.kind) ? getCellLikeTsAsMethod(v) : ""};`,
             );
         },
         tsStore(v, builder, field, w) {
@@ -404,7 +408,7 @@ const remainderSerializer: Serializer<{ kind: "cell" | "slice" | "builder" }> =
         },
         tsStoreTuple(v, to, field, w) {
             w.append(
-                `${to}.write${getCellLikeTsType(v)}(${field}${v.kind !== "cell" ? ".asCell()" : ""});`,
+                `${to}.write${getCellLikeTsType(v)}(${field}${!isCellType(v.kind) ? ".asCell()" : ""});`,
             );
         },
         abiMatcher(src) {
