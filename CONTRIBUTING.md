@@ -52,7 +52,7 @@ other tests are grouped into categories in the [src/test](./src/test) folder. Th
 Updating all the test snapshots:
 
 ```shell
-yarn test --u
+yarn test -u
 ```
 
 Updating a subset of the test snapshots can be done like so:
