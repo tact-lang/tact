@@ -410,6 +410,11 @@
       "name": "semantics",
       "path": "./src/test/e2e-emulated/contracts/semantics.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "contract-methods",
+      "path": "./src/test/e2e-emulated/contracts/contract-methods.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
     }
   ]
 }
