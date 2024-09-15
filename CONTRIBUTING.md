@@ -44,7 +44,7 @@ The most up-to-date recipe to build Tact is described in [.github/workflows/tact
 
 As our testing framework we use [Jest](https://jestjs.io). We use a combination of snapshot and expectation tests supported by Jest.
 
-Some tests are put in the same directory with the implementation and can be located in `*.spec.ts` files,
+Some tests are put in the same folder with the implementation and can be located in `*.spec.ts` files,
 other tests are grouped into categories in the [src/test](./src/test) folder. The project map section has more information on tests relevant for each compiler component.
 
 ### How to update test snapshots
@@ -153,7 +153,7 @@ The negative tests for constant evaluation are contained in the Tact files prefi
 
 Some general information on how Tact code maps to FunC is described in the Tact docs: <https://docs.tact-lang.org/book/func>.
 
-The code generator lives in the [src/generator](./src/generator) sub-directory with the entry point in [src/generator/writeProgram.ts](./src/generator/writeProgram.ts).
+The code generator lives in the [src/generator](./src/generator) sub-folder with the entry point in [src/generator/writeProgram.ts](./src/generator/writeProgram.ts).
 
 The implementation that we have right now is being refactored to produce FunC ASTs and then pretty-print those ASTs as strings instead of producing source FunC code in one step. Here is the relevant pull request: <https://github.com/tact-lang/tact/pull/559>.
 
