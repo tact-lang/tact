@@ -1,6 +1,9 @@
 import { toNano } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { ComputePhaseErrorsTester as TestContract } from "./contracts/output/compute-phase-errors_ComputePhaseErrorsTester";
+import {
+    ComputePhaseErrorsTester as TestContract,
+    ExitCode4,
+} from "./contracts/output/compute-phase-errors_ComputePhaseErrorsTester";
 import "@ton/test-utils";
 
 describe("compute phase errors", () => {
@@ -33,199 +36,63 @@ describe("compute phase errors", () => {
 
     // 0: success
     it("should test exit code 0", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "0",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: true,
-            exitCode: 0,
-        });
+        await testComputePhaseExitCode(0, contract, treasure);
     });
 
     // 1: alt. success code
     it("should test exit code 1", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "1",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: true,
-            exitCode: 1,
-        });
+        await testComputePhaseExitCode(1, contract, treasure);
     });
 
     // 2: stack underflow
     it("should test exit code 2", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "2",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 2,
-        });
+        await testComputePhaseExitCode(2, contract, treasure);
     });
 
     // 3: Stack overflow
     it("should test exit code 3", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "3",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 3,
-        });
+        await testComputePhaseExitCode(3, contract, treasure);
     });
 
     // 4: Integer overflow
     it("should test exit code 4", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            {
-                $$type: "ExitCode4",
-                val0: BigInt(0),
-                val1: BigInt(1),
-            },
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 4,
-        });
+        await testComputePhaseExitCode(4, contract, treasure);
     });
 
     // 5: Integer out of range
     it("should test exit code 5", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "5",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 5,
-        });
+        await testComputePhaseExitCode(5, contract, treasure);
     });
 
     // 6: Invalid opcode
     it("should test exit code 6", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "6",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 6,
-        });
+        await testComputePhaseExitCode(8, contract, treasure);
     });
 
     // 7: Type check error
     it("should test exit code 7", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "7",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 7,
-        });
+        await testComputePhaseExitCode(7, contract, treasure);
     });
 
     // 8: Cell overflow
     it("should test exit code 8", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "8",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 8,
-        });
+        await testComputePhaseExitCode(8, contract, treasure);
     });
 
     // 9: Cell underflow
     it("should test exit code 9", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "9",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 9,
-        });
+        await testComputePhaseExitCode(9, contract, treasure);
     });
 
     // 10: Dictionary error
     it("should test exit code 10", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "10",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 10,
-        });
+        await testComputePhaseExitCode(10, contract, treasure);
     });
 
     // 11: "Unknown" error
     // NOTE: Thrown in various unrelated cases
     it("should test exit code 11", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "11",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 11,
-        });
+        await testComputePhaseExitCode(11, contract, treasure);
     });
 
     // 12: Fatal error
@@ -233,20 +100,52 @@ describe("compute phase errors", () => {
 
     // 13 (actually, -14): Out of gas
     it("should test exit code 13", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "13",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: -14,
-        });
+        await testComputePhaseExitCode(13, contract, treasure);
     });
 
     // 14: Virtualization error
     // NOTE: Reserved, but never thrown
 });
+
+async function testComputePhaseExitCode(
+    code: number,
+    contract: SandboxContract<TestContract>,
+    treasure: SandboxContract<TreasuryContract>,
+) {
+    expect(code).toBeGreaterThanOrEqual(0);
+    expect(code).toBeLessThan(128);
+    expect([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13]).toContain(code);
+    type testedExitCodes =
+        | "0"
+        | "1"
+        | "2"
+        | "3"
+        | ExitCode4
+        | "5"
+        | "6"
+        | "7"
+        | "8"
+        | "9"
+        | "10"
+        | "11"
+        | "13";
+
+    const sendResult = await contract.send(
+        treasure.getSender(),
+        { value: toNano("10") },
+        code === 4
+            ? {
+                  $$type: "ExitCode4",
+                  val0: BigInt(0),
+                  val1: BigInt(1),
+              }
+            : (code.toString(10) as testedExitCodes),
+    );
+
+    expect(sendResult.transactions).toHaveTransaction({
+        from: treasure.address,
+        to: contract.address,
+        success: code === 0 || code === 1 ? true : false,
+        exitCode: code === 13 ? -14 : code,
+    });
+}

@@ -33,18 +33,7 @@ describe("Tact-reserved contract errors", () => {
 
     // 128: Null reference exception
     it("should test exit code 128", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "128",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 128,
-        });
+        await testReservedExitCode(128, contract, treasure);
     });
 
     // 129: Invalid serialization prefix
@@ -54,18 +43,7 @@ describe("Tact-reserved contract errors", () => {
 
     // 130: Invalid incoming message
     it("should test exit code 130", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "130",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: contract.address, // From contract back to contract
-            to: contract.address,
-            success: false,
-            exitCode: 130,
-        });
+        await testReservedExitCode(130, contract, treasure);
     });
 
     // 131: Constraints error
@@ -73,18 +51,7 @@ describe("Tact-reserved contract errors", () => {
 
     // 132: Access denied
     it("should test exit code 132", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "132",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 132,
-        });
+        await testReservedExitCode(132, contract, treasure);
     });
 
     // 133: Contract stopped
@@ -92,18 +59,7 @@ describe("Tact-reserved contract errors", () => {
 
     // 134: Invalid argument
     it("should test exit code 134", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "134",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 134,
-        });
+        await testReservedExitCode(134, contract, treasure);
     });
 
     // 135: Code of a contract was not found
@@ -111,33 +67,35 @@ describe("Tact-reserved contract errors", () => {
 
     // 136: Invalid address
     it("should test exit code 136", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "136",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 136,
-        });
+        await testReservedExitCode(136, contract, treasure);
     });
 
     // 137: Masterchain support is not enabled for this contract
     it("should test exit code 137", async () => {
-        const sendResult = await contract.send(
-            treasure.getSender(),
-            { value: toNano("10") },
-            "137",
-        );
-
-        expect(sendResult.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: false,
-            exitCode: 137,
-        });
+        await testReservedExitCode(137, contract, treasure);
     });
 });
+
+async function testReservedExitCode(
+    code: number,
+    contract: SandboxContract<TestContract>,
+    treasure: SandboxContract<TreasuryContract>,
+) {
+    expect(code).toBeGreaterThanOrEqual(128);
+    expect(code).toBeLessThan(256);
+    expect([128, 130, 132, 134, 136, 137]).toContain(code);
+    type testedExitCodes = "128" | "130" | "132" | "134" | "136" | "137";
+
+    const sendResult = await contract.send(
+        treasure.getSender(),
+        { value: toNano("10") },
+        code.toString(10) as testedExitCodes,
+    );
+
+    expect(sendResult.transactions).toHaveTransaction({
+        from: code === 130 ? contract.address : treasure.address,
+        to: contract.address,
+        success: false,
+        exitCode: code,
+    });
+}

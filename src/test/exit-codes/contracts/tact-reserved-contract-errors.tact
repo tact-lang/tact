@@ -51,10 +51,9 @@ contract ReservedContractErrorsTester with Ownable {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "Slice.fromBase64() didn't error on invalid Base64");
+        require(failed, "Slice.fromBase64() didn't error on invalid Base64");
 
         // Case 2
-        failed = true;
         try {
             // 0 is code of NUL in ASCII and it is not valid Base64
             dump("\x00".fromBase64());
@@ -62,27 +61,25 @@ contract ReservedContractErrorsTester with Ownable {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "String.fromBase64() didn't error on invalid Base64");
+        require(failed, "String.fromBase64() didn't error on invalid Base64");
 
         // Case 3
-        failed = true;
         try {
             dump((42).toFloatString(-1));
             failed = false;
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "Int.toFloatString() didn't error on digits -1");
+        require(failed, "Int.toFloatString() didn't error on digits -1");
 
         // Case 4
-        failed = true;
         try {
             dump((42).toFloatString(78));
             failed = false;
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "Int.toFloatString() didn't error on digits 78");
+        require(failed, "Int.toFloatString() didn't error on digits 78");
 
         // As we got here, everything above caused the target exit code,
         // so let's throw it explicitly now for the tests on Blueprint's side

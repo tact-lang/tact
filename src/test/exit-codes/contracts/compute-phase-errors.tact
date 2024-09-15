@@ -44,7 +44,7 @@ contract ComputePhaseErrorsTester {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "Addition didn't cause an integer overflow");
+        require(failed, "Addition didn't cause an integer overflow");
 
         // Subtraction
         try {
@@ -53,7 +53,7 @@ contract ComputePhaseErrorsTester {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "Subtraction didn't cause an integer overflow");
+        require(failed, "Subtraction didn't cause an integer overflow");
 
         // Negation
         try {
@@ -62,7 +62,7 @@ contract ComputePhaseErrorsTester {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "Negation didn't cause an integer overflow");
+        require(failed, "Negation didn't cause an integer overflow");
 
         // Multiplication
         try {
@@ -71,7 +71,7 @@ contract ComputePhaseErrorsTester {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "Multiplication didn't cause an integer overflow");
+        require(failed, "Multiplication didn't cause an integer overflow");
 
         // Division
         try {
@@ -80,7 +80,7 @@ contract ComputePhaseErrorsTester {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "Division didn't cause an integer overflow");
+        require(failed, "Division didn't cause an integer overflow");
 
         // Division by zero
         try {
@@ -89,7 +89,7 @@ contract ComputePhaseErrorsTester {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "Division by zero didn't cause an integer overflow");
+        require(failed, "Division by zero didn't cause an integer overflow");
 
         // Modulo by zero
         try {
@@ -98,7 +98,7 @@ contract ComputePhaseErrorsTester {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "Modulo by zero didn't cause an integer overflow");
+        require(failed, "Modulo by zero didn't cause an integer overflow");
 
         // As we got here, everything above caused the target exit code,
         // so let's throw it explicitly now for the tests on Blueprint's side
@@ -141,7 +141,7 @@ contract ComputePhaseErrorsTester {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "1024 bits didn't cause the cell overflow");
+        require(failed, "1024 bits didn't cause the cell overflow");
 
         // Cell overflow (refs)
         try {
@@ -156,7 +156,7 @@ contract ComputePhaseErrorsTester {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "5 refs didn't cause the cell overflow");
+        require(failed, "5 refs didn't cause the cell overflow");
 
         // As we got here, everything above caused the target exit code,
         // so let's throw it explicitly now for the tests on Blueprint's side
@@ -176,7 +176,7 @@ contract ComputePhaseErrorsTester {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "Loading 1 bit from an empty Slice didn't cause the cell underflow");
+        require(failed, "Loading 1 bit from an empty Slice didn't cause the cell underflow");
 
         // Cell underflow (refs)
         try {
@@ -185,7 +185,7 @@ contract ComputePhaseErrorsTester {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed == true, "Loading 1 ref from an empty Slice didn't cause the cell underflow");
+        require(failed, "Loading 1 ref from an empty Slice didn't cause the cell underflow");
 
         // As we got here, everything above caused the target exit code,
         // so let's throw it explicitly now for the tests on Blueprint's side
