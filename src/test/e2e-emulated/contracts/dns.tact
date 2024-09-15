@@ -34,7 +34,7 @@ contract DNSTester with Deployable, DNSResolver {
     receive("test dnsInternalNormalize throws") {
         let sliceWithRef = beginCell().storeRef(emptyCell()).asSlice();
 
-        // Refs in the the passed Slice are prohibited
+        // Refs in the passed Slice are prohibited
         self.tmpC = dnsInternalNormalize(sliceWithRef).asCell();
     }
 }
