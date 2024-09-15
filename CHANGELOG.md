@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `emptyMap()` in equality comparison expressions does not cause code generation failures: PR [#814](https://github.com/tact-lang/tact/pull/814)
 - Maps with `coins` as value type are now correctly handled in structs: PR [#821](https://github.com/tact-lang/tact/pull/821)
 - Contract method calls in return statements: PR [#829](https://github.com/tact-lang/tact/pull/829)
+- Disallow initializers for trait storage fields: PR [#831](https://github.com/tact-lang/tact/pull/831)
 
 ## [1.4.4] - 2024-08-18
 
