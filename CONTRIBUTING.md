@@ -58,7 +58,7 @@ yarn test -u
 Updating a subset of the test snapshots can be done like so:
 
 ```shell
-yarn test -u spec-name-pattern1 spec-name-pattern-2
+yarn test -u spec-name-pattern1 spec-name-pattern2
 ```
 
 ## Linting
