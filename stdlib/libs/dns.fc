@@ -122,8 +122,8 @@ int dns_internal_verify(slice sc) inline_ref {
     return counter == 0 & ~ isHyphen;
 }
 
-slice dns_internal_normalize(slice src) inline_ref {
-    throw_unless(src.slice_refs() == 0, 134); ;; Invalid argument error
+slice dns_internal_normalize(slice src) impure inline_ref {
+    throw_unless(134, src.slice_refs() == 0); ;; Invalid argument error
     builder target = begin_cell();
     repeat(src.slice_bits() / 8) {
         int char = src~load_uint(8);
