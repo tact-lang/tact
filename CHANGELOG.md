@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disallow zero binary message opcodes as those are reserved for text messages: PR [#786](https://github.com/tact-lang/tact/pull/786)
 - Return-statements in `init()` function do not cause FunC compilation error anymore: PR [#794](https://github.com/tact-lang/tact/pull/794)
 - `emptyMap()` in equality comparison expressions does not cause code generation failures: PR [#814](https://github.com/tact-lang/tact/pull/814)
+- Contract method calls in return statements: PR [#829](https://github.com/tact-lang/tact/pull/829)
 
 ## [1.4.4] - 2024-08-18
 
