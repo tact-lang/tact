@@ -256,7 +256,7 @@ export function resolveABIType(src: AstFieldDecl): ABITypeRef {
             key = "int";
             if (src.type.keyStorageType) {
                 const format = intMapFormats[idText(src.type.keyStorageType)];
-                if (!format) {
+                if (!format || format.format === "coins") {
                     throwCompilationError(
                         `Unsupported format ${idTextErr(src.type.keyStorageType)} for map key`,
                         src.loc,
@@ -421,7 +421,7 @@ export function createABITypeRefFromTypeRef(
             key = "int";
             if (src.keyAs) {
                 const format = intMapFormats[src.keyAs];
-                if (!format) {
+                if (!format || src.keyAs === "coins") {
                     throwCompilationError(
                         `Unsupported format ${src.keyAs} for map key`,
                         loc,
