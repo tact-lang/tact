@@ -575,6 +575,16 @@ Line 7, col 1:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for trait-field-initialized 1`] = `
+"<unknown>:2:14: Trait field cannot have an initializer
+Line 2, col 14:
+  1 | trait T {
+> 2 |     a: Int = 42; // error
+                   ^~
+  3 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for wf-type-const 1`] = `
 "<unknown>:4:19: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
 Line 4, col 19:
