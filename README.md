@@ -18,6 +18,7 @@ A next-gen smart contract language for TON focused on efficiency and simplicity.
 ## Community
 
 - [Tact Discussion Group](https://t.me/tactlang)
+- [Tact Updates Channel](https://t.me/tact_kitchen)
 
 ## Getting started
 
