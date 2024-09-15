@@ -44,7 +44,7 @@ export function emit(args: {
                     if (f.flags.has("impure")) {
                         sig = `${sig} impure`;
                     }
-                    res += `${sig} asm${f.code.shuffle} "${f.code.code}";`;
+                    res += `${sig} asm${f.code.shuffle} """${f.code.code}""";`;
                 } else {
                     throw new Error(`Unknown function body kind`);
                 }

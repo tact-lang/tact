@@ -415,6 +415,11 @@
       "name": "contract-methods",
       "path": "./src/test/e2e-emulated/contracts/contract-methods.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "asm-functions",
+      "path": "./src/test/e2e-emulated/contracts/asm-functions.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
     }
   ]
 }
