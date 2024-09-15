@@ -4,9 +4,10 @@
 
 A next-gen smart contract language for TON focused on efficiency and simplicity.
 
-- [Changelog](/CHANGELOG.md)
-- [Roadmap](/ROADMAP.md)
-- [Examples](/examples/)
+- [Changelog](./CHANGELOG.md)
+- [How to contribute to Tact development](./CONTRIBUTING.md)
+- [Roadmap](./ROADMAP.md)
+- [Examples](./examples/)
 
 ## Key Resources
 
