@@ -33,7 +33,10 @@ slice dns_string_to_internal(slice domain) inline_ref {
         ;; Continue loading next character
         if (continue) {
             int char = cs~load_uint(8);
-            ;; we can do it because additional UTF-8 character's octets >= 128 -- https://www.ietf.org/rfc/rfc3629.txt
+            ;; Normalize to lowercase if character is uppercase
+            if (char >= 65 && char <= 90) { ;; A-Z
+                char += 32; ;; Convert to lowercase
+            }
             int is_hyphen = (char == 45);
             int is_dot  = (char == 46);
             int valid_char = is_hyphen | is_dot | ((char >= 48) & (char <= 57)) | ((char >= 97) & (char <= 122)); ;; '-' or 0-9 or a-z
@@ -95,6 +98,10 @@ int dns_internal_verify(slice sc) inline_ref {
     int isHyphen = false;
     repeat(len) {
         int char = sc~load_uint(8);
+        ;; Normalize to lowercase if character is uppercase
+        if (char >= 65 && char <= 90) { ;; A-Z
+            char += 32; ;; Convert to lowercase
+        }
         if (char == 0) {
             if (counter == 0) {
                 return false;
@@ -122,8 +129,8 @@ int dns_internal_verify(slice sc) inline_ref {
     return counter == 0 & ~ isHyphen;
 }
 
-slice dns_internal_normalize(slice src) impure inline_ref {
-    throw_unless(134, src.slice_refs() == 0); ;; Invalid argument error
+slice dns_internal_normalize(slice src) inline_ref {
+    throw_unless(src.slice_refs() == 0, 134); ;; Invalid argument error
     builder target = begin_cell();
     repeat(src.slice_bits() / 8) {
         int char = src~load_uint(8);
