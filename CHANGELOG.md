@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Maps with `coins` as value type are now correctly handled in structs: PR [#821](https://github.com/tact-lang/tact/pull/821)
 - Contract method calls in return statements: PR [#829](https://github.com/tact-lang/tact/pull/829)
 - Disallow initializers for trait storage fields: PR [#831](https://github.com/tact-lang/tact/pull/831)
+- Fix `dnsInternalNormalize()` in `@stdlib/dns` to throw on slices with references as expected: PR [#834](https://github.com/tact-lang/tact/pull/834)
 
 ## [1.4.4] - 2024-08-18
 

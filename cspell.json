@@ -180,6 +180,7 @@
     "src/test/e2e-emulated/strings.spec.ts",
     "src/test/e2e-emulated/contracts/intrinsics.tact",
     "src/test/e2e-emulated/contracts/strings.tact",
+    "src/test/e2e-emulated/contracts/dns.tact",
     "src/test/compilation-fail/fail-const-eval.spec.ts",
     "src/test/e2e-emulated/getter-names-conflict.spec.ts",
     "src/test/exit-codes/contracts/compute-phase-errors.tact",

@@ -81,6 +81,17 @@ contract ReservedContractErrorsTester with Ownable {
         }
         require(failed, "Int.toFloatString() didn't error on digits 78");
 
+        // Case 5
+        try {
+            // Refs in the passed Slice are prohibited
+            let sliceWithRef = beginCell().storeRef(emptyCell()).asSlice();
+            dump(dnsInternalNormalize(sliceWithRef));
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed, "dnsInternalNormalize() didn't error on Slice with refs");
+
         // As we got here, everything above caused the target exit code,
         // so let's throw it explicitly now for the tests on Blueprint's side
         throw(targetCode);
