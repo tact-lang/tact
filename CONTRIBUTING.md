@@ -149,6 +149,8 @@ You can find the relevant tests in [src/test/e2e-emulated/contracts/constants.ta
 
 ### Code generator
 
+Some general information on how Tact code maps to FunC is described in the Tact docs: <https://docs.tact-lang.org/book/func>.
+
 The code generator lives in the [src/generator](./src/generator) sub-directory with the entry point in [src/generator/writeProgram.ts](./src/generator/writeProgram.ts).
 
 The implementation that we have right now is being refactored to produce FunC ASTs and then pretty-print those ASTs as strings instead of producing source FunC code in one step. Here is the relevant pull request: <https://github.com/tact-lang/tact/pull/559>.
