@@ -232,6 +232,14 @@ struct LongAndDeepNestedStruct {
     s4: TripleNestedStructOpt?;
 }
 
+message(42) Foo {
+    s: Slice as remaining;
+}
+
+struct Dict {
+    m: map<Int as uint8, Int as coins>;
+}
+
 contract StructsTester {
     s1: S = S {a: false, b: 21 + 21};
     s2: S;
@@ -271,6 +279,17 @@ contract StructsTester {
 
     // Deploy
     receive() { }
+
+    receive(msg: Foo) {
+        let d = Dict.fromSlice(msg.s);
+        send(SendParameters{
+            bounce: false,
+            to: sender(),
+            value: ton("0.01"),
+            mode: SendPayGasSeparately,
+            body: d.toCell()
+        });
+    }
 
     get fun structInitializerTest(): Bool {
         return self.s1.a == self.s2.a && self.s1.b == self.s2.b &&

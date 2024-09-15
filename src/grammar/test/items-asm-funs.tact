@@ -23,3 +23,7 @@ asm fun checkAndRemoveAddExtensionPrefix(self: Slice): Int {
 asm fun checkAndRemoveAddExtensionPrefix() {
     -ROT
 }
+
+asm fun debugStr() {
+    "Works!" DEBUGSTR
+}

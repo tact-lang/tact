@@ -6,6 +6,12 @@ exports[`local-type-inference should automatically set types for let statements 
     "10": {
       "message": "Dictionary error",
     },
+    "11": {
+      "message": "'Unknown' error",
+    },
+    "12": {
+      "message": "Fatal error",
+    },
     "128": {
       "message": "Null reference exception",
     },
@@ -39,6 +45,9 @@ exports[`local-type-inference should automatically set types for let statements 
     "137": {
       "message": "Masterchain support is not enabled for this contract",
     },
+    "14": {
+      "message": "Virtualization error",
+    },
     "2": {
       "message": "Stack underflow",
     },
@@ -46,10 +55,19 @@ exports[`local-type-inference should automatically set types for let statements 
       "message": "Stack overflow",
     },
     "32": {
-      "message": "Method ID not found",
+      "message": "Action list is invalid",
+    },
+    "33": {
+      "message": "Action list is too long",
     },
     "34": {
       "message": "Action is invalid or not supported",
+    },
+    "35": {
+      "message": "Invalid source address in outbound message",
+    },
+    "36": {
+      "message": "Invalid destination address in outbound message",
     },
     "37": {
       "message": "Not enough TON",
@@ -57,11 +75,29 @@ exports[`local-type-inference should automatically set types for let statements 
     "38": {
       "message": "Not enough extra-currencies",
     },
+    "39": {
+      "message": "Outbound message does not fit into a cell after rewriting",
+    },
     "4": {
       "message": "Integer overflow",
     },
+    "40": {
+      "message": "Cannot process a message",
+    },
+    "41": {
+      "message": "Library reference is null",
+    },
+    "42": {
+      "message": "Library change action error",
+    },
+    "43": {
+      "message": "Exceeded maximum number of cells in the library or the maximum depth of the Merkle tree",
+    },
     "5": {
       "message": "Integer out of expected range",
+    },
+    "50": {
+      "message": "Account state size exceeded limits",
     },
     "6": {
       "message": "Invalid opcode",

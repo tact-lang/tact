@@ -1,0 +1,8 @@
+() stack_overflow() impure asm """
+    <{
+    }>CONT // c
+    0 SETNUMARGS // c'
+    2 PUSHINT // c' 2
+    SWAP // 2 c'
+    1 -1 SETCONTARGS
+""";

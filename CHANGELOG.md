@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `toSlice` method for structs and messages: PR [#630](https://github.com/tact-lang/tact/pull/630)
 - Wider range of serialization options for integers — `uint1` through `uint256` and `int1` through `int257`: PR [#558](https://github.com/tact-lang/tact/pull/558)
 - The `deepEquals` method for the `Map` type: PR [#637](https://github.com/tact-lang/tact/pull/637)
-- `asm` bodies for module-level functions: PR [#769](https://github.com/tact-lang/tact/pull/769)
+- `asm` bodies for module-level functions: PR [#769](https://github.com/tact-lang/tact/pull/769), PR [#825](https://github.com/tact-lang/tact/pull/825)
 - Corresponding stdlib functions for new TVM instructions from 2023.07 and 2024.04 upgrades: PR [#331](https://github.com/tact-lang/tact/pull/331)
 - `slice`, `rawSlice`, `ascii` and `crc32` built-in functions: PR [#787](https://github.com/tact-lang/tact/pull/787), PR [#799](https://github.com/tact-lang/tact/pull/799)
 - `Builder.storeMaybeRef`, `parseStdAddress` and `parseVarAddress` stdlib functions: PR [#793](https://github.com/tact-lang/tact/pull/793)
@@ -38,6 +38,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disallow zero binary message opcodes as those are reserved for text messages: PR [#786](https://github.com/tact-lang/tact/pull/786)
 - Return-statements in `init()` function do not cause FunC compilation error anymore: PR [#794](https://github.com/tact-lang/tact/pull/794)
 - `emptyMap()` in equality comparison expressions does not cause code generation failures: PR [#814](https://github.com/tact-lang/tact/pull/814)
+- Maps with `coins` as value type are now correctly handled in structs: PR [#821](https://github.com/tact-lang/tact/pull/821)
+- Contract method calls in return statements: PR [#829](https://github.com/tact-lang/tact/pull/829)
+- Disallow initializers for trait storage fields: PR [#831](https://github.com/tact-lang/tact/pull/831)
 
 ## [1.4.4] - 2024-08-18
 

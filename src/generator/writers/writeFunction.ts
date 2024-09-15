@@ -88,7 +88,14 @@ export function writeStatement(
 
                 // Return
                 if (self) {
-                    ctx.append(`return (${self}, ${result});`);
+                    // we introduce an intermediate return variable here
+                    // to treat the case of a contract method call which
+                    // can modify "self", otherwise the "self" below would
+                    // contain the old state of contract, not the one
+                    // updated in the "result" expression
+                    const retVar = freshIdentifier("ret");
+                    ctx.append(`var ${retVar} = ${result};`);
+                    ctx.append(`return (${self}, ${retVar});`);
                 } else {
                     ctx.append(`return ${result};`);
                 }
