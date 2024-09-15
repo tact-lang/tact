@@ -83,7 +83,7 @@ contract ReservedContractErrorsTester with Ownable {
 
         // Case 5
         try {
-            // Refs in the the passed Slice are prohibited
+            // Refs in the passed Slice are prohibited
             let sliceWithRef = beginCell().storeRef(emptyCell()).asSlice();
             dump(dnsInternalNormalize(sliceWithRef));
             failed = false;
