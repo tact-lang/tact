@@ -147,6 +147,8 @@ The main logic of the constant evaluator can be found in the file [src/interpret
 
 You can find the relevant tests in [src/test/e2e-emulated/contracts/constants.tact](./src/test/e2e-emulated/contracts/constants.tact) and the corresponding spec-file: [](./src/test/e2e-emulated/constants.spec.ts).
 
+The negative tests for constant evaluation are contained in the Tact files prefixed with `const-eval` in the [src/test/compilation-failed/contracts](./src/test/compilation-failed/contracts) folder.
+
 ### Code generator
 
 Some general information on how Tact code maps to FunC is described in the Tact docs: <https://docs.tact-lang.org/book/func>.
