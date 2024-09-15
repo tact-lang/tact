@@ -30,12 +30,18 @@ describe("semantics", () => {
 
     it("should implement semantics correctly", async () => {
         // Check methods
+        expect(await contract.getCheckAllContractFieldsAreUnchanged()).toEqual(
+            true,
+        );
         expect(await contract.getStructAssign1()).toEqual(true);
         expect(await contract.getStructAssign2()).toEqual(true);
-        expect(await contract.getStructInitCheck()).toEqual(true);
         expect(await contract.getParamStruct1()).toEqual(true);
         expect(await contract.getParamStruct2()).toEqual(true);
         expect(await contract.getMutateParamStruct1()).toEqual(true);
         expect(await contract.getMutateParamStruct2()).toEqual(true);
+        expect(await contract.getMapAssign1()).toEqual(true);
+        expect(await contract.getMapAssign2()).toEqual(true);
+        expect(await contract.getParamMap1()).toEqual(true);
+        expect(await contract.getParamMap2()).toEqual(true);
     });
 });
