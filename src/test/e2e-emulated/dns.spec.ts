@@ -235,4 +235,19 @@ describe("dns", () => {
             }
         });
     }
+
+    it("should test dnsInternalNormalize throws", async () => {
+        const sendResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            "test dnsInternalNormalize throws",
+        );
+
+        expect(sendResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: false,
+            exitCode: 134, // Invalid argument
+        });
+    });
 });

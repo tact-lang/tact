@@ -538,65 +538,75 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Trait
         if (a.kind === "trait") {
-            for (const f of a.declarations) {
-                if (f.kind === "field_decl") {
+            for (const traitDecl of a.declarations) {
+                if (traitDecl.kind === "field_decl") {
                     if (
                         types
                             .get(idText(a.name))!
-                            .fields.find((v) => eqNames(v.name, f.name))
+                            .fields.find((v) => eqNames(v.name, traitDecl.name))
                     ) {
                         throwCompilationError(
-                            `Field ${idTextErr(f.name)} already exists`,
-                            f.loc,
+                            `Field ${idTextErr(traitDecl.name)} already exists`,
+                            traitDecl.loc,
                         );
                     }
-                    if (f.as) {
+                    if (traitDecl.as) {
                         throwCompilationError(
                             `Trait field cannot have serialization specifier`,
-                            f.loc,
+                            traitDecl.loc,
+                        );
+                    }
+                    if (traitDecl.initializer) {
+                        throwCompilationError(
+                            `Trait field cannot have an initializer`,
+                            traitDecl.initializer.loc,
                         );
                     }
                     types
                         .get(idText(a.name))!
                         .fields.push(
                             buildFieldDescription(
-                                f,
+                                traitDecl,
                                 types.get(idText(a.name))!.fields.length,
                             ),
                         );
                 } else if (
-                    f.kind === "constant_def" ||
-                    f.kind === "constant_decl"
+                    traitDecl.kind === "constant_def" ||
+                    traitDecl.kind === "constant_decl"
                 ) {
                     if (
                         types
                             .get(idText(a.name))!
-                            .fields.find((v) => eqNames(v.name, f.name))
+                            .fields.find((v) => eqNames(v.name, traitDecl.name))
                     ) {
                         throwCompilationError(
-                            `Field ${idTextErr(f.name)} already exists`,
-                            f.loc,
+                            `Field ${idTextErr(traitDecl.name)} already exists`,
+                            traitDecl.loc,
                         );
                     }
                     if (
                         types
                             .get(idText(a.name))!
-                            .constants.find((v) => eqNames(v.name, f.name))
+                            .constants.find((v) =>
+                                eqNames(v.name, traitDecl.name),
+                            )
                     ) {
                         throwCompilationError(
-                            `Constant ${idTextErr(f.name)} already exists`,
-                            f.loc,
+                            `Constant ${idTextErr(traitDecl.name)} already exists`,
+                            traitDecl.loc,
                         );
                     }
-                    if (f.attributes.find((v) => v.type === "override")) {
+                    if (
+                        traitDecl.attributes.find((v) => v.type === "override")
+                    ) {
                         throwCompilationError(
                             `Trait constant cannot be overridden`,
-                            f.loc,
+                            traitDecl.loc,
                         );
                     }
                     types
                         .get(idText(a.name))!
-                        .constants.push(buildConstantDescription(f));
+                        .constants.push(buildConstantDescription(traitDecl));
                 }
             }
         }

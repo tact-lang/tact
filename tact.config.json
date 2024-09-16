@@ -410,6 +410,29 @@
       "name": "semantics",
       "path": "./src/test/e2e-emulated/contracts/semantics.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "contract-methods",
+      "path": "./src/test/e2e-emulated/contracts/contract-methods.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "asm-functions",
+      "path": "./src/test/e2e-emulated/contracts/asm-functions.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "tact-reserved-contract-errors",
+      "path": "./src/test/exit-codes/contracts/tact-reserved-contract-errors.tact",
+      "output": "./src/test/exit-codes/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "compute-phase-errors",
+      "path": "./src/test/exit-codes/contracts/compute-phase-errors.tact",
+      "output": "./src/test/exit-codes/contracts/output"
     }
   ]
 }

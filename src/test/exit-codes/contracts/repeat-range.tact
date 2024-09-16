@@ -1,4 +1,4 @@
-contract RepeatRange {
+contract RepeatRangeTester {
     /// To handle deployment
     receive() {}
 

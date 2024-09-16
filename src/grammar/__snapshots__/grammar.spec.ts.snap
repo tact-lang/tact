@@ -3358,7 +3358,7 @@ exports[`grammar should parse expr-with-var 1`] = `
 
 exports[`grammar should parse items-asm-funs 1`] = `
 {
-  "id": 46,
+  "id": 48,
   "imports": [],
   "items": [
     {
@@ -3711,6 +3711,30 @@ exports[`grammar should parse items-asm-funs 1`] = `
         "kind": "id",
         "loc": checkAndRemoveAddExtensionPrefix,
         "text": "checkAndRemoveAddExtensionPrefix",
+      },
+      "params": [],
+      "return": null,
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 47,
+      "instructions": [
+        ""Works!"",
+        "DEBUGSTR",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun debugStr() {
+    "Works!" DEBUGSTR
+},
+      "name": {
+        "id": 46,
+        "kind": "id",
+        "loc": debugStr,
+        "text": "debugStr",
       },
       "params": [],
       "return": null,
