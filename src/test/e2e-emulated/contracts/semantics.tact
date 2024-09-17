@@ -139,46 +139,19 @@ extends mutates fun changeSomeEntries(self: MapWrapper) {
 
 /**** Auxiliary functions for contracts **********/
 
-fun getNewContract(c: SemanticsTester): SemanticsTester {
-    // Reassign the parameter value
-    // This does not change the contract passed as parameter to the function
-    // c = ???   // How does one instantiate a contract? At first glance it seems that it cannot be done 
-                 // because the initOf expression seems that only returns a struct with cells containing 
-                 // the initial state of the contract. It is not clear how to instantiate a contract from there.
-
-
-   // Copying a contract opens the door to a lot of potential problems that need to be checked.
-   // For example: 
-   // - What is the address of the copy? Since it is a copy, it should have the same address as the original.
-   //   But the copy could modify its state and diverge from the state of the original. 
-   //   Does this mean that copies only exist while the TVM is running and do not get serialized into persistent storage
-   //   unless an explicit assignment to "self" happens somewhere?
-   //   Or the copy is simply like a struct that is not deployed and only serves to store data? 
-   // - Can the copy receive messages and send messages?
-   //   Note that it is always possible to invoke contract functions on the copy:
-
-   c.paramMap1();   // This call will not change the fields of c
-
-   //   Hence, the copy should be able to send messages as well.
-   
-    return c; 
-}
-
 fun copyAndModifyContract(c: SemanticsTester): SemanticsTester {
-    // Change some fields in the contract given as parameter
-    // Since contracts are passed by value, this does not change the contract passed as parameter to the function
+    // Since contracts are passed by value, this function creates a copy of the contract when called.
+    // In other words, c is a copy of the contract passed as parameter to the function.
+
+    // Let us modify some fields in the copy c
     c.uB = SB {b1: true, b2: SC {c1: 99}, b3: 98};
     c.mA.del(1);
 
     // It is also possible to call contract functions on the copy
     // This call will not change the state of c beyond those changes in the previous lines.
-    c.structAssign2();  
-    return c;
-}
+    c.structAssign2();
 
-extends mutates fun reassignContract(self: SemanticsTester) {
-    // Reassigning the parameter will change the contract given as parameter
-    // self = ?????    // Again, how does one instantiate a contract?
+    return c;
 }
 
 extends mutates fun changeSomeContractFields(self: SemanticsTester) {
@@ -216,6 +189,12 @@ contract SemanticsTester {
 
     mA: map<Int,SA>;
     mB: map<Int,Bool>;
+
+
+    // Flag storing the result of calling method mutateContractState.
+    // So that we can get the result using a getter method
+
+    mutateContractStateResult: Bool = false;
 
     init() { 
 
@@ -268,6 +247,11 @@ contract SemanticsTester {
     }
 
     receive() { }
+
+    receive("mutate") {
+        self.mutateContractStateResult = self.mutateContractState();
+    }
+
 
     // IMPORTANT: The operator == does not allow comparing two structs.
     // So, to compare if two structs are equal using ==, one needs to compare each
@@ -613,14 +597,31 @@ contract SemanticsTester {
 
     /*************** Contracts ********************/
 
-    get fun paramContract1(): Bool {
+    get fun contractAssign1(): Bool {
         
-        // This should not modify self.
+        // Contract assignment works by value, which means that a copy of the contract is created 
+        // during assignment.
+        
+        let c = self;
 
-        let c = getNewContract(self);
+        // What does it mean that c is a copy? It does NOT mean that 
+        // there is a new contract c deployed in the TON network. In fact, both c and self
+        // have the same address. Why? An address is determined by the initial state and code
+        // of the contract, and since c was created from the state of self AFTER self was deployed,
+        // c must have the same address. Indeed, there is a test in "semantics.spec.ts" testing that
+        // the address of "self" does not change after "self" is reassigned with a modified copy of itself.
+        
+        // Even though the states of c and self may diverge from this moment 
+        // (for example, by explicitly changing a field in c),
+        // the state of c does not have existence beyond the execution of the TVM, i.e.,
+        // as long as "self = c" is never executed, the state of c will be lost as soon as 
+        // the TVM finishes executing the transaction, because the state of c will never 
+        // be persisted back into the network. So, in a sense, c is like a struct storing temporal values 
+        // for the fields in self.
 
-        // At the moment, getNewContract returns a copy of self
-        // because it is not clear how to instantiate a fresh contract that is not a direct copy of an existing contract.
+        // Nevertheless, it is possible to call declared contract functions on c.
+        // For example, getter checkAllContractFieldsAreUnchanged is called both on self
+        // and c below, which implies that both self and c have identical state so far.
 
         let result = 
                self.checkAllContractFieldsAreUnchanged() &&
@@ -631,10 +632,59 @@ contract SemanticsTester {
         return result;
     }
 
-    get fun paramContract2(): Bool {
+    get fun contractAssign2(): Bool {
+        
+        // Contract assignment works by value, which means that a copy of the contract is created 
+        // during assignment.
+        
+        let c = self;
+
+        // Delete entries 1 and 2 in c.mA. This should not affect self.
+        c.mA.del(1);
+        c.mA.del(2);
+
+        let result = 
+               self.checkAllContractFieldsAreUnchanged() &&
+               
+               c.uB.b1 == false &&
+               c.uB.b2.c1 == 0 &&
+               c.uB.b3 == 14 &&
+               
+               c.sA.a1 == 20 && 
+               c.sA.a2.b1 == true &&
+               c.sA.a2.b2.c1 == 5 &&
+               c.sA.a2.b3 == 10 &&
+
+               c.sB.b1 == false &&
+               c.sB.b2.c1 == 3 &&
+               c.sB.b3 == 10 &&
+
+               c.sC.c1 == 5 &&
+
+               c.mB.isEmpty() && 
+
+               // the map c.mA has one key-value pair:
+
+               c.mA.get(3)!!.a1 == 5 && 
+               c.mA.get(3)!!.a2.b1 == false &&
+               c.mA.get(3)!!.a2.b2.c1 == 150 &&
+               c.mA.get(3)!!.a2.b3 == 0;
+
+        // And no other entries
+        foreach (k, _ in c.mA) {
+            result = result && k == 3;
+        }
+
+        return result;
+    }
+
+
+    get fun paramContract(): Bool {
         
         // This should not modify self.
-        // In the copy: it will change the uB field and delete entry 1 in mA.
+        // This function will copy self and do the following changes to the copy: 
+        // Change the uB field and delete entry 1 in mA.
+
         let c = copyAndModifyContract(self);
 
         let result = 
@@ -655,7 +705,7 @@ contract SemanticsTester {
 
                c.sC.c1 == 5 &&
 
-               self.mB.isEmpty() && 
+               c.mB.isEmpty() && 
 
                // the map c.mA has two key-value pairs:
 
@@ -677,26 +727,7 @@ contract SemanticsTester {
         return result;
     }
 
-    get fun mutateParamContract1(): Bool {
-
-        // Make a copy of the contract
-        let c = self;
-
-        // Currently, reassignContract does not do anything to c because it is not
-        // clear how to create a fresh contract that is not a copy of an existing one.
-
-        c.reassignContract();
-
-        let result = 
-               self.checkAllContractFieldsAreUnchanged() &&
-               
-               // Since c is not modified, it has the  same state as self 
-               c.checkAllContractFieldsAreUnchanged();
-
-        return result;
-    }
-
-    get fun mutateParamContract2(): Bool {
+    get fun mutateParamContract(): Bool {
 
         // First, make a copy of the contract
         let c = self;
@@ -706,8 +737,8 @@ contract SemanticsTester {
         
         c.changeSomeContractFields();
 
-        /* If we were not in a getter function and suppose we would like to persist the changes in the copy 
-           back into persistent storage, we would write:
+        /* If we were not in a getter function we could persist the changes in the copy 
+           back into persistent storage, by writing:
            
            self = c;
            
@@ -756,5 +787,81 @@ contract SemanticsTester {
         }
 
         return result;
+    }
+
+    get fun address(): Address {
+        return myAddress();
+    }
+
+    fun checkFieldsChanged(sB: SB, n: Int): Bool {
+        let result = 
+               self.uB.b1 == sB.b1 &&
+               self.uB.b2.c1 == sB.b2.c1 &&
+               self.uB.b3 == sB.b3 &&
+
+               self.sA.a1 == 20 && 
+               self.sA.a2.b1 == true &&
+               self.sA.a2.b2.c1 == n &&
+               self.sA.a2.b3 == 10 &&
+
+               self.sB.b1 == false &&
+               self.sB.b2.c1 == 3 &&
+               self.sB.b3 == 10 &&
+
+               self.sC.c1 == 5 &&
+
+               self.mB.isEmpty() && 
+
+               self.mA.get(1)!!.a1 == 20 && 
+               self.mA.get(1)!!.a2.b1 == true &&
+               self.mA.get(1)!!.a2.b2.c1 == 5 &&
+               self.mA.get(1)!!.a2.b3 == 10 &&
+
+               self.mA.get(2)!!.a1 == 20 && 
+               self.mA.get(2)!!.a2.b1 == true &&
+               self.mA.get(2)!!.a2.b2.c1 == 100 &&
+               self.mA.get(2)!!.a2.b3 == 0 &&
+
+               self.mA.get(3)!!.a1 == 5 && 
+               self.mA.get(3)!!.a2.b1 == false &&
+               self.mA.get(3)!!.a2.b2.c1 == 150 &&
+               self.mA.get(3)!!.a2.b3 == 0;
+
+        // And no other entries
+        foreach (k, _ in self.mA) {
+            result = result && (k == 1 || k == 2 || k == 3);
+        }
+
+        return result;
+    }
+
+    fun mutateContractState(): Bool {
+        // First, make a copy of the contract
+        let c = self;
+        
+        // In the copy, change the uB field and the sA.a2.b2.c1 field.
+        
+        c.changeSomeContractFields();
+
+        let result = 
+               self.checkAllContractFieldsAreUnchanged() &&
+
+               // This line tests that method calls on copies actually use the state of the copy.
+               c.checkFieldsChanged(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
+
+        // Persist the copy into self
+        
+        self = c;
+
+        // Now, check that the changes in c are now in self.
+        // Note that checkFieldsChanged is called on self now.
+
+        result = result && self.checkFieldsChanged(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
+
+        return result;
+    }
+
+    get fun mutateContractStateFlag(): Bool {   
+        return self.mutateContractStateResult;
     }
 }
