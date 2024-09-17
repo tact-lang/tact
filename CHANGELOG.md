@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- The `engines` property in `package.json` and its strict checking to ensure minimal required Node.js version is 22: PR [#847](https://github.com/tact-lang/tact/pull/847)
+
 ### Changed
 
 ### Fixed
