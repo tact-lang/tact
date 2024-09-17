@@ -793,7 +793,10 @@ contract SemanticsTester {
         return myAddress();
     }
 
-    fun checkFieldsChanged(sB: SB, n: Int): Bool {
+    // Check if fields uB and sA.a2.b2.c1 are equal to the provided parameters,
+    // and that the rest of fields remained unchanged.
+
+    fun checkFieldsEqualTo(sB: SB, n: Int): Bool {
         let result = 
                self.uB.b1 == sB.b1 &&
                self.uB.b2.c1 == sB.b2.c1 &&
@@ -847,21 +850,25 @@ contract SemanticsTester {
                self.checkAllContractFieldsAreUnchanged() &&
 
                // This line tests that method calls on copies actually use the state of the copy.
-               c.checkFieldsChanged(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
+               c.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
 
         // Persist the copy into self
         
         self = c;
 
         // Now, check that the changes in c are now in self.
-        // Note that checkFieldsChanged is called on self now.
+        // Note that checkFieldsEqualTo is called on self now.
 
-        result = result && self.checkFieldsChanged(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
+        result = result && self.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
 
         return result;
     }
 
     get fun mutateContractStateFlag(): Bool {   
         return self.mutateContractStateResult;
+    }
+
+    get fun changesPersisted(): Bool {
+        return self.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
     }
 }

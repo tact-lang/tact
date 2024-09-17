@@ -76,6 +76,8 @@ describe("semantics", () => {
 
         // The contract was successfully mutated
         expect(await contract.getMutateContractStateFlag()).toEqual(true);
+        // And the changes persisted
+        expect(await contract.getChangesPersisted()).toEqual(true);
 
         // Obtain the address after the contract was modified
         const address2 = await contract.getAddress();
