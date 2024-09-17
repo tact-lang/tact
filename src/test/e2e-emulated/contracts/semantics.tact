@@ -13,6 +13,13 @@ struct SC {
     c1: Int;
 }
 
+// Wrapper struct in order to pass maps to mutating functions. See issue #815
+struct MapWrapper {
+    m: map<Int,SA>
+}
+
+/**** Auxiliary functions for structs **********/
+
 fun getNewStruct(s: SA): SA {
     // Reassign the parameter value
     // This does not change the struct passed as parameter to the function
@@ -39,6 +46,8 @@ extends mutates fun changeSomeFields(self: SA) {
     self.a1 += 100;
     self.a2.b2.c1 += 1;
 }
+
+/**** Auxiliary functions for maps **********/
 
 fun getNewMap(m: map<Int,SA>): map<Int,SA> {
     // Reassign the parameter value
@@ -86,48 +95,71 @@ fun copyAndModifyMap(m: map<Int,SA>): map<Int,SA> {
 }
 
 /*
-The following two functions are not allowed by the compiler, because mutating functions 
-can only have reference types as first argument.
+Currently, the compiler does not allow passing maps to extension (and hence mutating) functions 
+in their "self" argument.
 
-This has an IMPORTANT consequence: since maps are passed by value,
-NO map can be modified when passed to a function. Is there a reason for 
-this design decision?
+One workaround is to wrap the map using a struct, since structs are allowed in extension functions 
+(see issue #815)
+*/
 
-extends mutates fun reassignMap(self: map<Int,SA>) {
+extends mutates fun reassignMap(self: MapWrapper) {
     // Reassigning the parameter will change the map given as parameter
-    self = emptyMap();
-    self.set(1, SA {a1: 0, a2: SB {b1: false, b2: SC {c1: 0}, b3: 0}});
+    self = MapWrapper {m: emptyMap()};
+    self.m.set(1, SA {a1: 0, a2: SB {b1: false, b2: SC {c1: 0}, b3: 0}});
 }
 
-extends mutates fun changeSomeEntries(self: map<Int,SA>) {
+extends mutates fun changeSomeEntries(self: MapWrapper) {
     // Change some entries in the map given as parameter
     // This will change the map passed as parameter to the function
 
     // Similar to comments in function copyAndModifyMap, it is not possible
     // to directly mutate the struct in entry 1 of the map.
-    // So, first make a local copy of the struct
+    // So, first make a local copy of the struct.
     
-    let c = self.get(1)!!;
+    let c = self.m.get(1)!!;
 
     // Modify the struct
     c.a2.b2.c1 += 30;
 
-    // And assign it back into entry 1, because c is a copy so far
-    // To check the previous claim, this function will return an emptyMap()
-    // if self.get(1)!!.a2.b2.c1 == c.a2.b2.c1 at this point (which will not be true):
+    // And assign it back into entry 1, because c is a copy so far.
+    // To check the previous claim, this function will immediately return
+    // if self.m.get(1)!!.a2.b2.c1 == c.a2.b2.c1 at this point (which will not be true):
 
-    if (self.get(1)!!.a2.b2.c1 == c.a2.b2.c1) {
-        return emptyMap();
+    if (self.m.get(1)!!.a2.b2.c1 == c.a2.b2.c1) {
+        return;
     }
 
-    self.set(1, c);
+    self.m.set(1, c);
 
     // Now delete entries 2 and 3
 
-    self.del(2);
-    self.del(3);
+    self.m.del(2);
+    self.m.del(3);
 }
-*/
+
+/**** Auxiliary functions for contracts **********/
+
+fun copyAndModifyContract(c: SemanticsTester): SemanticsTester {
+    // Since contracts are passed by value, this function creates a copy of the contract when called.
+    // In other words, c is a copy of the contract passed as parameter to the function.
+
+    // Let us modify some fields in the copy c
+    c.uB = SB {b1: true, b2: SC {c1: 99}, b3: 98};
+    c.mA.del(1);
+
+    // It is also possible to call contract functions on the copy
+    // This call will not change the state of c beyond those changes in the previous lines.
+    c.structAssign2();
+
+    return c;
+}
+
+extends mutates fun changeSomeContractFields(self: SemanticsTester) {
+    // Change some fields in the contract given as parameter
+    // This will change the contract passed as parameter to the function
+    self.uB = SB {b1: true, b2: SC {c1: 77}, b3: 88};
+    self.sA.a2.b2.c1 += 30;
+}
 
 contract SemanticsTester {
 
@@ -158,7 +190,16 @@ contract SemanticsTester {
     mA: map<Int,SA>;
     mB: map<Int,Bool>;
 
+
+    // Flag storing the result of calling method mutateContractState.
+    // So that we can get the result using a getter method
+
+    mutateContractStateResult: Bool = false;
+
     init() { 
+
+        /***** Structs *****/
+
         self.uB.b1 = false;       // What is the meaning of this? self.uB is not initialized.
                                   // Is this instantiating a partially constructed struct SB?
                                   // Nevertheless, it is not possible to check if it is a partially initialized
@@ -172,6 +213,9 @@ contract SemanticsTester {
         self.sB.b1 = false;
         self.sB.b2 = SC {c1: 3};
 
+        
+        /**** Maps *****/
+        
         // Initialize the mA map
         self.mA.set(1, self.sA);     // The compiler does not complain that self.mA is not initialized, because
                                      // map fields in contracts are implicitly initialized as empty.
@@ -190,9 +234,24 @@ contract SemanticsTester {
         s.a2.b1 = false;
 
         self.mA.set(3, s);
+
+        
+        /****** Contracts *****/
+
+        /* I commented out the following code because 
+           reading the self variable inside init should not be allowed. See issue #816.
+        
+        let contract_copy = self;
+        contract_copy.sC = SC {c1: 8};
+        */
     }
 
     receive() { }
+
+    receive("mutate") {
+        self.mutateContractStateResult = self.mutateContractState();
+    }
+
 
     // IMPORTANT: The operator == does not allow comparing two structs.
     // So, to compare if two structs are equal using ==, one needs to compare each
@@ -254,6 +313,8 @@ contract SemanticsTester {
 
         return result;
     }
+
+    /*************** Structs ********************/
 
     // Assigning a struct to a variable preserves fields
 
@@ -357,6 +418,7 @@ contract SemanticsTester {
                s.a2.b3 == 10;
     }
 
+    /*************** Maps ********************/
 
     // Assigning a map to a variable preserves contents
 
@@ -487,28 +549,23 @@ contract SemanticsTester {
         return result;
     }
 
-/*
-
-We cannot test the effect of a map given as parameter to a mutating function,
-because mutating functions only allow reference types in their self parameter.
-
     get fun mutateParamMap1(): Bool {
 
-        let s = self.mA;
+        let s = MapWrapper {m: self.mA};
 
-        // This should reassign s, but leave self.mA unchanged.
+        // This should reassign s.m, but leave self.mA unchanged.
 
         s.reassignMap();
 
         let result = 
                self.checkAllContractFieldsAreUnchanged() &&
-               s.get(1)!!.a1 == 0 && 
-               s.get(1)!!.a2.b1 == false &&
-               s.get(1)!!.a2.b2.c1 == 0 &&
-               s.get(1)!!.a2.b3 == 0;
+               s.m.get(1)!!.a1 == 0 && 
+               s.m.get(1)!!.a2.b1 == false &&
+               s.m.get(1)!!.a2.b2.c1 == 0 &&
+               s.m.get(1)!!.a2.b3 == 0;
         
         // And no other entries 
-        foreach (k, _ in s) {
+        foreach (k, _ in s.m) {
             result = result && k == 1;
         }
 
@@ -517,26 +574,301 @@ because mutating functions only allow reference types in their self parameter.
 
     get fun mutateParamMap2(): Bool {
 
-        let s = self.mA;
+        let s = MapWrapper {m: self.mA};
 
-        // This should mutate entry 1 in s, and delete entries 2 and 3, but leave self.mA unchanged.
+        // This should mutate entry 1 in s.m, and delete entries 2 and 3, but leave self.mA unchanged.
         
         s.changeSomeEntries();
 
         let result = 
                self.checkAllContractFieldsAreUnchanged() &&
-               s.get(1)!!.a1 == 20 && 
-               s.get(1)!!.a2.b1 == true &&
-               s.get(1)!!.a2.b2.c1 == 35 &&
-               s.get(1)!!.a2.b3 == 10;
+               s.m.get(1)!!.a1 == 20 && 
+               s.m.get(1)!!.a2.b1 == true &&
+               s.m.get(1)!!.a2.b2.c1 == 35 &&
+               s.m.get(1)!!.a2.b3 == 10;
         
         // And no other entries 
-        foreach (k, _ in s) {
+        foreach (k, _ in s.m) {
             result = result && k == 1;
         }
 
         return result;
     }
-*/
 
+    /*************** Contracts ********************/
+
+    get fun contractAssign1(): Bool {
+        
+        // Contract assignment works by value, which means that a copy of the contract is created 
+        // during assignment.
+        
+        let c = self;
+
+        // What does it mean that c is a copy? It does NOT mean that 
+        // there is a new contract c deployed in the TON network. In fact, both c and self
+        // have the same address. Why? An address is determined by the initial state and code
+        // of the contract, and since c was created from the state of self AFTER self was deployed,
+        // c must have the same address. Indeed, there is a test in "semantics.spec.ts" testing that
+        // the address of "self" does not change after "self" is reassigned with a modified copy of itself.
+        
+        // Even though the states of c and self may diverge from this moment 
+        // (for example, by explicitly changing a field in c),
+        // the state of c does not have existence beyond the execution of the TVM, i.e.,
+        // as long as "self = c" is never executed, the state of c will be lost as soon as 
+        // the TVM finishes executing the transaction, because the state of c will never 
+        // be persisted back into the network. So, in a sense, c is like a struct storing temporal values 
+        // for the fields in self.
+
+        // Nevertheless, it is possible to call declared contract functions on c.
+        // For example, getter checkAllContractFieldsAreUnchanged is called both on self
+        // and c below, which implies that both self and c have identical state so far.
+
+        let result = 
+               self.checkAllContractFieldsAreUnchanged() &&
+
+               // Note that this will check that the state of the copy is identical to self.
+               c.checkAllContractFieldsAreUnchanged();
+
+        return result;
+    }
+
+    get fun contractAssign2(): Bool {
+        
+        // Contract assignment works by value, which means that a copy of the contract is created 
+        // during assignment.
+        
+        let c = self;
+
+        // Delete entries 1 and 2 in c.mA. This should not affect self.
+        c.mA.del(1);
+        c.mA.del(2);
+
+        let result = 
+               self.checkAllContractFieldsAreUnchanged() &&
+               
+               c.uB.b1 == false &&
+               c.uB.b2.c1 == 0 &&
+               c.uB.b3 == 14 &&
+               
+               c.sA.a1 == 20 && 
+               c.sA.a2.b1 == true &&
+               c.sA.a2.b2.c1 == 5 &&
+               c.sA.a2.b3 == 10 &&
+
+               c.sB.b1 == false &&
+               c.sB.b2.c1 == 3 &&
+               c.sB.b3 == 10 &&
+
+               c.sC.c1 == 5 &&
+
+               c.mB.isEmpty() && 
+
+               // the map c.mA has one key-value pair:
+
+               c.mA.get(3)!!.a1 == 5 && 
+               c.mA.get(3)!!.a2.b1 == false &&
+               c.mA.get(3)!!.a2.b2.c1 == 150 &&
+               c.mA.get(3)!!.a2.b3 == 0;
+
+        // And no other entries
+        foreach (k, _ in c.mA) {
+            result = result && k == 3;
+        }
+
+        return result;
+    }
+
+
+    get fun paramContract(): Bool {
+        
+        // This should not modify self.
+        // This function will copy self and do the following changes to the copy: 
+        // Change the uB field and delete entry 1 in mA.
+
+        let c = copyAndModifyContract(self);
+
+        let result = 
+               self.checkAllContractFieldsAreUnchanged() &&
+               
+               c.uB.b1 == true &&
+               c.uB.b2.c1 == 99 &&
+               c.uB.b3 == 98 &&
+               
+               c.sA.a1 == 20 && 
+               c.sA.a2.b1 == true &&
+               c.sA.a2.b2.c1 == 5 &&
+               c.sA.a2.b3 == 10 &&
+
+               c.sB.b1 == false &&
+               c.sB.b2.c1 == 3 &&
+               c.sB.b3 == 10 &&
+
+               c.sC.c1 == 5 &&
+
+               c.mB.isEmpty() && 
+
+               // the map c.mA has two key-value pairs:
+
+               c.mA.get(2)!!.a1 == 20 && 
+               c.mA.get(2)!!.a2.b1 == true &&
+               c.mA.get(2)!!.a2.b2.c1 == 100 &&
+               c.mA.get(2)!!.a2.b3 == 0 &&
+
+               c.mA.get(3)!!.a1 == 5 && 
+               c.mA.get(3)!!.a2.b1 == false &&
+               c.mA.get(3)!!.a2.b2.c1 == 150 &&
+               c.mA.get(3)!!.a2.b3 == 0;
+
+        // And no other entries
+        foreach (k, _ in c.mA) {
+            result = result && (k == 2 || k == 3);
+        }
+
+        return result;
+    }
+
+    get fun mutateParamContract(): Bool {
+
+        // First, make a copy of the contract
+        let c = self;
+        
+        // This should not modify self.
+        // In the copy: it will change the uB field and the sA.a2.b2.c1 field.
+        
+        c.changeSomeContractFields();
+
+        /* If we were not in a getter function we could persist the changes in the copy 
+           back into persistent storage, by writing:
+           
+           self = c;
+           
+           Nevertheless, the compiler does not report such line as an error inside a getter 
+           function: see issue #818
+        */
+
+        let result = 
+               self.checkAllContractFieldsAreUnchanged() &&
+
+               c.uB.b1 == true &&
+               c.uB.b2.c1 == 77 &&
+               c.uB.b3 == 88 &&
+
+               c.sA.a1 == 20 && 
+               c.sA.a2.b1 == true &&
+               c.sA.a2.b2.c1 == 35 &&
+               c.sA.a2.b3 == 10 &&
+
+               c.sB.b1 == false &&
+               c.sB.b2.c1 == 3 &&
+               c.sB.b3 == 10 &&
+
+               c.sC.c1 == 5 &&
+
+               c.mB.isEmpty() && 
+
+               c.mA.get(1)!!.a1 == 20 && 
+               c.mA.get(1)!!.a2.b1 == true &&
+               c.mA.get(1)!!.a2.b2.c1 == 5 &&
+               c.mA.get(1)!!.a2.b3 == 10 &&
+
+               c.mA.get(2)!!.a1 == 20 && 
+               c.mA.get(2)!!.a2.b1 == true &&
+               c.mA.get(2)!!.a2.b2.c1 == 100 &&
+               c.mA.get(2)!!.a2.b3 == 0 &&
+
+               c.mA.get(3)!!.a1 == 5 && 
+               c.mA.get(3)!!.a2.b1 == false &&
+               c.mA.get(3)!!.a2.b2.c1 == 150 &&
+               c.mA.get(3)!!.a2.b3 == 0;
+
+        // And no other entries
+        foreach (k, _ in c.mA) {
+            result = result && (k == 1 || k == 2 || k == 3);
+        }
+
+        return result;
+    }
+
+    get fun address(): Address {
+        return myAddress();
+    }
+
+    // Check if fields uB and sA.a2.b2.c1 are equal to the provided parameters,
+    // and that the rest of fields remained unchanged.
+
+    fun checkFieldsEqualTo(sB: SB, n: Int): Bool {
+        let result = 
+               self.uB.b1 == sB.b1 &&
+               self.uB.b2.c1 == sB.b2.c1 &&
+               self.uB.b3 == sB.b3 &&
+
+               self.sA.a1 == 20 && 
+               self.sA.a2.b1 == true &&
+               self.sA.a2.b2.c1 == n &&
+               self.sA.a2.b3 == 10 &&
+
+               self.sB.b1 == false &&
+               self.sB.b2.c1 == 3 &&
+               self.sB.b3 == 10 &&
+
+               self.sC.c1 == 5 &&
+
+               self.mB.isEmpty() && 
+
+               self.mA.get(1)!!.a1 == 20 && 
+               self.mA.get(1)!!.a2.b1 == true &&
+               self.mA.get(1)!!.a2.b2.c1 == 5 &&
+               self.mA.get(1)!!.a2.b3 == 10 &&
+
+               self.mA.get(2)!!.a1 == 20 && 
+               self.mA.get(2)!!.a2.b1 == true &&
+               self.mA.get(2)!!.a2.b2.c1 == 100 &&
+               self.mA.get(2)!!.a2.b3 == 0 &&
+
+               self.mA.get(3)!!.a1 == 5 && 
+               self.mA.get(3)!!.a2.b1 == false &&
+               self.mA.get(3)!!.a2.b2.c1 == 150 &&
+               self.mA.get(3)!!.a2.b3 == 0;
+
+        // And no other entries
+        foreach (k, _ in self.mA) {
+            result = result && (k == 1 || k == 2 || k == 3);
+        }
+
+        return result;
+    }
+
+    fun mutateContractState(): Bool {
+        // First, make a copy of the contract
+        let c = self;
+        
+        // In the copy, change the uB field and the sA.a2.b2.c1 field.
+        
+        c.changeSomeContractFields();
+
+        let result = 
+               self.checkAllContractFieldsAreUnchanged() &&
+
+               // This line tests that method calls on copies actually use the state of the copy.
+               c.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
+
+        // Persist the copy into self
+        
+        self = c;
+
+        // Now, check that the changes in c are now in self.
+        // Note that checkFieldsEqualTo is called on self now.
+
+        result = result && self.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
+
+        return result;
+    }
+
+    get fun mutateContractStateFlag(): Bool {   
+        return self.mutateContractStateResult;
+    }
+
+    get fun changesPersisted(): Bool {
+        return self.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
+    }
 }
