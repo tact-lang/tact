@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- CI now does matrix tests with [Blueprint](https://github.com/ton-org/blueprint) and `npm`, `yarn`, `pnpm`, and `bun` package managers: PR [#848](https://github.com/tact-lang/tact/pull/848)
+
 ### Fixed
 
 ## [1.5.0] - 2024-09-15

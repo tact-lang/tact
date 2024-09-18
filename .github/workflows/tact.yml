@@ -161,10 +161,81 @@ jobs:
           yarn build
           yarn test
 
-      - name: Test compatibility with Blueprint
+  test-blueprint:
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        package-manager: [npm, yarn, pnpm, bun]
+        # follow-up ifs are for ensuring clean state at all times
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn" # dependency caching only
+
+      - uses: oven-sh/setup-bun@v2
+        if: ${{ matrix.package-manager == 'bun' }}
+
+      - name: Prepare Tact compiler
         run: |
-          yarn create ton -- test-project --type tact-counter --contractName Counter &&
-          cd test-project &&
-          yarn link @tact-lang/compiler &&
-          yarn build &&
+          # There are issues with corepack + it disallows the use of pnpm for linkage later on
+          # It's only useful for making sure that Tact compiler developers use the same version of Yarn
+          # https://github.com/nodejs/corepack/issues/112
+          # corepack enable
+          yarn install
+          yarn clean
+          yarn gen
+          yarn build
+
+      - name: (npm) Test compatibility with Blueprint
+        if: ${{ matrix.package-manager == 'npm' }}
+        run: |
+          npm link
+          # for end-users 'npm create ton@latest' works fine even in PowerShell,
+          # but it fails on Windows in GitHub Actions because of weird -- expansion
+          npx create-ton@latest test-project --type tact-counter --contractName Counter
+          cd test-project
+          npm link @tact-lang/compiler
+          npm run build
+          npm run test
+
+      - name: (yarn) Test compatibility with Blueprint
+        if: ${{ matrix.package-manager == 'yarn' }}
+        run: |
+          yarn link
+          yarn create ton test-project --type tact-counter --contractName Counter
+          cd test-project
+          yarn link @tact-lang/compiler
+          yarn build
           yarn test
+
+      - name: (pnpm) Test compatibility with Blueprint
+        if: ${{ matrix.package-manager == 'pnpm' }}
+        run: |
+          npm i -g pnpm
+          pnpm link -g
+          cd ..
+          pnpm create ton@latest test-project --type tact-counter --contractName Counter
+          cd test-project
+          pnpm link -g @tact-lang/compiler
+          pnpm build
+          pnpm test
+
+      - name: (bun) Test compatibility with Blueprint
+        if: ${{ matrix.package-manager == 'bun' }}
+        run: |
+          bun link
+          bun create ton@latest test-project --type tact-counter --contractName Counter
+          cd test-project
+          bun link @tact-lang/compiler
+          bun run build # without 'run' Bun will use its own bundler
+          bun run test  # without 'run' Bun will use its own test runner
