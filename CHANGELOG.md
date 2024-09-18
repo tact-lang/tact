@@ -9,13 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Release contributors
+
+## [1.5.1] - 2024-09-18
+
+### Added
+
 - The `engines` property in `package.json` and its strict checking to ensure minimal required Node.js version is 22: PR [#847](https://github.com/tact-lang/tact/pull/847)
 
 ### Changed
 
 - CI now does matrix tests with [Blueprint](https://github.com/ton-org/blueprint) and `npm`, `yarn`, `pnpm`, and `bun` package managers: PR [#848](https://github.com/tact-lang/tact/pull/848)
 
-### Fixed
+### Release contributors
+
+- [Jesús Héctor Domínguez Sánchez](https://github.com/jeshecdom)
+- [Novus Nota](https://github.com/novusnota)
 
 ## [1.5.0] - 2024-09-15
 
