@@ -1495,6 +1495,26 @@ Line 34, col 13:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-track-initof-1 1`] = `
+"<unknown>:9:18: Cannot evaluate expression: divisor must be non-zero
+Line 9, col 18:
+   8 |     init(v: Int) {
+>  9 |         self.a / self.a;    // Division by zero
+                        ^~~~~~
+  10 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-track-initof-2 1`] = `
+"<unknown>:12:9: Cannot evaluate expression: divisor must be non-zero
+Line 12, col 9:
+  11 |         self.a = 0;
+> 12 |         v / self.a;    // Division by zero
+               ^~~~~~~~~~
+  13 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for var-track-inside-do-until 1`] = `
 "<unknown>:10:25: Cannot evaluate expression: divisor must be non-zero
 Line 10, col 25:
