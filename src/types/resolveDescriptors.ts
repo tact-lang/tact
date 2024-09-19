@@ -818,12 +818,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     firstParam.loc,
                 );
             }
-            if (firstParam.type.optional) {
-                throwCompilationError(
-                    "Extend functions must have a non-optional type as the first parameter",
-                    firstParam.loc,
-                );
-            }
             if (!types.has(firstParam.type.name)) {
                 throwCompilationError(
                     "Type " + firstParam.type.name + " not found",

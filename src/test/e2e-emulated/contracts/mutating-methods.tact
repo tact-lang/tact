@@ -1,3 +1,5 @@
+asm(value key self keySize) extends mutates fun nativeUdictStoreUint(self: Cell?, keySize: Int, key: Int, value: Slice) { DICTUSET }
+
 extends mutates fun multiply(self: Int, x: Int): Int {
     self *= x;
     return self;
@@ -63,5 +65,10 @@ contract Tester {
     get fun test9(): Int {
         self.s.loadUint(1);
         return self.s.loadUint(3);
+    }
+
+    get fun test10(dict: Cell?): Cell? {
+        dict.nativeUdictStoreUint(8, 123, rawSlice("456"));
+        return dict;
     }
 }
