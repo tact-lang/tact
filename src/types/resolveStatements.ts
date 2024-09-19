@@ -53,10 +53,47 @@ export type StatementContext = {
     varBindings: Map<string, Value | undefined>;
     // The compiler will also track those variables that become "undetermined".
     // A variable is undetermined when it has conflicting values in different branches of the program.
-    // Remember that the compiler DOES not execute the program, it only keeps track
+    // Remember that the compiler does NOT execute the program, it only keeps track
     // of variable values for analysis at compile time. So, if the same variable gets assigned
     // two different values in, say, two branches of a conditional, the compiler will mark it
     // as undetermined.
+
+    // A variable is undetermined if it does not exist in the varBindings map or it exists but maps to "undefined".
+    // Why not simply say that a variable is undetermined if does not exist in the map (so that we can remove
+    // the "undefined" value from the map)? The reason is that the algorithm keeps an invariant: variable bindings
+    // should only increase or remain the same in different branches of the program. So for example:
+    /*  
+        let a = 5;       // At this point, varBindings contains a --> 5
+        if (cond) {
+           a = 7;        
+           let b = 10;   // In this branch, varBindings contains a --> 7, b --> 10
+        } else {
+           a = someFun();  // If someFun() cannot be evaluated at compile time, a will become undetermined
+        }                  // Since varBindings can only grow or remain the same, in this branch, 
+                           // varBindings will have a --> undefined.
+    */
+    // Maintaining such invariant makes easier merging the different branches. For example, in the above program, after the if:
+    // since "a" has value 7 in one branch, and undefined in another, the final value of "a" is also "undefined" after the if, i.e.,
+    // varBindings will contain: a --> undefined. Variable b can be dropped after the if, because it only exists
+    // in one of the branches.
+
+    /*
+    The merging algorithm is actually quite simple:
+    Suppose initSctx is your initial statement context and that all the possible branches in your program produced a list
+    of modified statement contexts: [sctx1, sctx2, sctx3], each of which augments the variable bindings in initSctx in
+    different ways.
+
+    Then, the statement context after all the different branches should be:
+    
+    newSctx: Map;
+
+    foreach var in initSctx:
+        if var maps to the same value v in all [sctx1, sctx2, sctx3] then
+            newSctx.set(var, v);
+        else 
+            // var differs in at least one of the contexts, hence, var is now undetermined.
+            newSctx.set(var, undefined);
+    */
 };
 
 export function emptyContext(
@@ -151,6 +188,304 @@ function addVariable(
     };
 }
 
+/*
+Decided to keep this function separate from addVariable in order to keep the old code unchanged.
+
+The merging algorithm assumes that one is working with simple variables (no path expressions,
+no structs, and no contracts).
+In fact, if one tries to treat path expressions as a single variable, problems occur when structs make
+their appearance. For example, consider this program:
+
+struct B {
+   b: Int;
+}
+
+fun test(v: Int) {
+   let a = B {b: 7, c: 10};
+   if (v < 5) {
+      a = B {b: 42, c: 10};
+   } else {
+      a = B {b: 42, c: 10};
+      a.b = 41;
+   }
+}
+
+Let us treat path expressions as a single variable name.
+Before entering the conditional, the bindings are: a --> B {b: 7, c: 10}.
+In the then-branch, the bindings are: a --> B {b: 42, c: 10}. 
+In the else-branch, the bindings are: a --> B {b: 42, c: 10}, a.b --> 41.
+So, after merging, the bindings are: a --> B {b: 42, c: 10}, which is incorrect, because 
+after the conditional, "a" is actually undetermined, because in one branch,
+"a" is the struct B {b: 42, c: 10}, but in another is the struct B {b: 41, c: 10}.
+
+The problem is that the merging algorithm is unaware that "a" has more structure inside.
+So, how can we keep using the merging algorithm in the presence of structs and contracts?
+
+One idea that works is to flatten the structs whenever an assignment happens. For example, the above code
+would "logically" correspond to:
+
+fun test(v: Int) {
+   let a.b = 7;
+   let a.c = 10;
+   if (v < 5) {
+      a.b = 42;
+      a.c = 10;
+   } else {
+      a.b = 42;
+      a.c = 10;
+      a.b = 41;
+   }
+}
+
+Hence, after merging, now we see that a.b is undetermined, while a.c = 10. 
+
+Flattening works because structs and contracts are always assigned by value. For example, in this snippet:
+
+let a = A {f: 7};
+let b = a;
+b.f = 8;
+
+After modifying field f in b, the struct "a" remains unaffected. In other words, the above snippet is equivalent to its flattened
+counterpart:
+
+let a.f = 7;
+let b.f = a.f;
+b.f = 8;
+
+Here, clearly, modifying variable b.f, does not affect variable a.f.
+
+However, flattening structs (and contracts) introduces another problem: What to do if an expression reads the full struct? 
+For example, 
+
+fun test(v: Int) {
+   let a = B {b: 7, c: 10};
+   if (v < 5) {
+      a = B {b: 42, c: 10};
+   } else {
+      a = B {b: 42, c: 10};
+      a.b = 41;
+   }
+   let w:Int = someFun(a);    // The expression is reading all the struct a
+}
+
+So, "logically" is this program:
+
+fun test(v: Int) {
+   let a.b = 7;
+   let a.c = 10;
+   if (v < 5) {
+      a.b = 42;
+      a.c = 10;
+   } else {
+      a.b = 42;
+      a.c = 10;
+      a.b = 41;
+   }
+   let w:Int = someFun(a);   // What should we do here?
+}
+
+We need a way to "inflate" the flattened struct back into a full struct value, so that 
+the interpreter can attempt to evaluate the expression "someFun(a)".
+
+Since we need to recover the type of structs when we inflate them back, we take the following convention
+when flattening structs (this is similar to how structs are represented as maps from strings to values in type StructValue):
+
+Attach a special field "$tactStruct" that stores the struct type. For example, the following assignment:
+
+a = A {f1: 4, f2: B {g1: 10, g2: 6}, f3: true}
+
+would be flattened as:
+
+a.$tactStruct = "A";
+a.f1 = 4;
+a.f2.$tactStruct = "B";
+a.f2.g1 = 10;
+a.f2.g2 = 6;
+a.f3 = true;
+
+In this way, the above keeps all the information to be able to inflate back into a struct.
+
+For example, let us suppose that some expression makes use of a.f2. In order to inflate the above bindings,
+first search in the bindings, all bindings starting with a.f2. This will give you the following set of children bindings:
+
+a.f2.$tactStruct = "B";
+a.f2.g1 = 10;
+a.f2.g2 = 6;
+
+And now, inflate into the struct:
+
+a.f2 = B {g1: 10, g2: 6}
+
+Note that the process of inflating could produce partial structs. For example, consider this program:
+
+fun test(v: Int) {
+   let a = B {b: 7, c: 0};
+   if (v < 5) {
+      a = B {b: 42, c: 0};
+   } else {
+      a = B {b: 42, c: 0};
+      a.b = 41;
+   }              // Label A
+   let w = a;     // Label B
+   1 / w.c;      // Flushing the toilet through a black hole because of division by zero
+}
+
+After the conditional at label A, the set of bindings will be: 
+a.$tactStruct ---> "B", 
+a.b ---> undefined, 
+a.c ---> 0.
+
+But then, at label B, we need to inflate "a" into a struct and then flattened it back into w.
+When inflating, we only take the children that are not undefined. For example, our set of bindings is:
+
+a.$tactStruct = "B"
+a.b = undefined
+a.c = 0
+
+Therefore, the inflated struct will be (we do not include field b):
+
+a = B {c: 0}
+
+Even though this is an invalid struct (because it lacks field b), this is OK from the point of view of the analyzer,
+which always works with partial information. In fact, we actually NEED the partial struct. For suppose we take the approach 
+in which "a" is undefined if at least one of its children bindings is undefined. Then, in the above example we would get that "a"
+is undefined, and hence, "w" would be undefined. This in turn would not detect the division by zero in the expression (1 / w.c),
+which incidentally, FunC is able to detect when the above program is translated into FunC.
+
+Instead, if we allow the partial struct 
+
+a = B {c: 0}
+
+Then "w.c = 0" is added as a binding in the assignment "w = a", which in turn detects the division by zero in 1 / w.c.
+
+All right, after this bird view of the procedure. We can now go into the specifics of the implementation.
+
+The setVariableBinding will store a variable with the given value. This function carries out the flattening procedure 
+described above. 
+
+It receives a path (i.e., a path expression represented as an array of Ids). The value that the binding will store
+(it could be undefined). The type of the path expression. The compiler and statement contexts, and 
+an array with the names of the types of all the ancestors in the path expression. 
+
+For example, if the path expression is (which has "a" and "f2" as ancestors)
+
+a.f2.g1
+
+where "a" has type:
+
+A {f1: Int; f2: B {g1: Int; g2: Int}; f3: Bool}
+
+Then, the array ancestorTypes would be:
+
+["A", "B"]
+
+corresponding to the types of ancestors "a" and "f2" respectively.
+
+*/
+export function setVariableBinding(
+    path: AstId[],
+    value: Value | undefined,
+    varType: TypeRef,
+    ctx: CompilerContext,
+    sctx: StatementContext,
+    ancestorTypes: string[],
+): StatementContext {
+    const varFullName = path.map(idText).join(".");
+
+    const result = new Map(sctx.varBindings);
+
+    // For the analyzer, it is enough to treat contracts and structs uniformly as structs.
+    // So, register the type of the variable's ancestors, so that expressions can reconstruct
+    // the struct later.
+
+    // For example, if the path is
+
+    // a.f2.g1
+
+    // and our ancestor's array is ["A", "B"]
+
+    // This will add the following bindings to result map:
+
+    // a.$tactStruct = "A"
+    // a.f2.$tactStruct = "B"
+
+    for (let i = 1; i < path.length; i++) {
+        const parentName = path.slice(0, i).map(idText).join(".");
+        result.set(`${parentName}.$tactStruct`, ancestorTypes[i - 1]);
+    }
+
+    // Next, attach to the result all fields declared in the type of the value, in case the value is a struct or contract.
+    // For example, suppose we are working with path expression a.f2, which has type:
+
+    // B {g1: Int; g2: Int}
+
+    // This will add the following bindings to result:
+
+    // a.f2.g1 = undefined
+    // a.f2.g2 = undefined
+    // a.f2.$tactStruct = "B"
+
+    // In other words, this flattens the type of a.f2 to ensure that all the fields of a.f2 occur in the result bindings.
+    // This is necessary, because the actual value could be a partial struct, i.e., value = B {g1: 4}, where g2 is missing.
+
+    let flattenedType: Map<string, string | undefined> = new Map();
+    if (varType.kind === "ref") {
+        flattenedType = new Map(
+            flattenType(getType(ctx, varType.name).ast, ctx),
+        );
+        for (const [key, val] of flattenedType) {
+            result.set(`${varFullName}.${key}`, val);
+        }
+    }
+
+    // Now assign the actual value. In case the value is a struct, flatten the struct.
+    // This will add the actual values. So, if our value is "B {g1: 4, g2: 10}" and our path is a.f2,
+    // This will set the bindings:
+
+    // a.f2.g1 = 4
+    // a.f2.g2 = 10
+
+    // If the value was the partial struct "B {g1: 4}". This will set only the binding:
+
+    // a.f2.g1 = 4
+
+    // But recall, that in the previous steps, the following two bindings would have been already present in result map:
+
+    // a.f2.g2 = undefined
+    // a.f2.$tactStruct = "B"
+
+    if (value !== undefined) {
+        const flattened = flattenValue(value);
+        if (flattened instanceof Map) {
+            for (const [key, val] of flattened.entries()) {
+                result.set(`${varFullName}.${key}`, val);
+            }
+        } else {
+            result.set(varFullName, flattened);
+        }
+    } else {
+        // In case the type of the value is a struct (i.e., map flattenedType is not empty),
+        // do not add the variable to the result, since the flattened tree is already in the
+        // result bindings.
+        // However, if flattenedType is actually empty, this means that the value is a plain variable
+        // and we can set it to be undefined.
+        if (flattenedType.size === 0) {
+            result.set(varFullName, undefined);
+        }
+    }
+
+    return {
+        ...sctx,
+        varBindings: result,
+    };
+}
+
+/*
+This function looks in the bindings the path expression "name", and returns a Value
+if found, or undefined if not.
+
+The function carries out the inflation process described above.
+*/
 export function lookupVariable(
     name: AstId[],
     sctx: StatementContext,
@@ -159,7 +494,24 @@ export function lookupVariable(
 
     const children: Map<string, Value> = new Map();
 
-    // Get all the bindings having varFullName as prefix
+    // Get all the bindings having varFullName as prefix.
+    // These are the children bindings of varFullName.
+    // Only those children not having undefined will be picked.
+
+    // For example, if the bindings are
+
+    // a.f2.g1 = 4
+    // a.f2.g2 = 10
+    // a.f2.$tactStruct = "B"
+
+    // Then, the children of a.f2 will be:
+
+    // g1 = 4
+    // g2 = 10
+    // $tactStruct = "B"
+
+    // The slice function removes the "a.f2." part from the children names.
+
     for (const [key, value] of sctx.varBindings.entries()) {
         if (key.startsWith(varFullName)) {
             // Include the child only if its value is defined
@@ -177,62 +529,17 @@ export function lookupVariable(
         return undefined;
     }
 
+    // Now proceed to inflate the found children:
+
+    // g1 = 4
+    // g2 = 10
+    // $tactStruct = "B"
+
+    // Will produce the StructValue:
+
+    // B {g1: 4, g2: 10}
+
     return inflateToValue(children);
-}
-
-export function setVariableBinding(
-    path: AstId[],
-    value: Value | undefined,
-    varType: TypeRef,
-    ctx: CompilerContext,
-    sctx: StatementContext,
-    ancestorTypes: string[],
-): StatementContext {
-    const varFullName = path.map(idText).join(".");
-
-    const result = new Map(sctx.varBindings);
-
-    // For the analyzer, it is enough to treat contracts and struct uniformly as structs
-    // so, register the type of the variable's parent, so that expressions can reconstruct
-    // the struct later.
-    for (let i = 1; i < path.length; i++) {
-        const parentName = path.slice(0, i).map(idText).join(".");
-        result.set(`${parentName}.$tactStruct`, ancestorTypes[i - 1]);
-    }
-
-    // First, attach to the result all fields declared in the type of the value, in case the value is a struct.
-    let flattenedType: Map<string, string | undefined> = new Map();
-    if (varType.kind === "ref") {
-        flattenedType = new Map(
-            flattenType(getType(ctx, varType.name).ast, ctx),
-        );
-        for (const [key, val] of flattenedType) {
-            result.set(`${varFullName}.${key}`, val);
-        }
-    }
-
-    // Now assign the actual value. In case the value is a struct, flatten the struct.
-    if (value !== undefined) {
-        const flattened = flattenValue(value);
-        if (flattened instanceof Map) {
-            for (const [key, val] of flattened.entries()) {
-                result.set(`${varFullName}.${key}`, val);
-            }
-        } else {
-            result.set(varFullName, flattened);
-        }
-    } else {
-        // In case the type of the value is a struct (i.e., map flattenedType is not empty),
-        // do not add the variable to the map, since the flattened tree is already in the bindings.
-        if (flattenedType.size === 0) {
-            result.set(varFullName, undefined);
-        }
-    }
-
-    return {
-        ...sctx,
-        varBindings: result,
-    };
 }
 
 function processCondition(
@@ -248,6 +555,9 @@ function processCondition(
     const initialSctx = sctx;
 
     // Process expression. This updates the statement and compiler contexts.
+    // We need resolveExpression to also return the updated statement context
+    // because calling mutating functions inside expressions have the same effect
+    // of having assignments inside the expressions!!
     const resCtx = resolveExpression(condition.condition, sctx, ctx);
     ctx = resCtx.ctx;
     sctx = resCtx.sctx;
@@ -268,6 +578,7 @@ function processCondition(
         conditionValue = rawConditionValue;
     }
 
+    // Remember the bindings just after the condition was processed.
     let postConditionSctx = sctx;
 
     // Simple if
@@ -283,20 +594,17 @@ function processCondition(
         // can be determined
         if (conditionValue !== undefined) {
             if (conditionValue) {
-                // Copy the latest updates to all variables in initialCtx as found in r.sctx
-                postConditionSctx = synchronizeVariableContexts(
-                    postConditionSctx,
-                    r.sctx,
-                );
+                // Copy the latest updates to all variables in postConditionSctx as found in r.sctx
+                postConditionSctx = copyBindings(postConditionSctx, r.sctx);
             }
             // If the condition does not hold, then we ignore any updates to variables
-            // in r.sctx, and leave initialCtx as is.
+            // in r.sctx, and leave postConditionSctx as is.
         } else {
-            // The condition cannot be determined. We need to mark variables in initialCtx as
+            // The condition cannot be determined. We need to mark variables in postConditionSctx as
             // undetermined only if they have conflicting values in r.sctx.
-            // Note we need to add initialCtx in the updatedCtxs because it is the implicit
+            // Note we need to add postConditionSctx in the updatedCtxs because it is the implicit
             // "else" branch.
-            postConditionSctx = markConflictingVariables(postConditionSctx, [
+            postConditionSctx = mergeBranches(postConditionSctx, [
                 r.sctx,
                 postConditionSctx,
             ]);
@@ -364,27 +672,24 @@ function processCondition(
     // Now merge the assignments in the different contexts according to the condition value
     if (conditionValue !== undefined) {
         if (conditionValue) {
-            // Copy the latest updates to all variables in initialCtx as found in
+            // Copy the latest updates to all variables in postConditionSctx as found in
             // processedCtx[0] (i.e., the context from the true branch)
-            postConditionSctx = synchronizeVariableContexts(
+            postConditionSctx = copyBindings(
                 postConditionSctx,
                 processedCtx[0]!,
             );
         } else {
             // If the condition does not hold, take the updates from processedCtx[1]
             // i.e., whatever branch executed as else or elseif
-            postConditionSctx = synchronizeVariableContexts(
+            postConditionSctx = copyBindings(
                 postConditionSctx,
                 processedCtx[1]!,
             );
         }
     } else {
-        // The condition cannot be determined. We need to mark variables in initialCtx as
+        // The condition cannot be determined. We need to mark variables in postConditionSctx as
         // undetermined only if they have conflicting values in the updated contexts.
-        postConditionSctx = markConflictingVariables(
-            postConditionSctx,
-            processedCtx,
-        );
+        postConditionSctx = mergeBranches(postConditionSctx, processedCtx);
     }
 
     return {
@@ -865,6 +1170,50 @@ function processStatements(
                     // iteration of the loop. To simulate such thing, it is enough to make all
                     // assigned variables in the loop undetermined in postRepeatExprSctx, and then
                     // execute processStatements in such statement context.
+
+                    /* The motivation for doing such thing is the following.
+                       Suppose we have this program snippet:
+
+                       let a = 10;
+                       let x = 7;
+                       repeat(v) {
+                          a += 1;   // Equivalent to a = a + 1
+                          x = 9;
+                       }
+
+                       Imagine we are in some arbitrary iteration of the loop. Hence,
+                       before starting the arbitrary iteration, both a and x have some unknown value.
+                       Hence, we need to start the analysis with a and x undetermined.
+                       After a += 1, variable "a" remains undetermined.
+                       After x = 9, variable "x" becomes determined with value 9.
+                       
+                       Hence, after each iteration, variable "a" is always undetermined but "x" always have value 9.
+
+                       For this procedure to work, we need to collect all variables that are assigned inside the loop
+                       (including variables which are being changed through a mutating function).
+
+                       For example, in this program
+
+                       let a = 10;
+                       let x = 7;
+                       repeat(v) {
+                          a += 1;
+                          x.mutate();  <--- mutate is declared as extends mutates somewhere else
+                          if (v >= 1) {
+                              z = 8;
+                              v.doSomething(); <---- doSomething is ONLY marked as extends, i.e., not a mutating function
+                          }
+                       }
+                       
+                       the assigned variables inside the repeat loop would be: {a, x, z}. Note v is not included 
+                       because doSomething() is not a mutating function.
+
+                       Function makeAssignedVariablesUndetermined collects these variables and creates the statement 
+                       context where these variables have the undefined binding.
+                       
+                       The intuition is the same for the other loops.
+                    */
+
                     const loopSctx = processStatements(
                         s.statements,
                         makeAssignedVariablesUndetermined(
@@ -883,17 +1232,14 @@ function processStatements(
                             sctx = postRepeatExprSctx;
                         } else {
                             // The loop iterates at least once, take the updates from loopSctx
-                            sctx = synchronizeVariableContexts(
-                                postRepeatExprSctx,
-                                loopSctx,
-                            );
+                            sctx = copyBindings(postRepeatExprSctx, loopSctx);
                         }
                     } else {
                         // The number of iterations cannot be determined. We need to mark variables in postRepeatExprSctx as
                         // undetermined only if they have conflicting values in the updated contexts.
                         // We need to include postRepeatExprSctx in the updated contexts, because it represents
                         // the context when the loop does not execute.
-                        sctx = markConflictingVariables(postRepeatExprSctx, [
+                        sctx = mergeBranches(postRepeatExprSctx, [
                             postRepeatExprSctx,
                             loopSctx,
                         ]);
@@ -924,7 +1270,7 @@ function processStatements(
                     ctx = resStatements.ctx;
 
                     // Copy all the bindings discovered during the processing of one iteration of the loop body
-                    const oneIterSctx = synchronizeVariableContexts(
+                    const oneIterSctx = copyBindings(
                         initialSctx,
                         resStatements.sctx,
                     );
@@ -940,11 +1286,10 @@ function processStatements(
                     );
 
                     // Copy all the bindings discovered during processing of the condition
-                    const oneIterPlusConditionSctx =
-                        synchronizeVariableContexts(
-                            oneIterSctx,
-                            resConditionOneIter.sctx,
-                        );
+                    const oneIterPlusConditionSctx = copyBindings(
+                        oneIterSctx,
+                        resConditionOneIter.sctx,
+                    );
 
                     // Repeat the analysis of the loop body, but this time simulating an arbitrary
                     // iteration of the loop. To simulate such thing, it is enough to make all
@@ -961,7 +1306,7 @@ function processStatements(
                     );
 
                     // Copy all the bindings discovered during the processing of many iterations of the loop body
-                    const manyIterSctx = synchronizeVariableContexts(
+                    const manyIterSctx = copyBindings(
                         initialSctx,
                         resLoop.sctx,
                     );
@@ -977,11 +1322,10 @@ function processStatements(
                     );
 
                     // Copy all the bindings discovered during processing of the condition
-                    const manyIterPlusConditionSctx =
-                        synchronizeVariableContexts(
-                            manyIterSctx,
-                            resConditionManyIter.sctx,
-                        );
+                    const manyIterPlusConditionSctx = copyBindings(
+                        manyIterSctx,
+                        resConditionManyIter.sctx,
+                    );
 
                     // XXX a do-until loop is a weird place to always return from a function
                     // so we might want to issue a warning here
@@ -1027,7 +1371,7 @@ function processStatements(
                         // undetermined only if they have conflicting values in the updated contexts.
                         // We need to include oneIterPlusConditionSctx in the updated contexts, because it represents
                         // the context when the loop executes exactly once.
-                        sctx = markConflictingVariables(initialSctx, [
+                        sctx = mergeBranches(initialSctx, [
                             oneIterPlusConditionSctx,
                             manyIterPlusConditionSctx,
                         ]);
@@ -1094,10 +1438,7 @@ function processStatements(
                     ) {
                         if (conditionValue) {
                             // The loop iterates at least once, take the updates from loopSctx
-                            sctx = synchronizeVariableContexts(
-                                postConditionSctx,
-                                loopSctx,
-                            );
+                            sctx = copyBindings(postConditionSctx, loopSctx);
                         } else {
                             // The loop does not execute.
                             // The final statement context is simply the context after the condition was checked.
@@ -1108,7 +1449,7 @@ function processStatements(
                         // undetermined only if they have conflicting values in the updated contexts.
                         // We need to include postConditionSctx in the updated contexts, because it represents
                         // the context when the loop does not execute.
-                        sctx = markConflictingVariables(postConditionSctx, [
+                        sctx = mergeBranches(postConditionSctx, [
                             postConditionSctx,
                             loopSctx,
                         ]);
@@ -1128,10 +1469,7 @@ function processStatements(
 
                     // Mark variables that would have conflicting values if the try block
                     // were to be executed or not.
-                    sctx = markConflictingVariables(initialSctx, [
-                        initialSctx,
-                        sctx,
-                    ]);
+                    sctx = mergeBranches(initialSctx, [initialSctx, sctx]);
                 }
                 break;
             case "statement_try_catch":
@@ -1180,10 +1518,7 @@ function processStatements(
 
                     // Mark variables that would have conflicting values if the try block
                     // were to be executed or the catch block were to be executed.
-                    sctx = markConflictingVariables(initialSctx, [
-                        trySctx,
-                        catchCtx,
-                    ]);
+                    sctx = mergeBranches(initialSctx, [trySctx, catchCtx]);
                 }
                 break;
             case "statement_foreach": {
@@ -1279,10 +1614,10 @@ function processStatements(
                     We need to include postMapExprSctx in the updated contexts, because it represents
                     the context when the loop does not execute.
                     */
-                const finalBindings = markConflictingVariables(
+                const finalBindings = mergeBranches(postMapExprSctx, [
                     postMapExprSctx,
-                    [postMapExprSctx, loopSctx],
-                ).varBindings;
+                    loopSctx,
+                ]).varBindings;
 
                 // Merge statement contexts (similar to catch block merging)
                 const removed: string[] = [];
@@ -1513,7 +1848,10 @@ export function resolveStatements(ctx: CompilerContext) {
     return ctx;
 }
 
-function synchronizeVariableContexts(
+/*
+Copy the bindings in updatedCtx, back to initialCtx, but only of variables in initialCtx.
+*/
+function copyBindings(
     initialCtx: StatementContext,
     updatedCtx: StatementContext,
 ): StatementContext {
@@ -1538,7 +1876,20 @@ function synchronizeVariableContexts(
     };
 }
 
-function markConflictingVariables(
+/*
+Carries out the merging algorithm:
+
+    foreach var in initialCtx:
+        if var maps to the same value v in all updatedCtxs then
+            newSctx.set(var, v);
+        else 
+            // var differs in at least one of the contexts, hence, var is now undetermined.
+            newSctx.set(var, undefined);
+
+where initialCtx has been updated to each of the contexts in updatedCtxs.
+Each context updatedCtxs represents a possible branch in which initialCtx evolved into.
+ */
+function mergeBranches(
     initialCtx: StatementContext,
     updatedCtxs: StatementContext[],
 ): StatementContext {
@@ -1599,6 +1950,11 @@ function markConflictingVariables(
     };
 }
 
+/* Extract all variables that are being assigned or mutated through a mutating function in the provided
+list of statements. If V is the set of extracted variables, update the variable bindings in sctx so 
+that each variable in V has "undefined" as binding.
+*/
+
 function makeAssignedVariablesUndetermined(
     statements: AstStatement[],
     sctx: StatementContext,
@@ -1619,6 +1975,9 @@ function makeAssignedVariablesUndetermined(
     };
 }
 
+/* Extract all variables that are being assigned or mutated through a mutating function in the provided
+list of statements.
+*/
 function extractAssignedVariables(
     statements: AstStatement[],
     sctx: StatementContext,
@@ -1760,6 +2119,9 @@ function extractAssignedVariables(
     return varNames;
 }
 
+/* Extract all variables that are being mutated through a mutating function in the provided
+list of expressions.
+*/
 function extractAssignedVariablesInExpression(
     expressions: AstExpression[],
     sctx: StatementContext,
@@ -1936,7 +2298,7 @@ function flattenValue(varValue: Value): Value | Map<string, Value> {
 
 function inflateToValue(entries: Map<string, Value>): Value {
     // If there is a single entry in the map, with the empty string as key, it means
-    // that there are no children. In other words, there is no structure to inflate
+    // that it is a simple variable without structure. In other words, there is no structure to inflate
     // into a StructValue.
     if (entries.size === 1 && entries.has("")) {
         return entries.get("")!;
@@ -2036,6 +2398,20 @@ function flattenType(
     return result;
 }
 
+/* Extracts the ancestor types in the path expression.
+
+For example, if the path expression is 
+
+a.f2.g1 
+
+and the type of a is:
+
+A {f1: Int; f2: B {g1: Int; g2: Int}; f3: Bool}
+
+This will return the array:
+
+["A", "B"]
+*/
 export function extractAncestorTypes(
     path: AstExpression,
     ctx: CompilerContext,
@@ -2052,6 +2428,14 @@ export function extractAncestorTypes(
     return [];
 }
 
+/*
+Extracts the type at the base in nested optionals
+
+Example:
+
+T???? would return T
+
+ */
 function getOptionalBaseType(
     type: AstOptionalType,
 ): AstTypeId | AstMapType | AstBouncedMessageType {
