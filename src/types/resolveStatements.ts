@@ -10,6 +10,7 @@ import {
     selfId,
     isSelfId,
     eqNames,
+    AstStatementAugmentedAssign,
 } from "../grammar/ast";
 import { isAssignable } from "./subtyping";
 import {
@@ -125,6 +126,38 @@ function addVariable(
         ...sctx,
         vars: new Map(sctx.vars).set(idText(name), ref),
     };
+}
+
+function isAugmentedAssignExpression(
+    s: AstStatementAugmentedAssign,
+    ctx: CompilerContext,
+): boolean {
+    // Check type
+    const expressionType = getExpType(ctx, s.expression);
+    const tailType = getExpType(ctx, s.path);
+
+    // Check if any of the types is not ref or is optional or types themselves don't match
+    if (
+        expressionType.kind !== "ref" ||
+        expressionType.optional ||
+        tailType.kind !== "ref" ||
+        tailType.optional ||
+        expressionType.name !== tailType.name
+    ) {
+        return false;
+    }
+
+    // Both types are ints
+    if (expressionType.name === "Int") {
+        return true; // all ops are supported
+    }
+
+    // Both types are booleans
+    if (expressionType.name === "Bool") {
+        return s.op === "&&" || s.op === "||"; // only `&&=` and `||=` are supported
+    }
+
+    return false; // only ints and booleans are supported in augmented assignment
 }
 
 function processCondition(
@@ -350,18 +383,7 @@ function processStatements(
                     // Process expression
                     ctx = resolveExpression(s.expression, sctx, ctx);
 
-                    // Check type
-                    const expressionType = getExpType(ctx, s.expression);
-                    const tailType = getExpType(ctx, s.path);
-                    // Check if types are Int
-                    if (
-                        expressionType.kind !== "ref" ||
-                        expressionType.name !== "Int" ||
-                        expressionType.optional ||
-                        tailType.kind !== "ref" ||
-                        tailType.name !== "Int" ||
-                        tailType.optional
-                    ) {
+                    if (!isAugmentedAssignExpression(s, ctx)) {
                         throwCompilationError(
                             `Type error: Augmented assignment is only allowed for Int type`,
                             s.loc,

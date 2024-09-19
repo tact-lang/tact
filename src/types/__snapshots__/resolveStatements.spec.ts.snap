@@ -2533,6 +2533,35 @@ exports[`resolveStatements should resolve statements for return-analysis-try-cat
 ]
 `;
 
+exports[`resolveStatements should resolve statements for stmt-augmented-assgn-bool 1`] = `
+[
+  [
+    "false",
+    "Bool",
+  ],
+  [
+    "a",
+    "Bool",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "a",
+    "Bool",
+  ],
+  [
+    "false",
+    "Bool",
+  ],
+  [
+    "a",
+    "Bool",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for stmt-augmented-assgn-numerical-type 1`] = `
 [
   [

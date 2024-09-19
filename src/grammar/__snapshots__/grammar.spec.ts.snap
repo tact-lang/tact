@@ -6477,12 +6477,12 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
 
 exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
 {
-  "id": 72,
+  "id": 94,
   "imports": [],
   "items": [
     {
       "attributes": [],
-      "id": 71,
+      "id": 93,
       "kind": "function_def",
       "loc": fun testFunc(): Int {
     let a: Int = 1;
@@ -6503,6 +6503,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
     a %= 2;
     a %= b;
     a %= b % 2;
+    a <<= 2;
+    a <<= b;
+    a <<= b << 2;
+    a >>= 2;
+    a >>= b;
+    a >>= b >> 2;
     return a;
 },
       "name": {
@@ -6927,12 +6933,148 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
+            "id": 70,
+            "kind": "number",
+            "loc": 2,
+            "value": 2n,
+          },
+          "id": 71,
+          "kind": "statement_augmentedassign",
+          "loc": a <<= 2;,
+          "op": "<<",
+          "path": {
             "id": 69,
             "kind": "id",
             "loc": a,
             "text": "a",
           },
-          "id": 70,
+        },
+        {
+          "expression": {
+            "id": 73,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "id": 74,
+          "kind": "statement_augmentedassign",
+          "loc": a <<= b;,
+          "op": "<<",
+          "path": {
+            "id": 72,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 78,
+            "kind": "op_binary",
+            "left": {
+              "id": 76,
+              "kind": "id",
+              "loc": b,
+              "text": "b",
+            },
+            "loc": b << 2,
+            "op": "<<",
+            "right": {
+              "base": 10,
+              "id": 77,
+              "kind": "number",
+              "loc": 2,
+              "value": 2n,
+            },
+          },
+          "id": 79,
+          "kind": "statement_augmentedassign",
+          "loc": a <<= b << 2;,
+          "op": "<<",
+          "path": {
+            "id": 75,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "base": 10,
+            "id": 81,
+            "kind": "number",
+            "loc": 2,
+            "value": 2n,
+          },
+          "id": 82,
+          "kind": "statement_augmentedassign",
+          "loc": a >>= 2;,
+          "op": ">>",
+          "path": {
+            "id": 80,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 84,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "id": 85,
+          "kind": "statement_augmentedassign",
+          "loc": a >>= b;,
+          "op": ">>",
+          "path": {
+            "id": 83,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 89,
+            "kind": "op_binary",
+            "left": {
+              "id": 87,
+              "kind": "id",
+              "loc": b,
+              "text": "b",
+            },
+            "loc": b >> 2,
+            "op": ">>",
+            "right": {
+              "base": 10,
+              "id": 88,
+              "kind": "number",
+              "loc": 2,
+              "value": 2n,
+            },
+          },
+          "id": 90,
+          "kind": "statement_augmentedassign",
+          "loc": a >>= b >> 2;,
+          "op": ">>",
+          "path": {
+            "id": 86,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 91,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "id": 92,
           "kind": "statement_return",
           "loc": return a;,
         },
@@ -7297,6 +7439,236 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
             "text": "a",
           },
           "id": 54,
+          "kind": "statement_return",
+          "loc": return a;,
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
+{
+  "id": 36,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 35,
+      "kind": "function_def",
+      "loc": fun testFunc(): Bool {
+    let a: Bool = true;
+    let b: Bool = false;
+    a ||= true;
+    a ||= b;
+    a ||= b || true;
+    a &&= true;
+    a &&= b;
+    a &&= b && true;
+    return a;
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": testFunc,
+        "text": "testFunc",
+      },
+      "params": [],
+      "return": {
+        "id": 2,
+        "kind": "type_id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 5,
+            "kind": "boolean",
+            "loc": true,
+            "value": true,
+          },
+          "id": 6,
+          "kind": "statement_let",
+          "loc": let a: Bool = true;,
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 4,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+        },
+        {
+          "expression": {
+            "id": 9,
+            "kind": "boolean",
+            "loc": false,
+            "value": false,
+          },
+          "id": 10,
+          "kind": "statement_let",
+          "loc": let b: Bool = false;,
+          "name": {
+            "id": 7,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 8,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+        },
+        {
+          "expression": {
+            "id": 12,
+            "kind": "boolean",
+            "loc": true,
+            "value": true,
+          },
+          "id": 13,
+          "kind": "statement_augmentedassign",
+          "loc": a ||= true;,
+          "op": "||",
+          "path": {
+            "id": 11,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 15,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "id": 16,
+          "kind": "statement_augmentedassign",
+          "loc": a ||= b;,
+          "op": "||",
+          "path": {
+            "id": 14,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 20,
+            "kind": "op_binary",
+            "left": {
+              "id": 18,
+              "kind": "id",
+              "loc": b,
+              "text": "b",
+            },
+            "loc": b || true,
+            "op": "||",
+            "right": {
+              "id": 19,
+              "kind": "boolean",
+              "loc": true,
+              "value": true,
+            },
+          },
+          "id": 21,
+          "kind": "statement_augmentedassign",
+          "loc": a ||= b || true;,
+          "op": "||",
+          "path": {
+            "id": 17,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 23,
+            "kind": "boolean",
+            "loc": true,
+            "value": true,
+          },
+          "id": 24,
+          "kind": "statement_augmentedassign",
+          "loc": a &&= true;,
+          "op": "&&",
+          "path": {
+            "id": 22,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 26,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "id": 27,
+          "kind": "statement_augmentedassign",
+          "loc": a &&= b;,
+          "op": "&&",
+          "path": {
+            "id": 25,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 31,
+            "kind": "op_binary",
+            "left": {
+              "id": 29,
+              "kind": "id",
+              "loc": b,
+              "text": "b",
+            },
+            "loc": b && true,
+            "op": "&&",
+            "right": {
+              "id": 30,
+              "kind": "boolean",
+              "loc": true,
+              "value": true,
+            },
+          },
+          "id": 32,
+          "kind": "statement_augmentedassign",
+          "loc": a &&= b && true;,
+          "op": "&&",
+          "path": {
+            "id": 28,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 33,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "id": 34,
           "kind": "statement_return",
           "loc": return a;,
         },
