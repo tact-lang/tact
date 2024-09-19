@@ -126,6 +126,7 @@ Tact {
               | StatementUntil
               | StatementTry
               | StatementForEach
+              | StatementDestruct
 
     StatementBlock = "{" Statement* "}"
 
@@ -156,6 +157,8 @@ Tact {
                  | try "{" Statement* "}" catch "(" id ")" "{" Statement* "}" --withCatch
 
     StatementForEach = foreach "(" id "," id "in" Expression ")" "{" Statement* "}"
+
+    StatementDestruct = let "{" ListOf<id, ","> ","? "}" "=" Expression (";" | &"}")
 
     Expression = ExpressionConditional
 

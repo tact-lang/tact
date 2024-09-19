@@ -454,7 +454,7 @@ Line 1, col 9:
 `;
 
 exports[`grammar should fail ident-cannot-be-if-reserved-word 1`] = `
-"<unknown>:2:9: Parse error: expected not a reservedWord
+"<unknown>:2:9: Parse error: expected "{" or not a reservedWord
 
 Line 2, col 9:
   1 | fun hello(): Int {

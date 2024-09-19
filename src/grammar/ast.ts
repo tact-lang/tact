@@ -204,7 +204,8 @@ export type AstStatement =
     | AstStatementRepeat
     | AstStatementTry
     | AstStatementTryCatch
-    | AstStatementForEach;
+    | AstStatementForEach
+    | AstStatementDestruct;
 
 export type AstStatementLet = {
     kind: "statement_let";
@@ -316,6 +317,14 @@ export type AstStatementForEach = {
     valueName: AstId;
     map: AstExpression;
     statements: AstStatement[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstStatementDestruct = {
+    kind: "statement_destruct";
+    identifiers: AstId[];
+    expression: AstExpression;
     id: number;
     loc: SrcInfo;
 };

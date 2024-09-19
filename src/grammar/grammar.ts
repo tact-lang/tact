@@ -1012,6 +1012,23 @@ semantics.addOperation<AstNode>("astOfStatement", {
             loc: createRef(this),
         });
     },
+    StatementDestruct(
+        _letKwd,
+        _lparen,
+        identifiers,
+        _optTrailingComma,
+        _rparen,
+        _equals,
+        expression,
+        _semicolon,
+    ) {
+        return createAstNode({
+            kind: "statement_destruct",
+            identifiers: identifiers.astsOfList(),
+            expression: expression.astOfExpression(),
+            loc: createRef(this),
+        });
+    },
 });
 
 semantics.addOperation<AstNode>("astOfType", {
