@@ -15,6 +15,7 @@ import {
     eqNames,
     idText,
     isWildcard,
+    tryExtractPath,
 } from "../grammar/ast";
 import { idTextErr, throwCompilationError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
@@ -32,7 +33,7 @@ import {
     TypeRef,
     typeRefEquals,
 } from "./types";
-import { StatementContext } from "./resolveStatements";
+import { extractAncestorTypes, setVariableBinding, StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
@@ -115,7 +116,9 @@ function resolveStructNew(
     exp: AstStructInstance,
     sctx: StatementContext,
     ctx: CompilerContext,
-): CompilerContext {
+): {ctx: CompilerContext,
+    sctx: StatementContext
+ } {
     // Get type
     const tp = getType(ctx, exp.type);
 
@@ -148,7 +151,9 @@ function resolveStructNew(
         }
 
         // Resolve expression
-        ctx = resolveExpression(e.initializer, sctx, ctx);
+        const resCtx = resolveExpression(e.initializer, sctx, ctx);
+        ctx = resCtx.ctx;
+        sctx = resCtx.sctx;
 
         // Check expression type
         const expressionType = getExpType(ctx, e.initializer);
@@ -175,21 +180,29 @@ function resolveStructNew(
     }
 
     // Register result
-    return registerExpType(ctx, exp, {
+    return {ctx: registerExpType(ctx, exp, {
         kind: "ref",
         name: tp.name,
         optional: false,
-    });
+    }), sctx};
 }
 
 function resolveBinaryOp(
     exp: AstOpBinary,
     sctx: StatementContext,
     ctx: CompilerContext,
-): CompilerContext {
+): {ctx: CompilerContext,
+    sctx: StatementContext
+ } {
     // Resolve left and right expressions
-    ctx = resolveExpression(exp.left, sctx, ctx);
-    ctx = resolveExpression(exp.right, sctx, ctx);
+    let resCtx = resolveExpression(exp.left, sctx, ctx);
+    ctx = resCtx.ctx;
+    sctx = resCtx.sctx;
+
+    resCtx = resolveExpression(exp.right, sctx, ctx);
+    ctx = resCtx.ctx;
+    sctx = resCtx.sctx;
+    
     const le = getExpType(ctx, exp.left);
     const re = getExpType(ctx, exp.right);
 
@@ -293,7 +306,7 @@ function resolveBinaryOp(
     }
 
     // Register result
-    return registerExpType(ctx, exp, resolved);
+    return {ctx: registerExpType(ctx, exp, resolved), sctx};
 }
 
 function isEqualityType(ctx: CompilerContext, ty: TypeRef): boolean {
@@ -326,9 +339,13 @@ function resolveUnaryOp(
     exp: AstOpUnary,
     sctx: StatementContext,
     ctx: CompilerContext,
-): CompilerContext {
+):  {ctx: CompilerContext,
+    sctx: StatementContext
+ } {
     // Resolve right side
-    ctx = resolveExpression(exp.operand, sctx, ctx);
+    const resCtx = resolveExpression(exp.operand, sctx, ctx);
+    ctx = resCtx.ctx;
+    sctx = resCtx.sctx;
 
     // Check right type dependent on operator
     let resolvedType = getExpType(ctx, exp.operand);
@@ -379,16 +396,20 @@ function resolveUnaryOp(
     }
 
     // Register result
-    return registerExpType(ctx, exp, resolvedType);
+    return {ctx: registerExpType(ctx, exp, resolvedType), sctx};
 }
 
 function resolveFieldAccess(
     exp: AstFieldAccess,
     sctx: StatementContext,
     ctx: CompilerContext,
-): CompilerContext {
+):  {ctx: CompilerContext,
+    sctx: StatementContext
+ } {
     // Resolve expression
-    ctx = resolveExpression(exp.aggregate, sctx, ctx);
+    const resCtx = resolveExpression(exp.aggregate, sctx, ctx);
+    ctx = resCtx.ctx;
+    sctx = resCtx.sctx;
 
     // Find target type and check for type
     const src = getExpType(ctx, exp.aggregate);
@@ -454,9 +475,9 @@ function resolveFieldAccess(
 
     // Register result type
     if (field) {
-        return registerExpType(ctx, exp, field.type);
+        return {ctx: registerExpType(ctx, exp, field.type), sctx};
     } else {
-        return registerExpType(ctx, exp, cst!.type);
+        return {ctx: registerExpType(ctx, exp, cst!.type), sctx};
     }
 }
 
@@ -464,14 +485,18 @@ function resolveStaticCall(
     exp: AstStaticCall,
     sctx: StatementContext,
     ctx: CompilerContext,
-): CompilerContext {
+):  {ctx: CompilerContext,
+    sctx: StatementContext
+ } {
     // Check if abi global function
     if (GlobalFunctions.has(idText(exp.function))) {
         const f = GlobalFunctions.get(idText(exp.function))!;
 
         // Resolve arguments
         for (const e of exp.args) {
-            ctx = resolveExpression(e, sctx, ctx);
+            const resCtx = resolveExpression(e, sctx, ctx);
+            ctx = resCtx.ctx;
+            sctx = resCtx.sctx;
         }
 
         // Resolve return type
@@ -482,7 +507,7 @@ function resolveStaticCall(
         );
 
         // Register return type
-        return registerExpType(ctx, exp, resolved);
+        return {ctx: registerExpType(ctx, exp, resolved), sctx};
     }
 
     // Check if function exists
@@ -510,7 +535,9 @@ function resolveStaticCall(
 
     // Resolve call arguments
     for (const e of exp.args) {
-        ctx = resolveExpression(e, sctx, ctx);
+        const resCtx = resolveExpression(e, sctx, ctx);
+        ctx = resCtx.ctx;
+        sctx = resCtx.sctx;
     }
 
     // Check arguments
@@ -532,16 +559,20 @@ function resolveStaticCall(
     }
 
     // Resolve return type
-    return registerExpType(ctx, exp, f.returns);
+    return {ctx: registerExpType(ctx, exp, f.returns), sctx};
 }
 
 function resolveCall(
     exp: AstMethodCall,
     sctx: StatementContext,
     ctx: CompilerContext,
-): CompilerContext {
+):  {ctx: CompilerContext,
+    sctx: StatementContext
+ } {
     // Resolve expression
-    ctx = resolveExpression(exp.self, sctx, ctx);
+    let resCtx = resolveExpression(exp.self, sctx, ctx);
+    ctx = resCtx.ctx;
+    sctx = resCtx.sctx;
 
     // Check if self is initialized
     if (
@@ -554,11 +585,34 @@ function resolveCall(
 
     // Resolve args
     for (const e of exp.args) {
-        ctx = resolveExpression(e, sctx, ctx);
+        resCtx = resolveExpression(e, sctx, ctx);
+        ctx = resCtx.ctx;
+        sctx = resCtx.sctx;
     }
 
     // Resolve return value
     const src = getExpType(ctx, exp.self);
+
+    // Make a copy of the statement context that will store the modified
+    // statement context once exp.self is marked as undetermined.
+    let selfSctx = sctx;
+
+    const path = tryExtractPath(exp.self);
+    if (path !== null) {
+        selfSctx = setVariableBinding(
+            path,
+            undefined,
+            src,
+            ctx,
+            sctx,
+            extractAncestorTypes(exp.self, ctx)
+        );
+    }
+    // If path is null, it means that exp.self has a form like:
+    // m.funcCall().id1.id2
+    // The part m.funcCall() returns some object that we cannot know its full variable name; 
+    // hence, it is not possible make such variable undetermined.
+
 
     // Handle ref
     if (src.kind === "ref") {
@@ -581,7 +635,14 @@ function resolveCall(
                     [src, ...exp.args.map((v) => getExpType(ctx, v))],
                     exp.loc,
                 );
-                return registerExpType(ctx, exp, resolved);
+
+                // Treat api functions as black boxes. As such, they could mutate
+                // their "self" parameter. Hence, the "self" parameter
+                // becomes undetermined.
+                // We make the variable undetermined simply by updating sctx to be selfSctx
+                sctx = selfSctx;
+                
+                return {ctx: registerExpType(ctx, exp, resolved), sctx};
             }
         }
 
@@ -605,7 +666,13 @@ function resolveCall(
                 }
             }
 
-            return registerExpType(ctx, exp, f.returns);
+            // If the function is marked as mutating, then we make the variable undetermined.
+            if (f.isMutating) {
+                // We make the variable undetermined simply by updating sctx to be selfSctx
+                sctx = selfSctx;
+            }
+
+            return {ctx: registerExpType(ctx, exp, f.returns), sctx};
         }
 
         // Check if a field with the same name exists
@@ -637,7 +704,14 @@ function resolveCall(
             [src, ...exp.args.map((v) => getExpType(ctx, v))],
             exp.loc,
         );
-        return registerExpType(ctx, exp, resolved);
+
+        // Treat api functions as black boxes. As such, they could mutate
+        // their "self" parameter. Hence, the "self" parameter
+        // becomes undetermined.
+        // We make the variable undetermined simply by updating sctx to be selfSctx
+        sctx = selfSctx;
+
+        return {ctx: registerExpType(ctx, exp, resolved), sctx};
     }
 
     if (src.kind === "ref_bounced") {
@@ -654,7 +728,9 @@ function resolveInitOf(
     ast: AstInitOf,
     sctx: StatementContext,
     ctx: CompilerContext,
-): CompilerContext {
+):  {ctx: CompilerContext,
+    sctx: StatementContext
+ } {
     // Resolve type
     const type = getType(ctx, ast.contract);
     if (type.kind !== "contract") {
@@ -672,7 +748,9 @@ function resolveInitOf(
 
     // Resolve args
     for (const e of ast.args) {
-        ctx = resolveExpression(e, sctx, ctx);
+        const resCtx = resolveExpression(e, sctx, ctx);
+        ctx = resCtx.ctx;
+        sctx = resCtx.sctx;
     }
 
     // Check arguments
@@ -694,19 +772,23 @@ function resolveInitOf(
     }
 
     // Register return type
-    return registerExpType(ctx, ast, {
+    return {ctx: registerExpType(ctx, ast, {
         kind: "ref",
         name: "StateInit",
         optional: false,
-    });
+    }), sctx};
 }
 
 function resolveConditional(
     ast: AstConditional,
     sctx: StatementContext,
     ctx: CompilerContext,
-): CompilerContext {
-    ctx = resolveExpression(ast.condition, sctx, ctx);
+):  {ctx: CompilerContext,
+    sctx: StatementContext
+ } {
+    let resCtx = resolveExpression(ast.condition, sctx, ctx);
+    ctx = resCtx.ctx;
+    sctx = resCtx.sctx;
     const conditionType = getExpType(ctx, ast.condition);
     if (
         conditionType.kind !== "ref" ||
@@ -719,8 +801,12 @@ function resolveConditional(
         );
     }
 
-    ctx = resolveExpression(ast.thenBranch, sctx, ctx);
-    ctx = resolveExpression(ast.elseBranch, sctx, ctx);
+    resCtx = resolveExpression(ast.thenBranch, sctx, ctx);
+    ctx = resCtx.ctx;
+    sctx = resCtx.sctx;
+    resCtx = resolveExpression(ast.elseBranch, sctx, ctx);
+    ctx = resCtx.ctx;
+    sctx = resCtx.sctx;
     const thenType = getExpType(ctx, ast.thenBranch);
     const elseType = getExpType(ctx, ast.elseBranch);
 
@@ -732,7 +818,7 @@ function resolveConditional(
                 ast.loc,
             );
         }
-        return registerExpType(ctx, ast, resultType);
+        return {ctx: registerExpType(ctx, ast, resultType), sctx};
     }
 
     throwCompilationError(
@@ -745,19 +831,22 @@ export function resolveExpression(
     exp: AstExpression,
     sctx: StatementContext,
     ctx: CompilerContext,
-) {
+): {
+    ctx: CompilerContext;
+    sctx: StatementContext;
+} {
     switch (exp.kind) {
         case "boolean": {
-            return resolveBooleanLiteral(exp, sctx, ctx);
+            return {ctx: resolveBooleanLiteral(exp, sctx, ctx), sctx};
         }
         case "number": {
-            return resolveIntLiteral(exp, sctx, ctx);
+            return {ctx: resolveIntLiteral(exp, sctx, ctx), sctx};
         }
         case "null": {
-            return resolveNullLiteral(exp, sctx, ctx);
+            return {ctx: resolveNullLiteral(exp, sctx, ctx), sctx};
         }
         case "string": {
-            return resolveStringLiteral(exp, sctx, ctx);
+            return {ctx: resolveStringLiteral(exp, sctx, ctx), sctx};
         }
         case "struct_instance": {
             return resolveStructNew(exp, sctx, ctx);
@@ -784,11 +873,11 @@ export function resolveExpression(
                     try {
                         const t = getType(ctx, exp.text);
                         if (t.kind === "struct") {
-                            return registerExpType(ctx, exp, {
+                            return {ctx: registerExpType(ctx, exp, {
                                 kind: "ref",
                                 name: t.name,
                                 optional: false,
-                            });
+                            }), sctx};
                         }
                     } catch {
                         // Ignore
@@ -817,11 +906,11 @@ export function resolveExpression(
                     );
                 } else {
                     const cc = getStaticConstant(ctx, exp.text);
-                    return registerExpType(ctx, exp, cc.type);
+                    return {ctx: registerExpType(ctx, exp, cc.type), sctx};
                 }
             }
 
-            return registerExpType(ctx, exp, v);
+            return {ctx: registerExpType(ctx, exp, v), sctx};
         }
         case "field_access": {
             return resolveFieldAccess(exp, sctx, ctx);
