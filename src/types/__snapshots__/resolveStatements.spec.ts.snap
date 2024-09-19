@@ -3296,6 +3296,1938 @@ exports[`resolveStatements should resolve statements for var-scope-valueOf-fun 1
 ]
 `;
 
+exports[`resolveStatements should resolve statements for var-track-outside-do-until 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "v > 0",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v - v",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "v - v + 6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-do-until-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "v > 0",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-foreach 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "xMap",
+    "map<Int, Int>",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "k",
+    "Int",
+  ],
+  [
+    "10 + k",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-foreach-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "xMap",
+    "map<Int, Int>",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "k",
+    "Int",
+  ],
+  [
+    "10 + k",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-else 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-else-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-else-no-assign-false-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-else-no-assign-false-branch-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-else-no-assign-true-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-else-no-assign-true-branch-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-elseif 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-elseif-else 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "x > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "a - 7",
+    "Int",
+  ],
+  [
+    "1 / (a - 7)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-elseif-else-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "x > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-elseif-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-elseif-no-assign-false-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-elseif-no-assign-false-branch-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-elseif-no-assign-true-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-elseif-no-assign-true-branch-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-if-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-repeat 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v - v",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "v - v + 6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-repeat-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-try 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "x - x",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "x - x + 6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-try-catch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "x - x",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "x - x + 6",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-try-catch-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-try-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-while 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "v > 0",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v - v",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "v - v + 6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-track-outside-while-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "v > 0",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for var-underscore-name-in-foreach 1`] = `
 [
   [
