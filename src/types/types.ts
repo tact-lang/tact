@@ -1,4 +1,4 @@
-import { ABIField, Address, Cell } from "@ton/core";
+import { ABIField, Address, Cell, Slice } from "@ton/core";
 import { throwInternalCompilerError } from "../errors";
 import {
     AstConstantDef,
@@ -12,6 +12,8 @@ import {
     AstFunctionDecl,
     AstConstantDecl,
     AstFieldDecl,
+    AstAsmFunctionDef,
+    AstNumber,
 } from "../grammar/ast";
 import { dummySrcInfo, ItemOrigin } from "../grammar/grammar";
 
@@ -20,7 +22,7 @@ export type TypeDescription = {
     origin: ItemOrigin;
     name: string;
     uid: number;
-    header: number | null;
+    header: AstNumber | null;
     tlb: string | null;
     signature: string | null;
     fields: FieldDescription[];
@@ -76,6 +78,7 @@ export type Value =
     | string
     | Address
     | Cell
+    | Slice
     | null
     | CommentValue
     | StructValue;
@@ -89,7 +92,7 @@ export function showValue(val: Value): string {
         return val ? "true" : "false";
     } else if (Address.isAddress(val)) {
         return val.toRawString();
-    } else if (val instanceof Cell) {
+    } else if (val instanceof Cell || val instanceof Slice) {
         return val.toString();
     } else if (val === null) {
         return "null";
@@ -190,7 +193,11 @@ export type FunctionDescription = {
     self: string | null;
     returns: TypeRef;
     params: FunctionParameter[];
-    ast: AstFunctionDef | AstNativeFunctionDecl | AstFunctionDecl;
+    ast:
+        | AstFunctionDef
+        | AstNativeFunctionDecl
+        | AstFunctionDecl
+        | AstAsmFunctionDef;
 };
 
 export type BinaryReceiverSelector =

@@ -146,7 +146,11 @@ export function writeInit(
             // Generate statements
             const returns = resolveFuncTypeUnpack(t, funcIdOf("self"), ctx);
             for (const s of init.ast.statements) {
-                writeStatement(s, returns, null, ctx);
+                if (s.kind === "statement_return") {
+                    ctx.append(`return ${returns};`);
+                } else {
+                    writeStatement(s, returns, null, ctx);
+                }
             }
 
             // Return result

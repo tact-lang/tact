@@ -17,6 +17,7 @@ import {
     AstExpression,
     AstMapType,
     AstTypeId,
+    AstAsmFunctionDef,
 } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
 import {
@@ -519,69 +520,93 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     a.loc,
                 );
             }
+            if (a.kind === "message_decl" && a.opcode) {
+                if (a.opcode.value === 0n) {
+                    throwCompilationError(
+                        `Zero opcodes are reserved for text comments and cannot be used for message structs`,
+                        a.opcode.loc,
+                    );
+                }
+                if (a.opcode.value > 0xffff_ffff) {
+                    throwCompilationError(
+                        `Opcode of message ${idTextErr(a.name)} is too large: it must fit into 32 bits`,
+                        a.opcode.loc,
+                    );
+                }
+            }
         }
 
         // Trait
         if (a.kind === "trait") {
-            for (const f of a.declarations) {
-                if (f.kind === "field_decl") {
+            for (const traitDecl of a.declarations) {
+                if (traitDecl.kind === "field_decl") {
                     if (
                         types
                             .get(idText(a.name))!
-                            .fields.find((v) => eqNames(v.name, f.name))
+                            .fields.find((v) => eqNames(v.name, traitDecl.name))
                     ) {
                         throwCompilationError(
-                            `Field ${idTextErr(f.name)} already exists`,
-                            f.loc,
+                            `Field ${idTextErr(traitDecl.name)} already exists`,
+                            traitDecl.loc,
                         );
                     }
-                    if (f.as) {
+                    if (traitDecl.as) {
                         throwCompilationError(
                             `Trait field cannot have serialization specifier`,
-                            f.loc,
+                            traitDecl.loc,
+                        );
+                    }
+                    if (traitDecl.initializer) {
+                        throwCompilationError(
+                            `Trait field cannot have an initializer`,
+                            traitDecl.initializer.loc,
                         );
                     }
                     types
                         .get(idText(a.name))!
                         .fields.push(
                             buildFieldDescription(
-                                f,
+                                traitDecl,
                                 types.get(idText(a.name))!.fields.length,
                             ),
                         );
                 } else if (
-                    f.kind === "constant_def" ||
-                    f.kind === "constant_decl"
+                    traitDecl.kind === "constant_def" ||
+                    traitDecl.kind === "constant_decl"
                 ) {
                     if (
                         types
                             .get(idText(a.name))!
-                            .fields.find((v) => eqNames(v.name, f.name))
+                            .fields.find((v) => eqNames(v.name, traitDecl.name))
                     ) {
                         throwCompilationError(
-                            `Field ${idTextErr(f.name)} already exists`,
-                            f.loc,
+                            `Field ${idTextErr(traitDecl.name)} already exists`,
+                            traitDecl.loc,
                         );
                     }
                     if (
                         types
                             .get(idText(a.name))!
-                            .constants.find((v) => eqNames(v.name, f.name))
+                            .constants.find((v) =>
+                                eqNames(v.name, traitDecl.name),
+                            )
                     ) {
                         throwCompilationError(
-                            `Constant ${idTextErr(f.name)} already exists`,
-                            f.loc,
+                            `Constant ${idTextErr(traitDecl.name)} already exists`,
+                            traitDecl.loc,
                         );
                     }
-                    if (f.attributes.find((v) => v.type === "override")) {
+                    if (
+                        traitDecl.attributes.find((v) => v.type === "override")
+                    ) {
                         throwCompilationError(
                             `Trait constant cannot be overridden`,
-                            f.loc,
+                            traitDecl.loc,
                         );
                     }
                     types
                         .get(idText(a.name))!
-                        .constants.push(buildConstantDescription(f));
+                        .constants.push(buildConstantDescription(traitDecl));
                 }
             }
         }
@@ -601,7 +626,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     function resolveFunctionDescriptor(
         optSelf: string | null,
-        a: AstFunctionDef | AstNativeFunctionDecl | AstFunctionDecl,
+        a:
+            | AstFunctionDef
+            | AstNativeFunctionDecl
+            | AstFunctionDecl
+            | AstAsmFunctionDef,
         origin: ItemOrigin,
     ): FunctionDescription {
         let self = optSelf;
@@ -852,6 +881,101 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
         }
 
+        // check asm shuffle
+        if (a.kind === "asm_function_def") {
+            // check arguments shuffle
+            if (a.shuffle.args.length !== 0) {
+                const shuffleArgSet = new Set(
+                    a.shuffle.args.map((id) => idText(id)),
+                );
+                if (shuffleArgSet.size !== a.shuffle.args.length) {
+                    throwCompilationError(
+                        "asm argument rearrangement cannot have duplicates",
+                        a.loc,
+                    );
+                }
+                const paramSet = new Set(
+                    a.params.map((typedId) => idText(typedId.name)),
+                );
+                if (!paramSet.isSubsetOf(shuffleArgSet)) {
+                    throwCompilationError(
+                        "asm argument rearrangement must mention all function parameters",
+                        a.loc,
+                    );
+                }
+                if (!shuffleArgSet.isSubsetOf(paramSet)) {
+                    throwCompilationError(
+                        "asm argument rearrangement must mention only function parameters",
+                        a.loc,
+                    );
+                }
+            }
+
+            // check return shuffle
+            if (a.shuffle.ret.length !== 0) {
+                const shuffleRetSet = new Set(
+                    a.shuffle.ret.map((num) => Number(num.value)),
+                );
+                if (shuffleRetSet.size !== a.shuffle.ret.length) {
+                    throwCompilationError(
+                        "asm return rearrangement cannot have duplicates",
+                        a.loc,
+                    );
+                }
+
+                let retTupleSize = 0;
+                switch (returns.kind) {
+                    case "ref":
+                        {
+                            const ty = types.get(returns.name)!;
+                            switch (ty.kind) {
+                                case "struct":
+                                case "contract":
+                                    retTupleSize = ty.fields.length;
+                                    break;
+                                case "primitive_type_decl":
+                                    retTupleSize = 1;
+                                    break;
+                                case "trait":
+                                    throwInternalCompilerError(
+                                        "A trait cannot be returned from a function",
+                                        a.loc,
+                                    );
+                            }
+                        }
+                        break;
+                    case "null":
+                    case "map":
+                        retTupleSize = 1;
+                        break;
+                    case "ref_bounced":
+                        throwInternalCompilerError(
+                            "A <bounced> type cannot be returned from a function",
+                            a.loc,
+                        );
+                        break;
+                    case "void":
+                        retTupleSize = 0;
+                        break;
+                }
+                // mutating functions also return `self` arg (implicitly in Tact, but explicitly in FunC)
+                retTupleSize += isMutating ? 1 : 0;
+                const returnValueSet = new Set([...Array(retTupleSize).keys()]);
+                if (!returnValueSet.isSubsetOf(shuffleRetSet)) {
+                    throwCompilationError(
+                        `asm return rearrangement must mention all return position numbers: [0..${retTupleSize - 1}]`,
+                        a.loc,
+                    );
+                }
+                if (!shuffleRetSet.isSubsetOf(returnValueSet)) {
+                    throwCompilationError(
+                        `asm return rearrangement must mention only valid return position numbers: [0..${retTupleSize - 1}]`,
+                        a.loc,
+                    );
+                }
+            }
+        }
+
         // Register function
         return {
             name: idText(a.name),
@@ -901,7 +1025,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (a.kind === "contract" || a.kind === "trait") {
             const s = types.get(idText(a.name))!;
             for (const d of a.declarations) {
-                if (d.kind === "function_def" || d.kind === "function_decl") {
+                if (
+                    d.kind === "function_def" ||
+                    d.kind === "function_decl" ||
+                    d.kind === "asm_function_def"
+                ) {
                     const f = resolveFunctionDescriptor(s.name, d, s.origin);
                     if (f.self !== s.name) {
                         throwInternalCompilerError(

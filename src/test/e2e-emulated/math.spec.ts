@@ -1,19 +1,38 @@
 import { beginCell, Dictionary, toNano } from "@ton/core";
-import { ContractSystem, randomAddress } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { MathTester } from "./contracts/output/math_MathTester";
+import "@ton/test-utils";
+import { randomAddress } from "../utils/randomAddress";
 
 describe("math", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<MathTester>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await MathTester.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            { $$type: "Deploy", queryId: 0n },
+        );
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
     });
+
     it("should perform math operations correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await MathTester.fromInit());
-        const addressA = randomAddress("a");
-        const addressB = randomAddress("b");
+        const addressA = randomAddress(0, "a");
+        const addressB = randomAddress(0, "b");
         const cellA = beginCell().storeUint(0, 32).endCell();
         const cellB = beginCell().storeUint(1, 32).endCell();
         const sliceA = beginCell()
@@ -30,12 +49,6 @@ describe("math", () => {
         const stringB = "bar";
         const dictA = Dictionary.empty<bigint, bigint>().set(0n, 0n);
         const dictB = Dictionary.empty<bigint, bigint>().set(0n, 2n);
-        await contract.send(
-            treasure,
-            { value: toNano("10") },
-            { $$type: "Deploy", queryId: 0n },
-        );
-        await system.run();
 
         // Tests
         expect(await contract.getAdd(1n, 2n)).toBe(3n);
@@ -383,7 +396,7 @@ describe("math", () => {
         for (let num = -3n; num <= 3n; num++) {
             if (num <= 0n) {
                 await expect(contract.getLog2(num)).rejects.toThrow(
-                    "Integer out of expected range",
+                    "Unable to execute get method. Got exit_code: 5",
                 );
             }
         }
@@ -392,7 +405,7 @@ describe("math", () => {
             for (let base = -3n; base <= 3n; base++) {
                 if (num <= 0n || base <= 1n) {
                     await expect(contract.getLog(num, base)).rejects.toThrow(
-                        "Integer out of expected range",
+                        "Unable to execute get method. Got exit_code: 5",
                     );
                 } else {
                     const logarithm = BigInt(
@@ -449,10 +462,10 @@ describe("math", () => {
         expect(await contract.getPow2(3n)).toBe(8n);
 
         await expect(contract.getPow(2n, -1n)).rejects.toThrow(
-            "Integer out of expected range",
+            "Unable to execute get method. Got exit_code: 5",
         );
         await expect(contract.getPow2(-1n)).rejects.toThrow(
-            "Integer out of expected range",
+            "Unable to execute get method. Got exit_code: 5",
         );
 
         // Test operation precedence

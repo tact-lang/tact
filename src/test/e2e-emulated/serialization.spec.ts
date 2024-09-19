@@ -1,13 +1,18 @@
 import { beginCell, Builder, Cell, Slice, toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { SerializationTester3 } from "./contracts/output/serialization-3_SerializationTester3";
 import { SerializationTester2 } from "./contracts/output/serialization-2_SerializationTester2";
 import { SerializationTester } from "./contracts/output/serialization_SerializationTester";
+import "@ton/test-utils";
 
 describe("serialization", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        treasure = await blockchain.treasury("treasure");
     });
 
     //
@@ -42,9 +47,7 @@ describe("serialization", () => {
                 const cs = cases[i]!;
 
                 // Init contract
-                const system = await ContractSystem.create();
-                const treasure = system.treasure("treasure");
-                const contract = system.open(
+                const contract = blockchain.openContract(
                     await SerializationTester.fromInit(
                         cs.a,
                         cs.b,
@@ -57,8 +60,19 @@ describe("serialization", () => {
                         cs.i,
                     ),
                 );
-                await contract.send(treasure, { value: toNano("10") }, null);
-                await system.run();
+
+                const deployResult = await contract.send(
+                    treasure.getSender(),
+                    { value: toNano("10") },
+                    null,
+                );
+
+                expect(deployResult.transactions).toHaveTransaction({
+                    from: treasure.address,
+                    to: contract.address,
+                    success: true,
+                    deploy: true,
+                });
 
                 // Check inputs
                 expect(await contract.getGetA()).toBe(cs.a);
@@ -120,13 +134,22 @@ describe("serialization", () => {
                 const cs = cases[i]!;
 
                 // Init contract
-                const system = await ContractSystem.create();
-                const treasure = system.treasure("treasure");
-                const contract = system.open(
+                const contract = blockchain.openContract(
                     await SerializationTester2.fromInit(cs.a, cs.b),
                 );
-                await contract.send(treasure, { value: toNano("10") }, null);
-                await system.run();
+
+                const deployResult = await contract.send(
+                    treasure.getSender(),
+                    { value: toNano("10") },
+                    null,
+                );
+
+                expect(deployResult.transactions).toHaveTransaction({
+                    from: treasure.address,
+                    to: contract.address,
+                    success: true,
+                    deploy: true,
+                });
 
                 // Check values
                 const a = await contract.getGetA();
@@ -159,11 +182,10 @@ describe("serialization", () => {
             });
         }
     }
+
     it("serialization-3", async () => {
         // Init contract
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(
+        const contract = blockchain.openContract(
             await SerializationTester3.fromInit(
                 1n,
                 true,
@@ -173,9 +195,21 @@ describe("serialization", () => {
                 "test",
             ),
         );
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
 
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+
+        // Check values
         expect(await contract.getGetA()).toBe(1n);
         expect(await contract.getGetB()).toBe(true);
         expect(await contract.getGetC()).toBeInstanceOf(Cell);

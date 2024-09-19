@@ -138,8 +138,9 @@ export class AstRenamer {
             message_decl: 4,
             constant_def: 5,
             function_def: 6,
-            trait: 7,
-            contract: 8,
+            asm_function_def: 7,
+            trait: 8,
+            contract: 9,
         };
         return items.sort((a, b) => {
             const kindComparison = kindOrder[a.kind] - kindOrder[b.kind];

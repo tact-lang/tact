@@ -162,7 +162,7 @@ Line 1, col 19:
 `;
 
 exports[`grammar should fail contract-with-imports 1`] = `
-"<unknown>:6:1: Parse error: expected end of input, "trait", "contract", "message", "struct", "const", "@name", "fun", or "primitive"
+"<unknown>:6:1: Parse error: expected end of input, "trait", "contract", "message", "struct", "const", "@name", "asm", "fun", or "primitive"
 
 Line 6, col 1:
   5 | // all imports must be at the very top of the file
@@ -575,6 +575,46 @@ Line 2, col 23:
 "
 `;
 
+exports[`grammar should fail items-asm-fun-1 1`] = `
+"<unknown>:1:5: Parse error: expected ")"
+
+Line 1, col 5:
+> 1 | asm(1 0) extends fun loadCoins(self: Slice): Int {
+          ^
+  2 |     LDVARUINT16
+"
+`;
+
+exports[`grammar should fail items-asm-fun-2 1`] = `
+"<unknown>:1:9: Parse error: expected ")", "->", "_", "A".."Z", or "a".."z"
+
+Line 1, col 9:
+> 1 | asm(c b 42) extends fun storeDict(b: Builder, c: Cell) {
+              ^
+  2 |     STDICT
+"
+`;
+
+exports[`grammar should fail items-asm-fun-3 1`] = `
+"<unknown>:1:14: Parse error: expected "0" or "1".."9"
+
+Line 1, col 14:
+> 1 | asm(s len -> len 1 0) extends fun loadInt(self: Slice, len: Int): Int {
+                   ^
+  2 |     LDIX
+"
+`;
+
+exports[`grammar should fail items-asm-fun-4 1`] = `
+"<unknown>:1:7: Parse error: expected "0" or "1".."9"
+
+Line 1, col 7:
+> 1 | asm(->) extends fun loadInt(self: Slice, len: Int): Int {
+            ^
+  2 |     LDIX
+"
+`;
+
 exports[`grammar should fail literal-dec-trailing-underscore 1`] = `
 "<unknown>:2:16: Parse error: expected a digit
 
@@ -649,6 +689,16 @@ Line 2, col 13:
 > 2 |     return 0_123;
                   ^
   3 | }
+"
+`;
+
+exports[`grammar should fail message-negative-opcode 1`] = `
+"<unknown>:1:9: Parse error: expected "0", "1".."9", "0O", "0o", "0B", "0b", "0X", or "0x"
+
+Line 1, col 9:
+> 1 | message(-1) Foo { }
+              ^
+  2 | 
 "
 `;
 
@@ -875,6 +925,7 @@ exports[`grammar should parse contract-optional-semicolon-for-last-const-def 1`]
           "attributes": [],
           "id": 5,
           "initializer": {
+            "base": 10,
             "id": 4,
             "kind": "number",
             "loc": 42,
@@ -986,6 +1037,7 @@ exports[`grammar should parse contract-with-const-override 1`] = `
           ],
           "id": 5,
           "initializer": {
+            "base": 10,
             "id": 4,
             "kind": "number",
             "loc": 0,
@@ -1650,6 +1702,7 @@ exports[`grammar should parse expr-arith 1`] = `
                 "id": 5,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 3,
                   "kind": "number",
                   "loc": 0,
@@ -1658,6 +1711,7 @@ exports[`grammar should parse expr-arith 1`] = `
                 "loc": 0 + 1,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 4,
                   "kind": "number",
                   "loc": 1,
@@ -1667,6 +1721,7 @@ exports[`grammar should parse expr-arith 1`] = `
               "loc": (0 + 1) * 10,
               "op": "*",
               "right": {
+                "base": 10,
                 "id": 6,
                 "kind": "number",
                 "loc": 10,
@@ -1676,6 +1731,7 @@ exports[`grammar should parse expr-arith 1`] = `
             "loc": (0 + 1) * 10 / 20,
             "op": "/",
             "right": {
+              "base": 10,
               "id": 8,
               "kind": "number",
               "loc": 20,
@@ -1733,6 +1789,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
                   "id": 5,
                   "kind": "op_binary",
                   "left": {
+                    "base": 10,
                     "id": 3,
                     "kind": "number",
                     "loc": 0,
@@ -1741,6 +1798,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
                   "loc": 0 + 1,
                   "op": "+",
                   "right": {
+                    "base": 10,
                     "id": 4,
                     "kind": "number",
                     "loc": 1,
@@ -1750,6 +1808,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
                 "loc": (0 + 1) * 10,
                 "op": "*",
                 "right": {
+                  "base": 10,
                   "id": 6,
                   "kind": "number",
                   "loc": 10,
@@ -1759,6 +1818,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
               "loc": (0 + 1) * 10 / 20,
               "op": "/",
               "right": {
+                "base": 10,
                 "id": 8,
                 "kind": "number",
                 "loc": 20,
@@ -1768,6 +1828,7 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
             "loc": (0 + 1) * 10 / 20 != 10,
             "op": "!=",
             "right": {
+              "base": 10,
               "id": 10,
               "kind": "number",
               "loc": 10,
@@ -1828,6 +1889,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                     "id": 5,
                     "kind": "op_binary",
                     "left": {
+                      "base": 10,
                       "id": 3,
                       "kind": "number",
                       "loc": 0,
@@ -1836,6 +1898,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                     "loc": 0 + 1,
                     "op": "+",
                     "right": {
+                      "base": 10,
                       "id": 4,
                       "kind": "number",
                       "loc": 1,
@@ -1845,6 +1908,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                   "loc": (0 + 1) * 10,
                   "op": "*",
                   "right": {
+                    "base": 10,
                     "id": 6,
                     "kind": "number",
                     "loc": 10,
@@ -1854,6 +1918,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                 "loc": (0 + 1) * 10 / 20,
                 "op": "/",
                 "right": {
+                  "base": 10,
                   "id": 8,
                   "kind": "number",
                   "loc": 20,
@@ -1866,6 +1931,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                 "id": 12,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 10,
                   "kind": "number",
                   "loc": 10,
@@ -1898,6 +1964,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                 "loc": some2 > 10,
                 "op": ">",
                 "right": {
+                  "base": 10,
                   "id": 15,
                   "kind": "number",
                   "loc": 10,
@@ -1920,6 +1987,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                 "right": {
                   "args": [
                     {
+                      "base": 10,
                       "id": 20,
                       "kind": "number",
                       "loc": 10,
@@ -1936,6 +2004,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                     "text": "add",
                   },
                   "self": {
+                    "base": 10,
                     "id": 18,
                     "kind": "number",
                     "loc": 123,
@@ -1999,6 +2068,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                     "id": 5,
                     "kind": "op_binary",
                     "left": {
+                      "base": 10,
                       "id": 3,
                       "kind": "number",
                       "loc": 0,
@@ -2007,6 +2077,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                     "loc": 0 + 1,
                     "op": "+",
                     "right": {
+                      "base": 10,
                       "id": 4,
                       "kind": "number",
                       "loc": 1,
@@ -2016,6 +2087,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                   "loc": (0 + 1) * 10,
                   "op": "*",
                   "right": {
+                    "base": 10,
                     "id": 6,
                     "kind": "number",
                     "loc": 10,
@@ -2025,6 +2097,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                 "loc": (0 + 1) * 10 / 20,
                 "op": "/",
                 "right": {
+                  "base": 10,
                   "id": 8,
                   "kind": "number",
                   "loc": 20,
@@ -2037,6 +2110,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                 "id": 12,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 10,
                   "kind": "number",
                   "loc": 10,
@@ -2069,6 +2143,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                 "loc": some2 > 10,
                 "op": ">",
                 "right": {
+                  "base": 10,
                   "id": 15,
                   "kind": "number",
                   "loc": 10,
@@ -2089,6 +2164,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
                 "loc": some3 < 10,
                 "op": "<",
                 "right": {
+                  "base": 10,
                   "id": 18,
                   "kind": "number",
                   "loc": 10,
@@ -2274,6 +2350,7 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
                 "loc": a == 123,
                 "op": "==",
                 "right": {
+                  "base": 10,
                   "id": 7,
                   "kind": "number",
                   "loc": 123,
@@ -2294,6 +2371,7 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
                 "loc": a == 456,
                 "op": "==",
                 "right": {
+                  "base": 10,
                   "id": 10,
                   "kind": "number",
                   "loc": 456,
@@ -2313,6 +2391,7 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
               "loc": a + 2,
               "op": "+",
               "right": {
+                "base": 10,
                 "id": 17,
                 "kind": "number",
                 "loc": 2,
@@ -2334,6 +2413,7 @@ exports[`grammar should parse expr-condition-with-or 1`] = `
               "loc": a + 1,
               "op": "+",
               "right": {
+                "base": 10,
                 "id": 14,
                 "kind": "number",
                 "loc": 1,
@@ -2410,6 +2490,7 @@ exports[`grammar should parse expr-conditional 1`] = `
               "loc": a == 123,
               "op": "==",
               "right": {
+                "base": 10,
                 "id": 7,
                 "kind": "number",
                 "loc": 123,
@@ -2417,6 +2498,7 @@ exports[`grammar should parse expr-conditional 1`] = `
               },
             },
             "elseBranch": {
+              "base": 10,
               "id": 10,
               "kind": "number",
               "loc": 2,
@@ -2426,6 +2508,7 @@ exports[`grammar should parse expr-conditional 1`] = `
             "kind": "conditional",
             "loc": a == 123 ? 1 : 2,
             "thenBranch": {
+              "base": 10,
               "id": 9,
               "kind": "number",
               "loc": 1,
@@ -2502,6 +2585,7 @@ exports[`grammar should parse expr-conditional-with-let 1`] = `
               "loc": a == 123,
               "op": "==",
               "right": {
+                "base": 10,
                 "id": 9,
                 "kind": "number",
                 "loc": 123,
@@ -2509,6 +2593,7 @@ exports[`grammar should parse expr-conditional-with-let 1`] = `
               },
             },
             "elseBranch": {
+              "base": 10,
               "id": 12,
               "kind": "number",
               "loc": 2,
@@ -2518,6 +2603,7 @@ exports[`grammar should parse expr-conditional-with-let 1`] = `
             "kind": "conditional",
             "loc": a == 123 ? 1 : 2,
             "thenBranch": {
+              "base": 10,
               "id": 11,
               "kind": "number",
               "loc": 1,
@@ -2601,6 +2687,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                     "id": 5,
                     "kind": "op_binary",
                     "left": {
+                      "base": 10,
                       "id": 3,
                       "kind": "number",
                       "loc": 0,
@@ -2609,6 +2696,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                     "loc": 0 + 1,
                     "op": "+",
                     "right": {
+                      "base": 10,
                       "id": 4,
                       "kind": "number",
                       "loc": 1,
@@ -2618,6 +2706,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                   "loc": (0 + 1) * 10,
                   "op": "*",
                   "right": {
+                    "base": 10,
                     "id": 6,
                     "kind": "number",
                     "loc": 10,
@@ -2627,6 +2716,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                 "loc": (0 + 1) * 10 / 20,
                 "op": "/",
                 "right": {
+                  "base": 10,
                   "id": 8,
                   "kind": "number",
                   "loc": 20,
@@ -2639,6 +2729,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                 "id": 12,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 10,
                   "kind": "number",
                   "loc": 10,
@@ -2671,6 +2762,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                 "loc": some2 > 10,
                 "op": ">",
                 "right": {
+                  "base": 10,
                   "id": 15,
                   "kind": "number",
                   "loc": 10,
@@ -2695,6 +2787,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                     {
                       "args": [
                         {
+                          "base": 10,
                           "id": 21,
                           "kind": "number",
                           "loc": 10,
@@ -2711,6 +2804,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
                         "text": "add",
                       },
                       "self": {
+                        "base": 10,
                         "id": 19,
                         "kind": "number",
                         "loc": 123,
@@ -2770,6 +2864,7 @@ exports[`grammar should parse expr-int-literal 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 3,
             "kind": "number",
             "loc": 0,
@@ -2847,6 +2942,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
                 "loc": a == 123,
                 "op": "==",
                 "right": {
+                  "base": 10,
                   "id": 7,
                   "kind": "number",
                   "loc": 123,
@@ -2867,6 +2963,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
                 "loc": a == 456,
                 "op": "==",
                 "right": {
+                  "base": 10,
                   "id": 10,
                   "kind": "number",
                   "loc": 456,
@@ -2886,6 +2983,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
               "loc": a + 2,
               "op": "+",
               "right": {
+                "base": 10,
                 "id": 22,
                 "kind": "number",
                 "loc": 2,
@@ -2908,6 +3006,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
                 "loc": a == 10,
                 "op": "==",
                 "right": {
+                  "base": 10,
                   "id": 14,
                   "kind": "number",
                   "loc": 10,
@@ -2926,6 +3025,7 @@ exports[`grammar should parse expr-nested-conditional 1`] = `
                 "loc": a * 2,
                 "op": "*",
                 "right": {
+                  "base": 10,
                   "id": 18,
                   "kind": "number",
                   "loc": 2,
@@ -2991,6 +3091,7 @@ exports[`grammar should parse expr-parens 1`] = `
                 "id": 5,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 3,
                   "kind": "number",
                   "loc": 1,
@@ -2999,6 +3100,7 @@ exports[`grammar should parse expr-parens 1`] = `
                 "loc": 1 + 2,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 4,
                   "kind": "number",
                   "loc": 2,
@@ -3016,6 +3118,7 @@ exports[`grammar should parse expr-parens 1`] = `
                   "id": 8,
                   "kind": "op_binary",
                   "left": {
+                    "base": 10,
                     "id": 6,
                     "kind": "number",
                     "loc": 123,
@@ -3024,6 +3127,7 @@ exports[`grammar should parse expr-parens 1`] = `
                   "loc": 123 + 3,
                   "op": "+",
                   "right": {
+                    "base": 10,
                     "id": 7,
                     "kind": "number",
                     "loc": 3,
@@ -3035,6 +3139,7 @@ exports[`grammar should parse expr-parens 1`] = `
             "loc": 1 + 2 + (123 + 3)!! > 123,
             "op": ">",
             "right": {
+              "base": 10,
               "id": 11,
               "kind": "number",
               "loc": 123,
@@ -3089,6 +3194,7 @@ exports[`grammar should parse expr-with-unbox 1`] = `
                 "id": 5,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 3,
                   "kind": "number",
                   "loc": 1,
@@ -3097,6 +3203,7 @@ exports[`grammar should parse expr-with-unbox 1`] = `
                 "loc": 1 + 2,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 4,
                   "kind": "number",
                   "loc": 2,
@@ -3111,6 +3218,7 @@ exports[`grammar should parse expr-with-unbox 1`] = `
                 "loc": 3!!,
                 "op": "!!",
                 "operand": {
+                  "base": 10,
                   "id": 6,
                   "kind": "number",
                   "loc": 3,
@@ -3121,6 +3229,7 @@ exports[`grammar should parse expr-with-unbox 1`] = `
             "loc": 1 + 2 + 3!! > 123,
             "op": ">",
             "right": {
+              "base": 10,
               "id": 9,
               "kind": "number",
               "loc": 123,
@@ -3178,6 +3287,7 @@ exports[`grammar should parse expr-with-var 1`] = `
                   "id": 5,
                   "kind": "op_binary",
                   "left": {
+                    "base": 10,
                     "id": 3,
                     "kind": "number",
                     "loc": 0,
@@ -3186,6 +3296,7 @@ exports[`grammar should parse expr-with-var 1`] = `
                   "loc": 0 + 1,
                   "op": "+",
                   "right": {
+                    "base": 10,
                     "id": 4,
                     "kind": "number",
                     "loc": 1,
@@ -3195,6 +3306,7 @@ exports[`grammar should parse expr-with-var 1`] = `
                 "loc": (0 + 1) * 10,
                 "op": "*",
                 "right": {
+                  "base": 10,
                   "id": 6,
                   "kind": "number",
                   "loc": 10,
@@ -3204,6 +3316,7 @@ exports[`grammar should parse expr-with-var 1`] = `
               "loc": (0 + 1) * 10 / 20,
               "op": "/",
               "right": {
+                "base": 10,
                 "id": 8,
                 "kind": "number",
                 "loc": 20,
@@ -3216,6 +3329,7 @@ exports[`grammar should parse expr-with-var 1`] = `
               "id": 12,
               "kind": "op_binary",
               "left": {
+                "base": 10,
                 "id": 10,
                 "kind": "number",
                 "loc": 10,
@@ -3236,6 +3350,398 @@ exports[`grammar should parse expr-with-var 1`] = `
           "loc": return (0 + 1) * 10 / 20 != 10 * someId;,
         },
       ],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse items-asm-funs 1`] = `
+{
+  "id": 48,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 6,
+      "instructions": [
+        "1",
+        "INT",
+        "HASHEXT_KECCAK256",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun keccak256(s: Slice): Int {
+    1
+    INT
+    HASHEXT_KECCAK256
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": keccak256,
+        "text": "keccak256",
+      },
+      "params": [
+        {
+          "id": 5,
+          "kind": "typed_parameter",
+          "loc": s: Slice,
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": {
+            "id": 4,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+      ],
+      "return": {
+        "id": 2,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "loc": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 14,
+      "instructions": [
+        "LDVARUINT16",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm( -> 1 0) extends fun loadCoins(self: Slice): Int {
+    LDVARUINT16
+},
+      "name": {
+        "id": 9,
+        "kind": "id",
+        "loc": loadCoins,
+        "text": "loadCoins",
+      },
+      "params": [
+        {
+          "id": 13,
+          "kind": "typed_parameter",
+          "loc": self: Slice,
+          "name": {
+            "id": 11,
+            "kind": "id",
+            "loc": self,
+            "text": "self",
+          },
+          "type": {
+            "id": 12,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+      ],
+      "return": {
+        "id": 10,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [
+          {
+            "base": 10,
+            "id": 7,
+            "kind": "number",
+            "loc": 1,
+            "value": 1n,
+          },
+          {
+            "base": 10,
+            "id": 8,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+        ],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "loc": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 24,
+      "instructions": [
+        "STDICT",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm(c b) extends fun storeDict(b: Builder, c: Cell) {
+    STDICT
+},
+      "name": {
+        "id": 17,
+        "kind": "id",
+        "loc": storeDict,
+        "text": "storeDict",
+      },
+      "params": [
+        {
+          "id": 20,
+          "kind": "typed_parameter",
+          "loc": b: Builder,
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 19,
+            "kind": "type_id",
+            "loc": Builder,
+            "text": "Builder",
+          },
+        },
+        {
+          "id": 23,
+          "kind": "typed_parameter",
+          "loc": c: Cell,
+          "name": {
+            "id": 21,
+            "kind": "id",
+            "loc": c,
+            "text": "c",
+          },
+          "type": {
+            "id": 22,
+            "kind": "type_id",
+            "loc": Cell,
+            "text": "Cell",
+          },
+        },
+      ],
+      "return": null,
+      "shuffle": {
+        "args": [
+          {
+            "id": 15,
+            "kind": "id",
+            "loc": c,
+            "text": "c",
+          },
+          {
+            "id": 16,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+        ],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [
+        {
+          "loc": extends,
+          "type": "extends",
+        },
+      ],
+      "id": 37,
+      "instructions": [
+        "LDIX",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm(s len -> 1 0) extends fun loadInt(self: Slice, len: Int): Int {
+    LDIX
+},
+      "name": {
+        "id": 29,
+        "kind": "id",
+        "loc": loadInt,
+        "text": "loadInt",
+      },
+      "params": [
+        {
+          "id": 33,
+          "kind": "typed_parameter",
+          "loc": self: Slice,
+          "name": {
+            "id": 31,
+            "kind": "id",
+            "loc": self,
+            "text": "self",
+          },
+          "type": {
+            "id": 32,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+        {
+          "id": 36,
+          "kind": "typed_parameter",
+          "loc": len: Int,
+          "name": {
+            "id": 34,
+            "kind": "id",
+            "loc": len,
+            "text": "len",
+          },
+          "type": {
+            "id": 35,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "return": {
+        "id": 30,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [
+          {
+            "id": 25,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          {
+            "id": 26,
+            "kind": "id",
+            "loc": len,
+            "text": "len",
+          },
+        ],
+        "ret": [
+          {
+            "base": 10,
+            "id": 27,
+            "kind": "number",
+            "loc": 1,
+            "value": 1n,
+          },
+          {
+            "base": 10,
+            "id": 28,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+        ],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 43,
+      "instructions": [
+        "x{02}",
+        "SDBEGINSQ",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun checkAndRemoveAddExtensionPrefix(self: Slice): Int {
+    x{02} SDBEGINSQ
+},
+      "name": {
+        "id": 38,
+        "kind": "id",
+        "loc": checkAndRemoveAddExtensionPrefix,
+        "text": "checkAndRemoveAddExtensionPrefix",
+      },
+      "params": [
+        {
+          "id": 42,
+          "kind": "typed_parameter",
+          "loc": self: Slice,
+          "name": {
+            "id": 40,
+            "kind": "id",
+            "loc": self,
+            "text": "self",
+          },
+          "type": {
+            "id": 41,
+            "kind": "type_id",
+            "loc": Slice,
+            "text": "Slice",
+          },
+        },
+      ],
+      "return": {
+        "id": 39,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 45,
+      "instructions": [
+        "-ROT",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun checkAndRemoveAddExtensionPrefix() {
+    -ROT
+},
+      "name": {
+        "id": 44,
+        "kind": "id",
+        "loc": checkAndRemoveAddExtensionPrefix,
+        "text": "checkAndRemoveAddExtensionPrefix",
+      },
+      "params": [],
+      "return": null,
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 47,
+      "instructions": [
+        ""Works!"",
+        "DEBUGSTR",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun debugStr() {
+    "Works!" DEBUGSTR
+},
+      "name": {
+        "id": 46,
+        "kind": "id",
+        "loc": debugStr,
+        "text": "debugStr",
+      },
+      "params": [],
+      "return": null,
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
     },
   ],
   "kind": "module",
@@ -3342,6 +3848,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
                 "id": 15,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 13,
                   "kind": "number",
                   "loc": 32,
@@ -3462,6 +3969,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
                 "id": 34,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 32,
                   "kind": "number",
                   "loc": 32,
@@ -3663,6 +4171,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
                 "text": "b",
               },
               {
+                "base": 10,
                 "id": 68,
                 "kind": "number",
                 "loc": 4,
@@ -3945,12 +4454,14 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
           "expression": {
             "args": [
               {
+                "base": 10,
                 "id": 106,
                 "kind": "number",
                 "loc": 2,
                 "value": 2n,
               },
               {
+                "base": 10,
                 "id": 107,
                 "kind": "number",
                 "loc": 3,
@@ -4019,6 +4530,7 @@ exports[`grammar should parse items-multi-funs 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 2,
             "kind": "number",
             "loc": 0,
@@ -4053,6 +4565,7 @@ exports[`grammar should parse items-multi-funs 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 7,
             "kind": "number",
             "loc": 0,
@@ -4087,6 +4600,7 @@ exports[`grammar should parse items-multi-funs 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 12,
             "kind": "number",
             "loc": 0,
@@ -5130,6 +5644,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
             },
             "id": 14,
             "initializer": {
+              "base": 10,
               "id": 13,
               "kind": "number",
               "loc": 1,
@@ -5200,6 +5715,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
                 },
                 "id": 22,
                 "initializer": {
+                  "base": 10,
                   "id": 21,
                   "kind": "number",
                   "loc": 1,
@@ -5217,6 +5733,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
                 },
                 "id": 25,
                 "initializer": {
+                  "base": 10,
                   "id": 24,
                   "kind": "number",
                   "loc": 2,
@@ -5317,6 +5834,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
             },
             "id": 42,
             "initializer": {
+              "base": 10,
               "id": 41,
               "kind": "number",
               "loc": 2,
@@ -5334,6 +5852,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
             },
             "id": 45,
             "initializer": {
+              "base": 10,
               "id": 44,
               "kind": "number",
               "loc": 3,
@@ -5407,6 +5926,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
                 },
                 "id": 53,
                 "initializer": {
+                  "base": 10,
                   "id": 52,
                   "kind": "number",
                   "loc": 1,
@@ -5424,6 +5944,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
                 },
                 "id": 56,
                 "initializer": {
+                  "base": 10,
                   "id": 55,
                   "kind": "number",
                   "loc": 5,
@@ -5494,6 +6015,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 5,
             "kind": "number",
             "loc": 123,
@@ -5522,6 +6044,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
             "loc": -123,
             "op": "-",
             "operand": {
+              "base": 10,
               "id": 9,
               "kind": "number",
               "loc": 123,
@@ -5546,6 +6069,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 14,
             "kind": "number",
             "loc": 1_0123_00_000,
@@ -5569,6 +6093,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 16,
             "id": 18,
             "kind": "number",
             "loc": 0x123,
@@ -5597,6 +6122,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
             "loc": -0x123,
             "op": "-",
             "operand": {
+              "base": 16,
               "id": 22,
               "kind": "number",
               "loc": 0x123,
@@ -5621,6 +6147,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 16,
             "id": 27,
             "kind": "number",
             "loc": 0x1_0123_00_000,
@@ -5644,6 +6171,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 2,
             "id": 31,
             "kind": "number",
             "loc": 0b101010,
@@ -5672,6 +6200,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
             "loc": -0b101010,
             "op": "-",
             "operand": {
+              "base": 2,
               "id": 35,
               "kind": "number",
               "loc": 0b101010,
@@ -5696,6 +6225,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 2,
             "id": 40,
             "kind": "number",
             "loc": 0b1_0101_00_000,
@@ -5719,6 +6249,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 8,
             "id": 44,
             "kind": "number",
             "loc": 0o123,
@@ -5747,6 +6278,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
             "loc": -0o123,
             "op": "-",
             "operand": {
+              "base": 8,
               "id": 48,
               "kind": "number",
               "loc": 0o123,
@@ -5771,6 +6303,7 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
         },
         {
           "expression": {
+            "base": 8,
             "id": 53,
             "kind": "number",
             "loc": 0o1_0123_00_000,
@@ -5988,6 +6521,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 5,
             "kind": "number",
             "loc": 1,
@@ -6011,6 +6545,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 9,
             "kind": "number",
             "loc": 2,
@@ -6070,6 +6605,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 18,
             "kind": "number",
             "loc": 3,
@@ -6099,6 +6635,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
             "loc": b + 4,
             "op": "+",
             "right": {
+              "base": 10,
               "id": 22,
               "kind": "number",
               "loc": 4,
@@ -6118,6 +6655,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 26,
             "kind": "number",
             "loc": 1,
@@ -6165,6 +6703,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
             "loc": b - 1,
             "op": "-",
             "right": {
+              "base": 10,
               "id": 33,
               "kind": "number",
               "loc": 1,
@@ -6184,6 +6723,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 37,
             "kind": "number",
             "loc": 2,
@@ -6231,6 +6771,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
             "loc": b * 2,
             "op": "*",
             "right": {
+              "base": 10,
               "id": 44,
               "kind": "number",
               "loc": 2,
@@ -6250,6 +6791,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 48,
             "kind": "number",
             "loc": 2,
@@ -6297,6 +6839,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
             "loc": b / 2,
             "op": "/",
             "right": {
+              "base": 10,
               "id": 55,
               "kind": "number",
               "loc": 2,
@@ -6316,6 +6859,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 59,
             "kind": "number",
             "loc": 2,
@@ -6363,6 +6907,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
             "loc": b % 2,
             "op": "%",
             "right": {
+              "base": 10,
               "id": 66,
               "kind": "number",
               "loc": 2,
@@ -6440,6 +6985,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 5,
             "kind": "number",
             "loc": 1,
@@ -6463,6 +7009,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 9,
             "kind": "number",
             "loc": 2,
@@ -6522,6 +7069,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 18,
             "kind": "number",
             "loc": 3,
@@ -6551,6 +7099,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
             "loc": b | 4,
             "op": "|",
             "right": {
+              "base": 10,
               "id": 22,
               "kind": "number",
               "loc": 4,
@@ -6570,6 +7119,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 26,
             "kind": "number",
             "loc": 1,
@@ -6635,6 +7185,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
             "loc": b & 1,
             "op": "&",
             "right": {
+              "base": 10,
               "id": 36,
               "kind": "number",
               "loc": 1,
@@ -6654,6 +7205,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 40,
             "kind": "number",
             "loc": 2,
@@ -6719,6 +7271,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
             "loc": b ^ 2,
             "op": "^",
             "right": {
+              "base": 10,
               "id": 50,
               "kind": "number",
               "loc": 2,
@@ -6847,6 +7400,7 @@ exports[`grammar should parse stmt-if 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 13,
             "kind": "number",
             "loc": 0,
@@ -6938,6 +7492,7 @@ exports[`grammar should parse stmt-if-else 1`] = `
           "falseStatements": [
             {
               "expression": {
+                "base": 10,
                 "id": 12,
                 "kind": "number",
                 "loc": 10,
@@ -7001,6 +7556,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 4,
             "kind": "number",
             "loc": 1,
@@ -7038,6 +7594,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
               "loc": i >= 10,
               "op": ">=",
               "right": {
+                "base": 10,
                 "id": 7,
                 "kind": "number",
                 "loc": 10,
@@ -7058,6 +7615,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
               "loc": i <= 100,
               "op": "<=",
               "right": {
+                "base": 10,
                 "id": 10,
                 "kind": "number",
                 "loc": 100,
@@ -7071,6 +7629,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 14,
                 "kind": "number",
                 "loc": 1,
@@ -7091,6 +7650,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
         },
         {
           "expression": {
+            "base": 10,
             "id": 18,
             "kind": "number",
             "loc": 42,
@@ -7152,6 +7712,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 26,
             "kind": "number",
             "loc": 42,
@@ -7212,6 +7773,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
                 "id": 36,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 34,
                   "kind": "number",
                   "loc": 21,
@@ -7220,6 +7782,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
                 "loc": 21 + 21,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 35,
                   "kind": "number",
                   "loc": 21,
@@ -7265,6 +7828,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 4,
             "kind": "number",
             "loc": 1,
@@ -7302,6 +7866,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
               "loc": i >= 10,
               "op": ">=",
               "right": {
+                "base": 10,
                 "id": 7,
                 "kind": "number",
                 "loc": 10,
@@ -7322,6 +7887,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
               "loc": i <= 100,
               "op": "<=",
               "right": {
+                "base": 10,
                 "id": 10,
                 "kind": "number",
                 "loc": 100,
@@ -7348,6 +7914,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
                 "loc": i + 1,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 15,
                   "kind": "number",
                   "loc": 1,
@@ -7405,6 +7972,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 4,
             "kind": "number",
             "loc": 1,
@@ -7452,6 +8020,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
                 "loc": i + 1,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 9,
                   "kind": "number",
                   "loc": 1,
@@ -7473,6 +8042,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
         {
           "id": 19,
           "iterations": {
+            "base": 10,
             "id": 13,
             "kind": "number",
             "loc": 10,
@@ -7496,6 +8066,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
                 "loc": i * 10,
                 "op": "*",
                 "right": {
+                  "base": 10,
                   "id": 16,
                   "kind": "number",
                   "loc": 10,
@@ -7540,6 +8111,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
                 "loc": i - 1,
                 "op": "-",
                 "right": {
+                  "base": 10,
                   "id": 23,
                   "kind": "number",
                   "loc": 1,
@@ -7628,6 +8200,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
       "attributes": [],
       "id": 12,
       "initializer": {
+        "base": 10,
         "id": 11,
         "kind": "number",
         "loc": 5,
@@ -7652,6 +8225,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
       "attributes": [],
       "id": 16,
       "initializer": {
+        "base": 10,
         "id": 15,
         "kind": "number",
         "loc": 6,
@@ -7837,6 +8411,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
           "as": null,
           "id": 5,
           "initializer": {
+            "base": 10,
             "id": 4,
             "kind": "number",
             "loc": 1000,
@@ -7881,6 +8456,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
           },
           "id": 12,
           "initializer": {
+            "base": 10,
             "id": 11,
             "kind": "number",
             "loc": 1000,
@@ -8058,6 +8634,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 21,
           "initializer": {
+            "base": 10,
             "id": 20,
             "kind": "number",
             "loc": 42,
@@ -8095,6 +8672,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 27,
           "initializer": {
+            "base": 10,
             "id": 26,
             "kind": "number",
             "loc": 42,
@@ -8255,6 +8833,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 52,
           "initializer": {
+            "base": 10,
             "id": 51,
             "kind": "number",
             "loc": 42,
@@ -8293,6 +8872,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "as": null,
           "id": 58,
           "initializer": {
+            "base": 10,
             "id": 57,
             "kind": "number",
             "loc": 42,
@@ -8749,6 +9329,7 @@ exports[`grammar should parse types-optional 1`] = `
                 "id": 9,
                 "kind": "op_binary",
                 "left": {
+                  "base": 10,
                   "id": 7,
                   "kind": "number",
                   "loc": 1,
@@ -8757,6 +9338,7 @@ exports[`grammar should parse types-optional 1`] = `
                 "loc": 1 + 2,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 8,
                   "kind": "number",
                   "loc": 2,
@@ -8774,6 +9356,7 @@ exports[`grammar should parse types-optional 1`] = `
                   "id": 12,
                   "kind": "op_binary",
                   "left": {
+                    "base": 10,
                     "id": 10,
                     "kind": "number",
                     "loc": 123,
@@ -8782,6 +9365,7 @@ exports[`grammar should parse types-optional 1`] = `
                   "loc": 123 + 3,
                   "op": "+",
                   "right": {
+                    "base": 10,
                     "id": 11,
                     "kind": "number",
                     "loc": 3,
@@ -8793,6 +9377,7 @@ exports[`grammar should parse types-optional 1`] = `
             "loc": 1 + 2 + (123 + 3)!! > 123,
             "op": ">",
             "right": {
+              "base": 10,
               "id": 15,
               "kind": "number",
               "loc": 123,

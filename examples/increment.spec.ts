@@ -1,29 +1,50 @@
 import { IncrementContract } from "./output/increment_IncrementContract";
-import { ContractSystem } from "@tact-lang/emulator";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { toNano } from "@ton/core";
+import "@ton/test-utils";
 
 describe("increment", () => {
-    it("should deploy", async () => {
-        // Create wallet
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await IncrementContract.fromInit());
-        const tracker = system.track(contract.address);
-        await contract.send(
-            treasure,
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<IncrementContract>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        treasure = await blockchain.treasury("treasure");
+        contract = blockchain.openContract(await IncrementContract.fromInit());
+
+        const result = await contract.send(
+            treasure.getSender(),
             { value: toNano("10") },
             { $$type: "Deploy", queryId: 0n },
         );
-        await system.run();
-        expect(tracker.collect()).toMatchSnapshot();
 
-        // Send internal message
+        expect(result.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should deploy", async () => {});
+
+    it("should increment", async () => {
         await contract.send(
-            treasure,
-            { value: toNano("10") },
-            { $$type: "Increment", key: 0n, value: -1232n },
+            treasure.getSender(),
+            {
+                value: toNano("10"),
+            },
+            {
+                $$type: "Increment",
+                key: 0n,
+                value: -1232n,
+            },
         );
-        await system.run();
-        expect(tracker.collect()).toMatchSnapshot();
+
+        const counters = await contract.getCounters();
+        expect(counters.size).toEqual(1);
+        expect(counters.get(0n)).toEqual(-1232n);
     });
 });

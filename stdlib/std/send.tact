@@ -1,5 +1,6 @@
-@name(send_raw_message)
-native nativeSendMessage(cell: Cell, mode: Int);
+asm fun nativeSendMessage(cell: Cell, mode: Int) { SENDRAWMSG }
+
+asm fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
 
 const SendRemainingBalance: Int = 128;
 const SendRemainingValue: Int = 64;
@@ -7,6 +8,7 @@ const SendIgnoreErrors: Int = 2;
 const SendPayGasSeparately: Int = 1;
 const SendDestroyIfZero: Int = 32;
 const SendBounceIfActionFail: Int = 16;
+const SendOnlyEstimateFee: Int = 1024;
 
 struct SendParameters {
     bounce: Bool = true;
@@ -18,7 +20,7 @@ struct SendParameters {
     data: Cell? = null;
 }
 
-fun send(params: SendParameters) {
+fun send(params: SendParameters): Int { // returns forward fee
     let b: Builder = beginCell();
     b = b.storeInt(1, 2); // internal_message + ihd_disabled
     b = b.storeBool(params.bounce); // bounce
@@ -66,7 +68,7 @@ fun send(params: SendParameters) {
 
     // Send
     let c: Cell = b.endCell();
-    nativeSendMessage(c, params.mode);
+    return nativeSendMessageReturnForwardFee(c, params.mode);
 }
 
 inline fun emit(body: Cell) {
@@ -79,8 +81,6 @@ inline fun emit(body: Cell) {
     nativeSendMessage(c, 0);
 }
 
-@name(accept_message)
-native acceptMessage();
+asm fun acceptMessage() { ACCEPT }
 
-@name(commit)
-native commit();
+asm fun commit() { COMMIT }

@@ -1,20 +1,35 @@
 import { beginCell, toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { StringsTester } from "./contracts/output/strings_StringsTester";
+import "@ton/test-utils";
 
 describe("strings", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-    it("should implement strings correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await StringsTester.fromInit());
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<StringsTester>;
 
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await StringsTester.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should implement strings correctly", async () => {
         expect(contract.abi.errors!["31733"]!.message).toStrictEqual(
             "condition can`t be...",
         );

@@ -1,6 +1,5 @@
 import { Dictionary, beginCell, toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import {
     IntFields,
     MyMessage1,
@@ -16,20 +15,35 @@ import {
     storeMyStruct1,
     storeMyStruct2,
 } from "./contracts/output/structs_StructsTester";
+import "@ton/test-utils";
 
 describe("structs", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-    it("should implement structs correctly", async () => {
-        // Init
-        const system = await ContractSystem.create();
-        const treasure = system.treasure("treasure");
-        const contract = system.open(await StructsTester.fromInit());
-        await contract.send(treasure, { value: toNano("10") }, null);
-        await system.run();
-        const tracker = system.track(contract.address);
+    let blockchain: Blockchain;
+    let treasure: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<StructsTester>;
 
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        treasure = await blockchain.treasury("treasure");
+
+        contract = blockchain.openContract(await StructsTester.fromInit());
+
+        const deployResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            null,
+        );
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should implement structs correctly", async () => {
         expect(await contract.getStructInitializerTest()).toEqual(true);
 
         // Prepare test values
@@ -196,7 +210,7 @@ describe("structs", () => {
 
         await expect(
             contract.getFromCell1(beginCell().storeUint(0, 123).endCell()),
-        ).rejects.toThrow("Cell underflow");
+        ).rejects.toThrow("Unable to execute get method. Got exit_code: 9");
 
         await expect(
             contract.getFromCell1(
@@ -206,7 +220,7 @@ describe("structs", () => {
                     )
                     .endCell(),
             ),
-        ).rejects.toThrow("Cell underflow");
+        ).rejects.toThrow("Unable to execute get method. Got exit_code: 9");
 
         expect(() =>
             loadMyStruct1(beginCell().storeUint(0, 123).endCell().asSlice()),
@@ -242,9 +256,17 @@ describe("structs", () => {
 
         // https://github.com/tact-lang/tact/issues/472
 
-        await contract.send(treasure, { value: toNano("10") }, "example");
-        await system.run();
-        expect(tracker.collect()).toMatchSnapshot();
+        const sendResult = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            "example",
+        );
+        expect(sendResult.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: false,
+            exitCode: 9,
+        });
 
         expect(await contract.getLongStruct15Test()).toMatchSnapshot();
         expect(await contract.getLongStruct16Test()).toMatchSnapshot();
@@ -258,22 +280,37 @@ describe("structs", () => {
         // https://github.com/tact-lang/tact/issues/671
 
         expect(
-            (await system.provider(contract).get("longStruct15Test", [])).stack,
-        ).toMatchSnapshot();
-        expect(
-            (await system.provider(contract).get("longStruct16Test", [])).stack,
-        ).toMatchSnapshot();
-        expect(
-            (await system.provider(contract).get("longStruct32Test", [])).stack,
-        ).toMatchSnapshot();
-        expect(
-            (await system.provider(contract).get("longNestedStructTest", []))
-                .stack,
+            (
+                await blockchain
+                    .provider(contract.address)
+                    .get("longStruct15Test", [])
+            ).stack,
         ).toMatchSnapshot();
         expect(
             (
-                await system
-                    .provider(contract)
+                await blockchain
+                    .provider(contract.address)
+                    .get("longStruct16Test", [])
+            ).stack,
+        ).toMatchSnapshot();
+        expect(
+            (
+                await blockchain
+                    .provider(contract.address)
+                    .get("longStruct32Test", [])
+            ).stack,
+        ).toMatchSnapshot();
+        expect(
+            (
+                await blockchain
+                    .provider(contract.address)
+                    .get("longNestedStructTest", [])
+            ).stack,
+        ).toMatchSnapshot();
+        expect(
+            (
+                await blockchain
+                    .provider(contract.address)
                     .get("longNestedStructWithOptsTest", [])
             ).stack,
         ).toMatchSnapshot();
@@ -338,5 +375,32 @@ describe("structs", () => {
             .endCell();
 
         expect(await contract.getUintFieldsMessage()).toEqual(mUintFields);
+
+        // https://github.com/tact-lang/tact/issues/767
+
+        const m = Dictionary.empty(
+            Dictionary.Keys.Uint(8),
+            Dictionary.Values.BigVarUint(4),
+        );
+        m.set(1, 1n);
+        m.set(2, 2n);
+        m.set(3, 3n);
+        const result = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            {
+                $$type: "Foo",
+                s: beginCell().storeDict(m).endCell().asSlice(),
+            },
+        );
+        expect(result.transactions).toHaveTransaction({
+            on: contract.address,
+            success: true,
+        });
+        expect(result.transactions).toHaveTransaction({
+            from: contract.address,
+            to: treasure.address,
+            body: beginCell().storeDict(m).endCell(),
+        });
     });
 });

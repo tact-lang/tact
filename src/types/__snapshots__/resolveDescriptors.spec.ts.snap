@@ -1,5 +1,75 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-arg-duplicate 1`] = `
+"<unknown>:3:1: asm argument rearrangement cannot have duplicates
+Line 3, col 1:
+  2 | 
+> 3 | asm(x x) fun foo(x: Int) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  4 |     DROP
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-arg-missing-and-non-existent-param 1`] = `
+"<unknown>:3:1: asm argument rearrangement must mention all function parameters
+Line 3, col 1:
+  2 | 
+> 3 | asm(x extra) fun foo(x: Int, y: Int) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  4 |     DROP
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-arg-missing-param 1`] = `
+"<unknown>:3:1: asm argument rearrangement must mention all function parameters
+Line 3, col 1:
+  2 | 
+> 3 | asm(x) fun foo(x: Int, y: Int) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  4 |     DROP
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-arg-non-existent-param 1`] = `
+"<unknown>:3:1: asm argument rearrangement must mention only function parameters
+Line 3, col 1:
+  2 | 
+> 3 | asm(x extra) fun foo(x: Int) {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  4 |     DROP
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-ret-duplicate 1`] = `
+"<unknown>:3:1: asm return rearrangement cannot have duplicates
+Line 3, col 1:
+  2 | 
+> 3 | asm(-> 0 0) fun foo(x: Int): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  4 |     INC
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-ret-missing-position 1`] = `
+"<unknown>:4:1: asm return rearrangement must mention all return position numbers: [0..1]
+Line 4, col 1:
+  3 | 
+> 4 | asm(-> 0) fun foo(x: Int, y: Int): Pair {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     SWAP
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-ret-non-existent-position 1`] = `
+"<unknown>:4:1: asm return rearrangement must mention only valid return position numbers: [0..1]
+Line 4, col 1:
+  3 | 
+> 4 | asm(-> 2 1 0) fun foo(x: Int, y: Int): Pair {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 |     SWAP
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for const-decl-default-field-wrong-initializer-type copy 1`] = `
 "<unknown>:4:17: Constant "C" has declared type "Bool", but its initializer has incompatible type "Int"
 Line 4, col 17:
@@ -268,6 +338,25 @@ Line 8, col 1:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for message-opcode-too-large 1`] = `
+"<unknown>:1:9: Opcode of message "Foo" is too large: it must fit into 32 bits
+Line 1, col 9:
+> 1 | message(0x1_FFFFF_FFFF) Foo { }
+              ^~~~~~~~~~~~~~
+  2 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-opcode-zero 1`] = `
+"<unknown>:4:9: Zero opcodes are reserved for text comments and cannot be used for message structs
+Line 4, col 9:
+  3 | // zero opcodes are reserved for string comments
+> 4 | message(0) ZeroOpcode { }
+              ^
+  5 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for method-first-param-not-self1 1`] = `
 "<unknown>:8:17: Extend function must have first parameter named "self"
 Line 8, col 17:
@@ -486,6 +575,16 @@ Line 7, col 1:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for trait-field-initialized 1`] = `
+"<unknown>:2:14: Trait field cannot have an initializer
+Line 2, col 14:
+  1 | trait T {
+> 2 |     a: Int = 42; // error
+                   ^~
+  3 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for wf-type-const 1`] = `
 "<unknown>:4:19: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
 Line 4, col 19:
@@ -534,6 +633,861 @@ Line 4, col 16:
                      ^~~~
   5 | 
 "
+`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Slice;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Slice,
+        "text": "Slice",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "loadRef" => {
+        "ast": {
+          "attributes": [
+            {
+              "loc": extends,
+              "type": "extends",
+            },
+            {
+              "loc": mutates,
+              "type": "mutates",
+            },
+          ],
+          "id": 12,
+          "instructions": [
+            "LDREF",
+          ],
+          "kind": "asm_function_def",
+          "loc": asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF },
+          "name": {
+            "id": 7,
+            "kind": "id",
+            "loc": loadRef,
+            "text": "loadRef",
+          },
+          "params": [
+            {
+              "id": 11,
+              "kind": "typed_parameter",
+              "loc": self: Slice,
+              "name": {
+                "id": 9,
+                "kind": "id",
+                "loc": self,
+                "text": "self",
+              },
+              "type": {
+                "id": 10,
+                "kind": "type_id",
+                "loc": Slice,
+                "text": "Slice",
+              },
+            },
+          ],
+          "return": {
+            "id": 8,
+            "kind": "type_id",
+            "loc": Cell,
+            "text": "Cell",
+          },
+          "shuffle": {
+            "args": [],
+            "ret": [
+              {
+                "base": 10,
+                "id": 5,
+                "kind": "number",
+                "loc": 1,
+                "value": 1n,
+              },
+              {
+                "base": 10,
+                "id": 6,
+                "kind": "number",
+                "loc": 0,
+                "value": 0n,
+              },
+            ],
+          },
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "name": "loadRef",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Cell",
+          "optional": false,
+        },
+        "self": "Slice",
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Slice",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 35456,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Cell;,
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Cell,
+        "text": "Cell",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Cell",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 26294,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffle 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffle 2`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "id": 9,
+      "instructions": [
+        "NOP",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm(-> 0) fun foo(x: Int): Int {
+    NOP
+},
+      "name": {
+        "id": 4,
+        "kind": "id",
+        "loc": foo,
+        "text": "foo",
+      },
+      "params": [
+        {
+          "id": 8,
+          "kind": "typed_parameter",
+          "loc": x: Int,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": x,
+            "text": "x",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "return": {
+        "id": 5,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [
+          {
+            "base": 10,
+            "id": 3,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+        ],
+      },
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverride": false,
+    "isVirtual": false,
+    "name": "foo",
+    "origin": "user",
+    "params": [
+      {
+        "loc": x: Int,
+        "name": {
+          "id": 6,
+          "kind": "id",
+          "loc": x,
+          "text": "x",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "returns": {
+      "kind": "ref",
+      "name": "Int",
+      "optional": false,
+    },
+    "self": null,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffle 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffle 2`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "id": 12,
+      "instructions": [
+        "DROP",
+        "DROP",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm(y x) fun foo(x: Int, y: Int) {
+    DROP
+    DROP
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": foo,
+        "text": "foo",
+      },
+      "params": [
+        {
+          "id": 8,
+          "kind": "typed_parameter",
+          "loc": x: Int,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": x,
+            "text": "x",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "id": 11,
+          "kind": "typed_parameter",
+          "loc": y: Int,
+          "name": {
+            "id": 9,
+            "kind": "id",
+            "loc": y,
+            "text": "y",
+          },
+          "type": {
+            "id": 10,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "return": null,
+      "shuffle": {
+        "args": [
+          {
+            "id": 3,
+            "kind": "id",
+            "loc": y,
+            "text": "y",
+          },
+          {
+            "id": 4,
+            "kind": "id",
+            "loc": x,
+            "text": "x",
+          },
+        ],
+        "ret": [],
+      },
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverride": false,
+    "isVirtual": false,
+    "name": "foo",
+    "origin": "user",
+    "params": [
+      {
+        "loc": x: Int,
+        "name": {
+          "id": 6,
+          "kind": "id",
+          "loc": x,
+          "text": "x",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "loc": y: Int,
+        "name": {
+          "id": 9,
+          "kind": "id",
+          "loc": y,
+          "text": "y",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 2`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "id": 7,
+      "instructions": [
+        "DROP",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun foo(x: Int) {
+    DROP
+},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": foo,
+        "text": "foo",
+      },
+      "params": [
+        {
+          "id": 6,
+          "kind": "typed_parameter",
+          "loc": x: Int,
+          "name": {
+            "id": 4,
+            "kind": "id",
+            "loc": x,
+            "text": "x",
+          },
+          "type": {
+            "id": 5,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "return": null,
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverride": false,
+    "isVirtual": false,
+    "name": "foo",
+    "origin": "user",
+    "params": [
+      {
+        "loc": x: Int,
+        "name": {
+          "id": 4,
+          "kind": "id",
+          "loc": x,
+          "text": "x",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "returns": {
+      "kind": "void",
+    },
+    "self": null,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 6,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": fst: Int,
+          "name": {
+            "id": 4,
+            "kind": "id",
+            "loc": fst,
+            "text": "fst",
+          },
+          "type": {
+            "id": 5,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": null,
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": snd: Int,
+          "name": {
+            "id": 7,
+            "kind": "id",
+            "loc": snd,
+            "text": "snd",
+          },
+          "type": {
+            "id": 8,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 10,
+      "kind": "struct_decl",
+      "loc": struct Pair { fst: Int; snd: Int },
+      "name": {
+        "id": 3,
+        "kind": "type_id",
+        "loc": Pair,
+        "text": "Pair",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "fst",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 6,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": fst: Int,
+          "name": {
+            "id": 4,
+            "kind": "id",
+            "loc": fst,
+            "text": "fst",
+          },
+          "type": {
+            "id": 5,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": fst: Int,
+        "name": "fst",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "snd",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": snd: Int,
+          "name": {
+            "id": 7,
+            "kind": "id",
+            "loc": snd,
+            "text": "snd",
+          },
+          "type": {
+            "id": 8,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 1,
+        "loc": snd: Int,
+        "name": "snd",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "Pair",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "Pair{fst:int257,snd:int257}",
+    "tlb": "_ fst:int257 snd:int257 = Pair",
+    "traits": [],
+    "uid": 13831,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 2`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "id": 21,
+      "instructions": [
+        "SWAP",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm(-> 1 0) fun foo(x: Int, y: Int): Pair {
+    SWAP
+},
+      "name": {
+        "id": 13,
+        "kind": "id",
+        "loc": foo,
+        "text": "foo",
+      },
+      "params": [
+        {
+          "id": 17,
+          "kind": "typed_parameter",
+          "loc": x: Int,
+          "name": {
+            "id": 15,
+            "kind": "id",
+            "loc": x,
+            "text": "x",
+          },
+          "type": {
+            "id": 16,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "id": 20,
+          "kind": "typed_parameter",
+          "loc": y: Int,
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": y,
+            "text": "y",
+          },
+          "type": {
+            "id": 19,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "return": {
+        "id": 14,
+        "kind": "type_id",
+        "loc": Pair,
+        "text": "Pair",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [
+          {
+            "base": 10,
+            "id": 11,
+            "kind": "number",
+            "loc": 1,
+            "value": 1n,
+          },
+          {
+            "base": 10,
+            "id": 12,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+        ],
+      },
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverride": false,
+    "isVirtual": false,
+    "name": "foo",
+    "origin": "user",
+    "params": [
+      {
+        "loc": x: Int,
+        "name": {
+          "id": 15,
+          "kind": "id",
+          "loc": x,
+          "text": "x",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "loc": y: Int,
+        "name": {
+          "id": 18,
+          "kind": "id",
+          "loc": y,
+          "text": "y",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "returns": {
+      "kind": "ref",
+      "name": "Pair",
+      "optional": false,
+    },
+    "self": null,
+  },
+]
 `;
 
 exports[`resolveDescriptors should resolve descriptors for const-decl-struct-with-default-field 1`] = `
@@ -606,6 +1560,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
           "as": null,
           "id": 9,
           "initializer": {
+            "base": 10,
             "id": 8,
             "kind": "number",
             "loc": 42,
@@ -655,6 +1610,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
           "as": null,
           "id": 9,
           "initializer": {
+            "base": 10,
             "id": 8,
             "kind": "number",
             "loc": 42,
@@ -1059,7 +2015,13 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       },
     ],
     "functions": Map {},
-    "header": 3746466057,
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 3746466057n,
+    },
     "init": null,
     "interfaces": [],
     "kind": "struct",
@@ -1620,7 +2582,13 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       },
     ],
     "functions": Map {},
-    "header": 2219696518,
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 2219696518n,
+    },
     "init": null,
     "interfaces": [],
     "kind": "struct",
@@ -2150,6 +3118,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           ],
           "id": 14,
           "initializer": {
+            "base": 10,
             "id": 13,
             "kind": "number",
             "loc": 42,
@@ -2202,6 +3171,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           ],
           "id": 14,
           "initializer": {
+            "base": 10,
             "id": 13,
             "kind": "number",
             "loc": 42,
@@ -2498,6 +3468,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           ],
           "id": 9,
           "initializer": {
+            "base": 10,
             "id": 8,
             "kind": "number",
             "loc": 41,
@@ -2543,6 +3514,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           ],
           "id": 9,
           "initializer": {
+            "base": 10,
             "id": 8,
             "kind": "number",
             "loc": 41,
@@ -2635,6 +3607,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           ],
           "id": 15,
           "initializer": {
+            "base": 10,
             "id": 14,
             "kind": "number",
             "loc": 42,
@@ -2687,6 +3660,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
           ],
           "id": 15,
           "initializer": {
+            "base": 10,
             "id": 14,
             "kind": "number",
             "loc": 42,
@@ -2787,6 +3761,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               ],
               "id": 9,
               "initializer": {
+                "base": 10,
                 "id": 8,
                 "kind": "number",
                 "loc": 41,
@@ -2832,6 +3807,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
               ],
               "id": 9,
               "initializer": {
+                "base": 10,
                 "id": 8,
                 "kind": "number",
                 "loc": 41,
@@ -3075,7 +4051,13 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       },
     ],
     "functions": Map {},
-    "header": 3746466057,
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 3746466057n,
+    },
     "init": null,
     "interfaces": [],
     "kind": "struct",
@@ -3121,6 +4103,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 15,
                 "kind": "number",
                 "loc": 42,
@@ -3144,6 +4127,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 18,
                 "kind": "number",
                 "loc": 42,
@@ -3234,6 +4218,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 15,
                 "kind": "number",
                 "loc": 42,
@@ -3269,6 +4254,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 18,
                 "kind": "number",
                 "loc": 42,
@@ -3569,6 +4555,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 13,
                 "kind": "number",
                 "loc": 0,
@@ -3636,6 +4623,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 13,
                 "kind": "number",
                 "loc": 0,
@@ -3965,6 +4953,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 8,
                 "kind": "number",
                 "loc": 42,
@@ -4025,6 +5014,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 8,
                 "kind": "number",
                 "loc": 42,
@@ -4133,6 +5123,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 15,
                 "kind": "number",
                 "loc": 43,
@@ -4200,6 +5191,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 15,
                 "kind": "number",
                 "loc": 43,
@@ -4316,6 +5308,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "statements": [
                 {
                   "expression": {
+                    "base": 10,
                     "id": 8,
                     "kind": "number",
                     "loc": 42,
@@ -4376,6 +5369,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "statements": [
                 {
                   "expression": {
+                    "base": 10,
                     "id": 8,
                     "kind": "number",
                     "loc": 42,
@@ -5000,6 +5994,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 9,
             "kind": "number",
             "loc": 0,
@@ -5046,6 +6041,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 13,
             "kind": "number",
             "loc": 0,
@@ -5125,6 +6121,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "statements": [
         {
           "expression": {
+            "base": 10,
             "id": 23,
             "kind": "number",
             "loc": 0,
@@ -5476,6 +6473,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 27,
                 "kind": "number",
                 "loc": 0,
@@ -5515,6 +6513,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 32,
                 "kind": "number",
                 "loc": 0,
@@ -5624,6 +6623,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 27,
                 "kind": "number",
                 "loc": 0,
@@ -5680,6 +6680,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 32,
                 "kind": "number",
                 "loc": 0,
@@ -5911,6 +6912,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
                 "loc": self + 1,
                 "op": "+",
                 "right": {
+                  "base": 10,
                   "id": 13,
                   "kind": "number",
                   "loc": 1,
@@ -6555,12 +7557,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
+                    "base": 10,
                     "id": 24,
                     "kind": "number",
                     "loc": 1,
                     "value": 1n,
                   },
                   {
+                    "base": 10,
                     "id": 25,
                     "kind": "number",
                     "loc": 2,
@@ -6591,12 +7595,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
+                    "base": 10,
                     "id": 32,
                     "kind": "number",
                     "loc": 1,
                     "value": 1n,
                   },
                   {
+                    "base": 10,
                     "id": 33,
                     "kind": "number",
                     "loc": 2,
@@ -6641,6 +7647,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "left": {
                   "args": [
                     {
+                      "base": 10,
                       "id": 38,
                       "kind": "number",
                       "loc": 1,
@@ -6668,6 +7675,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "right": {
                   "args": [
                     {
+                      "base": 10,
                       "id": 44,
                       "kind": "number",
                       "loc": 1,
@@ -6876,12 +7884,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
+                    "base": 10,
                     "id": 24,
                     "kind": "number",
                     "loc": 1,
                     "value": 1n,
                   },
                   {
+                    "base": 10,
                     "id": 25,
                     "kind": "number",
                     "loc": 2,
@@ -6912,12 +7922,14 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               "expression": {
                 "args": [
                   {
+                    "base": 10,
                     "id": 32,
                     "kind": "number",
                     "loc": 1,
                     "value": 1n,
                   },
                   {
+                    "base": 10,
                     "id": 33,
                     "kind": "number",
                     "loc": 2,
@@ -6962,6 +7974,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "left": {
                   "args": [
                     {
+                      "base": 10,
                       "id": 38,
                       "kind": "number",
                       "loc": 1,
@@ -6989,6 +8002,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
                 "right": {
                   "args": [
                     {
+                      "base": 10,
                       "id": 44,
                       "kind": "number",
                       "loc": 1,
@@ -7156,6 +8170,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 5,
                 "kind": "number",
                 "loc": 0,
@@ -7241,6 +8256,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         {
           "id": 19,
           "iterations": {
+            "base": 10,
             "id": 14,
             "kind": "number",
             "loc": 1,
@@ -7253,6 +8269,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 17,
                 "kind": "number",
                 "loc": 0,
@@ -7350,6 +8367,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
           "statements": [
             {
               "expression": {
+                "base": 10,
                 "id": 29,
                 "kind": "number",
                 "loc": 0,
@@ -7449,6 +8467,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
           "trueStatements": [
             {
               "expression": {
+                "base": 10,
                 "id": 41,
                 "kind": "number",
                 "loc": 0,
@@ -7584,6 +8603,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
           "as": null,
           "id": 9,
           "initializer": {
+            "base": 10,
             "id": 8,
             "kind": "number",
             "loc": 42,
@@ -7633,6 +8653,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
           "as": null,
           "id": 9,
           "initializer": {
+            "base": 10,
             "id": 8,
             "kind": "number",
             "loc": 42,
@@ -8239,7 +9260,13 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
       },
     ],
     "functions": Map {},
-    "header": 383013829,
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 383013829n,
+    },
     "init": null,
     "interfaces": [],
     "kind": "struct",

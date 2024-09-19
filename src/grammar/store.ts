@@ -4,6 +4,7 @@ import {
     AstFunctionDef,
     AstNativeFunctionDecl,
     AstTypeDecl,
+    AstAsmFunctionDef,
 } from "./ast";
 import { throwInternalCompilerError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
@@ -24,7 +25,7 @@ export type TactSource = { code: string; path: string; origin: ItemOrigin };
 export type AstStore = {
     sources: TactSource[];
     funcSources: { code: string; path: string }[];
-    functions: (AstFunctionDef | AstNativeFunctionDecl)[];
+    functions: (AstFunctionDef | AstNativeFunctionDecl | AstAsmFunctionDef)[];
     constants: AstConstantDef[];
     types: AstTypeDecl[];
 };
@@ -71,7 +72,11 @@ export function openContext(
 ): CompilerContext {
     const modules = parsedModules ? parsedModules : parseModules(sources);
     const types: AstTypeDecl[] = [];
-    const functions: (AstNativeFunctionDecl | AstFunctionDef)[] = [];
+    const functions: (
+        | AstNativeFunctionDecl
+        | AstFunctionDef
+        | AstAsmFunctionDef
+    )[] = [];
     const constants: AstConstantDef[] = [];
     for (const module of modules) {
         for (const item of module.items) {
@@ -86,6 +91,7 @@ export function openContext(
                     }
                     break;
                 case "function_def":
+                case "asm_function_def":
                 case "native_function_decl":
                     {
                         functions.push(item);

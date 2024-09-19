@@ -1,11 +1,7 @@
-@name(cell_hash)
-extends native hash(self: Cell): Int;
+asm extends fun hash(self: Cell): Int { HASHCU }
 
-@name(slice_hash)
-extends native hash(self: Slice): Int;
+asm extends fun hash(self: Slice): Int { HASHSU }
 
-@name(check_signature)
-native checkSignature(hash: Int, signature: Slice, public_key: Int): Bool;
+asm fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool { CHKSIGNU }
 
-@name(check_data_signature)
-native checkDataSignature(data: Slice, signature: Slice, public_key: Int): Bool;
+asm fun checkDataSignature(data: Slice, signature: Slice, public_key: Int): Bool { CHKSIGNS }

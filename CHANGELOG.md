@@ -9,23 +9,74 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Release contributors
+
+## [1.5.1] - 2024-09-18
+
+### Added
+
+- The `engines` property in `package.json` and its strict checking to ensure minimal required Node.js version is 22: PR [#847](https://github.com/tact-lang/tact/pull/847)
+
+### Changed
+
+- CI now does matrix tests with [Blueprint](https://github.com/ton-org/blueprint) and `npm`, `yarn`, `pnpm`, and `bun` package managers: PR [#848](https://github.com/tact-lang/tact/pull/848)
+
+### Release contributors
+
+- [Jesús Héctor Domínguez Sánchez](https://github.com/jeshecdom)
+- [Novus Nota](https://github.com/novusnota)
+
+## [1.5.0] - 2024-09-15
+
+### Added
+
 - The `exists` method for the `Map` type: PR [#581](https://github.com/tact-lang/tact/pull/581)
 - The `storeBit` method for `Builder` type and the `loadBit` method for `Slice` type: PR [#699](https://github.com/tact-lang/tact/pull/699)
 - The `toSlice` method for structs and messages: PR [#630](https://github.com/tact-lang/tact/pull/630)
 - Wider range of serialization options for integers — `uint1` through `uint256` and `int1` through `int257`: PR [#558](https://github.com/tact-lang/tact/pull/558)
+- The `deepEquals` method for the `Map` type: PR [#637](https://github.com/tact-lang/tact/pull/637)
+- `asm` bodies for module-level functions: PR [#769](https://github.com/tact-lang/tact/pull/769), PR [#825](https://github.com/tact-lang/tact/pull/825)
+- Corresponding stdlib functions for new TVM instructions from 2023.07 and 2024.04 upgrades: PR [#331](https://github.com/tact-lang/tact/pull/331). Added the `storeBuilder` extension function and `gasConsumed`, `getComputeFee`, `getStorageFee`, `getForwardFee`, `getSimpleComputeFee`, `getSimpleForwardFee`, `getOriginalFwdFee`, `myStorageDue` functions.
+- `slice`, `rawSlice`, `ascii` and `crc32` built-in functions: PR [#787](https://github.com/tact-lang/tact/pull/787), PR [#799](https://github.com/tact-lang/tact/pull/799)
+- `Builder.storeMaybeRef`, `parseStdAddress` and `parseVarAddress` stdlib functions: PR [#793](https://github.com/tact-lang/tact/pull/793)
+- The compiler development guide: PR [#833](https://github.com/tact-lang/tact/pull/833)
+- Constant evaluator now uses an interpreter: PR [#664](https://github.com/tact-lang/tact/pull/664). This allows calls to user-defined functions and references to declared global constants.
 
 ### Changed
 
-- Constant evaluator now uses an interpreter: PR [#664](https://github.com/tact-lang/tact/pull/664). This increases the expression simplification capabilities of the constant evaluator to expressions that include:
-  - Calls to user-defined functions.
-  - References to declared global constants.
 - Allow omitting semicolons in contract/trait declarations and definitions: PR [#718](https://github.com/tact-lang/tact/pull/718)
+- Compiler Tests are now using `@ton/sandbox` instead of `@tact-lang/emulator`: PR [#651](https://github.com/tact-lang/tact/pull/651)
+- The minimal required Node.js version is bumped to 22: PR [#769](https://github.com/tact-lang/tact/pull/769)
 
 ### Fixed
 
 - Traits can override inherited abstract functions: PR [#724](https://github.com/tact-lang/tact/pull/724)
 - Fix code generation bug for maps from unsigned integers to Boolean values: PR [#725](https://github.com/tact-lang/tact/pull/725)
 - Compiler failure when `toString` gets called as a static function and not a method: PR [#745](https://github.com/tact-lang/tact/pull/745)
+- Tact AST keeps the original format of integer literals (hex/dec/oct/bin): PR [#771](https://github.com/tact-lang/tact/pull/771)
+- Message opcodes are now checked if they fit into 32 bits: PR [#771](https://github.com/tact-lang/tact/pull/771)
+- Disallow zero binary message opcodes as those are reserved for text messages: PR [#786](https://github.com/tact-lang/tact/pull/786)
+- Return-statements in `init()` function do not cause FunC compilation error anymore: PR [#794](https://github.com/tact-lang/tact/pull/794)
+- `emptyMap()` in equality comparison expressions does not cause code generation failures: PR [#814](https://github.com/tact-lang/tact/pull/814)
+- Maps with `coins` as value type are now correctly handled in structs: PR [#821](https://github.com/tact-lang/tact/pull/821)
+- Contract method calls in return statements: PR [#829](https://github.com/tact-lang/tact/pull/829)
+- Disallow initializers for trait storage fields: PR [#831](https://github.com/tact-lang/tact/pull/831)
+- Fix `dnsInternalNormalize()` in `@stdlib/dns` to throw on slices with references as expected: PR [#834](https://github.com/tact-lang/tact/pull/834)
+
+### Release contributors
+
+- [Jesús Héctor Domínguez Sánchez](https://github.com/jeshecdom)
+- [Novus Nota](https://github.com/novusnota)
+- [Daniil Sedov](https://github.com/Gusarich)
+- [Anton Trunov](https://github.com/anton-trunov)
+
+### Special thanks
+
+- [Georgiy Komarov](https://github.com/jubnzv)
 
 ## [1.4.4] - 2024-08-18
 

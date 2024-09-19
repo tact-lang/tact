@@ -160,4 +160,39 @@ describe("fail-const-eval", () => {
         errorMessage:
             "Cannot evaluate expression: repeat argument must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)",
     });
+    itShouldNotCompile({
+        testName: "const-eval-ascii-overflow",
+        errorMessage:
+            "Cannot evaluate expression to a constant: ascii string is too long, expected up to 32 bytes, got 33",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-ascii-overflow-2",
+        errorMessage:
+            "Cannot evaluate expression to a constant: ascii string is too long, expected up to 32 bytes, got 33",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-rawslice-not-hex",
+        errorMessage:
+            "Cannot evaluate expression to a constant: invalid hex string: hello world",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-rawslice-overflow",
+        errorMessage:
+            "Cannot evaluate expression to a constant: slice constant is too long, expected up to 1023 bits, got 1024",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-rawslice-overflow-padded",
+        errorMessage:
+            "Cannot evaluate expression to a constant: slice constant is too long, expected up to 1023 bits, got 1024",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-rawslice-invalid",
+        errorMessage:
+            "Cannot evaluate expression to a constant: invalid hex string: 4a__",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-ascii-empty",
+        errorMessage:
+            "Cannot evaluate expression to a constant: ascii string cannot be empty",
+    });
 });

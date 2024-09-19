@@ -78,18 +78,6 @@ return address;",
   },
   {
     "code": {
-      "code": "asm( -> 1 0) "1 LDI"",
-      "kind": "asm",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_load_bool",
-    "signature": "(slice, int) __tact_load_bool(slice s)",
-  },
-  {
-    "code": {
       "code": "slice raw = cs~load_msg_addr();
 return (cs, __tact_verify_address(raw));",
       "kind": "generic",
@@ -211,20 +199,6 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "return pair_first(get_balance());",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_my_balance",
-    "signature": "int __tact_my_balance()",
-  },
-  {
-    "code": {
       "code": "throw_if(128, null?(x)); return x;",
       "kind": "generic",
     },
@@ -240,8 +214,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTDEL"",
+      "code": "DICTDEL",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -252,8 +227,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTIDEL"",
+      "code": "DICTIDEL",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -264,8 +240,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTUDEL"",
+      "code": "DICTUDEL",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -276,8 +253,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(value index dict key_len) "DICTSETREF"",
+      "code": "DICTSETREF",
       "kind": "asm",
+      "shuffle": "(value index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -288,8 +266,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT"",
+      "code": "DICTGET NULLSWAPIFNOT",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -300,8 +279,22 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT"",
+      "code": "DICTDELGET NULLSWAPIFNOT2",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_get",
+    "signature": "(cell, (slice, int)) __tact_dict_delete_get(cell dict, int key_len, slice index)",
+  },
+  {
+    "code": {
+      "code": "DICTGETREF NULLSWAPIFNOT",
+      "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -312,8 +305,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(dict key_len -> 1 0 2) "DICTMIN" "NULLSWAPIFNOT2"",
+      "code": "DICTMIN  NULLSWAPIFNOT2",
       "kind": "asm",
+      "shuffle": "(dict key_len -> 1 0 2)",
     },
     "comment": null,
     "context": "stdlib",
@@ -324,8 +318,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(dict key_len -> 1 0 2) "DICTMINREF" "NULLSWAPIFNOT2"",
+      "code": "DICTMINREF NULLSWAPIFNOT2",
       "kind": "asm",
+      "shuffle": "(dict key_len -> 1 0 2)",
     },
     "comment": null,
     "context": "stdlib",
@@ -336,8 +331,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(pivot dict key_len -> 1 0 2) "DICTGETNEXT" "NULLSWAPIFNOT2"",
+      "code": "DICTGETNEXT NULLSWAPIFNOT2",
       "kind": "asm",
+      "shuffle": "(pivot dict key_len -> 1 0 2)",
     },
     "comment": null,
     "context": "stdlib",
@@ -367,8 +363,9 @@ if (flag) {
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "s0 DUMP" "DROP"",
+      "code": "STRDUMP DROP STRDUMP DROP s0 DUMP DROP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -381,8 +378,9 @@ if (flag) {
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "STRDUMP" "DROP"",
+      "code": "STRDUMP DROP STRDUMP DROP STRDUMP DROP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -415,8 +413,9 @@ if (flag) {
   },
   {
     "code": {
-      "code": "asm "SDSUBSTR"",
+      "code": "SDSUBSTR",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -542,8 +541,9 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "DUMPSTK"",
+      "code": "STRDUMP DROP STRDUMP DROP DUMPSTK",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -616,8 +616,9 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -628,8 +629,9 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -1580,7 +1582,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "return equal_slice_bits(a, b);",
+      "code": "return equal_slices_bits(a, b);",
       "kind": "generic",
     },
     "comment": null,
@@ -1594,7 +1596,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "return (null?(a)) ? (false) : (equal_slice_bits(a, b));",
+      "code": "return (null?(a)) ? (false) : (equal_slices_bits(a, b));",
       "kind": "generic",
     },
     "comment": null,
@@ -1610,7 +1612,7 @@ if (flag) {
     "code": {
       "code": "var a_is_null = null?(a);
 var b_is_null = null?(b);
-return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );",
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slices_bits(a, b) ) : ( false ) );",
       "kind": "generic",
     },
     "comment": null,
@@ -1621,6 +1623,35 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
     },
     "name": "__tact_slice_eq_bits_nullable",
     "signature": "int __tact_slice_eq_bits_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "(slice key, slice value, int flag) = __tact_dict_min(a, kl);
+while (flag) {
+    (slice value_b, int flag_b) = b~__tact_dict_delete_get(kl, key);
+    ifnot (flag_b) {
+        return 0;
+    }
+    ifnot (value.slice_hash() == value_b.slice_hash()) {
+        return 0;
+    }
+    (key, value, flag) = __tact_dict_next(a, kl, key);
+}
+return null?(b);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+      "__tact_dict_delete_get",
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_eq",
+    "signature": "int __tact_dict_eq(cell a, cell b, int kl)",
   },
   {
     "code": {
@@ -1890,8 +1921,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "NIL"",
+      "code": "NIL",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -1916,8 +1948,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "1 TUPLE"",
+      "code": "1 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -1928,8 +1961,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "1 UNTUPLE"",
+      "code": "1 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -1940,8 +1974,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "2 TUPLE"",
+      "code": "2 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -1952,8 +1987,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "2 UNTUPLE"",
+      "code": "2 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -1964,8 +2000,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "3 TUPLE"",
+      "code": "3 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -1976,8 +2013,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "3 UNTUPLE"",
+      "code": "3 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -1988,8 +2026,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "4 TUPLE"",
+      "code": "4 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2000,8 +2039,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "4 UNTUPLE"",
+      "code": "4 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2012,8 +2052,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "5 TUPLE"",
+      "code": "5 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2024,8 +2065,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "5 UNTUPLE"",
+      "code": "5 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2036,8 +2078,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "6 TUPLE"",
+      "code": "6 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2048,8 +2091,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "6 UNTUPLE"",
+      "code": "6 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2060,8 +2104,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "7 TUPLE"",
+      "code": "7 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2072,8 +2117,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "7 UNTUPLE"",
+      "code": "7 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2084,8 +2130,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "8 TUPLE"",
+      "code": "8 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2096,8 +2143,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "8 UNTUPLE"",
+      "code": "8 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2108,8 +2156,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "9 TUPLE"",
+      "code": "9 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2120,8 +2169,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "9 UNTUPLE"",
+      "code": "9 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2132,8 +2182,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "10 TUPLE"",
+      "code": "10 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2144,8 +2195,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "10 UNTUPLE"",
+      "code": "10 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2156,8 +2208,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "11 TUPLE"",
+      "code": "11 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2168,8 +2221,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "11 UNTUPLE"",
+      "code": "11 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2180,8 +2234,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "12 TUPLE"",
+      "code": "12 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2192,8 +2247,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "12 UNTUPLE"",
+      "code": "12 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2204,8 +2260,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "13 TUPLE"",
+      "code": "13 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2216,8 +2273,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "13 UNTUPLE"",
+      "code": "13 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2228,8 +2286,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "14 TUPLE"",
+      "code": "14 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2240,8 +2299,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "14 UNTUPLE"",
+      "code": "14 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2252,8 +2312,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "15 TUPLE"",
+      "code": "15 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2264,8 +2325,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "15 UNTUPLE"",
+      "code": "15 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -2539,18 +2601,6 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "asm "DUP 5 THROWIFNOT UBITSIZE DEC"",
-      "kind": "asm",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_log2",
-    "signature": "int __tact_log2(int num)",
-  },
-  {
-    "code": {
       "code": "throw_unless(5, num > 0);
 throw_unless(5, base > 1);
 if (num < base) {
@@ -2591,18 +2641,6 @@ return result;",
     },
     "name": "__tact_pow",
     "signature": "int __tact_pow(int base, int exp)",
-  },
-  {
-    "code": {
-      "code": "asm "POW2"",
-      "kind": "asm",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_pow2",
-    "signature": "int __tact_pow2(int exp)",
   },
   {
     "code": {
@@ -2796,8 +2834,9 @@ return v'g;",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "type:A",
@@ -3054,8 +3093,9 @@ return v'g;",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "type:B",
@@ -3327,8 +3367,9 @@ return v'h;",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "type:C",
@@ -3596,18 +3637,6 @@ return address;",
   },
   {
     "code": {
-      "code": "asm( -> 1 0) "1 LDI"",
-      "kind": "asm",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_load_bool",
-    "signature": "(slice, int) __tact_load_bool(slice s)",
-  },
-  {
-    "code": {
       "code": "slice raw = cs~load_msg_addr();
 return (cs, __tact_verify_address(raw));",
       "kind": "generic",
@@ -3729,20 +3758,6 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "return pair_first(get_balance());",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_my_balance",
-    "signature": "int __tact_my_balance()",
-  },
-  {
-    "code": {
       "code": "throw_if(128, null?(x)); return x;",
       "kind": "generic",
     },
@@ -3758,8 +3773,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTDEL"",
+      "code": "DICTDEL",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -3770,8 +3786,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTIDEL"",
+      "code": "DICTIDEL",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -3782,8 +3799,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTUDEL"",
+      "code": "DICTUDEL",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -3794,8 +3812,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(value index dict key_len) "DICTSETREF"",
+      "code": "DICTSETREF",
       "kind": "asm",
+      "shuffle": "(value index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -3806,8 +3825,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT"",
+      "code": "DICTGET NULLSWAPIFNOT",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -3818,8 +3838,22 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT"",
+      "code": "DICTDELGET NULLSWAPIFNOT2",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_get",
+    "signature": "(cell, (slice, int)) __tact_dict_delete_get(cell dict, int key_len, slice index)",
+  },
+  {
+    "code": {
+      "code": "DICTGETREF NULLSWAPIFNOT",
+      "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -3830,8 +3864,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(dict key_len -> 1 0 2) "DICTMIN" "NULLSWAPIFNOT2"",
+      "code": "DICTMIN  NULLSWAPIFNOT2",
       "kind": "asm",
+      "shuffle": "(dict key_len -> 1 0 2)",
     },
     "comment": null,
     "context": "stdlib",
@@ -3842,8 +3877,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(dict key_len -> 1 0 2) "DICTMINREF" "NULLSWAPIFNOT2"",
+      "code": "DICTMINREF NULLSWAPIFNOT2",
       "kind": "asm",
+      "shuffle": "(dict key_len -> 1 0 2)",
     },
     "comment": null,
     "context": "stdlib",
@@ -3854,8 +3890,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(pivot dict key_len -> 1 0 2) "DICTGETNEXT" "NULLSWAPIFNOT2"",
+      "code": "DICTGETNEXT NULLSWAPIFNOT2",
       "kind": "asm",
+      "shuffle": "(pivot dict key_len -> 1 0 2)",
     },
     "comment": null,
     "context": "stdlib",
@@ -3885,8 +3922,9 @@ if (flag) {
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "s0 DUMP" "DROP"",
+      "code": "STRDUMP DROP STRDUMP DROP s0 DUMP DROP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -3899,8 +3937,9 @@ if (flag) {
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "STRDUMP" "DROP"",
+      "code": "STRDUMP DROP STRDUMP DROP STRDUMP DROP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -3933,8 +3972,9 @@ if (flag) {
   },
   {
     "code": {
-      "code": "asm "SDSUBSTR"",
+      "code": "SDSUBSTR",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -4060,8 +4100,9 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "DUMPSTK"",
+      "code": "STRDUMP DROP STRDUMP DROP DUMPSTK",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -4134,8 +4175,9 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -4146,8 +4188,9 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5098,7 +5141,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "return equal_slice_bits(a, b);",
+      "code": "return equal_slices_bits(a, b);",
       "kind": "generic",
     },
     "comment": null,
@@ -5112,7 +5155,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "return (null?(a)) ? (false) : (equal_slice_bits(a, b));",
+      "code": "return (null?(a)) ? (false) : (equal_slices_bits(a, b));",
       "kind": "generic",
     },
     "comment": null,
@@ -5128,7 +5171,7 @@ if (flag) {
     "code": {
       "code": "var a_is_null = null?(a);
 var b_is_null = null?(b);
-return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );",
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slices_bits(a, b) ) : ( false ) );",
       "kind": "generic",
     },
     "comment": null,
@@ -5139,6 +5182,35 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
     },
     "name": "__tact_slice_eq_bits_nullable",
     "signature": "int __tact_slice_eq_bits_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "(slice key, slice value, int flag) = __tact_dict_min(a, kl);
+while (flag) {
+    (slice value_b, int flag_b) = b~__tact_dict_delete_get(kl, key);
+    ifnot (flag_b) {
+        return 0;
+    }
+    ifnot (value.slice_hash() == value_b.slice_hash()) {
+        return 0;
+    }
+    (key, value, flag) = __tact_dict_next(a, kl, key);
+}
+return null?(b);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+      "__tact_dict_delete_get",
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_eq",
+    "signature": "int __tact_dict_eq(cell a, cell b, int kl)",
   },
   {
     "code": {
@@ -5408,8 +5480,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "NIL"",
+      "code": "NIL",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5434,8 +5507,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "1 TUPLE"",
+      "code": "1 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5446,8 +5520,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "1 UNTUPLE"",
+      "code": "1 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5458,8 +5533,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "2 TUPLE"",
+      "code": "2 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5470,8 +5546,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "2 UNTUPLE"",
+      "code": "2 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5482,8 +5559,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "3 TUPLE"",
+      "code": "3 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5494,8 +5572,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "3 UNTUPLE"",
+      "code": "3 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5506,8 +5585,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "4 TUPLE"",
+      "code": "4 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5518,8 +5598,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "4 UNTUPLE"",
+      "code": "4 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5530,8 +5611,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "5 TUPLE"",
+      "code": "5 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5542,8 +5624,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "5 UNTUPLE"",
+      "code": "5 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5554,8 +5637,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "6 TUPLE"",
+      "code": "6 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5566,8 +5650,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "6 UNTUPLE"",
+      "code": "6 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5578,8 +5663,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "7 TUPLE"",
+      "code": "7 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5590,8 +5676,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "7 UNTUPLE"",
+      "code": "7 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5602,8 +5689,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "8 TUPLE"",
+      "code": "8 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5614,8 +5702,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "8 UNTUPLE"",
+      "code": "8 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5626,8 +5715,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "9 TUPLE"",
+      "code": "9 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5638,8 +5728,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "9 UNTUPLE"",
+      "code": "9 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5650,8 +5741,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "10 TUPLE"",
+      "code": "10 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5662,8 +5754,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "10 UNTUPLE"",
+      "code": "10 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5674,8 +5767,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "11 TUPLE"",
+      "code": "11 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5686,8 +5780,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "11 UNTUPLE"",
+      "code": "11 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5698,8 +5793,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "12 TUPLE"",
+      "code": "12 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5710,8 +5806,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "12 UNTUPLE"",
+      "code": "12 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5722,8 +5819,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "13 TUPLE"",
+      "code": "13 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5734,8 +5832,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "13 UNTUPLE"",
+      "code": "13 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5746,8 +5845,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "14 TUPLE"",
+      "code": "14 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5758,8 +5858,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "14 UNTUPLE"",
+      "code": "14 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5770,8 +5871,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "15 TUPLE"",
+      "code": "15 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -5782,8 +5884,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "15 UNTUPLE"",
+      "code": "15 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -6057,18 +6160,6 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "asm "DUP 5 THROWIFNOT UBITSIZE DEC"",
-      "kind": "asm",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_log2",
-    "signature": "int __tact_log2(int num)",
-  },
-  {
-    "code": {
       "code": "throw_unless(5, num > 0);
 throw_unless(5, base > 1);
 if (num < base) {
@@ -6109,18 +6200,6 @@ return result;",
     },
     "name": "__tact_pow",
     "signature": "int __tact_pow(int base, int exp)",
-  },
-  {
-    "code": {
-      "code": "asm "POW2"",
-      "kind": "asm",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_pow2",
-    "signature": "int __tact_pow2(int exp)",
   },
   {
     "code": {
@@ -6314,8 +6393,9 @@ return v'g;",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "type:A",
@@ -6572,8 +6652,9 @@ return v'g;",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "type:B",
@@ -6845,8 +6926,9 @@ return v'h;",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "type:C",
@@ -7114,18 +7196,6 @@ return address;",
   },
   {
     "code": {
-      "code": "asm( -> 1 0) "1 LDI"",
-      "kind": "asm",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_load_bool",
-    "signature": "(slice, int) __tact_load_bool(slice s)",
-  },
-  {
-    "code": {
       "code": "slice raw = cs~load_msg_addr();
 return (cs, __tact_verify_address(raw));",
       "kind": "generic",
@@ -7247,20 +7317,6 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "return pair_first(get_balance());",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_my_balance",
-    "signature": "int __tact_my_balance()",
-  },
-  {
-    "code": {
       "code": "throw_if(128, null?(x)); return x;",
       "kind": "generic",
     },
@@ -7276,8 +7332,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTDEL"",
+      "code": "DICTDEL",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -7288,8 +7345,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTIDEL"",
+      "code": "DICTIDEL",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -7300,8 +7358,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTUDEL"",
+      "code": "DICTUDEL",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -7312,8 +7371,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(value index dict key_len) "DICTSETREF"",
+      "code": "DICTSETREF",
       "kind": "asm",
+      "shuffle": "(value index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -7324,8 +7384,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT"",
+      "code": "DICTGET NULLSWAPIFNOT",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -7336,8 +7397,22 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT"",
+      "code": "DICTDELGET NULLSWAPIFNOT2",
       "kind": "asm",
+      "shuffle": "(index dict key_len)",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_get",
+    "signature": "(cell, (slice, int)) __tact_dict_delete_get(cell dict, int key_len, slice index)",
+  },
+  {
+    "code": {
+      "code": "DICTGETREF NULLSWAPIFNOT",
+      "kind": "asm",
+      "shuffle": "(index dict key_len)",
     },
     "comment": null,
     "context": "stdlib",
@@ -7348,8 +7423,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(dict key_len -> 1 0 2) "DICTMIN" "NULLSWAPIFNOT2"",
+      "code": "DICTMIN  NULLSWAPIFNOT2",
       "kind": "asm",
+      "shuffle": "(dict key_len -> 1 0 2)",
     },
     "comment": null,
     "context": "stdlib",
@@ -7360,8 +7436,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(dict key_len -> 1 0 2) "DICTMINREF" "NULLSWAPIFNOT2"",
+      "code": "DICTMINREF NULLSWAPIFNOT2",
       "kind": "asm",
+      "shuffle": "(dict key_len -> 1 0 2)",
     },
     "comment": null,
     "context": "stdlib",
@@ -7372,8 +7449,9 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
-      "code": "asm(pivot dict key_len -> 1 0 2) "DICTGETNEXT" "NULLSWAPIFNOT2"",
+      "code": "DICTGETNEXT NULLSWAPIFNOT2",
       "kind": "asm",
+      "shuffle": "(pivot dict key_len -> 1 0 2)",
     },
     "comment": null,
     "context": "stdlib",
@@ -7403,8 +7481,9 @@ if (flag) {
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "s0 DUMP" "DROP"",
+      "code": "STRDUMP DROP STRDUMP DROP s0 DUMP DROP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -7417,8 +7496,9 @@ if (flag) {
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "STRDUMP" "DROP"",
+      "code": "STRDUMP DROP STRDUMP DROP STRDUMP DROP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -7451,8 +7531,9 @@ if (flag) {
   },
   {
     "code": {
-      "code": "asm "SDSUBSTR"",
+      "code": "SDSUBSTR",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -7578,8 +7659,9 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "asm "STRDUMP" "DROP" "STRDUMP" "DROP" "DUMPSTK"",
+      "code": "STRDUMP DROP STRDUMP DROP DUMPSTK",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -7652,8 +7734,9 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -7664,8 +7747,9 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -8616,7 +8700,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "return equal_slice_bits(a, b);",
+      "code": "return equal_slices_bits(a, b);",
       "kind": "generic",
     },
     "comment": null,
@@ -8630,7 +8714,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "return (null?(a)) ? (false) : (equal_slice_bits(a, b));",
+      "code": "return (null?(a)) ? (false) : (equal_slices_bits(a, b));",
       "kind": "generic",
     },
     "comment": null,
@@ -8646,7 +8730,7 @@ if (flag) {
     "code": {
       "code": "var a_is_null = null?(a);
 var b_is_null = null?(b);
-return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );",
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slices_bits(a, b) ) : ( false ) );",
       "kind": "generic",
     },
     "comment": null,
@@ -8657,6 +8741,35 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
     },
     "name": "__tact_slice_eq_bits_nullable",
     "signature": "int __tact_slice_eq_bits_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "(slice key, slice value, int flag) = __tact_dict_min(a, kl);
+while (flag) {
+    (slice value_b, int flag_b) = b~__tact_dict_delete_get(kl, key);
+    ifnot (flag_b) {
+        return 0;
+    }
+    ifnot (value.slice_hash() == value_b.slice_hash()) {
+        return 0;
+    }
+    (key, value, flag) = __tact_dict_next(a, kl, key);
+}
+return null?(b);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+      "__tact_dict_delete_get",
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_eq",
+    "signature": "int __tact_dict_eq(cell a, cell b, int kl)",
   },
   {
     "code": {
@@ -8926,8 +9039,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "NIL"",
+      "code": "NIL",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -8952,8 +9066,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "1 TUPLE"",
+      "code": "1 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -8964,8 +9079,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "1 UNTUPLE"",
+      "code": "1 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -8976,8 +9092,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "2 TUPLE"",
+      "code": "2 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -8988,8 +9105,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "2 UNTUPLE"",
+      "code": "2 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9000,8 +9118,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "3 TUPLE"",
+      "code": "3 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9012,8 +9131,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "3 UNTUPLE"",
+      "code": "3 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9024,8 +9144,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "4 TUPLE"",
+      "code": "4 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9036,8 +9157,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "4 UNTUPLE"",
+      "code": "4 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9048,8 +9170,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "5 TUPLE"",
+      "code": "5 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9060,8 +9183,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "5 UNTUPLE"",
+      "code": "5 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9072,8 +9196,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "6 TUPLE"",
+      "code": "6 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9084,8 +9209,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "6 UNTUPLE"",
+      "code": "6 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9096,8 +9222,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "7 TUPLE"",
+      "code": "7 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9108,8 +9235,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "7 UNTUPLE"",
+      "code": "7 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9120,8 +9248,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "8 TUPLE"",
+      "code": "8 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9132,8 +9261,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "8 UNTUPLE"",
+      "code": "8 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9144,8 +9274,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "9 TUPLE"",
+      "code": "9 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9156,8 +9287,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "9 UNTUPLE"",
+      "code": "9 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9168,8 +9300,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "10 TUPLE"",
+      "code": "10 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9180,8 +9313,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "10 UNTUPLE"",
+      "code": "10 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9192,8 +9326,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "11 TUPLE"",
+      "code": "11 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9204,8 +9339,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "11 UNTUPLE"",
+      "code": "11 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9216,8 +9352,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "12 TUPLE"",
+      "code": "12 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9228,8 +9365,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "12 UNTUPLE"",
+      "code": "12 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9240,8 +9378,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "13 TUPLE"",
+      "code": "13 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9252,8 +9391,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "13 UNTUPLE"",
+      "code": "13 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9264,8 +9404,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "14 TUPLE"",
+      "code": "14 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9276,8 +9417,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "14 UNTUPLE"",
+      "code": "14 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9288,8 +9430,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "15 TUPLE"",
+      "code": "15 TUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9300,8 +9443,9 @@ return data;",
   },
   {
     "code": {
-      "code": "asm "15 UNTUPLE"",
+      "code": "15 UNTUPLE",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "stdlib",
@@ -9575,18 +9719,6 @@ return b.end_cell().begin_parse();",
   },
   {
     "code": {
-      "code": "asm "DUP 5 THROWIFNOT UBITSIZE DEC"",
-      "kind": "asm",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_log2",
-    "signature": "int __tact_log2(int num)",
-  },
-  {
-    "code": {
       "code": "throw_unless(5, num > 0);
 throw_unless(5, base > 1);
 if (num < base) {
@@ -9627,18 +9759,6 @@ return result;",
     },
     "name": "__tact_pow",
     "signature": "int __tact_pow(int base, int exp)",
-  },
-  {
-    "code": {
-      "code": "asm "POW2"",
-      "kind": "asm",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_pow2",
-    "signature": "int __tact_pow2(int exp)",
   },
   {
     "code": {
@@ -9835,8 +9955,9 @@ return v'g;",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "type:A",
@@ -10093,8 +10214,9 @@ return v'g;",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "type:B",
@@ -10366,8 +10488,9 @@ return v'h;",
   },
   {
     "code": {
-      "code": "asm "NOP"",
+      "code": "NOP",
       "kind": "asm",
+      "shuffle": "",
     },
     "comment": null,
     "context": "type:C",

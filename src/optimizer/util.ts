@@ -60,6 +60,7 @@ export function makeValueExpression(value: Value, loc: SrcInfo): AstValue {
     if (typeof value === "bigint") {
         const result = createAstNode({
             kind: "number",
+            base: 10,
             value: value,
             loc: loc,
         });

@@ -1,12 +1,19 @@
 import { toNano } from "@ton/core";
-import { ContractSystem } from "@tact-lang/emulator";
+import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Test } from "./contracts/output/allocation_Test";
+import "@ton/test-utils";
 
 describe("allocation", () => {
-    it("should deploy correctly and process SetCost message without cell overflow", async () => {
-        const system = await ContractSystem.create();
-        const owner = system.treasure("owner");
-        const contract = system.open(
+    let blockchain: Blockchain;
+    let owner: SandboxContract<TreasuryContract>;
+    let contract: SandboxContract<Test>;
+
+    beforeEach(async () => {
+        blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        owner = await blockchain.treasury("owner");
+
+        contract = blockchain.openContract(
             await Test.fromInit(owner.address, {
                 $$type: "Struct2",
                 c: "",
@@ -15,18 +22,34 @@ describe("allocation", () => {
                 f: "",
             }),
         );
-        system.name(contract.address, "main");
-        await contract.send(
-            owner,
-            { value: toNano(1) },
+
+        const deployResult = await contract.send(
+            owner.getSender(),
+            {
+                value: toNano(1),
+            },
             { $$type: "Deploy", queryId: 0n },
         );
-        await system.run();
-        await contract.send(
-            owner,
+
+        expect(deployResult.transactions).toHaveTransaction({
+            from: owner.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+    });
+
+    it("should deploy correctly and process SetCost message without cell overflow", async () => {
+        const setCostResult = await contract.send(
+            owner.getSender(),
             { value: toNano(1) },
             { $$type: "SetCost", cost: toNano("0.1") },
         );
-        await system.run();
+
+        expect(setCostResult.transactions).toHaveTransaction({
+            from: owner.address,
+            to: contract.address,
+            success: true,
+        });
     });
 });

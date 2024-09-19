@@ -71,7 +71,7 @@ export function resolveAllocations(ctx: CompilerContext): CompilerContext {
         let header: { value: number; bits: number } | null = null;
         if (s.header !== null) {
             reserveBits += 32; // Header size
-            header = { value: s.header, bits: 32 };
+            header = { value: Number(s.header.value), bits: 32 };
         }
 
         // Reserver refs

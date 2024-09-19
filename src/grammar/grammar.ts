@@ -22,6 +22,7 @@ import {
     createAstNode,
     AstImport,
     AstConstantDef,
+    AstNumberBase,
 } from "./ast";
 import { throwParseError, throwSyntaxError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
@@ -190,7 +191,7 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
             name: typeId.astOfType(),
             fields: fields.astsOfList(),
             opcode: unwrapOptNode(optIntMsgId, (number) =>
-                Number(bigintOfIntLiteral(number)),
+                number.astOfExpression(),
             ),
             loc: createRef(this),
         });
@@ -329,6 +330,39 @@ semantics.addOperation<AstNode>("astOfItem", {
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             params: funParameters.astsOfList(),
             statements: funBody.children.map((s) => s.astOfStatement()),
+            loc: createRef(this),
+        });
+    },
+    AsmFunction(
+        _asmKwd,
+        optAsmShuffle,
+        funAttributes,
+        _funKwd,
+        funId,
+        funParameters,
+        _optColon,
+        optReturnType,
+        _lbrace,
+        asmInstructions,
+        _rbrace,
+    ) {
+        const shuffle = optAsmShuffle.children[0]?.astsOfAsmShuffle() ?? {
+            args: [],
+            ret: [],
+        };
+        const attributes = funAttributes.children.map((a) =>
+            a.astOfFunctionAttributes(),
+        ) as AstFunctionAttribute[];
+        checkVariableName(funId.sourceString, createRef(funId));
+        checkFunctionAttributes(false, attributes, createRef(this));
+        return createAstNode({
+            kind: "asm_function_def",
+            shuffle,
+            attributes,
+            name: funId.astOfExpression(),
+            return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
+            params: funParameters.astsOfList(),
+            instructions: asmInstructions.children.map((s) => s.sourceString),
             loc: createRef(this),
         });
     },
@@ -488,6 +522,21 @@ semantics.addOperation<AstFunctionAttribute>("astOfFunctionAttributes", {
         return { type: "abstract", loc: createRef(this) };
     },
 });
+
+semantics.addOperation<{ args: AstNode[]; ret: AstNode[] }>(
+    "astsOfAsmShuffle",
+    {
+        AsmShuffle(_lparen, argsShuffle, _optArrow, optRetShuffle, _rparen) {
+            return {
+                args: argsShuffle.children.map((id) => id.astOfExpression()),
+                ret:
+                    optRetShuffle.children[0]?.children.map((num) =>
+                        num.astOfExpression(),
+                    ) ?? [],
+            };
+        },
+    },
+);
 
 semantics.addOperation<AstConstantAttribute>("astOfConstAttribute", {
     ConstantAttribute_override(_) {
@@ -900,15 +949,41 @@ function bigintOfIntLiteral(litString: NonterminalNode): bigint {
     return BigInt(litString.sourceString.replaceAll("_", ""));
 }
 
+function baseOfIntLiteral(node: NonterminalNode): AstNumberBase {
+    const basePrefix = node.sourceString.slice(0, 2).toLowerCase();
+    switch (basePrefix) {
+        case "0x":
+            return 16;
+        case "0o":
+            return 8;
+        case "0b":
+            return 2;
+        default:
+            return 10;
+    }
+}
+
+function astOfNumber(node: Node): AstNode {
+    return createAstNode({
+        kind: "number",
+        base: baseOfIntLiteral(node),
+        value: bigintOfIntLiteral(node),
+        loc: createRef(node),
+    });
+}
+
 // Expressions
 semantics.addOperation<AstNode>("astOfExpression", {
     // Literals
-    integerLiteral(number) {
-        return createAstNode({
-            kind: "number",
-            value: bigintOfIntLiteral(number),
-            loc: createRef(this),
-        }); // Parses dec, hex, and bin numbers
+    integerLiteral(_) {
+        // Parses dec, hex, and bin numbers
+        return astOfNumber(this);
+    },
+    integerLiteralDec(_) {
+        return astOfNumber(this);
+    },
+    integerLiteralHex(_0x, _digit, _1, _2) {
+        return astOfNumber(this);
     },
     boolLiteral(boolValue) {
         return createAstNode({
