@@ -36,7 +36,7 @@ describe("repeat range", () => {
         expect(await contract.getTestIgnoredRange()).toEqual(true);
 
         // invalid range
-        expect(await contract.getTestInvalidRange()).toEqual(true);
+        expect(await contract.getTestInvalidRange(31n)).toEqual(true);
 
         // min effective range
         expect(await contract.getTestMinEffectiveRange()).toEqual(true);

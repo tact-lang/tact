@@ -244,19 +244,18 @@ function processCondition(
     sctx: StatementContext;
     returnAlwaysReachable: boolean;
 } {
-    // Copy the initial statement and compiler contexts
+    // Copy the initial statement context
     const initialSctx = sctx;
-    const initialCtx = ctx;
 
     // Process expression. This updates the statement and compiler contexts.
     const resCtx = resolveExpression(condition.condition, sctx, ctx);
     ctx = resCtx.ctx;
     sctx = resCtx.sctx;
 
-    // Evaluate the condition in the initial statement and compiler contexts.
+    // Evaluate the condition in the initial statement context.
     const rawConditionValue = callExpressionEvaluation(
         condition.condition,
-        initialCtx,
+        ctx,
         initialSctx,
     );
 
@@ -465,9 +464,8 @@ function processStatements(
         switch (s.kind) {
             case "statement_let":
                 {
-                    // Copy the initial statement and compiler contexts
+                    // Copy the initial statement context
                     const initialSctx = sctx;
-                    const initialCtx = ctx;
 
                     // Process expression. This updates the statement and compiler contexts.
                     const resCtx = resolveExpression(s.expression, sctx, ctx);
@@ -488,10 +486,10 @@ function processStatements(
                             );
                         }
 
-                        // Evaluate the expression in the initial statement and compiler contexts.
+                        // Evaluate the expression in the initial statement context.
                         const varDef = callExpressionEvaluation(
                             s.expression,
-                            initialCtx,
+                            ctx,
                             initialSctx,
                         );
                         sctx = addVariable(s.name, variableType, ctx, sctx);
@@ -517,10 +515,10 @@ function processStatements(
                             );
                         }
 
-                        // Evaluate the expression in the initial statement and compiler contexts.
+                        // Evaluate the expression in the initial statement context.
                         const varDef = callExpressionEvaluation(
                             s.expression,
-                            initialCtx,
+                            ctx,
                             initialSctx,
                         );
                         sctx = addVariable(s.name, expressionType, ctx, sctx);
@@ -537,9 +535,8 @@ function processStatements(
                 break;
             case "statement_assign":
                 {
-                    // Copy the initial statement and compiler contexts
+                    // Copy the initial statement context
                     const initialSctx = sctx;
-                    const initialCtx = ctx;
 
                     // The following temporal statement context is just for checking the path expression.
                     const tempSctx = { ...sctx, requiredFields: [] };
@@ -591,10 +588,10 @@ function processStatements(
                         }
                     }
 
-                    // Evaluate the expression in the initial contexts.
+                    // Evaluate the expression in the initial statement context.
                     const exprVal = callExpressionEvaluation(
                         s.expression,
-                        initialCtx,
+                        ctx,
                         initialSctx,
                     );
                     sctx = setVariableBinding(
@@ -609,9 +606,8 @@ function processStatements(
                 break;
             case "statement_augmentedassign":
                 {
-                    // Copy the initial statement and compiler contexts
+                    // Copy the initial statement context
                     const initialSctx = sctx;
-                    const initialCtx = ctx;
 
                     // The following temporal statement context is just for checking the path expression.
                     // Process lvalue
@@ -660,10 +656,10 @@ function processStatements(
                         );
                     }
 
-                    // Evaluate expression in the initial context
+                    // Evaluate expression in the initial statement context.
                     const exprVal = callExpressionEvaluation(
                         s.expression,
-                        initialCtx,
+                        ctx,
                         initialSctx,
                     );
                     const ancestorTypes = extractAncestorTypes(s.path, ctx);
@@ -707,9 +703,8 @@ function processStatements(
                 break;
             case "statement_expression":
                 {
-                    // Copy the initial statement and compiler contexts
+                    // Copy the initial statement context
                     const initialSctx = sctx;
-                    const initialCtx = ctx;
 
                     // Process expression and update contexts
                     const resCtx = resolveExpression(s.expression, sctx, ctx);
@@ -728,11 +723,7 @@ function processStatements(
                     }
 
                     // Evaluate the expression just in case there are errors
-                    callExpressionEvaluation(
-                        s.expression,
-                        initialCtx,
-                        initialSctx,
-                    );
+                    callExpressionEvaluation(s.expression, ctx, initialSctx);
                 }
                 break;
             case "statement_condition":
@@ -759,9 +750,8 @@ function processStatements(
                 break;
             case "statement_return":
                 {
-                    // Copy the initial statement and compiler contexts
+                    // Copy the initial statement context.
                     const initialSctx = sctx;
-                    const initialCtx = ctx;
 
                     if (s.expression) {
                         // Process expression and update contexts
@@ -793,10 +783,10 @@ function processStatements(
                             );
                         }
 
-                        // Evaluate the return argument in the initial contexts, just to check for errors.
+                        // Evaluate the return argument in the initial statement contexts, just to check for errors.
                         callExpressionEvaluation(
                             s.expression,
-                            initialCtx,
+                            ctx,
                             initialSctx,
                         );
                     } else {
@@ -828,9 +818,8 @@ function processStatements(
                 break;
             case "statement_repeat":
                 {
-                    // Copy the initial statement and compiler contexts
+                    // Copy the initial statement context.
                     const initialSctx = sctx;
-                    const initialCtx = ctx;
 
                     // Process expression and update contexts.
                     const resCtx = resolveExpression(s.iterations, sctx, ctx);
@@ -840,7 +829,7 @@ function processStatements(
                     // Evaluate the iterations expressions to determine how many iterations.
                     const rawIterationsValue = callExpressionEvaluation(
                         s.iterations,
-                        initialCtx,
+                        ctx,
                         initialSctx,
                     );
 
@@ -881,9 +870,9 @@ function processStatements(
                         makeAssignedVariablesUndetermined(
                             s.statements,
                             postRepeatExprSctx,
-                            initialCtx,
+                            ctx,
                         ),
-                        initialCtx,
+                        ctx,
                     ).sctx;
 
                     // Now merge the assignments in the different contexts according to the iterations value
@@ -913,9 +902,18 @@ function processStatements(
                 break;
             case "statement_until":
                 {
-                    // Copy the initial statement and compiler contexts
+                    // Copy the initial statement context.
                     const initialSctx = sctx;
-                    const initialCtx = ctx;
+
+                    // For the correct functioning of the typechecker, we first need to process the condition
+                    // in order to check scope of the variables in the condition.
+                    // At this stage, we ignore any bindings discovered during processing of the
+                    // condition. We will later process the condition again, with the correct bindings.
+                    ctx = resolveExpression(
+                        s.condition,
+                        { ...sctx, varBindings: new Map() },
+                        ctx,
+                    ).ctx;
 
                     // Process statements
                     const resStatements = processStatements(
@@ -923,6 +921,7 @@ function processStatements(
                         initialSctx,
                         ctx,
                     );
+                    ctx = resStatements.ctx;
 
                     // Copy all the bindings discovered during the processing of one iteration of the loop body
                     const oneIterSctx = synchronizeVariableContexts(
@@ -937,7 +936,7 @@ function processStatements(
                             ...initialSctx,
                             varBindings: oneIterSctx.varBindings,
                         },
-                        initialCtx,
+                        ctx,
                     );
 
                     // Copy all the bindings discovered during processing of the condition
@@ -956,9 +955,9 @@ function processStatements(
                         makeAssignedVariablesUndetermined(
                             s.statements,
                             initialSctx,
-                            initialCtx,
+                            ctx,
                         ),
-                        initialCtx,
+                        ctx,
                     );
 
                     // Copy all the bindings discovered during the processing of many iterations of the loop body
@@ -974,7 +973,7 @@ function processStatements(
                             ...initialSctx,
                             varBindings: manyIterSctx.varBindings,
                         },
-                        initialCtx,
+                        ctx,
                     );
 
                     // Copy all the bindings discovered during processing of the condition
@@ -983,8 +982,6 @@ function processStatements(
                             manyIterSctx,
                             resConditionManyIter.sctx,
                         );
-
-                    ctx = resStatements.ctx;
 
                     // XXX a do-until loop is a weird place to always return from a function
                     // so we might want to issue a warning here
@@ -1007,7 +1004,7 @@ function processStatements(
                     // Evaluate the condition in the context after executing one iteration
                     const conditionValue = callExpressionEvaluation(
                         s.condition,
-                        initialCtx,
+                        ctx,
                         oneIterSctx,
                     );
 
@@ -1039,9 +1036,8 @@ function processStatements(
                 break;
             case "statement_while":
                 {
-                    // Copy the initial statement and compiler contexts
+                    // Copy the initial statement context
                     const initialSctx = sctx;
-                    const initialCtx = ctx;
 
                     // Process expression and update contexts.
                     const resCtx = resolveExpression(s.condition, sctx, ctx);
@@ -1080,15 +1076,15 @@ function processStatements(
                         makeAssignedVariablesUndetermined(
                             s.statements,
                             postConditionSctx,
-                            initialCtx,
+                            ctx,
                         ),
-                        initialCtx,
+                        ctx,
                     ).sctx;
 
-                    // Evaluate the condition in the initial contexts
+                    // Evaluate the condition in the initial statement context
                     const conditionValue = callExpressionEvaluation(
                         s.condition,
-                        initialCtx,
+                        ctx,
                         initialSctx,
                     );
 
@@ -1241,6 +1237,7 @@ function processStatements(
 
                 // Process inner statements
                 const r = processStatements(s.statements, sctx, ctx);
+                ctx = r.ctx;
 
                 // Repeat the analysis of the loop body, but this time simulating an arbitrary
                 // iteration of the loop. To simulate such thing, it is enough to make all
@@ -1286,8 +1283,6 @@ function processStatements(
                     postMapExprSctx,
                     [postMapExprSctx, loopSctx],
                 ).varBindings;
-
-                ctx = r.ctx;
 
                 // Merge statement contexts (similar to catch block merging)
                 const removed: string[] = [];

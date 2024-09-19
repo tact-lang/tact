@@ -426,10 +426,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load slice data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const str = evalConstantExpression(resolved[0]!, {
+                    ctx: ctx.ctx,
+                }) as string;
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
@@ -478,10 +477,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load slice data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const str = evalConstantExpression(resolved[0]!, {
+                    ctx: ctx.ctx,
+                }) as string;
                 let c: Cell;
                 try {
                     c = beginCell().storeBuffer(Buffer.from(str)).endCell();
@@ -524,10 +522,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load slice data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const str = evalConstantExpression(resolved[0]!, {
+                    ctx: ctx.ctx,
+                }) as string;
 
                 if (str.length > 32) {
                     throwCompilationError(
@@ -569,10 +566,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load slice data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const str = evalConstantExpression(resolved[0]!, {
+                    ctx: ctx.ctx,
+                }) as string;
 
                 return `"${str}"c`;
             },

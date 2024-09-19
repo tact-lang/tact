@@ -163,36 +163,35 @@ describe("fail-const-eval", () => {
     itShouldNotCompile({
         testName: "const-eval-ascii-overflow",
         errorMessage:
-            "Cannot evaluate expression to a constant: ascii string is too long, expected up to 32 bytes, got 33",
+            "Cannot evaluate expression: ascii string is too long, expected up to 32 bytes, got 33",
     });
     itShouldNotCompile({
         testName: "const-eval-ascii-overflow-2",
         errorMessage:
-            "Cannot evaluate expression to a constant: ascii string is too long, expected up to 32 bytes, got 33",
+            "Cannot evaluate expression: ascii string is too long, expected up to 32 bytes, got 33",
     });
     itShouldNotCompile({
         testName: "const-eval-rawslice-not-hex",
         errorMessage:
-            "Cannot evaluate expression to a constant: invalid hex string: hello world",
+            "Cannot evaluate expression: invalid hex string: hello world",
     });
     itShouldNotCompile({
         testName: "const-eval-rawslice-overflow",
         errorMessage:
-            "Cannot evaluate expression to a constant: slice constant is too long, expected up to 1023 bits, got 1024",
+            "Cannot evaluate expression: slice constant is too long, expected up to 1023 bits, got 1024",
     });
     itShouldNotCompile({
         testName: "const-eval-rawslice-overflow-padded",
         errorMessage:
-            "Cannot evaluate expression to a constant: slice constant is too long, expected up to 1023 bits, got 1024",
+            "Cannot evaluate expression: slice constant is too long, expected up to 1023 bits, got 1024",
     });
     itShouldNotCompile({
         testName: "const-eval-rawslice-invalid",
-        errorMessage:
-            "Cannot evaluate expression to a constant: invalid hex string: 4a__",
+        errorMessage: "Cannot evaluate expression: invalid hex string: 4a__",
     });
     itShouldNotCompile({
         testName: "const-eval-ascii-empty",
         errorMessage:
-            "Cannot evaluate expression to a constant: ascii string cannot be empty",
+            "Cannot evaluate expression: ascii string cannot be empty",
     });
 });
