@@ -134,6 +134,12 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             if (node.type) traverse(node.type, callback);
             traverse(node.expression, callback);
             break;
+        case "statement_destruct":
+            node.identifiers.forEach((e) => {
+                traverse(e, callback);
+            });
+            traverse(node.expression, callback);
+            break;
         case "statement_return":
             if (node.expression) traverse(node.expression, callback);
             break;

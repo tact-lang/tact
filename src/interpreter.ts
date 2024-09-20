@@ -34,6 +34,7 @@ import {
     AstStatement,
     AstStatementAssign,
     AstStatementAugmentedAssign,
+    AstStatementDestruct,
     AstStatementExpression,
     AstStatementForEach,
     AstStatementLet,
@@ -1390,6 +1391,9 @@ export class Interpreter {
             case "statement_let":
                 this.interpretLetStatement(ast);
                 break;
+            case "statement_destruct":
+                this.interpretDestructStatement(ast);
+                break;
             case "statement_assign":
                 this.interpretAssignStatement(ast);
                 break;
@@ -1436,6 +1440,53 @@ export class Interpreter {
         }
         const val = this.interpretExpression(ast.expression);
         this.envStack.setNewBinding(idText(ast.name), val);
+    }
+
+    public interpretDestructStatement(ast: AstStatementDestruct) {
+        for (const name of ast.identifiers) {
+            if (hasStaticConstant(this.context, idText(name))) {
+                // Attempt of shadowing a constant in a destructuring declaration
+                throwInternalCompilerError(
+                    `declaration of ${idText(name)} shadows a constant with the same name`,
+                    ast.loc,
+                );
+            }
+        }
+        const val = this.interpretExpression(ast.expression);
+        if (
+            val === null ||
+            typeof val !== "object" ||
+            !("$tactStruct" in val)
+        ) {
+            throwErrorConstEval(
+                `destructuring assignment expected a struct, but got ${showValue(
+                    val,
+                )}`,
+                ast.expression.loc,
+            );
+        }
+        if (ast.identifiers.length !== Object.keys(val).length - 1) {
+            throwErrorConstEval(
+                `destructuring assignment expected ${ast.identifiers.length} fields, but got ${
+                    Object.keys(val).length - 1
+                }`,
+                ast.loc,
+            );
+        }
+
+        for (const name of ast.identifiers) {
+            const v = val[idText(name)];
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (v === undefined) {
+                throwErrorConstEval(
+                    `destructuring assignment expected field ${idTextErr(
+                        name,
+                    )}`,
+                    ast.loc,
+                );
+            }
+            this.envStack.setNewBinding(idText(name), v);
+        }
     }
 
     public interpretAssignStatement(ast: AstStatementAssign) {
