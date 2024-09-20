@@ -3007,6 +3007,22 @@ exports[`resolveStatements should resolve statements for stmt-destructuring 1`] 
     "S",
   ],
   [
+    "1",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "M{ a: 1, b: 2 }",
+    "M",
+  ],
+  [
+    "m",
+    "M",
+  ],
+  [
     "a",
     "Int",
   ],
@@ -3096,6 +3112,22 @@ exports[`resolveStatements should resolve statements for stmt-destructuring 1`] 
   ],
   [
     "a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4",
+    "Int",
+  ],
+  [
+    "a_m",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m",
+    "Int",
+  ],
+  [
+    "b_m",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m + b_m",
     "Int",
   ],
 ]
