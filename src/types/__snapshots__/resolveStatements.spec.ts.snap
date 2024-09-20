@@ -898,6 +898,26 @@ Line 5, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for stmt-destructuring-fields 1`] = `
+"<unknown>:15:26: Type 'S' has 3 fields, but 4 variables are provided
+Line 15, col 26:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let { a, b, c, d } = s;
+                                ^
+  16 |     return a + b + c + d;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields2 1`] = `
+"<unknown>:15:20: Type 'S' has 3 fields, but 2 variables are provided
+Line 15, col 20:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let { a, b } = s;
+                          ^
+  16 |     return a + b;
+"
+`;
+
 exports[`resolveStatements should fail statements for stmt-do-int 1`] = `
 "<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
 Line 9, col 5:
@@ -2935,6 +2955,147 @@ exports[`resolveStatements should resolve statements for stmt-augmented-assgn-nu
   ],
   [
     "a",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for stmt-destructuring 1`] = `
+[
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "S{ a: 1, b: 2, c: 3 }",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a + b",
+    "Int",
+  ],
+  [
+    "c",
+    "Int",
+  ],
+  [
+    "a + b + c",
+    "Int",
+  ],
+  [
+    "a1",
+    "Int",
+  ],
+  [
+    "a + b + c + a1",
+    "Int",
+  ],
+  [
+    "b1",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1",
+    "Int",
+  ],
+  [
+    "c1",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1",
+    "Int",
+  ],
+  [
+    "a2",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2",
+    "Int",
+  ],
+  [
+    "b2",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2",
+    "Int",
+  ],
+  [
+    "a3",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2 + a3",
+    "Int",
+  ],
+  [
+    "c3",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3",
+    "Int",
+  ],
+  [
+    "b4",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4",
+    "Int",
+  ],
+  [
+    "c4",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4",
     "Int",
   ],
 ]

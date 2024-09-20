@@ -8063,6 +8063,561 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
 }
 `;
 
+exports[`grammar should parse stmt-destructuring 1`] = `
+{
+  "id": 87,
+  "imports": [],
+  "items": [
+    {
+      "fields": [
+        {
+          "as": null,
+          "id": 4,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": a: Int,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 3,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": null,
+          "id": 7,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": b: Int,
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 6,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": null,
+          "id": 10,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": c: Int,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": c,
+            "text": "c",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 11,
+      "kind": "struct_decl",
+      "loc": struct S {
+    a: Int;
+    b: Int;
+    c: Int;
+},
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": S,
+        "text": "S",
+      },
+    },
+    {
+      "attributes": [],
+      "id": 86,
+      "kind": "function_def",
+      "loc": fun testFunc(): Int {
+    let s = S{ a: 1, b: 2, c: 3 };
+    let { a, b, c } = s;
+    let { a1, _, _ } = s;
+    let { _, b1, _ } = s;
+    let { _, _, c1 } = s;
+    let { a2, b2, _, } = s;
+    let { a3, _, c3, } = s;
+    let { _, b4, c4, } = s;
+
+    return a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4;
+},
+      "name": {
+        "id": 12,
+        "kind": "id",
+        "loc": testFunc,
+        "text": "testFunc",
+      },
+      "params": [],
+      "return": {
+        "id": 13,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "statements": [
+        {
+          "expression": {
+            "args": [
+              {
+                "field": {
+                  "id": 16,
+                  "kind": "id",
+                  "loc": a,
+                  "text": "a",
+                },
+                "id": 18,
+                "initializer": {
+                  "base": 10,
+                  "id": 17,
+                  "kind": "number",
+                  "loc": 1,
+                  "value": 1n,
+                },
+                "kind": "struct_field_initializer",
+                "loc": a: 1,
+              },
+              {
+                "field": {
+                  "id": 19,
+                  "kind": "id",
+                  "loc": b,
+                  "text": "b",
+                },
+                "id": 21,
+                "initializer": {
+                  "base": 10,
+                  "id": 20,
+                  "kind": "number",
+                  "loc": 2,
+                  "value": 2n,
+                },
+                "kind": "struct_field_initializer",
+                "loc": b: 2,
+              },
+              {
+                "field": {
+                  "id": 22,
+                  "kind": "id",
+                  "loc": c,
+                  "text": "c",
+                },
+                "id": 24,
+                "initializer": {
+                  "base": 10,
+                  "id": 23,
+                  "kind": "number",
+                  "loc": 3,
+                  "value": 3n,
+                },
+                "kind": "struct_field_initializer",
+                "loc": c: 3,
+              },
+            ],
+            "id": 25,
+            "kind": "struct_instance",
+            "loc": S{ a: 1, b: 2, c: 3 },
+            "type": {
+              "id": 15,
+              "kind": "type_id",
+              "loc": S,
+              "text": "S",
+            },
+          },
+          "id": 26,
+          "kind": "statement_let",
+          "loc": let s = S{ a: 1, b: 2, c: 3 };,
+          "name": {
+            "id": 14,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": null,
+        },
+        {
+          "expression": {
+            "id": 30,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 31,
+          "identifiers": [
+            {
+              "id": 27,
+              "kind": "id",
+              "loc": a,
+              "text": "a",
+            },
+            {
+              "id": 28,
+              "kind": "id",
+              "loc": b,
+              "text": "b",
+            },
+            {
+              "id": 29,
+              "kind": "id",
+              "loc": c,
+              "text": "c",
+            },
+          ],
+          "kind": "statement_destruct",
+          "loc": let { a, b, c } = s;,
+        },
+        {
+          "expression": {
+            "id": 35,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 36,
+          "identifiers": [
+            {
+              "id": 32,
+              "kind": "id",
+              "loc": a1,
+              "text": "a1",
+            },
+            {
+              "id": 33,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+            {
+              "id": 34,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+          ],
+          "kind": "statement_destruct",
+          "loc": let { a1, _, _ } = s;,
+        },
+        {
+          "expression": {
+            "id": 40,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 41,
+          "identifiers": [
+            {
+              "id": 37,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+            {
+              "id": 38,
+              "kind": "id",
+              "loc": b1,
+              "text": "b1",
+            },
+            {
+              "id": 39,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+          ],
+          "kind": "statement_destruct",
+          "loc": let { _, b1, _ } = s;,
+        },
+        {
+          "expression": {
+            "id": 45,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 46,
+          "identifiers": [
+            {
+              "id": 42,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+            {
+              "id": 43,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+            {
+              "id": 44,
+              "kind": "id",
+              "loc": c1,
+              "text": "c1",
+            },
+          ],
+          "kind": "statement_destruct",
+          "loc": let { _, _, c1 } = s;,
+        },
+        {
+          "expression": {
+            "id": 50,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 51,
+          "identifiers": [
+            {
+              "id": 47,
+              "kind": "id",
+              "loc": a2,
+              "text": "a2",
+            },
+            {
+              "id": 48,
+              "kind": "id",
+              "loc": b2,
+              "text": "b2",
+            },
+            {
+              "id": 49,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+          ],
+          "kind": "statement_destruct",
+          "loc": let { a2, b2, _, } = s;,
+        },
+        {
+          "expression": {
+            "id": 55,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 56,
+          "identifiers": [
+            {
+              "id": 52,
+              "kind": "id",
+              "loc": a3,
+              "text": "a3",
+            },
+            {
+              "id": 53,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+            {
+              "id": 54,
+              "kind": "id",
+              "loc": c3,
+              "text": "c3",
+            },
+          ],
+          "kind": "statement_destruct",
+          "loc": let { a3, _, c3, } = s;,
+        },
+        {
+          "expression": {
+            "id": 60,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 61,
+          "identifiers": [
+            {
+              "id": 57,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+            {
+              "id": 58,
+              "kind": "id",
+              "loc": b4,
+              "text": "b4",
+            },
+            {
+              "id": 59,
+              "kind": "id",
+              "loc": c4,
+              "text": "c4",
+            },
+          ],
+          "kind": "statement_destruct",
+          "loc": let { _, b4, c4, } = s;,
+        },
+        {
+          "expression": {
+            "id": 84,
+            "kind": "op_binary",
+            "left": {
+              "id": 82,
+              "kind": "op_binary",
+              "left": {
+                "id": 80,
+                "kind": "op_binary",
+                "left": {
+                  "id": 78,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 76,
+                    "kind": "op_binary",
+                    "left": {
+                      "id": 74,
+                      "kind": "op_binary",
+                      "left": {
+                        "id": 72,
+                        "kind": "op_binary",
+                        "left": {
+                          "id": 70,
+                          "kind": "op_binary",
+                          "left": {
+                            "id": 68,
+                            "kind": "op_binary",
+                            "left": {
+                              "id": 66,
+                              "kind": "op_binary",
+                              "left": {
+                                "id": 64,
+                                "kind": "op_binary",
+                                "left": {
+                                  "id": 62,
+                                  "kind": "id",
+                                  "loc": a,
+                                  "text": "a",
+                                },
+                                "loc": a + b,
+                                "op": "+",
+                                "right": {
+                                  "id": 63,
+                                  "kind": "id",
+                                  "loc": b,
+                                  "text": "b",
+                                },
+                              },
+                              "loc": a + b + c,
+                              "op": "+",
+                              "right": {
+                                "id": 65,
+                                "kind": "id",
+                                "loc": c,
+                                "text": "c",
+                              },
+                            },
+                            "loc": a + b + c + a1,
+                            "op": "+",
+                            "right": {
+                              "id": 67,
+                              "kind": "id",
+                              "loc": a1,
+                              "text": "a1",
+                            },
+                          },
+                          "loc": a + b + c + a1 + b1,
+                          "op": "+",
+                          "right": {
+                            "id": 69,
+                            "kind": "id",
+                            "loc": b1,
+                            "text": "b1",
+                          },
+                        },
+                        "loc": a + b + c + a1 + b1 + c1,
+                        "op": "+",
+                        "right": {
+                          "id": 71,
+                          "kind": "id",
+                          "loc": c1,
+                          "text": "c1",
+                        },
+                      },
+                      "loc": a + b + c + a1 + b1 + c1 + a2,
+                      "op": "+",
+                      "right": {
+                        "id": 73,
+                        "kind": "id",
+                        "loc": a2,
+                        "text": "a2",
+                      },
+                    },
+                    "loc": a + b + c + a1 + b1 + c1 + a2 + b2,
+                    "op": "+",
+                    "right": {
+                      "id": 75,
+                      "kind": "id",
+                      "loc": b2,
+                      "text": "b2",
+                    },
+                  },
+                  "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3,
+                  "op": "+",
+                  "right": {
+                    "id": 77,
+                    "kind": "id",
+                    "loc": a3,
+                    "text": "a3",
+                  },
+                },
+                "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3,
+                "op": "+",
+                "right": {
+                  "id": 79,
+                  "kind": "id",
+                  "loc": c3,
+                  "text": "c3",
+                },
+              },
+              "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4,
+              "op": "+",
+              "right": {
+                "id": 81,
+                "kind": "id",
+                "loc": b4,
+                "text": "b4",
+              },
+            },
+            "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4,
+            "op": "+",
+            "right": {
+              "id": 83,
+              "kind": "id",
+              "loc": c4,
+              "text": "c4",
+            },
+          },
+          "id": 85,
+          "kind": "statement_return",
+          "loc": return a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4;,
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
 exports[`grammar should parse stmt-if 1`] = `
 {
   "id": 16,
