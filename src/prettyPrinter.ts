@@ -47,6 +47,7 @@ import {
     AstAsmInstruction,
     AstAsmShuffle,
     astNumToString,
+    AstStatementDestruct,
 } from "./grammar/ast";
 import { throwInternalCompilerError } from "./errors";
 import JSONbig from "json-bigint";
@@ -577,6 +578,10 @@ export class PrettyPrinter {
                 return this.ppAstStatementTryCatch(
                     stmt as AstStatementTryCatch,
                 );
+            case "statement_destruct":
+                return this.ppAstStatementDestruct(
+                    stmt as AstStatementDestruct,
+                );
         }
     }
 
@@ -679,6 +684,11 @@ export class PrettyPrinter {
         const tryBody = this.ppStatementBlock(statement.statements);
         const catchBody = this.ppStatementBlock(statement.catchStatements);
         return `${this.indent()}try ${tryBody} catch (${this.ppAstId(statement.catchName)}) ${catchBody}`;
+    }
+
+    ppAstStatementDestruct(statement: AstStatementDestruct): string {
+        const ids = statement.identifiers.map((id) => this.ppAstId(id));
+        return `${this.indent()}let {${ids.join(", ")}} = ${this.ppAstExpression(statement.expression)};`;
     }
 }
 

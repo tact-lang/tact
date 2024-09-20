@@ -684,6 +684,51 @@ function processStatements(
                 }
 
                 sctx = initialSctx; // Re-assign the modified initial context back to sctx after merging
+                break;
+            }
+            case "statement_destruct": {
+                // Process expression
+                ctx = resolveExpression(s.expression, sctx, ctx);
+
+                // Check variable names
+                for (const name of s.identifiers) {
+                    checkVariableExists(ctx, sctx, name);
+                }
+
+                // Check type
+                const expressionType = getExpType(ctx, s.expression);
+                if (expressionType.kind !== "ref") {
+                    throwCompilationError(
+                        `Type '${printTypeRef(expressionType)}' is not destructurable`,
+                        s.expression.loc,
+                    );
+                }
+                if (expressionType.optional) {
+                    throwCompilationError(
+                        `Type '${printTypeRef(expressionType)}' is optional and cannot be destructured`,
+                        s.expression.loc,
+                    );
+                }
+                const ty = getType(ctx, expressionType.name);
+                if (ty.kind !== "struct") {
+                    throwCompilationError(
+                        `Type '${printTypeRef(expressionType)}' is not destructurable`,
+                        s.expression.loc,
+                    );
+                }
+                if (ty.fields.length !== s.identifiers.length) {
+                    throwCompilationError(
+                        `Type '${printTypeRef(expressionType)}' has ${ty.fields.length} fields, but ${s.identifiers.length} variables are provided`,
+                        s.expression.loc,
+                    );
+                }
+
+                // Add variables
+                s.identifiers.forEach((name, i) => {
+                    sctx = addVariable(name, ty.fields[i]!.type, ctx, sctx);
+                });
+
+                break;
             }
         }
     }

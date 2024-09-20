@@ -1024,7 +1024,9 @@ semantics.addOperation<AstNode>("astOfStatement", {
     ) {
         return createAstNode({
             kind: "statement_destruct",
-            identifiers: identifiers.astsOfList(),
+            identifiers: identifiers
+                .asIteration()
+                .children.map((id) => id.astOfExpression()),
             expression: expression.astOfExpression(),
             loc: createRef(this),
         });

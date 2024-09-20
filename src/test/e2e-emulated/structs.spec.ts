@@ -412,5 +412,9 @@ describe("structs", () => {
         expect(
             await contract.getOptionalFields(),
         ).toMatchObject<OptionalFields>(optionalFields);
+
+        // Struct destructuring
+        expect(await contract.getDestructuringTest1()).toBe(43n);
+        expect(await contract.getDestructuringTest2()).toBe(42n);
     });
 });
