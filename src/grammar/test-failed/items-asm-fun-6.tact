@@ -1,0 +1,3 @@
+asm fun forgetWordFromStack() {
+    (forget)
+}

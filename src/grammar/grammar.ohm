@@ -22,7 +22,7 @@ Tact {
     ModuleFunction = FunctionDefinition
                    | AsmFunction
 
-    AsmFunction = "asm" AsmShuffle? FunctionAttribute* fun id Parameters (":" Type)? "{" asmInstruction+ "}"
+    AsmFunction = "asm" AsmShuffle? FunctionAttribute* fun id Parameters (":" Type)? "{" AsmInstruction* "}"
 
     ModuleConstant = ConstantDefinition
 
@@ -98,8 +98,26 @@ Tact {
              | external "(" Parameter? ")" "{" Statement* "}" --externalRegular
              | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
 
-    asmInstruction = ("x" | "X" | "b" | "B") "{" hexDigit* "}" --data
-                   | ~comment (~space ~"}" any)+ --any
+    AsmInstruction = "[" &#whiteSpace AsmInstruction* "]" &#whiteSpace --internal
+                   | "{" &#whiteSpace AsmInstruction* "}" &#whiteSpace --list
+                   | "({)" &#whiteSpace AsmInstruction* "(})" &#whiteSpace --listNoStateCheck
+                   | "\"" (~"\"" any)* "\"" &#whiteSpace --string
+                   | "'" &#whiteSpace asmInstruction &#whiteSpace --tick
+                   | "char" &#whiteSpace (~whiteSpace any) &#whiteSpace --char
+                   | "x{" hexDigit* "_"? "}" &#whiteSpace --hexLiteral
+                   | "b{" binDigit* "}" &#whiteSpace --binLiteral
+                   | ("create" | "::_" | "::" | ":_" | ":") &#whiteSpace
+                     ("[" | "]" | "{" | "}" | "({)" | "(})") &#whiteSpace
+                     --partiallyDisallowDirectShadowing
+                   | "forget" &#whiteSpace asmInstruction --disallowForget
+                   | "(forget)" &#whiteSpace --disallowIndirectForget
+                   | asmInstruction --custom
+
+    // Instructions exclude word list begin and end words to ensure correct parse
+    asmInstruction = ~(("[" | "]" | "{" | "}" | "({)" | "(})") ~asmWord) asmWord
+
+    // A chuck of non-whitespace characters forms a word in Fift
+    asmWord = (~whiteSpace any)+
 
     Statement = StatementLet
               | StatementBlock

@@ -615,6 +615,47 @@ Line 1, col 7:
 "
 `;
 
+exports[`grammar should fail items-asm-fun-5 1`] = `
+"Syntax error: <unknown>:2:5: Usage of forget is prohibited, no instructions can be removed
+Line 2, col 5:
+  1 | asm fun forgetForget() {
+> 2 |     forget forget
+          ^~~~~~~~~~~~~
+  3 | }
+"
+`;
+
+exports[`grammar should fail items-asm-fun-6 1`] = `
+"Syntax error: <unknown>:2:5: Usage of (forget) is prohibited, no instructions can be removed
+Line 2, col 5:
+  1 | asm fun forgetWordFromStack() {
+> 2 |     (forget)
+          ^~~~~~~~
+  3 | }
+"
+`;
+
+exports[`grammar should fail items-asm-fun-7 1`] = `
+"<unknown>:4:1: Parse error: expected end of input, "trait", "contract", "message", "struct", "const", "@name", "asm", "fun", or "primitive"
+
+Line 4, col 1:
+  3 |     5 }
+> 4 | }
+      ^
+  5 | 
+"
+`;
+
+exports[`grammar should fail items-asm-fun-8 1`] = `
+"Syntax error: <unknown>:2:5: The binary bitstring has more than 128 digits
+Line 2, col 5:
+  1 | asm fun giganticBinary() {
+> 2 |     b{000000001111111100000000111111110000000011111111000000001111111100000000111111110000000011111111000000001111111100000000111111110}
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  3 | }
+"
+`;
+
 exports[`grammar should fail literal-dec-trailing-underscore 1`] = `
 "<unknown>:2:16: Parse error: expected a digit
 
@@ -3358,7 +3399,7 @@ exports[`grammar should parse expr-with-var 1`] = `
 
 exports[`grammar should parse items-asm-funs 1`] = `
 {
-  "id": 48,
+  "id": 51,
   "imports": [],
   "items": [
     {
@@ -3738,6 +3779,39 @@ exports[`grammar should parse items-asm-funs 1`] = `
       },
       "params": [],
       "return": null,
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 50,
+      "instructions": [
+        "{ INC }",
+        ":",
+        "incinc",
+        "41",
+        "incinc",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun createAndUseWord(): Int {
+    { INC } : incinc
+    41 incinc
+},
+      "name": {
+        "id": 48,
+        "kind": "id",
+        "loc": createAndUseWord,
+        "text": "createAndUseWord",
+      },
+      "params": [],
+      "return": {
+        "id": 49,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
       "shuffle": {
         "args": [],
         "ret": [],

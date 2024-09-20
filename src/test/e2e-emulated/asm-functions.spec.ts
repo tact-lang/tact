@@ -34,5 +34,6 @@ describe("asm functions", () => {
         expect(await contract.getTestAsmLoadCoins()).toEqual(true);
         expect(await contract.getTestAsmLoadInt()).toEqual(true);
         expect(await contract.getTestAsmDebugStr()).toEqual(true);
+        expect(await contract.getTestAsmCreateUseWord()).toEqual(true);
     });
 });

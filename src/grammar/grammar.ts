@@ -362,7 +362,9 @@ semantics.addOperation<AstNode>("astOfItem", {
             name: funId.astOfExpression(),
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             params: funParameters.astsOfList(),
-            instructions: asmInstructions.children.map((s) => s.sourceString),
+            instructions: asmInstructions.children.map((s) =>
+                s.astOfAsmInstruction(),
+            ),
             loc: createRef(this),
         });
     },
@@ -496,6 +498,100 @@ semantics.addOperation<AstNode>("astOfItem", {
             statements: receiverBody.children.map((s) => s.astOfStatement()),
             loc: createRef(this),
         });
+    },
+});
+
+// Beginnings of the possible future AST for Fift-asm
+semantics.addOperation<string>("astOfAsmInstruction", {
+    asmInstruction(word) {
+        return word.sourceString;
+    },
+    AsmInstruction(instruction) {
+        return instruction.astOfAsmInstruction();
+    },
+    AsmInstruction_custom(instruction) {
+        return instruction.astOfAsmInstruction();
+    },
+    AsmInstruction_internal(
+        _leftBracket,
+        _ws1,
+        instructions,
+        _rightBracket,
+        _ws2,
+    ) {
+        return [
+            "[",
+            instructions.children.map((s) => s.astOfAsmInstruction()).join(" "),
+            "]",
+        ].join(" ");
+    },
+    AsmInstruction_list(_lbrace, _ws1, instructions, _rbrace, _ws2) {
+        return [
+            "{",
+            instructions.children.map((s) => s.astOfAsmInstruction()).join(" "),
+            "}",
+        ].join(" ");
+    },
+    AsmInstruction_listNoStateCheck(
+        _lbrace,
+        _ws1,
+        instructions,
+        _rbrace,
+        _ws2,
+    ) {
+        return [
+            "({)",
+            instructions.children.map((s) => s.astOfAsmInstruction()).join(" "),
+            "(})",
+        ].join(" ");
+    },
+    AsmInstruction_string(_startQuotationMark, string, _endQuotationMark, _ws) {
+        return `"${string.sourceString}"`;
+    },
+    AsmInstruction_tick(_singleQuote, _ws1, instruction, _ws2) {
+        return `' ${instruction.sourceString}`;
+    },
+    AsmInstruction_char(_word, _ws1, char, _ws2) {
+        return `char ${char.sourceString}`;
+    },
+    AsmInstruction_hexLiteral(_prefix, digits, optUnderscore, _rbrace, _ws) {
+        const length = digits.numChildren;
+        const underscore = unwrapOptNode(optUnderscore, (t) => t.sourceString);
+        if (length > 128) {
+            throwSyntaxError(
+                "The hex bitstring has more than 128 digits",
+                createRef(this),
+            );
+        }
+        return `x{${digits.sourceString}${underscore ?? ""}}`;
+    },
+    AsmInstruction_binLiteral(_prefix, digits, _rbrace, _ws) {
+        const length = digits.numChildren;
+        if (length > 128) {
+            throwSyntaxError(
+                "The binary bitstring has more than 128 digits",
+                createRef(this),
+            );
+        }
+        return `b{${digits.sourceString}}`;
+    },
+    AsmInstruction_partiallyDisallowDirectShadowing(word, _ws1, wordArg, _ws2) {
+        throwSyntaxError(
+            `Shadowing of ${wordArg.sourceString} by ${word.sourceString} is prohibited`,
+            createRef(this),
+        );
+    },
+    AsmInstruction_disallowForget(_word, _ws, _instruction) {
+        throwSyntaxError(
+            `Usage of forget is prohibited, no instructions can be removed`,
+            createRef(this),
+        );
+    },
+    AsmInstruction_disallowIndirectForget(_word, _ws) {
+        throwSyntaxError(
+            `Usage of (forget) is prohibited, no instructions can be removed`,
+            createRef(this),
+        );
     },
 });
 

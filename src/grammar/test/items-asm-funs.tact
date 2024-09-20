@@ -27,3 +27,8 @@ asm fun checkAndRemoveAddExtensionPrefix() {
 asm fun debugStr() {
     "Works!" DEBUGSTR
 }
+
+asm fun createAndUseWord(): Int {
+    { INC } : incinc
+    41 incinc
+}
