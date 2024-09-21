@@ -3399,7 +3399,7 @@ exports[`grammar should parse expr-with-var 1`] = `
 
 exports[`grammar should parse items-asm-funs 1`] = `
 {
-  "id": 51,
+  "id": 61,
   "imports": [],
   "items": [
     {
@@ -3768,14 +3768,14 @@ exports[`grammar should parse items-asm-funs 1`] = `
         "DEBUGSTR",
       ],
       "kind": "asm_function_def",
-      "loc": asm fun debugStr() {
+      "loc": asm fun debugStr1() {
     "Works!" DEBUGSTR
 },
       "name": {
         "id": 46,
         "kind": "id",
-        "loc": debugStr,
-        "text": "debugStr",
+        "loc": debugStr1,
+        "text": "debugStr1",
       },
       "params": [],
       "return": null,
@@ -3786,7 +3786,51 @@ exports[`grammar should parse items-asm-funs 1`] = `
     },
     {
       "attributes": [],
-      "id": 50,
+      "id": 49,
+      "instructions": [
+        ""Works!"",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun debugStr2() { "Works!" },
+      "name": {
+        "id": 48,
+        "kind": "id",
+        "loc": debugStr2,
+        "text": "debugStr2",
+      },
+      "params": [],
+      "return": null,
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 51,
+      "instructions": [
+        "{ INC }",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun createWord() {
+    { INC }
+},
+      "name": {
+        "id": 50,
+        "kind": "id",
+        "loc": createWord,
+        "text": "createWord",
+      },
+      "params": [],
+      "return": null,
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 54,
       "instructions": [
         "{ INC }",
         ":",
@@ -3795,19 +3839,90 @@ exports[`grammar should parse items-asm-funs 1`] = `
         "incinc",
       ],
       "kind": "asm_function_def",
-      "loc": asm fun createAndUseWord(): Int {
+      "loc": asm fun createAndUseWord1(): Int {
     { INC } : incinc
     41 incinc
 },
       "name": {
-        "id": 48,
+        "id": 52,
         "kind": "id",
-        "loc": createAndUseWord,
-        "text": "createAndUseWord",
+        "loc": createAndUseWord1,
+        "text": "createAndUseWord1",
       },
       "params": [],
       "return": {
-        "id": 49,
+        "id": 53,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 57,
+      "instructions": [
+        "{ INC }",
+        ":",
+        "incinc",
+        "41",
+        "incinc",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun createAndUseWord2(): Int { { INC
+}
+: incinc 41 incinc
+},
+      "name": {
+        "id": 55,
+        "kind": "id",
+        "loc": createAndUseWord2,
+        "text": "createAndUseWord2",
+      },
+      "params": [],
+      "return": {
+        "id": 56,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 60,
+      "instructions": [
+        "{ INC }",
+        ":",
+        "incinc",
+        "41",
+        "incinc",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun createAndUseWord3(): Int {
+{
+INC
+}
+:
+incinc
+41
+incinc
+},
+      "name": {
+        "id": 58,
+        "kind": "id",
+        "loc": createAndUseWord3,
+        "text": "createAndUseWord3",
+      },
+      "params": [],
+      "return": {
+        "id": 59,
         "kind": "type_id",
         "loc": Int,
         "text": "Int",

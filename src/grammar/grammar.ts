@@ -548,7 +548,7 @@ semantics.addOperation<string>("astOfAsmInstruction", {
     AsmInstruction_string(_startQuotationMark, string, _endQuotationMark, _ws) {
         return `"${string.sourceString}"`;
     },
-    AsmInstruction_tick(_singleQuote, _ws1, instruction, _ws2) {
+    AsmInstruction_tick(_singleQuote, _ws1, instruction) {
         return `' ${instruction.sourceString}`;
     },
     AsmInstruction_char(_word, _ws1, char, _ws2) {

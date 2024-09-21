@@ -24,11 +24,32 @@ asm fun checkAndRemoveAddExtensionPrefix() {
     -ROT
 }
 
-asm fun debugStr() {
+asm fun debugStr1() {
     "Works!" DEBUGSTR
 }
 
-asm fun createAndUseWord(): Int {
+asm fun debugStr2() { "Works!" }
+
+asm fun createWord() {
+    { INC }
+}
+
+asm fun createAndUseWord1(): Int {
     { INC } : incinc
     41 incinc
+}
+
+asm fun createAndUseWord2(): Int { { INC
+}
+: incinc 41 incinc
+}
+
+asm fun createAndUseWord3(): Int {
+{
+INC
+}
+:
+incinc
+41
+incinc
 }

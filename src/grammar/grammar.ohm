@@ -102,10 +102,10 @@ Tact {
                    | "{" &#whiteSpace AsmInstruction* "}" &#whiteSpace --list
                    | "({)" &#whiteSpace AsmInstruction* "(})" &#whiteSpace --listNoStateCheck
                    | "\"" (~"\"" any)* "\"" &#whiteSpace --string
-                   | "'" &#whiteSpace asmInstruction &#whiteSpace --tick
+                   | "'" &#whiteSpace asmInstruction --tick
                    | "char" &#whiteSpace (~whiteSpace any) &#whiteSpace --char
-                   | "x{" hexDigit* "_"? "}" &#whiteSpace --hexLiteral
-                   | "b{" binDigit* "}" &#whiteSpace --binLiteral
+                   | "x{" ~#whiteSpace hexDigit* ~#whiteSpace ("_" ~#whiteSpace)? "}" &#whiteSpace --hexLiteral
+                   | "b{" ~#whiteSpace binDigit* ~#whiteSpace "}" &#whiteSpace --binLiteral
                    | ("create" | "::_" | "::" | ":_" | ":") &#whiteSpace
                      ("[" | "]" | "{" | "}" | "({)" | "(})") &#whiteSpace
                      --partiallyDisallowDirectShadowing
