@@ -185,6 +185,7 @@
     "src/grammar/grammar.ohm-bundle.d.ts",
     "src/grammar/test/items-native-fun-funcid.tact",
     "src/grammar/test/items-asm-funs.tact",
+    "src/grammar/test-asm/*.tact",
     "src/grammar/test-failed/funcid-*.tact",
     "src/imports/stdlib.ts",
     "/src/test/compilation-failed/const-eval-failed.spec.ts",

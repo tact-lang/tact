@@ -545,8 +545,13 @@ semantics.addOperation<string>("astOfAsmInstruction", {
             "(})",
         ].join(" ");
     },
-    AsmInstruction_string(_startQuotationMark, string, _endQuotationMark, _ws) {
-        return `"${string.sourceString}"`;
+    AsmInstruction_string(
+        startQuotationMarkWord,
+        string,
+        _endQuotationMark,
+        _ws,
+    ) {
+        return `${startQuotationMarkWord.sourceString}${string.sourceString}"`;
     },
     AsmInstruction_tick(_singleQuote, _ws1, instruction) {
         return `' ${instruction.sourceString}`;
@@ -554,7 +559,7 @@ semantics.addOperation<string>("astOfAsmInstruction", {
     AsmInstruction_char(_word, _ws1, char, _ws2) {
         return `char ${char.sourceString}`;
     },
-    AsmInstruction_hexLiteral(_prefix, digits, optUnderscore, _rbrace, _ws) {
+    AsmInstruction_hexLiteral(prefix, digits, optUnderscore, _rbrace, _ws) {
         const length = digits.numChildren;
         const underscore = unwrapOptNode(optUnderscore, (t) => t.sourceString);
         if (length > 128) {
@@ -563,7 +568,7 @@ semantics.addOperation<string>("astOfAsmInstruction", {
                 createRef(this),
             );
         }
-        return `x{${digits.sourceString}${underscore ?? ""}}`;
+        return `${prefix.sourceString}${digits.sourceString}${underscore ?? ""}}`;
     },
     AsmInstruction_binLiteral(_prefix, digits, _rbrace, _ws) {
         const length = digits.numChildren;
@@ -574,24 +579,6 @@ semantics.addOperation<string>("astOfAsmInstruction", {
             );
         }
         return `b{${digits.sourceString}}`;
-    },
-    AsmInstruction_partiallyDisallowDirectShadowing(word, _ws1, wordArg, _ws2) {
-        throwSyntaxError(
-            `Shadowing of ${wordArg.sourceString} by ${word.sourceString} is prohibited`,
-            createRef(this),
-        );
-    },
-    AsmInstruction_disallowForget(_word, _ws, _instruction) {
-        throwSyntaxError(
-            `Usage of forget is prohibited, no instructions can be removed`,
-            createRef(this),
-        );
-    },
-    AsmInstruction_disallowIndirectForget(_word, _ws) {
-        throwSyntaxError(
-            `Usage of (forget) is prohibited, no instructions can be removed`,
-            createRef(this),
-        );
     },
 });
 

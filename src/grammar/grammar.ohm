@@ -101,19 +101,14 @@ Tact {
     AsmInstruction = "[" &#whiteSpace AsmInstruction* "]" &#whiteSpace --internal
                    | "{" &#whiteSpace AsmInstruction* "}" &#whiteSpace --list
                    | "({)" &#whiteSpace AsmInstruction* "(})" &#whiteSpace --listNoStateCheck
-                   | "\"" (~"\"" any)* "\"" &#whiteSpace --string
+                   | ("abort\"" | ".\"" | "+\"" | "\"") (~"\"" any)* "\"" &#whiteSpace --string
                    | "'" &#whiteSpace asmInstruction --tick
                    | "char" &#whiteSpace (~whiteSpace any) &#whiteSpace --char
-                   | "x{" ~#whiteSpace hexDigit* ~#whiteSpace ("_" ~#whiteSpace)? "}" &#whiteSpace --hexLiteral
+                   | ("x{" | "B{") ~#whiteSpace hexDigit* ~#whiteSpace ("_" ~#whiteSpace)? "}" &#whiteSpace --hexLiteral
                    | "b{" ~#whiteSpace binDigit* ~#whiteSpace "}" &#whiteSpace --binLiteral
-                   | ("create" | "::_" | "::" | ":_" | ":") &#whiteSpace
-                     ("[" | "]" | "{" | "}" | "({)" | "(})") &#whiteSpace
-                     --partiallyDisallowDirectShadowing
-                   | "forget" &#whiteSpace asmInstruction --disallowForget
-                   | "(forget)" &#whiteSpace --disallowIndirectForget
                    | asmInstruction --custom
 
-    // Instructions exclude word list begin and end words to ensure correct parse
+    // Instructions exclude some begin and end words to ensure correct parse
     asmInstruction = ~(("[" | "]" | "{" | "}" | "({)" | "(})") ~asmWord) asmWord
 
     // A chunk of non-whitespace characters forms a word in Fift
