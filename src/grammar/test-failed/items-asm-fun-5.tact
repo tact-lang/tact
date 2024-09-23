@@ -1,3 +1,4 @@
-asm fun forgetForget() {
-    forget forget
+asm fun shadowingAttempt() {
+    { INC } : }
+    5 }
 }
