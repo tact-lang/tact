@@ -467,7 +467,6 @@ export function writeStatement(
         }
         case "statement_destruct": {
             ctx.append(
-                //`var ${resolveFuncTypeUnpack(t, funcIdOf(f.name), ctx)} = ${writeCastedExpression(f.expression, t, ctx)};`,
                 `var (${f.identifiers.map((n) => funcIdOf(n)).join(", ")}) = ${writeCastedExpression(f.expression, getExpType(ctx.ctx, f.expression), ctx)};`,
             );
             return;
