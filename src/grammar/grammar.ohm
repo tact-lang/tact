@@ -116,7 +116,7 @@ Tact {
     // Instructions exclude word list begin and end words to ensure correct parse
     asmInstruction = ~(("[" | "]" | "{" | "}" | "({)" | "(})") ~asmWord) asmWord
 
-    // A chuck of non-whitespace characters forms a word in Fift
+    // A chunk of non-whitespace characters forms a word in Fift
     asmWord = (~whiteSpace any)+
 
     Statement = StatementLet
