@@ -10,7 +10,6 @@ import {
     selfId,
     isSelfId,
     eqNames,
-    AstStatementAugmentedAssign,
 } from "../grammar/ast";
 import { isAssignable } from "./subtyping";
 import {
