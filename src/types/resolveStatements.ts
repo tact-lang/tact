@@ -128,38 +128,6 @@ function addVariable(
     };
 }
 
-function isAugmentedAssignExpression(
-    s: AstStatementAugmentedAssign,
-    ctx: CompilerContext,
-): boolean {
-    // Check type
-    const expressionType = getExpType(ctx, s.expression);
-    const tailType = getExpType(ctx, s.path);
-
-    // Check if any of the types is not ref or is optional or types themselves don't match
-    if (
-        expressionType.kind !== "ref" ||
-        expressionType.optional ||
-        tailType.kind !== "ref" ||
-        tailType.optional ||
-        expressionType.name !== tailType.name
-    ) {
-        return false;
-    }
-
-    // Both types are ints
-    if (expressionType.name === "Int") {
-        return true; // all ops are supported
-    }
-
-    // Both types are booleans
-    if (expressionType.name === "Bool") {
-        return s.op === "&&" || s.op === "||"; // only `&&=` and `||=` are supported
-    }
-
-    return false; // only ints and booleans are supported in augmented assignment
-}
-
 function processCondition(
     condition: AstCondition,
     sctx: StatementContext,
@@ -383,11 +351,44 @@ function processStatements(
                     // Process expression
                     ctx = resolveExpression(s.expression, sctx, ctx);
 
-                    if (!isAugmentedAssignExpression(s, ctx)) {
+                    // Check type
+                    const expressionType = getExpType(ctx, s.expression);
+                    const tailType = getExpType(ctx, s.path);
+
+                    // Check if any of the types is not ref or is optional or types themselves don't match
+                    if (
+                        expressionType.kind !== "ref" ||
+                        expressionType.optional ||
+                        tailType.kind !== "ref" ||
+                        tailType.optional
+                    ) {
                         throwCompilationError(
-                            `Type error: Augmented assignment is only allowed for Int type`,
+                            `Type error: Augmented assignment ${s.op}= is only allowed for Int and Bool types`,
                             s.loc,
                         );
+                    }
+
+                    if (expressionType.name !== tailType.name) {
+                        throwCompilationError(
+                            `Type error: Augmented assignment ${s.op}= is only allowed for matching types`,
+                            s.loc,
+                        );
+                    }
+
+                    if (s.op === "&&" || s.op === "||") {
+                        if (expressionType.name !== "Bool") {
+                            throwCompilationError(
+                                `Type error: Augmented assignment ${s.op}= is only allowed for Bool types`,
+                                s.loc,
+                            );
+                        }
+                    } else {
+                        if (expressionType.name !== "Int") {
+                            throwCompilationError(
+                                `Type error: Augmented assignment ${s.op}= is only allowed for Int types`,
+                                s.loc,
+                            );
+                        }
                     }
                 }
                 break;

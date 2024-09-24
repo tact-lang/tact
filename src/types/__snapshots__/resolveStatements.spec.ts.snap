@@ -776,7 +776,7 @@ Line 9, col 5:
 `;
 
 exports[`resolveStatements should fail statements for stmt-augmented-assgn-bool 1`] = `
-"<unknown>:5:5: Type error: Augmented assignment is only allowed for Int type
+"<unknown>:5:5: Type error: Augmented assignment %= is only allowed for Int types
 Line 5, col 5:
   4 |     let a: Bool = false;
 > 5 |     a %= true;
@@ -785,8 +785,38 @@ Line 5, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for stmt-augmented-assgn-bool-int 1`] = `
+"<unknown>:9:5: Type error: Augmented assignment += is only allowed for matching types
+Line 9, col 5:
+   8 | fun test(x: Bool): Bool {
+>  9 |     x += 1;
+           ^~~~~~~
+  10 |     return x;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-augmented-assgn-int 1`] = `
+"<unknown>:5:5: Type error: Augmented assignment &&= is only allowed for Bool types
+Line 5, col 5:
+  4 |     let a: Int = 1;
+> 5 |     a &&= 1;
+          ^~~~~~~~
+  6 |     return a;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-augmented-assgn-int-bool 1`] = `
+"<unknown>:9:5: Type error: Augmented assignment &&= is only allowed for matching types
+Line 9, col 5:
+   8 | fun test(x: Int): Int {
+>  9 |     x &&= true;
+           ^~~~~~~~~~~
+  10 |     return x;
+"
+`;
+
 exports[`resolveStatements should fail statements for stmt-augmented-assgn-string 1`] = `
-"<unknown>:5:5: Type error: Augmented assignment is only allowed for Int type
+"<unknown>:5:5: Type error: Augmented assignment %= is only allowed for Int types
 Line 5, col 5:
   4 |     let a: String = "foo";
 > 5 |     a %= "bar";
