@@ -2064,8 +2064,11 @@ function checkInitializerType(
     initializer: AstExpression,
     ctx: CompilerContext,
 ): CompilerContext {
-    const stmtCtx = emptyContext(initializer.loc, null, declTy);
-    ctx = resolveExpression(initializer, stmtCtx, ctx);
+    let stmtCtx = emptyContext(initializer.loc, null, declTy);
+    const resCtx = resolveExpression(initializer, stmtCtx, ctx);
+    ctx = resCtx.ctx;
+    stmtCtx = resCtx.sctx;
+
     const initTy = getExpType(ctx, initializer);
     if (!isAssignable(initTy, declTy)) {
         throwCompilationError(
@@ -2089,10 +2092,9 @@ function initializeConstants(
                 constant.ast.initializer,
                 ctx,
             );
-            constant.value = evalConstantExpression(
-                constant.ast.initializer,
-                ctx,
-            );
+            constant.value = evalConstantExpression(constant.ast.initializer, {
+                ctx: ctx,
+            });
         }
     }
     return ctx;
@@ -2120,7 +2122,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
                             );
                             field.default = evalConstantExpression(
                                 field.ast.initializer,
-                                ctx,
+                                { ctx: ctx },
                             );
                         } else {
                             // if a field has optional type and it is missing an explicit initializer

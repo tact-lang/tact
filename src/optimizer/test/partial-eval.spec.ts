@@ -6,7 +6,7 @@ import {
     eqExpressions,
     isValue,
 } from "../../grammar/ast";
-import { parseExpression } from "../../grammar/grammar";
+import { dummySrcInfo, parseExpression } from "../../grammar/grammar";
 import { extractValue, makeValueExpression } from "../util";
 import { partiallyEvalExpression } from "../../constEval";
 import { CompilerContext } from "../../context";
@@ -317,10 +317,9 @@ function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
         expect(
             eqExpressions(
-                partiallyEvalExpression(
-                    parseExpression(original),
-                    new CompilerContext(),
-                ),
+                partiallyEvalExpression(parseExpression(original), {
+                    ctx: new CompilerContext(),
+                }),
                 dummyEval(parseExpression(simplified)),
             ),
         ).toBe(true);
@@ -378,6 +377,7 @@ function dummyEval(ast: AstExpression): AstExpression {
                         ast.op,
                         extractValue(newNode.operand as AstValue),
                     ),
+                    dummySrcInfo,
                 );
             }
             return newNode;
@@ -392,6 +392,7 @@ function dummyEval(ast: AstExpression): AstExpression {
                         extractValue(newNode.left as AstValue),
                         extractValue(newNode.right as AstValue),
                     ),
+                    dummySrcInfo,
                 );
             }
             return newNode;
