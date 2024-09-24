@@ -1320,10 +1320,10 @@
     jssha "3.2.0"
     tweetnacl "1.0.3"
 
-"@ton/sandbox@^0.20.0":
-  version "0.20.0"
-  resolved "https://registry.npmjs.org/@ton/sandbox/-/sandbox-0.20.0.tgz#229ef12bd99b313b91003393890cdb01262189b5"
-  integrity sha512-uci6DRDZGW1eu+hHgbVzf4lDTi29PV+5XKPC8ZyYUJaoOtulkHDtgyrfZ1H5QSOVOmUIjHDQhPwLsn1kU51yHw==
+"@ton/sandbox@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.npmjs.org/@ton/sandbox/-/sandbox-0.22.0.tgz#76a3b724f40be18512df748deee6c5d5ff0a96fb"
+  integrity sha512-ilvKtyAGxJyEbIwITlx1y78oDmJyvT+pkLfVm4952NjxZpANdG2nZ8/mBGJlWph9FZtxxXCjCf/79hNihC6P6A==
 
 "@ton/test-utils@^0.4.2":
   version "0.4.2"
@@ -1430,9 +1430,9 @@
     "@types/istanbul-lib-report" "*"
 
 "@types/jest@^29.5.12":
-  version "29.5.12"
-  resolved "https://registry.npmjs.org/@types/jest/-/jest-29.5.12.tgz"
-  integrity sha512-eDC8bTvT/QhYdxJAulQikueigY5AsdBRH2yDKW3yveW7svY3+DzN84/2NUgkw10RTiJbWqZrTtoGVdYlvFJdLw==
+  version "29.5.13"
+  resolved "https://registry.npmjs.org/@types/jest/-/jest-29.5.13.tgz#8bc571659f401e6a719a7bf0dbcb8b78c71a8adc"
+  integrity sha512-wd+MVEZCHt23V0/L642O5APvspWply/rGY5BcW4SUETo2UzPU3Z26qr8jC2qxpimI2jjx9h7+2cj2FwIr01bXg==
   dependencies:
     expect "^29.0.0"
     pretty-format "^29.0.0"
