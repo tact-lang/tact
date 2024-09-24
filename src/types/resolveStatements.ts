@@ -377,14 +377,14 @@ function processStatements(
                     if (s.op === "&&" || s.op === "||") {
                         if (expressionType.name !== "Bool") {
                             throwCompilationError(
-                                `Type error: Augmented assignment ${s.op}= is only allowed for Bool types`,
+                                `Type error: Augmented assignment ${s.op}= is only allowed for Bool type`,
                                 s.loc,
                             );
                         }
                     } else {
                         if (expressionType.name !== "Int") {
                             throwCompilationError(
-                                `Type error: Augmented assignment ${s.op}= is only allowed for Int types`,
+                                `Type error: Augmented assignment ${s.op}= is only allowed for Int type`,
                                 s.loc,
                             );
                         }

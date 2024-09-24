@@ -796,7 +796,7 @@ Line 9, col 5:
 `;
 
 exports[`resolveStatements should fail statements for stmt-augmented-assgn-int 1`] = `
-"<unknown>:5:5: Type error: Augmented assignment &&= is only allowed for Bool types
+"<unknown>:5:5: Type error: Augmented assignment &&= is only allowed for Bool type
 Line 5, col 5:
   4 |     let a: Int = 1;
 > 5 |     a &&= 1;
