@@ -24,8 +24,12 @@ contract AsmFunctionsTester {
     }
 
     get fun testAsmDebugStr(): Bool {
-        debugStr();
+        asmDebugStr();
         return true;
+    }
+
+    get fun testAsmCreateUseWord(): Bool {
+        return asmCreateUseWord(6) == 7;
     }
 }
 
@@ -39,7 +43,13 @@ asm extends fun asmLoadCoins(self: Slice): IntSlice { LDVARUINT16 }
 
 asm(self len -> 1 0) extends fun asmLoadInt(self: Slice, len: Int): SliceInt { LDIX }
 
-asm fun debugStr() { "Works!" DEBUGSTR }
+asm fun asmDebugStr() { "Works!" DEBUGSTR }
+
+asm fun asmCreateUseWord(x: Int): Int {
+    { INC INC INC } : 🥰🥰🥰
+    { DEC DEC DEC } : 💀💀💀
+    🥰🥰🥰 💀💀💀 INC
+}
 
 // Helper Structs
 
