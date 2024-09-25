@@ -13,11 +13,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `asm` functions now support full range of Fift-asm syntax: PR [#855](https://github.com/tact-lang/tact/pull/855)
-
 ### Fixed
 
 ### Release contributors
+
+## [1.5.2] - 2024-09-25
+
+### Fixed
+
+- `asm` functions now support full range of Fift-asm syntax: PR [#855](https://github.com/tact-lang/tact/pull/855)
+
+- Fix `npm` installations of Tact compiler or any of the packages depending on it by hiding unnecessary post-install runs of `husky`: PR [#870](https://github.com/tact-lang/tact/pull/870)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
 
 ## [1.5.1] - 2024-09-18
 
