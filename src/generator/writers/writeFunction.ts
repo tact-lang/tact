@@ -182,8 +182,9 @@ export function writeStatement(
             }
             const path = writePathExpression(lvaluePath);
             const t = getExpType(ctx.ctx, f.path);
+            const op = f.op === "&&" ? "&" : f.op === "||" ? "|" : f.op;
             ctx.append(
-                `${path} = ${cast(t, t, `${path} ${f.op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
+                `${path} = ${cast(t, t, `${path} ${op} ${writeExpression(f.expression, ctx)}`, ctx)};`,
             );
             return;
         }

@@ -17,5 +17,11 @@ fun testFunc(): Int {
     a %= 2;
     a %= b;
     a %= b % 2;
+    a <<= 2;
+    a <<= b;
+    a <<= b << 2;
+    a >>= 2;
+    a >>= b;
+    a >>= b >> 2;
     return a;
 }

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#853](https://github.com/tact-lang/tact/pull/853)
+
 ### Changed
 
 ### Fixed

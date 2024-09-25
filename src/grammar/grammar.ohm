@@ -136,7 +136,7 @@ Tact {
 
     StatementExpression = Expression (";" | &"}")
 
-    StatementAssign = Expression ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "|=" | "&=" | "^=") Expression (";" | &"}")
+    StatementAssign = Expression ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "|=" | "&=" | "^=" | "||=" | "&&=" | ">>=" | "<<=") Expression (";" | &"}")
 
     StatementCondition = if Expression "{" Statement* "}" ~else --noElse
                        | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse

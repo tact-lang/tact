@@ -488,5 +488,24 @@ describe("math", () => {
         expect(await contract.getBitwiseNot2(5n)).toBe(-6n);
         expect(await contract.getBitwiseNot3(5n)).toBe(4n);
         expect(await contract.getBitwiseNot4(5n)).toBe(6n);
+
+        // Augmented Logical Operations
+        expect(await contract.getAugmentedAnd(true, true)).toBe(true);
+        expect(await contract.getAugmentedAnd(true, false)).toBe(false);
+        expect(await contract.getAugmentedAnd(false, true)).toBe(false);
+        expect(await contract.getAugmentedAnd(false, false)).toBe(false);
+
+        expect(await contract.getAugmentedOr(true, true)).toBe(true);
+        expect(await contract.getAugmentedOr(true, false)).toBe(true);
+        expect(await contract.getAugmentedOr(false, true)).toBe(true);
+        expect(await contract.getAugmentedOr(false, false)).toBe(false);
+
+        // Augmented Binary Shift Operations
+        expect(await contract.getAugmentedShiftLeft(1n, 1n)).toBe(2n);
+        expect(await contract.getAugmentedShiftLeft(1n, 2n)).toBe(4n);
+        expect(await contract.getAugmentedShiftLeft(2n, 3n)).toBe(16n);
+        expect(await contract.getAugmentedShiftRight(2n, 1n)).toBe(1n);
+        expect(await contract.getAugmentedShiftRight(4n, 2n)).toBe(1n);
+        expect(await contract.getAugmentedShiftRight(16n, 3n)).toBe(2n);
     });
 });
