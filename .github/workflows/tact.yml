@@ -207,6 +207,12 @@ jobs:
           npm link @tact-lang/compiler
           npm run build
           npm run test
+          # Out of the box, only npm experiences issues
+          # with lifecycle scripts of installed dependencies
+          cd .. && mkdir npm-test && cd npm-test
+          npm init -y
+          npm i @tact-lang/compiler
+          npm i @ton/blueprint
 
       - name: (yarn) Test compatibility with Blueprint
         if: ${{ matrix.package-manager == 'yarn' }}

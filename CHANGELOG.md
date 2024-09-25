@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fix `npm` installations of Tact compiler or any of the packages depending on it by hiding unnecessary post-install runs of `husky`: PR [#870](https://github.com/tact-lang/tact/pull/870)
+
 ### Release contributors
 
 ## [1.5.1] - 2024-09-18
