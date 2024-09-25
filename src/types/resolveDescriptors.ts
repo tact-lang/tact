@@ -1926,7 +1926,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 const existing = methodIds.get(methodId);
                 if (existing) {
                     throwCompilationError(
-                        `Method ID collision: getter '${f.name}' has the same method ID ${methodId} as getter '${existing}'`,
+                        `Method ID collision: getter '${f.name}' has the same method ID ${methodId} as getter '${existing}'\nPick a different getter name to avoid collisions`,
                         f.ast.name.loc,
                     );
                 } else {
