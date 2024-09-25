@@ -1924,7 +1924,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (f.isGetter) {
                 const methodId = getMethodId(f.name);
                 const existing = methodIds.get(methodId);
-                console.log(f.name, !!existing);
                 if (existing) {
                     throwCompilationError(
                         `Method ID collision: getter '${f.name}' has the same method ID ${methodId} as getter '${existing}'`,
