@@ -211,6 +211,7 @@ jobs:
       - name: (npm) Test Tact and Blueprint installs in existing projects
         if: ${{ matrix.package-manager == 'npm' }}
         run: |
+          npm link
           # Out of the box, only npm experiences issues
           # with lifecycle scripts of installed dependencies
           cd .. && mkdir npm-test && cd npm-test
