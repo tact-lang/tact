@@ -328,6 +328,39 @@ Line 4, col 17:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for getter-collision 1`] = `
+"<unknown>:8:13: Method ID collision: getter 'pko' has the same method ID 103057 as getter 'getter1'
+Pick a different getter name to avoid collisions
+Line 8, col 13:
+  7 | 
+> 8 |     get fun pko() {
+                  ^~~
+  9 |         return;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for getter-collision-trait 1`] = `
+"<unknown>:8:13: Method ID collision: getter 'pko' has the same method ID 103057 as getter 'getter1'
+Pick a different getter name to avoid collisions
+Line 8, col 13:
+  7 | 
+> 8 |     get fun pko() {
+                  ^~~
+  9 |         return;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for getter-collision-with-trait 1`] = `
+"<unknown>:4:13: Method ID collision: getter 'pko' has the same method ID 103057 as getter 'getter1'
+Pick a different getter name to avoid collisions
+Line 4, col 13:
+  3 | trait T {
+> 4 |     get fun pko() {
+                  ^~~
+  5 |         return;
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for getter-outside-contract 1`] = `
 "<unknown>:8:1: Getters must be defined within a contract
 Line 8, col 1:

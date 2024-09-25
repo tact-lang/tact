@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Collisions in getter method ids are now handled and reported properly: PR [#875](https://github.com/tact-lang/tact/pull/875)
+
 ### Release contributors
 
 ## [1.5.2] - 2024-09-25
