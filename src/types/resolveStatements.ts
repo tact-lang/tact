@@ -351,21 +351,52 @@ function processStatements(
                     ctx = resolveExpression(s.expression, sctx, ctx);
 
                     // Check type
-                    const expressionType = getExpType(ctx, s.expression);
                     const tailType = getExpType(ctx, s.path);
-                    // Check if types are Int
+                    const expressionType = getExpType(ctx, s.expression);
+
+                    // Check if any of the types is not ref or is optional or types themselves don't match
+                    if (tailType.kind !== "ref" || tailType.optional) {
+                        throwCompilationError(
+                            `Type error: invalid type ${printTypeRef(tailType)} for augmented assignment`,
+                            s.path.loc,
+                        );
+                    }
                     if (
                         expressionType.kind !== "ref" ||
-                        expressionType.name !== "Int" ||
-                        expressionType.optional ||
-                        tailType.kind !== "ref" ||
-                        tailType.name !== "Int" ||
-                        tailType.optional
+                        expressionType.optional
                     ) {
                         throwCompilationError(
-                            `Type error: Augmented assignment is only allowed for Int type`,
-                            s.loc,
+                            `Type error: invalid type ${printTypeRef(expressionType)} for augmented assignment`,
+                            s.expression.loc,
                         );
+                    }
+
+                    if (s.op === "&&" || s.op === "||") {
+                        if (tailType.name !== "Bool") {
+                            throwCompilationError(
+                                `Type error: Augmented assignment ${s.op}= is only allowed for Bool type`,
+                                s.path.loc,
+                            );
+                        }
+                        if (expressionType.name !== "Bool") {
+                            throwCompilationError(
+                                `Type error: Augmented assignment ${s.op}= is only allowed for Bool type`,
+                                s.expression.loc,
+                            );
+                        }
+                    } else {
+                        if (tailType.name !== "Int") {
+                            throwCompilationError(
+                                `Type error: Augmented assignment ${s.op}= is only allowed for Int type`,
+                                s.path.loc,
+                            );
+                        }
+                        if (expressionType.name !== "Int") {
+                            throwCompilationError(
+                                `Type error: Augmented assignment ${s.op}= is only allowed for Int type`,
+                                s.expression.loc,
+                            );
+                        }
                     }
                 }
                 break;

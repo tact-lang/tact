@@ -776,21 +776,61 @@ Line 9, col 5:
 `;
 
 exports[`resolveStatements should fail statements for stmt-augmented-assgn-bool 1`] = `
-"<unknown>:5:5: Type error: Augmented assignment is only allowed for Int type
+"<unknown>:5:5: Type error: Augmented assignment %= is only allowed for Int type
 Line 5, col 5:
   4 |     let a: Bool = false;
 > 5 |     a %= true;
-          ^~~~~~~~~~
+          ^
   6 |     return a;
 "
 `;
 
+exports[`resolveStatements should fail statements for stmt-augmented-assgn-bool-int 1`] = `
+"<unknown>:9:5: Type error: Augmented assignment += is only allowed for Int type
+Line 9, col 5:
+   8 | fun test(x: Bool): Bool {
+>  9 |     x += 1;
+           ^
+  10 |     return x;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-augmented-assgn-int 1`] = `
+"<unknown>:5:5: Type error: Augmented assignment &&= is only allowed for Bool type
+Line 5, col 5:
+  4 |     let a: Int = 1;
+> 5 |     a &&= 1;
+          ^
+  6 |     return a;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-augmented-assgn-int-bool 1`] = `
+"<unknown>:9:5: Type error: Augmented assignment &&= is only allowed for Bool type
+Line 9, col 5:
+   8 | fun test(x: Int): Int {
+>  9 |     x &&= true;
+           ^
+  10 |     return x;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-augmented-assgn-not-matching 1`] = `
+"<unknown>:10:10: Type error: Augmented assignment += is only allowed for Int type
+Line 10, col 10:
+   9 |     let x: Int = 42;
+> 10 |     x += true;
+                ^~~~
+  11 |     return x;
+"
+`;
+
 exports[`resolveStatements should fail statements for stmt-augmented-assgn-string 1`] = `
-"<unknown>:5:5: Type error: Augmented assignment is only allowed for Int type
+"<unknown>:5:5: Type error: Augmented assignment %= is only allowed for Int type
 Line 5, col 5:
   4 |     let a: String = "foo";
 > 5 |     a %= "bar";
-          ^~~~~~~~~~~
+          ^
   6 |     return a;
 "
 `;
@@ -2529,6 +2569,35 @@ exports[`resolveStatements should resolve statements for return-analysis-try-cat
   [
     "43",
     "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for stmt-augmented-assgn-bool 1`] = `
+[
+  [
+    "false",
+    "Bool",
+  ],
+  [
+    "a",
+    "Bool",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "a",
+    "Bool",
+  ],
+  [
+    "false",
+    "Bool",
+  ],
+  [
+    "a",
+    "Bool",
   ],
 ]
 `;

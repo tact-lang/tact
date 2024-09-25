@@ -807,6 +807,18 @@ semantics.addOperation<AstNode>("astOfStatement", {
                 case "^=":
                     op = "^";
                     break;
+                case "||=":
+                    op = "||";
+                    break;
+                case "&&=":
+                    op = "&&";
+                    break;
+                case "<<=":
+                    op = "<<";
+                    break;
+                case ">>=":
+                    op = ">>";
+                    break;
                 default:
                     throwInternalCompilerError(
                         "Unreachable augmented assignment operator.",
