@@ -52,6 +52,7 @@ import { ItemOrigin } from "../grammar/grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
+import { getMethodId } from "../utils/utils";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -1914,6 +1915,26 @@ export function resolveDescriptors(ctx: CompilerContext) {
             );
         }
         staticConstants.set(idText(a.name), buildConstantDescription(a));
+    }
+
+    // Check for collisions in getter method IDs
+    for (const t of types.values()) {
+        const methodIds: Map<number, string> = new Map();
+        for (const f of t.functions.values()) {
+            if (f.isGetter) {
+                const methodId = getMethodId(f.name);
+                const existing = methodIds.get(methodId);
+                console.log(f.name, !!existing);
+                if (existing) {
+                    throwCompilationError(
+                        `Method ID collision: getter '${f.name}' has the same method ID ${methodId} as getter '${existing}'`,
+                        f.ast.name.loc,
+                    );
+                } else {
+                    methodIds.set(methodId, f.name);
+                }
+            }
+        }
     }
 
     //
