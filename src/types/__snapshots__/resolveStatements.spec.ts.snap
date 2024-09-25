@@ -780,7 +780,7 @@ exports[`resolveStatements should fail statements for stmt-augmented-assgn-bool 
 Line 5, col 5:
   4 |     let a: Bool = false;
 > 5 |     a %= true;
-          ^~~~~~~~~~
+          ^
   6 |     return a;
 "
 `;
@@ -790,7 +790,7 @@ exports[`resolveStatements should fail statements for stmt-augmented-assgn-bool-
 Line 9, col 5:
    8 | fun test(x: Bool): Bool {
 >  9 |     x += 1;
-           ^~~~~~~
+           ^
   10 |     return x;
 "
 `;
@@ -800,7 +800,7 @@ exports[`resolveStatements should fail statements for stmt-augmented-assgn-int 1
 Line 5, col 5:
   4 |     let a: Int = 1;
 > 5 |     a &&= 1;
-          ^~~~~~~~
+          ^
   6 |     return a;
 "
 `;
@@ -810,8 +810,18 @@ exports[`resolveStatements should fail statements for stmt-augmented-assgn-int-b
 Line 9, col 5:
    8 | fun test(x: Int): Int {
 >  9 |     x &&= true;
-           ^~~~~~~~~~~
+           ^
   10 |     return x;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-augmented-assgn-not-matching 1`] = `
+"<unknown>:10:10: Type error: Augmented assignment += is only allowed for Int type
+Line 10, col 10:
+   9 |     let x: Int = 42;
+> 10 |     x += true;
+                ^~~~
+  11 |     return x;
 "
 `;
 
@@ -820,7 +830,7 @@ exports[`resolveStatements should fail statements for stmt-augmented-assgn-strin
 Line 5, col 5:
   4 |     let a: String = "foo";
 > 5 |     a %= "bar";
-          ^~~~~~~~~~~
+          ^
   6 |     return a;
 "
 `;
