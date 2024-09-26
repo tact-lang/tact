@@ -404,7 +404,7 @@ contract SemanticsTester {
         // The map self.mC has a single entry 100 -> MapWrapper {m: 10 -> self.sA}.
         foreach (k1, v1 in self.mC) {
             foreach (k2, v2 in v1.m) {
-                result = result && 
+                result &&= 
                          k1 == 100 && 
                          k2 == 10 &&
                          
@@ -547,7 +547,7 @@ contract SemanticsTester {
         // Note that the only place where s is reassigned is after reflectStruct executes.
         // This means that the above expression does NOT change s.
 
-        result = result && 
+        result &&=
                self.checkAllContractFieldsAreUnchanged() &&
                s.a1 == 20 &&    
                s.a2.b1 == true &&
@@ -567,7 +567,7 @@ contract SemanticsTester {
         // is not possible because changeSomeFields has void return type.
 
         // s is now changed by changeSomeFields, and the rest remains the same
-        result = result && 
+        result &&=
                self.checkAllContractFieldsAreUnchanged() &&
                s.a1 == 120 &&   
                s.a2.b1 == true &&
@@ -991,7 +991,7 @@ contract SemanticsTester {
                wm.m.get(3)!!.a2.b3 == 0;
 
         foreach (k, _ in wm.m) {
-            result = result && (k == 1 || k == 2 || k == 3);
+            result &&= (k == 1 || k == 2 || k == 3);
         }
 
         // Instead, passing "wm" to the mutating function "unwrapMap", 
@@ -1002,7 +1002,7 @@ contract SemanticsTester {
         wm.unwrapMap().del(1);  // FunC error: issue #866
 
         // The contract fields remain the same and also wm
-        result = result &&
+        result &&=
                self.checkAllContractFieldsAreUnchanged() &&
                wm.m.get(1)!!.a1 == 20 && 
                wm.m.get(1)!!.a2.b1 == true &&
@@ -1020,7 +1020,7 @@ contract SemanticsTester {
                wm.m.get(3)!!.a2.b3 == 0;
 
         foreach (k, _ in wm.m) {
-            result = result && (k == 1 || k == 2 || k == 3);
+            result &&= (k == 1 || k == 2 || k == 3);
         }
 
         // Since unwrapMap always returns a copy of wm.m, it is not possible 
@@ -1030,7 +1030,7 @@ contract SemanticsTester {
         wm.m.del(1);
 
         // The contract fields remain the same and wm only lost entry 1
-        result = result &&
+        result &&=
                self.checkAllContractFieldsAreUnchanged() &&
 
                wm.m.get(2)!!.a1 == 20 && 
@@ -1044,7 +1044,7 @@ contract SemanticsTester {
                wm.m.get(3)!!.a2.b3 == 0;
 
         foreach (k, _ in wm.m) {
-            result = result && (k == 2 || k == 3);
+            result &&= (k == 2 || k == 3);
         }
 
         // Hence, chaining mutating functions to attempt to delete another entry,
@@ -1053,7 +1053,7 @@ contract SemanticsTester {
         wm.reflectMap().unwrapMap().del(2);  // FunC error: issue #866
 
         // The contract fields remain the same and wm remains as in the previous step
-        result = result &&
+        result &&=
                self.checkAllContractFieldsAreUnchanged() &&
 
                wm.m.get(2)!!.a1 == 20 && 
@@ -1067,7 +1067,7 @@ contract SemanticsTester {
                wm.m.get(3)!!.a2.b3 == 0;
 
         foreach (k, _ in wm.m) {
-            result = result && (k == 2 || k == 3);
+            result &&= (k == 2 || k == 3);
         }
 
         return result;
@@ -1109,7 +1109,7 @@ contract SemanticsTester {
         // But m does not change
         foreach (k1, v1 in m) {
             foreach (k2, v2 in v1.m) {
-                result = result && 
+                result &&=
                          k1 == 100 && 
                          k2 == 10 &&
                          
@@ -1155,7 +1155,7 @@ contract SemanticsTester {
         // Indeed, wrappedNested1 and wrappedNested2 are equal
 
         foreach (k2, v2 in wrappedNested1.m) {
-                result = result && 
+                result &&=
                 k2 == 10 &&
                          
                 v2.a1 == 20 && 
@@ -1165,7 +1165,7 @@ contract SemanticsTester {
         }
 
         foreach (k2, v2 in wrappedNested2.m) {
-                result = result && 
+                result &&=
                 k2 == 10 &&
                          
                 v2.a1 == 20 && 
@@ -1181,7 +1181,7 @@ contract SemanticsTester {
 
         foreach (k1, v1 in m) {
             foreach (k2, v2 in v1.m) {
-                result = result && 
+                result &&=
                          k1 == 100 && 
                          k2 == 10 &&
                          
@@ -1193,7 +1193,7 @@ contract SemanticsTester {
         }
 
         // The rest of the fields in the contract did not change (including self.mC).
-        result = result && self.checkAllContractFieldsAreUnchanged();
+        result &&= self.checkAllContractFieldsAreUnchanged();
 
         return result;
     }
@@ -1441,7 +1441,7 @@ contract SemanticsTester {
         // The map self.mC has a single entry 100 -> MapWrapper {m: 10 -> original self.sA}.
         foreach (k1, v1 in self.mC) {
             foreach (k2, v2 in v1.m) {
-                result = result && 
+                result &&=
                          k1 == 100 && 
                          k2 == 10 &&
                          
@@ -1518,7 +1518,7 @@ contract SemanticsTester {
         // c.changeSomeContractFields();
 
         // Nothing changed
-        result = result &&
+        result &&=
                self.checkAllContractFieldsAreUnchanged() &&
                c.checkAllContractFieldsAreUnchanged();
 
@@ -1530,7 +1530,7 @@ contract SemanticsTester {
         c = c.reflectContract().incrementIntFieldsInUB().flipBooleanFieldsInUB();
 
         // c is now changed, the rest remains the same.
-        result = result && 
+        result &&=
                self.checkAllContractFieldsAreUnchanged() &&
                c.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 1}, b3: 15}, 5);
 
