@@ -1,6 +1,6 @@
 {
   "name": "@tact-lang/compiler",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tact-lang/tact.git"
@@ -28,7 +28,7 @@
     "knip": "knip",
     "lint:all": "yarn lint && yarn fmt:check && yarn lint:schema && yarn spell && yarn knip",
     "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint:all",
-    "postinstall": "husky",
+    "postinstall": "node .husky/install.mjs || true",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable"
   },
@@ -65,7 +65,7 @@
     "@tact-lang/coverage": "^0.0.8",
     "@tact-lang/ton-abi": "^0.0.3",
     "@tact-lang/ton-jest": "^0.0.4",
-    "@ton/sandbox": "^0.20.0",
+    "@ton/sandbox": "^0.22.0",
     "@ton/test-utils": "^0.4.2",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.12",

@@ -398,7 +398,7 @@ contract SemanticsTester {
 
         // And no other entries
         foreach (k, _ in self.mA) {
-            result = result && (k == 1 || k == 2 || k == 3);
+            result &&= (k == 1 || k == 2 || k == 3);
         }
 
         // The map self.mC has a single entry 100 -> MapWrapper {m: 10 -> self.sA}.
@@ -807,7 +807,7 @@ contract SemanticsTester {
         
         // And no other entries
         foreach (k, _ in s) {
-            result = result && (k == 1 || k == 2 || k == 3);
+            result &&= (k == 1 || k == 2 || k == 3);
         }
 
         return result;
@@ -848,7 +848,7 @@ contract SemanticsTester {
 
         // And no other entries
         foreach (k, _ in s) {
-            result = result && (k == 1 || k == 2 || k == 3);
+            result &&= (k == 1 || k == 2 || k == 3);
         }
 
         return result;
@@ -869,7 +869,7 @@ contract SemanticsTester {
         
         // And no other entries 
         foreach (k, _ in s) {
-            result = result && k == 1;
+            result &&= k == 1;
         }
 
         return result;
@@ -890,7 +890,7 @@ contract SemanticsTester {
         
         // And no other entries 
         foreach (k, _ in s) {
-            result = result && k == 1;
+            result &&= k == 1;
         }
 
         return result;
@@ -913,7 +913,7 @@ contract SemanticsTester {
         
         // And no other entries 
         foreach (k, _ in s.m) {
-            result = result && k == 1;
+            result &&= k == 1;
         }
 
         return result;
@@ -936,7 +936,7 @@ contract SemanticsTester {
         
         // And no other entries 
         foreach (k, _ in s.m) {
-            result = result && k == 1;
+            result &&= k == 1;
         }
 
         return result;
@@ -1275,7 +1275,7 @@ contract SemanticsTester {
 
         // And no other entries
         foreach (k, _ in c.mA) {
-            result = result && k == 3;
+            result &&= k == 3;
         }
 
         return result;
@@ -1324,7 +1324,7 @@ contract SemanticsTester {
 
         // And no other entries
         foreach (k, _ in c.mA) {
-            result = result && (k == 2 || k == 3);
+            result &&= (k == 2 || k == 3);
         }
 
         return result;
@@ -1386,7 +1386,7 @@ contract SemanticsTester {
 
         // And no other entries
         foreach (k, _ in c.mA) {
-            result = result && (k == 1 || k == 2 || k == 3);
+            result &&= (k == 1 || k == 2 || k == 3);
         }
 
         return result;
@@ -1435,7 +1435,7 @@ contract SemanticsTester {
 
         // And no other entries
         foreach (k, _ in self.mA) {
-            result = result && (k == 1 || k == 2 || k == 3);
+            result &&= (k == 1 || k == 2 || k == 3);
         }
 
         // The map self.mC has a single entry 100 -> MapWrapper {m: 10 -> original self.sA}.
@@ -1476,7 +1476,7 @@ contract SemanticsTester {
         // Now, check that the changes in c are now in self.
         // Note that checkFieldsEqualTo is called on self now.
 
-        result = result && self.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
+        result &&= self.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
 
         return result;
     }

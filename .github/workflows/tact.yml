@@ -196,7 +196,7 @@ jobs:
           yarn gen
           yarn build
 
-      - name: (npm) Test compatibility with Blueprint
+      - name: (npm) Test creation of new Blueprint projects
         if: ${{ matrix.package-manager == 'npm' }}
         run: |
           npm link
@@ -208,7 +208,17 @@ jobs:
           npm run build
           npm run test
 
-      - name: (yarn) Test compatibility with Blueprint
+      - name: (npm) Test Tact and Blueprint installs in existing projects
+        if: ${{ matrix.package-manager == 'npm' }}
+        run: |
+          # Out of the box, only npm experiences issues
+          # with lifecycle scripts of installed dependencies
+          mkdir npm-test && cd npm-test
+          npm init -y
+          npm i ../  # installing compiler relatively
+          npm i @ton/blueprint
+
+      - name: (yarn) Test creation of new Blueprint projects
         if: ${{ matrix.package-manager == 'yarn' }}
         run: |
           yarn link
@@ -218,7 +228,7 @@ jobs:
           yarn build
           yarn test
 
-      - name: (pnpm) Test compatibility with Blueprint
+      - name: (pnpm) Test creation of new Blueprint projects
         if: ${{ matrix.package-manager == 'pnpm' }}
         run: |
           npm i -g pnpm
@@ -230,7 +240,7 @@ jobs:
           pnpm build
           pnpm test
 
-      - name: (bun) Test compatibility with Blueprint
+      - name: (bun) Test creation of new Blueprint projects
         if: ${{ matrix.package-manager == 'bun' }}
         run: |
           bun link

@@ -22,7 +22,7 @@ Tact {
     ModuleFunction = FunctionDefinition
                    | AsmFunction
 
-    AsmFunction = "asm" AsmShuffle? FunctionAttribute* fun id Parameters (":" Type)? "{" asmInstruction+ "}"
+    AsmFunction = "asm" AsmShuffle? FunctionAttribute* fun id Parameters (":" Type)? "{" AsmInstruction* "}"
 
     ModuleConstant = ConstantDefinition
 
@@ -98,8 +98,21 @@ Tact {
              | external "(" Parameter? ")" "{" Statement* "}" --externalRegular
              | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
 
-    asmInstruction = ("x" | "X" | "b" | "B") "{" hexDigit* "}" --data
-                   | ~comment (~space ~"}" any)+ --any
+    AsmInstruction = "[" &#whiteSpace AsmInstruction* "]" &#whiteSpace --internal
+                   | "{" &#whiteSpace AsmInstruction* "}" &#whiteSpace --list
+                   | "({)" &#whiteSpace AsmInstruction* "(})" &#whiteSpace --listNoStateCheck
+                   | ("abort\"" | ".\"" | "+\"" | "\"") (~"\"" any)* "\"" &#whiteSpace --string
+                   | "'" &#whiteSpace asmInstruction --tick
+                   | "char" &#whiteSpace (~whiteSpace any) &#whiteSpace --char
+                   | ("x{" | "B{") ~#whiteSpace hexDigit* ~#whiteSpace ("_" ~#whiteSpace)? "}" &#whiteSpace --hexLiteral
+                   | "b{" ~#whiteSpace binDigit* ~#whiteSpace "}" &#whiteSpace --binLiteral
+                   | asmInstruction --custom
+
+    // Instructions exclude some begin and end words to ensure correct parse
+    asmInstruction = ~(("[" | "]" | "{" | "}" | "({)" | "(})") ~asmWord) asmWord
+
+    // A chunk of non-whitespace characters forms a word in Fift
+    asmWord = (~whiteSpace any)+
 
     Statement = StatementLet
               | StatementBlock
@@ -123,7 +136,7 @@ Tact {
 
     StatementExpression = Expression (";" | &"}")
 
-    StatementAssign = Expression ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "|=" | "&=" | "^=") Expression (";" | &"}")
+    StatementAssign = Expression ("=" | "+=" | "-=" | "*=" | "/=" | "%=" | "|=" | "&=" | "^=" | "||=" | "&&=" | ">>=" | "<<=") Expression (";" | &"}")
 
     StatementCondition = if Expression "{" Statement* "}" ~else --noElse
                        | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse

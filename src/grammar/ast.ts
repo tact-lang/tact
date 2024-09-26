@@ -242,8 +242,12 @@ export type AstAugmentedAssignOperation =
     | "-"
     | "*"
     | "/"
+    | "&&"
+    | "||"
     | "%"
     | "|"
+    | "<<"
+    | ">>"
     | "&"
     | "^";
 

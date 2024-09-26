@@ -406,4 +406,24 @@ contract MathTester with Deployable {
     get fun bitwiseNot4(x: Int): Int {
         return -~x;
     }
+
+    get fun augmentedAnd(a: Bool, b: Bool): Bool {
+        a &&= b;
+        return a;
+    }
+
+    get fun augmentedOr(a: Bool, b: Bool): Bool {
+        a ||= b;
+        return a;
+    }
+
+    get fun augmentedShiftLeft(a: Int, b: Int): Int {
+        a <<= b;
+        return a;
+    }
+
+    get fun augmentedShiftRight(a: Int, b: Int): Int {
+        a >>= b;
+        return a;
+    }
 }
