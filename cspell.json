@@ -115,9 +115,9 @@
     "привет"
   ],
   "ignoreRegExpList": [
-    "\\b[xB]\\{[a-fA-F0-9]*_?\\}",                       // binary literals in Fift-asm
-    "\\b0[xX][a-fA-F0-9_]*\\b",                          // hexadecimal numbers
-    "\\b(?:address|crc32|cell|slice|rawSlice)\\(\".+\"\\)", // some comptime functions
+    "\\b[xB]\\{[a-fA-F0-9]*_?\\}", // binary literals in Fift-asm
+    "\\b0[xX][a-fA-F0-9_]*\\b", // hexadecimal numbers
+    "\\b(?:address|crc32|cell|slice|rawSlice)\\(\".+\"\\)" // some comptime functions
   ],
   "flagWords": [],
   "ignorePaths": [
