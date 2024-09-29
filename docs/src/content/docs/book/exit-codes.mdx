@@ -1,0 +1,324 @@
+---
+title: Exit Codes
+---
+
+:::caution
+  THis page is under re-construction as per [#106](https://github.com/tact-lang/tact-docs/issues/106). All anchor links (`#`) may change in the future!
+:::
+
+An exit code is a $16$-bit unsigned integer which ranges between $0$ to $65535$ (or $2_{16} - 1$).
+
+Codes from $0$ to $127$ are allocated for FunC (TVM), $128$ to $255$ for Tact. The range from $256$ to $65535$ is free for developer-defined exit codes.
+
+List of pre-allocated exit codes:
+
+Exit Code  | phase              | Description
+:--------- | :----------------- | --------------------------------------------------------------------------------------------------------------------------
+$0$        | [Compute phase][c] | Standard successful execution exit code
+$2$        | [Compute phase][c] | Stack underflow. Last op-code consumed more elements than there are on the stacks
+$3$        | [Compute phase][c] | Stack overflow. More values have been stored on a stack than allowed by this version of TVM
+$4$        | [Compute phase][c] | Integer overflow. Integer does not fit into −2<sup>256</sup> ≤ x < 2<sup>256</sup> or a division by zero has occurred
+$5$        | [Compute phase][c] | Integer out of expected range
+$6$        | [Compute phase][c] | Invalid opcode. Instruction is unknown in the current TVM version
+$7$        | [Compute phase][c] | Type check error. An argument to a primitive is of an incorrect value type
+$8$        | [Compute phase][c] | Cell overflow. Writing to builder is not possible since after operation there would be more than 1023 bits or 4 references
+$9$        | [Compute phase][c] | Cell underflow. Read from slice primitive tried to read more bits or references than there are
+$10$       | [Compute phase][c] | Dictionary error. Error during manipulation with dictionary (hashmaps)
+$13$       | [Compute phase][c] | Out of gas error. Thrown by TVM when the remaining gas becomes negative
+$-14$      | [Compute phase][c] | It means out of gas error, same as $13$. Negative, because it cannot be faked
+$32$       | [Action phase][a]  | Action list is invalid. Set during action phase if c5 register after execution contains unparsable object
+$34$       | [Action phase][a]  | Action is invalid or not supported. Set during action phase if current action cannot be applied
+$37$       | [Action phase][a]  | Not enough TON. Message sends too much TON (or there is not enough TON after deducting fees)
+$38$       | [Action phase][a]  | Not enough extra-currencies
+$128$      | Tact (Compiler)    | Null reference exception — compiler expects an integer or cell but a null value has been passed
+$129$      | Tact (Compiler)    | Invalid serialization prefix — if there is any inconsistency with the previous op-code check, this exit code will be thrown
+$130$      | Tact (Compiler)    | Invalid incoming message — no suitable operation is found
+$131$      | Tact (Compiler)    | Constraints error
+$132$      | Tact (Compiler)    | Access denied — someone other than the owner sent a message to the contract
+$133$      | Tact (Compiler)    | Contract stopped — a message has been sent to a stopped contract
+$134$      | Tact (Compiler)    | Invalid argument — invalid Base64 string
+$135$      | Tact (Compiler)    | Code of a contract was not found — false flag for a dictionary call
+$136$      | Tact (Compiler)    | Invalid Address — Non $267$-bit Address or invalid chain id (other than 0 or -1)
+$137$      | Tact (Compiler)    | Masterchain support is not enabled for this contract
+
+[c]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase
+[a]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases
+
+Q: **Where to observe the list of all auto-generated exit codes in your project?**\
+A: The Tact Compiler collects all exit codes at the end of a *.md file and you can track them in the directory along
+the path "./ProjectFolder/build/ProjectName/tact_ProjectName.md"
+
+Q: **How to observe a thrown exit code?**\
+A: In Tact, it's not wise to print the transactions to see the results because they are not easy to read. If you want to see the exit code of a transaction,
+use the below template in your Typescript local tests:
+
+```typescript
+const sender = await blockchain.treasury('sender');
+const result = await contractName.send(sender.getSender(), { value: toNano('0.05'), }, { transactionData });
+
+expect(result.transactions).toHaveTransaction(
+    { from: sender.address, to: contractName.address, exitCode: YOUR_DESIRED_EXIT_CODE }
+);
+```
+* First line defines the sender.
+* Second line sends the transaction.
+* In the third line, you check if the result has a transaction from sender to your contract with your desired exit code.
+
+## Compute phase
+
+### $0$: Successful execution {#0}
+
+This exit code means that the Compute phase of the transaction was completed successfully.
+
+### $4$: Integer overflow {#4}
+
+In TVM, integer can be in the range -2<sup>256</sup> < x < 2<sup>256</sup>.
+If the value during the calculation went beyond this range, then 4 exit code is thrown.
+
+Example:
+
+```tact
+self.id = 1; // force not to ignore it by using storage variables
+repeat(256) {
+    self.id = 2 * self.id;
+}
+```
+
+### $5$: Integer out of expected range {#5}
+
+If the integer value went beyond the expected range, then 5 exit code is thrown.
+For example, if a negative value was used in the .store_uint() function. In Tact, there are some other new situations such as:\
+1- As you know, you can define more limited integers in Tact (integers with less than 257 bits).
+If you try to store a number in this kind of integers and the number doesn't fit to this limited range, you will face this exit code.\
+2- according to ```storeUint(self: Builder, value: Int, bits: Int)``` function, it's not possible to use ```storeUint(0, 257)``` because ```0 ≤ bits ≤ 256```.
+
+Example:
+
+```tact
+// option 1 -> id: Int as uint32
+self.id = 1; // force not to ignore it by using storage variables
+repeat(32) {
+    self.id = 2 * self.id;
+}
+
+// option 2 -> according to storeUint(self: Builder, value: Int, bits: Int) function, it's not possible to use storeUint(0, 1024) because 0 ≤ bits ≤ 256
+let s: Slice = beginCell().storeUint(0, 257).asSlice();
+```
+
+### $8$: Cell overflow {#8}
+A cell has the capacity to store 1023 bits of data and 4 references to other cells.
+If you try to write more than 1023 bits or more than 4 references, 8 exit code is thrown.
+
+Example:
+
+```tact
+// according to storeUint(self: Builder, value: Int, bits: Int) function, it's not possible to use storeUint(0, 1024) because 0 ≤ bits ≤ 256
+let s: Slice = beginCell().storeUint(0, 256).storeUint(0, 256).storeUint(0, 256).storeUint(0, 256).asSlice();
+```
+
+### $9$: Cell underflow {#9}
+
+If you try to read more data from a slice than it contains, then 9 exit code is thrown.
+
+Example:
+
+```tact
+let s: Slice = emptySlice();
+self.id = s.loadUint(1); // force not to ignore it by using storage variables
+```
+
+### $13$: Out of gas error {#13}
+
+If there isn't enough TON to handle compute phase, this error is thrown.
+
+During processing, the NOT operation is applied to this value, which changes this value to -14. This is done so that this exit code cannot be faked using the throw function, since all such functions accept only positive values for the exit code as it was discussed previously.
+
+Example:
+
+```tact
+repeat(10000) {
+    self.id += 1;
+}
+```
+
+## Action phase
+
+### $34$: Action is invalid or not supported {#34}
+
+This exit code is responsible for most of the errors when working with actions: invalid message, incorrect action, and so on.
+
+Example:
+
+```tact
+nativeSendMessage(emptyCell(), 0);
+```
+
+### $37$: Not enough TON {#37}
+
+It means that there isn't enough TON to send the specified amount of it.
+
+Example:
+
+```tact
+send(SendParameters{to: context().sender, value: ton("10")});
+```
+
+## Tact (Compiler)
+
+### 128: Null reference exception {#128}
+
+If there's a non-null assertion, such as the [`!!{:tact}`](/book/operators#unary-non-null-assert) operator, and the checked value is [`null{:tact}`](/book/optionals), an error with exit code $128$ is thrown: `Null reference exception`.
+
+```tact
+let gotcha: String? = null;
+
+try {
+    // Asserting that the value isn't null, which isn't the case!
+    dump(gotcha!!);
+} catch (exitCode) {
+    exitCode; // 128
+}
+```
+
+### $130$: Invalid incoming message {#130}
+
+When you send a message to a contract, the first 32 bits of message body is the op code. It determines the operation that must be done.
+In FunC, if no op code is found, 0xffff will be thrown. In Tact, 130 exit code will be thrown.
+
+Example:
+
+1. First, define an empty contract like below:
+
+```tact
+contract Fireworks {}
+```
+
+2. Then, send a message to this contract. Because no suitable operation is found, you will get this exit code.
+
+### $132$: Access denied {#132}
+
+First, you should import and inherit from Ownable Trait. After it, your contract will have an owner.
+You can ask for a check by calling ```self.requireOwner();``` in your functions. It will ensure that only the owner can send message to your contract.
+
+Example:
+
+```tact
+import "@stdlib/deploy";
+import "@stdlib/ownable";
+
+message FakeLaunch {
+
+}
+
+contract Fireworks with
+    Deployable,
+    Ownable,
+{
+    owner: Address;
+
+    init(){
+        self.owner = sender();
+    }
+
+    receive(msg: FakeLaunch){
+        self.requireOwner();
+    }
+}
+
+fun requireOwner() {
+        nativeThrowUnless(132, sender() == self.owner);
+}
+```
+
+### $133$: Contract stopped {#133}
+
+The stoppable trait allows to stop the contract.
+If you send a message to a stopped contract, and the contract asks for a check by running ```self.requireNotStopped();```, this exit code will be thrown.
+In the current version of Tact, 40368 exit code will be thrown instead of 133.
+
+Example:
+
+```tact
+import "@stdlib/deploy";
+import "@stdlib/ownable";
+import "@stdlib/stoppable";
+
+message FakeLaunch {}
+
+contract Fireworks with
+    Deployable,
+    Ownable,
+    Stoppable,
+{
+    owner: Address;
+    stopped: Bool;
+
+    init() {
+        self.owner = sender();
+        self.stopped = false;
+    }
+
+    receive(msg: FakeLaunch) {
+        self.stopped = true;
+        self.requireNotStopped();
+    }
+}
+
+fun requireNotStopped() {
+    require(!self.stopped, "Contract stopped");
+}
+```
+
+### $134$: Invalid argument {#134}
+
+This will be thrown by the below FunC function(in the last part of a bunch of if conditions). This function reads something from Base64.
+
+If the input characters don't fit into base64 chars, you will encounter this exit code.
+
+Example:
+
+```tact
+let code: Slice = beginCell().storeUint(0, 8).asSlice().fromBase64();
+// 0 is not a valid ASCII code so it cannot be converted to Base64
+```
+
+### $135$: Code of a contract was not found {#135}
+
+It will check the return flag of a search on the dictionary keys.
+
+Example:
+
+```tact
+// copy & paste the below line in wrapper file(../build/ContractName/tact_ContractName.ts) instead of the second line of ContractName_init() function - this is a dictionary containing another smart contract code which leads to 135 exit code
+// const __system = Cell.fromBase64('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');
+let ctx: Context = context();
+let fireworks_init: StateInit = initOf Fireworks(0);
+```
+
+### $136$: Invalid address {#136}
+
+In TON, all addresses are 267 bits. If you violate this rule, you will face this exit code.
+
+Currently, TON only supports two chain id. 0 for basechain and -1 for masterchain. If you address isn't from basechain, 136 exit code will be thrown.
+
+Example:
+
+```tact
+// fun newAddress(chain: Int, hash: Int): Address;
+// creates a new address from chain and hash values.
+let zeroAddress: Address = newAddress(1, 0); // invalid chain zero address
+```
+
+### $137$: Masterchain support is not enabled for this contract {#137}
+
+Currently, TON only supports two chain id. 0 for basechain and -1 for masterchain.
+
+Tact only supports basechain and if you address is from masterchain, 137 exit code will be thrown.
+
+Example:
+
+```tact
+// fun newAddress(chain: Int, hash: Int): Address;
+// creates a new address from chain and hash values.
+let zeroAddress: Address = newAddress(-1, 0); // masterchain zero address
+```

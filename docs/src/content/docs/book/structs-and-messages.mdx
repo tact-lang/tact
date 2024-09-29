@@ -1,0 +1,302 @@
+---
+title: Structs and Messages
+---
+
+Tact supports a number of [primitive data types](/book/types#primitive-types) that are tailored for smart contract use. However, using individual means of storage often becomes cumbersome, so there are [Structs](#structs) and [Messages](#messages) which allow combining types together.
+
+:::caution
+
+  **Warning**: Currently circular types are **not** possible. This means that Struct/Message **A** can't have a field of a Struct/Message **B** that has a field of the Struct/Message **A**.
+
+  Therefore, the following code **won't** compile:
+
+  ```tact
+  struct A {
+      circularFieldA: B;
+  }
+
+  struct B {
+      impossibleFieldB: A;
+  }
+  ```
+
+:::
+
+## Structs
+
+Structs can define complex data types that contain multiple fields of different types. They can also be nested.
+
+```tact
+struct Point {
+    x: Int as int64;
+    y: Int as int64;
+}
+
+struct Line {
+    start: Point;
+    end: Point;
+}
+```
+
+Structs can also contain default fields and define fields of [optional types](/book/optionals). This can be useful if you have a lot of fields, but don't want to keep having to specify common values for them in [new instances](#instantiate).
+
+```tact
+struct Params {
+    name: String = "Satoshi"; // default value
+
+    age: Int?; // field with an optional type Int?
+               // and default value of null
+
+    point: Point; // nested Structs
+}
+```
+
+Structs are also useful as return values from getters or other internal functions. They effectively allow a single getter to return multiple return values.
+
+```tact
+contract StructsShowcase {
+    params: Params; // Struct as a contract's persistent state variable
+
+    init() {
+        self.params = Params{
+            point: Point{
+                x: 4,
+                y: 2,
+            },
+        };
+    }
+
+    get fun params(): Params {
+        return self.params;
+    }
+}
+```
+
+Note, that the last semicolon `;` in Struct declaration is optional and may be omitted:
+
+```tact
+struct Mad { ness: Bool }
+
+struct MoviesToWatch {
+    wolverine: String;
+    redFunnyGuy: String
+}
+```
+
+The order of fields matters, as it corresponds to the resulting memory layout in [TL-B schemas](https://docs.ton.org/develop/data-formats/tl-b-language). However, unlike some languages with manual memory management, Tact does not have any padding between fields.
+
+## Messages
+
+Messages can hold [Structs](#structs) in them:
+
+```tact
+struct Point {
+    x: Int;
+    y: Int;
+}
+
+message Add {
+    point: Point; // holds a struct Point
+}
+```
+
+Messages are almost the same thing as [Structs](#structs) with the only difference that Messages have a 32-bit integer header in their serialization containing their unique numeric id, commonly referred to as an _opcode_ (operation code). This allows Messages to be used with [receivers](/book/receive) since the contract can tell different types of messages apart based on this id.
+
+Tact automatically generates those unique ids (opcodes) for every received Message, but this can be manually overwritten:
+
+```tact
+// This Message overwrites its unique id with 0x7362d09c
+message(0x7362d09c) TokenNotification {
+    forwardPayload: Slice as remaining;
+}
+```
+
+This is useful for cases where you want to handle certain opcodes of a given smart contract, such as [Jetton standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md). The short-list of opcodes this contract is able to process is [given here in FunC](https://github.com/ton-blockchain/token-contract/blob/main/ft/op-codes.fc). They serve as an interface to the smart contract.
+
+:::note
+
+  For more in-depth information on this see:\
+  [Convert received messages to `op` operations](/book/func#convert-received-messages-to-op-operations)\
+  [Internal message body layout in TON Docs](https://docs.ton.org/develop/smart-contracts/guidelines/internal-messages#internal-message-body)\
+  [Messages of the Jetton implementation in Tact](https://github.com/howardpen9/jetton-implementation-in-tact/blob/9eee917877a92af218002874a9f2bd3f9c619229/sources/messages.tact)\
+  [Jetton Standard in Tact on Tact-by-Example](https://tact-by-example.org/07-jetton-standard)
+
+:::
+
+## Operations
+
+### Instantiate
+
+Creation of [Struct](#structs) and [Message](#messages) instances resembles [function calls](/book/expressions#static-function-call), but instead of paretheses `(){:tact}` one needs to specify arguments in braces `{}{:tact}` (curly brackets):
+
+```tact
+struct StA {
+    field1: Int;
+    field2: Int;
+}
+
+message MsgB {
+    field1: String;
+    field2: String;
+}
+
+fun example() {
+    // Instance of a Struct StA
+    StA{
+        field1: 42,
+        field2: 68 + 1, // trailing comma is allowed
+    };
+
+    // Instance of a Message MsgB
+    MsgB{
+        field1: "May the 4th",
+        field2: "be with you!", // trailing comma is allowed
+    };
+}
+```
+
+When the name of a variable or constant assigned to a field coincides with the name of such field, Tact provides a handy syntactic shortcut sometimes called field punning. With it, you don't have to type more than it's necessary:
+
+```tact
+struct PopQuiz {
+    vogonsCount: Int;
+    nicestNumber: Int;
+}
+
+fun example() {
+    // Let's introduce a couple of variables
+    let vogonsCount: Int = 42;
+    let nicestNumber: Int = 68 + 1;
+
+    // You may instantiate the Struct as usual and assign variables to fields,
+    // but that is a bit repetitive and tedious at times
+    PopQuiz{ vogonsCount: vogonsCount, nicestNumber: nicestNumber };
+
+    // Let's use field punning and type less,
+    // because our variable names happen to be the same as field names
+    PopQuiz{
+        vogonsCount,
+        nicestNumber, // trailing comma is allowed here too!
+    };
+}
+```
+
+:::note
+
+  Because instantiation is an expression in Tact, it's also described on the related page: [Instantiation expression](/book/expressions#instantiation).
+
+:::
+
+### Convert to a `Cell`, `.toCell()` {#tocell}
+
+It's possible to convert an arbitrary [Struct](#structs) or [Message](#messages) to the [`Cell{:tact}`][cell] type by using the `.toCell(){:tact}` [extension function](/book/functions#extension-function):
+
+```tact
+struct Big {
+    f1: Int;
+    f2: Int;
+    f3: Int;
+    f4: Int;
+    f5: Int;
+    f6: Int;
+}
+
+fun conversionFun() {
+    dump(Big{
+        f1: 10000000000, f2: 10000000000, f3: 10000000000,
+        f4: 10000000000, f5: 10000000000, f6: 10000000000,
+    }.toCell()); // x{...cell with references...}
+}
+```
+
+:::note
+
+  See those extension functions in the Reference:\
+  [`Struct.toCell(){:tact}`](/ref/core-cells#structtocell)\
+  [`Message.toCell(){:tact}`](/ref/core-cells#messagetocell)
+
+:::
+
+### Obtain from a `Cell` or `Slice`, `.fromCell()` and `.fromSlice()` {#fromcellslice}
+
+Instead of manually parsing a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] via a series of relevant `.loadSomething(){:tact}` function calls, one can use `.fromCell(){:tact}` and `.fromSlice(){:tact}` [extension functions](/book/functions#extension-function) for converting the provided [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] into the needed [Struct](#structs) or [Message](#messages).
+
+Those extension functions only attempt to parse a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] according to the structure of your [Struct](#structs) or [Message](#messages). In case layouts don't match, various exceptions may be thrown — make sure to wrap your code in [`try...catch{:tact}`](/book/statements#try-catch) blocks to prevent unexpected results.
+
+```tact
+struct Fizz { foo: Int }
+message(100) Buzz { bar: Int }
+
+fun constructThenParse() {
+    let fizzCell = Fizz{foo: 42}.toCell();
+    let buzzCell = Buzz{bar: 27}.toCell();
+
+    let parsedFizz: Fizz = Fizz.fromCell(fizzCell);
+    let parsedBuzz: Buzz = Buzz.fromCell(buzzCell);
+}
+```
+
+:::note
+
+  See those extension functions in the Reference:\
+  [`Struct.fromCell(){:tact}`][st-fc]\
+  [`Struct.fromSlice(){:tact}`][st-fs]\
+  [`Message.fromCell(){:tact}`][msg-fc]\
+  [`Message.fromSlice(){:tact}`][msg-fs]
+
+:::
+
+### Conversion laws
+
+Whenever one converts between [`Cell{:tact}`][cell]/[`Slice{:tact}`][slice] and [Struct](#structs)/[Message](#messages) via `.toCell(){:tact}` and `.fromCell(){:tact}` functions, the following laws hold:
+
+* For any instance of type [Struct](#structs)/[Message](#messages), calling `.toCell(){:tact}` on it, then applying `Struct.fromCell(){:tact}` (or `Message.fromCell(){:tact}`) to the result gives back the copy of the original instance:
+
+```tact {8-9,13-14}
+struct ArbitraryStruct {}
+message(0x2A) ArbitraryMessage {}
+
+fun lawOne() {
+    let structInst = ArbitraryStruct{};
+    let messageInst = ArbitraryMessage{};
+
+    ArbitraryStruct.fromCell(structInst.toCell());   // = structInst
+    ArbitraryMessage.fromCell(messageInst.toCell()); // = messageInst
+
+    // Same goes for Slices, with .toCell().asSlice() and .fromSlice()
+
+    ArbitraryStruct.fromSlice(structInst.toCell().asSlice());   // = structInst
+    ArbitraryMessage.fromSlice(messageInst.toCell().asSlice()); // = messageInst
+}
+```
+
+* For any [`Cell{:tact}`][cell] with the same [TL-B](https://docs.ton.org/develop/data-formats/tl-b-language) layout as a given [Struct](#structs)/[Message](#messages), calling `Struct.fromCell(){:tact}` (or `Message.fromCell(){:tact}`) on it, and then converting the result to a [`Cell{:tact}`][cell] via `.toCell(){:tact}` would give the copy of the original [`Cell{:tact}`][cell]:
+
+```tact {9-10,15-16}
+struct ArbitraryStruct { val: Int as uint32 }
+message(0x2A) ArbitraryMessage {}
+
+fun lawTwo() {
+    // Using 32 bits to store 42 just so this cellInst can be
+    // re-used for working with both ArbitraryStruct and ArbitraryMessage
+    let cellInst = beginCell().storeUint(42, 32).endCell();
+
+    ArbitraryStruct.fromCell(cellInst).toCell();  // = cellInst
+    ArbitraryMessage.fromCell(cellInst).toCell(); // = cellInst
+
+    // Same goes for Slices, with .fromSlice() and .toCell().asSlice()
+    let sliceInst = cellInst.asSlice();
+
+    ArbitraryStruct.fromSlice(sliceInst).toCell().asSlice();  // = sliceInst
+    ArbitraryMessage.fromSlice(sliceInst).toCell().asSlice(); // = sliceInst
+}
+```
+
+[st-fc]: /ref/core-cells#structfromcell
+[st-fs]: /ref/core-cells#structfromslice
+[msg-fc]: /ref/core-cells#messagefromcell
+[msg-fs]: /ref/core-cells#messagefromslice
+
+[p]: /book/types#primitive-types
+[cell]: /book/cells#cells
+[slice]: /book/cells#slices

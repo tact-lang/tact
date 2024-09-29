@@ -1,0 +1,56 @@
+---
+title: "OTP-001: Supported Interfaces"
+sidebar:
+  order: 1
+---
+
+This proposal recommends a way to introspect smart contracts and find out what interfaces they support.
+
+## Motivation
+
+Right now it is impossible to guess what a user wants to do with a contract or can't figure out what the transaction is about because there is no clear way to find what a contract is about. Humans need to remember or guess what this was about in most ways.
+
+## Guide
+
+When human tries to sign a transaction, they need to understand clearly what they are doing: minting, token transfer, staking, DAO voting. While Ethereum wallets support signing arbitrary structures it is still not clear what are you signing and what's the implications of doing so. In the same way, explorers can't show what's going on in a nice form.
+
+The start of a working with specific contract is a performing introspection - figuring out what the contract declares about itself. When the app knows what this contract is about it could build a good UI, show transaction history, and verify what a human tries to sign.
+
+This proposal describes a way to report what interfaces the contract supports.
+
+Interfaces are defined in a free-form specification. Unlike most of the other approaches, this proposal defines interface as not only the technical interface of a contract (get methods, internal messages, etc) but also a description of its behavior. Attaching a hash of the representation of a technical interface of a contract could cause conflicts between different standards and because of this proposal defines interfaces loosely. Also, it allows an interface to be more fluid, for example token that couldn't be transferred could be just a contract that will have to get the method `can_transfer` that returns `false` and this would mean that this token doesn't support transfers at all without the need to implement this method.
+
+Interface IDs are hashes of reverse domain names (like packages in Java), this avoids clashes of names between different teams if they want to build something just for themselves.
+
+## Specification
+
+In order to support the introspection contract MUST implement the supports_interface GET method:
+
+```(int...) supported_interfaces()```
+Which returns a list of supported interface codes. The first value MUST be `hash("org.ton.introspection.v0")` = `123515602279859691144772641439386770278`.
+If the first value is incorrect app MUST stop attempting to introspect the contract.
+Example
+```func
+_ supported_interfaces() method_id {
+    return (123515602279859691144772641439386770278);
+}
+```
+
+The hash of an interface is defined as truncated to 128 bits SHA256.
+
+## Drawbacks
+
+This proposal doesn't guarantee that the contract would behave correctly to an interface, also it doesn't provide a guaranteed way to avoid name clashes between different interfaces. This is a non-goal for this proposal.
+
+This proposal isn't tied to a specific technical interface. This could lead to multiple interfaces that do the same thing but with different IDs. This is a non-goal for this proposal since a centralized registry would be very useful for existing interfaces and a custom one would be used mostly in-house.
+
+## Rationale and alternatives
+
+- Why 128 bit? We are looking at a global namespace that we need to keep without conflicts, we can't use anything much smaller since the probability of conflicts would be much higher. We are looking at UUID-like entropy that is exactly 128-bit and is time-proven. More than 128 is too wasteful.
+- Why freeform? As mentioned before, it is easier just to define some ID to start work early and then eventually build a standard. Also interfaces (like ERC20) usually not just a technical interface, but also a number of rules on how to work with it.
+- Why not find out what contract supports by decompiling? Explicit is always better than implicit in open-world scenarios. We can't rely on our "disassembling" capabilities to perform introspections, even small errors could be fatal.
+- Why not hash of representation? Right now there are no compilers that support that, also this proposal is future-proof. If anyone would want to build something more automated they could easily build their own hashes by their own rules keeping everything the same for external observers.
+
+## Prior art
+
+[Ethereum Interface Detection](https://eips.ethereum.org/EIPS/eip-165)

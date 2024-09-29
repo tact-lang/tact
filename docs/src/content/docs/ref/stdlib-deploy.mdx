@@ -1,0 +1,96 @@
+---
+title: "@stdlib/deploy"
+---
+
+Provides unified mechanisms for deployments.
+
+To use this library, import `@stdlib/deploy`:
+
+```tact
+import "@stdlib/deploy";
+```
+
+## Messages
+
+### Deploy
+
+```tact
+message Deploy {
+    queryId: Int as uint64;
+}
+```
+
+### DeployOk
+
+```tact
+message DeployOk {
+    queryId: Int as uint64;
+}
+```
+
+### FactoryDeploy
+
+```tact
+message FactoryDeploy {
+    queryId: Int as uint64;
+    cashback: Address;
+}
+```
+
+## Traits
+
+### Deployable
+
+Simplest trait `Deployable{:tact}` that provides a handy unified mechanism for deployments by implementing a simple receiver for the [Deploy](#deploy) message.
+
+All contracts are deployed by sending them a message. While any message can be used for this purpose, best practice is to use the special [Deploy](#deploy) message.
+
+This message has a single field, `queryId`, provided by the deployer (usually set to zero). If the deployment succeeds, the contract will reply with a [DeployOk](#deployok) message and echo the same `queryId` in the response.
+
+Source code:
+
+```tact
+trait Deployable {
+    receive(deploy: Deploy) {
+        self.notify(DeployOk{queryId: deploy.queryId}.toCell());
+    }
+}
+```
+
+Usage example:
+
+```tact /Deployable/
+import "@stdlib/deploy";
+
+contract ExampleContract with Deployable {
+    // Now, this contract has a receiver for Deploy message
+}
+```
+
+### FactoryDeployable
+
+Trait `FactoryDeployable{:tact}` provides a handy unified mechanism for chained deployments.
+
+Source code:
+
+```tact
+trait FactoryDeployable  {
+    receive(deploy: FactoryDeploy) {
+        self.forward(deploy.cashback, DeployOk{queryId: deploy.queryId}.toCell(), false, null);
+    }
+}
+```
+
+Usage example:
+
+```tact /FactoryDeployable/
+import "@stdlib/deploy";
+
+contract ExampleContract with FactoryDeployable {
+    // Now, this contract has a receiver for FactoryDeploy message
+}
+```
+
+## Sources
+
+* [deploy.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/deploy.tact)

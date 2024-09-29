@@ -1,0 +1,55 @@
+---
+title: "@stdlib/config"
+---
+
+Provides functions for config and elector Address retrieval.
+
+To use this library, import `@stdlib/config`:
+
+```tact
+import "@stdlib/config";
+```
+
+## Functions
+
+### getConfigAddress
+
+```tact
+fun getConfigAddress(): Address;
+```
+
+Retrieves config parameter $0$ as an [`Address{:tact}`][p].
+
+Source code:
+
+```tact
+fun getConfigAddress(): Address {
+    let cell: Cell = getConfigParam(0)!!;
+    let sc: Slice = cell.beginParse();
+    return newAddress(-1, sc.loadUint(256));
+}
+```
+
+### getElectorAddress
+
+```tact
+fun getElectorAddress(): Address;
+```
+
+Retrieves config parameter $1$ as an [`Address{:tact}`][p].
+
+Source code:
+
+```tact
+fun getElectorAddress(): Address {
+    let cell: Cell = getConfigParam(1)!!;
+    let sc: Slice = cell.beginParse();
+    return newAddress(-1, sc.loadUint(256));
+}
+```
+
+## Sources
+
+* [config.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/config.tact)
+
+[p]: /book/types#primitive-types

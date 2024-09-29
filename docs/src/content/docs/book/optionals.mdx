@@ -1,0 +1,42 @@
+---
+title: Optionals
+---
+
+As it was mentioned in [type system overview](/book/types#optionals), all [primitive types](/book/types#primitive-types), [Structs](/book/structs-and-messages#structs) and [Messages](/book/structs-and-messages#messages) could be nullable. That is, they don't necessarily hold any value, aside from `null{:tact}` — a special value, which represents the intentional absence of any other value.
+
+[Variables](/book/statements#let) or fields of [Structs](/book/structs-and-messages#structs) and [Messages](/book/structs-and-messages#messages) that can hold `null{:tact}` are called "optionals". They're useful to reduce state size when the variable isn't necessarily used.
+
+You can make any variable or a field an optional by adding a question mark (`?{:tact}`) after its type declaration. The only exceptions are [`map<K, V>{:tact}`](/book/maps) and [`bounced<Msg>{:tact}`](/book/bounced), where you can't make them, inner key/value type (in case of a map) or the inner [Message](/book/structs-and-messages#messages) (in case of a bounced) optional.
+
+Optional variables or optional fields that are not defined hold the `null{:tact}` value by default. You cannot access them without checking for `null{:tact}` first. But if you're certain they are not `null{:tact}` at a given moment, use the [non-null assertion operator `!!{:tact}`](/book/operators#unary-non-null-assert) to access their value.
+
+Trying to access the value of an optional variable or an optional field without using [`!!{:tact}`](/book/operators#unary-non-null-assert) or without checking for `null{:tact}` beforehand will result in a compilation error if the compiler can track it, and if not — in an exception with [exit code 128](/book/exit-codes#128): `Null reference exception`.
+
+Example of optionals:
+
+```tact
+struct StOpt {
+    opt: Int?; // Int or null
+}
+
+message MsOpt {
+    opt: StOpt?; // Notice, how the struct StOpt is used in this definition
+}
+
+contract Optionals {
+    opt: Int?;
+    address: Address?;
+
+    init(opt: Int?) { // optionals as parameters
+        self.opt = opt;
+        self.address = null; // explicit null value
+    }
+
+    receive(msg: MsOpt) {
+        let opt: Int? = 12; // defining a new variable
+        if (self.opt != null) { // explicit check
+            self.opt = opt!!; // using !! as we know that opt value isn't null
+        }
+    }
+}
+```
