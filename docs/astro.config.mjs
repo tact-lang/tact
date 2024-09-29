@@ -286,6 +286,9 @@ export default defineConfig({
 	],
 	redirects: {
 		'/ecosystem/tools/overview': '/ecosystem',
-		'/ecosystem/tools/[...slug]': '/ecosystem/[...slug]',
+		'/ecosystem/tools/typescript': '/ecosystem/typescript',
+		'/ecosystem/tools/jetbrains': '/ecosystem/jetbrains',
+		'/ecosystem/tools/vscode': '/ecosystem/vscode',
+		'/ecosystem/tools/misti': '/ecosystem/misti',
 	},
 });
