@@ -1,0 +1,33 @@
+# To not merge, if build fails
+name: Test docs/ build
+
+on:
+  # For new PRs, or those who are ready and/or request a review
+  pull_request:
+    types: ['opened', 'edited', 'reopened', 'synchronize', 'ready_for_review', 'review_requested']
+    branches: ['main']
+    # Only start the workflow if anything inside the docs has changed
+    paths: ['docs/**']
+
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Allow simultaneous checks
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # with:
+        #   fetch-depth: 0
+      - name: Install, build and store site artifact
+        uses: withastro/action@v3
+        with:
+          path: docs
+          node-version: 22
