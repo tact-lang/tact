@@ -200,6 +200,6 @@
     "src/test/e2e-emulated/getter-names-conflict.spec.ts",
     "src/test/exit-codes/contracts/compute-phase-errors.tact",
     "stdlib/stdlib.fc",
-    "/docs",
+    "/docs"
   ]
 }

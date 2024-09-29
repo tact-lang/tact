@@ -4,10 +4,18 @@ name: Test docs/ build
 on:
   # For new PRs, or those who are ready and/or request a review
   pull_request:
-    types: ['opened', 'edited', 'reopened', 'synchronize', 'ready_for_review', 'review_requested']
-    branches: ['main']
+    types:
+      [
+        "opened",
+        "edited",
+        "reopened",
+        "synchronize",
+        "ready_for_review",
+        "review_requested",
+      ]
+    branches: ["main"]
     # Only start the workflow if anything inside the docs has changed
-    paths: ['docs/**']
+    paths: ["docs/**"]
 
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
