@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "clean": "rm -rf dist/ out/ .astro/",
+    "deps": "yarn install --frozen-lockfile",
     "dev": "astro dev",
     "build": "yarn clean && yarn spell && astro check && astro build",
     "preview": "astro preview",
