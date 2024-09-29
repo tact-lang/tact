@@ -10,7 +10,7 @@ Closes #number.
 ## Checklist
 
 - [ ] I have updated CHANGELOG.md
-- [ ] I have documented my contribution in Tact Docs: https://github.com/tact-lang/tact-docs/pull/PR-NUMBER
+- [ ] I have documented my contribution in `docs/` and made the build locally
 - [ ] I have added tests to demonstrate the contribution is correctly implemented: this usually includes both positive and negative tests, showing the happy path(s) and featuring intentionally broken cases
 - [ ] I have run all the tests locally and no test failure was reported
 - [ ] I have run the linter, formatter and spellchecker
