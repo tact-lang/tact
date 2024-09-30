@@ -1,0 +1,50 @@
+---
+title: Standard libraries overview
+---
+
+Some libraries (also referred to as standard libraries or stdlibs) come bundled with Tact compiler, but aren't automatically included to your project until explicitly made to.
+
+To import any standard library, use the [`import{:tact}` keyword](/book/import) followed by the name of that library in a [string][p], like so:
+
+```tact
+// This would include everything from @stdlib/deploy into your codebase:
+import "@stdlib/deploy";
+```
+
+## List of standard libraries: {#list}
+
+Library                  | Description                                                      | Commonly used APIs
+:----------------------- | :--------------------------------------------------------------- | :-----------------
+[`@stdlib/config`][1]    | Config and elector address retrieval.                            | [`getConfigAddress(){:tact}`][gca], [`getElectorAddress(){:tact}`][gea]
+[`@stdlib/content`][2]   | Encoding off-chain link [strings][p] to a [`Cell{:tact}`][cell]. | [`createOffchainContent(){:tact}`][coff]
+[`@stdlib/deploy`][3]    | Unified mechanism for deployments.                               | [`Deployable{:tact}`][dep], [`FactoryDeployable{:tact}`][fcd]
+[`@stdlib/dns`][4]       | Resolution of [DNS][dns] names.                                  | [`DNSResolver{:tact}`][dnsr], [`dnsInternalVerify(){:tact}`][dnsi]
+[`@stdlib/ownable`][5]   | Traits for ownership management.                                 | [`Ownable{:tact}`][own], [`OwnableTransferable{:tact}`][ownt]
+[`@stdlib/stoppable`][6] | Traits that allow contract stops. Requires [@stdlib/ownable][5]. | [`Stoppable{:tact}`][stp], [`Resumable{:tact}`][res]
+
+[1]: /ref/stdlib-config
+[gca]: /ref/stdlib-config#getconfigaddress
+[gea]: /ref/stdlib-config#getelectoraddress
+
+[2]: /ref/stdlib-content
+[coff]: /ref/stdlib-content#createoffchaincontent
+
+[3]: /ref/stdlib-deploy
+[dep]: /ref/stdlib-deploy#deployable
+[fcd]: /ref/stdlib-deploy#factorydeployable
+
+[4]: /ref/stdlib-dns
+[dnsr]: /ref/stdlib-dns#dnsresolver
+[dnsi]: /ref/stdlib-dns#dnsinternalverify
+
+[5]: /ref/stdlib-ownable
+[own]: /ref/stdlib-ownable#ownable
+[ownt]: /ref/stdlib-ownable#ownabletransferable
+
+[6]: /ref/stdlib-stoppable
+[stp]: /ref/stdlib-stoppable#stoppable
+[res]: /ref/stdlib-stoppable#resumable
+
+[p]: /book/types#primitive-types
+[cell]: /book/cells#cells
+[dns]: https://docs.ton.org/participate/web3/dns

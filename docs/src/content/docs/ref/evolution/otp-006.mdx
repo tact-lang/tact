@@ -1,0 +1,54 @@
+---
+title: "OTP-006: Contract Package"
+sidebar:
+  order: 6
+---
+
+This proposal defines a way to package compile contracts, their dependencies, and all related metadata into a single file.
+
+## Motivation
+
+A unified package format is needed to simplify the process of deploying and upgrading contracts using various tools without the need to configure them.
+
+## Specification
+
+The package file has an extension `.pkg` and is a JSON file:
+
+```json
+{
+  "name": "My Contract",
+  "code": "... boc of code ...",
+  "abi": "ABI string to be uploaded as is to IPFS or Ton Storage",
+  "init": {
+    "kind": "direct", // Means that this contract can be deployed as is
+    "args": {
+      // ... Arguments in ABI format
+    },
+    "prefix": {
+      // Optional prefix for contract init state
+      "bits": 0, // Number of bits in prefix
+      "value": 0 // Value of prefix
+    },
+    "deployment": {
+      "kind": "system-cell", // Means that this contract can be deployed as is
+      "system": "... boc of system cell ..."
+    }
+  },
+  "sources": {
+    "file.ton": "... base64 encoded source file ..."
+  },
+  "compiler": {
+    "name": "func",
+    "version": "0.4.1",
+    "parameters": "..." // Optional string parameters
+  }
+}
+```
+
+## Drawbacks
+
+None
+
+## Reference
+
+- Bags of Cells (BoC): https://docs.ton.org/develop/data-formats/cell-boc#packing-a-bag-of-cells
