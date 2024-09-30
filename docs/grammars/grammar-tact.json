@@ -1,0 +1,604 @@
+{
+  "name": "tact",
+  "displayName": "Tact",
+  "scopeName": "source.tact",
+  "fileTypes": [
+    "tact"
+  ],
+  "foldingStartMarker": "\\{\\s*$",
+  "foldingStopMarker": "^\\s*\\}",
+  "patterns": [
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#annotation"
+    },
+    {
+      "include": "#literal"
+    },
+    {
+      "include": "#invalid"
+    },
+    {
+      "include": "#constant"
+    },
+    {
+      "include": "#type"
+    },
+    {
+      "include": "#expression"
+    },
+    {
+      "include": "#punctuation"
+    },
+    {
+      "include": "#keyword"
+    },
+    {
+      "include": "#function"
+    },
+    {
+      "include": "#variable"
+    }
+  ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.tact",
+          "begin": "//",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.line.double-slash.tact"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#todo"
+            }
+          ],
+          "end": "$"
+        },
+        {
+          "name": "comment.block.tact",
+          "begin": "\\s*/\\*",
+          "beginCaptures": {
+            "0": {
+              "name": "comment.block.begin.tact punctuation.definition.comment.begin.tact"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#todo"
+            }
+          ],
+          "end": "\\*/",
+          "endCaptures": {
+            "0": {
+              "name": "comment.block.end.tact punctuation.definition.comment.end.tact"
+            }
+          }
+        }
+      ]
+    },
+
+    "todo": {
+      "match": "(?i)\\b(FIXME|TODO|CHANGED|XXX|IDEA|HACK|NOTE|REVIEW|NB|BUG)\\b(?-i)",
+      "name": "keyword.comment.todo.tact"
+    },
+
+    "annotation": {
+      "patterns": [
+        {
+          "comment": "@name() in native functions",
+          "begin": "^\\s*(@name)\\s*(\\()",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.other.attribute-name.tact"
+            },
+            "2": {
+              "name": "punctuation.brackets.round.tact"
+            }
+          },
+          "patterns": [
+            {
+              "comment": "FunC identifier",
+              "match": "(.*?)",
+              "name": "entity.name.function.func.tact"
+            }
+          ],
+          "end": "\\)",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.brackets.round.tact"
+            }
+          }
+        },
+        {
+          "comment": "One or more @inteface() before traits and contracts",
+          "begin": "(?<!\\.)(@interface)\\s*(\\()",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.other.attribute-name.tact"
+            },
+            "2": {
+              "name": "punctuation.brackets.round.tact"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#string"
+            }
+          ],
+          "end": "\\)",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.brackets.round.tact"
+            }
+          }
+        },
+        {
+          "comment": "Asm arrangements",
+          "begin": "(?<!\\.)(asm)\\s*(\\()",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.other.attribute-name.tact"
+            },
+            "2": {
+              "name": "punctuation.brackets.round.tact"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#variable"
+            },
+            {
+              "match": "->",
+              "name": "keyword.operator.mapsto.tact"
+            },
+            {
+              "match": "\\b([0-9]*)\\b",
+              "name": "constant.numeric.decimal.tact"
+            }
+          ],
+          "end": "\\)",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.brackets.round.tact"
+            }
+          }
+        },
+        {
+          "comment": "Fallback match",
+          "match": "(?<!\\.)\\b(@name|@interface|asm)\\b",
+          "name": "entity.other.attribute-name.tact"
+        }
+      ]
+    },
+
+    "literal": {
+      "patterns": [
+        {
+          "comment": "Hexadecimal integer",
+          "match": "\\b(0[xX][a-fA-F0-9](?:_?[a-fA-F0-9])*)\\b",
+          "name": "constant.numeric.hex.tact"
+        },
+        {
+          "comment": "Octal integer",
+          "match": "\\b(0[oO][0-7](?:_?[0-7])*)\\b",
+          "name": "constant.numeric.oct.tact"
+        },
+        {
+          "comment": "Binary integer",
+          "match": "\\b(0[bB][01](?:_?[01])*)\\b",
+          "name": "constant.numeric.bin.tact"
+        },
+        {
+          "comment": "Decimal integer WITH leading zero",
+          "match": "\\b(0[0-9]*)\\b",
+          "name": "constant.numeric.decimal.tact"
+        },
+        {
+          "comment": "Decimal integer WITHOUT leading zero",
+          "match": "\\b([1-9](?:_?[0-9])*)\\b",
+          "name": "constant.numeric.decimal.tact"
+        },
+        {
+          "comment": "Boolean literal",
+          "match": "(?<!\\.)\\b(true|false)\\b",
+          "name": "constant.language.bool.tact"
+        },
+        {
+          "include": "#string"
+        },
+        {
+          "comment": "self",
+          "match": "(?<!\\.)\\b(self)\\b",
+          "name": "variable.language.this.tact"
+        }
+      ]
+    },
+
+    "string": {
+      "comment": "String literal",
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.tact"
+        }
+      },
+      "name": "string.quoted.double.tact",
+      "patterns": [
+        {
+          "include": "#escape-sequence"
+        }
+      ],
+      "end": "\"",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.tact"
+        }
+      }
+    },
+
+    "escape-sequence": {
+      "comment": "Allowed escape sequences in strings",
+      "match": "(?:\\\\)(?:(\\\\)|(\")|([nrtvbf])|(x[a-fA-F0-9]{2})|(u[a-fA-F0-9]{4})|(u\\{[a-fA-F0-9]{1,6}\\}))",
+        "name": "constant.character.escape.tact",
+        "captures": {
+          "1": {
+            "name": "constant.character.escape.backslash.tact"
+          },
+          "2": {
+            "name": "constant.character.escape.double-quote.tact"
+          },
+          "3": {
+            "name": "constant.character.escape.special.tact"
+          },
+          "4": {
+            "name": "constant.character.escape.hex.tact"
+          },
+          "5": {
+            "name": "constant.character.escape.unicode.tact"
+          },
+          "6": {
+            "name": "constant.character.escape.unicodepoint.tact"
+          }
+        }
+      },
+
+      "invalid": {
+        "patterns": [
+          {
+            "comment": "Anything starting with __gen or __tact",
+            "match": "\\b__(?:gen|tact)[a-zA-Z0-9_]*\\b",
+            "name": "invalid.illegal.identifier.tact"
+          }
+        ]
+      },
+
+      "constant": {
+        "patterns": [
+          {
+            "comment": "self.storageReserve",
+            "match": "(?<=self\\.)(storageReserve)\\b",
+            "name": "constant.other.builtin.tact"
+          },
+          {
+            "comment": "Other constants from the core library",
+            "match": "(?<!\\.)\\b(SendRemainingValue|SendRemainingBalance|SendPayGasSeparately|SendIgnoreErrors|SendBounceIfActionFail|SendDestroyIfZero|SendOnlyEstimateFee|ReserveExact|ReserveAllExcept|ReserveAtMost|ReserveAddOriginalBalance|ReserveInvertSign|ReserveBounceIfActionFail)\\b",
+            "name": "constant.other.builtin.tact"
+          },
+          {
+            "comment": "ALL CAPS constants",
+            "match": "\\b([A-Z]{2}[A-Z0-9_]*)\\b",
+            "name": "constant.other.caps.tact"
+          },
+          {
+            "comment": "Constant declaration or definition",
+            "match": "(?<!\\.)\\b(const)\\s+([a-zA-Z_][A-Za-z0-9_]*)\\b",
+            "captures": {
+              "1": {
+                "name": "keyword.other.tact"
+              },
+              "2": {
+                "name": "constant.other.declaration.tact"
+              }
+            }
+          },
+          {
+            "comment": "null",
+            "match": "(?<!\\.)\\b(null)\\b",
+            "name": "constant.language.null.tact"
+          }
+        ]
+      },
+
+      "type": {
+        "patterns": [
+          {
+            "include": "#simple-type"
+          },
+          {
+            "comment": "bounced<T>",
+            "begin": "(?<!\\.)\\b(bounced)\\s*(<)",
+            "beginCaptures": {
+              "1": {
+                "name": "entity.name.type.tact"
+              },
+              "2": {
+                "name": "punctuation.brackets.angle.tact"
+              }
+            },
+            "patterns": [
+              {
+                "include": "#simple-type"
+              }
+            ],
+            "end": ">",
+            "endCaptures": {
+              "0": {
+                "name": "punctuation.brackets.angle.tact"
+              }
+            }
+          },
+          {
+            "comment": "map<K, V>",
+            "begin": "(?<!\\.)\\b(map)\\s*(<)",
+            "beginCaptures": {
+              "1": {
+                "name": "entity.name.type.tact"
+              },
+              "2": {
+                "name": "punctuation.brackets.angle.tact"
+              }
+            },
+            "patterns": [
+              {
+                "include": "#simple-type"
+              },
+              {
+                "match": ",",
+                "name": "punctuation.comma.tact"
+              },
+              {
+                "include": "#as-tlb"
+              }
+            ],
+            "end": ">",
+            "endCaptures": {
+              "0": {
+                "name": "punctuation.brackets.angle.tact"
+              }
+            }
+          },
+          {
+            "include": "#as-tlb"
+          }
+        ]
+      },
+
+      "simple-type": {
+        "comment": "Simple types",
+        "match": "(?<!\\.)\\b([A-Z][a-zA-Z0-9_]*)(\\??)",
+        "captures": {
+          "1": {
+            "name": "entity.name.type.tact"
+          },
+          "2": {
+            "name": "keyword.operator.optional.tact"
+          }
+        }
+      },
+
+      "as-tlb": {
+        "comment": "Serialization",
+        "patterns": [
+          {
+            "match": "(?<!\\.)\\b(as)\\s+(coins|remaining|bytes32|bytes64|int257|u?int(?:2[0-5][0-6]|1[0-9][0-9]|[1-9][0-9]?))\\b",
+            "captures": {
+              "1": {
+                "name": "keyword.other.as.tact storage.modifier.tact"
+              },
+              "2": {
+                "name": "entity.name.type.tact"
+              }
+            }
+          }
+        ]
+      },
+
+      "expression": {
+        "patterns": [
+          {
+            "comment": "Logical operators",
+            "match": "(\\|\\||&&|!!?)(?!=)",
+            "name": "keyword.operator.logical.tact"
+          },
+          {
+            "comment": "Bitwise operators",
+            "match": "(\\^|&|\\||~|<<|>>)(?!=)",
+            "name": "keyword.operator.bitwise.tact"
+          },
+          {
+            "comment": "Augmented assignment operators",
+            "match": "(\\+=|-=|\\*=|/=|%=|\\^=|&=|\\|=|<<=|>>=)",
+            "name": "keyword.operator.assignment.tact"
+          },
+          {
+            "comment": "Assignment operator",
+            "match": "(?<![<>])=(?!=)",
+            "name": "keyword.operator.assignment.equal.tact"
+          },
+          {
+            "comment": "Comparison operators",
+            "match": "([!=]=|<=?|>=?)",
+            "name": "keyword.operator.comparison.tact"
+          },
+          {
+            "comment": "Arithmetic operators",
+            "match": "([+%*\\-])|(/(?!/))",
+            "name": "keyword.operator.arithmetic.tact"
+          },
+          {
+            "comment": "initOf expression",
+            "match": "\\b(initOf)\\b",
+            "name": "keyword.operator.new.tact"
+          },
+          {
+            "comment": "Ternary expression",
+            "begin": "(?!\\?\\.\\s*[^[:digit:]])(\\?)(?!\\?)",
+            "beginCaptures": {
+              "1": {
+                "name": "keyword.operator.ternary.tact"
+              }
+            },
+            "patterns": [
+              {
+                "include": "$self"
+              }
+            ],
+            "end": "\\s*(:)",
+            "endCaptures": {
+              "1": {
+                "name": "keyword.operator.ternary.tact"
+              }
+            }
+          }
+        ]
+      },
+
+      "punctuation": {
+        "patterns": [
+          {
+            "match": ",",
+            "name": "punctuation.comma.tact"
+          },
+          {
+            "match": "[{}]",
+            "name": "punctuation.brackets.curly.tact"
+          },
+          {
+            "match": "[()]",
+            "name": "punctuation.brackets.round.tact"
+          },
+          {
+            "match": ";",
+            "name": "punctuation.semi.tact"
+          },
+          {
+            "match": ":",
+            "name": "punctuation.colon.tact"
+          },
+          {
+            "match": "\\.",
+            "name": "punctuation.dot.tact"
+          }
+        ]
+      },
+
+      "keyword": {
+        "patterns": [
+          {
+            "match": "(?<!\\.)\\b(import)\\b",
+            "name": "keyword.control.import.tact"
+          },
+          {
+            "comment": "Control flow keywords, prefixed by more than one dot",
+            "match": "(?<=\\.\\.)\\b(else|catch|until|in(?!\\s*\\())\\b",
+            "name": "keyword.control.tact"
+          },
+          {
+            "comment": "Control flow keywords",
+            "match": "(?<!\\.)\\b(if|else|try|catch|repeat|do|until|while|foreach|in(?!\\s*\\()|return)\\b",
+            "name": "keyword.control.tact"
+          },
+          {
+            "comment": "let and const",
+            "match": "(?<!\\.)\\b(let|const)\\b",
+            "name": "keyword.other.tact"
+          },
+          {
+            "comment": "Serialization",
+            "match": "(?<!\\.)\\b(as)\\b",
+            "name": "keyword.other.as.tact storage.modifier.tact"
+          },
+          {
+            "match": "(?<!\\.)\\b(struct)\\b",
+            "name": "keyword.other.struct.tact"
+          },
+          {
+            "match": "(?<!\\.)\\b(message)\\b",
+            "name": "keyword.other.message.tact"
+          },
+          {
+            "match": "(?<!\\.)\\b(trait)\\b",
+            "name": "keyword.other.trait.tact"
+          },
+          {
+            "match": "(?<!\\.)\\b(contract)\\b",
+            "name": "keyword.other.contract.tact"
+          },
+          {
+            "comment": "Constant and function attributes",
+            "match": "(?<!\\.)\\b(abstract|virtual|override)\\b",
+            "name": "keyword.other.attribute.tact storage.modifier.tact"
+          },
+          {
+            "comment": "Function attributes",
+            "match": "(?<!\\.)\\b(extends|get|inline|mutates)\\b",
+            "name": "keyword.other.attribute.tact"
+          },
+          {
+            "comment": "Function declaration/definition keywords",
+            "match": "(?<!\\.)\\b(fun|native)\\b",
+            "name": "keyword.other.function.tact"
+          },
+          {
+            "comment": "Special functions",
+            "match": "(?<!\\.)\\b(init|receive|bounced|external)(?=\\s*\\()",
+            "name": "keyword.other.function.tact"
+          },
+          {
+            "comment": "Reserved keywords",
+            "match": "(?<!\\.)\\b(extend|public)\\b",
+            "name": "keyword.other.reserved.tact"
+          },
+          {
+            "comment": "Other keywords",
+            "match": "(?<!\\.)\\b(primitive|with)\\b",
+            "name": "keyword.other.tact"
+          }
+        ]
+      },
+
+      "function": {
+        "comment": "Function declaration, definition or call",
+        "match": "\\b((?:[a-zA-Z_][a-zA-Z0-9_]*))\\s*(\\()",
+        "captures": {
+          "1": {
+            "name": "entity.name.function.tact"
+          },
+          "2": {
+            "name": "punctuation.brackets.round.tact"
+          }
+        }
+      },
+
+      "variable": {
+        "patterns": [
+          {
+            "comment": "Any valid Tact identifier",
+            "match": "(?<!\\.)\\b(_)\\b",
+            "name": "comment.unused-identifier.tact"
+          },
+          {
+            "comment": "Any valid Tact identifier",
+            "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b",
+            "name": "variable.other.tact"
+          }
+        ]
+      }
+    }
+  }

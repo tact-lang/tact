@@ -1,0 +1,137 @@
+---
+title: Functions and their types
+---
+
+Functions in Tact could be defined in different ways:
+
+* Global static function
+* Extension functions
+* Mutable functions
+* Native functions
+* Receiver functions
+* Getter functions
+
+All functions, except for [receiver functions](#receiver-functions) can have a trailing comma in their definitions (parameter lists) and calls (argument lists):
+
+```tact
+fun foo(
+    a: Int, // trailing comma in parameter lists is allowed
+) {}
+
+fun bar() {
+    foo(
+        5, // trailing comma in argument lists is allowed too!
+    );
+}
+```
+
+## Global static functions
+
+You can define global function anywhere in your program:
+
+```tact
+fun customPow(a: Int, c: Int): Int {
+  let res: Int = 1;
+  repeat(c) {
+    res *= a;
+  }
+  return res;
+}
+```
+
+## Virtual and abstract functions
+
+You can allow the contract inheriting a [traits](/book/types#traits) to modify an internal function, if it has the `virtual{:tact}` keyword, using `override{:tact}`. The function can be also marked as `abstract{:tact}`, in which case the inheriting contract has to define its implementation:
+
+```tact
+trait FilterTrait with Ownable {
+    // Virtual functions can be overridden by users of this trait
+    virtual fun filterMessage(): Bool {
+        return sender() != self.owner;
+    }
+
+    abstract fun specialFilter(): Bool;
+}
+
+contract Filter with FilterTrait {
+    // Overriding default behavior of the FilterTrait
+    override fun filterMessage(): Bool {
+        return true;
+    }
+
+    override fun specialFilter(): Bool {
+        return true;
+    }
+}
+````
+
+## Extension function
+
+Extension functions allow you to implement extensions for any possible type.
+
+> **Warning**
+> The name of the first argument MUST be named `self` and the type of this argument is the type you are extending.
+
+```tact
+extends fun customPow(self: Int, c: Int): Int {
+    let res: Int = 1;
+    repeat(c) {
+        res *= self;
+    }
+    return res;
+}
+```
+
+## Mutable functions
+
+Mutable functions are performing mutation of a value replacing it with an execution result. To perform mutation, the function must change the `self` value.
+
+```tact
+extends mutates fun customPow(self: Int, c: Int) {
+    let res: Int = 1;
+    repeat(c) {
+        res *= self;
+    }
+    self = res;
+}
+```
+
+## Native functions
+
+Native functions are direct bindings of FunC functions:
+
+> **Note**
+> Native functions could be also mutable and extension ones.
+
+```tact
+@name(store_uint)
+native storeUint(s: Builder, value: Int, bits: Int): Builder;
+
+@name(load_int)
+extends mutates native loadInt(self: Slice, l: Int): Int;
+```
+
+## Receiver functions
+
+Receiver functions are special functions that are responsible for receiving messages in contracts and could be defined only within a contract or trait.
+
+```tact
+contract Treasure {
+    // This means that this contract can receive the comment "Increment" and this function would be called for such messages
+    receive("Increment") {
+        self.counter += 1;
+    }
+}
+```
+
+## Getter Functions
+
+Getter functions define getters on smart contracts and can be defined only within a contract or trait.
+
+```tact
+contract Treasure {
+    get fun counter(): Int {
+        return self.counter;
+    }
+}
+```

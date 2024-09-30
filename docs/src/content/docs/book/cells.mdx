@@ -1,0 +1,445 @@
+---
+title: Cells, Builders and Slices
+---
+
+[Cells](#cells), [Builders](#builders) and [Slices](#slices) are low-level [primitives][p] of TON Blockchain. The virtual machine of TON Blockchain, [TVM][tvm], uses cells to represent all data structures in persistent storage, and most in memory.
+
+## Cells
+
+`Cell{:tact}` is a [primitive][p] and a data structure, which [ordinarly](#cells-kinds) consists of up to $1023$ continuously laid out bits and up to $4$ references (refs) to other cells. Circular references are forbidden and cannot be created by the means of [TVM][tvm], which means cells can be viewed as [quadtrees][quadtree] or [directed acyclic graphs (DAGs)](https://en.wikipedia.org/wiki/Directed_acyclic_graph) of themselves. Contract code itself is represented by a tree of cells.
+
+Cells and [cell primitives](#cells-immutability) are bit-oriented, not byte-oriented: [TVM][tvm] regards data kept in cells as sequences (strings or streams) of up to $1023$ bits, not bytes. If necessary, contracts are free to use, say, $21$-bit integer fields serialized into [TVM][tvm] cells, thus using fewer persistent storage bytes to represent the same data.
+
+### Kinds {#cells-kinds}
+
+While the [TVM][tvm] type [`Cell{:tact}`](#cells) refers to all cells, there are different cell kinds with various memory layouts. The one described [earlier](#cells) is commonly referred to as an _ordinary_ (or simple) cell — that's the most simple and most commonly used flavor of cells, which can only contain data. The grand majority of descriptions, guides and [references](/ref/core-cells) to cells and their usage assumes ordinary ones.
+
+Other kinds of cells are collectively called _exotic_ (or special) cells. They sometimes appear in actual representations of blocks and other data structures on TON Blockchain. Their memory layouts and purposes significantly differ from ordinary cells.
+
+Kinds (or subtypes) of all cells are encoded by an integer between $-1$ and $255$. Ordinary cells are encoded by $-1$, while exotic ones can be encoded by any other integer in that range. The subtype of an exotic cell is stored in the first $8$ bits of its data, which means valid exotic cells always have at least $8$ data bits.
+
+[TVM][tvm] currently supports the following exotic cell subtypes:
+* [Pruned branch cell][c-pruned], with subtype encoded as $1$ — they represent deleted subtrees of cells.
+* [Library reference cell][c-library], with subtype encoded as $2$ — they are used for storing libraries, and usually, in [masterchain](/book/masterchain) contexts.
+* [Merkle proof cell][c-mproof], with subtype encoded as $3$ — they are used for verifying that certain portions of other cell's tree data belong to the full tree.
+* [Merkle update cell][c-mupdate], with subtype encoded as $4$ — they always have two references and behave like a [Merkle proof][mproof] for both of them.
+
+:::note[Useful links:]
+
+  [Pruned branch cells in TON Docs][c-pruned]\
+  [Library reference cells in TON Docs][c-library]\
+  [Merkle proof cells in TON Docs][c-mproof]\
+  [Merkle update cells in TON Docs][c-mupdate]\
+  [Simple proof-verifying example in TON Docs][mproof]
+
+:::
+
+[c-pruned]: https://docs.ton.org/develop/data-formats/exotic-cells#pruned-branch
+[c-library]: https://docs.ton.org/develop/data-formats/library-cells
+[c-mproof]: https://docs.ton.org/develop/data-formats/exotic-cells#merkle-proof
+[c-mupdate]: https://docs.ton.org/develop/data-formats/exotic-cells#merkle-update
+[mproof]: https://docs.ton.org/develop/data-formats/exotic-cells#simple-proof-verifying-example
+
+### Levels {#cells-levels}
+
+Every cell, being a [quadtree][quadtree], has an attribute called _level_, which is represented by an integer between $0$ and $3$. The level of an [ordinary](#cells-kinds) cell is always equal to the maximum of the levels of all its references. That is, level of an ordinary cell without references is equal to $0$.
+
+[Exotic](#cells-kinds) cells have different rules for determining their level, which are described [on this page in TON Docs](https://docs.ton.org/develop/data-formats/exotic-cells).
+
+### Serialization {#cells-serialization}
+
+Before a cell can be transferred over the network or stored on disk, it must be serialized. There are several common formats, such as [standard `Cell{:tact}` representation](#cells-representation) and [BoC](#cells-boc).
+
+#### Standard representation {#cells-representation}
+
+Standard [`Cell{:tact}`](#cells) representation is a common serialization format for cells first described in the [tvm.pdf](https://docs.ton.org/tvm.pdf). Its algorithm representing cells in octet (byte) sequences begins with serializing the first $2$ bytes called descriptors:
+
+* _Refs descriptor_ is calculated according to this formula: $r + 8 * k + 32 * l$, where $r$ is the number of references contained in the cell (between $0$ and $4$), $k$ is a flag for the cell kind ($0$ for [ordinary](#cells-kinds) and $1$ for [exotic](#cells-kinds)), and $l$ is the [level](#cells-levels) of the cell (between $0$ and $3$).
+* _Bits descriptor_ is calculated according to this formula $\lfloor\frac{b}{8}\rfloor + \lceil\frac{b}{8}\rceil$, where $b$ is the number of bits in the cell (between $0$ and $1023$).
+
+Then, the data bits of the cell themselves are serialized as $\lceil\frac{b}{8}\rceil$ $8$-bit octets (bytes). If $b$ is not a multiple of eight, a binary $1$ and up to six binary $0$s are appended to the data bits.
+
+Next, the $2$ bytes store the depth of the refs, i.e. the number of cells between the root of the cell tree (the current cell) and the deepest of the references, including it. For example, a cell containing only one reference and no further references would have a depth of $1$, while the referenced cell would have a depth of $0$.
+
+Finally, for every reference cell the [SHA-256][sha-2] hash of its standard representation is stored, occupying $32$ bytes per each such cell and recursively repeating the said algorithm. Notice, that cyclic cell references are not allowed, so this recursion always ends in a well-defined manner.
+
+If we were to compute the hash of the standard representation of this cell, all the bytes from steps above would be concatenated together and then hashed using [SHA-256][sha-2] hash. This is the algorithm behind [`HASHCU` and `HASHSU` instructions](https://docs.ton.org/learn/tvm-instructions/instructions) of [TVM][tvm] and respective [`Cell.hash(){:tact}`](/ref/core-cells#cellhash) and [`Slice.hash(){:tact}`](/ref/core-cells#slicehash) functions of Tact.
+
+#### Bag of Cells {#cells-boc}
+
+Bag of Cells, or _BoC_ for short, is a format for serializing and de-serializing cells into byte arrays as described in [boc.tlb](https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/tl/boc.tlb#L25) [TL-B schema][tlb].
+
+Read more about BoC in TON Docs: [Bag of Cells](https://docs.ton.org/develop/data-formats/cell-boc#bag-of-cells).
+
+:::note
+
+  Advanced information on [`Cell{:tact}`](#cells) serialization: [Canonical `Cell{:tact}` Serialization](https://docs.ton.org/develop/research-and-development/boc).
+
+:::
+
+### Immutability {#cells-immutability}
+
+Cells are read-only and immutable, but there are two major sets of [ordinary](#cells-kinds) cell manipulation instructions in [TVM][tvm]:
+
+* Cell creation (or serialization) instructions, which are used to construct new cells from previously kept values and cells;
+* And cell parsing (or deserialization) instructions, which are used to extract or load data previously stored into cells via serialization instructions.
+
+On top of that, there are instructions specific to [exotic](#cells-kinds) cells to create them and expect their values. However, [ordinary](#cells-kinds) cell parsing instructions can still be used on [exotic](#cells-kinds) ones, in which case they are automatically replaced by [ordinary](#cells-kinds) cells during such deserialization attempts.
+
+All cell manipulation instructions require transforming values of [`Cell{:tact}`](#cells) type to either [`Builder{:tact}`](#builders) or [`Slice{:tact}`](#slices) types before such cells can be modified or inspected.
+
+## Builders
+
+`Builder{:tact}` is a cell manipulation [primitive][p] for using cell creation instructions. They're immutable just like cells are, and allow constructing new cells from previously kept values and cells. Unlike cells, values of type `Builder{:tact}` appear only on [TVM][tvm] stack and cannot be stored in persistent storage. That means, for example, that persistent storage fields with type `Builder{:tact}` would actually be stored as cells under the hood.
+
+`Builder{:tact}` type represents partially composed cells, for which fast operations for appending integers, other cells, references to other cells and many others are defined:
+
+* [`Builder.storeUint(){:tact}` in Core library][b-2]
+* [`Builder.storeInt(){:tact}` in Core library][b-3]
+* [`Builder.storeBool(){:tact}` in Core library][b-4]
+* [`Builder.storeSlice(){:tact}` in Core library][b-5]
+* [`Builder.storeCoins(){:tact}` in Core library][b-6]
+* [`Builder.storeAddress(){:tact}` in Core library][b-7]
+* [`Builder.storeRef(){:tact}` in Core library][b-8]
+
+While you may use them for [manual construction](#cnp-manually) of the cells, it's strongly recommended to use [Structs][struct] instead: [Construction of cells with Structs](#cnp-structs).
+
+## Slices
+
+`Slice{:tact}` is a cell manipulation [primitive][p] for using cell parsing instructions. Unlike cells, they're mutable and allow extracting or loading data previously stored into cells via serialization instructions. Also unlike cells, values of type `Slice{:tact}` appear only on [TVM][tvm] stack and cannot be stored in persistent storage. That means, for example, that persistent storage fields with type `Slice{:tact}` would actually be stored as cells under the hood.
+
+`Slice{:tact}` type represents either the remainder of a partially parsed cell, or a value (subcell) residing inside such a cell and extracted from it by a parsing instruction:
+
+* [`Slice.loadUint(){:tact}` in Core library][s-2]
+* [`Slice.loadInt(){:tact}` in Core library][s-3]
+* [`Slice.loadBool(){:tact}` in Core library][s-4]
+* [`Slice.loadBits(){:tact}` in Core library][s-5]
+* [`Slice.loadCoins(){:tact}` in Core library][s-6]
+* [`Slice.loadAddress(){:tact}` in Core library][s-7]
+* [`Slice.loadRef(){:tact}` in Core library][s-8]
+
+While you may use them for [manual parsing](#cnp-manually) of the cells, it's strongly recommended to use [Structs][struct] instead: [Parsing of cells with Structs](#cnp-structs).
+
+## Serialization types
+
+Similar to serialization options of [`Int{:tact}`](/book/integers) type, `Cell{:tact}`, `Builder{:tact}` and `Slice{:tact}` also have various representations for encoding their values in the following cases:
+
+* as [storage variables](/book/contracts#variables) of [contracts](/book/contracts) and [traits](/book/types#traits),
+* and as fields of [Structs](/book/structs-and-messages#structs) and [Messages](/book/structs-and-messages#messages).
+
+```tact {2-3}
+contract SerializationExample {
+    someCell: Cell as remaining;
+    someSlice: Slice as bytes32;
+
+    // Constructor function,
+    // necessary for this example contract to compile
+    init() {
+        self.someCell = emptyCell();
+        self.someSlice = beginCell().storeUint(42, 256).asSlice();
+    }
+}
+```
+
+### `remaining` {#serialization-remaining}
+
+The `remaining{:tact}` serialization option can be applied to values of [`Cell{:tact}`](#cells), [`Builder{:tact}`](#builders) and [`Slice{:tact}`](#slices) types.
+
+It affects the process of constructing and parsing cell values by causing them to be stored and loaded directly rather than as a reference. To draw parallels with [cell manipulation instructions](#cells-immutability), specifying `remaining{:tact}` is like using [`Builder.storeSlice(){:tact}`][b-5] and [`Slice.loadBits(){:tact}`][s-5] instead of [`Builder.storeRef(){:tact}`][b-8] and [`Slice.loadRef(){:tact}`][s-8], which are to be used by default.
+
+In addition, the [TL-B][tlb] representation produced by Tact changes too:
+
+```tact {3-5, 8-10}
+contract SerializationExample {
+    // By default
+    cRef: Cell;    // ^cell in TL-B
+    bRef: Builder; // ^builder in TL-B
+    sRef: Slice;   // ^slice in TL-B
+
+    // With `remaining`
+    cRem: Cell as remaining;    // remainder<cell> in TL-B
+    bRem: Builder as remaining; // remainder<builder> in TL-B
+    sRem: Slice as remaining;   // remainder<slice> in TL-B
+
+    // Constructor function,
+    // necessary for this example contract to compile
+    init() {
+        self.cRef = emptyCell();
+        self.bRef = beginCell();
+        self.sRef = emptySlice();
+        self.cRem = emptyCell();
+        self.bRem = beginCell();
+        self.sRem = emptySlice();
+    }
+}
+```
+
+There, `^cell`, `^builder` and `^slice` in [TL-B][tlb] syntax mean the reference to [`Cell{:tact}`](#cells), [`Builder{:tact}`](#builders) and [`Slice{:tact}`](#slices) values respectively, while the `remainder<…>` of `cell`, `builder` or `slice` tells that the given value would be stored as a `Slice{:tact}` directly and not as a reference.
+
+Now, to give a real-world example, imagine that you need to notice and react to inbound [jetton][jetton] transfers in your smart contract. The appropriate [Message][message] structure for doing so would look something like this:
+
+```tact /remaining/
+message(0x7362d09c) JettonTransferNotification {
+    queryId: Int as uint64;             // arbitrary request number to prevent replay attacks
+    amount: Int as coins;               // amount of jettons transferred
+    sender: Address;                    // address of the sender of the jettons
+    forwardPayload: Slice as remaining; // optional custom payload
+}
+```
+
+And the [receiver][recv] in the contract would look like this:
+
+```tact
+receive(msg: JettonTransferNotification) {
+    // ... you do you ...
+}
+```
+
+Upon receiving a [jetton][jetton] transfer notification message, its cell body is converted into a [`Slice{:tact}`](#slices) and then parsed as a `JettonTransferNotification{:tact}` [Message][message]. At the end of this process, the `forwardPayload` will have all the remaining data of the original message cell.
+
+Here, it's not possible to violate the [jetton][jetton] standard by placing the `forwardPayload: Slice as remaining` field in any other position in the `JettonTransferNotification{:tact}` [Message][message]. That's because Tact prohibits usage of `as remaining{:tact}` for any but the last field of the [Structs][struct] and [Messages][message] to prevent misuse of the contract storage and reduce gas consumption.
+
+:::note
+
+  Note, that the cell serialized via `as remaining{:tact}` cannot be [optional](/book/optionals). That is, specifying something like `Cell? as remaining{:tact}`, `Builder? as remaining{:tact}` or `Slice? as remaining{:tact}` would cause a compilation error.
+
+  Also note, that specifying `remaining{:tact}` for the `Cell{:tact}` as the [map](/book/maps) value type is considered an error and it won't compile.
+
+:::
+
+### `bytes32` {#serialization-bytes64}
+
+:::note
+
+  To be resolved by [#94](https://github.com/tact-lang/tact-docs/issues/94).
+
+:::
+
+### `bytes64` {#serialization-bytes64}
+
+:::note
+
+  To be resolved by [#94](https://github.com/tact-lang/tact-docs/issues/94).
+
+:::
+
+## Operations
+
+### Construct and parse {#operations-cnp}
+
+In Tact, there are at least two ways to construct and parse cells:
+
+* [Manually](#cnp-manually), which involves active use of [`Builder{:tact}`](#builders), [`Slice{:tact}`](#slices) and [relevant methods](/ref/core-cells).
+* [Using Structs](#cnp-structs), which is a recommended and much more convenient approach.
+
+#### Manually {#cnp-manually}
+
+Construction via `Builder{:tact}`      | Parsing via `Slice{:tact}`
+:------------------------------------- | :-------------------------
+[`beginCell(){:tact}`][b-1]            | [`Cell.beginParse(){:tact}`][s-1]
+[`.storeUint(42, 7){:tact}`][b-2]      | [`Slice.loadUint(7){:tact}`][s-2]
+[`.storeInt(42, 7){:tact}`][b-3]       | [`Slice.loadInt(7){:tact}`][s-3]
+[`.storeBool(true){:tact}`][b-4]       | [`Slice.loadBool(true){:tact}`][s-4]
+[`.storeSlice(slice){:tact}`][b-5]     | [`Slice.loadBits(slice){:tact}`][s-5]
+[`.storeCoins(42){:tact}`][b-6]        | [`Slice.loadCoins(42){:tact}`][s-6]
+[`.storeAddress(address){:tact}`][b-7] | [`Slice.loadAddress(){:tact}`][s-7]
+[`.storeRef(cell){:tact}`][b-8]        | [`Slice.loadRef(){:tact}`][s-8]
+[`.endCell(){:tact}`][b-9]             | [`Slice.endParse(){:tact}`][s-9]
+
+[b-1]: /ref/core-cells#begincell
+[b-2]: /ref/core-cells#builderstoreuint
+[b-3]: /ref/core-cells#builderstoreint
+[b-4]: /ref/core-cells#builderstorebool
+[b-5]: /ref/core-cells#builderstoreslice
+[b-6]: /ref/core-cells#builderstorecoins
+[b-7]: /ref/core-cells#builderstoreaddress
+[b-8]: /ref/core-cells#builderstoreref
+[b-9]: /ref/core-cells#builderendcell
+[s-1]: /ref/core-cells#cellbeginparse
+[s-2]: /ref/core-cells#sliceloaduint
+[s-3]: /ref/core-cells#sliceloadint
+[s-4]: /ref/core-cells#sliceloadbool
+[s-5]: /ref/core-cells#sliceloadbits
+[s-6]: /ref/core-cells#sliceloadcoins
+[s-7]: /ref/core-cells#sliceloadaddress
+[s-8]: /ref/core-cells#sliceloadref
+[s-9]: /ref/core-cells#sliceendparse
+
+#### Using Structs (recommended) {#cnp-structs}
+
+[Structs][struct] and [Messages][message] are almost like living [TL-B schemas][tlb]. Which means that they're, essentially, [TL-B schemas][tlb] expressed in maintainable, verifiable and user-friendly Tact code.
+
+It is strongly recommended to use them and their [methods](/book/functions#extension-function) like [`Struct.toCell(){:tact}`][st-tc] and [`Struct.fromCell(){:tact}`][st-fc] instead of manually constructing and parsing cells, as this allows for much more declarative and self-explanatory contracts.
+
+The examples of manual parsing [above](#cnp-manually) could be re-written using [Structs][struct], with descriptive names of fields if one so desires:
+
+```tact /fromCell/ /toCell/
+// First Struct
+struct Showcase {
+    id: Int as uint8;
+    someImportantNumber: Int as int8;
+    isThatCool: Bool;
+    payload: Slice;
+    nanoToncoins: Int as coins;
+    wackyTacky: Address;
+    jojoRef: Adventure; // another Struct
+}
+
+// Here it is
+struct Adventure {
+    bizarre: Bool = true;
+    time: Bool = false;
+}
+
+fun example() {
+    // Basics
+    let s = Showcase.fromCell(
+        Showcase{
+            id: 7,
+            someImportantNumber: 42,
+            isThatCool: true,
+            payload: emptySlice(),
+            nanoToncoins: 1330 + 7,
+            wackyTacky: myAddress(),
+            jojoRef: Adventure{ bizarre: true, time: false },
+        }.toCell());
+    s.isThatCool; // true
+}
+```
+
+Note, that Tact's auto-layout algorithm is greedy. For example, `struct Adventure{:tact}` occupies very little space, and it won't be stored as a reference [`Cell{:tact}`](#cells), but will be provided directly as a [`Slice{:tact}`](#slices).
+
+By using [Structs][struct] and [Messages][message] over manual [`Cell{:tact}`](#cells) composition and parsing, those details would be simplified away and won't cause any hassle when the optimized layout changes.
+
+:::note[Useful links:]
+
+  [Convert serialization](/book/func#convert-serialization)\
+  [`Struct.toCell(){:tact}` in Core library][st-tc]\
+  [`Struct.fromCell(){:tact}` in Core library][st-fc]\
+  [`Struct.fromSlice(){:tact}` in Core library][st-fs]\
+  [`Message.toCell(){:tact}` in Core library][msg-tc]\
+  [`Message.fromCell(){:tact}` in Core library][msg-fc]\
+  [`Message.fromSlice(){:tact}` in Core library][msg-fs]
+
+:::
+
+[st-tc]: /ref/core-cells#structtocell
+[st-fc]: /ref/core-cells#structfromcell
+[st-fs]: /ref/core-cells#structfromslice
+[msg-tc]: /ref/core-cells#messagetocell
+[msg-fc]: /ref/core-cells#messagefromcell
+[msg-fs]: /ref/core-cells#messagefromslice
+
+### Check if empty {#operations-empty}
+
+Neither [`Cell{:tact}`](#cells) nor [`Builder{:tact}`](#builders) can be checked for emptiness directly — one needs to convert them to [`Slice{:tact}`](#slices) first.
+
+To check if there are any bits, use [`Slice.dataEmpty(){:tact}`][s-de]. To check if there are any references, use [`Slice.refsEmpty(){:tact}`][s-re]. And to check both at the same time, use [`Slice.empty(){:tact}`][s-e].
+
+To also throw an [exit code 9](/book/exit-codes#9) whenever the [`Slice{:tact}`](#slices) isn't completely empty, use [`Slice.endParse(){:tact}`][s-ep].
+
+```tact
+// Preparations
+let someCell = beginCell().storeUint(42, 7).endCell();
+let someBuilder = beginCell().storeRef(someCell);
+
+// Obtaining our Slices
+let slice1 = someCell.asSlice();
+let slice2 = someBuilder.asSlice();
+
+// .dataEmpty()
+slice1.dataEmpty(); // false
+slice2.dataEmpty(); // true
+
+// .refsEmpty()
+slice1.refsEmpty(); // true
+slice2.refsEmpty(); // false
+
+// .empty()
+slice1.empty(); // false
+slice2.empty(); // false
+
+// .endParse()
+try {
+    slice1.endParse();
+    slice2.endParse();
+} catch (e) {
+    e; // 9
+}
+```
+
+:::note[Useful links:]
+
+  [`Cell.asSlice(){:tact}` in Core library](/ref/core-cells#cellasslice)\
+  [`Builder.asSlice(){:tact}` in Core library](/ref/core-cells#builderasslice)\
+  [`Slice.dataEmpty(){:tact}` in Core library][s-de]\
+  [`Slice.refsEmpty(){:tact}` in Core library][s-re]\
+  [`Slice.empty(){:tact}` in Core library][s-e]\
+  [`Slice.endParse(){:tact}` in Core library][s-ep]
+
+:::
+
+[s-de]: /ref/core-cells#slicedataempty
+[s-re]: /ref/core-cells#slicerefsempty
+[s-e]: /ref/core-cells#sliceempty
+[s-ep]: /ref/core-cells#sliceendparse
+
+### Check if equal {#operations-equal}
+
+Values of type [`Builder{:tact}`](#builders) cannot be compared directly using binary equality [`=={:tact}`][bin-eq] or inequality [`!={:tact}`][bin-eq] operators. However, values of type [`Cell{:tact}`](#cells) and [`Slice{:tact}`](#slices) can.
+
+Direct comparisons:
+
+```tact
+let a = beginCell().storeUint(123, 8).endCell();
+let aSlice = a.asSlice();
+
+let b = beginCell().storeUint(123, 8).endCell();
+let bSlice = b.asSlice();
+
+let areCellsEqual = a == b; // true
+let areCellsNotEqual = a != b; // false
+
+let areSlicesEqual = aSlice == bSlice; // true
+let areSlicesNotEqual = aSlice != bSlice; // false
+```
+
+Note, that direct comparison via `=={:tact}` or `!={:tact}` operators implicitly uses [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hashes of [standard `Cell{:tact}` representation](#cells-representation) under the hood.
+
+Explicit comparisons using `.hash(){:tact}` are also available:
+
+```tact
+let a = beginCell().storeUint(123, 8).endCell();
+let aSlice = a.asSlice();
+
+let b = beginCell().storeUint(123, 8).endCell();
+let bSlice = b.asSlice();
+
+let areCellsEqual = a.hash() == b.hash(); // true
+let areCellsNotEqual = a.hash() != b.hash(); // false
+
+let areSlicesEqual = aSlice.hash() == bSlice.hash(); // true
+let areSlicesNotEqual = aSlice.hash() != bSlice.hash(); // false
+```
+
+:::note[Useful links:]
+
+  [`Cell.hash(){:tact}` in Core library](/ref/core-cells#cellhash)\
+  [`Slice.hash(){:tact}` in Core library](/ref/core-cells#slicehash)\
+  [`=={:tact}` and `!={:tact}`][bin-eq]
+
+:::
+
+[p]: /book/types#primitive-types
+[struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages
+[recv]: /book/contracts#receiver-functions
+
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
+[tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
+[jetton]: https://docs.ton.org/develop/dapps/asset-processing/jettons
+[sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
+
+[quadtree]: https://en.wikipedia.org/wiki/Quadtree
+[bin-eq]: /book/operators#binary-equality
+

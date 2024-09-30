@@ -1,0 +1,32 @@
+{
+  "name": "tact-docs",
+  "license": "CC-BY-4.0",
+  "private": "true",
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf dist/ out/ .astro/",
+    "deps": "yarn install --frozen-lockfile",
+    "dev": "astro dev",
+    "build": "yarn clean && yarn spell && astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "spell": "cspell --no-progress src/content/docs"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.3",
+    "@astrojs/markdown-remark": "^5.2.0",
+    "@astrojs/starlight": "^0.28.2",
+    "astro": "^4.15.3",
+    "rehype-autolink-headings": "7.1.0",
+    "rehype-katex": "7.0.1",
+    "remark-custom-heading-id": "2.0.0",
+    "remark-math": "6.0.0",
+    "sharp": "^0.32.5",
+    "starlight-links-validator": "^0.12.1",
+    "typescript": "^5.6.2",
+    "cspell": "^8.14.4",
+    "hast-util-to-string": "^3.0.0",
+    "unist-util-visit": "^5.0.0"
+  },
+  "packageManager": "yarn@1.22.22"
+}
