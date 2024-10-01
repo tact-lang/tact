@@ -5,6 +5,13 @@ extends mutates fun multiply(self: Int, x: Int): Int {
     return self;
 }
 
+extends fun multiplyExtends(self: Int?, x: Int): Int? {
+    if (self == null) {
+        return null;
+    }
+    return self!! * x;
+}
+
 struct Foo {
     s: Slice;
 }
@@ -70,5 +77,11 @@ contract Tester {
     get fun test10(dict: Cell?): Cell? {
         dict.nativeUdictStoreUint(8, 123, rawSlice("456"));
         return dict;
+    }
+
+    get fun test11(x: Int?): Int? {
+        x.multiplyExtends(2);
+        x.multiplyExtends(2).multiplyExtends(3);
+        return x.multiplyExtends(2).multiplyExtends(3);
     }
 }
