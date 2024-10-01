@@ -2268,6 +2268,223 @@ exports[`resolveStatements should resolve statements for expr-struct-constructio
 ]
 `;
 
+exports[`resolveStatements should resolve statements for fun-extends-optional 1`] = `
+[
+  [
+    "y",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "y == null",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "y",
+    "Int?",
+  ],
+  [
+    "y!!",
+    "Int",
+  ],
+  [
+    "x + y!!",
+    "Int",
+  ],
+  [
+    "y",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "y == null",
+    "Bool",
+  ],
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "y",
+    "Int?",
+  ],
+  [
+    "y!!",
+    "Int",
+  ],
+  [
+    "self + y!!",
+    "Int",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "self == null",
+    "Bool",
+  ],
+  [
+    "y",
+    "Int",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "self!!",
+    "Int",
+  ],
+  [
+    "y",
+    "Int",
+  ],
+  [
+    "self!! + y",
+    "Int",
+  ],
+  [
+    "y",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "y == null",
+    "Bool",
+  ],
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "y",
+    "Int?",
+  ],
+  [
+    "y!!",
+    "Int",
+  ],
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "self == null",
+    "Bool",
+  ],
+  [
+    "y",
+    "Int",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "self!!",
+    "Int",
+  ],
+  [
+    "y",
+    "Int",
+  ],
+  [
+    "self!! + y",
+    "Int",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "self!!",
+    "Int",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "self == null",
+    "Bool",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "self!!",
+    "Int",
+  ],
+  [
+    "y",
+    "Int",
+  ],
+  [
+    "self!! + y",
+    "Int",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for init-vars-analysis-with-if 1`] = `
 [
   [

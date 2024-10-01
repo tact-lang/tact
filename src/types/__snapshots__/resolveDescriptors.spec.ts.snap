@@ -769,7 +769,11 @@ exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] =
           "name": "Cell",
           "optional": false,
         },
-        "self": "Slice",
+        "self": {
+          "kind": "ref",
+          "name": "Slice",
+          "optional": false,
+        },
       },
     },
     "header": null,
@@ -4505,7 +4509,11 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "name": "Int",
           "optional": false,
         },
-        "self": "T",
+        "self": {
+          "kind": "ref",
+          "name": "T",
+          "optional": false,
+        },
       },
     },
     "header": null,
@@ -4682,7 +4690,11 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "name": "Int",
           "optional": false,
         },
-        "self": "TestContract",
+        "self": {
+          "kind": "ref",
+          "name": "TestContract",
+          "optional": false,
+        },
       },
     },
     "header": null,
@@ -4832,7 +4844,11 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "name": "Int",
               "optional": false,
             },
-            "self": "T",
+            "self": {
+              "kind": "ref",
+              "name": "T",
+              "optional": false,
+            },
           },
         },
         "header": null,
@@ -5073,7 +5089,11 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "name": "Int",
           "optional": false,
         },
-        "self": "T",
+        "self": {
+          "kind": "ref",
+          "name": "T",
+          "optional": false,
+        },
       },
     },
     "header": null,
@@ -5250,7 +5270,11 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
           "name": "Int",
           "optional": false,
         },
-        "self": "TestContract",
+        "self": {
+          "kind": "ref",
+          "name": "TestContract",
+          "optional": false,
+        },
       },
     },
     "header": null,
@@ -5428,7 +5452,11 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
               "name": "Int",
               "optional": false,
             },
-            "self": "T",
+            "self": {
+              "kind": "ref",
+              "name": "T",
+              "optional": false,
+            },
           },
         },
         "header": null,
@@ -5484,6 +5512,762 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
 `;
 
 exports[`resolveDescriptors should resolve descriptors for contract-getter-override-virtual 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "test_extends" => {
+        "ast": {
+          "attributes": [
+            {
+              "loc": extends,
+              "type": "extends",
+            },
+          ],
+          "id": 26,
+          "kind": "function_def",
+          "loc": extends fun test_extends(self: Int, y: Int?): Int {
+    return 123;
+},
+          "name": {
+            "id": 15,
+            "kind": "id",
+            "loc": test_extends,
+            "text": "test_extends",
+          },
+          "params": [
+            {
+              "id": 19,
+              "kind": "typed_parameter",
+              "loc": self: Int,
+              "name": {
+                "id": 17,
+                "kind": "id",
+                "loc": self,
+                "text": "self",
+              },
+              "type": {
+                "id": 18,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            {
+              "id": 23,
+              "kind": "typed_parameter",
+              "loc": y: Int?,
+              "name": {
+                "id": 20,
+                "kind": "id",
+                "loc": y,
+                "text": "y",
+              },
+              "type": {
+                "id": 22,
+                "kind": "optional_type",
+                "loc": Int?,
+                "typeArg": {
+                  "id": 21,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+          ],
+          "return": {
+            "id": 16,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 24,
+                "kind": "number",
+                "loc": 123,
+                "value": 123n,
+              },
+              "id": 25,
+              "kind": "statement_return",
+              "loc": return 123;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": false,
+        "isOverride": false,
+        "isVirtual": false,
+        "name": "test_extends",
+        "origin": "user",
+        "params": [
+          {
+            "loc": y: Int?,
+            "name": {
+              "id": 20,
+              "kind": "id",
+              "loc": y,
+              "text": "y",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": true,
+            },
+          },
+        ],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      "test_extends_self" => {
+        "ast": {
+          "attributes": [
+            {
+              "loc": extends,
+              "type": "extends",
+            },
+          ],
+          "id": 38,
+          "kind": "function_def",
+          "loc": extends fun test_extends_self(self: Int?, y: Int): Int {
+    return 123;
+},
+          "name": {
+            "id": 27,
+            "kind": "id",
+            "loc": test_extends_self,
+            "text": "test_extends_self",
+          },
+          "params": [
+            {
+              "id": 32,
+              "kind": "typed_parameter",
+              "loc": self: Int?,
+              "name": {
+                "id": 29,
+                "kind": "id",
+                "loc": self,
+                "text": "self",
+              },
+              "type": {
+                "id": 31,
+                "kind": "optional_type",
+                "loc": Int?,
+                "typeArg": {
+                  "id": 30,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "id": 35,
+              "kind": "typed_parameter",
+              "loc": y: Int,
+              "name": {
+                "id": 33,
+                "kind": "id",
+                "loc": y,
+                "text": "y",
+              },
+              "type": {
+                "id": 34,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "return": {
+            "id": 28,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 36,
+                "kind": "number",
+                "loc": 123,
+                "value": 123n,
+              },
+              "id": 37,
+              "kind": "statement_return",
+              "loc": return 123;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": false,
+        "isOverride": false,
+        "isVirtual": false,
+        "name": "test_extends_self",
+        "origin": "user",
+        "params": [
+          {
+            "loc": y: Int,
+            "name": {
+              "id": 33,
+              "kind": "id",
+              "loc": y,
+              "text": "y",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": true,
+        },
+      },
+      "test_mutates" => {
+        "ast": {
+          "attributes": [
+            {
+              "loc": extends,
+              "type": "extends",
+            },
+            {
+              "loc": mutates,
+              "type": "mutates",
+            },
+          ],
+          "id": 50,
+          "kind": "function_def",
+          "loc": extends mutates fun test_mutates(self: Int, y: Int?): Int {
+    return 123;
+},
+          "name": {
+            "id": 39,
+            "kind": "id",
+            "loc": test_mutates,
+            "text": "test_mutates",
+          },
+          "params": [
+            {
+              "id": 43,
+              "kind": "typed_parameter",
+              "loc": self: Int,
+              "name": {
+                "id": 41,
+                "kind": "id",
+                "loc": self,
+                "text": "self",
+              },
+              "type": {
+                "id": 42,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            {
+              "id": 47,
+              "kind": "typed_parameter",
+              "loc": y: Int?,
+              "name": {
+                "id": 44,
+                "kind": "id",
+                "loc": y,
+                "text": "y",
+              },
+              "type": {
+                "id": 46,
+                "kind": "optional_type",
+                "loc": Int?,
+                "typeArg": {
+                  "id": 45,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+          ],
+          "return": {
+            "id": 40,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 48,
+                "kind": "number",
+                "loc": 123,
+                "value": 123n,
+              },
+              "id": 49,
+              "kind": "statement_return",
+              "loc": return 123;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "name": "test_mutates",
+        "origin": "user",
+        "params": [
+          {
+            "loc": y: Int?,
+            "name": {
+              "id": 44,
+              "kind": "id",
+              "loc": y,
+              "text": "y",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": true,
+            },
+          },
+        ],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      "test_mutates_self" => {
+        "ast": {
+          "attributes": [
+            {
+              "loc": extends,
+              "type": "extends",
+            },
+            {
+              "loc": mutates,
+              "type": "mutates",
+            },
+          ],
+          "id": 62,
+          "kind": "function_def",
+          "loc": extends mutates fun test_mutates_self(self: Int?, y: Int): Int {
+    return 123;
+},
+          "name": {
+            "id": 51,
+            "kind": "id",
+            "loc": test_mutates_self,
+            "text": "test_mutates_self",
+          },
+          "params": [
+            {
+              "id": 56,
+              "kind": "typed_parameter",
+              "loc": self: Int?,
+              "name": {
+                "id": 53,
+                "kind": "id",
+                "loc": self,
+                "text": "self",
+              },
+              "type": {
+                "id": 55,
+                "kind": "optional_type",
+                "loc": Int?,
+                "typeArg": {
+                  "id": 54,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "id": 59,
+              "kind": "typed_parameter",
+              "loc": y: Int,
+              "name": {
+                "id": 57,
+                "kind": "id",
+                "loc": y,
+                "text": "y",
+              },
+              "type": {
+                "id": 58,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "return": {
+            "id": 52,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 60,
+                "kind": "number",
+                "loc": 123,
+                "value": 123n,
+              },
+              "id": 61,
+              "kind": "statement_return",
+              "loc": return 123;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "name": "test_mutates_self",
+        "origin": "user",
+        "params": [
+          {
+            "loc": y: Int,
+            "name": {
+              "id": 57,
+              "kind": "id",
+              "loc": y,
+              "text": "y",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": true,
+        },
+      },
+      "test_mutates_self_opt" => {
+        "ast": {
+          "attributes": [
+            {
+              "loc": extends,
+              "type": "extends",
+            },
+            {
+              "loc": mutates,
+              "type": "mutates",
+            },
+          ],
+          "id": 75,
+          "kind": "function_def",
+          "loc": extends mutates fun test_mutates_self_opt(self: Int?, y: Int): Int? {
+    return null;
+},
+          "name": {
+            "id": 63,
+            "kind": "id",
+            "loc": test_mutates_self_opt,
+            "text": "test_mutates_self_opt",
+          },
+          "params": [
+            {
+              "id": 69,
+              "kind": "typed_parameter",
+              "loc": self: Int?,
+              "name": {
+                "id": 66,
+                "kind": "id",
+                "loc": self,
+                "text": "self",
+              },
+              "type": {
+                "id": 68,
+                "kind": "optional_type",
+                "loc": Int?,
+                "typeArg": {
+                  "id": 67,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "id": 72,
+              "kind": "typed_parameter",
+              "loc": y: Int,
+              "name": {
+                "id": 70,
+                "kind": "id",
+                "loc": y,
+                "text": "y",
+              },
+              "type": {
+                "id": 71,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "return": {
+            "id": 65,
+            "kind": "optional_type",
+            "loc": Int?,
+            "typeArg": {
+              "id": 64,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 73,
+                "kind": "null",
+                "loc": null,
+              },
+              "id": 74,
+              "kind": "statement_return",
+              "loc": return null;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "name": "test_mutates_self_opt",
+        "origin": "user",
+        "params": [
+          {
+            "loc": y: Int,
+            "name": {
+              "id": 70,
+              "kind": "id",
+              "loc": y,
+              "text": "y",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": true,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": true,
+        },
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 2`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "id": 14,
+      "kind": "function_def",
+      "loc": fun test(x: Int, y: Int?): Int {
+    return 123;
+},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": test,
+        "text": "test",
+      },
+      "params": [
+        {
+          "id": 7,
+          "kind": "typed_parameter",
+          "loc": x: Int,
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": x,
+            "text": "x",
+          },
+          "type": {
+            "id": 6,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "id": 11,
+          "kind": "typed_parameter",
+          "loc": y: Int?,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": y,
+            "text": "y",
+          },
+          "type": {
+            "id": 10,
+            "kind": "optional_type",
+            "loc": Int?,
+            "typeArg": {
+              "id": 9,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+      ],
+      "return": {
+        "id": 4,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "statements": [
+        {
+          "expression": {
+            "base": 10,
+            "id": 12,
+            "kind": "number",
+            "loc": 123,
+            "value": 123n,
+          },
+          "id": 13,
+          "kind": "statement_return",
+          "loc": return 123;,
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverride": false,
+    "isVirtual": false,
+    "name": "test",
+    "origin": "user",
+    "params": [
+      {
+        "loc": x: Int,
+        "name": {
+          "id": 5,
+          "kind": "id",
+          "loc": x,
+          "text": "x",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "loc": y: Int?,
+        "name": {
+          "id": 8,
+          "kind": "id",
+          "loc": y,
+          "text": "y",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": true,
+        },
+      },
+    ],
+    "returns": {
+      "kind": "ref",
+      "name": "Int",
+      "optional": false,
+    },
+    "self": null,
+  },
+]
+`;
 
 exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-uninit-storage-vars 1`] = `
 [
@@ -5805,7 +6589,11 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "returns": {
           "kind": "void",
         },
-        "self": "HelloWorld",
+        "self": {
+          "kind": "ref",
+          "name": "HelloWorld",
+          "optional": false,
+        },
       },
       "hello2" => {
         "ast": {
@@ -5837,7 +6625,11 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "returns": {
           "kind": "void",
         },
-        "self": "HelloWorld",
+        "self": {
+          "kind": "ref",
+          "name": "HelloWorld",
+          "optional": false,
+        },
       },
     },
     "header": null,
@@ -6682,7 +7474,11 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "name": "Int",
           "optional": false,
         },
-        "self": "Main",
+        "self": {
+          "kind": "ref",
+          "name": "Main",
+          "optional": false,
+        },
       },
       "hello2" => {
         "ast": {
@@ -6739,7 +7535,11 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "name": "Point",
           "optional": false,
         },
-        "self": "Main",
+        "self": {
+          "kind": "ref",
+          "name": "Main",
+          "optional": false,
+        },
       },
     },
     "header": null,
@@ -6972,7 +7772,11 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
           "name": "Int",
           "optional": false,
         },
-        "self": "Int",
+        "self": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
       },
     },
     "header": null,
@@ -7320,7 +8124,11 @@ mutates extends native inc(self: Int): Int;,
           "name": "Int",
           "optional": false,
         },
-        "self": "Int",
+        "self": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
       },
     },
     "header": null,
@@ -8090,7 +8898,11 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
           "name": "Int",
           "optional": false,
         },
-        "self": "Main",
+        "self": {
+          "kind": "ref",
+          "name": "Main",
+          "optional": false,
+        },
       },
     },
     "header": null,

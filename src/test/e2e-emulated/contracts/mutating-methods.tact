@@ -1,6 +1,15 @@
+asm(value key self keySize) extends mutates fun nativeUdictStoreUint(self: Cell?, keySize: Int, key: Int, value: Slice) { DICTUSET }
+
 extends mutates fun multiply(self: Int, x: Int): Int {
     self *= x;
     return self;
+}
+
+extends fun multiplyExtends(self: Int?, x: Int): Int? {
+    if (self == null) {
+        return null;
+    }
+    return self!! * x;
 }
 
 struct Foo {
@@ -63,5 +72,16 @@ contract Tester {
     get fun test9(): Int {
         self.s.loadUint(1);
         return self.s.loadUint(3);
+    }
+
+    get fun test10(dict: Cell?): Cell? {
+        dict.nativeUdictStoreUint(8, 123, rawSlice("456"));
+        return dict;
+    }
+
+    get fun test11(x: Int?): Int? {
+        x.multiplyExtends(2);
+        x.multiplyExtends(2).multiplyExtends(3);
+        return x.multiplyExtends(2).multiplyExtends(3);
     }
 }

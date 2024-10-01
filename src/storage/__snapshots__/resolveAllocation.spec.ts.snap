@@ -2293,7 +2293,11 @@ exports[`resolveAllocation should write program 1`] = `
           "returns": {
             "kind": "void",
           },
-          "self": "Sample",
+          "self": {
+            "kind": "ref",
+            "name": "Sample",
+            "optional": false,
+          },
         },
       },
       "header": null,

@@ -95,8 +95,8 @@
       "output": "./src/test/e2e-emulated/contracts/output"
     },
     {
-      "name": "mutating-method-chaining",
-      "path": "./src/test/e2e-emulated/contracts/mutating-method-chaining.tact",
+      "name": "mutating-methods",
+      "path": "./src/test/e2e-emulated/contracts/mutating-methods.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
     },
     {
