@@ -626,7 +626,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function resolveFunctionDescriptor(
-        optSelf: string | null,
+        optSelf: TypeRef | null,
         a:
             | AstFunctionDef
             | AstNativeFunctionDecl
@@ -746,7 +746,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check virtual
         if (isVirtual) {
-            const t = types.get(self!)!;
+            if (self?.kind !== "ref") {
+                throwCompilationError(
+                    "Virtual functions must have a self parameter",
+                    isVirtual.loc,
+                );
+            }
+            const t = types.get(self.name!)!;
             if (t.kind !== "trait") {
                 throwCompilationError(
                     "Virtual functions must be defined within a trait",
@@ -757,7 +763,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check abstract
         if (isAbstract) {
-            const t = types.get(self!)!;
+            if (self?.kind !== "ref") {
+                throwCompilationError(
+                    "Abstract functions must have a self parameter",
+                    isAbstract.loc,
+                );
+            }
+            const t = types.get(self.name!)!;
             if (t.kind !== "trait") {
                 throwCompilationError(
                     "Abstract functions must be defined within a trait",
@@ -767,7 +779,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
 
         if (isOverride) {
-            const t = types.get(self!)!;
+            if (self?.kind !== "ref") {
+                throwCompilationError(
+                    "Override functions must have a self parameter",
+                    isOverride.loc,
+                );
+            }
+            const t = types.get(self.name!)!;
             if (!["contract", "trait"].includes(t.kind)) {
                 throwCompilationError(
                     "Overridden functions must be defined within a contract or a trait",
@@ -826,7 +844,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
 
             // Update self and remove first parameter
-            self = firstParam.type.name;
+            self = firstParam.type;
             params = params.slice(1);
         }
 
@@ -1025,8 +1043,16 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     d.kind === "function_decl" ||
                     d.kind === "asm_function_def"
                 ) {
-                    const f = resolveFunctionDescriptor(s.name, d, s.origin);
-                    if (f.self !== s.name) {
+                    const f = resolveFunctionDescriptor(
+                        {
+                            kind: "ref",
+                            name: s.name,
+                            optional: false,
+                        },
+                        d,
+                        s.origin,
+                    );
+                    if (f.self?.kind !== "ref" || f.self.name !== s.name) {
                         throwInternalCompilerError(
                             `Function self must be ${s.name}`,
                         ); // Impossible
@@ -1608,7 +1634,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // Register function
                 contractOrTrait.functions.set(traitFunction.name, {
                     ...traitFunction,
-                    self: contractOrTrait.name,
+                    self: {
+                        kind: "ref",
+                        name: contractOrTrait.name,
+                        optional: false,
+                    },
                     ast: cloneNode(traitFunction.ast),
                 });
             }
@@ -1864,13 +1894,19 @@ export function resolveDescriptors(ctx: CompilerContext) {
     for (const a of ast.functions) {
         const r = resolveFunctionDescriptor(null, a, a.loc.origin);
         if (r.self) {
-            if (types.get(r.self)!.functions.has(r.name)) {
+            if (r.self.kind !== "ref") {
                 throwCompilationError(
-                    `Function "${r.name}" already exists in type "${r.self}"`,
+                    `Wrong self type "${r.name}" for static function`,
                     r.ast.loc,
                 );
             }
-            types.get(r.self)!.functions.set(r.name, r);
+            if (types.get(r.self.name)!.functions.has(r.name)) {
+                throwCompilationError(
+                    `Function "${r.name}" already exists in type "${r.self.name}"`,
+                    r.ast.loc,
+                );
+            }
+            types.get(r.self.name)!.functions.set(r.name, r);
         } else {
             if (staticFunctions.has(r.name) || GlobalFunctions.has(r.name)) {
                 throwCompilationError(

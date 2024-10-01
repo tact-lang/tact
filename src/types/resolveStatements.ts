@@ -864,12 +864,12 @@ export function resolveStatements(ctx: CompilerContext) {
             ) {
                 // Build statement context
                 let sctx = emptyContext(f.ast.loc, f.name, f.returns);
-                sctx = addVariable(
-                    selfId,
-                    { kind: "ref", name: t.name, optional: false },
-                    ctx,
-                    sctx,
-                );
+                if (f.self === null) {
+                    throwInternalCompilerError(
+                        "Self is null where it should not be",
+                    );
+                }
+                sctx = addVariable(selfId, f.self, ctx, sctx);
                 for (const a of f.params) {
                     sctx = addVariable(a.name, a.type, ctx, sctx);
                 }

@@ -149,7 +149,7 @@ export type FunctionDescription = {
     isVirtual: boolean;
     isAbstract: boolean;
     isInline: boolean;
-    self: string | null;
+    self: TypeRef | null;
     returns: TypeRef;
     params: FunctionParameter[];
     ast:
