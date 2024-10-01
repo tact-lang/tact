@@ -5539,54 +5539,51 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               "type": "extends",
             },
           ],
-          "id": 44,
+          "id": 26,
           "kind": "function_def",
           "loc": extends fun test_extends(self: Int, y: Int?): Int {
-    if (y == null) {
-        return self;
-    }
-    return self + y!!;
+    return 123;
 },
           "name": {
-            "id": 24,
+            "id": 15,
             "kind": "id",
             "loc": test_extends,
             "text": "test_extends",
           },
           "params": [
             {
-              "id": 28,
+              "id": 19,
               "kind": "typed_parameter",
               "loc": self: Int,
               "name": {
-                "id": 26,
+                "id": 17,
                 "kind": "id",
                 "loc": self,
                 "text": "self",
               },
               "type": {
-                "id": 27,
+                "id": 18,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
               },
             },
             {
-              "id": 32,
+              "id": 23,
               "kind": "typed_parameter",
               "loc": y: Int?,
               "name": {
-                "id": 29,
+                "id": 20,
                 "kind": "id",
                 "loc": y,
                 "text": "y",
               },
               "type": {
-                "id": 31,
+                "id": 22,
                 "kind": "optional_type",
                 "loc": Int?,
                 "typeArg": {
-                  "id": 30,
+                  "id": 21,
                   "kind": "type_id",
                   "loc": Int,
                   "text": "Int",
@@ -5595,79 +5592,23 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
             },
           ],
           "return": {
-            "id": 25,
+            "id": 16,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
           },
           "statements": [
             {
-              "condition": {
-                "id": 35,
-                "kind": "op_binary",
-                "left": {
-                  "id": 33,
-                  "kind": "id",
-                  "loc": y,
-                  "text": "y",
-                },
-                "loc": y == null,
-                "op": "==",
-                "right": {
-                  "id": 34,
-                  "kind": "null",
-                  "loc": null,
-                },
-              },
-              "elseif": null,
-              "falseStatements": null,
-              "id": 38,
-              "kind": "statement_condition",
-              "loc": if (y == null) {
-        return self;
-    },
-              "trueStatements": [
-                {
-                  "expression": {
-                    "id": 36,
-                    "kind": "id",
-                    "loc": self,
-                    "text": "self",
-                  },
-                  "id": 37,
-                  "kind": "statement_return",
-                  "loc": return self;,
-                },
-              ],
-            },
-            {
               "expression": {
-                "id": 42,
-                "kind": "op_binary",
-                "left": {
-                  "id": 39,
-                  "kind": "id",
-                  "loc": self,
-                  "text": "self",
-                },
-                "loc": self + y!!,
-                "op": "+",
-                "right": {
-                  "id": 41,
-                  "kind": "op_unary",
-                  "loc": y!!,
-                  "op": "!!",
-                  "operand": {
-                    "id": 40,
-                    "kind": "id",
-                    "loc": y,
-                    "text": "y",
-                  },
-                },
+                "base": 10,
+                "id": 24,
+                "kind": "number",
+                "loc": 123,
+                "value": 123n,
               },
-              "id": 43,
+              "id": 25,
               "kind": "statement_return",
-              "loc": return self + y!!;,
+              "loc": return 123;,
             },
           ],
         },
@@ -5683,7 +5624,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           {
             "loc": y: Int?,
             "name": {
-              "id": 29,
+              "id": 20,
               "kind": "id",
               "loc": y,
               "text": "y",
@@ -5714,37 +5655,34 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               "type": "extends",
             },
           ],
-          "id": 65,
+          "id": 38,
           "kind": "function_def",
           "loc": extends fun test_extends_self(self: Int?, y: Int): Int {
-    if (self == null) {
-        return y;
-    }
-    return self!! + y;
+    return 123;
 },
           "name": {
-            "id": 45,
+            "id": 27,
             "kind": "id",
             "loc": test_extends_self,
             "text": "test_extends_self",
           },
           "params": [
             {
-              "id": 50,
+              "id": 32,
               "kind": "typed_parameter",
               "loc": self: Int?,
               "name": {
-                "id": 47,
+                "id": 29,
                 "kind": "id",
                 "loc": self,
                 "text": "self",
               },
               "type": {
-                "id": 49,
+                "id": 31,
                 "kind": "optional_type",
                 "loc": Int?,
                 "typeArg": {
-                  "id": 48,
+                  "id": 30,
                   "kind": "type_id",
                   "loc": Int,
                   "text": "Int",
@@ -5752,17 +5690,17 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
-              "id": 53,
+              "id": 35,
               "kind": "typed_parameter",
               "loc": y: Int,
               "name": {
-                "id": 51,
+                "id": 33,
                 "kind": "id",
                 "loc": y,
                 "text": "y",
               },
               "type": {
-                "id": 52,
+                "id": 34,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
@@ -5770,79 +5708,23 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
             },
           ],
           "return": {
-            "id": 46,
+            "id": 28,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
           },
           "statements": [
             {
-              "condition": {
-                "id": 56,
-                "kind": "op_binary",
-                "left": {
-                  "id": 54,
-                  "kind": "id",
-                  "loc": self,
-                  "text": "self",
-                },
-                "loc": self == null,
-                "op": "==",
-                "right": {
-                  "id": 55,
-                  "kind": "null",
-                  "loc": null,
-                },
-              },
-              "elseif": null,
-              "falseStatements": null,
-              "id": 59,
-              "kind": "statement_condition",
-              "loc": if (self == null) {
-        return y;
-    },
-              "trueStatements": [
-                {
-                  "expression": {
-                    "id": 57,
-                    "kind": "id",
-                    "loc": y,
-                    "text": "y",
-                  },
-                  "id": 58,
-                  "kind": "statement_return",
-                  "loc": return y;,
-                },
-              ],
-            },
-            {
               "expression": {
-                "id": 63,
-                "kind": "op_binary",
-                "left": {
-                  "id": 61,
-                  "kind": "op_unary",
-                  "loc": self!!,
-                  "op": "!!",
-                  "operand": {
-                    "id": 60,
-                    "kind": "id",
-                    "loc": self,
-                    "text": "self",
-                  },
-                },
-                "loc": self!! + y,
-                "op": "+",
-                "right": {
-                  "id": 62,
-                  "kind": "id",
-                  "loc": y,
-                  "text": "y",
-                },
+                "base": 10,
+                "id": 36,
+                "kind": "number",
+                "loc": 123,
+                "value": 123n,
               },
-              "id": 64,
+              "id": 37,
               "kind": "statement_return",
-              "loc": return self!! + y;,
+              "loc": return 123;,
             },
           ],
         },
@@ -5858,7 +5740,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           {
             "loc": y: Int,
             "name": {
-              "id": 51,
+              "id": 33,
               "kind": "id",
               "loc": y,
               "text": "y",
@@ -5893,55 +5775,51 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               "type": "mutates",
             },
           ],
-          "id": 86,
+          "id": 50,
           "kind": "function_def",
           "loc": extends mutates fun test_mutates(self: Int, y: Int?): Int {
-    if (y == null) {
-        return self;
-    }
-    self += y;
-    return self;
+    return 123;
 },
           "name": {
-            "id": 66,
+            "id": 39,
             "kind": "id",
             "loc": test_mutates,
             "text": "test_mutates",
           },
           "params": [
             {
-              "id": 70,
+              "id": 43,
               "kind": "typed_parameter",
               "loc": self: Int,
               "name": {
-                "id": 68,
+                "id": 41,
                 "kind": "id",
                 "loc": self,
                 "text": "self",
               },
               "type": {
-                "id": 69,
+                "id": 42,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
               },
             },
             {
-              "id": 74,
+              "id": 47,
               "kind": "typed_parameter",
               "loc": y: Int?,
               "name": {
-                "id": 71,
+                "id": 44,
                 "kind": "id",
                 "loc": y,
                 "text": "y",
               },
               "type": {
-                "id": 73,
+                "id": 46,
                 "kind": "optional_type",
                 "loc": Int?,
                 "typeArg": {
-                  "id": 72,
+                  "id": 45,
                   "kind": "type_id",
                   "loc": Int,
                   "text": "Int",
@@ -5950,79 +5828,23 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
             },
           ],
           "return": {
-            "id": 67,
+            "id": 40,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
           },
           "statements": [
             {
-              "condition": {
-                "id": 77,
-                "kind": "op_binary",
-                "left": {
-                  "id": 75,
-                  "kind": "id",
-                  "loc": y,
-                  "text": "y",
-                },
-                "loc": y == null,
-                "op": "==",
-                "right": {
-                  "id": 76,
-                  "kind": "null",
-                  "loc": null,
-                },
-              },
-              "elseif": null,
-              "falseStatements": null,
-              "id": 80,
-              "kind": "statement_condition",
-              "loc": if (y == null) {
-        return self;
-    },
-              "trueStatements": [
-                {
-                  "expression": {
-                    "id": 78,
-                    "kind": "id",
-                    "loc": self,
-                    "text": "self",
-                  },
-                  "id": 79,
-                  "kind": "statement_return",
-                  "loc": return self;,
-                },
-              ],
-            },
-            {
               "expression": {
-                "id": 82,
-                "kind": "id",
-                "loc": y,
-                "text": "y",
+                "base": 10,
+                "id": 48,
+                "kind": "number",
+                "loc": 123,
+                "value": 123n,
               },
-              "id": 83,
-              "kind": "statement_augmentedassign",
-              "loc": self += y;,
-              "op": "+",
-              "path": {
-                "id": 81,
-                "kind": "id",
-                "loc": self,
-                "text": "self",
-              },
-            },
-            {
-              "expression": {
-                "id": 84,
-                "kind": "id",
-                "loc": self,
-                "text": "self",
-              },
-              "id": 85,
+              "id": 49,
               "kind": "statement_return",
-              "loc": return self;,
+              "loc": return 123;,
             },
           ],
         },
@@ -6038,7 +5860,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           {
             "loc": y: Int?,
             "name": {
-              "id": 71,
+              "id": 44,
               "kind": "id",
               "loc": y,
               "text": "y",
@@ -6073,38 +5895,34 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               "type": "mutates",
             },
           ],
-          "id": 108,
+          "id": 62,
           "kind": "function_def",
           "loc": extends mutates fun test_mutates_self(self: Int?, y: Int): Int {
-    if (self == null) {
-        return y;
-    }
-    self!! += y;
-    return self;
+    return 123;
 },
           "name": {
-            "id": 87,
+            "id": 51,
             "kind": "id",
             "loc": test_mutates_self,
             "text": "test_mutates_self",
           },
           "params": [
             {
-              "id": 92,
+              "id": 56,
               "kind": "typed_parameter",
               "loc": self: Int?,
               "name": {
-                "id": 89,
+                "id": 53,
                 "kind": "id",
                 "loc": self,
                 "text": "self",
               },
               "type": {
-                "id": 91,
+                "id": 55,
                 "kind": "optional_type",
                 "loc": Int?,
                 "typeArg": {
-                  "id": 90,
+                  "id": 54,
                   "kind": "type_id",
                   "loc": Int,
                   "text": "Int",
@@ -6112,17 +5930,17 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
-              "id": 95,
+              "id": 59,
               "kind": "typed_parameter",
               "loc": y: Int,
               "name": {
-                "id": 93,
+                "id": 57,
                 "kind": "id",
                 "loc": y,
                 "text": "y",
               },
               "type": {
-                "id": 94,
+                "id": 58,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
@@ -6130,85 +5948,23 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
             },
           ],
           "return": {
-            "id": 88,
+            "id": 52,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
           },
           "statements": [
             {
-              "condition": {
-                "id": 98,
-                "kind": "op_binary",
-                "left": {
-                  "id": 96,
-                  "kind": "id",
-                  "loc": self,
-                  "text": "self",
-                },
-                "loc": self == null,
-                "op": "==",
-                "right": {
-                  "id": 97,
-                  "kind": "null",
-                  "loc": null,
-                },
-              },
-              "elseif": null,
-              "falseStatements": null,
-              "id": 101,
-              "kind": "statement_condition",
-              "loc": if (self == null) {
-        return y;
-    },
-              "trueStatements": [
-                {
-                  "expression": {
-                    "id": 99,
-                    "kind": "id",
-                    "loc": y,
-                    "text": "y",
-                  },
-                  "id": 100,
-                  "kind": "statement_return",
-                  "loc": return y;,
-                },
-              ],
-            },
-            {
               "expression": {
-                "id": 104,
-                "kind": "id",
-                "loc": y,
-                "text": "y",
+                "base": 10,
+                "id": 60,
+                "kind": "number",
+                "loc": 123,
+                "value": 123n,
               },
-              "id": 105,
-              "kind": "statement_augmentedassign",
-              "loc": self!! += y;,
-              "op": "+",
-              "path": {
-                "id": 103,
-                "kind": "op_unary",
-                "loc": self!!,
-                "op": "!!",
-                "operand": {
-                  "id": 102,
-                  "kind": "id",
-                  "loc": self,
-                  "text": "self",
-                },
-              },
-            },
-            {
-              "expression": {
-                "id": 106,
-                "kind": "id",
-                "loc": self,
-                "text": "self",
-              },
-              "id": 107,
+              "id": 61,
               "kind": "statement_return",
-              "loc": return self;,
+              "loc": return 123;,
             },
           ],
         },
@@ -6224,7 +5980,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           {
             "loc": y: Int,
             "name": {
-              "id": 93,
+              "id": 57,
               "kind": "id",
               "loc": y,
               "text": "y",
@@ -6259,38 +6015,34 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               "type": "mutates",
             },
           ],
-          "id": 131,
+          "id": 75,
           "kind": "function_def",
           "loc": extends mutates fun test_mutates_self_opt(self: Int?, y: Int): Int? {
-    if (self == null) {
-        return null;
-    }
-    self!! += y;
-    return self;
+    return null;
 },
           "name": {
-            "id": 109,
+            "id": 63,
             "kind": "id",
             "loc": test_mutates_self_opt,
             "text": "test_mutates_self_opt",
           },
           "params": [
             {
-              "id": 115,
+              "id": 69,
               "kind": "typed_parameter",
               "loc": self: Int?,
               "name": {
-                "id": 112,
+                "id": 66,
                 "kind": "id",
                 "loc": self,
                 "text": "self",
               },
               "type": {
-                "id": 114,
+                "id": 68,
                 "kind": "optional_type",
                 "loc": Int?,
                 "typeArg": {
-                  "id": 113,
+                  "id": 67,
                   "kind": "type_id",
                   "loc": Int,
                   "text": "Int",
@@ -6298,17 +6050,17 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
               },
             },
             {
-              "id": 118,
+              "id": 72,
               "kind": "typed_parameter",
               "loc": y: Int,
               "name": {
-                "id": 116,
+                "id": 70,
                 "kind": "id",
                 "loc": y,
                 "text": "y",
               },
               "type": {
-                "id": 117,
+                "id": 71,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
@@ -6316,11 +6068,11 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
             },
           ],
           "return": {
-            "id": 111,
+            "id": 65,
             "kind": "optional_type",
             "loc": Int?,
             "typeArg": {
-              "id": 110,
+              "id": 64,
               "kind": "type_id",
               "loc": Int,
               "text": "Int",
@@ -6328,77 +6080,14 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           },
           "statements": [
             {
-              "condition": {
-                "id": 121,
-                "kind": "op_binary",
-                "left": {
-                  "id": 119,
-                  "kind": "id",
-                  "loc": self,
-                  "text": "self",
-                },
-                "loc": self == null,
-                "op": "==",
-                "right": {
-                  "id": 120,
-                  "kind": "null",
-                  "loc": null,
-                },
-              },
-              "elseif": null,
-              "falseStatements": null,
-              "id": 124,
-              "kind": "statement_condition",
-              "loc": if (self == null) {
-        return null;
-    },
-              "trueStatements": [
-                {
-                  "expression": {
-                    "id": 122,
-                    "kind": "null",
-                    "loc": null,
-                  },
-                  "id": 123,
-                  "kind": "statement_return",
-                  "loc": return null;,
-                },
-              ],
-            },
-            {
               "expression": {
-                "id": 127,
-                "kind": "id",
-                "loc": y,
-                "text": "y",
+                "id": 73,
+                "kind": "null",
+                "loc": null,
               },
-              "id": 128,
-              "kind": "statement_augmentedassign",
-              "loc": self!! += y;,
-              "op": "+",
-              "path": {
-                "id": 126,
-                "kind": "op_unary",
-                "loc": self!!,
-                "op": "!!",
-                "operand": {
-                  "id": 125,
-                  "kind": "id",
-                  "loc": self,
-                  "text": "self",
-                },
-              },
-            },
-            {
-              "expression": {
-                "id": 129,
-                "kind": "id",
-                "loc": self,
-                "text": "self",
-              },
-              "id": 130,
+              "id": 74,
               "kind": "statement_return",
-              "loc": return self;,
+              "loc": return null;,
             },
           ],
         },
@@ -6414,7 +6103,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
           {
             "loc": y: Int,
             "name": {
-              "id": 116,
+              "id": 70,
               "kind": "id",
               "loc": y,
               "text": "y",
@@ -6459,13 +6148,10 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
   {
     "ast": {
       "attributes": [],
-      "id": 23,
+      "id": 14,
       "kind": "function_def",
       "loc": fun test(x: Int, y: Int?): Int {
-    if (y == null) {
-        return x;
-    }
-    return x + y!!;
+    return 123;
 },
       "name": {
         "id": 3,
@@ -6522,72 +6208,16 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
       },
       "statements": [
         {
-          "condition": {
-            "id": 14,
-            "kind": "op_binary",
-            "left": {
-              "id": 12,
-              "kind": "id",
-              "loc": y,
-              "text": "y",
-            },
-            "loc": y == null,
-            "op": "==",
-            "right": {
-              "id": 13,
-              "kind": "null",
-              "loc": null,
-            },
-          },
-          "elseif": null,
-          "falseStatements": null,
-          "id": 17,
-          "kind": "statement_condition",
-          "loc": if (y == null) {
-        return x;
-    },
-          "trueStatements": [
-            {
-              "expression": {
-                "id": 15,
-                "kind": "id",
-                "loc": x,
-                "text": "x",
-              },
-              "id": 16,
-              "kind": "statement_return",
-              "loc": return x;,
-            },
-          ],
-        },
-        {
           "expression": {
-            "id": 21,
-            "kind": "op_binary",
-            "left": {
-              "id": 18,
-              "kind": "id",
-              "loc": x,
-              "text": "x",
-            },
-            "loc": x + y!!,
-            "op": "+",
-            "right": {
-              "id": 20,
-              "kind": "op_unary",
-              "loc": y!!,
-              "op": "!!",
-              "operand": {
-                "id": 19,
-                "kind": "id",
-                "loc": y,
-                "text": "y",
-              },
-            },
+            "base": 10,
+            "id": 12,
+            "kind": "number",
+            "loc": 123,
+            "value": 123n,
           },
-          "id": 22,
+          "id": 13,
           "kind": "statement_return",
-          "loc": return x + y!!;,
+          "loc": return 123;,
         },
       ],
     },
