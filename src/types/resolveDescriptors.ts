@@ -747,7 +747,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Check virtual
         if (isVirtual) {
             if (self?.kind !== "ref") {
-                throwCompilationError(
+                throwInternalCompilerError(
                     "Virtual functions must have a self parameter",
                     isVirtual.loc,
                 );
@@ -764,7 +764,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Check abstract
         if (isAbstract) {
             if (self?.kind !== "ref") {
-                throwCompilationError(
+                throwInternalCompilerError(
                     "Abstract functions must have a self parameter",
                     isAbstract.loc,
                 );
@@ -780,7 +780,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         if (isOverride) {
             if (self?.kind !== "ref") {
-                throwCompilationError(
+                throwInternalCompilerError(
                     "Override functions must have a self parameter",
                     isOverride.loc,
                 );
