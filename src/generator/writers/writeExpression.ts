@@ -558,13 +558,6 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
 
         // Reference type
         if (selfTyRef.kind === "ref") {
-            if (selfTyRef.optional) {
-                throwCompilationError(
-                    `Cannot call function of non - direct type: "${printTypeRef(selfTyRef)}"`,
-                    f.loc,
-                );
-            }
-
             // Render function call
             const selfTy = getType(wCtx.ctx, selfTyRef.name);
 
