@@ -1,5 +1,5 @@
 # To not merge, if build fails
-name: Test docs/ build
+name: Tact Docs CI
 
 on:
   # For new PRs, or those who are ready and/or request a review
@@ -34,8 +34,18 @@ jobs:
         uses: actions/checkout@v4
         # with:
         #   fetch-depth: 0
-      - name: Install, build and store site artifact
-        uses: withastro/action@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          path: docs
           node-version: 22
+          cache: "yarn"
+          cache-dependency-path: "docs/yarn.lock"
+
+      - name: Install dependencies
+        working-directory: docs
+        run: yarn deps
+
+      - name: Build the site
+        working-directory: docs
+        run: yarn build
