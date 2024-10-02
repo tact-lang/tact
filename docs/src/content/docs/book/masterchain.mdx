@@ -1,0 +1,49 @@
+---
+title: Masterchain
+---
+
+:::caution
+
+  Masterchain addresses are treated as invalid unless the `masterchain` option in the [configuration file](/book/config) is set to `true{:json}`.
+
+:::
+
+In TON Blockchain, a special chain called ["masterchain"](https://docs.ton.org/learn/overviews/ton-blockchain#masterchain-blockchain-of-blockchains) is used to synchronize message routing and transaction execution, so that nodes in the network can fix a particular point in a multi-chain state and reach a consensus about that state.
+
+Masterchain stores the [network configuration](/ref/core-advanced#getconfigparam) and the final state of all [workchains](https://docs.ton.org/learn/overviews/ton-blockchain#workchain-blockchain-with-your-own-rules). It carries fundamental protocol information, including current settings, a list of active validators and their stakes, active workchains, and associated [shardchains](https://docs.ton.org/develop/blockchain/shards). Most importantly, it maintains a record of the latest block hashes for all workchains and shardchains, enforcing consensus across the network.
+
+## How contract is protected from masterchain {#protection}
+
+Tact enforces all contracts to use the [basechain](https://docs.ton.org/develop/blockchain/shards), which is the default workchain with ID $0$. This is done to prevent masterchain addresses from being used in the contract.
+
+Any attempts to point to masterchain or otherwise interact with it without [enabling masterchain support](#support) throw an exception with [exit code 137](/book/exit-codes#137): `Masterchain support is not enabled for this contract`.
+
+That is, accidental deployments to the masterchain, receiving messages from masterchain accounts, sending messages to such accounts, and using masterchain addresses or its chain ID ($-1$) are all prohibited by default.
+
+## Enabling masterchain support in compilation options {#support}
+
+:::caution
+
+Most contracts don't need to be deployed on a masterchain or have any interactions on a masterchain. That's because the masterchain is primarily used for voting or storing libraries. If you don't need to partake in those things, you don't need to enable masterchain support.
+
+:::
+
+If you really do need masterchain support, the simplest and recommended approach is to modify a [`tact.config.json`](/book/config) file in the root of your project (or create it if it didn't exist yet), and [set the `masterchain` property to `true{:json}`](/book/config#options-masterchain).
+
+If you're working on a [Blueprint][bp]-based project, you can enable masterchain support in the compilation configs of your contracts, which are located in a directory named `wrappers/`:
+
+```typescript title="wrappers/YourContractName.compile.ts" {7}
+import { CompilerConfig } from '@ton/blueprint';
+
+export const compile: CompilerConfig = {
+  lang: 'tact',
+  target: 'contracts/your_contract_name.tact',
+  options: {
+    masterchain: true, // ← that's the stuff!
+  }
+};
+```
+
+However, [`tact.config.json`](/book/config) may still be used in [Blueprint][bp] projects. In such cases values specified in [`tact.config.json`](/book/config) act as default unless modified in the `wrappers/`.
+
+[bp]: https://github.com/ton-org/blueprint

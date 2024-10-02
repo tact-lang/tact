@@ -1,0 +1,73 @@
+---
+title: Compile-time
+---
+
+This page lists all the built-in [global static functions](/book/functions#global-static-functions), which are evaluated at the time of building the Tact project and cannot work with non-constant, run-time data. These functions are commonly referred to as "compile-time functions".
+
+## address
+
+```tact
+fun address(s: String): Address;
+```
+
+A compile-time function that converts a [`String{:tact}`][p] with an address into the [`Address{:tact}`][p] type.
+
+Usage example:
+
+```tact
+contract Example {
+    // Persistent state variables
+    addr: Address =
+        address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"); // works at compile-time!
+}
+```
+
+## cell
+
+```tact
+fun cell(bocBase64: String): Cell;
+```
+
+A compile-time function that embeds a base64-encoded [BoC](https://docs.ton.org/develop/data-formats/cell-boc#bag-of-cells) `bocBase64` as a [`Cell{:tact}`][cell] into the contract.
+
+Usage example:
+
+```tact
+contract Example {
+    // Persistent state variables
+    storedCell: Cell =
+        // Init package for Wallet V3R1 as a base64-encoded BoC
+        cell("te6cckEBAQEAYgAAwP8AIN0gggFMl7qXMO1E0NcLH+Ck8mCDCNcYINMf0x/TH/gjE7vyY+1E0NMf0x/T/9FRMrryoVFEuvKiBPkBVBBV+RDyo/gAkyDXSpbTB9QC+wDo0QGkyMsfyx/L/8ntVD++buA="); // works at compile-time!
+}
+```
+
+:::note[Useful links:]
+
+  [Bag of Cells in TON Docs](https://docs.ton.org/develop/data-formats/cell-boc#bag-of-cells)
+
+:::
+
+## ton
+
+```tact
+fun ton(value: String): Int;
+```
+
+A compile-time function that converts the given Toncoins `value` from a human-readable format [`String{:tact}`][p] to the [nanoToncoin](/book/integers#nanotoncoin) [`Int{:tact}`][int] format.
+
+Usage example:
+
+```tact
+contract Example {
+    // Persistent state variables
+    one: Int = ton("1");            // 10^9 nanoToncoins, which is equal to one Toncoin
+    pointOne: Int = ton("0.1");     // 10^8 nanoToncoins, which is equal to 0.1 Toncoin
+    nano: Int = ton("0.000000001"); // 1 nanoToncoin, which is equal to 10^-9 Toncoins
+                                    // works at compile-time!
+}
+```
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[cell]: /book/cells#cells

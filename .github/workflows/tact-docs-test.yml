@@ -1,0 +1,51 @@
+# To not merge, if build fails
+name: Tact Docs CI
+
+on:
+  # For new PRs, or those who are ready and/or request a review
+  pull_request:
+    types:
+      [
+        "opened",
+        "edited",
+        "reopened",
+        "synchronize",
+        "ready_for_review",
+        "review_requested",
+      ]
+    branches: ["main"]
+    # Only start the workflow if anything inside the docs has changed
+    paths: ["docs/**"]
+
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Allow simultaneous checks
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # with:
+        #   fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "yarn"
+          cache-dependency-path: "docs/yarn.lock"
+
+      - name: Install dependencies
+        working-directory: docs
+        run: yarn deps
+
+      - name: Build the site
+        working-directory: docs
+        run: yarn build

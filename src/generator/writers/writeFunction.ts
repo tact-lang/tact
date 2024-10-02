@@ -503,7 +503,7 @@ function writeCondition(
 
 export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     // Resolve self
-    const self = f.self ? getType(ctx.ctx, f.self) : null;
+    const self = f.self?.kind === "ref" ? getType(ctx.ctx, f.self.name) : null;
 
     // Write function header
     let returns: string = resolveFuncType(f.returns, ctx);
@@ -683,7 +683,7 @@ function writeNonMutatingFunction(
 
 export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
     // Render tensors
-    const self = f.self !== null ? getType(ctx.ctx, f.self) : null;
+    const self = f.self?.kind === "ref" ? getType(ctx.ctx, f.self.name) : null;
     if (!self) {
         throw new Error(`No self type for getter ${idTextErr(f.name)}`); // Impossible
     }

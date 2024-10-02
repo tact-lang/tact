@@ -1,0 +1,284 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "ohm",
+  "scopeName": "source.ohm",
+  "fileTypes": [
+    "ohm"
+  ],
+  "patterns": [
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#grammar"
+    }
+  ],
+  "repository": {
+    "grammar": {
+      "patterns": [
+        {
+          "include": "#baseGrammar"
+        },
+        {
+          "include": "#derivedGrammar"
+        }
+      ]
+    },
+    "baseGrammar": {
+      "begin": "^\\s*([a-zA-Z_]\\w*)\\s*({)",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.class"
+        },
+        "2": {
+          "name": "punctuation.bracket"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#ruleName"
+        },
+        {
+          "include": "#ruleBody"
+        }
+      ],
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.bracket"
+        }
+      }
+    },
+    "derivedGrammar": {
+      "begin": "^\\s*([a-zA-Z_]\\w*)\\s+(<:)\\s+([a-zA-Z_]\\w*)\\s*({)",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.class"
+        },
+        "2": {
+          "name": "keyword.operator"
+        },
+        "3": {
+          "name": "entity.other.inherited-class"
+        },
+        "4": {
+          "name": "punctuation.bracket"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#ruleName"
+        },
+        {
+          "include": "#ruleBody"
+        }
+      ],
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.bracket"
+        }
+      }
+    },
+    "ruleName": {
+      "begin": "^\\s*([a-zA-Z_]\\w*)",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.function"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#formals"
+        },
+        {
+          "include": "#ruleDescr"
+        }
+      ],
+      "end": "([:+]?=)",
+      "endCaptures": {
+        "1": {
+          "name": "keyword.operator"
+        }
+      }
+    },
+    "formals": {
+      "begin": "(<)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.bracket"
+        }
+      },
+      "patterns": [
+        {
+          "name": "variable.parameter",
+          "match": "[a-zA-Z_]\\w*"
+        },
+        {
+          "name": "punctuation.delimiter",
+          "match": ","
+        }
+      ],
+      "end": "(>)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.bracket"
+        }
+      }
+    },
+    "ruleDescr": {
+      "name": "comment.block.documentation",
+      "begin": "(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.bracket"
+        }
+      },
+      "end": "(\\))",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.bracket"
+        }
+      }
+    },
+    "ruleBody": {
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#builtInRulesLexical"
+        },
+        {
+          "include": "#builtInRulesSyntactic"
+        },
+        {
+          "include": "#terminal"
+        },
+        {
+          "include": "#operator"
+        },
+        {
+          "include": "#punctuation"
+        },
+        {
+          "include": "#caseName"
+        }
+      ]
+    },
+    "builtInRulesLexical": {
+      "name": "support.function",
+      "match": "\\b(?:any|alnum|end|digit|hexDigit|letter|space|lower|upper|caseInsensitive|listOf|nonemptyListOf|emptyListOf|applySyntactic)\\b"
+    },
+    "builtInRulesSyntactic": {
+      "name": "support.function",
+      "match": "\\b(?:ListOf|NonemptyListOf|EmptyListOf)\\b"
+    },
+    "terminal": {
+      "name": "string.quoted.double",
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin"
+        }
+      },
+      "patterns": [
+        {
+          "name": "constant.character.escape",
+          "match": "\\\\(?:x\\h{2}|u\\h{4}|u\\{\\h{1,6}\\}|t|r|n|b|'|\"|\\\\)"
+        }
+      ],
+      "end": "(?:(?<!\\\\)|(?<=\\\\\\\\))\"",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end"
+        }
+      }
+    },
+    "operator": {
+      "name": "keyword.operator",
+      "match": "<:|=|:=|\\+=|\\*|\\+|\\?|~|&|#|\\.\\.|\\.\\.\\.|\\|"
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.delimiter",
+          "match": "<|>|,"
+        },
+        {
+          "name": "punctuation.bracket",
+          "match": "(|)"
+        }
+      ]
+    },
+    "caseName": {
+      "match": "(--)\\s*([a-zA-Z_]\\w*)",
+      "captures": {
+        "1": {
+          "name": "punctuation.delimiter"
+        },
+        "2": {
+          "name": "entity.name.tag"
+        }
+      }
+    },
+    "comment": {
+      "patterns": [
+        {
+          "include": "#lineComment"
+        },
+        {
+          "include": "#blockComment"
+        }
+      ]
+    },
+    "lineComment": {
+      "name": "comment.line",
+      "begin": "//",
+      "beginCaptures": {
+        "0": {
+          "name": "comment.line.double-slash"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#todoComment"
+        }
+      ],
+      "end": "$"
+    },
+    "blockComment": {
+      "name": "comment.block",
+      "begin": "\\s*/\\*",
+      "beginCaptures": {
+        "0": {
+          "name": "comment.block.begin"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#todoComment"
+        }
+      ],
+      "end": "\\*/",
+      "endCaptures": {
+        "0": {
+          "name": "comment.block.end"
+        }
+      }
+    },
+    "todoComment": {
+      "name": "keyword.comment.todo",
+      "match": "(?i)\\b(FIXME|TODO|CHANGED|XXX|IDEA|HACK|NOTE|REVIEW|NB|BUG)\\b"
+    }
+  }
+}

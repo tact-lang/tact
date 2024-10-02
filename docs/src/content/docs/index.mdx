@@ -1,0 +1,196 @@
+---
+title: Learn all about programming in ⚡ Tact
+description: Tact is a new programming language for TON Blockchain that is focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts.
+template: splash
+hero:
+  tagline: Tact is a new programming language for TON Blockchain that is focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts. Tact is a statically typed language with a simple syntax and a powerful type system.
+  image:
+    dark: ../../../public/logomark-dark.svg
+    light: ../../../public/logomark-light.svg
+    alt: Tact logo
+  actions:
+    - text: 📚 Book
+      link: /book
+      variant: minimal
+      icon: right-arrow
+
+    - text: 🍲 Cookbook
+      link: /cookbook
+      variant: minimal
+      icon: right-arrow
+
+    - text: 🔬 Reference
+      link: /ref
+      variant: minimal
+      icon: right-arrow
+
+    - text: 🗺️ Ecosystem
+      link: /ecosystem
+      variant: minimal
+      icon: right-arrow
+---
+
+import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+      {/* icon: right-arrow */}
+
+## 🚀 Let's start! {#start}
+
+<p>ㅤ</p>
+
+<Steps>
+
+1. #### Ensure that the supported version of Node.js is installed and available {#start-1}
+
+	 To check it, run `node --version{:shell}` — it should show you the version 22.0.0 or later.
+
+2. #### Run the following command {#start-2}
+
+   It will create a new project with the simple counter contract:
+
+   <Tabs>
+     <TabItem label="yarn" icon="seti:yarn">
+       ```shell
+       # recommended
+       yarn create ton simple-counter --type tact-counter --contractName SimpleCounter
+       ```
+     </TabItem>
+     <TabItem label="npm" icon="seti:npm">
+       ```shell
+       npm create ton@latest -- simple-counter --type tact-counter --contractName SimpleCounter
+       ```
+     </TabItem>
+     <TabItem label="pnpm" icon="pnpm">
+       ```shell
+       pnpm create ton@latest simple-counter --type tact-counter --contractName SimpleCounter
+       ```
+     </TabItem>
+     <TabItem label="bun" icon="bun">
+       ```shell
+       bun create ton@latest simple-counter --type tact-counter --contractName SimpleCounter
+       ```
+     </TabItem>
+   </Tabs>
+
+3. #### That's it! {#start-3}
+
+   Your first contract project is written and compiled already!
+
+   Go check it out by moving into the relevant directory — `cd simple-counter/contracts{:shell}`. Here's how it would look like:
+
+	 ```tact
+	 import "@stdlib/deploy";
+
+	 message Add {
+	     queryId: Int as uint64;
+	     amount: Int as uint32;
+	 }
+
+	 contract SimpleCounter with Deployable {
+	     id: Int as uint32;
+	     counter: Int as uint32;
+
+	     init(id: Int) {
+	         self.id = id;
+	         self.counter = 0;
+	     }
+
+	     receive(msg: Add) {
+	         self.counter += msg.amount;
+
+	         // Notify the caller that the receiver was executed and forward remaining value back
+	         self.notify("Cashback".asComment());
+	     }
+
+	     get fun counter(): Int {
+	         return self.counter;
+	     }
+
+	     get fun id(): Int {
+	         return self.id;
+	     }
+	 }
+	 ```
+
+   To re-compile or deploy, refer to the commands in the scripts section of `package.json` in the root of this newly created project and to the documentation of [Blueprint](https://github.com/ton-org/blueprint) — this is the tool we've used to create and compile your first simple counter contract in Tact. In fact, Blueprint can do much more than that: including tests, customizations and more.
+
+</Steps>
+
+## 🤔 Where to go next? {#next}
+
+<p>ㅤ</p>
+
+<Steps>
+
+1. #### Have some blockchain knowledge already? {#next-1}
+
+   See the [Tact Cookbook](/cookbook), which is a handy collection of everyday tasks (and solutions) every Tact developer faces during smart contract development. Use it to avoid re-inventing the wheel.
+
+   Alternatively, check the following cheat sheets to quickly get started:
+
+   <CardGrid>
+     <LinkCard
+       title="💎 Coming from FunC (TON)"
+       href="/book/cs/from-func"
+     />
+     <LinkCard
+       title="🔷 Coming from Solidity (Ethereum)"
+       href="/book/cs/from-solidity"
+     />
+   </CardGrid>
+
+2. #### Want to know more? {#next-2}
+
+   For further guidance on compilation, testing and deployment see the respective pages:
+
+   * [Testing and debugging](/book/debug) page tells you everything about debugging Tact contracts
+   * [Deployment](/book/deploy) page shows what deployment looks like and helps you harness the powers of [Blueprint](https://github.com/ton-org/blueprint) for it.
+
+   For custom plugins for your favorite editor and other tooling see the [Ecosystem](/ecosystem) section.
+
+   Alternatively, take a look at the following broader sections:
+
+   * [Book](/book) helps you learn the language step-by-step
+   * [Cookbook](/cookbook) gives you ready-made recipes of Tact code
+   * [Reference](/ref) provides a complete glossary of the standard library, grammar and evolution process
+   * Finally, [Ecosystem](/ecosystem) describes "what's out there" in the Tact's and TON's ecosystems
+
+   <CardGrid>
+     <LinkCard
+       title="📚 Read the Book of Tact"
+       href="/book"
+     />
+     <LinkCard
+       title="🍲 Grind the Cookbook"
+       href="/cookbook"
+     />
+     <LinkCard
+       title="🔬 Skim the Reference"
+       href="/ref"
+     />
+     <LinkCard
+       title="🗺️ Embrace the Ecosystem"
+       href="/ecosystem"
+     />
+   </CardGrid>
+
+3. #### Feeling a bit uncomfortable? {#next-3}
+
+   If you ever get stuck, try searching — the search box is right at the top of the documentation. There is also a handy <kbd>Ctrl</kbd> + <kbd>K</kbd> shortcut to quickly focus and start the search as you type.
+
+   If you can't find the answer in the docs, or you've tried to do some local testing and it still didn't help — don't hesitate to reach out to Tact's flourishing community:
+
+   <CardGrid>
+     <LinkCard
+       title="✈️ Telegram Group"
+       href="https://t.me/tactlang"
+     />
+     <LinkCard
+       title="🐦 X/Twitter"
+       href="https://twitter.com/tact_language"
+     />
+   </CardGrid>
+
+   Good luck on your coding adventure with ⚡ Tact!
+
+</Steps>

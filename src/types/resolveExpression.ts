@@ -562,13 +562,6 @@ function resolveCall(
 
     // Handle ref
     if (src.kind === "ref") {
-        if (src.optional) {
-            throwCompilationError(
-                `Invalid type "${printTypeRef(src)}" for function call`,
-                exp.loc,
-            );
-        }
-
         // Register return type
         const srcT = getType(ctx, src.name);
 

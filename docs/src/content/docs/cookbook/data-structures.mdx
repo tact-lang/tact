@@ -1,0 +1,377 @@
+---
+title: Data structures
+---
+
+Data structures are data organization, management, and storage formats that are usually chosen for efficient access to data. More precisely, a data structure is a collection of data values, the relationships among them, and the functions or operations that can be applied to the data.
+
+This page lists a handy collection of data structures implemented in Tact for your day-to-day needs and beyond.
+
+All of the data structures listed here are made using the built-in [`map<K, V>{:tact}`][map] type. For the description and basic usage of maps see the [dedicated page in the Book][map].
+
+## Array
+
+An [array](https://en.wikipedia.org/wiki/Array_(data_structure)) is a data structure consisting of a continuous block of memory, which represents a collection of elements of same memory size, each identified by at least one array key or _index_.
+
+Following example emulates an array using a [`map<Int, V>{:tact}`][map] wrapped in a [Struct](/book/structs-and-messages#structs), where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
+
+```tact
+import "@stdlib/deploy"; // for Deployable trait
+
+struct Array {
+    m: map<Int as uint16, Int>; // array of Int values as a map of Ints to Ints,
+                                // with serialization of its keys to uint16 to save space
+    length: Int = 0;            // length of the array, defaults to 0
+}
+
+// Compile-time constant upper bound for our map representing an array.
+const MaxArraySize: Int = 5_000; // 5,000 entries max, to stay reasonably far from limits
+
+// Extension mutation function for adding new entries to the end of the array
+extends mutates fun append(self: Array, item: Int) {
+    require(self.length + 1 <= MaxArraySize, "No space in the array left for new items!");
+
+    self.map.set(self.length, item); // set the entry (key-value pair)
+    self.length += 1;                // increase the length field
+}
+
+// Extension mutation function for inserting new entries at the given index
+extends mutates fun insert(self: Array, item: Int, idx: Int) {
+    require(self.length + 1 <= MaxArraySize, "No space in the array left for new items!");
+    require(idx >= 0, "Index of the item cannot be negative!");
+    require(idx < self.length, "Index is out of array bounds!");
+
+    // Move all items from idx to the right
+    let i: Int = self.length; // not a typo, as we need to start from the non-existing place
+    while (i > idx) {
+        // Note, that we use !! operator as we know for sure that the value would be there
+        self.map.set(i, self.map.get(i - 1)!!);
+        i -= 1;
+    }
+
+    // And put the new item in
+    self.map.set(idx, item); // set the entry (key-value pair)
+    self.length += 1;        // increase the length field
+}
+
+// Extension function for getting the value at the given index
+extends fun getIdx(self: Array, idx: Int): Int {
+    require(self.length > 0, "No items in the array!");
+    require(idx >= 0, "Index of the item cannot be negative!");
+    require(idx < self.length, "Index is out of array bounds!");
+
+    // Note, that we use !! operator as we know for sure that the value would be there
+    return self.map.get(idx)!!;
+}
+
+// Extension function for returning the last value
+extends fun getLast(self: Array): Int {
+    require(self.length > 0, "No items in the array!");
+
+    // Note, that we use !! operator as we know for sure that the value would be there
+    return self.map.get(self.length - 1)!!;
+}
+
+// Extension mutation function for deleting and entry at the given index and returning its value
+extends mutates fun deleteIdx(self: Array, idx: Int): Int {
+    require(self.length > 0, "No items in the array to delete!");
+    require(idx >= 0, "Index of the item cannot be negative!");
+    require(idx < self.length, "Index is out of array bounds!");
+
+    // Remember the value, which is going to be deleted
+    let memorized: Int = self.map.get(idx)!!;
+
+    // Move all items from idx and including to the left
+    let i: Int = idx;
+    while (i + 1 < self.length) {
+        // Note, that we use !! operator as we know for sure that the value would be there
+        self.map.set(i, self.map.get(i + 1)!!);
+        i += 1;
+    }
+
+    self.map.set(self.length - 1, null); // delete the last entry
+    self.length -= 1;                    // decrease the length field
+
+    return memorized;
+}
+
+// Extension mutation function for deleting the last entry and returning its value
+extends fun deleteLast(self: Array): Int {
+    require(self.length > 0, "No items in the array!");
+
+    // Note, that we use !! operator as we know for sure that the value would be there
+    let lastItem: Int = self.map.get(self.length - 1)!!;
+    self.map.set(self.length - 1, null); // delete the entry
+    self.length -= 1;                    // decrease the length field
+
+    return lastItem;
+}
+
+// Extension function for deleting all items in the Array
+extends mutates fun deleteAll(self: Array) {
+    self.map = emptyMap();
+    self.length = 0;
+}
+
+// Global static function for creating an empty Array
+fun emptyArray(): Array {
+    return Array{m: emptyMap(), length: 0}; // length defaults to 0
+}
+
+// Contract, with emulating an Array using the map
+contract MapAsArray with Deployable {
+    // Persistent state variables
+    array: Array;
+
+    // Constructor (initialization) function of the contract
+    init() {
+        self.array = emptyArray();
+    }
+
+    // Internal message receiver, which responds to a String message "append"
+    receive("append") {
+        // Add a new item
+        self.array.append(42);
+    }
+
+    // Internal message receiver, which responds to a String message "delete_5h"
+    receive("delete_5th") {
+        // Remove the 5th item if it exists and reply back with its value, or raise an error
+        self.reply(self.array.deleteIdx(4).toCoinsString().asComment()); // index offset 0 + 4 gives the 5th item
+    }
+
+    // Internal message receiver, which responds to a String message "del_last"
+    receive("del_last") {
+        // Remove the last item and reply back with its value, or raise an error
+        self.reply(self.array.deleteLast().toCoinsString().asComment());
+    }
+
+    // Internal message receiver, which responds to a String message "get_last"
+    receive("get_last") {
+        // Reply back with the latest item in the array if it exists, or raise an error
+        self.reply(self.array.getLast().toCoinsString().asComment());
+    }
+
+    // Internal message receiver, which responds to a String message "delete_all"
+    receive("delete_all") {
+        self.array.deleteAll();
+    }
+}
+```
+
+## Stack
+
+A [stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type)) is a data structure consisting of a collection of elements with two main operations:
+
+* push, which adds an element to the end of the collection
+* pop, which removes the most recently added element
+
+Following example emulates a stack using a [`map<Int, V>{:tact}`][map] wrapped in a [Struct](/book/structs-and-messages#structs), where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
+
+```tact
+import "@stdlib/deploy"; // for Deployable trait
+
+struct Stack {
+    m: map<Int as uint16, Int>; // stack of Int values as a map of Ints to Ints,
+                                // with serialization of its keys to uint16 to save space
+    length: Int = 0;            // length of the stack, defaults to 0
+}
+
+// Compile-time constant upper bound for our map representing an stack.
+const MaxStackSize: Int = 5_000; // 5,000 entries max, to stay reasonably far from limits
+
+// Extension mutation function for adding new entries to the end of the stack
+extends mutates fun push(self: Stack, item: Int) {
+    require(self.length + 1 <= MaxStackSize, "No space in the stack left for new items!");
+
+    self.map.set(self.length, item); // set the entry (key-value pair)
+    self.length += 1;                // increase the length field
+}
+
+// Extension mutation function for deleting the last entry and returning its value
+extends mutates fun pop(self: Stack): Int {
+    require(self.length > 0, "No items in the stack to delete!");
+
+    // Note, that we use !! operator as we know for sure that the value would be there
+    let lastItem: Int = self.map.get(self.length - 1)!!;
+    self.map.set(self.length - 1, null); // delete the entry
+    self.length -= 1;                    // decrease the length field
+
+    return lastItem;
+}
+
+// Extension function for returning the last value
+extends fun peek(self: Stack): Int {
+    require(self.length > 0, "No items in the stack!");
+
+    // Note, that we use !! operator as we know for sure that the value would be there
+    return self.map.get(self.length - 1)!!;
+}
+
+// Extension function for deleting all items in the Stack
+extends mutates fun deleteAll(self: Stack) {
+    self.map = emptyMap();
+    self.length = 0;
+}
+
+// Global static function for creating an empty Stack
+fun emptyStack(): Stack {
+    return Stack{m: emptyMap(), length: 0}; // length defaults to 0
+}
+
+contract MapAsStack with Deployable {
+    // Persistent state variables
+    stack: Stack; // our stack, which uses the map
+
+    // Constructor (initialization) function of the contract
+    init() {
+        self.stack = emptyStack();
+    }
+
+    // Internal message receiver, which responds to a String message "push"
+    receive("push") {
+        // Add a new item
+        self.stack.push(42);
+    }
+
+    // Internal message receiver, which responds to a String message "pop"
+    receive("pop") {
+        // Remove the last item and reply with it
+        self.reply(self.stack.pop().toCoinsString().asComment());
+    }
+
+    // Internal message receiver, which responds to a String message "peek"
+    receive("peek") {
+        // Reply back with the latest item in the map if it exists, or raise an error
+        self.reply(self.stack.peek().toCoinsString().asComment());
+    }
+
+    // Internal message receiver, which responds to a String message "delete_all"
+    receive("delete_all") {
+        self.stack.deleteAll();
+    }
+
+    // Getter function for obtaining the stack
+    get fun map(): map<Int, Int> {
+        return self.stack.map;
+    }
+
+    // Getter function for obtaining the current length of the stack
+    get fun length(): Int {
+        return self.stack.length;
+    }
+}
+```
+
+## Circular buffer
+
+A [circular buffer](https://en.wikipedia.org/wiki/Circular_buffer) (circular queue, cyclic buffer or ring buffer) is a data structure, which uses a single, fixed-size [buffer](https://en.wikipedia.org/wiki/Data_buffer) as it were connected end-to-end.
+
+Following example emulates a circular buffer using a [`map<Int, V>{:tact}`][map] wrapped in a [Struct](/book/structs-and-messages#structs), where `V{:tact}` can be any of the [allowed value types](/book/maps#allowed-types) of the map:
+
+```tact
+import "@stdlib/deploy"; // for Deployable trait
+
+struct CircularBuffer {
+    m: map<Int as uint8, Int>; // circular buffer of Int values as a map of Ints to Ints,
+                               // with serialization of its keys to uint8 to save space
+    length: Int = 0;           // length of the circular buffer, defaults to 0
+    start: Int = 0;            // current index into the circular buffer, defaults to 0
+}
+
+// Compile-time constant upper bound for our map representing a circular buffer.
+const MaxCircularBufferSize: Int = 5;
+
+// Extension mutation function for putting new items to the circular buffer
+extends mutates fun put(self: CircularBuffer, item: Int) {
+    if (self.length < MaxCircularBufferSize) {
+        self.map.set(self.length, item); // store the item
+        self.length += 1;                // increase the length field
+    } else {
+        self.map.set(self.start, item);                        // store the item, overriding previous entry
+        self.start = (self.start + 1) % MaxCircularBufferSize; // update starting position
+    }
+}
+
+// Extension mutation function for getting an item from the circular buffer
+extends mutates fun getIdx(self: CircularBuffer, idx: Int): Int {
+    require(self.length > 0, "No items in the circular buffer!");
+    require(idx >= 0, "Index of the item cannot be negative!");
+
+    if (self.length < MaxCircularBufferSize) {
+        // Note, that we use !! operator as we know for sure that the value would be there
+        return self.map.get(idx % self.length)!!;
+    }
+
+    // Return the value rotating around the circular buffer, also guaranteed to be there
+    return self.map.get((self.start + idx) % MaxCircularBufferSize)!!;
+}
+
+// Extension function for iterating over all items in the circular buffer and dumping them to the console
+extends fun printAll(self: CircularBuffer) {
+    let i: Int = self.start;
+    repeat (self.length) {
+        dump(self.map.get(i)!!); // !! tells the compiler this can't be null
+        i = (i + 1) % MaxCircularBufferSize;
+    }
+}
+
+// Extension function for deleting all items in the CircularBuffer
+extends mutates fun deleteAll(self: CircularBuffer) {
+    self.map = emptyMap();
+    self.length = 0;
+    self.start = 0;
+}
+
+// Global static function for creating an empty CircularBuffer
+fun emptyCircularBuffer(): CircularBuffer {
+    return CircularBuffer{m: emptyMap(), length: 0, start: 0}; // length and start default to 0
+}
+
+// This contract records the last 5 timestamps of when "timer" message was received
+contract MapAsCircularBuffer with Deployable {
+    // Persistent state variables
+    cBuf: CircularBuffer; // our circular buffer, which uses a map
+
+    // Constructor (initialization) function of the contract
+    init() {
+        self.cBuf = emptyCircularBuffer();
+    }
+
+    // Internal message receiver, which responds to a String message "timer"
+    // and records the timestamp when it receives such message
+    receive("timer") {
+        let timestamp: Int = now();
+        self.cBuf.put(timestamp);
+    }
+
+    // Internal message receiver, which responds to a String message "get_first"
+    // and replies with the first item of the circular buffer
+    receive("get_first") {
+        self.reply(self.cBuf.getIdx(0).toCoinsString().asComment());
+    }
+
+    // Internal message receiver, which responds to a String message "print_all"
+    receive("print_all") {
+        self.cBuf.printAll();
+    }
+
+    // Internal message receiver, which responds to a String message "delete_all"
+    receive("delete_all") {
+        self.cBuf.deleteAll();
+    }
+}
+```
+
+:::note
+
+  This example is adapted from [Arrays page in Tact-By-Example](https://tact-by-example.org/04-arrays).
+
+:::
+
+:::tip[Hey there!]
+
+  Didn't find your favorite example of working with data structures? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
+
+:::
+
+[map]: /book/maps

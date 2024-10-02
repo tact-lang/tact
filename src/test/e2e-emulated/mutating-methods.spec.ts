@@ -1,6 +1,6 @@
-import { toNano } from "@ton/core";
+import { beginCell, BitString, Dictionary, toNano } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Tester } from "./contracts/output/mutating-method-chaining_Tester";
+import { Tester } from "./contracts/output/mutating-methods_Tester";
 import "@ton/test-utils";
 
 describe("bugs", () => {
@@ -52,5 +52,41 @@ describe("bugs", () => {
         expect(await contract.getTest7()).toBe(42n);
         expect(await contract.getTest8()).toBe(5n);
         expect(await contract.getTest9()).toBe(5n);
+
+        // Test `extends mutates` function with optional self param
+        {
+            // Non-empty dictionary
+            const d = Dictionary.empty(
+                Dictionary.Keys.Uint(8),
+                Dictionary.Values.BitString(12),
+            );
+            d.set(1, new BitString(Buffer.from("1234", "hex"), 0, 12));
+            const c = beginCell().storeDictDirect(d).endCell();
+            const c2 = await contract.getTest10(c);
+            const d2 = c2
+                ?.beginParse()
+                .loadDictDirect(
+                    Dictionary.Keys.Uint(8),
+                    Dictionary.Values.BitString(12),
+                );
+            expect(d2?.size).toBe(2);
+            expect(d2?.get(1)?.toString()).toBe("123");
+            expect(d2?.get(123)?.toString()).toBe("456");
+        }
+        {
+            // Empty dictionary
+            const c = await contract.getTest10(null);
+            const d = c
+                ?.beginParse()
+                .loadDictDirect(
+                    Dictionary.Keys.Uint(8),
+                    Dictionary.Values.BitString(12),
+                );
+            expect(d?.size).toBe(1);
+            expect(d?.get(123)?.toString()).toBe("456");
+        }
+
+        expect(await contract.getTest11(1n)).toBe(6n);
+        expect(await contract.getTest11(2n)).toBe(12n);
     });
 });

@@ -37,7 +37,8 @@
     "src/**/*",
     "bin/**/*",
     "stdlib/**/*",
-    "!**/test"
+    "!**/test",
+    "!/docs"
   ],
   "main": "./dist/main.js",
   "bin": {

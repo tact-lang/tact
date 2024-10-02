@@ -1,0 +1,97 @@
+/*
+	Color palettes are generated via:
+	https://starlight.astro.build/guides/css-and-tailwind/#color-theme-editor
+*/
+
+/* Dark mode colors. */
+:root {
+	--sl-color-accent-low: #00234c;
+	--sl-color-accent: #0067c9;
+	--sl-color-accent-high: #a4ccff;
+	--sl-color-white: #ffffff;
+	--sl-color-gray-1: #eceef2;
+	--sl-color-gray-2: #c0c2c7;
+	--sl-color-gray-3: #888b96;
+	--sl-color-gray-4: #545861;
+	--sl-color-gray-5: #353841;
+	--sl-color-gray-6: #24272f;
+	--sl-color-black: #17181c;
+}
+
+/* Light mode colors. */
+:root[data-theme='light'] {
+	--sl-color-accent-low: #bddaff;
+	--sl-color-accent: #0069cd;
+	--sl-color-accent-high: #003166;
+	--sl-color-white: #17181c;
+	--sl-color-gray-1: #24272f;
+	--sl-color-gray-2: #353841;
+	--sl-color-gray-3: #545861;
+	--sl-color-gray-4: #888b96;
+	--sl-color-gray-5: #c0c2c7;
+	--sl-color-gray-6: #eceef2;
+	--sl-color-gray-7: #f5f6f8;
+	--sl-color-black: #ffffff;
+}
+
+/* Clip the right side of the view */
+.fifty {
+	clip-path: inset(0 0 0 50%);
+}
+
+/* Add bigger margin between steps. */
+.sl-steps>li+li {
+	margin-top: 1.25rem;
+}
+
+/* Add an autolink '#' to headings */
+
+h1 .autolink-header,
+h5 .autolink-header,
+h6 .autolink-header {
+	display: none;
+}
+
+h2:hover .autolink-header,
+h3:hover .autolink-header,
+h4:hover .autolink-header {
+	opacity: 1;
+}
+
+.autolink-header {
+	opacity: 0;
+	transition: opacity 0.1s ease-in-out;
+	margin-left: 4px;
+	text-decoration: none;
+}
+
+.autolink-header::after {
+	content: '#';
+	color: #7d8080;
+	padding-left: 0.25rem;
+	padding-right: 0.25rem;
+}
+
+:root[data-theme~='light'] .autolink-header::after {
+	color: #acaeae;
+}
+
+/* # */
+
+/* Disable bold fonts on nested group labels */
+ul ul div.group-label > span.large {
+	font-size: var(--sl-text-sm);
+	font-weight: inherit;
+	color: inherit;
+}
+
+/* Add a sidebar separator */
+.sidebar-separator {
+  margin-top: 1rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* CSS classes to modify / target: */
+/* .sidebar-content .group-label */
+/* */
