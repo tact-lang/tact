@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Collisions in getter method ids are now handled and reported properly: PR [#875](https://github.com/tact-lang/tact/pull/875)
+- The `sha256()` function now throws on comptime strings of length > 128: PR [#907](https://github.com/tact-lang/tact/pull/907)
 
 ### Release contributors
 

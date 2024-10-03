@@ -9,7 +9,7 @@ import {
     writeExpression,
     writeValue,
 } from "../generator/writers/writeExpression";
-import { throwCompilationError } from "../errors";
+import { TactConstEvalError, throwCompilationError } from "../errors";
 import { evalConstantExpression } from "../constEval";
 import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
@@ -368,23 +368,37 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // String case
                 if (arg0.name === "String") {
+                    let str: string | undefined;
+
+                    // Try const-eval
                     try {
-                        const str = evalConstantExpression(
+                        str = evalConstantExpression(
                             resolved[0]!,
                             ctx.ctx,
                         ) as string;
-                        if (Buffer.from(str).length > 128) {
+                    } catch (error) {
+                        if (
+                            !(error instanceof TactConstEvalError) ||
+                            error.fatal
+                        )
+                            throw error;
+                    }
+
+                    // If const-eval did succeed
+                    if (str !== undefined) {
+                        const dataSize = Buffer.from(str).length;
+                        if (dataSize > 128) {
                             throwCompilationError(
-                                "sha256 expects string argument with byte length <= 128",
+                                `data is too large for sha256 hash, expected up to 128 bytes, got ${dataSize}`,
                                 ref,
                             );
                         }
                         return BigInt(
                             "0x" + sha256_sync(str).toString("hex"),
                         ).toString(10);
-                    } catch (e) {
-                        // Not a constant
                     }
+
+                    // Otherwise, revert back to runtime hash through SHA256U
                     const exp = writeExpression(resolved[0]!, ctx);
                     return `string_hash(${exp})`;
                 }
