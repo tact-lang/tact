@@ -1798,9 +1798,9 @@ contract SemanticsTester {
 
         result &&= s == 2;
 
-        // It will evaluate the first and second conjuncts and short-circuit at the 
-        // second conjunct to true. So s will be incremented at the second conjunct to 3, 
-        // but it should not be incremented to 4 in the third conjunct.
+        // It will evaluate the first and second disjuncts and short-circuit at the 
+        // second disjunct to true. So s will be incremented at the second disjunct to 3, 
+        // but it should not be incremented to 4 in the third one.
         let m4 = s != 2 || s.increment() >= 3 || s.increment() > 3;
 
         result &&= s == 3;
@@ -1810,10 +1810,10 @@ contract SemanticsTester {
         
         result &&= s == 5;
 
-        // It will evaluate the first and second conjuncts and short-circuit at the 
-        // second conjunct to true. So s will be incremented at the second conjunct to 6, 
-        // but it should not be incremented to 7 in the third conjunct or to 8 in the 
-        // fourth conjunct.
+        // It will evaluate the first and second disjuncts and short-circuit at the 
+        // second disjunct to true. So s will be incremented at the second disjunct to 6, 
+        // but it should not be incremented to 7 in the third disjunct or to 8 in the 
+        // fourth one.
         let m6 = s != 5 || s.increment() >= 6 || s.increment() > 6 || s.increment() > 6;
 
         result &&= s == 6;
@@ -1836,17 +1836,17 @@ contract SemanticsTester {
         // Short-circuits to true, so no infinite loop happens.
         let l2 = s >= 1 || infiniteLoop();
 
-        // It will evaluate the first and second conjuncts and short-circuit at the 
-        // second conjunct to true. So s will be incremented at the second conjunct to 2, 
-        // And no infinite loop happens in the third conjunct.
+        // It will evaluate the first and second disjuncts and short-circuit at the 
+        // second disjunct to true. So s will be incremented at the second disjunct to 2, 
+        // And no infinite loop happens in the third disjunct.
         let l3 = s != 1 || s.increment() >= 2 || infiniteLoop();
 
         let result = s == 2;
 
-        // It will evaluate the first and second conjuncts and short-circuit at the 
-        // second conjunct to true. So s will be incremented at the second conjunct to 3, 
-        // And no infinite loop happens in the third conjunct and no increment happens at 
-        // the fourth conjunct.
+        // It will evaluate the first and second disjuncts and short-circuit at the 
+        // second disjunct to true. So s will be incremented at the second disjunct to 3, 
+        // And no infinite loop happens in the third disjunct and no increment happens at 
+        // the fourth one.
         let l4 = s != 2 || s.increment() >= 3 || infiniteLoop() || s.increment() > 3;
 
         result &&= s == 3;
@@ -1867,17 +1867,17 @@ contract SemanticsTester {
         // Short-circuits to true, so no exception thrown.
         let t2 = s >= 1 || throwException(s-1);
 
-        // It will evaluate the first and second conjuncts and short-circuit at the 
-        // second conjunct to true. So s will be incremented at the second conjunct to 2, 
-        // And no exception happens in the third conjunct.
+        // It will evaluate the first and second disjuncts and short-circuit at the 
+        // second disjunct to true. So s will be incremented at the second disjunct to 2, 
+        // And no exception happens in the third disjunct.
         let t3 = s != 1 || s.increment() >= 2 || throwException(s-2);
 
         let result = s == 2;
 
-        // It will evaluate the first and second conjuncts and short-circuit at the 
-        // second conjunct to true. So s will be incremented at the second conjunct to 3, 
-        // And no exception happens in the third conjunct and no increment happens at 
-        // the fourth conjunct.
+        // It will evaluate the first and second disjuncts and short-circuit at the 
+        // second disjunct to true. So s will be incremented at the second disjunct to 3, 
+        // And no exception happens in the third disjunct and no increment happens at 
+        // the fourth one.
         let t4 = s != 2 || s.increment() >= 3 || throwException(s-3) || s.increment() > 3;
 
         result &&= s == 3;
