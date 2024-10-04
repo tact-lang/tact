@@ -1,0 +1,245 @@
+---
+title: Common
+---
+
+List of the most commonly used built-in [global static functions](/book/functions#global-static-functions).
+
+## Contextual
+
+### now
+
+```tact
+fun now(): Int
+```
+
+Returns the current [Unix time](https://en.wikipedia.org/wiki/Unix_time).
+
+Usage example:
+
+```tact
+let timeOffset: Int = now() + 1000; // thousand seconds from now()
+```
+
+### myBalance
+
+```tact
+fun myBalance(): Int;
+```
+
+Returns the [nanoToncoin](/book/integers#nanotoncoin) balance of the smart contract as it was at the start of the [compute phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase) of the current transaction.
+
+Usage example:
+
+```tact
+let iNeedADolla: Int = myBalance();
+```
+
+:::caution
+
+  Beware, that [all message sending functions](/book/send) of Tact can change the _actual_ contract's balance, but they _won't_ update the value returned by this function.
+
+:::
+
+### myAddress
+
+```tact
+fun myAddress(): Address;
+```
+
+Returns the address of the current smart contract as an [`Address{:tact}`][p].
+
+Usage example:
+
+```tact
+let meMyselfAndI: Address = myAddress();
+```
+
+### sender
+
+```tact
+fun sender(): Address;
+```
+
+Returns the [`Address{:tact}`][p] of the sender of the current message.
+
+Usage example:
+
+```tact
+receive() {
+    let whoSentMeMessage: Address = sender();
+}
+```
+
+:::caution
+
+  Behavior is undefined for [getter functions](/book/contracts#getter-functions), as they cannot have a sender nor they can send messages.
+
+:::
+
+:::note
+
+  In order to reduce gas usage, prefer using this function over calling [`context().sender{:tact}`](#context) when you only need to know the sender of the message.
+
+:::
+
+### context
+
+```tact
+fun context(): Context;
+```
+
+Returns `Context{:tact}` [Struct](/book/structs-and-messages#structs), that consists of:
+
+| Field     | Type                      | Description                                                                                                                                                                                                                                                                                                                           |
+| :-------- | :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `bounced` | [`Bool{:tact}`][bool]     | [Bounced](https://ton.org/docs/learn/overviews/addresses#bounceable-vs-non-bounceable-addresses) flag of the incoming message.                                                                                                                                                                                                        |
+| `sender`  | [`Address{:tact}`][p]     | Internal address of the sender on the TON blockchain.                                                                                                                                                                                                                                                                                 |
+| `value`   | [`Int{:tact}`][int]       | Amount of [nanoToncoins](/book/integers#nanotoncoin) in a message.                                                                                                                                                                                                                                                                    |
+| `raw`     | [`Slice{:tact}`][slice]   | The remainder of the message as a [`Slice{:tact}`][slice]. It follows [internal message layout](https://docs.ton.org/develop/smart-contracts/messages#message-layout) of TON starting from the destination [`Address{:tact}`][p] (`dest:MsgAddressInt ` in [TL-B notation](https://docs.ton.org/develop/data-formats/tl-b-language)). |
+
+Usage example:
+
+```tact
+let ctx: Context = context();
+require(ctx.value != 68 + 1, "Invalid amount of nanoToncoins, bye!");
+```
+
+:::note
+
+  Note, that if you only need to know who sent the message, use the [`sender(){:tact}`](#sender) function, as it's less gas-consuming.
+
+:::
+
+## Addressing
+
+### newAddress
+
+```tact
+fun newAddress(chain: Int, hash: Int): Address;
+```
+
+Creates a new [`Address{:tact}`][p] based on the [`chain` id](https://ton-blockchain.github.io/docs/#/overviews/TON_blockchain_overview) and the [SHA-256](/ref/core-math#sha256) encoded [`hash` value](https://docs.ton.org/learn/overviews/addresses#account-id).
+
+This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
+
+Usage example:
+
+```tact
+let oldTonFoundationAddr: Address =
+    newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+    //         ↑  ------------------------------------------------------------------
+    //         |  ↑
+    //         |  sha-256 hash of contract's init package (StateInit)
+    //         chain id: 0 is a workchain, -1 is a masterchain
+```
+
+:::caution
+
+  This method throws an error with [exit code 136](/book/exit-codes#136) if `chain` is invalid or with [exit code 137](/book/exit-codes#137) if `chain` points to the masterchain ($-1$) without [masterchain support](/book/masterchain) enabled.
+
+:::
+
+:::note[Useful links:]
+
+  [`chain` (Workchain ID) in TON Docs](https://docs.ton.org/learn/overviews/addresses#workchain-id)\
+  [`hash` (Account ID) in TON Docs](https://docs.ton.org/learn/overviews/addresses#account-id)\
+  [Contract's init package (`StateInit{:tact}`)](/book/expressions#initof)
+
+:::
+
+### contractAddress
+
+```tact
+fun contractAddress(s: StateInit): Address;
+```
+
+Computes smart contract's [`Address{:tact}`][p] in a workchain $0$ based on its [`StateInit{:tact}`](/book/expressions#initof).
+
+Usage example:
+
+```tact
+let foundMeSome: Address = contractAddress(initOf SomeContract());
+```
+
+### contractAddressExt
+
+```tact
+fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
+```
+
+Computes smart contract's [`Address{:tact}`][p] based on the `chain` id, contract's `code` and contract's initial state `data`. Use [`initOf{:tact}`](/book/expressions#initof) expression to obtain initial `code` and initial `data` of a given contract.
+
+Usage example:
+
+```tact
+let initPkg: StateInit = initOf SomeContract();
+let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
+```
+
+:::caution
+
+  This method throws an error with [exit code 136](/book/exit-codes#136) if `chain` is invalid or with [exit code 137](/book/exit-codes#137) if `chain` points to the masterchain ($-1$) without [masterchain support](/book/masterchain) enabled.
+
+:::
+
+:::note
+
+  For this function to work, the compiler option `debug` has to be set to `true{:tact}` for the current project in the [configuration file](/book/config).\
+  Read more about debugging on the dedicated page: [Debugging](/book/debug).
+
+:::
+
+## Communication
+
+### send
+
+```tact
+fun send(params: SendParameters);
+```
+
+[Queues the message](/book/send#outbound-message-processing) to be sent using a [`SendParameters{:tact}`](/book/send) [Struct](/book/structs-and-messages#structs).
+
+Usage example:
+
+```tact
+send(SendParameters{
+    to: sender(),    // back to the sender,
+    value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
+                     // and no message body
+});
+```
+
+:::note[Useful links:]
+
+  [Sending messages in the Book](/book/send)\
+  [Message `mode` in the Book](/book/message-mode)\
+  [Single-contract communication in the Cookbook](/cookbook/single-communication)
+
+:::
+
+### emit
+
+```tact
+fun emit(body: Cell);
+```
+
+[Queues the message](/book/send#outbound-message-processing) `body` to be sent to the outer world with the purpose of logging and analyzing it later off-chain. The message does not have a recipient and is gas-efficient compared to using any other message sending functions of Tact.
+
+Usage example:
+
+```tact
+emit("Catch me if you can, Mr. Holmes".asComment()); // asComment() converts a String to a Cell
+```
+
+:::note
+
+  To analyze `emit(){:tact}` calls, one has to look at [external messages](/book/external) produced by the contract.
+
+  Read more: [Logging via `emit(){:tact}`](/book/debug#logging).
+
+:::
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[slice]: /book/cells#slices
