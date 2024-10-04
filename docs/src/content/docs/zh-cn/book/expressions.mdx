@@ -1,0 +1,256 @@
+---
+title: Expressions
+---
+
+Every operator in Tact forms an expression, but there's much more to uncover as Tact offers a wide range of expressive options to choose from.
+
+## Literals
+
+Literals represent values in Tact. These are fixed values—not variables—that you _literally_ provide in your code. All literals in Tact are expressions themselves.
+
+You can also call [extension functions](/book/functions#extension-function) defined on certain [primitive types][p] corresponding to literals right on the literal values:
+
+```tact
+// Calling toString() defined for Int on a integer literal:
+42.toString();
+
+// Calling asComment() defined for String on a string literal:
+"Tact is awesome!".asComment();
+```
+
+### Integer literals
+
+Integer literals can be written in [decimal](/book/integers#decimal) (base $10$), [hexadecimal](/book/integers#hexadecimal) (base $16$), [octal](/book/integers#octal) (base $8$) and [binary](/book/integers#binary) (base $2$) notations:
+
+- A [_decimal_ integer](/book/integers#decimal) literal is a sequence of digits ($\mathrm{0 - 9}$).
+
+- A leading $\mathrm{0x}$ (or $\mathrm{0X}$) indicates a [hexadecimal integer](/book/integers#hexadecimal) literal. They can include digits ($\mathrm{0 - 9}$) and the letters $\mathrm{a - f}$ and $\mathrm{A - F}$. Note, that the case of a character does not change its value. Therefore: $\mathrm{0xa}$ = $\mathrm{0xA}$ = $10$ and $\mathrm{0xf}$ = $\mathrm{0xF}$ = $15$.
+
+- A leading $\mathrm{0o}$ (or $\mathrm{0O}$) indicates a [octal integer](/book/integers#octal) literals. They can include only the digits $\mathrm{0 - 7}$.
+
+- A leading $\mathrm{0b}$ (or $\mathrm{0B}$) indicates a [binary integer](/book/integers#binary) literal. THey can only include the digits $0$ and $1$.
+
+:::caution
+  Be wary that in Tact integer literals with a leading $0$ are still considered decimals, unlike in JavaScript/TypeScript where leading $0$ indicates an octal!
+:::
+
+Some examples of integer literals:
+
+```tact
+// decimal, base 10:
+0, 42, 1_000, 020
+
+// hexadecimal, base 16:
+0xABC, 0xF, 0x0011
+
+// octal, base 8:
+0o777, 0o001
+
+// binary, base 2:
+0b01111001_01101111_01110101_00100000_01100001_01110010_01100101_00100000_01100001_01110111_01100101_01110011_01101111_01101101_01100101
+```
+
+Read more about integers and [`Int{:tact}`](/book/integers) type on the dedicated page: [Integers](/book/integers).
+
+### Boolean literals
+
+The [`Bool{:tact}`](/book/types#booleans) type has only two literal values: `true{:tact}` and `false{:tact}`.
+
+```tact
+true == true;
+true != false;
+```
+
+Read more about booleans and [`Bool{:tact}`](/book/types#booleans) type in the dedicated chapter: [Booleans](/book/types#booleans).
+
+### String literals
+
+A string literal is zero or more characters enclosed in double (`"`) quotation marks. All string literals are objects of [`String{:tact}`][p] type.
+
+```tact
+"foo";
+"1234";
+```
+
+Tact strings support a range of [escape sequences](https://en.wikipedia.org/wiki/Escape_sequence) starting with a backslash `\\` character:
+
+- `\\{:tact}` — literal backslash
+- `\"{:tact}` — double quote
+- `\n{:tact}` — newline
+- `\r{:tact}` — carriage return
+- `\t{:tact}` — tab
+- `\v{:tact}` — vertical tab
+- `\b{:tact}` — backspace
+- `\f{:tact}` — form feed
+- `\x00{:tact}` through `\xFF{:tact}` — [code point](https://en.wikipedia.org/wiki/Code_point), must be exactly two hex digits long
+- `\u0000{:tact}` through `\uFFFF{:tact}` — [Unicode code point][unicode], must be exactly four hex digits long
+- `\u{0}{:tact}` through `\u{FFFFFF}{:tact}` — [Unicode code point][unicode], can be from $1$ to $6$ hex digits long
+
+[unicode]: https://en.wikipedia.org/wiki/Unicode#Codespace_and_code_points
+
+```tact
+// \\
+"escape \\ if \\ you \\ can \\";
+
+// \"
+"this \"literally\" works";
+
+// \n
+"line \n another line";
+
+// \r
+"Shutters \r Like \r This \r One";
+
+// \t
+"spacing \t granted!";
+
+// \v
+"those \v words \v are \v aligned";
+
+// \b
+"rm\b\bcreate!";
+
+// \f
+"form \f feed";
+
+// \x00 - \xFF
+"this \x22literally\x22 works"; // \x22 represents a double quote
+
+// \u0000 - \uFFFF
+"danger, \u26A1 high voltage \u26A1"; // \u26A1 represents the ⚡ emoji
+
+// \u{0} - \u{FFFFFF}
+"\u{1F602} LOL \u{1F602}"; // \u{1F602} represents the 😂 emoji
+```
+
+:::note
+
+  Read more about strings and [`String{:tact}`][p] type:\
+  [Primitive types in the Book][p]\
+  [Strings and StringBuilders in the Reference](/ref/core-strings)
+
+:::
+
+### `null` literal
+
+The `null{:tact}` value is written with a `null{:tact}` literal. It's **not** an [identifier](#identifiers) and doesn't refer to any object. It's also **not** an instance of a [primitive type][p]. Instead, `null{:tact}` represents a lack of identification and the intentional absence of any value.
+
+```tact
+let var: Int? = null; // variable, which can hold null value
+var = 42;
+if (var != null) {
+    var!! + var!!;
+}
+```
+
+Read more about working with `null{:tact}` on the dedicated page: [Optionals](/book/optionals).
+
+## Identifiers
+
+An identifier is a sequence of characters in the code that _identifies_ a [variable](/book/statements#let), [constant](/book/constants), [map](/book/maps) and a [function](/book/functions), as well as a [Struct][s], [Message][m], [contract](/book/contracts), [trait](/book/types#traits), or their fields and methods. Identifiers are case-sensitive and not quoted.
+
+In Tact, identifiers can contain latin lowercase letters (`a-z`), latin uppercase letters (`A-Z`), underscores (`_`) and digits ($\mathrm{0 - 9}$), but may not start with a digit. An identifier differs from a [string](#string-literals) in that a string is data, while an identifier is part of the code.
+
+Note, that when identifiers for [primitive types][p] start with an uppercase letter. Used-defined [composite types](/book/types#composite-types), such as [Structs][s] and [Messages][m] also must be capitalized.
+
+## Instantiation
+
+You can create instances of the following types:
+
+- [Structs][s]
+- [Messages][m]
+
+```tact
+struct StExample {
+    fieldInit: Int = 1;
+    fieldUninit: Int;
+}
+
+fun example() {
+    // Instance with default value of fieldInit
+    StExample{ fieldUninit: 2 };
+
+    // Instance with both fields set
+    StExample{
+        fieldInit: 0,
+        fieldUninit: 2, // trailing comma is allowed
+    };
+}
+```
+
+## Field access
+
+You can directly access fields of the following types:
+
+- [Structs][s]
+- [Messages][m]
+
+```tact
+struct StExample {
+    fieldInit: Int = 1;
+    fieldUninit: Int;
+}
+
+fun example(): Int {
+    let struct: StExample = StExample{ fieldUninit: 2 }; // instantiation
+
+    struct.fieldInit;          // access a field
+    return struct.fieldUninit; // return field value from the function
+}
+```
+
+## Extension function call
+
+[Extension functions](/book/functions#extension-function) are defined only on specific types. They can be called similar to method calls in many other languages:
+
+```tact
+42.toString(); // toString() is a stdlib function that is defined on Int type
+```
+
+## Static function call
+
+Anywhere in the function body, a global [static function](/book/functions#global-static-functions) or an internal function of a [contract](/book/contracts) can be called:
+
+```tact
+contract ExampleContract {
+    receive() {
+        now(); // now() is a static function of stdlib
+        let expiration: Int = now() + 1000; // operation and variable declaration
+        expiration = self.answerQuestion(); // internal function
+    }
+    fun answerQuestion(): Int {
+        return 42;
+    }
+}
+```
+
+## `initOf`
+
+Expression `initOf{:tact}` computes initial state (`StateInit{:tact}`) of a [contract](/book/contracts):
+
+```tact
+//                     argument values for the init() function of the contract
+//                     ↓   ↓
+initOf ExampleContract(42, 100); // returns a Struct StateInit{}
+//     ---------------
+//     ↑
+//     name of the contract
+//     ↓
+//     ---------------
+initOf ExampleContract(
+    42,  // first argument
+    100, // second argument, trailing comma is allowed
+);
+```
+
+Where `StateInit{:tact}` is a built-in [Struct][s], that consists of:
+
+| Field  | Type                  | Description                                                                                             |
+| :----- | :-------------------- | :------------------------------------------------------------------------------------------------------ |
+| `code` | [`Cell{:tact}`][cell] | initial code of the [contract](/book/contracts) (the compiled bytecode)                                 |
+| `data` | [`Cell{:tact}`][cell] | initial data of the [contract](/book/contracts) (arguments of `init(){:tact}` function of the contract) |
+
+[p]: /book/types#primitive-types
+[cell]: /book/cells#cells
+[s]: /book/structs-and-messages#structs
+[m]: /book/structs-and-messages#messages
