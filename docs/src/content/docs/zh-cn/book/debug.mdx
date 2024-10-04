@@ -1,0 +1,728 @@
+---
+title: Debugging Tact contracts
+---
+
+import { LinkCard, CardGrid, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Without fail, the code we write as smart contract developers doesn’t always do what we expected it to do. Sometimes it does something completely different! When the unexpected happens, the next task is to figure out why. To do so, there are various ways to reveal problems or "bugs" in the code. Let's get to _debugging_!
+
+<CardGrid>
+  <LinkCard
+    title="General approach"
+    href="#approach"
+  />
+  <LinkCard
+    title="Debug mode"
+    href="#debug-mode"
+  />
+  <LinkCard
+    title="Structure of tests"
+    href="#tests-structure"
+  />
+  <LinkCard
+    title="Dump values"
+    href="#tests-dump"
+  />
+  <LinkCard
+    title="Expect certain states"
+    href="#tests-errors"
+  />
+  <LinkCard
+    title="Send messages"
+    href="#tests-send"
+  />
+  <LinkCard
+    title="Observe fees"
+    href="#tests-fees"
+  />
+  <LinkCard
+    title="Expect exit codes"
+    href="#tests-errors"
+  />
+  <LinkCard
+    title="Simulate time"
+    href="#tests-time"
+  />
+  <LinkCard
+    title="Emit and log messages"
+    href="#logging"
+  />
+  <LinkCard
+    title="Handle bounced messages"
+    href="#bounced"
+  />
+  <LinkCard
+    title="Experimental lab setup"
+    href="#lab"
+  />
+</CardGrid>
+
+## General approach {#approach}
+
+At the moment, Tact doesn't have a step-through debugger. Despite that, it's still possible to use the ["printf debugging"](https://en.wikipedia.org/wiki/Debugging#printf_debugging) approach.
+
+It involves actively placing [`dump(){:tact}`][dump] and [`dumpStack(){:tact}`](/ref/core-debug#dumpstack) function calls throughout your code and observing states of variables at a given point of time. Note, that those functions work only in a [debug mode](#debug-mode) and won't be executed otherwise.
+
+:::note
+
+  See how to use [`dump(){:tact}`][dump] for debugging: [Debug with `dump(){:tact}`](#tests-dump).
+
+:::
+
+In addition to dumping values, it's often helpful to use assertive functions like [`require(){:tact}`](/ref/core-debug#require), [`nativeThrowIf(){:tact}`](/ref/core-debug#nativethrowif) and [`nativeThrowUnless(){:tact}`](/ref/core-debug#nativethrowunless). They help stating your assumptions clear, and are handy for setting up "trip wires" for catching issues in the future.
+
+And if you didn't find or cannot resolve the cause of your issues, try asking the community in Tact's [Telegram chat][tg] or, if your issue or question is generally related to TON more than it's related to Tact, hop into [TON Dev Telegram chat](https://t.me/tondev_eng).
+
+## Common debugging functions {#debug-functions}
+
+Tact provides a handful amount of various functions useful for debugging: [Core library → Debug](/ref/core-debug).
+
+## Enabling debug mode in compilation options {#debug-mode}
+
+In order to make certain functions like [`dump(){:tact}`][dump] or [`dumpStack(){:tact}`](/ref/core-debug#dumpstack) work, one needs to enable debug mode.
+
+The simplest and recommended approach is to modify a [`tact.config.json`](/book/config) file in the root of your project (or create it if it didn't exist yet), and [set the `debug` property to `true{:json}`](/book/config#options-debug).
+
+If you're working on a [Blueprint][bp]-based project, you can enable debug mode in the compilation configs of your contracts, which are located in a directory named `wrappers/`:
+
+```typescript title="wrappers/YourContractName.compile.ts" {7}
+import { CompilerConfig } from '@ton/blueprint';
+
+export const compile: CompilerConfig = {
+  lang: 'tact',
+  target: 'contracts/your_contract_name.tact',
+  options: {
+    debug: true, // ← that's the stuff!
+  }
+};
+```
+
+Note, that versions of [Blueprint][bp] starting with 0.20.0 automatically enable debug mode in `wrappers/` for new contracts.
+
+In addition to that, [`tact.config.json`](/book/config) may still be used in [Blueprint][bp] projects. In such cases values specified in [`tact.config.json`](/book/config) act as default unless modified in the `wrappers/`.
+
+:::note
+
+  Read more about configuration and [`tact.config.json`](/book/config) file: [Configuration](/book/config).\
+  See how to use [`dump(){:tact}`][dump] for debugging: [Debug with `dump(){:tact}`](#tests-dump).
+
+:::
+
+## Writing tests in Blueprint, with Sandbox and Jest {#tests}
+
+The [Blueprint][bp] is a popular development framework for writing, testing and deploying smart contracts on TON Blockchain.
+
+For testing smart contracts it uses the [Sandbox][sb], a local TON Blockchain emulator and [Jest][jest], a JavaScript testing framework.
+
+Whenever you create a new [Blueprint][bp] project or use `blueprint create` command inside the existing project, it creates a new contract alongside with a test suite file for it.
+
+Those files are placed in `tests/` folder and executed with [Jest][jest]. By default, all tests run, unless you specify specific group or test closure. For other options, refer to the brief documentation in the Jest CLI: `jest --help`.
+
+### Structure of test files {#tests-structure}
+
+Let's say that we have a contract named `Playground`, written in `contracts/playground.tact` file. If we've created that contract through [Blueprint][bp], then it also created a `tests/Playground.spec.ts` test suite file for us.
+
+The test file contains a single `describe(){:typescript}` [Jest][jest] function call, which denotes a test group.
+
+Inside that group, you'll have three variables, available in all tests within:
+
+- `blockchain` — local blockchain instance provided by [Sandbox][sb]
+- `deployer` — a TypeScript wrapper used for deploying our `Playground` contract or any other we'd like to be deployed
+- `playground` — a TypeScript wrapper for our `Playground` contract
+
+:::note
+
+  It's a common mistake to update `.tact` code and run tests without making a build first. That's because tests in [Blueprint][bp] rely on TypeScript wrappers generated by a Tact compiler and work with the latest build made.
+
+  That's why every time you make a change to your Tact code, make sure to also build it with `npx blueprint build` before you execute the test suite. For your convenience, you may unite builds and tests into a single command, as shown in the [experimental lab setup](#lab-4).
+
+:::
+
+Then, a `beforeEach(){:tact}` [Jest][jest] function is called — it specifies all the code to be executed before each of the subsequent test closures.
+
+:::note
+
+  It is strongly advised not to modify the contents of `beforeEach(){:tact}`, unless you really need some specific behavior for each test closure or parameters of your [`init(){:tact}`](/book/contracts#init-function) function have changed.
+
+:::
+
+Finally, each test closure is described with a call to `it(){:tact}` [Jest][jest] function — that's where tests are actually written.
+
+A simplest example of the test closure can look like that:
+
+```typescript
+it('should deploy', async () => {
+  // The check is done inside beforeEach, so this can be empty
+});
+```
+
+### Debug with `dump()` {#tests-dump}
+
+To see results of [`dump(){:tact}`][dump] function calls and use ["printf debugging"](#approach) approach, one has to:
+
+1. Put calls to [`dump(){:tact}`][dump] and other [common debugging functions](#debug-functions) in relevant places of the code.
+2. Run [Jest][jest] tests, which would call target functions and send messages to target receivers.
+
+Assuming you've created a [new counter contract project](/#start), let's see how it works in practice.
+
+First, let's place a call to [`dump(){:tact}`][dump] in `contracts/simple_counter.tact`, which would output the `amount` passed in `msg{:tact}` [Struct][struct] to contract's debug console:
+
+```tact title="contracts/simple_counter.tact" {3}
+// ...
+receive(msg: Add) {
+    dump(msg.amount);
+    // ...
+}
+// ...
+```
+
+Next, let's comment out all existing `it(){:typescript}` test closures in `tests/SimpleCounter.spec.ts` file. And then add the following one:
+
+```typescript title="tests/SimpleCounter.spec.ts"
+it('should dump', async () => {
+  await playground.send(
+    deployer.getSender(),
+    { value: toNano('0.5') },
+    { $$type: 'Add', queryId: 1n, amount: 1n },
+  );
+});
+```
+
+It sends a message to our contract's `receive(msg: Add){:tact}` [receiver](/book/receive) without storing the [results of such send](#tests-send).
+
+Now, if we build our contract with `yarn build{:shell}` and run our test suite with `yarn test{:shell}`, we'll see the following in the test logs:
+
+```txt
+console.log
+  #DEBUG#: [DEBUG] File contracts/simple_counter.tact:17:9
+  #DEBUG#: 1
+
+    at SmartContract.runCommon (node_modules/@ton/sandbox/dist/blockchain/SmartContract.js:221:21)
+```
+
+Which is produced by of our [`dump(){:tact}`][dump] call above.
+
+:::note
+
+  Read more about sending messages to contracts in tests: [Send messages to contracts](#tests-send).
+
+:::
+
+### State expectations with `expect()` {#tests-expect}
+
+The integral parts of writing tests is ensuring that your expectations match the observed reality. For that, [Jest][jest] provides a function `expect(){:tact}`, which is used as follows:
+
+1. First, an observed variable is provided.
+2. Then, a specific method is called to check a certain property of that variable.
+
+Here's a more involved example, which uses `expect(){:tact}` function to check that counter contract actually properly increases the counter:
+
+```typescript
+it('should increase counter', async () => {
+  const increaseTimes = 3;
+  for (let i = 0; i < increaseTimes; i++) {
+    console.log(`increase ${i + 1}/${increaseTimes}`);
+
+    const increaser = await blockchain.treasury('increaser' + i);
+
+    const counterBefore = await simpleCounter.getCounter();
+    console.log('counter before increasing', counterBefore);
+
+    const increaseBy = BigInt(Math.floor(Math.random() * 100));
+    console.log('increasing by', increaseBy);
+
+    const increaseResult = await simpleCounter.send(
+      increaser.getSender(),
+      { value: toNano('0.05') },
+      { $$type: 'Add', queryId: 0n, amount: increaseBy }
+    );
+
+    expect(increaseResult.transactions).toHaveTransaction({
+      from: increaser.address,
+      to: simpleCounter.address,
+      success: true,
+    });
+
+    const counterAfter = await simpleCounter.getCounter();
+    console.log('counter after increasing', counterAfter);
+
+    expect(counterAfter).toBe(counterBefore + increaseBy);
+  }
+});
+```
+
+:::note
+
+  See more test examples in the [Sandbox][sb] documentation:\
+  [Testing flow (FunC)](https://github.com/ton-org/sandbox/blob/main/docs/testing-key-points.md)\
+  [Writing tests for Tact](https://github.com/ton-org/sandbox/blob/main/docs/tact-testing-examples.md)
+
+:::
+
+### Utility methods {#tests-jest-utils}
+
+Test files generated by [Blueprint][bp] import `@ton/test-utils` library, which provides access to a number of additional helper methods for the result type of `expect(){:typescript}` [Jest][jest] function. Note, that regular methods like `toEqual(){:typescript}` are still there and ready to be used.
+
+#### toHaveTransaction
+
+The method `expect(…).toHaveTransaction(){:typescript}` checks that the list of transactions has a transaction matching certain properties you specify:
+
+```typescript {2}
+const res = await yourContractName.send(…);
+expect(res.transactions).toHaveTransaction({
+  // For example, let's check that a transaction to your contract was successful:
+  to: yourContractName.address,
+  success: true,
+});
+```
+
+To know the full list of such properties, look at auto-completion options provided by your editor or IDE.
+
+#### toEqualCell
+
+The method `expect(…).toEqualCell(){:typescript}` checks equality of two [cells](/book/cells#cells):
+
+```typescript {3}
+expect(oneCell).toEqualCell(anotherCell);
+```
+
+#### toEqualSlice
+
+The method `expect(…).toEqualSlice(){:typescript}` checks equality of two [slices](/book/cells#slices):
+
+```typescript {3}
+expect(oneSlice).toEqualSlice(anotherSlice);
+```
+
+#### toEqualAddress
+
+The method `expect(…).toEqualAddress(){:typescript}` checks equality of two [addresses](/book/types#primitive-types):
+
+```typescript {3}
+expect(oneAddress).toEqualAddress(anotherAddress);
+```
+
+### Send messages to contracts {#tests-send}
+
+To send messages to contracts, use `.send(){:typescript}` method on their TypeScript wrappers like so:
+
+```typescript
+// It accepts 3 arguments:
+await yourContractName.send(
+  // 1. sender of the message
+  deployer.getSender(), // this is a default treasury, can be replaced
+
+  // 2. value and (optional) bounce, which is true by default
+  { value: toNano('0.5'), bounce: false },
+
+  // 3. a message body, if any
+  'Look at me!',
+);
+```
+
+Message body can be a simple string, or an object specifying fields of the [Message](/book/structs-and-messages#messages) type:
+
+```typescript {4-8}
+await yourContractName.send(
+  deployer.getSender(),
+  { value: toNano('0.5') },
+  {
+    $$type: 'NameOfYourMessageType',
+    field1: 0n, // bigint zero
+    field2: 'yay',
+  },
+);
+```
+
+More often than not, it's important to store results of such sends, because they contain events occurred, transactions made and external messages sent:
+
+```typescript
+const res = await yourContractName.send(…);
+// res.events — array of events occurred
+// res.externals — array of external-out messages
+// res.transactions — array of transactions made
+```
+
+With that, we can easily filter or check certain transactions:
+
+```typescript
+expect(res.transactions).toHaveTransaction(…);
+```
+
+### Observe the fees and values {#tests-fees}
+
+[Sandbox][sb] provides a helper function `printTransactionFees(){:typescript}`, which pretty-prints all the values and fees that went into transactions provided. It is quite handy for observing the flow of [nanoToncoins](/book/integers#nanotoncoin).
+
+To use it, modify imports from `@ton/sandbox` on top of the test file:
+
+```typescript
+import { Blockchain, SandboxContract, TreasuryContract, printTransactionFees } from '@ton/sandbox';
+//                                                      ^^^^^^^^^^^^^^^^^^^^
+```
+
+Then, provide an array of transactions as an argument, like so:
+
+```typescript
+printTransactionFees(res.transactions);
+```
+
+To work with individual values of total fees or fees from compute and action [phases](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases), inspect each transaction individually:
+
+```typescript {11,17,21}
+// Storing the transaction handled by the receiver in a separate constant
+const receiverHandledTx = res.transactions[1];
+expect(receiverHandledTx.description.type).toEqual('generic');
+
+// Needed to please TypeScript
+if (receiverHandledTx.description.type !== 'generic') {
+  throw new Error('Generic transaction expected');
+}
+
+// Total fees
+console.log('Total fees: ', receiverHandledTx.totalFees);
+
+// Compute fee
+const computeFee = receiverHandledTx.description.computePhase.type === 'vm'
+  ? receiverHandledTx.description.computePhase.gasFees
+  : undefined;
+console.log('Compute fee: ', computeFee);
+
+// Action fee
+const actionFee = receiverHandledTx.description.actionPhase?.totalActionFees;
+console.log('Action fee: ', actionFee);
+
+// Now we can do some involved checks, like limiting the fees to 1 Toncoin
+expect(
+  (computeFee ?? 0n)
+  + (actionFee ?? 0n)
+).toBeLessThanOrEqual(toNano('1'));
+```
+
+:::note
+
+  [Sandbox][sb] has many more utility functions, which are often handy. For example, it provides `prettyLogTransaction(){:typescript}` and `prettyLogTransactions(){:typescript}`, which operate on a single or multiple transactions respectively and pretty-print flow of values between the addresses.
+
+:::
+
+### Transactions with intentional errors {#tests-errors}
+
+Sometimes it's useful to make negative tests, featuring intentional errors and throwing specific [exit codes](/book/exit-codes).
+
+Example of such [Jest][jest] test closure in [Blueprint][bp]:
+
+```typescript title="tests/YourTestFileHere.spec.ts" {9,15}
+it('throws specific exit code', async () => {
+  // Send a specific message to our contract and store the results
+  const res = await your_contract_name.send(
+    deployer.getSender(),
+    {
+      value: toNano('0.5'), // value in nanoToncoins sent
+      bounce: true,         // (default) bounceable message
+    },
+    'the message your receiver expects', // ← change it to yours
+  );
+
+  // Expect the transaction to our contract fail with a certain exit code
+  expect(res.transactions).toHaveTransaction({
+    to: your_contract_name.address,
+    exitCode: 5, // ← change it to yours
+  });
+});
+```
+
+Note, that to track down transactions with a certain exit code, you only need to specify `exitCode` field in object argument to the `toHaveTransaction(){:typescript}` method of `expect(){:typescript}`.
+
+However, it's useful to narrow the scope by specifying the recipient address `to`, such that Jest would look only at the transaction caused by our message to the contract.
+
+### Simulate passage of time {#tests-time}
+
+The Unix time in local blockchain instances provided by [Sandbox][bp] starts at the moment of the creation of those in `beforeEach(){:typescript}` block.
+
+```typescript {2}
+beforeEach(async () => {
+  blockchain = await Blockchain.create(); // ← here
+  // ...
+});
+```
+
+Previously, we've been warned not to modify the `beforeEach(){:typescript}` block unless we really need to. And now, to override the time and time travel a little, we do.
+
+Let's add the following line by the end of it, setting `blockchain.now` explicitly to the time when deployment message was handled:
+
+```typescript {3}
+beforeEach(async () => {
+  // ...
+  blockchain.now = deployResult.transactions[1].now;
+});
+```
+
+Now, we can manipulate time in out test clauses. For example, let's make a transaction one minute after the deployment and another one after two:
+
+```typescript {2,4}
+it('your test clause title', async () => {
+  blockchain.now += 60; // 60 seconds late
+  const res1 = await yourContractName.send(…);
+  blockchain.now += 60; // another 60 seconds late
+  const res2 = await yourContractName.send(…);
+});
+```
+
+## Logging via `emit` {#logging}
+
+A [global static function](/book/functions#global-static-functions) [`emit(){:tact}`](/ref/core-common#emit) sends a message to the outer world — it doesn't have a specific recipient.
+
+This function is very handy for logging and analyzing data off-chain — one just has to look at [external messages](/book/external) produced by the contract.
+
+### Logs in local Sandbox tests {#logging-local}
+
+When deploying in the [Sandbox][sb], you may call [`emit(){:tact}`](/ref/core-common#emit) from a [receiver function](/book/contracts#receiver-functions) and then observe the list of sent [external messages](/book/external):
+
+```typescript {9-10}
+it('emits', async () => {
+  const res = await simpleCounter.send(
+    deployer.getSender(),
+    { value: toNano('0.05') },
+    'emit_receiver', // ← change to the message your receiver handles
+  );
+
+  console.log("Address of our contract: " + simpleCounter.address);
+  console.log(res.externals); // ← here one would see results of emit() calls,
+                              //   and all external messages in general
+});
+```
+
+### Logs of a deployed contract {#logging-deployed}
+
+Every transaction on TON Blockchain [contains `out_msgs`](https://docs.ton.org/develop/data-formats/transaction-layout#transaction) — a dictionary that holds the list of outgoing messages that were created while executing the transaction.
+
+To see logs from [`emit(){:tact}`](/ref/core-common#emit) in that dictionary, look for external messages without a recipient. In various TON Blockchain explorers, such transactions will be marked as `external-out` with destination specified as `-` or `empty`.
+
+Note, that some explorers deserialize the message body sent for you, while others don't. However, you can always [parse it yourself](#logging-parsing) locally.
+
+### Parsing body of the emitted message {#logging-parsing}
+
+Consider the following example:
+
+```tact
+// We have a Struct
+struct Ballroom {
+    meme: Bool;
+    in: Int;
+    theory: String;
+}
+
+// And a simple contract,
+contract Bonanza {
+    // which can receive a String message,
+    receive("time to emit") {
+        // emit a String
+        emit("But to the Supes? Absolutely diabolical.".asComment());
+
+        // and a Struct
+        emit(Ballroom{meme: true, in: 42, theory: "Duh"}.toCell());
+    }
+}
+```
+
+Now, let's make a simple [test clause](#tests-structure) for the `Bonanza` contract:
+
+```typescript /bonanza/
+it('emits', async () => {
+  const res = await bonanza.send(
+    deployer.getSender(),
+    { value: toNano('0.05') },
+    'time to emit',
+  );
+});
+```
+
+There, the `res` object would contain the list of sent [external messages](/book/external) as its `externals` field. Let's access it to parse the first message sent via a call to [`emit(){:tact}`](/ref/core-common#emit) in Tact code (or _emitted_ for short):
+
+```typescript /body/
+it('emits', async () => {
+  // ... prior code ...
+
+  // We'll need only the body of the observed message:
+  const firstMsgBody = res.externals[0].body;
+
+  // Now, let's parse it, knowing that it's a text message.
+  // NOTE: In a real-world scenario,
+  //       you'd want to check that first or wrap this in a try...catch
+  const firstMsgText = firstMsgBody.asSlice().loadStringTail();
+
+  // "But to the Supes? Absolutely diabolical."
+  console.log(firstMsgText);
+});
+```
+
+To parse the second emitted message, we could manually use a bunch of `.loadSomething(){:typescript}` functions, but that's way too brittle — if the fields of the `Ballroom{:tact}` [Struct][struct] even change, you'd need to start all over. That could really backfire when you have a lot of tests written in that manner.
+
+Fortunately, Tact compiler auto-generates TypeScript bindings (or wrappers) for the contracts, and it's really easy to re-use them in your test suite. Not only they have a wrapper of the contract you're testing, but they also export a bunch of helper functions to store or load [Structs][struct] and [Messages][message] defined in the contract. The latter will be named just like the [Structs][struct] and [Messages][message] are, but with the `load` prefix in front.
+
+For example, in our case we'll need a function called `loadBallroom(){:typescript}`, for parsing a [`Slice{:tact}`][slice] into the `Ballroom{:tact}` [Struct][struct] in TypeScript. To import it, either type the name and let your IDE suggest auto-importing it for you, or take a look at the top of your test suite file — there should be a similar line:
+
+```typescript
+import { Bonanza } from '../wrappers/Bonanza';
+//              ^ here you could import loadBallroom
+```
+
+With that, let's parse the second emitted message:
+
+```typescript
+it('emits', async () => {
+  // ... prior code ...
+
+  // We'll need only the body of the observed message:
+  const secondMsgBody = res.externals[1].body;
+
+  // Now, let's parse it, knowing that it's the Ballroom Struct.
+  // NOTE: In a real-world scenario,
+  //       you'd want to check that first or wrap this in a try...catch
+  const secondMsgStruct = loadBallroom(secondMsgBody.asSlice());
+
+  // { '$$type': 'Ballroom', meme: true, in: 42n, theory: 'Duh' }
+  console.log(secondMsgStruct);
+});
+```
+
+Mind you, that it's also possible to parse emitted messages of deployed contracts even outside of our test suite. You would just need to obtain the emitted message bodies and then use the auto-generated TypeScript bindings of Tact alongside the `@ton/core` library just like we did in those examples above.
+
+## Handling bounced messages {#bounced}
+
+When [sent](/book/send) with `bounce: true{:tact}`, messages can bounce back in case of errors. Make sure to write relevant [`bounced(){:tact}`](/book/bounced) message [receivers](/book/contracts#receiver-functions) and handle bounced messages gracefully:
+
+```tact
+bounced(msg: YourMessage) {
+    // ...alright squad, let's bounce!...
+}
+```
+
+Keep in mind that bounced messages in TON have only $224$ usable data bits in their message body and don't have any references, so one cannot recover much data from it. However, you still get to see whether the message has bounced or not, allowing you to create more robust contracts.
+
+Read more about bounced messages and receivers: [Bounced messages](/book/bounced).
+
+## Experimental lab setup {#lab}
+
+If you're overwhelmed by the testing setup of [Blueprint][bp] or just want to test some things quickly, worry not — there is a way to set up a simple playground as an experimental lab to test your ideas and hypotheses.
+
+<Steps>
+
+1. #### Create a new Blueprint project {#lab-1}
+
+   That will prevent pollution of your existing one with arbitrary code and tests.
+
+   The new project can be named anything, but I'll name it `Playground` to convey the right intent.
+
+   To create it, run the following command:
+
+   <Tabs>
+     <TabItem label="yarn" icon="seti:yarn">
+       ```shell
+       # recommended
+       yarn create ton tact-playground --type tact-empty --contractName Playground
+       ```
+     </TabItem>
+     <TabItem label="npm" icon="seti:npm">
+       ```shell
+       npm create ton@latest -- tact-playground --type tact-empty --contractName Playground
+       ```
+     </TabItem>
+     <TabItem label="pnpm" icon="pnpm">
+       ```shell
+       pnpm create ton@latest tact-playground --type tact-empty --contractName Playground
+       ```
+     </TabItem>
+     <TabItem label="bun" icon="bun">
+       ```shell
+       bun create ton@latest tact-playground --type tact-empty --contractName Playground
+       ```
+     </TabItem>
+   </Tabs>
+
+   Versions of [Blueprint][bp] starting with 0.20.0 automatically enable debug mode in `wrappers/` for new contracts, so we only have to adjust the testing suite and prepare our `Playground` contract for testing.
+
+2. #### Update the test suite {#lab-2}
+
+   Move into the newly created `tact-playground/` project and in the `tests/Playground.spec.ts`, change the `"should deploy"{:tact}` test closure to the following:
+
+   ```typescript title="tests/Playground.spec.ts"
+   it('plays', async () => {
+     const res = await playground.send(
+       deployer.getSender(),
+       { value: toNano('0.5') }, // ← here you may increase the value in nanoToncoins sent
+       'plays',
+     );
+
+     console.log("Address of our contract: " + playground.address);
+     console.log(res.externals); // ← here one would see results of emit() calls
+   });
+   ```
+
+3. #### Modify the contract {#lab-3}
+
+   Replace the code in `contracts/playground.tact` with the following:
+
+   ```tact title="contracts/playground.tact" {4-6}
+   import "@stdlib/deploy";
+
+   contract Playground with Deployable {
+       receive("plays") {
+           // NOTE: write your test logic here!
+       }
+   }
+   ```
+
+   The basic idea of this setup is to place the code you want to test into the [receiver function](/book/contracts#receiver-functions) responding to the [string](/book/types#primitive-types) message `"plays"{:tact}`.
+
+   Note, that you can still write any valid Tact code outside of that [receiver](/book/contracts#receiver-functions). But in order to test it you'll need to write related test logic inside of it.
+
+4. #### Let's test! {#lab-4}
+
+   With that, our experimental lab setup is complete. To execute that single test we've prepared for our `Playground` contract, run the following:
+
+   ```shell
+   yarn test -t plays
+   ```
+
+   From now on, to test something you only need to modify the contents of the tested [receiver function](/book/contracts#receiver-functions) of your Tact contract file and re-run the command above. Rinse and repeat that process until you've tested what you wanted to test.
+
+   For simplicity and cleaner output's sake, you may add a new field to `scripts` in your `package.json`, such that you'll only need to run `yarn lab{:shell}` to build and test in one.
+
+   On Linux or macOS, it would look like:
+
+   ```json filename="package.json" {3}
+   {
+     "scripts": {
+       "lab": "blueprint build 1>/dev/null && yarn test -t plays"
+     }
+   }
+   ```
+
+   And here's how it may look on Windows:
+
+   ```json filename="package.json" {3-4}
+   {
+     "scripts": {
+       "build": "blueprint build | out-null",
+       "lab": "yarn build && yarn test -t plays"
+     }
+   }
+   ```
+
+   To run:
+
+   ```shell
+   yarn lab
+   ```
+
+</Steps>
+
+[dump]: /ref/core-debug#dump
+[struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages
+[cell]: /book/cells#cells
+[slice]: /book/cells#slices
+[tg]: https://t.me/tactlang
+[bp]: https://github.com/ton-org/blueprint
+[sb]: https://github.com/ton-org/sandbox
+[jest]: https://jestjs.io
