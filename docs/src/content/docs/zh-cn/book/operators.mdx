@@ -1,0 +1,642 @@
+---
+title: Operators
+---
+
+Almost every contract operates on data: transforms some values into another. Scope may vary, but operators lay in core of such modifications.
+
+This page lists all the operators in Tact in decreasing order of their [precedence](#precedence), with examples of usage.
+
+:::note
+
+  Note, that there are no implicit type conversions in Tact, so operators can't be used to, say, add values of different type or compare them in terms of equality without explicitly casting to the same type. That's done with certain functions from the standard library. See [`Int.toString(){:tact}`](/ref/core-strings#inttostring) for an example of such function.
+
+:::
+
+## Table of operators {#table}
+
+The following table lists operators in order of decreasing [precedence](#precedence): from highest to lowest.
+
+| Brief description | Operators                                                                                       |
+| :---------------- | :---------------------------------------------------------------------------------------------- |
+| Parentheses       | [`(){:tact}`][paren]                                                                            |
+| Unary postfix     | [`!!{:tact}`][nna]                                                                              |
+| Unary prefix      | [`+{:tact}`][plus] &nbsp; [`-{:tact}`][neg] &nbsp; [`!{:tact}`][inv] &nbsp; [`~{:tact}`][b-not] |
+| Multiplicative    | [`*{:tact}`][mul] &nbsp; [`/{:tact}`][div] &nbsp; [`%{:tact}`][mod]                             |
+| Additive          | [`+{:tact}`][add] &nbsp; [`-{:tact}`][sub]                                                      |
+| Shift             | [`>>{:tact}`][shr] &nbsp; [`<<{:tact}`][shl]                                                    |
+| Relation          | [`>{:tact}`][gt] &nbsp; [`>={:tact}`][ge] &nbsp; [`<{:tact}`][lt] &nbsp; [`<={:tact}`][le]      |
+| Equality          | [`=={:tact}`][eq] &nbsp; [`!={:tact}`][eq]                                                      |
+| Bitwise AND       | [`&{:tact}`][b-and]                                                                             |
+| Bitwise XOR       | [`^{:tact}`][b-xor]                                                                             |
+| Bitwise OR        | [`\|{:tact}`][b-or]                                                                             |
+| Logical AND       | [`&&{:tact}`][l-and]                                                                            |
+| Logical OR        | [`\|\|{:tact}`][l-or]                                                                           |
+| Ternary           | [`?:{:tact}`][ternary]                                                                          |
+| Assignment        | [`={:tact}`][assign] and [all augmented assignment operators](#augmented-assignment)            |
+
+[paren]: #parentheses
+[nna]: #unary-non-null-assert
+[plus]: #unary-plus
+[neg]: #unary-negate
+[inv]: #unary-inverse
+[b-not]: #unary-bitwise-not
+[mul]: #binary-multiply
+[div]: #binary-divide
+[mod]: #binary-modulo
+[add]: #binary-add
+[sub]: #binary-subtract
+[shr]: #binary-bitwise-shift-right
+[shl]: #binary-bitwise-shift-left
+[gt]: #binary-greater
+[ge]: #binary-greater-equal
+[lt]: #binary-less
+[le]: #binary-less-equal
+[eq]: #binary-equality
+[b-and]: #binary-bitwise-and
+[b-xor]: #binary-bitwise-xor
+[b-or]: #binary-bitwise-or
+[l-and]: #binary-logical-and
+[l-or]: #binary-logical-or
+[ternary]: #ternary
+[assign]: #assignment
+
+## Precedence
+
+All operators on this page are given in order of decreasing precedence, from highest to lowest. Precedence is used to choose which operator would be considered in a particular situation. Whenever any ambiguity arises, Tact would prefer operators with higher precedence over those with lower.
+
+For example, minus sign (`-{:tact}`) may be considered as a subtraction operator or as a negation operator, which reverses the sign of the expression from plus to minus, or vice-versa. As the latter has the higher precedence over the former in cases of ambiguity between the two Tact will first consider `-{:tact}` as a negation operator. And if that doesn't make sense for the given expression, only then it would consider it as a subtraction operator.
+
+Consider the following code:
+
+```tact
+5 + -5; // here, the minus sign would be viewed as a negation operator
+5 -5;   // while here it would be viewed as a subtraction operator, despite formatting
+```
+
+Even though this example may be simple, neglecting of precedence rules can often lead to confusing situations with operators. The correct order of operations can be ensured by wrapping every operation in [parentheses](#parentheses), since parentheses have the highest precedence of all expressions and operators there is.
+
+## Parentheses, `()` {#parentheses}
+
+Parentheses (also can be called round brackets, `(){:tact}`) are more of a punctuation symbols than actual operators, but their [precedence](#precedence) is higher than precedence of any other operator. Use parentheses to override order of operations:
+
+```tact
+5 * 5 - 2;   // 23
+5 * (5 - 2); // 15
+```
+
+## Unary
+
+Unary here means that they are applied only to one operand of the given expression. All unary operators, except for the [non-null assertion](#unary-non-null-assert), are of the same [precedence](#precedence).
+
+Unary operators can be one of the two types:
+
+- prefix — placed before the expression.
+- postfix (or suffix) —  placed after the expression.
+
+### Non-null assert, `!!` {#unary-non-null-assert}
+
+Unary double-exclamation mark (_non-null assertion_) operator `!!{:tact}` is a postfix operator, which enforces non-`null{:tact}` values and allows direct access to the value of the optional variable if it's not `null{:tact}`. Otherwise, raises a compilation error if the compiler can track it, and if not — throws an exception with [exit code 128](/book/exit-codes#128): `Null reference exception`. Can be applied to any optional variable regardless of its non-`null{:tact}` type.
+
+:::note
+
+  Read more about optional variables and fields here: [Optionals](/book/optionals)
+
+:::
+
+### Plus, `+` {#unary-plus}
+
+Although unary plus sign operator `+{:tact}` is specified in the grammar of Tact compiler, it only exists as a [binary operator](#binary-add).
+
+### Negate, `-` {#unary-negate}
+
+Unary minus sign (_negation_) operator `-{:tact}` is a prefix operator, which reverses the sign of the expression. Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let five: Int = 5;
+five + -five; // here, the minus sign is a negation operator, not a subtraction operator
+-(-1);        // double application gives back the original value, which is 1
+--1;          // 1
+```
+
+### Inverse, `!` {#unary-inverse}
+
+Unary exclamation mark (_inversion_) operator `!{:tact}` is a prefix operator, which inverts the boolean value of the expression — changes `true{:tact}` to `false{:tact}`, and vice versa. Can only be applied to values of type [`Bool{:tact}`][bool]:
+
+```tact
+let iLikeTact: Bool = true;
+!iLikeTact; // false
+!false;     // true
+!(!false);  // false
+!!false;    // false
+```
+
+### Bitwise NOT, `~` {#unary-bitwise-not}
+
+Unary tilde (_bitwise not_) operator `~{:tact}` is a prefix operator, which inverts or _flips_ each bit in the binary representation of the expression — changes each $1$ to $0$, and vice versa. Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let answer: Int = 42;
+~answer;    // -43
+~(~answer); // 42
+~(~0);      // 0
+~~0;        // 0
+```
+
+## Binary
+
+Binary operators are split into several subsections, in order of decreasing [precedence](#precedence). Operators within each subsection have the same [precedence](#precedence) as the subsection itself.
+
+### Multiplication {#binary-multiplication}
+
+Multiply, divide or obtain a remainder.
+
+#### Multiply, `*` {#binary-multiply}
+
+Binary asterisk (_multiplication_) operator `*{:tact}` is used for multiplication of two values. Can cause [integer overflows](/book/integers#operations).
+
+Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two * two;         // 4
+0 * 1_000_000_000; // 0
+-1 * 5;            // -5
+
+pow(2, 255) * pow(2, 255); // build error: integer overflow!
+```
+
+#### Divide, `/` {#binary-divide}
+
+Binary slash (_division_) operator `/{:tact}` is used for integer division of two values, which truncates towards zero if result is positive, and away from zero if result is negative. This is also called [rounding down](https://en.wikipedia.org/wiki/Rounding#Rounding_down) (or rounding towards $-∞$).
+
+An attempt to divide by zero would result in an error with [exit code 4](/book/exit-codes#4): `Integer overflow`.
+
+Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two / 2; // 1
+two / 1; // 2
+-1 / 5;  // -1
+-1 / -5; // 0
+1 / -5;  // -1
+1 / 5;   // 0
+6 / 5;   // 1, rounding down
+-6 / 5;  // -2, rounding down (towards -∞)
+```
+
+:::note
+
+  Note that the following relationship between the division and modulo operators always holds for `Int{:tact}` type:
+
+```tact
+a / b * b + a % b == a; // true for any Int values of `a` and `b`,
+                        //   except when `b` is equal to 0 and we divide `a` by 0,
+                        //   which is an attempt to divide by zero resulting in an error
+```
+
+:::
+
+#### Modulo, `%` {#binary-modulo}
+
+Binary percent sign (_modulo_) operator `%{:tact}` is used for getting the modulo of an integer division, which must not be confused with getting a remainder. For two values of the same sign, modulo and remainder operations are equivalent, but when the operands are of different signs, the modulo result always has the same sign as the _divisor_ (value on the right), while the remainder has the same sign as the _dividend_ (value on the left), which can make them differ by one unit of the _divisor_.
+
+Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two % 2; // 0
+two % 1; // 1
+
+1 % 5;   // 1
+-1 % 5;  // 4
+1 % -5;  // -4
+-1 % -5; // -1
+```
+
+The simplest way to avoid confusion between the two is to prefer using positive values via [`abs(x: Int){:tact}`](/ref/core-math#abs):
+
+```tact
+abs(-1) % abs(-5); // 1
+```
+
+:::note
+
+  Did you know, that in JavaScript `%{:tact}` works as a _remainder_ operator, but not _modulo_ operator (like in Tact)?\
+  [Remainder (%) - JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder#description)\
+  [Modulo - Wikipedia](https://en.wikipedia.org/wiki/Modulo)
+
+:::
+
+### Addition {#binary-addition}
+
+Add or subtract.
+
+#### Add, `+` {#binary-add}
+
+Binary plus (_addition_) operator `+{:tact}` is used for adding numbers together. Going beyond the maximum value of an [`Int{:tact}`][int] will result in an error with [exit code 4](/book/exit-codes#4): `Integer overflow`.
+
+Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two + 2; // 4
+-1 + 1;  // 0
+
+pow(2, 254) + pow(2, 254);     // 2 * 2^254
+pow(2, 255) + pow(2, 255);     // build error: integer overflow!
+pow(2, 255) - 1 + pow(2, 255); // 2^256 - 1, maximal value of any integer in Tact!
+```
+
+#### Subtract, `-` {#binary-subtract}
+
+Binary minus (_subtraction_) operator `-{:tact}` is used for subtracting numbers from each other. Going beyond the minimum value of an [`Int{:tact}`][int] will result in an error with [exit code 4](/book/exit-codes#4): `Integer overflow`.
+
+Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two - 2; // 0
+-1 - 1;  // -2
+
+pow(2, 254) - pow(2, 254); // 0
+pow(2, 255) - pow(2, 255); // 0
+pow(2, 256) - pow(2, 256); // build error: integer overflow!
+```
+
+### Bitwise shifts {#binary-bitwise-shifts}
+
+Shift bits to the left or to the right.
+
+#### Shift right, `>>` {#binary-bitwise-shift-right}
+
+Binary double greater than (_bitwise shift right_) operator `>>{:tact}` returns an integer which binary representation is the _left operand_ value shifted by the _right operand_ number of bits to the right. Excess bits shifted off to the right are discarded, and copies of the leftmost bit are shifted in from the left. This operation is also called "sign-propagating right shift" or "arithmetic right shift", because the sign of the resulting number is the same as the sign of the _left operand_. This is a more effective way to divide the _left operand_ by $2^n$, where $n$ is equal to the _right operand_.
+
+Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two >> 1; // 1
+4 >> 1;   // 2
+5 >> 1;   // 2, due to flooring of integer values
+
+pow(2, 254) >> 254; // 1
+```
+
+:::note
+
+  [Bit shifts - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#Bit_shifts)\
+  [Bit manipulation - Wikipedia](https://en.wikipedia.org/wiki/Bit_manipulation)
+
+:::
+
+#### Shift left, `<<` {#binary-bitwise-shift-left}
+
+Binary double greater than (_bitwise shift left_) operator `<<{:tact}` returns an integer which binary representation is the _left operand_ value shifted by the _right operand_ number of bits to the left. Excess bits shifted off to the left are discarded, and zero bits are shifted in from the right. This is a more effective way to multiply the _left operand_ by $2^n$, where $n$ is equal to the _right operand_. Going beyond the maximum value of an [`Int{:tact}`][int] will result in an error with [exit code 4](/book/exit-codes#4): `Integer overflow`.
+
+Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two << 1; // 4
+1 << 5;   // 1 * 2^5, which is 32
+2 << 5;   // 2 * 2^5, which is 64
+
+pow(2, 254) == (1 << 254); // true
+pow(2, 254) == 1 << 254; // true, no parentheses needed due to higher precedence of >> over ==
+pow(2, 255) == 1 << 255; // true, but we're very close to overflow here!
+```
+
+:::note
+
+  [Bit shifts - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#Bit_shifts)\
+  [Bit manipulation - Wikipedia](https://en.wikipedia.org/wiki/Bit_manipulation)
+
+:::
+
+### Relation {#binary-relation}
+
+Find bigger, smaller or equal values.
+
+#### Greater than, `>` {#binary-greater}
+
+Binary _greater than_ operator `>{:tact}` returns `true{:tact}` if the left operand is greater than the right operand, and `false{:tact}` otherwise. Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two > 2; // false
+-1 > -3; // true
+```
+
+#### Greater than or equal to, `>=` {#binary-greater-equal}
+
+Binary _greater than or equal to_ operator `>={:tact}` returns `true{:tact}` if the left operand is greater than or to the right operand, and `false{:tact}` otherwise. Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two >= 2; // true
+-1 >= -3; // true
+```
+
+#### Less than, `<` {#binary-less}
+
+Binary _less than_ operator `<{:tact}` returns `true{:tact}` if the left operand is less than the right operand, and `false{:tact}` otherwise. Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two < 2; // false
+-1 < -3; // false
+```
+
+#### Less than or equal to, `<=` {#binary-less-equal}
+
+Binary _less than or equal to_ operator `<={:tact}` returns `true{:tact}` if the left operand is less than or equal to the right operand, and `false{:tact}` otherwise. Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two <= 2; // true
+-1 <= -3; // false
+```
+
+### Equality and inequality, `==` `!=` {#binary-equality}
+
+Binary equality (_equal_) operator `=={:tact}` checks whether its two operands are _equal_, returning a result of type [`Bool{:tact}`][bool].
+
+Binary inequality (_not equal_) operator `!={:tact}` checks whether its two operands are _not equal_, returning a result of type [`Bool{:tact}`][bool].
+
+Both operators require operands to be of the same type and both don't perform implicit type conversions, except for the [`Cell{:tact}`][cell] and [`Slice{:tact}`][slice] types, which are implicitly compared by their hashes.
+
+Both operators can be applied to the following list of types and values:
+
+- [`Int{:tact}`][int]
+- [`Bool{:tact}`][bool]
+- [`Address{:tact}`][p]
+- [`Cell{:tact}`][cell], implicitly compares via `.hash(){:tact}`
+- [`Slice{:tact}`][slice], implicitly compares via `.hash(){:tact}`
+- [`String{:tact}`][p]
+- [`map<K, V>{:tact}`](/book/maps), but only if their key and value types are identical
+- [Optionals and `null{:tact}` value](/book/optionals)
+
+```tact
+// Int:
+2 == 3; // false
+2 != 3; // true
+
+// Bool:
+true == true;  // true
+false != true; // true
+
+// Address:
+myAddress() == myAddress(); // true
+myAddress() != myAddress(); // false
+
+// Cell:
+emptyCell() == emptyCell(); // true
+emptyCell() != emptyCell(); // false
+
+// Slice:
+"A".asSlice() == "A".asSlice(); // true
+"A".asSlice() != "A".asSlice(); // false
+
+// String:
+"A" == "A"; // true
+"A" != "A"; // false
+
+// map<K, V>:
+let map1: map<Int, Int> = emptyMap();
+let map2: map<Int, Int> = emptyMap();
+map1 == map2; // true
+map1 != map2; // false
+
+// Optionals and null values themselves
+let nullable: Int? = null;
+nullable == null; // true
+null == null;     // true
+nullable != null; // false
+null != null;     // false
+
+let anotherNullable: Int? = 5;
+nullable == anotherNullable; // false
+nullable != anotherNullable; // true
+```
+
+### Bitwise AND, `&` {#binary-bitwise-and}
+
+Binary ampersand (_bitwise AND_) operator `&{:tact}` applies a [bitwise AND](https://en.wikipedia.org/wiki/Bitwise_operation#AND), which performs the [logical AND](#binary-logical-and) operation on each pair of the corresponding bits of operands. This is useful when we want to clear selected bits off a number, where each bit represents an individual flag or a boolean state, which makes it possible to "store" up to $257$ boolean values per integer, as all integers in Tact are $257$-bit signed.
+
+Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two & 1; // 0
+4 & 1;   // 0
+3 & 1;   // 1
+1 & 1;   // 1
+
+255 & 0b00001111;        // 15
+0b11111111 & 0b00001111; // 15
+```
+
+:::note
+
+  [Bitwise AND - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#AND)\
+  [Bit manipulation - Wikipedia](https://en.wikipedia.org/wiki/Bit_manipulation)
+
+:::
+
+### Bitwise XOR, `^` {#binary-bitwise-xor}
+
+Binary caret (_bitwise XOR_) operator `^{:tact}` applies a [bitwise XOR](https://en.wikipedia.org/wiki/Bitwise_operation#XOR), which performs the [logical exclusive OR](https://en.wikipedia.org/wiki/Exclusive_or) operation on each pair of the corresponding bits of operands. The result in each position is $1$ if only one of the bits is $1$, but will be $0$ if both are $0$ or both are $1$. In this it performs the comparison of two bits, giving $1$ if the two bits are different, and $0$ if they are the same.
+
+It is useful for inverting selected bits of an operand (also called toggle or flip), as any bit may be toggled by "XORing" it with $1$.
+
+Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two ^ 3; // 1
+4 ^ 1;   // 0
+3 ^ 1;   // 3
+1 ^ 1;   // 0
+
+255 ^ 0b00001111;        // 240
+0b11111111 ^ 0b00001111; // 240
+```
+
+:::note
+
+  [Bitwise XOR - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#XOR)\
+  [Bit manipulation - Wikipedia](https://en.wikipedia.org/wiki/Bit_manipulation)
+
+:::
+
+### Bitwise OR, `|` {#binary-bitwise-or}
+
+Binary bar (_bitwise OR_) operator `|{:tact}` applies a [bitwise OR](https://en.wikipedia.org/wiki/Bitwise_operation#OR), which performs the [logical OR](#binary-logical-or) operation on each pair of the corresponding bits of operands. This is useful when we want to apply a specific [bitmask](https://en.wikipedia.org/wiki/Mask_(computing)).
+
+For example, _bitwise OR_ is commonly used in Tact to [combine base modes with optional flags](/book/message-mode#combining-modes-with-flags) by masking specific bits to $1$ in order to construct a target [message `mode`](/book/message-mode).
+
+Can only be applied to values of type [`Int{:tact}`][int]:
+
+```tact
+let two: Int = 2;
+two | 1; // 3
+4 | 1;   // 5
+3 | 1;   // 3
+1 | 1;   // 1
+
+255 | 0b00001111;        // 255
+0b11111111 | 0b00001111; // 255
+```
+
+:::note
+
+  [Bitwise OR - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#OR)\
+  [Bit manipulation - Wikipedia](https://en.wikipedia.org/wiki/Bit_manipulation)
+
+:::
+
+### Logical AND, `&&` {#binary-logical-and}
+
+Binary logical AND ([logical conjunction](https://en.wikipedia.org/wiki/Logical_conjunction)) operator `&&{:tact}` returns `true{:tact}` if both operands are `true{:tact}`, and `false{:tact}` otherwise. It's short-circuited, meaning that it would immediately evaluate the whole expression as `false{:tact}` if the left operand is `false{:tact}`, without evaluating the right one.
+
+Can only be applied to values of type [`Bool{:tact}`][bool]:
+
+```tact
+let iLikeTact: Bool = true;
+iLikeTact && true;  // true, evaluated both operands
+iLikeTact && false; // false, evaluated both operands
+false && iLikeTact; // false, didn't evaluate iLikeTact
+```
+
+### Logical OR, `||` {#binary-logical-or}
+
+Binary logical OR ([logical disjunction](https://en.wikipedia.org/wiki/Logical_disjunction)) operator `||{:tact}` returns `false{:tact}` only if both operands are `false{:tact}`, and `true{:tact}` otherwise. It's short-circuited, meaning that it would immediately evaluate the whole expression as `true{:tact}` if the left operand is `true{:tact}`, without evaluating the right one.
+
+Can only be applied to values of type [`Bool{:tact}`][bool]:
+
+```tact
+let iLikeSnails: Bool = false;
+iLikeSnails || true;  // true, evaluated both operands
+iLikeSnails || false; // false, evaluated both operands
+true || iLikeSnails;  // true, didn't evaluate iLikeSnails
+```
+
+## Ternary, `?:` {#ternary}
+
+Conditional (_ternary_) operator is the only Tact operator that takes three operands: a condition followed by a question mark (`?{:tact}`), then an expression to execute if the condition is evaluated to `true{:tact}` followed by a colon (`:{:tact}`), and finally the expression to execute if the condition is evaluated to `false{:tact}`. This operator is frequently used as an alternative to an [`if...else{:tact}`](/book/statements#if-else) statement.
+
+Condition must resolve to type [`Bool{:tact}`][bool]:
+
+```tact
+// condition
+// ↓
+true ? "incredibly so" : "absolutely not"; // "incredibly so"
+//     ---------------   ----------------
+//     ↑                 ↑
+//     |                 alternative, when condition is false
+//     |
+//     consequence, when condition is true
+
+2 + 2 == 4 ? true : false; // true
+```
+
+Ternary operator is the only operator with right associativity, besides [assignment-related ones](#assignment). This means that in ambiguous situations Tact would prefer the longest matching sequence. In short, this makes bracket-less nesting of ternary operators possible, but only for alternative cases (the part that comes after the colon sign `:{:tact}`):
+
+```tact
+// don't need additional parentheses for alternative cases
+false ? 1 : (false ? 2 : 3); // 3
+false ? 1 : false ? 2 : 3;   // also 3
+false ? 1 : true ? 2 : 3;    // 2
+
+// need additional parentheses for consequence cases (parts in-between ? and :)
+false ? (false ? 1 : 2) : 3; // 3
+false ? false ? 1 : 2 : 3;   // SYNTAX ERROR!
+true  ? (false ? 1 : 2) : 3; // 2
+```
+
+## Assignment, `=` {#assignment}
+
+Assignment operator `={:tact}` is used to assign a value to a variable, or to a property of a [Message](/book/structs-and-messages#messages) or a [Struct](/book/structs-and-messages#structs). The assignment is a statement and it doesn't return a value.
+
+```tact
+let someVar: Int = 5;    // assignment operator = is used here...
+someVar = 4;             // ...and here
+someVar = (someVar = 5); // SYNTAX ERROR!
+```
+
+### Augmented assignment
+
+Augmented (or compound) assignment operators such as `+={:tact}` combine an operation with an [assignment](#assignment). The augmented assignment is a statement and it doesn't return a value.
+
+Augmented assignments are semantically equivalent to regular assignments, but with an operation:
+
+```tact
+let value: Int = 5;
+
+// this:
+value += 5;
+// is equivalent to this:
+value = value + 5;
+```
+
+List of augmented assignment operators:
+
+- `+={:tact}`, which uses [addition operator `+{:tact}`](#binary-add). Can only be applied to values of type [`Int{:tact}`][int].
+- `-={:tact}`, which uses [subtraction operator `-{:tact}`](#binary-subtract). Can only be applied to values of type [`Int{:tact}`][int].
+- `*={:tact}`, which uses [multiplication operator `*{:tact}`](#binary-multiply). Can only be applied to values of type [`Int{:tact}`][int].
+- `/={:tact}`, which uses [division operator `/{:tact}`](#binary-divide). Can only be applied to values of type [`Int{:tact}`][int].
+- `%={:tact}`, which uses [modulo operator `%{:tact}`](#binary-modulo). Can only be applied to values of type [`Int{:tact}`][int].
+- `&={:tact}`, which uses [bitwise AND operator `&{:tact}`](#binary-bitwise-and). Can only be applied to values of type [`Int{:tact}`][int].
+- `^={:tact}`, which uses [bitwise XOR operator `^{:tact}`](#binary-bitwise-xor). Can only be applied to values of type [`Int{:tact}`][int].
+- `|={:tact}`, which uses [bitwise OR operator `|{:tact}`](#binary-bitwise-or). Can only be applied to values of type [`Int{:tact}`][int].
+
+```tact
+let value: Int = 5;
+
+// +=
+value + 5;         // adds 5
+value = value + 5; // adds 5 and assigns result back
+value += 5;        // also adds 5 and assigns result back
+
+// -=
+value - 5;         // subtracts 5
+value = value - 5; // subtracts 5 and assigns result back
+value -= 5;        // also subtracts 5 and assigns result back
+
+// *=
+value * 5;         // multiplies by 5
+value = value * 5; // multiplies by 5 and assigns result back
+value *= 5;        // also multiplies by 5 and assigns result back
+
+// /=
+value / 5;         // divides by 5
+value = value / 5; // divides by 5 and assigns result back
+value /= 5;        // also divides by 5 and assigns result back
+
+// %=
+value % 5;         // gets modulo by 5
+value = value % 5; // gets modulo by 5 and assigns result back
+value %= 5;        // also gets modulo by 5 and assigns result back
+
+// &=
+value & 5;         // bitwise ANDs 5
+value = value & 5; // bitwise ANDs 5 and assigns result back
+value &= 5;        // also bitwise ANDs 5 and assigns result back
+
+// ^=
+value ^ 5;         // bitwise XORs 5
+value = value ^ 5; // bitwise XORs 5 and assigns result back
+value ^= 5;        // also bitwise XORs 5 and assigns result back
+
+// |=
+value | 5;         // bitwise ORs 5
+value = value | 5; // bitwise ORs 5 and assigns result back
+value |= 5;        // also bitwise ORs 5 and assigns result back
+```
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[cell]: /book/cells#cells
+[slice]: /book/cells#slices
