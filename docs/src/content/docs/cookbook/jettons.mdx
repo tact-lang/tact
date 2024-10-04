@@ -2,9 +2,14 @@
 title: Fungible Tokens (Jettons)
 ---
 
-This page lists common examples of working with [jettons](https://docs.ton.org/develop/dapps/asset-processing/jettons).
+This page lists common examples of working with [jettons](https://docs.ton.org/develop/dapps/asset-processing/jettons) and [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md) related of knowledges.
 
-## Accepting jetton transfer
+- Accepting Jetton Transfer
+- Sending Jetton Transfer
+- Burning Jetton
+- USDT Jetton Operations
+
+## Accepting Jetton Transfer
 
 Transfer notification message have the following structure.
 
@@ -25,10 +30,12 @@ Use [receiver](/book/receive) function to accept token notification message.
 
 :::
 
-Validation can be done using jetton wallet state init and calculating jetton address.
-Note, that notifications are coming from YOUR contract's jetton wallet, so [`myAddress()`](/ref/core-common#myaddress) should be used in owner address field.
-Wallet initial data layout is shown below, but sometimes it can differ.
-Note that `myJettonWalletAddress` may also be stored in contract storage to use less gas in every transaction.
+
+Validation can be performed using the jetton wallet's state initialization and by calculating the jetton address. Note that notifications come from **your** contract's jetton wallet, so [`myAddress()`](/ref/core-common#myaddress) should be used in the owner address field. 
+
+The wallet's initial data layout is shown below, but it may sometimes vary. Additionally, `myJettonWalletAddress` can be stored in the contract storage to reduce gas usage for each transaction.
+
+
 
 ```tact
 struct JettonWalletData {
@@ -67,10 +74,10 @@ contract Sample {
 }
 ```
 
-## Sending jetton transfer
+## Sending Jetton Transfer
 
-To send jetton transfer use [`send(){:tact}`](/book/send) function.
-Note that `myJettonWalletAddress` may also be stored in contract storage to use less gas in every transaction.
+To send a jetton transfer, use the [`send(){:tact}`](/book/send) function. Note that `myJettonWalletAddress` can also be stored in the contract storage to reduce gas usage for each transaction. The less on-chain computing required, the less gas you spend each time this transaction is executed.
+
 
 ```tact
 message(0xf8a7ea5) JettonTransfer {
@@ -101,7 +108,7 @@ receive("send") {
 }
 ```
 
-## Burning jetton
+## Burning Jetton
 
 ```tact
 message(0x595f07bc) JettonBurn {
@@ -125,7 +132,7 @@ receive("burn") {
 }
 ```
 
-## USDT jetton operations
+## USDT Jetton Operations
 
 Operations with USDT (on TON) remain the same, except that the  `JettonWalletData` will have the following structure:
 
