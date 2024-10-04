@@ -128,6 +128,7 @@ contract Treasure {
 ## Getter Functions
 
 Getter functions define getters on smart contracts and can be defined only within a contract or trait.
+Getter functions cannot be used to read some other contract's state: if you need to obtain some data you need to do that by sending a message with a request and define a receiver which would process the request answer.
 
 ```tact
 contract Treasure {
@@ -136,3 +137,33 @@ contract Treasure {
     }
 }
 ```
+
+As other functions in TVM contracts, getters have their *unique* associated function selectors which are some integers ids (called *method IDs*).
+Some of those integers are reserved for internal puproses, e.g. -4, -3, -2, -1, 0 are reserved IDs and 
+regular functions (internal to a contract and not callable from outside) are usually numbered by subsequent (small) integers starting from 1.
+By default, getters have associated method IDs that are derived from their names using the [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) algorithm as follows:
+`crc16(<function_name>) & 0xffff) | 0x10000`.
+Sometimes this can get you the same method ID for getters with different names.
+If this happens, you can either rename some of the contract's getters or
+specify the getter's method ID manually as a compile-time expression like so:
+
+```tact
+contract ManualMethodId {
+    const methodId: Int = 16384 + 42;
+
+    get(self.methodId) fun methodId1(): Int {
+        return self.methodId;
+    }
+
+    get(crc32("crc32") + 42 & 0x3ffff | 0x4000)
+    fun methodId2(): Int {
+        return 0;
+    }
+}
+```
+
+Note that you *cannot* use method IDs that are reserved by TVM and you cannot use some initial positive integers because those will be used as function selectors by the compiler.
+
+User-specified method IDs are 19-bit signed integers, so you can use integers from $2^{-18}$ to $-5$ and from $2^14$ to $2^18 - 1$.
+
+Also, a few method IDs are reserved for the usage by the getters the Tact compiler can insert during compilation, those are 113617, 115390, 121275.

@@ -144,6 +144,7 @@ export type FunctionDescription = {
     name: string;
     origin: ItemOrigin;
     isGetter: boolean;
+    methodId: number | null;
     isMutating: boolean;
     isOverride: boolean;
     isVirtual: boolean;

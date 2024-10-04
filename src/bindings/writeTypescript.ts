@@ -600,9 +600,19 @@ export function writeTypescript(
                             writeArgumentToStack(a.name, a.type, w);
                         }
                     }
-                    w.append(
-                        `let source = (await provider.get('${g.name}', builder.build())).stack;`,
-                    );
+                    if (g.methodId) {
+                        // 'as any' is used because Sandbox contracts's getters can be called
+                        // using the function name or the method id number
+                        // but the ContractProvider's interface get methods can only
+                        // take strings (function names)
+                        w.append(
+                            `let source = (await provider.get(${g.methodId} as any, builder.build())).stack;`,
+                        );
+                    } else {
+                        w.append(
+                            `let source = (await provider.get('${g.name}', builder.build())).stack;`,
+                        );
+                    }
                     if (g.returnType) {
                         writeGetParser("result", g.returnType, w);
                         w.append(`return result;`);
