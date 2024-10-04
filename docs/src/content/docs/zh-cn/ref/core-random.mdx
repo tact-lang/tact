@@ -1,0 +1,44 @@
+---
+title: Random number generation
+---
+
+Random number generation for Tact smart contracts.
+
+## random
+
+```tact
+fun random(min: Int, max: Int): Int;
+```
+
+Generates and returns a new pseudo-random unsigned [`Int{:tact}`][int] value `x` in the provided semi-closed interval: `min` $≤$ `x` $<$ `max` or `min` $≥$ `x` $>$ `max`, if both `min` and `max` are negative. Note, that `max` value is never included in the interval.
+
+Usage examples:
+
+```tact
+random(42, 43); // 42, always
+random(0, 42);  // 0-41, but never a 42
+```
+
+## randomInt
+
+```tact
+fun randomInt(): Int;
+```
+
+Generates and returns a new pseudo-random unsigned $256$-bit [`Int{:tact}`][int] value `x`.
+
+The algorithm works as follows: if `r` is the old value of the random seed considered a $32$-byte array (by constructing the big-endian representation of an unsigned $256$-bit [`Int{:tact}`][int]), then its `sha512(r){:tact}` is computed. The first $32$ bytes of this hash are stored as the new value `r'` of the random seed, and the remaining $32$ bytes are returned as the next random value `x`.
+
+Usage example:
+
+```tact
+let allYourRandomBelongsToUs: Int = randomInt(); // ???, it's random :)
+```
+
+:::caution
+
+  Advanced functions for working with random numbers are listed on a specialized page: [Advanced APIs](/ref/core-advanced).
+
+:::
+
+[int]: /book/integers
