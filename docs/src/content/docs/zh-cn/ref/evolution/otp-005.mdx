@@ -1,0 +1,35 @@
+---
+title: "OTP-005: Argument-addressable contracts"
+sidebar:
+  order: 5
+---
+
+This proposal defines a way to address contracts by their arguments instead of their initial data.
+
+## Motivation
+
+Init data could be very different from the arguments. This allows us to avoid executing untrusted code from another contract in the context of a current one or executing TVM code off-chain for deployment that could be risky in some cases.
+
+## Specification
+
+This specification defines a way to write arguments to an init data cell to be read by the contract code during deployment.
+
+### Prefix
+
+The prefix is defined by a smart contract itself, but by default, it is assumed as a `single zero bit`. Prefix is used by the contract code to distinguish between deployed and not-deployed state.
+
+### Arguments encoding
+
+Arguments are encoded using [Auto Encoder](/ref/evolution/otp-004).
+
+### Contract Requirements
+
+- Contract MUST expose `lazy_deployment_completed` get method that returns `true` if the contract is deployed and `false` otherwise.
+- Contract MUST expose `org.ton.deploy.lazy.v0` interface.
+
+## Drawbacks
+
+- Contracts could be in a semi-deployed state
+- There are multiple ways to write arguments that would end up in a different init data and a different address
+- You can deploy a pre-initialized contract and it would have a different address while being fully functional
+- Unpredictable gas usage on deployment. Deployments are usually expensive, but this proposal makes it even more expensive.
