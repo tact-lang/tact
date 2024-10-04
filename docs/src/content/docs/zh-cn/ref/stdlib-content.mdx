@@ -1,0 +1,38 @@
+---
+title: "@stdlib/content"
+---
+
+Provides a function for encoding an off-chain link from a [`String{:tact}`][p] to a [`Cell{:tact}`][cell].
+
+To use this library, import `@stdlib/content`:
+
+```tact
+import "@stdlib/content";
+```
+
+## Functions
+
+### createOffchainContent
+
+```tact
+fun createOffchainContent(link: String): Cell;
+```
+
+Encodes an off-chain `link` from a [`String{:tact}`][p] to a [`Cell{:tact}`][cell].
+
+Source code:
+
+```tact
+fun createOffchainContent(link: String): Cell {
+    let builder: StringBuilder = beginStringFromBuilder(beginCell().storeUint(0x01, 8));
+    builder.append(link);
+    return builder.toCell();
+}
+```
+
+## Sources
+
+- [content.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/content.tact)
+
+[p]: /book/types#primitive-types
+[cell]: /book/cells#cells
