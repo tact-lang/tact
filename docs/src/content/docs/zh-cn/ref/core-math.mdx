@@ -1,0 +1,279 @@
+---
+title: Math
+---
+
+Various math helper functions.
+
+## min
+
+```tact
+fun min(x: Int, y: Int): Int;
+```
+
+Computes and returns the [minimum](https://en.wikipedia.org/wiki/Maximum_and_minimum) of two [`Int{:tact}`][int] values `x` and `y`.
+
+Usage examples:
+
+```tact
+min(1, 2);        // 1
+min(2, 2);        // 2
+min(007, 3);      // 3
+min(0x45, 3_0_0); // 69, nice
+//  ↑     ↑
+//  69    300
+```
+
+## max
+
+```tact
+fun max(x: Int, y: Int): Int;
+```
+
+Computes and returns the [maximum](https://en.wikipedia.org/wiki/Maximum_and_minimum) of two [`Int{:tact}`][int] values `x` and `y`.
+
+Usage examples:
+
+```tact
+max(1, 2);        // 2
+max(2, 2);        // 2
+max(007, 3);      // 7
+max(0x45, 3_0_0); // 300
+//  ↑     ↑
+//  69    300
+```
+
+## abs
+
+```tact
+fun abs(x: Int): Int
+```
+
+Computes and returns the [absolute value](https://en.wikipedia.org/wiki/Absolute_value) of the [`Int{:tact}`][int] value `x`.
+
+Usage examples:
+
+```tact
+abs(42);        // 42
+abs(-42);       // 42
+abs(-(-(-42))); // 42
+```
+
+## log
+
+```tact
+fun log(num: Int, base: Int): Int;
+```
+
+Computes and returns the [logarithm](https://en.wikipedia.org/wiki/Logarithm) of a number `num` $> 0$ to the base `base` $≥ 1$. Results are [rounded down](https://en.wikipedia.org/wiki/Rounding#Rounding_down). Passing a non-positive `num` value or a `base` less than $1$ throws an error with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage examples:
+
+```tact
+log(1000, 10); // 3, as 10^3 is 1000
+//  ↑     ↑             ↑       ↑
+//  num   base          base    num
+
+log(1001, 10);  // 3
+log(999, 10);   // 2
+try {
+  log(-1000, 10); // throws exit code 5 because of the non-positive num
+}
+log(1024, 2);   // 10
+try {
+  log(1024, -2);  // throws exit code 5 because of the base less than 1
+}
+```
+
+:::note
+
+  Note, that if you only need to obtain logarithms to the base $2$, use the [`log2(){:tact}`](#log2) function, as it's more gas-efficient.
+
+:::
+
+## log2
+
+```tact
+fun log2(num: Int): Int;
+```
+
+Similar to [`log(){:tact}`](#log), but sets the `base` to $2$.
+
+Usage example:
+
+```tact
+log2(1024); // 10, as 2^10 is 1024
+//   ↑                ↑       ↑
+//   num              base₂   num
+```
+
+:::note
+
+  In order to reduce gas usage, prefer using this function over calling [`log(){:tact}`](#log) when you only need to obtain logarithms to the base $2$.
+
+:::
+
+## pow
+
+```tact
+fun pow(base: Int, exp: Int): Int;
+```
+
+Computes and returns the [exponentiation](https://en.wikipedia.org/wiki/Exponentiation) involving two numbers: the `base` and the exponent (or _power_) `exp`. Exponent `exp` must be non-negative, otherwise an error with [exit code 5](/book/exit-codes#5) will be thrown: `Integer out of expected range`.
+
+Note, that this function works both at run-time and at [compile-time](/ref/core-comptime).
+
+Usage example:
+
+```tact
+contract Example {
+    // Persistent state variables
+    p23: Int = pow(2, 3); // raises 2 to the 3rd power, which is 8
+    one: Int = pow(5, 0); // raises 5 to the power 0, which always produces 1
+                          // works at compile-time!
+
+    // Internal message receiver, which accepts message ExtMsg
+    receive() {
+        pow(self.p23, self.one + 1); // 64, works at run-time too!
+        pow(0, -1);                  // ERROR! Exit code 5: Integer out of expected range
+    }
+}
+```
+
+:::note
+
+  Note, that if you only need to obtain powers of $2$, use the [`pow2(){:tact}`](#pow2) function, as it's more gas-efficient.
+
+:::
+
+:::note
+
+  List of functions, that only work at compile-time: [API Comptime](/ref/core-comptime).
+
+:::
+
+## pow2
+
+```tact
+fun pow2(exp: Int): Int;
+```
+
+Similar to [`pow(){:tact}`](#pow), but sets the `base` to $2$. Works both at run-time and at [compile-time](/ref/core-comptime).
+
+Usage examples:
+
+```tact
+contract Example {
+    // Persistent state variables
+    p23: Int = pow2(3); // raises 2 to the 3rd power, which is 8
+    one: Int = pow2(0); // raises 2 to the power 0, which always produces 1
+                        // works at compile-time!
+
+    // Internal message receiver, which accepts message ExtMsg
+    receive() {
+        pow2(self.one + 1); // 4, works at run-time too!
+        pow2(-1);           // ERROR! Exit code 5: Integer out of expected range
+    }
+}
+```
+
+:::note
+
+  In order to reduce gas usage, prefer using this function over calling [`pow(){:tact}`](#pow) when you only need to obtain powers of $2$.
+
+:::
+
+:::note
+
+  List of functions, that only work at compile-time: [API Comptime](/ref/core-comptime).
+
+:::
+
+## checkSignature
+
+```tact
+fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool;
+```
+
+Checks the [Ed25519][ed] `signature` of the $256$-bit unsigned [`Int{:tact}`][int] `hash` using a `public_key`, represented by a $256$-bit unsigned [`Int{:tact}`][int] too. The signature must contain at least $512$ bits of data, but only the first $512$ bits are used.
+
+Returns `true{:tact}` if the signature is valid, `false{:tact}` otherwise.
+
+Usage example:
+
+```tact {19-24}
+message ExtMsg {
+    signature: Slice;
+    data: Cell;
+}
+
+contract Showcase {
+    // Persistent state variables
+    pub: Int as uint256; // public key as an 256-bit unsigned Int
+
+    // Constructor function init(), where all the variables are initialized
+    init(pub: Int) {
+        self.pub = pub; // storing the public key upon contract initialization
+    }
+
+    // External message receiver, which accepts message ExtMsg
+    external(msg: ExtMsg) {
+        let hash: Int = beginCell().storeRef(msg.data).endCell().hash();
+        let check: Bool = checkSignature(hash, msg.signature, self.pub);
+        //                               ----  -------------  --------
+        //                               ↑     ↑              ↑
+        //                               |     |              public_key, stored in our contract
+        //                               |     signature, obtained from the received message
+        //                               hash, calculated using the data from the received message
+        // ... follow-up logic ...
+    }
+}
+```
+
+## checkDataSignature
+
+```tact
+fun checkDataSignature(data: Slice, signature: Slice, public_key: Int): Bool;
+```
+
+Checks the [Ed25519][ed] `signature` of the `data` using a `public_key`, similar to [`checkSignature(){:tact}`](#checksignature). If the bit length of `data` is not divisible by $8$, this functions throws an error with [exit code 9](/book/exit-codes#9): `Cell underflow`. Verification itself is being done indirectly: on a [SHA-256][sha-2] hash of the `data`.
+
+Returns `true{:tact}` if the signature is valid, `false{:tact}` otherwise.
+
+Usage example:
+
+```tact
+let data: Slice = ...;
+let signature: Slice = ...;
+let publicKey: Int = ...;
+
+let check: Bool = checkSignature(data, signature, publicKey);
+```
+
+## sha256
+
+```tact
+fun sha256(data: Slice): Int;
+fun sha256(data: String): Int;
+```
+
+Computes and returns the [SHA-256][sha-2] hash as an $256$-bit unsigned [`Int{:tact}`][int] from a passed [`Slice{:tact}`][slice] or [`String{:tact}`][p] `data`.
+
+In case `data` is a [`String{:tact}`][p] it should have a number of bits divisible by $8$, and in case it's a [`Slice{:tact}`][slice] it must **also** have no references (i.e. only up to 1023 bits of data in total).
+
+This function tries to resolve constant string values in [compile-time](/ref/core-comptime) whenever possible.
+
+Usage examples:
+
+```tact
+sha256(beginCell().asSlice());
+sha256("Hello, world!"); // will be resolved in compile-time
+sha256(someVariableElsewhere); // will try to resolve at compile-time,
+                               // and fallback to run-time evaluation
+```
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[slice]: /book/cells#slices
+[ed]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
+[sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
