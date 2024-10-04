@@ -1,0 +1,63 @@
+---
+title: VS Code extension
+---
+
+Provides extensive support for Tact language in the Visual Studio Code:
+
+- Syntax highlighting
+- Error highlighting
+- Snippets
+- Information on hover
+- Code completion for all variables, functions, global parameters and unique types of Tact
+- Code completion for all contracts / libraries in the current file and all referenced imports
+- Formatting
+
+Extension on the VS Code Marketplace: [Tact Language Support for TON blockchain](https://marketplace.visualstudio.com/items?itemName=KonVik.tact-lang-vscode)
+
+## Installation manual
+
+1. Open Visual Studio Code (shortly referred to as VS Code).
+
+2. Navigate to the Extensions view by clicking on the Extensions icon in the Activity Bar on the side of the window. It looks like a square within a square.
+
+3. In the Extensions view input box, type "Tact Language". You should see a dropdown with the extension "Tact Language" provided by KonVik. Probably, you would see the similar extension provided by TON Community, but that one is deprecated and **we should use KonVik's one instead**.
+
+4. Click on the install button next to the extension name. Wait until the installation is complete.
+
+5. Once the extension is installed, you might need to reload VS Code. If necessary, there will be a Reload button next to the extension. Click on this button if it appears.
+
+6. The Tact Language extension should now be installed on your VS Code.
+
+## Enabling `Format on Save` {#format-on-save}
+
+This guide will provide instructions on how to enable the Format on Save feature for the Tact Language extension in VS Code using the Command Palette and editing the JSON settings file.
+
+1. Type `Preferences: Open Settings (JSON)` in the command palette. This will open your `settings.json` file.
+
+2. Editing JSON Settings
+
+   - You'll see a JSON object. We're going to add some properties to this object to enable format on save for the Tact Language extension.
+
+   - Add the following lines inside the JSON object:
+
+     ```json
+     {
+     	"[tact]": {
+     		"editor.formatOnSave": true,
+     		"editor.defaultFormatter": "KonVik.tact-lang-vscode"
+     	}
+     }
+     ```
+
+   - This will enable format on save (`"editor.formatOnSave": true`) and set the default formatter for Tact files (`"[tact]": {"editor.defaultFormatter": "KonVik.tact-lang-vscode"}`) to the Tact Language extension.
+
+3. Saving and Closing Settings
+   - Save your `settings.json` file after adding these lines (You can press `Ctrl+S` to save).
+   - Close the `settings.json` tab or press `Ctrl+W`.
+
+Your Tact Language VS Code extension should now automatically format your files when you save them. If you don't see these changes take effect immediately, you might need to reload VS Code.
+
+## References and Resources
+
+- [Extension on GitHub](https://github.com/tact-lang/tact-vscode)
+- [Extension on the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=KonVik.tact-lang-vscode)
