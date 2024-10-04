@@ -1,0 +1,9 @@
+---
+title: TypeScript libraries
+---
+
+The Tact language has built-in support for the [@ton/ton](https://github.com/ton-org/ton) and [@ton/core](https://github.com/ton-org/ton-core) TypeScript libraries. The compiler automatically generates code for these libraries, so you can use [@tact-lang/emulator](https://github.com/tact-lang/tact-emulator) or [@ton/sandbox](https://github.com/ton-org/sandbox), that work on top of them.
+
+## Tact contract in TypeScript
+
+The compiler generates files named `{project}_{contract}.ts` for each contract in your [project](/book/config#projects), which contain ready-to-use strongly typed wrappers for working with it in any TypeScript-powered environment: for [testing](/book/debug), [deployments](/book/deploy), etc.
