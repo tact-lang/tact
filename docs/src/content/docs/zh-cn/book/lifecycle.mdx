@@ -1,0 +1,28 @@
+---
+title: Message Lifecycle
+---
+
+There are several stages of message processing by a contract, there are more of them, but we would focus on the most important ones:
+
+## Receive Phase
+
+This phase combines multiple low-level phases. 
+
+It starts by adding a **message value to the contract balance**. The value of an incoming message is the maximum price that a contract can pay for gas to process this message. The contract can overwrite this limit, but it is not recommended and is suitable only for advanced developers since it could lead to a contract being drained. 1 million of gas is the maximum amount that a contract can spend in a single contract which equals 0.4 TON for basechain (currently). If the message value is zero then execution is aborted.
+
+Then some (usually small) amount of nanotons gets subtracted from the contract balance for storage. This means that you can't perfectly predict balance changes and have to adjust your code to this instability.
+
+Then it deploys a contract if it is not deployed yet and the message contains the init package. If the init package isn't present, it will be ignored.
+
+## Compute Phase
+
+This phase executes the code of a smart contract and produces a list of actions or an exception. Currently, only two types of actions are supported: **send message** and **reserve**.
+
+Sending a message could use a fixed value or a dynamic value like **remaining value of a message** - the remaining value of the incoming message. Sending a message could be with a flag `SendIgnoreErrors` that would ignore errors during message sending and would continue to the next action. This flag is useful if you have multiple actions. When sending a message with some value, it first subtracts this value from the incoming value and only then from the contract balance (before processing).
+
+## Action Phase
+
+Actions are executed in sequence, but bear in mind:
+**EXCEPTION DURING PROCESSING ACTIONS WOULDN'T REVERT THE TRANSACTION**
+
+For example, if you subtract 1 ton from a customer's balance and then send an invalid message, that could lead to a situation when the customer's balance is subtracted, but he wouldn't receive it.
