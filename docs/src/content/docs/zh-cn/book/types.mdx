@@ -7,18 +7,18 @@ Every variable, item, and value in Tact programs has a type. They can be:
 - One of the [primitive types](#primitive-types)
 - or [composite types](#composite-types)
 
-Additionally, many of those types [can be made nullable](#optionals).
+Also, many of those types [can be made nullable](/book/defining-types#optionals).
 
 ## Primitive types
 
 Tact supports a number of primitive data types that are tailored for smart contract use:
 
-- [`Int{:tact}`](/book/integers) — all numbers in Tact are $257$-bit signed integers, but [smaller representations](/book/integers#serialization) can be used to reduce storage costs.
-- [`Bool{:tact}`](#booleans) — classical boolean with `true{:tact}` and `false{:tact}` values.
-- `Address{:tact}` — standard [smart contract address](https://docs.ton.org/learn/overviews/addresses#address-of-smart-contract) in TON Blockchain.
+- Int — all numbers in Tact are 257-bit signed integers, but [smaller representations](/book/integers#serialization) can be used to reduce storage costs.
+- Bool — classical boolean with `true` and `false` values.
+- Address — standard [smart contract address](https://docs.ton.org/learn/overviews/addresses#address-of-smart-contract) in TON Blockchain.
 - [`Cell{:tact}`](/book/cells#cells), [`Builder{:tact}`](/book/cells#builders), [`Slice{:tact}`](/book/cells#slices) — low-level primitives of [TVM][tvm].
 - `String{:tact}` — immutable text strings.
-- `StringBuilder{:tact}` — helper type that allows you to concatenate strings in a gas-efficient way.
+- StringBuilder — helper type that allows you to concatenate strings in a gas-efficient way.
 
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 
@@ -41,7 +41,7 @@ Persisting bools to state is very space-efficient, as they only take 1-bit. Stor
 Using individual means of storage often becomes cumbersome, so there are ways to combine multiple [primitive types](#primitive-types) together to create composite types:
 
 - [Maps](#maps) — associations of keys with values.
-- [Structs and Messages](#structs-and-messages) — data structures with typed fields.
+- Composite types, such as [Structs and Messages](#structs-and-messages)
 - [Optionals](#optionals) — `null{:tact}` values for variables or fields of [Structs and Messages](#structs-and-messages).
 
 In addition to the composite types above, Tact provides a special type constructor [`bounced<T>{:tact}`](/book/bounced), which can only be specified in [bounced message receivers](/book/bounced).
@@ -50,9 +50,11 @@ Note, while [contracts](#contracts) and [traits](#traits) are also considered a 
 
 ### Maps
 
-The type [`map<K, V>{:tact}`][maps] is used as a way to associate keys of type `K{:tact}` with corresponding values of type `V{:tact}`.
+The type `map<k, v>{:tact}` is used as a way to associate data with corresponding keys.
 
-Example of a [`map<K, V>{:tact}`][maps]:
+contract HelloWorld {
+    counters: map<Int, Int>;
+}
 
 ```tact
 let mapExample: map<Int, Int> = emptyMap(); // empty map with Int keys and values
@@ -60,13 +62,13 @@ let mapExample: map<Int, Int> = emptyMap(); // empty map with Int keys and value
 
 Learn more about them on a dedicated page: [Maps][maps].
 
-[maps]: /book/maps
+[[Maps](#maps)]: /book/maps
 
 ### Structs and Messages
 
-[Structs][structs] and [Messages][messages] are two main ways of combining multiple [primitive types](#primitive-types) into a composite one.
+Possible key types:
 
-Example of a [Struct][structs]:
+[Struct](/book/defining-types#structs) example:
 
 ```tact
 struct Point {
@@ -75,22 +77,22 @@ struct Point {
 }
 ```
 
-Example of a [Message][messages]:
+[Message](/book/defining-types#messages) example:
 
 ```tact
 // Custom numeric id of the Message
 message(0x11111111) SetValue {
     key: Int;
-    value: Int?; // Optional, Int or null
+    value: Int?; // Optional
     coins: Int as coins; // Serialization into TL-B types
 }
 ```
 
 Learn more about them on a dedicated page: [Structs and Messages][s-n-m].
 
-[s-n-m]: /book/structs-and-messages
-[structs]: /book/structs-and-messages#structs
-[messages]: /book/structs-and-messages#messages
+[s-n-m]: Address
+[structs]: [Struct](/book/defining-types#structs)
+[messages]: [Message](/book/defining-types#messages)
 
 ### Optionals
 
@@ -102,43 +104,39 @@ Example of an [optional][optionals]:
 let opt: Int? = null; // Int or null, with explicitly assigned null
 ```
 
-Learn more about them on a dedicated page: [Optionals][optionals].
+Learn more about them on a dedicated page about [defining composite types](/book/defining-types).
 
 [optionals]: /book/optionals
 
 ### Contracts
 
-[Contracts](/book/contracts) in Tact serve as the main entrypoints of smart contracts of TON blockchain. They hold all [functions](/book/functions), [getters](/book/functions#getter-functions), and [receivers](/book/functions#receiver-functions) of a TON contract, and much more.
+Contracts are the main entry of a smart contract on the TON blockchain. It holds all functions, getters, and receivers of a TON contract.
 
 Example of a [contract](/book/contracts):
 
 ```tact
 contract HelloWorld {
-    // Persistent state variable
     counter: Int;
 
-    // Constructor function init(), where all the variables are initialized
     init() {
         self.counter = 0;
     }
 
-    // Internal message receiver, which responds to a string message "increment"
     receive("increment") {
-        self.counter += 1;
+        self.counter = self.counter + 1;
     }
 
-    // Getter function with return type Int
     get fun counter(): Int {
         return self.counter;
     }
 }
 ```
 
-Read more about them on the dedicated page: [Contracts](/book/contracts).
+or [Contracts](#contracts) and [Traits](#traits)
 
 ### Traits
 
-Tact doesn't support classical class inheritance, but instead introduces the concept of _traits_, which can be viewed as abstract contracts (like abstract classes in popular object-oriented languages). They have the same structure as [contracts](#contracts), but can't [initialize persistent state variables](/book/contracts#init-function).
+Tact doesn't support classical class inheritance, but instead introduces the concept of **traits**. They have the same structure as [contracts](#contracts), but can't [initialize persistent state variables](/book/contracts#init-function).
 
 A trait can also let the contract inheriting it to override the behavior of its [functions](/book/functions#virtual-and-abstract-functions) and the value of its [constants](/book/constants#virtual-and-abstract-constants).
 
@@ -146,31 +144,27 @@ Example of a trait [`Ownable{:tact}`](/ref/stdlib-ownable#ownable) from [`@stdli
 
 ```tact
 trait Ownable {
-    // Persistent state variable, which cannot be initialized in the trait
     owner: Address;
 
-    // Internal function
     fun requireOwner() {
         nativeThrowUnless(132, context().sender == self.owner);
     }
 
-    // Getter function with return type Address
     get fun owner(): Address {
         return self.owner;
     }
 }
 ```
 
-And the [contract](#contracts) that uses trait [`Ownable{:tact}`](/ref/stdlib-ownable#ownable):
+And the contract that uses trait:
 
 ```tact
 contract Treasure with Ownable {
-    // Persistent state variable, which MUST be defined in the contract
-    owner: Address;
+  owner: Address; // Field from trait MUST be defined in contract itself
 
-    // Constructor function init(), where all the variables are initialized
-    init(owner: Address) {
-        self.owner = owner;
-    }
+  // Here we init the way we need, trait can't specify how you must init owner field
+  init(owner: Address) {
+    self.owner = owner;
+  }
 }
 ```
