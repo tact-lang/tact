@@ -1,25 +1,26 @@
 ---
-title: Book overview
+title: Overview
 ---
 
 import { LinkCard, CardGrid, Steps } from '@astrojs/starlight/components';
 
 Welcome to **The Tact Book** section (or just **The Book**), — an introductory book about the Tact language.
 
-Here are its main contents:
+Here are it's main contents:
 
 <Steps>
 
-1. #### Cheatsheets
+1. #### Guides
 
    [Cheatsheets](/book/cs/from-func) are quick rundowns on Tact syntax and idioms with comparison to other blockchain languages, such as FunC (also on TON) and Solidity (Ethereum blockchain). Use those to transition to Tact as swiftly as possible.
 
-   <CardGrid>
-     <LinkCard
+   <Cards>
+     <Cards.Card
+       arrow
        title="Go to the first cheatsheet"
        href="/book/cs/from-func"
      />
-   </CardGrid>
+   </Cards>
 
 2. #### Book
 
@@ -29,11 +30,12 @@ Here are its main contents:
 
    Book also assumes that you’ve written code in another programming language but doesn’t make any assumptions about which one. We’ve tried to make the material broadly accessible to those from a wide variety of programming backgrounds. We don’t spend a lot of time talking about what programming _is_ or how to think about it. If you’re entirely new to programming, you would be better served by reading a book that specifically provides an introduction to programming.
 
-   <CardGrid>
-     <LinkCard
-       title="Proceed to the Book itself"
-       href="/book/types"
+   <Cards>
+     <Cards.Card
+       arrow
+       title="Go to the Tools"
+       href="/ecosystem/tools/overview"
      />
-   </CardGrid>
+   </Cards>
 
 </Steps>
