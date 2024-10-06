@@ -34,19 +34,16 @@ trait MyTrait {
 }
 
 trait MyAbstractTrait {
-    abstract const MY_DEV_FEE: Int;
+    abstract const MY_DEVFEE: Int;
 }
 ```
 
 Now you can overwrite defaults in the contract:
 
 ```tact
-contract MyContract with
-    MyTrait,
-    MyAbstractTrait, // trailing comma is allowed
-{
+contract MyContract with MyTrait, MyAbstractTrait {
     override const MY_FEE: Int = ton("0.5");
-    override const MY_DEV_FEE: Int = ton("1000");
+    override const MY_DEVFEE: Int = ton("1000");
 }
 ```
 
@@ -68,4 +65,5 @@ trait Treasure {
 contract MyContract with Treasure {
     override const ENABLE_TIMELOCK: Bool = false;
 }
+
 ```
