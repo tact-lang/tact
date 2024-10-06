@@ -6,17 +6,18 @@ TON is a distributed blockchain which means that communication between contracts
 
 ## Receive internal messages
 
-To receive a message of the required type, you need to declare a receiver function, for example, `receive("increment"){:tact}`. This notation means the declaration of a receiver function that will be called when a text with the value `"increment"{:tact}` is sent to the contract. The function body can modify the state of the contract and send messages to other contracts. It is impossible to call a receiver directly. If you need to reuse some logic you can declare a function and call it from the receiver.
+To receive a message of the required type, you need to declare a receiver function, for example, `receive("increment")`. This notation means the declaration of a `receiver` function that will be called when a text with the value `"increment"` is sent to the contract. The function body can modify the state of the contract and send messages to other contracts. It is impossible to call `receiver` directly. If you need to reuse some logic you can declare a function and call it from `receiver`.
 
 There are several receiver functions. All receiver functions are processed in the order they are listed below:
 
-- `receive(){:tact}` - called when an empty message is sent to the contract
-- `receive("message"){:tact}` - called when a text message with a specific comment is sent to the contract
-- `receive(str: String){:tact}` - called when an arbitrary text message is sent to the contract
-- `receive(msg: MyMessage){:tact}` - called when a binary message of type `MyMessage` is sent to the contract
-- `receive(msg: Slice){:tact}` - called when binary message of unknown type is sent to the contract
+- `receive()` - called when an empty message is sent to the contract
+- `receive("message")` - called when a text message with a specific comment is sent to the contract
+- `receive(str: String)` - called when an arbitrary text message is sent to the contract
+- `receive(msg: MyMessage)` - called when a binary message of type `MyMessage` is sent to the contract
+- `receive(msg: Slice)` - called when binary message of unknown type is sent to the contract
 
 ```tact
+
 message MyMessage {
     value: Int;
 }
