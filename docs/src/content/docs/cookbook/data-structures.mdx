@@ -31,8 +31,8 @@ const MaxArraySize: Int = 5_000; // 5,000 entries max, to stay reasonably far fr
 extends mutates fun append(self: Array, item: Int) {
     require(self.length + 1 <= MaxArraySize, "No space in the array left for new items!");
 
-    self.map.set(self.length, item); // set the entry (key-value pair)
-    self.length += 1;                // increase the length field
+    self.m.set(self.length, item); // set the entry (key-value pair)
+    self.length += 1;              // increase the length field
 }
 
 // Extension mutation function for inserting new entries at the given index
@@ -45,13 +45,13 @@ extends mutates fun insert(self: Array, item: Int, idx: Int) {
     let i: Int = self.length; // not a typo, as we need to start from the non-existing place
     while (i > idx) {
         // Note, that we use !! operator as we know for sure that the value would be there
-        self.map.set(i, self.map.get(i - 1)!!);
+        self.m.set(i, self.m.get(i - 1)!!);
         i -= 1;
     }
 
     // And put the new item in
-    self.map.set(idx, item); // set the entry (key-value pair)
-    self.length += 1;        // increase the length field
+    self.m.set(idx, item); // set the entry (key-value pair)
+    self.length += 1;      // increase the length field
 }
 
 // Extension function for getting the value at the given index
@@ -61,7 +61,7 @@ extends fun getIdx(self: Array, idx: Int): Int {
     require(idx < self.length, "Index is out of array bounds!");
 
     // Note, that we use !! operator as we know for sure that the value would be there
-    return self.map.get(idx)!!;
+    return self.m.get(idx)!!;
 }
 
 // Extension function for returning the last value
@@ -69,7 +69,7 @@ extends fun getLast(self: Array): Int {
     require(self.length > 0, "No items in the array!");
 
     // Note, that we use !! operator as we know for sure that the value would be there
-    return self.map.get(self.length - 1)!!;
+    return self.m.get(self.length - 1)!!;
 }
 
 // Extension mutation function for deleting and entry at the given index and returning its value
@@ -79,18 +79,18 @@ extends mutates fun deleteIdx(self: Array, idx: Int): Int {
     require(idx < self.length, "Index is out of array bounds!");
 
     // Remember the value, which is going to be deleted
-    let memorized: Int = self.map.get(idx)!!;
+    let memorized: Int = self.m.get(idx)!!;
 
     // Move all items from idx and including to the left
     let i: Int = idx;
     while (i + 1 < self.length) {
         // Note, that we use !! operator as we know for sure that the value would be there
-        self.map.set(i, self.map.get(i + 1)!!);
+        self.m.set(i, self.m.get(i + 1)!!);
         i += 1;
     }
 
-    self.map.set(self.length - 1, null); // delete the last entry
-    self.length -= 1;                    // decrease the length field
+    self.m.set(self.length - 1, null); // delete the last entry
+    self.length -= 1;                  // decrease the length field
 
     return memorized;
 }
@@ -100,16 +100,16 @@ extends fun deleteLast(self: Array): Int {
     require(self.length > 0, "No items in the array!");
 
     // Note, that we use !! operator as we know for sure that the value would be there
-    let lastItem: Int = self.map.get(self.length - 1)!!;
-    self.map.set(self.length - 1, null); // delete the entry
-    self.length -= 1;                    // decrease the length field
+    let lastItem: Int = self.m.get(self.length - 1)!!;
+    self.m.set(self.length - 1, null); // delete the entry
+    self.length -= 1;                  // decrease the length field
 
     return lastItem;
 }
 
 // Extension function for deleting all items in the Array
 extends mutates fun deleteAll(self: Array) {
-    self.map = emptyMap();
+    self.m = emptyMap();
     self.length = 0;
 }
 
@@ -184,8 +184,8 @@ const MaxStackSize: Int = 5_000; // 5,000 entries max, to stay reasonably far fr
 extends mutates fun push(self: Stack, item: Int) {
     require(self.length + 1 <= MaxStackSize, "No space in the stack left for new items!");
 
-    self.map.set(self.length, item); // set the entry (key-value pair)
-    self.length += 1;                // increase the length field
+    self.m.set(self.length, item); // set the entry (key-value pair)
+    self.length += 1;              // increase the length field
 }
 
 // Extension mutation function for deleting the last entry and returning its value
@@ -193,9 +193,9 @@ extends mutates fun pop(self: Stack): Int {
     require(self.length > 0, "No items in the stack to delete!");
 
     // Note, that we use !! operator as we know for sure that the value would be there
-    let lastItem: Int = self.map.get(self.length - 1)!!;
-    self.map.set(self.length - 1, null); // delete the entry
-    self.length -= 1;                    // decrease the length field
+    let lastItem: Int = self.m.get(self.length - 1)!!;
+    self.m.set(self.length - 1, null); // delete the entry
+    self.length -= 1;                  // decrease the length field
 
     return lastItem;
 }
@@ -205,12 +205,12 @@ extends fun peek(self: Stack): Int {
     require(self.length > 0, "No items in the stack!");
 
     // Note, that we use !! operator as we know for sure that the value would be there
-    return self.map.get(self.length - 1)!!;
+    return self.m.get(self.length - 1)!!;
 }
 
 // Extension function for deleting all items in the Stack
 extends mutates fun deleteAll(self: Stack) {
-    self.map = emptyMap();
+    self.m = emptyMap();
     self.length = 0;
 }
 
@@ -252,8 +252,8 @@ contract MapAsStack with Deployable {
     }
 
     // Getter function for obtaining the stack
-    get fun map(): map<Int, Int> {
-        return self.stack.map;
+    get fun stack(): map<Int as uint16, Int> {
+        return self.stack.m;
     }
 
     // Getter function for obtaining the current length of the stack
@@ -285,10 +285,10 @@ const MaxCircularBufferSize: Int = 5;
 // Extension mutation function for putting new items to the circular buffer
 extends mutates fun put(self: CircularBuffer, item: Int) {
     if (self.length < MaxCircularBufferSize) {
-        self.map.set(self.length, item); // store the item
-        self.length += 1;                // increase the length field
+        self.m.set(self.length, item); // store the item
+        self.length += 1;              // increase the length field
     } else {
-        self.map.set(self.start, item);                        // store the item, overriding previous entry
+        self.m.set(self.start, item);                          // store the item, overriding previous entry
         self.start = (self.start + 1) % MaxCircularBufferSize; // update starting position
     }
 }
@@ -300,25 +300,25 @@ extends mutates fun getIdx(self: CircularBuffer, idx: Int): Int {
 
     if (self.length < MaxCircularBufferSize) {
         // Note, that we use !! operator as we know for sure that the value would be there
-        return self.map.get(idx % self.length)!!;
+        return self.m.get(idx % self.length)!!;
     }
 
     // Return the value rotating around the circular buffer, also guaranteed to be there
-    return self.map.get((self.start + idx) % MaxCircularBufferSize)!!;
+    return self.m.get((self.start + idx) % MaxCircularBufferSize)!!;
 }
 
 // Extension function for iterating over all items in the circular buffer and dumping them to the console
 extends fun printAll(self: CircularBuffer) {
     let i: Int = self.start;
     repeat (self.length) {
-        dump(self.map.get(i)!!); // !! tells the compiler this can't be null
+        dump(self.m.get(i)!!); // !! tells the compiler this can't be null
         i = (i + 1) % MaxCircularBufferSize;
     }
 }
 
 // Extension function for deleting all items in the CircularBuffer
 extends mutates fun deleteAll(self: CircularBuffer) {
-    self.map = emptyMap();
+    self.m = emptyMap();
     self.length = 0;
     self.start = 0;
 }
