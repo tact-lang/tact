@@ -2,12 +2,13 @@
 title: Importing code
 ---
 
-Tact allows you to import Tact and [FunC](https://docs.ton.org/develop/func/overview) code — any given `.tact` or `.fc`/`.func` file can be imported into your project using the `import{:tact}` keyword.
+Tact allows you to import Tact and [FunC](https://docs.ton.org/develop/func/overview) code — any given `.tact` or `.fc`/`.func` file can be imported into your project using an `import{:tact}` keyword.
 
-Additionally, Tact compiler has a versatile set of standard libraries, which come bundled in, but not included right away, see [Standard libraries overview](/ref/standard-libraries).
+Additionally, Tact compiler has a versatile set of standard libraries, which come bundled in, but not included right away, see [Language→Libs→Overview](/language/libs/overview).
 
 :::caution
 
+<Callout type="warning" emoji="⚠️">
   NOTE: All imported code is combined together with yours, so it's important to avoid name collisions and always double-check the sources!
 
 :::
@@ -38,7 +39,7 @@ import "./relative/path/to/the/target/func/file.fc";
 import "../subfolder/imported/func/file.fc";
 ```
 
-But in order to use functions from such file, one has to declare them as `native` functions first. For example, when standard library [@stdlib/dns](/ref/stdlib-dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
+But in order to use functions from such file, one has to declare them as `native` functions first. For example, when standard library [@stdlib/dns](/language/libs/dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
 
 ```tact
 // FunC code located in a file right next to the current Tact one:
@@ -51,4 +52,4 @@ native dnsStringToInternal(str: String): Slice?;
 
 ## Standard libraries
 
-See [Standard libraries overview](/ref/standard-libraries).
+See [Language→Libs→Overview](/language/libs/overview).
