@@ -8,7 +8,7 @@ The following statements can appear anywhere in the [function](/book/functions) 
 
 The `let{:tact}` statement allows local and [block](#block)-scoped variable declaration.
 
-In Tact, declaring a local variable always requires an initial value. However, the type ascription can be omitted and Tact will try to infer it from the initial value:
+Declaring variable always requires an initial value and an explicit type: However, the type ascription can be omitted and Tact will try to infer it from the initial value:
 
 ```tact
 let value: Int = 123; // full declaration with type and value
@@ -43,10 +43,7 @@ dump(_); // COMPILATION ERROR! Cannot access _
 The `return{:tact}` statement ends [function](/book/functions) execution and specifies a value to be returned to the [function](/book/functions) caller.
 
 ```tact
-// Simple wrapper over stdlib function now()
-fun getTimeFromNow(offset: Int): Int {
-    return now() + offset;
-}
+let expiration: Int = now() + 1000; // now() is stdlib static function
 ```
 
 ## Block
@@ -99,7 +96,7 @@ value += 5;     // augmented assignment (one of the many, see below)
 
 Control the flow of the code.
 
-### `if...else` {#if-else}
+### `!=`, `==` - equality operations
 
 :::caution
 
@@ -112,43 +109,30 @@ When executing an `if...else{:tact}` statement, first, the specified condition g
 Regular `if{:tact}` statement:
 
 ```tact
-// condition
-// ↓
-if (true) { // consequence, when condition is true
-    dump(2 + 2);
+if (condition) {
+  doSomething();
 }
 ```
 
 With `else{:tact}` block:
 
 ```tact
-// condition
-// ↓
-if (2 + 2 == 4) {
-    // consequence, when condition is true
-    dump(true);
+if (condition) {
+  doSomething();
 } else {
-    // alternative, when condition is false
-    dump(false);
+  doSomething2();
 }
 ```
 
 With nested `if...else{:tact}`:
 
 ```tact
-// condition
-// ↓
-if (2 + 2 == 3) {
-    // consequence, when condition is true
-    dump("3?");
-//        condition2
-//        ↓
-} else if (2 + 2 == 4) {
-    // another consequence, when condition2 is true
-    dump(true);
+if (condition) {
+  doSomething();
+} else if (condition2) {
+  doSomething2();
 } else {
-    // alternative, when both condition and condition2 are false
-    dump(false);
+  doSomething3();
 }
 ```
 
@@ -237,51 +221,42 @@ try {
 
 Conditionally repeat certain blocks of code multiple times.
 
-### `repeat` {#repeat-loop}
+### Repeat loop
 
-The `repeat{:tact}` loop executes a block of code a specified number of times. The number of repetitions should be given as a positive $32$-bit [`Int{:tact}`][int] in the inclusive range from $1$ to $2^{31} - 1$. If the value is greater, an error with the [exit code 5](/book/exit-codes#5), `Integer out of the expected range` would be thrown.
+The Repeat Loop executes a block of code a specified number of times. The number of repetitions should be given as a positive $32$-bit [`Int{:tact}`][int] in the inclusive range from $1$ to $2^{31} - 1$. If the value is greater, an error with the [exit code 5](/book/exit-codes#5), `Integer out of the expected range` would be thrown.
 
 If the specified number of repetitions is equal to $0$ or any negative number in the inclusive range $-2^{256}$ to $-1$, it is ignored and the code block is not executed at all.
 
 ```tact
-let twoPow: Int = 1;
-
-// Repeat exactly 10 times
-repeat (10) {
-    twoPow *= 2;
+let a: Int = 1;
+repeat(10) {
+  a = a * a;
 }
-
-// Skipped
-repeat (-1) {
-    twoPow *= 3333;
-}
-
-twoPow; // 1024
 ```
 
-### `while` {#while-loop}
+### While loop
 
-The `while{:tact}` loop continues executing the block of code as long as the given condition is `true{:tact}`.
+The While Loop continues executing the block of code as long as the given condition is true.
 
-In the following example, the value of `x` is decremented by $1$ on each iteration, so the loop will run $10$ times:
+In the example, the value of \( x \) is decremented by 1 in each iteration, so the loop will run 10 times.
 
 ```tact
 let x: Int = 10;
-while (x > 0) {
-    x -= 1;
+while(x > 0) {
+  x = x - 1;
 }
 ```
 
 ### `do...until` {#do-until-loop}
 
-The `do...until{:tact}` loop is a post-test loop that executes the block of code at least once, and then continues to execute it until the given condition becomes `true{:tact}`.
+The Until Loop is a post-test loop that executes the block of code at least once and then continues to execute it until the given condition becomes true.
 
-In the following example, the value of `x` is decremented by $1$ on each iteration, so the loop will run $10$ times:
+In the example, the value of � x is decremented by 1 in each iteration, so the loop will run 10 times.
 
 ```tact
 let x: Int = 10;
 do {
-    x -= 1;  // executes this code block at least once
+  x = x - 1;  # do something no matter at least one time
 } until (x <= 0);
 ```
 
@@ -413,4 +388,4 @@ foreach (k, v in genCoolStruct().map) {
 
 :::
 
-[int]: /book/integers
+[initOf]: /book/integers
