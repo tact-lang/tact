@@ -1,5 +1,5 @@
 ---
-title: Deployment
+title: Deploy
 ---
 
 Tact Deployer is a small library that integrates with [TON Verifier](https://verifier.ton.org) that allows you to deploy your contracts safely using your favorite wallet without needing to manage keys or deploy contracts manually. Tact Deployer also automatically verifies your contract's source code and you can be sure that your compiler is not compromised.
@@ -18,7 +18,7 @@ yarn add @tact-lang/deployer
 
 ## How to use
 
-When you build your smart contracts using Tact, it produces a package (\*.pkg) file that has all the required information about the built smart contract. To deploy your smart contract, you need to create a deployer instance, pass your package file to it and provide initial data for your contract.
+When you build your smart contracts using Tact, it produces a package (\*.pkg) file that has all the required information about the built smart contract. To deploy a smart contract in TON you need to send a message with `init` data attached to it.
 
 ```typescript
 import * as fs from 'fs';
