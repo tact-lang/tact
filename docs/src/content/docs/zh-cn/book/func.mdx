@@ -1,22 +1,22 @@
 ---
-title: Compatibility with FunC
+title: Compatibility with func
 ---
 
-Tact itself compiles to FunC and maps all its entities directly to various FunC and TL-B types.
+Tact itself compiles to `func` and maps Tact entities directly to various `func` and `tl-b` types.
 
 ## Convert types
 
-[Primitive types](/book/types#primitive-types) in Tact are directly mapped to FunC ones.
+Primitive types in `tact` are directly mapped to `func` one.
 
-All rules about copying variables are the same. One of the big differences is that there are no visible mutation operators in Tact and most [`Slice{:tact}`](/book/cells#slices) operations mutate variables in place.
+All rules about copying variables are the same. One of the big differences is that there are no visible mutation operators in `tact` and most `Slice` operations mutate variables in place.
 
 ## Convert serialization
 
-Serialization of [Structs](/book/structs-and-messages#structs) and [Messages](/book/structs-and-messages#messages) in Tact is automatic, unlike FunC where you need to define serialization logic manually.
+Tact structs and messages serialization is automatic unlike `func` where you need to define serialization logic manually.
 
-Tact's auto-layout algorithm is greedy. This means that it takes the next variable, calculates its size, and tries to fit it into a current cell. If it doesn't fit, it creates a new cell and continues. All inner structs for auto-layout are flattened before allocation.
+The tact auto-layout algorithm is greedy. This means that it takes the next variable, calculates its size, and tries to fit it into a current cell. If it doesn't fit, it creates a new cell and continues. All inner structs for auto-layout are flattened before allocation.
 
-All optional types are serialized as `Maybe` in TL-B, except for [`Address{:tact}`](/book/types#primitive-types).
+All, except `Address`, optional types are serialized as `Maybe` in `tl-b`.
 
 There is no support for `Either` since it does not define what to pick during serialization in some cases.
 
@@ -146,15 +146,16 @@ contract Contract {
     }
 
 }
+
 ```
 
-## Convert `get`-methods
+## Convert get-methods
 
-You can express everything except `list-style-lists` in Tact that would be compatible with FunC's `get`-methods.
+You can express everything except `list-style-lists` in Tact that would be compatible with `func`'s `get`-methods.
 
 ### Primitive return type
 
-If a `get`-method returns a primitive in FunC, you can implement it the same way in Tact.
+if `get-method` returns a primitive in `func`, you can implement it the same way in the `tact`.
 
 The following code in FunC:
 
@@ -167,6 +168,7 @@ int seqno() method_id {
 Becomes this in Tact:
 
 ```tact
+// Tact
 get fun seqno(): Int {
     return 0;
 }
@@ -174,9 +176,9 @@ get fun seqno(): Int {
 
 ### Tensor return types
 
-In FunC there is a difference between tensor type `(int, int){:func}` and `(int, (int)){:func}`, but for TVM there are no differences, they all represent a stack of two integers.
+In `func` there is a difference between tensor type `(int, int)` and `(int, (int))`, but for TVM there are no differences, they all represent a stack of two ints.
 
-To convert the tensor that returned from a FunC `get`-method, you need to define a [Struct](/book/structs-and-messages#structs) that has the same field types as the tensor and in the same order.
+To convert the tensor that returned from the `func` get-method, you need to define a `struct` that has the same amount of fields as the tensor and in the same order.
 
 The following code in FunC:
 
@@ -196,16 +198,15 @@ struct JettonWalletData {
     walletCode: Cell;
 }
 
-contract JettonWallet {
-    get fun get_wallet_data(): JettonWalletData {
-        return ...;
-    }
+
+get fun get_wallet_data(): JettonWalletData {
+    return ...;
 }
 ```
 
 ### Tuple return type
 
-In FunC if you are returning a tuple, instead of a tensor you need to follow the process for a tensor type, but define the return type of a `get`-method as optional.
+In `func` if you are returning a tuple, instead of a tensor you need to follow the process for tensor type, but define return type of a get method as optional.
 
 The following code in FunC:
 
@@ -223,16 +224,15 @@ struct ContractState {
     valueB: Int;
 }
 
-contract StatefulContract {
-    get fun get_contract_state(): ContractState? {
-        return ...;
-    }
+
+get fun get_contract_state(): ContractState? {
+    return ...;
 }
 ```
 
 ### Mixed tuple and tensor return types
 
-When some of the tensors are a tuple, you need to define a struct as in previous steps and the tuple one must be defined as a separate [Struct](/book/structs-and-messages#structs).
+When some of the tensors are a tuple, you need to define a struct as in previous steps and the tuple one must be defined as a separate struct.
 
 The following code in FunC:
 
@@ -249,22 +249,20 @@ struct ContractStateInner {
     valueA: Int;
     valueB: Int;
 }
-
 struct ContractState {
     valueA: Int;
     valueB: ContractStateInner;
 }
 
-contract StatefulContract {
-    get fun get_contract_state(): ContractState {
-        return ...;
-    }
+
+get fun get_contract_state(): ContractState {
+    return ...;
 }
 ```
 
 ### Arguments mapping
 
-Conversion of `get`-methods arguments is straightforward. Each argument is mapped _as-is_ to FunC one, and each tuple is mapped to a [Struct](/book/structs-and-messages#structs).
+Conversion of get-methods arguments is forward. Each argument is mapped as-is to `func` one, and each tuple is mapped to a struct.
 
 The following code in FunC:
 
@@ -286,21 +284,13 @@ struct ContractStateInner {
     valueA: Int;
     valueB: Int;
 }
-
 struct ContractState {
     valueA: Int;
     valueB: ContractStateInner;
 }
 
-contract StatefulContract {
-    get fun get_contract_state(arg1: Int, arg2: ContractStateArg2): ContractState {
-        return ContractState{
-            valueA: arg1,
-            valueB: ContractStateInner{
-                valueA: arg2.valueA,
-                valueB: arg2.valueB, // trailing comma is allowed
-            }, // trailing comma is allowed
-        };
-    }
+
+get fun get_contract_state(arg1: Int, arg2: ContractStateArg2): ContractState {
+    return ...;
 }
 ```
