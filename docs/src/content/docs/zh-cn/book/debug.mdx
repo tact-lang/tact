@@ -1,5 +1,5 @@
 ---
-title: Debugging Tact contracts
+title: Debugging Tact Contracts
 ---
 
 import { LinkCard, CardGrid, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
@@ -79,9 +79,9 @@ Tact provides a handful amount of various functions useful for debugging: [Core 
 
 ## Enabling debug mode in compilation options {#debug-mode}
 
-In order to make certain functions like [`dump(){:tact}`][dump] or [`dumpStack(){:tact}`](/ref/core-debug#dumpstack) work, one needs to enable debug mode.
+Using `@tact-lang/emulator`
 
-The simplest and recommended approach is to modify a [`tact.config.json`](/book/config) file in the root of your project (or create it if it didn't exist yet), and [set the `debug` property to `true{:json}`](/book/config#options-debug).
+To make `dump` work you need to enable the feature `debug` in `tact.conf.json`.
 
 If you're working on a [Blueprint][bp]-based project, you can enable debug mode in the compilation configs of your contracts, which are located in a directory named `wrappers/`:
 
@@ -103,8 +103,23 @@ In addition to that, [`tact.config.json`](/book/config) may still be used in [Bl
 
 :::note
 
-  Read more about configuration and [`tact.config.json`](/book/config) file: [Configuration](/book/config).\
-  See how to use [`dump(){:tact}`][dump] for debugging: [Debug with `dump(){:tact}`](#tests-dump).
+  import { ContractSystem } from '@tact-lang/emulator';
+import { sample_Contract } from './output/sample_Contract';describe("contract", () => {
+    it("should deploy correctly", async () => {```
+    // Init test
+    const system = await ContractSystem.create();
+    const treasure = await system.treasure('my treasure');
+    const contract = system.open(sample_Contract.fromInit(treasure.address));
+    const tracker = system.track(contract.address);
+
+    // Send a message
+    await contract.send(treasure, { value: toNano(1) }, { $$type: "Deploy", queryId: 0n });
+    await system.run();
+
+    // Testing output
+    expect(tracker.collect()).toMatchInlineSnapshot();
+});
+```});
 
 :::
 
@@ -112,7 +127,7 @@ In addition to that, [`tact.config.json`](/book/config) may still be used in [Bl
 
 The [Blueprint][bp] is a popular development framework for writing, testing and deploying smart contracts on TON Blockchain.
 
-For testing smart contracts it uses the [Sandbox][sb], a local TON Blockchain emulator and [Jest][jest], a JavaScript testing framework.
+Ton Emulator allows you to have a small virtual blockchain in your Node.js code. This library is built specifically for testing smart contracts in unit tests.
 
 Whenever you create a new [Blueprint][bp] project or use `blueprint create` command inside the existing project, it creates a new contract alongside with a test suite file for it.
 
@@ -148,7 +163,7 @@ Then, a `beforeEach(){:tact}` [Jest][jest] function is called — it specifies a
 
 Finally, each test closure is described with a call to `it(){:tact}` [Jest][jest] function — that's where tests are actually written.
 
-A simplest example of the test closure can look like that:
+Example of a minimal test file:
 
 ```typescript
 it('should deploy', async () => {
@@ -501,7 +516,7 @@ Note, that some explorers deserialize the message body sent for you, while other
 
 ### Parsing body of the emitted message {#logging-parsing}
 
-Consider the following example:
+Example:
 
 ```tact
 // We have a Struct
