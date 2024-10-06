@@ -1,35 +1,35 @@
 ---
-title: Message mode
+title: Message `mode`
 ---
 
-As it was previously mentioned, messages are sent with the `mode` param of a struct `SendParameters{:tact}`. It's an [`Int{:tact}`][int] value, which is combined from base modes and optional flags, which are also [`Int{:tact}`][int] values.
+As you might've noticed, messages are sent with the `mode` param of a struct `SendParameters`. It's an Int value, which is combined from base modes and optional flags, which are also Int values.
 
-It's possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience there's a set of constants which you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
+It's possible to use raw Int values and manually provide them for the `mode`, but for your convenience there's a set of constants which you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
 
 ## Base modes
 
 | Mode value | Constant name                 | Description                                                                                                             |
 | ---------: | :---------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | $0$        | -                             | Ordinary message (default).                                                                                             |
-| $64$       | `SendRemainingValue{:tact}`   | Carry all the remaining value of the inbound message in addition to the value initially indicated in the new message.   |
-| $128$      | `SendRemainingBalance{:tact}` | Carry all the remaining balance of the current smart contract instead of the value originally indicated in the message. |
+| $64$       | SendRemainingValue            | Carry all the remaining value of the inbound message in addition to the value initially indicated in the new message.   |
+| $128$      | SendRemainingBalance          | Carry all the remaining balance of the current smart contract instead of the value originally indicated in the message. |
 
 ## Optional flags
 
-| Flag value | Constant name                   | Description                                                                                                                     |
-| ---------: | :------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| $+1$       | `SendPayGasSeparately{:tact}`   | Pay forward fees separately from the message value.                                                                             |
-| $+2$       | `SendIgnoreErrors{:tact}`       | Ignore any errors arising while processing this message during the action phase.                                                |
-| $+16$      | `SendBounceIfActionFail{:tact}` | Bounce transaction in case of any errors during action phase. Has no effect if flag $+2$, `SendIgnoreErrors{:tact}` is used.    |
-| $+32$      | `SendDestroyIfZero{:tact}`      | Current account must be destroyed if its resulting balance is zero (often used with mode $128$, `SendRemainingBalance{:tact}`). |
+| Flag value | Constant name                   | Description                                                                                                            |
+| ---------: | :------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| $+1$       | SendPayGasSeparately            | Pay forward fees separately from the message value.                                                                    |
+| $+2$       | SendIgnoreErrors                | Ignore any errors arising while processing this message during the action phase.                                       |
+| $+16$      | SendBounceIfActionFail          | Bounce transaction in case of any errors during action phase. Has no effect if flag $+2$, SendIgnoreErrors is used.    |
+| $+32$      | SendDestroyIfZero               | Current account must be destroyed if its resulting balance is zero (often used with mode $128$, SendRemainingBalance). |
 
 ## Combining modes with flags
 
-To make the [`Int{:tact}`][int] value for `mode` field of `SendParameters{:tact}`, you just have to combine base modes with optional flags by applying the [bitwise OR](/book/operators#binary-bitwise-or) operation.
+To make the Int value for `mode` field of SendParameters, you just have to combine base modes with optional flags by adding them together as numbers.
 
-For example, if you want to send a regular message and pay transfer fees separately, use the mode $0$ (default) and a flag $+1$ to get `mode` $= 1$, which is equal to using `SendPayGasSeparately{:tact}` constant.
+Alternatively, if you want to send the whole contract balance and destroy it immediately, use the mode $128$ and flag $+32$ to get `mode` $= 160$, which is equal to SendRemainingBalance + SendDestroyIfZero.
 
-Alternatively, if you want to send the whole contract balance and destroy it immediately, use the mode $128$ and flag $+32$ to get `mode` $= 160$, which is equal to `SendRemainingBalance | SendDestroyIfZero{:tact}`.
+For example, if you want to send a regular message and pay transfer fees separately, use the mode $0$ (default) and a flag $+1$ to get `mode` $= 1$, which is equal to just use SendPayGasSeparately constant.
 
 Here's how the latter example would look in code:
 
@@ -39,8 +39,8 @@ let value: Int = ton("1");
 send(SendParameters{
     to: to,
     value: value,
-    mode: SendRemainingBalance | SendDestroyIfZero,
-    body: "Hello, World!".asComment(),
+    mode: SendRemainingBalance + SendDestroyIfZero,
+    body: "Hello, World!".asComment()
 });
 ```
 
@@ -52,7 +52,8 @@ send(SendParameters{
 
 :::note
 
-  Also note, that there can be only one [base mode](#base-modes), but number of [optional flags](#optional-flags) may vary: you can use them all, none or just some.
+<Callout>
+NOTE: There can be only one base mode, but number of optional flags may vary: you can use them all, none or just some.
 
 :::
 
