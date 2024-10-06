@@ -9,8 +9,8 @@ import { toString } from 'hast-util-to-string';
 import {
   bundledLanguages,
   createHighlighter,
+  createWasmOnigEngine,
 } from 'shiki';
-import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
 import fs from 'node:fs';
 
 // Import custom grammars
@@ -71,7 +71,7 @@ export default function rehypeInlineCodeHighlighting() {
       ],
       // TODO: Made the 'name' lowercase in the TextMate grammars
       langAlias: { fc: 'func' },
-      engine: await createOnigurumaEngine(import('shiki/wasm')),
+      engine: await createWasmOnigEngine(import('shiki/wasm')),
     });
 
     // Apply highlighting to each target node
