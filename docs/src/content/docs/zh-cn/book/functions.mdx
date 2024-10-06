@@ -30,10 +30,10 @@ fun bar() {
 You can define global function anywhere in your program:
 
 ```tact
-fun customPow(a: Int, c: Int): Int {
+fun pow(a: Int, c: Int): Int {
   let res: Int = 1;
   repeat(c) {
-    res *= a;
+    res = res * a;
   }
   return res;
 }
@@ -73,12 +73,12 @@ Extension functions allow you to implement extensions for any possible type.
 > The name of the first argument MUST be named `self` and the type of this argument is the type you are extending.
 
 ```tact
-extends fun customPow(self: Int, c: Int): Int {
-    let res: Int = 1;
-    repeat(c) {
-        res *= self;
-    }
-    return res;
+extends fun pow(self: Int, c: Int) {
+  let res: Int = 1;
+  repeat(c) {
+    res = res * self;
+  }
+  return res;
 }
 ```
 
@@ -87,18 +87,18 @@ extends fun customPow(self: Int, c: Int): Int {
 Mutable functions are performing mutation of a value replacing it with an execution result. To perform mutation, the function must change the `self` value.
 
 ```tact
-extends mutates fun customPow(self: Int, c: Int) {
-    let res: Int = 1;
-    repeat(c) {
-        res *= self;
-    }
-    self = res;
+extends mutates fun pow(self: Int, c: Int) {
+  let res: Int = 1;
+  repeat(c) {
+    res = res * self;
+  }
+  self = res;
 }
 ```
 
 ## Native functions
 
-Native functions are direct bindings of FunC functions:
+Native functions are direct bindings of func functions:
 
 > **Note**
 > Native functions could be also mutable and extension ones.
@@ -117,10 +117,13 @@ Receiver functions are special functions that are responsible for receiving mess
 
 ```tact
 contract Treasure {
-    // This means that this contract can receive the comment "Increment" and this function would be called for such messages
-    receive("Increment") {
-        self.counter += 1;
-    }
+
+  // ...
+  
+  // This means that this contract can receive the comment "Increment" and this function would be called for such messages
+  receive("Increment") {
+    self.counter = self.counter + 1;
+  }
 }
 ```
 
@@ -130,8 +133,11 @@ Getter functions define getters on smart contracts and can be defined only withi
 
 ```tact
 contract Treasure {
-    get fun counter(): Int {
-        return self.counter;
-    }
+
+  // ...
+  
+  get fun counter(): Int {
+    return self.counter;
+  }
 }
 ```
