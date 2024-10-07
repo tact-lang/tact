@@ -3,6 +3,8 @@ title: Functions
 description: "Global, asm, native functions, as well as receivers, getters and storage functions, plus the many attributes that allow for great flexibility and expressivity of Tact language"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Functions in Tact could be defined in different ways:
 
 * Global static function
@@ -140,7 +142,7 @@ contract Treasure {
 
 ### Explicit resolution of method ID collisions
 
-<Badge text="Available since Tact 1.6" variant="tip" size="large"/>
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 As other functions in TVM contracts, getters have their *unique* associated function selectors which are some integers ids (called *method IDs*).
 Some of those integers are reserved for internal purposes, e.g. -4, -3, -2, -1, 0 are reserved IDs and 
