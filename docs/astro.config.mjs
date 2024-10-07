@@ -45,9 +45,9 @@ export default defineConfig({
 		starlight({
 			title: {
 				en: '⚡ Tact Documentation',
-				'zh-CN': '⚡ Tact Documentation',
+				'zh-CN': '⚡ Tact 语言文档',
 			},
-			titleDelimiter: '-',
+			titleDelimiter: undefined,
 			favicon: '/favicon.png',
 			logo: {
 				dark: '/public/logo-dark.svg',
@@ -55,7 +55,7 @@ export default defineConfig({
 				alt: '⚡ Tact Documentation',
 				replacesTitle: true,
 			},
-			// 'head' is auto-populated with SEO-friendly contents
+			// 'head' is auto-populated with SEO-friendly contents based on the page frontmatters
 			social: {
 				github: 'https://github.com/tact-lang/tact',
 				telegram: 'https://t.me/tactlang',
@@ -113,7 +113,7 @@ export default defineConfig({
 						'zh-CN': '图书',
 					},
 					items: [
-						'book',
+						{ slug: 'book' },
 						{
 							label: 'Cheatsheets',
 							translations: {
@@ -123,52 +123,52 @@ export default defineConfig({
 							autogenerate: { directory: 'book/cs' },
 						},
 						{
-						  label: 'Fundamentals of Tact',
-						  translations: { 'zn-CN': 'Tact 语言基础' },
-						  link: '#', attrs: { class: 'sidebar-separator' }
+							label: 'Fundamentals of Tact',
+							translations: { 'zh-CN': 'Tact 语言基础' },
+							link: '#', attrs: { class: 'sidebar-separator' }
 						},
-						'book/types',
-						'book/integers',
-						'book/cells',
-						'book/maps',
-						'book/structs-and-messages',
-						'book/optionals',
-						'book/contracts',
-						'book/exit-codes',
+						{ slug: 'book/types' },
+						{ slug: 'book/integers' },
+						{ slug: 'book/cells' },
+						{ slug: 'book/maps' },
+						{ slug: 'book/structs-and-messages' },
+						{ slug: 'book/optionals' },
+						{ slug: 'book/contracts' },
+						{ slug: 'book/exit-codes' },
 						{
-						  label: 'Expressiveness',
-						  translations: { 'zn-CN': '表现力' },
-						  link: '#', attrs: { class: 'sidebar-separator' }
+							label: 'Expressiveness',
+							translations: { 'zh-CN': '表现力' },
+							link: '#', attrs: { class: 'sidebar-separator' }
 						},
-						'book/operators',
-						'book/expressions',
-						'book/statements',
-						'book/constants',
-						'book/functions',
+						{ slug: 'book/operators' },
+						{ slug: 'book/expressions' },
+						{ slug: 'book/statements' },
+						{ slug: 'book/constants' },
+						{ slug: 'book/functions' },
 						{
-						  label: 'Communication',
-						  translations: { 'zn-CN': '交流' },
-						  link: '#', attrs: { class: 'sidebar-separator' }
+							label: 'Communication',
+							translations: { 'zh-CN': '交流' },
+							link: '#', attrs: { class: 'sidebar-separator' }
 						},
-						'book/receive',
-						'book/bounced',
-						'book/external',
-						'book/lifecycle',
-						'book/send',
-						'book/message-mode',
+						{ slug: 'book/receive' },
+						{ slug: 'book/bounced' },
+						{ slug: 'book/external' },
+						{ slug: 'book/lifecycle' },
+						{ slug: 'book/send' },
+						{ slug: 'book/message-mode' },
 						{
-						  label: 'Going places',
-						  translations: { 'zn-CN': '前往各地' },
-						  link: '#', attrs: { class: 'sidebar-separator' }
+							label: 'Going places',
+							translations: { 'zh-CN': '前往各地' },
+							link: '#', attrs: { class: 'sidebar-separator' }
 						},
-						'book/deploy',
-						'book/debug',
-						'book/upgrades',
-						'book/import',
-						'book/config',
-						'book/masterchain',
-						'book/func',
-						'book/programmatic',
+						{ slug: 'book/deploy' },
+						{ slug: 'book/debug' },
+						{ slug: 'book/upgrades' },
+						{ slug: 'book/import' },
+						{ slug: 'book/config' },
+						{ slug: 'book/masterchain' },
+						{ slug: 'book/func' },
+						{ slug: 'book/programmatic' },
 					],
 				},
 				{
@@ -177,28 +177,28 @@ export default defineConfig({
 						'zh-CN': '食谱',
 					},
 					items: [
-						'cookbook',
+						{ slug: 'cookbook' },
 						{
-						  label: 'Single contract',
-						  translations: { 'zn-CN': '单一合同' },
-						  link: '#', attrs: { class: 'sidebar-separator' }
+							label: 'Single contract',
+							translations: { 'zh-CN': '单一合同' },
+							link: '#', attrs: { class: 'sidebar-separator' }
 						},
-						'cookbook/single-communication',
-						'cookbook/type-conversion',
-						'cookbook/data-structures',
-						'cookbook/algo',
-						'cookbook/time',
-						'cookbook/access',
-						'cookbook/random',
-						'cookbook/misc',
+						{ slug: 'cookbook/single-communication' },
+						{ slug: 'cookbook/type-conversion' },
+						{ slug: 'cookbook/data-structures' },
+						{ slug: 'cookbook/algo' },
+						{ slug: 'cookbook/time' },
+						{ slug: 'cookbook/access' },
+						{ slug: 'cookbook/random' },
+						{ slug: 'cookbook/misc' },
 						{
-						  label: 'Multiple contracts',
-						  translations: { 'zn-CN': '多重合同' },
-						  link: '#', attrs: { class: 'sidebar-separator' }
+							label: 'Multiple contracts',
+							translations: { 'zh-CN': '多重合同' },
+							link: '#', attrs: { class: 'sidebar-separator' }
 						},
-						'cookbook/multi-communication',
-						'cookbook/jettons',
-						'cookbook/nfts',
+						{ slug: 'cookbook/multi-communication' },
+						{ slug: 'cookbook/jettons' },
+						{ slug: 'cookbook/nfts' },
 						{
 							label: 'Decentralized EXchanges (DEXes)',
 							translations: {
@@ -215,8 +215,8 @@ export default defineConfig({
 						'zh-CN': '参考',
 					},
 					items: [
-						'ref',
-						'ref/spec',
+						{ slug: 'ref' },
+						{ slug: 'ref/spec' },
 						{
 							'label': 'Evolution',
 							translations: {
@@ -226,31 +226,31 @@ export default defineConfig({
 							autogenerate: { directory: 'ref/evolution' }
 						},
 						{
-						  label: 'Core library',
-						  translations: { 'zn-CN': '核心图书馆' },
-						  link: '#', attrs: { class: 'sidebar-separator' }
+							label: 'Core library',
+							translations: { 'zh-CN': '核心图书馆' },
+							link: '#', attrs: { class: 'sidebar-separator' }
 						},
-						'ref/core-base',
-						'ref/core-common',
-						'ref/core-comptime',
-						'ref/core-debug',
-						'ref/core-random',
-						'ref/core-math',
-						'ref/core-strings',
-						'ref/core-cells',
-						'ref/core-advanced',
+						{ slug: 'ref/core-base' },
+						{ slug: 'ref/core-common' },
+						{ slug: 'ref/core-comptime' },
+						{ slug: 'ref/core-debug' },
+						{ slug: 'ref/core-random' },
+						{ slug: 'ref/core-math' },
+						{ slug: 'ref/core-strings' },
+						{ slug: 'ref/core-cells' },
+						{ slug: 'ref/core-advanced' },
 						{
-						  label: 'Standard libraries',
-						  translations: { 'zn-CN': '标准图书馆' },
-						  link: '#', attrs: { class: 'sidebar-separator' }
+							label: 'Standard libraries',
+							translations: { 'zh-CN': '标准图书馆' },
+							link: '#', attrs: { class: 'sidebar-separator' }
 						},
-						'ref/standard-libraries',
-						'ref/stdlib-config',
-						'ref/stdlib-content',
-						'ref/stdlib-deploy',
-						'ref/stdlib-dns',
-						'ref/stdlib-ownable',
-						'ref/stdlib-stoppable',
+						{ slug: 'ref/standard-libraries' },
+						{ slug: 'ref/stdlib-config' },
+						{ slug: 'ref/stdlib-content' },
+						{ slug: 'ref/stdlib-deploy' },
+						{ slug: 'ref/stdlib-dns' },
+						{ slug: 'ref/stdlib-ownable' },
+						{ slug: 'ref/stdlib-stoppable' },
 					],
 				},
 				{
@@ -259,16 +259,16 @@ export default defineConfig({
 						'zh-CN': '生态系统',
 					},
 					items: [
-						'ecosystem',
+						{ slug: 'ecosystem' },
 						{
-						  label: 'Tools',
-						  translations: { 'zn-CN': '工具' },
-						  link: '#', attrs: { class: 'sidebar-separator' }
+							label: 'Tools',
+							translations: { 'zh-CN': '工具' },
+							link: '#', attrs: { class: 'sidebar-separator' }
 						},
-						'ecosystem/typescript',
-						'ecosystem/vscode',
-						'ecosystem/jetbrains',
-						'ecosystem/misti',
+						{ slug: 'ecosystem/typescript' },
+						{ slug: 'ecosystem/vscode' },
+						{ slug: 'ecosystem/jetbrains' },
+						{ slug: 'ecosystem/misti' },
 					],
 				},
 				{

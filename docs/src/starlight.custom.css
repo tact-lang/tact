@@ -79,7 +79,7 @@ h4:hover .autolink-header {
 /* # */
 
 /* Disable bold fonts on nested group labels */
-ul ul div.group-label > span.large {
+ul ul div.group-label>span.large {
 	font-size: var(--sl-text-sm);
 	font-weight: inherit;
 	color: inherit;
@@ -87,11 +87,13 @@ ul ul div.group-label > span.large {
 
 /* Add a sidebar separator */
 .sidebar-separator {
-  margin-top: 1rem;
-  font-weight: 600;
-  pointer-events: none;
+	margin-top: 1rem;
+	font-weight: 600;
+	pointer-events: none;
 }
 
-/* CSS classes to modify / target: */
-/* .sidebar-content .group-label */
-/* */
+/* Prevent work breaks in inline code items in tables */
+td>code,
+td>a>code {
+	white-space: nowrap;
+}

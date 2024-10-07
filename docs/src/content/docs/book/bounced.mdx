@@ -1,5 +1,6 @@
 ---
 title: Bounced messages
+description: "When a contract sends a message with a flag bounce set to true, then if the message wasn't processed properly, it would bounce back to the sender"
 ---
 
 When a contract sends a message with a flag `bounce` set to `true{:tact}`, then if the message wasn't processed properly, it would bounce back to the sender. This is useful when you want to make sure that the message was processed properly and if not — revert the changes.

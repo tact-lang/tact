@@ -1,5 +1,5 @@
 
-<img src="public/banner.jpeg">
+<img src="public/banner.jpg">
 
 # Welcome to ⚡ Tact Documentation
 
