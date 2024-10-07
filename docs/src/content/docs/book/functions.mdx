@@ -164,6 +164,6 @@ contract ManualMethodId {
 
 Note that you *cannot* use method IDs that are reserved by TVM and you cannot use some initial positive integers because those will be used as function selectors by the compiler.
 
-User-specified method IDs are 19-bit signed integers, so you can use integers from $-2^{-18}$ to $-5$ and from $2^{14}$ to $2^{18} - 1$.
+User-specified method IDs are 19-bit signed integers, so you can use integers from $-2^{18}$ to $-5$ and from $2^{14}$ to $2^{18} - 1$.
 
 Also, a few method IDs are reserved for the usage by the getters the Tact compiler can insert during compilation, those are 113617, 115390, 121275.
