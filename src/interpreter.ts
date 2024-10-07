@@ -213,7 +213,7 @@ export function evalUnaryOp(
 export function evalBinaryOp(
     op: AstBinaryOperation,
     valLeft: Value,
-    valRight: Value,
+    valRightContinuation: () => Value, // It needs to be a continuation, because some binary operators short-circuit
     locLeft: SrcInfo = dummySrcInfo,
     locRight: SrcInfo = dummySrcInfo,
     source: SrcInfo = dummySrcInfo,
@@ -221,17 +221,20 @@ export function evalBinaryOp(
     switch (op) {
         case "+":
             return ensureInt(
-                ensureInt(valLeft, locLeft) + ensureInt(valRight, locRight),
+                ensureInt(valLeft, locLeft) +
+                    ensureInt(valRightContinuation(), locRight),
                 source,
             );
         case "-":
             return ensureInt(
-                ensureInt(valLeft, locLeft) - ensureInt(valRight, locRight),
+                ensureInt(valLeft, locLeft) -
+                    ensureInt(valRightContinuation(), locRight),
                 source,
             );
         case "*":
             return ensureInt(
-                ensureInt(valLeft, locLeft) * ensureInt(valRight, locRight),
+                ensureInt(valLeft, locLeft) *
+                    ensureInt(valRightContinuation(), locRight),
                 source,
             );
         case "/": {
@@ -239,7 +242,7 @@ export function evalBinaryOp(
             // is a non-conventional one: by default it rounds towards negative infinity,
             // meaning, for instance, -1 / 5 = -1 and not zero, as in many mainstream languages.
             // Still, the following holds: a / b * b + a % b == a, for all b != 0.
-            const r = ensureInt(valRight, locRight);
+            const r = ensureInt(valRightContinuation(), locRight);
             if (r === 0n)
                 throwErrorConstEval(
                     "divisor expression must be non-zero",
@@ -250,7 +253,7 @@ export function evalBinaryOp(
         case "%": {
             // Same as for division, see the comment above
             // Example: -1 % 5 = 4
-            const r = ensureInt(valRight, locRight);
+            const r = ensureInt(valRightContinuation(), locRight);
             if (r === 0n)
                 throwErrorConstEval(
                     "divisor expression must be non-zero",
@@ -259,14 +262,23 @@ export function evalBinaryOp(
             return ensureInt(modFloor(ensureInt(valLeft, locLeft), r), source);
         }
         case "&":
-            return ensureInt(valLeft, locLeft) & ensureInt(valRight, locRight);
+            return (
+                ensureInt(valLeft, locLeft) &
+                ensureInt(valRightContinuation(), locRight)
+            );
         case "|":
-            return ensureInt(valLeft, locLeft) | ensureInt(valRight, locRight);
+            return (
+                ensureInt(valLeft, locLeft) |
+                ensureInt(valRightContinuation(), locRight)
+            );
         case "^":
-            return ensureInt(valLeft, locLeft) ^ ensureInt(valRight, locRight);
+            return (
+                ensureInt(valLeft, locLeft) ^
+                ensureInt(valRightContinuation(), locRight)
+            );
         case "<<": {
             const valNum = ensureInt(valLeft, locLeft);
-            const valBits = ensureInt(valRight, locRight);
+            const valBits = ensureInt(valRightContinuation(), locRight);
             if (0n > valBits || valBits > 256n) {
                 throwErrorConstEval(
                     `the number of bits shifted ('${valBits}') must be within [0..256] range`,
@@ -287,7 +299,7 @@ export function evalBinaryOp(
         }
         case ">>": {
             const valNum = ensureInt(valLeft, locLeft);
-            const valBits = ensureInt(valRight, locRight);
+            const valBits = ensureInt(valRightContinuation(), locRight);
             if (0n > valBits || valBits > 256n) {
                 throwErrorConstEval(
                     `the number of bits shifted ('${valBits}') must be within [0..256] range`,
@@ -307,44 +319,61 @@ export function evalBinaryOp(
             }
         }
         case ">":
-            return ensureInt(valLeft, locLeft) > ensureInt(valRight, locRight);
+            return (
+                ensureInt(valLeft, locLeft) >
+                ensureInt(valRightContinuation(), locRight)
+            );
         case "<":
-            return ensureInt(valLeft, locLeft) < ensureInt(valRight, locRight);
+            return (
+                ensureInt(valLeft, locLeft) <
+                ensureInt(valRightContinuation(), locRight)
+            );
         case ">=":
-            return ensureInt(valLeft, locLeft) >= ensureInt(valRight, locRight);
+            return (
+                ensureInt(valLeft, locLeft) >=
+                ensureInt(valRightContinuation(), locRight)
+            );
         case "<=":
-            return ensureInt(valLeft, locLeft) <= ensureInt(valRight, locRight);
-        case "==":
+            return (
+                ensureInt(valLeft, locLeft) <=
+                ensureInt(valRightContinuation(), locRight)
+            );
+        case "==": {
+            const valR = valRightContinuation();
+
             // the null comparisons account for optional types, e.g.
             // a const x: Int? = 42 can be compared to null
             if (
-                typeof valLeft !== typeof valRight &&
+                typeof valLeft !== typeof valR &&
                 valLeft !== null &&
-                valRight !== null
+                valR !== null
             ) {
                 throwErrorConstEval(
                     "operands of `==` must have same type",
                     source,
                 );
             }
-            return valLeft === valRight;
-        case "!=":
-            if (typeof valLeft !== typeof valRight) {
+            return valLeft === valR;
+        }
+        case "!=": {
+            const valR = valRightContinuation();
+            if (typeof valLeft !== typeof valR) {
                 throwErrorConstEval(
                     "operands of `!=` must have same type",
                     source,
                 );
             }
-            return valLeft !== valRight;
+            return valLeft !== valR;
+        }
         case "&&":
             return (
                 ensureBoolean(valLeft, locLeft) &&
-                ensureBoolean(valRight, locRight)
+                ensureBoolean(valRightContinuation(), locRight)
             );
         case "||":
             return (
                 ensureBoolean(valLeft, locLeft) ||
-                ensureBoolean(valRight, locRight)
+                ensureBoolean(valRightContinuation(), locRight)
             );
     }
 }
@@ -411,7 +440,7 @@ class ReturnSignal extends Error {
     }
 }
 
-type InterpreterConfig = {
+export type InterpreterConfig = {
     // Options that tune the interpreter's behavior.
 
     // Maximum number of iterations inside a loop before a time out is issued.
@@ -846,12 +875,12 @@ export class Interpreter {
 
     public interpretBinaryOp(ast: AstOpBinary): Value {
         const valLeft = this.interpretExpression(ast.left);
-        const valRight = this.interpretExpression(ast.right);
+        const valRightContinuation = () => this.interpretExpression(ast.right);
 
         return evalBinaryOp(
             ast.op,
             valLeft,
-            valRight,
+            valRightContinuation,
             ast.left.loc,
             ast.right.loc,
             ast.loc,
@@ -1423,7 +1452,7 @@ export class Interpreter {
 
     public interpretAugmentedAssignStatement(ast: AstStatementAugmentedAssign) {
         if (ast.path.kind === "id") {
-            const updateVal = this.interpretExpression(ast.expression);
+            const updateVal = () => this.interpretExpression(ast.expression);
             const currentPathValue = this.envStack.getBinding(idText(ast.path));
             if (currentPathValue === undefined) {
                 throwNonFatalErrorConstEval(
