@@ -633,7 +633,7 @@ export type AstContractAttribute = {
 };
 
 export type AstFunctionAttribute =
-    | { type: "get"; loc: SrcInfo }
+    | { type: "get"; methodId: AstExpression | null; loc: SrcInfo }
     | { type: "mutates"; loc: SrcInfo }
     | { type: "extends"; loc: SrcInfo }
     | { type: "virtual"; loc: SrcInfo }

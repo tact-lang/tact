@@ -90,6 +90,26 @@ Line 23, col 22:
 "
 `;
 
+exports[`resolveStatements should fail statements for contract-getter-with-method-id-1 1`] = `
+"<unknown>:5:9: Invalid type "String" for binary operator "+"
+Line 5, col 9:
+  4 | contract Test {
+> 5 |     get(crc32("crc32") + "42") fun test(): Int {
+              ^~~~~~~~~~~~~~~~~~~~~
+  6 |         return 0
+"
+`;
+
+exports[`resolveStatements should fail statements for contract-getter-with-method-id-2 1`] = `
+"<unknown>:5:9: Getter's method id expression must be of type "Int" but it has type "Bool"
+Line 5, col 9:
+  4 | contract Test {
+> 5 |     get(true) fun test(): Int {
+              ^~~~
+  6 |         return 0
+"
+`;
+
 exports[`resolveStatements should fail statements for contract-initof-wrong-arg 1`] = `
 "<unknown>:26:25: Invalid type "String" for argument "owner"
 Line 26, col 25:
@@ -532,6 +552,39 @@ Line 13, col 12:
 > 13 |     return f1(a);
                   ^~~~~
   14 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for getter-collision 1`] = `
+"<unknown>:8:13: Method ID collision: getter 'pko' has the same method ID 103057 as getter 'getter1'
+Pick a different getter name or explicit method ID to avoid collisions
+Line 8, col 13:
+  7 | 
+> 8 |     get fun pko() {
+                  ^~~
+  9 |         return;
+"
+`;
+
+exports[`resolveStatements should fail statements for getter-collision-trait 1`] = `
+"<unknown>:8:13: Method ID collision: getter 'pko' has the same method ID 103057 as getter 'getter1'
+Pick a different getter name or explicit method ID to avoid collisions
+Line 8, col 13:
+  7 | 
+> 8 |     get fun pko() {
+                  ^~~
+  9 |         return;
+"
+`;
+
+exports[`resolveStatements should fail statements for getter-collision-with-trait 1`] = `
+"<unknown>:4:13: Method ID collision: getter 'pko' has the same method ID 103057 as getter 'getter1'
+Pick a different getter name or explicit method ID to avoid collisions
+Line 4, col 13:
+  3 | trait T {
+> 4 |     get fun pko() {
+                  ^~~
+  5 |         return;
 "
 `;
 
@@ -1575,6 +1628,53 @@ exports[`resolveStatements should resolve statements for assign-self-mutating-me
   ],
   [
     "42",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for contract-getter-with-method-id-1 1`] = `
+[
+  [
+    "0",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for contract-getter-with-method-id-2 1`] = `
+[
+  [
+    "16384",
+    "Int",
+  ],
+  [
+    "MethodId",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for contract-getter-with-method-id-3 1`] = `
+[
+  [
+    "16384",
+    "Int",
+  ],
+  [
+    "41",
+    "Int",
+  ],
+  [
+    "16384 + 41",
+    "Int",
+  ],
+  [
+    "self",
+    "ManualMethodId",
+  ],
+  [
+    "self.methodId",
     "Int",
   ],
 ]

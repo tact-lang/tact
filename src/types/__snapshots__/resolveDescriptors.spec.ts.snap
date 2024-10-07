@@ -328,39 +328,6 @@ Line 4, col 17:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for getter-collision 1`] = `
-"<unknown>:8:13: Method ID collision: getter 'pko' has the same method ID 103057 as getter 'getter1'
-Pick a different getter name to avoid collisions
-Line 8, col 13:
-  7 | 
-> 8 |     get fun pko() {
-                  ^~~
-  9 |         return;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for getter-collision-trait 1`] = `
-"<unknown>:8:13: Method ID collision: getter 'pko' has the same method ID 103057 as getter 'getter1'
-Pick a different getter name to avoid collisions
-Line 8, col 13:
-  7 | 
-> 8 |     get fun pko() {
-                  ^~~
-  9 |         return;
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for getter-collision-with-trait 1`] = `
-"<unknown>:4:13: Method ID collision: getter 'pko' has the same method ID 103057 as getter 'getter1'
-Pick a different getter name to avoid collisions
-Line 4, col 13:
-  3 | trait T {
-> 4 |     get fun pko() {
-                  ^~~
-  5 |         return;
-"
-`;
-
 exports[`resolveDescriptors should fail descriptors for getter-outside-contract 1`] = `
 "<unknown>:8:1: Getters must be defined within a contract
 Line 8, col 1:
@@ -761,6 +728,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] =
         "isMutating": true,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "loadRef",
         "origin": "user",
         "params": [],
@@ -920,6 +888,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffl
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "foo",
     "origin": "user",
     "params": [
@@ -1064,6 +1033,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffl
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "foo",
     "origin": "user",
     "params": [
@@ -1188,6 +1158,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 2`
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "foo",
     "origin": "user",
     "params": [
@@ -1485,6 +1456,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "foo",
     "origin": "user",
     "params": [
@@ -4428,6 +4400,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -4475,6 +4448,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -4501,6 +4475,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "isMutating": true,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "getter",
         "origin": "user",
         "params": [],
@@ -4574,6 +4549,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -4642,6 +4618,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -4682,6 +4659,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "isMutating": true,
         "isOverride": true,
         "isVirtual": false,
+        "methodId": null,
         "name": "getter",
         "origin": "user",
         "params": [],
@@ -4763,6 +4741,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 },
                 {
                   "loc": get,
+                  "methodId": null,
                   "type": "get",
                 },
               ],
@@ -4810,6 +4789,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 },
                 {
                   "loc": get,
+                  "methodId": null,
                   "type": "get",
                 },
               ],
@@ -4836,6 +4816,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "isMutating": true,
             "isOverride": false,
             "isVirtual": false,
+            "methodId": null,
             "name": "getter",
             "origin": "user",
             "params": [],
@@ -4980,6 +4961,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -5041,6 +5023,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -5081,6 +5064,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "isMutating": true,
         "isOverride": false,
         "isVirtual": true,
+        "methodId": null,
         "name": "getter",
         "origin": "user",
         "params": [],
@@ -5154,6 +5138,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -5222,6 +5207,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             },
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -5262,6 +5248,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "isMutating": true,
         "isOverride": true,
         "isVirtual": false,
+        "methodId": null,
         "name": "getter",
         "origin": "user",
         "params": [],
@@ -5343,6 +5330,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 },
                 {
                   "loc": get,
+                  "methodId": null,
                   "type": "get",
                 },
               ],
@@ -5404,6 +5392,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 },
                 {
                   "loc": get,
+                  "methodId": null,
                   "type": "get",
                 },
               ],
@@ -5444,6 +5433,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "isMutating": true,
             "isOverride": false,
             "isVirtual": true,
+            "methodId": null,
             "name": "getter",
             "origin": "user",
             "params": [],
@@ -5618,6 +5608,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
         "isMutating": false,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "test_extends",
         "origin": "user",
         "params": [
@@ -5734,6 +5725,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
         "isMutating": false,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "test_extends_self",
         "origin": "user",
         "params": [
@@ -5854,6 +5846,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
         "isMutating": true,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "test_mutates",
         "origin": "user",
         "params": [
@@ -5974,6 +5967,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
         "isMutating": true,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "test_mutates_self",
         "origin": "user",
         "params": [
@@ -6097,6 +6091,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
         "isMutating": true,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "test_mutates_self_opt",
         "origin": "user",
         "params": [
@@ -6227,6 +6222,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "test",
     "origin": "user",
     "params": [
@@ -6583,6 +6579,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "isMutating": true,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "hello",
         "origin": "user",
         "params": [],
@@ -6619,6 +6616,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "isMutating": true,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "hello2",
         "origin": "user",
         "params": [],
@@ -6837,6 +6835,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "testFunc",
     "origin": "user",
     "params": [],
@@ -6884,6 +6883,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "testFunc2",
     "origin": "user",
     "params": [],
@@ -6964,6 +6964,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "testFunc3",
     "origin": "user",
     "params": [
@@ -7274,6 +7275,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "attributes": [
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -7314,6 +7316,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "attributes": [
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -7424,6 +7427,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "attributes": [
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -7466,6 +7470,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "isMutating": true,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "hello",
         "origin": "user",
         "params": [],
@@ -7485,6 +7490,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           "attributes": [
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -7527,6 +7533,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "isMutating": true,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "hello2",
         "origin": "user",
         "params": [],
@@ -7764,6 +7771,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
         "isMutating": false,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "inc",
         "origin": "user",
         "params": [],
@@ -8010,6 +8018,7 @@ native sample(a: Int): Int;,
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "sample",
     "origin": "user",
     "params": [
@@ -8116,6 +8125,7 @@ mutates extends native inc(self: Int): Int;,
         "isMutating": true,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "inc",
         "origin": "user",
         "params": [],
@@ -8322,6 +8332,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
           "attributes": [
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -8649,6 +8660,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
           "attributes": [
             {
               "loc": get,
+              "methodId": null,
               "type": "get",
             },
           ],
@@ -8890,6 +8902,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         "isMutating": true,
         "isOverride": false,
         "isVirtual": false,
+        "methodId": null,
         "name": "test",
         "origin": "user",
         "params": [],
@@ -9070,6 +9083,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "scopeUntil",
     "origin": "user",
     "params": [],
@@ -9169,6 +9183,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "scopeRepeat",
     "origin": "user",
     "params": [],
@@ -9267,6 +9282,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "scopeWhile",
     "origin": "user",
     "params": [],
@@ -9367,6 +9383,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
     "isMutating": false,
     "isOverride": false,
     "isVirtual": false,
+    "methodId": null,
     "name": "scopeIf",
     "origin": "user",
     "params": [],
