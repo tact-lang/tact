@@ -8,18 +8,17 @@ import {
     isValue,
     SrcInfo,
 } from "../grammar/ast";
-import { evalBinaryOp } from "../interpreter";
+import { evalBinaryOp } from "../interpreterSemantics/standardSemantics";
+import { abs, sign } from "../interpreterSemantics/util";
 import { Value } from "../types/types";
 import { ExpressionTransformer, Rule } from "./types";
 import {
-    abs,
     checkIsBinaryOpNode,
     checkIsBinaryOp_With_RightValue,
     checkIsBinaryOp_With_LeftValue,
     extractValue,
     makeBinaryExpression,
     makeValueExpression,
-    sign,
 } from "./util";
 
 type TransformData = {
