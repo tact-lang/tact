@@ -583,8 +583,12 @@ semantics.addOperation<string>("astOfAsmInstruction", {
 });
 
 semantics.addOperation<AstFunctionAttribute>("astOfFunctionAttributes", {
-    FunctionAttribute_getter(_) {
-        return { type: "get", loc: createRef(this) };
+    FunctionAttribute_getter(_getKwd, _optLparen, optMethodId, _optRparen) {
+        return {
+            type: "get",
+            methodId: unwrapOptNode(optMethodId, (e) => e.astOfExpression()),
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_extends(_) {
         return { type: "extends", loc: createRef(this) };

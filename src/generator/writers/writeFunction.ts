@@ -12,7 +12,6 @@ import {
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
 import { FunctionDescription, TypeRef } from "../../types/types";
-import { getMethodId } from "../../utils/utils";
 import { WriterContext } from "../Writer";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
@@ -681,45 +680,45 @@ function writeNonMutatingFunction(
     });
 }
 
-export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
+export function writeGetter(f: FunctionDescription, wCtx: WriterContext) {
     // Render tensors
-    const self = f.self?.kind === "ref" ? getType(ctx.ctx, f.self.name) : null;
+    const self = f.self?.kind === "ref" ? getType(wCtx.ctx, f.self.name) : null;
     if (!self) {
         throw new Error(`No self type for getter ${idTextErr(f.name)}`); // Impossible
     }
-    ctx.append(
-        `_ %${f.name}(${f.params.map((v) => resolveFuncTupleType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) method_id(${getMethodId(f.name)}) {`,
+    wCtx.append(
+        `_ %${f.name}(${f.params.map((v) => resolveFuncTupleType(v.type, wCtx) + " " + funcIdOf(v.name)).join(", ")}) method_id(${f.methodId!}) {`,
     );
-    ctx.inIndent(() => {
+    wCtx.inIndent(() => {
         // Unpack parameters
         for (const param of f.params) {
             unwrapExternal(
                 funcIdOf(param.name),
                 funcIdOf(param.name),
                 param.type,
-                ctx,
+                wCtx,
             );
         }
 
         // Load contract state
-        ctx.append(`var self = ${ops.contractLoad(self.name, ctx)}();`);
+        wCtx.append(`var self = ${ops.contractLoad(self.name, wCtx)}();`);
 
         // Execute get method
-        ctx.append(
-            `var res = self~${ctx.used(ops.extension(self.name, f.name))}(${f.params.map((v) => funcIdOf(v.name)).join(", ")});`,
+        wCtx.append(
+            `var res = self~${wCtx.used(ops.extension(self.name, f.name))}(${f.params.map((v) => funcIdOf(v.name)).join(", ")});`,
         );
 
         // Pack if needed
         if (f.returns.kind === "ref") {
-            const t = getType(ctx.ctx, f.returns.name);
+            const t = getType(wCtx.ctx, f.returns.name);
             if (t.kind === "struct" || t.kind === "contract") {
                 if (f.returns.optional) {
-                    ctx.append(
-                        `return ${ops.typeToOptExternal(t.name, ctx)}(res);`,
+                    wCtx.append(
+                        `return ${ops.typeToOptExternal(t.name, wCtx)}(res);`,
                     );
                 } else {
-                    ctx.append(
-                        `return ${ops.typeToExternal(t.name, ctx)}(res);`,
+                    wCtx.append(
+                        `return ${ops.typeToExternal(t.name, wCtx)}(res);`,
                     );
                 }
                 return;
@@ -727,8 +726,8 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
         }
 
         // Return result
-        ctx.append(`return res;`);
+        wCtx.append(`return res;`);
     });
-    ctx.append(`}`);
-    ctx.append();
+    wCtx.append(`}`);
+    wCtx.append();
 }
