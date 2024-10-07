@@ -56,6 +56,18 @@ export default defineConfig({
 				replacesTitle: true,
 			},
 			// 'head' is auto-populated with SEO-friendly contents based on the page frontmatters
+			head: [
+				{
+					// Google tag (gtag.js)
+					tag: "script",
+					attrs: { async: true, src: 'https://www.googletagmanager.com/gtag/js?id=G-ZJ3GZHJ0Z5' }
+				},
+				{
+					// Per-page Google tag setup
+					tag: "script",
+					content: "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-ZJ3GZHJ0Z5');",
+				}
+			],
 			social: {
 				github: 'https://github.com/tact-lang/tact',
 				telegram: 'https://t.me/tactlang',
