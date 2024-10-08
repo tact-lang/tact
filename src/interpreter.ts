@@ -1443,11 +1443,11 @@ export class Interpreter {
     }
 
     public interpretDestructStatement(ast: AstStatementDestruct) {
-        for (const name of ast.identifiers) {
-            if (hasStaticConstant(this.context, idText(name))) {
+        for (const item of ast.identifiers) {
+            if (hasStaticConstant(this.context, idText(item.name))) {
                 // Attempt of shadowing a constant in a destructuring declaration
                 throwInternalCompilerError(
-                    `declaration of ${idText(name)} shadows a constant with the same name`,
+                    `declaration of ${idText(item.name)} shadows a constant with the same name`,
                     ast.loc,
                 );
             }
@@ -1474,18 +1474,18 @@ export class Interpreter {
             );
         }
 
-        for (const name of ast.identifiers) {
-            const v = val[idText(name)];
+        for (const item of ast.identifiers) {
+            const v = val[idText(item.from)];
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (v === undefined) {
                 throwErrorConstEval(
                     `destructuring assignment expected field ${idTextErr(
-                        name,
+                        item.from,
                     )}`,
                     ast.loc,
                 );
             }
-            this.envStack.setNewBinding(idText(name), v);
+            this.envStack.setNewBinding(idText(item.name), v);
         }
     }
 

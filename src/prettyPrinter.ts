@@ -687,7 +687,13 @@ export class PrettyPrinter {
     }
 
     ppAstStatementDestruct(statement: AstStatementDestruct): string {
-        const ids = statement.identifiers.map((id) => this.ppAstId(id));
+        const ids = statement.identifiers.map((item) => {
+            if (item.from.text === item.name.text) {
+                return this.ppAstId(item.name);
+            } else {
+                return `${this.ppAstId(item.from)}: ${this.ppAstId(item.name)}`;
+            }
+        });
         return `${this.indent()}let {${ids.join(", ")}} = ${this.ppAstExpression(statement.expression)};`;
     }
 }

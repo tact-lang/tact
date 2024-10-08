@@ -1026,7 +1026,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
             kind: "statement_destruct",
             identifiers: identifiers
                 .asIteration()
-                .children.map((id) => id.astOfExpression()),
+                .children.map((item) => item.astOfExpression()),
             expression: expression.astOfExpression(),
             loc: createRef(this),
         });
@@ -1156,6 +1156,22 @@ semantics.addOperation<AstNode>("astOfExpression", {
         return createAstNode({
             kind: "string",
             value: string.sourceString,
+            loc: createRef(this),
+        });
+    },
+    DestructItem_regular(id) {
+        return createAstNode({
+            kind: "destruct_mapping",
+            from: id.astOfExpression(),
+            name: id.astOfExpression(),
+            loc: createRef(this),
+        });
+    },
+    DestructItem_withMap(idFrom, _colon, id) {
+        return createAstNode({
+            kind: "destruct_mapping",
+            from: idFrom.astOfExpression(),
+            name: id.astOfExpression(),
             loc: createRef(this),
         });
     },

@@ -158,7 +158,10 @@ Tact {
 
     StatementForEach = foreach "(" id "," id "in" Expression ")" "{" Statement* "}"
 
-    StatementDestruct = let "{" ListOf<id, ","> ","? "}" "=" Expression (";" | &"}")
+    StatementDestruct = let "{" ListOf<DestructItem, ","> ","? "}" "=" Expression (";" | &"}")
+
+    DestructItem = id ":" id --withMap
+                 | id --regular
 
     Expression = ExpressionConditional
 

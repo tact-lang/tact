@@ -691,8 +691,8 @@ function processStatements(
                 ctx = resolveExpression(s.expression, sctx, ctx);
 
                 // Check variable names
-                for (const name of s.identifiers) {
-                    checkVariableExists(ctx, sctx, name);
+                for (const item of s.identifiers) {
+                    checkVariableExists(ctx, sctx, item.name);
                 }
 
                 // Check type
@@ -716,16 +716,20 @@ function processStatements(
                         s.expression.loc,
                     );
                 }
-                if (ty.fields.length !== s.identifiers.length) {
-                    throwCompilationError(
-                        `Type '${printTypeRef(expressionType)}' has ${ty.fields.length} fields, but ${s.identifiers.length} variables are provided`,
-                        s.expression.loc,
-                    );
-                }
 
                 // Add variables
-                s.identifiers.forEach((name, i) => {
-                    sctx = addVariable(name, ty.fields[i]!.type, ctx, sctx);
+                s.identifiers.forEach((item) => {
+                    if (item.name.text === "_") {
+                        return;
+                    }
+                    const f = ty.fields.find((f) => eqNames(f.name, item.from));
+                    if (!f) {
+                        throwCompilationError(
+                            `Field '${idTextErr(item.from)}' not found in type '${expressionType.name}'`,
+                            item.from.loc,
+                        );
+                    }
+                    sctx = addVariable(item.name, f.type, ctx, sctx);
                 });
 
                 break;

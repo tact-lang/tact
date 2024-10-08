@@ -136,7 +136,8 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             break;
         case "statement_destruct":
             node.identifiers.forEach((e) => {
-                traverse(e, callback);
+                traverse(e.from, callback);
+                traverse(e.name, callback);
             });
             traverse(node.expression, callback);
             break;
@@ -200,6 +201,10 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             node.statements.forEach((e) => {
                 traverse(e, callback);
             });
+            break;
+        case "destruct_mapping":
+            traverse(node.from, callback);
+            traverse(node.name, callback);
             break;
         case "type_id":
             break;
