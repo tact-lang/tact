@@ -956,6 +956,7 @@ exports[`grammar should parse contract-getter-with-method-id 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": get(crc32("crc32") + 42 & 0x3ffff | 0x4000),
               "methodId": {
                 "id": 10,
@@ -1493,6 +1494,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": virtual,
               "type": "virtual",
             },
@@ -1572,6 +1574,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": override,
               "type": "override",
             },
@@ -1679,6 +1682,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": virtual,
               "type": "virtual",
             },
@@ -1758,6 +1762,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": override,
               "type": "override",
             },
@@ -3573,6 +3578,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     {
       "attributes": [
         {
+          "kind": "function_attribute",
           "loc": extends,
           "type": "extends",
         },
@@ -3639,6 +3645,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     {
       "attributes": [
         {
+          "kind": "function_attribute",
           "loc": extends,
           "type": "extends",
         },
@@ -3715,6 +3722,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     {
       "attributes": [
         {
+          "kind": "function_attribute",
           "loc": extends,
           "type": "extends",
         },
@@ -4370,6 +4378,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
     {
       "attributes": [
         {
+          "kind": "function_attribute",
           "loc": extends,
           "type": "extends",
         },
@@ -9735,6 +9744,7 @@ exports[`grammar should parse trait-optional-semicolon-for-last-fun-decl 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": abstract,
               "type": "abstract",
             },

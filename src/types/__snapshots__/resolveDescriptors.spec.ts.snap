@@ -657,10 +657,12 @@ exports[`resolveDescriptors should resolve descriptors for asm-extends-fun 1`] =
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": extends,
               "type": "extends",
             },
             {
+              "kind": "function_attribute",
               "loc": mutates,
               "type": "mutates",
             },
@@ -4395,10 +4397,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": abstract,
               "type": "abstract",
             },
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -4443,10 +4447,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": abstract,
               "type": "abstract",
             },
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -4544,10 +4550,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": override,
               "type": "override",
             },
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -4613,10 +4621,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": override,
               "type": "override",
             },
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -4736,10 +4746,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             {
               "attributes": [
                 {
+                  "kind": "function_attribute",
                   "loc": abstract,
                   "type": "abstract",
                 },
                 {
+                  "kind": "function_attribute",
                   "loc": get,
                   "methodId": null,
                   "type": "get",
@@ -4784,10 +4796,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "ast": {
               "attributes": [
                 {
+                  "kind": "function_attribute",
                   "loc": abstract,
                   "type": "abstract",
                 },
                 {
+                  "kind": "function_attribute",
                   "loc": get,
                   "methodId": null,
                   "type": "get",
@@ -4956,10 +4970,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": virtual,
               "type": "virtual",
             },
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -5018,10 +5034,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": virtual,
               "type": "virtual",
             },
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -5133,10 +5151,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": override,
               "type": "override",
             },
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -5202,10 +5222,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": override,
               "type": "override",
             },
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -5325,10 +5347,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             {
               "attributes": [
                 {
+                  "kind": "function_attribute",
                   "loc": virtual,
                   "type": "virtual",
                 },
                 {
+                  "kind": "function_attribute",
                   "loc": get,
                   "methodId": null,
                   "type": "get",
@@ -5387,10 +5411,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             "ast": {
               "attributes": [
                 {
+                  "kind": "function_attribute",
                   "loc": virtual,
                   "type": "virtual",
                 },
                 {
+                  "kind": "function_attribute",
                   "loc": get,
                   "methodId": null,
                   "type": "get",
@@ -5525,6 +5551,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": extends,
               "type": "extends",
             },
@@ -5642,6 +5669,7 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": extends,
               "type": "extends",
             },
@@ -5759,10 +5787,12 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": extends,
               "type": "extends",
             },
             {
+              "kind": "function_attribute",
               "loc": mutates,
               "type": "mutates",
             },
@@ -5880,10 +5910,12 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": extends,
               "type": "extends",
             },
             {
+              "kind": "function_attribute",
               "loc": mutates,
               "type": "mutates",
             },
@@ -6001,10 +6033,12 @@ exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": extends,
               "type": "extends",
             },
             {
+              "kind": "function_attribute",
               "loc": mutates,
               "type": "mutates",
             },
@@ -7274,6 +7308,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -7315,6 +7350,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -7426,6 +7462,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -7489,6 +7526,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -7698,6 +7736,7 @@ exports[`resolveDescriptors should resolve descriptors for item-method 1`] = `
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": extends,
               "type": "extends",
             },
@@ -8069,10 +8108,12 @@ exports[`resolveDescriptors should resolve descriptors for item-native-mutating-
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": mutates,
               "type": "mutates",
             },
             {
+              "kind": "function_attribute",
               "loc": extends,
               "type": "extends",
             },
@@ -8331,6 +8372,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
@@ -8659,6 +8701,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         "ast": {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": get,
               "methodId": null,
               "type": "get",
