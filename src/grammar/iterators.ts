@@ -96,6 +96,9 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
         case "struct_decl":
         case "message_decl":
             traverse(node.name, callback);
+            if (node.kind === "message_decl" && node.opcode !== null) {
+                traverse(node.opcode, callback);
+            }
             node.fields.forEach((e) => {
                 traverse(e, callback);
             });

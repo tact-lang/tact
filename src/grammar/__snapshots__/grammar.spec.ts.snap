@@ -734,16 +734,6 @@ Line 2, col 13:
 "
 `;
 
-exports[`grammar should fail message-negative-opcode 1`] = `
-"<unknown>:1:9: Parse error: expected "0", "1".."9", "0O", "0o", "0B", "0b", "0X", or "0x"
-
-Line 1, col 9:
-> 1 | message(-1) Foo { }
-              ^
-  2 | 
-"
-`;
-
 exports[`grammar should fail struct-double-semicolon 1`] = `
 "<unknown>:2:19: Parse error: expected "}"
 

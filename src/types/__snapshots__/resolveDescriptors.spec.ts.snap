@@ -338,8 +338,36 @@ Line 8, col 1:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-opcode-too-large 1`] = `
-"<unknown>:1:9: Opcode of message "Foo" is too large: it must fit into 32 bits
+exports[`resolveDescriptors should fail descriptors for message-negative-opcode-1 1`] = `
+"<unknown>:1:9: Opcode of message "Foo" is negative ('-1') which is not allowed
+Line 1, col 9:
+> 1 | message(-1) Foo { }
+              ^~
+  2 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-negative-opcode-2 1`] = `
+"<unknown>:1:9: Opcode of message "Foo" is negative ('-1') which is not allowed
+Line 1, col 9:
+> 1 | message(42 - 43) Foo { }
+              ^~~~~~~
+  2 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-opcode-div-by-zero 1`] = `
+"<unknown>:3:14: Cannot evaluate expression to a constant: divisor expression must be non-zero
+Line 3, col 14:
+  2 | 
+> 3 | message(42 / 0) DivByZeroOpcode { }
+                   ^
+  4 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-opcode-too-large-1 1`] = `
+"<unknown>:1:9: Opcode of message "Foo" is too large ('137438953471'): it must fit into 32 bits
 Line 1, col 9:
 > 1 | message(0x1_FFFFF_FFFF) Foo { }
               ^~~~~~~~~~~~~~
@@ -347,12 +375,31 @@ Line 1, col 9:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for message-opcode-zero 1`] = `
-"<unknown>:4:9: Zero opcodes are reserved for text comments and cannot be used for message structs
+exports[`resolveDescriptors should fail descriptors for message-opcode-too-large-2 1`] = `
+"<unknown>:1:9: Opcode of message "Foo" is too large ('8589737985'): it must fit into 32 bits
+Line 1, col 9:
+> 1 | message(0xFFFF * 0x1FFFF) Foo { }
+              ^~~~~~~~~~~~~~~~
+  2 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-opcode-zero-1 1`] = `
+"<unknown>:4:9: Opcode of message "ZeroOpcode" is zero: those are reserved for text comments and cannot be used for message structs
 Line 4, col 9:
   3 | // zero opcodes are reserved for string comments
 > 4 | message(0) ZeroOpcode { }
               ^
+  5 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-opcode-zero-2 1`] = `
+"<unknown>:4:9: Opcode of message "ZeroOpcode" is zero: those are reserved for text comments and cannot be used for message structs
+Line 4, col 9:
+  3 | // zero opcodes are reserved for string comments
+> 4 | message(pow(2, 4) - 16) ZeroOpcode { }
+              ^~~~~~~~~~~~~~
   5 | 
 "
 `;
@@ -9031,6 +9078,372 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
 `;
 
 exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait { },
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "fields": [
+        {
+          "as": {
+            "id": 8,
+            "kind": "id",
+            "loc": uint4,
+            "text": "uint4",
+          },
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": field: Int as uint4,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": field,
+            "text": "field",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 17,
+      "kind": "message_decl",
+      "loc": message((crc32("Tact") + 42) & 0xFFFF_FFFF) MsgWithExprOpcode {
+    field: Int as uint4;
+},
+      "name": {
+        "id": 5,
+        "kind": "type_id",
+        "loc": MsgWithExprOpcode,
+        "text": "MsgWithExprOpcode",
+      },
+      "opcode": {
+        "id": 16,
+        "kind": "op_binary",
+        "left": {
+          "id": 14,
+          "kind": "op_binary",
+          "left": {
+            "args": [
+              {
+                "id": 11,
+                "kind": "string",
+                "loc": "Tact",
+                "value": "Tact",
+              },
+            ],
+            "function": {
+              "id": 10,
+              "kind": "id",
+              "loc": crc32,
+              "text": "crc32",
+            },
+            "id": 12,
+            "kind": "static_call",
+            "loc": crc32("Tact"),
+          },
+          "loc": crc32("Tact") + 42,
+          "op": "+",
+          "right": {
+            "base": 10,
+            "id": 13,
+            "kind": "number",
+            "loc": 42,
+            "value": 42n,
+          },
+        },
+        "loc": (crc32("Tact") + 42) & 0xFFFF_FFFF,
+        "op": "&",
+        "right": {
+          "base": 16,
+          "id": 15,
+          "kind": "number",
+          "loc": 0xFFFF_FFFF,
+          "value": 4294967295n,
+        },
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "field",
+          "type": {
+            "format": 4,
+            "kind": "simple",
+            "optional": false,
+            "type": "uint",
+          },
+        },
+        "as": "uint4",
+        "ast": {
+          "as": {
+            "id": 8,
+            "kind": "id",
+            "loc": uint4,
+            "text": "uint4",
+          },
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": field: Int as uint4,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": field,
+            "text": "field",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": field: Int as uint4,
+        "name": "field",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 898001897n,
+    },
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "MsgWithExprOpcode",
+    "origin": "user",
+    "partialFieldCount": 1,
+    "receivers": [],
+    "signature": "MsgWithExprOpcode{field:uint4}",
+    "tlb": "msg_with_expr_opcode#35866be9 field:uint4 = MsgWithExprOpcode",
+    "traits": [],
+    "uid": 23017,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 22,
+          "kind": "receiver",
+          "loc": receive(msg: MsgWithExprOpcode) { },
+          "selector": {
+            "kind": "internal-simple",
+            "param": {
+              "id": 21,
+              "kind": "typed_parameter",
+              "loc": msg: MsgWithExprOpcode,
+              "name": {
+                "id": 19,
+                "kind": "id",
+                "loc": msg,
+                "text": "msg",
+              },
+              "type": {
+                "id": 20,
+                "kind": "type_id",
+                "loc": MsgWithExprOpcode,
+                "text": "MsgWithExprOpcode",
+              },
+            },
+          },
+          "statements": [],
+        },
+      ],
+      "id": 23,
+      "kind": "contract",
+      "loc": contract Foo {
+    receive(msg: MsgWithExprOpcode) { }
+},
+      "name": {
+        "id": 18,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 25,
+        "kind": "contract_init",
+        "loc": contract Foo {
+    receive(msg: MsgWithExprOpcode) { }
+},
+        "params": [],
+        "statements": [],
+      },
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Foo",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [
+      {
+        "ast": {
+          "id": 22,
+          "kind": "receiver",
+          "loc": receive(msg: MsgWithExprOpcode) { },
+          "selector": {
+            "kind": "internal-simple",
+            "param": {
+              "id": 21,
+              "kind": "typed_parameter",
+              "loc": msg: MsgWithExprOpcode,
+              "name": {
+                "id": 19,
+                "kind": "id",
+                "loc": msg,
+                "text": "msg",
+              },
+              "type": {
+                "id": 20,
+                "kind": "type_id",
+                "loc": MsgWithExprOpcode,
+                "text": "MsgWithExprOpcode",
+              },
+            },
+          },
+          "statements": [],
+        },
+        "selector": {
+          "kind": "internal-binary",
+          "name": {
+            "id": 19,
+            "kind": "id",
+            "loc": msg,
+            "text": "msg",
+          },
+          "type": "MsgWithExprOpcode",
+        },
+      },
+    ],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait { },
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 10576,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for scope-loops 1`] = `[]`;
 

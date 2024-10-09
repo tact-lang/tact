@@ -209,7 +209,7 @@ export class AstHasher {
 
     private hashMessageDecl(node: AstMessageDecl): string {
         const fieldsHash = this.hashFields(node.fields);
-        return `message|${fieldsHash}|${node.opcode?.value}`;
+        return `message|${fieldsHash}|${node.opcode ? this.hash(node.opcode) : "null"}`;
     }
 
     private hashFunctionDef(node: AstFunctionDef): string {

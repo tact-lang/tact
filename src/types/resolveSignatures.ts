@@ -2,7 +2,11 @@ import * as changeCase from "change-case";
 import { ABIField, beginCell } from "@ton/core";
 import { CompilerContext } from "../context";
 import { idToHex } from "../utils/idToHex";
-import { idTextErr, throwInternalCompilerError } from "../errors";
+import {
+    idTextErr,
+    throwConstEvalError,
+    throwInternalCompilerError,
+} from "../errors";
 import { getType, getAllTypes } from "./resolveDescriptors";
 import {
     BinaryReceiverSelector,
@@ -14,6 +18,8 @@ import { AstNumber, AstReceiver } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 import { sha256_sync } from "@ton/crypto";
 import { dummySrcInfo } from "../grammar/grammar";
+import { ensureInt } from "../interpreter";
+import { evalConstantExpression } from "../constEval";
 
 export function resolveSignatures(ctx: CompilerContext) {
     const signatures: Map<
@@ -187,7 +193,46 @@ export function resolveSignatures(ctx: CompilerContext) {
         let id: AstNumber | null = null;
         if (t.ast.kind === "message_decl") {
             if (t.ast.opcode !== null) {
-                id = t.ast.opcode;
+                // Currently, message opcode expressions do not get typechecked, so
+                // ```
+                // message(true ? 42 : false) TypeError { }
+                // ```
+                // WILL NOT result in error
+                const opCode = ensureInt(
+                    evalConstantExpression(t.ast.opcode, ctx),
+                    t.ast.opcode.loc,
+                );
+                if (opCode === 0n) {
+                    throwConstEvalError(
+                        `Opcode of message ${idTextErr(t.ast.name)} is zero: those are reserved for text comments and cannot be used for message structs`,
+                        true,
+                        t.ast.opcode.loc,
+                    );
+                }
+                if (opCode < 0) {
+                    throwConstEvalError(
+                        `Opcode of message ${idTextErr(t.ast.name)} is negative ('${opCode}') which is not allowed`,
+                        true,
+                        t.ast.opcode.loc,
+                    );
+                }
+                if (opCode > 0xffff_ffff) {
+                    throwConstEvalError(
+                        `Opcode of message ${idTextErr(t.ast.name)} is too large ('${opCode}'): it must fit into 32 bits`,
+                        true,
+                        t.ast.opcode.loc,
+                    );
+                }
+                id =
+                    t.ast.opcode.kind === "number"
+                        ? t.ast.opcode
+                        : {
+                              kind: "number",
+                              base: 10,
+                              value: opCode,
+                              id: 0,
+                              loc: dummySrcInfo,
+                          };
             } else {
                 id = newMessageOpcode(signature);
                 if (id.value === 0n) {

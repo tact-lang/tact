@@ -213,7 +213,14 @@ export class AstRenamer {
     private renameModuleItemContents(item: AstModuleItem): AstModuleItem {
         switch (item.kind) {
             case "struct_decl":
+                return item;
             case "message_decl":
+                if (item.opcode !== null) {
+                    return {
+                        ...item,
+                        opcode: this.renameExpression(item.opcode),
+                    };
+                }
                 return item;
             case "function_def":
                 return this.renameFunctionContents(item as AstFunctionDef);
