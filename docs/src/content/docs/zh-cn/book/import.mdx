@@ -1,5 +1,5 @@
 ---
-title: Importing code
+title: 导入代码
 ---
 
 Tact allows you to import Tact and [FunC](https://docs.ton.org/develop/func/overview) code — any given `.tact` or `.fc`/`.func` file can be imported into your project using an `import{:tact}` keyword.
@@ -13,43 +13,43 @@ Additionally, Tact compiler has a versatile set of standard libraries, which com
 
 :::
 
-## Import Tact code
+## 导入 Tact 代码
 
-It's possible to import any Tact code using the `import{:tact}` statement and providing a relative path to the target `.tact` file like so:
-
-```tact
-import "./relative/path/to/the/target/tact/file.tact";
-```
-
-Specifying parent directories (`../`) is also possible:
+使用 `import{:tact}` 语句并提供目标 `.tact` 文件的相对路径，可以导入任何 Tact 代码：
 
 ```tact
-import "../subfolder/imported/file.tact";
+导入"./relative/path/to/the/target/tact/file.tact"；
 ```
 
-## Import FunC code
+也可以指定父目录 (`../`)：
 
-It's possible to import code written in FunC code directly just as it's done with Tact code imports:
+```tact
+导入".../subfolder/imported/file.tact"；
+```
+
+## 导入 FunC 代码
+
+可以直接导入用 FunC 代码编写的代码，就像 Tact 代码导入一样：
 
 ```tact
 // Relative import
 import "./relative/path/to/the/target/func/file.fc";
 
 // Specifying parent directories
-import "../subfolder/imported/func/file.fc";
+import "../subfolder/imported/func/file.fc"；
 ```
 
-But in order to use functions from such file, one has to declare them as `native` functions first. For example, when standard library [@stdlib/dns](/language/libs/dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
+但要使用此类文件中的函数，必须先将它们声明为 "本地 "函数。 For example, when standard library [@stdlib/dns](/language/libs/dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
 
 ```tact
-// FunC code located in a file right next to the current Tact one:
+// FunC 代码位于当前 Tact 代码旁边的文件中：
 import "./dns.fc";
 
-// Mapping function signatures from FunC to Tact:
-@name(dns_string_to_internal)
-native dnsStringToInternal(str: String): Slice?;
+// 从 FunC 到 Tact 的函数签名映射：
+@name(dns_string_too_internal)
+native dnsStringToInternal(str: String)：Slice?
 ```
 
-## Standard libraries
+## 标准图书馆
 
 See [Language→Libs→Overview](/language/libs/overview).
