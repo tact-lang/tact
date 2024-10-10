@@ -1,19 +1,19 @@
 ---
-title: "OTP-003: Self-ABI reporting"
+title: OTP-003：自我评估报告
 sidebar:
   order: 3
 ---
 
-This proposal defines how to report the contract's ABI using the IPFS link.
+本建议定义了如何使用 IPFS 链接报告合同的 ABI。
 
-## Motivation
+## 动机
 
-Usually, ABI is supplied separately using a third-party service or via some repository on GitHub. This proposal suggests adding a new self-reporting of the contract's ABI using a link to an IPFS. This would allow us to avoid any third-party dependency and allow anyone to build tools that rely on ABI such as explorers, wallets, etc.
+通常，ABI 是通过第三方服务或 GitHub 上的某个存储库单独提供的。 本提案建议增加一项新的合同 ABI 自我报告，使用 IPFS 链接。 这将使我们避免任何第三方依赖，并允许任何人构建依赖于 ABI 的工具，如探索器、钱包等。
 
-## Specification
+## 规格
 
-To support this proposal, the contract should implement OTP-001 and report an interface `org.ton.abi.ipfs.v0`. Then implement a get method `get_abi_ipfs` that returns a string with an IPFS link to the ABI file. The link should be in the format `ipfs://<hash>`.
+为支持这一提议，合同应实施 OTP-001，并报告一个接口 "org.ton.abi.ipfs.v0"。 然后实现一个获取方法 `get_abi_ipfs`，该方法会返回一个字符串，其中包含指向 ABI 文件的 IPFS 链接。 链接格式应为 `ipfs://<hash>`。
 
-## Drawbacks
+## 缺点
 
-- No way to upgrade ABI without updating a contract. This is a drawback exists only for hardcoded links.
+- 不更新合同就无法升级 ABI。 这个缺点只存在于硬编码链接中。
