@@ -4,26 +4,26 @@ title: Message `mode`
 
 As you might've noticed, messages are sent with the `mode` param of a struct `SendParameters`. It's an Int value, which is combined from base modes and optional flags, which are also Int values.
 
-It's possible to use raw Int values and manually provide them for the `mode`, but for your convenience there's a set of constants which you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
+It's possible to use raw Int values and manually provide them for the `mode`, but for your convenience there's a set of constants which you may use to construct the compound `mode` with ease. 有关基本模式和可选标记的更多信息，请参阅下表。
 
-## Base modes
+## 基本模式
 
-| Mode value | Constant name                 | Description                                                                                                             |
-| ---------: | :---------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| $0$        | -                             | Ordinary message (default).                                                                                             |
-| $64$       | SendRemainingValue            | Carry all the remaining value of the inbound message in addition to the value initially indicated in the new message.   |
-| $128$      | SendRemainingBalance          | Carry all the remaining balance of the current smart contract instead of the value originally indicated in the message. |
+|        模式值 | 恒定名称                 | 说明                           |
+| ---------: | :------------------- | ---------------------------- |
+| $0$        | -                    | 普通信息（默认）。                    |
+| $64$       | SendRemainingValue   | 除了新报文中最初显示的值外，还携带入站报文的所有剩余值。 |
+| $128$      | SendRemainingBalance | 携带当前智能合约的所有余额，而不是信息中最初显示的值。  |
 
-## Optional flags
+## 可选标记
 
-| Flag value | Constant name                   | Description                                                                                                            |
-| ---------: | :------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| $+1$       | SendPayGasSeparately            | Pay forward fees separately from the message value.                                                                    |
-| $+2$       | SendIgnoreErrors                | Ignore any errors arising while processing this message during the action phase.                                       |
-| $+16$      | SendBounceIfActionFail          | Bounce transaction in case of any errors during action phase. Has no effect if flag $+2$, SendIgnoreErrors is used.    |
-| $+32$      | SendDestroyIfZero               | Current account must be destroyed if its resulting balance is zero (often used with mode $128$, SendRemainingBalance). |
+|        标志值 | 恒定名称                   | 说明                                                                                                                     |
+| ---------: | :--------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| $+1$       | SendPayGasSeparately   | 将转发费用与信息价值分开支付。                                                                                                        |
+| $+2$       | SendIgnoreErrors       | 忽略行动阶段处理该信息时出现的任何错误。                                                                                                   |
+| $+16$      | SendBounceIfActionFail | 如果在操作阶段出现任何错误，则退回交易。 Has no effect if flag $+2$, SendIgnoreErrors is used.                                             |
+| $+32$      | SendDestroyIfZero      | Current account must be destroyed if its resulting balance is zero (often used with mode $128$, SendRemainingBalance). |
 
-## Combining modes with flags
+## 将模式与标志相结合
 
 To make the Int value for `mode` field of SendParameters, you just have to combine base modes with optional flags by adding them together as numbers.
 
@@ -31,7 +31,7 @@ Alternatively, if you want to send the whole contract balance and destroy it imm
 
 For example, if you want to send a regular message and pay transfer fees separately, use the mode $0$ (default) and a flag $+1$ to get `mode` $= 1$, which is equal to just use SendPayGasSeparately constant.
 
-Here's how the latter example would look in code:
+下面是后一个示例的代码：
 
 ```tact
 let to: Address = ...;
@@ -46,7 +46,7 @@ send(SendParameters{
 
 :::caution
 
-  Note, that while adding ([`+{:tact}`](/book/operators#binary-add)) base modes together with optional flags is possible, it is discouraged due to the possibility of excess values. Use the bitwise OR ([`|{:tact}`](/book/operators#binary-bitwise-or)) instead, as it's designed to work with such flag and bit manipulations of the `mode`.
+  请注意，虽然可以将（[`+{:tact}`](/book/operators#binary-add)）基本模式与可选标志一起添加，但由于可能会出现多余的值，因此不鼓励这样做。 请使用位wise OR ([`|{:tact}`](/book/operators#binary-bitwise-or))，因为它是为处理此类标志和对 `mode` 的位操作而设计的。
 
 :::
 
