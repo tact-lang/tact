@@ -3,6 +3,8 @@ title: Maps
 description: "The composite type map is used as a way to associate keys with corresponding values of various types"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 The [composite type](/book/types#composite-types) `map<K, V>{:tact}` is used as a way to associate keys of type `K{:tact}` with corresponding values of type `V{:tact}`.
 
 For example, `map<Int, Int>{:tact}` uses [`Int{:tact}`][int] type for its keys and values:
@@ -150,6 +152,29 @@ if (fizz == null) {
     dump("Empty maps are null, which isn't obvious");
 }
 ```
+
+### Compare with `.deepEquals()` {#deepequals}
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+The `.deepEquals(){:tact}` [method](/book/functions#extension-function) on maps returns `true{:tact}` if all the entries of the map match respective entries of another map and their [underlying serialization logic](https://docs.ton.org/develop/data-formats/tl-b-types#hashmap) is exactly the same. Returns `false{:tact}` otherwise.
+
+```tact
+let fizz: map<Int, Int> = emptyMap();
+let buzz: map<Int, Int> = emptyMap();
+
+fizz.set(1, 2);
+buzz.set(1, 2);
+
+fizz.deepEquals(buzz); // true
+fizz == buzz;          // true, and uses much less gas to compute
+```
+
+:::note
+
+  This function is very gas expensive, and for the majority of cases it'll be enough to use the shallow comparison via the [equality `=={:tact}`](/book/operators#binary-equality) or [inequality `!={:tact}`](/book/operators#binary-equality) operators.
+
+:::
 
 ### Convert to a `Cell`, `.asCell()` {#ascell}
 
