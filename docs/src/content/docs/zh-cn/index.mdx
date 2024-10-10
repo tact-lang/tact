@@ -10,28 +10,30 @@ hero:
     alt: Tact 徽标
   actions:
     - text: 书籍
-      link: /book
+      link: /zh-cn/book
       variant: minimal
       icon: right-arrow
+
     - text: 🍲烹饪书
-      link: /cookbook
+      link: /zh-cn/cookbook
       variant: minimal
       icon: right-arrow
+
     - text: 🔬 参考资料
-      link: /ref
+      link: /zh-cn/ref
       variant: minimal
       icon: right-arrow
+
     - text: 🗺️ 生态系统
-      link: /ecosystem
+      link: /zh-cn/ecosystem
       variant: minimal
       icon: right-arrow
 ---
 
 import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
 
-```
-  {/* 图标：右箭头 */}
-```
+      {/* icon: right-arrow */}
+
 
 ## 🚀 我们开始吧！ {#start}
 
@@ -49,10 +51,10 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 
    <Tabs>
      <TabItem label="yarn" icon="seti:yarn">
-       ``shell
+       ```shell
        # 推荐
        yarn create ton simple-counter --type tact-counter --contractName SimpleCounter
-       ``shell
+       ```
      </TabItem>
      <TabItem label="npm" icon="seti:npm">
        ```shell
@@ -65,7 +67,7 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
        ```
      </TabItem>
      <TabItem label="bun" icon="bun">
-       ``shell
+       ```shell
        bun create ton@latest simple-counter --type tact-counter --contractName SimpleCounter
        ```
      </TabItem>
@@ -85,7 +87,7 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
        amount：Int as uint32;
    }
 
-   Deployable 合同 SimpleCounter {
+   contract SimpleCounter with Deployable {
        id: Int as uint32;
        counter：
 
@@ -123,18 +125,18 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 
 1. #### 已经掌握了一些区块链知识？ {#next-1}
 
-   请参阅 [Tact Cookbook](/cookbook)，它是每个 Tact 开发人员在智能合约开发过程中面临的日常任务（和解决方案）的便捷集合。 使用它可以避免重复发明轮子。
+   请参阅 [Tact Cookbook](/zh-cn/cookbook)，它是每个 Tact 开发人员在智能合约开发过程中面临的日常任务（和解决方案）的便捷集合。 使用它可以避免重复发明轮子。
 
    此外，还可以查看以下小抄，快速入门：
 
    <CardGrid>
      <LinkCard
        title="💎 来自 FunC (TON)"
-       href="/book/cs/from-func"
+       href="/zh-cn/book/cs/from-func"
      />
      <LinkCard
        title="🔷 来自 Solidity (Ethereum)"
-       href="/book/cs/from-solidity"
+       href="/zh-cn/book/cs/from-solidity"
      />
    </CardGrid>
 
@@ -142,34 +144,34 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 
    有关编译、测试和部署的进一步指导，请参阅相关页面：
 
-   - [测试和调试](/book/debug) 页面将为您介绍有关 Tact 合同调试的所有内容。
-   - [部署](/book/deploy)页面展示了部署的样子，并帮助你利用[蓝图](https://github.com/ton-org/blueprint) 的力量进行部署。
+   - [测试和调试](/zh-cn/book/debug) 页面将为您介绍有关 Tact 合同调试的所有内容。
+   - [部署](/zh-cn/book/deploy)页面展示了部署的样子，并帮助你利用[蓝图](https://github.com/ton-org/blueprint) 的力量进行部署。
 
-   有关您最喜欢的编辑器和其他工具的自定义插件，请参阅 [生态系统](/ecosystem) 部分。
+   有关您最喜欢的编辑器和其他工具的自定义插件，请参阅 [生态系统](/zh-cn/ecosystem) 部分。
 
    或者，也可以查看以下更广泛的章节：
 
-   - [书籍](/书籍) 帮助您逐步学习语言
-   - [Cookbook](/cookbook)为您提供现成的 Tact 代码食谱
-   - [参考资料](/ref) 提供了标准库、语法和演变过程的完整词汇表
-   - 最后，[生态系统](/ecosystem)描述了 Tact 和 TON 生态系统中的 "外面有什么"。
+   - [书籍](/zh-cn/book) 帮助您逐步学习语言
+   - [Cookbook](/zh-cn/cookbook)为您提供现成的 Tact 代码食谱
+   - [参考资料](/zh-cn/ref) 提供了标准库、语法和演变过程的完整词汇表
+   - 最后，[生态系统](/zh-cn/ecosystem)描述了 Tact 和 TON 生态系统中的 "外面有什么"。
 
    <CardGrid>
      <LinkCard
-       title="📚阅读《战术书》"
-       href="/book"
+       title="📚 阅读《战术书》"
+       href="/zh-cn/book"
      />
      <LinkCard
-       title="🍲研磨烹饪书"
-       href="/cookbook"
+       title="🍲 研磨烹饪书"
+       href="/zh-cn/cookbook"
      />
      <LinkCard
-       title="🔬 Skim the Reference"
-       href="/ref"
+       title="🔬 浏览参考资料"
+       href="/zh-cn/ref"
      />
      <LinkCard
-       title="🗺️ Embrace the Ecosystem"
-       href="/ecosystem"
+       title="🗺️ 拥抱生态系统"
+       href="/zh-cn/ecosystem"
      />
    </CardGrid>
 
