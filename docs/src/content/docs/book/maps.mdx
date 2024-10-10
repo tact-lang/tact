@@ -143,17 +143,26 @@ The `.exists(){:tact}` [method](/book/functions#extension-function) on maps retu
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
+fizz.set(0, 0);
 
 if (fizz.exists(2 + 2)) { // false
     dump("Something doesn't add up!");
 }
 
-fizz.set(0, 0);
-
 if (fizz.exists(1 / 2)) { // true
     dump("I told a fraction joke once. It was half funny.");
 }
+
+if (fizz.get(1 / 2) != null) { // also true, but consumes more gas
+    dump("Gotta pump more!");
+}
 ```
+
+:::note
+
+  Calling `m.exists(key){:tact}` is more gas-efficient than executing `m.get(key) != null{:tact}`, although both approaches yield the same results.
+
+:::
 
 ### Check if empty, `.isEmpty()` {#isempty}
 
