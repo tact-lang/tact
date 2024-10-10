@@ -2,30 +2,30 @@
 title: "@stdlib/config"
 ---
 
-Provides functions for config and elector Address retrieval.
+提供配置和选民地址检索功能。
 
-To use this library, import `@stdlib/config`:
+要使用该库，请导入 `@stdlib/config`：
 
 ```tact
-import "@stdlib/config";
+导入"@stdlib/config"；
 ```
 
-## Functions
+## 功能
 
-### getConfigAddress
+### 获取配置地址
 
 ```tact
-fun getConfigAddress(): Address;
+fun getConfigAddress()：地址；
 ```
 
-Retrieves config parameter $0$ as an [`Address{:tact}`][p].
+读取配置参数 $0$ 作为 [`地址{:tact}`][p]。
 
-Source code:
+源代码
 
 ```tact
-fun getConfigAddress(): Address {
-    let cell: Cell = getConfigParam(0)!!;
-    let sc: Slice = cell.beginParse();
+fun getConfigAddress()：Address {
+    let cell：Cell = getConfigParam(0)!!;
+    let sc：Slice = cell.beginParse();
     return newAddress(-1, sc.loadUint(256));
 }
 ```
@@ -33,22 +33,22 @@ fun getConfigAddress(): Address {
 ### getElectorAddress
 
 ```tact
-fun getElectorAddress(): Address;
+fun getElectorAddress()：地址；
 ```
 
-Retrieves config parameter $1$ as an [`Address{:tact}`][p].
+读取配置参数 $1$ 作为 [`地址{:tact}`][p]。
 
-Source code:
+源代码
 
 ```tact
-fun getElectorAddress(): Address {
-    let cell: Cell = getConfigParam(1)!!;
-    let sc: Slice = cell.beginParse();
+fun getElectorAddress()：Address {
+    let cell：Cell = getConfigParam(1)!!;
+    let sc：Slice = cell.beginParse();
     return newAddress(-1, sc.loadUint(256));
 }
 ```
 
-## Sources
+## 资料来源
 
 - [config.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/config.tact)
 
