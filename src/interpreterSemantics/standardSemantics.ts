@@ -1,4 +1,6 @@
-import { Address, Cell, toNano } from "@ton/core";
+import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
+import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
+import * as crc32 from "crc-32";
 import { CompilerContext } from "../context";
 import { idTextErr, throwInternalCompilerError } from "../errors";
 import {
@@ -281,11 +283,8 @@ that are already valid Tact programs.
 Internally, the semantics use a stack of environments to keep track of
 variables at different scopes. Each environment in the stack contains a map
 that binds a variable name to its corresponding value.
-
-In the standard semantics, statements do not produce results, as such I use type "undefined"
-as the generic type for statement's results.
 */
-export class StandardSemantics extends InterpreterSemantics<Value, undefined> {
+export class StandardSemantics extends InterpreterSemantics<Value> {
     private envStack: EnvironmentStack<Value>;
     private context: CompilerContext;
     private config: InterpreterConfig;
@@ -377,7 +376,7 @@ export class StandardSemantics extends InterpreterSemantics<Value, undefined> {
 
         return evalUnaryOp(
             ast.op,
-            operandEvaluator(),
+            operandEvaluator,
             ast.operand.loc,
             ast.loc,
         );
@@ -391,12 +390,7 @@ export class StandardSemantics extends InterpreterSemantics<Value, undefined> {
         return evalBinaryOp(
             ast.op,
             leftValue,
-            rightEvaluator(), // There is actually a bug in the current implementation of the semantics:
-            // boolean operators do not short-circuit in this implementation
-            // The evalBinaryOp function should receive the rightEvaluator, instead of executing
-            // rightEvaluator and pass the result as a parameter.
-            // This implies we need to change the the signature of the evalBinaryOp function
-            // (the one outside the class).
+            rightEvaluator,
             ast.left.loc,
             ast.right.loc,
             ast.loc,
@@ -411,12 +405,7 @@ export class StandardSemantics extends InterpreterSemantics<Value, undefined> {
         return evalBinaryOp(
             ast.op,
             leftValue,
-            rightEvaluator(), // There is actually a bug in the current implementation of the semantics:
-            // boolean operators do not short-circuit in this implementation
-            // The evalBinaryOp function should receive the rightEvaluator continuation, instead of executing
-            // rightEvaluator and pass the result as a parameter.
-            // This implies we need to change the the signature of the evalBinaryOp function
-            // (the one outside the class).
+            rightEvaluator,
             ast.path.loc,
             ast.expression.loc,
             ast.loc,
@@ -624,6 +613,111 @@ export class StandardSemantics extends InterpreterSemantics<Value, undefined> {
                     }
                 }
                 break;
+                case "slice":
+                    {
+                        ensureFunArity(1, ast.args, ast.loc);
+                        const str = ensureString(
+                            argValues[0]!,
+                            ast.args[0]!.loc,
+                        );
+                        try {
+                            return Cell.fromBase64(str).asSlice();
+                        } catch (_) {
+                            throwErrorConstEval(
+                                `invalid base64 encoding for a cell: ${str}`,
+                                ast.loc,
+                            );
+                        }
+                    }
+                    break;
+                case "rawSlice":
+                    {
+                        ensureFunArity(1, ast.args, ast.loc);
+                        const str = ensureString(
+                            argValues[0]!,
+                            ast.args[0]!.loc,
+                        );
+    
+                        if (!/^[0-9a-fA-F]*_?$/.test(str)) {
+                            throwErrorConstEval(
+                                `invalid hex string: ${str}`,
+                                ast.loc,
+                            );
+                        }
+    
+                        // Remove underscores from the hex string
+                        const hex = str.replace("_", "");
+                        const paddedHex = hex.length % 2 === 0 ? hex : "0" + hex;
+                        const buffer = Buffer.from(paddedHex, "hex");
+    
+                        // Initialize the BitString
+                        let bits = new BitString(
+                            buffer,
+                            hex.length % 2 === 0 ? 0 : 4,
+                            hex.length * 4,
+                        );
+    
+                        // Handle the case where the string ends with an underscore
+                        if (str.endsWith("_")) {
+                            const paddedBits = paddedBufferToBits(buffer);
+    
+                            // Ensure there's enough length to apply the offset
+                            const offset = hex.length % 2 === 0 ? 0 : 4;
+                            if (paddedBits.length >= offset) {
+                                bits = paddedBits.substring(
+                                    offset,
+                                    paddedBits.length - offset,
+                                );
+                            } else {
+                                bits = new BitString(Buffer.from(""), 0, 0);
+                            }
+                        }
+    
+                        // Ensure the bit length is within acceptable limits
+                        if (bits.length > 1023) {
+                            throwErrorConstEval(
+                                `slice constant is too long, expected up to 1023 bits, got ${bits.length}`,
+                                ast.loc,
+                            );
+                        }
+    
+                        // Return the constructed slice
+                        return beginCell().storeBits(bits).endCell().asSlice();
+                    }
+                    break;
+                case "ascii":
+                    {
+                        ensureFunArity(1, ast.args, ast.loc);
+                        const str = ensureString(
+                            argValues[0]!,
+                            ast.args[0]!.loc,
+                        );
+                        const hex = Buffer.from(str).toString("hex");
+                        if (hex.length > 64) {
+                            throwErrorConstEval(
+                                `ascii string is too long, expected up to 32 bytes, got ${Math.floor(hex.length / 2)}`,
+                                ast.loc,
+                            );
+                        }
+                        if (hex.length == 0) {
+                            throwErrorConstEval(
+                                `ascii string cannot be empty`,
+                                ast.loc,
+                            );
+                        }
+                        return BigInt("0x" + hex);
+                    }
+                    break;
+                case "crc32":
+                    {
+                        ensureFunArity(1, ast.args, ast.loc);
+                        const str = ensureString(
+                            argValues[0]!,
+                            ast.args[0]!.loc,
+                        );
+                        return BigInt(crc32.str(str) >>> 0); // >>> 0 converts to unsigned
+                    }
+                    break;
             case "address":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
@@ -714,6 +808,12 @@ export class StandardSemantics extends InterpreterSemantics<Value, undefined> {
                         ast.loc,
                     );
                     break;
+                case "asm_function_def":
+                    throwNonFatalErrorConstEval(
+                        "asm function calls are currently not supported",
+                        ast.loc,
+                    );
+                    break;
             }
         } else {
             throwNonFatalErrorConstEval(
@@ -760,7 +860,7 @@ export class StandardSemantics extends InterpreterSemantics<Value, undefined> {
         );
     }
 
-    public storeNewBinding(ast: AstStatementLet, exprValue: Value): undefined {
+    public storeNewBinding(ast: AstStatementLet, exprValue: Value) {
         if (hasStaticConstant(this.context, idText(ast.name))) {
             // Attempt of shadowing a constant in a let declaration
             throwInternalCompilerError(
@@ -772,36 +872,21 @@ export class StandardSemantics extends InterpreterSemantics<Value, undefined> {
         this.envStack.setNewBinding(idText(ast.name), exprValue);
     }
 
-    public updateBinding(id: AstId, exprValue: Value): undefined {
+    public updateBinding(id: AstId, exprValue: Value) {
         this.envStack.updateBinding(idText(id), exprValue);
     }
 
     public runInNewEnvironment(
         statementsEvaluator: () => undefined,
-    ): undefined {
+    ) {
         this.envStack.executeInNewEnvironment(statementsEvaluator);
-    }
-
-    public joinStatementResults(
-        _first: undefined,
-        _second: undefined,
-    ): undefined {
-        // Do nothing: statements do not return values, so there is nothing to join.
-    }
-
-    public emptyStatementResult(): undefined {
-        // Do nothing
-    }
-
-    public toStatementResult(_val: Value): undefined {
-        // Do nothing: values returned from expressions are ignored when the expression is executed as statement.
     }
 
     public toInteger(value: Value, src: SrcInfo): bigint {
         return ensureInt(value, src);
     }
 
-    public evalReturn(val?: Value): undefined {
+    public evalReturn(val?: Value) {
         throw new ReturnSignal(val);
     }
 
@@ -809,7 +894,7 @@ export class StandardSemantics extends InterpreterSemantics<Value, undefined> {
         iterationNumber: bigint,
         src: SrcInfo,
         iterationEvaluator: () => undefined,
-    ): undefined {
+    ) {
         iterationEvaluator();
         if (iterationNumber >= this.config.maxLoopIterations) {
             throwNonFatalErrorConstEval("loop timeout reached", src);
@@ -899,7 +984,7 @@ function ensureMethodArity(
 
 export function evalUnaryOp(
     op: AstUnaryOperation,
-    valOperand: Value,
+    operandEvaluator: () => Value,
     operandLoc: SrcInfo = dummySrcInfo,
     source: SrcInfo = dummySrcInfo,
 ): Value {
@@ -926,7 +1011,7 @@ export function evalUnaryOp(
 export function evalBinaryOp(
     op: AstBinaryOperation,
     valLeft: Value,
-    valRight: Value,
+    rightEvaluator: () => Value,
     locLeft: SrcInfo = dummySrcInfo,
     locRight: SrcInfo = dummySrcInfo,
     source: SrcInfo = dummySrcInfo,

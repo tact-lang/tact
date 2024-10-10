@@ -376,7 +376,7 @@ export class Interpreter<T> {
     public interpretAssignStatement(ast: AstStatementAssign) {
         if (ast.path.kind === "id") {
             const val = this.interpretExpression(ast.expression);
-            return this.semantics.updateBinding(ast.path, val);
+            this.semantics.updateBinding(ast.path, val);
         } else {
             throwNonFatalErrorConstEval(
                 "only identifiers are currently supported as path expressions",
@@ -397,7 +397,7 @@ export class Interpreter<T> {
                 currentPathValue,
                 updateEvaluator,
             );
-            return this.semantics.updateBinding(ast.path, newVal);
+            this.semantics.updateBinding(ast.path, newVal);
         } else {
             throwNonFatalErrorConstEval(
                 "only identifiers are currently supported as path expressions",
@@ -412,22 +412,23 @@ export class Interpreter<T> {
             ast.condition.loc,
         );
         if (condition) {
-            return this.semantics.runInNewEnvironment(() =>
+            this.semantics.runInNewEnvironment(() =>
                 this.executeStatements(ast.trueStatements),
             );
         } else if (ast.falseStatements !== null) {
-            return this.semantics.runInNewEnvironment(() =>
+            // We are in an else branch. The typechecker ensures that
+            // the elseif branch does not exist.
+            this.semantics.runInNewEnvironment(() =>
                 this.executeStatements(ast.falseStatements!),
             );
-        } else {
-            return this.semantics.emptyStatementResult();
+        } else if (ast.elseif !== null) {
+            // We are in an elseif branch
+            this.interpretConditionStatement(ast.elseif);
         }
     }
 
     public interpretExpressionStatement(ast: AstStatementExpression) {
-        return this.semantics.toStatementResult(
-            this.interpretExpression(ast.expression),
-        );
+        this.interpretExpression(ast.expression);
     }
 
     public interpretForEachStatement(ast: AstStatementForEach) {
@@ -446,28 +447,22 @@ export class Interpreter<T> {
             // the loop. Also, the language requires that all declared variables inside the
             // loop be initialized, which means that we can overwrite its value in the environment
             // in each iteration.
-            return this.semantics.runInNewEnvironment(() => {
-                let result = this.semantics.emptyStatementResult();
-
+            this.semantics.runInNewEnvironment(() => {
                 for (let i = 1n; i <= iterations; i++) {
-                    result = this.semantics.runOneIteration(i, ast.loc, () =>
-                        this.executeStatements(ast.statements, result),
+                    this.semantics.runOneIteration(i, ast.loc, () =>
+                        this.executeStatements(ast.statements)
                     );
                 }
-
-                return result;
             });
-        } else {
-            return this.semantics.emptyStatementResult();
         }
     }
 
     public interpretReturnStatement(ast: AstStatementReturn) {
         if (ast.expression !== null) {
             const val = this.interpretExpression(ast.expression);
-            return this.semantics.evalReturn(val);
+            this.semantics.evalReturn(val);
         } else {
-            return this.semantics.evalReturn();
+            this.semantics.evalReturn();
         }
     }
 
@@ -494,16 +489,14 @@ export class Interpreter<T> {
         // the loop. Also, the language requires that all declared variables inside the
         // loop be initialized, which means that we can overwrite its value in the environment
         // in each iteration.
-        return this.semantics.runInNewEnvironment(() => {
-            let result = this.semantics.emptyStatementResult();
+        this.semantics.runInNewEnvironment(() => {
             do {
-                result = this.semantics.runOneIteration(
+                this.semantics.runOneIteration(
                     iterCount,
                     ast.loc,
                     () => {
-                        const r = this.executeStatements(
-                            ast.statements,
-                            result,
+                        this.executeStatements(
+                            ast.statements
                         );
 
                         // The typechecker ensures that the condition does not refer to
@@ -512,15 +505,11 @@ export class Interpreter<T> {
                             this.interpretExpression(ast.condition),
                             ast.condition.loc,
                         );
-
-                        return r;
                     },
                 );
 
                 iterCount++;
             } while (!condition);
-
-            return result;
         });
     }
 
@@ -537,16 +526,14 @@ export class Interpreter<T> {
         // the loop. Also, the language requires that all declared variables inside the
         // loop be initialized, which means that we can overwrite its value in the environment
         // in each iteration.
-        return this.semantics.runInNewEnvironment(() => {
-            let result = this.semantics.emptyStatementResult();
+        this.semantics.runInNewEnvironment(() => {
             while (condition) {
-                result = this.semantics.runOneIteration(
+                this.semantics.runOneIteration(
                     iterCount,
                     ast.loc,
                     () => {
-                        const r = this.executeStatements(
-                            ast.statements,
-                            result,
+                        this.executeStatements(
+                            ast.statements
                         );
 
                         // The typechecker ensures that the condition does not refer to
@@ -555,15 +542,11 @@ export class Interpreter<T> {
                             this.interpretExpression(ast.condition),
                             ast.condition.loc,
                         );
-
-                        return r;
                     },
                 );
 
                 iterCount++;
             }
-
-            return result;
         });
     }
 }

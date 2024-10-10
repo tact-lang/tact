@@ -144,4 +144,6 @@ export abstract class InterpreterSemantics<V> {
         src: SrcInfo,
         iterationEvaluator: () => void,
     ): void;
+    
+    public abstract evalReturn(val?: V): void;
 }
