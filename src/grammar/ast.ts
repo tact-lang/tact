@@ -584,7 +584,7 @@ export const selfId: AstId = {
 
 export type AstDestructMapping = {
     kind: "destruct_mapping";
-    from: AstId;
+    field: AstId;
     name: AstId;
     id: number;
     loc: SrcInfo;
