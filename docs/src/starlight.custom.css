@@ -97,3 +97,8 @@ td>code,
 td>a>code {
 	white-space: nowrap;
 }
+
+/* Prevent inline code snippets from changing background color */
+code:not(pre *) {
+	background-color: var(--sl-color-bg-inline-code) !important;
+}
