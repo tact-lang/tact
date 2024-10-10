@@ -1,245 +1,245 @@
 ---
-title: Common
+title: 常见问题
 ---
 
-List of the most commonly used built-in [global static functions](/book/functions#global-static-functions).
+最常用的内置 [全局静态函数] 列表(/book/functions#global-static-functions)。
 
-## Contextual
+## 语境
 
-### now
+### 现在
 
 ```tact
-fun now(): Int
+fun now()：Int
 ```
 
-Returns the current [Unix time](https://en.wikipedia.org/wiki/Unix_time).
+返回当前 [Unix 时间](https://en.wikipedia.org/wiki/Unix_time)。
 
-Usage example:
+使用示例
 
 ```tact
-let timeOffset: Int = now() + 1000; // thousand seconds from now()
+let timeOffset：Int = now() + 1000; // 距离 now() 千秒
 ```
 
-### myBalance
+### 我的余额
 
 ```tact
-fun myBalance(): Int;
+fun myBalance()：Int；
 ```
 
-Returns the [nanoToncoin](/book/integers#nanotoncoin) balance of the smart contract as it was at the start of the [compute phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase) of the current transaction.
+返回当前交易的 [计算阶段](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase) 开始时智能合约的 [纳米通币](/book/integers#nanotoncoin) 余额。
 
-Usage example:
+使用示例
 
 ```tact
-let iNeedADolla: Int = myBalance();
+让 iNeedADolla：Int = myBalance()；
 ```
 
 :::caution
 
-  Beware, that [all message sending functions](/book/send) of Tact can change the _actual_ contract's balance, but they _won't_ update the value returned by this function.
+  请注意，Tact 的 [所有信息发送函数](/book/send) 可以更改_实际_合约的余额，但不会_更新此函数返回的值。
 
 :::
 
-### myAddress
+### 我的地址
 
 ```tact
-fun myAddress(): Address;
+fun myAddress()：地址；
 ```
 
-Returns the address of the current smart contract as an [`Address{:tact}`][p].
+以[`地址{:tact}`][p]的形式返回当前智能合约的地址。
 
-Usage example:
+使用示例
 
 ```tact
-let meMyselfAndI: Address = myAddress();
+let meMyselfAndI: Address = myAddress()；
 ```
 
-### sender
+### 收讯
 
 ```tact
-fun sender(): Address;
+fun sender()：地址；
 ```
 
-Returns the [`Address{:tact}`][p] of the sender of the current message.
+返回当前信息发件人的 [`地址{:tact}`][p]。
 
-Usage example:
+使用示例
 
 ```tact
 receive() {
-    let whoSentMeMessage: Address = sender();
+    let whoSentMeMessage：Address = sender();
 }
 ```
 
 :::caution
 
-  Behavior is undefined for [getter functions](/book/contracts#getter-functions), as they cannot have a sender nor they can send messages.
+  对于 [getter 函数](/book/contracts#getter-functions)，行为是未定义的，因为它们不能有发送者，也不能发送信息。
 
 :::
 
 :::note
 
-  In order to reduce gas usage, prefer using this function over calling [`context().sender{:tact}`](#context) when you only need to know the sender of the message.
+  为了减少气体用量，当您只需要知道消息的发件人时，请使用此函数而不是调用 [`context().sender{:tact}`](#context)。
 
 :::
 
-### context
+### 背景
 
 ```tact
-fun context(): Context;
+fun context()：Context；
 ```
 
-Returns `Context{:tact}` [Struct](/book/structs-and-messages#structs), that consists of:
+Returns `Context{:tact}` [Struct](/book/structs-and-messages#structs), that consists of：
 
-| Field     | Type                      | Description                                                                                                                                                                                                                                                                                                                           |
-| :-------- | :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `bounced` | [`Bool{:tact}`][bool]     | [Bounced](https://ton.org/docs/learn/overviews/addresses#bounceable-vs-non-bounceable-addresses) flag of the incoming message.                                                                                                                                                                                                        |
-| `sender`  | [`Address{:tact}`][p]     | Internal address of the sender on the TON blockchain.                                                                                                                                                                                                                                                                                 |
-| `value`   | [`Int{:tact}`][int]       | Amount of [nanoToncoins](/book/integers#nanotoncoin) in a message.                                                                                                                                                                                                                                                                    |
-| `raw`     | [`Slice{:tact}`][slice]   | The remainder of the message as a [`Slice{:tact}`][slice]. It follows [internal message layout](https://docs.ton.org/develop/smart-contracts/messages#message-layout) of TON starting from the destination [`Address{:tact}`][p] (`dest:MsgAddressInt ` in [TL-B notation](https://docs.ton.org/develop/data-formats/tl-b-language)). |
+| 现场     | 类型                     | 说明                                                                                                                                                                                                                                    |
+| :----- | :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 宣布     | [`Bool{:tact}`][bool]。 | [退信](https://ton.org/docs/learn/overviews/addresses#bounceable-vs-non-bounceable-addresses) 标志。                                                                                                                                       |
+| 发件人    | [`地址{:tact}`][p]       | 发送方在 TON 区块链上的内部地址。                                                                                                                                                                                                                   |
+| 值      | [`Int{:tact}`][int]。   | 信息中 [nanoToncoins](/book/integers#nanotoncoin) 的数量。                                                                                                                                                                                   |
+| 生      | [`切片{:tact}`][切片]      | 信息的其余部分作为 [`片{:tact}`][片]。 它遵循 TON 的[内部报文布局](https://docs.ton.org/develop/smart-contracts/messages#message-layout)，从目的地[`地址{:tact}`][p]（[TL-B 符号](https://docs.ton.org/develop/data-formats/tl-b-language) 中的`dest:MsgAddressInt`）开始。 |
 
-Usage example:
+使用示例
 
 ```tact
-let ctx: Context = context();
-require(ctx.value != 68 + 1, "Invalid amount of nanoToncoins, bye!");
+让 ctx：Context = context();
+require(ctx.value != 68 + 1, "Invalid amount of nanoToncoins, bye!")；
 ```
 
 :::note
 
-  Note, that if you only need to know who sent the message, use the [`sender(){:tact}`](#sender) function, as it's less gas-consuming.
+  请注意，如果您只需要知道谁发送了信息，请使用 [`sender(){:tact}`](#sender) 函数，因为它耗油量较少。
 
 :::
 
-## Addressing
+## 地址
 
-### newAddress
+### 新地址
 
 ```tact
-fun newAddress(chain: Int, hash: Int): Address;
+fun newAddress(chain: Int, hash: Int)：地址；
 ```
 
-Creates a new [`Address{:tact}`][p] based on the [`chain` id](https://ton-blockchain.github.io/docs/#/overviews/TON_blockchain_overview) and the [SHA-256](/ref/core-math#sha256) encoded [`hash` value](https://docs.ton.org/learn/overviews/addresses#account-id).
+根据[`链`id](https://ton-blockchain.github.io/docs/#/overviews/TON_blockchain_overview)和[SHA-256](/ref/core-math#sha256)编码的[`哈希`值](https://docs.ton.org/learn/overviews/addresses#account-id)创建一个新的[`地址{:tact}`][p]。
 
-This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
+该函数尽可能在[编译时](/ref/core-comptime)解析常量值。
 
-Usage example:
+使用示例
 
 ```tact
 let oldTonFoundationAddr: Address =
     newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
-    //         ↑  ------------------------------------------------------------------
-    //         |  ↑
-    //         |  sha-256 hash of contract's init package (StateInit)
-    //         chain id: 0 is a workchain, -1 is a masterchain
+    // ↑ ------------------------------------------------------------------
+    | // ↑
+    // | 合约初始包（StateInit）的 sha-256 哈希值
+    // 链 id：0 代表工作链，-1 代表主链。
 ```
 
 :::caution
 
-  This method throws an error with [exit code 136](/book/exit-codes#136) if `chain` is invalid or with [exit code 137](/book/exit-codes#137) if `chain` points to the masterchain ($-1$) without [masterchain support](/book/masterchain) enabled.
+  如果 `chain` 无效，该方法会抛出错误[退出代码 136](/book/exit-codes#136)；如果 `chain` 指向主链 ($-1$) 且未启用[主链支持](/book/masterchain)，该方法会抛出错误[退出代码 137](/book/exit-codes#137)。
 
 :::
 
-:::note[Useful links:]
+:::note[Useful 链接：]
 
-  [`chain` (Workchain ID) in TON Docs](https://docs.ton.org/learn/overviews/addresses#workchain-id)\
-  [`hash` (Account ID) in TON Docs](https://docs.ton.org/learn/overviews/addresses#account-id)\
-  [Contract's init package (`StateInit{:tact}`)](/book/expressions#initof)
+  [TON文档中的`chain`（工作链ID）](https://docs.ton.org/learn/overviews/addresses#workchain-id)\
+  [TON文档中的`hash`（账户ID）](https://docs.ton.org/learn/overviews/addresses#account-id)\
+  [合约的初始包（`StateInit{:tact}`）](/book/expressions#initof)
 
 :::
 
-### contractAddress
+### 合同地址
 
 ```tact
-fun contractAddress(s: StateInit): Address;
+fun contractAddress(s: StateInit)：地址；
 ```
 
-Computes smart contract's [`Address{:tact}`][p] in a workchain $0$ based on its [`StateInit{:tact}`](/book/expressions#initof).
+根据智能合约的 [`StateInit{:tact}`](/book/expressions#initof)，计算智能合约在工作链 $0$ 中的 [`地址{:tact}`][p]。
 
-Usage example:
+使用示例
 
 ```tact
-let foundMeSome: Address = contractAddress(initOf SomeContract());
+让 foundMeSome：Address = contractAddress(initOf SomeContract())；
 ```
 
-### contractAddressExt
+### 合同地址扩展
 
 ```tact
-fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
+fun contractAddressExt(chain: Int, code: Cell, data: Cell)：地址；
 ```
 
-Computes smart contract's [`Address{:tact}`][p] based on the `chain` id, contract's `code` and contract's initial state `data`. Use [`initOf{:tact}`](/book/expressions#initof) expression to obtain initial `code` and initial `data` of a given contract.
+根据 "链 "id、合约 "代码 "和合约初始状态 "数据 "计算智能合约的[地址{:tact}\`][p]。 使用 [`initOf{:tact}`](/book/expressions#initof)表达式获取给定合约的初始 `code` 和初始 `data` 。
 
-Usage example:
+使用示例
 
 ```tact
-let initPkg: StateInit = initOf SomeContract();
-let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
+让 initPkg：StateInit = initOf SomeContract();
+let hereBeDragons：Address = contractAddressExt(0, initPkg.code, initPkg.data)；
 ```
 
 :::caution
 
-  This method throws an error with [exit code 136](/book/exit-codes#136) if `chain` is invalid or with [exit code 137](/book/exit-codes#137) if `chain` points to the masterchain ($-1$) without [masterchain support](/book/masterchain) enabled.
+  如果 `chain` 无效，该方法会抛出错误[退出代码 136](/book/exit-codes#136)；如果 `chain` 指向主链 ($-1$) 且未启用[主链支持](/book/masterchain)，该方法会抛出错误[退出代码 137](/book/exit-codes#137)。
 
 :::
 
 :::note
 
-  For this function to work, the compiler option `debug` has to be set to `true{:tact}` for the current project in the [configuration file](/book/config).\
-  Read more about debugging on the dedicated page: [Debugging](/book/debug).
+  要使用该功能，必须在 [configuration file](/book/config).
+  中为当前项目将编译器选项 `debug` 设置为 `true{:tact}`：[调试](/book/debug)。
 
 :::
 
-## Communication
+## 交流
 
-### send
+### 发送
 
 ```tact
-fun send(params: SendParameters);
+fun send(params: SendParameters)；
 ```
 
-[Queues the message](/book/send#outbound-message-processing) to be sent using a [`SendParameters{:tact}`](/book/send) [Struct](/book/structs-and-messages#structs).
+使用 [`发送参数{:tact}`](/book/send)[结构](/book/structs-and-messages#structs)发送[队列信息](/book/send#outbound-message-processing)。
 
-Usage example:
+使用示例
 
 ```tact
 send(SendParameters{
-    to: sender(),    // back to the sender,
+    to: sender(), // back to the sender,
     value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
                      // and no message body
-});
+})；
 ```
 
-:::note[Useful links:]
+:::note[Useful 链接：]
 
-  [Sending messages in the Book](/book/send)\
-  [Message `mode` in the Book](/book/message-mode)\
+  [Sending messages in the Book](/book/send)/
+  [Message`mode` in the Book](/book/message-mode)/
   [Single-contract communication in the Cookbook](/cookbook/single-communication)
 
 :::
 
-### emit
+### 发出
 
 ```tact
-fun emit(body: Cell);
+fun emit(body: Cell)；
 ```
 
-[Queues the message](/book/send#outbound-message-processing) `body` to be sent to the outer world with the purpose of logging and analyzing it later off-chain. The message does not have a recipient and is gas-efficient compared to using any other message sending functions of Tact.
+将[信息排队](/book/send#outbound-message-processing) `body` 发送到外部世界，以便在链外进行记录和分析。 该信息没有收件人，与使用 Tact 的其他信息发送功能相比更省油。
 
-Usage example:
+使用示例
 
 ```tact
-emit("Catch me if you can, Mr. Holmes".asComment()); // asComment() converts a String to a Cell
+emit("Catch me if you can, Mr. Holmes".asComment()); // asComment() 将字符串转换为单元格
 ```
 
 :::note
 
-  To analyze `emit(){:tact}` calls, one has to look at [external messages](/book/external) produced by the contract.
+  要分析 `emit(){:tact}` 调用，必须查看合约产生的 [外部信息](/book/external)。
 
-  Read more: [Logging via `emit(){:tact}`](/book/debug#logging).
+  了解更多信息：[通过 `emit(){:tact}`记录日志](/book/debug#logging)。
 
 :::
 
 [p]: /book/types#primitive-types
 [bool]: /book/types#booleans
 [int]: /book/integers
-[slice]: /book/cells#slices
+[一片]: /book/cells#slices
