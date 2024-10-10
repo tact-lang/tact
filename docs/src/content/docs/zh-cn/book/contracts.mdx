@@ -1,58 +1,58 @@
 ---
-title: Contracts
+title: 合同
 ---
 
-Contracts in Tact are similar to classes in popular object-oriented languages, except that their instances are deployed on the blockchain and they can't be passed around like [Structs and Messages](/book/structs-and-messages).
+Tact 中的合约类似于流行的面向对象语言中的类，只是它们的实例部署在区块链上，不能像 [Structs and Messages]（/book/structs-and-messages）那样被传递。
 
-## Self-references {#self}
+## 自我参考 {#self}
 
-Contracts and [traits][trait] have a built-in [identifier](/book/expressions#identifiers) `self{:tact}`, which is used for referring to their fields (persistent state [variables](#variables) and [constants](#variables)) and methods ([internal functions](#internal-functions)):
+契约和[特质][trait]有一个内置的[标识符](/book/expressions#identifiers) `self{:tact}`，用于引用它们的字段（持久状态[变量](#variables)和[常量](#variables)）和方法（[内部函数](#internal-functions)）：
 
 ```tact
 contract Example {
-    // persistent state variables
-    foo: Int;
+    // 持久状态变量
+    foo：Int;
 
     init() {
-        self.foo = 42; // <- referencing variable foo through self.
+        self.foo = 42; // <- 通过 self 引用变量 foo。
     }
 }
 ```
 
-## Structure
+## 结构
 
-Each contract can contain:
+每份合同可包括
 
-- [Inherited traits](#traits)
-- [Supported interfaces](#interfaces)
-- [Persistent state variables](#variables)
-- [Constructor function `init(){:tact}`](#init-function)
-- [Contract constants](#constants)
-- [Getter functions](#getter-functions)
-- [Receiver functions](#receiver-functions)
-- [Internal functions](#internal-functions)
+- [继承特质](#特质)
+- [支持的接口](#接口)
+- [持久状态变量](#变量)
+- [构造函数 `init(){:tact}`](#init-function)
+- [合同常量](#常量)
+- [获取函数](#getter-functions)
+- [接收器功能]（#接收器功能）
+- [内部功能](#internal-functions)
 
-### Inherited traits, `with{:tact}` {#traits}
+### 继承特质， `with{:tact}` {#traits}
 
-Contracts can inherit all the declarations and definitions from [traits][trait] and override some of their default behaviours. In addition to that, every contract and trait implicitly inherits the special [`BaseTrait{:tact}` trait](/ref/core-base).
+契约可以继承[traits][trait]的所有声明和定义，并覆盖它们的某些默认行为。 除此之外，每个契约和特质都隐式继承了特殊的 [`BaseTrait{:tact}` trait]（/ref/core-base）。
 
-To inherit a [trait][trait], specify its name after the keyword `with{:tact}` in contract's declaration. To inherit multiple traits at once, specify their names in a comma-separated list with an optional trailing comma.
+要继承 [trait][trait]，请在合约声明中的关键字 `with{:tact}` 后指定其名称。 要同时继承多个性状，请在逗号分隔的列表中指定它们的名称，并在后面加上逗号。
 
 ```tact /with/
 trait InheritMe {}
 trait InheritMeToo {}
 
-// A contract inheriting a single trait
-contract Single with InheritMe {}
+// 继承单个特质的合约
+合约 Single with InheritMe {}
 
-// A contract inheriting multiple traits
-contract Plural with
+// 继承多个特质的合约
+合约 Plural with
     InheritMe,
-    InheritMeToo, // trailing comma is allowed
+    InheritMeToo, // 允许使用逗号结尾
 {}
 ```
 
-As [traits][trait] are not allowed to have [`init(){:tact}` function](#init-function), a contract inheriting a trait with any [persistent state variables](#variables) declared must initialize them by providing its own [`init(){:tact}` function](#init-function).
+由于[traits][trait]不允许有[`init(){:tact}`函数](#init-function)，因此继承了声明了任何[持久状态变量](#variables)的 trait 的合约必须通过提供自己的[`init(){:tact}`函数](#init-function)来初始化这些变量。
 
 ```tact
 trait Supe { omelander: Bool }
@@ -64,17 +64,17 @@ contract Vot with Supe {
 }
 ```
 
-If declared or defined in a trait, internal functions and constants can be marked as [virtual or abstract](/book/functions#virtual-and-abstract-functions) and overridden in contracts inheriting from the trait.
+如果在特质中声明或定义了内部函数和常量，则可将其标记为[虚拟或抽象](/book/functions#virtual-and-abstract-functions)，并在从特质继承的合约中重写。
 
-### Supported interfaces, `@interface(…)` {#interfaces}
+### 支持的接口，`@interface(…)` {#interfaces}
 
-It's hard to figure out what a contract does and what [receivers](#receiver-functions) and [getters](#getter-functions) it has without looking at its source code. Sometimes the source is unavailable or inaccessible, and all that's left is to try to disassemble the contract and introspect it that way, which is a very messy and error-prone approach with diminishing returns and no real reproducibility.
+如果不查看源代码，就很难弄清一个合约是做什么的，有哪些 [接收器]（#receiver-functions）和 [获取器]（#getter-functions）。 有时，无法获得或无法访问源代码，剩下的办法就是尝试拆解合同，并以这种方式对其进行反省，这是一种非常混乱且容易出错的方法，其收益会递减，而且没有真正的可重复性。
 
-In order to resolve this issue, an [OTP-001: Supported Interfaces](/ref/evolution/otp-001) was created. In accordance to it, Tact contracts [can report](/book/config#options-interfacesgetter) the list of supported interfaces as a return value of a special `supported_interfaces` [getter](#getter-functions). That getter is accessible off-chain using any TON Blockchain explorer — one just needs to specify `supported_interfaces` as a method to execute and get a list of hexadecimal values in return.
+为了解决这个问题，创建了 [OTP-001：支持的接口](/ref/evolution/otp-001)。 据此，Tact 合约[可以报告](/book/config#options-interfacesgetter) 支持的接口列表，作为特殊的 `supported_interfaces` [getter](#getter-functions) 的返回值。 使用任何 TON 区块链浏览器都可以在链外访问该获取器--只需指定 "supported_interfaces "作为要执行的方法，即可获得十六进制值列表。
 
-These hexadecimal values are truncated to the first 128 bit of [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hashes of the original [`String{:tact}`][p] values of the supported interfaces. The first value in this list **must** be equal to $\mathrm{0x5cec3d5d2cae7b1e84ec39d64a851b66}$ in [hexadecimal notation](/book/integers#hexadecimal), which is the first half of the SHA-256 hash for `"org.ton.introspection.v0"{:tact}`. If the first value is wrong, you must stop trying to introspect the contract, as it doesn't conform to the [Supported Interfaces](/ref/evolution/otp-001) proposal.
+这些十六进制值被截断为受支持接口的原始[`String{:tact}`][p]值的[SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) 哈希值的前 128 位。 该列表中的第一个值 **must** 必须等于 $\mathrm{0x5cec3d5d2cae7b1e84ec39d64a851b66}$（十六进制符号](/book/integers#hexadecimal)，即 `"org.ton.introspection.v0"{:tact}` 的 SHA-256 哈希值的前半部分。 如果第一个值是错误的，就必须停止反省合同，因为它不符合 [支持的接口](/ref/evolution/otp-001) 建议。
 
-To declare support of a certain interface, add one or more `@interface("…"){:tact}` attributes right before contract and [trait][trait] declarations:
+要声明支持某个接口，可在 contract 和 [trait][trait] 声明之前添加一个或多个 `@interface("…"){:tact}` 属性：
 
 ```tact
 @interface("His name is")
@@ -89,138 +89,138 @@ trait Misc {
 }
 ```
 
-Tact has a small set of interfaces provided under specific conditions:
+Tact 有一小套在特定条件下提供的接口：
 
-- `"org.ton.abi.ipfs.v0"{:tact}`, in accordance to [OTP-003: Self-ABI Reporting](/ref/evolution/otp-003) — opt-in via [`ipfsAbiGetter`](/book/config#options-ipfsabigetter) config property
-- `"org.ton.deploy.lazy.v0"{:tact}`, in accordance to [OTP-005: Argument-addressable contracts](/ref/evolution/otp-005)
-- `"org.ton.debug.v0"{:tact}`, but only if [debug mode](/book/debug#debug-mode) is enabled
-- `"org.ton.chain.any.v0"{:tact}` if [masterchain](/book/masterchain) support is enabled, and `"org.ton.chain.workchain.v0"{:tact}` otherwise
+- `"org.ton.abi.ipfs.v0"{:tact}`，根据 [OTP-003: Self-ABI Reporting](/ref/evolution/otp-003) - 通过 [`ipfsAbiGetter`](/book/config#options-ipfsabigetter)配置属性选择加入
+- "org.ton.deploy.lazy.v0 "{:tact}\`，符合[OTP-005：参数可寻址合约](/ref/evolution/otp-005)
+- org.ton.debug.v0"{:tact}\`，但只有在启用了[调试模式](/book/debug#debug-mode)时才会这样做
+- `"org.ton.chain.any.v0"{:tact}` 如果启用了 [masterchain](/book/masterchain) 支持，则为 `"org.ton.chain.workchain.v0"{:tact}` 否则为
 
-Some [traits][trait] in [standard libraries](/ref/standard-libraries) define their interfaces too:
+标准库](/ref/standard-libraries)中的一些[traits][trait]也定义了它们的接口：
 
-- [`Ownable{:tact}`](/ref/stdlib-ownable#ownable) trait specifies `"org.ton.ownable"{:tact}`
-- [`OwnableTransferable{:tact}`](/ref/stdlib-ownable#ownabletransferable) trait specifies `"org.ton.ownable.transferable.v2"{:tact}`
-- [`Stoppable{:tact}`](/ref/stdlib-stoppable#stoppable) trait specifies `"org.ton.stoppable"{:tact}`
-- [`Resumable{:tact}`](/ref/stdlib-stoppable#resumable) trait specifies `"org.ton.resumable"{:tact}`
+- [`Ownable{:tact}`](/ref/stdlib-ownable#ownable) trait 指定`"org.ton.ownable"{:tact}`。
+- [`OwnableTransferable{:tact}`](/ref/stdlib-ownable#ownabletransferable) trait 指定`"org.ton.ownable.transferable.v2"{:tact}`
+- [`Stoppable{:tact}`](/ref/stdlib-stoppable#stoppable) trait 指定`"org.ton.stoppable"{:tact}`。
+- [`Resumable{:tact}`](/ref/stdlib-stoppable#resumable) trait 指定`"org.ton.resumable"{:tact}`。
 
-To enable `supported_interfaces` [getter](#getter-functions) generation and use `@interface(){:tact}` attribute in your Tact contracts, modify a [`tact.config.json`](/book/config) file in the root of your project (or create it if it didn't exist yet), and [set the `interfacesGetter` property to `true{:json}`](/book/config#options-interfacesgetter).
+要启用 `supported_interfaces` [getter](#getter-functions) 生成并在 Tact 合约中使用 `@interface(){:tact}` 属性，请修改项目根目录下的 [`tact.config.json`](/book/config) 文件（如果该文件不存在，则创建该文件），并 [将 `interfacesGetter` 属性设置为 `true{:json}`](/book/config#options-interfacesgetter)。
 
-If you're working on a [Blueprint][bp]-based project, you can enable `supported_interfaces` in the compilation configs of your contracts, which are located in a directory named `wrappers/`:
+如果您的项目基于 [Blueprint][bp]，您可以在合约的编译配置中启用`supported_interfaces`，这些配置位于名为`wrappers/`的目录中：
 
 ```typescript title="wrappers/YourContractName.compile.ts" {7}
 import { CompilerConfig } from '@ton/blueprint';
 
-export const compile: CompilerConfig = {
+export const compile：CompilerConfig = {
   lang: 'tact',
   target: 'contracts/your_contract_name.tact',
-  options: {
-    interfacesGetter: true, // ← that's the stuff!
+  options：{
+    interfacesGetter: true, // ← that's the stuff！
   }
 };
 ```
 
-In addition to that, [`tact.config.json`](/book/config) may still be used in [Blueprint][bp] projects. In such cases values specified in [`tact.config.json`](/book/config) act as default unless modified in the `wrappers/`.
+除此之外，[蓝图][bp] 项目中仍可使用 [`tact.config.json`](/book/config)。 在这种情况下，除非在 `wrappers/` 中进行修改，否则 [`tact.config.json`](/book/config)中指定的值将作为默认值。
 
 :::caution
 
-  Be aware that adding an interface does not guarantee that the contract actually implements any particular functionality, or that it implements it in any particular way. It's just an off-chain, verifiable promise that a contract _might_ have some specific code in it. It's up to you to trust, but verify, such claims.
+  请注意，添加接口并不能保证合约实际实现任何特定功能，也不能保证以任何特定方式实现这些功能。 这只是一种可验证的链外承诺，即合同中可能包含某些特定代码。 您应该相信但要核实这些说法。
 
-  In addition, there is no guarantee that there won't be name clashes between different interfaces, although they are unlikely because even the first 128 bits of SHA-256 provide sufficient [collision resistance](https://en.wikipedia.org/wiki/Collision_resistance).
+  此外，不同接口之间也不能保证不会发生名称冲突，尽管这种情况不太可能发生，因为即使是 SHA-256 的前 128 位也能提供足够的[抗碰撞性](https://en.wikipedia.org/wiki/Collision_resistance)。
 
 :::
 
-### Persistent state variables {#variables}
+### 持久状态变量 {#variables}
 
-Contracts can define state variables that persist between contract calls. Contracts in TON [pay rent](https://docs.ton.org/develop/smart-contracts/fees#storage-fee) in proportion to the amount of persistent space they consume, so [compact representations via serialization](/book/integers#serialization) are encouraged.
+合约可以定义在合约调用之间持续存在的状态变量。 TON 中的合约[支付租金](https://docs.ton.org/develop/smart-contracts/fees#storage-fee) 与它们消耗的持久空间成正比，因此鼓励[通过序列化进行紧凑表示](/book/integers#serialization)。
 
 ```tact
 contract Example {
-    // persistent state variables
-    val: Int;              // Int
-    val32: Int as uint32;  // Int serialized to an 32-bit unsigned
+    // 持久状态变量
+    val: Int; // Int
+    val32: Int as uint32; // Int 序列化为 32 位无符号
     mapVal: map<Int, Int>; // Int keys to Int values
-    optVal: Int?;          // Int or null
+    optVal: Int?; // Int or null
 }
 ```
 
-State variables must have a default value or initialized in [`init(){:tact}`](#init-function) function, that runs on deployment of the contract. The only exception is persistent state variables of type [`map<K, V>{:tact}`](/book/maps) since they are initialized empty by default.
+状态变量必须有默认值或在 [`init(){:tact}`]（#init-function）函数中初始化，该函数在部署合约时运行。 唯一的例外是 [`map<K, V>{:tact}`]（/book/maps）类型的持久状态变量，因为它们默认初始化为空。
 
 :::note
 
-  Note, that Tact supports local, non-persistent-state variables too, see: [Variable declaration](/book/statements#let).
+  请注意，Tact 也支持非持续状态的局部变量，请参阅：[变量声明](/book/statements#let)：[变量声明](/book/statements#let)。
 
 :::
 
-### Contract constants {#constants}
+### 合同常量 {#constants}
 
-Unlike [variables](#variables), constants cannot change. Their values are calculated in _compile-time_ and cannot change during execution.
+与 [变量](#变量) 不同，常量不能更改。 它们的值是在_编译时_计算的，在执行过程中不会改变。
 
-There isn't much difference between constants defined outside of a contract (global constants) and inside the contract (contract constants). Those defined outside can be used by other contracts in your project.
+在合约外定义的常量（全局常量）和在合约内定义的常量（合约常量）没有太大区别。 项目中的其他合同可以使用外部定义的合同。
 
-Constant initializations must be relatively simple and only rely on values known during compilation. If you add two numbers for example, the compiler will calculate the result during build and put the result in your compiled code.
+常量初始化必须相对简单，并且只依赖于编译时已知的值。 例如，如果您将两个数字相加，编译器会在编译过程中计算出结果，并将结果放入已编译的代码中。
 
-You can read constants both in [receivers](#receiver-functions) and in [getters](#getter-functions).
+您可以在 [接收器]（#receiver-functions）和 [获取器]（#getter-functions）中读取常量。
 
-Unlike [contract variables](#variables), **contract constants don't consume space in persistent state**. Their values are stored directly in the code [`Cell{:tact}`](/book/cells#cells) of the contract.
+与[合约变量]（#变量）不同，**合约常量不会占用持久状态**的空间。 它们的值直接存储在合约的代码 [`单元格{:tact}`](/book/cells#cells)中。
 
 ```tact
-// global constants are calculated in compile-time and cannot change
-const GlobalConst1: Int = 1000 + ton("42") + pow(10, 9);
+// 全局常量在编译时计算，不能更改
+const GlobalConst1：Int = 1000 + ton("42") + pow(10, 9);
 
 contract Example {
-    // contract constants are also calculated in compile-time and cannot change
-    const ContractConst1: Int = 2000 + ton("43") + pow(10, 9);
+    // 合同常量也是在编译时计算的，不能更改
+    const ContractConst1：Int = 2000 + ton("43") + pow(10, 9);
 
-    // contract constants can be an easy alternative to enums
-    const StateUnpaid: Int = 0;
+    // 合同常量可以轻松替代枚举
+    const StateUnpaid：Int = 0;
     const StatePaid: Int = 1;
-    const StateDelivered: Int = 2;
-    const StateDisputed: Int = 3;
+    const StateDelivered：Int = 2;
+    const StateDisputed：Int = 3;
 
-    get fun sum(): Int {
+    get fun sum()：Int {
         // access constants from anywhere
         return GlobalConst1 + self.ContractConst1 + self.StatePaid;
     }
 }
 ```
 
-Read more about constants on their dedicated page: [Constants](/book/constants).
+有关常量的更多信息，请访问其专门页面：[常量](/book/constants)。
 
-### Constructor function `init()` {#init-function}
+### 构造函数 `init()` {#init-function}
 
-On deployment of the contract, the constructor function `init(){:tact}` is run.
+在部署合同时，会运行构造函数 `init(){:tact}`。
 
-If a contract has any [persistent state variables](#variables) without default values specified, it must initialize them in this function.
+如果合约有任何未指定默认值的 [持久状态变量](#variables)，则必须在此函数中对其进行初始化。
 
 ```tact
 contract Example {
-    // persistent state variables
-    var1: Int = 0; // initialized with default value 0
-    var2: Int;     // must be initialized in the init() function
+    // 持久状态变量
+    var1: Int = 0; // 以默认值 0 初始化
+    var2: Int; // 必须在 init() 函数中初始化
 
-    // constructor function
+    // 构造函数
     init() {
         self.var2 = 42;
     }
 }
 ```
 
-If a contract doesn't have any persistent state variables, or they all have their default value specified, it may omit the `init(){:tact}` function declaration altogether. That's because unless explicitly declared, the empty `init(){:tact}` function is present by default in all contracts.
+如果合约没有任何持久状态变量，或所有持久状态变量都指定了默认值，则可以完全省略 `init(){:tact}` 函数声明。 这是因为除非明确声明，否则所有合约中都默认存在空的 `init(){:tact}` 函数。
 
-The following is an example of a valid empty contract:
+下面是一个有效空合同的示例：
 
 ```tact
-contract IamEmptyAndIKnowIt {}
+合同 IamEmptyAndIKnowIt {}
 ```
 
-For your convenience, parameter list of `init(){:tact}` can have a trailing comma:
+为方便起见，`init(){:tact}` 的参数列表可以使用逗号：
 
 ```tact
 contract TheySeeMeTrailing {
     init(
         param1: Int,
         param2: Int, // trailing comma is allowed
-    ) {
+    ){
         // ...
     }
 }
@@ -228,84 +228,84 @@ contract TheySeeMeTrailing {
 
 :::note
 
-  To obtain initial state of the target contract in [internal functions](#internal-functions), [receivers](#receiver-functions) or [getters](#getter-functions) use [`initOf{:tact}`](/book/expressions#initof) expression.
+  要获取 [内部函数](#internal-functions)、[接收器](#receiver-functions) 或 [getters](#getter-functions) 中目标合约的初始状态，请使用 [`initOf{:tact}`](/book/expressions#initof)表达式。
 
 :::
 
-### Getter functions
+### 获取器功能
 
-[Getter functions](/book/functions#getter-functions) are **not accessible from other contracts and exported only to off-chain world**.
+[获取函数](/book/functions#getter-functions) **不能从其他合约访问，只能导出到链外世界**。
 
-Additionally, **getters cannot modify the contract's state variables**, only read their values and use them in expressions.
+此外，**获取器不能修改合约的状态变量**，只能读取它们的值并在表达式中使用。
 
 ```tact
 contract HelloWorld {
-    foo: Int;
+    foo：Int;
 
     init() {
         self.foo = 0;
     }
 
-    // getter function with return type Int
-    get fun foo(): Int {
-        return self.foo; // can't change self.foo here
+    // 返回类型为 Int 的 getter 函数
+    get fun foo()：Int {
+        return self.foo; // 这里不能更改 self.foo
     }
 }
 ```
 
-Read more about them in their dedicated section: [Getter functions](/book/functions#getter-functions)
+请在其专门章节中阅读更多相关信息：[获取函数](/book/functions#getter-functions)
 
-### Receiver functions
+### 接收器功能
 
-[Receiver functions](/book/functions#receiver-functions) in Tact can be one of the following three kinds:
+Tact 中的[接收器函数](/book/functions#receiver-functions)可以是以下三种之一：
 
-- [`receive(){:tact}`](/book/receive), which receive internal messages (from other contracts).
-- [`bounced(){:tact}`](/book/bounced), which are called when outgoing message from this contract has bounced back.
-- [`external(){:tact}`](/book/external), which don't have a sender and can be sent by anyone in the world.
+- [`receive(){:tact}`](/book/receive)，用于接收内部信息（来自其他合约）。
+- [`bounced(){:tact}`](/book/bounced)，当该合约发出的信息被退回时会调用。
+- [`external(){:tact}`](/book/external)，没有发件人，世界上任何人都可以发送。
 
 ```tact
 message CanBounce {
-    counter: Int;
+    counter：Int;
 }
 
 contract HelloWorld {
-    counter: Int;
+    counter：Int;
 
     init() {
         self.counter = 0;
     }
 
-    get fun counter(): Int {
+    get fun counter()：Int {
         return self.counter;
     }
 
-    // internal message receiver, which responds to a string message "increment"
+    // 内部消息接收器，响应字符串消息 "increment"
     receive("increment") {
         self.counter += 1;
 
-        // sending the message back to the sender
+        // 发送消息回发送者
         send(SendParameters{
             to: sender(),
             value: 0,
-            mode: SendRemainingValue | SendIgnoreErrors,
-            body: CanBounce{counter: self.counter}.toCell(),
+            mode：SendRemainingValue | SendIgnoreErrors,
+            body：CanBounce{counter: self.counter}.toCell(),
         });
     }
 
-    // bounced message receiver, which is called when the message bounces back to this contract
+    // 被弹回的消息接收器，当消息弹回本合约时被调用
     bounced(src: bounced<MsBounced>) {
-        self.counter = 0; // reset the counter in case message bounced
+        self.counter = 0; // 重置计数器以防消息弹回
     }
 
-    // external message receiver, which responds to off-chain message "hello, it's me"
+    // 外部消息接收器，用于回复链外消息 "你好，是我"
     external("hello, it's me") {
-        // can't be replied to as there's no sender!
+        // 无法回复，因为没有发件人！
         self.counter = 0;
     }
 }
 ```
 
-Naming a parameter of the receiver function with an underscore `_{:tact}` makes its value considered unused and discarded. This is useful when you don't need to inspect the message received and you only want it to convey a specific opcode:
+用下划线"_{:tact}"命名接收函数的参数时，其值将被视为未使用的值并被丢弃。 当您不需要检查接收到的信息，而只想让它传达特定的操作码时，这就很有用了：
 
 ```tact
 message(42) UniverseCalls {}
@@ -317,24 +317,24 @@ contract Example {
 }
 ```
 
-### Internal functions
+### 内部职能
 
-These functions behave similarly to private methods in popular object-oriented languages — they're internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](#self). That's why internal functions can sometimes be referred to as "contract methods".
+这些函数的行为类似于流行的面向对象语言中的私有方法--它们是合约的内部函数，可以通过在其前缀添加特殊的[标识符 `self{:tact}`](#self)来调用。 因此，内部函数有时也被称为 "契约方法"。
 
-Internal functions can access the contract's [persistent state variables](#variables) and [constants](#constants).
+内部函数可以访问合约的 [持久状态变量]（#variables）和 [常量]（#constants）。
 
-They can only be called from [receivers](#receiver-functions), [getters](#getter-functions) and other internal functions, but not from other contracts or [`init(){:tact}`](#init-function).
+它们只能从 [接收器](#receiver-functions)、[获取器](#getter-functions) 和其他内部函数中调用，而不能从其他合约或 [`init(){:tact}`](#init-function)中调用。
 
 ```tact
 contract Functions {
     val: Int = 0;
 
-    // this contract method can only be called from within this contract and access its variables
+    // 该契约方法只能在该契约内部调用，并访问其变量
     fun onlyZeros() {
-        require(self.val == 0, "Only zeros are permitted!");
+        require(self.val == 0, "Only zero are permitted!");
     }
 
-    // receiver function, which calls the internal function onlyZeros
+    // 接收函数，调用内部函数 onlyZeros
     receive("only zeros") {
         self.onlyZeros();
     }
@@ -343,10 +343,10 @@ contract Functions {
 
 :::note
 
-  Note, that Tact supports other kinds of functions too, see: [Functions](/book/functions).
+  请注意，Tact 还支持其他类型的函数，请参阅[函数](/book/functions)。
 
 :::
 
 [p]: /book/types#primitive-types
-[trait]: /book/types#traits
+[特质]: /book/types#traits
 [bp]: https://github.com/ton-org/blueprint
