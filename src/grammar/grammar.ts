@@ -23,6 +23,7 @@ import {
     AstImport,
     AstConstantDef,
     AstNumberBase,
+    AstId,
 } from "./ast";
 import { throwParseError, throwSyntaxError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
@@ -1028,7 +1029,11 @@ semantics.addOperation<AstNode>("astOfStatement", {
             type: typeId.astOfType(),
             identifiers: identifiers
                 .asIteration()
-                .children.map((item) => item.astOfExpression()),
+                .children.reduce((map, item) => {
+                    const destructItem = item.astOfExpression();
+                    map.set(destructItem.field, destructItem.name);
+                    return map;
+                }, new Map<AstId, AstId>()),
             expression: expression.astOfExpression(),
             loc: createRef(this),
         });

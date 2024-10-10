@@ -324,7 +324,7 @@ export type AstStatementForEach = {
 export type AstStatementDestruct = {
     kind: "statement_destruct";
     type: AstTypeId;
-    identifiers: AstDestructMapping[];
+    identifiers: Map<AstId, AstId>;
     expression: AstExpression;
     id: number;
     loc: SrcInfo;

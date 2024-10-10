@@ -1443,11 +1443,11 @@ export class Interpreter {
     }
 
     public interpretDestructStatement(ast: AstStatementDestruct) {
-        for (const item of ast.identifiers) {
-            if (hasStaticConstant(this.context, idText(item.name))) {
+        for (const [_, name] of ast.identifiers) {
+            if (hasStaticConstant(this.context, idText(name))) {
                 // Attempt of shadowing a constant in a destructuring declaration
                 throwInternalCompilerError(
-                    `declaration of ${idText(item.name)} shadows a constant with the same name`,
+                    `declaration of ${idText(name)} shadows a constant with the same name`,
                     ast.loc,
                 );
             }
@@ -1465,27 +1465,27 @@ export class Interpreter {
                 ast.expression.loc,
             );
         }
-        if (ast.identifiers.length !== Object.keys(val).length - 1) {
+        if (ast.identifiers.size !== Object.keys(val).length - 1) {
             throwErrorConstEval(
-                `destructuring assignment expected ${ast.identifiers.length} fields, but got ${
-                    Object.keys(val).length - 1
+                `destructuring assignment expected ${Object.keys(val).length - 1} fields, but got ${
+                    ast.identifiers.size
                 }`,
                 ast.loc,
             );
         }
 
-        for (const item of ast.identifiers) {
-            const v = val[idText(item.field)];
+        for (const [field, name] of ast.identifiers) {
+            const v = val[idText(field)];
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (v === undefined) {
                 throwErrorConstEval(
                     `destructuring assignment expected field ${idTextErr(
-                        item.field,
+                        field,
                     )}`,
                     ast.loc,
                 );
             }
-            this.envStack.setNewBinding(idText(item.name), v);
+            this.envStack.setNewBinding(idText(name), v);
         }
     }
 

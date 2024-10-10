@@ -687,13 +687,15 @@ export class PrettyPrinter {
     }
 
     ppAstStatementDestruct(statement: AstStatementDestruct): string {
-        const ids = statement.identifiers.map((item) => {
-            if (item.field.text === item.name.text) {
-                return this.ppAstId(item.name);
-            } else {
-                return `${this.ppAstId(item.field)}: ${this.ppAstId(item.name)}`;
-            }
-        });
+        const ids = Array.from(statement.identifiers.entries()).map(
+            ([field, name]) => {
+                if (field.text === name.text) {
+                    return this.ppAstId(name);
+                } else {
+                    return `${this.ppAstId(field)}: ${this.ppAstId(name)}`;
+                }
+            },
+        );
         return `${this.indent()}let ${this.ppAstTypeId(statement.type)} {${ids.join(", ")}} = ${this.ppAstExpression(statement.expression)};`;
     }
 }
