@@ -1,35 +1,35 @@
 ---
-title: "OTP-001: Supported Interfaces"
+title: OTP-001：支持的接口
 sidebar:
   order: 1
 ---
 
-This proposal recommends a way to introspect smart contracts and find out what interfaces they support.
+本建议书推荐了一种自省智能合约并找出它们支持哪些接口的方法。
 
-## Motivation
+## 动机
 
-Right now it is impossible to guess what a user wants to do with a contract or can't figure out what the transaction is about because there is no clear way to find what a contract is about. Humans need to remember or guess what this was about in most ways.
+现在，我们无法猜测用户想用合同做什么，也无法弄清交易的内容，因为没有明确的方法找到合同的内容。 在大多数情况下，人类需要记住或猜测这是怎么回事。
 
-## Guide
+## 指南
 
-When human tries to sign a transaction, they need to understand clearly what they are doing: minting, token transfer, staking, DAO voting. While Ethereum wallets support signing arbitrary structures it is still not clear what are you signing and what's the implications of doing so. In the same way, explorers can't show what's going on in a nice form.
+当人类试图签署一项交易时，他们需要清楚地了解自己在做什么：铸币、代币转移、盯盘、DAO 投票。 虽然以太坊钱包支持签署任意结构，但仍不清楚您签署的是什么以及这样做的影响。 同样，探险家也无法以漂亮的形式展示正在发生的事情。
 
-The start of a working with specific contract is a performing introspection - figuring out what the contract declares about itself. When the app knows what this contract is about it could build a good UI, show transaction history, and verify what a human tries to sign.
+与具体合同打交道的开始就是进行反省--弄清合同对自身的声明是什么。 当应用程序知道这份合同的内容时，它就可以建立一个良好的用户界面，显示交易历史，并验证人类试图签署的内容。
 
-This proposal describes a way to report what interfaces the contract supports.
+该提案描述了一种报告合同支持哪些接口的方法。
 
-Interfaces are defined in a free-form specification. Unlike most of the other approaches, this proposal defines interface as not only the technical interface of a contract (get methods, internal messages, etc) but also a description of its behavior. Attaching a hash of the representation of a technical interface of a contract could cause conflicts between different standards and because of this proposal defines interfaces loosely. Also, it allows an interface to be more fluid, for example token that couldn't be transferred could be just a contract that will have to get the method `can_transfer` that returns `false` and this would mean that this token doesn't support transfers at all without the need to implement this method.
+接口是以自由格式的规范定义的。 与其他大多数方法不同的是，本提案不仅将接口定义为合约的技术接口（获取方法、内部信息等），还将其定义为合约行为的描述。 附加合同技术接口的散列表示可能会导致不同标准之间的冲突，因此该提案对接口的定义比较松散。 此外，它还能使接口更加流畅，例如，无法传输的令牌可以只是一个合约，它必须获得返回 "false "的方法 "can_transfer"，这将意味着该令牌根本不支持传输，而无需实现该方法。
 
-Interface IDs are hashes of reverse domain names (like packages in Java), this avoids clashes of names between different teams if they want to build something just for themselves.
+接口 ID 是反向域名的哈希值（就像 Java 中的软件包），这样可以避免不同团队之间的名称冲突，如果他们只想为自己构建一些东西的话。
 
-## Specification
+## 规格
 
-In order to support the introspection contract MUST implement the supports_interface GET method:
+为了支持自省，合约必须实现 supports_interface GET 方法：
 
 `(int...) supported_interfaces()`
-Which returns a list of supported interface codes. The first value MUST be `hash("org.ton.introspection.v0")` = `123515602279859691144772641439386770278`.
-If the first value is incorrect app MUST stop attempting to introspect the contract.
-Example
+返回支持的接口代码列表。 第一个值必须是 `hash("org.ton.introspection.v0")` = `123515602279859691144772641439386770278`。
+如果第一个值不正确，应用程序必须停止尝试反省合同。
+示例
 
 ```func
 _ supported_interfaces() method_id {
@@ -37,21 +37,21 @@ _ supported_interfaces() method_id {
 }
 ```
 
-The hash of an interface is defined as truncated to 128 bits SHA256.
+接口的哈希值定义为截断为 128 位的 SHA256。
 
-## Drawbacks
+## 缺点
 
-This proposal doesn't guarantee that the contract would behave correctly to an interface, also it doesn't provide a guaranteed way to avoid name clashes between different interfaces. This is a non-goal for this proposal.
+这项建议并不能保证合约对接口的正确执行，也不能保证避免不同接口之间的名称冲突。 这不是本提案的目标。
 
-This proposal isn't tied to a specific technical interface. This could lead to multiple interfaces that do the same thing but with different IDs. This is a non-goal for this proposal since a centralized registry would be very useful for existing interfaces and a custom one would be used mostly in-house.
+这项建议与特定的技术接口无关。 这可能导致多个接口做同样的事情，但 ID 不同。 这不是本提案的目标，因为集中式注册表对现有接口非常有用，而自定义注册表则主要在内部使用。
 
-## Rationale and alternatives
+## 理由和替代方案
 
-- Why 128 bit? We are looking at a global namespace that we need to keep without conflicts, we can't use anything much smaller since the probability of conflicts would be much higher. We are looking at UUID-like entropy that is exactly 128-bit and is time-proven. More than 128 is too wasteful.
-- Why freeform? As mentioned before, it is easier just to define some ID to start work early and then eventually build a standard. Also interfaces (like ERC20) usually not just a technical interface, but also a number of rules on how to work with it.
-- Why not find out what contract supports by decompiling? Explicit is always better than implicit in open-world scenarios. We can't rely on our "disassembling" capabilities to perform introspections, even small errors could be fatal.
-- Why not hash of representation? Right now there are no compilers that support that, also this proposal is future-proof. If anyone would want to build something more automated they could easily build their own hashes by their own rules keeping everything the same for external observers.
+- 为什么是 128 位？ 我们需要在不发生冲突的情况下保留一个全局命名空间，我们不能使用小得多的命名空间，因为发生冲突的可能性会高得多。 我们正在研究类似 UUID 的熵，它正好是 128 位，并且经过时间验证。 超过 128 太浪费了。
+- 为什么是自由形式？ 如前所述，定义一些 ID 更容易尽早开始工作，然后最终建立一个标准。 此外，接口（如 ERC20）通常不仅仅是一个技术接口，还包括一些如何使用它的规则。
+- 为什么不通过反编译找出合同支持什么？ 在开放世界场景中，明示总比暗示好。 我们不能依靠自己的 "拆解 "能力来进行反省，即使是很小的错误也可能是致命的。
+- 为什么不是散列代表？ 目前还没有编译器支持这一点，而且这项建议是面向未来的。 如果有人想构建更自动化的东西，他们可以很容易地按照自己的规则构建自己的哈希值，对外部观察者而言，一切保持不变。
 
-## Prior art
+## 现有技术
 
-[Ethereum Interface Detection](https://eips.ethereum.org/EIPS/eip-165)
+[以太坊接口检测](https://eips.ethereum.org/EIPS/eip-165)
