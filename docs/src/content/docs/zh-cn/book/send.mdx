@@ -1,32 +1,32 @@
 ---
-title: Sending messages
+title: 发送信息
 ---
 
 TON blockchain is a message-based one to communicate with other contracts you need to send messages.
 
-Messages in Tact are commonly composed using a built-in [Struct](/book/structs-and-messages#structs) `SendParameters{:tact}`, which consists of:
+Tact 中的信息通常使用内置的 [Struct](/book/structs-and-messages#structs) `SendParameters{:tact}`组成，其中包括
 
-| Field    | Type                   | Description                                                                                                                                                             |
-| :------- | :--------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bounce` | [`Bool{:tact}`][p]     | `bounce` - if set to `true` (default) then the message will be bounced back to the sender if the receiver contract doesn't exist or wasn't able to process the message. |
-| `to`     | [`Address{:tact}`][p]  | Receiver internal [`Address{:tact}`][p] in TON blockchain.                                                                                                              |
-| `value`  | [`Int{:tact}`][int]    | `value` in TON - the amount of TON you want to send with the message. This value is used to cover gas fees on the receiver side.                                        |
-| `mode`   | [`Int{:tact}`][int]    | An 8-bit value that configures how to send a message, defaults to $0$. See: [Message `mode`](/book/message-mode).                                                       |
-| `body`   | [`Cell?{:tact}`][cell] | [Optional][opt] message body as a [`Cell{:tact}`][cell]                                                                                                                 |
-| `code`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial code of the contract (the compiled bytecode)                                                                                                    |
-| `data`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial data of the contract (arguments of [`init(){:tact}` function](/book/contracts#init-function) of the contract)                                   |
+| 现场    | 类型                      | 说明                                                                                                                                                                      |
+| :---- | :---------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 弹跳    | [`Bool{:tact}`][p]      | `bounce` - if set to `true` (default) then the message will be bounced back to the sender if the receiver contract doesn't exist or wasn't able to process the message. |
+| 到     | [`地址{:tact}`][p]        | TON 区块链中的内部接收器 [`地址{:tact}`][p]。                                                                                                                                        |
+| 值     | [`Int{:tact}`][int]。    | `value` in TON - the amount of TON you want to send with the message. This value is used to cover gas fees on the receiver side.                                        |
+| 模式    | [`Int{:tact}`][int]。    | 一个 8 位值，用于配置发送信息的方式，默认值为 $0$。 参见：[消息`模式`](/book/message-mode)。                                                                                                          |
+| 身体    | [`Cell?{:tact}`][单元格]   | [可选][选项]信息正文作为[`单元格{:tact}`][单元格]                                                                                                                                       |
+| 代码    | [`Cell?{:tact}`][单元格]   | [可选][opt] 合同的初始代码（编译后的字节码）                                                                                                                                              |
+| 数据    | [`Cell?{:tact}`][单元格]   | [可选][选项]合同的初始数据（合同的[`init(){:tact}`函数](/book/contracts#init-function)的参数）                                                                                               |
 
-Fields `code` and `data` are what's called an [init package](/book/expressions#initof), which is used in deployments of new contracts.
+字段 `code` 和 `data` 被称为 [初始包](/book/expressions#initof)，用于部署新合约。
 
-## Send simple reply
+## 发送简单回复
 
-The simplest message is a reply to the incoming message returning all excess value of a message:
+最简单的信息是对接收信息的回复，返回信息的所有多余值：
 
 ```tact
 self.reply("Hello, World!".asComment()); // asComment converts string to a Cell with a comment
 ```
 
-## Send message
+## 发送信息
 
 If you need more advanced logic you can use the `send` function directly.
 
@@ -50,11 +50,11 @@ This example sends a message to the `to` address with a `value` of 1 TON and the
 `mode` - an 8-bit flag that configures how to send a message
 ```
 
-`SendIgnoreErrors` means that even when an error occurs during message sending next messages would be sent anyway. **No error during the sending phase would revert a transaction.**
+`SendIgnoreErrors` means that even when an error occurs during message sending next messages would be sent anyway. \*\*在发送阶段出现的任何错误都不会使交易逆转。
 
-## Send typed message
+## 发送打字信息
 
-To send a binary typed message you can use the following code:
+要发送二进制键入信息，可以使用以下代码：
 
 ```tact
 let init: StateInit = initOf SecondContract(arg1, arg2);
@@ -71,7 +71,7 @@ send(SendParameters{
 });
 ```
 
-## Deploy contract
+## 部署合同
 
 To deploy a contract you need to calculate its address and init package, then send it with an initial message.
 
@@ -87,47 +87,47 @@ send(SendParameters{
 });
 ```
 
-## Outbound message processing
+## 外发信息处理
 
-Each transaction on TON Blockchain consists of [multiple phases][phases]. Outbound messages are evaluated in [compute phase][compute], but are **not** sent in that phase. Instead, they're queued in order of appearance for the [action phase][phases], where all actions listed in [compute phase][compute], like outbound messages or [reserve requests](/ref/core-advanced#nativereserve), are executed.
+TON 区块链上的每笔交易都由 [多个阶段][阶段] 组成。 出站报文在[计算阶段][计算]中进行评估，但\*\*\*不在该阶段发送。 在[计算阶段][compute]中列出的所有操作，如外向消息或[储备请求]（/ref/core-advanced#nativereserve），都会在[操作阶段][phases]中执行。
 
-As all the values are computed in [compute phase][compute], all the fees computed by the end of it, and exceptions do not revert the transaction during [action phase][phases], outbound message sends can fail without bounce due to unsufficient [action fees](https://docs.ton.org/develop/howto/fees-low-level#action-fee) or [forward fees][fwdfee].
+由于所有值都是在[计算阶段][compute]中计算的，所有费用都是在计算结束前计算的，而且在[操作阶段][phases]中出现异常时不会恢复交易，因此向外发送信息可能会因[操作费](https://docs.ton.org/develop/howto/fees-low-level#action-fee) 或[转发费][fwdfee]不足而失败，不会出现跳转。
 
-Consider the following example:
+请看下面的例子：
 
 ```tact
-// This contract initially has 0 nanoToncoins on the balance
-contract FailureIsNothingButAnotherStep {
-    // And all the funds it gets are obtained from inbound internal messages
+// 该合约最初的余额为 0 纳吨（nanoToncoins）
+合约 FailureIsNothingButAnotherStep {
+    // 它所获得的所有资金都来自内部入站消息
     receive() {
-        // 1st outbound message evaluated and queued (but not sent yet)
+        // 第一条出站消息已评估并排队（但尚未发送）
         send(SendParameters{
             to: sender(),
             value: ton("0.042"), // plus forward fee due to SendPayGasSeparately
-            mode: SendIgnoreErrors | SendPayGasSeparately,
+            mode：SendIgnoreErrors | SendPayGasSeparately,
         });
 
-        // 2nd outbound message evaluated and queued (but not sent yet, and never will be!)
+        // 第 2 条外发信息已评估并排队（但尚未发送，也永远不会发送！）
         send(SendParameters{
             to: sender(),
             value: 0,
-            mode: SendRemainingValue | SendIgnoreErrors,
+            mode：SendRemainingValue | SendIgnoreErrors,
         });
     }
 }
 ```
 
-There, the second message won't actually be sent:
+在那里，第二条信息实际上不会被发送：
 
-- After finishing the [compute phase][compute], the remaining value $\mathrm{R}$ of the contract is computed.
+- 计算阶段][计算]结束后，计算合约的剩余价值 $\mathrm{R}$。
 
-- During the outbound message processing and assuming that there was enough value provided in the inbound message, the first message leaves $\mathrm{R} - (0.042 + \mathrm{forward\_fees})$ [nanoToncoins](/book/integers#nanotoncoin) on the balance.
+- 在出站信息处理过程中，假设入站信息中提供了足够的价值，第一条信息会在余额上留下 $\mathrm{R} - (0.042 + \mathrm{forward\_fees})$ [nanoToncoins](/book/integers#nanotoncoin) 。
 
-- When the second message is processed, contract tries to send $\mathrm{R}$ [nanoToncoins](/book/integers#nanotoncoin), but fails to do so because there is already a smaller amount left.
+- 处理第二条信息时，合约会尝试发送 $\mathrm{R}$ [纳米通币](/book/integers#nanotoncoin)，但发送失败，因为剩余的金额已经较少。
 
 :::note
 
-  Read more about all message sending functions in the Reference:
+  有关所有信息发送功能的更多信息，请参阅参考资料：
 
 - [`send(){:tact}`](/ref/core-common#send)
 - [`emit(){:tact}`](/ref/core-common#emit)
@@ -140,9 +140,9 @@ There, the second message won't actually be sent:
 
 [p]: /book/types#primitive-types
 [int]: /book/integers
-[cell]: /book/cells#cells
-[opt]: /book/optionals
-[phases]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases
-[compute]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase
-[nano]: /book/integers#nanotoncoin
+[电池]: /book/cells#cells
+[选择]: /book/optionals
+[阶段]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases
+[算]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase
+[纳米]: /book/integers#nanotoncoin
 [fwdfee]: https://docs.ton.org/develop/howto/fees-low-level#forward-fees
