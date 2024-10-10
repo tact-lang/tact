@@ -1,76 +1,73 @@
 ---
-title: Integers
+title: 整数
 ---
 
-Arithmetic in smart contracts on TON is always done with integers and never with floating-point numbers since the floats are [unpredictable](https://learn.microsoft.com/en-us/cpp/build/why-floating-point-numbers-may-lose-precision). Therefore, the big accent goes on integers and their handling.
+TON 智能合约中的算术运算始终使用整数，从不使用浮点数，因为浮点数是[不可预测的](https://learn.microsoft.com/en-us/cpp/build/why-floating-point-numbers-may-lose-precision)。 因此，重点应放在整数及其处理上。
 
-The only primitive number type in Tact is `Int{:tact}`, for $257$-bit signed integers.\
-It's capable of storing integers between $-2^{256}$ and $2^{256} - 1.$
+{:tact} $257$
+它能够存储 $-2^ $ 和 $2^ - 1 之间的整数。{256}{256}
 
-## Notation
+## 符号
 
-Tact supports various ways of writing primitive values of `Int{:tact}` as [integer literals](/book/expressions#integer-literals).
+Tact 支持以各种方式将 `Int{:tact}` 的基元值写成 [整数字面量](/book/expressions#integer-literals)。
 
-Most of the notations allow adding underscores (`_`) in-between digits, except for:
+大多数符号允许在数字之间添加下划线 (`_`)，但下列符号除外：
 
-- Representations in strings, as seen in [nano-tons](#nanotoncoin) case.
-- Decimal numbers written with a leading zero $0.$ Their use is generally discouraged, see [below](#decimal).
+- 字符串表示法，如 [纳吨]（#nanotoncoin）案例所示。
+- 带前导零的十进制数 $0.$ 一般不鼓励使用，参见 [下文](#decimal)。
 
-Additionally, several underscores in a row as in $4\_\_2$, or trailing underscores as in $42\_$ are **not** allowed.
+此外，\*\*\*不允许在 $4\_\_2$ 中连续使用多个下划线，或在 $42\_$ 中使用尾部下划线。
 
-### Decimal
+### 十进制
 
-Most common and most used way of representing numbers, using the [decimal numeral system](https://en.wikipedia.org/wiki/Decimal): $123456789.$\
-You can use underscores (`_`) to improve readability: $123\_456\_789$ is equal to $123456789.$
+最常见、最常用的数字表示方法，使用[十进制数字系统](https://en.wikipedia.org/wiki/Decimal)： $123456789.$\
+您可以使用下划线（`_`）来提高可读性： $123\_456\_789$等于 $123456789.$
 
 :::caution
-  Alternatively, you can prefix the number with one $0$, which prohibits use of underscores and only allows decimal digits: $0123 = 123.$
-  Note, that using this notation with leading zero is **strongly discouraged** due to possible confusion with octal integer literals in TypeScript, which is often used alongside Tact to develop and test contracts.
+  或者，您也可以在数字前加上一个 $0$，这样就禁止使用下划线，只允许使用十进制数字：$0123 = 123.$
+  注意，**强烈建议**使用这种带前导零的符号，因为可能会与 TypeScript 中的八进制整数字面混淆，而 TypeScript 通常与 Tact 一起用于开发和测试合约。
 :::
 
-### Hexadecimal
+### 十六进制
 
-Represent numbers using [hexadecimal numeral system](https://en.wikipedia.org/wiki/Hexadecimal), denoted by the $\mathrm{0x}$ (or $\mathrm{0X}$) prefix: $\mathrm{0xFFFFFFFFF}.$\
-Use underscores (`_`) to improve readability: $\mathrm{0xFFF\_FFF\_FFF}$ is equal to $\mathrm{0xFFFFFFFFF}.$
+使用[十六进制数字系统](https://en.wikipedia.org/wiki/Hexadecimal)表示数字，用$\mathrm{0x}$（或$\mathrm{0X}$）前缀表示：$\mathrm{0xFFFFFFFFF}.$\04 使用下划线（`_`）提高可读性：$\mathrm{0xFFF\_FFFF\_FFF}$等于$\mathrm{0xFFFFFFFFF}.$
 
-### Octal
+### 八进制
 
-Represent numbers using [octal numeral system](https://en.wikipedia.org/wiki/Octal), denoted by the $\mathrm{0o}$ (or $\mathrm{0O}$) prefix: $\mathrm{0o777777777.}$\
-Use underscores (`_`) to improve readability: $\mathrm{0o777\_777\_777}$ is equal to $\mathrm{0o777777777}.$
+使用[八进制数字系统](https://en.wikipedia.org/wiki/Octal)表示数字，用$\mathrm{0o}$（或$\mathrm{0O}$）前缀表示：$\mathrm{0o777777777.}$\04 使用下划线（`_`）提高可读性：$\mathrm{0o777_777\_777}$等于$\mathrm{0o777777777}.$
 
-### Binary
+### 二进制
 
-Represent numbers using [binary numeral system](https://en.wikipedia.org/wiki/Binary_number), denoted by the $\mathrm{0b}$ (or $\mathrm{0B}$) prefix: $\mathrm{0b111111111.}$\
-Use underscores (`_`) to improve readability: $\mathrm{0b111\_111\_111}$ is equal to $\mathrm{0b111111111}.$
+使用[二进制数字系统](https://en.wikipedia.org/wiki/Binary_number)表示数字，用 $\mathrm{0b}$（或 $\mathrm{0B}$）前缀表示： $\mathrm{0b111111111.}$\04 使用下划线（`_`）提高可读性： $\mathrm{0b\_111\_111}$ 等于 $\mathrm{0b111111111}.$
 
-### NanoToncoin
+### 纳米通币
 
-Arithmetic with dollars requires two decimal places after the dot — those are used for the cents value. But how would we represent the number \$$1.25$ if we're only able to work with integers? The solution is to work with _cents_ directly. This way, \$$1.25$ becomes $125$ cents. We simply memorize that the two rightmost digits represent the numbers after the decimal point.
+美元的算术运算需要在圆点后保留两位小数，这两位小数用于美分的计算。 但是，如果我们只能用整数来表示数字 \$$1.25$ ，我们该如何表示呢？ 解决的办法是直接使用 _cents_。 这样， \$$1.25$ 就变成了 $125$ 美分。 我们只需记住最右边的两位数代表小数点后的数字。
 
-Similarly, working with Toncoin, the main currency of TON Blockchain, requires nine decimal places instead of the two. One can say that nanoToncoin is the $\frac{1}{10^{9}}\mathrm{th}$ of the Toncoin.
+同样，在使用 TON 区块链的主要货币 Toncoin 时，需要九位小数，而不是两位小数。 可以说，纳米通币是通币的 $\frac{1}{10^{9}}\mathrm{th}$。
 
-Therefore, the amount of $1.25$ Toncoin, which can be represented in Tact as [`ton("1.25"){:tact}`](/ref/core-comptime#ton), is actually the number $1250000000$. We refer to such numbers as _nanoToncoin(s)_ (or _nano-ton(s)_) rather than _cents_.
+因此， $1.25$ Toncoin 的数量，可以用 Tact 表示为 [`ton("1.25"){:tact}`](/ref/core-comptime#ton)，实际上就是数字 $1250000000$。 我们把这些数字称为 _ 纳米吨币_（或 _ 纳米吨_），而不是 _ 美分_。
 
-## Serialization
+## 序列化
 
-When encoding `Int{:tact}` values to persistent state (fields of [contracts](/book/contracts) and [traits](/book/types#traits)), it's usually better to use smaller representations than $257$-bits to reduce [storage costs](https://docs.ton.org/develop/smart-contracts/fees#storage-fee). Usage of such representations is also called "serialization" due to them representing the native [TL-B][tlb] types which TON Blockchain operates on.
+将 `Int{:tact}` 值编码为持久状态（[contracts](/book/contracts) 和 [traits](/book/types#traits) 的字段）时，通常最好使用比 $257$-bits 更小的表示形式，以降低[存储成本](https://docs.ton.org/develop/smart-contracts/fees#storage-fee)。 这些表示法的使用也被称为 "序列化"，因为它们代表了 TON 区块链运行的本地[TL-B][tlb]类型。
 
-The persistent state size is specified in every declaration of a state variable after the `as{:tact}` keyword:
+持久状态大小在状态变量的每个声明中都会在 "as{:tact}"关键字后指定：
 
 ```tact
 contract SerializationExample {
-    // persistent state variables
-    oneByte: Int as int8 = 0; // ranges from -128 to 127 (takes 8 bit = 1 byte)
-    twoBytes: Int as int16;   // ranges from -32,768 to 32,767 (takes 16 bit = 2 bytes)
+    // 持久状态变量
+    oneByte: Int as int8 = 0; // 范围从 -128 到 127（占用 8 位 = 1 字节）
+    twoBytes：int as int16; // 范围从 -32,768 到 32,767 （占用 16 位 = 2 个字节）
 
     init() {
-        // needs to be initialized in the init() because it doesn't have the default value
+        // 需要在 init() 中初始化，因为它没有默认值
         self.twoBytes = 55*55;
     }
 }
 ```
 
-Integer serialization is also available for the fields of [Structs](/book/structs-and-messages#structs) and [Messages](/book/structs-and-messages#messages), as well as in key/value types of [maps](/book/maps):
+整数序列化也适用于 [Structs](/book/structs and-messages#structs) 和 [Messages](/book/structs and-messages#messages) 的字段，以及 [maps](/book/maps) 的键/值类型：
 
 ```tact
 struct StSerialization {
@@ -78,54 +75,54 @@ struct StSerialization {
 }
 
 message MsgSerialization {
-    seamus: Int as int8;
+    seamus：Int as int8;
     mcFly: map<Int as int8, Int as int8>;
 }
 ```
 
-Motivation is very simple:
+动机很简单：
 
-- Storing $1000$ $257$-bit integers in state [costs](https://docs.ton.org/develop/smart-contracts/fees#how-to-calculate-fees) about $0.184$ TON per year.
-- Storing $1000$ $32$-bit integers only costs $0.023$ TON per year by comparison.
+- 在州[成本](https://docs.ton.org/develop/smart-contracts/fees#how-to-calculate-fees)中存储 $1000$ $257$- 位整数每年约需 $0.184$ 吨。
+- 相比之下，存储 $1000$ $32$-bit 整数每年只需花费 $0.023$ 吨。
 
-### Serialization types
+### 序列化类型
 
-| Name             | [TL-B][tlb]                 | Inclusive range             |                          Space taken                          |
-| :--------------: | :-------------------------: | :-------------------------: | :-----------------------------------------------------------: |
-| `uint8{:tact}`   | [`uint8`][tlb-builtin]      | $0$ to $2^{8} - 1$          |                      $8$ bits = $1$ byte                      |
-| `uint16{:tact}`  | [`uint16`][tlb-builtin]     | $0$ to $2^{16} - 1$         |                     $16$ bits = $2$ bytes                     |
-| `uint32{:tact}`  | [`uint32`][tlb-builtin]     | $0$ to $2^{32} - 1$         |                     $32$ bits = $4$ bytes                     |
-| `uint64{:tact}`  | [`uint64`][tlb-builtin]     | $0$ to $2^{64} - 1$         |                     $64$ bits = $8$ bytes                     |
-| `uint128{:tact}` | [`uint128`][tlb-builtin]    | $0$ to $2^{128} - 1$        |                    $128$ bits = $16$ bytes                    |
-| `uint256{:tact}` | [`uint256`][tlb-builtin]    | $0$ to $2^{256} - 1$        |                    $256$ bits = $32$ bytes                    |
-| `int8{:tact}`    | [`int8`][tlb-builtin]       | $-2^{7}$ to $2^{7} - 1$     |                      $8$ bits = $1$ byte                      |
-| `int16{:tact}`   | [`int16`][tlb-builtin]      | $-2^{15}$ to $2^{15} - 1$   |                     $16$ bits = $2$ bytes                     |
-| `int32{:tact}`   | [`int32`][tlb-builtin]      | $-2^{31}$ to $2^{31} - 1$   |                     $32$ bits = $4$ bytes                     |
-| `int64{:tact}`   | [`int64`][tlb-builtin]      | $-2^{63}$ to $2^{63} - 1$   |                     $64$ bits = $8$ bytes                     |
-| `int128{:tact}`  | [`int128`][tlb-builtin]     | $-2^{127}$ to $2^{127} - 1$ |                    $128$ bits = $16$ bytes                    |
-| `int256{:tact}`  | [`int256`][tlb-builtin]     | $-2^{255}$ to $2^{255} - 1$ |                    $256$ bits = $32$ bytes                    |
-| `int257{:tact}`  | [`int257`][tlb-builtin]     | $-2^{256}$ to $2^{256} - 1$ |               $257$ bits = $32$ bytes + $1$ bit               |
-| `coins{:tact}`   | [`VarUInteger 16`][varuint] | $0$ to $2^{120} - 1$        | between $4$ and $124$ bits, [see below](#serialization-coins) |
+|  名称              |         [TL-B][TLB]                        |      包容性范围                 |              占用空间              |
+| :--------------: | :----------------------------------------: | :------------------------: | :----------------------------: |
+| `uint8{:tact}`   |           [`uint8`][tlb-构建]                | $0$ 到 $2^{8} - 1$          |         $8$ 位 = $1$ 字节         |
+| `uint16{:tact}`  |         [`uint16`][tlb-builtin]            | $0$ 到 $2^{16} - 1$         |         $16$ 位 = $2$ 字节        |
+| `uint32{:tact}`  |         [`uint32`][tlb-builtin]            | $0$ 到 $2^{32} - 1$         |         $32$ 位 = $4$ 字节        |
+| `uint64{:tact}`  |         [`uint64`][tlb-builtin]            | $0$ 到 $2^{64} - 1$         |         $64$ 位 = $8$ 字节        |
+| `uint128{:tact}` |         [`uint128`][tlb-builtin]           | $0$ 到 $2^{128} - 1$        |        $128$ 位 = $16$ 字节       |
+| `uint256{:tact}` |         [`uint256`][tlb-builtin]           | $0$ 到 $2^{256} - 1$        |        $256$ 位 = $32$ 字节       |
+| `int8{:tact}`    |           [`int8`][tlb-构建]                 | $-2^{7}$ 至 $2^{7} - 1$     |         $8$ 位 = $1$ 字节         |
+| `int16{:tact}`   |         [`int16`][tlb-builtin]             | $-2^{15}$ 至 $2^{15} - 1$   |         $16$ 位 = $2$ 字节        |
+| `int32{:tact}`   |         [`int32`][tlb-builtin]             | $-2^{31}$ 至 $2^{31} - 1$   |         $32$ 位 = $4$ 字节        |
+| `int64{:tact}`   |         [`int64`][tlb-builtin]             | $-2^{63}$ 至 $2^{63} - 1$   |         $64$ 位 = $8$ 字节        |
+| `int128{:tact}`  |         [`int128`][tlb-builtin]            | $-2^{127}$ 至 $2^{127} - 1$ |        $128$ 位 = $16$ 字节       |
+| `int256{:tact}`  |         [`int256`][tlb-builtin]            | $-2^{255}$ 至 $2^{255} - 1$ |        $256$ 位 = $32$ 字节       |
+| `int257{:tact}`  |         [`int257`][tlb-builtin]            | $-2^{256}$ 至 $2^{256} - 1$ |    $257$ 位 = $32$ 字节 + $1$ 位   |
+| `coins{:tact}`   | 16`][varUInteger][varuint][`VarUInteger 16 | $0$ 到 $2^{120} - 1$        | $4$ 和 $124$ 位之间，[见下文]（#序列化-币值） |
 
-### Variable `coins` type {#serialization-coins}
+### 变量 `coins` 类型 {#serialization-coins}
 
-In Tact, `coins{:tact}` is an alias to [`VarUInteger 16`][varuint] in [TL-B][tlb] representation, i.e. it takes a variable bit length depending on the optimal number of bytes needed to store the given integer and is commonly used for storing [nanoToncoin](/book/integers#nanotoncoin) amounts.
+在 Tact 中，`coins{:tact}` 是[TL-B][tlb]表示法中[`VarUInteger 16`][varuint]的别名，即根据存储给定整数所需的最佳字节数，它的位长是可变的，通常用于存储[nanoToncoin](/book/integers#nanotoncoin)金额。
 
-This serialization format consists of two [TL-B fields](https://docs.ton.org/develop/data-formats/tl-b-language#field-definitions):
+这种序列化格式包括两个 [TL-B 字段](https://docs.ton.org/develop/data-formats/tl-b-language#field-definitions)：
 
-- `len`, a $4$-bit unsigned big-endian integer storing the byte length of the value provided
-- `value`, a $8 \* len$-bit unsigned big-endian representation of the value provided
+- len"，一个 $4$位无符号大二进制整数，存储所提供值的字节长度
+- value"，即所提供值的 8 \* len$ 位无符号大二进制表示法
 
-That is, integers serialized as `coins{:tact}` occupy between $4$ and $124$ bits ($4$ bits for `len` and $0$ to $15$ bytes for `value`) and have values in the inclusive range from $0$ to $2^{120} - 1$.
+也就是说，序列化为 `coins{:tact}` 的整数占用 $4$ 至 $124$ 位（`len`为$4$ 位，`value`为 $0$ 至 $15$ 字节），其值范围为 $0$ 至 $2^{120} - 1$ 之间。
 
-Examples:
+例如
 
 ```tact
 struct Scrooge {
     // len: 0000, 4 bits (always)
-    // value: none!
-    // in total: 4 bits
-    a: Int as coins = 0; // 0000
+    // value: none！
+    // 总共：4 位
+    a. Int as coins = 0; // 0000 // len: 0001, 4 bits // value: 00000001：Int as coins = 0; // 0000
 
     // len: 0001, 4 bits
     // value: 00000001, 8 bits
@@ -135,7 +132,7 @@ struct Scrooge {
     // len: 0010, 4 bits
     // value: 00000001 00000010, 16 bits
     // in total: 20 bits
-    c: Int as coins = 258; // 0010 00000001 00000010
+    c. Int as coins = 258; // 0010 00000001 00000010 // value: 00000001 00000010, 16 bits // in total: 20 bits Int as coins = 258; // 0010 00000001 00000010
 
     // len: 1111, 4 bits
     // value: hundred twenty 1's in binary
@@ -146,17 +143,17 @@ struct Scrooge {
 
 :::note
 
-  Read more on serialization here: [Compatibility with FunC](/book/func#convert-serialization)
+  点击此处阅读有关序列化的更多信息：[与 FunC 兼容](/book/func#convert-serialization)
 
 :::
 
-## Operations
+## 业务
 
-All runtime calculations with numbers are done at 257-bits, so [overflows](https://en.wikipedia.org/wiki/Integer_overflow) are quite rare. Nevertheless, if any math operation overflows, an exception will be thrown, and the transaction will fail. You could say that Tact's math is safe by default.
+所有数字的运行时计算都是在 257 位完成的，因此 [溢出](https://en.wikipedia.org/wiki/Integer_overflow) 非常罕见。 不过，如果任何数学运算出现溢出，就会抛出异常，事务也会失败。 可以说，Tact 的数学默认是安全的。
 
-Note, that there is no problem with mixing variables of [different state sizes](#serialization) in the same calculation. At runtime they are all the same type no matter what — $257$-bit signed, so overflows won't happen then.
+请注意，在同一计算中混合使用 [不同状态大小]（#序列化）的变量是没有问题的。 在运行时，无论如何，它们都是相同的类型 - $257$-比特签名，因此不会发生溢出。
 
-However, this can still lead to **errors** in the [compute phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase) of the transaction. Consider the following example:
+不过，这仍可能导致在事务的[计算阶段](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase)出现\*\*\*错误。 请看下面的例子：
 
 ```tact
 import "@stdlib/deploy";
@@ -169,18 +166,18 @@ contract ComputeErrorsOhNo with Deployable {
     }
 
     receive("lets break it") {
-        let tmp: Int = self.oneByte * 256; // no runtime overflow
-        self.oneByte = tmp; // whoops, tmp value is out of the expected range of oneByte
+        let tmp：int = self.oneByte * 256; // 没有运行时溢出
+        self.oneByte = tmp; // 哎呀，tmp 值超出了 oneByte 的预期范围
     }
 }
 ```
 
-Here, `oneByte` is serialized as a [`uint8`](#serialization-types), which occupies only one byte and ranges from $0$ to $2^{8} - 1$, which is $255$. And when used in runtime calculations no overflow happens and everything is calculated as a $257$-bit signed integers. But the very moment we decide to store the value of `tmp` back into `oneByte` we get an error with the [exit code 5](/book/exit-codes#5), which states the following: `Integer out of the expected range`.
+这里，"oneByte "被序列化为[`uint8`](#serialization-types)，只占用一个字节，范围从 $0$ 到 2^{8} - 1$，即 $255$。 在运行时计算中使用时，不会发生溢出，所有计算结果都是 $257$- 位有符号整数。 但是，就在我们决定将 `tmp` 的值存储回 `oneByte` 的那一刻，我们收到了一个错误，[退出代码 5](/book/exit-codes#5)，错误信息如下：整数超出预期范围。
 
 :::caution
-  Therefore, be **very** careful with numbers and always double-check calculations when using serialization.
+  因此，在使用序列化时，对数字要\*\*\*\*小心，并始终仔细检查计算结果。
 :::
 
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
 [tlb-builtin]: https://docs.ton.org/develop/data-formats/tl-b-language#built-in-types
-[varuint]: https://docs.ton.org/develop/data-formats/msg-tlb#varuinteger-n
+[变量]: https://docs.ton.org/develop/data-formats/msg-tlb#varuinteger-n
