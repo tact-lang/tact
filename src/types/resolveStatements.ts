@@ -717,6 +717,21 @@ function processStatements(
                     );
                 }
 
+                // Compare type with the specified one
+                const typeRef = resolveTypeRef(ctx, s.type);
+                if (typeRef.kind !== "ref") {
+                    throwInternalCompilerError(
+                        `Unexpected type kind: '${typeRef.kind}'`,
+                        s.type.loc,
+                    );
+                }
+                if (expressionType.name !== typeRef.name) {
+                    throwCompilationError(
+                        `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(typeRef)}"`,
+                        s.expression.loc,
+                    );
+                }
+
                 // Add variables
                 s.identifiers.forEach((name, field) => {
                     if (name.text === "_") {
