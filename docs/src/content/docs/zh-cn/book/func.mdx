@@ -4,28 +4,28 @@ title: Compatibility with func
 
 Tact itself compiles to `func` and maps Tact entities directly to various `func` and `tl-b` types.
 
-## Convert types
+## 转换类型
 
 Primitive types in `tact` are directly mapped to `func` one.
 
-All rules about copying variables are the same. One of the big differences is that there are no visible mutation operators in `tact` and most `Slice` operations mutate variables in place.
+复制变量的所有规则都是一样的。 One of the big differences is that there are no visible mutation operators in `tact` and most `Slice` operations mutate variables in place.
 
-## Convert serialization
+## 转换序列化
 
 Tact structs and messages serialization is automatic unlike `func` where you need to define serialization logic manually.
 
-The tact auto-layout algorithm is greedy. This means that it takes the next variable, calculates its size, and tries to fit it into a current cell. If it doesn't fit, it creates a new cell and continues. All inner structs for auto-layout are flattened before allocation.
+The tact auto-layout algorithm is greedy. 这意味着它会获取下一个变量，计算其大小，并尝试将其放入当前单元格中。 如果不合适，它会创建一个新单元格并继续。 自动布局的所有内部结构在分配前都会被扁平化。
 
 All, except `Address`, optional types are serialized as `Maybe` in `tl-b`.
 
-There is no support for `Either` since it does not define what to pick during serialization in some cases.
+不支持 "Either"，因为在某些情况下，它没有定义序列化过程中的选择。
 
-### Examples
+### 实例
 
 ```tact
 // _ value1:int257 = SomeValue;
 struct SomeValue {
-    value1: Int; // Default is 257 bits
+    value1: Int; // 默认为 257 位
 }
 ```
 
@@ -33,7 +33,7 @@ struct SomeValue {
 // _ value1:int256 value2:uint32 = SomeValue;
 struct SomeValue {
     value1: Int as int256;
-    value2: Int as uint32;
+    value2：int as uint32;
 }
 ```
 
@@ -41,21 +41,21 @@ struct SomeValue {
 // _ value1:bool value2:Maybe bool = SomeValue;
 struct SomeValue {
     value1: Bool;
-    value2: Bool?;
+    value2：Bool?;
 }
 ```
 
 ```tact
 // _ cell:^cell = SomeValue;
 struct SomeValue {
-    cell: Cell; // Always stored as a reference
+    cell：Cell; // 总是作为引用存储
 }
 ```
 
 ```tact
 // _ cell:^slice = SomeValue;
 struct SomeValue {
-    cell: Slice; // Always stored as a reference
+    cell：Slice; // 总是作为引用存储
 }
 ```
 
@@ -63,7 +63,7 @@ struct SomeValue {
 // _ value1:int256 value2:int256 value3:int256 ^[value4:int256] = SomeValue;
 struct SomeValue {
     value1: Int as int256;
-    value2: Int as int256;
+    value2：
     value3: Int as int256;
     value4: Int as int256;
 }
@@ -73,9 +73,9 @@ struct SomeValue {
 // _ value1:int256 value2:int256 value3:int256 ^[value4:int256] flag:bool = SomeValue;
 struct SomeValue {
     value1: Int as int256;
-    value2: Int as int256;
+    value2：
     value3: Int as int256;
-    flag: Bool; // Flag is written before value4 to avoid auto-layout to allocate it to the next cell
+    flag：Bool; // Flag 写在 value4 之前，以避免自动布局将其分配到下一个单元格
     value4: Int as int256;
 }
 ```
@@ -84,10 +84,10 @@ struct SomeValue {
 // _ value1:int256 value2:int256 value3:int256 ^[value4:int256 flag:bool] = SomeValue;
 struct SomeValue {
     value1: Int as int256;
-    value2: Int as int256;
+    value2：
     value3: Int as int256;
     value4: Int as int256;
-    flag: Bool;
+    flag：Bool;
 }
 ```
 
@@ -95,35 +95,35 @@ struct SomeValue {
 // _ value1:int256 value2:^TailString value3:int256 = SomeValue;
 struct SomeValue {
     value1: Int as int256;
-    value2: String;
+    value2：String;
     value3: Int as int256;
 }
 ```
 
-## Convert received messages to `op` operations
+## 将收到的信息转换为 `op` 操作
 
-Tact generates a unique `op` for every received typed message, but it can be overwritten.
+Tact 会为每条接收到的键入信息生成一个唯一的 `op`，但它可以被覆盖。
 
-The following code in FunC:
+下面是 FunC.NET 中的代码
 
 ```func
 () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    ;; incoming message code...
+    ;; 传入消息代码...
 
-    ;; Receive MessageWithGeneratedOp message
+    ;; 接收 MessageWithGeneratedOp 消息
     if (op == 1180414602) {
-        ;; code...
+        ;; 代码...
     }
 
-    ;; Receive MessageWithOverwrittenOP message
+    ;; 接收 MessageWithOverwrittenOP 消息
     if (op == 291) {
-        ;; code...
+        ;; 代码...
     }
 
 }
 ```
 
-Becomes this in Tact:
+在《战术》中变成了这样：
 
 ```tact
 message MessageWithGeneratedOp {
@@ -153,11 +153,11 @@ contract Contract {
 
 You can express everything except `list-style-lists` in Tact that would be compatible with `func`'s `get`-methods.
 
-### Primitive return type
+### 基本返回类型
 
 if `get-method` returns a primitive in `func`, you can implement it the same way in the `tact`.
 
-The following code in FunC:
+下面是 FunC.NET 中的代码
 
 ```func
 int seqno() method_id {
@@ -165,7 +165,7 @@ int seqno() method_id {
 }
 ```
 
-Becomes this in Tact:
+在《战术》中变成了这样：
 
 ```tact
 // Tact
@@ -174,13 +174,13 @@ get fun seqno(): Int {
 }
 ```
 
-### Tensor return types
+### 张量返回类型
 
 In `func` there is a difference between tensor type `(int, int)` and `(int, (int))`, but for TVM there are no differences, they all represent a stack of two ints.
 
 To convert the tensor that returned from the `func` get-method, you need to define a `struct` that has the same amount of fields as the tensor and in the same order.
 
-The following code in FunC:
+下面是 FunC.NET 中的代码
 
 ```func
 (int, slice, slice, cell) get_wallet_data() method_id {
@@ -188,7 +188,7 @@ The following code in FunC:
 }
 ```
 
-Becomes this in Tact:
+在《战术》中变成了这样：
 
 ```tact
 struct JettonWalletData {
@@ -204,11 +204,11 @@ get fun get_wallet_data(): JettonWalletData {
 }
 ```
 
-### Tuple return type
+### 元组返回类型
 
 In `func` if you are returning a tuple, instead of a tensor you need to follow the process for tensor type, but define return type of a get method as optional.
 
-The following code in FunC:
+下面是 FunC.NET 中的代码
 
 ```func
 [int, int] get_contract_state() method_id {
@@ -216,7 +216,7 @@ The following code in FunC:
 }
 ```
 
-Becomes this in Tact:
+在《战术》中变成了这样：
 
 ```tact
 struct ContractState {
@@ -230,11 +230,11 @@ get fun get_contract_state(): ContractState? {
 }
 ```
 
-### Mixed tuple and tensor return types
+### 混合元组和张量返回类型
 
 When some of the tensors are a tuple, you need to define a struct as in previous steps and the tuple one must be defined as a separate struct.
 
-The following code in FunC:
+下面是 FunC.NET 中的代码
 
 ```func
 (int, [int, int]) get_contract_state() method_id {
@@ -242,7 +242,7 @@ The following code in FunC:
 }
 ```
 
-Becomes this in Tact:
+在《战术》中变成了这样：
 
 ```tact
 struct ContractStateInner {
@@ -260,11 +260,11 @@ get fun get_contract_state(): ContractState {
 }
 ```
 
-### Arguments mapping
+### 参数 制图
 
 Conversion of get-methods arguments is forward. Each argument is mapped as-is to `func` one, and each tuple is mapped to a struct.
 
-The following code in FunC:
+下面是 FunC.NET 中的代码
 
 ```func
 (int, [int, int]) get_contract_state(int arg1, [int,int] arg2) method_id {
@@ -272,7 +272,7 @@ The following code in FunC:
 }
 ```
 
-Becomes this in Tact:
+在《战术》中变成了这样：
 
 ```tact
 struct ContractStateArg2 {
