@@ -1,0 +1,354 @@
+---
+title: 字符串和字符串构造器
+---
+
+字符串是不可更改的字符序列，这意味着 [`字符串{:tact}`][p]一旦创建，就不能更改。 字符串可用于存储文本，因此可将其转换为[`单元格{:tact}`][单元格]类型，用作信息体。
+
+要以省油的方式连接字符串，请使用 [`字符串生成器{:tact}`][p]。
+
+要直接使用 [`字符串{:tact}`][p]字面量，请参阅：[字符串字面量](/book/expressions#string-literals)。
+
+## beginString
+
+```tact
+fun beginString()：StringBuilder；
+```
+
+创建并返回空 [`StringBuilder{:tact}`][p]。
+
+使用示例
+
+```tact
+让 fizz：StringBuilder = beginString()；
+```
+
+## 开始评论
+
+```tact
+fun beginComment()：StringBuilder；
+```
+
+创建并返回一个空的 [`字符串生成器{:tact}`][p]，用于生成注释字符串，并在生成的 [`字符串{:tact}`][p]前加上四个空字节。 这种格式用于传递文本注释作为报文正文。
+
+使用示例
+
+```tact
+让 fizz：StringBuilder = beginComment()；
+```
+
+## beginTailString
+
+```tact
+fun beginTailString()：StringBuilder；
+```
+
+创建并返回一个空的 [`字符串生成器{:tact}`][p]，用于生成尾字符串，并在生成的 [`字符串{:tact}`][p]前加上一个空字节。 这种格式在 NFT 或 Jetton 等各种标准中都有使用。
+
+使用示例
+
+```tact
+让 fizz：StringBuilder = beginTailString()；
+```
+
+## beginStringFromBuilder
+
+```tact
+fun beginStringFromBuilder(b: StringBuilder)：StringBuilder；
+```
+
+从现有的 [`字符串生成器{:tact}`][p] `b` 创建并返回一个新的 [`字符串生成器{:tact}`][p]。 当您需要将现有的 [`字符串{:tact}`][p]序列化为 [`单元格{:tact}`][单元格]，并加上一些其他数据时非常有用。
+
+使用示例
+
+```tact
+让 fizz：StringBuilder = beginStringFromBuilder(beginString())；
+```
+
+## StringBuilder.append
+
+```tact
+extends mutates fun append(self: StringBuilder, s: String)；
+```
+
+用于 [`StringBuilder{:tact}`][p]的扩展突变函数。
+
+将 [`String{:tact}`][p] `s` 追加到 [`StringBuilder{:tact}`][p]。
+
+使用示例
+
+```tact
+让 fizz：StringBuilder = beginString();
+fizz.append("oh");
+fizz.append("my");
+fizz.append("Tact!")；
+```
+
+## StringBuilder.concat
+
+```tact
+extends fun concat(self: StringBuilder, s: String)：StringBuilder；
+```
+
+字符串生成器{:tact}\`][p]的扩展函数。
+
+与 [`字符串{:tact}`][p] `s` 连接后，返回一个新的 [`字符串构造器{:tact}`][p]。 与 [`StringBuilder.append(){:tact}`](#stringbuilderappend)不同，可以进行链式操作。
+
+使用示例
+
+```tact
+让 fizz：StringBuilder = beginString()
+    .concat("oh")
+    .concat("my")
+    .concat("Tact!")；
+```
+
+## StringBuilder.toString
+
+```tact
+extends fun toString(self: StringBuilder)：String；
+```
+
+字符串生成器{:tact}\`][p]的扩展函数。
+
+返回从 [`字符串生成器{:tact}`][p]构建的 [`字符串{:tact}`][p]。
+
+使用示例
+
+```tact
+让 fizz：StringBuilder = beginString();
+let buzz：String = fizz.toString()；
+```
+
+## StringBuilder.toCell
+
+```tact
+extends fun toCell(self: StringBuilder)：Cell；
+```
+
+字符串生成器{:tact}\`][p]的扩展函数。
+
+返回由 [`字符串生成器{:tact}`][p]组装的 [`单元格{:tact}`][单元格]。
+
+使用示例
+
+```tact
+让 fizz：StringBuilder = beginString();
+let buzz：Cell = fizz.toCell()；
+```
+
+## StringBuilder.toSlice
+
+```tact
+extends fun toSlice(self: StringBuilder)：Slice；
+```
+
+字符串生成器{:tact}\`][p]的扩展函数。
+
+从 [`StringBuilder{:tact}`][p]返回一个组装好的 [`单元格{:tact}`][单元格] 作为 [`片{:tact}`][片]。 别名为 [`self.toCell().asSlice(){:tact}`](/ref/core-cells#cellasslice)。
+
+使用示例
+
+```tact
+让 s：StringBuilder = beginString();
+let fizz：Slice = s.toSlice();
+let buzz：Slice = s.toCell().asSlice();
+
+fizz == buzz; // true
+```
+
+## String.asSlice
+
+```tact
+extends fun asSlice(self: String)：Slice；
+```
+
+字符串{:tact}\`][p]的扩展函数。
+
+从[`字符串{:tact}`][p]返回一个[`片{:tact}`][slice]，方法是尝试将其所有位打包到一个连续的[单元格][p]列表中，每个单元格引用下一个单元格，并为将来的解析打开所有单元格。
+
+请注意，[`片{:tact}`][片]中没有说明特定字符可能占用多少字节，也没有说明引用列表的深度，因此只有在知道自己在做什么的情况下才能使用该函数。
+
+使用示例
+
+```tact
+让 s：String = "It's alive！It's alive!!!";
+let fizz：Slice = s.asSlice();
+let buzz：Slice = s.asSlice().asString().asSlice();
+
+fizz == buzz; // true, 但要小心，因为并非总是如此。
+```
+
+:::note
+
+  查看 `String.asSlice{:tact}` 函数如何实际使用：[如何将 `String` 转换为 `Int`](/cookbook/type-conversion#how-to-convert-a-string-to-an-int).
+
+:::
+
+## String.asComment
+
+```tact
+extends fun asComment(self: String)：Cell；
+```
+
+字符串{:tact}\`][p]的扩展函数。
+
+从[`字符串{:tact}`][p]返回一个[`单元格{:tact}`][单元格]，在后者的前缀加上四个空字节。 这种格式用于传递文本注释作为报文正文。
+
+使用示例
+
+```tact
+让 s：String = "When life gives you lemons, call them 'yellow oranges' and sell them for double the price.";
+let fizz：Cell = s.asComment();
+
+let b: StringBuilder = beginComment();
+b.append(s);
+let buzz：Cell = b.toCell();
+
+fizz == buzz; // true
+```
+
+## String.fromBase64
+
+```tact
+extends fun fromBase64(self: String)：Slice；
+```
+
+字符串{:tact}\`][p]的扩展函数。
+
+从解码后的 [Base64](https://en.wikipedia.org/wiki/Base64) [`String{:tact}`][p]中返回 [`片{:tact}`][片]。 别名为 `self.asSlice().fromBase64(){:tact}`。
+
+请注意，该函数是有限制的，只能从给定的 [字符串{:tact}\`][p]中获取前 $1023$ 位数据，当 [字符串{:tact}\`][p]较大（即包含超过 $1023$ 位数据）时，不会抛出异常。
+
+如果给定的 [`String{:tact}`][p]包含不属于 Base64 集的字符，则会出现[退出代码 134](/book/exit-codes#134)异常："无效参数"。
+
+使用示例
+
+```tact
+让 s：String = "SGVyZSdzIEpvaG5ueSE=";
+let fizz：Slice = s.fromBase64();
+let buzz：Slice = s.asSlice().fromBase64();
+
+fizz == buzz; // true
+```
+
+## Slice.asString
+
+```tact
+extends fun asString(self: Slice)：String；
+```
+
+切片{:tact}\`][切片]的扩展函数。
+
+从 [`字符串{:tact}`][p]返回一个[`字符串{:tact}`][片]，方法是尝试加载它的所有位，而不查找它的引用（如果有的话）。
+
+请注意，该函数根本不查看引用，而且会将输出截断到 $1023$ 位，因此只有在知道自己在做什么的情况下才使用它。
+
+使用示例
+
+```tact
+让 s：String = "Keep your Slices close, but your Strings closer.";
+let fizz：String = s;
+let buzz：String = s.asSlice().asString();
+
+fizz == buzz; // true，但要小心，因为并非总是如此。
+```
+
+## Slice.fromBase64
+
+```tact
+extends fun fromBase64(self: Slice)：Slice；
+```
+
+切片{:tact}\`][切片]的扩展函数。
+
+从解码后的 [Base64](https://en.wikipedia.org/wiki/Base64) [`Slice{:tact}`][slice]返回一个新的 [`片{:tact}`][片]。
+
+请注意，该函数是有限制的，只能从给定的 [`片{:tact}`][片] 中获取前 $1023$ 位数据，如果 [`片{:tact}`][片] 有更多数据（即有任何引用），则不会抛出异常。
+
+如果给定的 [`Slice{:tact}`][p]包含不属于 Base64 集的字符，将产生[退出代码 134](/book/exit-codes#134)异常："无效参数"。
+
+使用示例
+
+```tact
+让 s：Slice = "SSBhbSBHcm9vdC4=".asSlice();
+let fizz：Slice = s.fromBase64()；
+```
+
+## Int.toString
+
+```tact
+extends fun toString(self: Int)：String；
+```
+
+Int{:tact}\`][int]的扩展函数。
+
+从 [`Int{:tact}`][int]值返回 [`String{:tact}`][p]。
+
+使用示例
+
+```tact
+让 fizz：String = (84 - 42).toString()；
+```
+
+## Int.toFloatString
+
+```tact
+extends fun toFloatString(self: Int, digits: Int)：String；
+```
+
+Int{:tact}\`][int]的扩展函数。
+
+使用小数的[定点表示](https://en.wikipedia.org/wiki/Fixed-point_arithmetic)从[`Int{:tact}`][int]值返回[`String{:tact}`][p]，其中`self`是数字的有效部分，`digits`是小数部分的位数。
+
+更确切地说，"digits "是 $10^{-\mathrm{digits}}$ 表达式的指数化参数，它给出了实际 [`Int{:tact}`][int]值乘以后所代表的小数。 参数 `digits` 必须在封闭区间内：$0 <$ `digits` $< 78$，否则会出现 [exit code 134](/book/exit-codes#134)异常："无效参数"。
+
+使用示例
+
+```tact
+let fizz：String = (42).toFloatString(9); // "0.000000042"
+```
+
+## Int.toCoinsString
+
+```tact
+extends fun toCoinsString(self: Int)：String；
+```
+
+Int{:tact}\`][int]的扩展函数。
+
+使用小数的[定点表示法](https://en.wikipedia.org/wiki/Fixed-point_arithmetic)从[`Int{:tact}`][int]值返回[`String{:tact}`][p]。 别名为 `self.toFloatString(9){:tact}`。
+
+用于用字符串表示 [纳米通币](/book/integers#nanotoncoin) [`Int{:tact}`][int]值。
+
+使用示例
+
+```tact
+let nanotons：Int = 42;
+let fizz：String = nanotons.toCoinsString();
+let buzz：String = nanotons.toFloatString(9);
+
+fizz == buzz; // true, 两者都存储 "0.000000042"。
+```
+
+## 地址
+
+```tact
+extends fun toString(self: Address)：String；
+```
+
+地址{:tact}\`][p]的扩展函数。
+
+从 [`地址{:tact}`][p]返回 [`字符串{:tact}`][p]。
+
+使用示例
+
+```tact
+让 community：Address = address("UQDpXLZKrkHsOuE_C1aS69C697wE568vTnqSeRfBXZfvmVOo");
+let fizz：String = community.toString()；
+```
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[电池]: /book/cells#cells
+[一片]: /book/cells#slices

@@ -1,0 +1,54 @@
+---
+title: OTP-006：合同包
+sidebar:
+  order: 6
+---
+
+该提案定义了一种将编译合同、其依赖关系和所有相关元数据打包成一个文件的方法。
+
+## 动机
+
+需要一种统一的软件包格式，以简化使用各种工具部署和升级合同的过程，而无需对其进行配置。
+
+## 规格
+
+软件包文件的扩展名为".pkg"，是一个 JSON 文件：
+
+```json
+{
+  "name"："我的合同",
+  "code"："......代码的 boc ...",
+  "abi"："要原样上传到 IPFS 或 Ton Storage 的 ABI 字符串"，
+  "init"：{
+    "kind"："direct", // 表示此合约可以原样部署
+    "args"：{
+      // ...ABI 格式的参数
+    },
+    "prefix"：{
+      // 合同初始状态的可选前缀
+      "bits"：0, // 前缀的位数
+      "value": 0 // 前缀的值
+    },
+    "deployment"：{
+      "kind"："system-cell", // 表示此合约可按原样部署
+      "system"："......系统单元的 boc ..."
+    }
+  },
+  "sources"：{
+    "file.ton"："... base64 编码的源文件......"
+  },
+  "compiler"：{
+    "name"："func",
+    "version"："0.4.1",
+    "parameters"："..." // 可选字符串参数
+  }
+}
+```
+
+## 缺点
+
+无
+
+## 参考资料
+
+- 细胞袋 (BoC): https://docs.ton.org/develop/data-formats/cell-boc#packing-a-bag-of-cells

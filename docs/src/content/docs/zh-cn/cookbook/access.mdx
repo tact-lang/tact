@@ -1,0 +1,52 @@
+---
+title: 门禁控制
+---
+
+本页列出了使用权限、所有权和访问控制的常见示例。
+
+## 如何使用 Ownable 特质检查发件人权限
+
+```tact
+// 为了方便起见，必须从 stdlib 导入 Ownable 以及 Deployable：
+import "@stdlib/ownable";
+import "@stdlib/deploy";
+
+message FooBarMsg {
+    newVal: Int as uint32;
+}
+
+// Ownable 特性可以限制某些操作只能由所有者执行
+Deployable, Ownable 的 SenderChecker 合约 {
+    // 持久状态变量
+    owner: Address; // Ownable 特性要求你添加这个确切的状态变量
+    val: Int as uint32; // 一些值
+
+    init() {
+        // 我们可以将所有者初始化为我们想要的任何值，在本例中就是部署者：
+        self.owner = sender();
+        self.val = 0;
+    }
+
+    receive("inc") {
+        self.requireOwner(); // throws exit code 132 if the sender isn't an owner
+        self.val += 1;
+    }
+
+    receive(msg: FooBarMsg) {
+        self.requireOwner(); // throws exit code 132 if the sender isn't an owner
+        self.val = msg.newVal;
+    }
+}
+```
+
+:::note[Useful 链接：]
+
+  [核心库中的 "trait Ownable{:tact}"](/ref/stdlib-ownable#ownable)
+
+:::
+
+:::tip[Hey 那里！]
+
+  没有找到您最喜欢的访问控制范例？ 您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
+
+:::

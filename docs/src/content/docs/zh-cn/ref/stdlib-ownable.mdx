@@ -1,0 +1,114 @@
+---
+title: "@stdlib/ownable"
+---
+
+为可拥有的合约提供 [traits]（/book/types#composite-types）。 这是最常用的性状，大多数其他性状都需要它。
+
+要使用该库，请导入 `@stdlib/ownable`：
+
+```tact
+导入"@stdlib/ownable"；
+```
+
+## 信息
+
+### 更改所有者
+
+```tact
+message ChangeOwner {
+    queryId：Int as uint64;
+    newOwner: Address;
+}
+```
+
+### 更改用户名
+
+```tact
+message ChangeOwnerOk {
+    queryId：Int as uint64;
+    newOwner: Address;
+}
+```
+
+## 特质
+
+### 可拥有
+
+[Trait](/book/types#composite-types) `Ownable{:tact}` 声明了 [contract](/book/contracts) 的所有者（不可编辑），并提供了一个辅助函数 `requireOwner(){:tact}` 来检查消息是否由所有者发送。
+
+此 [trait](/book/types#composite-types) 要求声明一个字段 `owner: Address{:tact}`，并公开一个 [getter 函数](/book/functions#getter-functions) `owner(){:tact}`，该函数从 [contract](/book/contracts) 中读取。
+
+源代码
+
+```tact
+@interface("org.ton.ownable")
+trait Ownable {
+    owner: Address;
+
+    fun requireOwner() {
+        nativeThrowUnless(132, sender() == self.owner);
+    }
+
+    get fun owner()：Address {
+        return self.owner;
+    }
+}
+```
+
+使用示例
+
+```tact /Ownable/
+import "@stdlib/ownable";
+
+合同 ExampleContract with Ownable {
+    owner: Address;
+
+    init(owner: Address) {
+        self.owner = owner;
+    }
+}
+```
+
+### 可拥有可转让
+
+OwnableTransferable{:tact}` 是 [`Ownable{:tact}`]（#ownable）的扩展，允许将合同的所有权转移到另一个地址。 它提供了一个安全的句柄 [Message](/book/structs-and-messages#messages) [`ChangeOwner{:tact}\`](#changeowner)，可供所有者调用以转移所有权。
+
+如果所有者转移请求成功，合约将回复一条 [`ChangeOwnerOk{:tact}`](#changeownerok) [信息](/book/structs-and-messages#messages)。
+
+源代码
+
+```tact
+@interface("org.ton.ownable.transferable.v2")
+trait OwnableTransferable with Ownable {
+    owner: Address;
+
+    receive(msg: ChangeOwner) {
+        // Check if the sender is the owner
+        self.requireOwner();
+
+        // 更新所有者
+        self.owner = msg.newOwner;
+
+        // 回复结果
+        self.reply(ChangeOwnerOk{ queryId: msg.queryId, newOwner: msg.newOwner }.toCell());
+    }
+}
+```
+
+使用示例
+
+```tact /OwnableTransferable/
+import "@stdlib/ownable";
+
+合同 ExampleContract with OwnableTransferable {
+    owner: Address;
+
+    init(owner: Address) {
+        self.owner = owner;
+    }
+}
+```
+
+## 资料来源
+
+- [ownable.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/ownable.tact)

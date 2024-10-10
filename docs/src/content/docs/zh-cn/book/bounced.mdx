@@ -1,0 +1,38 @@
+---
+title: 退信
+---
+
+When a contract sends a message with a flag bounce set to true, then if the message wasn't processed properly, it would bounce back to the sender. This is useful when you want to make sure that the message was processed properly and if not - revert the changes.
+
+## 注意事项
+
+Currently in TON bounced messages have only 224 usable data bits in the message and no references. 这意味着您无法从被退回的邮件中恢复大部分数据。 这是 TON 区块链的局限性，将来会得到修复。 Tact helps you to check if your message fits the limit and if not - it will suggest to use a special type modifier `bounced<T>` for the receiver that would construct a partial representation that fits into the required limits.
+
+## 退信接收器
+
+:::caution
+
+<Callout type="warning" emoji="⚠️">
+Bounced text messages are not supported yet.
+
+:::
+
+To receive a bounced message you need to define a `bounced` receiver in your contract or a trait:
+
+```tact {2-4}
+contract MyContract {
+    bounced(src: bounced<MyMessage>) {
+        // ...
+    }
+}
+```
+
+To process bounced messages manually, you can use a fallback definition that handles raw `Slice` instead of a message: 请注意，这样的接收方将获得由您的合约产生的所有\*\*\*被退回的邮件：
+
+```tact /rawMsg: Slice/
+contract MyContract {
+    bounced(src: Slice) {
+        // ...
+    }
+}
+```

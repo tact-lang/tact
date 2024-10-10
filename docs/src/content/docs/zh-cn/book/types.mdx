@@ -1,0 +1,170 @@
+---
+title: 类型系统概述
+---
+
+Tact 程序中的每个变量、项目和值都有一个类型。 它们可以是
+
+- 原始类型]（#primitive-types）之一
+- 或 [复合类型]（#复合类型）
+
+Also, many of those types [can be made nullable](/book/defining-types#optionals).
+
+## 原始类型
+
+Tact 支持许多专为智能合约定制的原始数据类型：
+
+- Int — all numbers in Tact are 257-bit signed integers, but [smaller representations](/book/integers#serialization) can be used to reduce storage costs.
+- Bool — classical boolean with `true` and `false` values.
+- Address — standard [smart contract address](https://docs.ton.org/learn/overviews/addresses#address-of-smart-contract) in TON Blockchain.
+- [`Cell{:tact}`](/book/cells#cells), [`Builder{:tact}`](/book/cells#builders), [`Slice{:tact}`](/book/cells#slices) - [TVM][tvm] 的底层基元。
+- 字符串{:tact}\` - 不可变的文本字符串。
+- StringBuilder — helper type that allows you to concatenate strings in a gas-efficient way.
+
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
+
+### 布尔 {#booleans}
+
+原始类型 `Bool{:tact}` 是经典的布尔类型，只能容纳两个值：True{:tact}`和`false{:tact}\`。 它便于布尔和逻辑运算，也便于存储标志。
+
+Tact 中没有隐式类型转换，因此两个布尔值的加法（[`+{:tact}`](/book/operators#binary-add)）是不可能的。 这里有许多比较[运算符](/book/operators)，例如：
+
+- `&&{:tact}` 为 [logical AND](/book/operators#binary-logical-and)、
+- ||{:tact}\`为 [logical OR](/book/operators#binary-logical-or)、
+- `!{:tact}` for [logical inversion](/book/operators#unary-inverse)、
+- `=={:tact}` 和 `!={:tact}` 用于检查 [相等](/book/operators#binary-equality)、
+- 和 `!{:tact}` 表示 [非空断言](/book/optionals)。
+
+将 bools 持久化为状态非常节省空间，因为它们只占用 1 位。 每年在州[花费](https://ton.org/docs/develop/smart-contracts/fees#how-to-calculate-fees)存储 1000 个布尔约需 $0.00072$ 吨。
+
+## 复合类型
+
+使用单独的存储手段往往会变得繁琐，因此有办法将多个 [原始类型]（#primitive-types）组合在一起，创建复合类型：
+
+- [Maps](#maps) - 键与值的关联。
+- Composite types, such as [Structs and Messages](#structs-and-messages)
+- [选项](#optionals) - [Structs and Messages](#structs and-messages) 变量或字段的 `null{:tact}` 值。
+
+除上述复合类型外，Tact 还提供了一种特殊的类型构造函数 [`bounced<T>{:tact}`](/book/bounced)，它只能在 [bounced message receivers](/book/bounced) 中指定。
+
+请注意，虽然 [contracts](#contracts) 和 [traits](#traits) 也被视为 Tacts 类型系统的一部分，但我们不能像 [Structs and Messages](#structs and-messages) 那样传递它们。 相反，我们可以使用 [`initOf{:tact}`](/book/expressions#initof)表达式来获取给定合约的初始状态。
+
+### 地图
+
+The type `map<k, v>{:tact}` is used as a way to associate data with corresponding keys.
+
+contract HelloWorld {
+    counters: map<Int, Int>;
+}
+
+```tact
+let mapExample: map<Int, Int> = emptyMap(); // 带有 Int 键和值的空地图
+```
+
+在专门页面了解更多信息：[地图][地图]。
+
+[[Maps](#maps)]: /book/maps
+
+### 结构和信息
+
+Possible key types:
+
+[Struct](/book/defining-types#structs) example:
+
+```tact
+struct Point {
+    x：Int;
+    y：Int;
+}
+```
+
+[Message](/book/defining-types#messages) example:
+
+```tact
+// Custom numeric id of the Message
+message(0x11111111) SetValue {
+    key: Int;
+    value: Int?; // Optional
+    coins: Int as coins; // Serialization into TL-B types
+}
+```
+
+有关它们的更多信息，请访问专门页面：[结构和信息][s-n-m]。
+
+[s-n-m]: Address
+[结构体]: [Struct](/book/defining-types#structs)
+[信息]: [Message](/book/defining-types#messages)
+
+### 可选项
+
+所有[原始类型](#primitive-types)以及[结构体和消息](#structs-and-messages)都可以为空，并持有一个特殊的 "null{:tact}\`"值。
+
+可选项][可选项]示例：
+
+```tact
+let opt：= null; // Int or null, with explicitly assigned null
+```
+
+Learn more about them on a dedicated page about [defining composite types](/book/defining-types).
+
+[选修课]: /book/optionals
+
+### 合同
+
+Contracts are the main entry of a smart contract on the TON blockchain. It holds all functions, getters, and receivers of a TON contract.
+
+合同]示例(/book/contracts)：
+
+```tact
+contract HelloWorld {
+    counter: Int;
+
+    init() {
+        self.counter = 0;
+    }
+
+    receive("increment") {
+        self.counter = self.counter + 1;
+    }
+
+    get fun counter(): Int {
+        return self.counter;
+    }
+}
+```
+
+or [Contracts](#contracts) and [Traits](#traits)
+
+### 特质
+
+Tact doesn't support classical class inheritance, but instead introduces the concept of **traits**. 它们的结构与[合约]（#contracts）相同，但不能[初始化持久状态变量]（/book/contracts#init-function）。
+
+特质还可以让继承它的契约重写其[函数]（/book/functions#virtual-and-abstract-functions）的行为和[常量]（/book/constants#virtual-and-abstract-constants）的值。
+
+来自 [`@stdlib/ownable`](/ref/stdlib-ownable) 的 trait [`Ownable{:tact}`](/ref/stdlib-ownable#ownable)示例：
+
+```tact
+trait Ownable {
+    owner: Address;
+
+    fun requireOwner() {
+        nativeThrowUnless(132, context().sender == self.owner);
+    }
+
+    get fun owner(): Address {
+        return self.owner;
+    }
+}
+```
+
+And the contract that uses trait:
+
+```tact
+contract Treasure with Ownable {
+  owner: Address; // Field from trait MUST be defined in contract itself
+
+  // Here we init the way we need, trait can't specify how you must init owner field
+  init(owner: Address) {
+    self.owner = owner;
+  }
+}
+```

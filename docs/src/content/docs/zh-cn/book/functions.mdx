@@ -1,0 +1,143 @@
+---
+title: 函数及其类型
+---
+
+Tact 中的功能可以用不同的方式定义：
+
+- 全局静态函数
+- 扩展功能
+- 可变函数
+- 本地功能
+- 接收器功能
+- 获取器功能
+
+除了 [接收器函数](#receiver-functions)，所有函数的定义（参数列表）和调用（参数列表）都可以使用逗号：
+
+```tact
+fun foo(
+    a: Int, // 允许在参数列表中使用逗号拖尾
+) {}
+
+fun bar() {
+    foo(
+        5, // 也允许在参数列表中使用逗号拖尾！
+    );
+}
+```
+
+## 全局静态函数
+
+您可以在程序的任何地方定义全局函数：
+
+```tact
+fun pow(a: Int, c: Int): Int {
+  let res: Int = 1;
+  repeat(c) {
+    res = res * a;
+  }
+  return res;
+}
+```
+
+## 虚拟和抽象函数
+
+如果 [traits](/book/types#traits) 有 `virtual{:tact}` 关键字，则可以使用 `override{:tact}` 允许继承 [traits](/book/types#traits) 的合约修改内部函数。 函数也可以标记为 "抽象{:tact}"，在这种情况下，继承合约必须定义其实现：
+
+```tact
+trait FilterTrait with Ownable {
+    // 此 trait 的用户可以重写虚拟函数
+    virtual fun filterMessage()：Bool {
+        return sender() != self.owner;
+    }
+
+    abstract fun specialFilter()：Bool;
+}
+
+带有 FilterTrait 的契约 Filter {
+    // 覆盖 FilterTrait 的默认行为
+    override fun filterMessage()：Bool {
+        return true;
+    }
+
+    override fun specialFilter()：Bool {
+        return true;
+    }
+}
+```
+
+## 扩展功能
+
+扩展函数允许你为任何可能的类型实现扩展。
+
+> **警告**
+> 第一个参数的名称必须名为 `self`，该参数的类型必须是你要扩展的类型。
+
+```tact
+extends fun pow(self: Int, c: Int) {
+  let res: Int = 1;
+  repeat(c) {
+    res = res * self;
+  }
+  return res;
+}
+```
+
+## 可变函数
+
+可变函数是对数值进行变异，用执行结果代替数值。 要执行突变，函数必须改变 `self` 值。
+
+```tact
+extends mutates fun pow(self: Int, c: Int) {
+  let res: Int = 1;
+  repeat(c) {
+    res = res * self;
+  }
+  self = res;
+}
+```
+
+## 本地功能
+
+Native functions are direct bindings of func functions:
+
+> **注**
+> 本地函数也可以是可变函数和扩展函数。
+
+```tact
+@name(store_uint)
+native storeUint(s: Builder, value: Int, bits: Int)：Builder;
+
+@name(load_int)
+扩展 mutates native loadInt(self: Slice, l: Int)：Int；
+```
+
+## 接收器功能
+
+接收器函数是负责在合约中接收信息的特殊函数，只能在合约或特质中定义。
+
+```tact
+contract Treasure {
+
+  // ...
+  
+  // This means that this contract can receive the comment "Increment" and this function would be called for such messages
+  receive("Increment") {
+    self.counter = self.counter + 1;
+  }
+}
+```
+
+## 获取器函数
+
+获取器函数定义智能合约上的获取器，只能在合约或特征中定义。
+
+```tact
+contract Treasure {
+
+  // ...
+  
+  get fun counter(): Int {
+    return self.counter;
+  }
+}
+```

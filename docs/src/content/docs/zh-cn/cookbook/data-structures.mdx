@@ -1,0 +1,377 @@
+---
+title: 数据结构
+---
+
+数据结构是数据组织、管理和存储格式，通常是为了高效访问数据而选择的。 更确切地说，数据结构是数据值、数据间关系以及可用于数据的函数或操作的集合。
+
+本页列出了一系列在 Tact 中实现的数据结构，方便您满足日常及其他需求。
+
+这里列出的所有数据结构都是使用内置的 [`map<K, V>{:tact}`][map]类型制作的。 有关地图的描述和基本用法，请参阅[本书专页][地图]。
+
+## 阵列
+
+数组](https://en.wikipedia.org/wiki/Array_(data_structure)) 是一种数据结构，由连续的内存块组成，代表相同内存大小的元素集合，每个元素至少由一个数组键或_index_标识。
+
+下面的示例使用[结构](/book/structs-and-messages#structs)包装的[`map<Int, V>{:tact}`][map]模拟数组，其中`V{:tact}`可以是 map 的任何[允许值类型](/book/maps#allowed-types)：
+
+```tact
+import "@stdlib/deploy"; // for Deployable trait
+
+struct Array {
+    m: map<Int as uint16, Int>; // 数组的 Int 值作为 Ints 到 Ints 的映射，
+                                // 将其键序列化为 uint16 以节省空间
+    length：Int = 0; // 数组的长度，默认为 0
+} // 数组的编译时常数上界。
+
+//
+const MaxArraySize：Int = 5_000; // 5,000 entries max, to stay reasonable far from limits
+
+// Extension mutation function for adding new entries to the end of the array
+extends mutates fun append(self: Array, item: Int) {
+    require(self.length + 1 <= MaxArraySize, "数组中没有空间留给新条目了！");
+
+    self.map.set(self.length, item); // 设置条目（键值对）
+    self.length += 1; // 增加长度字段
+}
+
+// 扩展突变函数，用于在给定索引处插入新条目
+extends mutates fun insert(self: Array, item: Int, idx: Int) {
+    require(self.length + 1 <= MaxArraySize, "数组中没有空间留给新条目！");
+    require(idx >= 0, "Index of the item cannot be negative!");
+    require(idx < self.length, "Index is out of array bounds!");
+
+    // Move all items from idx to the right
+    let i. Int = self.length; // not not：Int = self.length; // 不是错别字，因为我们需要从不曾存在的地方开始
+    while (i > idx) {
+        // 注意，我们使用了 !! 操作符，因为我们知道值肯定会在那里
+        self.map.set(i, self.map.get(i - 1)!!);
+        i -= 1;
+    }
+
+    // 并将新条目放入
+    self.map.set(idx, item); // 设置条目（键值对）
+    self.length += 1; // 增加长度字段
+}
+
+// Extension function for getting the value at the given index
+extends fun getIdx(self: Array, idx: Int)：Int {
+    require(self.length > 0, "No items in the array!");
+    require(idx >= 0, "Index of the item cannot be negative!");
+    require(idx < self.length, "Index is out of array bounds!");
+
+    // 注意，我们使用 !! 操作符，因为我们知道值肯定会在那里
+    return self.map.get(idx)!!;
+} // 返回最后一个值的扩展函数。
+
+// 返回最后一个值的扩展函数
+extends fun getLast(self: Array)：Int {
+    require(self.length > 0, "No items in the array!");
+
+    // 注意，我们使用 !! 运算符是因为我们确定值会在那里
+    return self.map.get(self.length - 1)!!;
+}
+
+// 扩展突变函数，用于删除给定索引中的条目并返回其值
+extends mutates fun deleteIdx(self: Array, idx: Int)：Int {
+    require(self.length > 0, "No items in the array to delete!");
+    require(idx >= 0, "Index of the item cannot be negative!");
+    require(idx < self.length, "Index is out of array bounds!");
+
+    // Remember the value, which is going to be deleted
+    let memorized：Int = self.map.get(idx)!!;
+
+    // 将所有从 idx 开始（包括 idx）的项目移到左边
+    let i：Int = idx;
+    while (i + 1 < self.length) {
+        // 注意，我们使用了！！操作符，因为我们知道该值肯定会存在
+        self.map.set(i, self.map.get(i + 1)!!);
+        i += 1;
+    }
+
+    self.map.set(self.length - 1, null); // 删除最后一个条目
+    self.length -= 1; // 减少长度字段
+
+    return memorized;
+}
+
+// 用于删除最后一个条目并返回其值的扩展突变函数
+extends fun deleteLast(self: Array)：Int {
+    require(self.length > 0, "No items in the array!");
+
+    // 注意，我们使用了！！操作符，因为我们知道值肯定会存在
+    let lastItem: Int = self.map.get(self.length - 1)!!;
+    self.map.set(self.length - 1, null); // 删除条目
+    self.length -= 1; // 减少长度字段
+
+    return lastItem;
+} // 删除数组中最后一个条目的扩展函数。
+
+// 用于删除数组中所有项的扩展函数
+extends mutates fun deleteAll(self: Array) {
+    self.map = emptyMap();
+    self.length = 0;
+}
+
+// 用于创建空数组的全局静态函数
+fun emptyArray()：Array {
+    return Array{m: emptyMap(), length: 0}; // length 默认为 0
+}
+
+// 契约，使用 map 仿真数组
+contract MapAsArray with Deployable {
+    // 持久状态变量
+    array：Array;
+
+    // 合约的构造函数（初始化）函数
+    init() {
+        self.array = emptyArray();
+    }
+
+    // 内部消息接收器，响应字符串消息 "append"
+    receive("append") {
+        // 添加一个新项目
+        self.array.append(42);
+    }
+
+    // 内部消息接收器，响应字符串消息 "delete_5h"
+    receive("delete_5th") {
+        // 删除第 5 个项目（如果存在），并回复其值，否则引发错误
+        self.reply(self.array.deleteIdx(4).toCoinsString().asComment()); // 索引偏移 0 + 4 给出第 5 个项目
+    }
+
+    // 内部消息接收器，对字符串消息 "del_last "做出响应
+    receive("del_last") {
+        // 删除最后一项，并回复其值，否则引发错误
+        self.reply(self.array.deleteLast().toCoinsString().asComment());
+    }
+
+    // 内部消息接收器，用于响应字符串消息 "get_last"
+    receive("get_last") {
+        // 如果数组中存在最新项目，则回复该项目，否则引发错误
+        self.reply(self.array.getLast().toCoinsString().asComment());
+    }
+
+    // 内部消息接收器，用于响应字符串消息 "delete_all"
+    receive("delete_all") {
+        self.array.deleteAll();
+    }
+}
+```
+
+## 堆栈
+
+堆栈](https://en.wikipedia.org/wiki/Stack_(abstract_data_type)) 是一种由元素集合组成的数据结构，主要有两种操作：
+
+- 推送，将一个元素添加到集合的末尾
+- 弹出，移除最近添加的元素
+
+下面的示例使用[结构](/book/structs-and-messages#structs)包装的[`map<Int, V>{:tact}`][map]模拟堆栈，其中 `V{:tact}`可以是 map 的任何[允许值类型](/book/maps#allowed-types)：
+
+```tact
+import "@stdlib/deploy"; // for Deployable trait
+
+struct Stack {
+    m: map<Int as uint16, Int>; // 堆栈中的 Int 值是 Ints 到 Ints 的映射，
+                                // 将其键序列化为 uint16 以节省空间
+    length：Int = 0; // 堆栈的长度，默认为 0
+} // 编译时常数上限值。
+
+//
+const MaxStackSize：Int = 5_000; // 最大 5,000 个条目，以合理地远离限制
+
+// 扩展突变函数，用于向堆栈末尾添加新条目
+extends mutates fun push(self: Stack, item: Int) {
+    require(self.length + 1 <= MaxStackSize, "No space left in the stack for new items!");
+
+    self.map.set(self.length, item); // set the entry (key-value pair)
+    self.length += 1; // increase the length field
+} // Extension mutation function for deleted the item.
+
+// 用于删除最后一个条目并返回其值的扩展突变函数
+extends mutates fun pop(self: Stack)：Int {
+    require(self.length > 0, "No items in the stack to delete!");
+
+    // 注意，我们使用了！！操作符，因为我们知道值肯定在那里
+    let lastItem: Int = self.map.get(self.length - 1)!!;
+    self.map.set(self.length - 1, null); // 删除条目
+    self.length -= 1; // 减少长度字段
+
+    return lastItem;
+}
+
+// 返回最后一个值的扩展函数
+extends fun peek(self: Stack)：Int {
+    require(self.length > 0, "No items in the stack!");
+
+    // 注意，我们使用 !! 运算符是因为我们知道值肯定会在那里
+    return self.map.get(self.length - 1)!!;
+}
+
+// 用于删除堆栈中所有项目的扩展函数
+extends mutates fun deleteAll(self: Stack) {
+    self.map = emptyMap();
+    self.length = 0;
+}
+
+// 用于创建空 Stack 的全局静态函数
+fun emptyStack()：Stack {
+    return Stack{m: emptyMap(), length: 0}; // length 默认为 0
+}
+
+contract MapAsStack with Deployable {
+    // Persistent state variables
+    stack：Stack; // 我们的栈，它使用 map
+
+    // 合约的构造函数（初始化）函数
+    init() {
+        self.stack = emptyStack();
+    }
+
+    // 内部消息接收器，响应字符串消息 "push"
+    receive("push") {
+        // 添加一个新项目
+        self.stack.push(42);
+    }
+
+    // 内部信息接收器，响应字符串信息 "pop"
+    receive("pop") {
+        // 删除最后一个项目并回复
+        self.reply(self.stack.pop().toCoinsString().asComment());
+    }
+
+    // 内部消息接收器，对字符串消息 "peek "做出响应
+    receive("peek") {
+        // 如果地图中存在最新条目，则回复该条目，否则引发错误
+        self.reply(self.stack.peek().toCoinsString().asComment());
+    }
+
+    // 内部消息接收器，响应字符串消息 "delete_all"
+    receive("delete_all") {
+        self.stack.deleteAll();
+    }
+
+    // 获取堆栈的获取函数
+    get fun map(): map<Int, Int> {
+        return self.stack.map;
+    }
+
+    // 获取堆栈当前长度的 Getter 函数
+    get fun length()：Int {
+        return self.stack.length;
+    }
+}
+```
+
+## 圆形缓冲区
+
+循环缓冲区](https://en.wikipedia.org/wiki/Circular_buffer)（循环队列、循环缓冲区或环形缓冲区）是一种数据结构，它使用单个固定大小的[缓冲区](https://en.wikipedia.org/wiki/Data_buffer)，就像端对端连接一样。
+
+下面的示例使用包裹在 [Struct](/book/structs-and-messages#structs) 中的 [`map<Int, V>{:tact}`][map]模拟循环缓冲区，其中 `V{:tact}` 可以是 map 的任何 [允许值类型](/book/maps#allowed-types)：
+
+```tact
+import "@stdlib/deploy"; // for Deployable trait
+
+struct CircularBuffer {
+    m: map<Int as uint8, Int>; // Int 值的循环缓冲区作为 Ints 到 Ints 的映射，
+                               // 将其键序列化为 uint8 以节省空间
+    length：Int = 0; // 循环缓冲区的长度，默认为 0
+    start：Int = 0; // 循环缓冲区的当前索引，默认为 0
+}
+
+//
+const MaxCircularBufferSize：Int = 5;
+
+// 扩展突变函数，用于将新项目放入循环缓冲区
+extends mutates fun put(self: CircularBuffer, item: Int) {
+    if (self.length < MaxCircularBufferSize) {
+        self.map.set(self.length, item); // 存储项目
+        self.map.set(self.length, item); // 将新项目放入循环缓冲区。length += 1; // 增加长度字段
+    } else {
+        self.map.set(self.start, item); // 存储项目，覆盖前一个条目
+        self.start = (self.start + 1) % MaxCircularBufferSize; // 更新起始位置
+    }
+}
+
+// 从循环缓冲区获取项目的扩展突变函数
+extends mutates fun getIdx(self: CircularBuffer, idx: Int)：Int {
+    require(self.length > 0, "No items in the circular buffer!");
+    require(idx >= 0, "Index of the item cannot be negative!");
+
+    if (self.length < MaxCircularBufferSize) {
+        // 注意，我们使用了！！运算符，因为我们知道值肯定会在那里
+        return self.map.get(idx % self.length)!!;
+    } // 返回围绕圆形缓冲区旋转的值。
+
+    // 返回围绕圆形缓冲区旋转的值，也保证在那里
+    return self.map.get((self.start + idx) % MaxCircularBufferSize)!!;
+}
+
+// 用于遍历循环缓冲区中的所有项目并将其转储到控制台的扩展函数
+extends fun printAll(self: CircularBuffer) {
+    let i. Int = self.start; repeat i. Int = self.start; repeat i. Int = self.start; repeat i. Int = self.start：Int = self.start;
+    repeat (self.length) {
+        dump(self.map.get(i)!!); // !! tells the compiler this can't be null
+        i = (i + 1) % MaxCircularBufferSize;
+    }
+}
+
+// 用于删除 CircularBuffer 中所有项的扩展函数
+extends mutates fun deleteAll(self: CircularBuffer) {
+    self.map = emptyMap();
+    self.length = 0;
+    self.start = 0;
+}
+
+// 用于创建空 CircularBuffer 的全局静态函数
+fun emptyCircularBuffer()：CircularBuffer {
+    return CircularBuffer{m: emptyMap(), length: 0, start：0}; // length 和 start 默认为 0
+}
+
+// 此合约记录了接收到 "timer "消息的最后 5 个时间戳
+合约 MapAsCircularBuffer with Deployable {
+    // 持久状态变量
+    cBuf: CircularBuffer; // 我们的循环缓冲区，使用 map
+
+    // 合约的构造函数（初始化）
+    init() {
+        self.cBuf = emptyCircularBuffer();
+    } // 内部消息接收器。
+
+    // 内部消息接收器，用于响应字符串消息 "timer"
+    // 并记录接收到该消息时的时间戳
+    receive("timer") {
+        let timestamp：Int = now();
+        self.cBuf.put(timestamp);
+    }
+
+    // 内部消息接收器，响应字符串消息 "get_first"
+    // 并以循环缓冲区的第一个项目作为回复
+    receive("get_first") {
+        self.reply(self.cBuf.getIdx(0).toCoinsString().asComment();
+    }
+
+    // 内部消息接收器，对字符串消息 "print_all "做出响应
+    receive("print_all") {
+        self.cBuf.printAll();
+    }
+
+    // 响应字符串消息 "delete_all "的内部消息接收器
+    receive("delete_all") {
+        self.cBuf.deleteAll();
+    }
+}
+```
+
+:::note
+
+  本例改编自[Tact-By-Example 中的 Arrays 页面](https://tact-by-example.org/04-arrays)。
+
+:::
+
+:::tip[Hey 那里！]
+
+  没有找到您最喜欢的使用数据结构的示例？ 您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
+
+:::
+
+[地图]: /book/maps

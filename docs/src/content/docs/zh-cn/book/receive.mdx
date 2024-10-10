@@ -1,0 +1,54 @@
+---
+title: 接收信息
+---
+
+TON 是一个分布式区块链，这意味着合约之间的通信是通过发送和接收信息完成的。 最常见的信息类型是内部信息--从一个合约（或钱包）发送到另一个合约（或钱包）的信息。
+
+## 接收内部信息
+
+To receive a message of the required type, you need to declare a receiver function, for example, `receive("increment")`. This notation means the declaration of a `receiver` function that will be called when a text with the value `"increment"` is sent to the contract. 函数体可以修改合约的状态，并向其他合约发送信息。 It is impossible to call `receiver` directly. If you need to reuse some logic you can declare a function and call it from `receiver`.
+
+接收器有多种功能。 所有接收器功能的处理顺序如下：
+
+- `receive()` - called when an empty message is sent to the contract
+- `receive("message")` - called when a text message with a specific comment is sent to the contract
+- `receive(str: String)` - called when an arbitrary text message is sent to the contract
+- `receive(msg: MyMessage)` - called when a binary message of type `MyMessage` is sent to the contract
+- `receive(msg: Slice)` - called when binary message of unknown type is sent to the contract
+
+```tact
+
+message MyMessage {
+    value: Int;
+}
+
+contract MyContract {
+    receive() {
+        // ...
+    }
+    receive("message") {
+        // ...
+    }
+    receive(str: String) {
+        // ...
+    }
+    receive(msg: MyMessage) {
+        // ...
+    }
+    receive(msg: Slice) {
+        // ...
+    }
+}
+```
+
+用下划线"_{:tact}"命名接收函数的参数时，其值将被视为未使用的值并被丢弃。 当您不需要检查接收到的信息，而只想让它传达特定的操作码时，这就很有用了：
+
+```tact
+message(42) UniverseCalls {}
+
+contract Example {
+    receive(_: UniverseCalls) {
+        // Got a Message with opcode 42
+    }
+}
+```

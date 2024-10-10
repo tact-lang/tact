@@ -1,0 +1,63 @@
+---
+title: VS Code Extension
+---
+
+在 Visual Studio 代码中为 Tact 语言提供广泛支持：
+
+- 语法高亮
+- 高亮显示错误
+- 片段
+- 悬停信息
+- 所有变量、函数、全局参数和 Tact 独特类型的代码自动完成
+- 对当前文件中的所有合约/库以及所有引用的导入进行代码补全
+- 格式化
+
+Installing the TACT Language VS Code Extension
+
+## 安装手册
+
+1. Open Visual Studio Code.
+
+2. 单击窗口侧面活动栏中的 "扩展 "图标，导航至 "扩展 "视图。 它看起来就像一个正方形中的正方形。
+
+3. In the Extensions view input box, type "TACT Language". You should see a dropdown with the extension "TACT Language" provided by KonVik. Probably, you would see the same extension provided by TON Community but this one is deprecated and we should use KonVik’s instead
+
+4. 点击扩展名称旁边的安装按钮。 等待安装完成。
+
+5. 安装扩展后，您可能需要重新加载 VS Code。 如有必要，扩展名旁边会有一个重新加载按钮。 如果出现该按钮，请单击该按钮。
+
+6. The TACT Language extension should now be installed on your VS Code.
+
+## 启用 "保存时格式化" {#format-on-save}
+
+This guide will provide instructions on how to enable the Format on Save feature for the TACT Language extension in VS Code using the Command Palette and editing the JSON settings file.
+
+1. 在命令调板中输入 "首选项：在命令调板中输入 "首选项：打开设置 (JSON)"。 这将打开你的 `settings.json` 文件。
+
+2. 编辑 JSON 设置
+
+   - 您将看到一个 JSON 对象。 We're going to add some properties to this object to enable format on save for the TACT Language extension.
+
+   - 在 JSON 对象中添加以下几行：
+
+     ```json
+     {
+     	"[tact]"：{
+     		"editor.formatOnSave": true,
+     		"editor.defaultFormatter"："KonVik.tact-lang-vscode"
+     	}
+     }
+     ```
+
+   - This will enable format on save (`"editor.formatOnSave": true`) and set the default formatter for TACT files (`"[tact]": {"editor.defaultFormatter": "KonVik.tact-lang-vscode"}`) to the TACT Language extension.
+
+3. 保存和关闭设置
+   - 添加完这些行后，保存您的 `settings.json` 文件（可按 `Ctrl+S` 保存）。
+   - 关闭 `settings.json` 选项卡或按 `Ctrl+W`。
+
+Your TACT Language VS Code extension should now automatically format your files when you save them. 如果您没有看到这些更改立即生效，您可能需要重新加载 VS 代码。
+
+## 参考资料和资源
+
+- Enabling Format on Save for the TACT Language Extension
+- [TACT Language VS Code Extension](https://marketplace.visualstudio.com/items?itemName=KonVik.tact-lang-vscode)

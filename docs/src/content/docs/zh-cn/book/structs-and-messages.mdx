@@ -1,0 +1,301 @@
+---
+title: 结构和信息
+---
+
+Tact 支持许多专为智能合约使用而定制的 [原始数据类型](/book/types#primitive-types)。 不过，使用单独的存储方式往往会变得繁琐，因此有 [Structs](#structs) 和 [Messages](#messages)可以将类型组合在一起。
+
+:::caution
+
+  **警告**：目前无法**\*循环类型。 这意味着结构/消息 **A** 的字段不能与结构/消息 **B\*\* 的字段相同。
+
+  因此，以下代码\*\*\*无法编译：
+
+```tact
+struct A {
+    circularFieldA: B;
+}
+
+struct B {
+    impossibleFieldB：A;
+}
+```
+
+:::
+
+## 结构
+
+结构体可以定义包含多个不同类型字段的复杂数据类型。 它们还可以嵌套。
+
+```tact
+struct Point {
+    x：Int as int64;
+    y：Int as int64;
+}
+
+struct Line {
+    start：point;
+    end：point;
+}
+```
+
+结构体还可以包含默认字段和定义[可选类型]字段（/book/optionals）。 如果您有很多字段，但又不想一直在 [new instances]（#instantiate）中为它们指定通用值，那么这将非常有用。
+
+```tact
+struct Params {
+    name: String = "Satoshi"; // default value
+
+    age: Int?; // field with an optional type Int?
+               // 默认值为空
+
+    point：Point; // 嵌套结构
+}
+```
+
+结构体还可用作获取器或其他内部函数的返回值。 它们有效地允许单个获取器返回多个返回值。
+
+```tact
+contract StructsShowcase {
+    params：Params; // Struct 作为合约的持久状态变量
+
+    init() {
+        self.params = Params{
+            point：Point{
+                x: 4,
+                y: 2,
+            },
+        };
+    }
+
+    get fun params()：Params {
+        return self.params;
+    }
+}
+```
+
+请注意，结构声明中的最后一个分号 `;`是可选项，可以省略：
+
+```tact
+struct Mad { ness: Bool }
+
+struct MoviesToWatch {
+    wolverine：String;
+    redFunnyGuy: String
+}
+```
+
+字段的顺序很重要，因为它与[TL-B 模式](https://docs.ton.org/develop/data-formats/tl-b-language) 中的内存布局一致。 不过，与某些采用手动内存管理的语言不同，Tact 在字段之间没有任何填充。
+
+## 信息
+
+消息中可以包含 [结构体]（#structs）：
+
+```tact
+struct Point {
+    x：Int;
+    y：Int;
+}
+
+message Add {
+    point：Point; // holds a struct Point
+}
+```
+
+消息与 [结构体](#structs)几乎相同，唯一不同的是，消息在序列化时有一个 32 位整数头，包含唯一的数字 id，通常称为 _opcode_（操作码）。 这使得信息可以与 [接收者]（/book/receive）一起使用，因为合约可以根据这个 id 区分不同类型的信息。
+
+Tact 会为每个接收到的信息自动生成这些唯一 ID（操作码），但也可以手动覆盖：
+
+```tact
+// 此消息用 0x7362d09c 覆盖其唯一 ID
+message(0x7362d09c) TokenNotification {
+    forwardPayload：Slice as remaining;
+}
+```
+
+这对于要处理特定智能合约的某些操作码（如 [Jetton standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md)）的情况非常有用。 该合约能够处理的操作码简表为[此处以 FunC 表示](https://github.com/ton-blockchain/token-contract/blob/main/ft/op-codes.fc)。 它们是智能合约的接口。
+
+:::note
+
+  更深入的信息请参见：
+  [Convert received messages to `op` operations](/book/func#convert-received-messages-to-op-op-operations)
+  [Internal message body layout in TON Docs](https://docs.ton.org/develop/smart-contracts/guidelines/internal-messages#internal-message-body)
+  [Messages of the Jetton implementation in Tact](https://github.com/howardpen9/jetton-implementation-in-tact/blob/9eee917877a92af218002874a9f2bd3f9c619229/sources/messages.tact)
+  [Jetton Standard in Tact on Tact-by-Example](https://tact-by-example.org/07-jetton-standard)
+
+:::
+
+## 业务
+
+### 实例化
+
+创建 [Struct](#structs) 和 [Message](#messages) 实例类似于 [function calls](/book/expressions#static-function-call)，但需要用大括号 `{}{:tact}`（大括号）代替小括号 `(){:tact}`指定参数：
+
+```tact
+struct StA {
+    field1：Int;
+    field2: Int;
+}
+
+message MsgB {
+    field1：String;
+    field2: String;
+}
+
+fun example() {
+    // Instance of a Struct StA
+    StA{
+        field1: 42,
+        field2: 68 + 1, // trailing comma is allowed
+    };
+
+    // Instance of a Message MsgB
+    MsgB{
+        field1："May the 4th",
+        field2: "be with you!", // trailing comma is allowed
+    };
+}
+```
+
+当分配给字段的变量或常量的名称与该字段的名称重合时，Tact 提供了一种方便的语法快捷方式，有时称为字段双关。 有了它，你就不必输入多余的内容：
+
+```tact
+struct PopQuiz {
+    vogonsCount：Int;
+    nicestNumber: Int;
+}
+
+fun example() {
+    // 让我们引入几个变量
+    let vogonsCount：Int = 42;
+    let nicestNumber: Int = 68 + 1;
+
+    // 你可以像往常一样实例化 Struct 并将变量赋值给字段，
+    // 但这样做有时会有点重复和乏味
+    PopQuiz{ vogonsCount: vogonsCount, nicestNumber: nicestNumber };
+
+    // 让我们使用字段双关语并减少键入，
+    // 因为我们的变量名恰好与字段名相同
+    PopQuiz{
+        vogonsCount,
+        nicestNumber, // 这里也允许使用尾部逗号！
+    };
+}
+```
+
+:::note
+
+  因为实例化是 Tact 中的一个表达式，所以在相关页面中也有描述：[实例化表达式](/book/expressions#instantiation)。
+
+:::
+
+### 转换为 `Cell`, `.toCell()` {#tocell}
+
+通过使用 `.toCell(){:tact}` [扩展函数](/book/functions#extension-function)，可以将任意 [Struct](#structs) 或 [Message](#messages) 转换为 [`单元格{:tact}`][单元格] 类型：
+
+```tact
+struct Big {
+    f1: Int;
+    f2: Int;
+    f3: Int;
+    f4：Int;
+    f5: Int;
+    f6: Int;
+}
+
+fun conversionFun() {
+    dump(Big{
+        f1: 10000000000, f2: 10000000000, f3: 10000000000,
+        f4: 10000000000, f5: 10000000000, f6: 10000000000,
+    }.toCell()); // x{...cell with references...}
+}
+```
+
+:::note
+
+  参见参考资料中的扩展函数：
+  [`Struct.toCell(){:tact}`](/ref/core-cells#structtocell)/
+  [`Message.toCell(){:tact}`](/ref/core-cells#messagetocell)。
+
+:::
+
+### 从 `Cell` 或 `Slice` 获取，`.fromCell()` 和 `.fromSlice()` {#fromcellslice}
+
+无需通过一系列相关的 `.loadSomething(){:tact}` 函数调用来手动解析 [`单元格{:tact}`][单元格] 或 [`切片{:tact}`][切片]，而是可以使用 `.fromCell(){:tact}` 和 `.fromSlice() ` [扩展函数](/book/functions#extension-function)。fromSlice(){:tact}`[扩展函数](/book/functions#extension-function)将所提供的 [`Cell{:tact}`][单元格] 或 [`Slice{:tact}\`][切片] 转换为所需的 [Struct](#structs) 或 [Message](#messages) 。
+
+这些扩展函数仅尝试根据 [Struct](#structs) 或 [Message](#messages) 的结构解析 [`单元格{:tact}`][单元格] 或 [`片{:tact}`][片]。 如果布局不匹配，可能会抛出各种异常--确保用 [`try...catch{:tact}`](/book/statements#try-catch)块封装代码，以防止意外结果。
+
+```tact
+struct Fizz { foo: Int }
+message(100) Buzz { bar: Int }
+
+fun constructThenParse() {
+    let fizzCell = Fizz{foo: 42}.toCell();
+    let buzzCell = Buzz{bar: 27}.toCell();
+
+    let parsedFizz：Fizz = Fizz.fromCell(fizzCell);
+    let parsedBuzz: Buzz = Buzz.fromCell(buzzCell);
+}
+```
+
+:::note
+
+  参见参考资料中的扩展函数：
+  [`Struct.fromCell(){:tact}`][st-fc]/
+  [`Struct.fromSlice(){:tact}`][st-fs]/
+  [`Message.fromCell(){:tact}`][msg-fc]/
+  [`Message.fromSlice(){:tact}`][msg-fs]/ 。
+
+:::
+
+### 转换法
+
+只要通过 `.toCell(){:tact}` 和 `.fromCell(){:tact}` 函数在 [`单元格{:tact}`][单元格]/[`切片{:tact}`][切片] 和 [结构体](#structs)/[消息](#messages) 之间进行转换，以下规律就会成立：
+
+- 对于任何 [Struct](#structs)/[Message](#messages)类型的实例，调用`.toCell(){:tact}`，然后对结果应用`Struct.fromCell(){:tact}`（或`Message.fromCell(){:tact}`），就会得到原始实例的副本：
+
+```tact {8-9,13-14}
+struct ArbitraryStruct {}
+message(0x2A) ArbitraryMessage {}
+
+fun lawOne() {
+    let structInst = ArbitraryStruct{};
+    let messageInst = ArbitraryMessage{};
+
+    ArbitraryStruct.fromCell(structInst.toCell()); // = structInst
+    ArbitraryMessage.fromCell(messageInst.toCell()); // = messageInst.toCell()); // = messageInst
+
+    // 切片也一样，有 .toCell().asSlice() 和 .fromSlice()
+
+    ArbitraryStruct.fromSlice(structInst.toCell().asSlice()); // = structInst
+    ArbitraryMessage.fromSlice(messageInst.toCell().asSlice()); // = messageInst
+}
+```
+
+- 对于任何与给定 [Struct](#structs)/[Message](#messages) 具有相同 [TL-B](https://docs.ton.org/develop/data-formats/tl-b-language) 布局的 [`单元格{:tact}`][单元格]，调用 `Struct.fromCell(){:tact}`（或 `Message.fromCell(){:tact}`），然后通过 `.toCell(){:tact}` 将结果转换为 [`Cell{:tact}`][单元格]，就会得到原始 [`单元格{:tact}`][单元格] 的副本：
+
+```tact {9-10,15-16}
+struct ArbitraryStruct { val: Int as uint32 }
+message(0x2A) ArbitraryMessage {}
+
+fun lawTwo() {
+    // 使用 32 位来存储 42，这样这个 cellInst 就可以
+    // 在处理 ArbitraryStruct 和 ArbitraryMessage 时重复使用
+    let cellInst = beginCell().storeUint(42, 32).endCell();
+
+    ArbitraryStruct.fromCell(cellInst).toCell(); // = cellInst
+    ArbitraryMessage.fromCell(cellInst).toCell(); // = cellInst
+
+    // Slices 也是如此，使用 .fromSlice() 和 .toCell().asSlice()
+    let sliceInst = cellInst.asSlice();
+
+    ArbitraryStruct.fromSlice(sliceInst).toCell().asSlice(); // = sliceInst
+    ArbitraryMessage.fromSlice(sliceInst).toCell().asSlice(); // = sliceInst
+}
+```
+
+[st-fc]: /ref/core-cells#structfromcell
+[st-fs]: /ref/core-cells#structfromslice
+[msg-fc]: /ref/core-cells#messagefromcell
+[msg-fs]: /ref/core-cells#messagefromslice
+[p]: /book/types#primitive-types
+[电池]: /book/cells#cells
+[一片]: /book/cells#slices

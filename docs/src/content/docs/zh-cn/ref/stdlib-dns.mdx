@@ -1,0 +1,194 @@
+---
+title: "@stdlib/dns"
+---
+
+提供[DNS](https://docs.ton.org/participate/web3/dns)名称的解析手段。
+
+要使用该库，请导入 `@stdlib/dns`：
+
+```tact
+导入"@stdlib/dns"；
+```
+
+## 结构
+
+### DNSResolveResult
+
+```tact
+struct DNSResolveResult {
+    prefix：Int;
+    record：Cell?;
+}
+```
+
+## 功能
+
+### dnsStringToInternal
+
+```tact
+@name(dns_string_to_internal)
+native dnsStringToInternal(str: String)：Slice?
+```
+
+将 DNS 字符串转换为[`slice{:tact}`][slice]或[`null{:tact}`](/book/optionals)，如果不可能的话。
+
+源代码 (FunC)：[dns.fc#L1](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc#L1)
+
+### dnsInternalNormalize
+
+```tact
+@name(dns_internal_normalize)
+native dnsInternalNormalize(src: Slice)：Slice；
+```
+
+将 [`片{:tact}`][片] 的内部 DNS 表示规范化。 传递的 [`Slice{:tact}`][slice]必须没有任何引用，否则将产生[退出代码 134](/book/exit-codes#134)异常："无效参数"。
+
+源代码 (FunC)：[dns.fc#L125](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc#L125)
+
+### dnsInternalVerify
+
+```tact
+@name(dns_internal_verify)
+native dnsInternalVerify(subdomain: Slice)：Bool；
+```
+
+验证子域 [`片{:tact}`][片] 的内部 DNS 表示。
+
+源代码 (FunC)：[dns.fc#L81](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc#L81)
+
+### dnsExtractTopDomainLength
+
+```tact
+fun dnsExtractTopDomainLength(subdomain: Slice)：Int；
+```
+
+计算顶域在 "子域"[`片{:tact}`][片]中的长度。
+
+源代码
+
+```tact
+fun dnsExtractTopDomainLength(subdomain: Slice)：Int {
+    let i：Int = 0;
+    let needBreak：Bool = false;
+    do {
+        let char：Int = subdomain.loadUint(8); // 我们不检查 domain.length，因为它必须包含 0 个字符
+        needBreak = char == 0;
+        if (!needBreak) {
+            i += 8;
+        }
+    } until (needBreak);
+    require(i != 0, "Invalid DNS name");
+    return i;
+}
+```
+
+### dnsExtractTopDomain
+
+```tact
+fun dnsExtractTopDomain(subdomain: Slice)：Slice；
+```
+
+从 "子域 "中提取顶域 [`片{:tact}`][片]。
+
+源代码
+
+```tact
+fun dnsExtractTopDomain(subdomain: Slice)：Slice {
+    let len: Int = dnsExtractTopDomainLength(subdomain);
+    return subdomain.loadBits(len);
+}
+```
+
+### dnsResolveNext
+
+```tact
+fun dnsResolveNext(address: Address)：Cell；
+```
+
+将`地址`[`地址{:tact}`][p]解析为[`单元格{:tact}`][单元格]。
+
+源代码
+
+```tact
+fun dnsResolveNext(address: Address)：Cell {
+    return beginCell()
+        .storeUint(0xba93, 16)
+        .storeAddress(address)
+        .endCell();
+}
+```
+
+### dnsResolveWallet
+
+```tact
+fun dnsResolveWallet(address: Address)：Cell；
+```
+
+将钱包 `address`[`Address{:tact}`][p]解析为[`Cell{:tact}`][cell]。
+
+源代码
+
+```tact
+fun dnsResolveWallet(address: Address)：Cell {
+    return beginCell()
+        .storeUint(0x9fd3, 16)
+        .storeAddress(address)
+        .storeUint(0, 8)
+        .endCell();
+}
+```
+
+## 特质
+
+### DNSResolver
+
+Trait `DNSResolver` 为 DNS 解析提供了两个辅助函数：
+
+1. [getter函数](/book/functions#getter-functions) `dnsresolve(){:tact}`，对应于其[FunC变体](https://docs.ton.org/develop/howto/subresolvers#dnsresolve-code)。
+2. 虚拟函数 `doResolveDNS(){:tact}`，由子域 [`片{:tact}`][片] 位创建结构 [DNSResolveResult](#dnsresolveresult)。
+
+源代码
+
+```tact
+trait DNSResolver {
+    get fun dnsresolve(subdomain: Slice, category: Int)：DNSResolveResult {
+        // Normalize
+        let delta: Int = 0;
+        if (subdomain.preloadUint(8) == 0) {
+            subdomain.loadUint(8); // Skip first byte
+            delta += 8;
+        } // Check correctity
+
+        // 检查正确性
+        require(dnsInternalVerify(subdomain), "Invalid DNS name");
+
+        // 解析
+        let res：DNSResolveResult = self.doResolveDNS(subdomain, category);
+        return DNSResolveResult{prefix: res.prefix + delta, record: res.record};
+    }
+    virtual fun doResolveDNS(subdomain: Slice, category: Int)：DNSResolveResult {
+        return DNSResolveResult{prefix: subdomain.bits(), record: null};
+    }
+}
+```
+
+使用示例
+
+```tact
+import "@stdlib/dns";
+
+合同 ExampleContract with DNSResolver {
+    // 现在，这个合同有一个：
+    // 1. dnsresolve getter 函数
+    // 2. doResolveDNS 虚拟函数
+}
+```
+
+## 资料来源
+
+- [dns.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/dns.tact)
+- [dns.fc](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc)
+
+[p]: /book/types#primitive-types
+[电池]: /book/cells#cells
+[一片]: /book/cells#slices

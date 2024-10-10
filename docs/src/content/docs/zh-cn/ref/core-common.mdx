@@ -1,0 +1,245 @@
+---
+title: 常见问题
+---
+
+最常用的内置 [全局静态函数] 列表(/book/functions#global-static-functions)。
+
+## 语境
+
+### 现在
+
+```tact
+fun now()：Int
+```
+
+返回当前 [Unix 时间](https://en.wikipedia.org/wiki/Unix_time)。
+
+使用示例
+
+```tact
+let timeOffset：Int = now() + 1000; // 距离 now() 千秒
+```
+
+### 我的余额
+
+```tact
+fun myBalance()：Int；
+```
+
+返回当前交易的 [计算阶段](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase) 开始时智能合约的 [纳米通币](/book/integers#nanotoncoin) 余额。
+
+使用示例
+
+```tact
+让 iNeedADolla：Int = myBalance()；
+```
+
+:::caution
+
+  请注意，Tact 的 [所有信息发送函数](/book/send) 可以更改_实际_合约的余额，但不会_更新此函数返回的值。
+
+:::
+
+### 我的地址
+
+```tact
+fun myAddress()：地址；
+```
+
+以[`地址{:tact}`][p]的形式返回当前智能合约的地址。
+
+使用示例
+
+```tact
+let meMyselfAndI: Address = myAddress()；
+```
+
+### 收讯
+
+```tact
+fun sender()：地址；
+```
+
+返回当前信息发件人的 [`地址{:tact}`][p]。
+
+使用示例
+
+```tact
+receive() {
+    let whoSentMeMessage：Address = sender();
+}
+```
+
+:::caution
+
+  对于 [getter 函数](/book/contracts#getter-functions)，行为是未定义的，因为它们不能有发送者，也不能发送信息。
+
+:::
+
+:::note
+
+  为了减少气体用量，当您只需要知道消息的发件人时，请使用此函数而不是调用 [`context().sender{:tact}`](#context)。
+
+:::
+
+### 背景
+
+```tact
+fun context()：Context；
+```
+
+Returns `Context{:tact}` [Struct](/book/structs-and-messages#structs), that consists of：
+
+| 现场     | 类型                     | 说明                                                                                                                                                                                                                                    |
+| :----- | :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 宣布     | [`Bool{:tact}`][bool]。 | [退信](https://ton.org/docs/learn/overviews/addresses#bounceable-vs-non-bounceable-addresses) 标志。                                                                                                                                       |
+| 发件人    | [`地址{:tact}`][p]       | 发送方在 TON 区块链上的内部地址。                                                                                                                                                                                                                   |
+| 值      | [`Int{:tact}`][int]。   | 信息中 [nanoToncoins](/book/integers#nanotoncoin) 的数量。                                                                                                                                                                                   |
+| 生      | [`切片{:tact}`][切片]      | 信息的其余部分作为 [`片{:tact}`][片]。 它遵循 TON 的[内部报文布局](https://docs.ton.org/develop/smart-contracts/messages#message-layout)，从目的地[`地址{:tact}`][p]（[TL-B 符号](https://docs.ton.org/develop/data-formats/tl-b-language) 中的`dest:MsgAddressInt`）开始。 |
+
+使用示例
+
+```tact
+让 ctx：Context = context();
+require(ctx.value != 68 + 1, "Invalid amount of nanoToncoins, bye!")；
+```
+
+:::note
+
+  请注意，如果您只需要知道谁发送了信息，请使用 [`sender(){:tact}`](#sender) 函数，因为它耗油量较少。
+
+:::
+
+## 地址
+
+### 新地址
+
+```tact
+fun newAddress(chain: Int, hash: Int)：地址；
+```
+
+根据[`链`id](https://ton-blockchain.github.io/docs/#/overviews/TON_blockchain_overview)和[SHA-256](/ref/core-math#sha256)编码的[`哈希`值](https://docs.ton.org/learn/overviews/addresses#account-id)创建一个新的[`地址{:tact}`][p]。
+
+该函数尽可能在[编译时](/ref/core-comptime)解析常量值。
+
+使用示例
+
+```tact
+let oldTonFoundationAddr: Address =
+    newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+    // ↑ ------------------------------------------------------------------
+    | // ↑
+    // | 合约初始包（StateInit）的 sha-256 哈希值
+    // 链 id：0 代表工作链，-1 代表主链。
+```
+
+:::caution
+
+  如果 `chain` 无效，该方法会抛出错误[退出代码 136](/book/exit-codes#136)；如果 `chain` 指向主链 ($-1$) 且未启用[主链支持](/book/masterchain)，该方法会抛出错误[退出代码 137](/book/exit-codes#137)。
+
+:::
+
+:::note[Useful 链接：]
+
+  [TON文档中的`chain`（工作链ID）](https://docs.ton.org/learn/overviews/addresses#workchain-id)\
+  [TON文档中的`hash`（账户ID）](https://docs.ton.org/learn/overviews/addresses#account-id)\
+  [合约的初始包（`StateInit{:tact}`）](/book/expressions#initof)
+
+:::
+
+### 合同地址
+
+```tact
+fun contractAddress(s: StateInit)：地址；
+```
+
+根据智能合约的 [`StateInit{:tact}`](/book/expressions#initof)，计算智能合约在工作链 $0$ 中的 [`地址{:tact}`][p]。
+
+使用示例
+
+```tact
+让 foundMeSome：Address = contractAddress(initOf SomeContract())；
+```
+
+### 合同地址扩展
+
+```tact
+fun contractAddressExt(chain: Int, code: Cell, data: Cell)：地址；
+```
+
+根据 "链 "id、合约 "代码 "和合约初始状态 "数据 "计算智能合约的[地址{:tact}\`][p]。 使用 [`initOf{:tact}`](/book/expressions#initof)表达式获取给定合约的初始 `code` 和初始 `data` 。
+
+使用示例
+
+```tact
+让 initPkg：StateInit = initOf SomeContract();
+let hereBeDragons：Address = contractAddressExt(0, initPkg.code, initPkg.data)；
+```
+
+:::caution
+
+  如果 `chain` 无效，该方法会抛出错误[退出代码 136](/book/exit-codes#136)；如果 `chain` 指向主链 ($-1$) 且未启用[主链支持](/book/masterchain)，该方法会抛出错误[退出代码 137](/book/exit-codes#137)。
+
+:::
+
+:::note
+
+  要使用该功能，必须在 [configuration file](/book/config).
+  中为当前项目将编译器选项 `debug` 设置为 `true{:tact}`：[调试](/book/debug)。
+
+:::
+
+## 交流
+
+### 发送
+
+```tact
+fun send(params: SendParameters)；
+```
+
+使用 [`发送参数{:tact}`](/book/send)[结构](/book/structs-and-messages#structs)发送[队列信息](/book/send#outbound-message-processing)。
+
+使用示例
+
+```tact
+send(SendParameters{
+    to: sender(), // back to the sender,
+    value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
+                     // and no message body
+})；
+```
+
+:::note[Useful 链接：]
+
+  [Sending messages in the Book](/book/send)/
+  [Message`mode` in the Book](/book/message-mode)/
+  [Single-contract communication in the Cookbook](/cookbook/single-communication)
+
+:::
+
+### 发出
+
+```tact
+fun emit(body: Cell)；
+```
+
+将[信息排队](/book/send#outbound-message-processing) `body` 发送到外部世界，以便在链外进行记录和分析。 该信息没有收件人，与使用 Tact 的其他信息发送功能相比更省油。
+
+使用示例
+
+```tact
+emit("Catch me if you can, Mr. Holmes".asComment()); // asComment() 将字符串转换为单元格
+```
+
+:::note
+
+  要分析 `emit(){:tact}` 调用，必须查看合约产生的 [外部信息](/book/external)。
+
+  了解更多信息：[通过 `emit(){:tact}`记录日志](/book/debug#logging)。
+
+:::
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[一片]: /book/cells#slices

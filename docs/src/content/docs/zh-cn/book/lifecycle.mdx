@@ -1,0 +1,28 @@
+---
+title: 信息生命周期
+---
+
+合同对信息的处理有几个阶段，其中还有更多的阶段，但我们将集中讨论最重要的几个阶段：
+
+## 接收阶段
+
+该阶段结合了多个低级阶段。 
+
+它首先会在合同余额**中添加一个**信息值。 输入报文的价值是合约为处理该报文的天然气所能支付的最高价格。 合同可以覆盖此限制，但不建议这样做，只有高级开发人员才适合这样做，因为这可能导致合同被耗尽。 1 million of gas is the maximum amount that a contract can spend in a single contract which equals 1 TON (currently). 如果信息值为零，则执行中止。
+
+Then some (usually a small amount) of nanotons is subtracted from the contract balance for storage. 这意味着您无法完美预测平衡的变化，必须根据这种不稳定性调整代码。
+
+然后，如果合同尚未部署，且信息中包含初始包，则会部署合同。 如果 init 软件包不存在，它将被忽略。
+
+## 计算阶段
+
+该阶段执行智能合约的代码，并产生一系列操作或异常。 目前只支持两种操作：**发送信息**和保留\*\*。
+
+Sending a message could use a fixed value or a dynamic value like **remaining value of a message** - the remaining of value of the incoming message. 发送信息时可以使用 "SendIgnoreErrors "标记，这样就可以忽略信息发送过程中出现的错误，并继续下一步操作。 如果您有多个操作，该标记非常有用。 在发送带有某个值的信息时，它首先从接收值中减去该值，然后才从合约余额中减去该值（在处理之前）。
+
+## 行动阶段
+
+操作是按顺序执行的，但请注意：
+处理操作过程中的**异常不会还原事务**
+
+例如，如果您从客户的余额中减去 1 吨，然后发送一条无效信息，这可能会导致客户的余额被减去，但他不会收到。
