@@ -1,72 +1,72 @@
 ---
-title: Advanced
+title: 高级
 ---
 
-Various niche, dangerous or unstable features which can produce unexpected results and are meant to be used by the more experienced users.
+各种小众、危险或不稳定的功能，可能会产生意想不到的结果，仅供更有经验的用户使用。
 
 :::caution
 
-  Proceed with caution.
+  谨慎行事。
 
 :::
 
 ## Context.readForwardFee
 
 ```tact
-extends fun readForwardFee(self: Context): Int
+extends fun readForwardFee(self: Context)：Int
 ```
 
-Extension function for the [`Context{:tact}`](/ref/core-common#context).
+语境{:tact}\`]（/ref/core-common#context）的扩展函数。
 
-Reads [forward fee](https://docs.ton.org/develop/smart-contracts/guidelines/processing) and returns it as [`Int{:tact}`][int] amount of [nanoToncoins](/book/integers#nanotoncoin).
+读取 [forward fee](https://docs.ton.org/develop/smart-contracts/guidelines/processing)，并以 [`Int{:tact}`][int]的形式返回 [nanoToncoins](/book/integers#nanotoncoin) 的金额。
 
-Usage example:
+使用示例
 
 ```tact
-let fwdFee: Int = context().readForwardFee();
+let fwdFee: Int = context().readForwardFee()；
 ```
 
-## getConfigParam
+## 获取配置参数
 
 ```tact
-fun getConfigParam(id: Int): Cell?;
+fun getConfigParam(id: Int)：Cell?
 ```
 
-Loads a [configuration parameter](https://docs.ton.org/develop/howto/blockchain-configs) of TON Blockchain by its `id` number.
+通过 "id "号加载 TON 区块链的[配置参数](https://docs.ton.org/develop/howto/blockchain-configs)。
 
-Usage examples:
+使用示例
 
 ```tact
-// Parameter 0, address of a special smart contract that stores the blockchain's configuration
+// 参数 0，存储区块链配置的特殊智能合约的地址
 let configAddrAsCell: Cell = getConfigParam(0)!!;
 
-// Parameter 18, configuration for determining the prices for data storage
-let dataStorageFeeConfig: Cell = getConfigParam(18)!!;
+// 参数 18，用于确定数据存储价格的配置
+let dataStorageFeeConfig：Cell = getConfigParam(18)!
 ```
 
 :::note
 
-  Standard library [`@stdlib/config`](/ref/stdlib-config) provides two related helper functions:\
-  [`getConfigAddress(){:tact}`](/ref/stdlib-config#getconfigaddress) for retrieving config [`Address{:tact}`][p]\
-  [`getElectorAddress(){:tact}`](/ref/stdlib-config#getconfigaddress) for retrieving elector [`Address{:tact}`][p]
+  标准库 [`@stdlib/config`](/ref/stdlib-config) 提供了两个相关的辅助函数：\
+  [`getConfigAddress(){:tact}`](/ref/stdlib-config#getconfigaddress)，用于获取配置 [`Address{:tact}`][p]/
+  [`getElectorAddress(){:tact}`](/ref/stdlib-config#getconfigaddress)，用于获取选区 [`地址{:tact}`][p]。
 
-  Read more about other parameters: [Config Parameters in TON Docs](https://docs.ton.org/develop/howto/blockchain-configs).
+  了解有关其他参数的更多信息：[TON 文档中的配置参数](https://docs.ton.org/develop/howto/blockchain-configs)。
 
 :::
 
-## acceptMessage
+## 接受消息
 
 ```tact
-fun acceptMessage();
+fun acceptMessage()；
 ```
 
-Agrees to buy some gas to finish the current transaction. This action is required to process external messages, which bring no value (hence no gas) with themselves.
+同意购买一些汽油来完成当前交易。 处理外部信息时需要这一操作，因为外部信息本身没有价值（因此没有气体）。
 
-Usage example:
+使用示例
 
 ```tact {10}
 contract Timeout {
-    timeout: Int;
+    timeout：Int;
 
     init() {
         self.timeout = now() + 5 * 60; // 5 minutes from now
@@ -74,7 +74,7 @@ contract Timeout {
 
     external("timeout") {
         if (now() > self.timeout) {
-            acceptMessage(); // start accepting external messages once timeout went out
+            acceptMessage(); // 超时后开始接受外部信息
         }
     }
 }
@@ -82,173 +82,173 @@ contract Timeout {
 
 :::note
 
-  For more details, see: [Accept Message Effects in TON Docs](https://docs.ton.org/develop/smart-contracts/guidelines/accept).
+  更多详情，请参阅[TON 文档中的接受信息效果](https://docs.ton.org/develop/smart-contracts/guidelines/accept)。
 
 :::
 
-## commit
+## 承诺
 
 ```tact
-fun commit();
+fun commit()；
 ```
 
-Commits the current state of [registers](https://docs.ton.org/learn/tvm-instructions/tvm-overview#control-registers) `c4` ("persistent data") and `c5` ("actions"), so that the current execution is considered "successful" with the saved values even if an exception in compute phase is thrown later.
+提交 [寄存器](https://docs.ton.org/learn/tvm-instructions/tvm-overview#control-registers)`c4`（"持久化数据"）和`c5`（"操作"）的当前状态，这样，即使随后在计算阶段出现异常，当前执行也会因保存的值而被视为 "成功"。
 
-Usage example:
+使用示例
 
 ```tact {1}
-commit();  // now, transaction is considered "successful"
-throw(42); // and this won't fail it
+commit(); // 现在，事务被视为 "成功"
+throw(42); // 这样就不会失败了
 ```
 
-## nativePrepareRandom
+## 本地随机准备
 
 ```tact
-fun nativePrepareRandom();
+fun nativePrepareRandom()；
 ```
 
-Prepares a random number generator by using [`nativeRandomizeLt(){:tact}`](#nativerandomizelt). Automatically called by [`randomInt(){:tact}`](/ref/core-random#randomint) and [`random(){:tact}`](/ref/core-random#random) functions.
+使用 [`nativeRandomizeLt(){:tact}`](#nativerandomizelt)准备随机数生成器。 由 [`randomInt(){:tact}`](/ref/core-random#randomint) 和 [`random(){:tact}`](/ref/core-random#random) 函数自动调用。
 
-Usage example:
+使用示例
 
 ```tact
 nativePrepareRandom(); // prepare the RNG
 // ... do your random things ...
 ```
 
-## nativeRandomize
+## 本机随机化
 
 ```tact
-fun nativeRandomize(x: Int);
+fun nativeRandomize(x: Int)；
 ```
 
-Randomizes the pseudo-random number generator with the specified seed `x`.
+使用指定的种子 `x` 随机化伪随机数生成器。
 
-Usage example:
+使用示例
 
 ```tact
-nativeRandomize();          // now, random numbers are less predictable
-let idk: Int = randomInt(); // ???, it's random!
+nativeRandomize(); // 现在，随机数的可预测性降低了
+let idk：Int = randomInt(); // ????, it's random！
 ```
 
-## nativeRandomizeLt
+## 本机随机化
 
 ```tact
-fun nativeRandomizeLt();
+fun nativeRandomizeLt()；
 ```
 
-Randomizes the random number generator with the current [logical time](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time).
+使用当前 [逻辑时间](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time) 随机化随机数发生器。
 
-Usage example:
+使用示例
 
 ```tact
-nativeRandomizeLt();        // now, random numbers are unpredictable for users,
-                            // but still may be affected by validators or collators
-                            // as they determine the seed of the current block.
-let idk: Int = randomInt(); // ???, it's random!
+nativeRandomizeLt(); // 现在，随机数对用户来说是不可预测的，
+                            // 但仍可能受到验证器或校对器的影响
+                            // 因为它们决定了当前代码块的种子。
+let idk：Int = randomInt(); // ???，它是随机的！
 ```
 
-## nativeRandom
+## 本机随机
 
 ```tact
-fun nativeRandom(): Int;
+fun nativeRandom()：Int；
 ```
 
-Generates and returns an $256$-bit random number just like [`randomInt(){:tact}`](/ref/core-random#randomint), but doesn't initialize the random generator with [`nativePrepareRandom(){:tact}`](#nativepreparerandom) beforehand.
+生成并返回 $256$-bit 随机数，就像 [`randomInt(){:tact}`](/ref/core-random#randomint)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativepreparerandom)初始化随机生成器。
 
 :::note
 
-  Don't use this function directly, and prefer using [`randomInt(){:tact}`](/ref/core-random#randomint) instead.
+  不要直接使用该函数，而应使用 [`randomInt(){:tact}`](/ref/core-random#randomint)。
 
 :::
 
-## nativeRandomInterval
+## 本机随机时间间隔
 
 ```tact
-fun nativeRandomInterval(max: Int): Int;
+fun nativeRandomInterval(max: Int)：Int；
 ```
 
-Generates and returns a $256$-bit random number in the range from $0$ to `max` similar to [`random(){:tact}`](/ref/core-random#random), but doesn't initialize the random generator with [`nativePrepareRandom(){:tact}`](#nativepreparerandom) beforehand.
+生成并返回 $256$-bit 的随机数，范围从 $0$ 到 `max`，类似于 [`random(){:tact}`](/ref/core-random#random)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativepreparerandom)初始化随机生成器。
 
 :::note
 
-  Don't use this function directly, and prefer using [`random(){:tact}`](/ref/core-random#random) instead.
+  不要直接使用该函数，而应使用 [`random(){:tact}`](/ref/core-random#random)。
 
 :::
 
-## nativeSendMessage
+## 本机发送消息
 
 ```tact
-fun nativeSendMessage(cell: Cell, mode: Int);
+fun nativeSendMessage(cell: Cell, mode: Int)；
 ```
 
-[Queues the message](/book/send#outbound-message-processing) to be sent by specifying the complete `cell` and the [message `mode`](/book/message-mode).
+通过指定完整的 "单元格 "和[信息 "模式"](/book/message-mode)，[排队发送信息](/book/send#outbound-message-processing)。
 
 :::note
 
-  Prefer using a much more common and user-friendly [`send(){:tact}`](/ref/core-common#send) function unless you have a complex logic that can't be expressed otherwise.
+  除非您有无法以其他方式表达的复杂逻辑，否则请优先使用更常见、更方便用户使用的 [`send(){:tact}`](/ref/core-common#send)函数。
 
 :::
 
-## nativeReserve
+## 本地储备金
 
 ```tact
-fun nativeReserve(amount: Int, mode: Int);
+fun nativeReserve(amount: Int, mode: Int)；
 ```
 
-Calls native `raw_reserve` function with specified amount and mode. The `raw_reserve` is a function that creates an output action to reserve a specific amount of [nanoToncoins](/book/integers#nanotoncoin) from the remaining balance of the account.
+以指定的金额和模式调用本地 `raw_reserve` 函数。 raw_reserve "是一个函数，用于创建输出操作，从账户余额中储备特定数量的[nanoToncoins](/book/integers#nanotoncoin)。
 
-It has the following signature in FunC:
+它在 FunC 中的签名如下
 
 ```func
-raw_reserve(int amount, int mode) impure asm "RAWRESERVE";
+raw_reserve(int amount, int mode) impure asm "RAWRESERVE"；
 ```
 
-The function takes two arguments:
+该函数有两个参数：
 
-- `amount`: The number of [nanoToncoins](/book/integers#nanotoncoin) to reserve.
-- `mode`: Determines the reservation behavior.
+- 金额：要储备的 [纳米通币](/book/integers#nanotoncoin)的数量。
+- 模式决定预订行为。
 
-Function `raw_reserve` is roughly equivalent to creating an outbound message carrying the specified `amount` of [nanoToncoins](/book/integers#nanotoncoin) (or `b` $-$ `amount` [nanoToncoins](/book/integers#nanotoncoin), where `b` is the remaining balance) to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
+函数 "raw_reserve "大致等同于创建一个向外发送的消息，将指定的 "金额"[nanoToncoins](/book/integers#nanotoncoin)（或 "b " $-$ "金额"[nanoToncoins](/book/integers#nanotoncoin)，其中 "b "为余额）发送给自己。 这就确保了后续产出行动所花费的资金不会超过剩余资金。
 
-It's possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience there's a set of constants which you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
+您可以使用原始的 [`Int{:tact}`][int]值，并手动为 `mode` 提供这些值，但为了方便起见，您可以使用一组常量来轻松构建复合 `mode`。 有关基本模式和可选标记的更多信息，请参阅下表。
 
 :::caution
 
-  Currently, `amount` must be a non-negative integer, and `mode` must be in the range $0..31$, inclusive.
+  目前，"金额 "必须是非负整数，"模式 "的范围必须是 $0..31$（含）。
 
 :::
 
-### Base modes {#nativereserve-base-modes}
+### 基本模式 {#nativereserve-base-modes}
 
-The resulting `mode` value can have the following base modes:
+由此产生的 `mode` 值可以有以下基本模式：
 
-| Mode value | Constant name                 | Description                                                                             |
-| ---------: | :---------------------------- | --------------------------------------------------------------------------------------- |
-| $0$        | `ReserveExact{:tact}`         | Reserves exactly the specified `amount` of [nanoToncoins](/book/integers#nanotoncoin).  |
-| $1$        | `ReserveAllExcept{:tact}`     | Reserves all, but the specified `amount` of [nanoToncoins](/book/integers#nanotoncoin). |
-| $2$        | `ReserveAtMost{:tact}`        | Reserves at most the specified `amount` of [nanoToncoins](/book/integers#nanotoncoin).  |
+|        模式值 | 恒定名称                          | 说明                                                                                   |
+| ---------: | :---------------------------- | ------------------------------------------------------------------------------------ |
+| $0$        | `ReserveExact{:tact}`         | 精确保留指定数量的 [纳顿币](/book/integers#nanotoncoin)。                                         |
+| $1$        | `ReserveAllExcept{:tact}`     | 保留所有 [纳米通币]（/book/integers#nanotoncoin），但保留指定数量的 [纳米通币]（/book/integers#nanotoncoin）。 |
+| $2$        | `ReserveAtMost{:tact}`        | 最多保留指定 "数量 "的 [纳顿币](/book/integers#nanotoncoin)。                                     |
 
-### Optional flags {#nativereserve-optional-flags}
+### 可选标记 {#nativereserve-optional-flags}
 
-Additionally, the resulting `mode` can have the following optional flags added:
+此外，生成的 `mode` 还可以添加以下可选标记：
 
-| Flag value | Constant name                      | Description                                                                                                                       |
-| ---------: | :--------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| $+4$       | `ReserveAddOriginalBalance{:tact}` | Increases the `amount` by the original balance of the current account (before the compute phase), including all extra currencies. |
-| $+8$       | `ReserveInvertSign{:tact}`         | Negates the `amount` value before performing the reservation.                                                                     |
-| $+16$      | `ReserveBounceIfActionFail{:tact}` | Bounces the transaction if reservation fails.                                                                                     |
+|        标志值 | 恒定名称                               | 说明                                  |
+| ---------: | :--------------------------------- | ----------------------------------- |
+| $+4$       | `ReserveAddOriginalBalance{:tact}` | 用经常账户的原始余额（计算阶段之前）增加 "金额"，包括所有额外货币。 |
+| $+8$       | `ReserveInvertSign{:tact}`         | 在执行保留之前否定 `amount` 值。               |
+| $+16$      | `ReserveBounceIfActionFail{:tact}` | 如果预订失败，则退回交易。                       |
 
-### Combining modes with flags {#nativereserve-combining-modes-with-flags}
+### 使用标志组合模式 {#nativereserve-combining-modes-with-flags}
 
-To make the [`Int{:tact}`][int] value for `mode` parameter, you just have to combine base modes with optional flags by applying the [bitwise OR](/book/operators#binary-bitwise-or) operation:
+要为 `mode` 参数创建 [`Int{:tact}`][int]值，只需通过 [bitwise OR](/book/operators#二进制-bitwise-or)操作将基本模式与可选标志结合起来：
 
 ```tact
 nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
-//            ----------  ----------------------------------------
-//            ↑           ↑
-//            |           mode, which would bounce the transaction if exact reservation would fail
-//            amount of nanoToncoins to reserve
+// ---------- ----------------------------------------
+// ↑ ↑
+// | 模式，如果精确预订失败，将反弹交易
+// 要预订的纳吨币数量
 ```
 
 [p]: /book/types#primitive-types
