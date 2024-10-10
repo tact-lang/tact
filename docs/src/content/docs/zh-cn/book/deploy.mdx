@@ -2,21 +2,21 @@
 title: Deploy
 ---
 
-Tact Deployer is a small library that integrates with [TON Verifier](https://verifier.ton.org) that allows you to deploy your contracts safely using your favorite wallet without needing to manage keys or deploy contracts manually. Tact Deployer also automatically verifies your contract's source code and you can be sure that your compiler is not compromised.
+Tact Deployer 是一个与 [TON Verifier](https://verifier.ton.org) 集成的小型库，可让您使用自己喜欢的钱包安全地部署合约，而无需管理密钥或手动部署合约。 Tact Deployer 还能自动验证合同的源代码，确保编译器不受损害。
 
-## Requirements
+## 要求
 
-Your contract MUST have the `Deployer` trait from the `@stdlib/deploy` package to be able to use Tact Deployer.
+要使用 Tact Deployer，您的合约必须具有 `@stdlib/deploy` 包中的 `Deployer` 特性。
 
-## Installation
+## 安装
 
-To add Tact Deployer to your project, just use `yarn`:
+要在项目中添加 Tact 部署器，只需使用 `yarn`：
 
 ```bash
 yarn add @tact-lang/deployer
 ```
 
-## How to use
+## 如何使用
 
 When you build your smart contracts using Tact, it produces a package (\*.pkg) file that has all the required information about the built smart contract. To deploy a smart contract in TON you need to send a message with `init` data attached to it.
 
@@ -28,16 +28,16 @@ import { SampleTactContract } from "./output/sample_SampleTactContract";
 import { prepareTactDeployment } from "@tact-lang/deployer";
 
 // Parameters
-let testnet = true;                                 // Flag for testnet or mainnet
-let packageName = 'sample_SampleTactContract.pkg';  // Name of your package to deploy
-let outputPath = path.resolve(__dirname, 'output'); // Path to output directory
-let owner = Address.parse('<put_address_here>');    // Our sample contract has an owner
-let init = await SampleTactContract.init(owner);    // Create initial data for our contract
+let testnet = true; // Flag for testnet or mainnet
+let packageName = 'sample_SampleTactContract.pkg'; // 要部署的软件包名称
+let outputPath = path.resolve(__dirname, 'output'); // 输出目录的路径
+let owner = Address.parse('<put_address_here>'); // 我们的示例合同有一个所有者
+let init = await SampleTactContract.init(owner); // 为我们的合同创建初始数据
 
-// Calculations
-let address = contractAddress(0, init);     // Calculate contract address. MUST match with the address in the verifier
-let data = init.data.toBoc();               // Create init data
-let pkg = fs.readFileSync(                  // Read package file
+// 计算
+let address = contractAddress(0, init); // 计算合同地址。MUST match with the address in the verifier
+let data = init.data.toBoc(); // Create init data
+let pkg = fs.readFileSync( // Read package file
     path.resolve(outputPath, packageName)
 );
 
@@ -45,8 +45,8 @@ let pkg = fs.readFileSync(                  // Read package file
 let link = await prepareTactDeployment({ pkg, data, testnet });
 
 // Present a deployment link and contract address
-console.log('Address: ' + address.toString({ testOnly: testnet }));
-console.log('Deploy link: ' + link);
+console.log('Address：' + address.toString({ testOnly: testnet }));
+console.log('Deploy link: ' + link)；
 ```
 
-After following this link you will be able to deploy and verify your smart contract.
+点击此链接后，您就可以部署和验证您的智能合约。
