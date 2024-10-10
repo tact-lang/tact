@@ -1,43 +1,43 @@
 ---
-title: Random number generation
+title: 随机数生成
 ---
 
-Random number generation for Tact smart contracts.
+为 Tact 智能合约生成随机数。
 
-## random
+## 随机的
 
 ```tact
-fun random(min: Int, max: Int): Int;
+fun random(min: Int, max: Int)：Int；
 ```
 
-Generates and returns a new pseudo-random unsigned [`Int{:tact}`][int] value `x` in the provided semi-closed interval: `min` $≤$ `x` $<$ `max` or `min` $≥$ `x` $>$ `max`, if both `min` and `max` are negative. Note, that `max` value is never included in the interval.
+在提供的半封闭区间内生成并返回一个新的伪随机无符号 [`Int{:tact}`][int]值 `x`: `min` $≤$ `x` $<$ `max` or `min` $≥$ `x` $>$ `max`, 如果 `min` 和 `max` 都是负值。 注意，"最大 "值从不包含在区间内。
 
-Usage examples:
+使用示例
 
 ```tact
 random(42, 43); // 42, always
-random(0, 42);  // 0-41, but never a 42
+random(0, 42); // 0-41, but never a 42
 ```
 
-## randomInt
+## 随机常数
 
 ```tact
-fun randomInt(): Int;
+fun randomInt()：Int；
 ```
 
-Generates and returns a new pseudo-random unsigned $256$-bit [`Int{:tact}`][int] value `x`.
+生成并返回一个新的伪随机无符号 $256$-bit [`Int{:tact}`][int]值 `x`。
 
-The algorithm works as follows: if `r` is the old value of the random seed considered a $32$-byte array (by constructing the big-endian representation of an unsigned $256$-bit [`Int{:tact}`][int]), then its `sha512(r){:tact}` is computed. The first $32$ bytes of this hash are stored as the new value `r'` of the random seed, and the remaining $32$ bytes are returned as the next random value `x`.
+该算法的工作原理如下：如果 `r` 是被视为 $32$-字节数组（通过构建无符号 $256$-位 [`Int{:tact}`][int]的 big-endian 表示）的随机种子的旧值，则计算其 `sha512(r){:tact}`。 哈希值的前 $32$ 字节作为随机种子的新值 `r'` 存储，其余 $32$ 字节作为下一个随机值 `x` 返回。
 
-Usage example:
+使用示例
 
 ```tact
-let allYourRandomBelongsToUs: Int = randomInt(); // ???, it's random :)
+let allYourRandomBelongsToUs：Int = randomInt(); // ????, it's random :)
 ```
 
 :::caution
 
-  Advanced functions for working with random numbers are listed on a specialized page: [Advanced APIs](/ref/core-advanced).
+  用于处理随机数的高级函数列在一个专门页面上：[高级应用程序接口](/ref/core-advanced)。
 
 :::
 
