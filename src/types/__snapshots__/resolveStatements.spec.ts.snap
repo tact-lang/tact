@@ -898,37 +898,7 @@ Line 5, col 5:
 "
 `;
 
-exports[`resolveStatements should fail statements for stmt-destructuring-fields 1`] = `
-"<unknown>:15:22: Field '"d"' not found in type 'S'
-Line 15, col 22:
-  14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S { a, b, c, d } = s;
-                            ^
-  16 |     return a + b + c + d;
-"
-`;
-
-exports[`resolveStatements should fail statements for stmt-destructuring-fields2 1`] = `
-"<unknown>:15:22: Field '"d"' not found in type 'S'
-Line 15, col 22:
-  14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S { a, b, c, d: e } = s;
-                            ^
-  16 |     return a + b + c + e;
-"
-`;
-
-exports[`resolveStatements should fail statements for stmt-destructuring-fields3 1`] = `
-"<unknown>:15:16: Field '"bb"' not found in type 'S'
-Line 15, col 16:
-  14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S { a, bb, c } = s;
-                      ^~
-  16 |     return a + bb + c;
-"
-`;
-
-exports[`resolveStatements should fail statements for stmt-destructuring-fields4 1`] = `
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-duplicate-id 1`] = `
 "<unknown>:15:22: Variable already exists: "x"
 Line 15, col 22:
   14 |     let s = S{ a: 1, b: 2, c: 3 };
@@ -938,23 +908,63 @@ Line 15, col 22:
 "
 `;
 
-exports[`resolveStatements should fail statements for stmt-destructuring-fields5 1`] = `
-"<unknown>:16:16: Variable already exists: "x"
-Line 16, col 16:
-  15 |     let x = 0;
-> 16 |     let S { a: x, b: b, c: c } = s;
-                      ^
-  17 |     return x + b + c;
-"
-`;
-
-exports[`resolveStatements should fail statements for stmt-destructuring-fields6 1`] = `
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-destructable 1`] = `
 "<unknown>:16:25: Type 'map<Int, Int>' is not destructurable
 Line 16, col 25:
   15 |     let m: map<Int, Int> = emptyMap();
 > 16 |     let S { a, b, c } = m;
                                ^
   17 |     return a + b + c;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-destructable2 1`] = `
+"<unknown>:16:29: Type 'Test' is not destructurable
+Line 16, col 29:
+  15 |         let s = S{ a: 1, b: 2, c: 3 };
+> 16 |         let S { a, b, c } = self;
+                                   ^~~~
+  17 |         return a + b + c;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing 1`] = `
+"<unknown>:15:22: Field '"d"' not found in type 'S'
+Line 15, col 22:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S { a, b, c, d: e } = s;
+                            ^
+  16 |     return a + b + c + e;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing-punned 1`] = `
+"<unknown>:15:16: Field '"bb"' not found in type 'S'
+Line 15, col 16:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S { a, bb, c } = s;
+                      ^~
+  16 |     return a + bb + c;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing-punned2 1`] = `
+"<unknown>:15:22: Field '"d"' not found in type 'S'
+Line 15, col 22:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S { a, b, c, d } = s;
+                            ^
+  16 |     return a + b + c + d;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-shadowed-id 1`] = `
+"<unknown>:16:16: Variable already exists: "x"
+Line 16, col 16:
+  15 |     let x = 0;
+> 16 |     let S { a: x, b: b, c: c } = s;
+                      ^
+  17 |     return x + b + c;
 "
 `;
 
