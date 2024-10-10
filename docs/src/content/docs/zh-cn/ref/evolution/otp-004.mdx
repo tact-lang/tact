@@ -1,36 +1,36 @@
 ---
-title: "OTP-004: Auto Encoder"
+title: OTP-004：自动编码器
 sidebar:
   order: 4
 ---
 
-This proposal defines a way to automatically build a serialization layout for a given structure.
+该提案定义了一种为给定结构自动构建序列化布局的方法。
 
-## Motivation
+## 动机
 
-Designing a serialization layout in TLB is a very risky task. Developers have to take care of the size limitations of cells and remember how many bits are used by each field. This is a very error-prone task and it is very easy to make a mistake. This proposal aims to solve this problem by providing a way to automatically build a serialization layout for a given structure.
+在 TLB 中设计序列化布局是一项非常冒险的任务。 开发人员必须注意单元格的大小限制，并记住每个字段使用的位数。 这是一项非常容易出错的工作，而且很容易出错。 本建议旨在解决这一问题，它提供了一种为给定结构自动构建序列化布局的方法。
 
-## Specification
+## 规格
 
-We define auto-encoder as an eager algorithm that builds a serialization layout for a given structure. The algorithm is defined as follows:
+我们将自动编码器定义为一种为给定结构构建序列化布局的急迫算法。 算法定义如下
 
 ```text
-Define available references and bits in a current cell 
-   as `available_references` and `available_bits` respectively.
-   NOTE: there must be at least one reference reserved for the serialization tail and one 
-         bit for an optional flag. Depending on context more references or bits may be reserved. 
+将当前单元格 
+   中的可用引用和位分别定义为 `available_references` 和 `available_bits`。
+   注意：必须至少为序列化尾部保留一个引用，为可选标记保留一个 
+         位。根据上下文，可能会保留更多的引用或位。 
 
-For each field in A:
-    (size_bits, size_ref) = get_field_max_size(field);
+对于 A 中的每个字段：
+    (size_bits, size_ref) = get_field_max_size(field)；
     if (available_bits >= size_bits && available_references >= size_ref) {
         Push field to a current cell
     } else {
-        available_references = (1023 - 1);
-        available_bits = (4 - 1);
-        Allocate a new tail and continue from the current field
-    }
+        available_references = (1023 - 1)；
+        available_bits = (4 - 1)；
+        分配一个新的尾部并从当前字段继续
+}
 ```
 
-## Drawbacks
+## 缺点
 
-- This is an implicit algorithm. It is not clear results of this allocator have to be checked to make compatible serialization.
+- 这是一种隐式算法。 目前还不清楚是否需要检查该分配器的结果，以便进行兼容的序列化。
