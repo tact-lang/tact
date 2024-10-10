@@ -12,7 +12,7 @@ title: 细胞、建造者和切片
 
   为此，建议高级用户使用[类型语言 - 二进制（TL-B）模式][tlb]。
 
-  建议每位用户使用 [Structs][struct] 及其 [方法](/book/functions#extension-function)，如 [`Struct.toCell(){:tact}`](#structtocell) 和 [`Struct.fromCell() `](#structfromcell)，而不是手动构建和解析单元格。fromCell(){:tact}\`](#structfromcell)，而不是手动构建和解析单元格，因为 [Structs][struct] 和 [Messages][message] 最接近于[您的合约的活 TL-B 架构](/book/cells#cnp-structs)。
+  建议每位用户使用 [Structs][struct] 及其 [方法](/book/functions#extension-function)，如 [`Struct.toCell(){:tact}`](#structtocell) 和 [`Struct.fromCell(){:tact}`](#structfromcell)，而不是手动构建和解析单元格，因为 [Structs][struct] 和 [Messages][message] 最接近于[您的合约的活 TL-B 架构](/book/cells#cnp-structs)。
 
 :::
 
@@ -70,7 +70,7 @@ fizz == buzz; // true
 extends fun beginParse(self: Cell)：Slice；
 ```
 
-单元格{:tact}\`][单元格]的扩展函数。
+[`单元格{:tact}`][单元格]的扩展函数。
 
 打开[`单元格{:tact}`][单元格]进行解析，并以[`切片{:tact}`][切片]的形式返回。
 
@@ -87,7 +87,7 @@ let fizz：Slice = c.beginParse()；
 extends fun hash(self: Cell)：Int；
 ```
 
-单元格{:tact}\`][单元格]的扩展函数。
+[`单元格{:tact}`][单元格]的扩展函数。
 
 计算并返回给定[`单元格{:tact}`][单元格]的[标准`单元格{:tact}`表示][st-repr]的[SHA-256][sha-2]哈希值的[`Int{:tact}`][int]值。
 
@@ -104,9 +104,9 @@ let fizz：Int = c.hash()；
 extends fun asSlice(self: Cell)：Slice；
 ```
 
-单元格{:tact}\`][单元格]的扩展函数。
+[`单元格{:tact}`][单元格]的扩展函数。
 
-将单元格转换为[`Slice{:tact}`][slice]并返回。 self.beginParse(){:tact}\`的别名。
+将单元格转换为[`Slice{:tact}`][slice]并返回。 `self.beginParse(){:tact}`的别名。
 
 使用示例
 
@@ -121,7 +121,7 @@ let fizz：Slice = c.asSlice()；
 extends fun endCell(self: Builder)：Cell；
 ```
 
-生成器{:tact}\`][生成器]的扩展函数。
+[`生成器{:tact}`][生成器]的扩展函数。
 
 将 [`构造器{:tact}`][构造器] 转换为普通的 [`单元格{:tact}`][单元格]。
 
@@ -138,11 +138,11 @@ let fizz：单元格 = b.endCell()；
 extends fun storeUint(self: Builder, value: Int, bits: Int)：Builder；
 ```
 
-生成器{:tact}\`][生成器]的扩展函数。
+[`生成器{:tact}`][生成器]的扩展函数。
 
-将$0 ≤$ `bits` $≤ 256$的无符号`bits`-位`value`存储到[`Builder{:tact}`][builder]的副本中。 返回该副本。
+将 $0 \leq \text{bits} \leq 256$ 的无符号 `bits` 位 `value` 存储到 [`Builder{:tact}`][builder] 的副本中。返回该副本。
 
-试图存储负`值`或提供不足或超界`位`数时，会出现[退出代码5](/book/exit-codes#5)异常：整数超出预期范围"。
+试图存储负 `value` 或提供不足或超界 `bits` 数时，会出现 [退出代码 5](/book/exit-codes#5) 异常："整数超出预期范围"。
 
 使用示例
 
@@ -157,7 +157,7 @@ let fizz：Builder = b.storeUint(42, 6)；
 extends fun storeInt(self: Builder, value: Int, bits: Int)：Builder；
 ```
 
-生成器{:tact}\`][生成器]的扩展函数。
+[`生成器{:tact}`][生成器]的扩展函数。
 
 将$0 ≤$ `bits` $≤ 257$的有符号`bits`-位`值`存储到[`builder{:tact}`][builder]的副本中。 返回该副本。
 
@@ -176,7 +176,7 @@ let fizz：Builder = b.storeUint(42, 7)；
 extends fun storeBool(self: Builder, value: Bool)：Builder；
 ```
 
-生成器{:tact}\`][生成器]的扩展函数。
+[`生成器{:tact}`][生成器]的扩展函数。
 
 将[`Bool{:tact}`][bool]`value`存储到[`Builder{:tact}`][builder]的副本中。 如果 `value` 是 `true{:tact}`，则写入 $1$ 作为单个位，否则写入 $0$。 返回 [`生成器{:tact}`][生成器] 的副本。
 
@@ -194,7 +194,7 @@ let buzz：Builder = b.storeBool(false); // writes 0
 extends fun storeSlice(self: Builder, cell: Slice)：Builder；
 ```
 
-生成器{:tact}\`][生成器]的扩展函数。
+[`生成器{:tact}`][生成器]的扩展函数。
 
 将[`slice{:tact}`][slice]`cell`存储到[`builder{:tact}`][builder]的副本中。 返回该副本。
 
@@ -212,9 +212,9 @@ let fizz：Builder = b.storeSlice(s)；
 extends fun storeCoins(self: Builder, value: Int)：Builder；
 ```
 
-生成器{:tact}\`][生成器]的扩展函数。
+[`生成器{:tact}`][生成器]的扩展函数。
 
-存储（序列化）一个范围为 $0 ... 的无符号 [`Int{:tact}`][int]`value`。 2^{120} - 1$ 到 [`生成器{:tact}`][生成器] 的副本中。 `value` 的序列化由 $4$-bit 无符号大端整数 $l$组成，它是最小的整数 $l ≥0$，使得 `value` $< 2^{8_l}$，然后是 `value` 的 $8 _ l$ 位无符号大端表示。 返回 [`生成器{:tact}`][生成器] 的副本。
+存储（序列化）一个范围为 $0 \ldots 2^{120} - 1$ 的无符号 [`Int{:tact}`][int] `value` 到 [`Builder{:tact}`][builder] 的副本中。`value` 的序列化由 $4$ 位无符号大端整数 $l$ 组成，它是最小的整数 $l \geq 0$，使得 $\text{value} < 2^{8l}$，然后是 `value` 的 $8l$ 位无符号大端表示。返回 [`Builder{:tact}`][builder] 的副本。
 
 试图存储一个超出范围的`值`时，会出现[退出代码5](/book/exit-codes#5)的异常：超出预期范围的`整数`。
 
@@ -239,7 +239,7 @@ let fizz：Builder = b.storeCoins(42)；
 extends fun storeAddress(self: Builder, address: Address)：Builder；
 ```
 
-生成器{:tact}\`][生成器]的扩展函数。
+[`生成器{:tact}`][生成器]的扩展函数。
 
 将地址存储在 [`生成器{:tact}`][生成器] 的副本中。 返回该副本。
 
@@ -256,7 +256,7 @@ let fizz：Builder = b.storeAddress(myAddress())；
 extends fun storeRef(self: Builder, cell: Cell)：Builder；
 ```
 
-生成器{:tact}\`][生成器]的扩展函数。
+[`生成器{:tact}`][生成器]的扩展函数。
 
 将引用 `cell` 存储到[`Builder{:tact}`][builder]的副本中。 返回该副本。
 
@@ -275,7 +275,7 @@ let fizz：Builder = b.storeRef(emptyCell())；
 extends fun refs(self: Builder)：Int；
 ```
 
-生成器{:tact}\`][生成器]的扩展函数。
+[`生成器{:tact}`][生成器]的扩展函数。
 
 以 [`Int{:tact}`][int]形式返回已存储在 [`构造器{:tact}`][构造器] 中的单元格引用的数目。
 
@@ -292,7 +292,7 @@ let fizz：Int = b.refs(); // 0
 extends fun bits(self: Builder)：Int；
 ```
 
-生成器{:tact}\`][生成器]的扩展函数。
+[`生成器{:tact}`][生成器]的扩展函数。
 
 以[`Int{:tact}`][int]形式返回已存储在[`builder{:tact}`][builder]中的数据位数。
 
@@ -309,7 +309,7 @@ let fizz：Int = b.bits(); // 0
 extends fun asSlice(self: Builder)：Slice；
 ```
 
-生成器{:tact}\`][生成器]的扩展函数。
+[`生成器{:tact}`][生成器]的扩展函数。
 
 将[`builder{:tact}`][builder]转换为[`slice{:tact}`][slice]并返回。 别名为 `self.endCell().beginParse(){:tact}`。
 
@@ -326,7 +326,7 @@ let fizz：Slice = b.asSlice()；
 extends fun asCell(self: Builder)：Cell；
 ```
 
-生成器{:tact}\`][生成器]的扩展函数。
+[`生成器{:tact}`][生成器]的扩展函数。
 
 将[`Builder{:tact}`][builder]转换为[`Cell{:tact}`][cell]并返回。 别名为 `self.endCell(){:tact}`。
 
@@ -343,7 +343,7 @@ let fizz：Cell = b.asCell()；
 extends mutates fun loadUint(self: Slice, l: Int)：Int；
 ```
 
-切片{:tact}\`][切片]的扩展突变函数。
+[`切片{:tact}`][切片]的扩展突变函数。
 
 从 [`Slice{:tact}`][slice]中加载并返回一个无符号的 `l` 位 [`Int{:tact}`][int]，条件是 $0 ≤$ `l` $≤ 256$。
 
@@ -364,7 +364,7 @@ let fizz：Int = s.loadUint(7)；
 extends fun preloadUint(self: Slice, l: Int)：Int；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 为 $0 ≤$ `l` $≤ 256$ 从 [`Slice{:tact}`][slice]中预载并返回一个无符号的 `l` 位 [`Int{:tact}`][int]。 不会修改 [`切片{:tact}`][切片]。
 
@@ -385,7 +385,7 @@ let fizz：Int = s.preloadUint(7)；
 extends mutates fun loadInt(self: Slice, l: Int)：Int；
 ```
 
-切片{:tact}\`][切片]的扩展突变函数。
+[`切片{:tact}`][切片]的扩展突变函数。
 
 从 [`Slice{:tact}`][slice]中加载并返回一个有符号的 `l` 位 [`Int{:tact}`][int]，值为 $0 ≤$ `l` $≤ 257$。
 
@@ -406,7 +406,7 @@ let fizz：Int = s.loadInt(7)；
 extends fun preloadInt(self: Slice, l: Int)：Int；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 为 $0 ≤$ `l` $≤ 257$ 从 [`Slice{:tact}`][slice]中预载并返回一个有符号的 `l` 位 [`Int{:tact}`][int]。 不会修改 [`切片{:tact}`][切片]。
 
@@ -427,7 +427,7 @@ let fizz：Int = s.preloadInt(7)；
 extends mutates fun loadBits(self: Slice, l: Int)：Slice；
 ```
 
-切片{:tact}\`][切片]的扩展突变函数。
+[`切片{:tact}`][切片]的扩展突变函数。
 
 从 [`片{:tact}`][片] 中加载 $0 ≤$ `l` $≤ 1023$ 位，并作为单独的 [`片{:tact}`][片] 返回。
 
@@ -448,7 +448,7 @@ let fizz：Slice = s.loadBits(7)；
 extends fun preloadBits(self: Slice, l: Int)：Slice；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 从 [`片{:tact}`][片] 中预载 $0 ≤$ `l` $≤ 1023$ 位，并将其作为单独的 [`片{:tact}`][片] 返回。 不修改原始 [`切片{:tact}`][切片]。
 
@@ -469,7 +469,7 @@ let fizz：Slice = s.preloadBits(7)；
 extends mutates fun skipBits(self: Slice, l: Int)；
 ```
 
-片{:tact}\`][片]的扩展突变函数。
+[`片{:tact}`][片]的扩展突变函数。
 
 从 [`片{:tact}`][片] 中加载除第一个 0 ≤$ `l` $≤ 1023$ 位以外的所有位。
 
@@ -491,7 +491,7 @@ let fizz：Slice = s.loadBits(1); // 只加载 1 位
 extends mutates fun loadBool(self: Slice)：Bool；
 ```
 
-片{:tact}\`][片]的扩展突变函数。
+[`片{:tact}`][片]的扩展突变函数。
 
 从[`Slice{:tact}`][slice]加载单个位并返回[`Bool{:tact}`][bool]值。 如果加载的位等于 $1$，则读取 `true{:tact}`，否则读取 `false{:tact}`。
 
@@ -512,13 +512,13 @@ let fizz：Bool = s.loadBool(); // true
 extends mutates fun loadCoins(self: Slice)：Int；
 ```
 
-切片{:tact}\`][切片]的扩展突变函数。
+[`切片{:tact}`][切片]的扩展突变函数。
 
-加载并返回 [序列化](#builderstorecoins)一个范围为 $0 ... 的无符号 [`Int{:tact}`][int]值。 2^{120} - 1$ 来自 [`片{:tact}`][片]。 该值通常代表以 [纳吨币]（/book/integers#nanotoncoin）为单位的金额。
+加载并返回[序列化](#builderstorecoins)的一个范围为 $0 ... 2^{120} - 1$ 的无符号 [`Int{:tact}`][int]值，来自 [`片{:tact}`][片]。该值通常代表以[纳吨币](/book/integers#nanotoncoin)为单位的金额。
 
-当 [\``Slice{:tact}`][slice]中不包含[`Int{:tact}`][int]时，尝试加载此类[`Int `][int]会产生异常，[退出代码为 8](/book/exit-codes#8)：单元格溢出"。
+当 [`Slice{:tact}`][slice]中不包含[`Int{:tact}`][int]时，尝试加载此类[`Int`][int]会产生异常，[退出代码为 8](/book/exit-codes#8)："单元格溢出"。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常："单元格下溢"。
 
 使用示例
 
@@ -539,13 +539,13 @@ let fizz：Int = s.loadCoins()；
 extends mutates fun loadAddress(self: Slice)：地址；
 ```
 
-切片{:tact}\`][切片]的扩展突变函数。
+[`Slice{:tact}`][slice]的扩展突变函数。
 
-从[`片{:tact}`][slice]加载并返回一个[`地址{:tact}`][p]。
+从[`Slice{:tact}`][slice]加载并返回一个[`Address{:tact}`][address]。
 
-当[`地址{:tact}`][p][片{:tact}\`][片]不包含该地址时，尝试加载该[`地址 `][p]会产生异常，[退出代码 8](/book/exit-codes#8)：单元格溢出"。
+当[`Slice{:tact}`][slice]不包含该地址时，尝试加载该[`Address{:tact}`][address]会产生异常，[退出代码 8](/book/exit-codes#8)："单元格溢出"。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [退出代码 9](/book/exit-codes#9) 异常："单元格下溢"。
 
 使用示例
 
@@ -560,11 +560,11 @@ let fizz：地址 = s.loadAddress()；
 extends mutates fun loadRef(self: Slice)：Cell；
 ```
 
-切片{:tact}\`][切片]的扩展突变函数。
+[`切片{:tact}`][切片]的扩展突变函数。
 
-从 [`片{:tact}`][片] 中加载下一个引用作为 [`单元{:tact}`][单元格]。
+从 [`切片{:tact}`][切片] 中加载下一个引用作为 [`单元格{:tact}`][单元格]。
 
-当 [`Cell{:tact}`][cell][slice{:tact}\`][slice]不包含该引用时，尝试加载该引用会产生异常，[退出代码 8](/book/exit-codes#8)：单元格溢出"。
+当 [`切片{:tact}`][切片]不包含该引用时，尝试加载该引用会产生异常，[退出代码 8](/book/exit-codes#8)："单元格溢出"。
 
 尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：单元格下溢"。
 
@@ -588,7 +588,7 @@ let ref2: Cell = s.loadRef()；
 extends fun refs(self: Slice)：Int；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 以 [`Int{:tact}`][int]形式返回 [`片{:tact}`][片] 中引用的个数。
 
@@ -605,7 +605,7 @@ let fizz：Int = s.refs().asSlice(); let fizz: Int = s.refs().asSlice()
 extends fun bits(self: Slice)：Int；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 以 [`Int{:tact}`][int]形式返回 [`片{:tact}`][片] 中的数据位数。
 
@@ -622,7 +622,7 @@ let fizz：Int = s.bits()；
 extends fun empty(self: Slice)：Bool；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 检查 [`片{:tact}`][片] 是否为空（即不包含数据位和单元格引用）。 如果为空，则返回 `true{:tact}`，否则返回 `false{:tact}`。
 
@@ -646,7 +646,7 @@ let buzz：Bool = beginCell().asSlice().empty(); // true
 extends fun dataEmpty(slice: Slice)：Bool；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 检查 [`片{:tact}`][片] 是否没有数据位。 如果没有数据，则返回 `true{:tact}`，否则返回 `false{:tact}`。
 
@@ -666,7 +666,7 @@ let buzz：Bool = s2.dataEmpty(); // false
 extends fun refsEmpty(slice: Slice)：Bool；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 检查 [`Slice{:tact}`][slice]是否没有引用。 如果没有引用，则返回 `true{:tact}`，否则返回 `false{:tact}`。
 
@@ -684,7 +684,7 @@ let buzz：Bool = beginCell().asSlice().refsEmpty(); // true
 extends fun endParse(self: Slice)；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 检查 [`片{:tact}`][片] 是否为空（即不包含数据位和单元格引用）。 如果不是，则抛出异常[退出代码 9](/book/exit-codes#9)：单元格下溢。
 
@@ -706,7 +706,7 @@ try {
 extends fun hash(self: Slice)：Int；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 计算并返回给定[`Slice{:tact}`][slice]的[标准`Cell{:tact}`表示][st-repr]的[SHA-256][sha-2]哈希值的[`Int{:tact}`][int]值。
 
@@ -723,7 +723,7 @@ let fizz：Int = s.hash()；
 extends fun asCell(self: Slice)：Cell；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 将 [`Slice{:tact}`][slice]转换为 [`Cell{:tact}`][cell]并返回。 别名为 `beginCell().storeSlice(self).endCell(){:tact}`。
 
@@ -743,7 +743,7 @@ fizz == buzz; // true
 extends fun asSlice(self: Address)：Slice；
 ```
 
-地址{:tact}\`][p]的扩展函数。
+[`地址{:tact}`][p]的扩展函数。
 
 将[`地址{:tact}`][p]转换为[`片{:tact}`][片]并返回。 别名为 `beginCell().storeAddress(self).asSlice(){:tact}`。
 
@@ -950,12 +950,14 @@ fun cautiousParse(payload: Slice)：TripleAxe?{
 [p]: /book/types#primitive-types
 [bool]: /book/types#booleans
 [int]: /book/integers
-[电池]: /book/cells#cells
-[建筑工人]: /book/cells#builders
-[一片]: /book/cells#slices
-[地图]: /book/maps
-[结构]: </book/structs and-messages#structs>
-[信息]: </book/structs and-messages#messages>
-[st-repr]: /book/cells#cells-representation
+[cell]: /book/cells#cells
+[builder]: /book/cells#builders
+[slice]: /book/cells#slices
+[map]: /book/maps
+[struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages
+
+[std-repr]: /book/cells#cells-representation
+
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
-[屏蔽-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
+[sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard

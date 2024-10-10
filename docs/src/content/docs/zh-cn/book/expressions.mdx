@@ -1,10 +1,10 @@
 ---
-title: 表达
+title: Expressions
 ---
 
 Tact 中的每个运算符都能构成一个表达式，但 Tact 还提供了更多的表达式选项供您选择。
 
-## 文字
+## Literals
 
 字面表示 Tact 中的值。 这些是固定值，而不是变量，是您在代码中实际提供的。 Tact 中的所有字面量都是表达式本身。
 
@@ -18,9 +18,9 @@ Tact 中的每个运算符都能构成一个表达式，但 Tact 还提供了更
 "Tact is awesome!".asComment()；
 ```
 
-### 整数字面
+### Integer literals
 
-整数字面可以用[十进制](/book/integers#十进制)（基 $10$）、[十六进制](/book/integers#十六进制)（基 $16$）、[八进制](/book/integers#八进制)（基 $8$）和[二进制](/book/integers#二进制)（基 $2$）符号书写：
+整数字面可以用[十进制](/book/integers#decimal)（基 $10$）、[十六进制](/book/integers#hexadecimal)（基 $16$）、[八进制](/book/integers#octal)（基 $8$）和[二进制](/book/integers#binary)（基 $2$）符号书写：
 
 - 一个 [_decimal_ integer](/book/integers#decimal) 字面量是一串数字（$\mathrm{0 - 9}$）。
 
@@ -52,9 +52,9 @@ Tact 中的每个运算符都能构成一个表达式，但 Tact 还提供了更
 
 有关整数和 [`Int{:tact}`](/book/integers)类型的更多信息，请访问专门页面：[整数](/book/integers)。
 
-### 布尔字面
+### Boolean literals
 
-[`Bool{:tact}`](/book/types#booleans)类型只有两个字面值：true{:tact}`和`false{:tact}\`。
+[`Bool{:tact}`](/book/types#booleans)类型只有两个字面值：`true{:tact}`和`false{:tact}`。
 
 ```tact
 true == true;
@@ -63,7 +63,7 @@ true != false；
 
 有关布尔和 [`Bool{:tact}`](/book/types#booleans)类型的更多信息，请参阅专门章节：[布尔](/book/types#booleans)。
 
-### 字符串字面量
+### String literals
 
 字符串字面量是用双引号（`"`"）括起来的零个或多个字符。 所有字符串字面量都是 [`字符串{:tact}`][p]类型的对象。
 
@@ -74,19 +74,19 @@ true != false；
 
 Tact 字符串支持一系列从反斜杠字符开始的[转义序列](https://en.wikipedia.org/wiki/Escape_sequence)：
 
-- {:tact}\` - 字面反斜线
+- `\\{:tact}` - 字面反斜线
 - `\"{:tact}` - 双引号
 - `\n{:tact}` - 换行
-- \r{:tact}\` - 回车
-- \t{:tact}\` - tab
+- `\r{:tact}` - 回车
+- `\t{:tact}` - tab
 - `\v{:tact}` - 垂直标签
 - `\b{:tact}` - 退格
-- `f{:tact}` - 表格供稿
-- \x00{:tact}`至`\xFF{:tact}\` - [代码点](https://en.wikipedia.org/wiki/Code_point)，长度必须正好是两个十六进制数字
-- \u0000{:tact}`至`\uFFFF{:tact}\` - [Unicode 代码点][unicode]，长度必须正好是四个十六进制数字
+- `\f{:tact}` - 表格供稿
+- `\x00{:tact}`至`\xFF{:tact}` - [代码点](https://en.wikipedia.org/wiki/Code_point)，长度必须正好是两个十六进制数字
+- `\u0000{:tact}`至`\uFFFF{:tact}` - [Unicode 代码点][unicode]，长度必须正好是四个十六进制数字
 - `\u{0}{:tact}` 到 `\u{FFFFFF}{:tact}` - [Unicode 代码点][unicode]，长度可以是 $1$ 到 $6$ 的十六进制数
 
-[单一码]: https://en.wikipedia.org/wiki/Unicode#Codespace_and_code_points
+[unicode]: https://en.wikipedia.org/wiki/Unicode#Codespace_and_code_points
 
 ```tact
 //
@@ -131,9 +131,9 @@ Tact 字符串支持一系列从反斜杠字符开始的[转义序列](https://e
 
 :::
 
-### 空 "字面
+### `null` literal
 
-空{:tact}`值将以`null{:tact}\` 字面形式写入。 它**_不是[标识符]（#identifiers），也不指向任何对象。 它也_**不是[原始类型][p]的实例。 相反，"null{:tact}"表示缺乏标识和故意不存在任何价值。
+`空{:tact}`值将以`null{:tact}` 字面形式写入。它**不是[标识符](#identifiers)**，也不指向任何对象。它也**不是[原始类型][p]的实例**。相反，`null{:tact}`表示缺乏标识和故意不存在任何价值。
 
 ```tact
 让 var：= null; // variable, which can hold null value
@@ -143,9 +143,9 @@ if (var != null) {
 }
 ```
 
-有关使用 "null{:tact}"的更多信息，请访问专门页面：[选项](/book/optionals)。
+有关使用 `null{:tact}`的更多信息，请访问专门页面：[选项](/book/optionals)。
 
-## 标识符
+## Identifiers
 
 标识符是代码中的一串字符，用于标识[变量](/book/statements#let)、[常量](/book/constants)、[映射](/book/maps)和[函数](/book/functions)，以及[结构][s]、[消息][m]、[契约](/book/contracts)、[特质](/book/types#traits)或它们的字段和方法。 标识符区分大小写，不加引号。
 
@@ -153,7 +153,7 @@ if (var != null) {
 
 请注意，当[基元类型][p]的标识符以大写字母开头时。 已使用定义的 [复合类型](/book/types#composite-types)，如 [Structs][s] 和 [Messages][m] 也必须大写。
 
-## 实例化
+## Instantiation
 
 您可以创建以下类型的实例：
 
@@ -178,7 +178,7 @@ fun example() {
 }
 ```
 
-## 实地访问
+## Field access
 
 您可以直接访问以下类型的字段：
 
@@ -199,7 +199,7 @@ fun example()：Int {
 }
 ```
 
-## 扩展功能调用
+## Extension function call
 
 [扩展函数](/book/functions#extension-function)仅在特定类型中定义。 它们的调用方式类似于许多其他语言中的方法调用：
 
@@ -207,7 +207,7 @@ fun example()：Int {
 42.toString(); // toString() 是针对 Int 类型定义的 stdlib 函数。
 ```
 
-## 静态函数调用
+## Static function call
 
 在函数体的任何位置，都可以调用全局 [static function](/book/functions#global-static-functions) 或 [contract](/book/contracts) 的内部函数：
 
@@ -243,14 +243,14 @@ initOf ExampleContract(
 )；
 ```
 
-其中，"StateInit{:tact}"是一个内置[结构][s]，由以下部分组成：
+其中，`StateInit{:tact}`是一个内置[结构][s]，由以下部分组成：
 
 | 现场  | 类型                  | 说明                                                |
 | :-- | :------------------ | :------------------------------------------------ |
-| 代码  | [`单元格{:tact}`][单元格] | 合同](/book/contracts)的初始代码（编译后的字节码                 |
-| 数据  | [`单元格{:tact}`][单元格] | 合同](/book/contracts)的初始数据（合同的 "init(){:tact}"函数参数 |
+| 代码  | [`单元格{:tact}`][单元格] | [合同](/book/contracts)的初始代码（编译后的字节码                 |
+| 数据  | [`单元格{:tact}`][单元格] | [合同](/book/contracts)的初始数据（合同的 `init(){:tact}`函数参数 |
 
 [p]: /book/types#primitive-types
-[电池]: /book/cells#cells
-[s]: </book/structs and-messages#structs>
-[m]: </book/structs and-messages#messages>
+[cell]: /book/cells#cells
+[s]: /book/structs-and-messages#structs
+[m]: /book/structs-and-messages#messages

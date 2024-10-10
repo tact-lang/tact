@@ -12,7 +12,7 @@ import "@stdlib/stoppable"; // 这也将自动导入 @stdlib/ownable！
 
 ## 特质
 
-### 可停止
+### Stoppable
 
 [Trait](/book/types#composite-types) `Stoppable{:tact}` 实现可由所有者发送的 [Message](/book/structs-and-messages#messages) [string](/book/types#primitive-types) "Stop" 的接收器、实现了 `stopped(){:tact}` [getter 函数](/book/functions#getter-functions)，如果合约已停止，则返回 `true{:tact}`（否则返回 `false{:tact}`），并提供了私有（非getter）函数 `requireNotStopped(){:tact}` 和 `requireStopped(){:tact}`。
 

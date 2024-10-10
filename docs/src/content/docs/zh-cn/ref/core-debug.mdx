@@ -47,7 +47,7 @@ try {
 fun dump(arg)；
 ```
 
-将参数 `arg` 打印到合约的调试控制台。 仅当[配置文件](/book/config) 中的 "debug "选项设置为 "true{:json}"时才进行评估，否则不执行任何操作。
+将参数 `arg` 打印到合约的调试控制台。 仅当[配置文件](/book/config) 中的 "debug "选项设置为 `true{:json}`时才进行评估，否则不执行任何操作。
 
 可应用于下列类型和值：
 
@@ -104,7 +104,7 @@ dump(emit("msg".asComment())); // 由于 emit() 函数不返回值，dump() 将�
 fun dumpStack()；
 ```
 
-将 [持久状态变量](/book/contracts#variables)的所有值打印到合约的调试控制台。 仅当[配置文件](/book/config) 中的 "debug "选项设置为 "true{:json}"时才进行评估，否则不执行任何操作。
+将 [持久状态变量](/book/contracts#variables)的所有值打印到合约的调试控制台。 仅当[配置文件](/book/config) 中的 "debug "选项设置为 `true{:json}`时才进行评估，否则不执行任何操作。
 
 使用示例
 
@@ -133,13 +133,13 @@ fun throw(code: Int)；
 
 是 [`nativeThrow(){:tact}`](#nativethrow)的别名。
 
-## 原生抛掷
+## nativethrow
 
 ```tact
 fun nativeThrow(code: Int)；
 ```
 
-抛出错误代码等于 `code` 的异常。 当前上下文的执行将停止（"nativeThrow "后的语句将不会执行），控制权将传递给调用栈中的第一个[`try...catch{:tact}`块](/book/statements#try-catch)。 如果调用者函数中不存在 "try{:tact}"或 "try...catch{:tact}"块，[TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview)将终止事务。
+抛出错误代码等于 `code` 的异常。 当前上下文的执行将停止（"nativeThrow "后的语句将不会执行），控制权将传递给调用栈中的第一个[`try...catch{:tact}`块](/book/statements#try-catch)。 如果调用者函数中不存在 `try{:tact}`或 `try...catch{:tact}`块，[TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview)将终止事务。
 
 试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/book/exit-codes#5)异常：整数超出预期范围"。
 

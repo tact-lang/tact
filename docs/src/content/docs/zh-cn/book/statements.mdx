@@ -18,7 +18,7 @@ let vExplicitCtx：Context = context(); // 显式类型 Context，内置结构
 let vCtx = context(); // 推断类型 Context
 ```
 
-请注意，"null{:tact}`"的初始值既可以指具有任意 "K{:tact}`"和 "V{:tact}`"类型的空[`map<K, V>{:tact}`](/book/maps)，也可以指故意不为[optional](/book/optionals)类型设置任何其他值。 这就是为什么在声明 [optional](/book/optionals) 或 [`map<K, V>{:tact}\`](/book/maps)时，需要明确指定类型，因为无法推断：
+请注意，`null{:tact}`的初始值既可以指具有任意 `K{:tact}`和 `V{:tact}`类型的空[`map<K, V>{:tact}`](/book/maps)，也可以指故意不为[optional](/book/optionals)类型设置任何其他值。 这就是为什么在声明 [optional](/book/optionals) 或 [`map<K, V>{:tact}`](/book/maps)时，需要明确指定类型，因为无法推断：
 
 ```tact
 let vOptional: Int? = null; // explicit type Int or null
@@ -46,9 +46,9 @@ dump(_); // COMPILATION ERROR！无法访问 _
 let expiration: Int = now() + 1000; // now() is stdlib static function
 ```
 
-## 街区
+## block
 
-块语句用于组合零个或多个语句。 块由一对大括号（"大括号"、"{}{:tact}\`）分隔，包含一个由零个或多个语句和声明组成的列表。
+块语句用于组合零个或多个语句。 块由一对大括号（"大括号"、`{}{:tact}`）分隔，包含一个由零个或多个语句和声明组成的列表。
 
 某些语句，如 [`let{:tact}`](#let) 或 [`return{:tact}`](#return)，必须以结束分号 `;{:tact}` 结束。 不过，语块中最后一条语句的分号是可选的，可以省略。
 
@@ -144,11 +144,11 @@ if (condition) {
 
 ### `try...catch` {#try-catch}
 
-try...catch{:tact}`语句由一个 `try{:tact}`块和一个可选的 `catch{:tact}`块组成，它接收一个 [`Int{:tact}`][int][退出代码](/book/exit-codes)作为唯一参数。 首先执行 `try{:tact}`块中的代码，如果失败，则执行`catch{:tact}`块中的代码，并尽可能回滚`try{:tact}\` 块中的更改。
+`try...catch{:tact}`语句由一个 `try{:tact}`块和一个可选的 `catch{:tact}`块组成，它接收一个 [`Int{:tact}`][int][退出代码](/book/exit-codes)作为唯一参数。 首先执行 `try{:tact}`块中的代码，如果失败，则执行`catch{:tact}`块中的代码，并尽可能回滚`try{:tact}` 块中的更改。
 
 :::note
 
-  请注意，某些 TVM 状态参数（如编码页和气体计数器）不会回滚。 也就是说，"try{:tact}"程序块中的所有气体使用量都将被考虑在内，而改变气体限值的操作码的效果也将被保留。
+  请注意，某些 TVM 状态参数（如编码页和气体计数器）不会回滚。 也就是说，`try{:tact}`程序块中的所有气体使用量都将被考虑在内，而改变气体限值的操作码的效果也将被保留。
 
 :::
 
@@ -179,7 +179,7 @@ fun niceCatch() {
 }
 ```
 
-使用嵌套的 "try...catch{:tact}"：
+使用嵌套的 `try...catch{:tact}`：
 
 ```tact
 try {
@@ -262,7 +262,7 @@ do {
 
 ### `foreach` {#foreach-loop}
 
-foreach{:tact}` 循环按顺序对 [`map<K, V>{:tact}\`](/book/maps) 类型的键值对（条目）进行操作：从 map 的最小键到最大键。
+`foreach{:tact}` 循环按顺序对 [`map<K, V>{:tact}`](/book/maps) 类型的键值对（条目）进行操作：从 map 的最小键到最大键。
 
 该循环为给定映射中的每个条目执行一个代码块，每次迭代都会捕获键和值。 当您事先不知道地图中有多少个条目，或不想明确地使用地图的 [`.get(){:tact}`](/book/maps#get) [method](/book/functions#extension-function) 查找每个条目时，这将非常方便。
 

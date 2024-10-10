@@ -81,7 +81,7 @@ virtual fun forward(to: Address, body: Cell?, bounce: Bool, init: StateInit?)；
 
 [将信息](/book/send#outbound-message-processing)（可跳转或不可跳转）发送到指定地址 `to`。 您可以选择提供信息的 "body "和[`init`包](/book/expressions#initof)。
 
-当[`self.storageReserve{:tact}`](#self-storageeserve)常量被覆盖为$> 0$时，在发送信息之前，它也会尝试从剩余余额中预留`self.storageReserve{:tact}`的[nanoToncoins][nano]金额，然后再以[`SendRemainingBalance{:tact}`](https://docs.tact-lang.org/book/message-mode#base-modes)($128$) 模式发送信息。
+当[`self.storageReserve{:tact}`](#self-storagereserve)常量被覆盖为$> 0$时，在发送信息之前，它也会尝试从剩余余额中预留`self.storageReserve{:tact}`的[nanoToncoins][nano]金额，然后再以[`SendRemainingBalance{:tact}`](https://docs.tact-lang.org/book/message-mode#base-modes)($128$) 模式发送信息。
 
 如果预订尝试失败，或在默认情况下没有尝试，则会以[`SendRemainingValue{:tact}`](https://docs.tact-lang.org/book/message-mode#base-modes)（$64$）模式发送信息。
 

@@ -16,7 +16,7 @@ title: 高级
 extends fun readForwardFee(self: Context)：Int
 ```
 
-语境{:tact}\`]（/ref/core-common#context）的扩展函数。
+[`语境{:tact}`]（/ref/core-common#context）的扩展函数。
 
 读取 [forward fee](https://docs.ton.org/develop/smart-contracts/guidelines/processing)，并以 [`Int{:tact}`][int]的形式返回 [nanoToncoins](/book/integers#nanotoncoin) 的金额。
 
@@ -101,13 +101,13 @@ commit(); // 现在，事务被视为 "成功"
 throw(42); // 这样就不会失败了
 ```
 
-## 本地随机准备
+## nativePrepareRandom {#nativePrepareRandom}
 
 ```tact
 fun nativePrepareRandom()；
 ```
 
-使用 [`nativeRandomizeLt(){:tact}`](#nativerandomizelt)准备随机数生成器。 由 [`randomInt(){:tact}`](/ref/core-random#randomint) 和 [`random(){:tact}`](/ref/core-random#random) 函数自动调用。
+使用 [`nativeRandomizeLt(){:tact}`](#本机随机化)准备随机数生成器。 由 [`randomInt(){:tact}`](/ref/core-random#randomint) 和 [`random(){:tact}`](/ref/core-random#random) 函数自动调用。
 
 使用示例
 
@@ -154,7 +154,7 @@ let idk：Int = randomInt(); // ???，它是随机的！
 fun nativeRandom()：Int；
 ```
 
-生成并返回 $256$-bit 随机数，就像 [`randomInt(){:tact}`](/ref/core-random#randomint)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativepreparerandom)初始化随机生成器。
+生成并返回 $256$-bit 随机数，就像 [`randomInt(){:tact}`](/ref/core-random#randomint)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativePrepareRandom)初始化随机生成器。
 
 :::note
 
@@ -168,7 +168,7 @@ fun nativeRandom()：Int；
 fun nativeRandomInterval(max: Int)：Int；
 ```
 
-生成并返回 $256$-bit 的随机数，范围从 $0$ 到 `max`，类似于 [`random(){:tact}`](/ref/core-random#random)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativepreparerandom)初始化随机生成器。
+生成并返回 $256$-bit 的随机数，范围从 $0$ 到 `max`，类似于 [`random(){:tact}`](/ref/core-random#random)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativePrepareRandom)初始化随机生成器。
 
 :::note
 
@@ -241,7 +241,7 @@ raw_reserve(int amount, int mode) impure asm "RAWRESERVE"；
 
 ### 使用标志组合模式 {#nativereserve-combining-modes-with-flags}
 
-要为 `mode` 参数创建 [`Int{:tact}`][int]值，只需通过 [bitwise OR](/book/operators#二进制-bitwise-or)操作将基本模式与可选标志结合起来：
+要为 `mode` 参数创建 [`Int{:tact}`][int]值，只需通过 [bitwise OR](/book/operators#binary-bitwise-or)操作将基本模式与可选标志结合起来：
 
 ```tact
 nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
