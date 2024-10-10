@@ -2,43 +2,43 @@
 title: "@stdlib/ownable"
 ---
 
-Provides [traits](/book/types#composite-types) for ownable contracts. This is most commonly used trait that is required by most other traits.
+为可拥有的合约提供 [traits]（/book/types#composite-types）。 这是最常用的性状，大多数其他性状都需要它。
 
-To use this library, import `@stdlib/ownable`:
+要使用该库，请导入 `@stdlib/ownable`：
 
 ```tact
-import "@stdlib/ownable";
+导入"@stdlib/ownable"；
 ```
 
-## Messages
+## 信息
 
-### ChangeOwner
+### 更改所有者
 
 ```tact
 message ChangeOwner {
-    queryId: Int as uint64;
+    queryId：Int as uint64;
     newOwner: Address;
 }
 ```
 
-### ChangeOwnerOk
+### 更改用户名
 
 ```tact
 message ChangeOwnerOk {
-    queryId: Int as uint64;
+    queryId：Int as uint64;
     newOwner: Address;
 }
 ```
 
-## Traits
+## 特质
 
-### Ownable
+### 可拥有
 
-[Trait](/book/types#composite-types) `Ownable{:tact}` declares an owner (non-editable) of a [contract](/book/contracts) and provides a helper function `requireOwner(){:tact}` that checks that a message was sent by an owner.
+[Trait](/book/types#composite-types) `Ownable{:tact}` 声明了 [contract](/book/contracts) 的所有者（不可编辑），并提供了一个辅助函数 `requireOwner(){:tact}` 来检查消息是否由所有者发送。
 
-This [trait](/book/types#composite-types) requires a field `owner: Address{:tact}` to be declared and exposes a [getter function](/book/functions#getter-functions) `owner(){:tact}`, which reads it from the [contract](/book/contracts).
+此 [trait](/book/types#composite-types) 要求声明一个字段 `owner: Address{:tact}`，并公开一个 [getter 函数](/book/functions#getter-functions) `owner(){:tact}`，该函数从 [contract](/book/contracts) 中读取。
 
-Source code:
+源代码
 
 ```tact
 @interface("org.ton.ownable")
@@ -49,18 +49,18 @@ trait Ownable {
         nativeThrowUnless(132, sender() == self.owner);
     }
 
-    get fun owner(): Address {
+    get fun owner()：Address {
         return self.owner;
     }
 }
 ```
 
-Usage example:
+使用示例
 
 ```tact /Ownable/
 import "@stdlib/ownable";
 
-contract ExampleContract with Ownable {
+合同 ExampleContract with Ownable {
     owner: Address;
 
     init(owner: Address) {
@@ -69,13 +69,13 @@ contract ExampleContract with Ownable {
 }
 ```
 
-### OwnableTransferable
+### 可拥有可转让
 
-`OwnableTransferable{:tact}` is an extension of an [`Ownable{:tact}`](#ownable) that allows to transfer ownership of a contract to another address. It provides a secure handle [Message](/book/structs-and-messages#messages) [`ChangeOwner{:tact}`](#changeowner) that could be called by an owner to transfer ownership.
+OwnableTransferable{:tact}` 是 [`Ownable{:tact}`]（#ownable）的扩展，允许将合同的所有权转移到另一个地址。 它提供了一个安全的句柄 [Message](/book/structs-and-messages#messages) [`ChangeOwner{:tact}\`](#changeowner)，可供所有者调用以转移所有权。
 
-If the owner transfer request succeeds, the contract will reply with a [`ChangeOwnerOk{:tact}`](#changeownerok) [Message](/book/structs-and-messages#messages).
+如果所有者转移请求成功，合约将回复一条 [`ChangeOwnerOk{:tact}`](#changeownerok) [信息](/book/structs-and-messages#messages)。
 
-Source code:
+源代码
 
 ```tact
 @interface("org.ton.ownable.transferable.v2")
@@ -86,21 +86,21 @@ trait OwnableTransferable with Ownable {
         // Check if the sender is the owner
         self.requireOwner();
 
-        // Update owner
+        // 更新所有者
         self.owner = msg.newOwner;
 
-        // Reply result
+        // 回复结果
         self.reply(ChangeOwnerOk{ queryId: msg.queryId, newOwner: msg.newOwner }.toCell());
     }
 }
 ```
 
-Usage example:
+使用示例
 
 ```tact /OwnableTransferable/
 import "@stdlib/ownable";
 
-contract ExampleContract with OwnableTransferable {
+合同 ExampleContract with OwnableTransferable {
     owner: Address;
 
     init(owner: Address) {
@@ -109,6 +109,6 @@ contract ExampleContract with OwnableTransferable {
 }
 ```
 
-## Sources
+## 资料来源
 
 - [ownable.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/ownable.tact)
