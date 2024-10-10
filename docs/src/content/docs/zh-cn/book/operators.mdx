@@ -1,220 +1,220 @@
 ---
-title: Operators
+title: 操作员
 ---
 
-Almost every contract operates on data: transforms some values into another. Scope may vary, but operators lay in core of such modifications.
+几乎所有合约都对数据进行操作：将某些值转换成另一个值。 范围可能各不相同，但运营商是此类修改的核心。
 
-This page lists all the operators in Tact in decreasing order of their [precedence](#precedence), with examples of usage.
+本页按照[优先级]（#precedence）的递减顺序列出了 Tact 中的所有运算符，并附有使用示例。
 
 :::note
 
-  Note, that there are no implicit type conversions in Tact, so operators can't be used to, say, add values of different type or compare them in terms of equality without explicitly casting to the same type. That's done with certain functions from the standard library. See [`Int.toString(){:tact}`](/ref/core-strings#inttostring) for an example of such function.
+  需要注意的是，Tact 中没有隐式类型转换，因此运算符不能用来添加不同类型的值，或者在不明确转换为相同类型的情况下比较它们的相等性。 这是通过标准库中的某些函数实现的。 请参阅 [`Int.toString(){:tact}`](/ref/core-strings#inttostring)，了解此类函数的示例。
 
 :::
 
-## Table of operators {#table}
+## 操作员表 {#table}
 
-The following table lists operators in order of decreasing [precedence](#precedence): from highest to lowest.
+下表列出了按 [优先级](#precedence)：从高到低递减的运算符。
 
-| Brief description | Operators                                                                                       |
-| :---------------- | :---------------------------------------------------------------------------------------------- |
-| Parentheses       | [`(){:tact}`][paren]                                                                            |
-| Unary postfix     | [`!!{:tact}`][nna]                                                                              |
-| Unary prefix      | [`+{:tact}`][plus] &nbsp; [`-{:tact}`][neg] &nbsp; [`!{:tact}`][inv] &nbsp; [`~{:tact}`][b-not] |
-| Multiplicative    | [`*{:tact}`][mul] &nbsp; [`/{:tact}`][div] &nbsp; [`%{:tact}`][mod]                             |
-| Additive          | [`+{:tact}`][add] &nbsp; [`-{:tact}`][sub]                                                      |
-| Shift             | [`>>{:tact}`][shr] &nbsp; [`<<{:tact}`][shl]                                                    |
-| Relation          | [`>{:tact}`][gt] &nbsp; [`>={:tact}`][ge] &nbsp; [`<{:tact}`][lt] &nbsp; [`<={:tact}`][le]      |
-| Equality          | [`=={:tact}`][eq] &nbsp; [`!={:tact}`][eq]                                                      |
-| Bitwise AND       | [`&{:tact}`][b-and]                                                                             |
-| Bitwise XOR       | [`^{:tact}`][b-xor]                                                                             |
-| Bitwise OR        | [`\|{:tact}`][b-or]                                                                             |
-| Logical AND       | [`&&{:tact}`][l-and]                                                                            |
-| Logical OR        | [`\|\|{:tact}`][l-or]                                                                           |
-| Ternary           | [`?:{:tact}`][ternary]                                                                          |
-| Assignment        | [`={:tact}`][assign] and [all augmented assignment operators](#augmented-assignment)            |
+| 简要说明           | 操作员                                                                                         |
+| :------------- | :------------------------------------------------------------------------------------------ |
+| 括号             | [`(){:tact}`][父母]                                                                           |
+| 一元后缀           | [`!!{:tact}`][nna]                                                                          |
+| 一元前缀           | [`+{:tact}`][正] &nbsp; [`-{:tact}`][负] &nbsp; [`!{:tact}`][负] &nbsp; [`~{:tact}`][b-not]。   |
+| 乘法             | [`*{:tact}`][mul] &nbsp; [`/{:tact}`][div] &nbsp; [`%{:tact}`][mod]。                        |
+| 添加剂            | [`+{:tact}`][加] &nbsp; [`-{:tact}`][分]                                                      |
+| 轮班             | [`>>{:tact}`][shr] &nbsp; [`<<{:tact}`][shl]。                                               |
+| 关系             | [`>{:tact}`][gt] &nbsp; [`>={:tact}`][ge] &nbsp; [`<{:tact}`][lt] &nbsp; [`<={:tact}`][le]。 |
+| 平等             | [`=={:tact}`][eq] &nbsp; [`！={:tact}`][eq]。                                                 |
+| 位与             | [`&{:tact}`][b-and]。                                                                        |
+| 比特 XOR         | [`^{:tact}`][b-xor]。                                                                        |
+| 位操作 OR         | [`\|{:tact}`][b-or]。                                                                        |
+| 逻辑与            | [`&&{:tact}`][l-and]。                                                                       |
+| 逻辑或            | [`\|\|{:tact}`][l-or]                                                                       |
+| 三元             | [`？：{:tact}`][三元]                                                                           |
+| 任务             | [`={:tact}`][赋值] 和 [所有增强赋值运算符](#augmented-assignment)                                       |
 
-[paren]: #parentheses
+[父母]: #括号
 [nna]: #unary-non-null-assert
-[plus]: #unary-plus
-[neg]: #unary-negate
-[inv]: #unary-inverse
-[b-not]: #unary-bitwise-not
-[mul]: #binary-multiply
-[div]: #binary-divide
-[mod]: #binary-modulo
-[add]: #binary-add
-[sub]: #binary-subtract
-[shr]: #binary-bitwise-shift-right
+[加号]: #unary-plus
+[否]: #unary-negate
+[请]: #unary-inverse
+[不]: #unary-bitwise-not
+[桑葚]: #binary-multiply
+[分裂]: #binary-divide
+[模式]: #binary-modulo
+[增加]: #binary-add
+[字幕]: #binary-subtract
+[缩]: #binary-bitwise-shift-right
 [shl]: #binary-bitwise-shift-left
 [gt]: #binary-greater
 [ge]: #binary-greater-equal
 [lt]: #binary-less
-[le]: #binary-less-equal
-[eq]: #binary-equality
-[b-and]: #binary-bitwise-and
+[勒]: #binary-less-equal
+[等式]: #二元平等
+[b 和]: #binary-bitwise-and
 [b-xor]: #binary-bitwise-xor
-[b-or]: #binary-bitwise-or
-[l-and]: #binary-logical-and
-[l-or]: #binary-logical-or
-[ternary]: #ternary
-[assign]: #assignment
+[或]: #binary-bitwise-or
+[和]: #binary-logical-and
+[或]: #binary-logical-or
+[三元]: #ternary
+[分配]: <# 分配>
 
-## Precedence
+## 优先权
 
-All operators on this page are given in order of decreasing precedence, from highest to lowest. Precedence is used to choose which operator would be considered in a particular situation. Whenever any ambiguity arises, Tact would prefer operators with higher precedence over those with lower.
+本页所有运算符的优先级从高到低依次递减。 优先级用于选择在特定情况下考虑哪个运算符。 每当出现模棱两可的情况时，Tact 会优先选择优先级较高的运算符，而不是优先级较低的运算符。
 
-For example, minus sign (`-{:tact}`) may be considered as a subtraction operator or as a negation operator, which reverses the sign of the expression from plus to minus, or vice-versa. As the latter has the higher precedence over the former in cases of ambiguity between the two Tact will first consider `-{:tact}` as a negation operator. And if that doesn't make sense for the given expression, only then it would consider it as a subtraction operator.
+例如，减号 (`-{:tact}`) 可被视为减法运算符或否定运算符，它将表达式的正负符号颠倒过来，反之亦然。 由于在两者有歧义的情况下，后者的优先级高于前者，Tact 将首先把 `-{:tact}` 视为否定操作符。 如果这对给定表达式没有意义，它才会将其视为减法运算符。
 
-Consider the following code:
+请看下面的代码
 
 ```tact
-5 + -5; // here, the minus sign would be viewed as a negation operator
-5 -5;   // while here it would be viewed as a subtraction operator, despite formatting
+5 + -5; // 在这里，减号将被视为否定运算符
+5 -5; // 而在这里，尽管有格式限制，它仍将被视为减法运算符
 ```
 
-Even though this example may be simple, neglecting of precedence rules can often lead to confusing situations with operators. The correct order of operations can be ensured by wrapping every operation in [parentheses](#parentheses), since parentheses have the highest precedence of all expressions and operators there is.
+尽管这个例子可能很简单，但忽略优先级规则往往会导致运算符出现混乱的情况。 由于括号在所有表达式和运算符中具有最高优先级，因此用[括号](#括号)封装每个操作可以确保正确的操作顺序。
 
-## Parentheses, `()` {#parentheses}
+## 括号，`()` {#parentheses}
 
-Parentheses (also can be called round brackets, `(){:tact}`) are more of a punctuation symbols than actual operators, but their [precedence](#precedence) is higher than precedence of any other operator. Use parentheses to override order of operations:
+括号（也可称为圆括号，`(){:tact}`）与其说是实际的运算符，不如说是一种标点符号，但其[优先级]（#优先级）高于任何其他运算符的优先级。 使用括号可覆盖运算顺序：
 
 ```tact
-5 * 5 - 2;   // 23
+5 * 5 - 2; // 23
 5 * (5 - 2); // 15
 ```
 
-## Unary
+## 一元
 
-Unary here means that they are applied only to one operand of the given expression. All unary operators, except for the [non-null assertion](#unary-non-null-assert), are of the same [precedence](#precedence).
+这里的 "一元 "是指只应用于给定表达式的一个操作数。 除了 [非空断言](#unary-non-null-assert)，所有一元运算符都具有相同的 [先例](#precedence)。
 
-Unary operators can be one of the two types:
+一元运算符可以是两种类型之一：
 
-- prefix — placed before the expression.
-- postfix (or suffix) —  placed after the expression.
+- 前缀 - 放在表达式之前。
+- 后缀（或后缀） - 放在表达式之后。
 
-### Non-null assert, `!!` {#unary-non-null-assert}
+### 非空断言，`!!` {#unary-non-null-assert}
 
-Unary double-exclamation mark (_non-null assertion_) operator `!!{:tact}` is a postfix operator, which enforces non-`null{:tact}` values and allows direct access to the value of the optional variable if it's not `null{:tact}`. Otherwise, raises a compilation error if the compiler can track it, and if not — throws an exception with [exit code 128](/book/exit-codes#128): `Null reference exception`. Can be applied to any optional variable regardless of its non-`null{:tact}` type.
+一元双叹号（_非空断言_）运算符 `!{:tact}是一个后缀运算符，它强制执行非`null{:tact}`值，如果可选变量不是`null{:tact}`，则允许直接访问可选变量的值。 否则，如果编译器可以跟踪，则引发编译错误；如果不能跟踪，则抛出[退出代码 128](/book/exit-codes#128)异常：空引用异常"。 可应用于任何可选变量，无论其类型是非 "空{:tact}`"。
 
 :::note
 
-  Read more about optional variables and fields here: [Optionals](/book/optionals)
+  点击此处了解更多有关可选变量和字段的信息：[可选变量](/book/optionals)
 
 :::
 
-### Plus, `+` {#unary-plus}
+### 加号，`+` {#unary-plus}
 
-Although unary plus sign operator `+{:tact}` is specified in the grammar of Tact compiler, it only exists as a [binary operator](#binary-add).
+虽然 Tact 编译器的语法中指定了一元加号运算符 `+{:tact}`，但它只作为 [二元运算符]（#binary-add）存在。
 
-### Negate, `-` {#unary-negate}
+### 否定，`-` {#unary-negate}
 
-Unary minus sign (_negation_) operator `-{:tact}` is a prefix operator, which reverses the sign of the expression. Can only be applied to values of type [`Int{:tact}`][int]:
+一元减号（_negation_）运算符 `-{:tact}` 是一个前缀运算符，用于反转表达式的符号。 只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
-let five: Int = 5;
-five + -five; // here, the minus sign is a negation operator, not a subtraction operator
--(-1);        // double application gives back the original value, which is 1
---1;          // 1
+let five：Int = 5;
+five + -five; // 在这里，减号是一个否定运算符，而不是减法运算符
+-(-1); // 双倍应用返回原始值，即 1
+--1; // 1
 ```
 
-### Inverse, `!` {#unary-inverse}
+### 逆，`！` {#unary-inverse}
 
-Unary exclamation mark (_inversion_) operator `!{:tact}` is a prefix operator, which inverts the boolean value of the expression — changes `true{:tact}` to `false{:tact}`, and vice versa. Can only be applied to values of type [`Bool{:tact}`][bool]:
+一元感叹号 (_inversion_) 运算符 `！{:tact}是一个前缀运算符，用于反转表达式的布尔值--将 `true{:tact}`变为`false{:tact}`，反之亦然。 只能应用于 [`Bool{:tact}\`][bool]类型的值：
 
 ```tact
-let iLikeTact: Bool = true;
+let iLikeTact：Bool = true;
 !iLikeTact; // false
-!false;     // true
-!(!false);  // false
-!!false;    // false
+!false; // true
+!(!false); // false
+!!false; // false
 ```
 
-### Bitwise NOT, `~` {#unary-bitwise-not}
+### 双向 NOT, `~` {#unary-bitwise-not}
 
-Unary tilde (_bitwise not_) operator `~{:tact}` is a prefix operator, which inverts or _flips_ each bit in the binary representation of the expression — changes each $1$ to $0$, and vice versa. Can only be applied to values of type [`Int{:tact}`][int]:
+单引号 tilde（_bitwise not_）运算符 `~{:tact}` 是一个前缀运算符，它将表达式二进制表示中的每一位反转或_flip_，即把 $1$ 改为 $0$，反之亦然。 只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
-let answer: Int = 42;
-~answer;    // -43
+let answer：Int = 42;
+~answer; // -43
 ~(~answer); // 42
-~(~0);      // 0
-~~0;        // 0
+~(~0); // 0
+~~0; // 0
 ```
 
-## Binary
+## 二进制
 
-Binary operators are split into several subsections, in order of decreasing [precedence](#precedence). Operators within each subsection have the same [precedence](#precedence) as the subsection itself.
+二进制运算符按[优先级](#precedence)递减的顺序分成几个小节。 每个小节中的操作符与小节本身具有相同的 [优先级](#precedence)。
 
-### Multiplication {#binary-multiplication}
+### 乘法 {#binary-multiplication}
 
-Multiply, divide or obtain a remainder.
+乘、除或求余数。
 
-#### Multiply, `*` {#binary-multiply}
+#### 乘法，`*` {#binary-multiply}
 
-Binary asterisk (_multiplication_) operator `*{:tact}` is used for multiplication of two values. Can cause [integer overflows](/book/integers#operations).
+二进制星号 (_multiplication_) 运算符 `*{:tact}` 用于两个值的乘法运算。 可能导致 [整数溢出](/book/integers#operations)。
 
-Can only be applied to values of type [`Int{:tact}`][int]:
+只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
-two * two;         // 4
+two * two; // 4
 0 * 1_000_000_000; // 0
--1 * 5;            // -5
+-1 * 5; // -5
 
-pow(2, 255) * pow(2, 255); // build error: integer overflow!
+pow(2, 255) * pow(2, 255); // build error: integer overflow！
 ```
 
-#### Divide, `/` {#binary-divide}
+#### 除法，`/` {#binary-divide}
 
-Binary slash (_division_) operator `/{:tact}` is used for integer division of two values, which truncates towards zero if result is positive, and away from zero if result is negative. This is also called [rounding down](https://en.wikipedia.org/wiki/Rounding#Rounding_down) (or rounding towards $-∞$).
+二进制斜线 (_division_) 运算符 `/{:tact}` 用于两个值的整除，如果结果为正，则向零截断，如果结果为负，则从零截断。 这也叫 [向下舍入](https://en.wikipedia.org/wiki/Rounding#Rounding_down)（或向 $-∞$ 舍入）。
 
-An attempt to divide by zero would result in an error with [exit code 4](/book/exit-codes#4): `Integer overflow`.
+如果尝试除以零，则会出现[退出代码 4](/book/exit-codes#4)错误：整数溢出。
 
-Can only be applied to values of type [`Int{:tact}`][int]:
+只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
 two / 2; // 1
 two / 1; // 2
--1 / 5;  // -1
+-1 / 5; // -1
 -1 / -5; // 0
-1 / -5;  // -1
-1 / 5;   // 0
-6 / 5;   // 1, rounding down
--6 / 5;  // -2, rounding down (towards -∞)
+1 / -5; // -1
+1 / 5; // 0
+6 / 5; // 1，四舍五入
+-6 / 5; // -2，四舍五入（向-∞方向）。
 ```
 
 :::note
 
-  Note that the following relationship between the division and modulo operators always holds for `Int{:tact}` type:
+  请注意，对于 `Int{:tact}` 类型，除法运算符和模数运算符之间的以下关系始终成立：
 
 ```tact
-a / b * b + a % b == a; // true for any Int values of `a` and `b`,
-                        //   except when `b` is equal to 0 and we divide `a` by 0,
-                        //   which is an attempt to divide by zero resulting in an error
+a / b * b + a % b == a; // 对于 `a` 和 `b` 的任何 Int 值均为 true,
+                        // 除了当 `b` 等于 0 且我们用 0 除以 `a` 时，
+                        // 这是尝试除以 0，结果会出错。
 ```
 
 :::
 
 #### Modulo, `%` {#binary-modulo}
 
-Binary percent sign (_modulo_) operator `%{:tact}` is used for getting the modulo of an integer division, which must not be confused with getting a remainder. For two values of the same sign, modulo and remainder operations are equivalent, but when the operands are of different signs, the modulo result always has the same sign as the _divisor_ (value on the right), while the remainder has the same sign as the _dividend_ (value on the left), which can make them differ by one unit of the _divisor_.
+二进制百分号 (_modulo_) 运算符 `%{:tact}` 用于获取整数除法的模数，不能与获取余数混淆。 对于符号相同的两个值，模运算和余运算是等价的，但当操作数的符号不同时，模运算的结果总是与_除数_（右边的值）的符号相同，而余运算的结果与_除数_（左边的值）的符号相同，这可能使它们相差一个单位的_除数_。
 
-Can only be applied to values of type [`Int{:tact}`][int]:
+只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
 two % 2; // 0
 two % 1; // 1
 
-1 % 5;   // 1
--1 % 5;  // 4
-1 % -5;  // -4
+1 % 5; // 1
+-1 % 5; // 4
+1 % -5; // -4
 -1 % -5; // -1
 ```
 
-The simplest way to avoid confusion between the two is to prefer using positive values via [`abs(x: Int){:tact}`](/ref/core-math#abs):
+避免两者混淆的最简单方法是通过 [`abs(x: Int){:tact}`](/ref/core-math#abs)优先使用正值：
 
 ```tact
 abs(-1) % abs(-5); // 1
@@ -222,105 +222,105 @@ abs(-1) % abs(-5); // 1
 
 :::note
 
-  Did you know, that in JavaScript `%{:tact}` works as a _remainder_ operator, but not _modulo_ operator (like in Tact)?\
-  [Remainder (%) - JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder#description)\
+  你知道吗，在 JavaScript 中，`%{:tact}` 可以作为_remainder_运算符，但不能作为_modul_运算符（比如在 Tact 中）？
+  [Remainder (%) - JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder#description)
   [Modulo - Wikipedia](https://en.wikipedia.org/wiki/Modulo)
 
 :::
 
-### Addition {#binary-addition}
+### 加法 {#binary-addition}
 
-Add or subtract.
+加法或减法。
 
-#### Add, `+` {#binary-add}
+#### 添加，`+` {#binary-add}
 
-Binary plus (_addition_) operator `+{:tact}` is used for adding numbers together. Going beyond the maximum value of an [`Int{:tact}`][int] will result in an error with [exit code 4](/book/exit-codes#4): `Integer overflow`.
+二进制加法运算符 `+{:tact}` 用于将数字相加。 超出 [`Int{:tact}`][int]的最大值将导致[退出代码 4](/book/exit-codes#4)错误：整数溢出"。
 
-Can only be applied to values of type [`Int{:tact}`][int]:
+只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
 two + 2; // 4
--1 + 1;  // 0
+-1 + 1; // 0
 
-pow(2, 254) + pow(2, 254);     // 2 * 2^254
-pow(2, 255) + pow(2, 255);     // build error: integer overflow!
-pow(2, 255) - 1 + pow(2, 255); // 2^256 - 1, maximal value of any integer in Tact!
+pow(2, 254) + pow(2, 254); // 2 * 2^254
+pow(2, 255) + pow(2, 255); // 编译错误：整数溢出！
+pow(2, 255) - 1 + pow(2, 255); // 2^256 - 1，Tact 中任何整数的最大值！
 ```
 
-#### Subtract, `-` {#binary-subtract}
+#### 减去，`-` {#binary-subtract}
 
-Binary minus (_subtraction_) operator `-{:tact}` is used for subtracting numbers from each other. Going beyond the minimum value of an [`Int{:tact}`][int] will result in an error with [exit code 4](/book/exit-codes#4): `Integer overflow`.
+二进制减号（_subtraction_）运算符 `-{:tact}` 用于将数字相减。 超出 [`Int{:tact}`][int]的最小值将导致[退出代码 4](/book/exit-codes#4)错误：整数溢出。
 
-Can only be applied to values of type [`Int{:tact}`][int]:
+只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
 two - 2; // 0
--1 - 1;  // -2
+-1 - 1; // -2
 
 pow(2, 254) - pow(2, 254); // 0
 pow(2, 255) - pow(2, 255); // 0
-pow(2, 256) - pow(2, 256); // build error: integer overflow!
+pow(2, 256) - pow(2, 256); // build error: integer overflow！
 ```
 
-### Bitwise shifts {#binary-bitwise-shifts}
+### 位移 {#binary-bitwise-shifts}
 
-Shift bits to the left or to the right.
+向左或向右移动位。
 
-#### Shift right, `>>` {#binary-bitwise-shift-right}
+#### 右移，`>>` {#binary-bitwise-shift-right}
 
-Binary double greater than (_bitwise shift right_) operator `>>{:tact}` returns an integer which binary representation is the _left operand_ value shifted by the _right operand_ number of bits to the right. Excess bits shifted off to the right are discarded, and copies of the leftmost bit are shifted in from the left. This operation is also called "sign-propagating right shift" or "arithmetic right shift", because the sign of the resulting number is the same as the sign of the _left operand_. This is a more effective way to divide the _left operand_ by $2^n$, where $n$ is equal to the _right operand_.
+二进制 double greater than（_比特向右移动_）运算符 `>>{:tact}` 返回一个整数，其二进制表示为_左操作数_的值向右移动了_右操作数_的位数。 向右移位的多余位被丢弃，最左边位的副本从左边移入。 这种操作也称为 "符号向右移动 "或 "算术向右移动"，因为结果数字的符号与左操作数的符号相同。 这是一种更有效的方法，即用 2^n$ 除以_左操作数_，其中 $n$ 等于_右操作数_。
 
-Can only be applied to values of type [`Int{:tact}`][int]:
+只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
 two >> 1; // 1
-4 >> 1;   // 2
-5 >> 1;   // 2, due to flooring of integer values
+4 >> 1; // 2
+5 >> 1; // 2，由于整数值的下限
 
 pow(2, 254) >> 254; // 1
 ```
 
 :::note
 
-  [Bit shifts - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#Bit_shifts)\
+  [Bit shifts - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#Bit_shifts)
   [Bit manipulation - Wikipedia](https://en.wikipedia.org/wiki/Bit_manipulation)
 
 :::
 
-#### Shift left, `<<` {#binary-bitwise-shift-left}
+#### 左移，`<<` {#binary-bitwise-shift-left}
 
-Binary double greater than (_bitwise shift left_) operator `<<{:tact}` returns an integer which binary representation is the _left operand_ value shifted by the _right operand_ number of bits to the left. Excess bits shifted off to the left are discarded, and zero bits are shifted in from the right. This is a more effective way to multiply the _left operand_ by $2^n$, where $n$ is equal to the _right operand_. Going beyond the maximum value of an [`Int{:tact}`][int] will result in an error with [exit code 4](/book/exit-codes#4): `Integer overflow`.
+二进制 double greater than（_bitwise shift left_）运算符 `<<{:tact}` 返回一个整数，其二进制表示为_左操作数_的值向左移动_右操作数_的位数。 向左移位的多余比特被丢弃，零比特从右边移入。 这是一种更有效的方法，可以将_左操作数_乘以 2^n$，其中 $n$ 等于_右操作数_。 超出 [`Int{:tact}`][int]的最大值将导致[退出代码 4](/book/exit-codes#4)错误：整数溢出"。
 
-Can only be applied to values of type [`Int{:tact}`][int]:
+只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
-let two: Int = 2;
+let two：Int = 2;
 two << 1; // 4
-1 << 5;   // 1 * 2^5, which is 32
-2 << 5;   // 2 * 2^5, which is 64
+1 << 5; // 1 * 2^5, 即 32
+2 << 5; // 2 * 2^5, 即 64
 
 pow(2, 254) == (1 << 254); // true
-pow(2, 254) == 1 << 254; // true, no parentheses needed due to higher precedence of >> over ==
-pow(2, 255) == 1 << 255; // true, but we're very close to overflow here!
+pow(2, 254) == 1 << 254；// true，由于 >> 优先于 ==
+pow(2, 255) == 1 << 255; // true，但我们在这里非常接近溢出，所以不需要括号！
 ```
 
 :::note
 
-  [Bit shifts - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#Bit_shifts)\
+  [Bit shifts - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#Bit_shifts)
   [Bit manipulation - Wikipedia](https://en.wikipedia.org/wiki/Bit_manipulation)
 
 :::
 
-### Relation {#binary-relation}
+### 关系 {#binary-relation}
 
-Find bigger, smaller or equal values.
+查找更大、更小或相等的数值。
 
-#### Greater than, `>` {#binary-greater}
+#### 大于，`>` {#binary-greater}
 
-Binary _greater than_ operator `>{:tact}` returns `true{:tact}` if the left operand is greater than the right operand, and `false{:tact}` otherwise. Can only be applied to values of type [`Int{:tact}`][int]:
+二进制_大于_运算符 `>{:tact}` 如果左操作数大于右操作数，则返回 `true{:tact}`，否则返回 `false{:tact}`。 只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
@@ -328,9 +328,9 @@ two > 2; // false
 -1 > -3; // true
 ```
 
-#### Greater than or equal to, `>=` {#binary-greater-equal}
+#### 大于或等于，`>=` {#binary-greater-equal}
 
-Binary _greater than or equal to_ operator `>={:tact}` returns `true{:tact}` if the left operand is greater than or to the right operand, and `false{:tact}` otherwise. Can only be applied to values of type [`Int{:tact}`][int]:
+二进制_大于或等于_运算符 `>={:tact}` 如果左操作数大于或等于右操作数，则返回 `true{:tact}`，否则返回 `false{:tact}`。 只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
@@ -338,9 +338,9 @@ two >= 2; // true
 -1 >= -3; // true
 ```
 
-#### Less than, `<` {#binary-less}
+#### 小于，`<` {#binary-less}
 
-Binary _less than_ operator `<{:tact}` returns `true{:tact}` if the left operand is less than the right operand, and `false{:tact}` otherwise. Can only be applied to values of type [`Int{:tact}`][int]:
+二进制 _less than_ 运算符 `<{:tact}` 如果左操作数小于右操作数，则返回 `true{:tact}`，否则返回 `false{:tact}`。 只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
@@ -348,9 +348,9 @@ two < 2; // false
 -1 < -3; // false
 ```
 
-#### Less than or equal to, `<=` {#binary-less-equal}
+#### 小于或等于，`<=` {#binary-less-equal}
 
-Binary _less than or equal to_ operator `<={:tact}` returns `true{:tact}` if the left operand is less than or equal to the right operand, and `false{:tact}` otherwise. Can only be applied to values of type [`Int{:tact}`][int]:
+二进制_小于或等于_运算符 `<={:tact}` 如果左操作数小于或等于右操作数，则返回 `true{:tact}`，否则返回 `false{:tact}`。 只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
@@ -358,24 +358,24 @@ two <= 2; // true
 -1 <= -3; // false
 ```
 
-### Equality and inequality, `==` `!=` {#binary-equality}
+### 平等与不平等，```===``！=``` {#binary-equality}
 
-Binary equality (_equal_) operator `=={:tact}` checks whether its two operands are _equal_, returning a result of type [`Bool{:tact}`][bool].
+二进制相等（_equal_）运算符 `=={:tact}` 检查其两个操作数是否_equal_，返回结果类型 [`Bool{:tact}`][bool]。
 
-Binary inequality (_not equal_) operator `!={:tact}` checks whether its two operands are _not equal_, returning a result of type [`Bool{:tact}`][bool].
+二元不等式（_not equal_）运算符 `!={:tact}` 检查其两个操作数是否_not equal_，返回一个 [`Bool{:tact}`][bool] 类型的结果。
 
-Both operators require operands to be of the same type and both don't perform implicit type conversions, except for the [`Cell{:tact}`][cell] and [`Slice{:tact}`][slice] types, which are implicitly compared by their hashes.
+除了 [`Cell{:tact}`][cell]和 [`Slice{:tact}`][slice]类型会通过哈希值进行隐式比较外，这两种操作符都要求操作数为相同类型，并且都不执行隐式类型转换。
 
-Both operators can be applied to the following list of types and values:
+这两种运算符都可以应用于下列类型和值：
 
-- [`Int{:tact}`][int]
-- [`Bool{:tact}`][bool]
-- [`Address{:tact}`][p]
-- [`Cell{:tact}`][cell], implicitly compares via `.hash(){:tact}`
-- [`Slice{:tact}`][slice], implicitly compares via `.hash(){:tact}`
-- [`String{:tact}`][p]
-- [`map<K, V>{:tact}`](/book/maps), but only if their key and value types are identical
-- [Optionals and `null{:tact}` value](/book/optionals)
+- [`Int{:tact}`][int]。
+- [`Bool{:tact}`][bool]。
+- [`地址{:tact}`][p]
+- [`单元格{:tact}`][单元格]，通过`.hash(){:tact}`隐式比较
+- [`片{:tact}`][片]，通过`.hash(){:tact}`隐式比较
+- [`字符串{:tact}`][p]
+- [`map<K, V>{:tact}`](/book/maps)，但前提是它们的键和值类型相同
+- [选项和 `null{:tact}` 值](/book/optionals)
 
 ```tact
 // Int:
@@ -383,12 +383,12 @@ Both operators can be applied to the following list of types and values:
 2 != 3; // true
 
 // Bool:
-true == true;  // true
+true == true; // true
 false != true; // true
 
 // Address:
 myAddress() == myAddress(); // true
-myAddress() != myAddress(); // false
+myAddress() ！= myAddress(); // false
 
 // Cell:
 emptyCell() == emptyCell(); // true
@@ -398,7 +398,7 @@ emptyCell() != emptyCell(); // false
 "A".asSlice() == "A".asSlice(); // true
 "A".asSlice() != "A".asSlice(); // false
 
-// String:
+// String：
 "A" == "A"; // true
 "A" != "A"; // false
 
@@ -408,235 +408,235 @@ let map2: map<Int, Int> = emptyMap();
 map1 == map2; // true
 map1 != map2; // false
 
-// Optionals and null values themselves
-let nullable: Int? = null;
+// 可选项和空值本身
+let nullable：Int? = null;
 nullable == null; // true
-null == null;     // true
+null == null; // true
 nullable != null; // false
-null != null;     // false
+null != null; // false
 
-let anotherNullable: Int? = 5;
+let anotherNullable：= 5;
 nullable == anotherNullable; // false
 nullable != anotherNullable; // true
 ```
 
-### Bitwise AND, `&` {#binary-bitwise-and}
+### 比特 AND, `&` {#binary-bitwise-and}
 
-Binary ampersand (_bitwise AND_) operator `&{:tact}` applies a [bitwise AND](https://en.wikipedia.org/wiki/Bitwise_operation#AND), which performs the [logical AND](#binary-logical-and) operation on each pair of the corresponding bits of operands. This is useful when we want to clear selected bits off a number, where each bit represents an individual flag or a boolean state, which makes it possible to "store" up to $257$ boolean values per integer, as all integers in Tact are $257$-bit signed.
+二进制安培（_比特 AND_）运算符 `&{:tact}` 应用[比特 AND](https://en.wikipedia.org/wiki/Bitwise_operation#AND)，对操作数的每一对相应比特执行[逻辑 AND](#二进制-逻辑-and)运算。 当我们要清除一个数字的选定位时，这一点非常有用，因为每个位都代表一个单独的标志或布尔状态，这使得每个整数可以 "存储 "多达 $257$ 个布尔值，因为 Tact 中的所有整数都是 $257$- 位有符号的。
 
-Can only be applied to values of type [`Int{:tact}`][int]:
+只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
 two & 1; // 0
-4 & 1;   // 0
-3 & 1;   // 1
-1 & 1;   // 1
+4 & 1; // 0
+3 & 1; // 1
+1 & 1; // 1
 
-255 & 0b00001111;        // 15
+255 & 0b00001111; // 15
 0b11111111 & 0b00001111; // 15
 ```
 
 :::note
 
-  [Bitwise AND - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#AND)\
+  [Bitwise AND - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#AND)
   [Bit manipulation - Wikipedia](https://en.wikipedia.org/wiki/Bit_manipulation)
 
 :::
 
-### Bitwise XOR, `^` {#binary-bitwise-xor}
+### 比特 XOR, `^` {#binary-bitwise-xor}
 
-Binary caret (_bitwise XOR_) operator `^{:tact}` applies a [bitwise XOR](https://en.wikipedia.org/wiki/Bitwise_operation#XOR), which performs the [logical exclusive OR](https://en.wikipedia.org/wiki/Exclusive_or) operation on each pair of the corresponding bits of operands. The result in each position is $1$ if only one of the bits is $1$, but will be $0$ if both are $0$ or both are $1$. In this it performs the comparison of two bits, giving $1$ if the two bits are different, and $0$ if they are the same.
+二进制符串（_位向 XOR_）运算符 `^{:tact}` 应用 [位向 XOR](https://en.wikipedia.org/wiki/Bitwise_operation#XOR)，对操作数的每一对相应位执行 [逻辑排他 OR](https://en.wikipedia.org/wiki/Exclusive_or)运算。 如果只有一个位是 $1$，则每个位置的结果都是 $1$ ，但如果两个位都是 $0$ 或两个位都是 $1$，则结果都是 $0$。 在这种情况下，它会对两个比特进行比较，如果两个比特不同，则给出 $1$ ；如果两个比特相同，则给出 $0$。
 
-It is useful for inverting selected bits of an operand (also called toggle or flip), as any bit may be toggled by "XORing" it with $1$.
+它适用于将操作数的选定位反转（也称为切换或翻转），因为任何位都可以通过与 $1$进行 "XOR "来切换。
 
-Can only be applied to values of type [`Int{:tact}`][int]:
+只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
 two ^ 3; // 1
-4 ^ 1;   // 0
-3 ^ 1;   // 3
-1 ^ 1;   // 0
+4 ^ 1; // 0
+3 ^ 1; // 3
+1 ^ 1; // 0
 
-255 ^ 0b00001111;        // 240
-0b11111111 ^ 0b00001111; // 240
+255 ^ 0b00001111; // 240
+0b111111 11 ^ 0b00001111; // 240
 ```
 
 :::note
 
-  [Bitwise XOR - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#XOR)\
+  [Bitwise XOR - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#XOR)/
   [Bit manipulation - Wikipedia](https://en.wikipedia.org/wiki/Bit_manipulation)
 
 :::
 
-### Bitwise OR, `|` {#binary-bitwise-or}
+### 位wise OR, `|` {#binary-bitwise-or}
 
-Binary bar (_bitwise OR_) operator `|{:tact}` applies a [bitwise OR](https://en.wikipedia.org/wiki/Bitwise_operation#OR), which performs the [logical OR](#binary-logical-or) operation on each pair of the corresponding bits of operands. This is useful when we want to apply a specific [bitmask](https://en.wikipedia.org/wiki/Mask_(computing)).
+二进制条形 (_bitwise OR_) 运算符 `|{:tact}` 应用 [bitwise OR](https://en.wikipedia.org/wiki/Bitwise_operation#OR)，对操作数的每一对相应位执行 [logical OR](#binary-logical-or) 运算。 当我们要应用特定的 [bitmask](https://en.wikipedia.org/wiki/Mask_(computing)) 时，这很有用。
 
-For example, _bitwise OR_ is commonly used in Tact to [combine base modes with optional flags](/book/message-mode#combining-modes-with-flags) by masking specific bits to $1$ in order to construct a target [message `mode`](/book/message-mode).
+例如，_bitwise OR_ 通常用于 Tact 中的[将基本模式与可选标记结合](/book/message-mode#combining-modes-with-flags)，方法是将特定位屏蔽到 $1$ ，以构建目标[信息`模式`](/book/message-mode)。
 
-Can only be applied to values of type [`Int{:tact}`][int]:
+只能应用于 [`Int{:tact}`][int]类型的值：
 
 ```tact
 let two: Int = 2;
 two | 1; // 3
-4 | 1;   // 5
-3 | 1;   // 3
-1 | 1;   // 1
+4 | 1; // 5
+3 | 1; // 3
+1 | 1; // 1
 
-255 | 0b00001111;        // 255
-0b11111111 | 0b00001111; // 255
+255 | 0b00001111; // 255
+0b111111 | 0b00001111; // 255
 ```
 
 :::note
 
-  [Bitwise OR - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#OR)\
+  [Bitwise OR - Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#OR)
   [Bit manipulation - Wikipedia](https://en.wikipedia.org/wiki/Bit_manipulation)
 
 :::
 
-### Logical AND, `&&` {#binary-logical-and}
+### 逻辑 AND, `&&` {#binary-logical-and}
 
-Binary logical AND ([logical conjunction](https://en.wikipedia.org/wiki/Logical_conjunction)) operator `&&{:tact}` returns `true{:tact}` if both operands are `true{:tact}`, and `false{:tact}` otherwise. It's short-circuited, meaning that it would immediately evaluate the whole expression as `false{:tact}` if the left operand is `false{:tact}`, without evaluating the right one.
+二进制逻辑 AND（[逻辑连接](https://en.wikipedia.org/wiki/Logical_conjunction)）运算符 `&&{:tact}` 如果两个操作数都是 `true{:tact}`，则返回 `true{:tact}`，否则返回 `false{:tact}`。 它是短路的，也就是说，如果左操作数是 `false{:tact}`，它会立即将整个表达式求值为 `false{:tact}`，而不求值右操作数。
 
-Can only be applied to values of type [`Bool{:tact}`][bool]:
+只能应用于 [`Bool{:tact}`][bool]类型的值：
 
 ```tact
-let iLikeTact: Bool = true;
-iLikeTact && true;  // true, evaluated both operands
+let iLikeTact：Bool = true;
+iLikeTact && true; // true, evaluated both operands
 iLikeTact && false; // false, evaluated both operands
 false && iLikeTact; // false, didn't evaluate iLikeTact
 ```
 
-### Logical OR, `||` {#binary-logical-or}
+### 逻辑 OR, `||` {#binary-logical-or}
 
-Binary logical OR ([logical disjunction](https://en.wikipedia.org/wiki/Logical_disjunction)) operator `||{:tact}` returns `false{:tact}` only if both operands are `false{:tact}`, and `true{:tact}` otherwise. It's short-circuited, meaning that it would immediately evaluate the whole expression as `true{:tact}` if the left operand is `true{:tact}`, without evaluating the right one.
+二元逻辑 OR（[逻辑析取](https://en.wikipedia.org/wiki/Logical_disjunction)）运算符 `||{:tact}` 只有当两个操作数都是 `false{:tact}` 时，才返回 `false{:tact}`，否则返回 `true{:tact}`。 它是短路的，也就是说，如果左操作数是 `true{:tact}`，它会立即将整个表达式评估为 `true{:tact}`，而不评估右操作数。
 
-Can only be applied to values of type [`Bool{:tact}`][bool]:
+只能应用于 [`Bool{:tact}`][bool]类型的值：
 
 ```tact
-let iLikeSnails: Bool = false;
-iLikeSnails || true;  // true, evaluated both operands
+let iLikeSnails：Bool = false;
+iLikeSnails || true; // true, evaluated both operands
 iLikeSnails || false; // false, evaluated both operands
-true || iLikeSnails;  // true, didn't evaluate iLikeSnails
+true || iLikeSnails; // true, didn't evaluate iLikeSnails
 ```
 
-## Ternary, `?:` {#ternary}
+## 三元，`?:` {#ternary}
 
-Conditional (_ternary_) operator is the only Tact operator that takes three operands: a condition followed by a question mark (`?{:tact}`), then an expression to execute if the condition is evaluated to `true{:tact}` followed by a colon (`:{:tact}`), and finally the expression to execute if the condition is evaluated to `false{:tact}`. This operator is frequently used as an alternative to an [`if...else{:tact}`](/book/statements#if-else) statement.
+条件（_ternary_）运算符是唯一一个包含三个操作数的 Tact 运算符：一个条件，后面跟一个问号（`?{:tact}`），然后是如果条件被评估为`true{:tact}`时要执行的表达式，后面跟一个冒号（`:{:tact}`），最后是如果条件被评估为`false{:tact}`时要执行的表达式。 该运算符常用于替代 [`if...else{:tact}`](/book/statements#if-else) 语句。
 
-Condition must resolve to type [`Bool{:tact}`][bool]:
+条件必须解析为 [`布尔{:tact}`][布尔] 类型：
 
 ```tact
 // condition
 // ↓
-true ? "incredibly so" : "absolutely not"; // "incredibly so"
-//     ---------------   ----------------
-//     ↑                 ↑
-//     |                 alternative, when condition is false
-//     |
-//     consequence, when condition is true
+true ?"incredibly so" ："absolutely not"; // "incredibly so"
+// --------------- ----------------
+// ↑ ↑
+// | alternative, when condition is false
+// |
+// consequence, when condition is true
 
 2 + 2 == 4 ? true : false; // true
 ```
 
-Ternary operator is the only operator with right associativity, besides [assignment-related ones](#assignment). This means that in ambiguous situations Tact would prefer the longest matching sequence. In short, this makes bracket-less nesting of ternary operators possible, but only for alternative cases (the part that comes after the colon sign `:{:tact}`):
+三元运算符是除[赋值相关运算符]（#赋值）外唯一具有右关联性的运算符。 这意味着，在模棱两可的情况下，Tact 会优先选择最长的匹配序列。 简而言之，这使得三元运算符的无括号嵌套成为可能，但仅限于替代情况（冒号 `:{:tact}` 后面的部分）：
 
 ```tact
-// don't need additional parentheses for alternative cases
-false ? 1 : (false ? 2 : 3); // 3
-false ? 1 : false ? 2 : 3;   // also 3
-false ? 1 : true ? 2 : 3;    // 2
+// 在其他情况下不需要额外的括号
+false ?1 : (false ? 2 : 3); // 3
+false ?1 : false ?2 : 3; // 也是 3
+false ?1 : true ?2 : 3; // 2
 
-// need additional parentheses for consequence cases (parts in-between ? and :)
-false ? (false ? 1 : 2) : 3; // 3
-false ? false ? 1 : 2 : 3;   // SYNTAX ERROR!
-true  ? (false ? 1 : 2) : 3; // 2
+// 后果情况需要额外的括号(介于 ? 和 : 之间的部分)
+false ?(false ? 1 : 2) : 3; // 3
+false ?1 : 2 : 3; // SYNTAX ERROR!
+true ?(false ? 1 : 2) : 3; // 2
 ```
 
-## Assignment, `=` {#assignment}
+## 赋值，`=` {#assignment}
 
-Assignment operator `={:tact}` is used to assign a value to a variable, or to a property of a [Message](/book/structs-and-messages#messages) or a [Struct](/book/structs-and-messages#structs). The assignment is a statement and it doesn't return a value.
+赋值操作符 `={:tact}` 用于为变量或 [Message](/book/structs-and-messages#messages) 或 [Struct](/book/structs-and-messages#structs) 的属性赋值。 赋值是一个语句，不返回值。
 
 ```tact
-let someVar: Int = 5;    // assignment operator = is used here...
-someVar = 4;             // ...and here
-someVar = (someVar = 5); // SYNTAX ERROR!
+let someVar：Int = 5; // 这里使用了赋值运算符 =...
+someVar = 4; // ... 这里
+someVar = (someVar = 5); // SYNTAX ERROR！
 ```
 
-### Augmented assignment
+### 扩增任务
 
-Augmented (or compound) assignment operators such as `+={:tact}` combine an operation with an [assignment](#assignment). The augmented assignment is a statement and it doesn't return a value.
+增强（或复合）赋值运算符，如 `+={:tact}`，将操作与 [赋值]（#assignment）结合起来。 增强赋值是一个语句，不返回值。
 
-Augmented assignments are semantically equivalent to regular assignments, but with an operation:
+扩充赋值在语义上等同于常规赋值，只是多了一个操作：
 
 ```tact
-let value: Int = 5;
+let value：Int = 5;
 
 // this:
 value += 5;
-// is equivalent to this:
-value = value + 5;
+// 等同于 this:
+value = value + 5；
 ```
 
-List of augmented assignment operators:
+增强赋值运算符列表：
 
-- `+={:tact}`, which uses [addition operator `+{:tact}`](#binary-add). Can only be applied to values of type [`Int{:tact}`][int].
-- `-={:tact}`, which uses [subtraction operator `-{:tact}`](#binary-subtract). Can only be applied to values of type [`Int{:tact}`][int].
-- `*={:tact}`, which uses [multiplication operator `*{:tact}`](#binary-multiply). Can only be applied to values of type [`Int{:tact}`][int].
-- `/={:tact}`, which uses [division operator `/{:tact}`](#binary-divide). Can only be applied to values of type [`Int{:tact}`][int].
-- `%={:tact}`, which uses [modulo operator `%{:tact}`](#binary-modulo). Can only be applied to values of type [`Int{:tact}`][int].
-- `&={:tact}`, which uses [bitwise AND operator `&{:tact}`](#binary-bitwise-and). Can only be applied to values of type [`Int{:tact}`][int].
-- `^={:tact}`, which uses [bitwise XOR operator `^{:tact}`](#binary-bitwise-xor). Can only be applied to values of type [`Int{:tact}`][int].
-- `|={:tact}`, which uses [bitwise OR operator `|{:tact}`](#binary-bitwise-or). Can only be applied to values of type [`Int{:tact}`][int].
+- `+={:tact}`，使用 [加法运算符 `+{:tact}`](#二进制加法)。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `-={:tact}`，使用 [减法运算符 `-{:tact}`]（#二进制-减法）。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `*={:tact}`，使用 [乘法运算符 `*{:tact}`]（#二进制-乘法）。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `/={:tact}`，使用 [除法运算符 `/{:tact}`](#二进制除法)。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `%={:tact}`，使用 [modulo 运算符 `%{:tact}`]（#二进制-modulo）。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `&={:tact}`，使用 [bitwise AND 运算符 `&{:tact}`]（#binary-bitwise-and）。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `^={:tact}`，它使用 [bitwise XOR 运算符 `^{:tact}`]（#二进制-bitwise-xor）。 只能应用于 [`Int{:tact}`][int]类型的值。
+- |={:tact}`，它使用 [bitwise OR 运算符 `|{:tact}`]（#二进制-bitwise-or）。 只能应用于 [`Int{:tact}\`][int]类型的值。
 
 ```tact
-let value: Int = 5;
+let value：Int = 5;
 
 // +=
-value + 5;         // adds 5
-value = value + 5; // adds 5 and assigns result back
-value += 5;        // also adds 5 and assigns result back
+value + 5; // 加 5
+value = value + 5; // 加 5 并返回结果
+value += 5; // 也加 5 并返回结果
 
 // -=
-value - 5;         // subtracts 5
-value = value - 5; // subtracts 5 and assigns result back
-value -= 5;        // also subtracts 5 and assigns result back
+value - 5; // 减 5
+value = value - 5; // 减 5 并返回结果
+value -= 5; // 也减 5 并返回结果
 
 // *=
-value * 5;         // multiplies by 5
-value = value * 5; // multiplies by 5 and assigns result back
-value *= 5;        // also multiplies by 5 and assigns result back
+value * 5；         // 乘以 5
+value = value * 5; // 乘以 5 并返回结果
+value *= 5; // 也乘以 5 并返回结果
 
 // /=
-value / 5;         // divides by 5
-value = value / 5; // divides by 5 and assigns result back
-value /= 5;        // also divides by 5 and assigns result back
+value / 5; // 除以 5
+value = value / 5; // 除以 5 并返回结果
+value /= 5; // 也除以 5 并返回结果
 
 // %=
-value % 5;         // gets modulo by 5
-value = value % 5; // gets modulo by 5 and assigns result back
-value %= 5;        // also gets modulo by 5 and assigns result back
+value % 5；         // 得到 5 的模数
+value = value % 5; // 得到 5 的模数并返回结果
+value %= 5; // 也得到 5 的模数并返回结果
 
 // &=
-value & 5;         // bitwise ANDs 5
-value = value & 5; // bitwise ANDs 5 and assigns result back
-value &= 5;        // also bitwise ANDs 5 and assigns result back
+value & 5; // 位和 5
+value = value & 5; // 位和 5 并返回结果
+value &= 5; // 也位和 5 并返回结果
 
 // ^=
-value ^ 5;         // bitwise XORs 5
-value = value ^ 5; // bitwise XORs 5 and assigns result back
-value ^= 5;        // also bitwise XORs 5 and assigns result back
+value ^ 5；         // 位似 XOR 5
+value = value ^ 5; // 位似 XOR 5 并返回结果
+value ^= 5; // 也是位似 XOR 5 并返回结果
 
 // |=
-value | 5;         // bitwise ORs 5
-value = value | 5; // bitwise ORs 5 and assigns result back
-value |= 5;        // also bitwise ORs 5 and assigns result back
+value | 5; // 位似 OR 5
+value = value | 5; // 位似 OR 5 并返回结果
+value |= 5; // 也是位似 OR 5 并返回结果
 ```
 
 [p]: /book/types#primitive-types
 [bool]: /book/types#booleans
 [int]: /book/integers
-[cell]: /book/cells#cells
-[slice]: /book/cells#slices
+[电池]: /book/cells#cells
+[一片]: /book/cells#slices
