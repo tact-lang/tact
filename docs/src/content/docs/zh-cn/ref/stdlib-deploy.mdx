@@ -2,21 +2,21 @@
 title: "@stdlib/deploy"
 ---
 
-Provides unified mechanisms for deployments.
+提供统一的部署机制。
 
-To use this library, import `@stdlib/deploy`:
+要使用该库，请导入 `@stdlib/deploy`：
 
 ```tact
-import "@stdlib/deploy";
+导入"@stdlib/deploy"；
 ```
 
-## Messages
+## 信息
 
-### Deploy
+### 部署
 
 ```tact
 message Deploy {
-    queryId: Int as uint64;
+    queryId：Int as uint64;
 }
 ```
 
@@ -24,30 +24,30 @@ message Deploy {
 
 ```tact
 message DeployOk {
-    queryId: Int as uint64;
+    queryId：Int as uint64;
 }
 ```
 
-### FactoryDeploy
+### 工厂部署
 
 ```tact
 message FactoryDeploy {
-    queryId: Int as uint64;
-    cashback: Address;
+    queryId：Int as uint64;
+    cashback：Address;
 }
 ```
 
-## Traits
+## 特质
 
-### Deployable
+### 可部署
 
-Simplest trait `Deployable{:tact}` that provides a handy unified mechanism for deployments by implementing a simple receiver for the [Deploy](#deploy) message.
+最简单的特质 "可部署{:tact}"，通过为[Deploy](#deploy)消息实现一个简单的接收器，为部署提供了一个方便的统一机制。
 
-All contracts are deployed by sending them a message. While any message can be used for this purpose, best practice is to use the special [Deploy](#deploy) message.
+所有合同都是通过发送信息来部署的。 虽然任何信息都可用于此目的，但最佳做法是使用特殊的 [部署](#deploy) 信息。
 
-This message has a single field, `queryId`, provided by the deployer (usually set to zero). If the deployment succeeds, the contract will reply with a [DeployOk](#deployok) message and echo the same `queryId` in the response.
+该信息只有一个字段 `queryId` ，由部署者提供（通常设置为零）。 如果部署成功，合约将回复一条 [DeployOk](#deployok) 消息，并在回复中呼应相同的 `queryId` 。
 
-Source code:
+源代码
 
 ```tact
 trait Deployable {
@@ -57,40 +57,40 @@ trait Deployable {
 }
 ```
 
-Usage example:
+使用示例
 
 ```tact /Deployable/
 import "@stdlib/deploy";
 
-contract ExampleContract with Deployable {
-    // Now, this contract has a receiver for Deploy message
+合同 ExampleContract with Deployable {
+    // 现在，这个合同有了一个 Deploy 消息的接收器
 }
 ```
 
-### FactoryDeployable
+### 工厂可部署
 
-Trait `FactoryDeployable{:tact}` provides a handy unified mechanism for chained deployments.
+Trait `FactoryDeployable{:tact}` 为连锁部署提供了方便的统一机制。
 
-Source code:
+源代码
 
 ```tact
-trait FactoryDeployable  {
+trait FactoryDeployable {
     receive(deploy: FactoryDeploy) {
         self.forward(deploy.cashback, DeployOk{queryId: deploy.queryId}.toCell(), false, null);
     }
 }
 ```
 
-Usage example:
+使用示例
 
 ```tact /FactoryDeployable/
 import "@stdlib/deploy";
 
-contract ExampleContract with FactoryDeployable {
-    // Now, this contract has a receiver for FactoryDeploy message
+合同 ExampleContract with FactoryDeployable {
+    // 现在，这个合同有了 FactoryDeploy 消息的接收器
 }
 ```
 
-## Sources
+## 资料来源
 
 - [deploy.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/deploy.tact)
