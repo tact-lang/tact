@@ -59,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- The `exists` method for the `Map` type: PR [#581](https://github.com/tact-lang/tact/pull/581)
+- The `exists` method for the `Map` type: PR [#581](https://github.com/tact-lang/tact/pull/581), PR [#938](https://github.com/tact-lang/tact/pull/938)
 - The `storeBit` method for `Builder` type and the `loadBit` method for `Slice` type: PR [#699](https://github.com/tact-lang/tact/pull/699), PR [#936](https://github.com/tact-lang/tact/pull/936)
 - The `toSlice` method for structs and messages: PR [#630](https://github.com/tact-lang/tact/pull/630), PR [#936](https://github.com/tact-lang/tact/pull/936)
 - Wider range of serialization options for integers — `uint1` through `uint256` and `int1` through `int257`: PR [#558](https://github.com/tact-lang/tact/pull/558), PR [#937](https://github.com/tact-lang/tact/pull/937)

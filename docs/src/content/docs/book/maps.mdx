@@ -3,6 +3,8 @@ title: Maps
 description: "The composite type map is used as a way to associate keys with corresponding values of various types"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 The [composite type](/book/types#composite-types) `map<K, V>{:tact}` is used as a way to associate keys of type `K{:tact}` with corresponding values of type `V{:tact}`.
 
 For example, `map<Int, Int>{:tact}` uses [`Int{:tact}`][int] type for its keys and values:
@@ -132,6 +134,35 @@ fizz = null; // identical to the previous line, but less descriptive
 ```
 
 With this approach all previous entries of the map are completely discarded from the contract even if the map was declared as its persistent state variable. As a result, assigning maps to `emptyMap(){:tact}` **does not** inflict any hidden or sudden [storage fees](https://docs.ton.org/develop/smart-contracts/fees#storage-fee).
+
+### Check if entry exists, `.exists()` {#exists}
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+The `.exists(){:tact}` [method](/book/functions#extension-function) on maps returns `true{:tact}` if the value under the given key exists in the map and `false{:tact}` otherwise.
+
+```tact
+let fizz: map<Int, Int> = emptyMap();
+fizz.set(0, 0);
+
+if (fizz.exists(2 + 2)) { // false
+    dump("Something doesn't add up!");
+}
+
+if (fizz.exists(1 / 2)) { // true
+    dump("I told a fraction joke once. It was half funny.");
+}
+
+if (fizz.get(1 / 2) != null) { // also true, but consumes more gas
+    dump("Gotta pump more!");
+}
+```
+
+:::note
+
+  Calling `m.exists(key){:tact}` is more gas-efficient than executing `m.get(key) != null{:tact}`, although both approaches yield the same results.
+
+:::
 
 ### Check if empty, `.isEmpty()` {#isempty}
 
