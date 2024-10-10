@@ -1,37 +1,37 @@
 ---
-title: Configuration
+title: 配置
 ---
 
 `tact.config.json` is an entry point to Tact projects. It is a JSON file that contains the list of all projects and compiler parameters.
 
-This page lists all of the configuration options as they're structured in the [schema](#schema). Look for table of contents on the right to easily navigate them.
+本页列出了 [模式](#schema)中的所有配置选项。 请查看右侧的目录，以方便浏览。
 
 :::note
 
-  The only requirement for that file is to be a valid JSON with [proper fields](#schema), so it can be named arbitrarily. However, naming your config file as `tact.config.json` is a common convention encouraged and supported by all tools working with Tact.
+  对该文件的唯一要求是它是一个有效的 JSON 文件，包含 [适当的字段](#schema)，因此可以任意命名。 不过，将配置文件命名为 `tact.config.json` 是所有使用 Tact 的工具都鼓励和支持的通用约定。
 
 :::
 
 ## `$schema` {#schema}
 
-A [JSON schema](https://json-schema.org/) file is available for editors to provide autocompletion and hover hints: [configSchema.json](http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json).
+编辑器可使用[JSON 模式](https://json-schema.org/) 文件提供自动完成和悬停提示：[configSchema.json](http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json)。
 
-Simply add the `$schema` field on top your configuration file:
+只需在配置文件顶部添加 `$schema` 字段即可：
 
 ```json filename="tact.config.json" {2}
 {
   "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
-  "projects": []
+  "projects"：[]
 }
 ```
 
-## `projects` {#projects}
+## 项目 {#projects}
 
-List of Tact projects with respective compilation options. Each `.tact` file represents its own Tact project.
+带有相应编译选项的 Tact 项目列表。 每个 `.tact` 文件都代表自己的 Tact 项目。
 
 ```json filename="tact.config.json" {3,4}
 {
-  "projects": [
+  "项目"：[
     { },
     { }
   ]
@@ -42,16 +42,16 @@ List of Tact projects with respective compilation options. Each `.tact` file rep
 
 `name` is the name of a project. All generated files are prefixed with this name.
 
-In [Blueprint][bp], `name` refers to the name of the contract itself.
+在 [Blueprint][bp] 中，"name "指合同本身的名称。
 
 ```json filename="tact.config.json" {4,7}
 {
-  "projects": [
+  "项目"：[
     {
-      "name": "some_prefix"
+      "name"："some_prefix"
     },
     {
-      "name": "ContractUnderBlueprint"
+      "name"："ContractUnderBlueprint"
     }
   ]
 }
@@ -59,9 +59,9 @@ In [Blueprint][bp], `name` refers to the name of the contract itself.
 
 ### `path` {#projects-path}
 
-Path to the project's Tact file. You can only specify one Tact file per project.
+项目 Tact 文件的路径。 每个项目只能指定一个 Tact 文件。
 
-In [Blueprint][bp], `path` is superseded by the `target` field in `wrappers/ContractName.compile.ts`.
+在 [Blueprint][bp] 中，`path` 被 `wrappers/ContractName.compile.ts` 中的 `target` 字段取代。
 
 ```json filename="tact.config.json" {5}
 `path` is the path to a root Tact file.
@@ -71,7 +71,7 @@ In [Blueprint][bp], `path` is superseded by the `target` field in `wrappers/Cont
 
 `output` is the path to a directory where all generated files will be placed.
 
-In [Blueprint][bp], `output` is not used and all generated files are always placed in `build/ProjectName/`.
+在 [蓝图][bp] 中，不使用 `output` ，所有生成的文件始终放在 `build/ProjectName/` 中。
 
 ```json filename="tact.config.json" {6}
 `parameters` is a dictionary of parameters that will be passed to a compiler.
@@ -79,9 +79,9 @@ In [Blueprint][bp], `output` is not used and all generated files are always plac
 
 ### `options` {#projects-options}
 
-Compilation options for the project.
+项目的编译选项。
 
-In [Blueprint][bp], they act as default unless modified in `wrappers/ContractName.compile.ts`.
+在 [Blueprint][bp] 中，除非在`wrappers/ContractName.compile.ts`中进行修改，否则它们将作为默认设置运行。
 
 ```json filename="tact.config.json" {7,11}
 Each project is described by the following fields:
@@ -89,7 +89,7 @@ Each project is described by the following fields:
 
 #### `debug` {#options-debug}
 
-`false{:json}` by default.
+默认为 `false{:json}`。
 
 `debug: true`. Enables debug output of a contract. It is useful for debugging purposes. Enabling this contract would report that it was compiled in debug mode using the `supported_interfaces` method.
 
@@ -113,30 +113,30 @@ Each project is described by the following fields:
 
 :::note
 
-  Read more on the dedicated page: [Debugging](/book/debug).
+  更多信息，请访问专用页面：[调试](/book/debug)。
 
 :::
 
 #### `masterchain` {#options-masterchain}
 
-`false{:json}` by default.
+默认为 `false{:json}`。
 
-If set to `true{:json}`, enables [masterchain](/book/masterchain) support.
+如果设置为 `true{:json}`，则启用 [masterchain](/book/masterchain) 支持。
 
 ```json filename="tact.config.json" {8,14}
 {
-  "projects": [
+  "项目"：[
     {
-      "name": "some_prefix",
-      "path": "./contract.tact",
-      "output": "./contract_output",
-      "options": {
+      "name"："some_prefix",
+      "path"："./contract.tact",
+      "output"："./contract_output",
+      "options"：{
         "masterchain": true
       }
     },
     {
-      "name": "ContractUnderBlueprint",
-      "options": {
+      "name"："ContractUnderBlueprint",
+      "options"：{
         "masterchain": true
       }
     }
@@ -146,15 +146,15 @@ If set to `true{:json}`, enables [masterchain](/book/masterchain) support.
 
 :::note
 
-  Read more on the dedicated page: [Masterchain](/book/masterchain).
+  更多信息，请访问专用页面：[大师链](/book/masterchain)。
 
 :::
 
 #### `external` {#options-external}
 
-`false{:json}` by default.
+默认为 `false{:json}`。
 
-If set to `true{:json}`, enables support of [external](/book/external) message receivers.
+如果设置为 `true{:json}`，则启用对 [external](/book/external) 消息接收器的支持。
 
 ```json filename="tact.config.json" {8,14}
 Tact support next parameters:
@@ -162,30 +162,30 @@ Tact support next parameters:
 
 :::note
 
-  Read more on the dedicated page: [External messages](/book/external).
+  更多信息，请访问专用页面：[外部信息](/book/external)。
 
 :::
 
-#### `ipfsAbiGetter` {#options-ipfsabigetter}
+#### ipfsAbiGetter\` {#options-ipfsabigetter}
 
-`false{:json}` by default.
+默认为 `false{:json}`。
 
-If set to `true{:json}`, enables generation of a [getter](/book/contracts#getter-functions) with IPFS links describing the contract's ABI.
+如果设置为 "true{:json}"，则可生成带有描述合同 ABI 的 IPFS 链接的[getter](/book/contracts#getter-functions)。
 
 ```json filename="tact.config.json" {8,14}
 {
-  "projects": [
+  "项目"：[
     {
-      "name": "some_prefix",
-      "path": "./contract.tact",
-      "output": "./contract_output",
-      "options": {
+      "name"："some_prefix",
+      "path"："./contract.tact",
+      "output"："./contract_output",
+      "options"：{
         "ipfsAbiGetter": true
       }
     },
     {
-      "name": "ContractUnderBlueprint",
-      "options": {
+      "name"："ContractUnderBlueprint",
+      "options"：{
         "ipfsAbiGetter": true
       }
     }
@@ -195,30 +195,30 @@ If set to `true{:json}`, enables generation of a [getter](/book/contracts#getter
 
 :::note
 
-  Read more on the dedicated page: [OTP-003: Self-ABI reporting](/ref/evolution/otp-003).
+  在专用网页上阅读更多信息：[OTP-003：自我 ABI 报告](/ref/evolution/otp-003)。
 
 :::
 
 #### `interfacesGetter` {#options-interfacesgetter}
 
-`false{:json}` by default.
+默认为 `false{:json}`。
 
-If set to `true{:json}`, enables generation of a [getter](/book/contracts#getter-functions) with a list of interfaces provided by the contract.
+如果设置为 `true{:json}`，则可生成包含合约所提供接口列表的 [getter]（/book/contracts#getter-functions）。
 
 ```json filename="tact.config.json" {8,14}
 {
-  "projects": [
+  "项目"：[
     {
-      "name": "some_prefix",
-      "path": "./contract.tact",
-      "output": "./contract_output",
-      "options": {
+      "name"："some_prefix",
+      "path"："./contract.tact",
+      "output"："./contract_output",
+      "options"：{
         "interfacesGetter": true
       }
     },
     {
-      "name": "ContractUnderBlueprint",
-      "options": {
+      "name"："ContractUnderBlueprint",
+      "options"：{
         "interfacesGetter": true
       }
     }
@@ -228,13 +228,13 @@ If set to `true{:json}`, enables generation of a [getter](/book/contracts#getter
 
 :::note
 
-  Read more: [Supported interfaces](/book/contracts#interfaces).
+  了解更多信息：[支持的接口](/book/contracts#interfaces)。
 
 :::
 
 #### Experimental
 
-Experimental options that might be removed in the future. Use with caution!
+将来可能会取消的试验性选项。 谨慎使用！
 
 ```json filename="tact.config.json" {8,14}
 `experimental` is a dictionary of experimental features that will be enabled for this project.
@@ -242,7 +242,7 @@ Experimental options that might be removed in the future. Use with caution!
 
 ##### `inline` {#experimental-inline}
 
-`false{:json}` by default.
+默认为 `false{:json}`。
 
 `inline: true`. Enables inlining of all functions in contracts. Could reduce gas usage at the cost of a bigger contract.
 
@@ -252,31 +252,31 @@ Tact support next experimental parameters:
 
 ### `mode` {#projects-mode}
 
-Compilation mode of the project. Valid values are:
+项目的编译模式。 有效值为
 
-| Value                            | Project description                                                                                                                   |
-| :------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
-| `"full"{:json}`                  | (default) Runs the whole compilation pipeline and emits FunC code, BoC, and various utility files, including wrappers for TypeScript. |
-| `"fullWithDecompilation"{:json}` | Runs the whole compilation pipeline like `"full"{:json}`, and also decompiles produced binary code in the BoC format.                 |
-| `"funcOnly"{:json}`              | Only outputs intermediate FunC code, preventing further compilation.                                                                  |
-| `"checkOnly"{:json}`             | Only performs syntax and type checking, preventing further compilation.                                                               |
+| 价值                               | Project description                                         |
+| :------------------------------- | :---------------------------------------------------------- |
+| `"full"{:json}`                  | (默认）运行整个编译流水线，并生成 FunC 代码、BoC 和各种实用程序文件，包括 TypeScript 的封装器。 |
+| `"fullWithDecompilation"{:json}` | 运行整个编译流水线，如 `"完整"{:json}`，并以 BoC 格式反编译生成的二进制代码。             |
+| `"funcOnly"{:json}`              | 只输出中间 FunC 代码，阻止进一步编译。                                      |
+| `"checkOnly"{:json}`             | 仅执行语法和类型检查，阻止进一步编译。                                         |
 
-In [Blueprint][bp], `mode` is always set to `"full"{:json}` and cannot be overwritten.
+在 [Blueprint][bp] 中，"mode "始终设置为""full"{:json}"，且不可覆盖。
 
 ```json filename="tact.config.json" {7,13}
 {
-  "projects": [
+  "项目"：[
     {
-      "name": "some_prefix",
-      "path": "./contract.tact",
-      "output": "./contract_output",
-      "mode": "full"
+      "name"："some_prefix",
+      "path"："./contract.tact",
+      "output"："./contract_output",
+      "mode"："full"
     },
     {
-      "name": "func_only",
-      "path": "./contract.tact",
-      "output": "./contract_output",
-      "mode": "funcOnly"
+      "name"："func_only",
+      "path"："./contract.tact",
+      "output"："./contract_output",
+      "mode"："funcOnly"
     }
   ]
 }
@@ -287,30 +287,30 @@ In [Blueprint][bp], `mode` is always set to `"full"{:json}` and cannot be overwr
 ```json filename="tact.config.json" copy=false
 {
   "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
-  "projects": [
+  "projects"：[
     {
-      "name": "basic",
-      "path": "./basic.tact",
-      "output": "./basic_output",
-      "mode": "full"
+      "name"："basic",
+      "path"："./basic.tact",
+      "output"："./basic_output",
+      "mode"："full"
     },
     {
-      "name": "func_only",
-      "path": "./basic.tact",
-      "output": "./basic_output",
-      "mode": "funcOnly"
+      "name"："func_only",
+      "path"："./basic.tact",
+      "output"："./basic_output",
+      "mode"："funcOnly"
     },
     {
-      "name": "debugPrefix",
-      "path": "./contracts/contract.tact",
-      "output": "./contracts/output",
-      "options": {
+      "name"："debugPrefix",
+      "path"："./contracts/contract.tact",
+      "output"："./contracts/output",
+      "options"：{
         "debug": true
       }
     },
     {
-      "name": "ContractUnderBlueprint",
-      "options": {
+      "name"："ContractUnderBlueprint",
+      "options"：{
         "debug": false,
         "masterchain": false,
         "external": false,
