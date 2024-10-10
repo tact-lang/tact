@@ -89,7 +89,7 @@ fizz.append("Tact!")；
 extends fun concat(self: StringBuilder, s: String)：StringBuilder；
 ```
 
-字符串生成器{:tact}\`][p]的扩展函数。
+[`字符串生成器{:tact}`][p]的扩展函数。
 
 与 [`字符串{:tact}`][p] `s` 连接后，返回一个新的 [`字符串构造器{:tact}`][p]。 与 [`StringBuilder.append(){:tact}`](#stringbuilderappend)不同，可以进行链式操作。
 
@@ -108,7 +108,7 @@ extends fun concat(self: StringBuilder, s: String)：StringBuilder；
 extends fun toString(self: StringBuilder)：String；
 ```
 
-字符串生成器{:tact}\`][p]的扩展函数。
+[`字符串生成器{:tact}`][p]的扩展函数。
 
 返回从 [`字符串生成器{:tact}`][p]构建的 [`字符串{:tact}`][p]。
 
@@ -125,7 +125,7 @@ let buzz：String = fizz.toString()；
 extends fun toCell(self: StringBuilder)：Cell；
 ```
 
-字符串生成器{:tact}\`][p]的扩展函数。
+[`字符串生成器{:tact}`][p]的扩展函数。
 
 返回由 [`字符串生成器{:tact}`][p]组装的 [`单元格{:tact}`][单元格]。
 
@@ -142,7 +142,7 @@ let buzz：Cell = fizz.toCell()；
 extends fun toSlice(self: StringBuilder)：Slice；
 ```
 
-字符串生成器{:tact}\`][p]的扩展函数。
+[`字符串生成器{:tact}`][p]的扩展函数。
 
 从 [`StringBuilder{:tact}`][p]返回一个组装好的 [`单元格{:tact}`][单元格] 作为 [`片{:tact}`][片]。 别名为 [`self.toCell().asSlice(){:tact}`](/ref/core-cells#cellasslice)。
 
@@ -162,7 +162,7 @@ fizz == buzz; // true
 extends fun asSlice(self: String)：Slice；
 ```
 
-字符串{:tact}\`][p]的扩展函数。
+[`字符串{:tact}`][p]的扩展函数。
 
 从[`字符串{:tact}`][p]返回一个[`片{:tact}`][slice]，方法是尝试将其所有位打包到一个连续的[单元格][p]列表中，每个单元格引用下一个单元格，并为将来的解析打开所有单元格。
 
@@ -190,7 +190,7 @@ fizz == buzz; // true, 但要小心，因为并非总是如此。
 extends fun asComment(self: String)：Cell；
 ```
 
-字符串{:tact}\`][p]的扩展函数。
+[`字符串{:tact}`][p]的扩展函数。
 
 从[`字符串{:tact}`][p]返回一个[`单元格{:tact}`][单元格]，在后者的前缀加上四个空字节。 这种格式用于传递文本注释作为报文正文。
 
@@ -213,13 +213,13 @@ fizz == buzz; // true
 extends fun fromBase64(self: String)：Slice；
 ```
 
-字符串{:tact}\`][p]的扩展函数。
+[`字符串{:tact}`][p]的扩展函数。
 
-从解码后的 [Base64](https://en.wikipedia.org/wiki/Base64) [`String{:tact}`][p]中返回 [`片{:tact}`][片]。 别名为 `self.asSlice().fromBase64(){:tact}`。
+从解码后的 [Base64](https://en.wikipedia.org/wiki/Base64) [`String{:tact}`][p] 中返回 [`片{:tact}`][片]。别名为 `self.asSlice().fromBase64(){:tact}`。
 
-请注意，该函数是有限制的，只能从给定的 [字符串{:tact}\`][p]中获取前 $1023$ 位数据，当 [字符串{:tact}\`][p]较大（即包含超过 $1023$ 位数据）时，不会抛出异常。
+请注意，该函数是有限制的，只能从给定的 [`字符串{:tact}`][p] 中获取前 $1023$ 位数据，当 [`字符串{:tact}`][p] 较大（即包含超过 $1023$ 位数据）时，不会抛出异常。
 
-如果给定的 [`String{:tact}`][p]包含不属于 Base64 集的字符，则会出现[退出代码 134](/book/exit-codes#134)异常："无效参数"。
+如果给定的 [`String{:tact}`][p] 包含不属于 Base64 集的字符，则会出现[退出代码 134](/book/exit-codes#134)异常："无效参数"。
 
 使用示例
 
@@ -237,7 +237,7 @@ fizz == buzz; // true
 extends fun asString(self: Slice)：String；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 从 [`字符串{:tact}`][p]返回一个[`字符串{:tact}`][片]，方法是尝试加载它的所有位，而不查找它的引用（如果有的话）。
 
@@ -259,7 +259,7 @@ fizz == buzz; // true，但要小心，因为并非总是如此。
 extends fun fromBase64(self: Slice)：Slice；
 ```
 
-切片{:tact}\`][切片]的扩展函数。
+[`切片{:tact}`][切片]的扩展函数。
 
 从解码后的 [Base64](https://en.wikipedia.org/wiki/Base64) [`Slice{:tact}`][slice]返回一个新的 [`片{:tact}`][片]。
 
@@ -280,7 +280,7 @@ let fizz：Slice = s.fromBase64()；
 extends fun toString(self: Int)：String；
 ```
 
-Int{:tact}\`][int]的扩展函数。
+[`Int{:tact}`][int]的扩展函数。
 
 从 [`Int{:tact}`][int]值返回 [`String{:tact}`][p]。
 
@@ -296,7 +296,7 @@ Int{:tact}\`][int]的扩展函数。
 extends fun toFloatString(self: Int, digits: Int)：String；
 ```
 
-Int{:tact}\`][int]的扩展函数。
+[`Int{:tact}`][int]的扩展函数。
 
 使用小数的[定点表示](https://en.wikipedia.org/wiki/Fixed-point_arithmetic)从[`Int{:tact}`][int]值返回[`String{:tact}`][p]，其中`self`是数字的有效部分，`digits`是小数部分的位数。
 
@@ -314,7 +314,7 @@ let fizz：String = (42).toFloatString(9); // "0.000000042"
 extends fun toCoinsString(self: Int)：String；
 ```
 
-Int{:tact}\`][int]的扩展函数。
+[`Int{:tact}`][int]的扩展函数。
 
 使用小数的[定点表示法](https://en.wikipedia.org/wiki/Fixed-point_arithmetic)从[`Int{:tact}`][int]值返回[`String{:tact}`][p]。 别名为 `self.toFloatString(9){:tact}`。
 
@@ -336,7 +336,7 @@ fizz == buzz; // true, 两者都存储 "0.000000042"。
 extends fun toString(self: Address)：String；
 ```
 
-地址{:tact}\`][p]的扩展函数。
+[`地址{:tact}`][p]的扩展函数。
 
 从 [`地址{:tact}`][p]返回 [`字符串{:tact}`][p]。
 

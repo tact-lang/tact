@@ -41,7 +41,7 @@ fun pow(a: Int, c: Int): Int {
 
 ## 虚拟和抽象函数
 
-如果 [traits](/book/types#traits) 有 `virtual{:tact}` 关键字，则可以使用 `override{:tact}` 允许继承 [traits](/book/types#traits) 的合约修改内部函数。 函数也可以标记为 "抽象{:tact}"，在这种情况下，继承合约必须定义其实现：
+如果 [traits](/book/types#traits) 有 `virtual{:tact}` 关键字，则可以使用 `override{:tact}` 允许继承 [traits](/book/types#traits) 的合约修改内部函数。 函数也可以标记为 `抽象{:tact}`，在这种情况下，继承合约必须定义其实现：
 
 ```tact
 trait FilterTrait with Ownable {
@@ -111,7 +111,7 @@ native storeUint(s: Builder, value: Int, bits: Int)：Builder;
 扩展 mutates native loadInt(self: Slice, l: Int)：Int；
 ```
 
-## 接收器功能
+## Receiver functions
 
 接收器函数是负责在合约中接收信息的特殊函数，只能在合约或特质中定义。
 

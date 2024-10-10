@@ -54,7 +54,7 @@ fun myAddress()：地址；
 let meMyselfAndI: Address = myAddress()；
 ```
 
-### 收讯
+### sender
 
 ```tact
 fun sender()：地址；
@@ -82,7 +82,7 @@ receive() {
 
 :::
 
-### 背景
+### context
 
 ```tact
 fun context()：Context；
@@ -167,7 +167,7 @@ fun contractAddress(s: StateInit)：地址；
 fun contractAddressExt(chain: Int, code: Cell, data: Cell)：地址；
 ```
 
-根据 "链 "id、合约 "代码 "和合约初始状态 "数据 "计算智能合约的[地址{:tact}\`][p]。 使用 [`initOf{:tact}`](/book/expressions#initof)表达式获取给定合约的初始 `code` 和初始 `data` 。
+根据 "链 "id、合约 "代码 "和合约初始状态 "数据 "计算智能合约的[`地址{:tact}`][p]。 使用 [`initOf{:tact}`](/book/expressions#initof)表达式获取给定合约的初始 `code` 和初始 `data` 。
 
 使用示例
 
@@ -189,7 +189,7 @@ let hereBeDragons：Address = contractAddressExt(0, initPkg.code, initPkg.data)�
 
 :::
 
-## 交流
+## 交流 
 
 ### 发送
 

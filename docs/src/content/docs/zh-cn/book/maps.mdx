@@ -290,7 +290,7 @@ struct SerializedMapInside {
 
 虽然地图在小范围内使用起来很方便，但如果项目数量不受限制，地图的大小会大幅增加，就会产生很多问题：
 
-- 由于智能合约状态大小的上限约为 [`Cell{:tact}`][cell]类型的 65\,000$ 项，因此整个合约的映射存储上限约为 30\,000$ 键值对。
+- 由于智能合约状态大小的上限约为 [`Cell{:tact}`][cell] 类型的 $65,000$ 项，因此整个合约的映射存储上限约为 $30,000$ 键值对。
 
 - 地图中的条目越多，[计算费](https://docs.ton.org/develop/howto/fees-low-level#computation-fees) 就越高。 因此，处理大型地图使得计算费用难以预测和管理。
 
@@ -322,9 +322,9 @@ contract Example {
 
 如果您仍然需要大地图或无约束（无限大）地图，最好按照[TON 区块链的异步和基于角色的模型](https://docs.ton.org/learn/overviews/ton-blockchain)来构建您的智能合约。 也就是说，使用合约分片，让整个区块链成为地图的一部分。
 
-{/_
+{/*
   TODO：添加对分片页面的引用，如： https://github.com/tact-lang/tact-docs/issues/155
-_/}
+*/}
 
 [p]: /book/types#primitive-types
 [int]: /book/integers

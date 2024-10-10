@@ -2,17 +2,17 @@
 title: 可选项
 ---
 
-类型系统概述](/book/types#optionals)中提到，所有[原始类型](/book/types#primitive-types)、[结构体](/book/structs-and-messages#structs)和[消息](/book/structs-and-messages#messages)都可以为空。 也就是说，除了 "null{:tact}\`"（一种特殊值，表示故意没有任何其他值）之外，它们不一定持有任何值。
+[类型系统概述](/book/types#optionals)中提到，所有[原始类型](/book/types#primitive-types)、[结构体](/book/structs-and-messages#structs)和[消息](/book/structs-and-messages#messages)都可以为空。也就是说，除了 `null{:tact}`（一种特殊值，表示故意没有任何其他值）之外，它们不一定持有任何值。
 
-[变量](/book/statements#let)或[结构](/book/structs-and-messages#structs)和[消息](/book/structs-and-messages#messages)中可容纳 "空{:tact}"的字段被称为 "可选项"。 当变量不一定被使用时，它们对减少状态大小很有用。
+[变量](/book/statements#let)或[结构](/book/structs-and-messages#structs)和[消息](/book/structs-and-messages#messages)中可容纳 `null{:tact}` 的字段被称为"可选项"。当变量不一定被使用时，它们对减少状态大小很有用。
 
-在变量或字段的类型声明后添加问号 (`?{:tact}`)，就可以将其设为可选变量或字段。 唯一的例外是 [`map<K, V>{:tact}`](/book/maps)和 [`bounced<Msg>{:tact}`](/book/bounced)，你不能让它们、内部键/值类型（如果是 map）或内部 [信息](/book/structs-and-messages#messages)（如果是 bounced）成为可选项。
+在变量或字段的类型声明后添加问号 (`?{:tact}`)，就可以将其设为可选变量或字段。唯一的例外是 [`map<K, V>{:tact}`](/book/maps)和 [`bounced<Msg>{:tact}`](/book/bounced)，你不能让它们、内部键/值类型（如果是 map）或内部[消息](/book/structs-and-messages#messages)（如果是 bounced）成为可选项。
 
-未定义的可选变量或可选字段默认为 "null{:tact}`"值。 如果不先检查 "空{:tact}"，就无法访问它们。 但如果你确定它们在某一时刻不是 `null{:tact}`，可以使用 [非空断言操作符 `!!{:tact}\`](/book/operators#unary-non-null-assert) 访问它们的值。
+未定义的可选变量或可选字段默认为 `null{:tact}` 值。如果不先检查 `null{:tact}`，就无法访问它们。但如果你确定它们在某一时刻不是 `null{:tact}`，可以使用[非空断言操作符 `!!{:tact}`](/book/operators#unary-non-null-assert)访问它们的值。
 
-在未使用 [`!!{:tact}`](/book/operators#unary-non-null-assert)或未事先检查 "空{:tact}\`"的情况下尝试访问可选变量或可选字段的值，如果编译器可以跟踪，则会导致编译错误；如果不能跟踪，则会导致[退出代码 128](/book/exit-codes#128)异常：空引用异常。
+在未使用 [`!!{:tact}`](/book/operators#unary-non-null-assert)或未事先检查 `null{:tact}` 的情况下尝试访问可选变量或可选字段的值，如果编译器可以跟踪，则会导致编译错误；如果不能跟踪，则会导致[退出代码 128](/book/exit-codes#128)异常：空引用异常。
 
-可选项举例
+可选项举例：
 
 ```tact
 struct StOpt {

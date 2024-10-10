@@ -103,29 +103,11 @@ export const compile：CompilerConfig = {
 
 :::note
 
-  import { ContractSystem } from '@tact-lang/emulator';
-import { sample_Contract } from './output/sample_Contract';describe("contract", () => {
-    it("should deploy correctly", async () => {```
-    // Init test
-    const system = await ContractSystem.create();
-    const treasure = await system.treasure('my treasure');
-    const contract = system.open(sample_Contract.fromInit(treasure.address));
-    const tracker = system.track(contract.address);
-
-    // Send a message
-    await contract.send(treasure, { value: toNano(1) }, { $$type: "Deploy", queryId: 0n });
-    await system.run();
-
-    // Testing output
-    expect(tracker.collect()).toMatchInlineSnapshot();
-});
-```});
-
 :::
 
 ## 在蓝图中编写测试，使用 Sandbox 和 Jest {#tests}
 
-蓝图][bp] 是一个流行的开发框架，用于在 TON 区块链上编写、测试和部署智能合约。
+[蓝图][bp] 是一个流行的开发框架，用于在 TON 区块链上编写、测试和部署智能合约。
 
 Ton Emulator allows you to have a small virtual blockchain in your Node.js code. This library is built specifically for testing smart contracts in unit tests.
 
@@ -276,7 +258,7 @@ it('should increase counter', async () => {
 
 ### 实用方法 {#tests-jest-utils}
 
-由 [Blueprint][bp] 生成的测试文件导入了 `@ton/test-utils` 库，该库为 `expect(){:typescript}` [Jest][jest] 函数的结果类型提供了一些额外的辅助方法。 请注意，"toEqual(){:typescript}"等常规方法仍然存在，随时可以使用。
+由 [Blueprint][bp] 生成的测试文件导入了 `@ton/test-utils` 库，该库为 `expect(){:typescript}` [Jest][jest] 函数的结果类型提供了一些额外的辅助方法。 请注意，`toEqual(){:typescript}`等常规方法仍然存在，随时可以使用。
 
 #### 有交易
 
@@ -423,7 +405,7 @@ expect(
 
 有时，进行负面测试也很有用，它可以故意出错并抛出特定的[退出代码](/book/exit-codes)。
 
-蓝图][bp]中此类[Jest][jest]测试闭包的示例：
+[蓝图][bp]中此类[Jest][jest]测试闭包的示例：
 
 ```typescript title="tests/YourTestFileHere.spec.ts" {9,15}
 it('throws specific exit code', async () => {
@@ -484,7 +466,7 @@ it('your test clause title', async () => {
 
 ## 通过 `emit` 记录 {#logging}
 
-全局静态函数](/book/functions#global-static-functions) [`emit(){:tact}`](/ref/core-common#emit)向外部世界发送信息--它没有特定的接收者。
+[全局静态函数](/book/functions#global-static-functions) [`emit(){:tact}`](/ref/core-common#emit)向外部世界发送信息--它没有特定的接收者。
 
 该功能对于记录和分析链外数据非常方便，只需查看合约生成的 [external messages](/book/external) 即可。
 
@@ -600,11 +582,11 @@ it('emits', async () => {
 })；
 ```
 
-请注意，即使在我们的测试套件之外，也可以解析已部署合约的发射信息。 您只需获取发射的消息体，然后像上面的示例一样，在 `@ton/core` 库旁使用自动生成的 Tact 的 TypeScript 绑定。
+请注意，即使在我们的测试套件之外，也可以解析已部署合约的发射信息。您只需获取发射的消息体，然后像上面的示例一样，在 `@ton/core` 库旁使用自动生成的 Tact 的 TypeScript 绑定。
 
 ## 处理退回的邮件 {#bounced}
 
-当 [send](/book/send)带有 "bounce: true{:tact}"时，信息会在出错时反弹。 确保编写相关的 [`bounced(){:tact}`](/book/bounced)消息[接收器](/book/contracts#receiver-functions)，并优雅地处理被退回的消息：
+当 [send](/book/send) 带有 `bounce: true{:tact}` 时，信息会在出错时反弹。确保编写相关的 [`bounced(){:tact}`](/book/bounced) 消息[接收器](/book/contracts#receiver-functions)，并优雅地处理被退回的消息：
 
 ```tact
 bounced(msg: YourMessage) {
@@ -632,13 +614,13 @@ bounced(msg: YourMessage) {
 
    <Tabs>
      <TabItem label="yarn" icon="seti:yarn">
-       ``shell
+       ```shell
        # 推荐
        yarn create ton tact-playground --type tact-empty --contractName Playground
-       ``shell
+       ```
      </TabItem>
      <TabItem label="npm" icon="seti:npm">
-       ``shell
+       ```shell
        npm create ton@latest -- tact-playground --type tact-empty --contractName Playground
        ```
      </TabItem>
@@ -648,7 +630,7 @@ bounced(msg: YourMessage) {
        ```
      </TabItem>
      <TabItem label="bun" icon="bun">
-       ``shell
+       ```shell
        bun create ton@latest tact-playground --type tact-empty --contractName Playground
        ```
      </TabItem>

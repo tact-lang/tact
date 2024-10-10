@@ -9,14 +9,11 @@ pagefind: false
 
 其编译器中使用的战术语法是用[欧姆语言](https://ohmjs.org)编写的，该语言基于[解析表达式语法](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEG)，是一种描述语法的形式化方法，类似于正则表达式和无上下文语法。
 
-{/\*
-    这是一个注释，会从页面上隐藏起来。
+{/*
+    这是一条注释，在页面上是隐藏的。
 
-```
-Shiki 在通过 TextMate 语法高亮 Ohm 方面做得很差，尽管在 VSCode 中运行良好。我认为原因可能在于 Shiki 是逐行高亮的，或者它使用了不同的 RegEx 引擎。我不确定问题出在哪里，所以在问题解决之前，最好使用 tree-sitter-ohm 并使用其 `highlight` 命令生成 ANSI 序列。剩下的就交给 Shiki 吧：
-```
-
-\*/}
+    Shiki 通过 TextMate 语法对 Ohm 的高亮处理效果不佳，尽管在 VSCode 中表现良好。我认为原因可能是 Shiki 逐行高亮或使用了不同的正则表达式引擎。我不确定具体问题在哪里，所以在修复之前，最好使用 tree-sitter-ohm 并通过其 `highlight` 命令生成 ANSI 序列。然后由 Shiki 完成剩余的工作：
+*/}
 
 ```ansi
 [38;5;23mTact[0m [38;5;239m{[0m

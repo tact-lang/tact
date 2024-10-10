@@ -34,7 +34,7 @@ title: 操作员
 | 三元             | [`？：{:tact}`][三元]                                                                           |
 | 任务             | [`={:tact}`][赋值] 和 [所有增强赋值运算符](#augmented-assignment)                                       |
 
-[父母]: #括号
+[父母]: #parentheses
 [nna]: #unary-non-null-assert
 [加号]: #unary-plus
 [否]: #unary-negate
@@ -60,7 +60,7 @@ title: 操作员
 [三元]: #ternary
 [分配]: <# 分配>
 
-## 优先权
+## 优先级 {#precedence}
 
 本页所有运算符的优先级从高到低依次递减。 优先级用于选择在特定情况下考虑哪个运算符。 每当出现模棱两可的情况时，Tact 会优先选择优先级较高的运算符，而不是优先级较低的运算符。
 
@@ -73,7 +73,7 @@ title: 操作员
 5 -5; // 而在这里，尽管有格式限制，它仍将被视为减法运算符
 ```
 
-尽管这个例子可能很简单，但忽略优先级规则往往会导致运算符出现混乱的情况。 由于括号在所有表达式和运算符中具有最高优先级，因此用[括号](#括号)封装每个操作可以确保正确的操作顺序。
+尽管这个例子可能很简单，但忽略优先级规则往往会导致运算符出现混乱的情况。 由于括号在所有表达式和运算符中具有最高优先级，因此用[括号](#parentheses)封装每个操作可以确保正确的操作顺序。
 
 ## 括号，`()` {#parentheses}
 
@@ -86,7 +86,7 @@ title: 操作员
 
 ## 一元
 
-这里的 "一元 "是指只应用于给定表达式的一个操作数。 除了 [非空断言](#unary-non-null-assert)，所有一元运算符都具有相同的 [先例](#precedence)。
+这里的"一元"是指只应用于给定表达式的一个操作数。除了[非空断言](#unary-non-null-assert)，所有一元运算符都具有相同的[优先级](#precedence)。
 
 一元运算符可以是两种类型之一：
 
@@ -95,7 +95,7 @@ title: 操作员
 
 ### 非空断言，`!!` {#unary-non-null-assert}
 
-一元双叹号（_非空断言_）运算符 `!{:tact}是一个后缀运算符，它强制执行非`null{:tact}`值，如果可选变量不是`null{:tact}`，则允许直接访问可选变量的值。 否则，如果编译器可以跟踪，则引发编译错误；如果不能跟踪，则抛出[退出代码 128](/book/exit-codes#128)异常：空引用异常"。 可应用于任何可选变量，无论其类型是非 "空{:tact}`"。
+一元双叹号（_非空断言_）运算符 `!{:tact}`是一个后缀运算符，它强制执行非`null{:tact}`值，如果可选变量不是`null{:tact}`，则允许直接访问可选变量的值。 否则，如果编译器可以跟踪，则引发编译错误；如果不能跟踪，则抛出[退出代码 128](/book/exit-codes#128)异常：空引用异常"。 可应用于任何可选变量，无论其类型是`非空{:tact}`。
 
 :::note
 
@@ -118,9 +118,9 @@ five + -five; // 在这里，减号是一个否定运算符，而不是减法运
 --1; // 1
 ```
 
-### 逆，`！` {#unary-inverse}
+### 逆，`!` {#unary-inverse}
 
-一元感叹号 (_inversion_) 运算符 `！{:tact}是一个前缀运算符，用于反转表达式的布尔值--将 `true{:tact}`变为`false{:tact}`，反之亦然。 只能应用于 [`Bool{:tact}\`][bool]类型的值：
+一元感叹号（_inversion_）运算符 `!{:tact}` 是一个前缀运算符，用于反转表达式的布尔值——将 `true{:tact}` 变为 `false{:tact}`，反之亦然。只能应用于 [`Bool{:tact}`][bool] 类型的值：
 
 ```tact
 let iLikeTact：Bool = true;
@@ -167,11 +167,11 @@ pow(2, 255) * pow(2, 255); // build error: integer overflow！
 
 #### 除法，`/` {#binary-divide}
 
-二进制斜线 (_division_) 运算符 `/{:tact}` 用于两个值的整除，如果结果为正，则向零截断，如果结果为负，则从零截断。 这也叫 [向下舍入](https://en.wikipedia.org/wiki/Rounding#Rounding_down)（或向 $-∞$ 舍入）。
+二进制斜线 (_division_) 运算符 `/{:tact}` 用于两个值的整除，如果结果为正，则向零截断，如果结果为负，则从零截断。这也叫[向下舍入](https://en.wikipedia.org/wiki/Rounding#Rounding_down)（或向 $-\infty$ 舍入）。
 
 如果尝试除以零，则会出现[退出代码 4](/book/exit-codes#4)错误：整数溢出。
 
-只能应用于 [`Int{:tact}`][int]类型的值：
+只能应用于 [`Int{:tact}`][int] 类型的值：
 
 ```tact
 let two: Int = 2;
@@ -270,9 +270,9 @@ pow(2, 256) - pow(2, 256); // build error: integer overflow！
 
 #### 右移，`>>` {#binary-bitwise-shift-right}
 
-二进制 double greater than（_比特向右移动_）运算符 `>>{:tact}` 返回一个整数，其二进制表示为_左操作数_的值向右移动了_右操作数_的位数。 向右移位的多余位被丢弃，最左边位的副本从左边移入。 这种操作也称为 "符号向右移动 "或 "算术向右移动"，因为结果数字的符号与左操作数的符号相同。 这是一种更有效的方法，即用 2^n$ 除以_左操作数_，其中 $n$ 等于_右操作数_。
+二进制双大于号（_位向右移动_）运算符 `>>{:tact}` 返回一个整数，其二进制表示为*左操作数*的值向右移动了*右操作数*的位数。向右移位的多余位被丢弃，最左边位的副本从左边移入。这种操作也称为"符号向右移动"或"算术向右移动"，因为结果数字的符号与左操作数的符号相同。这是一种更有效的方法，即用 $2^n$ 除以*左操作数*，其中 $n$ 等于*右操作数*。
 
-只能应用于 [`Int{:tact}`][int]类型的值：
+只能应用于 [`Int{:tact}`][int] 类型的值：
 
 ```tact
 let two: Int = 2;
@@ -292,9 +292,9 @@ pow(2, 254) >> 254; // 1
 
 #### 左移，`<<` {#binary-bitwise-shift-left}
 
-二进制 double greater than（_bitwise shift left_）运算符 `<<{:tact}` 返回一个整数，其二进制表示为_左操作数_的值向左移动_右操作数_的位数。 向左移位的多余比特被丢弃，零比特从右边移入。 这是一种更有效的方法，可以将_左操作数_乘以 2^n$，其中 $n$ 等于_右操作数_。 超出 [`Int{:tact}`][int]的最大值将导致[退出代码 4](/book/exit-codes#4)错误：整数溢出"。
+二进制双小于号（_bitwise shift left_）运算符 `<<{:tact}` 返回一个整数，其二进制表示为*左操作数*的值向左移动*右操作数*的位数。向左移位的多余比特被丢弃，零比特从右边移入。这是一种更有效的方法，可以将*左操作数*乘以 $2^n$，其中 $n$ 等于*右操作数*。超出 [`Int{:tact}`][int] 的最大值将导致[退出代码 4](/book/exit-codes#4)错误：整数溢出。
 
-只能应用于 [`Int{:tact}`][int]类型的值：
+只能应用于 [`Int{:tact}`][int] 类型的值：
 
 ```tact
 let two：Int = 2;
@@ -422,7 +422,7 @@ nullable != anotherNullable; // true
 
 ### 比特 AND, `&` {#binary-bitwise-and}
 
-二进制安培（_比特 AND_）运算符 `&{:tact}` 应用[比特 AND](https://en.wikipedia.org/wiki/Bitwise_operation#AND)，对操作数的每一对相应比特执行[逻辑 AND](#二进制-逻辑-and)运算。 当我们要清除一个数字的选定位时，这一点非常有用，因为每个位都代表一个单独的标志或布尔状态，这使得每个整数可以 "存储 "多达 $257$ 个布尔值，因为 Tact 中的所有整数都是 $257$- 位有符号的。
+二进制安培（_比特 AND_）运算符 `&{:tact}` 应用[比特 AND](https://en.wikipedia.org/wiki/Bitwise_operation#AND)，对操作数的每一对相应比特执行[逻辑 AND](#binary-bitwise-and)运算。 当我们要清除一个数字的选定位时，这一点非常有用，因为每个位都代表一个单独的标志或布尔状态，这使得每个整数可以 "存储 "多达 $257$ 个布尔值，因为 Tact 中的所有整数都是 $257$- 位有符号的。
 
 只能应用于 [`Int{:tact}`][int]类型的值：
 
@@ -565,7 +565,7 @@ someVar = 4; // ... 这里
 someVar = (someVar = 5); // SYNTAX ERROR！
 ```
 
-### 扩增任务
+### 增强赋值运算符 {#augmented-assignment}
 
 增强（或复合）赋值运算符，如 `+={:tact}`，将操作与 [赋值]（#assignment）结合起来。 增强赋值是一个语句，不返回值。
 
@@ -582,14 +582,14 @@ value = value + 5；
 
 增强赋值运算符列表：
 
-- `+={:tact}`，使用 [加法运算符 `+{:tact}`](#二进制加法)。 只能应用于 [`Int{:tact}`][int]类型的值。
-- `-={:tact}`，使用 [减法运算符 `-{:tact}`]（#二进制-减法）。 只能应用于 [`Int{:tact}`][int]类型的值。
-- `*={:tact}`，使用 [乘法运算符 `*{:tact}`]（#二进制-乘法）。 只能应用于 [`Int{:tact}`][int]类型的值。
-- `/={:tact}`，使用 [除法运算符 `/{:tact}`](#二进制除法)。 只能应用于 [`Int{:tact}`][int]类型的值。
-- `%={:tact}`，使用 [modulo 运算符 `%{:tact}`]（#二进制-modulo）。 只能应用于 [`Int{:tact}`][int]类型的值。
-- `&={:tact}`，使用 [bitwise AND 运算符 `&{:tact}`]（#binary-bitwise-and）。 只能应用于 [`Int{:tact}`][int]类型的值。
-- `^={:tact}`，它使用 [bitwise XOR 运算符 `^{:tact}`]（#二进制-bitwise-xor）。 只能应用于 [`Int{:tact}`][int]类型的值。
-- |={:tact}`，它使用 [bitwise OR 运算符 `|{:tact}`]（#二进制-bitwise-or）。 只能应用于 [`Int{:tact}\`][int]类型的值。
+- `+={:tact}`，使用 [加法运算符 `+{:tact}`](#binary-addition)。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `-={:tact}`，使用 [减法运算符 `-{:tact}`](#binary-subtract)。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `*={:tact}`，使用 [乘法运算符 `*{:tact}`](#binary-multiply)。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `/={:tact}`，使用 [除法运算符 `/{:tact}`](#binary-divide)。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `%={:tact}`，使用 [modulo 运算符 `%{:tact}`](#binary-modulo)。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `&={:tact}`，使用 [bitwise AND 运算符 `&{:tact}`](#binary-bitwise-and)。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `^={:tact}`，它使用 [bitwise XOR 运算符 `^{:tact}`](#binary-bitwise-xor)。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `|={:tact}`，它使用 [bitwise OR 运算符 `|{:tact}`](#binary-bitwise-or)。 只能应用于 [`Int{:tact}`][int]类型的值。
 
 ```tact
 let value：Int = 5;

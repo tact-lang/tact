@@ -6,7 +6,7 @@ title: 单项合同通信
 
 有关多个已部署合同之间的通信示例，请参阅：[多合约通信](/cookbook/multi-communication)。
 
-## 如何进行基本回复
+## 如何进行基本回复 {#how-to-make-a-basic-reply}
 
 ```tact
 receive() {
@@ -41,7 +41,7 @@ send(SendParameters{
 
 ## 如何发送带有余值的信息
 
-如果我们要向同一发件人发送回复，可以使用 "SendRemainingValue{:tact}"模式（即 "mode: 64{:tact}"），除了新信息中最初显示的值外，它还会携带入站信息的所有剩余值。
+如果我们要向同一发件人发送回复，可以使用 `SendRemainingValue{:tact}`模式（即 `mode: 64{:tact}`），除了新信息中最初显示的值外，它还会携带入站信息的所有剩余值。
 
 ```tact
 send(SendParameters{
@@ -53,7 +53,7 @@ send(SendParameters{
 })；
 ```
 
-通常还需要添加 "SendIgnoreErrors{:tact}"标记，以便忽略在操作阶段处理该消息时出现的任何错误L
+通常还需要添加 `SendIgnoreErrors{:tact}`标记，以便忽略在操作阶段处理该消息时出现的任何错误L
 
 ```tact
 send(SendParameters{

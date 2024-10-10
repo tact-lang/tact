@@ -166,11 +166,11 @@ Tact support next parameters:
 
 :::
 
-#### ipfsAbiGetter\` {#options-ipfsabigetter}
+#### `ipfsAbiGetter` {#options-ipfsabigetter}
 
 默认为 `false{:json}`。
 
-如果设置为 "true{:json}"，则可生成带有描述合同 ABI 的 IPFS 链接的[getter](/book/contracts#getter-functions)。
+如果设置为 `true{:json}`，则可生成带有描述合同 ABI 的 IPFS 链接的[getter](/book/contracts#getter-functions)。
 
 ```json filename="tact.config.json" {8,14}
 {
@@ -254,14 +254,14 @@ Tact support next experimental parameters:
 
 项目的编译模式。 有效值为
 
-| 价值                               | Project description                                         |
-| :------------------------------- | :---------------------------------------------------------- |
-| `"full"{:json}`                  | (默认）运行整个编译流水线，并生成 FunC 代码、BoC 和各种实用程序文件，包括 TypeScript 的封装器。 |
-| `"fullWithDecompilation"{:json}` | 运行整个编译流水线，如 `"完整"{:json}`，并以 BoC 格式反编译生成的二进制代码。             |
-| `"funcOnly"{:json}`              | 只输出中间 FunC 代码，阻止进一步编译。                                      |
-| `"checkOnly"{:json}`             | 仅执行语法和类型检查，阻止进一步编译。                                         |
+Value                            | Description
+:------------------------------- | :----------
+`"full"{:json}`                  | (default) Runs the whole compilation pipeline and emits FunC code, BoC, and various utility files, including wrappers for TypeScript.
+`"fullWithDecompilation"{:json}` | Runs the whole compilation pipeline like `"full"{:json}`, and also decompiles produced binary code in the BoC format.
+`"funcOnly"{:json}`              | Only outputs intermediate FunC code, preventing further compilation.
+`"checkOnly"{:json}`             | Only performs syntax and type checking, preventing further compilation.
 
-在 [Blueprint][bp] 中，"mode "始终设置为""full"{:json}"，且不可覆盖。
+在 [Blueprint][bp] 中，"mode "始终设置为`"full"{:json}`，且不可覆盖。
 
 ```json filename="tact.config.json" {7,13}
 {

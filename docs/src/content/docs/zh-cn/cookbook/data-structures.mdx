@@ -10,7 +10,7 @@ title: 数据结构
 
 ## 阵列
 
-数组](https://en.wikipedia.org/wiki/Array_(data_structure)) 是一种数据结构，由连续的内存块组成，代表相同内存大小的元素集合，每个元素至少由一个数组键或_index_标识。
+[数组](https://en.wikipedia.org/wiki/Array_(data_structure)) 是一种数据结构，由连续的内存块组成，代表相同内存大小的元素集合，每个元素至少由一个数组键或_index_标识。
 
 下面的示例使用[结构](/book/structs-and-messages#structs)包装的[`map<Int, V>{:tact}`][map]模拟数组，其中`V{:tact}`可以是 map 的任何[允许值类型](/book/maps#allowed-types)：
 
@@ -160,7 +160,7 @@ contract MapAsArray with Deployable {
 
 ## 堆栈
 
-堆栈](https://en.wikipedia.org/wiki/Stack_(abstract_data_type)) 是一种由元素集合组成的数据结构，主要有两种操作：
+[堆栈](https://en.wikipedia.org/wiki/Stack_(abstract_data_type)) 是一种由元素集合组成的数据结构，主要有两种操作：
 
 - 推送，将一个元素添加到集合的末尾
 - 弹出，移除最近添加的元素
@@ -264,7 +264,7 @@ contract MapAsStack with Deployable {
 
 ## 圆形缓冲区
 
-循环缓冲区](https://en.wikipedia.org/wiki/Circular_buffer)（循环队列、循环缓冲区或环形缓冲区）是一种数据结构，它使用单个固定大小的[缓冲区](https://en.wikipedia.org/wiki/Data_buffer)，就像端对端连接一样。
+[循环缓冲区](https://en.wikipedia.org/wiki/Circular_buffer)（循环队列、循环缓冲区或环形缓冲区）是一种数据结构，它使用单个固定大小的[缓冲区](https://en.wikipedia.org/wiki/Data_buffer)，就像端对端连接一样。
 
 下面的示例使用包裹在 [Struct](/book/structs-and-messages#structs) 中的 [`map<Int, V>{:tact}`][map]模拟循环缓冲区，其中 `V{:tact}` 可以是 map 的任何 [允许值类型](/book/maps#allowed-types)：
 
@@ -347,7 +347,7 @@ fun emptyCircularBuffer()：CircularBuffer {
     // 内部消息接收器，响应字符串消息 "get_first"
     // 并以循环缓冲区的第一个项目作为回复
     receive("get_first") {
-        self.reply(self.cBuf.getIdx(0).toCoinsString().asComment();
+        self.reply(self.cBuf.getIdx(0).toCoinsString().asComment());
     }
 
     // 内部消息接收器，对字符串消息 "print_all "做出响应

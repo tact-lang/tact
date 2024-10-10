@@ -4,11 +4,10 @@ title: 导入代码
 
 Tact allows you to import Tact and [FunC](https://docs.ton.org/develop/func/overview) code — any given `.tact` or `.fc`/`.func` file can be imported into your project using an `import{:tact}` keyword.
 
-Additionally, Tact compiler has a versatile set of standard libraries, which come bundled in, but not included right away, see [Language→Libs→Overview](/language/libs/overview).
+Additionally, Tact compiler has a versatile set of standard libraries, which come bundled in, but not included right away, see [Standard libraries overview](/ref/standard-libraries).
 
 :::caution
 
-<Callout type="warning" emoji="⚠️">
   NOTE: All imported code is combined together with yours, so it's important to avoid name collisions and always double-check the sources!
 
 :::
@@ -39,7 +38,7 @@ import "./relative/path/to/the/target/func/file.fc";
 import "../subfolder/imported/func/file.fc"；
 ```
 
-但要使用此类文件中的函数，必须先将它们声明为 "本地 "函数。 For example, when standard library [@stdlib/dns](/language/libs/dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
+但要使用此类文件中的函数，必须先将它们声明为 "本地 "函数。 For example, when standard library [@stdlib/dns](/ref/stdlib-dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
 
 ```tact
 // FunC 代码位于当前 Tact 代码旁边的文件中：
@@ -52,4 +51,4 @@ native dnsStringToInternal(str: String)：Slice?
 
 ## 标准图书馆
 
-See [Language→Libs→Overview](/language/libs/overview).
+See [Standard libraries overview](/ref/standard-libraries).
