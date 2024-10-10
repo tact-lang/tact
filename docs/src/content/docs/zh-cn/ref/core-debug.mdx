@@ -1,66 +1,66 @@
 ---
-title: Debug
+title: 调试
 ---
 
-List of functions commonly used for debugging smart contracts in Tact.
+Tact 中调试智能合约常用的函数列表。
 
 :::note
 
-  Read more about debugging on the dedicated page: [Debugging](/book/debug).
+  有关调试的更多信息，请访问专用页面：[调试](/book/debug)。
 
 :::
 
-## require
+## 要求
 
 ```tact
-fun require(condition: Bool, error: String);
+fun require(condition: Bool, error: String)；
 ```
 
-Checks the `condition` and throws an error with an [exit code](/book/exit-codes) generated from the `error` message if the `condition` is `false{:tact}`. Does nothing otherwise.
+检查 `condition` 并抛出错误，如果 `condition` 为 `false{:tact}`，则从 `error` 消息中生成 [exit code](/book/exit-codes)。 除此之外，别无其他作用。
 
-The algorithm for generating the exit code works as follows:
+生成退出代码的算法如下：
 
-- First, the [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hash of `error` message [`String{:tact}`][p] is obtained.
-- Then, its value is read as a 32-bit [big-endian](https://en.wikipedia.org/wiki/Endianness) number modulo $63000$ plus $1000$, in that order.
-- Finally, it's put into the `.md` compilation report file, which resides with the other compilation artifacts in your project's `outputs/` or `build/` directories.
+- 首先，获取`错误`报文[`字符串{:tact}`][p]的[SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) 哈希值。
+- 然后，按此顺序将其值读作一个 32 位 [big-endian](https://en.wikipedia.org/wiki/Endianness) 数字 modulo $63000$ 加 $1000$。
+- 最后，它将被放入 `.md` 编译报告文件，该文件与其他编译工件一起存放在项目的 `outputs/` 或 `build/` 目录中。
 
-The generated exit code is guaranteed to be outside the common $0 - 255$ range reserved for TVM and Tact contract errors, which makes it possible to distinguish exit codes from `require(){:tact}` and any other [standard exit codes](/book/exit-codes).
+保证生成的退出代码不在为 TVM 和 Tact 合同错误保留的常用 $0 - 255$ 范围内，这样就可以将退出代码与 `require(){:tact}` 和任何其他 [标准退出代码](/book/exit-codes) 区分开来。
 
-Usage examples:
+使用示例
 
 ```tact
-// now() has to return a value greater than 1000, otherwise an error message will be thrown
-require(now() > 1000, "We're in the first 1000 seconds of 1 January 1970!");
+// now() 必须返回一个大于 1000 的值，否则将抛出错误信息
+require(now() > 1000, "We're in the first 1000 seconds of January 1970!");
 
 try {
-    // The following will never be true, so this require would always throw
-    require(now() < -1, "Time is an illusion. Lunchtime doubly so.");
+    // 下面的内容永远不会为真，所以这个 require 将总是抛出
+    require(now() < -1, "Time is an illusion.午餐时间更是如此。");
 } catch (e) {
-    // e will be outside of range 0-255
+    // e 将超出 0-255 范围
     dump(e);
 }
 ```
 
-## dump
+## 转储
 
 ```tact
-fun dump(arg);
+fun dump(arg)；
 ```
 
-Prints the argument `arg` to the contract's debug console. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`, otherwise does nothing.
+将参数 `arg` 打印到合约的调试控制台。 仅当[配置文件](/book/config) 中的 "debug "选项设置为 "true{:json}"时才进行评估，否则不执行任何操作。
 
-Can be applied to the following list of types and values:
+可应用于下列类型和值：
 
-- [`Int{:tact}`][int]
-- [`Bool{:tact}`][bool]
-- [`Address{:tact}`][p]
-- [`Cell{:tact}`][cell], [`Builder{:tact}`][builder] or [`Slice{:tact}`][slice]
-- [`String{:tact}`][p] or [`StringBuilder{:tact}`][p]
+- [`Int{:tact}`][int]。
+- [`Bool{:tact}`][bool]。
+- [`地址{:tact}`][p]
+- [`单元格{:tact}`][单元格]、[`构建器{:tact}`][构建器]或[`切片{:tact}`][切片]
+- [`String{:tact}`][p] 或 [`StringBuilder{:tact}`][p]
 - [`map<K, V>{:tact}`](/book/maps)
-- [Optionals and `null{:tact}` value](/book/optionals)
-- `void`, which is implicitly returned when a function doesn't have return value defined
+- [选项和 `null{:tact}` 值](/book/optionals)
+- void"，当函数没有定义返回值时隐式返回
 
-Usage examples:
+使用示例
 
 ```tact
 // Int
@@ -74,39 +74,39 @@ dump(false);
 dump(myAddress());
 
 // Cell, Builder or Slice
-dump(emptyCell());  // Cell
-dump(beginCell());  // Builder
+dump(emptyCell())；  // Cell
+dump(beginCell()); // Builder
 dump(emptySlice()); // Slice
 
 // String or StringBuilder
 dump("Hello, my name is..."); // String
-dump(beginTailString());      // StringBuilder
+dump(beginTailString()); // StringBuilder
 
 // Maps
 let m: map<Int, Int> = emptyMap();
 m.set(2 + 2, 4);
 dump(m);
 
-// Special values
+// 特殊值
 dump(null);
-dump(emit("msg".asComment())); // As emit() function doesn't return a value, dump() would print #DEBUG#: void.
+dump(emit("msg".asComment())); // 由于 emit() 函数不返回值，dump() 将打印 #DEBUG#: void.
 ```
 
-:::note[Useful links:]
+:::note[Useful 链接：]
 
-  [Debug with `dump(){:tact}`](/book/debug#tests-dump)
+  [使用 `dump(){:tact}` 调试](/book/debug#tests-dump)
 
 :::
 
 ## dumpStack
 
 ```tact
-fun dumpStack();
+fun dumpStack()；
 ```
 
-Prints all the values of [persistent state variables](/book/contracts#variables) to the contract's debug console. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`, otherwise does nothing.
+将 [持久状态变量](/book/contracts#variables)的所有值打印到合约的调试控制台。 仅当[配置文件](/book/config) 中的 "debug "选项设置为 "true{:json}"时才进行评估，否则不执行任何操作。
 
-Usage example:
+使用示例
 
 ```tact {6}
 contract DumpsterFire {
@@ -119,99 +119,99 @@ contract DumpsterFire {
 }
 ```
 
-:::note[Useful links:]
+:::note[Useful 链接：]
 
-  [Debug with `dump(){:tact}`](/book/debug#tests-dump)
+  [使用 `dump(){:tact}` 调试](/book/debug#tests-dump)
 
 :::
 
-## throw
+## 丢
 
 ```tact
-fun throw(code: Int);
+fun throw(code: Int)；
 ```
 
-An alias to [`nativeThrow(){:tact}`](#nativethrow).
+是 [`nativeThrow(){:tact}`](#nativethrow)的别名。
 
-## nativeThrow
+## 原生抛掷
 
 ```tact
-fun nativeThrow(code: Int);
+fun nativeThrow(code: Int)；
 ```
 
-Throws an exception with an error code equal to `code`. Execution of the current context stops (the statements after `nativeThrow` won't be executed) and control will be passed to the first [`try...catch{:tact}` block](/book/statements#try-catch) in the call stack. If no `try{:tact}` or `try...catch{:tact}` block exists among caller functions, [TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview) will terminate the transaction.
+抛出错误代码等于 `code` 的异常。 当前上下文的执行将停止（"nativeThrow "后的语句将不会执行），控制权将传递给调用栈中的第一个[`try...catch{:tact}`块](/book/statements#try-catch)。 如果调用者函数中不存在 "try{:tact}"或 "try...catch{:tact}"块，[TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview)将终止事务。
 
-Attempts to specify the `code` outside of $0 - 65535$ range cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/book/exit-codes#5)异常：整数超出预期范围"。
 
-Usage examples:
+使用示例
 
 ```tact {2,7}
 fun thisWillTerminate() {
-    nativeThrow(42); // throwing with exit code 42
+    nativeThrow(42); // 抛出退出代码 42
 }
 
 fun butThisDoesNot() {
     try {
-        nativeThrow(42); // throwing with exit code 42
+        nativeThrow(42); // 抛出退出代码 42
     }
 
-    // ... follow-up logic ...
+    // ... 后续逻辑 ...
 }
 ```
 
-## nativeThrowIf
+## 原生抛出条件
 
 ```tact
-fun nativeThrowIf(code: Int, condition: Bool);
+fun nativeThrowIf(code: Int, condition: Bool)；
 ```
 
-Similar to [`nativeThrow(){:tact}`](#nativethrow), but throws an exception conditionally, when `condition` is equal to `true{:tact}`. Doesn't throw otherwise.
+类似于 [`nativeThrow(){:tact}`](#nativethrow)，但会在 `condition` 等于 `true{:tact}` 时有条件地抛出异常。 否则不会扔。
 
-Attempts to specify the `code` outside of $0 - 65535$ range cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/book/exit-codes#5) 异常：整数超出预期范围"。
 
-Usage examples:
+使用示例
 
 ```tact {2,7}
 fun thisWillTerminate() {
-    nativeThrowIf(42, true); // throwing with exit code 42
+    nativeThrowIf(42, true); // 抛出退出代码 42
 }
 
 fun butThisDoesNot() {
     try {
-        nativeThrowIf(42, true); // throwing with exit code 42
+        nativeThrowIf(42, true); // 抛出退出代码 42
     }
-    // ... follow-up logic ...
+    // ... 后续逻辑 ...
 }
 ```
 
-## nativeThrowUnless
+## 本机无投掷
 
 ```tact
-fun nativeThrowUnless(code: Int, condition: Bool);
+fun nativeThrowUnless(code: Int, condition: Bool)；
 ```
 
-Similar to [`nativeThrow(){:tact}`](#nativethrow), but throws an exception conditionally, when `condition` is equal to `false{:tact}`. Doesn't throw otherwise.
+类似于 [`nativeThrow(){:tact}`](#nativethrow)，但会在 `condition` 等于 `false{:tact}` 时有条件地抛出异常。 否则不会扔。
 
-Attempts to specify the `code` outside of $0 - 65535$ range cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/book/exit-codes#5) 异常：整数超出预期范围"。
 
-Usage examples:
+使用示例
 
 ```tact {2,7}
 fun thisWillTerminate() {
-    nativeThrowUnless(42, false); // throwing with exit code 42
+    nativeThrowUnless(42, false); // 抛出退出代码 42
 }
 
 fun butThisDoesNot() {
     try {
-        nativeThrowUnless(42, false); // throwing with exit code 42
+        nativeThrowUnless(42, false); // 抛出退出代码 42
     }
-    // ... follow-up logic ...
+    // ... 后续逻辑 ...
 }
 ```
 
 [p]: /book/types#primitive-types
 [bool]: /book/types#booleans
 [int]: /book/integers
-[cell]: /book/cells#cells
-[builder]: /book/cells#builders
-[slice]: /book/cells#slices
+[电池]: /book/cells#cells
+[建筑工人]: /book/cells#builders
+[一片]: /book/cells#slices
