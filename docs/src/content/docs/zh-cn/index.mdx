@@ -1,58 +1,58 @@
 ---
-title: Learn all about programming in ⚡ Tact
-description: Tact is a new programming language for TON Blockchain that is focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts.
-template: splash
+title: 学习⚡ Tact 中的所有编程知识
+description: Tact 是 TON 区块链的一种新编程语言，注重效率和简便性。 它设计得易于学习和使用，并且非常适合智能合约。
+template: 喷溅
 hero:
-  tagline: Tact is a new programming language for TON Blockchain that is focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts. Tact is a statically typed language with a simple syntax and a powerful type system.
+  tagline: Tact 是 TON 区块链的一种新编程语言，注重效率和简便性。 它设计得易于学习和使用，并且非常适合智能合约。 Tact 是一种静态类型语言，具有简单的语法和强大的类型系统。
   image:
     dark: /public/logomark-dark.svg
     light: /public/logomark-light.svg
-    alt: Tact logo
+    alt: Tact 徽标
   actions:
-    - text: 📚 Book
-      link: /book
-      variant: minimal
-      icon: right-arrow
-    - text: 🍲 Cookbook
+    - text: 书籍
+      link: /书
+      variant: 极少
+      icon: 右箭头
+    - text: 🍲烹饪书
       link: /cookbook
-      variant: minimal
-      icon: right-arrow
-    - text: 🔬 Reference
+      variant: 极少
+      icon: 右箭头
+    - text: 🔬 参考资料
       link: /ref
-      variant: minimal
-      icon: right-arrow
-    - text: 🗺️ Ecosystem
-      link: /ecosystem
-      variant: minimal
-      icon: right-arrow
+      variant: 极少
+      icon: 右箭头
+    - text: 🗺️ 生态系统
+      link: /生态系统
+      variant: 极少
+      icon: 右箭头
 ---
 
 import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
 
 ```
-  {/* icon: right-arrow */}
+  {/* 图标：右箭头 */}
 ```
 
-## 🚀 Let's start! {#start}
+## 🚀 我们开始吧！ {#start}
 
 <p>ㅤ</p>
 
 <Steps>
 
-1. #### Ensure that the supported version of Node.js is installed and available {#start-1}
+1. #### 确保已安装受支持的 Node.js 版本并可用 {#start-1}
 
-    To check it, run `node --version{:shell}` — it should show you the version 22.0.0 or later.
+    要检查它，请运行 `node --version{:shell}` --它应该会显示 22.0.0 或更高版本。
 
-2. #### Run the following command {#start-2}
+2. #### 运行以下命令 {#start-2}
 
-   It will create a new project with the simple counter contract:
+   它将创建一个带有简单计数器合同的新项目：
 
    <Tabs>
      <TabItem label="yarn" icon="seti:yarn">
-       ```shell
-       # recommended
+       ``shell
+       # 推荐
        yarn create ton simple-counter --type tact-counter --contractName SimpleCounter
-       ```
+       ``shell
      </TabItem>
      <TabItem label="npm" icon="seti:npm">
        ```shell
@@ -65,29 +65,29 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
        ```
      </TabItem>
      <TabItem label="bun" icon="bun">
-       ```shell
+       ``shell
        bun create ton@latest simple-counter --type tact-counter --contractName SimpleCounter
        ```
      </TabItem>
    </Tabs>
 
-3. #### That's it! {#start-3}
+3. #### 就是这样！ {#start-3}
 
-   Your first contract project is written and compiled already!
+   您的第一个合同项目已经编写完成！
 
-   Go check it out by moving into the relevant directory — `cd simple-counter/contracts{:shell}`. Here's how it would look like:
+   进入相关目录查看 - `cd simple-counter/contracts{:shell}`。 这就是它的样子：
 
    ```tact
    import "@stdlib/deploy";
 
    message Add {
-       queryId: Int as uint64;
-       amount: Int as uint32;
+       queryId：Int as uint64;
+       amount：Int as uint32;
    }
 
-   contract SimpleCounter with Deployable {
+   Deployable 合同 SimpleCounter {
        id: Int as uint32;
-       counter: Int as uint32;
+       counter：
 
        init(id: Int) {
            self.id = id;
@@ -97,70 +97,70 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
        receive(msg: Add) {
            self.counter += msg.amount;
 
-           // Notify the caller that the receiver was executed and forward remaining value back
+           // 通知调用者接收器已执行，并将余值转回
            self.notify("Cashback".asComment());
        }
 
-       get fun counter(): Int {
+       get fun counter()：Int {
            return self.counter;
        }
 
-       get fun id(): Int {
+       get fun id()：Int {
            return self.id;
        }
    }
    ```
 
-   To re-compile or deploy, refer to the commands in the scripts section of `package.json` in the root of this newly created project and to the documentation of [Blueprint](https://github.com/ton-org/blueprint) — this is the tool we've used to create and compile your first simple counter contract in Tact. In fact, Blueprint can do much more than that: including tests, customizations and more.
+   要重新编译或部署，请参考新创建项目根目录下 `package.json` 中脚本部分的命令，以及 [Blueprint](https://github.com/ton-org/blueprint) 的文档 - 这是我们用来在 Tact 中创建和编译第一个简单计数器合约的工具。 事实上，Blueprint 的功能远不止这些：包括测试、定制等。
 
 </Steps>
 
-## 🤔 Where to go next? {#next}
+## 🤔 下一站去哪里？ {#next}
 
 <p>ㅤ</p>
 
 <Steps>
 
-1. #### Have some blockchain knowledge already? {#next-1}
+1. #### 已经掌握了一些区块链知识？ {#next-1}
 
-   See the [Tact Cookbook](/cookbook), which is a handy collection of everyday tasks (and solutions) every Tact developer faces during smart contract development. Use it to avoid re-inventing the wheel.
+   请参阅 [Tact Cookbook](/cookbook)，它是每个 Tact 开发人员在智能合约开发过程中面临的日常任务（和解决方案）的便捷集合。 使用它可以避免重复发明轮子。
 
-   Alternatively, check the following cheat sheets to quickly get started:
+   此外，还可以查看以下小抄，快速入门：
 
    <CardGrid>
      <LinkCard
-       title="💎 Coming from FunC (TON)"
+       title="💎 来自 FunC (TON)"
        href="/book/cs/from-func"
      />
      <LinkCard
-       title="🔷 Coming from Solidity (Ethereum)"
+       title="🔷 来自 Solidity (Ethereum)"
        href="/book/cs/from-solidity"
      />
    </CardGrid>
 
-2. #### Want to know more? {#next-2}
+2. #### 想了解更多吗？ {#next-2}
 
-   For further guidance on compilation, testing and deployment see the respective pages:
+   有关编译、测试和部署的进一步指导，请参阅相关页面：
 
-   - [Testing and debugging](/book/debug) page tells you everything about debugging Tact contracts
-   - [Deployment](/book/deploy) page shows what deployment looks like and helps you harness the powers of [Blueprint](https://github.com/ton-org/blueprint) for it.
+   - [测试和调试](/book/debug) 页面将为您介绍有关 Tact 合同调试的所有内容。
+   - [部署](/book/deploy)页面展示了部署的样子，并帮助你利用[蓝图](https://github.com/ton-org/blueprint) 的力量进行部署。
 
-   For custom plugins for your favorite editor and other tooling see the [Ecosystem](/ecosystem) section.
+   有关您最喜欢的编辑器和其他工具的自定义插件，请参阅 [生态系统](/ecosystem) 部分。
 
-   Alternatively, take a look at the following broader sections:
+   或者，也可以查看以下更广泛的章节：
 
-   - [Book](/book) helps you learn the language step-by-step
-   - [Cookbook](/cookbook) gives you ready-made recipes of Tact code
-   - [Reference](/ref) provides a complete glossary of the standard library, grammar and evolution process
-   - Finally, [Ecosystem](/ecosystem) describes "what's out there" in the Tact's and TON's ecosystems
+   - [书籍](/书籍) 帮助您逐步学习语言
+   - [Cookbook](/cookbook)为您提供现成的 Tact 代码食谱
+   - [参考资料](/ref) 提供了标准库、语法和演变过程的完整词汇表
+   - 最后，[生态系统](/ecosystem)描述了 Tact 和 TON 生态系统中的 "外面有什么"。
 
    <CardGrid>
      <LinkCard
-       title="📚 Read the Book of Tact"
+       title="📚阅读《战术书》"
        href="/book"
      />
      <LinkCard
-       title="🍲 Grind the Cookbook"
+       title="🍲研磨烹饪书"
        href="/cookbook"
      />
      <LinkCard
@@ -173,11 +173,11 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
      />
    </CardGrid>
 
-3. #### Feeling a bit uncomfortable? {#next-3}
+3. #### 感觉有点不舒服？ {#next-3}
 
-   If you ever get stuck, try searching — the search box is right at the top of the documentation. There is also a handy <kbd>Ctrl</kbd> + <kbd>K</kbd> shortcut to quickly focus and start the search as you type.
+   如果遇到困难，请尝试搜索--搜索框就在文档顶部。 还有一个方便的<kbd>Ctrl</kbd>+<kbd>K</kbd>快捷键，可以在输入时快速对焦并开始搜索。
 
-   If you can't find the answer in the docs, or you've tried to do some local testing and it still didn't help — don't hesitate to reach out to Tact's flourishing community:
+   如果您在文档中找不到答案，或者您尝试进行了一些本地测试，但仍然无济于事，请不要犹豫，联系 Tact 活跃的社区：
 
    <CardGrid>
      <LinkCard
@@ -190,6 +190,6 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
      />
    </CardGrid>
 
-   Good luck on your coding adventure with ⚡ Tact!
+   祝你在⚡ Tact 的编码冒险中好运！
 
 </Steps>
