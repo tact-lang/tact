@@ -940,7 +940,7 @@ contract StructsTester {
             b: 42
         };
 
-        let {a, b} = s;
+        let S {a, b} = s;
 
         return (a ? 1 : 0) + b;
     }
@@ -951,7 +951,7 @@ contract StructsTester {
             b: 42
         };
 
-        let {_, b} = s;
+        let S {_, b} = s;
 
         return b;
     }

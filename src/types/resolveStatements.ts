@@ -722,11 +722,13 @@ function processStatements(
                     if (item.name.text === "_") {
                         return;
                     }
-                    const f = ty.fields.find((f) => eqNames(f.name, item.from));
+                    const f = ty.fields.find((f) =>
+                        eqNames(f.name, item.field),
+                    );
                     if (!f) {
                         throwCompilationError(
-                            `Field '${idTextErr(item.from)}' not found in type '${expressionType.name}'`,
-                            item.from.loc,
+                            `Field '${idTextErr(item.field)}' not found in type '${expressionType.name}'`,
+                            item.field.loc,
                         );
                     }
                     sctx = addVariable(item.name, f.type, ctx, sctx);

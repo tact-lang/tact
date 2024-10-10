@@ -476,7 +476,7 @@ export function writeStatement(
             const ty = getType(ctx.ctx, t.name);
             const ids = ty.fields.map((field) => {
                 const id = f.identifiers.find(
-                    (item) => item.from.text === field.name,
+                    (item) => item.field.text === field.name,
                 );
                 return id ? funcIdOf(id.name) : "_";
             });

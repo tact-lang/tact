@@ -899,31 +899,31 @@ Line 5, col 5:
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields 1`] = `
-"<unknown>:15:20: Field '"d"' not found in type 'S'
-Line 15, col 20:
+"<unknown>:15:22: Field '"d"' not found in type 'S'
+Line 15, col 22:
   14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let { a, b, c, d } = s;
-                          ^
+> 15 |     let S { a, b, c, d } = s;
+                            ^
   16 |     return a + b + c + d;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields2 1`] = `
-"<unknown>:15:20: Field '"d"' not found in type 'S'
-Line 15, col 20:
+"<unknown>:15:22: Field '"d"' not found in type 'S'
+Line 15, col 22:
   14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let { a, b, c, d: e } = s;
-                          ^
+> 15 |     let S { a, b, c, d: e } = s;
+                            ^
   16 |     return a + b + c + e;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields3 1`] = `
-"<unknown>:15:14: Field '"bb"' not found in type 'S'
-Line 15, col 14:
+"<unknown>:15:16: Field '"bb"' not found in type 'S'
+Line 15, col 16:
   14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let { a, bb, c } = s;
-                    ^~
+> 15 |     let S { a, bb, c } = s;
+                      ^~
   16 |     return a + bb + c;
 "
 `;

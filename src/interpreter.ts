@@ -1475,12 +1475,12 @@ export class Interpreter {
         }
 
         for (const item of ast.identifiers) {
-            const v = val[idText(item.from)];
+            const v = val[idText(item.field)];
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (v === undefined) {
                 throwErrorConstEval(
                     `destructuring assignment expected field ${idTextErr(
-                        item.from,
+                        item.field,
                     )}`,
                     ast.loc,
                 );
