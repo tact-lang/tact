@@ -1,31 +1,31 @@
 ---
-title: Programmatic API
+title: 程序化 API
 ---
 
-You can invoke the Tact compiler from your code in node and browser environments.
+您可以在节点和浏览器环境中从代码中调用 Tact 编译器。
 
 :::caution
 
-  This API has not been released yet. It will be released in the 1.0.0 version.
+  该应用程序接口尚未发布。 它将在 1.0.0 版本中发布。
 
 :::
 
-## Run compiler in browser
+## 在浏览器中运行编译器
 
 ```ts
 import { run } from "@tact-lang/compiler";
 
 // Virtual FS
 const fs = {
-  ["main.tact"]: Buffer.from("...").toString("base64"),
+  ["main.tact"]：Buffer.from("...").toString("base64"),
 };
 
 const config = {
-  projects: [
+  projects：[
     {
       name: "Sample",
-      path: "main.tact",
-      output: "./output",
+      path："main.tact",
+      output："./output",
     },
   ],
 };
@@ -36,12 +36,12 @@ let successful = await run({ config, fs });
 // NOTE: Output from is written to the same fs object.
 ```
 
-## Contract verification
+## 合同核查
 
-You can always verify the compiled package with the `verify` function.
+您可以使用 `verify` 函数验证编译后的软件包。
 
 ```ts
 import { verify } from "@tact-lang/compiler";
 const pkg: string = '...';
-const res = await verify(pkg);
+const res = await verify(pkg)；
 ```
