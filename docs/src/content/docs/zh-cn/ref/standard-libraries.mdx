@@ -1,44 +1,44 @@
 ---
-title: Standard libraries overview
+title: 标准图书馆概述
 ---
 
-Some libraries (also referred to as standard libraries or stdlibs) come bundled with Tact compiler, but aren't automatically included to your project until explicitly made to.
+有些库（也称为标准库或 stdlibs）与 Tact 编译器捆绑在一起，但不会自动包含到项目中，除非明确指定。
 
-To import any standard library, use the [`import{:tact}` keyword](/book/import) followed by the name of that library in a [string][p], like so:
+要导入任何标准库，请使用[`import{:tact}`关键字](/book/import)，然后在[字符串][p]中输入该库的名称，像这样：
 
 ```tact
-// This would include everything from @stdlib/deploy into your codebase:
-import "@stdlib/deploy";
+// 这将把 @stdlib/deploy 中的所有内容纳入代码库：
+import "@stdlib/deploy"；
 ```
 
-## List of standard libraries: {#list}
+## 标准图书馆列表： {#list}
 
-| Library                  | Description                                                      | Commonly used APIs                                                      |
-| :----------------------- | :--------------------------------------------------------------- | :---------------------------------------------------------------------- |
-| [`@stdlib/config`][1]    | Config and elector address retrieval.                            | [`getConfigAddress(){:tact}`][gca], [`getElectorAddress(){:tact}`][gea] |
-| [`@stdlib/content`][2]   | Encoding off-chain link [strings][p] to a [`Cell{:tact}`][cell]. | [`createOffchainContent(){:tact}`][coff]                                |
-| [`@stdlib/deploy`][3]    | Unified mechanism for deployments.                               | [`Deployable{:tact}`][dep], [`FactoryDeployable{:tact}`][fcd]           |
-| [`@stdlib/dns`][4]       | Resolution of [DNS][dns] names.                                  | [`DNSResolver{:tact}`][dnsr], [`dnsInternalVerify(){:tact}`][dnsi]      |
-| [`@stdlib/ownable`][5]   | Traits for ownership management.                                 | [`Ownable{:tact}`][own], [`OwnableTransferable{:tact}`][ownt]           |
-| [`@stdlib/stoppable`][6] | Traits that allow contract stops. Requires [@stdlib/ownable][5]. | [`Stoppable{:tact}`][stp], [`Resumable{:tact}`][res]                    |
+| 图书馆                      | 说明                                                      | 常用的应用程序接口                                                               |
+| :----------------------- | :------------------------------------------------------ | :---------------------------------------------------------------------- |
+| [`@stdlib/config`][1]    | 配置和选民地址检索。                                              | [`getConfigAddress(){:tact}`][gca]，[`getElectorAddress(){:tact}`][gea]。 |
+| [`@stdlib/content`][2]   | 将链外链接[字符串][p]编码为[`单元格{:tact}`][单元格]。                    | [`createOffchainContent(){:tact}`][coff]。                               |
+| [`@stdlib/deploy`][3]    | 统一的部署机制。                                                | [`可部署{:tact}`][dep]，[`可部署工厂{:tact}`][fcd]。                              |
+| [`@stdlib/dns`][4]       | 解析 [DNS][dns] 名称。                                       | [`DNSResolver{:tact}`][dnsr]，[`dnsInternalVerify(){:tact}`][dnsi]。      |
+| [`@stdlib/ownable`][5]   | 所有权管理的特质。                                               | [`可拥有{:tact}`][拥有]，[`可拥有可转让{:tact}`][拥有]                                |
+| [`@stdlib/stoppable`][6] | 允许合同停止的特征。 需要 [@stdlib/ownable][5]。                     | [`Stoppable{:tact}`][stp]，[`Resumable{:tact}`][res]。                    |
 
 [1]: /ref/stdlib-config
 [gca]: /ref/stdlib-config#getconfigaddress
 [gea]: /ref/stdlib-config#getelectoraddress
 [2]: /ref/stdlib-content
-[coff]: /ref/stdlib-content#createoffchaincontent
+[库克]: /ref/stdlib-content#createoffchaincontent
 [3]: /ref/stdlib-deploy
-[dep]: /ref/stdlib-deploy#deployable
+[描写]: /ref/stdlib-deploy#deployable
 [fcd]: /ref/stdlib-deploy#factorydeployable
 [4]: /ref/stdlib-dns
 [dnsr]: /ref/stdlib-dns#dnsresolver
 [dnsi]: /ref/stdlib-dns#dnsinternalverify
 [5]: /ref/stdlib-ownable
-[own]: /ref/stdlib-ownable#ownable
-[ownt]: /ref/stdlib-ownable#ownabletransferable
+[拥有]: /ref/stdlib-ownable#ownable
+[拥有]: /ref/stdlib-ownable#ownabletransferable
 [6]: /ref/stdlib-stoppable
 [stp]: /ref/stdlib-stoppable#stoppable
-[res]: /ref/stdlib-stoppable#resumable
+[重新]: /ref/stdlib-stoppable#resumable
 [p]: /book/types#primitive-types
-[cell]: /book/cells#cells
+[电池]: /book/cells#cells
 [dns]: https://docs.ton.org/participate/web3/dns
