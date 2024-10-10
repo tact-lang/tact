@@ -1,140 +1,139 @@
 ---
-title: Cells, Builders and Slices
+title: 细胞、建造者和切片
 ---
 
-[Cells](#cells), [Builders](#builders) and [Slices](#slices) are low-level [primitives][p] of TON Blockchain. The virtual machine of TON Blockchain, [TVM][tvm], uses cells to represent all data structures in persistent storage, and most in memory.
+[单元]（#cells）、[构建器]（#builders）和[切片]（#slices）是 TON 区块链的底层[基元][p]。 TON 区块链的虚拟机 [TVM][tvm]使用单元格来表示持久存储中的所有数据结构，以及内存中的大部分数据结构。
 
-## Cells
+## 细胞
 
-`Cell{:tact}` is a [primitive][p] and a data structure, which [ordinarly](#cells-kinds) consists of up to $1023$ continuously laid out bits and up to $4$ references (refs) to other cells. Circular references are forbidden and cannot be created by the means of [TVM][tvm], which means cells can be viewed as [quadtrees][quadtree] or [directed acyclic graphs (DAGs)](https://en.wikipedia.org/wiki/Directed_acyclic_graph) of themselves. Contract code itself is represented by a tree of cells.
+`Cell{:tact}`是一种[基元][p]和数据结构，它[通常](#cells-kinds)由多达 $1023$ 个连续排列的比特和多达 $4$ 个指向其他单元格的引用(refs)组成。 禁止循环引用，也不能通过[TVM][tvm]的方式创建循环引用，这意味着单元格可以被视为[四叉树][quadtree]或[有向无环图（DAG）](https://en.wikipedia.org/wiki/Directed_acyclic_graph)。 合同代码本身由单元格树形结构表示。
 
-Cells and [cell primitives](#cells-immutability) are bit-oriented, not byte-oriented: [TVM][tvm] regards data kept in cells as sequences (strings or streams) of up to $1023$ bits, not bytes. If necessary, contracts are free to use, say, $21$-bit integer fields serialized into [TVM][tvm] cells, thus using fewer persistent storage bytes to represent the same data.
+单元和 [单元基元](#cells-immutability) 是面向比特的，而不是面向字节的：[TVM][tvm] 将保存在单元中的数据视为最多为 $1023$ 比特的序列（字符串或数据流），而不是字节。 如有必要，合约可以自由使用 $21$-bit 整数字段，将其序列化为 [TVM][tvm] 单元，从而使用更少的持久存储字节来表示相同的数据。
 
-### Kinds {#cells-kinds}
+### 种类 {#cells-kinds}
 
-While the [TVM][tvm] type [`Cell{:tact}`](#cells) refers to all cells, there are different cell kinds with various memory layouts. The one described [earlier](#cells) is commonly referred to as an _ordinary_ (or simple) cell — that's the most simple and most commonly used flavor of cells, which can only contain data. The grand majority of descriptions, guides and [references](/ref/core-cells) to cells and their usage assumes ordinary ones.
+虽然 [TVM][tvm] 类型 [`单元格{:tact}`](#cells)指的是所有单元格，但有不同的单元格类型，其内存布局也各不相同。 前面描述的单元格（#cells）通常被称为_ordinary_（或 simple）单元格--这是最简单、最常用的单元格，只能包含数据。 绝大多数关于细胞及其用法的描述、指南和[参考文献](/ref/core-cells)都假定细胞是普通的。
 
-Other kinds of cells are collectively called _exotic_ (or special) cells. They sometimes appear in actual representations of blocks and other data structures on TON Blockchain. Their memory layouts and purposes significantly differ from ordinary cells.
+其他类型的细胞统称为_外来细胞（或特殊细胞）。 它们有时会出现在 TON 区块链上的区块和其他数据结构的实际表示中。 它们的内存布局和用途与普通电池大不相同。
 
-Kinds (or subtypes) of all cells are encoded by an integer between $-1$ and $255$. Ordinary cells are encoded by $-1$, while exotic ones can be encoded by any other integer in that range. The subtype of an exotic cell is stored in the first $8$ bits of its data, which means valid exotic cells always have at least $8$ data bits.
+所有细胞的种类（或亚型）都由 $-1$ 和 $255$之间的整数编码。 普通单元格用 $-1$编码，特殊单元格可用该范围内的任何其他整数编码。 奇异单元的子类型存储在其数据的前 $8$ 位，这意味着有效的奇异单元总是至少有 $8$ 个数据位。
 
-[TVM][tvm] currently supports the following exotic cell subtypes:
+[TVM][tvm]目前支持以下奇异细胞子类型：
 
-- [Pruned branch cell][c-pruned], with subtype encoded as $1$ — they represent deleted subtrees of cells.
-- [Library reference cell][c-library], with subtype encoded as $2$ — they are used for storing libraries, and usually, in [masterchain](/book/masterchain) contexts.
-- [Merkle proof cell][c-mproof], with subtype encoded as $3$ — they are used for verifying that certain portions of other cell's tree data belong to the full tree.
-- [Merkle update cell][c-mupdate], with subtype encoded as $4$ — they always have two references and behave like a [Merkle proof][mproof] for both of them.
+- [剪枝单元格][c-pruned]，子类型编码为 $1$ - 它们代表删除的单元格子树。
+- [图书馆引用单元][c-library]，子类型编码为 $2$ - 它们用于存储图书馆，通常在[masterchain]（/book/masterchain）上下文中使用。
+- [梅克尔证明单元][c-mproof]，子类型编码为 $3$ - 它们用于验证其他单元的树数据的某些部分是否属于完整树。
+- [梅克尔更新单元][c-mupdate]，子类型编码为 $4$ - 它们总是有两个引用，对这两个引用的行为类似于[梅克尔证明][mproof]。
 
-:::note[Useful links:]
+:::note[Useful 链接：]
 
-  [Pruned branch cells in TON Docs][c-pruned]\
-  [Library reference cells in TON Docs][c-library]\
-  [Merkle proof cells in TON Docs][c-mproof]\
-  [Merkle update cells in TON Docs][c-mupdate]\
-  [Simple proof-verifying example in TON Docs][mproof]
+  [TON Docs 中的剪枝单元][c-pruned]\
+  [TON Docs 中的 Merkle 证明单元][c-mproof]\
+  [TON Docs 中的 Merkle 更新单元][c-mupdate]\
+  [TON Docs 中的简单证明验证示例][mproof] [TON Docs 中的简单证明验证示例][mproof]\
 
 :::
 
-[c-pruned]: https://docs.ton.org/develop/data-formats/exotic-cells#pruned-branch
+[c- 修剪]: https://docs.ton.org/develop/data-formats/exotic-cells#pruned-branch
 [c-library]: https://docs.ton.org/develop/data-formats/library-cells
 [c-mproof]: https://docs.ton.org/develop/data-formats/exotic-cells#merkle-proof
 [c-mupdate]: https://docs.ton.org/develop/data-formats/exotic-cells#merkle-update
-[mproof]: https://docs.ton.org/develop/data-formats/exotic-cells#simple-proof-verifying-example
+[防潮]: https://docs.ton.org/develop/data-formats/exotic-cells#simple-proof-verifying-example
 
-### Levels {#cells-levels}
+### {#cells-levels}
 
-Every cell, being a [quadtree][quadtree], has an attribute called _level_, which is represented by an integer between $0$ and $3$. The level of an [ordinary](#cells-kinds) cell is always equal to the maximum of the levels of all its references. That is, level of an ordinary cell without references is equal to $0$.
+作为 [四叉树][quadtree]，每个单元格都有一个名为 _level_ 的属性，它由 $0$ 和 $3$之间的整数表示。 普通]（#cells-kinds）单元格的级别总是等于其所有引用级别的最大值。 也就是说，没有引用的普通单元格的电平等于 $0$。
 
-[Exotic](#cells-kinds) cells have different rules for determining their level, which are described [on this page in TON Docs](https://docs.ton.org/develop/data-formats/exotic-cells).
+[外来](#cells-kinds)细胞有不同的规则来决定它们的等级，这些规则在[TON Docs 的本页](https://docs.ton.org/develop/data-formats/exotic-cells)上有描述。
 
-### Serialization {#cells-serialization}
+### 序列化 {#cells-serialization}
 
-Before a cell can be transferred over the network or stored on disk, it must be serialized. There are several common formats, such as [standard `Cell{:tact}` representation](#cells-representation) and [BoC](#cells-boc).
+在通过网络传输单元格或在磁盘上存储单元格之前，必须对其进行序列化。 有几种常用格式，如[标准 `Cell{:tact}` 表示法](#cells-representation)和[BoC](#cells-boc)。
 
-#### Standard representation {#cells-representation}
+#### 标准表示法 {#cells-representation}
 
-Standard [`Cell{:tact}`](#cells) representation is a common serialization format for cells first described in the [tvm.pdf](https://docs.ton.org/tvm.pdf). Its algorithm representing cells in octet (byte) sequences begins with serializing the first $2$ bytes called descriptors:
+标准[`单元格{:tact}`](#cells)表示法是[tvm.pdf](https://docs.ton.org/tvm.pdf)中首次描述的单元格通用序列化格式。 它的算法以八进制（字节）序列表示单元，首先将称为描述符的第一个 $2$ 字节序列化：
 
-- _Refs descriptor_ is calculated according to this formula: $r + 8 _ k + 32 _ l$, where $r$ is the number of references contained in the cell (between $0$ and $4$), $k$ is a flag for the cell kind ($0$ for [ordinary](#cells-kinds) and $1$ for [exotic](#cells-kinds)), and $l$ is the [level](#cells-levels) of the cell (between $0$ and $3$).
-- _Bits descriptor_ is calculated according to this formula $\lfloor\frac{b}{8}\rfloor + \lceil\frac{b}{8}\rceil$, where $b$ is the number of bits in the cell (between $0$ and $1023$).
+- _Refs descriptor_ 的计算公式如下： $r + 8 _ k + 32 _ l$，其中 $r$ 是单元格中包含的引用数（介于 $0$ 和 $4$之间）， $k$ 是单元格类型标志（$0$ 表示 [ordinary](#cells-kinds) 和 $1$ 表示 [exotic](#cells-kinds) ）， $l$ 是单元格的 [level](#cells-levels) （介于 $0$ 和 $3$之间）。
+- _Bits descriptor_ 的计算公式为 $\lfloor\frac{b}{8}\rfloor + \lceil\frac{b}{8}\rceil$，其中 $b$ 是单元格中的位数（介于 $0$ 和 $1023$之间）。
 
-Then, the data bits of the cell themselves are serialized as $\lceil\frac{b}{8}\rceil$ $8$-bit octets (bytes). If $b$ is not a multiple of eight, a binary $1$ and up to six binary $0$s are appended to the data bits.
+然后，单元本身的数据位被序列化为 $\lceil\frac{b}{8}\rceil$ $8$-bit octets（字节）。 如果 $b$ 不是 8 的倍数，则在数据位上附加一个二进制 $1$ 和最多六个二进制 $0$s。
 
-Next, the $2$ bytes store the depth of the refs, i.e. the number of cells between the root of the cell tree (the current cell) and the deepest of the references, including it. For example, a cell containing only one reference and no further references would have a depth of $1$, while the referenced cell would have a depth of $0$.
+接下来， $2$ 字节存储了引用的深度，即单元格树根（当前单元格）和最深引用（包括它）之间的单元格数。 例如，如果一个单元格只包含一个引用而没有其他引用，则其深度为 $1$，而被引用单元格的深度为 $0$。
 
-Finally, for every reference cell the [SHA-256][sha-2] hash of its standard representation is stored, occupying $32$ bytes per each such cell and recursively repeating the said algorithm. Notice, that cyclic cell references are not allowed, so this recursion always ends in a well-defined manner.
+最后，为每个参考单元存储其标准表示的[SHA-256][sha-2] 哈希值，每个参考单元占用 $32$ 字节，并递归重复上述算法。 请注意，不允许循环引用单元格，因此递归总是以定义明确的方式结束。
 
-If we were to compute the hash of the standard representation of this cell, all the bytes from steps above would be concatenated together and then hashed using [SHA-256][sha-2] hash. This is the algorithm behind [`HASHCU` and `HASHSU` instructions](https://docs.ton.org/learn/tvm-instructions/instructions) of [TVM][tvm] and respective [`Cell.hash(){:tact}`](/ref/core-cells#cellhash) and [`Slice.hash(){:tact}`](/ref/core-cells#slicehash) functions of Tact.
+如果我们要计算这个单元格的标准表示的哈希值，就需要将上述步骤中的所有字节连接在一起，然后使用 [SHA-256][sha-2] 哈希值进行散列。 这是[TVM][tvm]的[`HASHCU`和`HASHSU`指令](https://docs.ton.org/learn/tvm-instructions/instructions)以及 Tact 的[`Cell.hash(){:tact}`](/ref/core-cells#cellhash)和[`Slice.hash(){:tact}`](/ref/core-cells#slicehash)函数背后的算法。
 
-#### Bag of Cells {#cells-boc}
+#### 细胞袋 {#cells-boc}
 
-Bag of Cells, or _BoC_ for short, is a format for serializing and de-serializing cells into byte arrays as described in [boc.tlb](https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/tl/boc.tlb#L25) [TL-B schema][tlb].
+如 [boc.tlb](https://github.com/ton-blockchain/ton/blob/24dc184a2ea67f9c47042b4104bbb4d82289fac1/crypto/tl/boc.tlb#L25) [TL-B schema][tlb] 所述，Bag of Cells（简称 _BoC_）是一种将单元格序列化和去序列化为字节数组的格式。
 
-Read more about BoC in TON Docs: [Bag of Cells](https://docs.ton.org/develop/data-formats/cell-boc#bag-of-cells).
+在 TON Docs 中阅读有关 BoC 的更多信息：[细胞袋](https://docs.ton.org/develop/data-formats/cell-boc#bag-of-cells)。
 
 :::note
 
-  Advanced information on [`Cell{:tact}`](#cells) serialization: [Canonical `Cell{:tact}` Serialization](https://docs.ton.org/develop/research-and-development/boc).
+  关于[`单元格{:tact}`](#cells)序列化的高级信息：[Canonical `Cell{:tact}` 序列化](https://docs.ton.org/develop/research-and-development/boc)。
 
 :::
 
-### Immutability {#cells-immutability}
+### 不变性 {#cells-immutability}
 
-Cells are read-only and immutable, but there are two major sets of [ordinary](#cells-kinds) cell manipulation instructions in [TVM][tvm]:
+单元格是只读和不可变的，但 [TVM][tvm] 中有两组主要的 [ordinary](#cells-kinds) 单元格操作指令：
 
-- Cell creation (or serialization) instructions, which are used to construct new cells from previously kept values and cells;
-- And cell parsing (or deserialization) instructions, which are used to extract or load data previously stored into cells via serialization instructions.
+- 单元格创建（或序列化）指令，用于根据先前保存的值和单元格构建新单元格；
+- 单元格解析（或反序列化）指令，用于提取或加载之前通过序列化指令存储到单元格中的数据。
 
-On top of that, there are instructions specific to [exotic](#cells-kinds) cells to create them and expect their values. However, [ordinary](#cells-kinds) cell parsing instructions can still be used on [exotic](#cells-kinds) ones, in which case they are automatically replaced by [ordinary](#cells-kinds) cells during such deserialization attempts.
+此外，还有专门针对 [exotic](#cells-kinds) 单元格的指令来创建这些单元格并期望它们的值。 不过，[普通](#cells-kinds)单元格解析指令仍可用于[奇异](#cells-kinds)单元格，在这种情况下，它们会在反序列化尝试中被自动替换为[普通](#cells-kinds)单元格。
 
-All cell manipulation instructions require transforming values of [`Cell{:tact}`](#cells) type to either [`Builder{:tact}`](#builders) or [`Slice{:tact}`](#slices) types before such cells can be modified or inspected.
+所有单元格操作指令都需要将 [`单元格{:tact}`](#cells)类型的值转换为 [`构建器{:tact}`](#builders)或 [`切片{:tact}`](#slices)类型，然后才能修改或检查这些单元格。
 
-## Builders
+## 建筑商
 
-`Builder{:tact}` is a cell manipulation [primitive][p] for using cell creation instructions. They're immutable just like cells are, and allow constructing new cells from previously kept values and cells. Unlike cells, values of type `Builder{:tact}` appear only on [TVM][tvm] stack and cannot be stored in persistent storage. That means, for example, that persistent storage fields with type `Builder{:tact}` would actually be stored as cells under the hood.
+`Builder{:tact}` 是一种用于使用单元格创建指令的单元格操作[基元][p]。 它们就像单元格一样不可改变，可以用以前保存的值和单元格构建新的单元格。 与单元格不同，"Builder{:tact}"类型的值只出现在[TVM][tvm]堆栈中，不能存储在持久存储区中。 举例来说，这意味着类型为 "Builder{:tact}"的持久存储字段实际上是以单元格的形式存储的。
 
-`Builder{:tact}` type represents partially composed cells, for which fast operations for appending integers, other cells, references to other cells and many others are defined:
+生成器{:tact}\` 类型表示部分组成的单元格，为其定义了追加整数、其他单元格、引用其他单元格等快速操作：
 
-- [`Builder.storeUint(){:tact}` in Core library][b-2]
-- [`Builder.storeInt(){:tact}` in Core library][b-3]
-- [`Builder.storeBool(){:tact}` in Core library][b-4]
-- [`Builder.storeSlice(){:tact}` in Core library][b-5]
-- [`Builder.storeCoins(){:tact}` in Core library][b-6]
-- [`Builder.storeAddress(){:tact}` in Core library][b-7]
-- [`Builder.storeRef(){:tact}` in Core library][b-8]
+- [核心库中的 "Builder.storeUint(){:tact}\`][b-2]。
+- [核心库中的 "Builder.storeInt(){:tact}\`][b-3]。
+- [核心库中的 "Builder.storeBool(){:tact}\`][b-4]。
+- [核心库中的 "Builder.storeSlice(){:tact}\`][b-5]。
+- [核心库中的 "Builder.storeCoins(){:tact}\`][b-6]。
+- [核心库中的 "Builder.storeAddress(){:tact}\`][b-7]。
+- [核心库中的 "Builder.storeRef(){:tact}"][b-8]
 
-While you may use them for [manual construction](#cnp-manually) of the cells, it's strongly recommended to use [Structs][struct] instead: [Construction of cells with Structs](#cnp-structs).
+虽然您可以使用它们来[手动构建](#cnp-manually)单元格，但强烈建议使用[结构体][structs]：[使用结构体构建单元格](#cnp-structs)。
 
-## Slices
+## 切片
 
-`Slice{:tact}` is a cell manipulation [primitive][p] for using cell parsing instructions. Unlike cells, they're mutable and allow extracting or loading data previously stored into cells via serialization instructions. Also unlike cells, values of type `Slice{:tact}` appear only on [TVM][tvm] stack and cannot be stored in persistent storage. That means, for example, that persistent storage fields with type `Slice{:tact}` would actually be stored as cells under the hood.
+`Slice{:tact}` 是使用单元格解析指令的单元格操作[基元][p]。 与单元格不同，它们是可变的，可以通过序列化指令提取或加载之前存储在单元格中的数据。 此外，与单元格不同，"Slice{:tact}"类型的值只出现在[TVM][tvm]堆栈中，不能存储在持久存储区中。 举例来说，这就意味着类型为 "Slice{:tact}"的持久存储字段实际上是以单元格的形式存储的。
 
-`Slice{:tact}` type represents either the remainder of a partially parsed cell, or a value (subcell) residing inside such a cell and extracted from it by a parsing instruction:
+`Slice{:tact}` 类型表示部分解析单元格的剩余部分，或位于此类单元格内并通过解析指令从中提取的值（子单元格）：
 
-- [`Slice.loadUint(){:tact}` in Core library][s-2]
-- [`Slice.loadInt(){:tact}` in Core library][s-3]
-- [`Slice.loadBool(){:tact}` in Core library][s-4]
-- [`Slice.loadBits(){:tact}` in Core library][s-5]
-- [`Slice.loadCoins(){:tact}` in Core library][s-6]
-- [`Slice.loadAddress(){:tact}` in Core library][s-7]
-- [`Slice.loadRef(){:tact}` in Core library][s-8]
+- [核心库中的`Slice.loadUint(){:tact}`][s-2]
+- [核心库中的`Slice.loadInt(){:tact}`][s-3]
+- [核心库中的`Slice.loadBool(){:tact}`][s-4]
+- [核心库中的`Slice.loadBits(){:tact}`][s-5]
+- [核心库中的`Slice.loadCoins(){:tact}`][s-6]
+- [核心库中的`Slice.loadAddress(){:tact}`][s-7]
+- [核心库中的`Slice.loadRef(){:tact}`][s-8]
 
-While you may use them for [manual parsing](#cnp-manually) of the cells, it's strongly recommended to use [Structs][struct] instead: [Parsing of cells with Structs](#cnp-structs).
+虽然您可以将它们用于单元格的 [手动解析](#cnp-manually)，但强烈建议使用 [结构体][structs]：[使用结构体解析单元格](#cnp-structs)。
 
-## Serialization types
+## 序列化类型
 
-Similar to serialization options of [`Int{:tact}`](/book/integers) type, `Cell{:tact}`, `Builder{:tact}` and `Slice{:tact}` also have various representations for encoding their values in the following cases:
+与 [`Int{:tact}`](/book/integers)类型的序列化选项类似，`Cell{:tact}`、`Builder{:tact}` 和`Slice{:tact}` 在以下情况下也有不同的值编码方式：
 
-- as [storage variables](/book/contracts#variables) of [contracts](/book/contracts) and [traits](/book/types#traits),
-- and as fields of [Structs](/book/structs-and-messages#structs) and [Messages](/book/structs-and-messages#messages).
+- 作为 [contracts](/book/contracts) 和 [traits](/book/types#traits) 的 [storage variables](/book/contracts#variables) 、
+- 以及 [Structs](/book/structs and-messages#structs) 和 [Messages](/book/structs and-messages#messages) 的字段。
 
 ```tact {2-3}
 contract SerializationExample {
     someCell: Cell as remaining;
-    someSlice: Slice as bytes32;
+    someSlice：Slice as bytes32;
 
-    // Constructor function,
-    // necessary for this example contract to compile
+    // 构造函数，
+    // 本示例合同编译所必需的
     init() {
         self.someCell = emptyCell();
         self.someSlice = beginCell().storeUint(42, 256).asSlice();
@@ -142,28 +141,28 @@ contract SerializationExample {
 }
 ```
 
-### `remaining` {#serialization-remaining}
+### `剩余` {#serialization-remaining}
 
-The `remaining{:tact}` serialization option can be applied to values of [`Cell{:tact}`](#cells), [`Builder{:tact}`](#builders) and [`Slice{:tact}`](#slices) types.
+`remaining{:tact}` 序列化选项可应用于 [`Cell{:tact}`](#cells)、[`Builder{:tact}`](#builders)和 [`Slice{:tact}`](#slices)类型的值。
 
-It affects the process of constructing and parsing cell values by causing them to be stored and loaded directly rather than as a reference. To draw parallels with [cell manipulation instructions](#cells-immutability), specifying `remaining{:tact}` is like using [`Builder.storeSlice(){:tact}`][b-5] and [`Slice.loadBits(){:tact}`][s-5] instead of [`Builder.storeRef(){:tact}`][b-8] and [`Slice.loadRef(){:tact}`][s-8], which are to be used by default.
+它通过直接存储和加载单元格值而不是作为引用来影响单元格值的构建和解析过程。 与 [单元操作指令](#cells-immutability) 相似，指定 `remaining{:tact}` 就像使用 [`Builder.storeSlice(){:tact}`][b-5] 和 [`Slice.loadBits(){:tact}`][s-5] 而不是 [`Builder.storeRef(){:tact}`][b-8] 和 [`Slice.loadRef(){:tact}`][s-8]，后者是默认使用的。
 
-In addition, the [TL-B][tlb] representation produced by Tact changes too:
+此外，Tact 产生的 [TL-B][tlb] 表示也会发生变化：
 
 ```tact {3-5, 8-10}
 contract SerializationExample {
-    // By default
-    cRef: Cell;    // ^cell in TL-B
+    // 默认情况下
+    cRef: Cell; // ^cell in TL-B
     bRef: Builder; // ^builder in TL-B
-    sRef: Slice;   // ^slice in TL-B
+    sRef: Slice; // ^slice in TL-B
 
     // With `remaining`
-    cRem: Cell as remaining;    // remainder<cell> in TL-B
-    bRem: Builder as remaining; // remainder<builder> in TL-B
-    sRem: Slice as remaining;   // remainder<slice> in TL-B
+    cRem：Cell as remaining; // remainder<cell> in TL-B
+    bRem：Builder as remaining; // remainder<builder> in TL-B
+    sRem：Slice as remaining; // remainder<slice> in TL-B
 
-    // Constructor function,
-    // necessary for this example contract to compile
+    // 构造函数，
+    // 本示例合同编译所必需
     init() {
         self.cRef = emptyCell();
         self.bRef = beginCell();
@@ -175,20 +174,20 @@ contract SerializationExample {
 }
 ```
 
-There, `^cell`, `^builder` and `^slice` in [TL-B][tlb] syntax mean the reference to [`Cell{:tact}`](#cells), [`Builder{:tact}`](#builders) and [`Slice{:tact}`](#slices) values respectively, while the `remainder<…>` of `cell`, `builder` or `slice` tells that the given value would be stored as a `Slice{:tact}` directly and not as a reference.
+其中，[TL-B][tlb] 语法中的 `^cell`、`^builder` 和 `^slice` 分别表示对 [`cell{:tact}`](#cells)、[`builder{:tact}`](#builder)和 [`slice{:tact}`](#slices)值的引用、而 `cell`、`builder` 或 `slice` 的 `remainder<…>` 则表示给定值将直接存储为 `Slice{:tact}`，而不是作为引用。
 
-Now, to give a real-world example, imagine that you need to notice and react to inbound [jetton][jetton] transfers in your smart contract. The appropriate [Message][message] structure for doing so would look something like this:
+现在，举一个真实世界的例子，想象一下你需要注意到智能合约中的入站 [jetton][jetton] 传输并做出反应。 相应的 [信息][消息] 结构如下：
 
 ```tact /remaining/
 message(0x7362d09c) JettonTransferNotification {
-    queryId: Int as uint64;             // arbitrary request number to prevent replay attacks
-    amount: Int as coins;               // amount of jettons transferred
-    sender: Address;                    // address of the sender of the jettons
-    forwardPayload: Slice as remaining; // optional custom payload
+    queryId：Int as uint64; // 任意请求编号，以防止重放攻击
+    amount：Int as coins; // 传输的捷通数量
+    sender：地址; // 净币发送方的地址
+    forwardPayload：Slice as remaining; // 可选自定义有效载荷
 }
 ```
 
-And the [receiver][recv] in the contract would look like this:
+合同中的 [receiver][recv] 应该是这样的：
 
 ```tact
 receive(msg: JettonTransferNotification) {
@@ -196,15 +195,15 @@ receive(msg: JettonTransferNotification) {
 }
 ```
 
-Upon receiving a [jetton][jetton] transfer notification message, its cell body is converted into a [`Slice{:tact}`](#slices) and then parsed as a `JettonTransferNotification{:tact}` [Message][message]. At the end of this process, the `forwardPayload` will have all the remaining data of the original message cell.
+收到 [jetton][jetton] 传输通知消息后，其单元体会被转换为 [`片{:tact}`](#片)，然后解析为 `JettonTransferNotification{:tact}` [消息][消息]。 在此过程结束时，"forwardPayload "将包含原始信息单元的所有剩余数据。
 
-Here, it's not possible to violate the [jetton][jetton] standard by placing the `forwardPayload: Slice as remaining` field in any other position in the `JettonTransferNotification{:tact}` [Message][message]. That's because Tact prohibits usage of `as remaining{:tact}` for any but the last field of the [Structs][struct] and [Messages][message] to prevent misuse of the contract storage and reduce gas consumption.
+在这里，将 `forwardPayload：Slice as remaining "字段放在 `JettonTransferNotification{:tact}\` [信息][message]中的任何其他位置都不会违反[jetton][jetton]标准。 这是因为 Tact 禁止在[Structs][结构]和[Messages][消息]的最后一个字段之外的任何字段中使用 "as remaining{:tact}"，以防止滥用合同存储空间并减少气体消耗。
 
 :::note
 
-  Note, that the cell serialized via `as remaining{:tact}` cannot be [optional](/book/optionals). That is, specifying something like `Cell? as remaining{:tact}`, `Builder? as remaining{:tact}` or `Slice? as remaining{:tact}` would cause a compilation error.
+  注意，通过 `as remaining{:tact}` 序列化的单元格不能是 [可选](/book/optionals)。 也就是说，指定类似 `Cell? as remaining{:tact}`, `Builder? 作为剩余{:tact}` 或 `切片？ 剩余的{:tact}` 会导致编译错误。
 
-  Also note, that specifying `remaining{:tact}` for the `Cell{:tact}` as the [map](/book/maps) value type is considered an error and it won't compile.
+  另外请注意，将 `Cell{:tact}` 指定为[map](/book/maps) 值类型的 "remaining{:tact}\`"会被视为错误，无法编译。
 
 :::
 
@@ -212,7 +211,7 @@ Here, it's not possible to violate the [jetton][jetton] standard by placing the 
 
 :::note
 
-  To be resolved by [#94](https://github.com/tact-lang/tact-docs/issues/94).
+  由 [#94](https://github.com/tact-lang/tact-docs/issues/94) 解决。
 
 :::
 
@@ -220,24 +219,24 @@ Here, it's not possible to violate the [jetton][jetton] standard by placing the 
 
 :::note
 
-  To be resolved by [#94](https://github.com/tact-lang/tact-docs/issues/94).
+  由 [#94](https://github.com/tact-lang/tact-docs/issues/94) 解决。
 
 :::
 
-## Operations
+## 业务
 
-### Construct and parse {#operations-cnp}
+### 构建和解析 {#operations-cnp}
 
-In Tact, there are at least two ways to construct and parse cells:
+在 Tact 中，至少有两种构建和解析单元格的方法：
 
-- [Manually](#cnp-manually), which involves active use of [`Builder{:tact}`](#builders), [`Slice{:tact}`](#slices) and [relevant methods](/ref/core-cells).
-- [Using Structs](#cnp-structs), which is a recommended and much more convenient approach.
+- [手动](#cnp-manually)，其中涉及积极使用[`Builder{:tact}`](#builders)、[`Slice{:tact}`](#slices)和[相关方法](/ref/core-cells)。
+- [使用结构体](#cnp-structs)，这是一种值得推荐且更加方便的方法。
 
-#### Manually {#cnp-manually}
+#### 手动 {#cnp-manually}
 
-| Construction via `Builder{:tact}`      | Parsing via `Slice{:tact}`            |
+| 通过 `Builder{:tact}`进行建造                | 通过 "切片{:tact}\`"进行解析                  |
 | :------------------------------------- | :------------------------------------ |
-| [`beginCell(){:tact}`][b-1]            | [`Cell.beginParse(){:tact}`][s-1]     |
+| [`beginCell(){:tact}`][b-1]            | [`Cell.beginParse(){:tact}`][s-1]。    |
 | [`.storeUint(42, 7){:tact}`][b-2]      | [`Slice.loadUint(7){:tact}`][s-2]     |
 | [`.storeInt(42, 7){:tact}`][b-3]       | [`Slice.loadInt(7){:tact}`][s-3]      |
 | [`.storeBool(true){:tact}`][b-4]       | [`Slice.loadBool(true){:tact}`][s-4]  |
@@ -262,26 +261,26 @@ In Tact, there are at least two ways to construct and parse cells:
 [s-4]: /ref/core-cells#sliceloadbool
 [s-5]: /ref/core-cells#sliceloadbits
 [s-6]: /ref/core-cells#sliceloadcoins
-[s-7]: /ref/core-cells#sliceloadaddress
+[s-7]: /ref/core-cells#sliceloaddress
 [s-8]: /ref/core-cells#sliceloadref
 [s-9]: /ref/core-cells#sliceendparse
 
-#### Using Structs (recommended) {#cnp-structs}
+#### 使用结构体（推荐） {#cnp-structs}
 
-[Structs][struct] and [Messages][message] are almost like living [TL-B schemas][tlb]. Which means that they're, essentially, [TL-B schemas][tlb] expressed in maintainable, verifiable and user-friendly Tact code.
+[结构][struct]和[消息][messages]几乎就是活生生的[TL-B 模式][tlb]。 也就是说，它们本质上是用可维护、可验证和用户友好的 Tact 代码表达的[TL-B 模式][tlb]。
 
-It is strongly recommended to use them and their [methods](/book/functions#extension-function) like [`Struct.toCell(){:tact}`][st-tc] and [`Struct.fromCell(){:tact}`][st-fc] instead of manually constructing and parsing cells, as this allows for much more declarative and self-explanatory contracts.
+强烈建议使用它们及其 [方法](/book/functions#extension-function)，如 [`Struct.toCell(){:tact}`][st-tc]和 [`Struct.fromCell(){:tact}`][st-fc]，而不是手动构造和解析单元格，因为这样可以得到更多声明性和不言自明的合约。
 
-The examples of manual parsing [above](#cnp-manually) could be re-written using [Structs][struct], with descriptive names of fields if one so desires:
+上文](#cnp-manually)的手动解析示例可以使用[Structs][struct]重新编写，如果愿意，还可以使用字段的描述性名称：
 
 ```tact /fromCell/ /toCell/
 // First Struct
 struct Showcase {
     id: Int as uint8;
     someImportantNumber: Int as int8;
-    isThatCool: Bool;
-    payload: Slice;
-    nanoToncoins: Int as coins;
+    isThatCool：Bool;
+    payload：Slice;
+    nanoToncoins：Int as coins;
     wackyTacky: Address;
     jojoRef: Adventure; // another Struct
 }
@@ -289,7 +288,7 @@ struct Showcase {
 // Here it is
 struct Adventure {
     bizarre: Bool = true;
-    time: Bool = false;
+    time：Bool = false;
 }
 
 fun example() {
@@ -308,19 +307,19 @@ fun example() {
 }
 ```
 
-Note, that Tact's auto-layout algorithm is greedy. For example, `struct Adventure{:tact}` occupies very little space, and it won't be stored as a reference [`Cell{:tact}`](#cells), but will be provided directly as a [`Slice{:tact}`](#slices).
+请注意，Tact 的自动布局算法是贪婪的。 例如，`struct Adventure{:tact}` 占用的空间很小，它不会以引用 [`单元格{:tact}`](#单元格) 的形式存储，而是直接以 [`切片{:tact}`](#切片) 的形式提供。
 
-By using [Structs][struct] and [Messages][message] over manual [`Cell{:tact}`](#cells) composition and parsing, those details would be simplified away and won't cause any hassle when the optimized layout changes.
+通过使用 [结构][structs] 和 [消息][messages]，而不是手动 [`Cell{:tact}`](#cells)组成和解析，这些细节将被简化，在优化布局发生变化时也不会造成任何麻烦。
 
-:::note[Useful links:]
+:::note[Useful 链接：]
 
-  [Convert serialization](/book/func#convert-serialization)\
+  [Convert serialization](/book/func#convert-serialization)/
   [`Struct.toCell(){:tact}` in Core library][st-tc]\
   [`Struct.fromCell(){:tact}` in Core library][st-fc]\
-  [`Struct.fromSlice(){:tact}` in Core library][st-fs]\
-  [`Message.toCell(){:tact}` in Core library][msg-tc]\
-  [`Message.fromCell(){:tact}` in Core library][msg-fc]\
-  [`Message.fromSlice(){:tact}` in Core library][msg-fs]
+  [`Struct.fromSlice() ` in Core library][st-fs]\ [`Message.toCell() ` in Core library][msg-tc]\ fromSlice(){:tact}` 在核心库中][st-fs]\
+  [`Message.toCell(){:tact}` 在核心库中][msg-tc]\
+  [`Message.fromCell(){:tact}` 在核心库中][msg-fc]\
+  [`Message.fromSlice(){:tact}\` 在核心库中][msg-fs］
 
 :::
 
@@ -331,20 +330,20 @@ By using [Structs][struct] and [Messages][message] over manual [`Cell{:tact}`](#
 [msg-fc]: /ref/core-cells#messagefromcell
 [msg-fs]: /ref/core-cells#messagefromslice
 
-### Check if empty {#operations-empty}
+### 检查是否为空 {#operations-empty}
 
-Neither [`Cell{:tact}`](#cells) nor [`Builder{:tact}`](#builders) can be checked for emptiness directly — one needs to convert them to [`Slice{:tact}`](#slices) first.
+细胞{:tact}`](#cells)和 [建筑{:tact}`](#builders)都不能直接检查空性，需要先将它们转换为 [切片{:tact}\`](#slices)。
 
-To check if there are any bits, use [`Slice.dataEmpty(){:tact}`][s-de]. To check if there are any references, use [`Slice.refsEmpty(){:tact}`][s-re]. And to check both at the same time, use [`Slice.empty(){:tact}`][s-e].
+要检查是否有任何位，请使用 [`Slice.dataEmpty(){:tact}`][s-de]。 要检查是否存在引用，请使用 [`Slice.refsEmpty(){:tact}`][s-re]。 要同时检查这两个文件，请使用 [`Slice.empty(){:tact}`][s-e]。
 
-To also throw an [exit code 9](/book/exit-codes#9) whenever the [`Slice{:tact}`](#slices) isn't completely empty, use [`Slice.endParse(){:tact}`][s-ep].
+如果 [`Slice{:tact}`](#slices)不完全为空，也要抛出 [exit code 9](/book/exit-codes#9)，请使用 [`Slice.endParse(){:tact}`][s-ep]。
 
 ```tact
-// Preparations
+// 准备工作
 let someCell = beginCell().storeUint(42, 7).endCell();
 let someBuilder = beginCell().storeRef(someCell);
 
-// Obtaining our Slices
+// 获取切片
 let slice1 = someCell.asSlice();
 let slice2 = someBuilder.asSlice();
 
@@ -369,34 +368,34 @@ try {
 }
 ```
 
-:::note[Useful links:]
+:::note[Useful 链接：]
 
-  [`Cell.asSlice(){:tact}` in Core library](/ref/core-cells#cellasslice)\
-  [`Builder.asSlice(){:tact}` in Core library](/ref/core-cells#builderasslice)\
-  [`Slice.dataEmpty(){:tact}` in Core library][s-de]\
-  [`Slice.refsEmpty(){:tact}` in Core library][s-re]\
-  [`Slice.empty(){:tact}` in Core library][s-e]\
-  [`Slice.endParse(){:tact}` in Core library][s-ep]
+  [`Cell.asSlice(){:tact}` 核心库中](/ref/core-cells#cellasslice)/
+  [`Builder.asSlice(){:tact}` 核心库中](/ref/core-cells#builderasslice)/
+  [`Slice.dataEmpty() ` 核心库中][s-de]/ [`Slice.refsEmpty() ` 核心库中][s-re]/ dataEmpty(){:tact}` 在核心库中][s-de]\
+  [`Slice.refsEmpty(){:tact}` 在核心库中][s-re]\
+  [`Slice.empty(){:tact}` 在核心库中][s-e]\
+  [`Slice.endParse(){:tact}\` 在核心库中][s-ep]
 
 :::
 
-[s-de]: /ref/core-cells#slicedataempty
-[s-re]: /ref/core-cells#slicerefsempty
+[咝--咝]: /ref/core-cells#slicedataempty
+[re]: /ref/core-cells#slicerefsempty
 [s-e]: /ref/core-cells#sliceempty
 [s-ep]: /ref/core-cells#sliceendparse
 
-### Check if equal {#operations-equal}
+### 检查是否等于 {#operations-equal}
 
-Values of type [`Builder{:tact}`](#builders) cannot be compared directly using binary equality [`=={:tact}`][bin-eq] or inequality [`!={:tact}`][bin-eq] operators. However, values of type [`Cell{:tact}`](#cells) and [`Slice{:tact}`](#slices) can.
+不能使用二进制相等 [`=={:tact}`][bin-eq]或不等式 [`！={:tact}`][bin-eq]操作符直接比较 [`生成器{:tact}`](#builders)类型的值。 但是，[`单元{:tact}`](#单元)和[`切片{:tact}`](#切片)类型的值可以。
 
-Direct comparisons:
+直接比较：
 
 ```tact
-let a = beginCell().storeUint(123, 8).endCell();
-let aSlice = a.asSlice();
+让 a = beginCell().storeUint(123, 8).endCell();
+让 aSlice = a.asSlice();
 
-let b = beginCell().storeUint(123, 8).endCell();
-let bSlice = b.asSlice();
+让 b = beginCell().storeUint(123, 8).endCell();
+让 bSlice = b. asSlice(); 让 areCellsEqual = a == b; // true 让 areCellsNotEqual = a !asSlice();
 
 let areCellsEqual = a == b; // true
 let areCellsNotEqual = a != b; // false
@@ -405,9 +404,9 @@ let areSlicesEqual = aSlice == bSlice; // true
 let areSlicesNotEqual = aSlice != bSlice; // false
 ```
 
-Note, that direct comparison via `=={:tact}` or `!={:tact}` operators implicitly uses [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hashes of [standard `Cell{:tact}` representation](#cells-representation) under the hood.
+请注意，通过 `=={:tact}` 或 `!={:tact}` 操作符进行的直接比较隐含地使用了[标准 `Cell{:tact}` 表示法](#cells-representation)的[SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) 哈希值。
 
-Explicit comparisons using `.hash(){:tact}` are also available:
+还可使用 `.hash(){:tact}` 进行显式比较：
 
 ```tact
 let a = beginCell().storeUint(123, 8).endCell();
@@ -416,28 +415,28 @@ let aSlice = a.asSlice();
 let b = beginCell().storeUint(123, 8).endCell();
 let bSlice = b.asSlice();
 
-let areCellsEqual = a.hash() == b.hash(); // true
+let areCellsEqual = a.hash() == b.hash(); // true let areCellsNotEqual = a.hash() != b.hash(); // false let areSliceEqual = aSlice.asSlice(); // truehash(); // true
 let areCellsNotEqual = a.hash() != b.hash(); // false
 
 let areSlicesEqual = aSlice.hash() == bSlice.hash(); // true
 let areSlicesNotEqual = aSlice.hash() != bSlice.hash(); // false
 ```
 
-:::note[Useful links:]
+:::note[Useful 链接：]
 
-  [`Cell.hash(){:tact}` in Core library](/ref/core-cells#cellhash)\
-  [`Slice.hash(){:tact}` in Core library](/ref/core-cells#slicehash)\
-  [`=={:tact}` and `!={:tact}`][bin-eq]
+  [核心库中的 `Cell.hash(){:tact}`](/ref/core-cells#cellhash)/
+  [核心库中的 `Slice.hash(){:tact}`](/ref/core-cells#slicehash)/
+  [`=={:tact}`和`!={:tact}`][bin-eq]。
 
 :::
 
 [p]: /book/types#primitive-types
-[struct]: /book/structs-and-messages#structs
-[message]: /book/structs-and-messages#messages
-[recv]: /book/contracts#receiver-functions
+[结构]: </book/structs and-messages#structs>
+[信息]: </book/structs and-messages#messages>
+[接收]: /book/contracts#receiver-functions
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
-[jetton]: https://docs.ton.org/develop/dapps/asset-processing/jettons
-[sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
-[quadtree]: https://en.wikipedia.org/wiki/Quadtree
+[杰顿]: https://docs.ton.org/develop/dapps/asset-processing/jettons
+[屏蔽-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
+[四叉树]: https://en.wikipedia.org/wiki/Quadtree
 [bin-eq]: /book/operators#binary-equality
