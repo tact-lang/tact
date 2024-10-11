@@ -955,4 +955,37 @@ contract StructsTester {
 
         return b;
     }
+
+    get fun destructuringTest3(): Int {
+        let s = S {
+            a: true,
+            b: 42
+        };
+
+        let S {b, a} = s;
+
+        return (a ? 1 : 0) + b;
+    }
+
+    get fun destructuringTest4(): Int {
+        let s = S {
+            a: true,
+            b: 42
+        };
+
+        let S {b: b, a: a} = s;
+
+        return (a ? 1 : 0) + b;
+    }
+
+    get fun destructuringTest5(): Int {
+        let s = S {
+            a: true,
+            b: 42
+        };
+
+        let S {b: a, a: b} = s;
+
+        return (b ? 1 : 0) + a;
+    }
 }

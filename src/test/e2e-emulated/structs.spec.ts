@@ -416,5 +416,8 @@ describe("structs", () => {
         // Struct destructuring
         expect(await contract.getDestructuringTest1()).toBe(43n);
         expect(await contract.getDestructuringTest2()).toBe(42n);
+        expect(await contract.getDestructuringTest3()).toBe(43n);
+        expect(await contract.getDestructuringTest4()).toBe(43n);
+        expect(await contract.getDestructuringTest5()).toBe(43n);
     });
 });
