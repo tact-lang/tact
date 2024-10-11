@@ -464,10 +464,20 @@ export class PrettyPrinter {
                     `${this.ppAstId(arg.name)}: ${this.ppAstType(arg.type)}`,
             )
             .join(", ");
-        const attrsRaw = attributes.map((attr) => attr.type).join(" ");
+        const attrsRaw = attributes
+            .map((attr) => this.ppAstFunctionAttribute(attr))
+            .join(" ");
         const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
         const returnType = retTy ? `: ${this.ppAstType(retTy)}` : "";
         return `${attrsFormatted}fun ${this.ppAstId(name)}(${argsFormatted})${returnType}`;
+    }
+
+    ppAstFunctionAttribute(attr: AstFunctionAttribute): string {
+        if (attr.type === "get" && attr.methodId !== null) {
+            return `get(${this.ppAstExpression(attr.methodId)})`;
+        } else {
+            return attr.type;
+        }
     }
 
     ppAstReceiver(receive: AstReceiver): string {

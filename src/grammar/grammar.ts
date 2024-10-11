@@ -583,26 +583,55 @@ semantics.addOperation<string>("astOfAsmInstruction", {
 });
 
 semantics.addOperation<AstFunctionAttribute>("astOfFunctionAttributes", {
-    FunctionAttribute_getter(_) {
-        return { type: "get", loc: createRef(this) };
+    FunctionAttribute_getter(_getKwd, _optLparen, optMethodId, _optRparen) {
+        return {
+            kind: "function_attribute",
+            type: "get",
+            methodId: unwrapOptNode(optMethodId, (e) => e.astOfExpression()),
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_extends(_) {
-        return { type: "extends", loc: createRef(this) };
+        return {
+            kind: "function_attribute",
+            type: "extends",
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_mutates(_) {
-        return { type: "mutates", loc: createRef(this) };
+        return {
+            kind: "function_attribute",
+            type: "mutates",
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_override(_) {
-        return { type: "override", loc: createRef(this) };
+        return {
+            kind: "function_attribute",
+            type: "override",
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_inline(_) {
-        return { type: "inline", loc: createRef(this) };
+        return {
+            kind: "function_attribute",
+            type: "inline",
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_virtual(_) {
-        return { type: "virtual", loc: createRef(this) };
+        return {
+            kind: "function_attribute",
+            type: "virtual",
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_abstract(_) {
-        return { type: "abstract", loc: createRef(this) };
+        return {
+            kind: "function_attribute",
+            type: "abstract",
+            loc: createRef(this),
+        };
     },
 });
 

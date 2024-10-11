@@ -6,6 +6,7 @@ import {
     MyStruct1,
     MyStruct2,
     MyStruct3,
+    OptionalFields,
     StructsTester,
     UintFields,
     loadMyMessage1,
@@ -402,5 +403,14 @@ describe("structs", () => {
             to: treasure.address,
             body: beginCell().storeDict(m).endCell(),
         });
+
+        const optionalFields: OptionalFields = {
+            $$type: "OptionalFields",
+            nickname: null,
+            avatar: "non-null string",
+        };
+        expect(
+            await contract.getOptionalFields(),
+        ).toMatchObject<OptionalFields>(optionalFields);
     });
 });

@@ -386,11 +386,12 @@ function dummyEval(ast: AstExpression): AstExpression {
             newNode.left = dummyEval(ast.left);
             newNode.right = dummyEval(ast.right);
             if (isValue(newNode.left) && isValue(newNode.right)) {
+                const valR = extractValue(newNode.right as AstValue);
                 return makeValueExpression(
                     evalBinaryOp(
                         ast.op,
                         extractValue(newNode.left as AstValue),
-                        extractValue(newNode.right as AstValue),
+                        () => valR,
                     ),
                 );
             }

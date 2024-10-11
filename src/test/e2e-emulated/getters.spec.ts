@@ -78,5 +78,10 @@ describe("getters", () => {
                 anotherData: beginCell().storeUint(123, 64).endCell(),
             }),
         ).toMatchSnapshot();
+
+        expect(await contract.getMethodIdExpr()).toBe(true);
+        expect(await contract.getMethodIdConst()).toBe(2n ** 14n);
+        expect(await contract.getMethodIdMin()).toBe(true);
+        expect(await contract.getMethodIdMax()).toBe(true);
     });
 });

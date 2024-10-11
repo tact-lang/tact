@@ -1,6 +1,9 @@
 ---
 title: Integers
+description: "Arithmetic in smart contracts on TON is always done with integers and never with floats"
 ---
+
+import { Badge } from '@astrojs/starlight/components';
 
 Arithmetic in smart contracts on TON is always done with integers and never with floating-point numbers since the floats are [unpredictable](https://learn.microsoft.com/en-us/cpp/build/why-floating-point-numbers-may-lose-precision). Therefore, the big accent goes on integers and their handling.
 
@@ -86,7 +89,7 @@ Motivation is very simple:
 * Storing $1000$ $257$-bit integers in state [costs](https://docs.ton.org/develop/smart-contracts/fees#how-to-calculate-fees) about $0.184$ TON per year.
 * Storing $1000$ $32$-bit integers only costs $0.023$ TON per year by comparison.
 
-### Serialization types
+### Common serialization types
 
 Name             | [TL-B][tlb]                 | Inclusive range             | Space taken
 :--------------: | :-------------------------: | :-------------------------: | :------------------------:
@@ -104,6 +107,19 @@ Name             | [TL-B][tlb]                 | Inclusive range             | S
 `int256{:tact}`  | [`int256`][tlb-builtin]     | $-2^{255}$ to $2^{255} - 1$ | $256$ bits = $32$ bytes
 `int257{:tact}`  | [`int257`][tlb-builtin]     | $-2^{256}$ to $2^{256} - 1$ | $257$ bits = $32$ bytes + $1$ bit
 `coins{:tact}`   | [`VarUInteger 16`][varuint] | $0$ to $2^{120} - 1$        | between $4$ and $124$ bits, [see below](#serialization-coins)
+
+### Arbitrary bit-width types
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+In addition to [common serialization types](#common-serialization-types), it's possible to specify arbitrary bit-width integers by using a prefix `int` or `uint` followed by digits. For example, writing `int7{:tact}` refers to a signed $7$-bit integer.
+
+The minimum allowed bit-width of an `Int{:tact}` type is $1$, while the maximum is $257$ for `int` prefixes (signed integers) and $256$ for `uint` prefixes (unsigned integers).
+
+Name             | [TL-B][tlb]            | Inclusive range                 | Space taken
+:--------------: | :--------------------: | :-----------------------------: | :---------:
+`uintX{:tact}`   | [`uintX`][tlb-builtin] | $0$ to $2^{X} - 1$              | $X$ bits, where $X$ is between $1$ and $256$
+`intX{:tact}`    | [`intX`][tlb-builtin]  | $-2^{X - 1}$ to $2^{X - 1} - 1$ | $X$ bits, where $X$ is between $1$ and $257$
 
 ### Variable `coins` type {#serialization-coins}
 
@@ -173,7 +189,7 @@ contract ComputeErrorsOhNo with Deployable {
 }
 ```
 
-Here, `oneByte` is serialized as a [`uint8`](#serialization-types), which occupies only one byte and ranges from $0$ to $2^{8} - 1$, which is $255$. And when used in runtime calculations no overflow happens and everything is calculated as a $257$-bit signed integers. But the very moment we decide to store the value of `tmp` back into `oneByte` we get an error with the [exit code 5](/book/exit-codes#5), which states the following: `Integer out of the expected range`.
+Here, `oneByte` is serialized as a [`uint8`](#common-serialization-types), which occupies only one byte and ranges from $0$ to $2^{8} - 1$, which is $255$. And when used in runtime calculations no overflow happens and everything is calculated as a $257$-bit signed integers. But the very moment we decide to store the value of `tmp` back into `oneByte` we get an error with the [exit code 5](/book/exit-codes#5), which states the following: `Integer out of the expected range`.
 
 :::caution
   Therefore, be **very** careful with numbers and always double-check calculations when using serialization.

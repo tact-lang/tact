@@ -1,5 +1,6 @@
 ---
 title: Cells, Builders and Slices
+description: "Various Cell, Builder and Slice functions from the Core library of Tact"
 ---
 
 [`Cell{:tact}`][cell] is a low-level [primitive][p] that represents data in TON Blockchain. Cells consist of $1023$ bits of data with up to $4$ references to another cells. They are read-only and immutable, and cannot have cyclic references.
@@ -186,6 +187,22 @@ Usage example:
 let b: Builder = beginCell();
 let fizz: Builder = b.storeBool(true);  // writes 1
 let buzz: Builder = b.storeBool(false); // writes 0
+```
+
+## Builder.storeBit
+
+```tact
+extends fun storeBit(self: Builder, value: Bool): Builder;
+```
+
+Extension function for the [`Builder{:tact}`][builder]. Alias to [`Builder.storeBool(){:tact}`](#builderstorebool).
+
+Usage example:
+
+```tact
+let b: Builder = beginCell();
+let fizz: Builder = b.storeBit(true);  // writes 1
+let buzz: Builder = b.storeBit(false); // writes 0
 ```
 
 ## Builder.storeSlice
@@ -506,6 +523,21 @@ let s: Slice = beginCell().storeBool(true).asSlice();
 let fizz: Bool = s.loadBool(); // true
 ```
 
+## Slice.loadBit
+
+```tact
+extends mutates fun loadBit(self: Slice): Bool;
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice]. Alias to [`Slice.loadBool(){:tact}`](#sliceloadbool).
+
+Usage example:
+
+```tact
+let s: Slice = beginCell().storeBit(true).asSlice();
+let fizz: Bool = s.loadBit(); // true
+```
+
 ## Slice.loadCoins
 
 ```tact
@@ -783,6 +815,32 @@ fun coinCell(): Cell {
 }
 ```
 
+## Struct.toSlice
+
+```tact
+extends fun toSlice(self: Struct): Slice;
+```
+
+Extension function for any structure type [Struct][struct].
+
+Converts the [Struct][struct] to a [`Slice{:tact}`][slice] and returns it. Alias to `self.toCell().asSlice(){:tact}`.
+
+Usage example:
+
+```tact
+struct GuessCoin {
+    probably: Int as coins;
+    nothing: Int as coins;
+}
+
+fun coinSlice(): Slice {
+    let s: GuessCoin = GuessCoin{ probably: 42, nothing: 27 };
+    let fizz: Slice = s.toSlice();
+
+    return fizz; // "CS{Cell{000612a11b} bits: 0..24; refs: 0..0}"
+}
+```
+
 ## Struct.fromCell
 
 ```tact
@@ -876,6 +934,32 @@ fun coinCell(): Cell {
     let fizz: Cell = s.toCell();
 
     return fizz; // "x{AB37107712A11B}"
+}
+```
+
+## Message.toSlice
+
+```tact
+extends fun toSlice(self: Message): Slice;
+```
+
+Extension function for any message type [Message][message].
+
+Converts the [Message][message] to a [`Slice{:tact}`][slice] and returns it. Alias to `self.toCell().asSlice(){:tact}`.
+
+Usage example:
+
+```tact
+message GuessCoin {
+    probably: Int as coins;
+    nothing: Int as coins;
+}
+
+fun coinSlice(): Slice {
+    let s: GuessCoin = GuessCoin{ probably: 42, nothing: 27 };
+    let fizz: Slice = s.toSlice();
+
+    return fizz; // "CS{Cell{000eab37107712a11b} bits: 0..56; refs: 0..0}"
 }
 ```
 

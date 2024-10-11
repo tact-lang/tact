@@ -245,6 +245,20 @@ extends mutates fun doNothing(self: Int): Int {
 }
 
 
+/**** Auxiliary functions for boolean expressions **********/
+
+fun infiniteLoop(): Bool {
+    while (true) {}
+    return true;
+}
+
+fun throwException(v: Int): Bool {
+    // I cannot use directly throw(v) because of issue #904
+    // So, I will generate a division by zero
+    return 1 / v > 0;
+}
+
+
 contract SemanticsTester {
 
     // Currently, declaring fields like this:
@@ -1651,5 +1665,225 @@ contract SemanticsTester {
         z.doNothing();
 
         return s == 3 && t == 6 && z == 6;
+    }
+
+    /*************** Boolean Expressions ********************/
+
+    /*** Tests && short-circuiting with mutating functions ***/
+    get fun andMutateShortCircuit(): Bool {
+
+        let s = 1;
+
+        // It will evaluate the full expression to false and increment s to 2
+        let m1 = true && s.increment() > 2;
+
+        let result = s == 2;
+
+        // Short-circuits to false, so that s should not be incremented.
+        let m2 = false && s.increment() > 2;
+
+        result &&= s == 2;
+
+        // Short-circuits to false, so that s should not be incremented.
+        let m3 = s > 2 && s.increment() > 2;
+
+        result &&= s == 2;
+
+        // It will evaluate the first and second conjuncts and short-circuit at the 
+        // second conjunct to false. So s will be incremented at the second conjunct to 3, 
+        // but it should not be incremented to 4 in the third conjunct.
+        let m4 = s == 2 && s.increment() > 3 && s.increment() > 3;
+
+        result &&= s == 3;
+
+        // It will evaluate the entire expression to true. So, s should be incremented twice.
+        let m5 = s == 3 && s.increment() > 3 && s.increment() > 4;
+        
+        result &&= s == 5;
+
+        // It will evaluate the first and second conjuncts and short-circuit at the 
+        // second conjunct to false. So s will be incremented at the second conjunct to 6, 
+        // but it should not be incremented to 7 in the third conjunct or to 8 in the 
+        // fourth conjunct.
+        let m6 = s == 5 && s.increment() > 6 && s.increment() > 6 && s.increment() > 6;
+
+        result &&= s == 6;
+
+        result &&= !m1 && !m2 && !m3 && !m4 && m5 && !m6;
+
+        return result;
+    }
+
+    /*** Tests && short-circuiting with infinite loops ***/
+    get fun andInfiniteLoopShortCircuit(): Bool {
+
+        let s = 1;
+
+        // Short-circuits to false, so no infinite loop happens.
+        // Note this implicitly tests the interpreter as well, because the 
+        // interpreter will be able to simplify the expression.
+        let l1 = false && infiniteLoop();
+
+        // Short-circuits to false, so no infinite loop happens.
+        let l2 = s > 1 && infiniteLoop();
+
+        // It will evaluate the first and second conjuncts and short-circuit at the 
+        // second conjunct to false. So s will be incremented at the second conjunct to 2, 
+        // And no infinite loop happens in the third conjunct.
+        let l3 = s == 1 && s.increment() > 2 && infiniteLoop();
+
+        let result = s == 2;
+
+        // It will evaluate the first and second conjuncts and short-circuit at the 
+        // second conjunct to false. So s will be incremented at the second conjunct to 3, 
+        // And no infinite loop happens in the third conjunct and no increment happens at 
+        // the fourth conjunct.
+        let l4 = s == 2 && s.increment() > 3 && infiniteLoop() && s.increment() > 3;
+
+        result &&= s == 3;
+
+        result &&= !l1 && !l2 && !l3 && !l4;
+
+        return result;
+    }
+
+    /*** Tests && short-circuiting with exception throwing ***/
+    get fun andExceptionShortCircuit(): Bool {
+
+        let s = 1;
+
+        // Short-circuits to false, so no exception thrown.
+        let t1 = false && throwException(s-1);
+
+        // Short-circuits to false, so no exception thrown.
+        let t2 = s > 1 && throwException(s-1);
+
+        // It will evaluate the first and second conjuncts and short-circuit at the 
+        // second conjunct to false. So s will be incremented at the second conjunct to 2, 
+        // And no exception happens in the third conjunct.
+        let t3 = s == 1 && s.increment() > 2 && throwException(s-2);
+
+        let result = s == 2;
+
+        // It will evaluate the first and second conjuncts and short-circuit at the 
+        // second conjunct to false. So s will be incremented at the second conjunct to 3, 
+        // And no exception happens in the third conjunct and no increment happens at 
+        // the fourth conjunct.
+        let t4 = s == 2 && s.increment() > 3 && throwException(s-3) && s.increment() > 3;
+
+        result &&= s == 3;
+
+        result &&= !t1 && !t2 && !t3 && !t4;
+
+        return result;
+    }
+
+    /*** Tests || short-circuiting with mutating functions ***/
+    get fun orMutateShortCircuit(): Bool {
+
+        let s = 1;
+
+        // It will evaluate the full expression to true and increment s to 2
+        let m1 = false || s.increment() >= 2;
+
+        let result = s == 2;
+
+        // Short-circuits to true, so that s should not be incremented.
+        let m2 = true || s.increment() > 2;
+
+        result &&= s == 2;
+
+        // Short-circuits to true, so that s should not be incremented.
+        let m3 = s >= 2 || s.increment() > 2;
+
+        result &&= s == 2;
+
+        // It will evaluate the first and second disjuncts and short-circuit at the 
+        // second disjunct to true. So s will be incremented at the second disjunct to 3, 
+        // but it should not be incremented to 4 in the third one.
+        let m4 = s != 2 || s.increment() >= 3 || s.increment() > 3;
+
+        result &&= s == 3;
+
+        // It will evaluate the entire expression to false. So, s should be incremented twice.
+        let m5 = s != 3 || s.increment() < 3 || s.increment() < 4;
+        
+        result &&= s == 5;
+
+        // It will evaluate the first and second disjuncts and short-circuit at the 
+        // second disjunct to true. So s will be incremented at the second disjunct to 6, 
+        // but it should not be incremented to 7 in the third disjunct or to 8 in the 
+        // fourth one.
+        let m6 = s != 5 || s.increment() >= 6 || s.increment() > 6 || s.increment() > 6;
+
+        result &&= s == 6;
+
+        result &&= m1 && m2 && m3 && m4 && !m5 && m6;
+
+        return result;
+    }
+
+    /*** Tests || short-circuiting with infinite loops ***/
+    get fun orInfiniteLoopShortCircuit(): Bool {
+
+        let s = 1;
+
+        // Short-circuits to true, so no infinite loop happens.
+        // Note this implicitly tests the interpreter as well, because the 
+        // interpreter will be able to simplify the expression.
+        let l1 = true || infiniteLoop();
+
+        // Short-circuits to true, so no infinite loop happens.
+        let l2 = s >= 1 || infiniteLoop();
+
+        // It will evaluate the first and second disjuncts and short-circuit at the 
+        // second disjunct to true. So s will be incremented at the second disjunct to 2, 
+        // And no infinite loop happens in the third disjunct.
+        let l3 = s != 1 || s.increment() >= 2 || infiniteLoop();
+
+        let result = s == 2;
+
+        // It will evaluate the first and second disjuncts and short-circuit at the 
+        // second disjunct to true. So s will be incremented at the second disjunct to 3, 
+        // And no infinite loop happens in the third disjunct and no increment happens at 
+        // the fourth one.
+        let l4 = s != 2 || s.increment() >= 3 || infiniteLoop() || s.increment() > 3;
+
+        result &&= s == 3;
+
+        result &&= l1 && l2 && l3 && l4;
+
+        return result;
+    }
+
+    /*** Tests || short-circuiting with exception throwing ***/
+    get fun orExceptionShortCircuit(): Bool {
+
+        let s = 1;
+
+        // Short-circuits to true, so no exception thrown.
+        let t1 = true || throwException(s-1);
+
+        // Short-circuits to true, so no exception thrown.
+        let t2 = s >= 1 || throwException(s-1);
+
+        // It will evaluate the first and second disjuncts and short-circuit at the 
+        // second disjunct to true. So s will be incremented at the second disjunct to 2, 
+        // And no exception happens in the third disjunct.
+        let t3 = s != 1 || s.increment() >= 2 || throwException(s-2);
+
+        let result = s == 2;
+
+        // It will evaluate the first and second disjuncts and short-circuit at the 
+        // second disjunct to true. So s will be incremented at the second disjunct to 3, 
+        // And no exception happens in the third disjunct and no increment happens at 
+        // the fourth one.
+        let t4 = s != 2 || s.increment() >= 3 || throwException(s-3) || s.increment() > 3;
+
+        result &&= s == 3;
+
+        result &&= t1 && t2 && t3 && t4;
+
+        return result;
     }
 }

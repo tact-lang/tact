@@ -1,6 +1,11 @@
 ---
 title: External Messages
+description: "External messages don't have a sender and can be sent by anyone from the offchain"
 ---
+
+:::caution
+  This page is under re-construction as per [#384](https://github.com/tact-lang/tact-docs/issues/384). All anchor links (`#`) may change in the future!
+:::
 
 :::caution
   External message support must be enabled explicitly in the project configuration.
@@ -26,13 +31,15 @@ External messages are not accepted automatically. You need to accept them manual
 10k gas is a very small limit, and Tact itself can consume a sizable amount of gas before it even reaches your code. You should always test the gas usage of your contracts and verify that everything is working as intended.
 
 :::tip[Hey there!]
+
   The 10k gas limit for external messages is based on the parameter we set by the
   validator for the whole blockchain of the `gas_limit` field. You can take
   the reference here:
-    - https://docs.ton.org/develop/smart-contracts/guidelines/accept#external-messages
-    - https://docs.ton.org/develop/howto/blockchain-configs#param-20-and-21
 
-  :::
+  - https://docs.ton.org/develop/smart-contracts/guidelines/accept#external-messages
+  - https://docs.ton.org/develop/howto/blockchain-configs#param-20-and-21
+
+:::
 
 ### Unbounded Gas Usage After Message Acceptance
 

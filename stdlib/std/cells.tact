@@ -15,6 +15,17 @@ extends native storeUint(self: Builder, value: Int, bits: Int): Builder;
 @name(__tact_store_bool)
 extends native storeBool(self: Builder, value: Bool): Builder;
 
+/// Extension function for the `Builder`. Alias to `Builder.storeBool()`.
+///
+/// ```tact
+/// let b: Builder = beginCell();
+/// let fizz: Builder = b.storeBit(true);  // writes 1
+/// let buzz: Builder = b.storeBit(false); // writes 0
+/// ```
+///
+/// @since Tact 1.5.0
+/// @see https://docs.tact-lang.org/ref/core-cells#builderstorebit
+///
 @name(__tact_store_bool)
 extends native storeBit(self: Builder, value: Bool): Builder;
 
@@ -73,6 +84,16 @@ extends native preloadUint(self: Slice, l: Int): Int;
 
 asm(-> 1 0) extends mutates fun loadBool(self: Slice): Bool { 1 LDI }
 
+/// Extension mutation function for the `Slice`. Alias to `Slice.loadBool()`.
+///
+/// ```tact
+/// let s: Slice = beginCell().storeBool(true).asSlice();
+/// let fizz: Bool = s.loadBit(); // true
+/// ```
+///
+/// @since Tact 1.5.0
+/// @see https://docs.tact-lang.org/ref/core-cells#sliceloadbit
+///
 asm(-> 1 0) extends mutates fun loadBit(self: Slice): Bool { 1 LDI }
 
 asm( -> 1 0) extends mutates fun loadCoins(self: Slice): Int { LDVARUINT16 }
