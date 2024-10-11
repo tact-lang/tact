@@ -7,6 +7,7 @@ import {
     MyStruct2,
     MyStruct3,
     OptionalFields,
+    S1,
     StructsTester,
     UintFields,
     loadMyMessage1,
@@ -426,13 +427,13 @@ describe("structs", () => {
         expect(await contract.getDestructuringTest5Const()).toBe(43n);
         expect(await contract.getDestructuringTest6()).toBe(6n);
         expect(await contract.getDestructuringTest6Const()).toBe(6n);
-        expect(await contract.getDestructuringTest7()).toEqual({
+        expect(await contract.getDestructuringTest7()).toMatchObject<S1>({
             $$type: "S1",
             a: 3n,
             b: 2n,
             c: 1n,
         });
-        expect(await contract.getDestructuringTest7Const()).toEqual({
+        expect(await contract.getDestructuringTest7Const()).toMatchObject<S1>({
             $$type: "S1",
             a: 3n,
             b: 2n,
