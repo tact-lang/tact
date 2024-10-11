@@ -52,6 +52,8 @@ import {
     AstFuncId,
     AstAsmFunctionDef,
     AstAsmInstruction,
+    AstDestructMapping,
+    AstStatementDestruct,
 } from "./ast";
 import { AstRenamer } from "./rename";
 import { throwInternalCompilerError } from "../errors";
@@ -548,6 +550,51 @@ export class AstComparator {
                     this.compare(forEachValueName1, forEachValueName2) &&
                     this.compare(forEachMap1, forEachMap2) &&
                     this.compareArray(forEachStatements1, forEachStatements2)
+                );
+            }
+
+            case "destruct_mapping": {
+                const {
+                    field: destructMappingField1,
+                    name: destructMappingName1,
+                } = node1 as AstDestructMapping;
+                const {
+                    field: destructMappingField2,
+                    name: destructMappingName2,
+                } = node2 as AstDestructMapping;
+                return (
+                    this.compare(
+                        destructMappingField1,
+                        destructMappingField2,
+                    ) &&
+                    this.compare(destructMappingName1, destructMappingName2)
+                );
+            }
+
+            case "statement_destruct": {
+                const {
+                    type: destructType1,
+                    identifiers: destructIdentifiers1,
+                    expression: destructExpression1,
+                } = node1 as AstStatementDestruct;
+                const {
+                    type: destructType2,
+                    identifiers: destructIdentifiers2,
+                    expression: destructExpression2,
+                } = node2 as AstStatementDestruct;
+                for (const [name1, field1] of destructIdentifiers1) {
+                    const name2 = destructIdentifiers2.get(field1);
+                    if (name1 !== name2) {
+                        return false;
+                    }
+                    destructIdentifiers2.delete(field1);
+                }
+                if (destructIdentifiers2.size > 0) {
+                    return false;
+                }
+                return (
+                    this.compare(destructType1, destructType2) &&
+                    this.compare(destructExpression1, destructExpression2)
                 );
             }
 
