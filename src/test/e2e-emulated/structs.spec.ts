@@ -415,9 +415,28 @@ describe("structs", () => {
 
         // Struct destructuring
         expect(await contract.getDestructuringTest1()).toBe(43n);
+        expect(await contract.getDestructuringTest1Const()).toBe(43n);
         expect(await contract.getDestructuringTest2()).toBe(42n);
+        expect(await contract.getDestructuringTest2Const()).toBe(42n);
         expect(await contract.getDestructuringTest3()).toBe(43n);
+        expect(await contract.getDestructuringTest3Const()).toBe(43n);
         expect(await contract.getDestructuringTest4()).toBe(43n);
+        expect(await contract.getDestructuringTest4Const()).toBe(43n);
         expect(await contract.getDestructuringTest5()).toBe(43n);
+        expect(await contract.getDestructuringTest5Const()).toBe(43n);
+        expect(await contract.getDestructuringTest6()).toBe(6n);
+        expect(await contract.getDestructuringTest6Const()).toBe(6n);
+        expect(await contract.getDestructuringTest7()).toEqual({
+            $$type: "S1",
+            a: 3n,
+            b: 2n,
+            c: 1n,
+        });
+        expect(await contract.getDestructuringTest7Const()).toEqual({
+            $$type: "S1",
+            a: 3n,
+            b: 2n,
+            c: 1n,
+        });
     });
 });

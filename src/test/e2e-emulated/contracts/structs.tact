@@ -245,6 +245,79 @@ struct OptionalFields {
     avatar: String?;
 }
 
+struct S1 {
+    a: Int;
+    b: Int;
+    c: Int;
+}
+
+fun destructuringTest1(): Int {
+    let s = S {
+        a: true,
+        b: 42
+    };
+
+    let S {a, b} = s;
+
+    return (a ? 1 : 0) + b;
+}
+
+fun destructuringTest2(): Int {
+    let s = S {
+        a: true,
+        b: 42
+    };
+
+    let S {_, b} = s;
+
+    return b;
+}
+
+fun destructuringTest3(): Int {
+    let s = S {
+        a: true,
+        b: 42
+    };
+
+    let S {b, a} = s;
+
+    return (a ? 1 : 0) + b;
+}
+
+fun destructuringTest4(): Int {
+    let s = S {
+        a: true,
+        b: 42
+    };
+
+    let S {b: b, a: a} = s;
+
+    return (a ? 1 : 0) + b;
+}
+
+fun destructuringTest5(): Int {
+    let s = S {
+        a: true,
+        b: 42
+    };
+
+    let S {b: a, a: b} = s;
+
+    return (b ? 1 : 0) + a;
+}
+
+fun destructuringTest6(): Int {
+    let s = S1 { a: 1, b: 2, c: 3 };
+    let S1 { c: e, b, a } = s;
+    return a + b + e;
+}
+
+fun destructuringTest7(): S1 {
+    let s = S1 { a: 1, b: 2, c: 3 };
+    let S1 { a, c: e, b: b } = s;
+    return S1 {a: e, b: b, c: a};
+}
+
 contract StructsTester {
     s1: S = S {a: false, b: 21 + 21};
     s2: S;
@@ -945,6 +1018,10 @@ contract StructsTester {
         return (a ? 1 : 0) + b;
     }
 
+    get fun destructuringTest1Const(): Int {
+        return destructuringTest1();
+    }
+
     get fun destructuringTest2(): Int {
         let s = S {
             a: true,
@@ -954,6 +1031,10 @@ contract StructsTester {
         let S {_, b} = s;
 
         return b;
+    }
+
+    get fun destructuringTest2Const(): Int {
+        return destructuringTest2();
     }
 
     get fun destructuringTest3(): Int {
@@ -967,6 +1048,10 @@ contract StructsTester {
         return (a ? 1 : 0) + b;
     }
 
+    get fun destructuringTest3Const(): Int {
+        return destructuringTest3();
+    }
+
     get fun destructuringTest4(): Int {
         let s = S {
             a: true,
@@ -978,6 +1063,10 @@ contract StructsTester {
         return (a ? 1 : 0) + b;
     }
 
+    get fun destructuringTest4Const(): Int {
+        return destructuringTest4();
+    }
+
     get fun destructuringTest5(): Int {
         let s = S {
             a: true,
@@ -987,5 +1076,29 @@ contract StructsTester {
         let S {b: a, a: b} = s;
 
         return (b ? 1 : 0) + a;
+    }
+
+    get fun destructuringTest5Const(): Int {
+        return destructuringTest5();
+    }
+
+    get fun destructuringTest6(): Int {
+        let s = S1 { a: 1, b: 2, c: 3 };
+        let S1 { c: e, b, a } = s;
+        return a + b + e;
+    }
+
+    get fun destructuringTest6Const(): Int {
+        return destructuringTest6();
+    }
+    
+    get fun destructuringTest7(): S1 {
+        let s = S1 { a: 1, b: 2, c: 3 };
+        let S1 { a, c: e, b: b } = s;
+        return S1 {a: e, b: b, c: a};
+    }
+
+    get fun destructuringTest7Const(): S1 {
+        return destructuringTest7();
     }
 }
