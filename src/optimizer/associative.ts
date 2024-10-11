@@ -7,7 +7,7 @@ import {
     AstValue,
     isValue,
 } from "../grammar/ast";
-import { evalBinaryOp } from "../interpreter";
+import * as interpreterModule from "../interpreter";
 import { Value } from "../types/types";
 import { ExpressionTransformer, Rule } from "./types";
 import {
@@ -27,6 +27,13 @@ type TransformData = {
 };
 
 type Transform = (x1: AstExpression, c1: Value, c2: Value) => TransformData;
+
+/* A simple wrapper function to transform the right value in a binary operator to a continuation
+   so that we can call the evaluation function in the interpreter module
+*/
+function evalBinaryOp(op: AstBinaryOperation, valL: Value, valR: Value): Value {
+    return interpreterModule.evalBinaryOp(op, valL, () => valR);
+}
 
 abstract class AssociativeRewriteRule extends Rule {
     // An entry (op, S) in the map means "operator op associates with all operators in set S",

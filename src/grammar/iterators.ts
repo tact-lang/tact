@@ -25,6 +25,9 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             traverse(node.name, callback);
             break;
         case "function_def":
+            node.attributes.forEach((attr) => {
+                traverse(attr, callback);
+            });
             traverse(node.name, callback);
             if (node.return) traverse(node.return, callback);
             node.params.forEach((e) => {
@@ -48,6 +51,9 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             });
             break;
         case "function_decl":
+            node.attributes.forEach((attr) => {
+                traverse(attr, callback);
+            });
             traverse(node.name, callback);
             if (node.return) traverse(node.return, callback);
             node.params.forEach((e) => {
@@ -61,6 +67,22 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
                 traverse(e, callback);
             });
             if (node.return) traverse(node.return, callback);
+            break;
+        case "function_attribute":
+            switch (node.type) {
+                case "get":
+                    {
+                        if (node.methodId) traverse(node.methodId, callback);
+                    }
+                    break;
+                case "mutates":
+                case "extends":
+                case "virtual":
+                case "abstract":
+                case "override":
+                case "inline":
+                    break;
+            }
             break;
         case "constant_def":
             traverse(node.name, callback);

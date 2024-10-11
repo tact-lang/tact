@@ -115,6 +115,7 @@ exports[`local-type-inference should automatically set types for let statements 
   "getters": [
     {
       "arguments": [],
+      "methodId": 70304,
       "name": "test1",
       "returnType": {
         "format": 257,
@@ -125,6 +126,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 74435,
       "name": "test2",
       "returnType": {
         "format": 257,
@@ -135,6 +137,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 78562,
       "name": "test3",
       "returnType": {
         "kind": "simple",
@@ -144,6 +147,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 82437,
       "name": "test4",
       "returnType": {
         "kind": "simple",
@@ -153,6 +157,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 86564,
       "name": "test5",
       "returnType": {
         "kind": "simple",
@@ -162,6 +167,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 90695,
       "name": "test6",
       "returnType": {
         "kind": "simple",
@@ -171,6 +177,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 94822,
       "name": "test7",
       "returnType": {
         "kind": "simple",
@@ -180,6 +187,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 99209,
       "name": "test8",
       "returnType": {
         "kind": "simple",
@@ -189,6 +197,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 103336,
       "name": "test9",
       "returnType": {
         "kind": "simple",
@@ -198,6 +207,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 107552,
       "name": "test10",
       "returnType": {
         "kind": "simple",
@@ -207,6 +217,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 111617,
       "name": "test11",
       "returnType": {
         "kind": "simple",
@@ -216,6 +227,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 99426,
       "name": "test12",
       "returnType": {
         "key": "int",
@@ -225,6 +237,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 103491,
       "name": "test13",
       "returnType": {
         "key": "int",
@@ -235,6 +248,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 124068,
       "name": "test14",
       "returnType": {
         "kind": "simple",
@@ -244,6 +258,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 128133,
       "name": "test15",
       "returnType": {
         "kind": "simple",
@@ -253,6 +268,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 115942,
       "name": "test16",
       "returnType": {
         "format": 257,
@@ -263,6 +279,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 120007,
       "name": "test17",
       "returnType": {
         "format": 257,
@@ -273,6 +290,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 75048,
       "name": "test18",
       "returnType": {
         "format": 257,
@@ -283,6 +301,7 @@ exports[`local-type-inference should automatically set types for let statements 
     },
     {
       "arguments": [],
+      "methodId": 79113,
       "name": "test19",
       "returnType": {
         "format": 257,

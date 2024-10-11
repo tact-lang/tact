@@ -15,6 +15,7 @@ import {
     AstFunctionDecl,
     AstConstantDecl,
     AstNode,
+    AstFunctionAttribute,
 } from "./ast";
 import { dummySrcInfo } from "./grammar";
 import { AstSorter } from "./sort";
@@ -266,8 +267,29 @@ export class AstRenamer {
     private renameFunctionContents(
         functionDef: AstFunctionDef,
     ): AstFunctionDef {
+        const attributes = this.renameFunctionAttributes(
+            functionDef.attributes,
+        );
         const statements = this.renameStatements(functionDef.statements);
-        return { ...functionDef, statements };
+        return { ...functionDef, attributes, statements };
+    }
+
+    /**
+     * Renames getter's methodId expression.
+     */
+    private renameFunctionAttributes(
+        functionAttrs: AstFunctionAttribute[],
+    ): AstFunctionAttribute[] {
+        return functionAttrs.map((attr) => {
+            if (attr.type === "get" && attr.methodId !== null) {
+                return {
+                    ...attr,
+                    methodId: this.renameExpression(attr.methodId),
+                };
+            } else {
+                return attr;
+            }
+        });
     }
 
     /**
@@ -403,7 +425,7 @@ export class AstRenamer {
             case "id":
                 return {
                     ...expr,
-                    text: this.renamed.get(expr.text) ?? expr.text,
+                    text: this.givenNames.get(expr.text) ?? expr.text,
                 };
             case "op_binary":
                 return {

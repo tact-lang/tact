@@ -141,6 +141,17 @@ Line 1, col 20:
 "
 `;
 
+exports[`grammar should fail contract-getter-parens-no-method-id 1`] = `
+"<unknown>:2:9: Parse error: expected "\\"", "initOf", "null", "_", "A".."Z", "a".."z", "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "(", "~", "!", "+", or "-"
+
+Line 2, col 9:
+  1 | contract Test {
+> 2 |     get() fun test(): Int {
+              ^
+  3 |         return 0
+"
+`;
+
 exports[`grammar should fail contract-init-trailing-comma-empty-params 1`] = `
 "Syntax error: <unknown>:2:10: Empty parameter list should not have a dangling comma.
 Line 2, col 10:
@@ -934,6 +945,134 @@ exports[`grammar should parse case-35 1`] = `
 }
 `;
 
+exports[`grammar should parse contract-getter-with-method-id 1`] = `
+{
+  "id": 17,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": get(crc32("crc32") + 42 & 0x3ffff | 0x4000),
+              "methodId": {
+                "id": 10,
+                "kind": "op_binary",
+                "left": {
+                  "id": 8,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 6,
+                    "kind": "op_binary",
+                    "left": {
+                      "args": [
+                        {
+                          "id": 3,
+                          "kind": "string",
+                          "loc": "crc32",
+                          "value": "crc32",
+                        },
+                      ],
+                      "function": {
+                        "id": 2,
+                        "kind": "id",
+                        "loc": crc32,
+                        "text": "crc32",
+                      },
+                      "id": 4,
+                      "kind": "static_call",
+                      "loc": crc32("crc32"),
+                    },
+                    "loc": crc32("crc32") + 42,
+                    "op": "+",
+                    "right": {
+                      "base": 10,
+                      "id": 5,
+                      "kind": "number",
+                      "loc": 42,
+                      "value": 42n,
+                    },
+                  },
+                  "loc": crc32("crc32") + 42 & 0x3ffff,
+                  "op": "&",
+                  "right": {
+                    "base": 16,
+                    "id": 7,
+                    "kind": "number",
+                    "loc": 0x3ffff,
+                    "value": 262143n,
+                  },
+                },
+                "loc": crc32("crc32") + 42 & 0x3ffff | 0x4000,
+                "op": "|",
+                "right": {
+                  "base": 16,
+                  "id": 9,
+                  "kind": "number",
+                  "loc": 0x4000,
+                  "value": 16384n,
+                },
+              },
+              "type": "get",
+            },
+          ],
+          "id": 15,
+          "kind": "function_def",
+          "loc": get(crc32("crc32") + 42 & 0x3ffff | 0x4000) fun test(): Int {
+        return 0
+    },
+          "name": {
+            "id": 11,
+            "kind": "id",
+            "loc": test,
+            "text": "test",
+          },
+          "params": [],
+          "return": {
+            "id": 12,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 13,
+                "kind": "number",
+                "loc": 0,
+                "value": 0n,
+              },
+              "id": 14,
+              "kind": "statement_return",
+              "loc": return 0,
+            },
+          ],
+        },
+      ],
+      "id": 16,
+      "kind": "contract",
+      "loc": contract Test {
+    get(crc32("crc32") + 42 & 0x3ffff | 0x4000) fun test(): Int {
+        return 0
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
 exports[`grammar should parse contract-optional-semicolon-for-last-const-def 1`] = `
 {
   "id": 7,
@@ -1355,6 +1494,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": virtual,
               "type": "virtual",
             },
@@ -1434,6 +1574,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": override,
               "type": "override",
             },
@@ -1541,6 +1682,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": virtual,
               "type": "virtual",
             },
@@ -1620,6 +1762,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": override,
               "type": "override",
             },
@@ -3435,6 +3578,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     {
       "attributes": [
         {
+          "kind": "function_attribute",
           "loc": extends,
           "type": "extends",
         },
@@ -3501,6 +3645,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     {
       "attributes": [
         {
+          "kind": "function_attribute",
           "loc": extends,
           "type": "extends",
         },
@@ -3577,6 +3722,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     {
       "attributes": [
         {
+          "kind": "function_attribute",
           "loc": extends,
           "type": "extends",
         },
@@ -4232,6 +4378,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
     {
       "attributes": [
         {
+          "kind": "function_attribute",
           "loc": extends,
           "type": "extends",
         },
@@ -9597,6 +9744,7 @@ exports[`grammar should parse trait-optional-semicolon-for-last-fun-decl 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": abstract,
               "type": "abstract",
             },

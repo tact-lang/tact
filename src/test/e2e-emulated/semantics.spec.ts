@@ -71,6 +71,15 @@ describe("semantics", () => {
         expect(await contract.getMutatesChainInt5()).toEqual(true);
         expect(await contract.getMutatesChainInt6()).toEqual(true);
 
+        // Boolean expressions
+
+        expect(await contract.getAndMutateShortCircuit()).toEqual(true);
+        expect(await contract.getAndInfiniteLoopShortCircuit()).toEqual(true);
+        expect(await contract.getAndExceptionShortCircuit()).toEqual(true);
+        expect(await contract.getOrMutateShortCircuit()).toEqual(true);
+        expect(await contract.getOrInfiniteLoopShortCircuit()).toEqual(true);
+        expect(await contract.getOrExceptionShortCircuit()).toEqual(true);
+
         // Contracts
 
         expect(await contract.getContractAssign1()).toEqual(true);

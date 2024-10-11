@@ -158,7 +158,13 @@
               "name": "keyword.operator.mapsto.tact"
             },
             {
-              "match": "\\b([0-9]*)\\b",
+              "comment": "Decimal integer WITH leading zero",
+              "match": "\\b(0[0-9]*)\\b",
+              "name": "constant.numeric.decimal.tact"
+            },
+            {
+              "comment": "Decimal integer WITHOUT leading zero",
+              "match": "\\b([1-9](?:_?[0-9])*)\\b",
               "name": "constant.numeric.decimal.tact"
             }
           ],

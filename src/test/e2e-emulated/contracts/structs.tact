@@ -240,6 +240,11 @@ struct Dict {
     m: map<Int as uint8, Int as coins>;
 }
 
+struct OptionalFields {
+    nickname: String?;
+    avatar: String?;
+}
+
 contract StructsTester {
     s1: S = S {a: false, b: 21 + 21};
     s2: S;
@@ -920,5 +925,12 @@ contract StructsTester {
 
     get fun uintFieldsFromCell(src: Cell): UintFields {
         return UintFields.fromCell(src);
+    }
+
+    get fun optionalFields(): OptionalFields {
+        return OptionalFields {
+            nickname: null,
+            avatar: "non-null string",
+        }
     }
 }
