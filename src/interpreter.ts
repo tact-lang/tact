@@ -1475,6 +1475,9 @@ export class Interpreter {
         }
 
         for (const [field, name] of ast.identifiers) {
+            if (name.text === "_") {
+                continue;
+            }
             const v = val[idText(field)];
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (v === undefined) {
