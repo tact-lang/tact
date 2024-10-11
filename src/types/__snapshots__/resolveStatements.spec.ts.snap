@@ -968,6 +968,16 @@ Line 15, col 22:
 "
 `;
 
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-shadowed-const-id 1`] = `
+"<unknown>:17:16: Variable "x" is trying to shadow an existing constant with the same name
+Line 17, col 16:
+  16 |     let s = S{ a: 1, b: 2, c: 3 };
+> 17 |     let S { a: x, b: b, c: c } = s;
+                      ^
+  18 |     return x + b + c;
+"
+`;
+
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-shadowed-id 1`] = `
 "<unknown>:16:16: Variable already exists: "x"
 Line 16, col 16:
