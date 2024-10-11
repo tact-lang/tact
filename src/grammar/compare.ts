@@ -582,15 +582,26 @@ export class AstComparator {
                     identifiers: destructIdentifiers2,
                     expression: destructExpression2,
                 } = node2 as AstStatementDestruct;
-                for (const [name1, field1] of destructIdentifiers1) {
-                    const name2 = destructIdentifiers2.get(field1);
-                    if (name1 !== name2) {
+                const sortedIdentifiers1 =
+                    Array.from(destructIdentifiers1).sort();
+                const sortedIdentifiers2 =
+                    Array.from(destructIdentifiers2).sort();
+                if (sortedIdentifiers1.length !== sortedIdentifiers2.length) {
+                    return false;
+                }
+                for (let i = 0; i < sortedIdentifiers1.length; i++) {
+                    if (
+                        !this.compare(
+                            sortedIdentifiers1[i]![0],
+                            sortedIdentifiers2[i]![0],
+                        ) ||
+                        !this.compare(
+                            sortedIdentifiers1[i]![1],
+                            sortedIdentifiers2[i]![1],
+                        )
+                    ) {
                         return false;
                     }
-                    destructIdentifiers2.delete(field1);
-                }
-                if (destructIdentifiers2.size > 0) {
-                    return false;
                 }
                 return (
                     this.compare(destructType1, destructType2) &&
