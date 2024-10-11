@@ -81,7 +81,9 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return b.store_slice(${ctx.used(`__tact_verify_address`)}(address));
+                return b.store_slice(${ctx.used(
+                    `__tact_verify_address`,
+                )}(address));
             `);
         });
     });
@@ -185,6 +187,25 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.asm("(value index dict key_len)", "DICTSETREF");
     });
 
+    ctx.fun("__tact_dict_replace_ref", () => {
+        ctx.signature(
+            `((cell), (int)) __tact_dict_replace_ref(cell dict, int key_len, slice index, cell value)`,
+        );
+        ctx.context("stdlib");
+        ctx.asm("(value index dict key_len)", "DICTREPLACEREF");
+    });
+
+    ctx.fun("__tact_dict_replaceget_ref", () => {
+        ctx.signature(
+            `((cell), (cell, int)) __tact_dict_replaceget_ref(cell dict, int key_len, slice index, cell value)`,
+        );
+        ctx.context("stdlib");
+        ctx.asm(
+            "(value index dict key_len)",
+            "DICTREPLACEGETREF NULLSWAPIFNOT",
+        );
+    });
+
     ctx.fun("__tact_dict_get", () => {
         ctx.signature(
             `(slice, int) __tact_dict_get(cell dict, int key_len, slice index)`,
@@ -198,7 +219,15 @@ export function writeStdlib(ctx: WriterContext): void {
             `(cell, (slice, int)) __tact_dict_delete_get(cell dict, int key_len, slice index)`,
         );
         ctx.context("stdlib");
-        ctx.asm("(index dict key_len)", "DICTDELGET NULLSWAPIFNOT2");
+        ctx.asm("(index dict key_len)", "DICTDELGET NULLSWAPIFNOT");
+    });
+
+    ctx.fun("__tact_dict_delete_get_ref", () => {
+        ctx.signature(
+            `(cell, (cell, int)) __tact_dict_delete_get_ref(cell dict, int key_len, slice index)`,
+        );
+        ctx.context("stdlib");
+        ctx.asm("(index dict key_len)", "DICTDELGETREF NULLSWAPIFNOT");
     });
 
     ctx.fun("__tact_dict_get_ref", () => {
@@ -240,7 +269,9 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                var (key, value, flag) = ${ctx.used("__tact_dict_next")}(dict, key_len, pivot);
+                var (key, value, flag) = ${ctx.used(
+                    "__tact_dict_next",
+                )}(dict, key_len, pivot);
                 if (flag) {
                     return (key, value~load_ref(), flag);
                 } else {
@@ -277,9 +308,13 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.body(() => {
             ctx.write(`
                 if (value) {
-                    ${ctx.used("__tact_debug_str")}("true", debug_print_1, debug_print_2);
+                    ${ctx.used(
+                        "__tact_debug_str",
+                    )}("true", debug_print_1, debug_print_2);
                 } else {
-                    ${ctx.used("__tact_debug_str")}("false", debug_print_1, debug_print_2);
+                    ${ctx.used(
+                        "__tact_debug_str",
+                    )}("false", debug_print_1, debug_print_2);
                 }
             `);
         });
@@ -343,10 +378,18 @@ export function writeStdlib(ctx: WriterContext): void {
                     int n = (bs1 << 16) | (bs2 << 8) | bs3;
             
                     res = res
-                        .store_slice(${ctx.used("__tact_preload_offset")}(chars, ((n >> 18) & 63) * 8, 8))
-                        .store_slice(${ctx.used("__tact_preload_offset")}(chars, ((n >> 12) & 63) * 8, 8))
-                        .store_slice(${ctx.used("__tact_preload_offset")}(chars, ((n >>  6) & 63) * 8, 8))
-                        .store_slice(${ctx.used("__tact_preload_offset")}(chars, ((n      ) & 63) * 8, 8));
+                        .store_slice(${ctx.used(
+                            "__tact_preload_offset",
+                        )}(chars, ((n >> 18) & 63) * 8, 8))
+                        .store_slice(${ctx.used(
+                            "__tact_preload_offset",
+                        )}(chars, ((n >> 12) & 63) * 8, 8))
+                        .store_slice(${ctx.used(
+                            "__tact_preload_offset",
+                        )}(chars, ((n >>  6) & 63) * 8, 8))
+                        .store_slice(${ctx.used(
+                            "__tact_preload_offset",
+                        )}(chars, ((n      ) & 63) * 8, 8));
                 }
                 
                 return res.end_cell().begin_parse();
@@ -367,13 +410,17 @@ export function writeStdlib(ctx: WriterContext): void {
                     .store_uint(hash, 256)
                 .end_cell().begin_parse();
             
-                slice checksum = ${ctx.used("__tact_crc16")}(user_friendly_address);
+                slice checksum = ${ctx.used(
+                    "__tact_crc16",
+                )}(user_friendly_address);
                 slice user_friendly_address_with_checksum = begin_cell()
                     .store_slice(user_friendly_address)
                     .store_slice(checksum)
                 .end_cell().begin_parse();
             
-                return ${ctx.used("__tact_base64_encode")}(user_friendly_address_with_checksum);
+                return ${ctx.used(
+                    "__tact_base64_encode",
+                )}(user_friendly_address_with_checksum);
             `);
         });
     });
@@ -386,7 +433,9 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                ${ctx.used("__tact_debug_str")}(${ctx.used("__tact_address_to_user_friendly")}(address), debug_print_1, debug_print_2);
+                ${ctx.used("__tact_debug_str")}(${ctx.used(
+                    "__tact_address_to_user_friendly",
+                )}(address), debug_print_1, debug_print_2);
             `);
         });
     });
@@ -507,16 +556,22 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                (slice key, slice value, int flag) = ${ctx.used("__tact_dict_min")}(a, kl);
+                (slice key, slice value, int flag) = ${ctx.used(
+                    "__tact_dict_min",
+                )}(a, kl);
                 while (flag) {
-                    (slice value_b, int flag_b) = b~${ctx.used("__tact_dict_delete_get")}(kl, key);
+                    (slice value_b, int flag_b) = b~${ctx.used(
+                        "__tact_dict_delete_get",
+                    )}(kl, key);
                     ifnot (flag_b) {
                         return 0;
                     }
                     ifnot (value.slice_hash() == value_b.slice_hash()) {
                         return 0;
                     }
-                    (key, value, flag) = ${ctx.used("__tact_dict_next")}(a, kl, key);
+                    (key, value, flag) = ${ctx.used(
+                        "__tact_dict_next",
+                    )}(a, kl, key);
                 }
                 return null?(b);
             `);
@@ -778,7 +833,9 @@ export function writeStdlib(ctx: WriterContext): void {
                 args.push(`X${j}`);
             }
             ctx.signature(
-                `forall ${args.join(", ")} -> tuple __tact_tuple_create_${i}((${args.join(", ")}) v)`,
+                `forall ${args.join(
+                    ", ",
+                )} -> tuple __tact_tuple_create_${i}((${args.join(", ")}) v)`,
             );
             ctx.context("stdlib");
             ctx.asm("", `${i} TUPLE`);
@@ -789,7 +846,9 @@ export function writeStdlib(ctx: WriterContext): void {
                 args.push(`X${j}`);
             }
             ctx.signature(
-                `forall ${args.join(", ")} -> (${args.join(", ")}) __tact_tuple_destroy_${i}(tuple v)`,
+                `forall ${args.join(", ")} -> (${args.join(
+                    ", ",
+                )}) __tact_tuple_destroy_${i}(tuple v)`,
             );
             ctx.context("stdlib");
             ctx.asm("", `${i} UNTUPLE`);
@@ -806,7 +865,9 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return ${ctx.used("__tact_string_builder_start")}(begin_cell().store_uint(0, 32));
+                return ${ctx.used(
+                    "__tact_string_builder_start",
+                )}(begin_cell().store_uint(0, 32));
             `);
         });
     });
@@ -817,7 +878,9 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return ${ctx.used("__tact_string_builder_start")}(begin_cell().store_uint(0, 8));
+                return ${ctx.used(
+                    "__tact_string_builder_start",
+                )}(begin_cell().store_uint(0, 8));
             `);
         });
     });
@@ -867,7 +930,9 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.context("stdlib");
         ctx.body(() => {
             ctx.write(`
-                return ${ctx.used("__tact_string_builder_end")}(builders).begin_parse();
+                return ${ctx.used(
+                    "__tact_string_builder_end",
+                )}(builders).begin_parse();
             `);
         });
     });
@@ -1075,6 +1140,8 @@ export function writeStdlib(ctx: WriterContext): void {
             genTactDictGetMin(ctx, key, val);
             genTactDictGetNext(ctx, key, val);
             genTactDictSet(ctx, key, val);
+            genTactDictReplace(ctx, key, val);
+            genTactDictReplaceGet(ctx, key, val);
         }
     }
     for (const key of keyTypes) {
@@ -1384,6 +1451,174 @@ function genTactDictGetNext(
                     }
                 `);
             }
+        });
+    });
+}
+
+function genTactDictReplace(
+    ctx: WriterContext,
+    key: KeyType,
+    value: ValType,
+): void {
+    const signatureKeyType = key === "uint" ? "int" : key;
+    const signatureValueType = value === "uint" ? "int" : value;
+    const valBitsArg = () => {
+        switch (value) {
+            case "slice":
+            case "cell":
+                return "";
+            case "uint":
+            case "int":
+                return ", int vl";
+        }
+    };
+    const dictDel = () => {
+        switch (key) {
+            case "slice":
+                return ctx.used("__tact_dict_delete");
+            case "uint":
+                return "udict_delete?";
+            case "int":
+                return "idict_delete?";
+        }
+    };
+    const returnExpr = () => {
+        switch (`${key}:${value}`) {
+            case "int:int":
+                return "idict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))";
+            case "int:uint":
+                return "idict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))";
+            case "uint:int":
+                return "udict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))";
+            case "uint:uint":
+                return "udict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))";
+            case "slice:int":
+                return "dict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))";
+            case "slice:uint":
+                return "dict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))";
+            case "int:cell":
+                return "idict_replace_ref?(d, kl, k, v)";
+            case "uint:cell":
+                return "udict_replace_ref?(d, kl, k, v)";
+            case "int:slice":
+                return "idict_replace?(d, kl, k, v)";
+            case "uint:slice":
+                return "udict_replace?(d, kl, k, v)";
+            case "slice:cell":
+                return `${ctx.used("__tact_dict_replace_ref")}(d, kl, k, v)`;
+            case "slice:slice":
+                return "dict_replace_builder?(d, kl, k, begin_cell().store_slice(v))";
+            default:
+                throwInternalCompilerError(
+                    `Unprocessed combination of key/value types ${key}/${value} in dict replace operation`,
+                );
+        }
+    };
+    ctx.fun(`__tact_dict_replace_${key}_${value}`, () => {
+        ctx.signature(
+            `(cell, (int)) __tact_dict_replace_${key}_${value}(cell d, int kl, ${signatureKeyType} k, ${signatureValueType} v${valBitsArg()})`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                if (null?(v)) {
+                    var (r, ok) = ${dictDel()}(d, kl, k);
+                    return (r, (ok));
+                } else {
+                    return ${returnExpr()};
+                }
+            `);
+        });
+    });
+}
+
+function genTactDictReplaceGet(
+    ctx: WriterContext,
+    key: KeyType,
+    value: ValType,
+): void {
+    const signatureKeyType = key === "uint" ? "int" : key;
+    const signatureValueType = value === "uint" ? "int" : value;
+    const valBitsArg = () => {
+        switch (value) {
+            case "slice":
+            case "cell":
+                return "";
+            case "uint":
+            case "int":
+                return ", int vl";
+        }
+    };
+    const dictDelGet = () => {
+        const cellSuffix = value === "cell" ? "_ref" : "";
+        switch (key) {
+            case "slice":
+                return ctx.used(`__tact_dict_delete_get${cellSuffix}`);
+            case "uint":
+                return `udict_delete_get${cellSuffix}?`;
+            case "int":
+                return `idict_delete_get${cellSuffix}?`;
+        }
+    };
+    const returnExpr = () => {
+        switch (`${key}:${value}`) {
+            case "int:int":
+                return "d~idict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())";
+            case "int:uint":
+                return "d~idict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())";
+            case "uint:int":
+                return "d~udict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())";
+            case "uint:uint":
+                return "d~udict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())";
+            case "slice:int":
+                return "d~dict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())";
+            case "slice:uint":
+                return "d~dict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())";
+            case "int:cell":
+                return "d~idict_replaceget_ref?(kl, k, v)";
+            case "uint:cell":
+                return "d~udict_replaceget_ref?(kl, k, v)";
+            case "int:slice":
+                return "d~idict_replaceget?(kl, k, v)";
+            case "uint:slice":
+                return "d~udict_replaceget?(kl, k, v)";
+            case "slice:cell":
+                return `d~${ctx.used("__tact_dict_replaceget_ref")}(kl, k, v)`;
+            case "slice:slice":
+                return "d~dict_replaceget?(kl, k, begin_cell().store_slice(v).end_cell().begin_parse())";
+            default:
+                throwInternalCompilerError(
+                    `Unprocessed combination of key/value types ${key}/${value} in dict replaceGet operation`,
+                );
+        }
+    };
+    const parseExpr = () => {
+        switch (value) {
+            case "slice":
+            case "cell":
+                return "old";
+            case "uint":
+                return "old~load_uint(vl)";
+            case "int":
+                return "old~load_int(vl)";
+        }
+    };
+    ctx.fun(`__tact_dict_replaceget_${key}_${value}`, () => {
+        ctx.signature(
+            `(cell, (${signatureValueType})) __tact_dict_replaceget_${key}_${value}(cell d, int kl, ${signatureKeyType} k, ${signatureValueType} v${valBitsArg()})`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (old, ok) = null?(v) ? d~${dictDelGet()}(kl, k) : ${returnExpr()};
+                if (ok) {
+                    return (d, ${parseExpr()});
+                } else {
+                    return (d, null());
+                }
+            `);
         });
     });
 }
