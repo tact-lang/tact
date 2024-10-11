@@ -157,6 +157,91 @@ message DelAddrMap7 {
 
 message CheckNullReference {}
 
+message ReplaceIntMap1 {
+    key: Int;
+    value: Int?;
+}
+
+message ReplaceIntMap2 {
+    key: Int;
+    value: Bool?;
+}
+
+message ReplaceIntMap3 {
+    key: Int;
+    value: Cell?;
+}
+
+message ReplaceIntMap4 {
+    key: Int;
+    value: SomeStruct?;
+}
+
+message ReplaceIntMap5 {
+    key: Int;
+    value: Address?;
+}
+
+message ReplaceIntMap6 {
+    key: Int;
+    value: Int?;
+}
+
+message ReplaceUIntMap7 {
+    key: Int;
+    value: Int?;
+}
+
+message ReplaceIntMap8 {
+    key: Int;
+    value: Int?;
+}
+
+message ReplaceUIntMap9 {
+    key: Int;
+    value: Int?;
+}
+
+message ReplaceUIntMap10 {
+    key: Int;
+    value: Int?;
+}
+
+message ReplaceAddrMap1 {
+    key: Address;
+    value: Int?;
+}
+
+message ReplaceAddrMap2 {
+    key: Address;
+    value: Bool?;
+}
+
+message ReplaceAddrMap3 {
+    key: Address;
+    value: Cell?;
+}
+
+message ReplaceAddrMap4 {
+    key: Address;
+    value: SomeStruct?;
+}
+
+message ReplaceAddrMap5 {
+    key: Address;
+    value: Address?;
+}
+
+message ReplaceAddrMap6 {
+    key: Address;
+    value: Int?;
+}
+
+message ReplaceAddrMap7 {
+    key: Address;
+    value: Int?;
+}
+
 contract MapTestContract {
 
     init() {
@@ -340,6 +425,71 @@ contract MapTestContract {
         self.intMap10_2.del(msg.key);
         self.intMap10_3.del(msg.key);
         self.intMap10_4.del(msg.key);
+    }
+
+    receive(msg: ReplaceIntMap1) {
+        self.intMap1.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceIntMap2) {
+        self.intMap2.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceIntMap3) {
+        self.intMap3.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceIntMap4) {
+        self.intMap4.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceIntMap5) {
+        self.intMap5.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceIntMap6) {
+        self.intMap6_1.replace(msg.key, msg.value);
+        self.intMap6_2.replace(msg.key, msg.value);
+        self.intMap6_3.replace(msg.key, msg.value);
+        self.intMap6_4.replace(msg.key, msg.value);
+        self.intMap6_5.replace(msg.key, msg.value);
+        self.intMap6_6.replace(msg.key, msg.value);
+        self.intMap6_7.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceUIntMap7) {
+        self.intMap7_1.replace(msg.key, msg.value);
+        self.intMap7_2.replace(msg.key, msg.value);
+        self.intMap7_3.replace(msg.key, msg.value);
+        self.intMap7_4.replace(msg.key, msg.value);
+        self.intMap7_5.replace(msg.key, msg.value);
+        self.intMap7_6.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceIntMap8) {
+        self.intMap8_1.replace(msg.key, msg.value);
+        self.intMap8_2.replace(msg.key, msg.value);
+        self.intMap8_3.replace(msg.key, msg.value);
+        self.intMap8_4.replace(msg.key, msg.value);
+        self.intMap8_5.replace(msg.key, msg.value);
+        self.intMap8_6.replace(msg.key, msg.value);
+        self.intMap8_7.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceUIntMap9) {
+        self.intMap9_1.replace(msg.key, msg.value);
+        self.intMap9_2.replace(msg.key, msg.value);
+        self.intMap9_3.replace(msg.key, msg.value);
+        self.intMap9_4.replace(msg.key, msg.value);
+        self.intMap9_5.replace(msg.key, msg.value);
+        self.intMap9_6.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceUIntMap10) {
+        self.intMap10_1.replace(msg.key, msg.value);
+        self.intMap10_2.replace(msg.key, msg.value);
+        self.intMap10_3.replace(msg.key, msg.value);
+        self.intMap10_4.replace(msg.key, msg.value);
     }
 
     get fun intMap1(): map<Int, Int> {
@@ -857,6 +1007,45 @@ contract MapTestContract {
         self.addrMap7_6.del(msg.key);
     }
 
+    receive(msg: ReplaceAddrMap1) {
+        self.addrMap1.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceAddrMap2) {
+        self.addrMap2.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceAddrMap3) {
+        self.addrMap3.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceAddrMap4) {
+        self.addrMap4.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceAddrMap5) {
+        self.addrMap5.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceAddrMap6) {
+        self.addrMap6_1.replace(msg.key, msg.value);
+        self.addrMap6_2.replace(msg.key, msg.value);
+        self.addrMap6_3.replace(msg.key, msg.value);
+        self.addrMap6_4.replace(msg.key, msg.value);
+        self.addrMap6_5.replace(msg.key, msg.value);
+        self.addrMap6_6.replace(msg.key, msg.value);
+        self.addrMap6_7.replace(msg.key, msg.value);
+    }
+
+    receive(msg: ReplaceAddrMap7) {
+        self.addrMap7_1.replace(msg.key, msg.value);
+        self.addrMap7_2.replace(msg.key, msg.value);
+        self.addrMap7_3.replace(msg.key, msg.value);
+        self.addrMap7_4.replace(msg.key, msg.value);
+        self.addrMap7_5.replace(msg.key, msg.value);
+        self.addrMap7_6.replace(msg.key, msg.value);
+    }
+
     receive("reset") {
         self.addrMap1 = emptyMap();
         self.addrMap2 = emptyMap();
@@ -1025,6 +1214,10 @@ contract MapTestContract {
 
     get fun intMap1Del(key: Int): Bool {
         return self.intMap1.del(key);
+    }
+
+    get fun intMap1Replace(key: Int, value: Int?): Bool {
+        return self.intMap1.replace(key, value);
     }
 
     get fun checkNullReference(): Int {
