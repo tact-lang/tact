@@ -44,16 +44,64 @@ asm fun getOriginalFwdFee(fwd_fee: Int, is_masterchain: Bool): Int { GETORIGINAL
 // Current debt for storage fee in nanotons.
 asm fun myStorageDue(): Int { DUEPAYMENT }
 
+/// Struct representing the standard address on TON Blockchain with signed 8-bit `workchain` ID and an unsigned 256-bit `address` in the specified `workchain`.
+///
+/// At the moment, only `workchain` IDs used on TON are 0 of the basechain and -1 of the masterchain.
+///
+/// @since Tact 1.5.0
+/// @see https://docs.tact-lang.org/ref/core-advanced#parsestdaddress
+/// @see https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb#L105-L106
+///
 struct StdAddress {
     workchain: Int as int8;
     address: Int as uint256;
 }
 
+/// Struct representing the address of variable length with signed 32-bit `workchain` ID and a `Slice` containing unsigned `address` in the specified `workchain`.
+///
+/// Variable-length addresses are intended for future extensions, and while validators must be ready to accept them in inbound messages, the standard (non-variable) addresses are used whenever possible.
+///
+/// @since Tact 1.5.0
+/// @see https://docs.tact-lang.org/ref/core-advanced#parsevaraddress
+/// @see https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb#L107-L108
+///
 struct VarAddress {
     workchain: Int as int32;
     address: Slice;
 }
 
+/// Converts a `Slice` containing an address into the `StdAddress` Struct and returns it.
+///
+/// ```tact
+/// let addr = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
+/// let parsedAddr = parseStdAddress(addr.asSlice());
+///
+/// parsedAddr.workchain; // 0
+/// parsedAddr.address;   // 107...287
+/// ```
+///
+/// @since Tact 1.5.0
+/// @see https://docs.tact-lang.org/ref/core-advanced#parsestdaddress
+///
 asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 
+/// Converts a `Slice` containing an address of variable length into the `VarAddress` Struct and returns it.
+///
+/// ```tact
+/// let varAddrSlice = beginCell()
+///     .storeUint(6, 3)     // to recognize the following as a VarAddress
+///     .storeUint(123, 9)   // make address occupy 123 bits
+///     .storeUint(234, 32)  // specify workchain ID of 234
+///     .storeUint(345, 123) // specify address of 345
+///     .asSlice();
+/// let parsedVarAddr = parseVarAddress(varAddrSlice);
+///
+/// parsedVarAddr.workchain;             // 234
+/// parsedVarAddr.address;               // CS{Cell{002...2b3} bits: 44..167; refs: 0..0}
+/// parsedVarAddr.address.loadUint(123); // 345
+/// ```
+///
+/// @since Tact 1.5.0
+/// @see https://docs.tact-lang.org/ref/core-advanced#parsevaraddress
+///
 asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
