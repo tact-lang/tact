@@ -1,0 +1,36 @@
+---
+title: OTP-004：自动编码器
+sidebar:
+  order: 4
+---
+
+该提案定义了一种为给定结构自动构建序列化布局的方法。
+
+## 动机
+
+在 TLB 中设计序列化布局是一项非常冒险的任务。 开发人员必须注意单元格的大小限制，并记住每个字段使用的位数。 这是一项非常容易出错的工作，而且很容易出错。 本建议旨在解决这一问题，它提供了一种为给定结构自动构建序列化布局的方法。
+
+## 规格
+
+我们将自动编码器定义为一种为给定结构构建序列化布局的急迫算法。 算法定义如下
+
+```text
+将当前单元格 
+   中的可用引用和位分别定义为 `available_references` 和 `available_bits`。
+   注意：必须至少为序列化尾部保留一个引用，为可选标记保留一个 
+         位。根据上下文，可能会保留更多的引用或位。 
+
+对于 A 中的每个字段：
+    (size_bits, size_ref) = get_field_max_size(field)；
+    if (available_bits >= size_bits && available_references >= size_ref) {
+        Push field to a current cell
+    } else {
+        available_references = (1023 - 1)；
+        available_bits = (4 - 1)；
+        分配一个新的尾部并从当前字段继续
+}
+```
+
+## 缺点
+
+- 这是一种隐式算法。 目前还不清楚是否需要检查该分配器的结果，以便进行兼容的序列化。

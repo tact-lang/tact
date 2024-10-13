@@ -1,0 +1,296 @@
+---
+title: Compatibility with func
+---
+
+Tact itself compiles to `func` and maps Tact entities directly to various `func` and `tl-b` types.
+
+## 转换类型
+
+Primitive types in `tact` are directly mapped to `func` one.
+
+复制变量的所有规则都是一样的。 One of the big differences is that there are no visible mutation operators in `tact` and most `Slice` operations mutate variables in place.
+
+## 转换序列化
+
+Tact structs and messages serialization is automatic unlike `func` where you need to define serialization logic manually.
+
+The tact auto-layout algorithm is greedy. 这意味着它会获取下一个变量，计算其大小，并尝试将其放入当前单元格中。 如果不合适，它会创建一个新单元格并继续。 自动布局的所有内部结构在分配前都会被扁平化。
+
+All, except `Address`, optional types are serialized as `Maybe` in `tl-b`.
+
+不支持 "Either"，因为在某些情况下，它没有定义序列化过程中的选择。
+
+### 实例
+
+```tact
+// _ value1:int257 = SomeValue;
+struct SomeValue {
+    value1: Int; // 默认为 257 位
+}
+```
+
+```tact
+// _ value1:int256 value2:uint32 = SomeValue;
+struct SomeValue {
+    value1: Int as int256;
+    value2：int as uint32;
+}
+```
+
+```tact
+// _ value1:bool value2:Maybe bool = SomeValue;
+struct SomeValue {
+    value1: Bool;
+    value2：Bool?;
+}
+```
+
+```tact
+// _ cell:^cell = SomeValue;
+struct SomeValue {
+    cell：Cell; // 总是作为引用存储
+}
+```
+
+```tact
+// _ cell:^slice = SomeValue;
+struct SomeValue {
+    cell：Slice; // 总是作为引用存储
+}
+```
+
+```tact
+// _ value1:int256 value2:int256 value3:int256 ^[value4:int256] = SomeValue;
+struct SomeValue {
+    value1: Int as int256;
+    value2：
+    value3: Int as int256;
+    value4: Int as int256;
+}
+```
+
+```tact
+// _ value1:int256 value2:int256 value3:int256 ^[value4:int256] flag:bool = SomeValue;
+struct SomeValue {
+    value1: Int as int256;
+    value2：
+    value3: Int as int256;
+    flag：Bool; // Flag 写在 value4 之前，以避免自动布局将其分配到下一个单元格
+    value4: Int as int256;
+}
+```
+
+```tact
+// _ value1:int256 value2:int256 value3:int256 ^[value4:int256 flag:bool] = SomeValue;
+struct SomeValue {
+    value1: Int as int256;
+    value2：
+    value3: Int as int256;
+    value4: Int as int256;
+    flag：Bool;
+}
+```
+
+```tact
+// _ value1:int256 value2:^TailString value3:int256 = SomeValue;
+struct SomeValue {
+    value1: Int as int256;
+    value2：String;
+    value3: Int as int256;
+}
+```
+
+## 将收到的信息转换为 `op` 操作
+
+Tact 会为每条接收到的键入信息生成一个唯一的 `op`，但它可以被覆盖。
+
+下面是 FunC.NET 中的代码
+
+```func
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    ;; 传入消息代码...
+
+    ;; 接收 MessageWithGeneratedOp 消息
+    if (op == 1180414602) {
+        ;; 代码...
+    }
+
+    ;; 接收 MessageWithOverwrittenOP 消息
+    if (op == 291) {
+        ;; 代码...
+    }
+
+}
+```
+
+在《战术》中变成了这样：
+
+```tact
+message MessageWithGeneratedOp {
+    amount: Int as uint32;
+}
+
+message(0x123) MessageWithOverwrittenOP {
+    amount: Int as uint32;
+}
+
+contract Contract {
+    // Contract Body...
+
+    receive(msg: MessageWithGeneratedOp) {
+        // code...
+    }
+
+    receive(msg: MessageWithOverwrittenOP) {
+        // code...
+    }
+
+}
+
+```
+
+## Convert get-methods
+
+You can express everything except `list-style-lists` in Tact that would be compatible with `func`'s `get`-methods.
+
+### 基本返回类型
+
+if `get-method` returns a primitive in `func`, you can implement it the same way in the `tact`.
+
+下面是 FunC.NET 中的代码
+
+```func
+int seqno() method_id {
+    return 0;
+}
+```
+
+在《战术》中变成了这样：
+
+```tact
+// Tact
+get fun seqno(): Int {
+    return 0;
+}
+```
+
+### 张量返回类型
+
+In `func` there is a difference between tensor type `(int, int)` and `(int, (int))`, but for TVM there are no differences, they all represent a stack of two ints.
+
+To convert the tensor that returned from the `func` get-method, you need to define a `struct` that has the same amount of fields as the tensor and in the same order.
+
+下面是 FunC.NET 中的代码
+
+```func
+(int, slice, slice, cell) get_wallet_data() method_id {
+    return ...;
+}
+```
+
+在《战术》中变成了这样：
+
+```tact
+struct JettonWalletData {
+    balance: Int;
+    owner: Address;
+    master: Address;
+    walletCode: Cell;
+}
+
+
+get fun get_wallet_data(): JettonWalletData {
+    return ...;
+}
+```
+
+### 元组返回类型
+
+In `func` if you are returning a tuple, instead of a tensor you need to follow the process for tensor type, but define return type of a get method as optional.
+
+下面是 FunC.NET 中的代码
+
+```func
+[int, int] get_contract_state() method_id {
+    return ...;
+}
+```
+
+在《战术》中变成了这样：
+
+```tact
+struct ContractState {
+    valueA: Int;
+    valueB: Int;
+}
+
+
+get fun get_contract_state(): ContractState? {
+    return ...;
+}
+```
+
+### 混合元组和张量返回类型
+
+When some of the tensors are a tuple, you need to define a struct as in previous steps and the tuple one must be defined as a separate struct.
+
+下面是 FunC.NET 中的代码
+
+```func
+(int, [int, int]) get_contract_state() method_id {
+    return ...;
+}
+```
+
+在《战术》中变成了这样：
+
+```tact
+struct ContractStateInner {
+    valueA: Int;
+    valueB: Int;
+}
+struct ContractState {
+    valueA: Int;
+    valueB: ContractStateInner;
+}
+
+
+get fun get_contract_state(): ContractState {
+    return ...;
+}
+```
+
+### 参数 制图
+
+Conversion of get-methods arguments is forward. Each argument is mapped as-is to `func` one, and each tuple is mapped to a struct.
+
+下面是 FunC.NET 中的代码
+
+```func
+(int, [int, int]) get_contract_state(int arg1, [int,int] arg2) method_id {
+    return ...;
+}
+```
+
+在《战术》中变成了这样：
+
+```tact
+struct ContractStateArg2 {
+    valueA: Int;
+    valueB: Int;
+}
+
+struct ContractStateInner {
+    valueA: Int;
+    valueB: Int;
+}
+struct ContractState {
+    valueA: Int;
+    valueB: ContractStateInner;
+}
+
+
+get fun get_contract_state(arg1: Int, arg2: ContractStateArg2): ContractState {
+    return ...;
+}
+```

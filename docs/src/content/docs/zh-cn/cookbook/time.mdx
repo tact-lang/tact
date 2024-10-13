@@ -1,0 +1,30 @@
+---
+title: 时间和日期
+---
+
+## 如何获取当前时间
+
+使用 `now(){:tact}` 方法获取当前标准[Unix 时间](https://en.wikipedia.org/wiki/Unix_time)。
+
+如果需要在状态中存储时间或在信息中编码时间，请使用下面的 [serialization](/book/integers#serialization)：`Int as uint32{:tact}`。
+
+```tact
+let currentTime: Int = now();
+
+if (currentTime > 1672080143) {
+    // do something
+}
+```
+
+:::note[Useful 链接：]
+
+  [核心库中的 `now(){:tact}`](/ref/core-common#now)/
+  [Tact-By-Example中的 "当前时间"](https://tact-by-example.org/04-current-time)
+
+:::
+
+:::tip[Hey 那里！]
+
+  没有找到您最喜欢的使用时间和日期的例子？ 您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
+
+:::

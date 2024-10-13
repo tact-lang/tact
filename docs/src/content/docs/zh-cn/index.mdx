@@ -1,0 +1,197 @@
+---
+title: 学习⚡ Tact 中的所有编程知识
+description: Tact 是 TON 区块链的一种新编程语言，注重效率和简便性。 它设计得易于学习和使用，并且非常适合智能合约。
+template: splash
+hero:
+  tagline: Tact 是 TON 区块链的一种新编程语言，注重效率和简便性。 它设计得易于学习和使用，并且非常适合智能合约。 Tact 是一种静态类型语言，具有简单的语法和强大的类型系统。
+  image:
+    dark: /public/logomark-dark.svg
+    light: /public/logomark-light.svg
+    alt: Tact 徽标
+  actions:
+    - text: 书籍
+      link: /zh-cn/book
+      variant: minimal
+      icon: right-arrow
+
+    - text: 🍲烹饪书
+      link: /zh-cn/cookbook
+      variant: minimal
+      icon: right-arrow
+
+    - text: 🔬 参考资料
+      link: /zh-cn/ref
+      variant: minimal
+      icon: right-arrow
+
+    - text: 🗺️ 生态系统
+      link: /zh-cn/ecosystem
+      variant: minimal
+      icon: right-arrow
+---
+
+import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+      {/* icon: right-arrow */}
+
+
+## 🚀 我们开始吧！ {#start}
+
+<p>ㅤ</p>
+
+<Steps>
+
+1. #### 确保已安装受支持的 Node.js 版本并可用 {#start-1}
+
+    要检查它，请运行 `node --version{:shell}` --它应该会显示 22.0.0 或更高版本。
+
+2. #### 运行以下命令 {#start-2}
+
+   它将创建一个带有简单计数器合同的新项目：
+
+   <Tabs>
+     <TabItem label="yarn" icon="seti:yarn">
+       ```shell
+       # 推荐
+       yarn create ton simple-counter --type tact-counter --contractName SimpleCounter
+       ```
+     </TabItem>
+     <TabItem label="npm" icon="seti:npm">
+       ```shell
+       npm create ton@latest -- simple-counter --type tact-counter --contractName SimpleCounter
+       ```
+     </TabItem>
+     <TabItem label="pnpm" icon="pnpm">
+       ```shell
+       pnpm create ton@latest simple-counter --type tact-counter --contractName SimpleCounter
+       ```
+     </TabItem>
+     <TabItem label="bun" icon="bun">
+       ```shell
+       bun create ton@latest simple-counter --type tact-counter --contractName SimpleCounter
+       ```
+     </TabItem>
+   </Tabs>
+
+3. #### 就是这样！ {#start-3}
+
+   您的第一个合同项目已经编写完成！
+
+   进入相关目录查看 - `cd simple-counter/contracts{:shell}`。 这就是它的样子：
+
+   ```tact
+   import "@stdlib/deploy";
+
+   message Add {
+       queryId：Int as uint64;
+       amount：Int as uint32;
+   }
+
+   contract SimpleCounter with Deployable {
+       id: Int as uint32;
+       counter：
+
+       init(id: Int) {
+           self.id = id;
+           self.counter = 0;
+       }
+
+       receive(msg: Add) {
+           self.counter += msg.amount;
+
+           // 通知调用者接收器已执行，并将余值转回
+           self.notify("Cashback".asComment());
+       }
+
+       get fun counter()：Int {
+           return self.counter;
+       }
+
+       get fun id()：Int {
+           return self.id;
+       }
+   }
+   ```
+
+   要重新编译或部署，请参考新创建项目根目录下 `package.json` 中脚本部分的命令，以及 [Blueprint](https://github.com/ton-org/blueprint) 的文档 - 这是我们用来在 Tact 中创建和编译第一个简单计数器合约的工具。 事实上，Blueprint 的功能远不止这些：包括测试、定制等。
+
+</Steps>
+
+## 🤔 下一站去哪里？ {#next}
+
+<p>ㅤ</p>
+
+<Steps>
+
+1. #### 已经掌握了一些区块链知识？ {#next-1}
+
+   请参阅 [Tact Cookbook](/zh-cn/cookbook)，它是每个 Tact 开发人员在智能合约开发过程中面临的日常任务（和解决方案）的便捷集合。 使用它可以避免重复发明轮子。
+
+   此外，还可以查看以下小抄，快速入门：
+
+   <CardGrid>
+     <LinkCard
+       title="💎 来自 FunC (TON)"
+       href="/zh-cn/book/cs/from-func"
+     />
+     <LinkCard
+       title="🔷 来自 Solidity (Ethereum)"
+       href="/zh-cn/book/cs/from-solidity"
+     />
+   </CardGrid>
+
+2. #### 想了解更多吗？ {#next-2}
+
+   有关编译、测试和部署的进一步指导，请参阅相关页面：
+
+   - [测试和调试](/zh-cn/book/debug) 页面将为您介绍有关 Tact 合同调试的所有内容。
+   - [部署](/zh-cn/book/deploy)页面展示了部署的样子，并帮助你利用[蓝图](https://github.com/ton-org/blueprint) 的力量进行部署。
+
+   有关您最喜欢的编辑器和其他工具的自定义插件，请参阅 [生态系统](/zh-cn/ecosystem) 部分。
+
+   或者，也可以查看以下更广泛的章节：
+
+   - [书籍](/zh-cn/book) 帮助您逐步学习语言
+   - [Cookbook](/zh-cn/cookbook)为您提供现成的 Tact 代码食谱
+   - [参考资料](/zh-cn/ref) 提供了标准库、语法和演变过程的完整词汇表
+   - 最后，[生态系统](/zh-cn/ecosystem)描述了 Tact 和 TON 生态系统中的 "外面有什么"。
+
+   <CardGrid>
+     <LinkCard
+       title="📚 阅读《战术书》"
+       href="/zh-cn/book"
+     />
+     <LinkCard
+       title="🍲 研磨烹饪书"
+       href="/zh-cn/cookbook"
+     />
+     <LinkCard
+       title="🔬 浏览参考资料"
+       href="/zh-cn/ref"
+     />
+     <LinkCard
+       title="🗺️ 拥抱生态系统"
+       href="/zh-cn/ecosystem"
+     />
+   </CardGrid>
+
+3. #### 感觉有点不舒服？ {#next-3}
+
+   如果遇到困难，请尝试搜索--搜索框就在文档顶部。 还有一个方便的<kbd>Ctrl</kbd>+<kbd>K</kbd>快捷键，可以在输入时快速对焦并开始搜索。
+
+   如果您在文档中找不到答案，或者您尝试进行了一些本地测试，但仍然无济于事，请不要犹豫，联系 Tact 活跃的社区：
+
+   <CardGrid>
+     <LinkCard
+       title="✈️ Telegram Group"
+       href="https://t.me/tactlang"
+     />
+     <LinkCard
+       title="🐦 X/Twitter"
+       href="https://twitter.com/tact_language"
+     />
+   </CardGrid>
+
+   祝你在⚡ Tact 的编码冒险中好运！
+
+</Steps>

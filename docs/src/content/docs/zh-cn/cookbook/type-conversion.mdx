@@ -1,0 +1,150 @@
+---
+title: 类型转换
+---
+
+本页展示了在[原始类型][p]之间进行转换以及从[复合类型](/book/types#composite-types)中获取这些类型的示例。
+
+## `Int` ↔ `String` {#int-string}
+
+### 如何将 "字符串 "转换为 "整数
+
+```tact
+// 为 String 类型定义一个新的扩展函数，返回 Int 类型的值
+// 注意：当 String 包含非数字字符时，会产生意想不到的结果！
+extends fun toInt(self: String)：Int {
+    // 将 String 转换为 Slice 用于解析
+    let string：Slice = self.asSlice();
+
+    // 一个用于存储累积数字的变量
+    let acc: Int = 0;
+
+    // 循环直到 String 为空
+    while (!string.empty()) {
+        let char：Int = string.loadUint(8); // 从 Slice 中加载 8 位（1 个字节）
+        acc = (acc * 10) + (char - 48); // 使用 ASCII 表获取数值
+        // 注意，当起始字符串包含非数字字符时，这种方法会产生意想不到的结果
+        // 如果起始字符串包含非数字字符时，这种方法会产生意想不到的结果！
+    }
+
+    // 产生结果数字
+    return acc;
+}
+
+fun runMe() {
+    let string：String = "26052021";
+    dump(string.toInt());
+}
+```
+
+### 如何将 `Int` 转换为 `String` 字符
+
+```tact
+let number: Int = 261119911;
+
+// 将 [number] 转换为字符串
+let numberString：String = number.toString();
+
+// 将 [number] 转换为浮点字符串,
+// 其中传递的参数 3 是结果浮点字符串的指数 10^(-3),
+// 它可以是 0 到 76 之间的任何整数，包括两端
+let floatString：String = number.toFloatString(3);
+
+// 将作为硬币的[数字]转换为人类可读的字符串
+let coinsString：String = number.toCoinsString();
+
+dump(numberString); // "261119911"
+dump(floatString); // "261119.911"
+dump(coinsString); // "0.261119911"
+```
+
+:::note[Useful 链接：]
+
+  [`Int.toString(){:tact}` 在核心库中](/ref/core-strings#inttostring)/
+  [`Int.toFloatString(){:tact}` 在核心库中](/ref/core-strings#inttofloatstring)/
+  [`Int.toCoinsString(){:tact}` 在核心库中](/ref/core-strings#inttocoinsstring)
+
+:::
+
+## `Struct` 或 `Message` ↔ `Cell` 或 `Slice` {#structmessage-cellslice}
+
+### 如何将任意 "结构 "或 "消息 "转换为 "单元 "或 "片"？
+
+```tact {19-20, 22-23}
+struct Profit {
+    big：String?;
+    dict: map<Int, Int as uint64>;
+    energy: Int;
+}
+
+message(0x45) Nice {
+    maybeStr：String?;
+}
+
+fun convert() {
+    let st = Profit{
+        big: null,
+        dict: null,
+        energy: 42,
+    };
+    let msg = Nice{ maybeStr："今天的消息！"};
+
+    st.toCell();
+    msg.toCell();
+
+    st.toCell().asSlice();
+    msg.toCell().asSlice();
+}
+```
+
+:::note[Useful 链接：]
+
+  [`Struct.toCell(){:tact}` 在核心库中](/ref/core-cells#structtocell)/
+  [`Message.toCell(){:tact}` 在核心库中](/ref/core-cells#messagetocell)
+
+:::
+
+### 如何将 "单元格 "或 "切片 "转换为任意的 "结构 "或 "消息"？
+
+```tact {19-20, 22-23}
+struct Profit {
+    big：String?;
+    dict: map<Int, Int as uint64>;
+    energy: Int;
+}
+
+message(0x45) Nice {
+    maybeStr：String?;
+}
+
+fun convert() {
+    let stCell = Profit{
+        big: null,
+        dict: null,
+        energy: 42,
+    }.toCell();
+    let msgCell = Nice{ maybeStr："今日消息！"}.toCell();
+
+    Profit.fromCell(stCell);
+    Nice.fromCell(msgCell);
+
+    Profit.fromSlice(stCell.asSlice());
+    Nice.fromSlice(msgCell.asSlice());
+}
+```
+
+:::note[Useful 链接：]
+
+  [`Struct.fromCell(){:tact}` in Core library](/ref/core-cells#structfromcell)\
+  [`Struct.fromSlice(){:tact}` in Core library](/ref/core-cells#structfromslice)\
+  [`Message.fromCell(){:tact}` 在核心库中](/ref/core-cells#messagefromcell)/
+  [`Message.fromSlice(){:tact}` 在核心库中](/ref/core-cells#messagefromslice)
+
+:::
+
+:::tip[Hey 那里！]
+
+  没有找到您最喜欢的类型转换示例？ 您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
+
+:::
+
+[p]: /book/types#primitive-types

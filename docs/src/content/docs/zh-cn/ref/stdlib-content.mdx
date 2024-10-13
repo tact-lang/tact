@@ -1,0 +1,38 @@
+---
+title: "@stdlib/content"
+---
+
+提供一个函数，用于编码从 [`字符串{:tact}`][p]到 [`单元格{:tact}`][单元格] 的链外链接。
+
+要使用该库，请导入 `@stdlib/content`：
+
+```tact
+导入"@stdlib/content"；
+```
+
+## 功能
+
+### 创建区块链内容
+
+```tact
+fun createOffchainContent(link: String)：Cell；
+```
+
+编码从[`字符串{:tact}`][p]到[`单元{:tact}`][单元格]的链外`链接`。
+
+源代码
+
+```tact
+fun createOffchainContent(link: String)：Cell {
+    let builder：StringBuilder = beginStringFromBuilder(beginCell().storeUint(0x01, 8));
+    builder.append(link);
+    return builder.toCell();
+}
+```
+
+## 资料来源
+
+- [content.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/content.tact)
+
+[p]: /book/types#primitive-types
+[电池]: /book/cells#cells

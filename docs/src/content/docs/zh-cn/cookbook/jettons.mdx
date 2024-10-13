@@ -1,0 +1,160 @@
+---
+title: 可变型代币（Jettons）
+---
+
+本页列出了使用 [jettons](https://docs.ton.org/develop/dapps/asset-processing/jettons)的常见示例。
+
+## 接受 jetton 转移
+
+转账通知信息的结构如下
+
+```tact
+message(0x7362d09c) JettonTransferNotification {
+    queryId：Int as uint64;
+    amount：Int as coins;
+    sender：地址;
+    forwardPayload：Slice as remaining;
+}
+```
+
+使用 [receiver](/book/receive) 功能接受令牌通知信息。
+
+:::caution
+
+  必须验证转账通知的发送方！
+
+:::
+
+可使用 jetton 钱包状态初始值和计算 jetton 地址进行验证。
+请注意，通知来自您的合约的 jetton 钱包，因此所有者地址栏应使用 [`myAddress()`](/ref/core-common#myaddress)。
+钱包的初始数据布局如下所示，但有时会有所不同。
+请注意，"myJettonWalletAddress "也可以存储在合约存储中，以便在每次交易中减少气体使用量。
+
+```tact
+struct JettonWalletData {
+    balance：Int as coins;
+    ownerAddress：地址;
+    jettonMasterAddress：Address;
+    jettonWalletCode：
+}
+
+fun calculateJettonWalletAddress(ownerAddress: Address, jettonMasterAddress: Address, jettonWalletCode: Cell)：Address {
+    let initData = JettonWalletData{
+        balance：0,
+        ownerAddress,
+        jettonMasterAddress,
+        jettonWalletCode,
+    };
+
+    return contractAddress(StateInit{code: jettonWalletCode, data: initData.toCell()});
+}
+
+contract Sample {
+    jettonWalletCode：Cell;
+    jettonMasterAddress：Address;
+
+    init(jettonWalletCode: Cell, jettonMasterAddress: Address) {
+        self.jettonWalletCode = jettonWalletCode;
+        self.jettonMasterAddress = jettonMasterAddress;
+    }
+
+    receive(msg: JettonTransferNotification) {
+        let myJettonWalletAddress = calculateJettonWalletAddress(myAddress(), self.jettonMasterAddress, self.jettonWalletCode);
+        require(sender() == myJettonWalletAddress, "Notification not from your jetton wallet!");
+
+        // 您处理令牌通知的逻辑
+    } }
+}
+```
+
+## 发送 jetton 转送
+
+要发送 jetton 传输，请使用 [`send(){:tact}`](/book/send)函数。
+请注意，"myJettonWalletAddress" 也可以存储在合约存储中，以便在每次交易中减少气体使用量。
+
+```tact
+message(0xf8a7ea5) JettonTransfer {
+    queryId：Int as uint64;
+    amount：Int as coins;
+    destination：Address;
+    responseDestination：Address?;
+    customPayload：= null;
+    forwardTonAmount：Int as coins;
+    forwardPayload：Slice as remaining;
+}
+
+receive("send") {
+    let myJettonWalletAddress = calculateJettonWalletAddress(myAddress(), self.jettonMasterAddress, self.jettonWalletCode);
+    send(SendParameters{
+        to: myJettonWalletAddress,
+        value: ton("0.05"),
+        body：JettonTransfer{
+            queryId：42,
+            amount: jettonAmount, // 您要转账的 jetton 金额
+            destination: msg.userAddress, // 您要转账的 jettons 地址。请注意，这是 jetton 钱包所有者的地址，而不是 jetton 钱包本身
+            responseDestination: msg.userAddress, // 发送确认转账成功的响应的地址，以及传入信息通币的其余部分
+            customPayload: null, // 在大多数情况下为空，可以省略。需要用于 Jetton 钱包本身的自定义逻辑
+            forwardTonAmount：1, // 将通过 JettonTransferNotification 转移的金额。用于执行自定义逻辑，如下面的示例。如果金额为 0，则不会发送通知
+            forwardPayload: rawSlice("F") // 预先计算的 beginCell().storeUint(0xF, 4).endCell().beginParse().这适用于简单传输，如果需要，任何结构体都可用作 `forwardPayload`
+        }.toCell(),
+    });
+}
+```
+
+## 燃烧的喷气顿
+
+```tact
+message(0x595f07bc) JettonBurn {
+    queryId：Int as uint64;
+    amount：Int as coins;
+    responseDestination：Address?;
+    customPayload：Cell? = null;
+}
+
+receive("burn") {
+    let myJettonWalletAddress = calculateJettonWalletAddress(myAddress(), self.jettonMasterAddress, self.jettonWalletCode);
+    send(SendParameters{
+        to: myJettonWalletAddress,
+        body：JettonBurn{
+            queryId：42,
+            amount: jettonAmount, // 您要烧毁的 jetton 金额
+            responseDestination: someAddress, // 发送确认烧毁成功的响应和其他传入信息硬币的地址
+            customPayload: null, // 在大多数情况下为空，可以省略。需要用于捷通本身的自定义逻辑
+        }.toCell(),
+    });
+}
+```
+
+## USDT jetton 业务
+
+除了 `JettonWalletData` 将采用以下结构外，USDT（在 TON 上）的操作保持不变：
+
+```tact
+struct JettonWalletData {
+    status：Ins as uint4;
+    balance：Int as coins;
+    ownerAddress：Address;
+    jettonMasterAddress：地址；
+}
+```
+
+计算钱包地址的函数如下所示：
+
+```tact
+fun calculateJettonWalletAddress(ownerAddress: Address, jettonMasterAddress: Address, jettonWalletCode: Cell)：Address {
+    let initData = JettonWalletData{
+        status：0,
+        balance：0,
+        ownerAddress,
+        jettonMasterAddress,
+    };
+
+    return contractAddress(StateInit{code: jettonWalletCode, data: initData.toCell()});
+}
+```
+
+:::tip[Hey 那里！]
+
+  没有找到您最喜欢的 jetton 使用范例？ 您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
+
+:::

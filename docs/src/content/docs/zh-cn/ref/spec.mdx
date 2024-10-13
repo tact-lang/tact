@@ -1,0 +1,306 @@
+---
+title: Tact 规格
+pagefind: false
+---
+
+:::danger[Not 已实施]
+  在 [#76](https://github.com/tact-lang/tact-docs/issues/76) 实现之前，本页主要是一个存根。
+:::
+
+其编译器中使用的战术语法是用[欧姆语言](https://ohmjs.org)编写的，该语言基于[解析表达式语法](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEG)，是一种描述语法的形式化方法，类似于正则表达式和无上下文语法。
+
+{/*
+    这是一条注释，在页面上是隐藏的。
+
+    Shiki 通过 TextMate 语法对 Ohm 的高亮处理效果不佳，尽管在 VSCode 中表现良好。我认为原因可能是 Shiki 逐行高亮或使用了不同的正则表达式引擎。我不确定具体问题在哪里，所以在修复之前，最好使用 tree-sitter-ohm 并通过其 `highlight` 命令生成 ANSI 序列。然后由 Shiki 完成剩余的工作：
+*/}
+
+```ansi
+[38;5;23mTact[0m [38;5;239m{[0m
+
+    [3;38;5;245m// Starting point of the program[0m
+    [38;5;26mProgram[0m [1;38;5;239m=[0m [38;5;26mProgramItem[0m[1;38;5;239m*[0m
+    [38;5;26mProgramItem[0m [1;38;5;239m=[0m [38;5;26mStruct[0m
+                [1;38;5;239m|[0m [38;5;26mContract[0m
+                [1;38;5;239m|[0m [38;5;26mPrimitive[0m
+                [1;38;5;239m|[0m [38;5;26mStaticFunction[0m
+                [1;38;5;239m|[0m [38;5;26mNativeFunction[0m
+                [1;38;5;239m|[0m [38;5;26mProgramImport[0m
+                [1;38;5;239m|[0m [38;5;26mTrait[0m
+                [1;38;5;239m|[0m [38;5;26mConstant[0m
+    [38;5;26mProgramImport[0m [1;38;5;239m=[0m [38;5;26mimport[0m [38;5;26mstringLiteral[0m [38;5;28m";"[0m
+
+    [3;38;5;245m// Built-in declarations[0m
+    [38;5;26mPrimitive[0m [1;38;5;239m=[0m [38;5;28m"primitive"[0m [38;5;26mType[0m [38;5;28m";"[0m
+
+    [3;38;5;245m// Static function[0m
+    [38;5;26mStaticFunction[0m [1;38;5;239m=[0m [38;5;26mFunction[0m
+    [38;5;26mNativeFunction[0m [1;38;5;239m=[0m [38;5;26mnameAttribute[0m [38;5;28m"("[0m [38;5;26mfuncId[0m [38;5;28m")"[0m [38;5;26mFunctionAttribute[0m[1;38;5;239m*[0m [38;5;26mnative[0m [38;5;26mid[0m [38;5;28m"("[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mFunctionArg[0m[38;5;239m,[0m[38;5;28m","[0m[38;5;239m>[0m [38;5;28m")"[0m [38;5;28m";"[0m [3;38;5;124m--withVoid[0m
+                   [1;38;5;239m|[0m [38;5;26mnameAttribute[0m [38;5;28m"("[0m [38;5;26mfuncId[0m [38;5;28m")"[0m [38;5;26mFunctionAttribute[0m[1;38;5;239m*[0m [38;5;26mnative[0m [38;5;26mid[0m [38;5;28m"("[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mFunctionArg[0m[38;5;239m,[0m[38;5;28m","[0m[38;5;239m>[0m [38;5;28m")"[0m [38;5;28m":"[0m [38;5;26mType[0m [38;5;28m";"[0m [3;38;5;124m--withType[0m
+
+    [3;38;5;245m// Field declarations[0m
+    [38;5;26mType[0m [1;38;5;239m=[0m [38;5;26mtypeLiteral[0m [38;5;28m"?"[0m [3;38;5;124m--optional[0m
+         [1;38;5;239m|[0m [38;5;26mtypeLiteral[0m [3;38;5;124m--required[0m
+         [1;38;5;239m|[0m [38;5;28m"map"[0m [38;5;28m"<"[0m [38;5;26mtypeLiteral[0m [38;5;239m([0m[38;5;26mas[0m [38;5;26mid[0m[38;5;239m)[0m[1;38;5;239m?[0m [38;5;28m","[0m [38;5;26mtypeLiteral[0m [38;5;239m([0m[38;5;26mas[0m [38;5;26mid[0m[38;5;239m)[0m[1;38;5;239m?[0m [38;5;28m">"[0m [3;38;5;124m--map[0m
+         [1;38;5;239m|[0m [38;5;28m"bounced"[0m [38;5;28m"<"[0m [38;5;26mtypeLiteral[0m [38;5;28m">"[0m [3;38;5;124m--bounced[0m
+    [38;5;26mField[0m [1;38;5;239m=[0m [38;5;26mid[0m [38;5;28m":"[0m [38;5;26mType[0m [38;5;28m";"[0m [3;38;5;124m--default[0m
+          [1;38;5;239m|[0m [38;5;26mid[0m [38;5;28m":"[0m [38;5;26mType[0m [38;5;28m"="[0m [38;5;26mExpression[0m [38;5;28m";"[0m [3;38;5;124m--defaultWithInit[0m
+          [1;38;5;239m|[0m [38;5;26mid[0m [38;5;28m":"[0m [38;5;26mType[0m [38;5;26mas[0m [38;5;26mid[0m [38;5;28m";"[0m [3;38;5;124m--withSerialization[0m
+          [1;38;5;239m|[0m [38;5;26mid[0m [38;5;28m":"[0m [38;5;26mType[0m [38;5;26mas[0m [38;5;26mid[0m [38;5;28m"="[0m [38;5;26mExpression[0m [38;5;28m";"[0m [3;38;5;124m--withSerializationAndInit[0m
+
+    [3;38;5;245m// Constant[0m
+    [38;5;26mConstantAttribute[0m [1;38;5;239m=[0m [38;5;26mvirtual[0m    [3;38;5;124m--virtual[0m
+                      [1;38;5;239m|[0m [38;5;26moverride[0m   [3;38;5;124m--override[0m
+                      [1;38;5;239m|[0m [38;5;26mabstract[0m   [3;38;5;124m--abstract[0m
+    [38;5;26mConstant[0m [1;38;5;239m=[0m [38;5;26mConstantAttribute[0m[1;38;5;239m*[0m [1;38;5;239m~[0m[38;5;26mfun[0m [38;5;26mconst[0m [38;5;26mid[0m [38;5;28m":"[0m [38;5;26mType[0m [38;5;28m"="[0m [38;5;26mExpression[0m [38;5;28m";"[0m [3;38;5;124m--withValue[0m
+             [1;38;5;239m|[0m [38;5;26mConstantAttribute[0m[1;38;5;239m*[0m [1;38;5;239m~[0m[38;5;26mfun[0m [38;5;26mconst[0m [38;5;26mid[0m [38;5;28m":"[0m [38;5;26mType[0m [38;5;28m";"[0m                [3;38;5;124m--withEmpty[0m
+
+    [3;38;5;245m// Struct[0m
+    [38;5;26mStruct[0m [1;38;5;239m=[0m [38;5;28m"struct"[0m [38;5;26mtypeLiteral[0m [38;5;28m"{"[0m [38;5;26mStructBody[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--originary[0m
+           [1;38;5;239m|[0m [38;5;28m"message"[0m [38;5;26mtypeLiteral[0m [38;5;28m"{"[0m [38;5;26mStructBody[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--message[0m
+           [1;38;5;239m|[0m [38;5;28m"message"[0m [38;5;28m"("[0m [38;5;26mintegerLiteral[0m [38;5;28m")"[0m [38;5;26mtypeLiteral[0m [38;5;28m"{"[0m [38;5;26mStructBody[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--messageWithId[0m
+    [38;5;26mStructBody[0m [1;38;5;239m=[0m [38;5;26mField[0m
+
+    [3;38;5;245m// Contract[0m
+    [38;5;26mContract[0m [1;38;5;239m=[0m [38;5;26mContractAttribute[0m[1;38;5;239m*[0m [38;5;26mcontract[0m [38;5;26mid[0m [38;5;28m"{"[0m [38;5;26mContractBody[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--simple[0m
+             [1;38;5;239m|[0m [38;5;26mContractAttribute[0m[1;38;5;239m*[0m [38;5;26mcontract[0m [38;5;26mid[0m [38;5;26mwith[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mid[0m[38;5;239m,[0m[38;5;28m","[0m[38;5;239m>[0m [38;5;28m"{"[0m [38;5;26mContractBody[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--withTraits[0m
+    [38;5;26mContractInit[0m [1;38;5;239m=[0m [38;5;28m"init"[0m [38;5;28m"("[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mFunctionArg[0m[38;5;239m,[0m[38;5;28m","[0m[38;5;239m>[0m [38;5;28m")"[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m
+    [38;5;26mContractBody[0m [1;38;5;239m=[0m [38;5;26mField[0m
+                 [1;38;5;239m|[0m [38;5;26mContractInit[0m
+                 [1;38;5;239m|[0m [38;5;26mReceiveFunction[0m
+                 [1;38;5;239m|[0m [38;5;26mFunction[0m
+                 [1;38;5;239m|[0m [38;5;26mConstant[0m
+
+    [3;38;5;245m// Trait[0m
+    [38;5;26mTrait[0m [1;38;5;239m=[0m [38;5;26mContractAttribute[0m[1;38;5;239m*[0m [38;5;26mtrait[0m [38;5;26mid[0m [38;5;28m"{"[0m [38;5;26mTraitBody[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--originary[0m
+          [1;38;5;239m|[0m [38;5;26mContractAttribute[0m[1;38;5;239m*[0m [38;5;26mtrait[0m [38;5;26mid[0m [38;5;26mwith[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mid[0m[38;5;239m,[0m[38;5;28m","[0m[38;5;239m>[0m [38;5;28m"{"[0m [38;5;26mTraitBody[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--withTraits[0m
+    [38;5;26mTraitBody[0m [1;38;5;239m=[0m [38;5;26mField[0m
+              [1;38;5;239m|[0m [38;5;26mReceiveFunction[0m
+              [1;38;5;239m|[0m [38;5;26mFunction[0m
+              [1;38;5;239m|[0m [38;5;26mConstant[0m
+
+    [3;38;5;245m// Contract attributes[0m
+    [38;5;26mContractAttribute[0m [1;38;5;239m=[0m [38;5;28m"@interface"[0m [38;5;28m"("[0m [38;5;26mstringLiteral[0m [38;5;28m")"[0m [3;38;5;124m--interface[0m
+
+    [3;38;5;245m// Function[0m
+    [38;5;26mFunctionAttribute[0m [1;38;5;239m=[0m [38;5;28m"get"[0m     [3;38;5;124m--getter[0m
+                      [1;38;5;239m|[0m [38;5;26mmutates[0m   [3;38;5;124m--mutates[0m
+                      [1;38;5;239m|[0m [38;5;26mextends[0m   [3;38;5;124m--extends[0m
+                      [1;38;5;239m|[0m [38;5;26mvirtual[0m   [3;38;5;124m--virtual[0m
+                      [1;38;5;239m|[0m [38;5;26moverride[0m  [3;38;5;124m--override[0m
+                      [1;38;5;239m|[0m [38;5;26minline[0m    [3;38;5;124m--inline[0m
+                      [1;38;5;239m|[0m [38;5;26mabstract[0m  [3;38;5;124m--abstract[0m
+    [38;5;26mFunction[0m [1;38;5;239m=[0m [38;5;26mFunctionAttribute[0m[1;38;5;239m*[0m [38;5;26mfun[0m [38;5;26mid[0m [38;5;28m"("[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mFunctionArg[0m[38;5;239m,[0m[38;5;28m","[0m[38;5;239m>[0m [38;5;28m")"[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--withVoid[0m
+             [1;38;5;239m|[0m [38;5;26mFunctionAttribute[0m[1;38;5;239m*[0m [38;5;26mfun[0m [38;5;26mid[0m [38;5;28m"("[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mFunctionArg[0m[38;5;239m,[0m[38;5;28m","[0m[38;5;239m>[0m [38;5;28m")"[0m [38;5;28m":"[0m [38;5;26mType[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--withType[0m
+             [1;38;5;239m|[0m [38;5;26mFunctionAttribute[0m[1;38;5;239m*[0m [38;5;26mfun[0m [38;5;26mid[0m [38;5;28m"("[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mFunctionArg[0m[38;5;239m,[0m[38;5;28m","[0m[38;5;239m>[0m [38;5;28m")"[0m [38;5;28m";"[0m [3;38;5;124m--abstractVoid[0m
+             [1;38;5;239m|[0m [38;5;26mFunctionAttribute[0m[1;38;5;239m*[0m [38;5;26mfun[0m [38;5;26mid[0m [38;5;28m"("[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mFunctionArg[0m[38;5;239m,[0m[38;5;28m","[0m[38;5;239m>[0m [38;5;28m")"[0m [38;5;28m":"[0m [38;5;26mType[0m [38;5;28m";"[0m [3;38;5;124m--abstractType[0m
+    [38;5;26mFunctionArg[0m [1;38;5;239m=[0m [38;5;26mid[0m [38;5;28m":"[0m [38;5;26mType[0m
+
+    [38;5;26mReceiveFunction[0m [1;38;5;239m=[0m [38;5;28m"receive"[0m [38;5;28m"("[0m [38;5;26mFunctionArg[0m [38;5;28m")"[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--simple[0m
+                    [1;38;5;239m|[0m [38;5;28m"receive"[0m [38;5;28m"("[0m [38;5;28m")"[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--empty[0m
+                    [1;38;5;239m|[0m [38;5;28m"receive"[0m [38;5;28m"("[0m [38;5;26mstringLiteral[0m [38;5;28m")"[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--comment[0m
+                    [1;38;5;239m|[0m [38;5;28m"bounced"[0m [38;5;28m"("[0m [38;5;26mFunctionArg[0m [38;5;28m")"[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--bounced[0m
+                    [1;38;5;239m|[0m [38;5;28m"external"[0m [38;5;28m"("[0m [38;5;26mFunctionArg[0m [38;5;28m")"[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--externalSimple[0m
+                    [1;38;5;239m|[0m [38;5;28m"external"[0m [38;5;28m"("[0m [38;5;26mstringLiteral[0m [38;5;28m")"[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--externalComment[0m
+                    [1;38;5;239m|[0m [38;5;28m"external"[0m [38;5;28m"("[0m [38;5;28m")"[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--externalEmpty[0m
+
+    [3;38;5;245m// Statements[0m
+    [38;5;26mStatement[0m [1;38;5;239m=[0m [38;5;26mStatementLet[0m
+              [1;38;5;239m|[0m [38;5;26mStatementBlock[0m
+              [1;38;5;239m|[0m [38;5;26mStatementReturn[0m
+              [1;38;5;239m|[0m [38;5;26mStatementExpression[0m
+              [1;38;5;239m|[0m [38;5;26mStatementAssign[0m
+              [1;38;5;239m|[0m [38;5;26mStatementAugmentedAssign[0m
+              [1;38;5;239m|[0m [38;5;26mStatementCondition[0m
+              [1;38;5;239m|[0m [38;5;26mStatementWhile[0m
+              [1;38;5;239m|[0m [38;5;26mStatementRepeat[0m
+              [1;38;5;239m|[0m [38;5;26mStatementUntil[0m
+    [38;5;26mStatementBlock[0m [1;38;5;239m=[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m
+    [38;5;26mStatementLet[0m [1;38;5;239m=[0m [38;5;26mlet[0m [38;5;26mid[0m [38;5;28m":"[0m [38;5;26mType[0m [38;5;28m"="[0m [38;5;26mExpression[0m [38;5;28m";"[0m
+    [38;5;26mStatementReturn[0m [1;38;5;239m=[0m [38;5;26mreturn[0m [38;5;26mExpression[0m [38;5;28m";"[0m [3;38;5;124m--withExpression[0m
+                    [1;38;5;239m|[0m [38;5;26mreturn[0m [38;5;28m";"[0m [3;38;5;124m--withoutExpression    [0m
+    [38;5;26mStatementExpression[0m [1;38;5;239m=[0m [38;5;26mExpression[0m [38;5;28m";"[0m
+    [38;5;26mStatementAssign[0m [1;38;5;239m=[0m [38;5;26mLValue[0m [38;5;28m"="[0m [38;5;26mExpression[0m [38;5;28m";"[0m
+    [38;5;26mStatementAugmentedAssign[0m [1;38;5;239m=[0m [38;5;26mStatementAugmentedAssignAdd[0m
+                             [1;38;5;239m|[0m [38;5;26mStatementAugmentedAssignSub[0m
+                             [1;38;5;239m|[0m [38;5;26mStatementAugmentedAssignMul[0m
+                             [1;38;5;239m|[0m [38;5;26mStatementAugmentedAssignDiv[0m
+                             [1;38;5;239m|[0m [38;5;26mStatementAugmentedAssignRem[0m
+    [38;5;26mStatementAugmentedAssignAdd[0m [1;38;5;239m=[0m [38;5;26mLValue[0m [38;5;28m"+="[0m [38;5;26mExpression[0m [38;5;28m";"[0m
+    [38;5;26mStatementAugmentedAssignSub[0m [1;38;5;239m=[0m [38;5;26mLValue[0m [38;5;28m"-="[0m [38;5;26mExpression[0m [38;5;28m";"[0m
+    [38;5;26mStatementAugmentedAssignMul[0m [1;38;5;239m=[0m [38;5;26mLValue[0m [38;5;28m"*="[0m [38;5;26mExpression[0m [38;5;28m";"[0m
+    [38;5;26mStatementAugmentedAssignDiv[0m [1;38;5;239m=[0m [38;5;26mLValue[0m [38;5;28m"/="[0m [38;5;26mExpression[0m [38;5;28m";"[0m
+    [38;5;26mStatementAugmentedAssignRem[0m [1;38;5;239m=[0m [38;5;26mLValue[0m [38;5;28m"%="[0m [38;5;26mExpression[0m [38;5;28m";"[0m
+    [38;5;26mStatementCondition[0m [1;38;5;239m=[0m [38;5;26mif[0m [38;5;26mExpression[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [1;38;5;239m~[0m[38;5;26melse[0m [3;38;5;124m--simple[0m
+                       [1;38;5;239m|[0m [38;5;26mif[0m [38;5;26mExpression[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [38;5;26melse[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [3;38;5;124m--withElse[0m
+                       [1;38;5;239m|[0m [38;5;26mif[0m [38;5;26mExpression[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [38;5;26melse[0m [38;5;26mStatementCondition[0m [3;38;5;124m--withElseIf[0m
+    [38;5;26mStatementWhile[0m [1;38;5;239m=[0m [38;5;26mwhile[0m [38;5;28m"("[0m [38;5;26mExpression[0m [38;5;28m")"[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m
+    [38;5;26mStatementRepeat[0m [1;38;5;239m=[0m [38;5;26mrepeat[0m [38;5;28m"("[0m [38;5;26mExpression[0m [38;5;28m")"[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m
+    [38;5;26mStatementUntil[0m [1;38;5;239m=[0m [38;5;26mdo[0m [38;5;28m"{"[0m [38;5;26mStatement[0m[1;38;5;239m*[0m [38;5;28m"}"[0m [38;5;26muntil[0m [38;5;28m"("[0m [38;5;26mExpression[0m [38;5;28m")"[0m [38;5;28m";"[0m
+
+    [3;38;5;245m// L-value[0m
+    [38;5;26mLValue[0m [1;38;5;239m=[0m [38;5;26mid[0m [38;5;28m"."[0m [38;5;26mLValue[0m [3;38;5;124m--more[0m
+           [1;38;5;239m|[0m [38;5;26mid[0m [3;38;5;124m--single[0m
+
+    [3;38;5;245m// Expressions[0m
+    [38;5;26mExpression[0m [1;38;5;239m=[0m [38;5;26mExpressionConditional[0m
+    [38;5;26mExpressionConditional[0m [1;38;5;239m=[0m [38;5;26mExpressionOr[0m [38;5;28m"?"[0m [38;5;26mExpressionOr[0m [38;5;28m":"[0m [38;5;26mExpressionConditional[0m [3;38;5;124m--ternary[0m
+                          [1;38;5;239m|[0m [38;5;26mExpressionOr[0m
+    [38;5;26mExpressionOr[0m [1;38;5;239m=[0m [38;5;26mExpressionOr[0m [38;5;28m"||"[0m [38;5;26mExpressionAnd[0m [3;38;5;124m--or[0m
+                 [1;38;5;239m|[0m [38;5;26mExpressionAnd[0m
+    [38;5;26mExpressionAnd[0m [1;38;5;239m=[0m [38;5;26mExpressionAnd[0m [38;5;28m"&&"[0m [38;5;26mExpressionCompare[0m [3;38;5;124m--and[0m
+                  [1;38;5;239m|[0m [38;5;26mExpressionCompare[0m
+    [38;5;26mExpressionCompare[0m [1;38;5;239m=[0m [38;5;26mExpressionCompare[0m [38;5;28m"!="[0m [38;5;26mExpressionBinary[0m [3;38;5;124m--not[0m
+                      [1;38;5;239m|[0m [38;5;26mExpressionCompare[0m [38;5;28m"=="[0m [38;5;26mExpressionBinary[0m [3;38;5;124m--eq[0m
+                      [1;38;5;239m|[0m [38;5;26mExpressionCompare[0m [38;5;28m">"[0m [38;5;26mExpressionBinary[0m [3;38;5;124m--gt[0m
+                      [1;38;5;239m|[0m [38;5;26mExpressionCompare[0m [38;5;28m">="[0m [38;5;26mExpressionBinary[0m [3;38;5;124m--gte[0m
+                      [1;38;5;239m|[0m [38;5;26mExpressionCompare[0m [38;5;28m"<"[0m [38;5;26mExpressionBinary[0m [3;38;5;124m--lt[0m
+                      [1;38;5;239m|[0m [38;5;26mExpressionCompare[0m [38;5;28m"<="[0m [38;5;26mExpressionBinary[0m [3;38;5;124m--lte[0m
+                      [1;38;5;239m|[0m [38;5;26mExpressionBinary[0m
+    [38;5;26mExpressionBinary[0m [1;38;5;239m=[0m [38;5;26mExpressionBinary[0m [38;5;28m">>"[0m [38;5;26mExpressionAdd[0m [3;38;5;124m--shr[0m
+                    [1;38;5;239m|[0m [38;5;26mExpressionBinary[0m [38;5;28m"<<"[0m [38;5;26mExpressionAdd[0m [3;38;5;124m--shl[0m
+                    [1;38;5;239m|[0m [38;5;26mExpressionBinary[0m [38;5;28m"&"[0m [38;5;26mExpressionAdd[0m [3;38;5;124m--bin_and[0m
+                    [1;38;5;239m|[0m [38;5;26mExpressionBinary[0m [38;5;28m"|"[0m [38;5;26mExpressionAdd[0m [3;38;5;124m--bin_or[0m
+                    [1;38;5;239m|[0m [38;5;26mExpressionAdd[0m
+    [38;5;26mExpressionAdd[0m [1;38;5;239m=[0m [38;5;26mExpressionAdd[0m [38;5;28m"+"[0m [1;38;5;239m~[0m[38;5;28m"+"[0m [38;5;26mExpressionMul[0m [3;38;5;124m--add[0m
+                  [1;38;5;239m|[0m [38;5;26mExpressionAdd[0m [38;5;28m"-"[0m [1;38;5;239m~[0m[38;5;28m"-"[0m [38;5;26mExpressionMul[0m [3;38;5;124m--sub[0m
+                  [1;38;5;239m|[0m [38;5;26mExpressionMul[0m
+    [38;5;26mExpressionMul[0m [1;38;5;239m=[0m [38;5;26mExpressionMul[0m [38;5;28m"*"[0m [38;5;26mExpressionUnary[0m [3;38;5;124m--mul[0m
+                  [1;38;5;239m|[0m [38;5;26mExpressionMul[0m [38;5;28m"/"[0m [38;5;26mExpressionUnary[0m [3;38;5;124m--div[0m
+                  [1;38;5;239m|[0m [38;5;26mExpressionMul[0m [38;5;28m"%"[0m [38;5;26mExpressionUnary[0m [3;38;5;124m--rem[0m
+                  [1;38;5;239m|[0m [38;5;26mExpressionUnary[0m
+    [38;5;26mExpressionUnary[0m [1;38;5;239m=[0m [38;5;28m"-"[0m [38;5;26mExpressionUnarySuffix[0m [3;38;5;124m--neg[0m
+                    [1;38;5;239m|[0m [38;5;28m"+"[0m [38;5;26mExpressionUnarySuffix[0m [3;38;5;124m--add[0m
+                    [1;38;5;239m|[0m [38;5;28m"!"[0m [38;5;26mExpressionUnarySuffix[0m [3;38;5;124m--not[0m
+                    [1;38;5;239m|[0m [38;5;26mExpressionUnarySuffix[0m
+    [38;5;26mExpressionUnarySuffix[0m [1;38;5;239m=[0m [38;5;26mExpressionValue[0m [38;5;28m"!!"[0m [3;38;5;124m--notNull[0m
+                          [1;38;5;239m|[0m [38;5;26mExpressionValue[0m
+    [38;5;26mExpressionBracket[0m [1;38;5;239m=[0m [38;5;28m"("[0m [38;5;26mExpression[0m [38;5;28m")"[0m
+
+    [3;38;5;245m// Order is important[0m
+    [38;5;26mExpressionValue[0m [1;38;5;239m=[0m [38;5;26mExpressionCall[0m
+                    [1;38;5;239m|[0m [38;5;26mExpressionField[0m
+                    [1;38;5;239m|[0m [38;5;26mExpressionStaticCall[0m
+                    [1;38;5;239m|[0m [38;5;26mExpressionBracket[0m
+                    [1;38;5;239m|[0m [38;5;26mExpressionNew[0m
+                    [1;38;5;239m|[0m [38;5;26mintegerLiteral[0m
+                    [1;38;5;239m|[0m [38;5;26mboolLiteral[0m
+                    [1;38;5;239m|[0m [38;5;26mid[0m
+                    [1;38;5;239m|[0m [38;5;26mnull[0m
+                    [1;38;5;239m|[0m [38;5;26mExpressionInitOf[0m
+                    [1;38;5;239m|[0m [38;5;26mExpressionString[0m
+    [38;5;26mExpressionString[0m [1;38;5;239m=[0m [38;5;26mstringLiteral[0m
+    [38;5;26mExpressionField[0m [1;38;5;239m=[0m [38;5;26mExpressionValue[0m [38;5;28m"."[0m [38;5;26mid[0m [1;38;5;239m~[0m[38;5;28m"("[0m
+    [38;5;26mExpressionCall[0m [1;38;5;239m=[0m [38;5;26mExpressionValue[0m [38;5;28m"."[0m [38;5;26mid[0m [38;5;28m"("[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mExpression[0m[38;5;239m,[0m [38;5;28m","[0m[38;5;239m>[0m [38;5;28m")"[0m
+    [38;5;26mExpressionNew[0m [1;38;5;239m=[0m [38;5;26mid[0m [38;5;28m"{"[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mNewParameter[0m[38;5;239m,[0m [38;5;28m","[0m[38;5;239m>[0m [38;5;28m"}"[0m
+    [38;5;26mNewParameter[0m [1;38;5;239m=[0m [38;5;26mid[0m [38;5;28m":"[0m [38;5;26mExpression[0m
+    [38;5;26mExpressionStaticCall[0m [1;38;5;239m=[0m [38;5;26mid[0m [38;5;28m"("[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mExpression[0m[38;5;239m,[0m [38;5;28m","[0m[38;5;239m>[0m [38;5;28m")"[0m
+    [38;5;26mExpressionInitOf[0m [1;38;5;239m=[0m [38;5;26minitOf[0m [38;5;26mid[0m [38;5;28m"("[0m [1;38;5;26mListOf[0m[38;5;239m<[0m[38;5;26mExpression[0m[38;5;239m,[0m [38;5;28m","[0m[38;5;239m>[0m [38;5;28m")"[0m
+
+    [3;38;5;245m// Type Literal[0m
+    [38;5;26mtypeLiteral[0m [1;38;5;239m=[0m [38;5;26mletterAsciiUC[0m [38;5;26mtypeLiteralPart[0m[1;38;5;239m*[0m
+    [38;5;26mtypeLiteralPart[0m [1;38;5;239m=[0m [38;5;26mletterAscii[0m [1;38;5;239m|[0m [1;38;5;26mdigit[0m [1;38;5;239m|[0m [38;5;28m"_"[0m
+
+    [3;38;5;245m// Integer Literal[0m
+    [3;38;5;245m// hexDigit defined in Ohm's built-in rules (otherwise: hexDigit = "0".."9" | "a".."f" | "A".."F")[0m
+    [3;38;5;245m// digit defined in Ohm's built-in rules (otherwise: digit = "0".."9")[0m
+    [38;5;26mintegerLiteral[0m [1;38;5;239m=[0m [38;5;26mintegerLiteralHex[0m [1;38;5;239m|[0m [38;5;26mintegerLiteralBin[0m [1;38;5;239m|[0m [38;5;26mintegerLiteralOct[0m [1;38;5;239m|[0m [38;5;26mintegerLiteralDec[0m [3;38;5;245m// Order is important[0m
+    [38;5;26mintegerLiteralDec[0m [1;38;5;239m=[0m [38;5;26mnonZeroDigit[0m [38;5;239m([0m[38;5;28m"_"[0m[1;38;5;239m?[0m [1;38;5;26mdigit[0m[38;5;239m)[0m[1;38;5;239m*[0m  [3;38;5;124m--nonZeroIntegerLiteralDec[0m
+                      [1;38;5;239m|[0m [38;5;28m"0"[0m [1;38;5;26mdigit[0m[1;38;5;239m*[0m                  [3;38;5;124m--integerLiteralWithLeadingZero[0m
+    [38;5;26mintegerLiteralHex[0m [1;38;5;239m=[0m [38;5;239m([0m[38;5;28m"0x"[0m [1;38;5;239m|[0m [38;5;28m"0X"[0m[38;5;239m)[0m [1;38;5;26mhexDigit[0m [38;5;239m([0m[38;5;28m"_"[0m[1;38;5;239m?[0m [1;38;5;26mhexDigit[0m[38;5;239m)[0m[1;38;5;239m*[0m
+    [38;5;26mintegerLiteralBin[0m [1;38;5;239m=[0m [38;5;239m([0m[38;5;28m"0b"[0m [1;38;5;239m|[0m [38;5;28m"0B"[0m[38;5;239m)[0m [38;5;26mbinDigit[0m [38;5;239m([0m[38;5;28m"_"[0m[1;38;5;239m?[0m [38;5;26mbinDigit[0m[38;5;239m)[0m[1;38;5;239m*[0m
+    [38;5;26mintegerLiteralOct[0m [1;38;5;239m=[0m [38;5;239m([0m[38;5;28m"0o"[0m [1;38;5;239m|[0m [38;5;28m"0O"[0m[38;5;239m)[0m [38;5;26moctDigit[0m [38;5;239m([0m[38;5;28m"_"[0m[1;38;5;239m?[0m [38;5;26moctDigit[0m[38;5;239m)[0m[1;38;5;239m*[0m
+    [38;5;26mbinDigit[0m [1;38;5;239m=[0m [38;5;28m"0"[0m [1;38;5;239m|[0m [38;5;28m"1"[0m
+    [38;5;26moctDigit[0m [1;38;5;239m=[0m [38;5;28m"0"[0m[1;38;5;239m..[0m[38;5;28m"7"[0m
+    [38;5;26mnonZeroDigit[0m [1;38;5;239m=[0m [38;5;28m"1"[0m[1;38;5;239m..[0m[38;5;28m"9"[0m
+
+    [3;38;5;245m// Letters[0m
+    [38;5;26mletterAsciiLC[0m [1;38;5;239m=[0m [38;5;28m"a"[0m[1;38;5;239m..[0m[38;5;28m"z"[0m
+    [38;5;26mletterAsciiUC[0m [1;38;5;239m=[0m [38;5;28m"A"[0m[1;38;5;239m..[0m[38;5;28m"Z"[0m
+    [38;5;26mletterAscii[0m [1;38;5;239m=[0m [38;5;26mletterAsciiLC[0m [1;38;5;239m|[0m [38;5;26mletterAsciiUC[0m
+    [38;5;26mletterComment[0m [1;38;5;239m=[0m [38;5;26mletterAsciiLC[0m [1;38;5;239m|[0m [38;5;26mletterAsciiUC[0m [1;38;5;239m|[0m [1;38;5;26mdigit[0m [1;38;5;239m|[0m [38;5;28m"_"[0m
+
+    [3;38;5;245m// ID Literal[0m
+    [38;5;26midStart[0m [1;38;5;239m=[0m [38;5;26mletterAscii[0m [1;38;5;239m|[0m [38;5;28m"_"[0m
+    [38;5;26midPart[0m [1;38;5;239m=[0m [38;5;26mletterAscii[0m [1;38;5;239m|[0m [1;38;5;26mdigit[0m [1;38;5;239m|[0m [38;5;28m"_"[0m
+    [38;5;26mid[0m [1;38;5;239m=[0m [1;38;5;239m~[0m[38;5;26mreservedWord[0m [1;38;5;239m#[0m[38;5;26midStart[0m [1;38;5;239m#[0m[38;5;239m([0m[38;5;26midPart[0m[1;38;5;239m*[0m[38;5;239m)[0m
+
+    [3;38;5;245m// FunC id[0m
+    [38;5;26mfuncLetter[0m [1;38;5;239m=[0m [38;5;26mletterAscii[0m [1;38;5;239m|[0m [38;5;28m"_"[0m [1;38;5;239m|[0m [38;5;28m"'"[0m [1;38;5;239m|[0m [38;5;28m"?"[0m [1;38;5;239m|[0m [38;5;28m"!"[0m [1;38;5;239m|[0m [38;5;28m"::"[0m [1;38;5;239m|[0m [38;5;28m"&"[0m
+    [38;5;26mfuncId[0m [1;38;5;239m=[0m [38;5;26mfuncLetter[0m [1;38;5;239m#[0m[38;5;239m([0m[38;5;26mfuncLetter[0m [1;38;5;239m|[0m [1;38;5;26mdigit[0m[38;5;239m)[0m[1;38;5;239m*[0m
+
+    [3;38;5;245m// Bool Literal[0m
+    [38;5;26mboolLiteral[0m [1;38;5;239m=[0m [38;5;239m([0m[38;5;28m"true"[0m [1;38;5;239m|[0m [38;5;28m"false"[0m[38;5;239m)[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+
+    [3;38;5;245m// String literal[0m
+    [38;5;26mstringLiteralCharacter[0m [1;38;5;239m=[0m [1;38;5;239m~[0m[38;5;239m([0m[38;5;28m"[0m[38;5;30m\"[0m[38;5;28m"[0m [1;38;5;239m|[0m [38;5;28m"[0m[38;5;30m\\[0m[38;5;28m"[0m [1;38;5;239m|[0m [38;5;26mlineTerminator[0m[38;5;239m)[0m [1;38;5;26many[0m
+    [38;5;26mstringLiteral[0m [1;38;5;239m=[0m [38;5;28m"[0m[38;5;30m\"[0m[38;5;28m"[0m [38;5;26mstringLiteralCharacter[0m[1;38;5;239m*[0m [38;5;28m"[0m[38;5;30m\"[0m[38;5;28m"[0m
+
+    [3;38;5;245m// Keywords[0m
+    [3;38;5;245m// NOTE Order is important[0m
+    [38;5;26mkeyword[0m [1;38;5;239m=[0m [38;5;26mfun[0m
+            [1;38;5;239m|[0m [38;5;26mlet[0m
+            [1;38;5;239m|[0m [38;5;26mreturn[0m
+            [1;38;5;239m|[0m [38;5;26mextend[0m
+            [1;38;5;239m|[0m [38;5;26mnative[0m
+            [1;38;5;239m|[0m [38;5;26mpublic[0m
+            [1;38;5;239m|[0m [38;5;26mnull[0m
+            [1;38;5;239m|[0m [38;5;26mif[0m
+            [1;38;5;239m|[0m [38;5;26melse[0m
+            [1;38;5;239m|[0m [38;5;26mwhile[0m
+            [1;38;5;239m|[0m [38;5;26mrepeat[0m
+            [1;38;5;239m|[0m [38;5;26mdo[0m
+            [1;38;5;239m|[0m [38;5;26muntil[0m
+            [1;38;5;239m|[0m [38;5;26mas[0m
+            [1;38;5;239m|[0m [38;5;26mmutates[0m
+            [1;38;5;239m|[0m [38;5;26mextends[0m
+            [1;38;5;239m|[0m [38;5;26mimport[0m
+            [1;38;5;239m|[0m [38;5;26mwith[0m
+            [1;38;5;239m|[0m [38;5;26mtrait[0m
+            [1;38;5;239m|[0m [38;5;26minitOf[0m
+            [1;38;5;239m|[0m [38;5;26moverride[0m
+            [1;38;5;239m|[0m [38;5;26mabstract[0m
+            [1;38;5;239m|[0m [38;5;26mvirtual[0m
+            [1;38;5;239m|[0m [38;5;26minline[0m
+            [1;38;5;239m|[0m [38;5;26mconst[0m
+    [38;5;26mcontract[0m [1;38;5;239m=[0m [38;5;28m"contract"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mlet[0m [1;38;5;239m=[0m [38;5;28m"let"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mfun[0m [1;38;5;239m=[0m [38;5;28m"fun"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mreturn[0m [1;38;5;239m=[0m [38;5;28m"return"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mextend[0m [1;38;5;239m=[0m [38;5;28m"extend"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mnative[0m [1;38;5;239m=[0m [38;5;28m"native"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mpublic[0m [1;38;5;239m=[0m [38;5;28m"public"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mnull[0m [1;38;5;239m=[0m [38;5;28m"null"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mif[0m [1;38;5;239m=[0m [38;5;28m"if"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26melse[0m [1;38;5;239m=[0m [38;5;28m"else"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mwhile[0m [1;38;5;239m=[0m [38;5;28m"while"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mrepeat[0m [1;38;5;239m=[0m [38;5;28m"repeat"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mdo[0m [1;38;5;239m=[0m [38;5;28m"do"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26muntil[0m [1;38;5;239m=[0m [38;5;28m"until"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mas[0m [1;38;5;239m=[0m [38;5;28m"as"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mmutates[0m [1;38;5;239m=[0m [38;5;28m"mutates"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mextends[0m [1;38;5;239m=[0m [38;5;28m"extends"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mimport[0m [1;38;5;239m=[0m [38;5;28m"import"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mwith[0m [1;38;5;239m=[0m [38;5;28m"with"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mtrait[0m [1;38;5;239m=[0m [38;5;28m"trait"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26minitOf[0m [1;38;5;239m=[0m [38;5;28m"initOf"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mvirtual[0m [1;38;5;239m=[0m [38;5;28m"virtual"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26moverride[0m [1;38;5;239m=[0m [38;5;28m"override"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26minline[0m [1;38;5;239m=[0m [38;5;28m"inline"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mconst[0m [1;38;5;239m=[0m [38;5;28m"const"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+    [38;5;26mabstract[0m [1;38;5;239m=[0m [38;5;28m"abstract"[0m [1;38;5;239m~[0m[38;5;26midPart[0m
+
+    [3;38;5;245m// Attributes[0m
+    [38;5;26mnameAttribute[0m [1;38;5;239m=[0m [38;5;28m"@name"[0m
+
+    [3;38;5;245m// Reserved[0m
+    [38;5;26mreservedWord[0m [1;38;5;239m=[0m [38;5;26mkeyword[0m
+
+    [3;38;5;245m// Comments[0m
+    [38;5;26mspace[0m [1;38;5;239m+=[0m [38;5;26mcomment[0m [1;38;5;239m|[0m [38;5;26mlineTerminator[0m
+    [38;5;26mcomment[0m [1;38;5;239m=[0m [38;5;26mmultiLineComment[0m [1;38;5;239m|[0m [38;5;26msingleLineComment[0m
+    [38;5;26mlineTerminator[0m [1;38;5;239m=[0m [38;5;28m"[0m[38;5;30m\n[0m[38;5;28m"[0m [1;38;5;239m|[0m [38;5;28m"[0m[38;5;30m\r[0m[38;5;28m"[0m [1;38;5;239m|[0m [38;5;28m"[0m[38;5;30m\u2028[0m[38;5;28m"[0m [1;38;5;239m|[0m [38;5;28m"[0m[38;5;30m\u2029[0m[38;5;28m"[0m
+    [38;5;26mmultiLineComment[0m [1;38;5;239m=[0m [38;5;28m"/*"[0m [38;5;239m([0m[1;38;5;239m~[0m[38;5;28m"*/"[0m [1;38;5;26many[0m[38;5;239m)[0m[1;38;5;239m*[0m [38;5;28m"*/"[0m
+    [38;5;26msingleLineComment[0m [1;38;5;239m=[0m [38;5;28m"//"[0m [38;5;239m([0m[1;38;5;239m~[0m[38;5;26mlineTerminator[0m [1;38;5;26many[0m[38;5;239m)[0m[1;38;5;239m*[0m
+[38;5;239m}[0m
+```
