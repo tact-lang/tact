@@ -277,7 +277,11 @@ let addr = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
 let parsedAddr = parseStdAddress(addr.asSlice());
 
 parsedAddr.workchain; // 0
-parsedAddr.address;   // 107...287
+parsedAddr.address;   // 107...lots of digits...287
+
+// Using newAddress() function with the contents of StdAddress will yield the initial Address:
+let addr2: Address = newAddress(parsedAddr.workchain, parsedAddr.address);
+addr2 == addr; // true
 ```
 
 :::note

@@ -311,8 +311,8 @@ Usage example:
 ```tact
 let b: Builder = beginCell();
 let fizz: Builder = b
-    .storeMaybeRef(emptyCell()) // 1, then empty cell
-    .storeMaybeRef(null);       // 0
+    .storeMaybeRef(emptyCell()) // stores a single 1 bit, then an empty cell
+    .storeMaybeRef(null);       // stores only a single 0 bit
 ```
 
 ## Builder.refs
