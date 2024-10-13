@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Optional types for `self` argument in `extends mutates` functions are now allowed: PR [#854](https://github.com/tact-lang/tact/pull/854)
+- Docs: Enhanced cookbook/jetton page: PR [#944](https://github.com/tact-lang/tact/pull/944)
 
 ### Fixed
 

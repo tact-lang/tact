@@ -14,6 +14,9 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
+// Adds mermaid support
+import { mermaidPlugin } from './src/plugins/mermaid-plugin.mjs';
+
 // Adds syntax highlighting for inline code blocks
 import rehypeInlineCodeHighlighting from './inline-code-highlighting';
 
@@ -26,7 +29,7 @@ export default defineConfig({
 	outDir: './dist', // default, just to be sure
 	site: 'https://docs.tact-lang.org',
 	markdown: {
-		remarkPlugins: [remarkHeadingId, remarkMath],
+		remarkPlugins: [remarkHeadingId, remarkMath, mermaidPlugin],
 		rehypePlugins: [
 			rehypeHeadingIds,
 			[rehypeAutolinkHeadings, {
@@ -66,7 +69,11 @@ export default defineConfig({
 					// Per-page Google tag setup
 					tag: "script",
 					content: "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-ZJ3GZHJ0Z5');",
-				}
+				},
+				{
+					tag: "script",
+					attrs: { type: "module", src: '/src/plugins/mermaid.mjs', defer: true },
+				},
 			],
 			social: {
 				github: 'https://github.com/tact-lang/tact',
