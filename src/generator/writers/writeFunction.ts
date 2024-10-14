@@ -476,7 +476,7 @@ export function writeStatement(
             const ty = getType(ctx.ctx, t.name);
             const ids = ty.fields.map((field) => {
                 const id = Array.from(f.identifiers.entries()).find(
-                    ([key]) => key.text === field.name,
+                    ([key, val]) => val.text !== "_" && key.text === field.name,
                 );
                 return id ? funcIdOf(id[1]) : "_";
             });
