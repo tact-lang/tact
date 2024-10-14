@@ -582,10 +582,12 @@ export class AstComparator {
                     identifiers: destructIdentifiers2,
                     expression: destructExpression2,
                 } = node2 as AstStatementDestruct;
-                const sortedIdentifiers1 =
-                    Array.from(destructIdentifiers1).sort();
-                const sortedIdentifiers2 =
-                    Array.from(destructIdentifiers2).sort();
+                const sortedIdentifiers1 = Array.from(
+                    destructIdentifiers1.values(),
+                ).sort();
+                const sortedIdentifiers2 = Array.from(
+                    destructIdentifiers2.values(),
+                ).sort();
                 if (sortedIdentifiers1.length !== sortedIdentifiers2.length) {
                     return false;
                 }

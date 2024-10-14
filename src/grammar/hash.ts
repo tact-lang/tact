@@ -130,7 +130,7 @@ export class AstHasher {
             case "statement_foreach":
                 return `${node.kind}|${this.hash(node.map)}|${this.hashStatements(node.statements)}`;
             case "statement_destruct":
-                return `${node.kind}|${this.hash(node.type)}|${this.hashDestructIdentifiers(node.identifiers)}|${this.hash(node.expression)}`;
+                return `${node.kind}|${this.hash(node.type)}|${this.hashDestructIdentifiers(Array.from(node.identifiers.values()))}|${this.hash(node.expression)}`;
             // Expressions
             case "op_binary":
                 return `${node.kind}|${node.op}|${this.hash(node.left)}|${this.hash(node.right)}`;
@@ -195,8 +195,8 @@ export class AstHasher {
         }
     }
 
-    private hashDestructIdentifiers(identifiers: Map<AstId, AstId>): string {
-        const identifiersHash = Array.from(identifiers)
+    private hashDestructIdentifiers(identifiers: [AstId, AstId][]): string {
+        const identifiersHash = identifiers
             .map(([key, value]) => `${this.hash(key)}|${this.hash(value)}`)
             .join("|");
         return identifiersHash;
