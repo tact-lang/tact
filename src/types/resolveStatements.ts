@@ -699,7 +699,7 @@ function processStatements(
                 const expressionType = getExpType(ctx, s.expression);
                 if (expressionType.kind !== "ref") {
                     throwCompilationError(
-                        `Type '${printTypeRef(expressionType)}' is not destructurable`,
+                        `Type '${printTypeRef(expressionType)}' cannot be destructured`,
                         s.expression.loc,
                     );
                 }
@@ -712,7 +712,7 @@ function processStatements(
                 const ty = getType(ctx, expressionType.name);
                 if (ty.kind !== "struct") {
                     throwCompilationError(
-                        `Type '${printTypeRef(expressionType)}' is not destructurable`,
+                        `Type '${printTypeRef(expressionType)}' cannot be destructured`,
                         s.expression.loc,
                     );
                 }

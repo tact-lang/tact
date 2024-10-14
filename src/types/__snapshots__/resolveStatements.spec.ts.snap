@@ -909,7 +909,7 @@ Line 15, col 22:
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-destructable 1`] = `
-"<unknown>:16:25: Type 'map<Int, Int>' is not destructurable
+"<unknown>:16:25: Type 'map<Int, Int>' cannot be destructured
 Line 16, col 25:
   15 |     let m: map<Int, Int> = emptyMap();
 > 16 |     let S { a, b, c } = m;
@@ -929,7 +929,7 @@ Line 15, col 25:
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-destructable2 1`] = `
-"<unknown>:16:29: Type 'Test' is not destructurable
+"<unknown>:16:29: Type 'Test' cannot be destructured
 Line 16, col 29:
   15 |         let s = S{ a: 1, b: 2, c: 3 };
 > 16 |         let S { a, b, c } = self;
