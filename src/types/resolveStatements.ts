@@ -734,9 +734,6 @@ function processStatements(
 
                 // Add variables
                 s.identifiers.forEach((name, field) => {
-                    if (name.text === "_") {
-                        return;
-                    }
                     const f = ty.fields.find((f) => eqNames(f.name, field));
                     if (!f) {
                         throwCompilationError(
@@ -744,7 +741,9 @@ function processStatements(
                             field.loc,
                         );
                     }
-                    sctx = addVariable(name, f.type, ctx, sctx);
+                    if (name.text !== "_") {
+                        sctx = addVariable(name, f.type, ctx, sctx);
+                    }
                 });
 
                 break;
