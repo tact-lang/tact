@@ -5,10 +5,154 @@ sidebar:
   order: 1
 ---
 
+# DeDust.io
+
+
 [DeDust](https://dedust.io) is a decentralized exchange (DEX) and automated market maker (AMM) built natively on [TON Blockchain](https://ton.org) and [DeDust Protocol 2.0](https://docs.dedust.io/reference/tlb-schemes). DeDust is designed with a meticulous attention to user experience (UX), gas efficiency, and extensibility.
 
-:::danger[Not implemented]
+## Swaps
 
-  This page is a stub until it gets new content in [#146](https://github.com/tact-lang/tact-docs/issues/146).
+You can read more about swaps on [DeDust documentation](https://docs.dedust.io/docs/swaps).
+
+:::warning
+
+  It's important to ensure that contracts are deployed.
+  Sending funds to an inactive contract could result in irretrievable loss.
 
 :::
+
+All kinds of swaps shares same structures:
+
+```tact
+struct SwapStep {
+    poolAddress: Address;
+    reserved: Cell? = null; // NULL always, reserved.
+    limit: Int as coins = 0;
+    nextStep: Cell?; // should be `SwapStep`, but recursive types not supported in tact
+}
+
+struct SwapParams {
+    deadline: Int as uint32 = 0;
+    recipientAddress: Address? = null;
+    referralAddress: Address? = null;
+    fulfillPayload: Cell? = null;
+    rejectPayload: Cell? = null;
+}
+```
+
+### Swapping native coin
+
+```tact
+message(0xea06185d) NativeSwap {
+    queryId: Int as uint64 = 0;
+    amount: Int as coins; // TON amount for the swap
+    poolAddress: Address;
+    reserved: Cell? = null; // NULL always, reserved.
+    limit: Int as coins = 0;
+    nextStep: SwapStep? = null;
+    swapParams: SwapParams;
+}
+
+// address of ton vault to send message
+const TON_VAULT_ADDRESS: Address = address("EQDa4VOnTYlLvDJ0gZjNYm5PXfSmmtL6Vs6A_CZEtXCNICq_");
+
+// address of pool to swap. Pool is pair like TON/USDT
+const POOL_ADDRESS: Address = address("EQCY5ufIEA-wdv1L5Zw09OMDHywwHsqLKEAUBYtngwNnnal4");
+
+const TON_SWAP_GAS_AMOUNT: Int = ton("0.2");
+
+fun makeTonSwap() {
+    let swapParams = SwapParams{
+        deadline: 0,
+        recipientAddress: null,
+        referralAddress: null,
+        fulfillPayload: null,
+        rejectPayload: null,
+    };
+
+    // ton amount to swap in nanotons
+    let swapAmount = ...;
+
+    send(SendParameters{
+        to: TON_VAULT_ADDRESS,
+        value: swapAmount + TON_SWAP_GAS_AMOUNT,
+        body: NativeSwap{
+            queryId: 0,
+            amount: swapAmount,
+            poolAddress: POOL_ADDRESS,
+            reserved: null,
+            limit: 0,
+            nextStep: null,
+            swapParams,
+        }.toCell()
+    });
+}
+```
+
+
+### Swapping jetton
+
+```tact
+message(0xf8a7ea5) TokenTransfer {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    destination: Address;
+    responseDestination: Address;
+    customPayload: Cell?;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Cell?;
+}
+
+message(0xe3a0d482) JettonSwapPayload {
+    poolAddress: Address;
+    reserved: Cell? = null; // NULL always, reserved.
+    limit: Int as coins = 0;
+    nextStep: SwapStep? = null;
+    swapParams: SwapParams;
+}
+
+// address of jetton master you want to swap
+const JETTON_MASTER_ADDRESS: Address = address("kQCxBOJjV31OIAa0NN9JbaYUp6OXOahcFCipuYnsujx1MDAY");
+
+// address of jetton vault to send message
+const JETTON_VAULT_ADDRESS: Address = address("EQCgne1aW1CmkokSeRjMIREmJWbCKFbJxxkRCvtLDiheTTF9");
+
+// address of pool to swap. Pool is pair like TON/USDT
+const POOL_ADDRESS: Address = address("EQCY5ufIEA-wdv1L5Zw09OMDHywwHsqLKEAUBYtngwNnnal4");
+
+const JETTON_SWAP_GAS_AMOUNT: Int = ton("0.3");
+const JETTON_SWAP_FWD_AMOUNT: Int = ton("0.25");
+
+fun makeJettonSwap() {
+    let swapParams = SwapParams{
+        deadline: 0,
+        recipientAddress: null,
+        referralAddress: null,
+        fulfillPayload: null,
+        rejectPayload: null,
+    };
+
+    let myJettonWalletAddress = ...; // calculate wallet address of jetton you want to swap
+    let swapAmount = ...; // jetton amount for swap
+
+    send(SendParameters{
+        to: myJettonWalletAddress,
+        value: JETTON_SWAP_GAS_AMOUNT,
+        body: TokenTransfer{
+            queryId: 0,
+            amount: swapAmount,
+            destination: JETTON_VAULT_ADDRESS,
+            responseDestination: myAddress(),
+            customPayload: null,
+            forwardTonAmount: JETTON_SWAP_FWD_AMOUNT,
+            forwardPayload: JettonSwapPayload{
+                poolAddress: POOL_ADDRESS,
+                reserved: null,
+                limit: 0,
+                nextStep: null,
+                swapParams,
+            }.toCell()
+        }.toCell()
+    });
+}
+```
