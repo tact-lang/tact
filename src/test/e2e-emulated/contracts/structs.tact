@@ -268,7 +268,7 @@ fun destructuringTest2(): Int {
         b: 42
     };
 
-    let S {_, b} = s;
+    let S {a: _, b} = s;
 
     return b;
 }
@@ -1028,7 +1028,7 @@ contract StructsTester {
             b: 42
         };
 
-        let S {_, b} = s;
+        let S {a: _, b} = s;
 
         return b;
     }
