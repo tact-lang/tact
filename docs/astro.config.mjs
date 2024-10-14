@@ -142,7 +142,7 @@ export default defineConfig({
 						},
 						{ slug: 'book/types' },
 						{ slug: 'book/integers' },
-						{ slug: 'book/strings' },
+						{ slug: 'book/string' },
 						{ slug: 'book/cells' },
 						{ slug: 'book/maps' },
 						{ slug: 'book/structs-and-messages' },
