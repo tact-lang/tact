@@ -1031,9 +1031,18 @@ semantics.addOperation<AstNode>("astOfStatement", {
                 .asIteration()
                 .children.reduce((map, item) => {
                     const destructItem = item.astOfExpression();
-                    map.set(destructItem.field, destructItem.name);
+                    if (map.has(destructItem.field.text)) {
+                        throwSyntaxError(
+                            `Duplicate destructuring field: '${destructItem.field.text}'`,
+                            destructItem.loc,
+                        );
+                    }
+                    map.set(destructItem.field.text, [
+                        destructItem.field,
+                        destructItem.name,
+                    ]);
                     return map;
-                }, new Map<AstId, AstId>()),
+                }, new Map<string, [AstId, AstId]>()),
             expression: expression.astOfExpression(),
             loc: createRef(this),
         });

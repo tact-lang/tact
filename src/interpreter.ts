@@ -1443,7 +1443,7 @@ export class Interpreter {
     }
 
     public interpretDestructStatement(ast: AstStatementDestruct) {
-        for (const [_, name] of ast.identifiers) {
+        for (const [_, name] of ast.identifiers.values()) {
             if (hasStaticConstant(this.context, idText(name))) {
                 // Attempt of shadowing a constant in a destructuring declaration
                 throwInternalCompilerError(
@@ -1474,7 +1474,7 @@ export class Interpreter {
             );
         }
 
-        for (const [field, name] of ast.identifiers) {
+        for (const [field, name] of ast.identifiers.values()) {
             if (name.text === "_") {
                 continue;
             }

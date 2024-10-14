@@ -183,6 +183,16 @@ Line 6, col 1:
 "
 `;
 
+exports[`grammar should fail destructuring-duplicate-source-id 1`] = `
+"Syntax error: <unknown>:15:19: Duplicate destructuring field: 'a'
+Line 15, col 19:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S { a: x, a: y } = s;
+                         ^~~~
+  16 |     return x + y;
+"
+`;
+
 exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
 "Syntax error: <unknown>:6:14: Empty argument list should not have a dangling comma.
 Line 6, col 14:
@@ -8318,39 +8328,48 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
           "id": 46,
           "identifiers": Map {
-            {
-              "id": 36,
-              "kind": "id",
-              "loc": a,
-              "text": "a",
-            } => {
-              "id": 37,
-              "kind": "id",
-              "loc": a,
-              "text": "a",
-            },
-            {
-              "id": 39,
-              "kind": "id",
-              "loc": b,
-              "text": "b",
-            } => {
-              "id": 40,
-              "kind": "id",
-              "loc": b,
-              "text": "b",
-            },
-            {
-              "id": 42,
-              "kind": "id",
-              "loc": c,
-              "text": "c",
-            } => {
-              "id": 43,
-              "kind": "id",
-              "loc": c,
-              "text": "c",
-            },
+            "a" => [
+              {
+                "id": 36,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              {
+                "id": 37,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+            ],
+            "b" => [
+              {
+                "id": 39,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              {
+                "id": 40,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+            ],
+            "c" => [
+              {
+                "id": 42,
+                "kind": "id",
+                "loc": c,
+                "text": "c",
+              },
+              {
+                "id": 43,
+                "kind": "id",
+                "loc": c,
+                "text": "c",
+              },
+            ],
           },
           "kind": "statement_destruct",
           "loc": let S { a, b, c } = s;,
@@ -8370,17 +8389,20 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
           "id": 52,
           "identifiers": Map {
-            {
-              "id": 48,
-              "kind": "id",
-              "loc": a,
-              "text": "a",
-            } => {
-              "id": 49,
-              "kind": "id",
-              "loc": a1,
-              "text": "a1",
-            },
+            "a" => [
+              {
+                "id": 48,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              {
+                "id": 49,
+                "kind": "id",
+                "loc": a1,
+                "text": "a1",
+              },
+            ],
           },
           "kind": "statement_destruct",
           "loc": let S { a: a1 } = s;,
@@ -8400,17 +8422,20 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
           "id": 58,
           "identifiers": Map {
-            {
-              "id": 54,
-              "kind": "id",
-              "loc": b,
-              "text": "b",
-            } => {
-              "id": 55,
-              "kind": "id",
-              "loc": b1,
-              "text": "b1",
-            },
+            "b" => [
+              {
+                "id": 54,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              {
+                "id": 55,
+                "kind": "id",
+                "loc": b1,
+                "text": "b1",
+              },
+            ],
           },
           "kind": "statement_destruct",
           "loc": let S { b: b1 } = s;,
@@ -8430,17 +8455,20 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
           "id": 64,
           "identifiers": Map {
-            {
-              "id": 60,
-              "kind": "id",
-              "loc": c,
-              "text": "c",
-            } => {
-              "id": 61,
-              "kind": "id",
-              "loc": c1,
-              "text": "c1",
-            },
+            "c" => [
+              {
+                "id": 60,
+                "kind": "id",
+                "loc": c,
+                "text": "c",
+              },
+              {
+                "id": 61,
+                "kind": "id",
+                "loc": c1,
+                "text": "c1",
+              },
+            ],
           },
           "kind": "statement_destruct",
           "loc": let S { c: c1 } = s;,
@@ -8460,28 +8488,34 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
           "id": 73,
           "identifiers": Map {
-            {
-              "id": 66,
-              "kind": "id",
-              "loc": a,
-              "text": "a",
-            } => {
-              "id": 67,
-              "kind": "id",
-              "loc": a2,
-              "text": "a2",
-            },
-            {
-              "id": 69,
-              "kind": "id",
-              "loc": b,
-              "text": "b",
-            } => {
-              "id": 70,
-              "kind": "id",
-              "loc": b2,
-              "text": "b2",
-            },
+            "a" => [
+              {
+                "id": 66,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              {
+                "id": 67,
+                "kind": "id",
+                "loc": a2,
+                "text": "a2",
+              },
+            ],
+            "b" => [
+              {
+                "id": 69,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              {
+                "id": 70,
+                "kind": "id",
+                "loc": b2,
+                "text": "b2",
+              },
+            ],
           },
           "kind": "statement_destruct",
           "loc": let S { a: a2, b: b2 } = s;,
@@ -8501,28 +8535,34 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
           "id": 82,
           "identifiers": Map {
-            {
-              "id": 75,
-              "kind": "id",
-              "loc": a,
-              "text": "a",
-            } => {
-              "id": 76,
-              "kind": "id",
-              "loc": a3,
-              "text": "a3",
-            },
-            {
-              "id": 78,
-              "kind": "id",
-              "loc": c,
-              "text": "c",
-            } => {
-              "id": 79,
-              "kind": "id",
-              "loc": c3,
-              "text": "c3",
-            },
+            "a" => [
+              {
+                "id": 75,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              {
+                "id": 76,
+                "kind": "id",
+                "loc": a3,
+                "text": "a3",
+              },
+            ],
+            "c" => [
+              {
+                "id": 78,
+                "kind": "id",
+                "loc": c,
+                "text": "c",
+              },
+              {
+                "id": 79,
+                "kind": "id",
+                "loc": c3,
+                "text": "c3",
+              },
+            ],
           },
           "kind": "statement_destruct",
           "loc": let S { a: a3, c: c3 } = s;,
@@ -8542,28 +8582,34 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
           "id": 91,
           "identifiers": Map {
-            {
-              "id": 84,
-              "kind": "id",
-              "loc": b,
-              "text": "b",
-            } => {
-              "id": 85,
-              "kind": "id",
-              "loc": b4,
-              "text": "b4",
-            },
-            {
-              "id": 87,
-              "kind": "id",
-              "loc": c,
-              "text": "c",
-            } => {
-              "id": 88,
-              "kind": "id",
-              "loc": c4,
-              "text": "c4",
-            },
+            "b" => [
+              {
+                "id": 84,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              {
+                "id": 85,
+                "kind": "id",
+                "loc": b4,
+                "text": "b4",
+              },
+            ],
+            "c" => [
+              {
+                "id": 87,
+                "kind": "id",
+                "loc": c,
+                "text": "c",
+              },
+              {
+                "id": 88,
+                "kind": "id",
+                "loc": c4,
+                "text": "c4",
+              },
+            ],
           },
           "kind": "statement_destruct",
           "loc": let S { b: b4, c: c4 } = s;,
@@ -8644,28 +8690,34 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
           "id": 110,
           "identifiers": Map {
-            {
-              "id": 103,
-              "kind": "id",
-              "loc": a,
-              "text": "a",
-            } => {
-              "id": 104,
-              "kind": "id",
-              "loc": a_m,
-              "text": "a_m",
-            },
-            {
-              "id": 106,
-              "kind": "id",
-              "loc": b,
-              "text": "b",
-            } => {
-              "id": 107,
-              "kind": "id",
-              "loc": b_m,
-              "text": "b_m",
-            },
+            "a" => [
+              {
+                "id": 103,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              {
+                "id": 104,
+                "kind": "id",
+                "loc": a_m,
+                "text": "a_m",
+              },
+            ],
+            "b" => [
+              {
+                "id": 106,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              {
+                "id": 107,
+                "kind": "id",
+                "loc": b_m,
+                "text": "b_m",
+              },
+            ],
           },
           "kind": "statement_destruct",
           "loc": let M { a: a_m, b: b_m } = m;,

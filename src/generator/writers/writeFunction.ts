@@ -475,10 +475,10 @@ export function writeStatement(
             }
             const ty = getType(ctx.ctx, t.name);
             const ids = ty.fields.map((field) => {
-                const id = Array.from(f.identifiers.entries()).find(
-                    ([key, val]) => val.text !== "_" && key.text === field.name,
-                );
-                return id ? funcIdOf(id[1]) : "_";
+                const id = f.identifiers.get(field.name);
+                return id === undefined || isWildcard(id[1])
+                    ? "_"
+                    : funcIdOf(id[1]);
             });
             ctx.append(
                 `var (${ids.join(", ")}) = ${writeCastedExpression(f.expression, t, ctx)};`,

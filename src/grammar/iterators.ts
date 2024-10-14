@@ -135,7 +135,7 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             traverse(node.expression, callback);
             break;
         case "statement_destruct":
-            node.identifiers.forEach((name, field) => {
+            node.identifiers.forEach(([field, name], _) => {
                 traverse(field, callback);
                 traverse(name, callback);
             });

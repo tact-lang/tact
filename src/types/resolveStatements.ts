@@ -691,7 +691,7 @@ function processStatements(
                 ctx = resolveExpression(s.expression, sctx, ctx);
 
                 // Check variable names
-                for (const name of s.identifiers.values()) {
+                for (const [_, name] of s.identifiers.values()) {
                     checkVariableExists(ctx, sctx, name);
                 }
 
@@ -733,7 +733,7 @@ function processStatements(
                 }
 
                 // Add variables
-                s.identifiers.forEach((name, field) => {
+                s.identifiers.forEach(([field, name], _) => {
                     const f = ty.fields.find((f) => eqNames(f.name, field));
                     if (!f) {
                         throwCompilationError(
