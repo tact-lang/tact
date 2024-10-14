@@ -1,0 +1,171 @@
+
+# Strings in TACT
+
+Strings are a key data type in TACT, used for representing and manipulating text in smart contracts on the TON blockchain, with a focus on immutability and efficient handling via `StringBuilder`.
+
+## String Basics
+
+Strings in TACT are represented by the `String` primitive type and are **immutable**. Once a string is created, it cannot be modified directly. Any operation that changes a string will result in the creation of a new string. For efficient concatenation, TACT provides a `StringBuilder` utility.
+
+### String Literals
+
+String literals are created using double quotation marks:
+
+```tact
+let greeting: String = "Hello, TON!";
+```
+
+### Escape Sequences
+
+You can use the following escape sequences in TACT strings for special characters:
+
+- `\"`: Double quote
+- `\\`: Backslash
+- `\n`: Newline
+- `\r`: Carriage return
+- `\t`: Tab
+- `\v`: Vertical tab
+- `\b`: Backspace
+- `\f`: Form feed
+- `\u{X}`: Unicode character, where X is a hex value (e.g., `\u{1F600}` for 😀).
+
+Example:
+```tact
+let text: String = "Line 1\nLine 2\tTabbed";
+```
+
+## String Operations
+
+### StringBuilder for Concatenation
+
+Since strings are immutable in TACT, for efficient concatenation, you should use **StringBuilder**. This allows you to append multiple strings without creating intermediate immutable strings.
+
+```tact
+let builder: StringBuilder = beginString();
+builder.append("Hello, ");
+builder.append("TON!");
+let result: String = builder.toString();
+```
+
+- **Chained Concatenation**: You can chain concatenations using the `concat()` method:
+
+   ```tact
+   let builder: StringBuilder = beginString()
+       .concat("Hello, ")
+       .concat("TON!");
+   let result: String = builder.toString();
+   ```
+
+#### Specialized Builders:
+- **beginComment()**: Creates a StringBuilder for a comment string, which adds a specific prefix used for passing comments as message bodies.
+- **beginTailString()**: Initializes a StringBuilder for a tail string with a null byte prefix, typically used in standards like NFT or Jetton.
+
+Example:
+```tact
+let tailBuilder: StringBuilder = beginTailString();
+tailBuilder.append("Jetton Example");
+```
+
+### Converting Strings to Cells
+
+When working with smart contracts, strings are often used in messages, which are stored as **Cells**. To convert a string to a cell, use the `.asComment()` method:
+
+```tact
+let commentCell: Cell = "Hello, TON!".asComment();
+```
+
+Alternatively, use a **StringBuilder**:
+```tact
+let builder: StringBuilder = beginComment();
+builder.append("Hello, TON!");
+let commentCell: Cell = builder.toCell();
+```
+
+### Converting Strings to Slices
+
+Strings can also be converted into a **Slice** for lower-level manipulation:
+
+```tact
+let slice: Slice = "Some data".asSlice();
+```
+
+This is useful when you need to interact with serialized data in smart contracts. Be cautious as this conversion does not indicate how deep the string’s bits will go into the cell hierarchy.
+
+### Conversion Between Strings and Other Types
+
+- **Address to String**:
+   Convert an `Address` to a string using `.toString()`:
+
+   ```tact
+   let address: Address = address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N");
+   let addressString: String = address.toString();
+   ```
+
+- **String to Address**:
+   Similarly, convert a `String` back to an `Address`:
+
+   ```tact
+   let addressString: String = "EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N";
+   let address: Address = address(addressString);
+   ```
+
+### Additional Utility Methods
+
+- **fromBase64()**: Decodes a Base64 string and returns a slice. Limited to the first 1023 bits.
+   ```tact
+   let decoded: Slice = "SGVyZSdzIEpvaG5ueSE=".fromBase64();
+   ```
+
+- **Int to String**: Converts an `Int` to a string representation.
+   ```tact
+   let num: Int = 42;
+   let numString: String = num.toString();
+   ```
+
+## Strings in Functions and Messages
+
+Strings can be used in function parameters and message handlers:
+
+```tact
+fun greet(name: String): String {
+    return "Hello, " + name + "!";
+}
+
+receive(msg: String) {
+    self.reply(msg.asComment());
+}
+```
+
+## Storing Strings in Contract State
+
+Strings can be stored in a contract’s state, but for gas efficiency, it’s important to serialize them. This reduces storage costs, which are crucial on the TON blockchain.
+
+```tact
+contract StringStorage {
+    text: String;
+
+    init(initialText: String) {
+        self.text = initialText;
+    }
+
+    receive("update") {
+        self.text = "Updated text";
+    }
+}
+```
+
+## Best Practices
+
+1. **Use StringBuilder**: For efficient concatenation, especially in loops or when dealing with multiple strings, always use `StringBuilder` to minimize gas usage.
+2. **Limit String Size**: Strings can quickly consume gas and storage resources. Try to minimize the size and number of strings in smart contracts.
+3. **Leverage Literals**: For static values, use string literals to benefit from compile-time optimizations.
+4. **Immutability**: Strings are immutable, so modifying strings results in new instances, which can impact performance.
+
+## Limitations
+
+- **Limited String Manipulation**: TACT does not provide built-in functions for advanced string operations like `substring`, `replace`, or `split`. Custom implementations or off-chain processing may be required.
+- **Storage Costs**: Storing large amounts of string data in a smart contract can be expensive in terms of gas and storage. Keep string storage to a minimum where possible.
+
+## Conclusion
+
+TACT provides essential support for working with strings, focusing on immutability and efficient manipulation through `StringBuilder`. Keep best practices in mind to avoid gas-heavy operations, and always use efficient methods when dealing with string concatenation and storage.
