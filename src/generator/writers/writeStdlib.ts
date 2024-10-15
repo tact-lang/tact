@@ -192,6 +192,17 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.asm("(value index dict key_len)", "DICTREPLACEREF");
     });
 
+    ctx.fun("__tact_dict_replaceget_ref", () => {
+        ctx.signature(
+            `((cell), (cell, int)) __tact_dict_replaceget_ref(cell dict, int key_len, slice index, cell value)`,
+        );
+        ctx.context("stdlib");
+        ctx.asm(
+            "(value index dict key_len)",
+            "DICTREPLACEGETREF NULLSWAPIFNOT",
+        );
+    });
+
     ctx.fun("__tact_dict_get", () => {
         ctx.signature(
             `(slice, int) __tact_dict_get(cell dict, int key_len, slice index)`,
@@ -206,6 +217,14 @@ export function writeStdlib(ctx: WriterContext) {
         );
         ctx.context("stdlib");
         ctx.asm("(index dict key_len)", "DICTDELGET NULLSWAPIFNOT2");
+    });
+
+    ctx.fun("__tact_dict_delete_get_ref", () => {
+        ctx.signature(
+            `(cell, (cell, int)) __tact_dict_delete_get_ref(cell dict, int key_len, slice index)`,
+        );
+        ctx.context("stdlib");
+        ctx.asm("(index dict key_len)", "DICTDELGETREF NULLSWAPIFNOT2");
     });
 
     ctx.fun("__tact_dict_get_ref", () => {
@@ -503,6 +522,20 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
+    ctx.fun("__tact_dict_replaceget_int_int", () => {
+        ctx.signature(
+            `(cell, (int)) __tact_dict_replaceget_int_int(cell d, int kl, int k, int v, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (r, old, ok) = null?(v) ? idict_delete_get?(d, kl, k) : idict_replaceget?(d, kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse());
+                return (r, ok ? old~load_int(vl) : null());
+            `);
+        });
+    });
+
     ctx.fun("__tact_dict_get_int_int", () => {
         ctx.signature(
             `int __tact_dict_get_int_int(cell d, int kl, int k, int vl)`,
@@ -593,6 +626,20 @@ export function writeStdlib(ctx: WriterContext) {
                 } else {
                     return idict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl));
                 }
+            `);
+        });
+    });
+
+    ctx.fun("__tact_dict_replaceget_int_uint", () => {
+        ctx.signature(
+            `(cell, (int)) __tact_dict_replaceget_int_uint(cell d, int kl, int k, int v, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (r, old, ok) = null?(v) ? idict_delete_get?(d, kl, k) : idict_replaceget?(d, kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse());
+                return (r, ok ? old~load_uint(vl) : null());
             `);
         });
     });
@@ -691,6 +738,20 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
+    ctx.fun("__tact_dict_replaceget_uint_int", () => {
+        ctx.signature(
+            `(cell, (int)) __tact_dict_replaceget_uint_int(cell d, int kl, int k, int v, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (r, old, ok) = null?(v) ? udict_delete_get?(d, kl, k) : udict_replaceget?(d, kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse());
+                return (r, ok ? old~load_int(vl) : null());
+            `);
+        });
+    });
+
     ctx.fun("__tact_dict_get_uint_int", () => {
         ctx.signature(
             `int __tact_dict_get_uint_int(cell d, int kl, int k, int vl)`,
@@ -781,6 +842,20 @@ export function writeStdlib(ctx: WriterContext) {
                 } else {
                     return udict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl));
                 }
+            `);
+        });
+    });
+
+    ctx.fun("__tact_dict_replaceget_uint_uint", () => {
+        ctx.signature(
+            `(cell, (int)) __tact_dict_replaceget_uint_uint(cell d, int kl, int k, int v, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (r, old, ok) = null?(v) ? udict_delete_get?(d, kl, k) : udict_replaceget?(d, kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse());
+                return (r, ok ? old~load_uint(vl) : null());
             `);
         });
     });
@@ -879,6 +954,20 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
+    ctx.fun("__tact_dict_replaceget_int_cell", () => {
+        ctx.signature(
+            `(cell, (cell)) __tact_dict_replaceget_int_cell(cell d, int kl, int k, cell v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (r, old, ok) = null?(v) ? idict_delete_get_ref?(d, kl, k) : idict_replaceget_ref?(d, kl, k, v);
+                return (r, old);
+            `);
+        });
+    });
+
     ctx.fun("__tact_dict_get_int_cell", () => {
         ctx.signature(`cell __tact_dict_get_int_cell(cell d, int kl, int k)`);
         ctx.flag("inline");
@@ -967,6 +1056,20 @@ export function writeStdlib(ctx: WriterContext) {
                 } else {
                     return udict_replace_ref?(d, kl, k, v);
                 }
+            `);
+        });
+    });
+
+    ctx.fun("__tact_dict_replaceget_uint_cell", () => {
+        ctx.signature(
+            `(cell, (cell)) __tact_dict_replaceget_uint_cell(cell d, int kl, int k, cell v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (r, old, ok) = null?(v) ? udict_delete_get_ref?(d, kl, k) : udict_replaceget_ref?(d, kl, k, v);
+                return (r, old);
             `);
         });
     });
@@ -1063,6 +1166,20 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
+    ctx.fun("__tact_dict_replaceget_int_slice", () => {
+        ctx.signature(
+            `(cell, (slice)) __tact_dict_replaceget_int_slice(cell d, int kl, int k, slice v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (r, old, ok) = null?(v) ? idict_delete_get?(d, kl, k) : idict_replaceget?(d, kl, k, v);
+                return (r, old);
+            `);
+        });
+    });
+
     ctx.fun("__tact_dict_get_int_slice", () => {
         ctx.signature(`slice __tact_dict_get_int_slice(cell d, int kl, int k)`);
         ctx.flag("inline");
@@ -1151,6 +1268,20 @@ export function writeStdlib(ctx: WriterContext) {
                 } else {
                     return udict_replace?(d, kl, k, v);
                 }
+            `);
+        });
+    });
+
+    ctx.fun("__tact_dict_replaceget_uint_slice", () => {
+        ctx.signature(
+            `(cell, (slice)) __tact_dict_replaceget_uint_slice(cell d, int kl, int k, slice v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (r, old, ok) = null?(v) ? udict_delete_get?(d, kl, k) : udict_replaceget?(d, kl, k, v);
+                return (r, old);
             `);
         });
     });
@@ -1249,6 +1380,20 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
+    ctx.fun("__tact_dict_replaceget_slice_int", () => {
+        ctx.signature(
+            `(cell, (int)) __tact_dict_replaceget_slice_int(cell d, int kl, slice k, int v, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (old, ok) = null?(v) ? d~${ctx.used(`__tact_dict_delete_get`)}(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse());
+                return (d, ok ? old~load_int(vl) : null());
+            `);
+        });
+    });
+
     ctx.fun("__tact_dict_get_slice_int", () => {
         ctx.signature(
             `int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl)`,
@@ -1339,6 +1484,20 @@ export function writeStdlib(ctx: WriterContext) {
                 } else {
                     return dict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl));
                 }
+            `);
+        });
+    });
+
+    ctx.fun("__tact_dict_replaceget_slice_uint", () => {
+        ctx.signature(
+            `(cell, (int)) __tact_dict_replaceget_slice_uint(cell d, int kl, slice k, int v, int vl)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (old, ok) = null?(v) ? d~${ctx.used(`__tact_dict_delete_get`)}(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse());
+                return (d, ok ? old~load_uint(vl) : null());
             `);
         });
     });
@@ -1437,6 +1596,20 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
+    ctx.fun("__tact_dict_replaceget_slice_cell", () => {
+        ctx.signature(
+            `(cell, (cell)) __tact_dict_replaceget_slice_cell(cell d, int kl, slice k, cell v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (old, ok) = null?(v) ? d~${ctx.used(`__tact_dict_delete_get_ref`)}(kl, k) : d~${ctx.used(`__tact_dict_replaceget_ref`)}(kl, k, v);
+                return (d, old);
+            `);
+        });
+    });
+
     ctx.fun(`__tact_dict_get_slice_cell`, () => {
         ctx.signature(
             `cell __tact_dict_get_slice_cell(cell d, int kl, slice k)`,
@@ -1527,6 +1700,20 @@ export function writeStdlib(ctx: WriterContext) {
                 } else {
                     return dict_replace_builder?(d, kl, k, begin_cell().store_slice(v));
                 }
+            `);
+        });
+    });
+
+    ctx.fun("__tact_dict_replaceget_slice_slice", () => {
+        ctx.signature(
+            `(cell, (slice)) __tact_dict_replaceget_slice_slice(cell d, int kl, slice k, slice v)`,
+        );
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                var (old, ok) = null?(v) ? d~${ctx.used(`__tact_dict_delete_get`)}(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_slice(v).end_cell().begin_parse());
+                return (d, old);
             `);
         });
     });
