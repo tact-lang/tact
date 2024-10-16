@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs: the `description` property to the frontmatter of the each page for better SEO: PR [#916](https://github.com/tact-lang/tact/pull/916)
 - Docs: Google Analytics tags per every page: PR [#921](https://github.com/tact-lang/tact/pull/921)
 - Ability to specify a compile-time method ID expression for getters: PR [#922](https://github.com/tact-lang/tact/pull/922) and PR [#932](https://github.com/tact-lang/tact/pull/932)
-- Destructuring of structs and messages: PR [#856](https://github.com/tact-lang/tact/pull/856)
+- Destructuring of structs and messages: PR [#856](https://github.com/tact-lang/tact/pull/856), PR [#964](https://github.com/tact-lang/tact/pull/964)
 
 ### Changed
 
