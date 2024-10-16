@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs: the `description` property to the frontmatter of the each page for better SEO: PR [#916](https://github.com/tact-lang/tact/pull/916)
 - Docs: Google Analytics tags per every page: PR [#921](https://github.com/tact-lang/tact/pull/921)
 - Ability to specify a compile-time method ID expression for getters: PR [#922](https://github.com/tact-lang/tact/pull/922) and PR [#932](https://github.com/tact-lang/tact/pull/932)
+- Destructuring of structs and messages: PR [#856](https://github.com/tact-lang/tact/pull/856)
 
 ### Changed
 
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs: layout of tables, syntax highlighting, Chinese translations of sidebar separators: PR [#916](https://github.com/tact-lang/tact/pull/916)
 - Non-null struct fields after null ones are treated correctly in Sandbox tests after updating `@ton/core` to 0.59.0: PR [#933](https://github.com/tact-lang/tact/pull/933)
 - Prevent inline code snippets from changing their background color: PR [#935](https://github.com/tact-lang/tact/pull/935)
+- Docs: correctly handle next and previous page links at the bottom of the pages when there's a separator item in the sidebar: PR [#949](https://github.com/tact-lang/tact/pull/949)
 
 ### Release contributors
 
@@ -59,9 +61,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- The `exists` method for the `Map` type: PR [#581](https://github.com/tact-lang/tact/pull/581)
-- The `storeBit` method for `Builder` type and the `loadBit` method for `Slice` type: PR [#699](https://github.com/tact-lang/tact/pull/699)
-- The `toSlice` method for structs and messages: PR [#630](https://github.com/tact-lang/tact/pull/630)
+- The `exists` method for the `Map` type: PR [#581](https://github.com/tact-lang/tact/pull/581), PR [#938](https://github.com/tact-lang/tact/pull/938)
+- The `storeBit` method for `Builder` type and the `loadBit` method for `Slice` type: PR [#699](https://github.com/tact-lang/tact/pull/699), PR [#936](https://github.com/tact-lang/tact/pull/936)
+- The `toSlice` method for structs and messages: PR [#630](https://github.com/tact-lang/tact/pull/630), PR [#936](https://github.com/tact-lang/tact/pull/936)
 - Wider range of serialization options for integers — `uint1` through `uint256` and `int1` through `int257`: PR [#558](https://github.com/tact-lang/tact/pull/558), PR [#937](https://github.com/tact-lang/tact/pull/937)
 - The `deepEquals` method for the `Map` type: PR [#637](https://github.com/tact-lang/tact/pull/637), PR [#939](https://github.com/tact-lang/tact/pull/939)
 - `asm` bodies for module-level functions: PR [#769](https://github.com/tact-lang/tact/pull/769), PR [#825](https://github.com/tact-lang/tact/pull/825)

@@ -134,6 +134,13 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             if (node.type) traverse(node.type, callback);
             traverse(node.expression, callback);
             break;
+        case "statement_destruct":
+            node.identifiers.forEach(([field, name], _) => {
+                traverse(field, callback);
+                traverse(name, callback);
+            });
+            traverse(node.expression, callback);
+            break;
         case "statement_return":
             if (node.expression) traverse(node.expression, callback);
             break;
@@ -194,6 +201,10 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             node.statements.forEach((e) => {
                 traverse(e, callback);
             });
+            break;
+        case "destruct_mapping":
+            traverse(node.field, callback);
+            traverse(node.name, callback);
             break;
         case "type_id":
             break;

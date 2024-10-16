@@ -23,6 +23,7 @@ import {
     AstImport,
     AstConstantDef,
     AstNumberBase,
+    AstId,
 } from "./ast";
 import { throwParseError, throwSyntaxError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
@@ -1012,6 +1013,40 @@ semantics.addOperation<AstNode>("astOfStatement", {
             loc: createRef(this),
         });
     },
+    StatementDestruct(
+        _letKwd,
+        typeId,
+        _lparen,
+        identifiers,
+        _optTrailingComma,
+        _rparen,
+        _equals,
+        expression,
+        _semicolon,
+    ) {
+        return createAstNode({
+            kind: "statement_destruct",
+            type: typeId.astOfType(),
+            identifiers: identifiers
+                .asIteration()
+                .children.reduce((map, item) => {
+                    const destructItem = item.astOfExpression();
+                    if (map.has(destructItem.field.text)) {
+                        throwSyntaxError(
+                            `Duplicate destructuring field: '${destructItem.field.text}'`,
+                            destructItem.loc,
+                        );
+                    }
+                    map.set(destructItem.field.text, [
+                        destructItem.field,
+                        destructItem.name,
+                    ]);
+                    return map;
+                }, new Map<string, [AstId, AstId]>()),
+            expression: expression.astOfExpression(),
+            loc: createRef(this),
+        });
+    },
 });
 
 semantics.addOperation<AstNode>("astOfType", {
@@ -1137,6 +1172,22 @@ semantics.addOperation<AstNode>("astOfExpression", {
         return createAstNode({
             kind: "string",
             value: string.sourceString,
+            loc: createRef(this),
+        });
+    },
+    DestructItem_punned(id) {
+        return createAstNode({
+            kind: "destruct_mapping",
+            field: id.astOfExpression(),
+            name: id.astOfExpression(),
+            loc: createRef(this),
+        });
+    },
+    DestructItem_regular(idFrom, _colon, id) {
+        return createAstNode({
+            kind: "destruct_mapping",
+            field: idFrom.astOfExpression(),
+            name: id.astOfExpression(),
             loc: createRef(this),
         });
     },
