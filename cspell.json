@@ -89,6 +89,7 @@
     "rangle",
     "rawslice",
     "renamer",
+    "replaceget",
     "rparen",
     "rugpull",
     "rugpulled",
