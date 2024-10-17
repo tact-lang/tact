@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Destructuring of structs and messages: PR [#856](https://github.com/tact-lang/tact/pull/856)
 
 ### Changed
-
+- Adapted resolveImports to handle AstImport objects from parseImports: PR [#966](https://github.com/tact-lang/tact/pull/966)
 - Optional types for `self` argument in `extends mutates` functions are now allowed: PR [#854](https://github.com/tact-lang/tact/pull/854)
 
 ### Fixed
