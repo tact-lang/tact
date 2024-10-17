@@ -16,7 +16,7 @@
     "@astrojs/check": "^0.9.3",
     "@astrojs/markdown-remark": "^5.2.0",
     "@astrojs/starlight": "^0.28.2",
-    "astro": "^4.15.3",
+    "astro": "^4.16.1",
     "rehype-autolink-headings": "7.1.0",
     "rehype-katex": "7.0.1",
     "remark-custom-heading-id": "2.0.0",
