@@ -52,7 +52,7 @@ export function resolveImports(args: {
             });
             if (!resolved.ok) {
                 throwCompilationError(
-                    `Could not resolve import "${i}" in ${path}`,
+                    `Could not resolve import "${importPath}" in ${path}`,
                 );
             }
 
