@@ -362,7 +362,9 @@ semantics.addOperation<AstNode>("astOfItem", {
             name: funId.astOfExpression(),
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             params: funParameters.astsOfList(),
-            instructions: asmInstructions.children.map((s) => s.sourceString),
+            instructions: asmInstructions.children.map((s) =>
+                s.astOfAsmInstruction(),
+            ),
             loc: createRef(this),
         });
     },
@@ -499,27 +501,137 @@ semantics.addOperation<AstNode>("astOfItem", {
     },
 });
 
+// Beginnings of the possible future AST for Fift-asm
+semantics.addOperation<string>("astOfAsmInstruction", {
+    asmInstruction(word) {
+        return word.sourceString;
+    },
+    AsmInstruction(instruction) {
+        return instruction.astOfAsmInstruction();
+    },
+    AsmInstruction_custom(instruction) {
+        return instruction.astOfAsmInstruction();
+    },
+    AsmInstruction_internal(
+        _leftBracket,
+        _ws1,
+        instructions,
+        _rightBracket,
+        _ws2,
+    ) {
+        return [
+            "[",
+            instructions.children.map((s) => s.astOfAsmInstruction()).join(" "),
+            "]",
+        ].join(" ");
+    },
+    AsmInstruction_list(_lbrace, _ws1, instructions, _rbrace, _ws2) {
+        return [
+            "{",
+            instructions.children.map((s) => s.astOfAsmInstruction()).join(" "),
+            "}",
+        ].join(" ");
+    },
+    AsmInstruction_listNoStateCheck(
+        _lbrace,
+        _ws1,
+        instructions,
+        _rbrace,
+        _ws2,
+    ) {
+        return [
+            "({)",
+            instructions.children.map((s) => s.astOfAsmInstruction()).join(" "),
+            "(})",
+        ].join(" ");
+    },
+    AsmInstruction_string(
+        startQuotationMarkWord,
+        string,
+        _endQuotationMark,
+        _ws,
+    ) {
+        return `${startQuotationMarkWord.sourceString}${string.sourceString}"`;
+    },
+    AsmInstruction_tick(_singleQuote, _ws1, instruction) {
+        return `' ${instruction.sourceString}`;
+    },
+    AsmInstruction_char(_word, _ws1, char, _ws2) {
+        return `char ${char.sourceString}`;
+    },
+    AsmInstruction_hexLiteral(prefix, digits, optUnderscore, _rbrace, _ws) {
+        const length = digits.numChildren;
+        const underscore = unwrapOptNode(optUnderscore, (t) => t.sourceString);
+        if (length > 128) {
+            throwSyntaxError(
+                "The hex bitstring has more than 128 digits",
+                createRef(this),
+            );
+        }
+        return `${prefix.sourceString}${digits.sourceString}${underscore ?? ""}}`;
+    },
+    AsmInstruction_binLiteral(_prefix, digits, _rbrace, _ws) {
+        const length = digits.numChildren;
+        if (length > 128) {
+            throwSyntaxError(
+                "The binary bitstring has more than 128 digits",
+                createRef(this),
+            );
+        }
+        return `b{${digits.sourceString}}`;
+    },
+});
+
 semantics.addOperation<AstFunctionAttribute>("astOfFunctionAttributes", {
-    FunctionAttribute_getter(_) {
-        return { type: "get", loc: createRef(this) };
+    FunctionAttribute_getter(_getKwd, _optLparen, optMethodId, _optRparen) {
+        return {
+            kind: "function_attribute",
+            type: "get",
+            methodId: unwrapOptNode(optMethodId, (e) => e.astOfExpression()),
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_extends(_) {
-        return { type: "extends", loc: createRef(this) };
+        return {
+            kind: "function_attribute",
+            type: "extends",
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_mutates(_) {
-        return { type: "mutates", loc: createRef(this) };
+        return {
+            kind: "function_attribute",
+            type: "mutates",
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_override(_) {
-        return { type: "override", loc: createRef(this) };
+        return {
+            kind: "function_attribute",
+            type: "override",
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_inline(_) {
-        return { type: "inline", loc: createRef(this) };
+        return {
+            kind: "function_attribute",
+            type: "inline",
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_virtual(_) {
-        return { type: "virtual", loc: createRef(this) };
+        return {
+            kind: "function_attribute",
+            type: "virtual",
+            loc: createRef(this),
+        };
     },
     FunctionAttribute_abstract(_) {
-        return { type: "abstract", loc: createRef(this) };
+        return {
+            kind: "function_attribute",
+            type: "abstract",
+            loc: createRef(this),
+        };
     },
 });
 
@@ -723,6 +835,18 @@ semantics.addOperation<AstNode>("astOfStatement", {
                     break;
                 case "^=":
                     op = "^";
+                    break;
+                case "||=":
+                    op = "||";
+                    break;
+                case "&&=":
+                    op = "&&";
+                    break;
+                case "<<=":
+                    op = "<<";
+                    break;
+                case ">>=":
+                    op = ">>";
                     break;
                 default:
                     throwInternalCompilerError(

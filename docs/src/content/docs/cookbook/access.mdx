@@ -1,0 +1,53 @@
+---
+title: Access control
+description: "This page lists common examples of working with privileges, ownership and access control"
+---
+
+This page lists common examples of working with privileges, ownership and access control.
+
+## How to check sender privileges using Ownable trait
+
+```tact
+// Ownable has to be imported from stdlib, as well as Deployable, for convenience:
+import "@stdlib/ownable";
+import "@stdlib/deploy";
+
+message FooBarMsg {
+    newVal: Int as uint32;
+}
+
+// Ownable trait can limit certain actions to the owner only
+contract SenderChecker with Deployable, Ownable {
+    // Persistent state variables
+    owner: Address;     // Ownable trait requires you to add this exact state variable
+    val: Int as uint32; // some value
+
+    init() {
+        // we can initialize owner to any value we want, the deployer in this case:
+        self.owner = sender();
+        self.val = 0;
+    }
+
+    receive("inc") {
+        self.requireOwner(); // throws exit code 132 if the sender isn't an owner
+        self.val += 1;
+    }
+
+    receive(msg: FooBarMsg) {
+        self.requireOwner(); // throws exit code 132 if the sender isn't an owner
+        self.val = msg.newVal;
+    }
+}
+```
+
+:::note[Useful links:]
+
+  [`trait Ownable{:tact}` in Core library](/ref/stdlib-ownable#ownable)
+
+:::
+
+:::tip[Hey there!]
+
+  Didn't find your favorite example of access control? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
+
+:::

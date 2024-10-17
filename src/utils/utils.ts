@@ -1,4 +1,3 @@
-import { crc16 } from "./crc16";
 import { throwInternalCompilerError } from "../errors";
 
 export function topologicalSort<T>(src: T[], references: (src: T) => T[]) {
@@ -23,8 +22,4 @@ export function topologicalSort<T>(src: T[], references: (src: T) => T[]) {
         visit(s);
     }
     return result;
-}
-
-export function getMethodId(name: string) {
-    return (crc16(name) & 0xffff) | 0x10000;
 }

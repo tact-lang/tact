@@ -1,0 +1,85 @@
+---
+title: Cookbook overview
+description: "Cookbook section is focused on everyday tasks that every Tact developer resolves during the development of smart contracts"
+---
+
+import { LinkCard, Card, CardGrid, Steps } from '@astrojs/starlight/components';
+
+The main reason for making the Tact Cookbook is to gather all the experiences of Tact developers in one place so that future developers can use it. This section of the documentation is more focused on everyday tasks that every Tact developer resolves during the development of smart contracts.
+
+Use it as a recipe book for cooking up delightful smart contracts on TON Blockchain without re-inventing the wheel in the process.
+
+<Steps>
+
+1. #### Single contract {#single-contract}
+
+   Following pages focus on single-contract examples and cover a wide range of topics:
+
+   <CardGrid>
+    <LinkCard
+      title="1️⃣ Single-contract communication"
+      href="/cookbook/single-communication"
+    />
+    <LinkCard
+      title="⚙️ Type conversion"
+      href="/cookbook/type-conversion"
+    />
+    <LinkCard
+      title="📦 Data structures"
+      href="/cookbook/data-structures"
+    />
+    <LinkCard
+      title="🤖 Algorithms"
+      href="/cookbook/algo"
+    />
+    <LinkCard
+      title="📆 Time and date"
+      href="/cookbook/time"
+    />
+    <LinkCard
+      title="⚠️ Access control"
+      href="/cookbook/access"
+    />
+    <LinkCard
+      title="✨ Randomness"
+      href="/cookbook/random"
+    />
+    <LinkCard
+      title="🤔 Miscellaneous"
+      href="/cookbook/misc"
+    />
+   </CardGrid>
+
+2. #### Multiple contracts {#multiple-contracts}
+
+   Following pages focus on multi-contract examples, exploring the scalable nature of TON Blockchain:
+
+   <CardGrid>
+     <LinkCard
+       title="🧮 Multi-contract communication"
+       href="/cookbook/multi-communication"
+     />
+     <LinkCard
+       title="💎 Fungible Tokens (Jettons)"
+       href="/cookbook/jettons"
+     />
+     <LinkCard
+       title="🖼️ Non-Fungible Tokens (NFTs)"
+       href="/cookbook/nfts"
+     />
+   </CardGrid>
+
+   Additionally, there are examples of working with popular TON DEXes (Decentralized EXchanges), which often require many contracts and complex logic:
+
+   <CardGrid>
+     <LinkCard
+       title="DeDust.io"
+       href="/cookbook/dexes/dedust"
+     />
+     <LinkCard
+       title="STON.fi"
+       href="/cookbook/dexes/stonfi"
+     />
+   </CardGrid>
+
+</Steps>

@@ -1,0 +1,151 @@
+---
+title: Type conversion
+description: "Common examples of converting between primitive types and obtaining them from composite types"
+---
+
+This page shows examples of converting between [primitive types][p] and obtaining them from [composite types](/book/types#composite-types).
+
+## `Int` ↔ `String` {#int-string}
+
+### How to convert a `String` to an `Int`
+
+```tact
+// Defining a new extension function for type String that returns value of type Int
+// Caution: produces unexpected results when String contains non-numeric characters!
+extends fun toInt(self: String): Int {
+    // Cast the String as a Slice for parsing
+    let string: Slice = self.asSlice();
+
+    // A variable to store the accumulated number
+    let acc: Int = 0;
+
+    // Loop until the String is empty
+    while (!string.empty()) {
+        let char: Int = string.loadUint(8); // load 8 bits (1 byte) from the Slice
+        acc = (acc * 10) + (char - 48);     // using ASCII table to get numeric value
+        // Note, that this approach would produce unexpected results
+        //   when the starting String contains non-numeric characters!
+    }
+
+    // Produce the resulting number
+    return acc;
+}
+
+fun runMe() {
+    let string: String = "26052021";
+    dump(string.toInt());
+}
+```
+
+### How to convert an `Int` to a `String`
+
+```tact
+let number: Int = 261119911;
+
+// Converting the [number] to a String
+let numberString: String = number.toString();
+
+// Converting the [number] to a float String,
+//   where passed argument 3 is the exponent of 10^(-3) of resulting float String,
+//   and it can be any integer between 0 and 76 including both ends
+let floatString: String = number.toFloatString(3);
+
+// Converting the [number] as coins to a human-readable String
+let coinsString: String = number.toCoinsString();
+
+dump(numberString); // "261119911"
+dump(floatString);  // "261119.911"
+dump(coinsString);  // "0.261119911"
+```
+
+:::note[Useful links:]
+
+  [`Int.toString(){:tact}` in Core library](/ref/core-strings#inttostring)\
+  [`Int.toFloatString(){:tact}` in Core library](/ref/core-strings#inttofloatstring)\
+  [`Int.toCoinsString(){:tact}` in Core library](/ref/core-strings#inttocoinsstring)
+
+:::
+
+## `Struct` or `Message` ↔ `Cell` or `Slice` {#structmessage-cellslice}
+
+### How to convert an arbitrary `Struct` or `Message` to a `Cell` or a `Slice`
+
+```tact {19-20, 22-23}
+struct Profit {
+    big: String?;
+    dict: map<Int, Int as uint64>;
+    energy: Int;
+}
+
+message(0x45) Nice {
+    maybeStr: String?;
+}
+
+fun convert() {
+    let st = Profit{
+        big: null,
+        dict: null,
+        energy: 42,
+    };
+    let msg = Nice{ maybeStr: "Message of the day!" };
+
+    st.toCell();
+    msg.toCell();
+
+    st.toCell().asSlice();
+    msg.toCell().asSlice();
+}
+```
+
+:::note[Useful links:]
+
+  [`Struct.toCell(){:tact}` in Core library](/ref/core-cells#structtocell)\
+  [`Message.toCell(){:tact}` in Core library](/ref/core-cells#messagetocell)
+
+:::
+
+### How to convert a `Cell` or a `Slice` to an arbitrary `Struct` or `Message`
+
+```tact {19-20, 22-23}
+struct Profit {
+    big: String?;
+    dict: map<Int, Int as uint64>;
+    energy: Int;
+}
+
+message(0x45) Nice {
+    maybeStr: String?;
+}
+
+fun convert() {
+    let stCell = Profit{
+        big: null,
+        dict: null,
+        energy: 42,
+    }.toCell();
+    let msgCell = Nice{ maybeStr: "Message of the day!" }.toCell();
+
+    Profit.fromCell(stCell);
+    Nice.fromCell(msgCell);
+
+    Profit.fromSlice(stCell.asSlice());
+    Nice.fromSlice(msgCell.asSlice());
+}
+```
+
+:::note[Useful links:]
+
+  [`Struct.fromCell(){:tact}` in Core library](/ref/core-cells#structfromcell)\
+  [`Struct.fromSlice(){:tact}` in Core library](/ref/core-cells#structfromslice)\
+  [`Message.fromCell(){:tact}` in Core library](/ref/core-cells#messagefromcell)\
+  [`Message.fromSlice(){:tact}` in Core library](/ref/core-cells#messagefromslice)
+
+:::
+
+:::tip[Hey there!]
+
+  Didn't find your favorite example of type conversion? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
+
+:::
+
+[p]: /book/types#primitive-types

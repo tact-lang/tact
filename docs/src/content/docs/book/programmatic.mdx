@@ -1,0 +1,48 @@
+---
+title: Programmatic API
+description: "Ways to use the Tact compiler as a library in Node.js and browser projects"
+---
+
+You can invoke the Tact compiler from your code in node and browser environments.
+
+:::caution
+
+  This API has not been released yet. It will be released in the 1.0.0 version.
+
+:::
+
+## Run compiler in browser
+
+```ts
+import { run } from "@tact-lang/compiler";
+
+// Virtual FS
+const fs = {
+  ["main.tact"]: Buffer.from("...").toString("base64"),
+};
+
+const config = {
+  projects: [
+    {
+      name: "Sample",
+      path: "main.tact",
+      output: "./output",
+    },
+  ],
+};
+
+// Run compiler
+let successful = await run({ config, fs });
+
+// NOTE: Output from is written to the same fs object.
+```
+
+## Contract verification
+
+You can always verify the compiled package with the `verify` function.
+
+```ts
+import { verify } from "@tact-lang/compiler";
+const pkg: string = '...';
+const res = await verify(pkg);
+```

@@ -1,0 +1,79 @@
+---
+title: "OTP-002: Contract ABI"
+description: "This proposal defines an ABI to communicate with deployed smart contracts"
+sidebar:
+  order: 2
+---
+
+ABI defines how to communicate with smart contracts. It contains information about the contract's receivers, data structures, etc.
+
+## Motivation
+
+ABI is an essential tool that allows developers to generate handy bindings, UIs, etc. One of the best consumer usages would be using a DAO and being able to confirm what exactly it is trying to do before signing a transaction.
+
+## Guide
+
+This OTP is based on types that are defined in TLB+ and it is advised to know them before reading this OTP.
+
+## Specification
+
+ABI is a JSON file:
+
+```json
+{
+  "name": "MyContract",
+  "types": [
+    {
+      "name": "MyRequest",
+      "header": 12315123,
+      "fields": [
+        {
+          "name": "queryId",
+          "type": {
+            "kind": "simple",
+            "type": "int",
+            "optional": false,
+            "format": "uint256"
+          }
+        }
+      ]
+    }
+  ],
+  "receivers": [
+    { "type": "binary", "kind": "internal", "name": "MyRequest" },
+    { "type": "binary", "kind": "internal" },
+    { "type": "comment", "kind": "internal", "comment": "Vote!" },
+    { "type": "comment", "kind": "internal" },
+    { "type": "empty", "kind": "internal" }
+  ],
+  "getters": [
+    { "name": "getOwner", "type": "address", "args": [] },
+    {
+      "name": "getBalance",
+      "type": "coins",
+      "args": [
+        {
+          "name": "invested",
+          "type": {
+            "kind": "simple",
+            "type": "uint",
+            "format": "coins"
+          }
+        }
+      ]
+    }
+  ],
+  "errors": {
+    "123": "Error description",
+    "124": "Division by zero"
+  }
+}
+```
+
+## Drawbacks
+
+- Binary and compact representation of ABI could be better, but it is not critical for now.
+
+## Prior art
+
+- OTP-001, that is complimentary to this OTP.

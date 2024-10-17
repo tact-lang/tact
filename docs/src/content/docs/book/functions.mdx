@@ -1,0 +1,175 @@
+---
+title: Functions
+description: "Global, asm, native functions, as well as receivers, getters and storage functions, plus the many attributes that allow for great flexibility and expressivity of Tact language"
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Functions in Tact could be defined in different ways:
+
+* Global static function
+* Extension functions
+* Mutable functions
+* Native functions
+* Receiver functions
+* Getter functions
+
+All functions, except for [receiver functions](#receiver-functions) can have a trailing comma in their definitions (parameter lists) and calls (argument lists):
+
+```tact
+fun foo(
+    a: Int, // trailing comma in parameter lists is allowed
+) {}
+
+fun bar() {
+    foo(
+        5, // trailing comma in argument lists is allowed too!
+    );
+}
+```
+
+## Global static functions
+
+You can define global function anywhere in your program:
+
+```tact
+fun customPow(a: Int, c: Int): Int {
+  let res: Int = 1;
+  repeat(c) {
+    res *= a;
+  }
+  return res;
+}
+```
+
+## Virtual and abstract functions
+
+You can allow the contract inheriting a [traits](/book/types#traits) to modify an internal function, if it has the `virtual{:tact}` keyword, using `override{:tact}`. The function can be also marked as `abstract{:tact}`, in which case the inheriting contract has to define its implementation:
+
+```tact
+trait FilterTrait with Ownable {
+    // Virtual functions can be overridden by users of this trait
+    virtual fun filterMessage(): Bool {
+        return sender() != self.owner;
+    }
+
+    abstract fun specialFilter(): Bool;
+}
+
+contract Filter with FilterTrait {
+    // Overriding default behavior of the FilterTrait
+    override fun filterMessage(): Bool {
+        return true;
+    }
+
+    override fun specialFilter(): Bool {
+        return true;
+    }
+}
+````
+
+## Extension function
+
+Extension functions allow you to implement extensions for any possible type.
+
+> **Warning**
+> The name of the first argument MUST be named `self` and the type of this argument is the type you are extending.
+
+```tact
+extends fun customPow(self: Int, c: Int): Int {
+    let res: Int = 1;
+    repeat(c) {
+        res *= self;
+    }
+    return res;
+}
+```
+
+## Mutable functions
+
+Mutable functions are performing mutation of a value replacing it with an execution result. To perform mutation, the function must change the `self` value.
+
+```tact
+extends mutates fun customPow(self: Int, c: Int) {
+    let res: Int = 1;
+    repeat(c) {
+        res *= self;
+    }
+    self = res;
+}
+```
+
+## Native functions
+
+Native functions are direct bindings of FunC functions:
+
+> **Note**
+> Native functions could be also mutable and extension ones.
+
+```tact
+@name(store_uint)
+native storeUint(s: Builder, value: Int, bits: Int): Builder;
+
+@name(load_int)
+extends mutates native loadInt(self: Slice, l: Int): Int;
+```
+
+## Receiver functions
+
+Receiver functions are special functions that are responsible for receiving messages in contracts and could be defined only within a contract or trait.
+
+```tact
+contract Treasure {
+    // This means that this contract can receive the comment "Increment" and this function would be called for such messages
+    receive("Increment") {
+        self.counter += 1;
+    }
+}
+```
+
+## Getter Functions
+
+Getter functions define getters on smart contracts and can be defined only within a contract or trait.
+Getter functions cannot be used to read some other contract's state: if you need to obtain some data you need to do that by sending a message with a request and define a receiver which would process the request answer.
+
+```tact
+contract Treasure {
+    get fun counter(): Int {
+        return self.counter;
+    }
+}
+```
+
+### Explicit resolution of method ID collisions
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+As other functions in TVM contracts, getters have their *unique* associated function selectors which are some integers ids (called *method IDs*).
+Some of those integers are reserved for internal purposes, e.g. -4, -3, -2, -1, 0 are reserved IDs and 
+regular functions (internal to a contract and not callable from outside) are usually numbered by subsequent (small) integers starting from 1.
+By default, getters have associated method IDs that are derived from their names using the [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) algorithm as follows:
+`crc16(<function_name>) & 0xffff) | 0x10000`.
+Sometimes this can get you the same method ID for getters with different names.
+If this happens, you can either rename some of the contract's getters or
+specify the getter's method ID manually as a compile-time expression like so:
+
+```tact
+contract ManualMethodId {
+    const methodId: Int = 16384 + 42;
+
+    get(self.methodId) fun methodId1(): Int {
+        return self.methodId;
+    }
+
+    get(crc32("crc32") + 42 & 0x3ffff | 0x4000)
+    fun methodId2(): Int {
+        return 0;
+    }
+}
+```
+
+Note that you *cannot* use method IDs that are reserved by TVM and you cannot use some initial positive integers because those will be used as function selectors by the compiler.
+
+User-specified method IDs are 19-bit signed integers, so you can use integers from $-2^{18}$ to $-5$ and from $2^{14}$ to $2^{18} - 1$.
+
+Also, a few method IDs are reserved for the usage by the getters the Tact compiler can insert during compilation, those are 113617, 115390, 121275.

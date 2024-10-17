@@ -1,0 +1,31 @@
+---
+title: Time and date
+description: "Common examples of working with time and date in Tact"
+---
+
+## How to get the current time
+
+Use the `now(){:tact}` method to obtain the current standard [Unix time](https://en.wikipedia.org/wiki/Unix_time).
+
+If you need to store the time in state or encode it in a message, use the following [serialization](/book/integers#serialization): `Int as uint32{:tact}`.
+
+```tact
+let currentTime: Int = now();
+
+if (currentTime > 1672080143) {
+    // do something
+}
+```
+
+:::note[Useful links:]
+
+  [`now(){:tact}` in Core library](/ref/core-common#now)\
+  ["Current Time" in Tact-By-Example](https://tact-by-example.org/04-current-time)
+
+:::
+
+:::tip[Hey there!]
+
+  Didn't find your favorite example of working with time and date? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
+
+:::

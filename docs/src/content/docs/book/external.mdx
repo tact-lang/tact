@@ -1,0 +1,82 @@
+---
+title: External Messages
+description: "External messages don't have a sender and can be sent by anyone from the offchain"
+---
+
+:::caution
+  This page is under re-construction as per [#384](https://github.com/tact-lang/tact-docs/issues/384). All anchor links (`#`) may change in the future!
+:::
+
+:::caution
+  External message support must be enabled explicitly in the project configuration.
+  Without enabling it compilation would fail.
+:::
+
+External messages are those that don't have a sender and can be sent by anyone in the world. External messages are good tools for integrating with off-chain systems or for the general maintenance of contracts. Handling external messages is different from handling internal messages. In this section, we will cover how to handle external messages.
+
+## How External Messages are Different
+
+External messages are different from internal messages in the following ways:
+
+### Contracts Pay for Gas Usage Themselves
+
+When processing internal messages, the sender usually pays for gas usage. When processing external messages, the contract pays for gas usage. This means that you need to be careful with gas usage in external messages. You should always test the gas usage of your contracts and verify that everything is working as intended.
+
+### Messages Have to Be Accepted Manually
+
+External messages are not accepted automatically. You need to accept them manually. This is done by calling the `acceptMessage` function. If you don't call the `acceptMessage` function, the message will be rejected. This is done to prevent the spamming of external messages.
+
+### 10k Gas Limit Before Message Acceptance
+
+10k gas is a very small limit, and Tact itself can consume a sizable amount of gas before it even reaches your code. You should always test the gas usage of your contracts and verify that everything is working as intended.
+
+:::tip[Hey there!]
+
+  The 10k gas limit for external messages is based on the parameter we set by the
+  validator for the whole blockchain of the `gas_limit` field. You can take
+  the reference here:
+
+  - https://docs.ton.org/develop/smart-contracts/guidelines/accept#external-messages
+  - https://docs.ton.org/develop/howto/blockchain-configs#param-20-and-21
+
+:::
+
+### Unbounded Gas Usage After Message Acceptance
+
+After you accept the gas, the contract can use as much gas as it wants. This is done to allow the contract to carry out any kind of processing. You should always test the gas usage of your contracts and verify that everything is working as intended, and avoid possible vulnerabilities that could drain the contract balance.
+
+### No Context Available
+
+When processing an external message, the `context` and `sender` functions are not available. This is because there is no context available for external messages. This means that you can't use the `context` and `sender` functions in external messages. You need to carefully test your contract to make sure that it doesn't use the `context` and `sender` functions.
+
+## Enable External Messages Support
+
+To enable external messages support, please enable it in the project configuration file:
+
+```json
+{
+  "options": {
+    "external": true
+  }
+}
+```
+
+## External receivers
+
+External receivers are defined the same way as internal ones, but using the `external` keyword instead of `receive`:
+
+```tact
+contract SampleContract {
+    external("Check Timeout") {
+
+        // Check for contract timeout
+        require(self.timeout > now(), "Not timeouted");
+
+        // Accept message
+        acceptMessage();
+
+        // Timeout processing
+        self.onTimeouted();
+    }
+}
+```

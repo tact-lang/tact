@@ -1,7 +1,8 @@
 import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "./context";
-import { TactConstEvalError, TactParseError, idTextErr } from "./errors";
+import { TactConstEvalError, TactParseError, idTextErr, throwCompilationError, throwInternalCompilerError } from "./errors";
 import {
+    AstAsmFunctionDef,
     AstBoolean,
     AstCondition,
     AstConditional,
@@ -39,9 +40,9 @@ import {
     AstStructInstance,
     AstTrait,
     idText,
+    tryExtractPath,
 } from "./grammar/ast";
-import { parseExpression } from "./grammar/grammar";
-import { InterpreterSemantics } from "./interpreterSemantics/types";
+import { parseExpression, SrcInfo } from "./grammar/grammar";
 import { throwNonFatalErrorConstEval } from "./interpreterSemantics/util";
 import { Value } from "./types/types";
 
@@ -52,9 +53,10 @@ type EvalResult =
 export function parseAndEvalExpression(sourceCode: string): EvalResult {
     try {
         const ast = parseExpression(sourceCode);
-        const constEvalResult = evalConstantExpression(ast, {
-            ctx: new CompilerContext(),
-        });
+        const constEvalResult = evalConstantExpression(
+            ast,
+            new CompilerContext(),
+        );
         return { kind: "ok", value: constEvalResult };
     } catch (error) {
         if (
@@ -75,17 +77,18 @@ const interpreter = new Interpreter(new StandardSemantics(ctx));
 
 Generic type T is the expressions' result type.
 */
-export class Interpreter<T> {
-    private semantics: InterpreterSemantics<T>;
+export abstract class Interpreter<T> {
 
-    constructor(semantics: InterpreterSemantics<T>) {
-        this.semantics = semantics;
+    private copyValue: (val: T) => T;
+
+    constructor(copyValueMethod: (val: T) => T) {
+        this.copyValue = copyValueMethod;
     }
 
-    private executeStatements(
-        statements: AstStatement[]
-    ) {
-        statements.forEach(currStmt => this.interpretStatement(currStmt), this);
+    protected executeStatements(statements: AstStatement[]) {
+        statements.forEach((currStmt) => {
+            this.interpretStatement(currStmt);
+        }, this);
     }
 
     public interpretModuleItem(ast: AstModuleItem) {
@@ -97,10 +100,7 @@ export class Interpreter<T> {
                 this.interpretFunctionDef(ast);
                 break;
             case "asm_function_def":
-                throwNonFatalErrorConstEval(
-                    "Asm functions are currently not supported.",
-                    ast.loc,
-                );
+                this.interpretAsmFunctionDef(ast);
                 break;
             case "struct_decl":
                 this.interpretStructDecl(ast);
@@ -133,6 +133,13 @@ export class Interpreter<T> {
     public interpretFunctionDef(ast: AstFunctionDef) {
         throwNonFatalErrorConstEval(
             "Function definitions are currently not supported.",
+            ast.loc,
+        );
+    }
+
+    public interpretAsmFunctionDef(ast: AstAsmFunctionDef) {
+        throwNonFatalErrorConstEval(
+            "Asm functions are currently not supported.",
             ast.loc,
         );
     }
@@ -211,14 +218,15 @@ export class Interpreter<T> {
     }
 
     public interpretName(ast: AstId): T {
-        return this.semantics.lookupBinding(ast);
+        return this.lookupBinding(ast);
     }
 
     public interpretMethodCall(ast: AstMethodCall): T {
         const selfValue = this.interpretExpression(ast.self);
-        const argValues = ast.args.map(this.interpretExpression, this);
 
-        const builtinResult = this.semantics.evalBuiltinOnSelf(
+        const argValues = ast.args.map((expr) => this.copyValue(this.interpretExpression(expr)), this);
+
+        const builtinResult = this.evalBuiltinOnSelf(
             ast,
             selfValue,
             argValues,
@@ -242,29 +250,13 @@ export class Interpreter<T> {
         );
     }
 
-    public interpretNull(ast: AstNull): T {
-        return this.semantics.evalNull(ast);
-    }
-
-    public interpretBoolean(ast: AstBoolean): T {
-        return this.semantics.evalBoolean(ast);
-    }
-
-    public interpretNumber(ast: AstNumber): T {
-        return this.semantics.evalInteger(ast);
-    }
-
-    public interpretString(ast: AstString): T {
-        return this.semantics.evalString(ast);
-    }
-
     public interpretUnaryOp(ast: AstOpUnary): T {
         // Instead of immediately evaluating the operand, we surround the
         // operand evaluation in a continuation, because some
         // unary operators need to perform some previous checks before
         // evaluating the operand.
         const operandEvaluator = () => this.interpretExpression(ast.operand);
-        return this.semantics.evalUnaryOp(ast, operandEvaluator);
+        return this.evalUnaryOp(ast, operandEvaluator);
     }
 
     public interpretBinaryOp(ast: AstOpBinary): T {
@@ -276,11 +268,11 @@ export class Interpreter<T> {
         // the right argument, like short-circuiting, for example.
         const rightEvaluator = () => this.interpretExpression(ast.right);
 
-        return this.semantics.evalBinaryOp(ast, leftValue, rightEvaluator);
+        return this.evalBinaryOp(ast, leftValue, rightEvaluator);
     }
 
     public interpretConditional(ast: AstConditional): T {
-        const conditionValue = this.semantics.toBoolean(
+        const conditionValue = this.toBoolean(
             this.interpretExpression(ast.condition),
             ast.condition.loc,
         );
@@ -299,27 +291,27 @@ export class Interpreter<T> {
             this,
         );
 
-        return this.semantics.evalStructInstance(ast, argEvaluators);
+        return this.evalStructInstance(ast, argEvaluators);
     }
 
     public interpretFieldAccess(ast: AstFieldAccess): T {
         const aggregateEvaluator = () =>
             this.interpretExpression(ast.aggregate);
 
-        return this.semantics.evalFieldAccess(ast, aggregateEvaluator);
+        return this.evalFieldAccess(ast, aggregateEvaluator);
     }
 
     public interpretStaticCall(ast: AstStaticCall): T {
-        const argValues = ast.args.map(this.interpretExpression, this);
+        const argValues = ast.args.map((expr) => this.copyValue(this.interpretExpression(expr)), this);
 
-        const builtinResult = this.semantics.evalBuiltin(ast, argValues);
+        const builtinResult = this.evalBuiltin(ast, argValues);
         if (builtinResult !== undefined) {
             return builtinResult;
         }
 
         // We have a call to a user-defined function.
 
-        const functionDef = this.semantics.lookupFunction(ast);
+        const functionDef = this.lookupFunction(ast);
 
         // Extract the parameter names
         const paramNames = functionDef.params.map((param) =>
@@ -327,11 +319,12 @@ export class Interpreter<T> {
         );
 
         // Transform the statements into continuations
-        const statementsEvaluator = () =>
+        const statementsEvaluator = () => {
             this.executeStatements(functionDef.statements);
+        };
 
         // Now call the function
-        return this.semantics.evalStaticCall(
+        return this.evalStaticCall(
             ast,
             functionDef,
             statementsEvaluator,
@@ -342,93 +335,123 @@ export class Interpreter<T> {
     public interpretStatement(ast: AstStatement) {
         switch (ast.kind) {
             case "statement_let":
-                return this.interpretLetStatement(ast);
+                this.interpretLetStatement(ast);
+                break;
             case "statement_assign":
-                return this.interpretAssignStatement(ast);
+                this.interpretAssignStatement(ast);
+                break;
             case "statement_augmentedassign":
-                return this.interpretAugmentedAssignStatement(ast);
+                this.interpretAugmentedAssignStatement(ast);
+                break;
             case "statement_condition":
-                return this.interpretConditionStatement(ast);
+                this.interpretConditionStatement(ast);
+                break;
             case "statement_expression":
-                return this.interpretExpressionStatement(ast);
+                this.interpretExpressionStatement(ast);
+                break;
             case "statement_foreach":
-                return this.interpretForEachStatement(ast);
+                this.interpretForEachStatement(ast);
+                break;
             case "statement_repeat":
-                return this.interpretRepeatStatement(ast);
+                this.interpretRepeatStatement(ast);
+                break;
             case "statement_return":
-                return this.interpretReturnStatement(ast);
+                this.interpretReturnStatement(ast);
+                break;
             case "statement_try":
-                return this.interpretTryStatement(ast);
+                this.interpretTryStatement(ast);
+                break;
             case "statement_try_catch":
-                return this.interpretTryCatchStatement(ast);
+                this.interpretTryCatchStatement(ast);
+                break;
             case "statement_until":
-                return this.interpretUntilStatement(ast);
+                this.interpretUntilStatement(ast);
+                break;
             case "statement_while":
-                return this.interpretWhileStatement(ast);
+                this.interpretWhileStatement(ast);
+                break;
         }
     }
 
     public interpretLetStatement(ast: AstStatementLet) {
         const val = this.interpretExpression(ast.expression);
-        this.semantics.storeNewBinding(ast, val);
+        this.storeNewBinding(ast.name, val);        
     }
 
     public interpretAssignStatement(ast: AstStatementAssign) {
-        if (ast.path.kind === "id") {
+        const fullPath = tryExtractPath(ast.path);
+
+        if (fullPath !== null && fullPath.length > 0) {
             const val = this.interpretExpression(ast.expression);
-            this.semantics.updateBinding(ast.path, val);
+            this.updateBinding(fullPath, val, ast.loc);   
         } else {
-            throwNonFatalErrorConstEval(
-                "only identifiers are currently supported as path expressions",
+            throwInternalCompilerError(
+                "assignments allow path expressions only",
                 ast.path.loc,
             );
         }
     }
 
-    public interpretAugmentedAssignStatement(
-        ast: AstStatementAugmentedAssign,
-    ) {
-        if (ast.path.kind === "id") {
+    public interpretAugmentedAssignStatement(ast: AstStatementAugmentedAssign) {
+        const fullPath = tryExtractPath(ast.path);
+
+        if (fullPath !== null && fullPath.length > 0) {
             const updateEvaluator = () =>
                 this.interpretExpression(ast.expression);
-            const currentPathValue = this.semantics.lookupBinding(ast.path);
-            const newVal = this.semantics.evalBinaryOpInAugmentedAssign(
-                ast,
-                currentPathValue,
-                updateEvaluator,
-            );
-            this.semantics.updateBinding(ast.path, newVal);
+
+            let currentPathValue: T;
+
+                    // In an assignment, the path is either a field access or an id
+                    if (ast.path.kind === "field_access") {
+                        currentPathValue = this.interpretFieldAccess(ast.path);
+                    } else if (ast.path.kind === "id") {
+                        currentPathValue = this.lookupBinding(ast.path);
+                    } else {
+                        throwInternalCompilerError(
+                            "assignments allow path expressions only",
+                            ast.path.loc,
+                        );
+                    }
+
+                    const newVal = this.evalBinaryOpInAugmentedAssign(
+                        ast,
+                        currentPathValue,
+                        updateEvaluator,
+                    );
+                    this.updateBinding(fullPath, newVal, ast.loc);
         } else {
-            throwNonFatalErrorConstEval(
-                "only identifiers are currently supported as path expressions",
+            throwInternalCompilerError(
+                "assignments allow path expressions only",
                 ast.path.loc,
             );
         }
     }
 
     public interpretConditionStatement(ast: AstCondition) {
-        const condition = this.semantics.toBoolean(
-            this.interpretExpression(ast.condition),
-            ast.condition.loc,
-        );
-        if (condition) {
-            this.semantics.runInNewEnvironment(() =>
-                this.executeStatements(ast.trueStatements),
-            );
-        } else if (ast.falseStatements !== null) {
-            // We are in an else branch. The typechecker ensures that
-            // the elseif branch does not exist.
-            this.semantics.runInNewEnvironment(() =>
-                this.executeStatements(ast.falseStatements!),
-            );
-        } else if (ast.elseif !== null) {
-            // We are in an elseif branch
-            this.interpretConditionStatement(ast.elseif);
-        }
+        
+                const condition = this.toBoolean(
+                    this.interpretExpression(ast.condition),
+                    ast.condition.loc,
+                );
+
+                if (condition) {
+                    this.runInNewEnvironment(() => {
+                        this.executeStatements(ast.trueStatements);
+                    });
+                } else if (ast.falseStatements !== null) {
+                    // We are in an else branch. The typechecker ensures that
+                    // the elseif branch does not exist.
+                    this.runInNewEnvironment(() => {
+                        this.executeStatements(ast.falseStatements!);
+                    });
+                } else if (ast.elseif !== null) {
+                    // We are in an elseif branch
+                    this.interpretConditionStatement(ast.elseif);
+                }
     }
 
     public interpretExpressionStatement(ast: AstStatementExpression) {
-        this.interpretExpression(ast.expression);
+                this.interpretExpression(ast.expression);
     }
 
     public interpretForEachStatement(ast: AstStatementForEach) {
@@ -436,33 +459,39 @@ export class Interpreter<T> {
     }
 
     public interpretRepeatStatement(ast: AstStatementRepeat) {
-        const iterations = this.semantics.toRepeatInteger(
-            this.interpretExpression(ast.iterations),
-            ast.iterations.loc,
-        );
-        if (iterations > 0) {
-            // We can create a single environment for all the iterations in the loop
-            // (instead of a fresh environment for each iteration)
-            // because the typechecker ensures that variables do not leak outside
-            // the loop. Also, the language requires that all declared variables inside the
-            // loop be initialized, which means that we can overwrite its value in the environment
-            // in each iteration.
-            this.semantics.runInNewEnvironment(() => {
-                for (let i = 1n; i <= iterations; i++) {
-                    this.semantics.runOneIteration(i, ast.loc, () =>
-                        this.executeStatements(ast.statements)
-                    );
+       
+                const iterations = this.toRepeatInteger(
+                    this.interpretExpression(ast.iterations),
+                    ast.iterations.loc,
+                );
+
+                if (iterations > 0) {
+                    // We can create a single environment for all the iterations in the loop
+                    // (instead of a fresh environment for each iteration)
+                    // because the typechecker ensures that variables do not leak outside
+                    // the loop. Also, the language requires that all declared variables inside the
+                    // loop be initialized, which means that we can overwrite its value in the environment
+                    // in each iteration.
+                    this.runInNewEnvironment(() => {
+                        for (let i = 1n; i <= iterations; i++) {
+                            this.runOneIteration(i, ast.loc, () => {
+                                this.executeStatements(ast.statements);
+                            });
+                        }
+                    });
                 }
-            });
-        }
+
+       
     }
 
     public interpretReturnStatement(ast: AstStatementReturn) {
         if (ast.expression !== null) {
-            const val = this.interpretExpression(ast.expression);
-            this.semantics.evalReturn(val);
+            
+                    const val = this.interpretExpression(ast.expression);
+                    this.evalReturn(val);
+            
         } else {
-            this.semantics.evalReturn();
+            this.evalReturn();
         }
     }
 
@@ -489,24 +518,18 @@ export class Interpreter<T> {
         // the loop. Also, the language requires that all declared variables inside the
         // loop be initialized, which means that we can overwrite its value in the environment
         // in each iteration.
-        this.semantics.runInNewEnvironment(() => {
+        this.runInNewEnvironment(() => {
             do {
-                this.semantics.runOneIteration(
-                    iterCount,
-                    ast.loc,
-                    () => {
-                        this.executeStatements(
-                            ast.statements
-                        );
+                this.runOneIteration(iterCount, ast.loc, () => {
+                    this.executeStatements(ast.statements);
 
-                        // The typechecker ensures that the condition does not refer to
-                        // variables declared inside the loop.
-                        condition = this.semantics.toBoolean(
-                            this.interpretExpression(ast.condition),
-                            ast.condition.loc,
-                        );
-                    },
-                );
+                    // The typechecker ensures that the condition does not refer to
+                    // variables declared inside the loop.
+                    condition = this.toBoolean(
+                        this.interpretExpression(ast.condition),
+                        ast.condition.loc,
+                    );
+                });
 
                 iterCount++;
             } while (!condition);
@@ -514,7 +537,7 @@ export class Interpreter<T> {
     }
 
     public interpretWhileStatement(ast: AstStatementWhile) {
-        let condition = this.semantics.toBoolean(
+        let condition = this.toBoolean(
             this.interpretExpression(ast.condition),
             ast.condition.loc,
         );
@@ -526,27 +549,146 @@ export class Interpreter<T> {
         // the loop. Also, the language requires that all declared variables inside the
         // loop be initialized, which means that we can overwrite its value in the environment
         // in each iteration.
-        this.semantics.runInNewEnvironment(() => {
+        this.runInNewEnvironment(() => {
             while (condition) {
-                this.semantics.runOneIteration(
-                    iterCount,
-                    ast.loc,
-                    () => {
-                        this.executeStatements(
-                            ast.statements
-                        );
+                this.runOneIteration(iterCount, ast.loc, () => {
+                    this.executeStatements(ast.statements);
 
-                        // The typechecker ensures that the condition does not refer to
-                        // variables declared inside the loop.
-                        condition = this.semantics.toBoolean(
-                            this.interpretExpression(ast.condition),
-                            ast.condition.loc,
-                        );
-                    },
-                );
+                    // The typechecker ensures that the condition does not refer to
+                    // variables declared inside the loop.
+                    condition = this.toBoolean(
+                        this.interpretExpression(ast.condition),
+                        ast.condition.loc,
+                    );
+                });
 
                 iterCount++;
             }
         });
     }
+
+    /********  ABSTRACT METHODS  ****/
+    
+    /*
+    Executes calls to built-in functions of the form self.method(args).
+    Should return "undefined" if method is not a built-in function. 
+    */
+    public abstract evalBuiltinOnSelf(
+        ast: AstMethodCall,
+        self: T,
+        argValues: T[],
+    ): T | undefined;
+
+    public abstract interpretNull(ast: AstNull): T;
+
+    public abstract interpretBoolean(ast: AstBoolean): T;
+
+    public abstract interpretNumber(ast: AstNumber): T;
+
+    public abstract interpretString(ast: AstString): T;
+
+    /*
+    Evaluates the unary operation. Parameter operandEvaluator is a continuation 
+    that computes the operator's operand. The reason for using a continuation
+    is that certain operators may execute some logic **before** evaluation 
+    of the operand.
+    */
+    public abstract evalUnaryOp(ast: AstOpUnary, operandEvaluator: () => T): T;
+
+    /*
+    Evaluates the binary operator. Parameter rightEvaluator is a continuation
+    that computes the value of the right operand. The reason for using a continuation
+    is that certain operators may execute some logic **before** evaluation 
+    of the right operand (for example, short-circuiting).
+    */
+    public abstract evalBinaryOp(
+        ast: AstOpBinary,
+        leftValue: T,
+        rightEvaluator: () => T,
+    ): T;
+
+    public abstract toBoolean(value: T, src: SrcInfo): boolean;
+
+    /*
+    Evaluates the struct instance. Parameter initializerEvaluators is a list of continuations.
+    Each continuation computes the result of executing the initializer.
+    */
+    public abstract evalStructInstance(
+        ast: AstStructInstance,
+        initializerEvaluators: (() => T)[],
+    ): T;
+
+    /*
+    Evaluates a field access of the form "path.field". Parameter aggregateEvaluator is a continuation.
+    The continuation computes the value of "path".
+    */
+    public abstract evalFieldAccess(
+        ast: AstFieldAccess,
+        aggregateEvaluator: () => T,
+    ): T;
+
+    /*
+    Executes calls to built-in functions of the form method(args).
+    Should return "undefined" if method is not a built-in function. 
+    */
+    public abstract evalBuiltin(
+        ast: AstStaticCall,
+        argValues: T[],
+    ): T | undefined;
+
+    public abstract lookupFunction(ast: AstStaticCall): AstFunctionDef;
+
+    /*
+    Calls function "functionDef" using parameters "args". The body of "functionDef" can be
+    executed by invoking continuation "functionBodyEvaluator". 
+    */
+    public abstract evalStaticCall(
+        ast: AstStaticCall,
+        functionDef: AstFunctionDef,
+        functionBodyEvaluator: () => void,
+        args: { names: string[]; values: T[] },
+    ): T;
+
+    /*
+    Evaluates the binary operator implicit in an augment assignment. 
+    Parameter rightEvaluator is a continuation
+    that computes the value of the right operand. The reason for using a continuation
+    is that certain operators may execute some logic **before** evaluation 
+    of the right operand (for example, short-circuiting).
+    */
+    public abstract evalBinaryOpInAugmentedAssign(
+        ast: AstStatementAugmentedAssign,
+        leftValue: T,
+        rightEvaluator: () => T,
+    ): T;
+
+    public abstract lookupBinding(path: AstId): T;
+
+    public abstract storeNewBinding(id: AstId, exprValue: T | undefined): void;
+
+    public abstract updateBinding(path: AstId[], exprValue: T | undefined, src: SrcInfo): void;
+
+    /*
+    Runs the continuation statementsEvaluator in a new environment.
+    In the standard semantics, this means opening a new environment in 
+    the stack and closing the environment when statementsEvaluator finishes execution.
+    */
+    public abstract runInNewEnvironment(statementsEvaluator: () => void): void;
+
+    public abstract toInteger(value: T, src: SrcInfo): bigint;
+
+    public abstract toRepeatInteger(value: T, src: SrcInfo): bigint;
+
+    /*
+    Runs one iteration of the body of a loop. The body of the loop is executed by 
+    calling the continuation "iterationEvaluator". The iteration number is provided 
+    for further custom logic.
+    */
+    public abstract runOneIteration(
+        iterationNumber: bigint,
+        src: SrcInfo,
+        iterationEvaluator: () => void,
+    ): void;
+
+    public abstract evalReturn(val?: T): void;
 }

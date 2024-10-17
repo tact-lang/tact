@@ -144,8 +144,74 @@ export function eqValues(val1: Value, val2: Value): boolean {
         return Address.isAddress(val2) ? val1.equals(val2) : false;
     } else if (val1 instanceof Cell) {
         return val2 instanceof Cell ? val1.equals(val2) : false;
+    } else if (val1 instanceof Slice) {
+        return val2 instanceof Slice ? val1.asCell().equals(val2.asCell()) : false;
     } else {
         return val1 === val2;
+    }
+}
+
+export function extractCommonSubValue(val1: Value, val2: Value): Value | undefined {
+    if (val1 === null) {
+        return eqValues(val1, val2) ? val1 : undefined;
+    } else if (typeof val1 === "object" && "$tactStruct" in val1) {
+        if (
+            typeof val2 === "object" &&
+            val2 !== null &&
+            "$tactStruct" in val2
+        ) {
+            const val1Keys = new Set(Object.keys(val1));
+            const val2Keys = new Set(Object.keys(val2));
+            const commonKeys = val1Keys.intersection(val2Keys); 
+            // Since "$tactStruct" is in both val1 and val2, 
+            // commonKeys contains at least "$tactStruct".
+
+            if (val1["$tactStruct"] !== val2["$tactStruct"]) {
+                return undefined;
+            }
+
+            const result: StructValue = {};
+            for (const key of commonKeys) {
+                const commonVal = extractCommonSubValue(val1[key]!, val2[key]!);
+                if (commonVal !== undefined) {
+                    result[key] = commonVal;
+                }
+            }
+
+            return result;
+        } else {
+            return undefined;
+        }
+    } else {
+        // The rest of values, since they do not have further sub structure,
+        // just compare for equality as in the case for null
+        return eqValues(val1, val2) ? val1 : undefined;
+    }
+}
+
+export function copyValue(val: Value): Value {
+    if (val === null) {
+        return null;
+    } else if (val instanceof CommentValue) {
+        return new CommentValue(val.comment);
+    } else if (typeof val === "object" && "$tactStruct" in val) {
+        
+        const result: StructValue = {};
+
+        for (const [key, value] of Object.entries(val))  {
+            result[key] = copyValue(value);
+        }
+        return result;
+
+    } else if (Address.isAddress(val)) {
+        return val; // What is the propert way to copy an Address?
+    } else if (val instanceof Cell) {
+        return val;  // What is the proper way to copy a Cell?
+    } else if (val instanceof Slice) {
+        return val.clone();  // Is this the proper way of copying a Slice?
+    } else {
+        // These are atomic values. There is no need to copy them
+        return val;
     }
 }
 
@@ -185,12 +251,13 @@ export type FunctionDescription = {
     name: string;
     origin: ItemOrigin;
     isGetter: boolean;
+    methodId: number | null;
     isMutating: boolean;
     isOverride: boolean;
     isVirtual: boolean;
     isAbstract: boolean;
     isInline: boolean;
-    self: string | null;
+    self: TypeRef | null;
     returns: TypeRef;
     params: FunctionParameter[];
     ast:

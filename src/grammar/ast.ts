@@ -242,8 +242,12 @@ export type AstAugmentedAssignOperation =
     | "-"
     | "*"
     | "/"
+    | "&&"
+    | "||"
     | "%"
     | "|"
+    | "<<"
+    | ">>"
     | "&"
     | "^";
 
@@ -634,13 +638,18 @@ export type AstContractAttribute = {
 };
 
 export type AstFunctionAttribute =
-    | { type: "get"; loc: SrcInfo }
-    | { type: "mutates"; loc: SrcInfo }
-    | { type: "extends"; loc: SrcInfo }
-    | { type: "virtual"; loc: SrcInfo }
-    | { type: "abstract"; loc: SrcInfo }
-    | { type: "override"; loc: SrcInfo }
-    | { type: "inline"; loc: SrcInfo };
+    | {
+          kind: "function_attribute";
+          type: "get";
+          methodId: AstExpression | null;
+          loc: SrcInfo;
+      }
+    | { kind: "function_attribute"; type: "mutates"; loc: SrcInfo }
+    | { kind: "function_attribute"; type: "extends"; loc: SrcInfo }
+    | { kind: "function_attribute"; type: "virtual"; loc: SrcInfo }
+    | { kind: "function_attribute"; type: "abstract"; loc: SrcInfo }
+    | { kind: "function_attribute"; type: "override"; loc: SrcInfo }
+    | { kind: "function_attribute"; type: "inline"; loc: SrcInfo };
 
 export type AstTypedParameter = {
     kind: "typed_parameter";
@@ -686,6 +695,7 @@ export type AstNode =
     | AstFieldDecl
     | AstTypedParameter
     | AstFunctionDef
+    | AstFunctionAttribute
     | AstAsmFunctionDef
     | AstFunctionDecl
     | AstModule

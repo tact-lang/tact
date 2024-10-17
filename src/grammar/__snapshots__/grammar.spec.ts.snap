@@ -141,6 +141,17 @@ Line 1, col 20:
 "
 `;
 
+exports[`grammar should fail contract-getter-parens-no-method-id 1`] = `
+"<unknown>:2:9: Parse error: expected "\\"", "initOf", "null", "_", "A".."Z", "a".."z", "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "(", "~", "!", "+", or "-"
+
+Line 2, col 9:
+  1 | contract Test {
+> 2 |     get() fun test(): Int {
+              ^
+  3 |         return 0
+"
+`;
+
 exports[`grammar should fail contract-init-trailing-comma-empty-params 1`] = `
 "Syntax error: <unknown>:2:10: Empty parameter list should not have a dangling comma.
 Line 2, col 10:
@@ -615,6 +626,27 @@ Line 1, col 7:
 "
 `;
 
+exports[`grammar should fail items-asm-fun-5 1`] = `
+"<unknown>:3:5: Parse error: expected end of input, "trait", "contract", "message", "struct", "const", "@name", "asm", "fun", or "primitive"
+
+Line 3, col 5:
+  2 |     { INC } : }
+> 3 |     5 }
+          ^
+  4 | }
+"
+`;
+
+exports[`grammar should fail items-asm-fun-6 1`] = `
+"Syntax error: <unknown>:2:5: The binary bitstring has more than 128 digits
+Line 2, col 5:
+  1 | asm fun giganticBinary() {
+> 2 |     b{000000001111111100000000111111110000000011111111000000001111111100000000111111110000000011111111000000001111111100000000111111110}
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  3 | }
+"
+`;
+
 exports[`grammar should fail literal-dec-trailing-underscore 1`] = `
 "<unknown>:2:16: Parse error: expected a digit
 
@@ -905,6 +937,134 @@ exports[`grammar should parse case-35 1`] = `
         "kind": "id",
         "loc": ReceiveTestContract,
         "text": "ReceiveTestContract",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse contract-getter-with-method-id 1`] = `
+{
+  "id": 17,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": get(crc32("crc32") + 42 & 0x3ffff | 0x4000),
+              "methodId": {
+                "id": 10,
+                "kind": "op_binary",
+                "left": {
+                  "id": 8,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 6,
+                    "kind": "op_binary",
+                    "left": {
+                      "args": [
+                        {
+                          "id": 3,
+                          "kind": "string",
+                          "loc": "crc32",
+                          "value": "crc32",
+                        },
+                      ],
+                      "function": {
+                        "id": 2,
+                        "kind": "id",
+                        "loc": crc32,
+                        "text": "crc32",
+                      },
+                      "id": 4,
+                      "kind": "static_call",
+                      "loc": crc32("crc32"),
+                    },
+                    "loc": crc32("crc32") + 42,
+                    "op": "+",
+                    "right": {
+                      "base": 10,
+                      "id": 5,
+                      "kind": "number",
+                      "loc": 42,
+                      "value": 42n,
+                    },
+                  },
+                  "loc": crc32("crc32") + 42 & 0x3ffff,
+                  "op": "&",
+                  "right": {
+                    "base": 16,
+                    "id": 7,
+                    "kind": "number",
+                    "loc": 0x3ffff,
+                    "value": 262143n,
+                  },
+                },
+                "loc": crc32("crc32") + 42 & 0x3ffff | 0x4000,
+                "op": "|",
+                "right": {
+                  "base": 16,
+                  "id": 9,
+                  "kind": "number",
+                  "loc": 0x4000,
+                  "value": 16384n,
+                },
+              },
+              "type": "get",
+            },
+          ],
+          "id": 15,
+          "kind": "function_def",
+          "loc": get(crc32("crc32") + 42 & 0x3ffff | 0x4000) fun test(): Int {
+        return 0
+    },
+          "name": {
+            "id": 11,
+            "kind": "id",
+            "loc": test,
+            "text": "test",
+          },
+          "params": [],
+          "return": {
+            "id": 12,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 13,
+                "kind": "number",
+                "loc": 0,
+                "value": 0n,
+              },
+              "id": 14,
+              "kind": "statement_return",
+              "loc": return 0,
+            },
+          ],
+        },
+      ],
+      "id": 16,
+      "kind": "contract",
+      "loc": contract Test {
+    get(crc32("crc32") + 42 & 0x3ffff | 0x4000) fun test(): Int {
+        return 0
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
       },
       "traits": [],
     },
@@ -1334,6 +1494,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": virtual,
               "type": "virtual",
             },
@@ -1413,6 +1574,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": override,
               "type": "override",
             },
@@ -1520,6 +1682,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": virtual,
               "type": "virtual",
             },
@@ -1599,6 +1762,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": override,
               "type": "override",
             },
@@ -3358,7 +3522,7 @@ exports[`grammar should parse expr-with-var 1`] = `
 
 exports[`grammar should parse items-asm-funs 1`] = `
 {
-  "id": 48,
+  "id": 67,
   "imports": [],
   "items": [
     {
@@ -3414,6 +3578,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     {
       "attributes": [
         {
+          "kind": "function_attribute",
           "loc": extends,
           "type": "extends",
         },
@@ -3480,6 +3645,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     {
       "attributes": [
         {
+          "kind": "function_attribute",
           "loc": extends,
           "type": "extends",
         },
@@ -3556,6 +3722,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     {
       "attributes": [
         {
+          "kind": "function_attribute",
           "loc": extends,
           "type": "extends",
         },
@@ -3727,17 +3894,233 @@ exports[`grammar should parse items-asm-funs 1`] = `
         "DEBUGSTR",
       ],
       "kind": "asm_function_def",
-      "loc": asm fun debugStr() {
+      "loc": asm fun debugStr1() {
     "Works!" DEBUGSTR
 },
       "name": {
         "id": 46,
         "kind": "id",
-        "loc": debugStr,
-        "text": "debugStr",
+        "loc": debugStr1,
+        "text": "debugStr1",
       },
       "params": [],
       "return": null,
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 49,
+      "instructions": [
+        ""Works!"",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun debugStr2() { "Works!" },
+      "name": {
+        "id": 48,
+        "kind": "id",
+        "loc": debugStr2,
+        "text": "debugStr2",
+      },
+      "params": [],
+      "return": null,
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 51,
+      "instructions": [
+        "{ INC }",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun createWord() {
+    { INC }
+},
+      "name": {
+        "id": 50,
+        "kind": "id",
+        "loc": createWord,
+        "text": "createWord",
+      },
+      "params": [],
+      "return": null,
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 54,
+      "instructions": [
+        "{ INC }",
+        ":",
+        "incinc",
+        "41",
+        "incinc",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun createAndUseWord1(): Int {
+    { INC } : incinc
+    41 incinc
+},
+      "name": {
+        "id": 52,
+        "kind": "id",
+        "loc": createAndUseWord1,
+        "text": "createAndUseWord1",
+      },
+      "params": [],
+      "return": {
+        "id": 53,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 57,
+      "instructions": [
+        "{ INC }",
+        ":",
+        "incinc",
+        "41",
+        "incinc",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun createAndUseWord2(): Int { { INC
+}
+: incinc 41 incinc
+},
+      "name": {
+        "id": 55,
+        "kind": "id",
+        "loc": createAndUseWord2,
+        "text": "createAndUseWord2",
+      },
+      "params": [],
+      "return": {
+        "id": 56,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 60,
+      "instructions": [
+        "{ INC }",
+        ":",
+        "incinc",
+        "41",
+        "incinc",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun createAndUseWord3(): Int {
+{
+INC
+}
+:
+incinc
+41
+incinc
+},
+      "name": {
+        "id": 58,
+        "kind": "id",
+        "loc": createAndUseWord3,
+        "text": "createAndUseWord3",
+      },
+      "params": [],
+      "return": {
+        "id": 59,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "id": 66,
+      "instructions": [
+        "<{",
+        "TRY:<{",
+        "0",
+        "PUSHINT",
+        "ADD",
+        "DROP",
+        "-1",
+        "PUSHINT",
+        "}>CATCH<{",
+        "2DROP",
+        "0",
+        "PUSHINT",
+        "}>",
+        "}>CONT",
+        "1",
+        "1",
+        "CALLXARGS",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun isIntAnInt(x: Int): Int {
+    <{
+        TRY:<{
+            0 PUSHINT ADD DROP -1 PUSHINT
+        }>CATCH<{
+            2DROP 0 PUSHINT
+        }>
+    }>CONT 1 1 CALLXARGS
+},
+      "name": {
+        "id": 61,
+        "kind": "id",
+        "loc": isIntAnInt,
+        "text": "isIntAnInt",
+      },
+      "params": [
+        {
+          "id": 65,
+          "kind": "typed_parameter",
+          "loc": x: Int,
+          "name": {
+            "id": 63,
+            "kind": "id",
+            "loc": x,
+            "text": "x",
+          },
+          "type": {
+            "id": 64,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "return": {
+        "id": 62,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
       "shuffle": {
         "args": [],
         "ret": [],
@@ -3995,6 +4378,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
     {
       "attributes": [
         {
+          "kind": "function_attribute",
           "loc": extends,
           "type": "extends",
         },
@@ -6477,12 +6861,12 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
 
 exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
 {
-  "id": 72,
+  "id": 94,
   "imports": [],
   "items": [
     {
       "attributes": [],
-      "id": 71,
+      "id": 93,
       "kind": "function_def",
       "loc": fun testFunc(): Int {
     let a: Int = 1;
@@ -6503,6 +6887,12 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
     a %= 2;
     a %= b;
     a %= b % 2;
+    a <<= 2;
+    a <<= b;
+    a <<= b << 2;
+    a >>= 2;
+    a >>= b;
+    a >>= b >> 2;
     return a;
 },
       "name": {
@@ -6927,12 +7317,148 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
         },
         {
           "expression": {
+            "base": 10,
+            "id": 70,
+            "kind": "number",
+            "loc": 2,
+            "value": 2n,
+          },
+          "id": 71,
+          "kind": "statement_augmentedassign",
+          "loc": a <<= 2;,
+          "op": "<<",
+          "path": {
             "id": 69,
             "kind": "id",
             "loc": a,
             "text": "a",
           },
-          "id": 70,
+        },
+        {
+          "expression": {
+            "id": 73,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "id": 74,
+          "kind": "statement_augmentedassign",
+          "loc": a <<= b;,
+          "op": "<<",
+          "path": {
+            "id": 72,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 78,
+            "kind": "op_binary",
+            "left": {
+              "id": 76,
+              "kind": "id",
+              "loc": b,
+              "text": "b",
+            },
+            "loc": b << 2,
+            "op": "<<",
+            "right": {
+              "base": 10,
+              "id": 77,
+              "kind": "number",
+              "loc": 2,
+              "value": 2n,
+            },
+          },
+          "id": 79,
+          "kind": "statement_augmentedassign",
+          "loc": a <<= b << 2;,
+          "op": "<<",
+          "path": {
+            "id": 75,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "base": 10,
+            "id": 81,
+            "kind": "number",
+            "loc": 2,
+            "value": 2n,
+          },
+          "id": 82,
+          "kind": "statement_augmentedassign",
+          "loc": a >>= 2;,
+          "op": ">>",
+          "path": {
+            "id": 80,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 84,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "id": 85,
+          "kind": "statement_augmentedassign",
+          "loc": a >>= b;,
+          "op": ">>",
+          "path": {
+            "id": 83,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 89,
+            "kind": "op_binary",
+            "left": {
+              "id": 87,
+              "kind": "id",
+              "loc": b,
+              "text": "b",
+            },
+            "loc": b >> 2,
+            "op": ">>",
+            "right": {
+              "base": 10,
+              "id": 88,
+              "kind": "number",
+              "loc": 2,
+              "value": 2n,
+            },
+          },
+          "id": 90,
+          "kind": "statement_augmentedassign",
+          "loc": a >>= b >> 2;,
+          "op": ">>",
+          "path": {
+            "id": 86,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 91,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "id": 92,
           "kind": "statement_return",
           "loc": return a;,
         },
@@ -7297,6 +7823,236 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
             "text": "a",
           },
           "id": 54,
+          "kind": "statement_return",
+          "loc": return a;,
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
+{
+  "id": 36,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 35,
+      "kind": "function_def",
+      "loc": fun testFunc(): Bool {
+    let a: Bool = true;
+    let b: Bool = false;
+    a ||= true;
+    a ||= b;
+    a ||= b || true;
+    a &&= true;
+    a &&= b;
+    a &&= b && true;
+    return a;
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": testFunc,
+        "text": "testFunc",
+      },
+      "params": [],
+      "return": {
+        "id": 2,
+        "kind": "type_id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 5,
+            "kind": "boolean",
+            "loc": true,
+            "value": true,
+          },
+          "id": 6,
+          "kind": "statement_let",
+          "loc": let a: Bool = true;,
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 4,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+        },
+        {
+          "expression": {
+            "id": 9,
+            "kind": "boolean",
+            "loc": false,
+            "value": false,
+          },
+          "id": 10,
+          "kind": "statement_let",
+          "loc": let b: Bool = false;,
+          "name": {
+            "id": 7,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 8,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+        },
+        {
+          "expression": {
+            "id": 12,
+            "kind": "boolean",
+            "loc": true,
+            "value": true,
+          },
+          "id": 13,
+          "kind": "statement_augmentedassign",
+          "loc": a ||= true;,
+          "op": "||",
+          "path": {
+            "id": 11,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 15,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "id": 16,
+          "kind": "statement_augmentedassign",
+          "loc": a ||= b;,
+          "op": "||",
+          "path": {
+            "id": 14,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 20,
+            "kind": "op_binary",
+            "left": {
+              "id": 18,
+              "kind": "id",
+              "loc": b,
+              "text": "b",
+            },
+            "loc": b || true,
+            "op": "||",
+            "right": {
+              "id": 19,
+              "kind": "boolean",
+              "loc": true,
+              "value": true,
+            },
+          },
+          "id": 21,
+          "kind": "statement_augmentedassign",
+          "loc": a ||= b || true;,
+          "op": "||",
+          "path": {
+            "id": 17,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 23,
+            "kind": "boolean",
+            "loc": true,
+            "value": true,
+          },
+          "id": 24,
+          "kind": "statement_augmentedassign",
+          "loc": a &&= true;,
+          "op": "&&",
+          "path": {
+            "id": 22,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 26,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "id": 27,
+          "kind": "statement_augmentedassign",
+          "loc": a &&= b;,
+          "op": "&&",
+          "path": {
+            "id": 25,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 31,
+            "kind": "op_binary",
+            "left": {
+              "id": 29,
+              "kind": "id",
+              "loc": b,
+              "text": "b",
+            },
+            "loc": b && true,
+            "op": "&&",
+            "right": {
+              "id": 30,
+              "kind": "boolean",
+              "loc": true,
+              "value": true,
+            },
+          },
+          "id": 32,
+          "kind": "statement_augmentedassign",
+          "loc": a &&= b && true;,
+          "op": "&&",
+          "path": {
+            "id": 28,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+        },
+        {
+          "expression": {
+            "id": 33,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "id": 34,
           "kind": "statement_return",
           "loc": return a;,
         },
@@ -8988,6 +9744,7 @@ exports[`grammar should parse trait-optional-semicolon-for-last-fun-decl 1`] = `
         {
           "attributes": [
             {
+              "kind": "function_attribute",
               "loc": abstract,
               "type": "abstract",
             },

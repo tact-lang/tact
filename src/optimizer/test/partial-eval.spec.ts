@@ -320,9 +320,10 @@ function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
         expect(
             eqExpressions(
-                partiallyEvalExpression(parseExpression(original), {
-                    ctx: new CompilerContext(),
-                }),
+                partiallyEvalExpression(
+                    parseExpression(original),
+                    new CompilerContext(),
+                ),
                 dummyEval(parseExpression(simplified)),
             ),
         ).toBe(true);
@@ -375,11 +376,9 @@ function dummyEval(ast: AstExpression): AstExpression {
             newNode = cloneAstNode(ast);
             newNode.operand = dummyEval(ast.operand);
             if (isValue(newNode.operand)) {
+                const operandValue = extractValue(newNode.operand as AstValue);
                 return makeValueExpression(
-                    evalUnaryOp(
-                        ast.op,
-                        extractValue(newNode.operand as AstValue),
-                    ),
+                    evalUnaryOp(ast.op, () => operandValue),
                     dummySrcInfo,
                 );
             }
@@ -389,11 +388,12 @@ function dummyEval(ast: AstExpression): AstExpression {
             newNode.left = dummyEval(ast.left);
             newNode.right = dummyEval(ast.right);
             if (isValue(newNode.left) && isValue(newNode.right)) {
+                const valR = extractValue(newNode.right as AstValue);
                 return makeValueExpression(
                     evalBinaryOp(
                         ast.op,
                         extractValue(newNode.left as AstValue),
-                        extractValue(newNode.right as AstValue),
+                        () => valR,
                     ),
                     dummySrcInfo,
                 );

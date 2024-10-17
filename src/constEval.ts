@@ -17,14 +17,26 @@ import {
 } from "./optimizer/util";
 import { ExpressionTransformer } from "./optimizer/types";
 import { StandardOptimizer } from "./optimizer/standardOptimizer";
+import { Interpreter } from "./interpreter";
 import {
     ensureInt,
     evalBinaryOp,
     evalUnaryOp,
+    StandardSemanticsConfig,
     StandardSemantics,
 } from "./interpreterSemantics/standardSemantics";
-import { Interpreter } from "./interpreter";
 import { throwNonFatalErrorConstEval } from "./interpreterSemantics/util";
+
+// Utility Exception class to interrupt the execution
+// of functions that cannot evaluate a tree fully into a value.
+class PartiallyEvaluatedTree extends Error {
+    public tree: AstExpression;
+
+    constructor(tree: AstExpression) {
+        super();
+        this.tree = tree;
+    }
+}
 
 // The optimizer that applies the rewriting rules during partial evaluation.
 // For the moment we use an optimizer that respects overflows.
@@ -34,7 +46,7 @@ function partiallyEvalUnaryOp(
     op: AstUnaryOperation,
     operand: AstExpression,
     source: SrcInfo,
-    compEnv: CompilerEnvironment,
+    ctx: CompilerContext,
 ): AstExpression {
     if (operand.kind === "number" && op === "-") {
         // emulating negative integer literals
@@ -44,11 +56,16 @@ function partiallyEvalUnaryOp(
         );
     }
 
-    const simplOperand = partiallyEvalExpression(operand, compEnv);
+    const simplOperand = partiallyEvalExpression(operand, ctx);
 
     if (isValue(simplOperand)) {
         const valueOperand = extractValue(simplOperand as AstValue);
-        const result = evalUnaryOp(op, valueOperand, simplOperand.loc, source);
+        const result = evalUnaryOp(
+            op,
+            () => valueOperand,
+            simplOperand.loc,
+            source,
+        );
         // Wrap the value into a Tree to continue simplifications
         return makeValueExpression(result, source);
     } else {
@@ -62,25 +79,61 @@ function partiallyEvalBinaryOp(
     left: AstExpression,
     right: AstExpression,
     source: SrcInfo,
-    compEnv: CompilerEnvironment,
+    ctx: CompilerContext,
 ): AstExpression {
-    const leftOperand = partiallyEvalExpression(left, compEnv);
-    const rightOperand = partiallyEvalExpression(right, compEnv);
+    const leftOperand = partiallyEvalExpression(left, ctx);
 
-    if (isValue(leftOperand) && isValue(rightOperand)) {
+    if (isValue(leftOperand)) {
+        // Because of short-circuiting, we must delay evaluation of the right operand
         const valueLeftOperand = extractValue(leftOperand as AstValue);
-        const valueRightOperand = extractValue(rightOperand as AstValue);
-        const result = evalBinaryOp(
-            op,
-            valueLeftOperand,
-            valueRightOperand,
-            leftOperand.loc,
-            rightOperand.loc,
-            source,
-        );
-        // Wrap the value into a Tree to continue simplifications
-        return makeValueExpression(result, source);
+
+        try {
+            const result = evalBinaryOp(
+                op,
+                valueLeftOperand,
+                // We delay the evaluation of the right operand inside a continuation
+                () => {
+                    const rightOperand = partiallyEvalExpression(right, ctx);
+                    if (isValue(rightOperand)) {
+                        // If the right operand reduces to a value, then we can let the function
+                        // evalBinaryOp finish its normal execution by returning the value
+                        // in the right operand.
+                        return extractValue(rightOperand as AstValue);
+                    } else {
+                        // If the right operand does not reduce to a value,
+                        // we interrupt the execution of the evalBinaryOp function
+                        // by returning an exception with the partially evaluated right operand.
+                        // The simplification rules will handle the partially evaluated tree in the catch
+                        // of the try surrounding the evalBinaryOp function.
+                        throw new PartiallyEvaluatedTree(rightOperand);
+                    }
+                },
+                leftOperand.loc,
+                right.loc,
+                source,
+            );
+
+            return makeValueExpression(result, source);
+        } catch (e) {
+            if (e instanceof PartiallyEvaluatedTree) {
+                // The right operand did not evaluate to a value. Hence,
+                // time to symbolically simplify the full tree.
+                const newAst = makeBinaryExpression(
+                    op,
+                    leftOperand,
+                    e.tree,
+                    source,
+                );
+                return optimizer.applyRules(newAst);
+            } else {
+                throw e;
+            }
+        }
     } else {
+        // Since the left operand does not reduce to a value, no immediate short-circuiting will occur.
+        // Hence, we can partially evaluate the right operand and let the rules
+        // simplify the tree.
+        const rightOperand = partiallyEvalExpression(right, ctx);
         const newAst = makeBinaryExpression(
             op,
             leftOperand,
@@ -93,18 +146,20 @@ function partiallyEvalBinaryOp(
 
 export function evalConstantExpression(
     ast: AstExpression,
-    compEnv: CompilerEnvironment,
+    ctx: CompilerContext,
+    interpreterConfig?: StandardSemanticsConfig,
 ): Value {
-    const interpreter = new Interpreter(new StandardSemantics(ctx));
+    const interpreter = new StandardSemantics(ctx, interpreterConfig);
     const result = interpreter.interpretExpression(ast);
     return result;
 }
 
 export function partiallyEvalExpression(
     ast: AstExpression,
-    compEnv: CompilerEnvironment,
+    ctx: CompilerContext,
+    interpreterConfig?: StandardSemanticsConfig,
 ): AstExpression {
-    const interpreter = new Interpreter(new StandardSemantics(ctx));
+    const interpreter = new StandardSemantics(ctx, interpreterConfig);
     switch (ast.kind) {
         case "id":
             try {
@@ -148,14 +203,14 @@ export function partiallyEvalExpression(
                 ast.loc,
             );
         case "op_unary":
-            return partiallyEvalUnaryOp(ast.op, ast.operand, ast.loc, compEnv);
+            return partiallyEvalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
         case "op_binary":
             return partiallyEvalBinaryOp(
                 ast.op,
                 ast.left,
                 ast.right,
                 ast.loc,
-                compEnv,
+                ctx,
             );
         case "conditional":
             // Does not partially evaluate at the moment. Will attempt to fully evaluate

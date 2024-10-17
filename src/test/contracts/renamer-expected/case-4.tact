@@ -37,10 +37,10 @@ contract contract_6 {
     fun function_def_8() {
         let d: Int? = null;
         self.a = 10;
-        d = a > 0 ? self.a : 0;
+        d = constant_def_2 > 0 ? self.a : 0;
         let res: Bool = isZero(1, 2, false, self.c);
         let e = 42;
-        self.b = a;
+        self.b = constant_def_2;
         self.c = Source{a: 10, b: 20};
     }
 

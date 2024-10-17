@@ -10,8 +10,8 @@ import {
     idText,
     SrcInfo,
 } from "../grammar/ast";
+import { throwNonFatalErrorConstEval } from "../interpreterSemantics/util";
 import { StructValue, Value } from "../types/types";
-import { throwNonFatalErrorConstEval } from "../interpreter";
 
 // This function assumes that the parameter is already a value.
 // i.e., that the user called the isValue function to check

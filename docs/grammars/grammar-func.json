@@ -1,0 +1,117 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "func",
+	"foldingStartMarker": "\\{\\s*$",
+	"foldingStopMarker": "^\\s*\\}",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#directives"
+		},
+		{
+			"include": "#numeric"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#storage"
+		},
+		{
+			"include": "#functions"
+		},
+		{
+			"include": "#variables"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.",
+					"match": "\\b(if|ifnot|else|elseif|elseifnot|while|do|until|repeat|return|impure|method_id|forall|asm|inline|inline_ref)\\b"
+				},
+				{
+					"name": "keyword.operator",
+					"match": "(?<=\\s)(<=>|>=|<=|!=|==|\\^>>|\\~>>|>>|<<|\\/%|\\^%|\\~%|\\^\\/|\\~\\/|\\+=|-=|\\*=|\\/=|~\\/=|\\^\\/=|%=|\\^%=|<<=|>>=|~>>=|\\^>>=|&=|\\|=|\\^=|\\^|=|~|\\/|%|-|\\*|\\+|>|<|&|\\||:|\\?)(?=\\s)"
+				},
+				{
+					"name": "keyword.other",
+					"match": "\\b(false|true)\\b"
+				}
+			]
+		},
+		"directives": {
+			"name": "storage.modifier.import",
+			"begin": "#include|#pragma",
+			"end": ";",
+			"patterns": [
+				{
+					"begin": "\"",
+					"end": "\"",
+					"name": "string.quoted.double"
+				},
+				{
+					"match": "(>=|<=|=|>|<|\\^)?([0-9]+)(.[0-9]+)?(.[0-9]+)?",
+					"name": "constant.numeric"
+				}
+			]
+		},
+		"strings": {
+			"name": "string.quoted.double.",
+			"begin": "\"",
+			"end": "\"(H|h|c|u|s|a)?"
+		},
+		"numeric": {
+			"name": "constant.numeric",
+			"match": "(-?([\\d]+|0x[\\da-fA-F]+))\\b"
+		},
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line",
+					"match": ";;(.*)"
+				},
+				{
+					"name": "comment.block",
+					"begin": "{-",
+					"end": "-}"
+				}
+			]
+		},
+		"storage": {
+			"patterns": [
+				{
+					"name": "storage.type",
+					"match": "\\b(var|int|slice|tuple|cell|builder|cont|_)(?=[\\s\\),\\[\\]])"
+				},
+				{
+					"name": "storage.modifier",
+					"match": "\\b(global|const)\\s"
+				}
+			]
+		},
+		"variables": {
+			"patterns": [
+				{
+					"match": "(?!\")(`([^`]+)`|((?=_)_|(?={){|(?=})}|(?![_`{}]))([^;,\\[\\]\\(\\)\\s~.]+))",
+					"name": "variable.name"
+				}
+			]
+		},
+		"functions": {
+			"patterns": [
+				{
+					"match": "(?!\")(`([^`]+)`|(\\.|~)?((?=_)_|(?={){|(?=})}|(?![_`{}]))([^;,\\[\\]\\(\\)\\s~.]+))(?=[\\(])",
+					"name": "entity.name.function"
+				}
+			]
+		}
+	},
+	"scopeName": "source.func"
+}

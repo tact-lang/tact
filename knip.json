@@ -5,11 +5,7 @@
   "ignore": [
     "src/grammar/ast.ts",
     "src/prettyPrinter.ts",
-    ".github/workflows/tact.yml"
+    ".github/workflows/tact*.yml"
   ],
-  "ignoreDependencies": [
-    "@tact-lang/ton-abi",
-    "@tact-lang/ton-jest",
-    "@types/jest"
-  ]
+  "ignoreDependencies": ["@tact-lang/ton-abi"]
 }

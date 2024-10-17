@@ -1,0 +1,218 @@
+---
+title: Debug
+description: "Various debugging functions from the Core library of Tact"
+---
+
+List of functions commonly used for debugging smart contracts in Tact.
+
+:::note
+
+  Read more about debugging on the dedicated page: [Debugging](/book/debug).
+
+:::
+
+## require
+
+```tact
+fun require(condition: Bool, error: String);
+```
+
+Checks the `condition` and throws an error with an [exit code](/book/exit-codes) generated from the `error` message if the `condition` is `false{:tact}`. Does nothing otherwise.
+
+The algorithm for generating the exit code works as follows:
+
+* First, the [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hash of `error` message [`String{:tact}`][p] is obtained.
+* Then, its value is read as a 32-bit [big-endian](https://en.wikipedia.org/wiki/Endianness) number modulo $63000$ plus $1000$, in that order.
+* Finally, it's put into the `.md` compilation report file, which resides with the other compilation artifacts in your project's `outputs/` or `build/` directories.
+
+The generated exit code is guaranteed to be outside the common $0 - 255$ range reserved for TVM and Tact contract errors, which makes it possible to distinguish exit codes from `require(){:tact}` and any other [standard exit codes](/book/exit-codes).
+
+Usage examples:
+
+```tact
+// now() has to return a value greater than 1000, otherwise an error message will be thrown
+require(now() > 1000, "We're in the first 1000 seconds of 1 January 1970!");
+
+try {
+    // The following will never be true, so this require would always throw
+    require(now() < -1, "Time is an illusion. Lunchtime doubly so.");
+} catch (e) {
+    // e will be outside of range 0-255
+    dump(e);
+}
+```
+
+## dump
+
+```tact
+fun dump(arg);
+```
+
+Prints the argument `arg` to the contract's debug console. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`, otherwise does nothing.
+
+Can be applied to the following list of types and values:
+
+* [`Int{:tact}`][int]
+* [`Bool{:tact}`][bool]
+* [`Address{:tact}`][p]
+* [`Cell{:tact}`][cell], [`Builder{:tact}`][builder] or [`Slice{:tact}`][slice]
+* [`String{:tact}`][p] or [`StringBuilder{:tact}`][p]
+* [`map<K, V>{:tact}`](/book/maps)
+* [Optionals and `null{:tact}` value](/book/optionals)
+* `void`, which is implicitly returned when a function doesn't have return value defined
+
+Usage examples:
+
+```tact
+// Int
+dump(42);
+
+// Bool
+dump(true);
+dump(false);
+
+// Address
+dump(myAddress());
+
+// Cell, Builder or Slice
+dump(emptyCell());  // Cell
+dump(beginCell());  // Builder
+dump(emptySlice()); // Slice
+
+// String or StringBuilder
+dump("Hello, my name is..."); // String
+dump(beginTailString());      // StringBuilder
+
+// Maps
+let m: map<Int, Int> = emptyMap();
+m.set(2 + 2, 4);
+dump(m);
+
+// Special values
+dump(null);
+dump(emit("msg".asComment())); // As emit() function doesn't return a value, dump() would print #DEBUG#: void.
+```
+
+:::note[Useful links:]
+
+  [Debug with `dump(){:tact}`](/book/debug#tests-dump)
+
+:::
+
+## dumpStack
+
+```tact
+fun dumpStack();
+```
+
+Prints all the values of [persistent state variables](/book/contracts#variables) to the contract's debug console. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`, otherwise does nothing.
+
+Usage example:
+
+```tact {6}
+contract DumpsterFire {
+    var1: Int = 0;
+    var2: Int = 5;
+
+    receive() {
+        dumpStack(); // would print 0 5
+    }
+}
+```
+
+:::note[Useful links:]
+
+  [Debug with `dump(){:tact}`](/book/debug#tests-dump)
+
+:::
+
+## throw
+
+```tact
+fun throw(code: Int);
+```
+
+An alias to [`nativeThrow(){:tact}`](#nativethrow).
+
+## nativeThrow
+
+```tact
+fun nativeThrow(code: Int);
+````
+
+Throws an exception with an error code equal to `code`. Execution of the current context stops (the statements after `nativeThrow` won't be executed) and control will be passed to the first [`try...catch{:tact}` block](/book/statements#try-catch) in the call stack. If no `try{:tact}` or `try...catch{:tact}` block exists among caller functions, [TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview) will terminate the transaction.
+
+Attempts to specify the `code` outside of $0 - 65535$ range cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage examples:
+
+```tact {2,7}
+fun thisWillTerminate() {
+    nativeThrow(42); // throwing with exit code 42
+}
+
+fun butThisDoesNot() {
+    try {
+        nativeThrow(42); // throwing with exit code 42
+    }
+
+    // ... follow-up logic ...
+}
+```
+
+## nativeThrowIf
+
+```tact
+fun nativeThrowIf(code: Int, condition: Bool);
+```
+
+Similar to [`nativeThrow(){:tact}`](#nativethrow), but throws an exception conditionally, when `condition` is equal to `true{:tact}`. Doesn't throw otherwise.
+
+Attempts to specify the `code` outside of $0 - 65535$ range cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage examples:
+
+```tact {2,7}
+fun thisWillTerminate() {
+    nativeThrowIf(42, true); // throwing with exit code 42
+}
+
+fun butThisDoesNot() {
+    try {
+        nativeThrowIf(42, true); // throwing with exit code 42
+    }
+    // ... follow-up logic ...
+}
+```
+
+## nativeThrowUnless
+
+```tact
+fun nativeThrowUnless(code: Int, condition: Bool);
+```
+
+Similar to [`nativeThrow(){:tact}`](#nativethrow), but throws an exception conditionally, when `condition` is equal to `false{:tact}`. Doesn't throw otherwise.
+
+Attempts to specify the `code` outside of $0 - 65535$ range cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage examples:
+
+```tact {2,7}
+fun thisWillTerminate() {
+    nativeThrowUnless(42, false); // throwing with exit code 42
+}
+
+fun butThisDoesNot() {
+    try {
+        nativeThrowUnless(42, false); // throwing with exit code 42
+    }
+    // ... follow-up logic ...
+}
+```
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[cell]: /book/cells#cells
+[builder]: /book/cells#builders
+[slice]: /book/cells#slices

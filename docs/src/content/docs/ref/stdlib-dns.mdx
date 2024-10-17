@@ -1,0 +1,195 @@
+---
+title: "@stdlib/dns"
+description: "Provides means for resolution of DNS names on TON"
+---
+
+Provides means for resolution of [DNS](https://docs.ton.org/participate/web3/dns) names.
+
+To use this library, import `@stdlib/dns`:
+
+```tact
+import "@stdlib/dns";
+```
+
+## Structs
+
+### DNSResolveResult
+
+```tact
+struct DNSResolveResult {
+    prefix: Int;
+    record: Cell?;
+}
+```
+
+## Functions
+
+### dnsStringToInternal
+
+```tact
+@name(dns_string_to_internal)
+native dnsStringToInternal(str: String): Slice?;
+```
+
+Converts a DNS string to a [`Slice{:tact}`][slice] or [`null{:tact}`](/book/optionals), if it's impossible.
+
+Source code (FunC): [dns.fc#L1](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc#L1)
+
+### dnsInternalNormalize
+
+```tact
+@name(dns_internal_normalize)
+native dnsInternalNormalize(src: Slice): Slice;
+```
+
+Normalizes the internal DNS representation of the [`Slice{:tact}`][slice]. The passed [`Slice{:tact}`][slice] must not have any references, otherwise an exception wit [exit code 134](/book/exit-codes#134) will be thrown: `Invalid argument`.
+
+Source code (FunC): [dns.fc#L125](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc#L125)
+
+### dnsInternalVerify
+
+```tact
+@name(dns_internal_verify)
+native dnsInternalVerify(subdomain: Slice): Bool;
+```
+
+Verifies the internal DNS representation of the subdomain [`Slice{:tact}`][slice].
+
+Source code (FunC): [dns.fc#L81](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc#L81)
+
+### dnsExtractTopDomainLength
+
+```tact
+fun dnsExtractTopDomainLength(subdomain: Slice): Int;
+```
+
+Calculates length of a top domain in the `subdomain` [`Slice{:tact}`][slice].
+
+Source code:
+
+```tact
+fun dnsExtractTopDomainLength(subdomain: Slice): Int {
+    let i: Int = 0;
+    let needBreak: Bool = false;
+    do {
+        let char: Int = subdomain.loadUint(8); // we do not check domain.length because it MUST contain \0 character
+        needBreak = char == 0;
+        if (!needBreak) {
+            i += 8;
+        }
+    } until (needBreak);
+    require(i != 0, "Invalid DNS name");
+    return i;
+}
+```
+
+### dnsExtractTopDomain
+
+```tact
+fun dnsExtractTopDomain(subdomain: Slice): Slice;
+```
+
+Extracts top domain from a `subdomain` [`Slice{:tact}`][slice].
+
+Source code:
+
+```tact
+fun dnsExtractTopDomain(subdomain: Slice): Slice {
+    let len: Int = dnsExtractTopDomainLength(subdomain);
+    return subdomain.loadBits(len);
+}
+```
+
+### dnsResolveNext
+
+```tact
+fun dnsResolveNext(address: Address): Cell;
+```
+
+Resolves an `address` [`Address{:tact}`][p] into a [`Cell{:tact}`][cell].
+
+Source code:
+
+```tact
+fun dnsResolveNext(address: Address): Cell {
+    return beginCell()
+        .storeUint(0xba93, 16)
+        .storeAddress(address)
+        .endCell();
+}
+```
+
+### dnsResolveWallet
+
+```tact
+fun dnsResolveWallet(address: Address): Cell;
+```
+
+Resolves a wallet `address` [`Address{:tact}`][p] into a [`Cell{:tact}`][cell].
+
+Source code:
+
+```tact
+fun dnsResolveWallet(address: Address): Cell {
+    return beginCell()
+        .storeUint(0x9fd3, 16)
+        .storeAddress(address)
+        .storeUint(0, 8)
+        .endCell();
+}
+```
+
+## Traits
+
+### DNSResolver
+
+Trait `DNSResolver` provides two helper functions for DNS resolution:
+
+1. [getter function](/book/functions#getter-functions) `dnsresolve(){:tact}`, which corresponds to its [FunC variant](https://docs.ton.org/develop/howto/subresolvers#dnsresolve-code).
+2. virtual function `doResolveDNS(){:tact}`, which creates a struct [DNSResolveResult](#dnsresolveresult) out of subdomain [`Slice{:tact}`][slice] bits.
+
+Source code:
+
+```tact
+trait DNSResolver {
+    get fun dnsresolve(subdomain: Slice, category: Int): DNSResolveResult {
+        // Normalize
+        let delta: Int = 0;
+        if (subdomain.preloadUint(8) == 0) {
+            subdomain.loadUint(8); // Skip first byte
+            delta += 8;
+        }
+
+        // Checks correctness
+        require(dnsInternalVerify(subdomain), "Invalid DNS name");
+
+        // Resolve
+        let res: DNSResolveResult = self.doResolveDNS(subdomain, category);
+        return DNSResolveResult{prefix: res.prefix + delta, record: res.record};
+    }
+    virtual fun doResolveDNS(subdomain: Slice, category: Int): DNSResolveResult {
+        return DNSResolveResult{prefix: subdomain.bits(), record: null};
+    }
+}
+```
+
+Usage example:
+
+```tact
+import "@stdlib/dns";
+
+contract ExampleContract with DNSResolver {
+    // Now, this contract has a:
+    // 1. dnsresolve getter function
+    // 2. doResolveDNS virtual function
+}
+```
+
+## Sources
+
+* [dns.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/dns.tact)
+* [dns.fc](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc)
+
+[p]: /book/types#primitive-types
+[cell]: /book/cells#cells
+[slice]: /book/cells#slices

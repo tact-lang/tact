@@ -34,8 +34,7 @@ import {
     hasStaticFunction,
 } from "../types/resolveDescriptors";
 import { getExpType } from "../types/resolveExpression";
-import { CommentValue, showValue, StructValue, Value } from "../types/types";
-import { InterpreterSemantics } from "./types";
+import { CommentValue, copyValue, showValue, StructValue, Value } from "../types/types";
 import { sha256_sync } from "@ton/crypto";
 import { enabledMasterchain } from "../config/features";
 import { dummySrcInfo } from "../grammar/grammar";
@@ -45,6 +44,7 @@ import {
     throwErrorConstEval,
     throwNonFatalErrorConstEval,
 } from "./util";
+import { Interpreter } from "../interpreter";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -67,7 +67,7 @@ class ReturnSignal extends Error {
     }
 }
 
-type InterpreterConfig = {
+export type StandardSemanticsConfig = {
     // Options that tune the interpreter's behavior.
 
     // Maximum number of iterations inside a loop before a time out is issued.
@@ -84,7 +84,7 @@ representing the environments stack.
 
 The elements in the map are called "bindings".
 */
-type Environment<V> = { values: Map<string, V>; parent?: Environment<V> };
+export type Environment<V> = { values: Map<string, V>; parent?: Environment<V> };
 
 /*
 An environment stack is a linked list of Environment nodes. 
@@ -92,11 +92,21 @@ An environment stack is a linked list of Environment nodes.
 The type of the values stored in the environments is represented by the 
 generic type V.
 */
-class EnvironmentStack<V> {
+export class EnvironmentStack<V> {
     private currentEnv: Environment<V>;
+    private copyValue: (val: V) => V;
 
-    constructor() {
+    constructor(copyValueMethod: (val: V) => V) {
         this.currentEnv = { values: new Map() };
+        this.copyValue = copyValueMethod;
+    }
+
+    private copyCurrentEnvironment(): Environment<V> {
+        const newMap: Map<string, V> = new Map();
+
+        this.currentEnv.values.forEach((val, name) => newMap.set(name, this.copyValue(val)));
+
+        return {...this.currentEnv, values: newMap};
     }
 
     private findBindingMap(name: string): Map<string, V> | undefined {
@@ -235,9 +245,30 @@ class EnvironmentStack<V> {
             this.currentEnv = oldEnv;
         }
     }
+
+    public simulate(code: () => void, startEnv: Environment<V> = this.currentEnv): Environment<V> {
+        const envCopy = this.copyCurrentEnvironment();
+
+        this.currentEnv = startEnv;
+
+        try {
+            code();
+            return this.currentEnv;
+        } finally {
+            this.currentEnv = envCopy;
+        }
+    } 
+
+    public setCurrentEnvironment(env: Environment<V>) {
+        this.currentEnv = env;
+    }
+
+    public getCurrentEnvironment(): Environment<V> {
+        return this.currentEnv;
+    }
 }
 
-const defaultInterpreterConfig: InterpreterConfig = {
+const defaultStandardSemanticsConfig: StandardSemanticsConfig = {
     // We set the default max number of loop iterations
     // to the maximum number allowed for repeat loops
     maxLoopIterations: maxRepeatStatement,
@@ -284,17 +315,18 @@ Internally, the semantics use a stack of environments to keep track of
 variables at different scopes. Each environment in the stack contains a map
 that binds a variable name to its corresponding value.
 */
-export class StandardSemantics extends InterpreterSemantics<Value> {
-    private envStack: EnvironmentStack<Value>;
-    private context: CompilerContext;
-    private config: InterpreterConfig;
+export class StandardSemantics extends Interpreter<Value> {
+
+    protected envStack: EnvironmentStack<Value>;
+    protected context: CompilerContext;
+    protected config: StandardSemanticsConfig;
 
     constructor(
         context: CompilerContext = new CompilerContext(),
-        config: InterpreterConfig = defaultInterpreterConfig,
+        config: StandardSemanticsConfig = defaultStandardSemanticsConfig,
     ) {
-        super();
-        this.envStack = new EnvironmentStack();
+        super(copyValue);
+        this.envStack = new EnvironmentStack(copyValue);
         this.context = context;
         this.config = config;
     }
@@ -345,19 +377,19 @@ export class StandardSemantics extends InterpreterSemantics<Value> {
         );
     }
 
-    public evalNull(_ast: AstNull): Value {
+    public interpretNull(_ast: AstNull): Value {
         return null;
     }
 
-    public evalBoolean(ast: AstBoolean): Value {
+    public interpretBoolean(ast: AstBoolean): Value {
         return ast.value;
     }
 
-    public evalInteger(ast: AstNumber): Value {
+    public interpretNumber(ast: AstNumber): Value {
         return ensureInt(ast.value, ast.loc);
     }
 
-    public evalString(ast: AstString): Value {
+    public interpretString(ast: AstString): Value {
         return ensureString(
             interpretEscapeSequences(ast.value, ast.loc),
             ast.loc,
@@ -374,12 +406,7 @@ export class StandardSemantics extends InterpreterSemantics<Value> {
             return ensureInt(-ast.operand.value, ast.loc);
         }
 
-        return evalUnaryOp(
-            ast.op,
-            operandEvaluator,
-            ast.operand.loc,
-            ast.loc,
-        );
+        return evalUnaryOp(ast.op, operandEvaluator, ast.operand.loc, ast.loc);
     }
 
     public evalBinaryOp(
@@ -613,111 +640,99 @@ export class StandardSemantics extends InterpreterSemantics<Value> {
                     }
                 }
                 break;
-                case "slice":
-                    {
-                        ensureFunArity(1, ast.args, ast.loc);
-                        const str = ensureString(
-                            argValues[0]!,
-                            ast.args[0]!.loc,
+            case "slice":
+                {
+                    ensureFunArity(1, ast.args, ast.loc);
+                    const str = ensureString(argValues[0]!, ast.args[0]!.loc);
+                    try {
+                        return Cell.fromBase64(str).asSlice();
+                    } catch (_) {
+                        throwErrorConstEval(
+                            `invalid base64 encoding for a cell: ${str}`,
+                            ast.loc,
                         );
-                        try {
-                            return Cell.fromBase64(str).asSlice();
-                        } catch (_) {
-                            throwErrorConstEval(
-                                `invalid base64 encoding for a cell: ${str}`,
-                                ast.loc,
+                    }
+                }
+                break;
+            case "rawSlice":
+                {
+                    ensureFunArity(1, ast.args, ast.loc);
+                    const str = ensureString(argValues[0]!, ast.args[0]!.loc);
+
+                    if (!/^[0-9a-fA-F]*_?$/.test(str)) {
+                        throwErrorConstEval(
+                            `invalid hex string: ${str}`,
+                            ast.loc,
+                        );
+                    }
+
+                    // Remove underscores from the hex string
+                    const hex = str.replace("_", "");
+                    const paddedHex = hex.length % 2 === 0 ? hex : "0" + hex;
+                    const buffer = Buffer.from(paddedHex, "hex");
+
+                    // Initialize the BitString
+                    let bits = new BitString(
+                        buffer,
+                        hex.length % 2 === 0 ? 0 : 4,
+                        hex.length * 4,
+                    );
+
+                    // Handle the case where the string ends with an underscore
+                    if (str.endsWith("_")) {
+                        const paddedBits = paddedBufferToBits(buffer);
+
+                        // Ensure there's enough length to apply the offset
+                        const offset = hex.length % 2 === 0 ? 0 : 4;
+                        if (paddedBits.length >= offset) {
+                            bits = paddedBits.substring(
+                                offset,
+                                paddedBits.length - offset,
                             );
+                        } else {
+                            bits = new BitString(Buffer.from(""), 0, 0);
                         }
                     }
-                    break;
-                case "rawSlice":
-                    {
-                        ensureFunArity(1, ast.args, ast.loc);
-                        const str = ensureString(
-                            argValues[0]!,
-                            ast.args[0]!.loc,
+
+                    // Ensure the bit length is within acceptable limits
+                    if (bits.length > 1023) {
+                        throwErrorConstEval(
+                            `slice constant is too long, expected up to 1023 bits, got ${bits.length}`,
+                            ast.loc,
                         );
-    
-                        if (!/^[0-9a-fA-F]*_?$/.test(str)) {
-                            throwErrorConstEval(
-                                `invalid hex string: ${str}`,
-                                ast.loc,
-                            );
-                        }
-    
-                        // Remove underscores from the hex string
-                        const hex = str.replace("_", "");
-                        const paddedHex = hex.length % 2 === 0 ? hex : "0" + hex;
-                        const buffer = Buffer.from(paddedHex, "hex");
-    
-                        // Initialize the BitString
-                        let bits = new BitString(
-                            buffer,
-                            hex.length % 2 === 0 ? 0 : 4,
-                            hex.length * 4,
-                        );
-    
-                        // Handle the case where the string ends with an underscore
-                        if (str.endsWith("_")) {
-                            const paddedBits = paddedBufferToBits(buffer);
-    
-                            // Ensure there's enough length to apply the offset
-                            const offset = hex.length % 2 === 0 ? 0 : 4;
-                            if (paddedBits.length >= offset) {
-                                bits = paddedBits.substring(
-                                    offset,
-                                    paddedBits.length - offset,
-                                );
-                            } else {
-                                bits = new BitString(Buffer.from(""), 0, 0);
-                            }
-                        }
-    
-                        // Ensure the bit length is within acceptable limits
-                        if (bits.length > 1023) {
-                            throwErrorConstEval(
-                                `slice constant is too long, expected up to 1023 bits, got ${bits.length}`,
-                                ast.loc,
-                            );
-                        }
-    
-                        // Return the constructed slice
-                        return beginCell().storeBits(bits).endCell().asSlice();
                     }
-                    break;
-                case "ascii":
-                    {
-                        ensureFunArity(1, ast.args, ast.loc);
-                        const str = ensureString(
-                            argValues[0]!,
-                            ast.args[0]!.loc,
+
+                    // Return the constructed slice
+                    return beginCell().storeBits(bits).endCell().asSlice();
+                }
+                break;
+            case "ascii":
+                {
+                    ensureFunArity(1, ast.args, ast.loc);
+                    const str = ensureString(argValues[0]!, ast.args[0]!.loc);
+                    const hex = Buffer.from(str).toString("hex");
+                    if (hex.length > 64) {
+                        throwErrorConstEval(
+                            `ascii string is too long, expected up to 32 bytes, got ${Math.floor(hex.length / 2)}`,
+                            ast.loc,
                         );
-                        const hex = Buffer.from(str).toString("hex");
-                        if (hex.length > 64) {
-                            throwErrorConstEval(
-                                `ascii string is too long, expected up to 32 bytes, got ${Math.floor(hex.length / 2)}`,
-                                ast.loc,
-                            );
-                        }
-                        if (hex.length == 0) {
-                            throwErrorConstEval(
-                                `ascii string cannot be empty`,
-                                ast.loc,
-                            );
-                        }
-                        return BigInt("0x" + hex);
                     }
-                    break;
-                case "crc32":
-                    {
-                        ensureFunArity(1, ast.args, ast.loc);
-                        const str = ensureString(
-                            argValues[0]!,
-                            ast.args[0]!.loc,
+                    if (hex.length == 0) {
+                        throwErrorConstEval(
+                            `ascii string cannot be empty`,
+                            ast.loc,
                         );
-                        return BigInt(crc32.str(str) >>> 0); // >>> 0 converts to unsigned
                     }
-                    break;
+                    return BigInt("0x" + hex);
+                }
+                break;
+            case "crc32":
+                {
+                    ensureFunArity(1, ast.args, ast.loc);
+                    const str = ensureString(argValues[0]!, ast.args[0]!.loc);
+                    return BigInt(crc32.str(str) >>> 0); // >>> 0 converts to unsigned
+                }
+                break;
             case "address":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
@@ -860,25 +875,78 @@ export class StandardSemantics extends InterpreterSemantics<Value> {
         );
     }
 
-    public storeNewBinding(ast: AstStatementLet, exprValue: Value) {
-        if (hasStaticConstant(this.context, idText(ast.name))) {
+    public storeNewBinding(id: AstId, exprValue: Value | undefined) {
+        if (hasStaticConstant(this.context, idText(id))) {
             // Attempt of shadowing a constant in a let declaration
             throwInternalCompilerError(
-                `declaration of ${idText(ast.name)} shadows a constant with the same name`,
-                ast.loc,
+                `declaration of ${idText(id)} shadows a constant with the same name`,
+                id.loc,
             );
         }
 
-        this.envStack.setNewBinding(idText(ast.name), exprValue);
+        // In the standard interpreter, it should not happen that exprValue is undefined
+        if (exprValue !== undefined) {
+            // Make a copy of exprValue, because everything is assignned by value
+            this.envStack.setNewBinding(idText(id), copyValue(exprValue));
+        } else {
+            throwInternalCompilerError(
+                `Value of ${idText(id)} is undefined`,
+                id.loc,
+            );
+        }
     }
 
-    public updateBinding(id: AstId, exprValue: Value) {
-        this.envStack.updateBinding(idText(id), exprValue);
+    public updateBinding(path: AstId[], exprValue: Value | undefined, src: SrcInfo) {
+        // In the standard interpreter, it should not happen that exprValue is undefined
+        if (exprValue !== undefined) {
+            if (path.length === 0) {
+                throwInternalCompilerError(
+                    `path expression must be non-empty`,
+                    src,
+                );
+            }
+            if (path.length === 1) {
+                // Make a copy of exprValue, because everything is assignned by value
+                this.envStack.updateBinding(idText(path[0]!), copyValue(exprValue));
+                return;
+            }
+
+            // the path expression contains at least 2 identifiers
+
+            // Look up the first identifier
+            const baseStruct = this.envStack.getBinding(idText(path[0]!));
+            if (baseStruct !== undefined) {
+                // The typechecker ensures that baseStruct is a contract or a struct,
+                // which are treated identically by the interpreter as StructValues
+                
+                // Carry out look ups from ids 1 to path.length-2 (inclusive)
+                let innerValue = baseStruct as StructValue;
+                for (let i = 1; i <= path.length-2; i++) {
+                    const tempValue = innerValue[idText(path[i]!)];
+                    if (tempValue === undefined) {
+                        throwNonFatalErrorConstEval(`cannot find field ${idText(path[i]!)}`, path[i]!.loc);
+                    }
+                    // The typechecker ensures that tempValue is a StructValue 
+                    // (because we are not accessing the last id in the path)
+                    innerValue = tempValue as StructValue;
+                }
+
+                // Update the final field
+                // Make a copy of exprValue, because everything is assignned by value
+                innerValue[idText(path[path.length-1]!)] = copyValue(exprValue);
+            } else {
+                throwNonFatalErrorConstEval(`cannot find identifier ${idText(path[0]!)}`, path[0]!.loc);
+            }
+
+        } else {
+            throwInternalCompilerError(
+                `value of ${path.map(idText).join(".")} is undefined`,
+                src,
+            );
+        }
     }
 
-    public runInNewEnvironment(
-        statementsEvaluator: () => undefined,
-    ) {
+    public runInNewEnvironment(statementsEvaluator: () => void) {
         this.envStack.executeInNewEnvironment(statementsEvaluator);
     }
 
@@ -893,7 +961,7 @@ export class StandardSemantics extends InterpreterSemantics<Value> {
     public runOneIteration(
         iterationNumber: bigint,
         src: SrcInfo,
-        iterationEvaluator: () => undefined,
+        iterationEvaluator: () => void,
     ) {
         iterationEvaluator();
         if (iterationNumber >= this.config.maxLoopIterations) {
@@ -904,6 +972,7 @@ export class StandardSemantics extends InterpreterSemantics<Value> {
     public toRepeatInteger(value: Value, src: SrcInfo): bigint {
         return ensureRepeatInt(value, src);
     }
+
 }
 
 export function ensureInt(val: Value, source: SrcInfo): bigint {
@@ -984,20 +1053,24 @@ function ensureMethodArity(
 
 export function evalUnaryOp(
     op: AstUnaryOperation,
-    operandEvaluator: () => Value,
+    operandContinuation: () => Value,
     operandLoc: SrcInfo = dummySrcInfo,
     source: SrcInfo = dummySrcInfo,
 ): Value {
     switch (op) {
         case "+":
-            return ensureInt(valOperand, operandLoc);
+            return ensureInt(operandContinuation(), operandLoc);
         case "-":
-            return ensureInt(-ensureInt(valOperand, operandLoc), source);
+            return ensureInt(
+                -ensureInt(operandContinuation(), operandLoc),
+                source,
+            );
         case "~":
-            return ~ensureInt(valOperand, operandLoc);
+            return ~ensureInt(operandContinuation(), operandLoc);
         case "!":
-            return !ensureBoolean(valOperand, operandLoc);
-        case "!!":
+            return !ensureBoolean(operandContinuation(), operandLoc);
+        case "!!": {
+            const valOperand = operandContinuation();
             if (valOperand === null) {
                 throwErrorConstEval(
                     "non-null value expected but got null",
@@ -1005,13 +1078,14 @@ export function evalUnaryOp(
                 );
             }
             return valOperand;
+        }
     }
 }
 
 export function evalBinaryOp(
     op: AstBinaryOperation,
     valLeft: Value,
-    rightEvaluator: () => Value,
+    valRightContinuation: () => Value, // It needs to be a continuation, because some binary operators short-circuit
     locLeft: SrcInfo = dummySrcInfo,
     locRight: SrcInfo = dummySrcInfo,
     source: SrcInfo = dummySrcInfo,
@@ -1019,17 +1093,20 @@ export function evalBinaryOp(
     switch (op) {
         case "+":
             return ensureInt(
-                ensureInt(valLeft, locLeft) + ensureInt(valRight, locRight),
+                ensureInt(valLeft, locLeft) +
+                    ensureInt(valRightContinuation(), locRight),
                 source,
             );
         case "-":
             return ensureInt(
-                ensureInt(valLeft, locLeft) - ensureInt(valRight, locRight),
+                ensureInt(valLeft, locLeft) -
+                    ensureInt(valRightContinuation(), locRight),
                 source,
             );
         case "*":
             return ensureInt(
-                ensureInt(valLeft, locLeft) * ensureInt(valRight, locRight),
+                ensureInt(valLeft, locLeft) *
+                    ensureInt(valRightContinuation(), locRight),
                 source,
             );
         case "/": {
@@ -1037,7 +1114,7 @@ export function evalBinaryOp(
             // is a non-conventional one: by default it rounds towards negative infinity,
             // meaning, for instance, -1 / 5 = -1 and not zero, as in many mainstream languages.
             // Still, the following holds: a / b * b + a % b == a, for all b != 0.
-            const r = ensureInt(valRight, locRight);
+            const r = ensureInt(valRightContinuation(), locRight);
             if (r === 0n)
                 throwErrorConstEval(
                     "divisor expression must be non-zero",
@@ -1048,7 +1125,7 @@ export function evalBinaryOp(
         case "%": {
             // Same as for division, see the comment above
             // Example: -1 % 5 = 4
-            const r = ensureInt(valRight, locRight);
+            const r = ensureInt(valRightContinuation(), locRight);
             if (r === 0n)
                 throwErrorConstEval(
                     "divisor expression must be non-zero",
@@ -1057,14 +1134,23 @@ export function evalBinaryOp(
             return ensureInt(modFloor(ensureInt(valLeft, locLeft), r), source);
         }
         case "&":
-            return ensureInt(valLeft, locLeft) & ensureInt(valRight, locRight);
+            return (
+                ensureInt(valLeft, locLeft) &
+                ensureInt(valRightContinuation(), locRight)
+            );
         case "|":
-            return ensureInt(valLeft, locLeft) | ensureInt(valRight, locRight);
+            return (
+                ensureInt(valLeft, locLeft) |
+                ensureInt(valRightContinuation(), locRight)
+            );
         case "^":
-            return ensureInt(valLeft, locLeft) ^ ensureInt(valRight, locRight);
+            return (
+                ensureInt(valLeft, locLeft) ^
+                ensureInt(valRightContinuation(), locRight)
+            );
         case "<<": {
             const valNum = ensureInt(valLeft, locLeft);
-            const valBits = ensureInt(valRight, locRight);
+            const valBits = ensureInt(valRightContinuation(), locRight);
             if (0n > valBits || valBits > 256n) {
                 throwErrorConstEval(
                     `the number of bits shifted ('${valBits}') must be within [0..256] range`,
@@ -1085,7 +1171,7 @@ export function evalBinaryOp(
         }
         case ">>": {
             const valNum = ensureInt(valLeft, locLeft);
-            const valBits = ensureInt(valRight, locRight);
+            const valBits = ensureInt(valRightContinuation(), locRight);
             if (0n > valBits || valBits > 256n) {
                 throwErrorConstEval(
                     `the number of bits shifted ('${valBits}') must be within [0..256] range`,
@@ -1105,44 +1191,61 @@ export function evalBinaryOp(
             }
         }
         case ">":
-            return ensureInt(valLeft, locLeft) > ensureInt(valRight, locRight);
+            return (
+                ensureInt(valLeft, locLeft) >
+                ensureInt(valRightContinuation(), locRight)
+            );
         case "<":
-            return ensureInt(valLeft, locLeft) < ensureInt(valRight, locRight);
+            return (
+                ensureInt(valLeft, locLeft) <
+                ensureInt(valRightContinuation(), locRight)
+            );
         case ">=":
-            return ensureInt(valLeft, locLeft) >= ensureInt(valRight, locRight);
+            return (
+                ensureInt(valLeft, locLeft) >=
+                ensureInt(valRightContinuation(), locRight)
+            );
         case "<=":
-            return ensureInt(valLeft, locLeft) <= ensureInt(valRight, locRight);
-        case "==":
+            return (
+                ensureInt(valLeft, locLeft) <=
+                ensureInt(valRightContinuation(), locRight)
+            );
+        case "==": {
+            const valR = valRightContinuation();
+
             // the null comparisons account for optional types, e.g.
             // a const x: Int? = 42 can be compared to null
             if (
-                typeof valLeft !== typeof valRight &&
+                typeof valLeft !== typeof valR &&
                 valLeft !== null &&
-                valRight !== null
+                valR !== null
             ) {
                 throwErrorConstEval(
                     "operands of `==` must have same type",
                     source,
                 );
             }
-            return valLeft === valRight;
-        case "!=":
-            if (typeof valLeft !== typeof valRight) {
+            return valLeft === valR;
+        }
+        case "!=": {
+            const valR = valRightContinuation();
+            if (typeof valLeft !== typeof valR) {
                 throwErrorConstEval(
                     "operands of `!=` must have same type",
                     source,
                 );
             }
-            return valLeft !== valRight;
+            return valLeft !== valR;
+        }
         case "&&":
             return (
                 ensureBoolean(valLeft, locLeft) &&
-                ensureBoolean(valRight, locRight)
+                ensureBoolean(valRightContinuation(), locRight)
             );
         case "||":
             return (
                 ensureBoolean(valLeft, locLeft) ||
-                ensureBoolean(valRight, locRight)
+                ensureBoolean(valRightContinuation(), locRight)
             );
     }
 }

@@ -42,6 +42,13 @@ describe("semantics", () => {
         expect(await contract.getParamStruct2()).toEqual(true);
         expect(await contract.getMutateParamStruct1()).toEqual(true);
         expect(await contract.getMutateParamStruct2()).toEqual(true);
+        expect(await contract.getTestReturnedStructs()).toEqual(true);
+        expect(await contract.getMutatesChainStruct1()).toEqual(true);
+        expect(await contract.getMutatesChainStruct2()).toEqual(true);
+        expect(await contract.getMutatesChainStruct3()).toEqual(true);
+        expect(await contract.getMutatesChainStruct4()).toEqual(true);
+        expect(await contract.getMutatesChainStruct5()).toEqual(true);
+        expect(await contract.getMutatesChainStruct6()).toEqual(true);
 
         // Maps
 
@@ -51,6 +58,27 @@ describe("semantics", () => {
         expect(await contract.getParamMap2()).toEqual(true);
         expect(await contract.getMutateParamMap1()).toEqual(true);
         expect(await contract.getMutateParamMap2()).toEqual(true);
+        expect(await contract.getTestReturnedMaps1()).toEqual(true);
+        // expect(await contract.getTestReturnedMaps2()).toEqual(true);
+        expect(await contract.getMutateNestedMap1()).toEqual(true);
+
+        // Integers
+
+        expect(await contract.getMutatesChainInt1()).toEqual(true);
+        expect(await contract.getMutatesChainInt2()).toEqual(true);
+        expect(await contract.getMutatesChainInt3()).toEqual(true);
+        expect(await contract.getMutatesChainInt4()).toEqual(true);
+        expect(await contract.getMutatesChainInt5()).toEqual(true);
+        expect(await contract.getMutatesChainInt6()).toEqual(true);
+
+        // Boolean expressions
+
+        expect(await contract.getAndMutateShortCircuit()).toEqual(true);
+        expect(await contract.getAndInfiniteLoopShortCircuit()).toEqual(true);
+        expect(await contract.getAndExceptionShortCircuit()).toEqual(true);
+        expect(await contract.getOrMutateShortCircuit()).toEqual(true);
+        expect(await contract.getOrInfiniteLoopShortCircuit()).toEqual(true);
+        expect(await contract.getOrExceptionShortCircuit()).toEqual(true);
 
         // Contracts
 
@@ -58,6 +86,7 @@ describe("semantics", () => {
         expect(await contract.getContractAssign2()).toEqual(true);
         expect(await contract.getParamContract()).toEqual(true);
         expect(await contract.getMutateParamContract()).toEqual(true);
+        expect(await contract.getTestReturnedContracts()).toEqual(true);
 
         // Obtain the address before the contract gets modified
         const address1 = await contract.getAddress();

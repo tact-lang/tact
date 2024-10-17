@@ -1,0 +1,417 @@
+---
+title: Statements
+description: "This page lists all the statements in Tact, which can appear anywhere in the function bodies"
+---
+
+The following statements can appear anywhere in the [function](/book/functions) body.
+
+## `let` statement {#let}
+
+The `let{:tact}` statement allows local and [block](#block)-scoped variable declaration.
+
+In Tact, declaring a local variable always requires an initial value. However, the type ascription can be omitted and Tact will try to infer it from the initial value:
+
+```tact
+let value: Int = 123; // full declaration with type and value
+let vInferred = 123;  // inferred type Int
+
+let vExplicitCtx: Context = context(); // explicit type Context, a built-in Struct
+let vCtx = context();                  // inferred type Context
+```
+
+Note, that initial value of `null{:tact}` can mean both an empty [`map<K, V>{:tact}`](/book/maps) with arbitrary `K{:tact}` and `V{:tact}` types, and the intentional absence of any other value for the [optional](/book/optionals) type. That's why whenever you're declaring an [optional](/book/optionals) or a [`map<K, V>{:tact}`](/book/maps), you'll need to explicitly specify the type as it cannot be inferred:
+
+```tact
+let vOptional: Int? = null; // explicit type Int or null
+let vOptInt = 42;           // implicit type Int
+vOptInt = null;             // COMPILATION ERROR!
+
+let vMap: map<Int, Int> = emptyMap(); // explicit type map<Int, Int>
+let vMapWithSerialization: map<Int as uint8, Int as uint8> = emptyMap();
+```
+
+Naming a local variable with underscore `_{:tact}` makes its value considered unused and discarded. This is useful when you don't need a return value of some function with side effects, and want to explicitly mark the variable as unused. Note, that such wildcard variable name `_{:tact}` cannot be accessed:
+
+```tact
+let _ = someFunctionWithSideEffects(); // with type inference
+let _: map<Int, Int> = emptyMap();     // with explicit type
+
+dump(_); // COMPILATION ERROR! Cannot access _
+```
+
+## `return` statement {#return}
+
+The `return{:tact}` statement ends [function](/book/functions) execution and specifies a value to be returned to the [function](/book/functions) caller.
+
+```tact
+// Simple wrapper over stdlib function now()
+fun getTimeFromNow(offset: Int): Int {
+    return now() + offset;
+}
+```
+
+## Block
+
+A block statement is used to group zero or more statements. The block is delimited by a pair of braces ("curly braces", `{}{:tact}`) and contains a list of zero or more statements and declarations.
+
+Some statements, such as [`let{:tact}`](#let) or [`return{:tact}`](#return), must end with a terminating semicolon `;{:tact}`. However, the semicolon of the last statement in the block is optional and may be omitted.
+
+```tact
+{ // <- start of the block
+    // arbitrary statements:
+    let value: Int = 2 + 2;
+    dump(value);
+} // <- end of the block
+
+{ dump(2 + 2) } // a block with only one statement,
+                // omitted the last and only semicolon
+
+{
+    let nah = 3 * 3 * 3; // a block with two statements,
+    let yay = nah + 42   // but without the last semicolon
+}
+```
+
+## Expression
+
+An expression statement is an expression used in a place where a statement is expected. The expression is evaluated and its result is discarded — therefore, it makes sense only for expressions that have side effects, such as executing a function or updating a variable.
+
+```tact
+dump(2 + 2); // stdlib function
+```
+
+## Assignment
+
+Assignment statements use an [assignment operator](/book/operators#assignment) (`={:tact}`) or [augmented assignment operators](/book/operators#augmented-assignment) (assignments combined with an operation):
+
+```tact
+let value: Int; // declaration
+value = 5;      // assignment
+value += 5;     // augmented assignment (one of the many, see below)
+```
+
+:::note
+
+  Read more about assignment and augmented assignment in their dedicated section: [assignment operators](/book/operators#assignment).
+
+:::
+
+## Branches
+
+Control the flow of the code.
+
+### `if...else` {#if-else}
+
+:::caution
+
+  Curly brackets (code blocks) are required!
+
+:::
+
+When executing an `if...else{:tact}` statement, first, the specified condition gets evaluated. If the resulting value is `true{:tact}`, the following statement block gets executed. Otherwise, if the condition evaluates to `false{:tact}`, the optional `else{:tact}` block will be executed. If the `else{:tact}` block is missing, nothing happens and execution continues further.
+
+Regular `if{:tact}` statement:
+
+```tact
+// condition
+// ↓
+if (true) { // consequence, when condition is true
+    dump(2 + 2);
+}
+```
+
+With `else{:tact}` block:
+
+```tact
+// condition
+// ↓
+if (2 + 2 == 4) {
+    // consequence, when condition is true
+    dump(true);
+} else {
+    // alternative, when condition is false
+    dump(false);
+}
+```
+
+With nested `if...else{:tact}`:
+
+```tact
+// condition
+// ↓
+if (2 + 2 == 3) {
+    // consequence, when condition is true
+    dump("3?");
+//        condition2
+//        ↓
+} else if (2 + 2 == 4) {
+    // another consequence, when condition2 is true
+    dump(true);
+} else {
+    // alternative, when both condition and condition2 are false
+    dump(false);
+}
+```
+
+:::note
+
+  Tact also has a ternary expression `?:{:tact}`, which is described earlier in the Book: [Ternary](/book/operators#ternary).
+
+:::
+
+### `try...catch` {#try-catch}
+
+The `try...catch{:tact}` statement is comprised of a `try{:tact}` block and an optional `catch{:tact}` block, which receives an [`Int{:tact}`][int] [exit code](/book/exit-codes) as its only argument. The code in the `try{:tact}` block is executed first, and if it fails, the code in the `catch{:tact}` block will be executed and changes made in `try{:tact}` block will be rolled back, if possible.
+
+:::note
+
+  Note, that some TVM state parameters, such as codepage and gas counters, will not be rolled back. That is, all gas usage in the `try{:tact}` block will be taken into account and the effects of opcodes that change the gas limit will be preserved.
+
+:::
+
+Regular `try{:tact}` statement:
+
+```tact
+fun braveAndTrue() {
+    // Lets try and do something erroneous
+    try {
+        nativeThrow(42); // throwing with exit code 42
+    }
+
+    // The following will be executed as the erroneous code above was wrapped in a try block
+    dump(42);
+}
+```
+
+With `catch (e){:tact}` block:
+
+```tact
+fun niceCatch() {
+    // Lets try and do something erroneous
+    try {
+        nativeThrow(42); // throwing with exit code 42
+    } catch (err) {
+        dump(err);       // this will dump the exit code caught, which is 42
+    }
+}
+```
+
+With nested `try...catch{:tact}`:
+
+```tact
+try {
+    // Preparing an x equal to 0, in such a way that Tact compiler won't realize it (yet!)
+    let xs: Slice = beginCell().storeUint(0, 1).endCell().beginParse();
+    let x: Int = xs.loadUint(1); // 0
+
+    try {
+        throw(101);     // 1. throws with exit code 101
+    } catch (err) {     // 2. catches the error and captures its exit code (101) as err
+        return err / x; // 3. divides err by x, which is zero, throwing with exit code 4
+    }
+
+} catch (err) {         // 4. catches the new error and captures its exit code (4) as err
+    //   ^^^ this works without name collisions because the previous err
+    //       has a different scope and is only visible inside the previous catch block
+
+    dump(err);          // 5. dumps the last caught exit code (4)
+}
+```
+
+Note, that similar to [`let{:tact}` statement](#let), captured [exit code](/book/exit-codes) in the `catch (){:tact}` clause can be discarded by specifying an underscore `_{:tact}` in its place:
+
+```tact
+try {
+    throw(42);
+} catch (_) {
+    dump("I don't know the exit code anymore");
+}
+```
+
+:::note
+
+  Read more about exit codes on the dedicated page: [Exit codes in the Book](/book/exit-codes).
+
+:::
+
+## Loops
+
+Conditionally repeat certain blocks of code multiple times.
+
+### `repeat` {#repeat-loop}
+
+The `repeat{:tact}` loop executes a block of code a specified number of times. The number of repetitions should be given as a positive $32$-bit [`Int{:tact}`][int] in the inclusive range from $1$ to $2^{31} - 1$. If the value is greater, an error with the [exit code 5](/book/exit-codes#5), `Integer out of the expected range` would be thrown.
+
+If the specified number of repetitions is equal to $0$ or any negative number in the inclusive range $-2^{256}$ to $-1$, it is ignored and the code block is not executed at all.
+
+```tact
+let twoPow: Int = 1;
+
+// Repeat exactly 10 times
+repeat (10) {
+    twoPow *= 2;
+}
+
+// Skipped
+repeat (-1) {
+    twoPow *= 3333;
+}
+
+twoPow; // 1024
+```
+
+### `while` {#while-loop}
+
+The `while{:tact}` loop continues executing the block of code as long as the given condition is `true{:tact}`.
+
+In the following example, the value of `x` is decremented by $1$ on each iteration, so the loop will run $10$ times:
+
+```tact
+let x: Int = 10;
+while (x > 0) {
+    x -= 1;
+}
+```
+
+### `do...until` {#do-until-loop}
+
+The `do...until{:tact}` loop is a post-test loop that executes the block of code at least once, and then continues to execute it until the given condition becomes `true{:tact}`.
+
+In the following example, the value of `x` is decremented by $1$ on each iteration, so the loop will run $10$ times:
+
+```tact
+let x: Int = 10;
+do {
+    x -= 1;  // executes this code block at least once
+} until (x <= 0);
+```
+
+### `foreach` {#foreach-loop}
+
+The `foreach{:tact}` loop operates on key-value pairs (entries) of [`map<K, V>{:tact}`](/book/maps) type in sequential order: from the smallest keys of the map to the biggest ones.
+
+This loop executes a block of code for each entry in the given map, capturing the key and value on each iteration. This is handy when you don't know in advance how many items there is in the map or don't want to explicitly look for each of the entry using [`.get(){:tact}`](/book/maps#get) [method](/book/functions#extension-function) of maps.
+
+Note, that the names of captured key and value pair on each iteration are arbitrary and can be any valid Tact identifier, provided that they're new to the current scope. The most common options are: `k` and `v`, or `key` and `value`.
+
+In the following example, map `cells` has $4$ entries, so the loop will run $4$ times:
+
+```tact
+// Empty map
+let cells: map<Int, Cell> = emptyMap();
+
+// Setting four entries
+cells.set(1, beginCell().storeUint(100, 16).endCell());
+cells.set(2, beginCell().storeUint(200, 16).endCell());
+cells.set(3, beginCell().storeUint(300, 16).endCell());
+cells.set(4, beginCell().storeUint(400, 16).endCell());
+
+// A variable for summing up the values
+let sum: Int = 0;
+
+// For each key and value pair in cells map, do:
+foreach (key, value in cells) { // or just k, v
+    let s: Slice = value.beginParse(); // convert Cell to Slice
+    sum += s.loadUint(16);             // sum the Slice values
+}
+dump(sum); // 1000
+```
+
+It's also possible to iterate over a map in contract storage, and over maps as members of instances of [Struct](/book/structs-and-messages#structs) or [Message](/book/structs-and-messages#messages) types:
+
+```tact
+import "@stdlib/deploy";
+
+struct Fizz { oh_my: map<Int, Int> }
+message Buzz { oh_my: map<Int, Int> }
+
+contract Iterated {
+    oh_my: map<Int, Int>;
+
+    receive("call to iterate!") {
+        let oh_my: map<Int, Int> = emptyMap();
+        oh_my.set(0, 42);
+        oh_my.set(1, 27);
+
+        self.oh_my = oh_my; // assigning local map to the storage one
+        let fizz = Fizz{ oh_my }; // field punning
+        let buzz = Buzz{ oh_my }; // field punning
+
+        // Iterating over map in contract storage
+        foreach (key, value in self.oh_my) {
+            // ...
+        }
+
+        // Iterating over map member of a Struct Fizz instance
+        foreach (key, value in fizz.oh_my) {
+            // ...
+        }
+
+        // Iterating over map member of a Message Buzz instance
+        foreach (key, value in buzz.oh_my) {
+            // ...
+        }
+    }
+}
+```
+
+Note, that similar to [`let{:tact}` statement](#let), either of captured key or value (or both) can be discarded by specifying an underscore `_{:tact}` in their place:
+
+```tact
+// Empty map
+let quartiles: map<Int, Int> = emptyMap();
+
+// Setting some entries
+quartiles.set(1, 25);
+quartiles.set(2, 50);
+quartiles.set(3, 75);
+
+// Discarding captured keys
+// without modifying them in the map itself
+foreach (_, value in quartiles) {}
+
+// Discarding captured values
+// without modifying them in the map itself
+foreach (key, _ in quartiles) {}
+
+// Discarding both keys and values
+// without modifying them in the map itself
+foreach (_, _ in quartiles) {
+    // Can't access via _, but can do desired operations
+    // n times, where n is the current length of the map
+}
+```
+
+:::caution
+
+  Note, that at the moment `foreach{:tact}` works only with explicitly provided map identifiers and nested identifier constructions, like `foo.bar.targetMap{:tact}` or `self.baz.targetMap{:tact}`. That is, returning a map from a function and trying to iterate over its entries won't work:
+
+  ```tact
+  foreach (k, v in emptyMap()) {
+  //               ^ this will give the following error message:
+  //                 foreach is only allowed over maps that are path expressions,
+  //                 i.e. identifiers, or sequences of direct contract/struct/message accesses,
+  //                 like "self.foo" or "self.structure.field"
+  }
+  ```
+
+  Trying to iterate over a map member of a [Struct](/book/structs-and-messages#structs) returned from a function also won't work, because function call is an expression and not an identifier nor a nested identifier access:
+
+  ```tact
+  foreach (k, v in genCoolStruct().map) {
+  //               ^ this will give the following error message:
+  //                 foreach is only allowed over maps that are path expressions,
+  //                 i.e. identifiers, or sequences of direct contract/struct/message accesses,
+  //                 like "self.foo" or "self.structure.field"
+  }
+  ```
+
+:::
+
+:::note
+
+  For additional loop examples see: [Loops in Tact-By-Example](https://tact-by-example.org/04-loops).
+
+:::
+
+[int]: /book/integers

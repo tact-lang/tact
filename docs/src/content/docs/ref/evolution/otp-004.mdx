@@ -1,0 +1,37 @@
+---
+title: "OTP-004: Auto Encoder"
+description: "This proposal defines a way to automatically build a serialization layout for a given structure"
+sidebar:
+  order: 4
+---
+
+This proposal defines a way to automatically build a serialization layout for a given structure.
+
+## Motivation
+
+Designing a serialization layout in TLB is a very risky task. Developers have to take care of the size limitations of cells and remember how many bits are used by each field. This is a very error-prone task and it is very easy to make a mistake. This proposal aims to solve this problem by providing a way to automatically build a serialization layout for a given structure.
+
+## Specification
+
+We define auto-encoder as an eager algorithm that builds a serialization layout for a given structure. The algorithm is defined as follows:
+
+```text
+Define available references and bits in a current cell 
+   as `available_references` and `available_bits` respectively.
+   NOTE: there must be at least one reference reserved for the serialization tail and one 
+         bit for an optional flag. Depending on context more references or bits may be reserved. 
+
+For each field in A:
+    (size_bits, size_ref) = get_field_max_size(field);
+    if (available_bits >= size_bits && available_references >= size_ref) {
+        Push field to a current cell
+    } else {
+        available_references = (1023 - 1);
+        available_bits = (4 - 1);
+        Allocate a new tail and continue from the current field
+    }
+```
+
+## Drawbacks
+
+- This is an implicit algorithm. It is not clear results of this allocator have to be checked to make compatible serialization.

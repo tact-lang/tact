@@ -1,0 +1,256 @@
+---
+title: Advanced
+description: "Advanced, niche or dangerous functions from the Core library of Tact"
+---
+
+Various niche, dangerous or unstable features which can produce unexpected results and are meant to be used by the more experienced users.
+
+:::caution
+
+  Proceed with caution.
+
+:::
+
+## Context.readForwardFee
+
+```tact
+extends fun readForwardFee(self: Context): Int
+```
+
+Extension function for the [`Context{:tact}`](/ref/core-common#context).
+
+Reads [forward fee](https://docs.ton.org/develop/smart-contracts/guidelines/processing) and returns it as [`Int{:tact}`][int] amount of [nanoToncoins](/book/integers#nanotoncoin).
+
+Usage example:
+
+```tact
+let fwdFee: Int = context().readForwardFee();
+```
+
+## getConfigParam
+
+```tact
+fun getConfigParam(id: Int): Cell?;
+```
+
+Loads a [configuration parameter](https://docs.ton.org/develop/howto/blockchain-configs) of TON Blockchain by its `id` number.
+
+Usage examples:
+
+```tact
+// Parameter 0, address of a special smart contract that stores the blockchain's configuration
+let configAddrAsCell: Cell = getConfigParam(0)!!;
+
+// Parameter 18, configuration for determining the prices for data storage
+let dataStorageFeeConfig: Cell = getConfigParam(18)!!;
+```
+
+:::note
+
+  Standard library [`@stdlib/config`](/ref/stdlib-config) provides two related helper functions:\
+  [`getConfigAddress(){:tact}`](/ref/stdlib-config#getconfigaddress) for retrieving config [`Address{:tact}`][p]\
+  [`getElectorAddress(){:tact}`](/ref/stdlib-config#getconfigaddress) for retrieving elector [`Address{:tact}`][p]
+
+  Read more about other parameters: [Config Parameters in TON Docs](https://docs.ton.org/develop/howto/blockchain-configs).
+
+:::
+
+## acceptMessage
+
+```tact
+fun acceptMessage();
+```
+
+Agrees to buy some gas to finish the current transaction. This action is required to process external messages, which bring no value (hence no gas) with themselves.
+
+Usage example:
+
+```tact {10}
+contract Timeout {
+    timeout: Int;
+
+    init() {
+        self.timeout = now() + 5 * 60; // 5 minutes from now
+    }
+
+    external("timeout") {
+        if (now() > self.timeout) {
+            acceptMessage(); // start accepting external messages once timeout went out
+        }
+    }
+}
+```
+
+:::note
+
+  For more details, see: [Accept Message Effects in TON Docs](https://docs.ton.org/develop/smart-contracts/guidelines/accept).
+
+:::
+
+## commit
+
+```tact
+fun commit();
+```
+
+Commits the current state of [registers](https://docs.ton.org/learn/tvm-instructions/tvm-overview#control-registers) `c4` ("persistent data") and `c5` ("actions"), so that the current execution is considered "successful" with the saved values even if an exception in compute phase is thrown later.
+
+Usage example:
+
+```tact {1}
+commit();  // now, transaction is considered "successful"
+throw(42); // and this won't fail it
+```
+
+## nativePrepareRandom
+
+```tact
+fun nativePrepareRandom();
+```
+
+Prepares a random number generator by using [`nativeRandomizeLt(){:tact}`](#nativerandomizelt). Automatically called by [`randomInt(){:tact}`](/ref/core-random#randomint) and [`random(){:tact}`](/ref/core-random#random) functions.
+
+Usage example:
+
+```tact
+nativePrepareRandom(); // prepare the RNG
+// ... do your random things ...
+```
+
+## nativeRandomize
+
+```tact
+fun nativeRandomize(x: Int);
+```
+
+Randomizes the pseudo-random number generator with the specified seed `x`.
+
+Usage example:
+
+```tact
+nativeRandomize();          // now, random numbers are less predictable
+let idk: Int = randomInt(); // ???, it's random!
+```
+
+## nativeRandomizeLt
+
+```tact
+fun nativeRandomizeLt();
+```
+
+Randomizes the random number generator with the current [logical time](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time).
+
+Usage example:
+
+```tact
+nativeRandomizeLt();        // now, random numbers are unpredictable for users,
+                            // but still may be affected by validators or collators
+                            // as they determine the seed of the current block.
+let idk: Int = randomInt(); // ???, it's random!
+```
+
+## nativeRandom
+
+```tact
+fun nativeRandom(): Int;
+```
+
+Generates and returns an $256$-bit random number just like [`randomInt(){:tact}`](/ref/core-random#randomint), but doesn't initialize the random generator with [`nativePrepareRandom(){:tact}`](#nativepreparerandom) beforehand.
+
+:::note
+
+  Don't use this function directly, and prefer using [`randomInt(){:tact}`](/ref/core-random#randomint) instead.
+
+:::
+
+## nativeRandomInterval
+
+```tact
+fun nativeRandomInterval(max: Int): Int;
+```
+
+Generates and returns a $256$-bit random number in the range from $0$ to `max` similar to [`random(){:tact}`](/ref/core-random#random), but doesn't initialize the random generator with [`nativePrepareRandom(){:tact}`](#nativepreparerandom) beforehand.
+
+:::note
+
+  Don't use this function directly, and prefer using [`random(){:tact}`](/ref/core-random#random) instead.
+
+:::
+
+## nativeSendMessage
+
+```tact
+fun nativeSendMessage(cell: Cell, mode: Int);
+```
+
+[Queues the message](/book/send#outbound-message-processing) to be sent by specifying the complete `cell` and the [message `mode`](/book/message-mode).
+
+:::note
+
+  Prefer using a much more common and user-friendly [`send(){:tact}`](/ref/core-common#send) function unless you have a complex logic that can't be expressed otherwise.
+
+:::
+
+## nativeReserve
+
+```tact
+fun nativeReserve(amount: Int, mode: Int);
+```
+
+Calls native `raw_reserve` function with specified amount and mode. The `raw_reserve` is a function that creates an output action to reserve a specific amount of [nanoToncoins](/book/integers#nanotoncoin) from the remaining balance of the account.
+
+It has the following signature in FunC:
+
+```func
+raw_reserve(int amount, int mode) impure asm "RAWRESERVE";
+```
+
+The function takes two arguments:
+* `amount`: The number of [nanoToncoins](/book/integers#nanotoncoin) to reserve.
+* `mode`: Determines the reservation behavior.
+
+Function `raw_reserve` is roughly equivalent to creating an outbound message carrying the specified `amount` of [nanoToncoins](/book/integers#nanotoncoin) (or `b` $-$ `amount` [nanoToncoins](/book/integers#nanotoncoin), where `b` is the remaining balance) to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
+
+It's possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience there's a set of constants which you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
+
+:::caution
+
+  Currently, `amount` must be a non-negative integer, and `mode` must be in the range $0..31$, inclusive.
+
+:::
+
+### Base modes {#nativereserve-base-modes}
+
+The resulting `mode` value can have the following base modes:
+
+Mode value | Constant name                 | Description
+---------: | :---------------------------- | -----------
+$0$        | `ReserveExact{:tact}`         | Reserves exactly the specified `amount` of [nanoToncoins](/book/integers#nanotoncoin).
+$1$        | `ReserveAllExcept{:tact}`     | Reserves all, but the specified `amount` of [nanoToncoins](/book/integers#nanotoncoin).
+$2$        | `ReserveAtMost{:tact}`        | Reserves at most the specified `amount` of [nanoToncoins](/book/integers#nanotoncoin).
+
+### Optional flags {#nativereserve-optional-flags}
+
+Additionally, the resulting `mode` can have the following optional flags added:
+
+Flag value | Constant name                      | Description
+---------: | :--------------------------------- | -----------
+$+4$       | `ReserveAddOriginalBalance{:tact}` | Increases the `amount` by the original balance of the current account (before the compute phase), including all extra currencies.
+$+8$       | `ReserveInvertSign{:tact}`         | Negates the `amount` value before performing the reservation.
+$+16$      | `ReserveBounceIfActionFail{:tact}` | Bounces the transaction if reservation fails.
+
+### Combining modes with flags {#nativereserve-combining-modes-with-flags}
+
+To make the [`Int{:tact}`][int] value for `mode` parameter, you just have to combine base modes with optional flags by applying the [bitwise OR](/book/operators#binary-bitwise-or) operation:
+
+```tact
+nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
+//            ----------  ----------------------------------------
+//            ↑           ↑
+//            |           mode, which would bounce the transaction if exact reservation would fail
+//            amount of nanoToncoins to reserve
+```
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
