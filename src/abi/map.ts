@@ -654,7 +654,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             resolve(ctx, args, ref) {
                 // Check arguments
                 if (args.length !== 3) {
-                    throwCompilationError("replace expects two arguments", ref); // Should not happen
+                    throwCompilationError("replace expects two arguments", ref);
                 }
                 const self = args[0]!;
                 const key = args[1]!;
