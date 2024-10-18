@@ -266,6 +266,32 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "DICTREPLACEREF",
+      "kind": "asm",
+      "shuffle": "(value index dict key_len)",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_replace_ref",
+    "signature": "((cell), (int)) __tact_dict_replace_ref(cell dict, int key_len, slice index, cell value)",
+  },
+  {
+    "code": {
+      "code": "DICTREPLACEGETREF NULLSWAPIFNOT",
+      "kind": "asm",
+      "shuffle": "(value index dict key_len)",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_replaceget_ref",
+    "signature": "((cell), (cell, int)) __tact_dict_replaceget_ref(cell dict, int key_len, slice index, cell value)",
+  },
+  {
+    "code": {
       "code": "DICTGET NULLSWAPIFNOT",
       "kind": "asm",
       "shuffle": "(index dict key_len)",
@@ -289,6 +315,19 @@ return __tact_create_address(chain, hash);",
     "flags": Set {},
     "name": "__tact_dict_delete_get",
     "signature": "(cell, (slice, int)) __tact_dict_delete_get(cell dict, int key_len, slice index)",
+  },
+  {
+    "code": {
+      "code": "DICTDELGETREF NULLSWAPIFNOT2",
+      "kind": "asm",
+      "shuffle": "(index dict key_len)",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_get_ref",
+    "signature": "(cell, (cell, int)) __tact_dict_delete_get_ref(cell dict, int key_len, slice index)",
   },
   {
     "code": {
@@ -661,6 +700,40 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_int",
+    "signature": "(cell, (int)) __tact_dict_replace_int_int(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? idict_delete_get?(d, kl, k) : idict_replaceget?(d, kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse());
+return (r, ok ? old~load_int(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_int",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_int(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = idict_get?(d, kl, k);
 if (ok) {
     return r~load_int(vl);
@@ -734,6 +807,40 @@ if (flag) {
     },
     "name": "__tact_dict_set_int_uint",
     "signature": "(cell, ()) __tact_dict_set_int_uint(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_uint",
+    "signature": "(cell, (int)) __tact_dict_replace_int_uint(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? idict_delete_get?(d, kl, k) : idict_replaceget?(d, kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse());
+return (r, ok ? old~load_uint(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_uint",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_uint(cell d, int kl, int k, int v, int vl)",
   },
   {
     "code": {
@@ -813,6 +920,40 @@ if (flag) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_int",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_int(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? udict_delete_get?(d, kl, k) : udict_replaceget?(d, kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse());
+return (r, ok ? old~load_int(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_int",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_int(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = udict_get?(d, kl, k);
 if (ok) {
     return r~load_int(vl);
@@ -886,6 +1027,40 @@ if (flag) {
     },
     "name": "__tact_dict_set_uint_uint",
     "signature": "(cell, ()) __tact_dict_set_uint_uint(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_uint",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_uint(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? udict_delete_get?(d, kl, k) : udict_replaceget?(d, kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse());
+return (r, ok ? old~load_uint(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_uint",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_uint(cell d, int kl, int k, int v, int vl)",
   },
   {
     "code": {
@@ -965,6 +1140,40 @@ if (flag) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_ref?(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_cell",
+    "signature": "(cell, (int)) __tact_dict_replace_int_cell(cell d, int kl, int k, cell v)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? idict_delete_get_ref?(d, kl, k) : idict_replaceget_ref?(d, kl, k, v);
+return (r, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_cell",
+    "signature": "(cell, (cell)) __tact_dict_replaceget_int_cell(cell d, int kl, int k, cell v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = idict_get_ref?(d, kl, k);
 if (ok) {
     return r;
@@ -1038,6 +1247,40 @@ if (flag) {
     },
     "name": "__tact_dict_set_uint_cell",
     "signature": "(cell, ()) __tact_dict_set_uint_cell(cell d, int kl, int k, cell v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_ref?(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_cell",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_cell(cell d, int kl, int k, cell v)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? udict_delete_get_ref?(d, kl, k) : udict_replaceget_ref?(d, kl, k, v);
+return (r, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_cell",
+    "signature": "(cell, (cell)) __tact_dict_replaceget_uint_cell(cell d, int kl, int k, cell v)",
   },
   {
     "code": {
@@ -1117,6 +1360,40 @@ if (flag) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace?(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_slice",
+    "signature": "(cell, (int)) __tact_dict_replace_int_slice(cell d, int kl, int k, slice v)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? idict_delete_get?(d, kl, k) : idict_replaceget?(d, kl, k, v);
+return (r, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_slice",
+    "signature": "(cell, (slice)) __tact_dict_replaceget_int_slice(cell d, int kl, int k, slice v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = idict_get?(d, kl, k);
 if (ok) {
     return r;
@@ -1190,6 +1467,40 @@ if (flag) {
     },
     "name": "__tact_dict_set_uint_slice",
     "signature": "(cell, ()) __tact_dict_set_uint_slice(cell d, int kl, int k, slice v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace?(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_slice",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_slice(cell d, int kl, int k, slice v)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? udict_delete_get?(d, kl, k) : udict_replaceget?(d, kl, k, v);
+return (r, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_slice",
+    "signature": "(cell, (slice)) __tact_dict_replaceget_uint_slice(cell d, int kl, int k, slice v)",
   },
   {
     "code": {
@@ -1268,6 +1579,44 @@ if (flag) {
     },
     "name": "__tact_dict_set_slice_int",
     "signature": "(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_int",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_int(cell d, int kl, slice k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse());
+return (d, ok ? old~load_int(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_int",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_int(cell d, int kl, slice k, int v, int vl)",
   },
   {
     "code": {
@@ -1352,6 +1701,44 @@ if (flag) {
     },
     "name": "__tact_dict_set_slice_uint",
     "signature": "(cell, ()) __tact_dict_set_slice_uint(cell d, int kl, slice k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_uint",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_uint(cell d, int kl, slice k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse());
+return (d, ok ? old~load_uint(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_uint",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_uint(cell d, int kl, slice k, int v, int vl)",
   },
   {
     "code": {
@@ -1440,6 +1827,46 @@ if (flag) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return __tact_dict_replace_ref(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+      "__tact_dict_replace_ref",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_cell",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_cell(cell d, int kl, slice k, cell v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get_ref(kl, k) : d~__tact_dict_replaceget_ref(kl, k, v);
+return (d, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get_ref",
+      "__tact_dict_replaceget_ref",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_cell",
+    "signature": "(cell, (cell)) __tact_dict_replaceget_slice_cell(cell d, int kl, slice k, cell v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = __tact_dict_get_ref(d, kl, k);
 if (ok) {
     return r;
@@ -1521,6 +1948,44 @@ if (flag) {
     },
     "name": "__tact_dict_set_slice_slice",
     "signature": "(cell, ()) __tact_dict_set_slice_slice(cell d, int kl, slice k, slice v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_slice(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_slice",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_slice(cell d, int kl, slice k, slice v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_slice(v).end_cell().begin_parse());
+return (d, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_slice",
+    "signature": "(cell, (slice)) __tact_dict_replaceget_slice_slice(cell d, int kl, slice k, slice v)",
   },
   {
     "code": {
@@ -3825,6 +4290,32 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "DICTREPLACEREF",
+      "kind": "asm",
+      "shuffle": "(value index dict key_len)",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_replace_ref",
+    "signature": "((cell), (int)) __tact_dict_replace_ref(cell dict, int key_len, slice index, cell value)",
+  },
+  {
+    "code": {
+      "code": "DICTREPLACEGETREF NULLSWAPIFNOT",
+      "kind": "asm",
+      "shuffle": "(value index dict key_len)",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_replaceget_ref",
+    "signature": "((cell), (cell, int)) __tact_dict_replaceget_ref(cell dict, int key_len, slice index, cell value)",
+  },
+  {
+    "code": {
       "code": "DICTGET NULLSWAPIFNOT",
       "kind": "asm",
       "shuffle": "(index dict key_len)",
@@ -3848,6 +4339,19 @@ return __tact_create_address(chain, hash);",
     "flags": Set {},
     "name": "__tact_dict_delete_get",
     "signature": "(cell, (slice, int)) __tact_dict_delete_get(cell dict, int key_len, slice index)",
+  },
+  {
+    "code": {
+      "code": "DICTDELGETREF NULLSWAPIFNOT2",
+      "kind": "asm",
+      "shuffle": "(index dict key_len)",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_get_ref",
+    "signature": "(cell, (cell, int)) __tact_dict_delete_get_ref(cell dict, int key_len, slice index)",
   },
   {
     "code": {
@@ -4220,6 +4724,40 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_int",
+    "signature": "(cell, (int)) __tact_dict_replace_int_int(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? idict_delete_get?(d, kl, k) : idict_replaceget?(d, kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse());
+return (r, ok ? old~load_int(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_int",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_int(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = idict_get?(d, kl, k);
 if (ok) {
     return r~load_int(vl);
@@ -4293,6 +4831,40 @@ if (flag) {
     },
     "name": "__tact_dict_set_int_uint",
     "signature": "(cell, ()) __tact_dict_set_int_uint(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_uint",
+    "signature": "(cell, (int)) __tact_dict_replace_int_uint(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? idict_delete_get?(d, kl, k) : idict_replaceget?(d, kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse());
+return (r, ok ? old~load_uint(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_uint",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_uint(cell d, int kl, int k, int v, int vl)",
   },
   {
     "code": {
@@ -4372,6 +4944,40 @@ if (flag) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_int",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_int(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? udict_delete_get?(d, kl, k) : udict_replaceget?(d, kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse());
+return (r, ok ? old~load_int(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_int",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_int(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = udict_get?(d, kl, k);
 if (ok) {
     return r~load_int(vl);
@@ -4445,6 +5051,40 @@ if (flag) {
     },
     "name": "__tact_dict_set_uint_uint",
     "signature": "(cell, ()) __tact_dict_set_uint_uint(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_uint",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_uint(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? udict_delete_get?(d, kl, k) : udict_replaceget?(d, kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse());
+return (r, ok ? old~load_uint(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_uint",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_uint(cell d, int kl, int k, int v, int vl)",
   },
   {
     "code": {
@@ -4524,6 +5164,40 @@ if (flag) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_ref?(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_cell",
+    "signature": "(cell, (int)) __tact_dict_replace_int_cell(cell d, int kl, int k, cell v)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? idict_delete_get_ref?(d, kl, k) : idict_replaceget_ref?(d, kl, k, v);
+return (r, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_cell",
+    "signature": "(cell, (cell)) __tact_dict_replaceget_int_cell(cell d, int kl, int k, cell v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = idict_get_ref?(d, kl, k);
 if (ok) {
     return r;
@@ -4597,6 +5271,40 @@ if (flag) {
     },
     "name": "__tact_dict_set_uint_cell",
     "signature": "(cell, ()) __tact_dict_set_uint_cell(cell d, int kl, int k, cell v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_ref?(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_cell",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_cell(cell d, int kl, int k, cell v)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? udict_delete_get_ref?(d, kl, k) : udict_replaceget_ref?(d, kl, k, v);
+return (r, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_cell",
+    "signature": "(cell, (cell)) __tact_dict_replaceget_uint_cell(cell d, int kl, int k, cell v)",
   },
   {
     "code": {
@@ -4676,6 +5384,40 @@ if (flag) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace?(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_slice",
+    "signature": "(cell, (int)) __tact_dict_replace_int_slice(cell d, int kl, int k, slice v)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? idict_delete_get?(d, kl, k) : idict_replaceget?(d, kl, k, v);
+return (r, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_slice",
+    "signature": "(cell, (slice)) __tact_dict_replaceget_int_slice(cell d, int kl, int k, slice v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = idict_get?(d, kl, k);
 if (ok) {
     return r;
@@ -4749,6 +5491,40 @@ if (flag) {
     },
     "name": "__tact_dict_set_uint_slice",
     "signature": "(cell, ()) __tact_dict_set_uint_slice(cell d, int kl, int k, slice v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace?(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_slice",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_slice(cell d, int kl, int k, slice v)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? udict_delete_get?(d, kl, k) : udict_replaceget?(d, kl, k, v);
+return (r, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_slice",
+    "signature": "(cell, (slice)) __tact_dict_replaceget_uint_slice(cell d, int kl, int k, slice v)",
   },
   {
     "code": {
@@ -4827,6 +5603,44 @@ if (flag) {
     },
     "name": "__tact_dict_set_slice_int",
     "signature": "(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_int",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_int(cell d, int kl, slice k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse());
+return (d, ok ? old~load_int(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_int",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_int(cell d, int kl, slice k, int v, int vl)",
   },
   {
     "code": {
@@ -4911,6 +5725,44 @@ if (flag) {
     },
     "name": "__tact_dict_set_slice_uint",
     "signature": "(cell, ()) __tact_dict_set_slice_uint(cell d, int kl, slice k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_uint",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_uint(cell d, int kl, slice k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse());
+return (d, ok ? old~load_uint(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_uint",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_uint(cell d, int kl, slice k, int v, int vl)",
   },
   {
     "code": {
@@ -4999,6 +5851,46 @@ if (flag) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return __tact_dict_replace_ref(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+      "__tact_dict_replace_ref",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_cell",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_cell(cell d, int kl, slice k, cell v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get_ref(kl, k) : d~__tact_dict_replaceget_ref(kl, k, v);
+return (d, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get_ref",
+      "__tact_dict_replaceget_ref",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_cell",
+    "signature": "(cell, (cell)) __tact_dict_replaceget_slice_cell(cell d, int kl, slice k, cell v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = __tact_dict_get_ref(d, kl, k);
 if (ok) {
     return r;
@@ -5080,6 +5972,44 @@ if (flag) {
     },
     "name": "__tact_dict_set_slice_slice",
     "signature": "(cell, ()) __tact_dict_set_slice_slice(cell d, int kl, slice k, slice v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_slice(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_slice",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_slice(cell d, int kl, slice k, slice v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_slice(v).end_cell().begin_parse());
+return (d, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_slice",
+    "signature": "(cell, (slice)) __tact_dict_replaceget_slice_slice(cell d, int kl, slice k, slice v)",
   },
   {
     "code": {
@@ -7384,6 +8314,32 @@ return __tact_create_address(chain, hash);",
   },
   {
     "code": {
+      "code": "DICTREPLACEREF",
+      "kind": "asm",
+      "shuffle": "(value index dict key_len)",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_replace_ref",
+    "signature": "((cell), (int)) __tact_dict_replace_ref(cell dict, int key_len, slice index, cell value)",
+  },
+  {
+    "code": {
+      "code": "DICTREPLACEGETREF NULLSWAPIFNOT",
+      "kind": "asm",
+      "shuffle": "(value index dict key_len)",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_replaceget_ref",
+    "signature": "((cell), (cell, int)) __tact_dict_replaceget_ref(cell dict, int key_len, slice index, cell value)",
+  },
+  {
+    "code": {
       "code": "DICTGET NULLSWAPIFNOT",
       "kind": "asm",
       "shuffle": "(index dict key_len)",
@@ -7407,6 +8363,19 @@ return __tact_create_address(chain, hash);",
     "flags": Set {},
     "name": "__tact_dict_delete_get",
     "signature": "(cell, (slice, int)) __tact_dict_delete_get(cell dict, int key_len, slice index)",
+  },
+  {
+    "code": {
+      "code": "DICTDELGETREF NULLSWAPIFNOT2",
+      "kind": "asm",
+      "shuffle": "(index dict key_len)",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {},
+    "name": "__tact_dict_delete_get_ref",
+    "signature": "(cell, (cell, int)) __tact_dict_delete_get_ref(cell dict, int key_len, slice index)",
   },
   {
     "code": {
@@ -7779,6 +8748,40 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_int",
+    "signature": "(cell, (int)) __tact_dict_replace_int_int(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? idict_delete_get?(d, kl, k) : idict_replaceget?(d, kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse());
+return (r, ok ? old~load_int(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_int",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_int(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = idict_get?(d, kl, k);
 if (ok) {
     return r~load_int(vl);
@@ -7852,6 +8855,40 @@ if (flag) {
     },
     "name": "__tact_dict_set_int_uint",
     "signature": "(cell, ()) __tact_dict_set_int_uint(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_uint",
+    "signature": "(cell, (int)) __tact_dict_replace_int_uint(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? idict_delete_get?(d, kl, k) : idict_replaceget?(d, kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse());
+return (r, ok ? old~load_uint(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_uint",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_uint(cell d, int kl, int k, int v, int vl)",
   },
   {
     "code": {
@@ -7931,6 +8968,40 @@ if (flag) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_int",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_int(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? udict_delete_get?(d, kl, k) : udict_replaceget?(d, kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse());
+return (r, ok ? old~load_int(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_int",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_int(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = udict_get?(d, kl, k);
 if (ok) {
     return r~load_int(vl);
@@ -8004,6 +9075,40 @@ if (flag) {
     },
     "name": "__tact_dict_set_uint_uint",
     "signature": "(cell, ()) __tact_dict_set_uint_uint(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_uint",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_uint(cell d, int kl, int k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? udict_delete_get?(d, kl, k) : udict_replaceget?(d, kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse());
+return (r, ok ? old~load_uint(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_uint",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_uint(cell d, int kl, int k, int v, int vl)",
   },
   {
     "code": {
@@ -8083,6 +9188,40 @@ if (flag) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_ref?(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_cell",
+    "signature": "(cell, (int)) __tact_dict_replace_int_cell(cell d, int kl, int k, cell v)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? idict_delete_get_ref?(d, kl, k) : idict_replaceget_ref?(d, kl, k, v);
+return (r, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_cell",
+    "signature": "(cell, (cell)) __tact_dict_replaceget_int_cell(cell d, int kl, int k, cell v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = idict_get_ref?(d, kl, k);
 if (ok) {
     return r;
@@ -8156,6 +9295,40 @@ if (flag) {
     },
     "name": "__tact_dict_set_uint_cell",
     "signature": "(cell, ()) __tact_dict_set_uint_cell(cell d, int kl, int k, cell v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_ref?(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_cell",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_cell(cell d, int kl, int k, cell v)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? udict_delete_get_ref?(d, kl, k) : udict_replaceget_ref?(d, kl, k, v);
+return (r, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_cell",
+    "signature": "(cell, (cell)) __tact_dict_replaceget_uint_cell(cell d, int kl, int k, cell v)",
   },
   {
     "code": {
@@ -8235,6 +9408,40 @@ if (flag) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace?(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_slice",
+    "signature": "(cell, (int)) __tact_dict_replace_int_slice(cell d, int kl, int k, slice v)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? idict_delete_get?(d, kl, k) : idict_replaceget?(d, kl, k, v);
+return (r, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_slice",
+    "signature": "(cell, (slice)) __tact_dict_replaceget_int_slice(cell d, int kl, int k, slice v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = idict_get?(d, kl, k);
 if (ok) {
     return r;
@@ -8308,6 +9515,40 @@ if (flag) {
     },
     "name": "__tact_dict_set_uint_slice",
     "signature": "(cell, ()) __tact_dict_set_uint_slice(cell d, int kl, int k, slice v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace?(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_slice",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_slice(cell d, int kl, int k, slice v)",
+  },
+  {
+    "code": {
+      "code": "var (r, old, ok) = null?(v) ? udict_delete_get?(d, kl, k) : udict_replaceget?(d, kl, k, v);
+return (r, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_slice",
+    "signature": "(cell, (slice)) __tact_dict_replaceget_uint_slice(cell d, int kl, int k, slice v)",
   },
   {
     "code": {
@@ -8386,6 +9627,44 @@ if (flag) {
     },
     "name": "__tact_dict_set_slice_int",
     "signature": "(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_int",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_int(cell d, int kl, slice k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse());
+return (d, ok ? old~load_int(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_int",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_int(cell d, int kl, slice k, int v, int vl)",
   },
   {
     "code": {
@@ -8470,6 +9749,44 @@ if (flag) {
     },
     "name": "__tact_dict_set_slice_uint",
     "signature": "(cell, ()) __tact_dict_set_slice_uint(cell d, int kl, slice k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_uint",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_uint(cell d, int kl, slice k, int v, int vl)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse());
+return (d, ok ? old~load_uint(vl) : null());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_uint",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_uint(cell d, int kl, slice k, int v, int vl)",
   },
   {
     "code": {
@@ -8558,6 +9875,46 @@ if (flag) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return __tact_dict_replace_ref(d, kl, k, v);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+      "__tact_dict_replace_ref",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_cell",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_cell(cell d, int kl, slice k, cell v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get_ref(kl, k) : d~__tact_dict_replaceget_ref(kl, k, v);
+return (d, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get_ref",
+      "__tact_dict_replaceget_ref",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_cell",
+    "signature": "(cell, (cell)) __tact_dict_replaceget_slice_cell(cell d, int kl, slice k, cell v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = __tact_dict_get_ref(d, kl, k);
 if (ok) {
     return r;
@@ -8639,6 +9996,44 @@ if (flag) {
     },
     "name": "__tact_dict_set_slice_slice",
     "signature": "(cell, ()) __tact_dict_set_slice_slice(cell d, int kl, slice k, slice v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_slice(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_slice",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_slice(cell d, int kl, slice k, slice v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_slice(v).end_cell().begin_parse());
+return (d, old);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_slice",
+    "signature": "(cell, (slice)) __tact_dict_replaceget_slice_slice(cell d, int kl, slice k, slice v)",
   },
   {
     "code": {
