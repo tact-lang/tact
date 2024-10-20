@@ -3,6 +3,8 @@ title: Advanced
 description: "Advanced, niche or dangerous functions from the Core library of Tact"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Various niche, dangerous or unstable features which can produce unexpected results and are meant to be used by the more experienced users.
 
 :::caution
@@ -251,6 +253,84 @@ nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
 //            amount of nanoToncoins to reserve
 ```
 
+## parseStdAddress
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun parseStdAddress(slice: Slice): StdAddress;
+```
+
+Converts a [`Slice{:tact}`][slice] containing an address into the `StdAddress{:tact}` [Struct][s] and returns it. The `StdAddress{:tact}` is a built-in [Struct][s] that consists of:
+
+Field       | Type                           | Description
+:---------- | :----------------------------- | :----------
+`workchain` | [`Int as int8{:tact}`][int]    | Workchain ID of the address, usually $0$ (basechain) or $-1$ (masterchain)
+`address`   | [`Int as uint256{:tact}`][int] | Address in the specified `workchain`
+
+Attempts to pass a [`Slice{:tact}`][slice] with layout different from the `StdAddress{:tact}` or to load more data than a given [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let addr = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
+let parsedAddr = parseStdAddress(addr.asSlice());
+
+parsedAddr.workchain; // 0
+parsedAddr.address;   // 107...lots of digits...287
+
+// Using newAddress() function with the contents of StdAddress will yield the initial Address:
+let addr2: Address = newAddress(parsedAddr.workchain, parsedAddr.address);
+addr2 == addr; // true
+```
+
+:::note
+
+  For parsing addresses of variable length, see the [`parseVarAddress(){:tact}`](#parsevaraddress) function.
+
+:::
+
+## parseVarAddress
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun parseVarAddress(slice: Slice): VarAddress;
+```
+
+Converts a [`Slice{:tact}`][slice] containing an address of variable length into the `VarAddress{:tact}` [Struct][s] and returns it. The `VarAddress{:tact}` is a built-in [Struct][s] consisting of:
+
+Field       | Type                         | Description
+:---------- | :--------------------------- | :----------
+`workchain` | [`Int as int32{:tact}`][int] | Workchain ID of the variable length address
+`address`   | [`Slice{:tact}`][slice]      | Address in the specified `workchain`
+
+Attempts to pass a [`Slice{:tact}`][slice] with layout different from the `VarAddress{:tact}` or to load more data than a given [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let varAddrSlice = beginCell()
+    .storeUint(6, 3)     // to recognize the following as a VarAddress
+    .storeUint(123, 9)   // make address occupy 123 bits
+    .storeUint(234, 32)  // specify workchain ID of 234
+    .storeUint(345, 123) // specify address of 345
+    .asSlice();
+let parsedVarAddr = parseVarAddress(varAddrSlice);
+
+parsedVarAddr.workchain;             // 234
+parsedVarAddr.address;               // CS{Cell{002...2b3} bits: 44..167; refs: 0..0}
+parsedVarAddr.address.loadUint(123); // 345
+```
+
+:::caution
+
+  Variable-length addresses are intended for future extensions, and while validators must be ready to accept them in inbound messages, the standard (non-variable) addresses are used whenever possible.
+
+:::
+
 [p]: /book/types#primitive-types
 [bool]: /book/types#booleans
 [int]: /book/integers
+[slice]: /book/cells#slices
+[s]: /book/structs-and-messages#structs
