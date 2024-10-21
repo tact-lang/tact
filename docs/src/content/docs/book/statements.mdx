@@ -110,18 +110,29 @@ The syntax is derived from the [`let` statement](#let), and instead of specifyin
 // Definition of Example
 struct Example { number: Int }
 
+// An arbitrary helper function
+fun get42(): Example { return Example { number: 42 } }
+
 fun basic() {
     // Basic syntax of destructuring assignment (to the left of "="):
-    let Example { number } = Example { number: 42 };
-    //  -------   ------     ----------------------
+    let Example { number } = get42();
+    //  -------   ------     -------
     //  ↑         ↑          ↑
-    //  |         |          instantiation of Example Struct
+    //  |         |          gives the Example Struct
     //  |         definition of "number" variable, derived
     //  |         from the field "number" on Example Struct
     //  target structure type "Example"
     //  to destructure fields from
 
-    // The syntax above is equivalent to the following series of statements:
+    // Same as above, but with an instantiation
+    // to showcase how destructuring syntax mirrors it:
+    let Example { number } = Example { number: 42 };
+    //                       ----------------------
+    //                       ↑
+    //                       instantiation of Example Struct
+
+    // Above examples of syntax are roughly equivalent
+    // to the following series of statements:
     let example = Example { number: 42 };
     let number = example.number;
 }
@@ -147,9 +158,10 @@ fun trailblazing() {
 
   ```tact
   struct Example { number: Int }
+  fun get42(): Example { return Example { number: 42 } }
 
   fun basic() {
-      let Example { number } += Example { number: 42 };
+      let Example { number } += get42();
       //                     ^ this will result in the parse error:
       //                     expected "="
   }
