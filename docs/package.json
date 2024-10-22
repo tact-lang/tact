@@ -7,10 +7,11 @@
     "clean": "rm -rf dist/ out/ .astro/",
     "deps": "yarn install --frozen-lockfile",
     "dev": "astro dev",
-    "build": "yarn clean && yarn spell && astro check && astro build",
+    "build": "yarn clean && yarn lint:all && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "spell": "cspell --no-progress src/content/docs"
+    "spell": "cspell --no-progress src/content/docs",
+    "lint:all": "yarn spell"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",
