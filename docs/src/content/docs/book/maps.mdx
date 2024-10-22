@@ -96,6 +96,90 @@ if (gotButUnsure != null) {
 }
 ```
 
+### Replace values, `.replace()` {#replace}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+To replace the value under a key, if such a key exists, use the `.replace(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` on successful replacement and `false{:tact}` otherwise.
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Setting a couple of values under different keys
+fizz.set(7, 70);
+fizz.set(42, 42);
+
+// Overriding one of the existing key-value pairs
+let replaced1 = fizz.replace(7, 68); // key 7 now points to value 68
+replaced1; // true
+
+// Trying to replace the value in a non-existing key-value pair will do nothing
+let replaced2 = fizz.replace(8, 68); // no key 8, so nothing was altered
+replaced2; // false
+```
+
+If the given value is [`null{:tact}`](/book/optionals) and the key exists, the entry will be deleted from the map.
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Setting a couple of values under different keys
+fizz.set(7, 70);
+fizz.set(42, 42);
+
+// Overriding one of the existing key-value pairs
+let replaced1 = fizz.replace(7, null); // the entry under key 7 is now deleted
+replaced1; // true
+
+// Trying to replace the value in a non-existing key-value pair will do nothing
+let replaced2 = fizz.replace(8, null); // no key 8, so nothing was altered
+replaced2; // false
+```
+
+### Replace and get old value, `.replaceGet()` {#replaceget}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+Like [`.replace()`](#replace), but instead of returning a [`Bool{:tact}`](/book/types#booleans) it returns the old (pre-replacement) value on successful replacement and [`null{:tact}`](/book/optionals) otherwise.
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Setting a couple of values under different keys
+fizz.set(7, 70);
+fizz.set(42, 42);
+
+// Overriding one of the existing key-value pairs
+let oldVal1 = fizz.replace(7, 68); // key 7 now points to value 68
+oldVal1; // 70
+
+// Trying to replace the value in a non-existing key-value pair will do nothing
+let oldVal2 = fizz.replace(8, 68); // no key 8, so nothing was altered
+oldVal2; // null
+```
+
+If the given value is [`null{:tact}`](/book/optionals) and the key exists, the entry will be deleted from the map.
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Setting a couple of values under different keys
+fizz.set(7, 70);
+fizz.set(42, 42);
+
+// Overriding one of the existing key-value pairs
+let oldVal1 = fizz.replace(7, null); // the entry under key 7 is now deleted
+oldVal1; // 70
+
+// Trying to replace the value in a non-existing key-value pair will do nothing
+let oldVal2 = fizz.replace(8, null); // no key 8, so nothing was altered
+oldVal2; // null
+```
+
 ### Delete entries, `.del()` {#del}
 
 To delete a single key-value pair (single entry), use the `.del(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` in the case of successful deletion and `false{:tact}` otherwise.
