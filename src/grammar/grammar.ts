@@ -1509,7 +1509,7 @@ export function parseImports(
     src: string,
     path: string,
     origin: ItemOrigin,
-): string[] {
+): AstImport[] {
     return inFile(path, () => {
         const matchResult = tactGrammar.match(src, "JustImports");
         if (matchResult.failed()) {
@@ -1517,9 +1517,7 @@ export function parseImports(
         }
         ctx = { origin };
         try {
-            const imports: AstImport[] =
-                semantics(matchResult).astOfJustImports();
-            return imports.map((imp) => imp.path.value);
+            return semantics(matchResult).astOfJustImports();
         } finally {
             ctx = null;
         }

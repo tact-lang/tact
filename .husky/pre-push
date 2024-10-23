@@ -1,1 +1,1 @@
-yarn lint:all
+yarn lint:all && cd docs && yarn lint:all
