@@ -153,11 +153,11 @@ fizz.set(7, 70);
 fizz.set(42, 42);
 
 // Overriding one of the existing key-value pairs
-let oldVal1 = fizz.replace(7, 68); // key 7 now points to value 68
+let oldVal1 = fizz.replaceGet(7, 68); // key 7 now points to value 68
 oldVal1; // 70
 
 // Trying to replace the value in a non-existing key-value pair will do nothing
-let oldVal2 = fizz.replace(8, 68); // no key 8, so nothing was altered
+let oldVal2 = fizz.replaceGet(8, 68); // no key 8, so nothing was altered
 oldVal2; // null
 ```
 
@@ -172,11 +172,11 @@ fizz.set(7, 70);
 fizz.set(42, 42);
 
 // Overriding one of the existing key-value pairs
-let oldVal1 = fizz.replace(7, null); // the entry under key 7 is now deleted
+let oldVal1 = fizz.replaceGet(7, null); // the entry under key 7 is now deleted
 oldVal1; // 70
 
 // Trying to replace the value in a non-existing key-value pair will do nothing
-let oldVal2 = fizz.replace(8, null); // no key 8, so nothing was altered
+let oldVal2 = fizz.replaceGet(8, null); // no key 8, so nothing was altered
 oldVal2; // null
 ```
 
