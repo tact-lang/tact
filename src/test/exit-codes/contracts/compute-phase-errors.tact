@@ -204,7 +204,7 @@ contract ComputePhaseErrorsTester {
     /// Exit code 11
     receive("11") {
         // Unlike nativeSendMessage which uses SENDRAWMSG, this one uses SENDMSG,
-        // and therefore fails in Compute time when the message is ill-formed
+        // and therefore fails in Compute phase when the message is ill-formed
         nativeSendMessageReturnForwardFee(emptyCell(), 0);
     }
 
