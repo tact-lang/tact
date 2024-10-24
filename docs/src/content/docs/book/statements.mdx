@@ -217,6 +217,20 @@ fun discard(s: Two) {
 }
 ```
 
+To completely ignore the rest of the fields, use `..` at the end of the list:
+
+```tact
+struct Many { one: Int; two: Int; three: Int; fans: Int }
+
+fun ignore(s: Many) {
+    let Many { fans, .. } = s;
+    //               --
+    //               ↑
+    //               ignores all the unspecified fields,
+    //               defining only "fans"
+}
+```
+
 :::caution
 
   At the moment, destructuring of nested [Structs][s] or [Messages][m] isn't allowed. That is, the following won't work:
