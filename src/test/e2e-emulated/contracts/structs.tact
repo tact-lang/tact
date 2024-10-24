@@ -318,6 +318,17 @@ fun destructuringTest7(): S1 {
     return S1 {a: e, b: b, c: a};
 }
 
+fun destructuringTest8(): Int {
+    let s = S {
+        a: true,
+        b: 42
+    };
+
+    let S {b, ..} = s;
+
+    return b;
+}
+
 contract StructsTester {
     s1: S = S {a: false, b: 21 + 21};
     s2: S;
@@ -1100,5 +1111,20 @@ contract StructsTester {
 
     get fun destructuringTest7Const(): S1 {
         return destructuringTest7();
+    }
+
+    get fun destructuringTest8(): Int {
+        let s = S {
+            a: true,
+            b: 42
+        };
+
+        let S {b, ..} = s;
+
+        return b;
+    }
+
+    get fun destructuringTest8Const(): Int {
+        return destructuringTest8();
     }
 }

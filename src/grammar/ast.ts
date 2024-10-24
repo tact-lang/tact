@@ -326,6 +326,7 @@ export type AstStatementDestruct = {
     type: AstTypeId;
     /** field name -> [field id, local id] */
     identifiers: Map<string, [AstId, AstId]>;
+    rest: boolean;
     expression: AstExpression;
     id: number;
     loc: SrcInfo;

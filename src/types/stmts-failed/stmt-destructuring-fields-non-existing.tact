@@ -12,6 +12,6 @@ struct S {
 
 fun testFunc(): Int {
     let s = S{ a: 1, b: 2, c: 3 };
-    let S { a, b, c, d: e } = s;
-    return a + b + c + e;
+    let S { a, b, d: e } = s;
+    return a + b + e;
 }

@@ -1465,14 +1465,6 @@ export class Interpreter {
                 ast.expression.loc,
             );
         }
-        if (ast.identifiers.size !== Object.keys(val).length - 1) {
-            throwErrorConstEval(
-                `destructuring assignment expected ${Object.keys(val).length - 1} fields, but got ${
-                    ast.identifiers.size
-                }`,
-                ast.loc,
-            );
-        }
 
         for (const [field, name] of ast.identifiers.values()) {
             if (name.text === "_") {
