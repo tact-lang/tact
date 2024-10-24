@@ -3,11 +3,11 @@ title: Exit codes
 description: "An exit code is a 32-bit signed integer, which indicates whether the compute or action phase of the transaction was successful, and if not — signals the code of the exception occurred"
 ---
 
-Each transaction on TON Blockchain consists of [multiple phases](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases). An _exit code_ is a $32$-bit signed integer, which indicates whether the [compute](#compute) or [action](#action) phase of the transaction was successful, and if not — signals the code of the exception occurred. Each exit code represents its own exception or resulting state of the transaction.
+Each transaction on TON Blockchain consists of [multiple phases](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases). An _exit code_ is a $32$-bit signed integer, which indicates whether the [compute](#compute) or [action](#action) phase of the transaction was successful, and if not — holds the code of the exception occurred. Each exit code represents its own exception or resulting state of the transaction.
 
 Exit codes $0$ and $1$ indicate normal (successful) execution of the [compute phase](#compute). Exit (or [result](#action)) code $0$ indicates normal (successful) execution of the [action phase](#action). Any other exit code indicates that a certain exception has occurred and that the transaction wasn't successful in one way or another, i.e. transaction was reverted or the inbound message has bounced back.
 
-TON Blockchain reserves exit code values from $0$ to $127$, while Tact utilizes exit codes from $128$ to $255$. Note, that exit codes used by Tact indicate contract errors which can occur when using Tact-generated FunC code, and are therefore thrown in [compute phase](#compute) of the transaction and not during the compilation.
+TON Blockchain reserves exit code values from $0$ to $127$, while Tact utilizes exit codes from $128$ to $255$. Note, that exit codes used by Tact indicate contract errors which can occur when using Tact-generated FunC code, and are therefore thrown in the transaction's [compute phase](#compute) and not during the compilation.
 
 The range from $256$ to $65535$ is free for developer-defined exit codes.
 
@@ -31,7 +31,7 @@ Exit code     | Origin                              | Brief description
 [$3$](#3)     | [Compute phase][c]                  | Stack overflow.
 [$4$](#4)     | [Compute phase][c]                  | Integer overflow.
 [$5$](#5)     | [Compute phase][c]                  | Range check error — some integer is out of its expected range.
-[$6$](#6)     | [Compute phase][c]                  | Invalid opcode.
+[$6$](#6)     | [Compute phase][c]                  | Invalid [TVM][tvm] opcode.
 [$7$](#7)     | [Compute phase][c]                  | Type check error.
 [$8$](#8)     | [Compute phase][c]                  | Cell overflow.
 [$9$](#9)     | [Compute phase][c]                  | Cell underflow.
@@ -49,7 +49,7 @@ Exit code     | Origin                              | Brief description
 [$37$](#37)   | [Action phase][a]                   | Not enough Toncoin.
 [$38$](#38)   | [Action phase][a]                   | Not enough extra currencies.
 [$39$](#39)   | [Action phase][a]                   | Outbound message does not fit into a cell after rewriting.
-[$40$](#40)   | [Action phase][a]                   | Cannot process a message — not enough funds, the message is too large or it merkle depth is too big.
+[$40$](#40)   | [Action phase][a]                   | Cannot process a message — not enough funds, the message is too large or its Merkle depth is too big.
 [$41$](#41)   | [Action phase][a]                   | Library reference is null during library change action.
 [$42$](#42)   | [Action phase][a]                   | Library change action error — error during an attempt of the library change action.
 [$43$](#43)   | [Action phase][a]                   | Exceeded maximum number of cells in the library or the maximum depth of the Merkle tree.
@@ -67,7 +67,7 @@ Exit code     | Origin                              | Brief description
 
 :::note
 
-  Often enough you might encounter the exit code $65535$ (or `0xffff`), which usually means the same as the [exit code 130](#130) — the received opcode is unknown to the contract as there were no receivers expecting it. When writing contracts, the exit code $65535$ is set by the developers and not by [TVM][tvm] of Tact compiler.
+  Often enough you might encounter the exit code $65535$ (or `0xffff`), which usually means the same as the [exit code 130](#130) — the received opcode is unknown to the contract as there were no receivers expecting it. When writing contracts, the exit code $65535$ is set by the developers and not by [TVM][tvm]or the Tact compiler.
 
 :::
 
@@ -93,7 +93,7 @@ it('tests something, you name it', async () => {
   // Send a specific message to our contract and store the results
   const res = await your_contract_name.send(…);
 
-  // Now, we have an access to array of transactions made,
+  // Now, we have an access to array of executed transactions,
   // with the second one (index 1) being the one that we look for
   const tx = res.transactions[1]!;
 
@@ -139,7 +139,7 @@ contract Loot {
             // Removes 100 elements from the stack, causing an underflow
             repeat (100) { drop() }
         } catch (exitCode) {
-            exitCode; // 2
+            // exitCode is 2
         }
     }
 }
@@ -171,7 +171,7 @@ contract ItsSoOver {
         try {
             stackOverflow();
         } catch (exitCode) {
-            exitCode; // 3
+            // exitCode is 3
         }
     }
 }
@@ -194,19 +194,19 @@ try {
     -x; // integer overflow by negation
         // since the max positive value is 2^{256} - 1
 } catch (exitCode) {
-    exitCode; // 4
+    // exitCode is 4
 }
 
 try {
     x / 0; // division by zero!
 } catch (exitCode) {
-    exitCode; // 4
+    // exitCode is 4
 }
 
 try {
     x * x * x; // integer overflow!
 } catch (exitCode) {
-    exitCode; // 4
+    // exitCode is 4
 }
 
 // There can also be an integer overflow when doing:
@@ -229,14 +229,14 @@ try {
         dump("smash. logs. I. must.");
     }
 } catch (exitCode) {
-    exitCode; // 5
+    // exitCode is 5
 }
 
 try {
     // Builder.storeUint() function can only use up to 256 bits, so 512 is too much:
     let s: Slice = beginCell().storeUint(-1, 512).asSlice();
 } catch (exitCode) {
-    exitCode; // 5
+    // exitCode is 5
 }
 ```
 
@@ -253,7 +253,7 @@ contract OpOp {
         try {
             invalidOpcode();
         } catch (exitCode) {
-            exitCode; // 6
+            // exitCode is 6
         }
     }
 }
@@ -273,7 +273,7 @@ contract VibeCheck {
             // The 0th index doesn't exist
             typeCheckError().get(0)!!;
         } catch (exitCode) {
-            exitCode; // 7
+            // exitCode is 7
         }
     }
 }
@@ -300,7 +300,7 @@ try {
         .storeInt(0, 24) // 1024 bits!
         .endCell();
 } catch (exitCode) {
-    exitCode; // 8
+    // exitCode is 8
 }
 
 // Too much refs
@@ -313,7 +313,7 @@ try {
         .storeRef(emptyCell()) // 5 refs!
         .endCell();
 } catch (exitCode) {
-    exitCode; // 8
+    // exitCode is 8
 }
 ```
 
@@ -332,14 +332,14 @@ The most common cause of this error is a mismatch between the expected and actua
 try {
     emptySlice().loadInt(1); // 0 bits!
 } catch (exitCode) {
-    exitCode; // 9
+    // exitCode is 9
 }
 
 // Too few refs
 try {
     emptySlice().loadRef(); // 0 refs!
 } catch (exitCode) {
-    exitCode; // 9
+    // exitCode is 9
 }
 ```
 
@@ -365,7 +365,7 @@ contract DictPic {
             // And the error happens only when we touch it
             m.get(0)!!;
         } catch (exitCode) {
-            exitCode; // 10
+            // exitCode is 10
         }
     }
 }
@@ -381,7 +381,7 @@ try {
     // and therefore fails in Compute phase when the message is ill-formed
     nativeSendMessageReturnForwardFee(emptyCell(), 0);
 } catch (exitCode) {
-    exitCode; // 11
+    // exitCode is 11
 }
 ```
 
@@ -401,7 +401,7 @@ That's done in order to prevent the resulting code ($-14$) from being produced a
 try {
     repeat (pow(2, 31) - 1) {}
 } catch (exitCode) {
-    exitCode; // -14
+    // exitCode is -14
 }
 ```
 
@@ -415,7 +415,7 @@ Virtualization error, related to [prunned branch cells](/book/cells#cells-kinds)
 
 ## Action phase {#action}
 
-The [action phase][a] is processed after the successful execution of [compute phase](#compute). It attempts to perform the actions stored into the action list by [TVM][tvm] during the compute phase.
+The [action phase][a] is processed after the successful execution of the [compute phase](#compute). It attempts to perform the actions stored into the action list by [TVM][tvm] during the compute phase.
 
 Some actions may fail during processing, in which case those actions may be skipped or the whole transaction may revert depending on the mode of actions. The code indicating the resulting state of the [action phase][a] is called a _result code_. Since it's also a $32$-bit signed integer that essentially serves the same purpose as _exit code_ of [compute phase](#compute), it's common to call the result code an exit code too.
 
@@ -425,7 +425,7 @@ If the list of actions contains [exotic cells](/book/cells#cells-kinds), an acti
 
 :::note
 
-  Aside from this exit code there's a boolean flag `valid`, which you can find under `description.actionPhase.valid` in the transaction results when working with [Sandbox and Blueprint](#blueprint). This flag can be set to `false` even when there is some other exit code thrown from the action phase.
+  Aside from this exit code there's a boolean flag `valid`, which you can find under `description.actionPhase.valid` in the transaction results when working with [Sandbox and Blueprint](#blueprint). Transaction can set this flag to `false` even when there is some other exit code thrown from the action phase.
 
 :::
 
@@ -434,7 +434,7 @@ If the list of actions contains [exotic cells](/book/cells#cells-kinds), an acti
 If there are more than $255$ actions queued for execution, the [action phase](#action) will throw an error with an exit code $33$: `Action list is too long`.
 
 ```tact
-// For example, let's try and queue reservation of specific amount of nanoToncoins
+// For example, let's attempt to queue reservation of specific amount of nanoToncoins
 // This won't fail in compute phase, but will result in exit code 33 in Action phase
 repeat (256) {
     nativeReserve(ton("0.001"), ReserveAtMost);
@@ -467,7 +467,7 @@ If the destination address in the outbound message is invalid, e.g. it doesn't c
 
 ### 37: Not enough Toncoin {#37}
 
-If all the inbound message value with [base mode 64](/book/message-mode#base-modes) set has been already consumed and there's not enough funds to pay for the failed action, or the [TL-B][tlb] layout of the provided value ([`CurrencyCollection`](https://docs.ton.org/develop/data-formats/msg-tlb#currencycollection)) is invalid, or there's not enough funds to pay [forward fees](https://docs.ton.org/develop/smart-contracts/guidelines/processing) or not enough funds after deducting fees, an error with exit code $37$ is thrown: `Not enough Toncoin`.
+If all funds of the inbound message with [base mode 64](/book/message-mode#base-modes) set had been already consumed and there's not enough funds to pay for the failed action, or the [TL-B][tlb] layout of the provided value ([`CurrencyCollection`](https://docs.ton.org/develop/data-formats/msg-tlb#currencycollection)) is invalid, or there's not enough funds to pay [forward fees](https://docs.ton.org/develop/smart-contracts/guidelines/processing) or not enough funds after deducting fees, an error with exit code $37$ is thrown: `Not enough Toncoin`.
 
 :::note
 
@@ -500,7 +500,7 @@ When processing the message, TON Blockchain tries to pack it according to the [r
 
 ### 40: Cannot process a message {#40}
 
-If there would not be enough funds to process all the cells in a message, the message is too large or its merkle depth is too big, an error with exit code $40$ is thrown: `Cannot process a message`.
+If there would not be enough funds to process all the cells in a message, the message is too large or its Merkle depth is too big, an error with exit code $40$ is thrown: `Cannot process a message`.
 
 ### 41: Library reference is null {#41}
 
@@ -533,7 +533,7 @@ If the configuration is absent, default values are:
 
 ## Tact compiler
 
-Tact utilizes exit codes from $128$ to $255$. Note, that exit codes used by Tact indicate contract errors which can occur when using Tact-generated FunC code, and are therefore thrown in [compute phase](#compute) of the transaction and not during the compilation.
+Tact utilizes exit codes from $128$ to $255$. Note, that exit codes used by Tact indicate contract errors which can occur when using Tact-generated FunC code, and are therefore thrown in the transaction's [compute phase](#compute) and not during the compilation.
 
 ### 128: Null reference exception {#128}
 
@@ -546,7 +546,7 @@ try {
     // Asserting that the value isn't null, which isn't the case!
     dump(gotcha!!);
 } catch (exitCode) {
-    exitCode; // 128
+    // exitCode is 128
 }
 ```
 
@@ -615,7 +615,7 @@ try {
     // 0 is code of NUL in ASCII and it is not valid Base64
     let code: Slice = beginCell().storeUint(0, 8).asSlice().fromBase64();
 } catch (exitCode) {
-    exitCode; // 134
+    // exitCode is 134
 }
 ```
 
@@ -640,7 +640,7 @@ try {
     // Zero address in unsupported workchain
     dump(newAddress(unsupportedChainID, 0));
 } catch (exitCode) {
-    exitCode; // 136
+    // exitCode is 136
 }
 ```
 
@@ -655,7 +655,7 @@ try {
     // Zero address in masterchain without the config option set
     dump(newAddress(masterchainID, 0));
 } catch (exitCode) {
-    exitCode; // 137
+    // exitCode is 137
 }
 ```
 
