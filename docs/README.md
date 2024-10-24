@@ -101,6 +101,10 @@ All commands are run from the root of the project, from a terminal:
 | `yarn astro ...`          | Run CLI commands like `astro add`, `astro check`, etc.
 | `yarn astro -- --help`    | Get help using the Astro CLI.
 
+### ⚠️ Gotchas
+
+- When updating TextMate grammars in `grammars/` (for example, `grammar-tact.json`), make sure that the value for the `"name"` property is written all lowercase, otherwise highlighting will break.
+
 ### 👀 Want to learn more about the framework behind Tact docs?
 
 Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
