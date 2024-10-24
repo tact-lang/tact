@@ -1013,7 +1013,44 @@ semantics.addOperation<AstNode>("astOfStatement", {
             loc: createRef(this),
         });
     },
-    StatementDestruct(
+    StatementDestruct_withRest(
+        _letKwd,
+        typeId,
+        _lparen,
+        identifiers,
+        _comma,
+        _rest,
+        _optTrailingComma,
+        _rparen,
+        _equals,
+        expression,
+        _semicolon,
+    ) {
+        return createAstNode({
+            kind: "statement_destruct",
+            type: typeId.astOfType(),
+            identifiers: identifiers
+                .asIteration()
+                .children.reduce((map, item) => {
+                    const destructItem = item.astOfExpression();
+                    if (map.has(destructItem.field.text)) {
+                        throwSyntaxError(
+                            `Duplicate destructuring field: '${destructItem.field.text}'`,
+                            destructItem.loc,
+                        );
+                    }
+                    map.set(destructItem.field.text, [
+                        destructItem.field,
+                        destructItem.name,
+                    ]);
+                    return map;
+                }, new Map<string, [AstId, AstId]>()),
+            rest: true,
+            expression: expression.astOfExpression(),
+            loc: createRef(this),
+        });
+    },
+    StatementDestruct_noRest(
         _letKwd,
         typeId,
         _lparen,
@@ -1043,6 +1080,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
                     ]);
                     return map;
                 }, new Map<string, [AstId, AstId]>()),
+            rest: false,
             expression: expression.astOfExpression(),
             loc: createRef(this),
         });

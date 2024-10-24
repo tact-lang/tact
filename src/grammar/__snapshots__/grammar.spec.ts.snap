@@ -8214,12 +8214,12 @@ exports[`grammar should parse stmt-destructuring 1`] = `
       "loc": fun testFunc(): Int {
     let s = S{ a: 1, b: 2, c: 3 };
     let S { a, b, c } = s;
-    let S { a: a1 } = s;
-    let S { b: b1 } = s;
-    let S { c: c1 } = s;
-    let S { a: a2, b: b2 } = s;
-    let S { a: a3, c: c3 } = s;
-    let S { b: b4, c: c4 } = s;
+    let S { a: a1, .. } = s;
+    let S { b: b1, .. } = s;
+    let S { c: c1, .., } = s;
+    let S { a: a2, b: b2, .. } = s;
+    let S { a: a3, c: c3, .., } = s;
+    let S { b: b4, c: c4, .. } = s;
 
     let m = M{ a: 1, b: 2 };
     let M { a: a_m, b: b_m } = m;
@@ -8373,6 +8373,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
           "kind": "statement_destruct",
           "loc": let S { a, b, c } = s;,
+          "rest": false,
           "type": {
             "id": 35,
             "kind": "type_id",
@@ -8405,7 +8406,8 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
           },
           "kind": "statement_destruct",
-          "loc": let S { a: a1 } = s;,
+          "loc": let S { a: a1, .. } = s;,
+          "rest": true,
           "type": {
             "id": 47,
             "kind": "type_id",
@@ -8438,7 +8440,8 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
           },
           "kind": "statement_destruct",
-          "loc": let S { b: b1 } = s;,
+          "loc": let S { b: b1, .. } = s;,
+          "rest": true,
           "type": {
             "id": 53,
             "kind": "type_id",
@@ -8471,7 +8474,8 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
           },
           "kind": "statement_destruct",
-          "loc": let S { c: c1 } = s;,
+          "loc": let S { c: c1, .., } = s;,
+          "rest": true,
           "type": {
             "id": 59,
             "kind": "type_id",
@@ -8518,7 +8522,8 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
           },
           "kind": "statement_destruct",
-          "loc": let S { a: a2, b: b2 } = s;,
+          "loc": let S { a: a2, b: b2, .. } = s;,
+          "rest": true,
           "type": {
             "id": 65,
             "kind": "type_id",
@@ -8565,7 +8570,8 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
           },
           "kind": "statement_destruct",
-          "loc": let S { a: a3, c: c3 } = s;,
+          "loc": let S { a: a3, c: c3, .., } = s;,
+          "rest": true,
           "type": {
             "id": 74,
             "kind": "type_id",
@@ -8612,7 +8618,8 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
           },
           "kind": "statement_destruct",
-          "loc": let S { b: b4, c: c4 } = s;,
+          "loc": let S { b: b4, c: c4, .. } = s;,
+          "rest": true,
           "type": {
             "id": 83,
             "kind": "type_id",
@@ -8721,6 +8728,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
           "kind": "statement_destruct",
           "loc": let M { a: a_m, b: b_m } = m;,
+          "rest": false,
           "type": {
             "id": 102,
             "kind": "type_id",

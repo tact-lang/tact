@@ -158,7 +158,8 @@ Tact {
 
     StatementForEach = foreach "(" id "," id "in" Expression ")" "{" Statement* "}"
 
-    StatementDestruct = let typeId "{" ListOf<DestructItem, ","> ","? "}" "=" Expression (";" | &"}")
+    StatementDestruct = let typeId "{" ListOf<DestructItem, ","> ","? "}" "=" Expression (";" | &"}") --noRest
+                      | let typeId "{" ListOf<DestructItem, ","> "," ".." ","? "}" "=" Expression (";" | &"}") --withRest
 
     DestructItem = id ":" id --regular
                  | id --punned
