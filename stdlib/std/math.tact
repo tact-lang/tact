@@ -60,3 +60,5 @@ native log(num: Int, base: Int): Int;
 native pow(base: Int, exp: Int): Int;
 
 asm fun pow2(exp: Int): Int { POW2 }
+
+asm fun sgn(x: Int): Int { SGN }
