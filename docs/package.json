@@ -19,7 +19,6 @@
     "astro": "^4.15.3",
     "cspell": "^8.14.4",
     "hast-util-to-string": "^3.0.0",
-    "mermaid": "^11.3.0",
     "rehype-autolink-headings": "7.1.0",
     "rehype-katex": "7.0.1",
     "remark-custom-heading-id": "2.0.0",
