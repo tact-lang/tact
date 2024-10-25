@@ -40,6 +40,24 @@ asm extends fun storeBuilder(self: Builder, cell: Builder): Builder { STBR }
 @name(__tact_store_address)
 extends native storeAddress(self: Builder, address: Address): Builder;
 
+/// Extension function for the `Builder`.
+///
+/// If the `cell` is not `null`, stores 1 as a single bit and then reference `cell` into the copy of the `Builder`. Returns that copy.
+///
+/// If the `cell` is `null`, only stores 0 as a single bit into the copy of the `Builder`. Returns that copy.
+///
+/// As a single `Cell` can store up to 4 references, attempts to store more throw an exception with exit code 8: `Cell overflow`.
+///
+/// ```tact
+/// let b: Builder = beginCell();
+/// let fizz: Builder = b
+///     .storeMaybeRef(emptyCell()) // 1, then empty cell
+///     .storeMaybeRef(null);       // 0
+/// ```
+///
+/// @since Tact 1.5.0
+/// @see https://docs.tact-lang.org/ref/core-cells#builderstoremayberef
+///
 asm(cell self) extends fun storeMaybeRef(self: Builder, cell: Cell?): Builder { STOPTREF }
 
 asm extends fun endCell(self: Builder): Cell { ENDC }
