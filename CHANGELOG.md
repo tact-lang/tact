@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs: `preloadRef` method for the `Slice` type: PR [#1044](https://github.com/tact-lang/tact/pull/1044)
 - Docs: added DeDust cookbook: PR [#954](https://github.com/tact-lang/tact/pull/954)
 - Docs: described the limit for deeply nested expressions: PR [#1101](https://github.com/tact-lang/tact/pull/1101)
+- New functions in stdlib from `stdlib.fc` and `math.fc`: PR [#985](https://github.com/tact-lang/tact/pull/985)
 
 ### Changed
 
