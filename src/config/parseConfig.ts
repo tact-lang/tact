@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const optionsSchema = z
+export const optionsSchema = z
     .object({
         /**
          * If set to true, enables debug output of a contract and allows usage of `dump()` function,
@@ -49,7 +49,7 @@ const optionsSchema = z
     })
     .strict();
 
-const projectSchema = z
+export const projectSchema = z
     .object({
         /**
          * Name of the project. All generated files are prefixed with it.
@@ -86,7 +86,7 @@ const projectSchema = z
     })
     .strict();
 
-const configSchema = z
+export const configSchema = z
     .object({
         /**
          * A property for specifying a path or URL to the JSON schema of tact.config.json

@@ -415,6 +415,11 @@ export class AstRenamer {
                     map: this.renameExpression(stmt.map),
                     statements: this.renameStatements(stmt.statements),
                 };
+            case "statement_destruct":
+                return {
+                    ...stmt,
+                    expression: this.renameExpression(stmt.expression),
+                };
             default:
                 return stmt;
         }

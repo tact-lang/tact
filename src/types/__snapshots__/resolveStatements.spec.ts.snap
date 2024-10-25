@@ -898,6 +898,116 @@ Line 5, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-duplicate-id 1`] = `
+"<unknown>:15:22: Variable already exists: "x"
+Line 15, col 22:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S { a: x, b: x, c: y } = s;
+                            ^
+  16 |     return x + y;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-destructable 1`] = `
+"<unknown>:16:25: Type 'map<Int, Int>' cannot be destructured
+Line 16, col 25:
+  15 |     let m: map<Int, Int> = emptyMap();
+> 16 |     let S { a, b, c } = m;
+                               ^
+  17 |     return a + b + c;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-destructable-opt 1`] = `
+"<unknown>:15:25: Type 'S?' is optional and cannot be destructured
+Line 15, col 25:
+  14 |     let s: S? = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S { a, b, c } = s;
+                               ^
+  16 |     return a + b + c;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-destructable2 1`] = `
+"<unknown>:16:29: Type 'Test' cannot be destructured
+Line 16, col 29:
+  15 |         let s = S{ a: 1, b: 2, c: 3 };
+> 16 |         let S { a, b, c } = self;
+                                   ^~~~
+  17 |         return a + b + c;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing 1`] = `
+"<unknown>:15:22: Field '"d"' not found in type 'S'
+Line 15, col 22:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S { a, b, c, d: e } = s;
+                            ^
+  16 |     return a + b + c + e;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing-punned 1`] = `
+"<unknown>:15:16: Field '"bb"' not found in type 'S'
+Line 15, col 16:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S { a, bb, c } = s;
+                      ^~
+  16 |     return a + bb + c;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing-punned2 1`] = `
+"<unknown>:15:22: Field '"d"' not found in type 'S'
+Line 15, col 22:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S { a, b, c, d } = s;
+                            ^
+  16 |     return a + b + c + d;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing-underscore 1`] = `
+"<unknown>:15:12: Field '"_"' not found in type 'S'
+Line 15, col 12:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S {_, b} =  s;
+                  ^
+  16 |     return b;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-shadowed-const-id 1`] = `
+"<unknown>:17:16: Variable "x" is trying to shadow an existing constant with the same name
+Line 17, col 16:
+  16 |     let s = S{ a: 1, b: 2, c: 3 };
+> 17 |     let S { a: x, b: b, c: c } = s;
+                      ^
+  18 |     return x + b + c;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-shadowed-id 1`] = `
+"<unknown>:16:16: Variable already exists: "x"
+Line 16, col 16:
+  15 |     let x = 0;
+> 16 |     let S { a: x, b: b, c: c } = s;
+                      ^
+  17 |     return x + b + c;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-wrong-type 1`] = `
+"<unknown>:18:21: Type mismatch: "S2" is not assignable to "S1"
+Line 18, col 21:
+  17 | fun testFunc(): Int {
+> 18 |     let S1 {x, y} = S2 {x: 42, y: 43};
+                           ^~~~~~~~~~~~~~~~~
+  19 |     return x + y;
+"
+`;
+
 exports[`resolveStatements should fail statements for stmt-do-int 1`] = `
 "<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
 Line 9, col 5:
@@ -2935,6 +3045,179 @@ exports[`resolveStatements should resolve statements for stmt-augmented-assgn-nu
   ],
   [
     "a",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for stmt-destructuring 1`] = `
+[
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "S{ a: 1, b: 2, c: 3 }",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "s",
+    "S",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "M{ a: 1, b: 2 }",
+    "M",
+  ],
+  [
+    "m",
+    "M",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a + b",
+    "Int",
+  ],
+  [
+    "c",
+    "Int",
+  ],
+  [
+    "a + b + c",
+    "Int",
+  ],
+  [
+    "a1",
+    "Int",
+  ],
+  [
+    "a + b + c + a1",
+    "Int",
+  ],
+  [
+    "b1",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1",
+    "Int",
+  ],
+  [
+    "c1",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1",
+    "Int",
+  ],
+  [
+    "a2",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2",
+    "Int",
+  ],
+  [
+    "b2",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2",
+    "Int",
+  ],
+  [
+    "a3",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2 + a3",
+    "Int",
+  ],
+  [
+    "c3",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3",
+    "Int",
+  ],
+  [
+    "b4",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4",
+    "Int",
+  ],
+  [
+    "c4",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4",
+    "Int",
+  ],
+  [
+    "a_m",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m",
+    "Int",
+  ],
+  [
+    "b_m",
+    "Int",
+  ],
+  [
+    "a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m + b_m",
     "Int",
   ],
 ]

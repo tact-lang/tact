@@ -129,6 +129,8 @@ export class AstHasher {
                 return `${node.kind}|${this.hashStatements(node.statements)}|${this.hash(node.catchName)}|${this.hashStatements(node.catchStatements)}`;
             case "statement_foreach":
                 return `${node.kind}|${this.hash(node.map)}|${this.hashStatements(node.statements)}`;
+            case "statement_destruct":
+                return `${node.kind}|${this.hash(node.type)}|${this.hashDestructIdentifiers(Array.from(node.identifiers.values()))}|${this.hash(node.expression)}`;
             // Expressions
             case "op_binary":
                 return `${node.kind}|${node.op}|${this.hash(node.left)}|${this.hash(node.right)}`;
@@ -191,6 +193,13 @@ export class AstHasher {
                     `Unsupported node: ${JSONbig.stringify(node)}`,
                 );
         }
+    }
+
+    private hashDestructIdentifiers(identifiers: [AstId, AstId][]): string {
+        const identifiersHash = identifiers
+            .map(([key, value]) => `${this.hash(key)}|${this.hash(value)}`)
+            .join("|");
+        return identifiersHash;
     }
 
     private hashStructDecl(node: AstStructDecl): string {
