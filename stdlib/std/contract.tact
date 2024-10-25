@@ -240,3 +240,15 @@ asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 /// See: https://docs.tact-lang.org/ref/core-advanced#parsevaraddress
 ///
 asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
+
+asm fun curLt(): Int { LTIME }
+
+asm fun blockLt(): Int { BLOCKLT }
+
+asm fun setGasLimit(limit: Int) { SETGASLIMIT }
+
+asm fun getSeed(): Int { RANDSEED }
+
+asm fun setSeed(seed: Int) { SETRAND }
+
+asm fun myCode(): Cell { MYCODE }

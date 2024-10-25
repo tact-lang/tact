@@ -324,6 +324,39 @@ exports[`local-type-inference should automatically set types for let statements 
     {
       "fields": [
         {
+          "name": "cells",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "bits",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "refs",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+      ],
+      "header": null,
+      "name": "DataSize",
+    },
+    {
+      "fields": [
+        {
           "name": "code",
           "type": {
             "kind": "simple",
