@@ -62,18 +62,18 @@ Use [receiver](/book/receive) function to accept token notification message.
 The sender of a transfer notification must be validated because malicious actors could attempt to spoof notifications from an unauthorized account.
 If this validation is not done, the contract may accept unauthorized transactions, leading to potential security vulnerabilities.
 
-Validation is done using the Jetton address from the contract.
+Validation is done using the Jetton address from the contract:
 
-1. Sender send message with `op::transfer` to his Jetton wallet.
-2. Jetton wallet transfer funds to contract's Jetton wallet.
-3. After successful transfer accept, contract's Jetton wallet sends transfer notification to his owner - contract.
-4. Contract validates Jetton message.
+1. Sender sends message with `0xf8a7ea5` as its 32-bit header (opcode) to his Jetton wallet.
+2. Jetton wallet transfers funds to contract's Jetton wallet.
+3. After successful transfer accept, contract's Jetton wallet sends transfer notification to his owner contract.
+4. Contract validates the Jetton message.
 
 You may obtain contract's Jetton wallet is done using the [`contractAddress(){:tact}`](/ref/core-common#contractaddress) function or calculate this address offchain.
 
 To obtain the Jetton wallet's state init, you need the wallet's data and code. While there is a common structure for the initial data layout, it may differ in some cases, such as with [USDT](#usdt-jetton-operations).
 
-Since notifications originate from your contract's jetton wallet, as illustrated in the diagram, the function [`myAddress(){:tact}`](/ref/core-common#myaddress) should be used in `ownerAddress{:tact}` field.
+Since notifications originate from your contract's Jetton wallet, the function [`myAddress(){:tact}`](/ref/core-common#myaddress) should be used in `ownerAddress` field.
 
 :::caution
 
@@ -230,8 +230,13 @@ contract Example with Deployable {
                 // Can be used for custom logic of Jettons themselves,
                 // and without such can be set to null
                 customPayload: null,
-                forwardTonAmount: 1, // amount that will be transferred with JettonTransferNotification. Needed for custom logic execution like in example below. If the amount is 0 notification won't be sent
-                forwardPayload: rawSlice("F") // precomputed beginCell().storeUint(0xF, 4).endCell().beginParse(). This works for simple transfer, if needed any struct can be used as `forwardPayload`
+                // Amount to transfer with JettonTransferNotification,
+                // which is needed for the execution of custom logic
+                forwardTonAmount: 1, // if its 0, the notification won't be sent!
+                // Compile-time way of expressing:
+                //     beginCell().storeUint(0xF, 4).endCell().beginParse()
+                // For more complicated transfers, adjust accordingly
+                forwardPayload: rawSlice("F")
             }.toCell(),
         });
     }
