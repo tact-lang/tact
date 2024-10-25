@@ -33,7 +33,8 @@ export default defineConfig({
 				behavior: "append",
 				properties: {
 					class: "autolink-header",
-					ariaHidden: true,
+					ariaHidden: "true",
+					ariaLabel: "Link to this header",
 					tabIndex: -1,
 				},
 			}],

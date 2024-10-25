@@ -7,16 +7,17 @@
     "clean": "rm -rf dist/ out/ .astro/",
     "deps": "yarn install --frozen-lockfile",
     "dev": "astro dev",
-    "build": "yarn clean && yarn spell && astro check && astro build",
+    "build": "yarn clean && yarn lint:all && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "spell": "cspell --no-progress src/content/docs"
+    "spell": "cspell --no-progress src/content/docs",
+    "lint:all": "yarn spell"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",
     "@astrojs/markdown-remark": "^5.2.0",
     "@astrojs/starlight": "^0.28.2",
-    "astro": "^4.15.3",
+    "astro": "^4.16.1",
     "rehype-autolink-headings": "7.1.0",
     "rehype-katex": "7.0.1",
     "remark-custom-heading-id": "2.0.0",

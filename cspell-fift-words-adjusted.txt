@@ -29,6 +29,7 @@ Pos
 Split
 abort
 abs
+addop
 allot
 and
 anon

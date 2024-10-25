@@ -8,6 +8,11 @@ export {
     TactConstEvalError,
     TactErrorCollection,
 } from "./errors";
+export {
+    optionsSchema,
+    projectSchema,
+    configSchema,
+} from "./config/parseConfig";
 export { AstSorter } from "./grammar/sort";
 export { AstRenamer } from "./grammar/rename";
 export { AstHasher } from "./grammar/hash";
