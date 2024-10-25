@@ -33,7 +33,8 @@ export default defineConfig({
 				behavior: "append",
 				properties: {
 					class: "autolink-header",
-					ariaHidden: true,
+					ariaHidden: "true",
+					ariaLabel: "Link to this header",
 					tabIndex: -1,
 				},
 			}],
@@ -137,7 +138,8 @@ export default defineConfig({
 						{
 							label: 'Fundamentals of Tact',
 							translations: { 'zh-CN': 'Tact 语言基础' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'book/types#',
 						},
 						{ slug: 'book/types' },
 						{ slug: 'book/integers' },
@@ -150,7 +152,8 @@ export default defineConfig({
 						{
 							label: 'Expressiveness',
 							translations: { 'zh-CN': '表现力' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'book/operators#',
 						},
 						{ slug: 'book/operators' },
 						{ slug: 'book/expressions' },
@@ -160,7 +163,8 @@ export default defineConfig({
 						{
 							label: 'Communication',
 							translations: { 'zh-CN': '交流' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'book/receive#',
 						},
 						{ slug: 'book/receive' },
 						{ slug: 'book/bounced' },
@@ -171,7 +175,8 @@ export default defineConfig({
 						{
 							label: 'Going places',
 							translations: { 'zh-CN': '前往各地' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'book/deploy#',
 						},
 						{ slug: 'book/deploy' },
 						{ slug: 'book/debug' },
@@ -193,7 +198,8 @@ export default defineConfig({
 						{
 							label: 'Single contract',
 							translations: { 'zh-CN': '单一合同' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'cookbook/single-communication#',
 						},
 						{ slug: 'cookbook/single-communication' },
 						{ slug: 'cookbook/type-conversion' },
@@ -206,7 +212,8 @@ export default defineConfig({
 						{
 							label: 'Multiple contracts',
 							translations: { 'zh-CN': '多重合同' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'cookbook/multi-communication#',
 						},
 						{ slug: 'cookbook/multi-communication' },
 						{ slug: 'cookbook/jettons' },
@@ -240,7 +247,8 @@ export default defineConfig({
 						{
 							label: 'Core library',
 							translations: { 'zh-CN': '核心图书馆' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'ref/core-base#',
 						},
 						{ slug: 'ref/core-base' },
 						{ slug: 'ref/core-common' },
@@ -254,7 +262,8 @@ export default defineConfig({
 						{
 							label: 'Standard libraries',
 							translations: { 'zh-CN': '标准图书馆' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'ref/standard-libraries#',
 						},
 						{ slug: 'ref/standard-libraries' },
 						{ slug: 'ref/stdlib-config' },
@@ -275,7 +284,8 @@ export default defineConfig({
 						{
 							label: 'Tools',
 							translations: { 'zh-CN': '工具' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'ecosystem/typescript#',
 						},
 						{ slug: 'ecosystem/typescript' },
 						{ slug: 'ecosystem/vscode' },
