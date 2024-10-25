@@ -1,201 +1,189 @@
+import { CompilerContext } from "../context";
+import { SrcInfo } from "../grammar/grammar";
+import { TypeRef } from "../types/types";
+import { WriterContext } from "../generator/Writer";
 import { ops } from "../generator/writers/ops";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwCompilationError } from "../errors";
 import { getType } from "../types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
+import { AstExpression } from "../grammar/ast";
 
+// Helper functions to avoid redundancy
+function checkArgumentsLength(
+    args: (TypeRef | undefined)[],
+    expected: number,
+    message: string,
+    ref: SrcInfo,
+): void {
+    if (args.length !== expected || args.some((arg) => arg === undefined)) {
+        throwCompilationError(message, ref);
+    }
+}
+
+function checkMapType(
+    self: TypeRef | undefined,
+    ref: SrcInfo,
+): asserts self is {
+    kind: "map";
+    key: string;
+    keyAs: string | null;
+    value: string;
+    valueAs: string | null;
+} {
+    if (!self || self.kind !== "map") {
+        throwCompilationError("expects a map as self argument", ref);
+    }
+    if (self.key !== "Int" && self.key !== "Address") {
+        throwCompilationError("expects a map with Int or Address keys", ref);
+    }
+}
+
+function checkKeyType(
+    key: TypeRef | undefined,
+    expectedType: string,
+    ref: SrcInfo,
+): void {
+    if (
+        !key ||
+        key.kind !== "ref" ||
+        key.optional ||
+        key.name !== expectedType
+    ) {
+        throwCompilationError(
+            `expects a "${expectedType}" as first argument`,
+            ref,
+        );
+    }
+}
+
+function checkValueType(
+    value: TypeRef | undefined,
+    expectedType: string,
+    ref: SrcInfo,
+): void {
+    if (!value || (value.kind !== "null" && value.kind !== "ref")) {
+        throwCompilationError("expects a direct type as second argument", ref);
+    }
+    if (value.kind !== "null" && value.name !== expectedType) {
+        throwCompilationError(
+            `expects a "${expectedType}" as second argument`,
+            ref,
+        );
+    }
+}
+
+function resolveMapKeyBits(
+    self: { key: string; keyAs: string | null },
+    ref: SrcInfo,
+): { bits: number; kind: string } {
+    if (self.key === "Int") {
+        if (self.keyAs?.startsWith("int")) {
+            return { bits: parseInt(self.keyAs.slice(3), 10), kind: "int" };
+        }
+        if (self.keyAs?.startsWith("uint")) {
+            return { bits: parseInt(self.keyAs.slice(4), 10), kind: "uint" };
+        }
+        return { bits: 257, kind: "int" }; // Default for "Int" keys
+    } else if (self.key === "Address") {
+        return { bits: 267, kind: "slice" };
+    }
+    throwCompilationError(`Unsupported key type: ${self.key}`, ref);
+}
+
+function handleStructOrOtherValue(
+    self: { value: string; valueAs: string | null },
+    value: TypeRef,
+    resolved: string[],
+    ctx: WriterContext,
+    ref: SrcInfo,
+    bits: number,
+    kind: string,
+    operation: string = "set",
+): string {
+    const t = getType(ctx.ctx, self.value);
+    if (["contract", "trait"].includes(t.kind)) {
+        throwCompilationError(`"${t.name}" can't be value of a map`, ref);
+    }
+    if (t.kind === "struct") {
+        const funcName = `__tact_dict_${operation}_${kind}_cell`;
+        ctx.used(funcName);
+        const writerFunc =
+            value.kind === "ref" && !value.optional
+                ? ops.writerCell(t.name, ctx)
+                : ops.writerCellOpt(t.name, ctx);
+        return `${resolved[0]}~${funcName}(${bits}, ${resolved[1]}, ${writerFunc}(${resolved[2]}))`;
+    }
+    throwCompilationError(`"${t.name}" can't be value of a map`, ref);
+}
+
+// The fully refactored MapFunctions object
 export const MapFunctions: Map<string, AbiFunction> = new Map([
     [
         "set",
         {
             name: "set",
-            resolve(ctx, args, ref) {
-                // Check arguments
-                if (args.length !== 3) {
-                    throwCompilationError("set expects two arguments", ref); // Should not happen
-                }
-                const self = args[0]!;
-                const key = args[1]!;
-                const value = args[2]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "set expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            resolve(
+                ctx: CompilerContext,
+                args: (TypeRef | undefined)[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(args, 3, "set expects two arguments", ref);
 
-                // Resolve map types
-                if (self.key !== "Int" && self.key !== "Address") {
-                    throwCompilationError(
-                        "set expects a map with Int or Address keys",
-                        ref,
-                    );
-                }
-
-                // Check key type
-                if (key.kind !== "ref" || key.optional) {
-                    throwCompilationError(
-                        "set expects a direct type as first argument",
-                        ref,
-                    );
-                }
-                if (key.name !== self.key) {
-                    throwCompilationError(
-                        `set expects a "${self.key}" as first argument`,
-                        ref,
-                    );
-                }
-
-                // Check value type
-                if (value.kind !== "null" && value.kind !== "ref") {
-                    throwCompilationError(
-                        "set expects a direct type as second argument",
-                        ref,
-                    );
-                }
-                if (value.kind !== "null" && value.name !== self.value) {
-                    throwCompilationError(
-                        `set expects a "${self.value}" as second argument`,
-                        ref,
-                    );
-                }
+                const [self, key, value] = args;
+                checkMapType(self, ref);
+                checkKeyType(key, self.key, ref);
+                checkValueType(value, self.value, ref);
 
                 // Returns nothing
                 return { kind: "void" };
             },
-            generate: (ctx, args, exprs, ref) => {
-                // Check arguments
-                if (args.length !== 3) {
-                    throwCompilationError("set expects two arguments", ref); // Ignore self argument
-                }
-                const self = args[0]!;
-                const value = args[2]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "set expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            generate(
+                ctx: WriterContext,
+                args: (TypeRef | undefined)[],
+                exprs: AstExpression[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(args, 3, "set expects two arguments", ref);
 
-                // Render expressions
+                const [self, , value] = args;
+                checkMapType(self, ref);
+
                 const resolved = exprs.map((v) => writeExpression(v, ctx));
+                const { bits, kind } = resolveMapKeyBits(self, ref);
 
-                // Handle Int key
-                if (self.key === "Int") {
-                    let bits = 257;
-                    let kind = "int";
-                    if (self.keyAs?.startsWith("int")) {
-                        bits = parseInt(self.keyAs.slice(3), 10);
-                    } else if (self.keyAs?.startsWith("uint")) {
-                        bits = parseInt(self.keyAs.slice(4), 10);
-                        kind = "uint";
+                if (self.value === "Int") {
+                    let vBits = 257;
+                    let vKind = "int";
+                    if (self.valueAs?.startsWith("int")) {
+                        vBits = parseInt(self.valueAs.slice(3), 10);
+                    } else if (self.valueAs?.startsWith("uint")) {
+                        vBits = parseInt(self.valueAs.slice(4), 10);
+                        vKind = "uint";
                     }
-                    if (self.value === "Int") {
-                        let vBits = 257;
-                        let vKind = "int";
-                        if (self.valueAs?.startsWith("int")) {
-                            vBits = parseInt(self.valueAs.slice(3), 10);
-                        } else if (self.valueAs?.startsWith("uint")) {
-                            vBits = parseInt(self.valueAs.slice(4), 10);
-                            vKind = "uint";
-                        }
-                        ctx.used(`__tact_dict_set_${kind}_${vKind}`);
-                        return `${resolved[0]}~__tact_dict_set_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
-                    } else if (self.value === "Bool") {
-                        ctx.used(`__tact_dict_set_${kind}_int`);
-                        return `${resolved[0]}~__tact_dict_set_${kind}_int(${bits}, ${resolved[1]}, ${resolved[2]}, 1)`;
-                    } else if (self.value === "Cell") {
-                        ctx.used(`__tact_dict_set_${kind}_cell`);
-                        return `${resolved[0]}~__tact_dict_set_${kind}_cell(${bits}, ${resolved[1]}, ${resolved[2]})`;
-                    } else if (self.value === "Address") {
-                        ctx.used(`__tact_dict_set_${kind}_slice`);
-                        return `${resolved[0]}~__tact_dict_set_${kind}_slice(${bits}, ${resolved[1]}, ${resolved[2]})`;
-                    } else {
-                        const t = getType(ctx.ctx, self.value);
-                        if (t.kind === "contract") {
-                            throwCompilationError(
-                                `Contract can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "trait") {
-                            throwCompilationError(
-                                `Trait can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "struct") {
-                            ctx.used(`__tact_dict_set_${kind}_cell`);
-                            if (value.kind === "ref" && !value.optional) {
-                                return `${resolved[0]}~__tact_dict_set_${kind}_cell(${bits}, ${resolved[1]}, ${ops.writerCell(t.name, ctx)}(${resolved[2]}))`;
-                            } else {
-                                return `${resolved[0]}~__tact_dict_set_${kind}_cell(${bits}, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
-                            }
-                        } else {
-                            throwCompilationError(
-                                `"${t.name}" can't be value of a map`,
-                                ref,
-                            );
-                        }
-                    }
+                    ctx.used(`__tact_dict_set_${kind}_${vKind}`);
+                    return `${resolved[0]}~__tact_dict_set_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
+                } else if (self.value === "Bool") {
+                    ctx.used(`__tact_dict_set_${kind}_int`);
+                    return `${resolved[0]}~__tact_dict_set_${kind}_int(${bits}, ${resolved[1]}, ${resolved[2]}, 1)`;
+                } else if (self.value === "Cell") {
+                    ctx.used(`__tact_dict_set_${kind}_cell`);
+                    return `${resolved[0]}~__tact_dict_set_${kind}_cell(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                } else if (self.value === "Address") {
+                    ctx.used(`__tact_dict_set_${kind}_slice`);
+                    return `${resolved[0]}~__tact_dict_set_${kind}_slice(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                } else {
+                    return handleStructOrOtherValue(
+                        self,
+                        value!,
+                        resolved,
+                        ctx,
+                        ref,
+                        bits,
+                        kind,
+                        "set",
+                    );
                 }
-
-                // Handle address key
-                if (self.key === "Address") {
-                    if (self.value === "Int") {
-                        let vBits = 257;
-                        let vKind = "int";
-                        if (self.valueAs?.startsWith("int")) {
-                            vBits = parseInt(self.valueAs.slice(3), 10);
-                        } else if (self.valueAs?.startsWith("uint")) {
-                            vBits = parseInt(self.valueAs.slice(4), 10);
-                            vKind = "uint";
-                        }
-                        ctx.used(`__tact_dict_set_slice_${vKind}`);
-                        return `${resolved[0]}~__tact_dict_set_slice_${vKind}(267, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
-                    } else if (self.value === "Bool") {
-                        ctx.used(`__tact_dict_set_slice_int`);
-                        return `${resolved[0]}~__tact_dict_set_slice_int(267, ${resolved[1]}, ${resolved[2]}, 1)`;
-                    } else if (self.value === "Cell") {
-                        ctx.used(`__tact_dict_set_slice_cell`);
-                        return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, ${resolved[2]})`;
-                    } else if (self.value === "Address") {
-                        ctx.used(`__tact_dict_set_slice_slice`);
-                        return `${resolved[0]}~__tact_dict_set_slice_slice(267, ${resolved[1]}, ${resolved[2]})`;
-                    } else {
-                        const t = getType(ctx.ctx, self.value);
-                        if (t.kind === "contract") {
-                            throwCompilationError(
-                                `Contract can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "trait") {
-                            throwCompilationError(
-                                `Trait can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "struct") {
-                            ctx.used(`__tact_dict_set_slice_cell`);
-                            if (value.kind === "ref" && !value.optional) {
-                                return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, ${ops.writerCell(t.name, ctx)}(${resolved[2]}))`;
-                            } else {
-                                return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
-                            }
-                        } else {
-                            throwCompilationError(
-                                `"${t.name}" can't be value of a map`,
-                                ref,
-                            );
-                        }
-                    }
-                }
-
-                throwCompilationError(
-                    `set expects a map with Int or Address keys`,
-                    ref,
-                );
             },
         },
     ],
@@ -203,156 +191,76 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
         "get",
         {
             name: "get",
-            resolve(ctx, args, ref) {
-                // Check arguments
-                if (args.length !== 2) {
-                    throwCompilationError("set expects one argument", ref); // Ignore self argument
-                }
-                const self = args[0]!;
-                const key = args[1]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "set expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            resolve(
+                ctx: CompilerContext,
+                args: (TypeRef | undefined)[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(args, 2, "get expects one argument", ref);
 
-                // Check key type
-                if (key.kind !== "ref" || key.optional) {
-                    throwCompilationError(
-                        "set expects a direct type as first argument",
-                        ref,
-                    );
-                }
-                if (key.name !== self.key) {
-                    throwCompilationError(
-                        `set expects a "${self.key}" as first argument`,
-                        ref,
-                    );
-                }
+                const [self, key] = args;
+                checkMapType(self, ref);
+                checkKeyType(key, self.key, ref);
 
                 return { kind: "ref", name: self.value, optional: true };
             },
-            generate: (ctx, args, exprs, ref) => {
-                if (args.length !== 2) {
-                    throwCompilationError("set expects one argument", ref); // Ignore self argument
-                }
-                const self = args[0]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "set expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            generate(
+                ctx: WriterContext,
+                args: (TypeRef | undefined)[],
+                exprs: AstExpression[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(args, 2, "get expects one argument", ref);
 
-                // Render expressions
+                const [self] = args;
+                checkMapType(self, ref);
+
                 const resolved = exprs.map((v) => writeExpression(v, ctx));
+                const { bits, kind } = resolveMapKeyBits(self, ref);
 
-                // Handle Int key
-                if (self.key === "Int") {
-                    let bits = 257;
-                    let kind = "int";
-                    if (self.keyAs?.startsWith("int")) {
-                        bits = parseInt(self.keyAs.slice(3), 10);
-                    } else if (self.keyAs?.startsWith("uint")) {
-                        bits = parseInt(self.keyAs.slice(4), 10);
-                        kind = "uint";
+                if (self.value === "Int") {
+                    let vBits = 257;
+                    let vKind = "int";
+                    if (self.valueAs?.startsWith("int")) {
+                        vBits = parseInt(self.valueAs.slice(3), 10);
+                    } else if (self.valueAs?.startsWith("uint")) {
+                        vBits = parseInt(self.valueAs.slice(4), 10);
+                        vKind = "uint";
                     }
-                    if (self.value === "Int") {
-                        let vBits = 257;
-                        let vKind = "int";
-                        if (self.valueAs?.startsWith("int")) {
-                            vBits = parseInt(self.valueAs.slice(3), 10);
-                        } else if (self.valueAs?.startsWith("uint")) {
-                            vBits = parseInt(self.valueAs.slice(4), 10);
-                            vKind = "uint";
-                        }
-                        ctx.used(`__tact_dict_get_${kind}_${vKind}`);
-                        return `__tact_dict_get_${kind}_${vKind}(${resolved[0]}, ${bits}, ${resolved[1]}, ${vBits})`;
-                    } else if (self.value === "Bool") {
-                        ctx.used(`__tact_dict_get_${kind}_int`);
-                        return `__tact_dict_get_${kind}_int(${resolved[0]}, ${bits}, ${resolved[1]}, 1)`;
-                    } else if (self.value === "Cell") {
+                    ctx.used(`__tact_dict_get_${kind}_${vKind}`);
+                    return `__tact_dict_get_${kind}_${vKind}(${resolved[0]}, ${bits}, ${resolved[1]}, ${vBits})`;
+                } else if (self.value === "Bool") {
+                    ctx.used(`__tact_dict_get_${kind}_int`);
+                    return `__tact_dict_get_${kind}_int(${resolved[0]}, ${bits}, ${resolved[1]}, 1)`;
+                } else if (self.value === "Cell") {
+                    ctx.used(`__tact_dict_get_${kind}_cell`);
+                    return `__tact_dict_get_${kind}_cell(${resolved[0]}, ${bits}, ${resolved[1]})`;
+                } else if (self.value === "Address") {
+                    ctx.used(`__tact_dict_get_${kind}_slice`);
+                    return `__tact_dict_get_${kind}_slice(${resolved[0]}, ${bits}, ${resolved[1]})`;
+                } else {
+                    const t = getType(ctx.ctx, self.value);
+                    if (t.kind === "contract") {
+                        throwCompilationError(
+                            `Contract can't be value of a map`,
+                            ref,
+                        );
+                    }
+                    if (t.kind === "trait") {
+                        throwCompilationError(
+                            `Trait can't be value of a map`,
+                            ref,
+                        );
+                    }
+                    if (t.kind === "struct") {
                         ctx.used(`__tact_dict_get_${kind}_cell`);
-                        return `__tact_dict_get_${kind}_cell(${resolved[0]}, ${bits}, ${resolved[1]})`;
-                    } else if (self.value === "Address") {
-                        ctx.used(`__tact_dict_get_${kind}_slice`);
-                        return `__tact_dict_get_${kind}_slice(${resolved[0]}, ${bits}, ${resolved[1]})`;
-                    } else {
-                        const t = getType(ctx.ctx, self.value);
-                        if (t.kind === "contract") {
-                            throwCompilationError(
-                                `Contract can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "trait") {
-                            throwCompilationError(
-                                `Trait can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "struct") {
-                            ctx.used(`__tact_dict_get_${kind}_cell`);
-                            return `${ops.readerOpt(t.name, ctx)}(__tact_dict_get_${kind}_cell(${resolved[0]}, ${bits}, ${resolved[1]}))`;
-                        } else {
-                            throwCompilationError(
-                                `"${t.name}" can't be value of a map`,
-                                ref,
-                            );
-                        }
+                        return `${ops.readerOpt(t.name, ctx)}(__tact_dict_get_${kind}_cell(${resolved[0]}, ${bits}, ${resolved[1]}))`;
                     }
+                    throwCompilationError(
+                        `"${t.name}" can't be value of a map`,
+                        ref,
+                    );
                 }
-
-                // Handle Address key
-                if (self.key === "Address") {
-                    if (self.value === "Int") {
-                        let vBits = 257;
-                        let vKind = "int";
-                        if (self.valueAs?.startsWith("int")) {
-                            vBits = parseInt(self.valueAs.slice(3), 10);
-                        } else if (self.valueAs?.startsWith("uint")) {
-                            vBits = parseInt(self.valueAs.slice(4), 10);
-                            vKind = "uint";
-                        }
-                        ctx.used(`__tact_dict_get_slice_${vKind}`);
-                        return `__tact_dict_get_slice_${vKind}(${resolved[0]}, 267, ${resolved[1]}, ${vBits})`;
-                    } else if (self.value === "Bool") {
-                        ctx.used(`__tact_dict_get_slice_int`);
-                        return `__tact_dict_get_slice_int(${resolved[0]}, 267, ${resolved[1]}, 1)`;
-                    } else if (self.value === "Cell") {
-                        ctx.used(`__tact_dict_get_slice_cell`);
-                        return `__tact_dict_get_slice_cell(${resolved[0]}, 267, ${resolved[1]})`;
-                    } else if (self.value === "Address") {
-                        ctx.used(`__tact_dict_get_slice_slice`);
-                        return `__tact_dict_get_slice_slice(${resolved[0]}, 267, ${resolved[1]})`;
-                    } else {
-                        const t = getType(ctx.ctx, self.value);
-                        if (t.kind === "contract") {
-                            throwCompilationError(
-                                `Contract can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "trait") {
-                            throwCompilationError(
-                                `Trait can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "struct") {
-                            ctx.used(`__tact_dict_get_slice_cell`);
-                            return `${ops.readerOpt(t.name, ctx)}(__tact_dict_get_slice_cell(${resolved[0]}, 267, ${resolved[1]}))`;
-                        } else {
-                            throwCompilationError(
-                                `"${t.name}" can't be value of a map`,
-                                ref,
-                            );
-                        }
-                    }
-                }
-
-                throwCompilationError(`set expects a map with Int keys`, ref);
             },
         },
     ],
@@ -360,73 +268,46 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
         "del",
         {
             name: "del",
-            resolve(ctx, args, ref) {
-                // Check arguments
-                if (args.length !== 2) {
-                    throwCompilationError("del expects one argument", ref); // Ignore self argument
-                }
-                const self = args[0]!;
-                const key = args[1]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "del expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            resolve(
+                ctx: CompilerContext,
+                args: (TypeRef | undefined)[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(args, 2, "del expects one argument", ref);
 
-                // Check key type
-                if (key.kind !== "ref" || key.optional) {
-                    throwCompilationError(
-                        "del expects a direct type as first argument",
-                        ref,
-                    );
-                }
-                if (key.name !== self.key) {
-                    throwCompilationError(
-                        `del expects a "${self.key}" as first argument`,
-                        ref,
-                    );
-                }
+                const [self, key] = args;
+                checkMapType(self, ref);
+                checkKeyType(key, self.key, ref);
 
                 // Returns boolean
                 return { kind: "ref", name: "Bool", optional: false };
             },
-            generate: (ctx, args, exprs, ref) => {
-                if (args.length !== 2) {
-                    throwCompilationError("del expects one argument", ref); // Ignore self argument
-                }
-                const self = args[0]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "del expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            generate(
+                ctx: WriterContext,
+                args: (TypeRef | undefined)[],
+                exprs: AstExpression[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(args, 2, "del expects one argument", ref);
 
-                // Render expressions
+                const [self] = args;
+                checkMapType(self, ref);
+
                 const resolved = exprs.map((v) => writeExpression(v, ctx));
+                const { bits, kind } = resolveMapKeyBits(self, ref);
 
-                // Handle Int key
                 if (self.key === "Int") {
-                    let bits = 257;
-                    let kind = "int";
-                    if (self.keyAs?.startsWith("int")) {
-                        bits = parseInt(self.keyAs.slice(3), 10);
-                    } else if (self.keyAs?.startsWith("uint")) {
-                        bits = parseInt(self.keyAs.slice(4), 10);
-                        kind = "uint";
-                    }
                     ctx.used(`__tact_dict_delete_${kind}`);
                     return `${resolved[0]}~__tact_dict_delete_${kind}(${bits}, ${resolved[1]})`;
-                }
-
-                // Handle Address key
-                if (self.key === "Address") {
+                } else if (self.key === "Address") {
                     ctx.used(`__tact_dict_delete`);
                     return `${resolved[0]}~__tact_dict_delete(267, ${resolved[1]})`;
                 }
 
-                throwCompilationError(`del expects a map with Int keys`, ref);
+                throwCompilationError(
+                    `del expects a map with Int or Address keys`,
+                    ref,
+                );
             },
         },
     ],
@@ -434,32 +315,38 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
         "asCell",
         {
             name: "asCell",
-            resolve(ctx, args, ref) {
-                // Check arguments
-                if (args.length !== 1) {
-                    throwCompilationError("asCell expects one argument", ref); // Ignore self argument
-                }
-                const self = args[0]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "asCell expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            resolve(
+                ctx: CompilerContext,
+                args: (TypeRef | undefined)[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    1,
+                    "asCell expects one argument",
+                    ref,
+                );
+
+                const [self] = args;
+                checkMapType(self, ref);
 
                 return { kind: "ref", name: "Cell", optional: true };
             },
-            generate: (ctx, args, exprs, ref) => {
-                if (args.length !== 1) {
-                    throwCompilationError("asCell expects one argument", ref); // Ignore self argument
-                }
-                const self = args[0]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "asCell expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            generate(
+                ctx: WriterContext,
+                args: (TypeRef | undefined)[],
+                exprs: AstExpression[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    1,
+                    "asCell expects one argument",
+                    ref,
+                );
+
+                const [self] = args;
+                checkMapType(self, ref);
 
                 return writeExpression(exprs[0]!, ctx);
             },
@@ -469,32 +356,38 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
         "isEmpty",
         {
             name: "isEmpty",
-            resolve(ctx, args, ref) {
-                // Check arguments
-                if (args.length !== 1) {
-                    throwCompilationError("isEmpty expects one argument", ref); // Ignore self argument
-                }
-                const self = args[0]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "isEmpty expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            resolve(
+                ctx: CompilerContext,
+                args: (TypeRef | undefined)[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    1,
+                    "isEmpty expects one argument",
+                    ref,
+                );
+
+                const [self] = args;
+                checkMapType(self, ref);
 
                 return { kind: "ref", name: "Bool", optional: false };
             },
-            generate: (ctx, args, exprs, ref) => {
-                if (args.length !== 1) {
-                    throwCompilationError("isEmpty expects one argument", ref); // Ignore self argument
-                }
-                const self = args[0]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "isEmpty expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            generate(
+                ctx: WriterContext,
+                args: (TypeRef | undefined)[],
+                exprs: AstExpression[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    1,
+                    "isEmpty expects one argument",
+                    ref,
+                );
+
+                const [self] = args;
+                checkMapType(self, ref);
 
                 return `null?(${writeExpression(exprs[0]!, ctx)})`;
             },
@@ -504,74 +397,54 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
         "exists",
         {
             name: "exists",
-            resolve(ctx, args, ref) {
-                // Check arguments
-                if (args.length !== 2) {
-                    throwCompilationError("exists expects one argument", ref); // Ignore self argument
-                }
-                const self = args[0]!;
-                const key = args[1]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "exists expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            resolve(
+                ctx: CompilerContext,
+                args: (TypeRef | undefined)[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    2,
+                    "exists expects one argument",
+                    ref,
+                );
 
-                // Check key type
-                if (key.kind !== "ref" || key.optional) {
-                    throwCompilationError(
-                        "exists expects a direct type as first argument",
-                        ref,
-                    );
-                }
-                if (key.name !== self.key) {
-                    throwCompilationError(
-                        `exists expects a "${self.key}" as first argument`,
-                        ref,
-                    );
-                }
+                const [self, key] = args;
+                checkMapType(self, ref);
+                checkKeyType(key, self.key, ref);
 
                 // Returns boolean
                 return { kind: "ref", name: "Bool", optional: false };
             },
-            generate: (ctx, args, exprs, ref) => {
-                if (args.length !== 2) {
-                    throwCompilationError("exists expects one argument", ref); // Ignore self argument
-                }
-                const self = args[0]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "exists expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            generate(
+                ctx: WriterContext,
+                args: (TypeRef | undefined)[],
+                exprs: AstExpression[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    2,
+                    "exists expects one argument",
+                    ref,
+                );
 
-                // Render expressions
+                const [self] = args;
+                checkMapType(self, ref);
+
                 const resolved = exprs.map((v) => writeExpression(v, ctx));
+                const { bits, kind } = resolveMapKeyBits(self, ref);
 
-                // Handle Int key
                 if (self.key === "Int") {
-                    let bits = 257;
-                    let kind = "int";
-                    if (self.keyAs?.startsWith("int")) {
-                        bits = parseInt(self.keyAs.slice(3), 10);
-                    } else if (self.keyAs?.startsWith("uint")) {
-                        bits = parseInt(self.keyAs.slice(4), 10);
-                        kind = "uint";
-                    }
                     ctx.used(`__tact_dict_exists_${kind}`);
                     return `__tact_dict_exists_${kind}(${resolved[0]}, ${bits}, ${resolved[1]})`;
-                }
-
-                // Handle Address key
-                if (self.key === "Address") {
+                } else if (self.key === "Address") {
                     ctx.used(`__tact_dict_exists_slice`);
                     return `__tact_dict_exists_slice(${resolved[0]}, 267, ${resolved[1]})`;
                 }
 
                 throwCompilationError(
-                    `exists expects a map with Int keys`,
+                    `exists expects a map with Int or Address keys`,
                     ref,
                 );
             },
@@ -581,69 +454,69 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
         "deepEquals",
         {
             name: "deepEquals",
-            resolve(ctx, args, ref) {
-                // Check arguments
-                if (args.length !== 2) {
-                    throwCompilationError(
-                        "deepEquals expects two arguments",
-                        ref,
-                    ); // Ignore self argument
-                }
-                const self = args[0]!;
-                const other = args[1]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "deepEquals expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
-                if (other.kind !== "map") {
-                    throwCompilationError(
-                        "deepEquals expects a map as other argument",
-                        ref,
-                    ); // Should not happen
-                }
+            resolve(
+                ctx: CompilerContext,
+                args: (TypeRef | undefined)[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    2,
+                    "deepEquals expects two arguments",
+                    ref,
+                );
+
+                const [self, other] = args;
+                checkMapType(self, ref);
+                checkMapType(other, ref);
 
                 return { kind: "ref", name: "Bool", optional: false };
             },
-            generate: (ctx, args, exprs, ref) => {
-                if (args.length !== 2) {
+            generate(
+                ctx: WriterContext,
+                args: (TypeRef | undefined)[],
+                exprs: AstExpression[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    2,
+                    "deepEquals expects two arguments",
+                    ref,
+                );
+
+                const [self, other] = args;
+                checkMapType(self, ref);
+                checkMapType(other, ref);
+
+                // Determine key length based on key type
+                let keyLength: number;
+                if (self.key === "Int") {
+                    if (self.keyAs) {
+                        if (self.keyAs.startsWith("int")) {
+                            keyLength = parseInt(self.keyAs.slice(3), 10);
+                        } else if (self.keyAs.startsWith("uint")) {
+                            keyLength = parseInt(self.keyAs.slice(4), 10);
+                        } else {
+                            throwCompilationError(
+                                "Invalid key serialization type",
+                                ref,
+                            );
+                        }
+                    } else {
+                        keyLength = 257;
+                    }
+                } else if (self.key === "Address") {
+                    keyLength = 267;
+                } else {
                     throwCompilationError(
-                        "deepEquals expects two arguments",
+                        `Unsupported key type: ${self.key}`,
                         ref,
-                    ); // Ignore self argument
-                }
-                const self = args[0]!;
-                const other = args[1]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "deepEquals expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
-                if (other.kind !== "map") {
-                    throwCompilationError(
-                        "deepEquals expects a map as other argument",
-                        ref,
-                    ); // Should not happen
+                    );
                 }
 
-                // 257 for int, 267 for address
-                const keyLength =
-                    self.key === "Int"
-                        ? self.keyAs
-                            ? self.keyAs.startsWith("int")
-                                ? parseInt(self.keyAs.slice(3))
-                                : self.keyAs.startsWith("uint")
-                                  ? parseInt(self.keyAs.slice(4))
-                                  : throwCompilationError(
-                                        "Invalid key serialization type", // Should not happen
-                                        ref,
-                                    )
-                            : 257
-                        : 267;
-
-                return `${ctx.used("__tact_dict_eq")}(${writeExpression(exprs[0]!, ctx)}, ${writeExpression(exprs[1]!, ctx)}, ${keyLength})`;
+                ctx.used("__tact_dict_eq");
+                return `__tact_dict_eq(${writeExpression(exprs[0]!, ctx)}, ${writeExpression(exprs[1]!, ctx)}, ${keyLength})`;
             },
         },
     ],
@@ -651,193 +524,77 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
         "replace",
         {
             name: "replace",
-            resolve(ctx, args, ref) {
-                // Check arguments
-                if (args.length !== 3) {
-                    throwCompilationError("replace expects two arguments", ref);
-                }
-                const self = args[0]!;
-                const key = args[1]!;
-                const value = args[2]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "replace expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
-
-                // Resolve map types
-                if (self.key !== "Int" && self.key !== "Address") {
-                    throwCompilationError(
-                        "replace expects a map with Int or Address keys",
-                        ref,
-                    );
-                }
-
-                // Check key type
-                if (key.kind !== "ref" || key.optional) {
-                    throwCompilationError(
-                        "replace expects a direct type as first argument",
-                        ref,
-                    );
-                }
-                if (key.name !== self.key) {
-                    throwCompilationError(
-                        `replace expects a "${self.key}" as first argument`,
-                        ref,
-                    );
-                }
-
-                // Check value type
-                if (value.kind !== "null" && value.kind !== "ref") {
-                    throwCompilationError(
-                        "replace expects a direct type as second argument",
-                        ref,
-                    );
-                }
-                if (value.kind !== "null" && value.name !== self.value) {
-                    throwCompilationError(
-                        `replace expects a "${self.value}" as second argument`,
-                        ref,
-                    );
-                }
-
-                // Returns true if the key was replaced
-                return { kind: "ref", name: "Bool", optional: false };
-            },
-            generate: (ctx, args, exprs, ref) => {
-                // Check arguments
-                if (args.length !== 3) {
-                    throwCompilationError("replace expects two arguments", ref); // Ignore self argument
-                }
-                const self = args[0]!;
-                const value = args[2]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "replace expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
-
-                // Render expressions
-                const resolved = exprs.map((v) => writeExpression(v, ctx));
-
-                // Handle Int key
-                if (self.key === "Int") {
-                    let bits = 257;
-                    let kind = "int";
-                    if (self.keyAs?.startsWith("int")) {
-                        bits = parseInt(self.keyAs.slice(3), 10);
-                    } else if (self.keyAs?.startsWith("uint")) {
-                        bits = parseInt(self.keyAs.slice(4), 10);
-                        kind = "uint";
-                    }
-                    if (self.value === "Int") {
-                        let vBits = 257;
-                        let vKind = "int";
-                        if (self.valueAs?.startsWith("int")) {
-                            vBits = parseInt(self.valueAs.slice(3), 10);
-                        } else if (self.valueAs?.startsWith("uint")) {
-                            vBits = parseInt(self.valueAs.slice(4), 10);
-                            vKind = "uint";
-                        }
-                        ctx.used(`__tact_dict_replace_${kind}_${vKind}`);
-                        return `${resolved[0]}~__tact_dict_replace_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
-                    } else if (self.value === "Bool") {
-                        ctx.used(`__tact_dict_replace_${kind}_int`);
-                        return `${resolved[0]}~__tact_dict_replace_${kind}_int(${bits}, ${resolved[1]}, ${resolved[2]}, 1)`;
-                    } else if (self.value === "Cell") {
-                        ctx.used(`__tact_dict_replace_${kind}_cell`);
-                        return `${resolved[0]}~__tact_dict_replace_${kind}_cell(${bits}, ${resolved[1]}, ${resolved[2]})`;
-                    } else if (self.value === "Address") {
-                        ctx.used(`__tact_dict_replace_${kind}_slice`);
-                        return `${resolved[0]}~__tact_dict_replace_${kind}_slice(${bits}, ${resolved[1]}, ${resolved[2]})`;
-                    } else {
-                        const t = getType(ctx.ctx, self.value);
-                        if (t.kind === "contract") {
-                            throwCompilationError(
-                                `Contract can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "trait") {
-                            throwCompilationError(
-                                `Trait can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "struct") {
-                            ctx.used(`__tact_dict_replace_${kind}_cell`);
-                            if (value.kind === "ref" && !value.optional) {
-                                return `${resolved[0]}~__tact_dict_replace_${kind}_cell(${bits}, ${resolved[1]}, ${ops.writerCell(t.name, ctx)}(${resolved[2]}))`;
-                            } else {
-                                return `${resolved[0]}~__tact_dict_replace_${kind}_cell(${bits}, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
-                            }
-                        } else {
-                            throwCompilationError(
-                                `"${t.name}" can't be value of a map`,
-                                ref,
-                            );
-                        }
-                    }
-                }
-
-                // Handle address key
-                if (self.key === "Address") {
-                    if (self.value === "Int") {
-                        let vBits = 257;
-                        let vKind = "int";
-                        if (self.valueAs?.startsWith("int")) {
-                            vBits = parseInt(self.valueAs.slice(3), 10);
-                        } else if (self.valueAs?.startsWith("uint")) {
-                            vBits = parseInt(self.valueAs.slice(4), 10);
-                            vKind = "uint";
-                        }
-                        ctx.used(`__tact_dict_replace_slice_${vKind}`);
-                        return `${resolved[0]}~__tact_dict_replace_slice_${vKind}(267, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
-                    } else if (self.value === "Bool") {
-                        ctx.used(`__tact_dict_replace_slice_int`);
-                        return `${resolved[0]}~__tact_dict_replace_slice_int(267, ${resolved[1]}, ${resolved[2]}, 1)`;
-                    } else if (self.value === "Cell") {
-                        ctx.used(`__tact_dict_replace_slice_cell`);
-                        return `${resolved[0]}~__tact_dict_replace_slice_cell(267, ${resolved[1]}, ${resolved[2]})`;
-                    } else if (self.value === "Address") {
-                        ctx.used(`__tact_dict_replace_slice_slice`);
-                        return `${resolved[0]}~__tact_dict_replace_slice_slice(267, ${resolved[1]}, ${resolved[2]})`;
-                    } else {
-                        const t = getType(ctx.ctx, self.value);
-                        if (t.kind === "contract") {
-                            throwCompilationError(
-                                `Contract can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "trait") {
-                            throwCompilationError(
-                                `Trait can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "struct") {
-                            ctx.used(`__tact_dict_replace_slice_cell`);
-                            if (value.kind === "ref" && !value.optional) {
-                                return `${resolved[0]}~__tact_dict_replace_slice_cell(267, ${resolved[1]}, ${ops.writerCell(t.name, ctx)}(${resolved[2]}))`;
-                            } else {
-                                return `${resolved[0]}~__tact_dict_replace_slice_cell(267, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
-                            }
-                        } else {
-                            throwCompilationError(
-                                `"${t.name}" can't be value of a map`,
-                                ref,
-                            );
-                        }
-                    }
-                }
-
-                throwCompilationError(
-                    `replace expects a map with Int or Address keys`,
+            resolve(
+                ctx: CompilerContext,
+                args: (TypeRef | undefined)[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    3,
+                    "replace expects two arguments",
                     ref,
                 );
+
+                const [self, key, value] = args;
+                checkMapType(self, ref);
+                checkKeyType(key, self.key, ref);
+                checkValueType(value, self.value, ref);
+
+                // Returns boolean indicating if the key was replaced
+                return { kind: "ref", name: "Bool", optional: false };
+            },
+            generate(
+                ctx: WriterContext,
+                args: (TypeRef | undefined)[],
+                exprs: AstExpression[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    3,
+                    "replace expects two arguments",
+                    ref,
+                );
+
+                const [self, , value] = args;
+                checkMapType(self, ref);
+
+                const resolved = exprs.map((v) => writeExpression(v, ctx));
+                const { bits, kind } = resolveMapKeyBits(self, ref);
+
+                if (self.value === "Int") {
+                    let vBits = 257;
+                    let vKind = "int";
+                    if (self.valueAs?.startsWith("int")) {
+                        vBits = parseInt(self.valueAs.slice(3), 10);
+                    } else if (self.valueAs?.startsWith("uint")) {
+                        vBits = parseInt(self.valueAs.slice(4), 10);
+                        vKind = "uint";
+                    }
+                    ctx.used(`__tact_dict_replace_${kind}_${vKind}`);
+                    return `${resolved[0]}~__tact_dict_replace_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
+                } else if (self.value === "Bool") {
+                    ctx.used(`__tact_dict_replace_${kind}_int`);
+                    return `${resolved[0]}~__tact_dict_replace_${kind}_int(${bits}, ${resolved[1]}, ${resolved[2]}, 1)`;
+                } else if (self.value === "Cell") {
+                    ctx.used(`__tact_dict_replace_${kind}_cell`);
+                    return `${resolved[0]}~__tact_dict_replace_${kind}_cell(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                } else if (self.value === "Address") {
+                    ctx.used(`__tact_dict_replace_${kind}_slice`);
+                    return `${resolved[0]}~__tact_dict_replace_${kind}_slice(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                } else {
+                    return handleStructOrOtherValue(
+                        self,
+                        value!,
+                        resolved,
+                        ctx,
+                        ref,
+                        bits,
+                        kind,
+                        "replace",
+                    );
+                }
             },
         },
     ],
@@ -845,199 +602,77 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
         "replaceGet",
         {
             name: "replaceGet",
-            resolve(ctx, args, ref) {
-                // Check arguments
-                if (args.length !== 3) {
-                    throwCompilationError(
-                        "replaceGet expects two arguments",
-                        ref,
-                    ); // Should not happen
-                }
-                const self = args[0]!;
-                const key = args[1]!;
-                const value = args[2]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "replaceGet expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
+            resolve(
+                ctx: CompilerContext,
+                args: (TypeRef | undefined)[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    3,
+                    "replaceGet expects two arguments",
+                    ref,
+                );
 
-                // Resolve map types
-                if (self.key !== "Int" && self.key !== "Address") {
-                    throwCompilationError(
-                        "replaceGet expects a map with Int or Address keys",
-                        ref,
-                    );
-                }
-
-                // Check key type
-                if (key.kind !== "ref" || key.optional) {
-                    throwCompilationError(
-                        "replaceGet expects a direct type as first argument",
-                        ref,
-                    );
-                }
-                if (key.name !== self.key) {
-                    throwCompilationError(
-                        `replaceGet expects a "${self.key}" as first argument`,
-                        ref,
-                    );
-                }
-
-                // Check value type
-                if (value.kind !== "null" && value.kind !== "ref") {
-                    throwCompilationError(
-                        "replaceGet expects a direct type as second argument",
-                        ref,
-                    );
-                }
-                if (value.kind !== "null" && value.name !== self.value) {
-                    throwCompilationError(
-                        `replaceGet expects a "${self.value}" as second argument`,
-                        ref,
-                    );
-                }
+                const [self, key, value] = args;
+                checkMapType(self, ref);
+                checkKeyType(key, self.key, ref);
+                checkValueType(value, self.value, ref);
 
                 // Returns the previous value if it exists
                 return { kind: "ref", name: self.value, optional: true };
             },
-            generate: (ctx, args, exprs, ref) => {
-                // Check arguments
-                if (args.length !== 3) {
-                    throwCompilationError(
-                        "replaceGet expects two arguments",
-                        ref,
-                    ); // Ignore self argument
-                }
-                const self = args[0]!;
-                const value = args[2]!;
-                if (self.kind !== "map") {
-                    throwCompilationError(
-                        "replaceGet expects a map as self argument",
-                        ref,
-                    ); // Should not happen
-                }
-
-                // Render expressions
-                const resolved = exprs.map((v) => writeExpression(v, ctx));
-
-                // Handle Int key
-                if (self.key === "Int") {
-                    let bits = 257;
-                    let kind = "int";
-                    if (self.keyAs?.startsWith("int")) {
-                        bits = parseInt(self.keyAs.slice(3), 10);
-                    } else if (self.keyAs?.startsWith("uint")) {
-                        bits = parseInt(self.keyAs.slice(4), 10);
-                        kind = "uint";
-                    }
-                    if (self.value === "Int") {
-                        let vBits = 257;
-                        let vKind = "int";
-                        if (self.valueAs?.startsWith("int")) {
-                            vBits = parseInt(self.valueAs.slice(3), 10);
-                        } else if (self.valueAs?.startsWith("uint")) {
-                            vBits = parseInt(self.valueAs.slice(4), 10);
-                            vKind = "uint";
-                        }
-                        ctx.used(`__tact_dict_replaceget_${kind}_${vKind}`);
-                        return `${resolved[0]}~__tact_dict_replaceget_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
-                    } else if (self.value === "Bool") {
-                        ctx.used(`__tact_dict_replaceget_${kind}_int`);
-                        return `${resolved[0]}~__tact_dict_replaceget_${kind}_int(${bits}, ${resolved[1]}, ${resolved[2]}, 1)`;
-                    } else if (self.value === "Cell") {
-                        ctx.used(`__tact_dict_replaceget_${kind}_cell`);
-                        return `${resolved[0]}~__tact_dict_replaceget_${kind}_cell(${bits}, ${resolved[1]}, ${resolved[2]})`;
-                    } else if (self.value === "Address") {
-                        ctx.used(`__tact_dict_replaceget_${kind}_slice`);
-                        return `${resolved[0]}~__tact_dict_replaceget_${kind}_slice(${bits}, ${resolved[1]}, ${resolved[2]})`;
-                    } else {
-                        const t = getType(ctx.ctx, self.value);
-                        if (t.kind === "contract") {
-                            throwCompilationError(
-                                `Contract can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "trait") {
-                            throwCompilationError(
-                                `Trait can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "struct") {
-                            ctx.used(`__tact_dict_replaceget_${kind}_cell`);
-                            if (value.kind === "ref" && !value.optional) {
-                                return `${resolved[0]}~__tact_dict_replaceget_${kind}_cell(${bits}, ${resolved[1]}, ${ops.writerCell(t.name, ctx)}(${resolved[2]}))`;
-                            } else {
-                                return `${resolved[0]}~__tact_dict_replaceget_${kind}_cell(${bits}, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
-                            }
-                        } else {
-                            throwCompilationError(
-                                `"${t.name}" can't be value of a map`,
-                                ref,
-                            );
-                        }
-                    }
-                }
-
-                // Handle address key
-                if (self.key === "Address") {
-                    if (self.value === "Int") {
-                        let vBits = 257;
-                        let vKind = "int";
-                        if (self.valueAs?.startsWith("int")) {
-                            vBits = parseInt(self.valueAs.slice(3), 10);
-                        } else if (self.valueAs?.startsWith("uint")) {
-                            vBits = parseInt(self.valueAs.slice(4), 10);
-                            vKind = "uint";
-                        }
-                        ctx.used(`__tact_dict_replaceget_slice_${vKind}`);
-                        return `${resolved[0]}~__tact_dict_replaceget_slice_${vKind}(267, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
-                    } else if (self.value === "Bool") {
-                        ctx.used(`__tact_dict_replaceget_slice_int`);
-                        return `${resolved[0]}~__tact_dict_replaceget_slice_int(267, ${resolved[1]}, ${resolved[2]}, 1)`;
-                    } else if (self.value === "Cell") {
-                        ctx.used(`__tact_dict_replaceget_slice_cell`);
-                        return `${resolved[0]}~__tact_dict_replaceget_slice_cell(267, ${resolved[1]}, ${resolved[2]})`;
-                    } else if (self.value === "Address") {
-                        ctx.used(`__tact_dict_replaceget_slice_slice`);
-                        return `${resolved[0]}~__tact_dict_replaceget_slice_slice(267, ${resolved[1]}, ${resolved[2]})`;
-                    } else {
-                        const t = getType(ctx.ctx, self.value);
-                        if (t.kind === "contract") {
-                            throwCompilationError(
-                                `Contract can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "trait") {
-                            throwCompilationError(
-                                `Trait can't be value of a map`,
-                                ref,
-                            );
-                        }
-                        if (t.kind === "struct") {
-                            ctx.used(`__tact_dict_replaceget_slice_cell`);
-                            if (value.kind === "ref" && !value.optional) {
-                                return `${resolved[0]}~__tact_dict_replaceget_slice_cell(267, ${resolved[1]}, ${ops.writerCell(t.name, ctx)}(${resolved[2]}))`;
-                            } else {
-                                return `${resolved[0]}~__tact_dict_replaceget_slice_cell(267, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
-                            }
-                        } else {
-                            throwCompilationError(
-                                `"${t.name}" can't be value of a map`,
-                                ref,
-                            );
-                        }
-                    }
-                }
-
-                throwCompilationError(
-                    `replaceGet expects a map with Int or Address keys`,
+            generate(
+                ctx: WriterContext,
+                args: (TypeRef | undefined)[],
+                exprs: AstExpression[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    3,
+                    "replaceGet expects two arguments",
                     ref,
                 );
+
+                const [self, , value] = args;
+                checkMapType(self, ref);
+
+                const resolved = exprs.map((v) => writeExpression(v, ctx));
+                const { bits, kind } = resolveMapKeyBits(self, ref);
+
+                if (self.value === "Int") {
+                    let vBits = 257;
+                    let vKind = "int";
+                    if (self.valueAs?.startsWith("int")) {
+                        vBits = parseInt(self.valueAs.slice(3), 10);
+                    } else if (self.valueAs?.startsWith("uint")) {
+                        vBits = parseInt(self.valueAs.slice(4), 10);
+                        vKind = "uint";
+                    }
+                    ctx.used(`__tact_dict_replaceget_${kind}_${vKind}`);
+                    return `${resolved[0]}~__tact_dict_replaceget_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
+                } else if (self.value === "Bool") {
+                    ctx.used(`__tact_dict_replaceget_${kind}_int`);
+                    return `${resolved[0]}~__tact_dict_replaceget_${kind}_int(${bits}, ${resolved[1]}, ${resolved[2]}, 1)`;
+                } else if (self.value === "Cell") {
+                    ctx.used(`__tact_dict_replaceget_${kind}_cell`);
+                    return `${resolved[0]}~__tact_dict_replaceget_${kind}_cell(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                } else if (self.value === "Address") {
+                    ctx.used(`__tact_dict_replaceget_${kind}_slice`);
+                    return `${resolved[0]}~__tact_dict_replaceget_${kind}_slice(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                } else {
+                    return handleStructOrOtherValue(
+                        self,
+                        value!,
+                        resolved,
+                        ctx,
+                        ref,
+                        bits,
+                        kind,
+                        "replaceget",
+                    );
+                }
             },
         },
     ],
