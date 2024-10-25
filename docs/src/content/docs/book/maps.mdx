@@ -182,6 +182,51 @@ if (fizz == null) {
 }
 ```
 
+### Compare with `.deepEquals()` {#deepequals}
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+The `.deepEquals(){:tact}` [method](/book/functions#extension-function) on maps returns `true{:tact}` if all entries of the map match corresponding entries of another map, ignoring possible differences in the [underlying serialization logic][hashmap]. Returns `false{:tact}` otherwise.
+
+```tact
+let fizz: map<Int, Int> = emptyMap();
+let buzz: map<Int, Int> = emptyMap();
+
+fizz.set(1, 2);
+buzz.set(1, 2);
+
+fizz.deepEquals(buzz); // true
+fizz == buzz;          // true, and uses much less gas to compute
+```
+
+Using `.deepEquals(){:tact}` is very important in cases where a map comes from the third-party source that doesn't provide any guarantees about the [serialization layout][hashmap]. For one such example, consider the following code:
+
+```typescript title="some-typescript-code.ts"
+// First map, with long labels
+const m1 = beginCell()
+    .storeUint(2, 2) // long label
+    .storeUint(8, 4) // key length
+    .storeUint(1, 8) // key
+    .storeBit(true)  // value
+    .endCell();
+
+// Second map, with short labels
+const m2 = beginCell()
+    .storeUint(0, 1)           // short label
+    .storeUint(0b111111110, 9) // key length
+    .storeUint(1, 8)           // key
+    .storeBit(true)            // value
+    .endCell();
+```
+
+There, both maps are formed manually and both contain the same key-value pair. If you were to send both of those maps in a message to the Tact contract, and then compare them with `.deepEquals(){:tact}` and [equality operator `=={:tact}`](/book/operators#binary-equality), the former would produce `true{:tact}` because both maps have the same entry, while the latter would produce `false{:tact}`, because it only does the shallow comparison of map hashes. And those differ since the maps are serialized differently.
+
+:::note
+
+  This function is very gas expensive, and for the majority of cases it'll be enough to use the shallow comparison via the [equality `=={:tact}`](/book/operators#binary-equality) or [inequality `!={:tact}`](/book/operators#binary-equality) operators.
+
+:::
+
 ### Convert to a `Cell`, `.asCell()` {#ascell}
 
 Use `.asCell(){:tact}` [method](/book/functions#extension-function) on maps to convert all their values to a [`Cell{:tact}`][cell] type. Be mindful, that [`Cell{:tact}`][cell] type is able to store up to 1023 bits, so converting larger maps to the Cell will result in error.
@@ -361,3 +406,5 @@ If you still need a large map or an unbound (infinitely large) map, it's better 
 [p]: /book/types#primitive-types
 [int]: /book/integers
 [cell]: /book/cells#cells
+
+[hashmap]: https://docs.ton.org/develop/data-formats/tl-b-types#hashmap
