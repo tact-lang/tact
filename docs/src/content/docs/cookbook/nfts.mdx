@@ -3,8 +3,6 @@ title: Non-Fungible Tokens (NFTs)
 description: "Common examples of working with Non-Fungible Tokens (NFTs) in Tact"
 ---
 
-# Non-Fungible Tokens (NFTs)
-
 This page lists common examples of working with [NFTs](https://docs.ton.org/develop/dapps/asset-processing/nfts).
 
 ## Accepting NFT ownership assignment
@@ -190,7 +188,7 @@ receive(msg: NFTReportRoyaltyParams) {
 
   These methods are not part of any standard, and they will only work with [this specific implementation](https://github.com/ton-blockchain/token-contract/blob/main/nft/nft-collection.fc). Please keep this in mind before using them.
 
-:::caution
+:::
 
 Note that only NFT owners are allowed to use these methods.
 
@@ -238,8 +236,8 @@ receive("change owner") {
 }
 ```
 
-:::info
+:::tip[Hey there!]
 
-  Didn't find your favorite example of a NFT communication? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact-docs/issues)
+  Didn't find your favorite example of a NFT communication? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
 
-::info
+:::
