@@ -30,7 +30,7 @@ import { getExpType, resolveExpression } from "./resolveExpression";
 import { FunctionDescription, printTypeRef, TypeRef } from "./types";
 import { evalConstantExpression } from "../constEval";
 import { crc16 } from "../utils/crc16";
-import { ensureInt } from "../interpreterSemantics/standardSemantics";
+import { ensureInt } from "../interpreters/standard";
 
 export type StatementContext = {
     root: SrcInfo;

@@ -6,7 +6,7 @@ import {
     eqExpressions,
     isValue,
 } from "../grammar/ast";
-import { throwErrorConstEval } from "../interpreterSemantics/util";
+import { throwErrorConstEval } from "../interpreters/util";
 import { ExpressionTransformer, Rule } from "./types";
 import {
     checkIsBinaryOpNode,

@@ -1,6 +1,11 @@
 import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "./context";
-import { TactConstEvalError, TactParseError, idTextErr, throwCompilationError, throwInternalCompilerError } from "./errors";
+import {
+    TactConstEvalError,
+    TactParseError,
+    idTextErr,
+    throwInternalCompilerError,
+} from "./errors";
 import {
     AstAsmFunctionDef,
     AstBoolean,
@@ -43,7 +48,7 @@ import {
     tryExtractPath,
 } from "./grammar/ast";
 import { parseExpression, SrcInfo } from "./grammar/grammar";
-import { throwNonFatalErrorConstEval } from "./interpreterSemantics/util";
+import { throwNonFatalErrorConstEval } from "./interpreters/util";
 import { Value } from "./types/types";
 
 type EvalResult =
@@ -68,29 +73,7 @@ export function parseAndEvalExpression(sourceCode: string): EvalResult {
     }
 }
 
-/*
-A parameterizable Tact interpreter. It receives a concrete semantics in the constructor. 
-The concrete semantics attaches custom behaviors to the interpreter. 
-For example, for instantiating an interpreter with the standard Tact semantics:
-
-const interpreter = new Interpreter(new StandardSemantics(ctx));
-
-Generic type T is the expressions' result type.
-*/
-export abstract class Interpreter<T> {
-
-    private copyValue: (val: T) => T;
-
-    constructor(copyValueMethod: (val: T) => T) {
-        this.copyValue = copyValueMethod;
-    }
-
-    protected executeStatements(statements: AstStatement[]) {
-        statements.forEach((currStmt) => {
-            this.interpretStatement(currStmt);
-        }, this);
-    }
-
+export abstract class InterpreterInterface<T> {
     public interpretModuleItem(ast: AstModuleItem) {
         switch (ast.kind) {
             case "constant_def":
@@ -109,7 +92,7 @@ export abstract class Interpreter<T> {
                 this.interpretMessageDecl(ast);
                 break;
             case "native_function_decl":
-                this.interpretFunctionDecl(ast);
+                this.interpretNativeFunctionDecl(ast);
                 break;
             case "primitive_type_decl":
                 this.interpretPrimitiveTypeDecl(ast);
@@ -121,6 +104,176 @@ export abstract class Interpreter<T> {
                 this.interpretTrait(ast);
                 break;
         }
+    }
+
+    public abstract interpretConstantDef(ast: AstConstantDef): void;
+
+    public abstract interpretFunctionDef(ast: AstFunctionDef): void;
+
+    public abstract interpretAsmFunctionDef(ast: AstAsmFunctionDef): void;
+
+    public abstract interpretStructDecl(ast: AstStructDecl): void;
+
+    public abstract interpretMessageDecl(ast: AstMessageDecl): void;
+
+    public abstract interpretPrimitiveTypeDecl(ast: AstPrimitiveTypeDecl): void;
+
+    public abstract interpretNativeFunctionDecl(
+        ast: AstNativeFunctionDecl,
+    ): void;
+
+    public abstract interpretContract(ast: AstContract): void;
+
+    public abstract interpretTrait(ast: AstTrait): void;
+
+    public interpretExpression(ast: AstExpression): T {
+        switch (ast.kind) {
+            case "id":
+                return this.interpretName(ast);
+            case "method_call":
+                return this.interpretMethodCall(ast);
+            case "init_of":
+                return this.interpretInitOf(ast);
+            case "null":
+                return this.interpretNull(ast);
+            case "boolean":
+                return this.interpretBoolean(ast);
+            case "number":
+                return this.interpretNumber(ast);
+            case "string":
+                return this.interpretString(ast);
+            case "op_unary":
+                return this.interpretUnaryOp(ast);
+            case "op_binary":
+                return this.interpretBinaryOp(ast);
+            case "conditional":
+                return this.interpretConditional(ast);
+            case "struct_instance":
+                return this.interpretStructInstance(ast);
+            case "field_access":
+                return this.interpretFieldAccess(ast);
+            case "static_call":
+                return this.interpretStaticCall(ast);
+        }
+    }
+
+    public abstract interpretName(ast: AstId): T;
+
+    public abstract interpretMethodCall(ast: AstMethodCall): T;
+
+    public abstract interpretInitOf(ast: AstInitOf): T;
+
+    public abstract interpretNull(ast: AstNull): T;
+
+    public abstract interpretBoolean(ast: AstBoolean): T;
+
+    public abstract interpretNumber(ast: AstNumber): T;
+
+    public abstract interpretString(ast: AstString): T;
+
+    public abstract interpretUnaryOp(ast: AstOpUnary): T;
+
+    public abstract interpretBinaryOp(ast: AstOpBinary): T;
+
+    public abstract interpretConditional(ast: AstConditional): T;
+
+    public abstract interpretStructInstance(ast: AstStructInstance): T;
+
+    public abstract interpretFieldAccess(ast: AstFieldAccess): T;
+
+    public abstract interpretStaticCall(ast: AstStaticCall): T;
+
+    public interpretStatement(ast: AstStatement) {
+        switch (ast.kind) {
+            case "statement_let":
+                this.interpretLetStatement(ast);
+                break;
+            case "statement_assign":
+                this.interpretAssignStatement(ast);
+                break;
+            case "statement_augmentedassign":
+                this.interpretAugmentedAssignStatement(ast);
+                break;
+            case "statement_condition":
+                this.interpretConditionStatement(ast);
+                break;
+            case "statement_expression":
+                this.interpretExpressionStatement(ast);
+                break;
+            case "statement_foreach":
+                this.interpretForEachStatement(ast);
+                break;
+            case "statement_repeat":
+                this.interpretRepeatStatement(ast);
+                break;
+            case "statement_return":
+                this.interpretReturnStatement(ast);
+                break;
+            case "statement_try":
+                this.interpretTryStatement(ast);
+                break;
+            case "statement_try_catch":
+                this.interpretTryCatchStatement(ast);
+                break;
+            case "statement_until":
+                this.interpretUntilStatement(ast);
+                break;
+            case "statement_while":
+                this.interpretWhileStatement(ast);
+                break;
+        }
+    }
+
+    public abstract interpretLetStatement(ast: AstStatementLet): void;
+
+    public abstract interpretAssignStatement(ast: AstStatementAssign): void;
+
+    public abstract interpretAugmentedAssignStatement(
+        ast: AstStatementAugmentedAssign,
+    ): void;
+
+    public abstract interpretConditionStatement(ast: AstCondition): void;
+
+    public abstract interpretExpressionStatement(
+        ast: AstStatementExpression,
+    ): void;
+
+    public abstract interpretForEachStatement(ast: AstStatementForEach): void;
+
+    public abstract interpretRepeatStatement(ast: AstStatementRepeat): void;
+
+    public abstract interpretReturnStatement(ast: AstStatementReturn): void;
+
+    public abstract interpretTryStatement(ast: AstStatementTry): void;
+
+    public abstract interpretTryCatchStatement(ast: AstStatementTryCatch): void;
+
+    public abstract interpretUntilStatement(ast: AstStatementUntil): void;
+
+    public abstract interpretWhileStatement(ast: AstStatementWhile): void;
+
+    protected executeStatements(statements: AstStatement[]) {
+        statements.forEach((currStmt) => {
+            this.interpretStatement(currStmt);
+        }, this);
+    }
+}
+
+/*
+A parameterizable Tact interpreter. It receives a concrete semantics in the constructor. 
+The concrete semantics attaches custom behaviors to the interpreter. 
+For example, for instantiating an interpreter with the standard Tact semantics:
+
+const interpreter = new Interpreter(new StandardSemantics(ctx));
+
+Generic type T is the expressions' result type.
+*/
+export abstract class AbstractInterpreter<T> extends InterpreterInterface<T> {
+    protected copyValue: (val: T) => T;
+
+    constructor(copyValueMethod: (val: T) => T) {
+        super();
+        this.copyValue = copyValueMethod;
     }
 
     public interpretConstantDef(ast: AstConstantDef) {
@@ -165,7 +318,7 @@ export abstract class Interpreter<T> {
         );
     }
 
-    public interpretFunctionDecl(ast: AstNativeFunctionDecl) {
+    public interpretNativeFunctionDecl(ast: AstNativeFunctionDecl) {
         throwNonFatalErrorConstEval(
             "Native function declarations are currently not supported.",
             ast.loc,
@@ -186,37 +339,6 @@ export abstract class Interpreter<T> {
         );
     }
 
-    public interpretExpression(ast: AstExpression): T {
-        switch (ast.kind) {
-            case "id":
-                return this.interpretName(ast);
-            case "method_call":
-                return this.interpretMethodCall(ast);
-            case "init_of":
-                return this.interpretInitOf(ast);
-            case "null":
-                return this.interpretNull(ast);
-            case "boolean":
-                return this.interpretBoolean(ast);
-            case "number":
-                return this.interpretNumber(ast);
-            case "string":
-                return this.interpretString(ast);
-            case "op_unary":
-                return this.interpretUnaryOp(ast);
-            case "op_binary":
-                return this.interpretBinaryOp(ast);
-            case "conditional":
-                return this.interpretConditional(ast);
-            case "struct_instance":
-                return this.interpretStructInstance(ast);
-            case "field_access":
-                return this.interpretFieldAccess(ast);
-            case "static_call":
-                return this.interpretStaticCall(ast);
-        }
-    }
-
     public interpretName(ast: AstId): T {
         return this.lookupBinding(ast);
     }
@@ -224,13 +346,12 @@ export abstract class Interpreter<T> {
     public interpretMethodCall(ast: AstMethodCall): T {
         const selfValue = this.interpretExpression(ast.self);
 
-        const argValues = ast.args.map((expr) => this.copyValue(this.interpretExpression(expr)), this);
-
-        const builtinResult = this.evalBuiltinOnSelf(
-            ast,
-            selfValue,
-            argValues,
+        const argValues = ast.args.map(
+            (expr) => this.copyValue(this.interpretExpression(expr)),
+            this,
         );
+
+        const builtinResult = this.evalBuiltinOnSelf(ast, selfValue, argValues);
         if (builtinResult !== undefined) {
             return builtinResult;
         }
@@ -302,7 +423,10 @@ export abstract class Interpreter<T> {
     }
 
     public interpretStaticCall(ast: AstStaticCall): T {
-        const argValues = ast.args.map((expr) => this.copyValue(this.interpretExpression(expr)), this);
+        const argValues = ast.args.map(
+            (expr) => this.copyValue(this.interpretExpression(expr)),
+            this,
+        );
 
         const builtinResult = this.evalBuiltin(ast, argValues);
         if (builtinResult !== undefined) {
@@ -324,58 +448,15 @@ export abstract class Interpreter<T> {
         };
 
         // Now call the function
-        return this.evalStaticCall(
-            ast,
-            functionDef,
-            statementsEvaluator,
-            { names: paramNames, values: argValues },
-        );
-    }
-
-    public interpretStatement(ast: AstStatement) {
-        switch (ast.kind) {
-            case "statement_let":
-                this.interpretLetStatement(ast);
-                break;
-            case "statement_assign":
-                this.interpretAssignStatement(ast);
-                break;
-            case "statement_augmentedassign":
-                this.interpretAugmentedAssignStatement(ast);
-                break;
-            case "statement_condition":
-                this.interpretConditionStatement(ast);
-                break;
-            case "statement_expression":
-                this.interpretExpressionStatement(ast);
-                break;
-            case "statement_foreach":
-                this.interpretForEachStatement(ast);
-                break;
-            case "statement_repeat":
-                this.interpretRepeatStatement(ast);
-                break;
-            case "statement_return":
-                this.interpretReturnStatement(ast);
-                break;
-            case "statement_try":
-                this.interpretTryStatement(ast);
-                break;
-            case "statement_try_catch":
-                this.interpretTryCatchStatement(ast);
-                break;
-            case "statement_until":
-                this.interpretUntilStatement(ast);
-                break;
-            case "statement_while":
-                this.interpretWhileStatement(ast);
-                break;
-        }
+        return this.evalStaticCall(ast, functionDef, statementsEvaluator, {
+            names: paramNames,
+            values: argValues,
+        });
     }
 
     public interpretLetStatement(ast: AstStatementLet) {
         const val = this.interpretExpression(ast.expression);
-        this.storeNewBinding(ast.name, val);        
+        this.storeNewBinding(ast.name, val);
     }
 
     public interpretAssignStatement(ast: AstStatementAssign) {
@@ -383,7 +464,7 @@ export abstract class Interpreter<T> {
 
         if (fullPath !== null && fullPath.length > 0) {
             const val = this.interpretExpression(ast.expression);
-            this.updateBinding(fullPath, val, ast.loc);   
+            this.updateBinding(fullPath, val, ast.loc);
         } else {
             throwInternalCompilerError(
                 "assignments allow path expressions only",
@@ -401,24 +482,24 @@ export abstract class Interpreter<T> {
 
             let currentPathValue: T;
 
-                    // In an assignment, the path is either a field access or an id
-                    if (ast.path.kind === "field_access") {
-                        currentPathValue = this.interpretFieldAccess(ast.path);
-                    } else if (ast.path.kind === "id") {
-                        currentPathValue = this.lookupBinding(ast.path);
-                    } else {
-                        throwInternalCompilerError(
-                            "assignments allow path expressions only",
-                            ast.path.loc,
-                        );
-                    }
+            // In an assignment, the path is either a field access or an id
+            if (ast.path.kind === "field_access") {
+                currentPathValue = this.interpretFieldAccess(ast.path);
+            } else if (ast.path.kind === "id") {
+                currentPathValue = this.lookupBinding(ast.path);
+            } else {
+                throwInternalCompilerError(
+                    "assignments allow path expressions only",
+                    ast.path.loc,
+                );
+            }
 
-                    const newVal = this.evalBinaryOpInAugmentedAssign(
-                        ast,
-                        currentPathValue,
-                        updateEvaluator,
-                    );
-                    this.updateBinding(fullPath, newVal, ast.loc);
+            const newVal = this.evalBinaryOpInAugmentedAssign(
+                ast,
+                currentPathValue,
+                updateEvaluator,
+            );
+            this.updateBinding(fullPath, newVal, ast.loc);
         } else {
             throwInternalCompilerError(
                 "assignments allow path expressions only",
@@ -428,30 +509,29 @@ export abstract class Interpreter<T> {
     }
 
     public interpretConditionStatement(ast: AstCondition) {
-        
-                const condition = this.toBoolean(
-                    this.interpretExpression(ast.condition),
-                    ast.condition.loc,
-                );
+        const condition = this.toBoolean(
+            this.interpretExpression(ast.condition),
+            ast.condition.loc,
+        );
 
-                if (condition) {
-                    this.runInNewEnvironment(() => {
-                        this.executeStatements(ast.trueStatements);
-                    });
-                } else if (ast.falseStatements !== null) {
-                    // We are in an else branch. The typechecker ensures that
-                    // the elseif branch does not exist.
-                    this.runInNewEnvironment(() => {
-                        this.executeStatements(ast.falseStatements!);
-                    });
-                } else if (ast.elseif !== null) {
-                    // We are in an elseif branch
-                    this.interpretConditionStatement(ast.elseif);
-                }
+        if (condition) {
+            this.runInNewEnvironment(() => {
+                this.executeStatements(ast.trueStatements);
+            });
+        } else if (ast.falseStatements !== null) {
+            // We are in an else branch. The typechecker ensures that
+            // the elseif branch does not exist.
+            this.runInNewEnvironment(() => {
+                this.executeStatements(ast.falseStatements!);
+            });
+        } else if (ast.elseif !== null) {
+            // We are in an elseif branch
+            this.interpretConditionStatement(ast.elseif);
+        }
     }
 
     public interpretExpressionStatement(ast: AstStatementExpression) {
-                this.interpretExpression(ast.expression);
+        this.interpretExpression(ast.expression);
     }
 
     public interpretForEachStatement(ast: AstStatementForEach) {
@@ -459,37 +539,32 @@ export abstract class Interpreter<T> {
     }
 
     public interpretRepeatStatement(ast: AstStatementRepeat) {
-       
-                const iterations = this.toRepeatInteger(
-                    this.interpretExpression(ast.iterations),
-                    ast.iterations.loc,
-                );
+        const iterations = this.toRepeatInteger(
+            this.interpretExpression(ast.iterations),
+            ast.iterations.loc,
+        );
 
-                if (iterations > 0) {
-                    // We can create a single environment for all the iterations in the loop
-                    // (instead of a fresh environment for each iteration)
-                    // because the typechecker ensures that variables do not leak outside
-                    // the loop. Also, the language requires that all declared variables inside the
-                    // loop be initialized, which means that we can overwrite its value in the environment
-                    // in each iteration.
-                    this.runInNewEnvironment(() => {
-                        for (let i = 1n; i <= iterations; i++) {
-                            this.runOneIteration(i, ast.loc, () => {
-                                this.executeStatements(ast.statements);
-                            });
-                        }
+        if (iterations > 0) {
+            // We can create a single environment for all the iterations in the loop
+            // (instead of a fresh environment for each iteration)
+            // because the typechecker ensures that variables do not leak outside
+            // the loop. Also, the language requires that all declared variables inside the
+            // loop be initialized, which means that we can overwrite its value in the environment
+            // in each iteration.
+            this.runInNewEnvironment(() => {
+                for (let i = 1n; i <= iterations; i++) {
+                    this.runOneIteration(i, ast.loc, () => {
+                        this.executeStatements(ast.statements);
                     });
                 }
-
-       
+            });
+        }
     }
 
     public interpretReturnStatement(ast: AstStatementReturn) {
         if (ast.expression !== null) {
-            
-                    const val = this.interpretExpression(ast.expression);
-                    this.evalReturn(val);
-            
+            const val = this.interpretExpression(ast.expression);
+            this.evalReturn(val);
         } else {
             this.evalReturn();
         }
@@ -568,7 +643,7 @@ export abstract class Interpreter<T> {
     }
 
     /********  ABSTRACT METHODS  ****/
-    
+
     /*
     Executes calls to built-in functions of the form self.method(args).
     Should return "undefined" if method is not a built-in function. 
@@ -578,14 +653,6 @@ export abstract class Interpreter<T> {
         self: T,
         argValues: T[],
     ): T | undefined;
-
-    public abstract interpretNull(ast: AstNull): T;
-
-    public abstract interpretBoolean(ast: AstBoolean): T;
-
-    public abstract interpretNumber(ast: AstNumber): T;
-
-    public abstract interpretString(ast: AstString): T;
 
     /*
     Evaluates the unary operation. Parameter operandEvaluator is a continuation 
@@ -664,9 +731,13 @@ export abstract class Interpreter<T> {
 
     public abstract lookupBinding(path: AstId): T;
 
-    public abstract storeNewBinding(id: AstId, exprValue: T | undefined): void;
+    public abstract storeNewBinding(id: AstId, exprValue: T): void;
 
-    public abstract updateBinding(path: AstId[], exprValue: T | undefined, src: SrcInfo): void;
+    public abstract updateBinding(
+        path: AstId[],
+        exprValue: T,
+        src: SrcInfo,
+    ): void;
 
     /*
     Runs the continuation statementsEvaluator in a new environment.

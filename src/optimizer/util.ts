@@ -10,7 +10,7 @@ import {
     idText,
     SrcInfo,
 } from "../grammar/ast";
-import { throwNonFatalErrorConstEval } from "../interpreterSemantics/util";
+import { throwNonFatalErrorConstEval } from "../interpreters/util";
 import { StructValue, Value } from "../types/types";
 
 // This function assumes that the parameter is already a value.

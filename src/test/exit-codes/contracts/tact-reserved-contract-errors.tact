@@ -3,6 +3,12 @@ import "@stdlib/dns";
 
 message(1478) SpanishInquisition {}
 
+message(128) ExitCode128 { gotcha: String? }
+
+message(136) ExitCode136 { unsupportedChainId: Int }
+
+message(137) ExitCode137 { masterchainId: Int }
+
 contract ReservedContractErrorsTester with Ownable {
     /// To make Ownable work
     owner: Address;
@@ -14,9 +20,8 @@ contract ReservedContractErrorsTester with Ownable {
     receive() {}
 
     /// Exit code 128
-    receive("128") {
-        let gotcha: String? = null;
-        dump(gotcha!!);
+    receive(msg: ExitCode128) {
+        dump(msg.gotcha!!);
     }
 
     /// Exit code 130
@@ -98,20 +103,18 @@ contract ReservedContractErrorsTester with Ownable {
     }
 
     /// Exit code 136
-    receive("136") {
-        let unsupportedChainId = 1;
+    receive(msg: ExitCode136) {
         dump(
             // Zero address in unsupported workchain
-            newAddress(unsupportedChainId, 0)
+            newAddress(msg.unsupportedChainId, 0)
         );
     }
 
     /// Exit code 137
-    receive("137") {
-        let masterchainId = -1;
+    receive(msg: ExitCode137) {
         dump(
             // Zero address in masterchain without the config option set
-            newAddress(masterchainId, 0)
+            newAddress(msg.masterchainId, 0)
         );
     }
 }

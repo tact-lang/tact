@@ -7,6 +7,7 @@ import { resolveErrors } from "../types/resolveErrors";
 import { resolveSignatures } from "../types/resolveSignatures";
 import { resolveImports } from "../imports/resolveImports";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
+import { ConstantPropagationAnalyzer } from "../interpreters/constantPropagation";
 
 export function precompile(
     ctx: CompilerContext,
@@ -35,6 +36,9 @@ export function precompile(
 
     // This extracts error messages
     ctx = resolveErrors(ctx);
+
+    // This runs the AST constant propagation analyzer
+    new ConstantPropagationAnalyzer(ctx).startAnalysis();
 
     // Prepared context
     return ctx;

@@ -16,7 +16,6 @@ import {
     AstOpBinary,
     AstOpUnary,
     AstStatementAugmentedAssign,
-    AstStatementLet,
     AstStaticCall,
     AstString,
     AstStructInstance,
@@ -34,7 +33,13 @@ import {
     hasStaticFunction,
 } from "../types/resolveDescriptors";
 import { getExpType } from "../types/resolveExpression";
-import { CommentValue, copyValue, showValue, StructValue, Value } from "../types/types";
+import {
+    CommentValue,
+    copyValue,
+    showValue,
+    StructValue,
+    Value,
+} from "../types/types";
 import { sha256_sync } from "@ton/crypto";
 import { enabledMasterchain } from "../config/features";
 import { dummySrcInfo } from "../grammar/grammar";
@@ -44,7 +49,7 @@ import {
     throwErrorConstEval,
     throwNonFatalErrorConstEval,
 } from "./util";
-import { Interpreter } from "../interpreter";
+import { AbstractInterpreter } from "../interpreter";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -67,11 +72,12 @@ class ReturnSignal extends Error {
     }
 }
 
-export type StandardSemanticsConfig = {
+export type InterpreterConfig = {
     // Options that tune the interpreter's behavior.
 
     // Maximum number of iterations inside a loop before a time out is issued.
-    // This option only applies to: do...until and while loops
+    // If a loop takes more than such number of iterations, the interpreter will fail evaluation.
+    // This option applies to: do...until, while and repeat loops.
     maxLoopIterations: bigint;
 };
 
@@ -84,7 +90,10 @@ representing the environments stack.
 
 The elements in the map are called "bindings".
 */
-export type Environment<V> = { values: Map<string, V>; parent?: Environment<V> };
+export type Environment<V> = {
+    values: Map<string, V>;
+    parent?: Environment<V>;
+};
 
 /*
 An environment stack is a linked list of Environment nodes. 
@@ -101,12 +110,22 @@ export class EnvironmentStack<V> {
         this.copyValue = copyValueMethod;
     }
 
-    private copyCurrentEnvironment(): Environment<V> {
+    private copyEnvironment(env: Environment<V>): Environment<V> {
         const newMap: Map<string, V> = new Map();
 
-        this.currentEnv.values.forEach((val, name) => newMap.set(name, this.copyValue(val)));
+        for (const [name, val] of env.values) {
+            newMap.set(name, this.copyValue(val));
+        }
 
-        return {...this.currentEnv, values: newMap};
+        //env.values.forEach((val, name) => newMap.set(name, this.copyValue(val)), this);
+
+        let newParent: Environment<V> | undefined = undefined;
+
+        if (env.parent !== undefined) {
+            newParent = this.copyEnvironment(env.parent);
+        }
+
+        return { values: newMap, parent: newParent };
     }
 
     private findBindingMap(name: string): Map<string, V> | undefined {
@@ -246,18 +265,21 @@ export class EnvironmentStack<V> {
         }
     }
 
-    public simulate(code: () => void, startEnv: Environment<V> = this.currentEnv): Environment<V> {
-        const envCopy = this.copyCurrentEnvironment();
+    public simulate<T>(
+        code: () => T,
+        startEnv: Environment<V> = this.currentEnv,
+    ): { env: Environment<V>; val: T } {
+        const envCopy = this.copyEnvironment(this.currentEnv);
 
         this.currentEnv = startEnv;
 
         try {
-            code();
-            return this.currentEnv;
+            const result = code();
+            return { env: this.currentEnv, val: result };
         } finally {
             this.currentEnv = envCopy;
         }
-    } 
+    }
 
     public setCurrentEnvironment(env: Environment<V>) {
         this.currentEnv = env;
@@ -268,15 +290,15 @@ export class EnvironmentStack<V> {
     }
 }
 
-const defaultStandardSemanticsConfig: StandardSemanticsConfig = {
-    // We set the default max number of loop iterations
-    // to the maximum number allowed for repeat loops
-    maxLoopIterations: maxRepeatStatement,
+export const defaultInterpreterConfig: InterpreterConfig = {
+    // Let us put a limit of 2 ^ 12 = 4096 iterations on loops to increase compiler responsiveness
+    // I think maxLoopIterations should be a command line option in case a user wants to wait more
+    // during evaluation.
+    maxLoopIterations: 2n ** 12n,
 };
 
 /*
-The standard semantics for the Tact interpreter. See Interpreter class
-for ways of instantiating interpreters with different semantics.
+The standard semantics for the Tact interpreter.
 
 The constructor receives an optional CompilerContext which includes 
 all external declarations that the interpreter will use during interpretation.
@@ -315,20 +337,23 @@ Internally, the semantics use a stack of environments to keep track of
 variables at different scopes. Each environment in the stack contains a map
 that binds a variable name to its corresponding value.
 */
-export class StandardSemantics extends Interpreter<Value> {
-
+export class TactInterpreter extends AbstractInterpreter<Value> {
     protected envStack: EnvironmentStack<Value>;
     protected context: CompilerContext;
-    protected config: StandardSemanticsConfig;
+    protected config: InterpreterConfig;
 
     constructor(
         context: CompilerContext = new CompilerContext(),
-        config: StandardSemanticsConfig = defaultStandardSemanticsConfig,
+        config: InterpreterConfig = defaultInterpreterConfig,
     ) {
         super(copyValue);
         this.envStack = new EnvironmentStack(copyValue);
         this.context = context;
         this.config = config;
+    }
+
+    public setEnvironmentStack(envStack: EnvironmentStack<Value>) {
+        this.envStack = envStack;
     }
 
     public lookupBinding(name: AstId): Value {
@@ -337,7 +362,7 @@ export class StandardSemantics extends Interpreter<Value> {
             if (constant.value !== undefined) {
                 return constant.value;
             } else {
-                throwErrorConstEval(
+                throwNonFatalErrorConstEval(
                     `cannot evaluate declared constant ${idText(name)} as it does not have a body`,
                     name.loc,
                 );
@@ -513,7 +538,7 @@ export class StandardSemantics extends Interpreter<Value> {
                 if (foundContractConst.value !== undefined) {
                     return foundContractConst.value;
                 } else {
-                    throwErrorConstEval(
+                    throwNonFatalErrorConstEval(
                         `cannot evaluate declared contract/trait constant ${idTextErr(ast.field)} as it does not have a body`,
                         ast.field.loc,
                     );
@@ -531,13 +556,24 @@ export class StandardSemantics extends Interpreter<Value> {
                 ast.aggregate.loc,
             );
         }
-        if (idText(ast.field) in valStruct) {
-            return valStruct[idText(ast.field)]!;
+        return this.extractFieldFromStruct(
+            valStruct,
+            ast.field,
+            ast.aggregate.loc,
+        );
+    }
+
+    protected extractFieldFromStruct(
+        struct: StructValue,
+        field: AstId,
+        src: SrcInfo,
+    ): Value {
+        if (idText(field) in struct) {
+            return struct[idText(field)]!;
         } else {
-            // this cannot happen in a well-typed program
-            throwInternalCompilerError(
-                `struct field ${idTextErr(ast.field)} is missing`,
-                ast.aggregate.loc,
+            throwNonFatalErrorConstEval(
+                `struct field ${idTextErr(field)} is missing`,
+                src,
             );
         }
     }
@@ -875,7 +911,7 @@ export class StandardSemantics extends Interpreter<Value> {
         );
     }
 
-    public storeNewBinding(id: AstId, exprValue: Value | undefined) {
+    public storeNewBinding(id: AstId, exprValue: Value) {
         if (hasStaticConstant(this.context, idText(id))) {
             // Attempt of shadowing a constant in a let declaration
             throwInternalCompilerError(
@@ -884,64 +920,59 @@ export class StandardSemantics extends Interpreter<Value> {
             );
         }
 
-        // In the standard interpreter, it should not happen that exprValue is undefined
-        if (exprValue !== undefined) {
-            // Make a copy of exprValue, because everything is assignned by value
-            this.envStack.setNewBinding(idText(id), copyValue(exprValue));
-        } else {
-            throwInternalCompilerError(
-                `Value of ${idText(id)} is undefined`,
-                id.loc,
-            );
-        }
+        // Make a copy of exprValue, because everything is assigned by value
+        this.envStack.setNewBinding(idText(id), this.copyValue(exprValue));
     }
 
-    public updateBinding(path: AstId[], exprValue: Value | undefined, src: SrcInfo) {
-        // In the standard interpreter, it should not happen that exprValue is undefined
-        if (exprValue !== undefined) {
-            if (path.length === 0) {
-                throwInternalCompilerError(
-                    `path expression must be non-empty`,
-                    src,
-                );
-            }
-            if (path.length === 1) {
-                // Make a copy of exprValue, because everything is assignned by value
-                this.envStack.updateBinding(idText(path[0]!), copyValue(exprValue));
-                return;
-            }
+    public updateBinding(path: AstId[], exprValue: Value, src: SrcInfo) {
+        if (path.length === 0) {
+            throwInternalCompilerError(
+                `path expression must be non-empty`,
+                src,
+            );
+        }
+        if (path.length === 1) {
+            // Make a copy of exprValue, because everything is assigned by value
+            this.envStack.updateBinding(
+                idText(path[0]!),
+                this.copyValue(exprValue),
+            );
+            return;
+        }
 
-            // the path expression contains at least 2 identifiers
+        // the path expression contains at least 2 identifiers
 
-            // Look up the first identifier
-            const baseStruct = this.envStack.getBinding(idText(path[0]!));
-            if (baseStruct !== undefined) {
-                // The typechecker ensures that baseStruct is a contract or a struct,
-                // which are treated identically by the interpreter as StructValues
-                
-                // Carry out look ups from ids 1 to path.length-2 (inclusive)
-                let innerValue = baseStruct as StructValue;
-                for (let i = 1; i <= path.length-2; i++) {
-                    const tempValue = innerValue[idText(path[i]!)];
-                    if (tempValue === undefined) {
-                        throwNonFatalErrorConstEval(`cannot find field ${idText(path[i]!)}`, path[i]!.loc);
-                    }
-                    // The typechecker ensures that tempValue is a StructValue 
+        // Look up the first identifier
+        const baseStruct = this.envStack.getBinding(idText(path[0]!));
+        if (baseStruct !== undefined) {
+            // The typechecker ensures that baseStruct is a contract or a struct,
+            // which are treated identically by the interpreter as StructValues
+
+            // Carry out look ups from ids 1 to path.length-2 (inclusive)
+            let innerValue = baseStruct as StructValue;
+            for (let i = 1; i <= path.length - 2; i++) {
+                const fieldName = idText(path[i]!);
+                if (fieldName in innerValue) {
+                    const tempValue = innerValue[fieldName]!;
+                    // The typechecker ensures that tempValue is a StructValue
                     // (because we are not accessing the last id in the path)
                     innerValue = tempValue as StructValue;
+                } else {
+                    throwNonFatalErrorConstEval(
+                        `cannot find field ${fieldName}`,
+                        path[i]!.loc,
+                    );
                 }
-
-                // Update the final field
-                // Make a copy of exprValue, because everything is assignned by value
-                innerValue[idText(path[path.length-1]!)] = copyValue(exprValue);
-            } else {
-                throwNonFatalErrorConstEval(`cannot find identifier ${idText(path[0]!)}`, path[0]!.loc);
             }
 
+            // Update the final field
+            // Make a copy of exprValue, because everything is assigned by value
+            innerValue[idText(path[path.length - 1]!)] =
+                this.copyValue(exprValue);
         } else {
-            throwInternalCompilerError(
-                `value of ${path.map(idText).join(".")} is undefined`,
-                src,
+            throwNonFatalErrorConstEval(
+                `cannot find identifier ${idText(path[0]!)}`,
+                path[0]!.loc,
             );
         }
     }
@@ -972,7 +1003,6 @@ export class StandardSemantics extends Interpreter<Value> {
     public toRepeatInteger(value: Value, src: SrcInfo): bigint {
         return ensureRepeatInt(value, src);
     }
-
 }
 
 export function ensureInt(val: Value, source: SrcInfo): bigint {
@@ -992,7 +1022,7 @@ export function ensureInt(val: Value, source: SrcInfo): bigint {
     }
 }
 
-function ensureRepeatInt(val: Value, source: SrcInfo): bigint {
+export function ensureRepeatInt(val: Value, source: SrcInfo): bigint {
     if (typeof val !== "bigint") {
         throwErrorConstEval(
             `integer expected, but got '${showValue(val)}'`,
@@ -1009,7 +1039,7 @@ function ensureRepeatInt(val: Value, source: SrcInfo): bigint {
     }
 }
 
-function ensureBoolean(val: Value, source: SrcInfo): boolean {
+export function ensureBoolean(val: Value, source: SrcInfo): boolean {
     if (typeof val !== "boolean") {
         throwErrorConstEval(
             `boolean expected, but got '${showValue(val)}'`,
@@ -1116,10 +1146,7 @@ export function evalBinaryOp(
             // Still, the following holds: a / b * b + a % b == a, for all b != 0.
             const r = ensureInt(valRightContinuation(), locRight);
             if (r === 0n)
-                throwErrorConstEval(
-                    "divisor expression must be non-zero",
-                    locRight,
-                );
+                throwErrorConstEval("divisor must be non-zero", locRight);
             return ensureInt(divFloor(ensureInt(valLeft, locLeft), r), source);
         }
         case "%": {
@@ -1127,10 +1154,7 @@ export function evalBinaryOp(
             // Example: -1 % 5 = 4
             const r = ensureInt(valRightContinuation(), locRight);
             if (r === 0n)
-                throwErrorConstEval(
-                    "divisor expression must be non-zero",
-                    locRight,
-                );
+                throwErrorConstEval("divisor must be non-zero", locRight);
             return ensureInt(modFloor(ensureInt(valLeft, locLeft), r), source);
         }
         case "&":

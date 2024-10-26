@@ -8,8 +8,8 @@ import {
     isValue,
     SrcInfo,
 } from "../grammar/ast";
-import * as semanticsModule from "../interpreterSemantics/standardSemantics";
-import { abs, sign } from "../interpreterSemantics/util";
+import * as interpreterModule from "../interpreters/standard";
+import { abs, sign } from "../interpreters/util";
 import { Value } from "../types/types";
 import { ExpressionTransformer, Rule } from "./types";
 import {
@@ -37,7 +37,7 @@ type Transform = (
    so that we can call the evaluation function in the standard semantics module
 */
 function evalBinaryOp(op: AstBinaryOperation, valL: Value, valR: Value): Value {
-    return semanticsModule.evalBinaryOp(op, valL, () => valR);
+    return interpreterModule.evalBinaryOp(op, valL, () => valR);
 }
 
 abstract class AssociativeRewriteRule extends Rule {

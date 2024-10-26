@@ -9,21 +9,13 @@ export function throwNonFatalErrorConstEval(
     msg: string,
     source: SrcInfo,
 ): never {
-    throwConstEvalError(
-        `Cannot evaluate expression to a constant: ${msg}`,
-        false,
-        source,
-    );
+    throwConstEvalError(`Cannot evaluate expression: ${msg}`, false, source);
 }
 
 // Throws a fatal const-eval, meaning this is a meaningless program,
 // so compilation should be aborted in all cases
 export function throwErrorConstEval(msg: string, source: SrcInfo): never {
-    throwConstEvalError(
-        `Cannot evaluate expression to a constant: ${msg}`,
-        true,
-        source,
-    );
+    throwConstEvalError(`Cannot evaluate expression: ${msg}`, true, source);
 }
 
 // bigint arithmetic
