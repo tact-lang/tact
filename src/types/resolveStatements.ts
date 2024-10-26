@@ -684,6 +684,69 @@ function processStatements(
                 }
 
                 sctx = initialSctx; // Re-assign the modified initial context back to sctx after merging
+                break;
+            }
+            case "statement_destruct": {
+                // Process expression
+                ctx = resolveExpression(s.expression, sctx, ctx);
+
+                // Check variable names
+                for (const [_, name] of s.identifiers.values()) {
+                    checkVariableExists(ctx, sctx, name);
+                }
+
+                // Check type
+                const expressionType = getExpType(ctx, s.expression);
+                if (expressionType.kind !== "ref") {
+                    throwCompilationError(
+                        `Type '${printTypeRef(expressionType)}' cannot be destructured`,
+                        s.expression.loc,
+                    );
+                }
+                if (expressionType.optional) {
+                    throwCompilationError(
+                        `Type '${printTypeRef(expressionType)}' is optional and cannot be destructured`,
+                        s.expression.loc,
+                    );
+                }
+                const ty = getType(ctx, expressionType.name);
+                if (ty.kind !== "struct") {
+                    throwCompilationError(
+                        `Type '${printTypeRef(expressionType)}' cannot be destructured`,
+                        s.expression.loc,
+                    );
+                }
+
+                // Compare type with the specified one
+                const typeRef = resolveTypeRef(ctx, s.type);
+                if (typeRef.kind !== "ref") {
+                    throwInternalCompilerError(
+                        `Unexpected type kind: '${typeRef.kind}'`,
+                        s.type.loc,
+                    );
+                }
+                if (expressionType.name !== typeRef.name) {
+                    throwCompilationError(
+                        `Type mismatch: "${printTypeRef(expressionType)}" is not assignable to "${printTypeRef(typeRef)}"`,
+                        s.expression.loc,
+                    );
+                }
+
+                // Add variables
+                s.identifiers.forEach(([field, name], _) => {
+                    const f = ty.fields.find((f) => eqNames(f.name, field));
+                    if (!f) {
+                        throwCompilationError(
+                            `Field '${idTextErr(field)}' not found in type '${expressionType.name}'`,
+                            field.loc,
+                        );
+                    }
+                    if (name.text !== "_") {
+                        sctx = addVariable(name, f.type, ctx, sctx);
+                    }
+                });
+
+                break;
             }
         }
     }

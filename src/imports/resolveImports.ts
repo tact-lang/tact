@@ -42,16 +42,17 @@ export function resolveImports(args: {
     function processImports(source: string, path: string, origin: ItemOrigin) {
         const imp = parseImports(source, path, origin);
         for (const i of imp) {
+            const importPath = i.path.value;
             // Resolve library
             const resolved = resolveLibrary({
                 path: path,
-                name: i,
+                name: importPath,
                 project: args.project,
                 stdlib: args.stdlib,
             });
             if (!resolved.ok) {
                 throwCompilationError(
-                    `Could not resolve import "${i}" in ${path}`,
+                    `Could not resolve import "${importPath}" in ${path}`,
                 );
             }
 
