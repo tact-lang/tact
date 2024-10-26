@@ -1383,10 +1383,18 @@ describe("map", () => {
                 const valueInt = k * 10n;
                 const valueBool = k < 0n;
                 const addr = randomAddress(0, "addr-" + k.toString(10));
+                const anotherAddr = randomAddress(
+                    0,
+                    "anotherAddr-" + k.toString(10),
+                );
                 const valueCell = beginCell().storeUint(123123, 128).endCell();
                 const valueStruct: SomeStruct = {
                     $$type: "SomeStruct",
                     value: 10012312n,
+                };
+                const anotherValueStruct: SomeStruct = {
+                    $$type: "SomeStruct",
+                    value: 123n,
                 };
                 const valueAddr = randomAddress(0, "value-" + k.toString(10));
                 const keySmall = k % 100n;
@@ -1679,6 +1687,8 @@ describe("map", () => {
                 expect((await contract.getAddrMap4()).size).toBe(1);
 
                 // Check .replace return value
+
+                // Tests for intMap1
                 expect(await contract.getIntMap1Replace(k, null)).toBe(true);
                 expect(await contract.getIntMap1Replace(k + 1n, null)).toBe(
                     false,
@@ -1687,6 +1697,640 @@ describe("map", () => {
                 expect(await contract.getIntMap1Replace(k + 1n, 123n)).toBe(
                     false,
                 );
+
+                // Tests for intMap2
+                expect(await contract.getIntMap2Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap2Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap2Replace(k, true)).toBe(true);
+                expect(await contract.getIntMap2Replace(k + 1n, true)).toBe(
+                    false,
+                );
+
+                // Tests for intMap3
+                expect(await contract.getIntMap3Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap3Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap3Replace(k, valueCell)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap3Replace(k + 1n, valueCell),
+                ).toBe(false);
+
+                // Tests for intMap4
+                expect(await contract.getIntMap4Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap4Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(
+                    await contract.getIntMap4Replace(k, anotherValueStruct),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap4Replace(
+                        k + 1n,
+                        anotherValueStruct,
+                    ),
+                ).toBe(false);
+
+                // Tests for intMap5
+                expect(await contract.getIntMap5Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap5Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap5Replace(k, addr)).toBe(true);
+                expect(await contract.getIntMap5Replace(k + 1n, addr)).toBe(
+                    false,
+                );
+
+                // Tests for intMap6 (signed integer maps of various sizes)
+                expect(await contract.getIntMap6_1Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_1Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_1Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_1Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                expect(await contract.getIntMap6_2Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_2Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_2Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_2Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                expect(await contract.getIntMap6_3Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_3Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_3Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_3Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                expect(await contract.getIntMap6_4Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_4Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_4Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_4Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                expect(await contract.getIntMap6_5Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_5Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_5Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_5Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                expect(await contract.getIntMap6_6Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_6Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_6Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_6Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                expect(await contract.getIntMap6_7Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_7Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_7Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_7Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                // Tests for intMap7 (unsigned integer maps of various sizes)
+                expect(
+                    await contract.getIntMap7_1Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_1Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_1Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_1Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap7_2Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_2Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_2Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_2Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap7_3Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_3Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_3Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_3Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap7_4Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_4Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_4Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_4Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap7_5Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_5Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_5Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_5Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap7_6Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_6Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_6Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_6Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                // Tests for intMap8 (maps with signed value types)
+                expect(await contract.getIntMap8_1Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_1Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_1Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_1Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap8_2Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_2Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_2Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_2Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap8_3Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_3Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_3Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_3Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap8_4Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_4Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_4Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_4Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap8_5Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_5Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_5Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_5Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap8_6Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_6Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_6Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_6Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap8_7Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_7Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_7Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_7Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                // Tests for intMap9 (maps with unsigned value types)
+                expect(await contract.getIntMap9_1Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap9_1Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap9_1Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap9_1Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap9_2Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap9_2Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap9_2Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap9_2Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap9_3Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap9_3Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap9_3Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap9_3Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap9_4Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap9_4Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap9_4Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap9_4Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap9_5Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap9_5Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap9_5Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap9_5Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap9_6Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap9_6Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap9_6Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap9_6Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                // Tests for intMap10 (custom-sized integer pairings)
+                expect(
+                    await contract.getIntMap10_1Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_1Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_1Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_1Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap10_2Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_2Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_2Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_2Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap10_3Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_3Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_3Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_3Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap10_4Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_4Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_4Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_4Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                // Tests for addrMap1
+                expect(await contract.getAddrMap1Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap1Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap1Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap1Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                // Tests for addrMap2
+                expect(await contract.getAddrMap2Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap2Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap2Replace(addr, true)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap2Replace(anotherAddr, true),
+                ).toBe(false);
+
+                // Tests for addrMap3
+                expect(await contract.getAddrMap3Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap3Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap3Replace(addr, valueCell)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap3Replace(anotherAddr, valueCell),
+                ).toBe(false);
+
+                // Tests for addrMap4
+                expect(await contract.getAddrMap4Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap4Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(
+                    await contract.getAddrMap4Replace(addr, anotherValueStruct),
+                ).toBe(true);
+                expect(
+                    await contract.getAddrMap4Replace(
+                        anotherAddr,
+                        anotherValueStruct,
+                    ),
+                ).toBe(false);
+
+                // Tests for addrMap5
+                expect(await contract.getAddrMap5Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap5Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap5Replace(addr, addr)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap5Replace(anotherAddr, addr),
+                ).toBe(false);
+
+                // Tests for addrMap6 (signed int value types with address keys)
+                expect(await contract.getAddrMap6_1Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_1Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_1Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_1Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap6_2Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_2Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_2Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_2Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap6_3Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_3Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_3Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_3Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap6_4Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_4Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_4Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_4Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap6_5Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_5Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_5Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_5Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap6_6Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_6Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_6Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_6Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap6_7Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_7Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_7Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_7Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                // Tests for addrMap7 (unsigned int value types with address keys)
+                expect(await contract.getAddrMap7_1Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_1Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap7_1Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_1Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap7_2Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_2Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap7_2Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_2Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap7_3Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_3Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap7_3Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_3Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap7_4Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_4Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap7_4Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_4Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap7_5Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_5Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap7_5Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_5Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap7_6Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_6Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap7_6Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_6Replace(anotherAddr, 123n),
+                ).toBe(false);
 
                 // Replace values
                 await contract.send(
@@ -2067,6 +2711,652 @@ describe("map", () => {
                 expect((await contract.getAddrMap3()).size).toBe(1);
                 expect((await contract.getAddrMap4()).size).toBe(1);
 
+                // Check that .replace still returns same values
+
+                // Tests for intMap1
+                expect(await contract.getIntMap1Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap1Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap1Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap1Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                // Tests for intMap2
+                expect(await contract.getIntMap2Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap2Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap2Replace(k, true)).toBe(true);
+                expect(await contract.getIntMap2Replace(k + 1n, true)).toBe(
+                    false,
+                );
+
+                // Tests for intMap3
+                expect(await contract.getIntMap3Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap3Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap3Replace(k, valueCell)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap3Replace(k + 1n, valueCell),
+                ).toBe(false);
+
+                // Tests for intMap4
+                expect(await contract.getIntMap4Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap4Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(
+                    await contract.getIntMap4Replace(k, anotherValueStruct),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap4Replace(
+                        k + 1n,
+                        anotherValueStruct,
+                    ),
+                ).toBe(false);
+
+                // Tests for intMap5
+                expect(await contract.getIntMap5Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap5Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap5Replace(k, addr)).toBe(true);
+                expect(await contract.getIntMap5Replace(k + 1n, addr)).toBe(
+                    false,
+                );
+
+                // Tests for intMap6 (signed integer maps of various sizes)
+                expect(await contract.getIntMap6_1Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_1Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_1Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_1Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                expect(await contract.getIntMap6_2Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_2Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_2Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_2Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                expect(await contract.getIntMap6_3Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_3Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_3Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_3Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                expect(await contract.getIntMap6_4Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_4Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_4Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_4Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                expect(await contract.getIntMap6_5Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_5Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_5Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_5Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                expect(await contract.getIntMap6_6Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_6Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_6Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_6Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                expect(await contract.getIntMap6_7Replace(keySmall, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_7Replace(keySmall + 1n, null),
+                ).toBe(false);
+                expect(await contract.getIntMap6_7Replace(keySmall, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getIntMap6_7Replace(keySmall + 1n, 123n),
+                ).toBe(false);
+
+                // Tests for intMap7 (unsigned integer maps of various sizes)
+                expect(
+                    await contract.getIntMap7_1Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_1Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_1Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_1Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap7_2Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_2Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_2Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_2Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap7_3Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_3Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_3Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_3Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap7_4Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_4Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_4Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_4Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap7_5Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_5Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_5Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_5Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap7_6Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_6Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_6Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap7_6Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                // Tests for intMap8 (maps with signed value types)
+                expect(await contract.getIntMap8_1Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_1Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_1Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_1Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap8_2Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_2Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_2Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_2Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap8_3Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_3Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_3Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_3Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap8_4Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_4Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_4Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_4Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap8_5Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_5Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_5Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_5Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap8_6Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_6Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_6Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_6Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap8_7Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap8_7Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap8_7Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap8_7Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                // Tests for intMap9 (maps with unsigned value types)
+                expect(await contract.getIntMap9_1Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap9_1Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap9_1Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap9_1Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap9_2Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap9_2Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap9_2Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap9_2Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap9_3Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap9_3Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap9_3Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap9_3Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap9_4Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap9_4Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap9_4Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap9_4Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap9_5Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap9_5Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap9_5Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap9_5Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                expect(await contract.getIntMap9_6Replace(k, null)).toBe(true);
+                expect(await contract.getIntMap9_6Replace(k + 1n, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap9_6Replace(k, 123n)).toBe(true);
+                expect(await contract.getIntMap9_6Replace(k + 1n, 123n)).toBe(
+                    false,
+                );
+
+                // Tests for intMap10 (custom-sized integer pairings)
+                expect(
+                    await contract.getIntMap10_1Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_1Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_1Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_1Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap10_2Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_2Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_2Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_2Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap10_3Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_3Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_3Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_3Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                expect(
+                    await contract.getIntMap10_4Replace(keySmallAbs, null),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_4Replace(keySmallAbs + 1n, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_4Replace(keySmallAbs, 123n),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap10_4Replace(keySmallAbs + 1n, 123n),
+                ).toBe(false);
+
+                // Tests for addrMap1
+                expect(await contract.getAddrMap1Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap1Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap1Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap1Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                // Tests for addrMap2
+                expect(await contract.getAddrMap2Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap2Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap2Replace(addr, true)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap2Replace(anotherAddr, true),
+                ).toBe(false);
+
+                // Tests for addrMap3
+                expect(await contract.getAddrMap3Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap3Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap3Replace(addr, valueCell)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap3Replace(anotherAddr, valueCell),
+                ).toBe(false);
+
+                // Tests for addrMap4
+                expect(await contract.getAddrMap4Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap4Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(
+                    await contract.getAddrMap4Replace(addr, anotherValueStruct),
+                ).toBe(true);
+                expect(
+                    await contract.getAddrMap4Replace(
+                        anotherAddr,
+                        anotherValueStruct,
+                    ),
+                ).toBe(false);
+
+                // Tests for addrMap5
+                expect(await contract.getAddrMap5Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap5Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap5Replace(addr, addr)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap5Replace(anotherAddr, addr),
+                ).toBe(false);
+
+                // Tests for addrMap6 (signed int value types with address keys)
+                expect(await contract.getAddrMap6_1Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_1Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_1Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_1Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap6_2Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_2Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_2Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_2Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap6_3Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_3Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_3Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_3Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap6_4Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_4Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_4Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_4Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap6_5Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_5Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_5Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_5Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap6_6Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_6Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_6Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_6Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap6_7Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_7Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap6_7Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap6_7Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                // Tests for addrMap7 (unsigned int value types with address keys)
+                expect(await contract.getAddrMap7_1Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_1Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap7_1Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_1Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap7_2Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_2Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap7_2Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_2Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap7_3Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_3Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap7_3Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_3Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap7_4Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_4Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap7_4Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_4Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap7_5Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_5Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap7_5Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_5Replace(anotherAddr, 123n),
+                ).toBe(false);
+
+                expect(await contract.getAddrMap7_6Replace(addr, null)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_6Replace(anotherAddr, null),
+                ).toBe(false);
+                expect(await contract.getAddrMap7_6Replace(addr, 123n)).toBe(
+                    true,
+                );
+                expect(
+                    await contract.getAddrMap7_6Replace(anotherAddr, 123n),
+                ).toBe(false);
+
                 // Clear keys with .replace
                 await contract.send(
                     treasure.getSender(),
@@ -2236,6 +3526,292 @@ describe("map", () => {
                 expect(await contract.getAddrMap7_4Value(addr)).toBe(null);
                 expect(await contract.getAddrMap7_5Value(addr)).toBe(null);
                 expect(await contract.getAddrMap7_6Value(addr)).toBe(null);
+
+                // Check that .replace returns false for cleared keys
+
+                // Tests for intMap1
+                expect(await contract.getIntMap1Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap1Replace(k, 123n)).toBe(false);
+
+                // Tests for intMap2
+                expect(await contract.getIntMap2Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap2Replace(k, true)).toBe(false);
+
+                // Tests for intMap3
+                expect(await contract.getIntMap3Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap3Replace(k, valueCell)).toBe(
+                    false,
+                );
+
+                // Tests for intMap4
+                expect(await contract.getIntMap4Replace(k, null)).toBe(false);
+                expect(
+                    await contract.getIntMap4Replace(k, anotherValueStruct),
+                ).toBe(false);
+
+                // Tests for intMap5
+                expect(await contract.getIntMap5Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap5Replace(k, addr)).toBe(false);
+
+                // Tests for intMap6 (signed integer maps of various sizes)
+                expect(await contract.getIntMap6_1Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_1Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_2Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_2Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_3Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_3Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_4Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_4Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_5Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_5Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_6Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_6Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_7Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_7Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+
+                // Tests for intMap7 (unsigned integer maps of various sizes)
+                expect(
+                    await contract.getIntMap7_1Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_1Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_2Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_2Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_3Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_3Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_4Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_4Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_5Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_5Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_6Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_6Replace(keySmallAbs, 123n),
+                ).toBe(false);
+
+                // Tests for intMap8 (maps with signed value types)
+                expect(await contract.getIntMap8_1Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_1Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap8_2Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_2Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap8_3Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_3Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap8_4Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_4Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap8_5Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_5Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap8_6Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_6Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap8_7Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_7Replace(k, 123n)).toBe(false);
+
+                // Tests for intMap9 (maps with unsigned value types)
+                expect(await contract.getIntMap9_1Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap9_1Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap9_2Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap9_2Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap9_3Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap9_3Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap9_4Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap9_4Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap9_5Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap9_5Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap9_6Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap9_6Replace(k, 123n)).toBe(false);
+
+                // Tests for intMap10 (custom-sized integer pairings)
+                expect(
+                    await contract.getIntMap10_1Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_1Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_2Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_2Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_3Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_3Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_4Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_4Replace(keySmallAbs, 123n),
+                ).toBe(false);
+
+                // Tests for addrMap1
+                expect(await contract.getAddrMap1Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap1Replace(addr, 123n)).toBe(
+                    false,
+                );
+
+                // Tests for addrMap2
+                expect(await contract.getAddrMap2Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap2Replace(addr, true)).toBe(
+                    false,
+                );
+
+                // Tests for addrMap3
+                expect(await contract.getAddrMap3Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap3Replace(addr, valueCell)).toBe(
+                    false,
+                );
+
+                // Tests for addrMap4
+                expect(await contract.getAddrMap4Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(
+                    await contract.getAddrMap4Replace(addr, anotherValueStruct),
+                ).toBe(false);
+
+                // Tests for addrMap5
+                expect(await contract.getAddrMap5Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap5Replace(addr, addr)).toBe(
+                    false,
+                );
+
+                // Tests for addrMap6 (signed int value types with address keys)
+                expect(await contract.getAddrMap6_1Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_1Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_2Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_2Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_3Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_3Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_4Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_4Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_5Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_5Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_6Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_6Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_7Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_7Replace(addr, 123n)).toBe(
+                    false,
+                );
+
+                // Tests for addrMap7 (unsigned int value types with address keys)
+                expect(await contract.getAddrMap7_1Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_1Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_2Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_2Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_3Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_3Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_4Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_4Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_5Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_5Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_6Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_6Replace(addr, 123n)).toBe(
+                    false,
+                );
 
                 // Check that .replace doesn't do anything on non-existing keys
                 await contract.send(
@@ -2418,6 +3994,292 @@ describe("map", () => {
                 expect(await contract.getAddrMap7_4Value(addr)).toBe(null);
                 expect(await contract.getAddrMap7_5Value(addr)).toBe(null);
                 expect(await contract.getAddrMap7_6Value(addr)).toBe(null);
+
+                // Check that .replace still returns false for non-existing keys
+
+                // Tests for intMap1
+                expect(await contract.getIntMap1Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap1Replace(k, 123n)).toBe(false);
+
+                // Tests for intMap2
+                expect(await contract.getIntMap2Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap2Replace(k, true)).toBe(false);
+
+                // Tests for intMap3
+                expect(await contract.getIntMap3Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap3Replace(k, valueCell)).toBe(
+                    false,
+                );
+
+                // Tests for intMap4
+                expect(await contract.getIntMap4Replace(k, null)).toBe(false);
+                expect(
+                    await contract.getIntMap4Replace(k, anotherValueStruct),
+                ).toBe(false);
+
+                // Tests for intMap5
+                expect(await contract.getIntMap5Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap5Replace(k, addr)).toBe(false);
+
+                // Tests for intMap6 (signed integer maps of various sizes)
+                expect(await contract.getIntMap6_1Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_1Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_2Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_2Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_3Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_3Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_4Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_4Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_5Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_5Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_6Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_6Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_7Replace(keySmall, null)).toBe(
+                    false,
+                );
+                expect(await contract.getIntMap6_7Replace(keySmall, 123n)).toBe(
+                    false,
+                );
+
+                // Tests for intMap7 (unsigned integer maps of various sizes)
+                expect(
+                    await contract.getIntMap7_1Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_1Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_2Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_2Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_3Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_3Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_4Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_4Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_5Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_5Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_6Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap7_6Replace(keySmallAbs, 123n),
+                ).toBe(false);
+
+                // Tests for intMap8 (maps with signed value types)
+                expect(await contract.getIntMap8_1Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_1Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap8_2Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_2Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap8_3Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_3Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap8_4Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_4Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap8_5Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_5Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap8_6Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_6Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap8_7Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap8_7Replace(k, 123n)).toBe(false);
+
+                // Tests for intMap9 (maps with unsigned value types)
+                expect(await contract.getIntMap9_1Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap9_1Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap9_2Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap9_2Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap9_3Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap9_3Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap9_4Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap9_4Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap9_5Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap9_5Replace(k, 123n)).toBe(false);
+                expect(await contract.getIntMap9_6Replace(k, null)).toBe(false);
+                expect(await contract.getIntMap9_6Replace(k, 123n)).toBe(false);
+
+                // Tests for intMap10 (custom-sized integer pairings)
+                expect(
+                    await contract.getIntMap10_1Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_1Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_2Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_2Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_3Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_3Replace(keySmallAbs, 123n),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_4Replace(keySmallAbs, null),
+                ).toBe(false);
+                expect(
+                    await contract.getIntMap10_4Replace(keySmallAbs, 123n),
+                ).toBe(false);
+
+                // Tests for addrMap1
+                expect(await contract.getAddrMap1Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap1Replace(addr, 123n)).toBe(
+                    false,
+                );
+
+                // Tests for addrMap2
+                expect(await contract.getAddrMap2Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap2Replace(addr, true)).toBe(
+                    false,
+                );
+
+                // Tests for addrMap3
+                expect(await contract.getAddrMap3Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap3Replace(addr, valueCell)).toBe(
+                    false,
+                );
+
+                // Tests for addrMap4
+                expect(await contract.getAddrMap4Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(
+                    await contract.getAddrMap4Replace(addr, anotherValueStruct),
+                ).toBe(false);
+
+                // Tests for addrMap5
+                expect(await contract.getAddrMap5Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap5Replace(addr, addr)).toBe(
+                    false,
+                );
+
+                // Tests for addrMap6 (signed int value types with address keys)
+                expect(await contract.getAddrMap6_1Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_1Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_2Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_2Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_3Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_3Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_4Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_4Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_5Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_5Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_6Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_6Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_7Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap6_7Replace(addr, 123n)).toBe(
+                    false,
+                );
+
+                // Tests for addrMap7 (unsigned int value types with address keys)
+                expect(await contract.getAddrMap7_1Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_1Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_2Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_2Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_3Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_3Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_4Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_4Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_5Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_5Replace(addr, 123n)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_6Replace(addr, null)).toBe(
+                    false,
+                );
+                expect(await contract.getAddrMap7_6Replace(addr, 123n)).toBe(
+                    false,
+                );
             }
         } catch (e) {
             if (e instanceof ComputeError) {
@@ -2504,6 +4366,10 @@ describe("map", () => {
                 const valueInt = k * 10n;
                 const valueBool = k < 0n;
                 const addr = randomAddress(0, "addr-" + k.toString(10));
+                const anotherAddr = randomAddress(
+                    0,
+                    "anotherAddr-" + k.toString(10),
+                );
                 const valueCell = beginCell().storeUint(123123, 128).endCell();
                 const valueStruct: SomeStruct = {
                     $$type: "SomeStruct",
@@ -2800,6 +4666,8 @@ describe("map", () => {
                 expect((await contract.getAddrMap4()).size).toBe(1);
 
                 // Check .replaceGet return value
+
+                // Tests for intMap1
                 expect(await contract.getIntMap1ReplaceGet(k, null)).toBe(
                     valueInt,
                 );
@@ -2812,6 +4680,620 @@ describe("map", () => {
                 expect(await contract.getIntMap1ReplaceGet(k + 1n, 123n)).toBe(
                     null,
                 );
+
+                // Tests for intMap2
+                expect(await contract.getIntMap2ReplaceGet(k, null)).toBe(
+                    valueBool,
+                );
+                expect(await contract.getIntMap2ReplaceGet(k + 1n, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap2ReplaceGet(k, true)).toBe(
+                    valueBool,
+                );
+                expect(await contract.getIntMap2ReplaceGet(k + 1n, true)).toBe(
+                    null,
+                );
+
+                // Tests for intMap3
+                expect(
+                    await contract.getIntMap3ReplaceGet(k, null),
+                ).toEqualCell(valueCell);
+                expect(await contract.getIntMap3ReplaceGet(k + 1n, null)).toBe(
+                    null,
+                );
+                expect(
+                    await contract.getIntMap3ReplaceGet(k, valueCell),
+                ).toEqualCell(valueCell);
+                expect(
+                    await contract.getIntMap3ReplaceGet(k + 1n, valueCell),
+                ).toBe(null);
+
+                // Tests for intMap4
+                expect(
+                    strEq(
+                        (await contract.getIntMap4ReplaceGet(k, null))!,
+                        valueStruct,
+                    ),
+                ).toBe(true);
+                expect(await contract.getIntMap4ReplaceGet(k + 1n, null)).toBe(
+                    null,
+                );
+                expect(
+                    strEq(
+                        (await contract.getIntMap4ReplaceGet(k, valueStruct))!,
+                        valueStruct,
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap4ReplaceGet(k + 1n, valueStruct),
+                ).toBe(null);
+
+                // Tests for intMap5
+                expect(
+                    (await contract.getIntMap5ReplaceGet(k, null))!.equals(
+                        valueAddr,
+                    ),
+                ).toBe(true);
+                expect(await contract.getIntMap5ReplaceGet(k + 1n, null)).toBe(
+                    null,
+                );
+                expect(
+                    (await contract.getIntMap5ReplaceGet(k, valueAddr))!.equals(
+                        valueAddr,
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap5ReplaceGet(k + 1n, valueAddr),
+                ).toBe(null);
+
+                // Tests for intMap6 (signed integer maps of various sizes)
+                expect(
+                    await contract.getIntMap6_1ReplaceGet(keySmall, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_1ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_1ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_1ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_2ReplaceGet(keySmall, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_2ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_2ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_2ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_3ReplaceGet(keySmall, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_3ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_3ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_3ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_4ReplaceGet(keySmall, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_4ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_4ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_4ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_5ReplaceGet(keySmall, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_5ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_5ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_5ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_6ReplaceGet(keySmall, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_6ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_6ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_6ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_7ReplaceGet(keySmall, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_7ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_7ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap6_7ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                // Tests for intMap7 (unsigned integer maps of various sizes)
+                expect(
+                    await contract.getIntMap7_1ReplaceGet(keySmallAbs, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap7_1ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_1ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap7_1ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_2ReplaceGet(keySmallAbs, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap7_2ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_2ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap7_2ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_3ReplaceGet(keySmallAbs, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap7_3ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_3ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap7_3ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_4ReplaceGet(keySmallAbs, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap7_4ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_4ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap7_4ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_5ReplaceGet(keySmallAbs, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap7_5ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_5ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap7_5ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_6ReplaceGet(keySmallAbs, null),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap7_6ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_6ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueInt);
+                expect(
+                    await contract.getIntMap7_6ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                // Tests for intMap10 (custom-sized integer pairings)
+                expect(
+                    await contract.getIntMap10_1ReplaceGet(keySmallAbs, null),
+                ).toBe(valueSmallAbs);
+                expect(
+                    await contract.getIntMap10_1ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_1ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueSmallAbs);
+                expect(
+                    await contract.getIntMap10_1ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap10_2ReplaceGet(keySmallAbs, null),
+                ).toBe(valueSmallAbs);
+                expect(
+                    await contract.getIntMap10_2ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_2ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueSmallAbs);
+                expect(
+                    await contract.getIntMap10_2ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap10_3ReplaceGet(keySmallAbs, null),
+                ).toBe(valueSmallAbs);
+                expect(
+                    await contract.getIntMap10_3ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_3ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueSmallAbs);
+                expect(
+                    await contract.getIntMap10_3ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap10_4ReplaceGet(keySmallAbs, null),
+                ).toBe(valueSmallAbs);
+                expect(
+                    await contract.getIntMap10_4ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_4ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueSmallAbs);
+                expect(
+                    await contract.getIntMap10_4ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                // Tests for addrMap1
+                expect(await contract.getAddrMap1ReplaceGet(addr, null)).toBe(
+                    valueInt,
+                );
+                expect(
+                    await contract.getAddrMap1ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap1ReplaceGet(addr, 123n)).toBe(
+                    valueInt,
+                );
+                expect(
+                    await contract.getAddrMap1ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                // Tests for addrMap2
+                expect(await contract.getAddrMap2ReplaceGet(addr, null)).toBe(
+                    valueBool,
+                );
+                expect(
+                    await contract.getAddrMap2ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap2ReplaceGet(addr, true)).toBe(
+                    valueBool,
+                );
+                expect(
+                    await contract.getAddrMap2ReplaceGet(anotherAddr, true),
+                ).toBe(null);
+
+                // Tests for addrMap3
+                expect(
+                    await contract.getAddrMap3ReplaceGet(addr, null),
+                ).toEqualCell(valueCell);
+                expect(
+                    await contract.getAddrMap3ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(
+                    await contract.getAddrMap3ReplaceGet(addr, valueCell),
+                ).toEqualCell(valueCell);
+                expect(
+                    await contract.getAddrMap3ReplaceGet(
+                        anotherAddr,
+                        valueCell,
+                    ),
+                ).toBe(null);
+
+                // Tests for addrMap4
+                expect(
+                    strEq(
+                        (await contract.getAddrMap4ReplaceGet(addr, null))!,
+                        valueStruct,
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getAddrMap4ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(
+                    strEq(
+                        (await contract.getAddrMap4ReplaceGet(
+                            addr,
+                            valueStruct,
+                        ))!,
+                        valueStruct,
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getAddrMap4ReplaceGet(
+                        anotherAddr,
+                        valueStruct,
+                    ),
+                ).toBe(null);
+
+                // Tests for addrMap5
+                expect(
+                    (await contract.getAddrMap5ReplaceGet(addr, null))!.equals(
+                        valueAddr,
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getAddrMap5ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(
+                    (await contract.getAddrMap5ReplaceGet(
+                        addr,
+                        valueAddr,
+                    ))!.equals(valueAddr),
+                ).toBe(true);
+                expect(
+                    await contract.getAddrMap5ReplaceGet(
+                        anotherAddr,
+                        valueAddr,
+                    ),
+                ).toBe(null);
+
+                // Tests for addrMap6 (signed int value types with address keys)
+                expect(await contract.getAddrMap6_1ReplaceGet(addr, null)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_1ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_1ReplaceGet(addr, 123n)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_1ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap6_2ReplaceGet(addr, null)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_2ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_2ReplaceGet(addr, 123n)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_2ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap6_3ReplaceGet(addr, null)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_3ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_3ReplaceGet(addr, 123n)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_3ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap6_4ReplaceGet(addr, null)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_4ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_4ReplaceGet(addr, 123n)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_4ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap6_5ReplaceGet(addr, null)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_5ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_5ReplaceGet(addr, 123n)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_5ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap6_6ReplaceGet(addr, null)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_6ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_6ReplaceGet(addr, 123n)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_6ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap6_7ReplaceGet(addr, null)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_7ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_7ReplaceGet(addr, 123n)).toBe(
+                    valueSmall,
+                );
+                expect(
+                    await contract.getAddrMap6_7ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                // Tests for addrMap7 (unsigned int value types with address keys)
+                expect(await contract.getAddrMap7_1ReplaceGet(addr, null)).toBe(
+                    valueSmallAbs,
+                );
+                expect(
+                    await contract.getAddrMap7_1ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap7_1ReplaceGet(addr, 123n)).toBe(
+                    valueSmallAbs,
+                );
+                expect(
+                    await contract.getAddrMap7_1ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap7_2ReplaceGet(addr, null)).toBe(
+                    valueSmallAbs,
+                );
+                expect(
+                    await contract.getAddrMap7_2ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap7_2ReplaceGet(addr, 123n)).toBe(
+                    valueSmallAbs,
+                );
+                expect(
+                    await contract.getAddrMap7_2ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap7_3ReplaceGet(addr, null)).toBe(
+                    valueSmallAbs,
+                );
+                expect(
+                    await contract.getAddrMap7_3ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap7_3ReplaceGet(addr, 123n)).toBe(
+                    valueSmallAbs,
+                );
+                expect(
+                    await contract.getAddrMap7_3ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap7_4ReplaceGet(addr, null)).toBe(
+                    valueSmallAbs,
+                );
+                expect(
+                    await contract.getAddrMap7_4ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap7_4ReplaceGet(addr, 123n)).toBe(
+                    valueSmallAbs,
+                );
+                expect(
+                    await contract.getAddrMap7_4ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap7_5ReplaceGet(addr, null)).toBe(
+                    valueSmallAbs,
+                );
+                expect(
+                    await contract.getAddrMap7_5ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap7_5ReplaceGet(addr, 123n)).toBe(
+                    valueSmallAbs,
+                );
+                expect(
+                    await contract.getAddrMap7_5ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap7_6ReplaceGet(addr, null)).toBe(
+                    valueSmallAbs,
+                );
+                expect(
+                    await contract.getAddrMap7_6ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap7_6ReplaceGet(addr, 123n)).toBe(
+                    valueSmallAbs,
+                );
+                expect(
+                    await contract.getAddrMap7_6ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
 
                 // ReplaceGet values
                 await contract.send(
@@ -3200,6 +5682,837 @@ describe("map", () => {
                 expect((await contract.getAddrMap3()).size).toBe(1);
                 expect((await contract.getAddrMap4()).size).toBe(1);
 
+                // Check that .replaceGet returns new replaced values
+                // Tests for intMap1
+                expect(await contract.getIntMap1ReplaceGet(k, null)).toBe(
+                    valueInt + 1n,
+                );
+                expect(await contract.getIntMap1ReplaceGet(k + 1n, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap1ReplaceGet(k, 123n)).toBe(
+                    valueInt + 1n,
+                );
+                expect(await contract.getIntMap1ReplaceGet(k + 1n, 123n)).toBe(
+                    null,
+                );
+
+                // Tests for intMap2
+                expect(await contract.getIntMap2ReplaceGet(k, null)).toBe(
+                    !valueBool,
+                );
+                expect(await contract.getIntMap2ReplaceGet(k + 1n, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap2ReplaceGet(k, true)).toBe(
+                    !valueBool,
+                );
+                expect(await contract.getIntMap2ReplaceGet(k + 1n, true)).toBe(
+                    null,
+                );
+
+                // Tests for intMap3
+                expect(
+                    (await contract.getIntMap3ReplaceGet(k, null))!.equals(
+                        beginCell()
+                            .storeUint(123, 64)
+                            .storeRef(valueCell)
+                            .endCell(),
+                    ),
+                ).toBe(true);
+                expect(await contract.getIntMap3ReplaceGet(k + 1n, null)).toBe(
+                    null,
+                );
+                expect(
+                    (await contract.getIntMap3ReplaceGet(k, valueCell))!.equals(
+                        beginCell()
+                            .storeUint(123, 64)
+                            .storeRef(valueCell)
+                            .endCell(),
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap3ReplaceGet(k + 1n, valueCell),
+                ).toBe(null);
+
+                // Tests for intMap4
+                expect(
+                    strEq((await contract.getIntMap4ReplaceGet(k, null))!, {
+                        $$type: "SomeStruct",
+                        value: 10012312n + 1n,
+                    }),
+                ).toBe(true);
+                expect(await contract.getIntMap4ReplaceGet(k + 1n, null)).toBe(
+                    null,
+                );
+                expect(
+                    strEq(
+                        (await contract.getIntMap4ReplaceGet(k, valueStruct))!,
+                        {
+                            $$type: "SomeStruct",
+                            value: 10012312n + 1n,
+                        },
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap4ReplaceGet(k + 1n, valueStruct),
+                ).toBe(null);
+
+                // Tests for intMap5
+                expect(
+                    (await contract.getIntMap5ReplaceGet(k, null))!.equals(
+                        randomAddress(0, "value-" + (k + 1n).toString(10)),
+                    ),
+                ).toBe(true);
+                expect(await contract.getIntMap5ReplaceGet(k + 1n, null)).toBe(
+                    null,
+                );
+                expect(
+                    (await contract.getIntMap5ReplaceGet(k, valueAddr))!.equals(
+                        randomAddress(0, "value-" + (k + 1n).toString(10)),
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getIntMap5ReplaceGet(k + 1n, valueAddr),
+                ).toBe(null);
+
+                // Tests for intMap6 (signed integer maps of various sizes)
+                expect(
+                    await contract.getIntMap6_1ReplaceGet(keySmall, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_1ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_1ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_1ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_2ReplaceGet(keySmall, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_2ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_2ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_2ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_3ReplaceGet(keySmall, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_3ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_3ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_3ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_4ReplaceGet(keySmall, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_4ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_4ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_4ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_5ReplaceGet(keySmall, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_5ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_5ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_5ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_6ReplaceGet(keySmall, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_6ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_6ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_6ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_7ReplaceGet(keySmall, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_7ReplaceGet(keySmall + 1n, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_7ReplaceGet(keySmall, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap6_7ReplaceGet(keySmall + 1n, 123n),
+                ).toBe(null);
+
+                // Tests for intMap7 (unsigned integer maps of various sizes)
+                expect(
+                    await contract.getIntMap7_1ReplaceGet(keySmallAbs, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap7_1ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_1ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap7_1ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_2ReplaceGet(keySmallAbs, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap7_2ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_2ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap7_2ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_3ReplaceGet(keySmallAbs, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap7_3ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_3ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap7_3ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_4ReplaceGet(keySmallAbs, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap7_4ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_4ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap7_4ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_5ReplaceGet(keySmallAbs, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap7_5ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_5ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap7_5ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_6ReplaceGet(keySmallAbs, null),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap7_6ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_6ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueInt + 1n);
+                expect(
+                    await contract.getIntMap7_6ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                // Tests for intMap8 (signed small values)
+                expect(await contract.getIntMap8_1ReplaceGet(k, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_1ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap8_1ReplaceGet(k, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_1ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                expect(await contract.getIntMap8_2ReplaceGet(k, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_2ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap8_2ReplaceGet(k, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_2ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                expect(await contract.getIntMap8_3ReplaceGet(k, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_3ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap8_3ReplaceGet(k, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_3ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                expect(await contract.getIntMap8_4ReplaceGet(k, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_4ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap8_4ReplaceGet(k, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_4ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                expect(await contract.getIntMap8_5ReplaceGet(k, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_5ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap8_5ReplaceGet(k, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_5ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                expect(await contract.getIntMap8_6ReplaceGet(k, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_6ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap8_6ReplaceGet(k, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_6ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                expect(await contract.getIntMap8_7ReplaceGet(k, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_7ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap8_7ReplaceGet(k, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getIntMap8_7ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                // Tests for intMap9 (unsigned small values)
+                expect(await contract.getIntMap9_1ReplaceGet(k, null)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getIntMap9_1ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap9_1ReplaceGet(k, 123n)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getIntMap9_1ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                expect(await contract.getIntMap9_2ReplaceGet(k, null)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getIntMap9_2ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap9_2ReplaceGet(k, 123n)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getIntMap9_2ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                expect(await contract.getIntMap9_3ReplaceGet(k, null)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getIntMap9_3ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap9_3ReplaceGet(k, 123n)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getIntMap9_3ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                expect(await contract.getIntMap9_4ReplaceGet(k, null)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getIntMap9_4ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap9_4ReplaceGet(k, 123n)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getIntMap9_4ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                expect(await contract.getIntMap9_5ReplaceGet(k, null)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getIntMap9_5ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap9_5ReplaceGet(k, 123n)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getIntMap9_5ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                expect(await contract.getIntMap9_6ReplaceGet(k, null)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getIntMap9_6ReplaceGet(k + 1n, null),
+                ).toBe(null);
+                expect(await contract.getIntMap9_6ReplaceGet(k, 123n)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getIntMap9_6ReplaceGet(k + 1n, 123n),
+                ).toBe(null);
+
+                // Tests for intMap10 (custom-sized integer pairings)
+                expect(
+                    await contract.getIntMap10_1ReplaceGet(keySmallAbs, null),
+                ).toBe(valueSmallAbs + 1n);
+                expect(
+                    await contract.getIntMap10_1ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_1ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueSmallAbs + 1n);
+                expect(
+                    await contract.getIntMap10_1ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap10_2ReplaceGet(keySmallAbs, null),
+                ).toBe(valueSmallAbs + 1n);
+                expect(
+                    await contract.getIntMap10_2ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_2ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueSmallAbs + 1n);
+                expect(
+                    await contract.getIntMap10_2ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap10_3ReplaceGet(keySmallAbs, null),
+                ).toBe(valueSmallAbs + 1n);
+                expect(
+                    await contract.getIntMap10_3ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_3ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueSmallAbs + 1n);
+                expect(
+                    await contract.getIntMap10_3ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap10_4ReplaceGet(keySmallAbs, null),
+                ).toBe(valueSmallAbs + 1n);
+                expect(
+                    await contract.getIntMap10_4ReplaceGet(
+                        keySmallAbs + 1n,
+                        null,
+                    ),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_4ReplaceGet(keySmallAbs, 123n),
+                ).toBe(valueSmallAbs + 1n);
+                expect(
+                    await contract.getIntMap10_4ReplaceGet(
+                        keySmallAbs + 1n,
+                        123n,
+                    ),
+                ).toBe(null);
+
+                // Tests for addrMap1
+                expect(await contract.getAddrMap1ReplaceGet(addr, null)).toBe(
+                    valueInt + 1n,
+                );
+                expect(
+                    await contract.getAddrMap1ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap1ReplaceGet(addr, 123n)).toBe(
+                    valueInt + 1n,
+                );
+                expect(
+                    await contract.getAddrMap1ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                // Tests for addrMap2
+                expect(await contract.getAddrMap2ReplaceGet(addr, null)).toBe(
+                    !valueBool,
+                );
+                expect(
+                    await contract.getAddrMap2ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap2ReplaceGet(addr, true)).toBe(
+                    !valueBool,
+                );
+                expect(
+                    await contract.getAddrMap2ReplaceGet(anotherAddr, true),
+                ).toBe(null);
+
+                // Tests for addrMap3
+                expect(
+                    (await contract.getAddrMap3ReplaceGet(addr, null))!.equals(
+                        beginCell()
+                            .storeUint(123, 64)
+                            .storeRef(valueCell)
+                            .endCell(),
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getAddrMap3ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(
+                    (await contract.getAddrMap3ReplaceGet(
+                        addr,
+                        valueCell,
+                    ))!.equals(
+                        beginCell()
+                            .storeUint(123, 64)
+                            .storeRef(valueCell)
+                            .endCell(),
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getAddrMap3ReplaceGet(
+                        anotherAddr,
+                        valueCell,
+                    ),
+                ).toBe(null);
+
+                // Tests for addrMap4
+                expect(
+                    strEq((await contract.getAddrMap4ReplaceGet(addr, null))!, {
+                        $$type: "SomeStruct",
+                        value: 10012312n + 1n,
+                    }),
+                ).toBe(true);
+                expect(
+                    await contract.getAddrMap4ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(
+                    strEq(
+                        (await contract.getAddrMap4ReplaceGet(
+                            addr,
+                            valueStruct,
+                        ))!,
+                        {
+                            $$type: "SomeStruct",
+                            value: 10012312n + 1n,
+                        },
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getAddrMap4ReplaceGet(
+                        anotherAddr,
+                        valueStruct,
+                    ),
+                ).toBe(null);
+
+                // Tests for addrMap5
+                expect(
+                    (await contract.getAddrMap5ReplaceGet(addr, null))!.equals(
+                        randomAddress(0, "value-" + (k + 1n).toString(10)),
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getAddrMap5ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(
+                    (await contract.getAddrMap5ReplaceGet(
+                        addr,
+                        valueAddr,
+                    ))!.equals(
+                        randomAddress(0, "value-" + (k + 1n).toString(10)),
+                    ),
+                ).toBe(true);
+                expect(
+                    await contract.getAddrMap5ReplaceGet(
+                        anotherAddr,
+                        valueAddr,
+                    ),
+                ).toBe(null);
+
+                // Tests for addrMap6 (signed int value types with address keys)
+                expect(await contract.getAddrMap6_1ReplaceGet(addr, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_1ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_1ReplaceGet(addr, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_1ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap6_2ReplaceGet(addr, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_2ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_2ReplaceGet(addr, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_2ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap6_3ReplaceGet(addr, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_3ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_3ReplaceGet(addr, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_3ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap6_4ReplaceGet(addr, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_4ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_4ReplaceGet(addr, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_4ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap6_5ReplaceGet(addr, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_5ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_5ReplaceGet(addr, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_5ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap6_6ReplaceGet(addr, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_6ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_6ReplaceGet(addr, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_6ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap6_7ReplaceGet(addr, null)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_7ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap6_7ReplaceGet(addr, 123n)).toBe(
+                    valueSmall + 1n,
+                );
+                expect(
+                    await contract.getAddrMap6_7ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                // Tests for addrMap7 (unsigned int value types with address keys)
+                expect(await contract.getAddrMap7_1ReplaceGet(addr, null)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getAddrMap7_1ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap7_1ReplaceGet(addr, 123n)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getAddrMap7_1ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap7_2ReplaceGet(addr, null)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getAddrMap7_2ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap7_2ReplaceGet(addr, 123n)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getAddrMap7_2ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap7_3ReplaceGet(addr, null)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getAddrMap7_3ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap7_3ReplaceGet(addr, 123n)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getAddrMap7_3ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap7_4ReplaceGet(addr, null)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getAddrMap7_4ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap7_4ReplaceGet(addr, 123n)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getAddrMap7_4ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap7_5ReplaceGet(addr, null)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getAddrMap7_5ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap7_5ReplaceGet(addr, 123n)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getAddrMap7_5ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
+                expect(await contract.getAddrMap7_6ReplaceGet(addr, null)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getAddrMap7_6ReplaceGet(anotherAddr, null),
+                ).toBe(null);
+                expect(await contract.getAddrMap7_6ReplaceGet(addr, 123n)).toBe(
+                    valueSmallAbs + 1n,
+                );
+                expect(
+                    await contract.getAddrMap7_6ReplaceGet(anotherAddr, 123n),
+                ).toBe(null);
+
                 // Clear keys with .replaceGet
                 await contract.send(
                     treasure.getSender(),
@@ -3369,6 +6682,381 @@ describe("map", () => {
                 expect(await contract.getAddrMap7_4Value(addr)).toBe(null);
                 expect(await contract.getAddrMap7_5Value(addr)).toBe(null);
                 expect(await contract.getAddrMap7_6Value(addr)).toBe(null);
+
+                // Check that .replaceGet returns false for cleared keys
+                // Tests for intMap1
+                expect(await contract.getIntMap1ReplaceGet(k, null)).toBe(null);
+                expect(await contract.getIntMap1ReplaceGet(k, 123n)).toBe(null);
+
+                // Tests for intMap2
+                expect(await contract.getIntMap2ReplaceGet(k, null)).toBe(null);
+                expect(await contract.getIntMap2ReplaceGet(k, true)).toBe(null);
+
+                // Tests for intMap3
+                expect(await contract.getIntMap3ReplaceGet(k, null)).toBe(null);
+                expect(await contract.getIntMap3ReplaceGet(k, valueCell)).toBe(
+                    null,
+                );
+
+                // Tests for intMap4
+                expect(await contract.getIntMap4ReplaceGet(k, null)).toBe(null);
+                expect(
+                    await contract.getIntMap4ReplaceGet(k, valueStruct),
+                ).toBe(null);
+
+                // Tests for intMap5
+                expect(await contract.getIntMap5ReplaceGet(k, null)).toBe(null);
+                expect(await contract.getIntMap5ReplaceGet(k, valueAddr)).toBe(
+                    null,
+                );
+
+                // Tests for intMap6 (signed integer maps of various sizes)
+                expect(
+                    await contract.getIntMap6_1ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_1ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_2ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_2ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_3ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_3ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_4ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_4ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_5ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_5ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_6ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_6ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_7ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_7ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                // Tests for intMap7 (unsigned integer maps of various sizes)
+                expect(
+                    await contract.getIntMap7_1ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_1ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_2ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_2ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_3ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_3ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_4ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_4ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_5ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_5ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_6ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_6ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                // Tests for intMap8 (signed small values)
+                expect(await contract.getIntMap8_1ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_1ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap8_2ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_2ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap8_3ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_3ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap8_4ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_4ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap8_5ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_5ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap8_6ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_6ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap8_7ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_7ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                // Tests for intMap9 (unsigned small values)
+                expect(await contract.getIntMap9_1ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap9_1ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap9_2ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap9_2ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap9_3ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap9_3ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap9_4ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap9_4ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap9_5ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap9_5ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap9_6ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap9_6ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                // Tests for intMap10 (custom-sized integer pairings)
+                expect(
+                    await contract.getIntMap10_1ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_1ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap10_2ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_2ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap10_3ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_3ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap10_4ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_4ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                // Tests for addrMap1
+                expect(await contract.getAddrMap1ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap1ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                // Tests for addrMap2
+                expect(await contract.getAddrMap2ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap2ReplaceGet(addr, true)).toBe(
+                    null,
+                );
+
+                // Tests for addrMap3
+                expect(await contract.getAddrMap3ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(
+                    await contract.getAddrMap3ReplaceGet(addr, valueCell),
+                ).toBe(null);
+
+                // Tests for addrMap4
+                expect(await contract.getAddrMap4ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(
+                    await contract.getAddrMap4ReplaceGet(addr, valueStruct),
+                ).toBe(null);
+
+                // Tests for addrMap5
+                expect(await contract.getAddrMap5ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(
+                    await contract.getAddrMap5ReplaceGet(addr, valueAddr),
+                ).toBe(null);
+
+                // Tests for addrMap6 (signed int value types with address keys)
+                expect(await contract.getAddrMap6_1ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_1ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap6_2ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_2ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap6_3ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_3ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap6_4ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_4ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap6_5ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_5ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap6_6ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_6ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap6_7ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_7ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                // Tests for addrMap7 (unsigned int value types with address keys)
+                expect(await contract.getAddrMap7_1ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap7_1ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap7_2ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap7_2ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap7_3ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap7_3ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap7_4ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap7_4ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap7_5ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap7_5ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap7_6ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap7_6ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
 
                 // Check that .replaceGet doesn't do anything on non-existing keys
                 await contract.send(
@@ -3575,6 +7263,381 @@ describe("map", () => {
                 expect(await contract.getAddrMap7_4Value(addr)).toBe(null);
                 expect(await contract.getAddrMap7_5Value(addr)).toBe(null);
                 expect(await contract.getAddrMap7_6Value(addr)).toBe(null);
+
+                // Check that .replaceGet still returns false for non-existing keys
+                // Tests for intMap1
+                expect(await contract.getIntMap1ReplaceGet(k, null)).toBe(null);
+                expect(await contract.getIntMap1ReplaceGet(k, 123n)).toBe(null);
+
+                // Tests for intMap2
+                expect(await contract.getIntMap2ReplaceGet(k, null)).toBe(null);
+                expect(await contract.getIntMap2ReplaceGet(k, true)).toBe(null);
+
+                // Tests for intMap3
+                expect(await contract.getIntMap3ReplaceGet(k, null)).toBe(null);
+                expect(await contract.getIntMap3ReplaceGet(k, valueCell)).toBe(
+                    null,
+                );
+
+                // Tests for intMap4
+                expect(await contract.getIntMap4ReplaceGet(k, null)).toBe(null);
+                expect(
+                    await contract.getIntMap4ReplaceGet(k, valueStruct),
+                ).toBe(null);
+
+                // Tests for intMap5
+                expect(await contract.getIntMap5ReplaceGet(k, null)).toBe(null);
+                expect(await contract.getIntMap5ReplaceGet(k, valueAddr)).toBe(
+                    null,
+                );
+
+                // Tests for intMap6 (signed integer maps of various sizes)
+                expect(
+                    await contract.getIntMap6_1ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_1ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_2ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_2ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_3ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_3ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_4ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_4ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_5ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_5ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_6ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_6ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap6_7ReplaceGet(keySmall, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap6_7ReplaceGet(keySmall, 123n),
+                ).toBe(null);
+
+                // Tests for intMap7 (unsigned integer maps of various sizes)
+                expect(
+                    await contract.getIntMap7_1ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_1ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_2ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_2ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_3ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_3ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_4ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_4ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_5ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_5ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap7_6ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap7_6ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                // Tests for intMap8 (signed small values)
+                expect(await contract.getIntMap8_1ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_1ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap8_2ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_2ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap8_3ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_3ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap8_4ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_4ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap8_5ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_5ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap8_6ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_6ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap8_7ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap8_7ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                // Tests for intMap9 (unsigned small values)
+                expect(await contract.getIntMap9_1ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap9_1ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap9_2ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap9_2ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap9_3ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap9_3ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap9_4ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap9_4ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap9_5ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap9_5ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getIntMap9_6ReplaceGet(k, null)).toBe(
+                    null,
+                );
+                expect(await contract.getIntMap9_6ReplaceGet(k, 123n)).toBe(
+                    null,
+                );
+
+                // Tests for intMap10 (custom-sized integer pairings)
+                expect(
+                    await contract.getIntMap10_1ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_1ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap10_2ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_2ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap10_3ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_3ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                expect(
+                    await contract.getIntMap10_4ReplaceGet(keySmallAbs, null),
+                ).toBe(null);
+                expect(
+                    await contract.getIntMap10_4ReplaceGet(keySmallAbs, 123n),
+                ).toBe(null);
+
+                // Tests for addrMap1
+                expect(await contract.getAddrMap1ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap1ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                // Tests for addrMap2
+                expect(await contract.getAddrMap2ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap2ReplaceGet(addr, true)).toBe(
+                    null,
+                );
+
+                // Tests for addrMap3
+                expect(await contract.getAddrMap3ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(
+                    await contract.getAddrMap3ReplaceGet(addr, valueCell),
+                ).toBe(null);
+
+                // Tests for addrMap4
+                expect(await contract.getAddrMap4ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(
+                    await contract.getAddrMap4ReplaceGet(addr, valueStruct),
+                ).toBe(null);
+
+                // Tests for addrMap5
+                expect(await contract.getAddrMap5ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(
+                    await contract.getAddrMap5ReplaceGet(addr, valueAddr),
+                ).toBe(null);
+
+                // Tests for addrMap6 (signed int value types with address keys)
+                expect(await contract.getAddrMap6_1ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_1ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap6_2ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_2ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap6_3ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_3ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap6_4ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_4ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap6_5ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_5ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap6_6ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_6ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap6_7ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap6_7ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                // Tests for addrMap7 (unsigned int value types with address keys)
+                expect(await contract.getAddrMap7_1ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap7_1ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap7_2ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap7_2ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap7_3ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap7_3ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap7_4ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap7_4ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap7_5ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap7_5ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
+
+                expect(await contract.getAddrMap7_6ReplaceGet(addr, null)).toBe(
+                    null,
+                );
+                expect(await contract.getAddrMap7_6ReplaceGet(addr, 123n)).toBe(
+                    null,
+                );
             }
         } catch (e) {
             if (e instanceof ComputeError) {
