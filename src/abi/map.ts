@@ -662,15 +662,30 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     ctx.used(`__tact_dict_replaceget_${kind}_slice`);
                     return `${resolved[0]}~__tact_dict_replaceget_${kind}_slice(${bits}, ${resolved[1]}, ${resolved[2]})`;
                 } else {
-                    return handleStructOrOtherValue(
-                        self,
-                        value!,
-                        resolved,
-                        ctx,
+                    const t = getType(ctx.ctx, self.value);
+                    if (t.kind === "contract") {
+                        throwCompilationError(
+                            `Contract can't be value of a map`,
+                            ref,
+                        );
+                    }
+                    if (t.kind === "trait") {
+                        throwCompilationError(
+                            `Trait can't be value of a map`,
+                            ref,
+                        );
+                    }
+                    if (t.kind === "struct") {
+                        const writerFunc =
+                            value!.kind === "ref" && !value!.optional
+                                ? ops.writerCell(t.name, ctx)
+                                : ops.writerCellOpt(t.name, ctx);
+                        ctx.used(`__tact_dict_replaceget_${kind}_cell`);
+                        return `${ops.readerOpt(t.name, ctx)}(${resolved[0]}~__tact_dict_replaceget_${kind}_cell(${bits}, ${resolved[1]}, ${writerFunc}(${resolved[2]})))`;
+                    }
+                    throwCompilationError(
+                        `"${t.name}" can't be value of a map`,
                         ref,
-                        bits,
-                        kind,
-                        "replaceget",
                     );
                 }
             },
