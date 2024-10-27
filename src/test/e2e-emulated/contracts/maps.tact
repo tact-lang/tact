@@ -944,12 +944,12 @@ contract MapTestContract {
     receive(msg: DelAllMaps) {
         // Integer Key Maps
         self.int_int.del(msg.keyInt);
-        self.int_int8.del(msg.keyInt8);
-        self.int_int42.del(msg.keyInt42);
-        self.int_int256.del(msg.keyInt256);
-        self.int_uint8.del(msg.keyUint8);
-        self.int_uint42.del(msg.keyUint42);
-        self.int_uint256.del(msg.keyUint256);
+        self.int_int8.del(msg.keyInt);
+        self.int_int42.del(msg.keyInt);
+        self.int_int256.del(msg.keyInt);
+        self.int_uint8.del(msg.keyInt);
+        self.int_uint42.del(msg.keyInt);
+        self.int_uint256.del(msg.keyInt);
         self.int_bool.del(msg.keyInt);
         self.int_cell.del(msg.keyInt);
         self.int_address.del(msg.keyInt);
