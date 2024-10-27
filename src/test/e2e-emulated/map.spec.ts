@@ -5,6 +5,7 @@ import {
     MapTestContract,
     MapTestContract$Data,
     SetAllMaps,
+    DelAllMaps,
     SomeStruct,
 } from "./contracts/output/maps_MapTestContract";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
@@ -494,6 +495,7 @@ describe("MapTestContract", () => {
         );
 
         // Step 3: Prepare the get message with all keys
+        // Assuming getGetAllMaps method requires all keys as separate arguments
         const getMessage = {
             keyInt: keys.keyInt,
             keyInt8: keys.keyInt8,
@@ -528,6 +530,7 @@ describe("MapTestContract", () => {
             }) => {
                 let expectedValue = values[value];
                 let actualValue = getResponse[mapName];
+
                 if (valueTransform) {
                     expectedValue = valueTransform(expectedValue);
                     actualValue = valueTransform(actualValue);
@@ -589,6 +592,79 @@ describe("MapTestContract", () => {
         mapConfigs.forEach(({ mapName }) => {
             const actualValue = clearedGetResponse[mapName];
             expect(actualValue).toBeNull();
+        });
+    });
+
+    it("should implement .del operation correctly", async () => {
+        // Step 2: Send the set operation
+        const setMessage: SetAllMaps = {
+            $$type: "SetAllMaps",
+            ...keys,
+            ...values,
+        };
+
+        await contract.send(
+            treasury.getSender(),
+            { value: toNano("1") },
+            setMessage,
+        );
+
+        // Step 3: Retrieve all maps using `allMaps` getter to ensure they are set
+        const allMapsBeforeDel = await contract.getAllMaps();
+
+        // Step 4: Iterate over mapConfigs and verify all maps have one entry
+        mapConfigs.forEach(
+            ({ mapName, key, value, keyTransform, valueTransform }) => {
+                const map = allMapsBeforeDel[mapName] as Dictionary<any, any>;
+
+                expect(map.size).toBe(1);
+
+                let mapKey = keys[key];
+                if (keyTransform) {
+                    mapKey = keyTransform(mapKey);
+                }
+
+                let expectedValue = values[value];
+                if (valueTransform) {
+                    expectedValue = valueTransform(expectedValue);
+                }
+
+                const actualValue = map.get(mapKey);
+
+                if (expectedValue instanceof Cell) {
+                    expect(actualValue).toEqualCell(expectedValue);
+                } else if (expectedValue instanceof Address) {
+                    expect(actualValue).toEqualAddress(expectedValue);
+                } else if (isSomeStruct(expectedValue)) {
+                    expect(compareStructs(actualValue, expectedValue)).toBe(
+                        true,
+                    );
+                } else {
+                    expect(actualValue).toEqual(expectedValue);
+                }
+            },
+        );
+
+        // Step 5: Send the del operation
+        // Assuming DelAllMaps is similar to SetAllMaps but deletes entries
+        const delMessage: DelAllMaps = {
+            $$type: "DelAllMaps",
+            ...keys,
+        };
+
+        await contract.send(
+            treasury.getSender(),
+            { value: toNano("1") },
+            delMessage,
+        );
+
+        // Step 6: Retrieve all maps using `allMaps` getter to ensure they are deleted
+        const allMapsAfterDel = await contract.getAllMaps();
+
+        // Step 7: Iterate over mapConfigs and assert maps are empty
+        mapConfigs.forEach(({ mapName }) => {
+            const map = allMapsAfterDel[mapName] as Dictionary<any, any>;
+            expect(map.size).toBe(0);
         });
     });
 });
