@@ -1,1939 +1,1921 @@
-message SetIntMap1 {
-    key: Int;
-    value: Int?;
-}
-
-message SetIntMap2 {
-    key: Int;
-    value: Bool?;
-}
-
-message SetIntMap3 {
-    key: Int;
-    value: Cell?;
-}
-
-message SetIntMap4 {
-    key: Int;
-    value: SomeStruct?;
-}
-
-message SetIntMap5 {
-    key: Int;
-    value: Address?;
-}
-
-message SetIntMap6 {
-    key: Int;
-    value: Int?;
-}
-
-message SetUIntMap7 {
-    key: Int;
-    value: Int?;
-}
-
-message SetIntMap8 {
-    key: Int;
-    value: Int?;
-}
-
-message SetUIntMap9 {
-    key: Int;
-    value: Int?;
-}
-
-message SetUIntMap10 {
-    key: Int;
-    value: Int?;
-}
-
-message SetAddrMap1 {
-    key: Address;
-    value: Int?;
-}
-
-message SetAddrMap2 {
-    key: Address;
-    value: Bool?;
-}
-
-message SetAddrMap3 {
-    key: Address;
-    value: Cell?;
-}
-
-message SetAddrMap4 {
-    key: Address;
-    value: SomeStruct?;
-}
-
-message SetAddrMap5 {
-    key: Address;
-    value: Address?;
-}
-
-message SetAddrMap6 {
-    key: Address;
-    value: Int?;
-}
-
-message SetAddrMap7 {
-    key: Address;
-    value: Int?;
-}
-
+// struct with over 1023 bits so that it is serialized as multiple cells
 struct SomeStruct {
-    value: Int;
+    int: Int;
+    bool: Bool;
+    address: Address;
+    a: Int;
+    b: Int;
 }
 
-message DelIntMap1 {
-    key: Int;
+// ===============================
+// Structs For Getters
+// ===============================
+
+struct GetAllMapsResult {
+    // Integer Key Maps
+    int_int: Int?;
+    int_int8: Int?;
+    int_int42: Int?;
+    int_int256: Int?;
+    int_uint8: Int?;
+    int_uint42: Int?;
+    int_uint256: Int?;
+    int_bool: Bool?;
+    int_cell: Cell?;
+    int_address: Address?;
+    int_struct: SomeStruct?;
+
+    int8_int: Int?;
+    int8_int8: Int?;
+    int8_int42: Int?;
+    int8_int256: Int?;
+    int8_uint8: Int?;
+    int8_uint42: Int?;
+    int8_uint256: Int?;
+    int8_bool: Bool?;
+    int8_cell: Cell?;
+    int8_address: Address?;
+    int8_struct: SomeStruct?;
+
+    int42_int: Int?;
+    int42_int8: Int?;
+    int42_int42: Int?;
+    int42_int256: Int?;
+    int42_uint8: Int?;
+    int42_uint42: Int?;
+    int42_uint256: Int?;
+    int42_bool: Bool?;
+    int42_cell: Cell?;
+    int42_address: Address?;
+    int42_struct: SomeStruct?;
+
+    int256_int: Int?;
+    int256_int8: Int?;
+    int256_int42: Int?;
+    int256_int256: Int?;
+    int256_uint8: Int?;
+    int256_uint42: Int?;
+    int256_uint256: Int?;
+    int256_bool: Bool?;
+    int256_cell: Cell?;
+    int256_address: Address?;
+    int256_struct: SomeStruct?;
+
+    uint8_int: Int?;
+    uint8_int8: Int?;
+    uint8_int42: Int?;
+    uint8_int256: Int?;
+    uint8_uint8: Int?;
+    uint8_uint42: Int?;
+    uint8_uint256: Int?;
+    uint8_bool: Bool?;
+    uint8_cell: Cell?;
+    uint8_address: Address?;
+    uint8_struct: SomeStruct?;
+
+    uint42_int: Int?;
+    uint42_int8: Int?;
+    uint42_int42: Int?;
+    uint42_int256: Int?;
+    uint42_uint8: Int?;
+    uint42_uint42: Int?;
+    uint42_uint256: Int?;
+    uint42_bool: Bool?;
+    uint42_cell: Cell?;
+    uint42_address: Address?;
+    uint42_struct: SomeStruct?;
+
+    uint256_int: Int?;
+    uint256_int8: Int?;
+    uint256_int42: Int?;
+    uint256_int256: Int?;
+    uint256_uint8: Int?;
+    uint256_uint42: Int?;
+    uint256_uint256: Int?;
+    uint256_bool: Bool?;
+    uint256_cell: Cell?;
+    uint256_address: Address?;
+    uint256_struct: SomeStruct?;
+
+    // Address Key Maps
+    address_int: Int?;
+    address_int8: Int?;
+    address_int42: Int?;
+    address_int256: Int?;
+    address_uint8: Int?;
+    address_uint42: Int?;
+    address_uint256: Int?;
+    address_bool: Bool?;
+    address_cell: Cell?;
+    address_address: Address?;
+    address_struct: SomeStruct?;
 }
 
-message DelIntMap2 {
-    key: Int;
+struct ReplaceAllMapsResult {
+    // Integer Key Maps
+    int_int: Bool;
+    int_int8: Bool;
+    int_int42: Bool;
+    int_int256: Bool;
+    int_uint8: Bool;
+    int_uint42: Bool;
+    int_uint256: Bool;
+    int_bool: Bool;
+    int_cell: Bool;
+    int_address: Bool;
+    int_struct: Bool;
+
+    int8_int: Bool;
+    int8_int8: Bool;
+    int8_int42: Bool;
+    int8_int256: Bool;
+    int8_uint8: Bool;
+    int8_uint42: Bool;
+    int8_uint256: Bool;
+    int8_bool: Bool;
+    int8_cell: Bool;
+    int8_address: Bool;
+    int8_struct: Bool;
+
+    int42_int: Bool;
+    int42_int8: Bool;
+    int42_int42: Bool;
+    int42_int256: Bool;
+    int42_uint8: Bool;
+    int42_uint42: Bool;
+    int42_uint256: Bool;
+    int42_bool: Bool;
+    int42_cell: Bool;
+    int42_address: Bool;
+    int42_struct: Bool;
+
+    int256_int: Bool;
+    int256_int8: Bool;
+    int256_int42: Bool;
+    int256_int256: Bool;
+    int256_uint8: Bool;
+    int256_uint42: Bool;
+    int256_uint256: Bool;
+    int256_bool: Bool;
+    int256_cell: Bool;
+    int256_address: Bool;
+    int256_struct: Bool;
+
+    uint8_int: Bool;
+    uint8_int8: Bool;
+    uint8_int42: Bool;
+    uint8_int256: Bool;
+    uint8_uint8: Bool;
+    uint8_uint42: Bool;
+    uint8_uint256: Bool;
+    uint8_bool: Bool;
+    uint8_cell: Bool;
+    uint8_address: Bool;
+    uint8_struct: Bool;
+
+    uint42_int: Bool;
+    uint42_int8: Bool;
+    uint42_int42: Bool;
+    uint42_int256: Bool;
+    uint42_uint8: Bool;
+    uint42_uint42: Bool;
+    uint42_uint256: Bool;
+    uint42_bool: Bool;
+    uint42_cell: Bool;
+    uint42_address: Bool;
+    uint42_struct: Bool;
+
+    uint256_int: Bool;
+    uint256_int8: Bool;
+    uint256_int42: Bool;
+    uint256_int256: Bool;
+    uint256_uint8: Bool;
+    uint256_uint42: Bool;
+    uint256_uint256: Bool;
+    uint256_bool: Bool;
+    uint256_cell: Bool;
+    uint256_address: Bool;
+    uint256_struct: Bool;
+
+    // Address Key Maps
+    address_int: Bool;
+    address_int8: Bool;
+    address_int42: Bool;
+    address_int256: Bool;
+    address_uint8: Bool;
+    address_uint42: Bool;
+    address_uint256: Bool;
+    address_bool: Bool;
+    address_cell: Bool;
+    address_address: Bool;
+    address_struct: Bool;
 }
 
-message DelIntMap3 {
-    key: Int;
+struct ReplaceGetAllMapsResult {
+    // Integer Key Maps
+    int_int: Int?;
+    int_int8: Int?;
+    int_int42: Int?;
+    int_int256: Int?;
+    int_uint8: Int?;
+    int_uint42: Int?;
+    int_uint256: Int?;
+    int_bool: Bool?;
+    int_cell: Cell?;
+    int_address: Address?;
+    int_struct: SomeStruct?;
+
+    int8_int: Int?;
+    int8_int8: Int?;
+    int8_int42: Int?;
+    int8_int256: Int?;
+    int8_uint8: Int?;
+    int8_uint42: Int?;
+    int8_uint256: Int?;
+    int8_bool: Bool?;
+    int8_cell: Cell?;
+    int8_address: Address?;
+    int8_struct: SomeStruct?;
+
+    int42_int: Int?;
+    int42_int8: Int?;
+    int42_int42: Int?;
+    int42_int256: Int?;
+    int42_uint8: Int?;
+    int42_uint42: Int?;
+    int42_uint256: Int?;
+    int42_bool: Bool?;
+    int42_cell: Cell?;
+    int42_address: Address?;
+    int42_struct: SomeStruct?;
+
+    int256_int: Int?;
+    int256_int8: Int?;
+    int256_int42: Int?;
+    int256_int256: Int?;
+    int256_uint8: Int?;
+    int256_uint42: Int?;
+    int256_uint256: Int?;
+    int256_bool: Bool?;
+    int256_cell: Cell?;
+    int256_address: Address?;
+    int256_struct: SomeStruct?;
+
+    uint8_int: Int?;
+    uint8_int8: Int?;
+    uint8_int42: Int?;
+    uint8_int256: Int?;
+    uint8_uint8: Int?;
+    uint8_uint42: Int?;
+    uint8_uint256: Int?;
+    uint8_bool: Bool?;
+    uint8_cell: Cell?;
+    uint8_address: Address?;
+    uint8_struct: SomeStruct?;
+
+    uint42_int: Int?;
+    uint42_int8: Int?;
+    uint42_int42: Int?;
+    uint42_int256: Int?;
+    uint42_uint8: Int?;
+    uint42_uint42: Int?;
+    uint42_uint256: Int?;
+    uint42_bool: Bool?;
+    uint42_cell: Cell?;
+    uint42_address: Address?;
+    uint42_struct: SomeStruct?;
+
+    uint256_int: Int?;
+    uint256_int8: Int?;
+    uint256_int42: Int?;
+    uint256_int256: Int?;
+    uint256_uint8: Int?;
+    uint256_uint42: Int?;
+    uint256_uint256: Int?;
+    uint256_bool: Bool?;
+    uint256_cell: Cell?;
+    uint256_address: Address?;
+    uint256_struct: SomeStruct?;
+
+    // Address Key Maps
+    address_int: Int?;
+    address_int8: Int?;
+    address_int42: Int?;
+    address_int256: Int?;
+    address_uint8: Int?;
+    address_uint42: Int?;
+    address_uint256: Int?;
+    address_bool: Bool?;
+    address_cell: Cell?;
+    address_address: Address?;
+    address_struct: SomeStruct?;
 }
 
-message DelIntMap4 {
-    key: Int;
+struct ExistsAllMapsResult {
+    // Integer Key Maps
+    int_int: Bool;
+    int_int8: Bool;
+    int_int42: Bool;
+    int_int256: Bool;
+    int_uint8: Bool;
+    int_uint42: Bool;
+    int_uint256: Bool;
+    int_bool: Bool;
+    int_cell: Bool;
+    int_address: Bool;
+    int_struct: Bool;
+
+    int8_int: Bool;
+    int8_int8: Bool;
+    int8_int42: Bool;
+    int8_int256: Bool;
+    int8_uint8: Bool;
+    int8_uint42: Bool;
+    int8_uint256: Bool;
+    int8_bool: Bool;
+    int8_cell: Bool;
+    int8_address: Bool;
+    int8_struct: Bool;
+
+    int42_int: Bool;
+    int42_int8: Bool;
+    int42_int42: Bool;
+    int42_int256: Bool;
+    int42_uint8: Bool;
+    int42_uint42: Bool;
+    int42_uint256: Bool;
+    int42_bool: Bool;
+    int42_cell: Bool;
+    int42_address: Bool;
+    int42_struct: Bool;
+
+    int256_int: Bool;
+    int256_int8: Bool;
+    int256_int42: Bool;
+    int256_int256: Bool;
+    int256_uint8: Bool;
+    int256_uint42: Bool;
+    int256_uint256: Bool;
+    int256_bool: Bool;
+    int256_cell: Bool;
+    int256_address: Bool;
+    int256_struct: Bool;
+
+    uint8_int: Bool;
+    uint8_int8: Bool;
+    uint8_int42: Bool;
+    uint8_int256: Bool;
+    uint8_uint8: Bool;
+    uint8_uint42: Bool;
+    uint8_uint256: Bool;
+    uint8_bool: Bool;
+    uint8_cell: Bool;
+    uint8_address: Bool;
+    uint8_struct: Bool;
+
+    uint42_int: Bool;
+    uint42_int8: Bool;
+    uint42_int42: Bool;
+    uint42_int256: Bool;
+    uint42_uint8: Bool;
+    uint42_uint42: Bool;
+    uint42_uint256: Bool;
+    uint42_bool: Bool;
+    uint42_cell: Bool;
+    uint42_address: Bool;
+    uint42_struct: Bool;
+
+    uint256_int: Bool;
+    uint256_int8: Bool;
+    uint256_int42: Bool;
+    uint256_int256: Bool;
+    uint256_uint8: Bool;
+    uint256_uint42: Bool;
+    uint256_uint256: Bool;
+    uint256_bool: Bool;
+    uint256_cell: Bool;
+    uint256_address: Bool;
+    uint256_struct: Bool;
+
+    // Address Key Maps
+    address_int: Bool;
+    address_int8: Bool;
+    address_int42: Bool;
+    address_int256: Bool;
+    address_uint8: Bool;
+    address_uint42: Bool;
+    address_uint256: Bool;
+    address_bool: Bool;
+    address_cell: Bool;
+    address_address: Bool;
+    address_struct: Bool;
 }
 
-message DelIntMap5 {
-    key: Int;
+struct IsEmptyAllMapsResult {
+    // Integer Key Maps
+    int_int: Bool;
+    int_int8: Bool;
+    int_int42: Bool;
+    int_int256: Bool;
+    int_uint8: Bool;
+    int_uint42: Bool;
+    int_uint256: Bool;
+    int_bool: Bool;
+    int_cell: Bool;
+    int_address: Bool;
+    int_struct: Bool;
+
+    int8_int: Bool;
+    int8_int8: Bool;
+    int8_int42: Bool;
+    int8_int256: Bool;
+    int8_uint8: Bool;
+    int8_uint42: Bool;
+    int8_uint256: Bool;
+    int8_bool: Bool;
+    int8_cell: Bool;
+    int8_address: Bool;
+    int8_struct: Bool;
+
+    int42_int: Bool;
+    int42_int8: Bool;
+    int42_int42: Bool;
+    int42_int256: Bool;
+    int42_uint8: Bool;
+    int42_uint42: Bool;
+    int42_uint256: Bool;
+    int42_bool: Bool;
+    int42_cell: Bool;
+    int42_address: Bool;
+    int42_struct: Bool;
+
+    int256_int: Bool;
+    int256_int8: Bool;
+    int256_int42: Bool;
+    int256_int256: Bool;
+    int256_uint8: Bool;
+    int256_uint42: Bool;
+    int256_uint256: Bool;
+    int256_bool: Bool;
+    int256_cell: Bool;
+    int256_address: Bool;
+    int256_struct: Bool;
+
+    uint8_int: Bool;
+    uint8_int8: Bool;
+    uint8_int42: Bool;
+    uint8_int256: Bool;
+    uint8_uint8: Bool;
+    uint8_uint42: Bool;
+    uint8_uint256: Bool;
+    uint8_bool: Bool;
+    uint8_cell: Bool;
+    uint8_address: Bool;
+    uint8_struct: Bool;
+
+    uint42_int: Bool;
+    uint42_int8: Bool;
+    uint42_int42: Bool;
+    uint42_int256: Bool;
+    uint42_uint8: Bool;
+    uint42_uint42: Bool;
+    uint42_uint256: Bool;
+    uint42_bool: Bool;
+    uint42_cell: Bool;
+    uint42_address: Bool;
+    uint42_struct: Bool;
+
+    uint256_int: Bool;
+    uint256_int8: Bool;
+    uint256_int42: Bool;
+    uint256_int256: Bool;
+    uint256_uint8: Bool;
+    uint256_uint42: Bool;
+    uint256_uint256: Bool;
+    uint256_bool: Bool;
+    uint256_cell: Bool;
+    uint256_address: Bool;
+    uint256_struct: Bool;
+
+    // Address Key Maps
+    address_int: Bool;
+    address_int8: Bool;
+    address_int42: Bool;
+    address_int256: Bool;
+    address_uint8: Bool;
+    address_uint42: Bool;
+    address_uint256: Bool;
+    address_bool: Bool;
+    address_cell: Bool;
+    address_address: Bool;
+    address_struct: Bool;
 }
 
-message DelIntMap6 {
-    key: Int;
+struct AsCellAllMapsResult {
+    // Integer Key Maps
+    int_int: Cell?;
+    int_int8: Cell?;
+    int_int42: Cell?;
+    int_int256: Cell?;
+    int_uint8: Cell?;
+    int_uint42: Cell?;
+    int_uint256: Cell?;
+    int_bool: Cell?;
+    int_cell: Cell?;
+    int_address: Cell?;
+    int_struct: Cell?;
+
+    int8_int: Cell?;
+    int8_int8: Cell?;
+    int8_int42: Cell?;
+    int8_int256: Cell?;
+    int8_uint8: Cell?;
+    int8_uint42: Cell?;
+    int8_uint256: Cell?;
+    int8_bool: Cell?;
+    int8_cell: Cell?;
+    int8_address: Cell?;
+    int8_struct: Cell?;
+
+    int42_int: Cell?;
+    int42_int8: Cell?;
+    int42_int42: Cell?;
+    int42_int256: Cell?;
+    int42_uint8: Cell?;
+    int42_uint42: Cell?;
+    int42_uint256: Cell?;
+    int42_bool: Cell?;
+    int42_cell: Cell?;
+    int42_address: Cell?;
+    int42_struct: Cell?;
+
+    int256_int: Cell?;
+    int256_int8: Cell?;
+    int256_int42: Cell?;
+    int256_int256: Cell?;
+    int256_uint8: Cell?;
+    int256_uint42: Cell?;
+    int256_uint256: Cell?;
+    int256_bool: Cell?;
+    int256_cell: Cell?;
+    int256_address: Cell?;
+    int256_struct: Cell?;
+
+    uint8_int: Cell?;
+    uint8_int8: Cell?;
+    uint8_int42: Cell?;
+    uint8_int256: Cell?;
+    uint8_uint8: Cell?;
+    uint8_uint42: Cell?;
+    uint8_uint256: Cell?;
+    uint8_bool: Cell?;
+    uint8_cell: Cell?;
+    uint8_address: Cell?;
+    uint8_struct: Cell?;
+
+    uint42_int: Cell?;
+    uint42_int8: Cell?;
+    uint42_int42: Cell?;
+    uint42_int256: Cell?;
+    uint42_uint8: Cell?;
+    uint42_uint42: Cell?;
+    uint42_uint256: Cell?;
+    uint42_bool: Cell?;
+    uint42_cell: Cell?;
+    uint42_address: Cell?;
+    uint42_struct: Cell?;
+
+    uint256_int: Cell?;
+    uint256_int8: Cell?;
+    uint256_int42: Cell?;
+    uint256_int256: Cell?;
+    uint256_uint8: Cell?;
+    uint256_uint42: Cell?;
+    uint256_uint256: Cell?;
+    uint256_bool: Cell?;
+    uint256_cell: Cell?;
+    uint256_address: Cell?;
+    uint256_struct: Cell?;
+
+    // Address Key Maps
+    address_int: Cell?;
+    address_int8: Cell?;
+    address_int42: Cell?;
+    address_int256: Cell?;
+    address_uint8: Cell?;
+    address_uint42: Cell?;
+    address_uint256: Cell?;
+    address_bool: Cell?;
+    address_cell: Cell?;
+    address_address: Cell?;
+    address_struct: Cell?;
 }
 
-message DelUIntMap7 {
-    key: Int;
+// ===============================
+// Messages For Operations
+// ===============================
+
+message SetAllMaps {
+    // Key fields
+    keyInt: Int;
+    keyInt8: Int;
+    keyInt42: Int;
+    keyInt256: Int;
+    keyUint8: Int;
+    keyUint42: Int;
+    keyUint256: Int;
+    keyAddress: Address;
+
+    // Value fields
+    valueInt: Int?;
+    valueInt8: Int?;
+    valueInt42: Int?;
+    valueInt256: Int?;
+    valueUint8: Int?;
+    valueUint42: Int?;
+    valueUint256: Int?;
+    valueBool: Bool?;
+    valueCell: Cell?;
+    valueAddress: Address?;
+    valueStruct: SomeStruct?;
 }
 
-message DelIntMap8 {
-    key: Int;
+message DelAllMaps {
+    // Key fields
+    keyInt: Int;
+    keyInt8: Int;
+    keyInt42: Int;
+    keyInt256: Int;
+    keyUint8: Int;
+    keyUint42: Int;
+    keyUint256: Int;
+    keyAddress: Address;
 }
 
-message DelUIntMap9 {
-    key: Int;
+message ReplaceAllMaps {
+    // Key fields
+    keyInt: Int;
+    keyInt8: Int;
+    keyInt42: Int;
+    keyInt256: Int;
+    keyUint8: Int;
+    keyUint42: Int;
+    keyUint256: Int;
+    keyAddress: Address;
+
+    // Value fields
+    valueInt: Int?;
+    valueInt8: Int?;
+    valueInt42: Int?;
+    valueInt256: Int?;
+    valueUint8: Int?;
+    valueUint42: Int?;
+    valueUint256: Int?;
+    valueBool: Bool?;
+    valueCell: Cell?;
+    valueAddress: Address?;
+    valueStruct: SomeStruct?;
 }
 
-message DelUIntMap10 {
-    key: Int;
+message ReplaceGetAllMaps {
+    // Key fields
+    keyInt: Int;
+    keyInt8: Int;
+    keyInt42: Int;
+    keyInt256: Int;
+    keyUint8: Int;
+    keyUint42: Int;
+    keyUint256: Int;
+    keyAddress: Address;
+
+    // Value fields
+    valueInt: Int?;
+    valueInt8: Int?;
+    valueInt42: Int?;
+    valueInt256: Int?;
+    valueUint8: Int?;
+    valueUint42: Int?;
+    valueUint256: Int?;
+    valueBool: Bool?;
+    valueCell: Cell?;
+    valueAddress: Address?;
+    valueStruct: SomeStruct?;
 }
 
-message DelAddrMap1 {
-    key: Address;
-}
-
-message DelAddrMap2 {
-    key: Address;
-}
-
-message DelAddrMap3 {
-    key: Address;
-}
-
-message DelAddrMap4 {
-    key: Address;
-}
-
-message DelAddrMap5 {
-    key: Address;
-}
-
-message DelAddrMap6 {
-    key: Address;
-}
-
-message DelAddrMap7 {
-    key: Address;
-}
-
-message CheckNullReference {}
-
-message ReplaceIntMap1 {
-    key: Int;
-    value: Int?;
-}
-
-message ReplaceIntMap2 {
-    key: Int;
-    value: Bool?;
-}
-
-message ReplaceIntMap3 {
-    key: Int;
-    value: Cell?;
-}
-
-message ReplaceIntMap4 {
-    key: Int;
-    value: SomeStruct?;
-}
-
-message ReplaceIntMap5 {
-    key: Int;
-    value: Address?;
-}
-
-message ReplaceIntMap6 {
-    key: Int;
-    value: Int?;
-}
-
-message ReplaceUIntMap7 {
-    key: Int;
-    value: Int?;
-}
-
-message ReplaceIntMap8 {
-    key: Int;
-    value: Int?;
-}
-
-message ReplaceUIntMap9 {
-    key: Int;
-    value: Int?;
-}
-
-message ReplaceUIntMap10 {
-    key: Int;
-    value: Int?;
-}
-
-message ReplaceAddrMap1 {
-    key: Address;
-    value: Int?;
-}
-
-message ReplaceAddrMap2 {
-    key: Address;
-    value: Bool?;
-}
-
-message ReplaceAddrMap3 {
-    key: Address;
-    value: Cell?;
-}
-
-message ReplaceAddrMap4 {
-    key: Address;
-    value: SomeStruct?;
-}
-
-message ReplaceAddrMap5 {
-    key: Address;
-    value: Address?;
-}
-
-message ReplaceAddrMap6 {
-    key: Address;
-    value: Int?;
-}
-
-message ReplaceAddrMap7 {
-    key: Address;
-    value: Int?;
-}
-
-message ReplaceGetIntMap1 {
-    key: Int;
-    value: Int?;
-}
-
-message ReplaceGetIntMap2 {
-    key: Int;
-    value: Bool?;
-}
-
-message ReplaceGetIntMap3 {
-    key: Int;
-    value: Cell?;
-}
-
-message ReplaceGetIntMap4 {
-    key: Int;
-    value: SomeStruct?;
-}
-
-message ReplaceGetIntMap5 {
-    key: Int;
-    value: Address?;
-}
-
-message ReplaceGetIntMap6 {
-    key: Int;
-    value: Int?;
-}
-
-message ReplaceGetUIntMap7 {
-    key: Int;
-    value: Int?;
-}
-
-message ReplaceGetIntMap8 {
-    key: Int;
-    value: Int?;
-}
-
-message ReplaceGetUIntMap9 {
-    key: Int;
-    value: Int?;
-}
-
-message ReplaceGetUIntMap10 {
-    key: Int;
-    value: Int?;
-}
-
-message ReplaceGetAddrMap1 {
-    key: Address;
-    value: Int?;
-}
-
-message ReplaceGetAddrMap2 {
-    key: Address;
-    value: Bool?;
-}
-
-message ReplaceGetAddrMap3 {
-    key: Address;
-    value: Cell?;
-}
-
-message ReplaceGetAddrMap4 {
-    key: Address;
-    value: SomeStruct?;
-}
-
-message ReplaceGetAddrMap5 {
-    key: Address;
-    value: Address?;
-}
-
-message ReplaceGetAddrMap6 {
-    key: Address;
-    value: Int?;
-}
-
-message ReplaceGetAddrMap7 {
-    key: Address;
-    value: Int?;
-}
+// ===============================
+// Test Contract
+// ===============================
 
 contract MapTestContract {
-
-    init() {
-        // Nothing to do
-    }
-
-    receive() {
-        // Nothing to do
-    }
-
-    //
-    // Int Maps
-    //
-
-    intMap1: map<Int, Int>;
-    intMap2: map<Int, Bool>;
-    intMap3: map<Int, Cell>;
-    intMap4: map<Int, SomeStruct>;
-    intMap5: map<Int, Address>;
-    intMap6_1: map<Int as int8, Int>;
-    intMap6_2: map<Int as int16, Int>;
-    intMap6_3: map<Int as int32, Int>;
-    intMap6_4: map<Int as int64, Int>;
-    intMap6_5: map<Int as int128, Int>;
-    intMap6_6: map<Int as int256, Int>;
-    intMap6_7: map<Int as int257, Int>;
-
-    intMap7_1: map<Int as uint8, Int>;
-    intMap7_2: map<Int as uint16, Int>;
-    intMap7_3: map<Int as uint32, Int>;
-    intMap7_4: map<Int as uint64, Int>;
-    intMap7_5: map<Int as uint128, Int>;
-    intMap7_6: map<Int as uint256, Int>;
-
-    intMap8_1: map<Int, Int as int8>;
-    intMap8_2: map<Int, Int as int16>;
-    intMap8_3: map<Int, Int as int32>;
-    intMap8_4: map<Int, Int as int64>;
-    intMap8_5: map<Int, Int as int128>;
-    intMap8_6: map<Int, Int as int256>;
-    intMap8_7: map<Int, Int as int257>;
-
-    intMap9_1: map<Int, Int as uint8>;
-    intMap9_2: map<Int, Int as uint16>;
-    intMap9_3: map<Int, Int as uint32>;
-    intMap9_4: map<Int, Int as uint64>;
-    intMap9_5: map<Int, Int as uint128>;
-    intMap9_6: map<Int, Int as uint256>;
-
-    intMap10_1: map<Int as int42, Int as int27>;
-    intMap10_2: map<Int as int29, Int as uint31>;
-    intMap10_3: map<Int as uint33, Int as int34>;
-    intMap10_4: map<Int as uint35, Int as uint36>;
-
-    receive(msg: SetIntMap1) {
-        self.intMap1.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetIntMap2) {
-        self.intMap2.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetIntMap3) {
-        self.intMap3.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetIntMap4) {
-        self.intMap4.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetIntMap5) {
-        self.intMap5.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetIntMap6) {
-        self.intMap6_1.set(msg.key, msg.value);
-        self.intMap6_2.set(msg.key, msg.value);
-        self.intMap6_3.set(msg.key, msg.value);
-        self.intMap6_4.set(msg.key, msg.value);
-        self.intMap6_5.set(msg.key, msg.value);
-        self.intMap6_6.set(msg.key, msg.value);
-        self.intMap6_7.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetUIntMap7) {
-        self.intMap7_1.set(msg.key, msg.value);
-        self.intMap7_2.set(msg.key, msg.value);
-        self.intMap7_3.set(msg.key, msg.value);
-        self.intMap7_4.set(msg.key, msg.value);
-        self.intMap7_5.set(msg.key, msg.value);
-        self.intMap7_6.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetIntMap8) {
-        self.intMap8_1.set(msg.key, msg.value);
-        self.intMap8_2.set(msg.key, msg.value);
-        self.intMap8_3.set(msg.key, msg.value);
-        self.intMap8_4.set(msg.key, msg.value);
-        self.intMap8_5.set(msg.key, msg.value);
-        self.intMap8_6.set(msg.key, msg.value);
-        self.intMap8_7.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetUIntMap9) {
-        self.intMap9_1.set(msg.key, msg.value);
-        self.intMap9_2.set(msg.key, msg.value);
-        self.intMap9_3.set(msg.key, msg.value);
-        self.intMap9_4.set(msg.key, msg.value);
-        self.intMap9_5.set(msg.key, msg.value);
-        self.intMap9_6.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetUIntMap10) {
-        self.intMap10_1.set(msg.key, msg.value);
-        self.intMap10_2.set(msg.key, msg.value);
-        self.intMap10_3.set(msg.key, msg.value);
-        self.intMap10_4.set(msg.key, msg.value);
-    }
-
-    receive(msg: DelIntMap1) {
-        self.intMap1.del(msg.key);
-    }
-
-    receive(msg: DelIntMap2) {
-        self.intMap2.del(msg.key);
-    }
-
-    receive(msg: DelIntMap3) {
-        self.intMap3.del(msg.key);
-    }
-
-    receive(msg: DelIntMap4) {
-        self.intMap4.del(msg.key);
-    }
-
-    receive(msg: DelIntMap5) {
-        self.intMap5.del(msg.key);
-    }
-
-    receive(msg: DelIntMap6) {
-        self.intMap6_1.del(msg.key);
-        self.intMap6_2.del(msg.key);
-        self.intMap6_3.del(msg.key);
-        self.intMap6_4.del(msg.key);
-        self.intMap6_5.del(msg.key);
-        self.intMap6_6.del(msg.key);
-        self.intMap6_6.del(msg.key);
-        self.intMap6_7.del(msg.key);
-    }
-
-    receive(msg: DelUIntMap7) {
-        self.intMap7_1.del(msg.key);
-        self.intMap7_2.del(msg.key);
-        self.intMap7_3.del(msg.key);
-        self.intMap7_4.del(msg.key);
-        self.intMap7_5.del(msg.key);
-        self.intMap7_6.del(msg.key);
-    }
-
-    receive(msg: DelIntMap8) {
-        self.intMap8_1.del(msg.key);
-        self.intMap8_2.del(msg.key);
-        self.intMap8_3.del(msg.key);
-        self.intMap8_4.del(msg.key);
-        self.intMap8_5.del(msg.key);
-        self.intMap8_6.del(msg.key);
-        self.intMap8_7.del(msg.key);
-    }
-
-    receive(msg: DelUIntMap9) {
-        self.intMap9_1.del(msg.key);
-        self.intMap9_2.del(msg.key);
-        self.intMap9_3.del(msg.key);
-        self.intMap9_4.del(msg.key);
-        self.intMap9_5.del(msg.key);
-        self.intMap9_6.del(msg.key);
-    }
-
-    receive(msg: DelUIntMap10) {
-        self.intMap10_1.del(msg.key);
-        self.intMap10_2.del(msg.key);
-        self.intMap10_3.del(msg.key);
-        self.intMap10_4.del(msg.key);
-    }
-
-    receive(msg: ReplaceIntMap1) {
-        self.intMap1.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceIntMap2) {
-        self.intMap2.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceIntMap3) {
-        self.intMap3.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceIntMap4) {
-        self.intMap4.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceIntMap5) {
-        self.intMap5.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceIntMap6) {
-        self.intMap6_1.replace(msg.key, msg.value);
-        self.intMap6_2.replace(msg.key, msg.value);
-        self.intMap6_3.replace(msg.key, msg.value);
-        self.intMap6_4.replace(msg.key, msg.value);
-        self.intMap6_5.replace(msg.key, msg.value);
-        self.intMap6_6.replace(msg.key, msg.value);
-        self.intMap6_7.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceUIntMap7) {
-        self.intMap7_1.replace(msg.key, msg.value);
-        self.intMap7_2.replace(msg.key, msg.value);
-        self.intMap7_3.replace(msg.key, msg.value);
-        self.intMap7_4.replace(msg.key, msg.value);
-        self.intMap7_5.replace(msg.key, msg.value);
-        self.intMap7_6.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceIntMap8) {
-        self.intMap8_1.replace(msg.key, msg.value);
-        self.intMap8_2.replace(msg.key, msg.value);
-        self.intMap8_3.replace(msg.key, msg.value);
-        self.intMap8_4.replace(msg.key, msg.value);
-        self.intMap8_5.replace(msg.key, msg.value);
-        self.intMap8_6.replace(msg.key, msg.value);
-        self.intMap8_7.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceUIntMap9) {
-        self.intMap9_1.replace(msg.key, msg.value);
-        self.intMap9_2.replace(msg.key, msg.value);
-        self.intMap9_3.replace(msg.key, msg.value);
-        self.intMap9_4.replace(msg.key, msg.value);
-        self.intMap9_5.replace(msg.key, msg.value);
-        self.intMap9_6.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceUIntMap10) {
-        self.intMap10_1.replace(msg.key, msg.value);
-        self.intMap10_2.replace(msg.key, msg.value);
-        self.intMap10_3.replace(msg.key, msg.value);
-        self.intMap10_4.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetIntMap1) {
-        self.intMap1.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetIntMap2) {
-        self.intMap2.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetIntMap3) {
-        self.intMap3.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetIntMap4) {
-        self.intMap4.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetIntMap5) {
-        self.intMap5.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetIntMap6) {
-        self.intMap6_1.replaceGet(msg.key, msg.value);
-        self.intMap6_2.replaceGet(msg.key, msg.value);
-        self.intMap6_3.replaceGet(msg.key, msg.value);
-        self.intMap6_4.replaceGet(msg.key, msg.value);
-        self.intMap6_5.replaceGet(msg.key, msg.value);
-        self.intMap6_6.replaceGet(msg.key, msg.value);
-        self.intMap6_7.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetUIntMap7) {
-        self.intMap7_1.replaceGet(msg.key, msg.value);
-        self.intMap7_2.replaceGet(msg.key, msg.value);
-        self.intMap7_3.replaceGet(msg.key, msg.value);
-        self.intMap7_4.replaceGet(msg.key, msg.value);
-        self.intMap7_5.replaceGet(msg.key, msg.value);
-        self.intMap7_6.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetIntMap8) {
-        self.intMap8_1.replaceGet(msg.key, msg.value);
-        self.intMap8_2.replaceGet(msg.key, msg.value);
-        self.intMap8_3.replaceGet(msg.key, msg.value);
-        self.intMap8_4.replaceGet(msg.key, msg.value);
-        self.intMap8_5.replaceGet(msg.key, msg.value);
-        self.intMap8_6.replaceGet(msg.key, msg.value);
-        self.intMap8_7.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetUIntMap9) {
-        self.intMap9_1.replaceGet(msg.key, msg.value);
-        self.intMap9_2.replaceGet(msg.key, msg.value);
-        self.intMap9_3.replaceGet(msg.key, msg.value);
-        self.intMap9_4.replaceGet(msg.key, msg.value);
-        self.intMap9_5.replaceGet(msg.key, msg.value);
-        self.intMap9_6.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetUIntMap10) {
-        self.intMap10_1.replaceGet(msg.key, msg.value);
-        self.intMap10_2.replaceGet(msg.key, msg.value);
-        self.intMap10_3.replaceGet(msg.key, msg.value);
-        self.intMap10_4.replaceGet(msg.key, msg.value);
-    }
-
-    get fun intMap1(): map<Int, Int> {
-        return self.intMap1;
-    }
-
-    get fun intMap1Value(key: Int): Int? {
-        return self.intMap1.get(key);
-    }
-
-    get fun intMap2(): map<Int, Bool> {
-        return self.intMap2;
-    }
-
-    get fun intMap2Value(key: Int): Bool? {
-        return self.intMap2.get(key);
-    }
-
-    get fun intMap3(): map<Int, Cell> {
-        return self.intMap3;
-    }
-
-    get fun intMap3Value(key: Int): Cell? {
-        return self.intMap3.get(key);
-    }
-
-    get fun intMap4(): map<Int, SomeStruct> {
-        return self.intMap4;
-    }
-
-    get fun intMap4Value(key: Int): SomeStruct? {
-        return self.intMap4.get(key);
-    }
-
-    get fun intMap5(): map<Int, Address> {
-        return self.intMap5;
-    }
-
-    get fun intMap5Value(key: Int): Address? {
-        return self.intMap5.get(key);
-    }
-
-    get fun intMap6_1(): map<Int as int8, Int> {
-        return self.intMap6_1;
-    }
-
-    get fun intMap6_1Value(key: Int): Int? {
-        return self.intMap6_1.get(key);
-    }
-
-    get fun intMap6_2(): map<Int as int16, Int> {
-        return self.intMap6_2;
-    }
-
-    get fun intMap6_2Value(key: Int): Int? {
-        return self.intMap6_2.get(key);
-    }
-
-    get fun intMap6_3(): map<Int as int32, Int> {
-        return self.intMap6_3;
-    }
-
-    get fun intMap6_3Value(key: Int): Int? {
-        return self.intMap6_3.get(key);
-    }
-
-    get fun intMap6_4(): map<Int as int64, Int> {
-        return self.intMap6_4;
-    }
-
-    get fun intMap6_4Value(key: Int): Int? {
-        return self.intMap6_4.get(key);
-    }
-
-    get fun intMap6_5(): map<Int as int128, Int> {
-        return self.intMap6_5;
-    }
-
-    get fun intMap6_5Value(key: Int): Int? {
-        return self.intMap6_5.get(key);
-    }
-
-    get fun intMap6_6(): map<Int as int256, Int> {
-        return self.intMap6_6;
-    }
-
-    get fun intMap6_6Value(key: Int): Int? {
-        return self.intMap6_6.get(key);
-    }
-
-    get fun intMap6_7(): map<Int as int257, Int> {
-        return self.intMap6_7;
-    }
-
-    get fun intMap6_7Value(key: Int): Int? {
-        return self.intMap6_7.get(key);
-    }
-
-    get fun intMap7_1(): map<Int as uint8, Int> {
-        return self.intMap7_1;
-    }
-
-    get fun intMap7_1Value(key: Int): Int? {
-        return self.intMap7_1.get(key);
-    }
-
-    get fun intMap7_2(): map<Int as uint16, Int> {
-        return self.intMap7_2;
-    }
-
-    get fun intMap7_2Value(key: Int): Int? {
-        return self.intMap7_2.get(key);
-    }
-
-    get fun intMap7_3(): map<Int as uint32, Int> {
-        return self.intMap7_3;
-    }
-
-    get fun intMap7_3Value(key: Int): Int? {
-        return self.intMap7_3.get(key);
-    }
-
-    get fun intMap7_4(): map<Int as uint64, Int> {
-        return self.intMap7_4;
-    }
-
-    get fun intMap7_4Value(key: Int): Int? {
-        return self.intMap7_4.get(key);
-    }
-
-    get fun intMap7_5(): map<Int as uint128, Int> {
-        return self.intMap7_5;
-    }
-
-    get fun intMap7_5Value(key: Int): Int? {
-        return self.intMap7_5.get(key);
-    }
-
-    get fun intMap7_6(): map<Int as uint256, Int> {
-        return self.intMap7_6;
-    }
-
-    get fun intMap7_6Value(key: Int): Int? {
-        return self.intMap7_6.get(key);
-    }
-
-    get fun intMap8_1(): map<Int, Int as int8> {
-        return self.intMap8_1;
-    }
-
-    get fun intMap8_1Value(key: Int): Int? {
-        return self.intMap8_1.get(key);
-    }
-
-    get fun intMap8_2(): map<Int, Int as int16> {
-        return self.intMap8_2;
-    }
-
-    get fun intMap8_2Value(key: Int): Int? {
-        return self.intMap8_2.get(key);
-    }
-
-    get fun intMap8_3(): map<Int, Int as int32> {
-        return self.intMap8_3;
-    }
-
-    get fun intMap8_3Value(key: Int): Int? {
-        return self.intMap8_3.get(key);
-    }
-
-    get fun intMap8_4(): map<Int, Int as int64> {
-        return self.intMap8_4;
-    }
-
-    get fun intMap8_4Value(key: Int): Int? {
-        return self.intMap8_4.get(key);
-    }
-
-    get fun intMap8_5(): map<Int, Int as int128> {
-        return self.intMap8_5;
-    }
-
-    get fun intMap8_5Value(key: Int): Int? {
-        return self.intMap8_5.get(key);
-    }
-
-    get fun intMap8_6(): map<Int, Int as int256> {
-        return self.intMap8_6;
-    }
-
-    get fun intMap8_6Value(key: Int): Int? {
-        return self.intMap8_6.get(key);
-    }
-
-    get fun intMap8_7(): map<Int, Int as int257> {
-        return self.intMap8_7;
-    }
-
-    get fun intMap8_7Value(key: Int): Int? {
-        return self.intMap8_7.get(key);
-    }
-
-    get fun intMap9_1(): map<Int, Int as uint8> {
-        return self.intMap9_1;
-    }
-
-    get fun intMap9_1Value(key: Int): Int? {
-        return self.intMap9_1.get(key);
-    }
-
-    get fun intMap9_2(): map<Int, Int as uint16> {
-        return self.intMap9_2;
-    }
-
-    get fun intMap9_2Value(key: Int): Int? {
-        return self.intMap9_2.get(key);
-    }
-
-    get fun intMap9_3(): map<Int, Int as uint32> {
-        return self.intMap9_3;
-    }
-
-    get fun intMap9_3Value(key: Int): Int? {
-        return self.intMap9_3.get(key);
-    }
-
-    get fun intMap9_4(): map<Int, Int as uint64> {
-        return self.intMap9_4;
-    }
-
-    get fun intMap9_4Value(key: Int): Int? {
-        return self.intMap9_4.get(key);
-    }
-
-    get fun intMap9_5(): map<Int, Int as uint128> {
-        return self.intMap9_5;
-    }
-
-    get fun intMap9_5Value(key: Int): Int? {
-        return self.intMap9_5.get(key);
-    }
-
-    get fun intMap9_6(): map<Int, Int as uint256> {
-        return self.intMap9_6;
-    }
-
-    get fun intMap9_6Value(key: Int): Int? {
-        return self.intMap9_6.get(key);
-    }
-
-    get fun intMap10_1(): map<Int as int42, Int as int27> {
-        return self.intMap10_1;
-    }
-
-    get fun intMap10_1Value(key: Int): Int? {
-        return self.intMap10_1.get(key);
-    }
-
-    get fun intMap10_2(): map<Int as int29, Int as uint31> {
-        return self.intMap10_2;
-    }
-
-    get fun intMap10_2Value(key: Int): Int? {
-        return self.intMap10_2.get(key);
-    }
-
-    get fun intMap10_3(): map<Int as uint33, Int as int34> {
-        return self.intMap10_3;
-    }
-
-    get fun intMap10_3Value(key: Int): Int? {
-        return self.intMap10_3.get(key);
-    }
-
-    get fun intMap10_4(): map<Int as uint35, Int as uint36> {
-        return self.intMap10_4;
-    }
-
-    get fun intMap10_4Value(key: Int): Int? {
-        return self.intMap10_4.get(key);
-    }
-
-    //
-    // Int as Key inside the code (not storage)
-    //
-
-    get fun intMap10Value(key: Int, value: Int): Int {
-        let map1: map<Int as int8, Int> = emptyMap();
-        let map2: map<Int as int16, Int> = emptyMap();
-        let map3: map<Int as int32, Int> = emptyMap();
-        let map4: map<Int as int64, Int> = emptyMap();
-        let map5: map<Int as int128, Int> = emptyMap();
-        let map6: map<Int as int256, Int> = emptyMap();
-        let map7: map<Int as int257, Int> = emptyMap();
-
-        map1.set(key, value);
-        map2.set(key, value);
-        map3.set(key, value);
-        map4.set(key, value);
-        map5.set(key, value);
-        map6.set(key, value);
-        map7.set(key, value);
-
-        let value1: Int = map1.get(key)!!;
-        let value2: Int = map2.get(key)!!;
-        let value3: Int = map3.get(key)!!;
-        let value4: Int = map4.get(key)!!;
-        let value5: Int = map5.get(key)!!;
-        let value6: Int = map6.get(key)!!;
-        let value7: Int = map7.get(key)!!;
-
-        return value1 + value2 + value3 + value4 + value5 + value6 + value7;
-    }
-
-    get fun intMap11Value(key: Int, value: Int): Int {
-        let map1: map<Int as uint8, Int> = emptyMap();
-        let map2: map<Int as uint16, Int> = emptyMap();
-        let map3: map<Int as uint32, Int> = emptyMap();
-        let map4: map<Int as uint64, Int> = emptyMap();
-        let map5: map<Int as uint128, Int> = emptyMap();
-        let map6: map<Int as uint256, Int> = emptyMap();
-
-        map1.set(key, value);
-        map2.set(key, value);
-        map3.set(key, value);
-        map4.set(key, value);
-        map5.set(key, value);
-        map6.set(key, value);
-
-        let value1: Int = map1.get(key)!!;
-        let value2: Int = map2.get(key)!!;
-        let value3: Int = map3.get(key)!!;
-        let value4: Int = map4.get(key)!!;
-        let value5: Int = map5.get(key)!!;
-        let value6: Int = map6.get(key)!!;
-
-        return value1 + value2 + value3 + value4 + value5 + value6;
-    }
-
-    get fun intMap12Value(key: Int, value: Int): Int {
-        let map1: map<Int, Int as int8> = emptyMap();
-        let map2: map<Int, Int as int16> = emptyMap();
-        let map3: map<Int, Int as int32> = emptyMap();
-        let map4: map<Int, Int as int64> = emptyMap();
-        let map5: map<Int, Int as int128> = emptyMap();
-        let map6: map<Int, Int as int256> = emptyMap();
-        let map7: map<Int, Int as int257> = emptyMap();
-
-        map1.set(key, value);
-        map2.set(key, value);
-        map3.set(key, value);
-        map4.set(key, value);
-        map5.set(key, value);
-        map6.set(key, value);
-        map7.set(key, value);
-
-        let value1: Int = map1.get(key)!!;
-        let value2: Int = map2.get(key)!!;
-        let value3: Int = map3.get(key)!!;
-        let value4: Int = map4.get(key)!!;
-        let value5: Int = map5.get(key)!!;
-        let value6: Int = map6.get(key)!!;
-        let value7: Int = map7.get(key)!!;
-
-        return value1 + value2 + value3 + value4 + value5 + value6 + value7;
-    }
-
-    get fun intMap13Value(key: Int, value: Int): Int {
-        let map1: map<Int, Int as uint8> = emptyMap();
-        let map2: map<Int, Int as uint16> = emptyMap();
-        let map3: map<Int, Int as uint32> = emptyMap();
-        let map4: map<Int, Int as uint64> = emptyMap();
-        let map5: map<Int, Int as uint128> = emptyMap();
-        let map6: map<Int, Int as uint256> = emptyMap();
-        let map7: map<Int, Int as coins> = emptyMap();
-
-        map1.set(key, value);
-        map2.set(key, value);
-        map3.set(key, value);
-        map4.set(key, value);
-        map5.set(key, value);
-        map6.set(key, value);
-        map7.set(key, value);
-
-        let value1: Int = map1.get(key)!!;
-        let value2: Int = map2.get(key)!!;
-        let value3: Int = map3.get(key)!!;
-        let value4: Int = map4.get(key)!!;
-        let value5: Int = map5.get(key)!!;
-        let value6: Int = map6.get(key)!!;
-        let value7: Int = map7.get(key)!!;
-
-        return value1 + value2 + value3 + value4 + value5 + value6 + value7;
-    }
-
-    get fun intMap14Value(key: Int, value: Int): Int {
-        let map1: map<Int as int42, Int as int27> = emptyMap();
-        let map2: map<Int as int29, Int as uint31> = emptyMap();
-        let map3: map<Int as uint33, Int as int34> = emptyMap();
-        let map4: map<Int as uint35, Int as uint36> = emptyMap();
-
-        map1.set(key, value);
-        map2.set(key, value);
-        map3.set(key, value);
-        map4.set(key, value);
-
-        let value1: Int = map1.get(key)!!;
-        let value2: Int = map2.get(key)!!;
-        let value3: Int = map3.get(key)!!;
-        let value4: Int = map4.get(key)!!;
-
-        return value1 + value2 + value3 + value4;
-    }
-
-    //
-    // Address Keys
-    //
-
-    addrMap1: map<Address, Int>;
-    addrMap2: map<Address, Bool>;
-    addrMap3: map<Address, Cell>;
-    addrMap4: map<Address, SomeStruct>;
-    addrMap5: map<Address, Address>;
-
-    addrMap6_1: map<Address, Int as int8>;
-    addrMap6_2: map<Address, Int as int16>;
-    addrMap6_3: map<Address, Int as int32>;
-    addrMap6_4: map<Address, Int as int64>;
-    addrMap6_5: map<Address, Int as int128>;
-    addrMap6_6: map<Address, Int as int256>;
-    addrMap6_7: map<Address, Int as int257>;
-
-    addrMap7_1: map<Address, Int as uint8>;
-    addrMap7_2: map<Address, Int as uint16>;
-    addrMap7_3: map<Address, Int as uint32>;
-    addrMap7_4: map<Address, Int as uint64>;
-    addrMap7_5: map<Address, Int as uint128>;
-    addrMap7_6: map<Address, Int as uint256>;
-
-    receive(msg: SetAddrMap1) {
-        self.addrMap1.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetAddrMap2) {
-        self.addrMap2.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetAddrMap3) {
-        self.addrMap3.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetAddrMap4) {
-        self.addrMap4.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetAddrMap5) {
-        self.addrMap5.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetAddrMap6) {
-        self.addrMap6_1.set(msg.key, msg.value);
-        self.addrMap6_2.set(msg.key, msg.value);
-        self.addrMap6_3.set(msg.key, msg.value);
-        self.addrMap6_4.set(msg.key, msg.value);
-        self.addrMap6_5.set(msg.key, msg.value);
-        self.addrMap6_6.set(msg.key, msg.value);
-        self.addrMap6_7.set(msg.key, msg.value);
-    }
-
-    receive(msg: SetAddrMap7) {
-        self.addrMap7_1.set(msg.key, msg.value);
-        self.addrMap7_2.set(msg.key, msg.value);
-        self.addrMap7_3.set(msg.key, msg.value);
-        self.addrMap7_4.set(msg.key, msg.value);
-        self.addrMap7_5.set(msg.key, msg.value);
-        self.addrMap7_6.set(msg.key, msg.value);
-    }
-
-    receive(msg: DelAddrMap1) {
-        self.addrMap1.del(msg.key);
-    }
-
-    receive(msg: DelAddrMap2) {
-        self.addrMap2.del(msg.key);
-    }
-
-    receive(msg: DelAddrMap3) {
-        self.addrMap3.del(msg.key);
-    }
-
-    receive(msg: DelAddrMap4) {
-        self.addrMap4.del(msg.key);
-    }
-
-    receive(msg: DelAddrMap5) {
-        self.addrMap5.del(msg.key);
-    }
-
-    receive(msg: DelAddrMap6) {
-        self.addrMap6_1.del(msg.key);
-        self.addrMap6_2.del(msg.key);
-        self.addrMap6_3.del(msg.key);
-        self.addrMap6_4.del(msg.key);
-        self.addrMap6_5.del(msg.key);
-        self.addrMap6_6.del(msg.key);
-        self.addrMap6_7.del(msg.key);
-    }
-
-    receive(msg: DelAddrMap7) {
-        self.addrMap7_1.del(msg.key);
-        self.addrMap7_2.del(msg.key);
-        self.addrMap7_3.del(msg.key);
-        self.addrMap7_4.del(msg.key);
-        self.addrMap7_5.del(msg.key);
-        self.addrMap7_6.del(msg.key);
-    }
-
-    receive(msg: ReplaceAddrMap1) {
-        self.addrMap1.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceAddrMap2) {
-        self.addrMap2.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceAddrMap3) {
-        self.addrMap3.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceAddrMap4) {
-        self.addrMap4.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceAddrMap5) {
-        self.addrMap5.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceAddrMap6) {
-        self.addrMap6_1.replace(msg.key, msg.value);
-        self.addrMap6_2.replace(msg.key, msg.value);
-        self.addrMap6_3.replace(msg.key, msg.value);
-        self.addrMap6_4.replace(msg.key, msg.value);
-        self.addrMap6_5.replace(msg.key, msg.value);
-        self.addrMap6_6.replace(msg.key, msg.value);
-        self.addrMap6_7.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceAddrMap7) {
-        self.addrMap7_1.replace(msg.key, msg.value);
-        self.addrMap7_2.replace(msg.key, msg.value);
-        self.addrMap7_3.replace(msg.key, msg.value);
-        self.addrMap7_4.replace(msg.key, msg.value);
-        self.addrMap7_5.replace(msg.key, msg.value);
-        self.addrMap7_6.replace(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetAddrMap1) {
-        self.addrMap1.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetAddrMap2) {
-        self.addrMap2.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetAddrMap3) {
-        self.addrMap3.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetAddrMap4) {
-        self.addrMap4.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetAddrMap5) {
-        self.addrMap5.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetAddrMap6) {
-        self.addrMap6_1.replaceGet(msg.key, msg.value);
-        self.addrMap6_2.replaceGet(msg.key, msg.value);
-        self.addrMap6_3.replaceGet(msg.key, msg.value);
-        self.addrMap6_4.replaceGet(msg.key, msg.value);
-        self.addrMap6_5.replaceGet(msg.key, msg.value);
-        self.addrMap6_6.replaceGet(msg.key, msg.value);
-        self.addrMap6_7.replaceGet(msg.key, msg.value);
-    }
-
-    receive(msg: ReplaceGetAddrMap7) {
-        self.addrMap7_1.replaceGet(msg.key, msg.value);
-        self.addrMap7_2.replaceGet(msg.key, msg.value);
-        self.addrMap7_3.replaceGet(msg.key, msg.value);
-        self.addrMap7_4.replaceGet(msg.key, msg.value);
-        self.addrMap7_5.replaceGet(msg.key, msg.value);
-        self.addrMap7_6.replaceGet(msg.key, msg.value);
-    }
-
-    receive("reset") {
-        self.addrMap1 = emptyMap();
-        self.addrMap2 = emptyMap();
-        self.addrMap3 = emptyMap();
-        self.addrMap4 = emptyMap();
-        self.addrMap5 = emptyMap();
-
-        self.intMap1 = emptyMap();
-        self.intMap2 = emptyMap();
-        self.intMap3 = emptyMap();
-        self.intMap4 = emptyMap();
-        self.intMap5 = emptyMap();
-    }
-
-    get fun addrMap1(): map<Address, Int> {
-        return self.addrMap1;
-    }
-
-    get fun addrMap1Value(key: Address): Int? {
-        return self.addrMap1.get(key);
-    }
-
-    get fun addrMap2(): map<Address, Bool> {
-        return self.addrMap2;
-    }
-
-    get fun addrMap2Value(key: Address): Bool? {
-        return self.addrMap2.get(key);
-    }
-
-    get fun addrMap3(): map<Address, Cell> {
-        return self.addrMap3;
-    }
-
-    get fun addrMap3Value(key: Address): Cell? {
-        return self.addrMap3.get(key);
-    }
-
-    get fun addrMap4(): map<Address, SomeStruct> {
-        return self.addrMap4;
-    }
-
-    get fun addrMap4Value(key: Address): SomeStruct? {
-        return self.addrMap4.get(key);
-    }
-
-    get fun addrMap5(): map<Address, Address> {
-        return self.addrMap5;
-    }
-
-    get fun addrMap5Value(key: Address): Address? {
-        return self.addrMap5.get(key);
-    }
-
-    get fun addrMap6_1(): map<Address, Int as int8> {
-        return self.addrMap6_1;
-    }
-
-    get fun addrMap6_1Value(key: Address): Int? {
-        return self.addrMap6_1.get(key);
-    }
-
-    get fun addrMap6_2(): map<Address, Int as int16> {
-        return self.addrMap6_2;
-    }
-
-    get fun addrMap6_2Value(key: Address): Int? {
-        return self.addrMap6_2.get(key);
-    }
-
-    get fun addrMap6_3(): map<Address, Int as int32> {
-        return self.addrMap6_3;
-    }
-
-    get fun addrMap6_3Value(key: Address): Int? {
-        return self.addrMap6_3.get(key);
-    }
-
-    get fun addrMap6_4(): map<Address, Int as int64> {
-        return self.addrMap6_4;
-    }
-
-    get fun addrMap6_4Value(key: Address): Int? {
-        return self.addrMap6_4.get(key);
-    }
-
-    get fun addrMap6_5(): map<Address, Int as int128> {
-        return self.addrMap6_5;
-    }
-
-    get fun addrMap6_5Value(key: Address): Int? {
-        return self.addrMap6_5.get(key);
-    }
-
-    get fun addrMap6_6(): map<Address, Int as int256> {
-        return self.addrMap6_6;
-    }
-
-    get fun addrMap6_6Value(key: Address): Int? {
-        return self.addrMap6_6.get(key);
-    }
-
-    get fun addrMap6_7(): map<Address, Int as int257> {
-        return self.addrMap6_7;
-    }
-
-    get fun addrMap6_7Value(key: Address): Int? {
-        return self.addrMap6_7.get(key);
-    }
-
-    get fun addrMap7_1(): map<Address, Int as uint8> {
-        return self.addrMap7_1;
-    }
-
-    get fun addrMap7_1Value(key: Address): Int? {
-        return self.addrMap7_1.get(key);
-    }
-
-    get fun addrMap7_2(): map<Address, Int as uint16> {
-        return self.addrMap7_2;
-    }
-
-    get fun addrMap7_2Value(key: Address): Int? {
-        return self.addrMap7_2.get(key);
-    }
-
-    get fun addrMap7_3(): map<Address, Int as uint32> {
-        return self.addrMap7_3;
-    }
-
-    get fun addrMap7_3Value(key: Address): Int? {
-        return self.addrMap7_3.get(key);
-    }
-
-    get fun addrMap7_4(): map<Address, Int as uint64> {
-        return self.addrMap7_4;
-    }
-
-    get fun addrMap7_4Value(key: Address): Int? {
-        return self.addrMap7_4.get(key);
-    }
-
-    get fun addrMap7_5(): map<Address, Int as uint128> {
-        return self.addrMap7_5;
-    }
-
-    get fun addrMap7_5Value(key: Address): Int? {
-        return self.addrMap7_5.get(key);
-    }
-
-    get fun addrMap7_6(): map<Address, Int as uint256> {
-        return self.addrMap7_6;
-    }
-
-    get fun addrMap7_6Value(key: Address): Int? {
-        return self.addrMap7_6.get(key);
-    }
-
-    get fun mapAsCell(): Cell? {
-        return self.addrMap7_6.asCell();
-    }
-
-    get fun intMap1IsEmpty(): Bool {
-        return self.intMap1.isEmpty();
-    }
-
-    get fun intMap1Del(key: Int): Bool {
-        return self.intMap1.del(key);
-    }
-
-    // For intMap1: map<Int, Int>
-    get fun intMap1Replace(key: Int, value: Int?): Bool {
-        return self.intMap1.replace(key, value);
-    }
-
-    get fun intMap1ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap1.replaceGet(key, value);
-    }
-
-    // For intMap2: map<Int, Bool>
-    get fun intMap2Replace(key: Int, value: Bool?): Bool {
-        return self.intMap2.replace(key, value);
-    }
-
-    get fun intMap2ReplaceGet(key: Int, value: Bool?): Bool? {
-        return self.intMap2.replaceGet(key, value);
-    }
-
-    // For intMap3: map<Int, Cell>
-    get fun intMap3Replace(key: Int, value: Cell?): Bool {
-        return self.intMap3.replace(key, value);
-    }
-
-    get fun intMap3ReplaceGet(key: Int, value: Cell?): Cell? {
-        return self.intMap3.replaceGet(key, value);
-    }
-
-    // For intMap4: map<Int, SomeStruct>
-    get fun intMap4Replace(key: Int, value: SomeStruct?): Bool {
-        return self.intMap4.replace(key, value);
-    }
-
-    get fun intMap4ReplaceGet(key: Int, value: SomeStruct?): SomeStruct? {
-        return self.intMap4.replaceGet(key, value);
-    }
-
-    // For intMap5: map<Int, Address>
-    get fun intMap5Replace(key: Int, value: Address?): Bool {
-        return self.intMap5.replace(key, value);
-    }
-
-    get fun intMap5ReplaceGet(key: Int, value: Address?): Address? {
-        return self.intMap5.replaceGet(key, value);
-    }
-
-    // For intMap6_1: map<Int as int8, Int>
-    get fun intMap6_1Replace(key: Int, value: Int?): Bool {
-        return self.intMap6_1.replace(key, value);
-    }
-
-    get fun intMap6_1ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap6_1.replaceGet(key, value);
-    }
-
-    // For intMap6_2: map<Int as int16, Int>
-    get fun intMap6_2Replace(key: Int, value: Int?): Bool {
-        return self.intMap6_2.replace(key, value);
-    }
-
-    get fun intMap6_2ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap6_2.replaceGet(key, value);
-    }
-
-    // For intMap6_3: map<Int as int32, Int>
-    get fun intMap6_3Replace(key: Int, value: Int?): Bool {
-        return self.intMap6_3.replace(key, value);
-    }
-
-    get fun intMap6_3ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap6_3.replaceGet(key, value);
-    }
-
-    // For intMap6_4: map<Int as int64, Int>
-    get fun intMap6_4Replace(key: Int, value: Int?): Bool {
-        return self.intMap6_4.replace(key, value);
-    }
-
-    get fun intMap6_4ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap6_4.replaceGet(key, value);
-    }
-
-    // For intMap6_5: map<Int as int128, Int>
-    get fun intMap6_5Replace(key: Int, value: Int?): Bool {
-        return self.intMap6_5.replace(key, value);
-    }
-
-    get fun intMap6_5ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap6_5.replaceGet(key, value);
-    }
-
-    // For intMap6_6: map<Int as int256, Int>
-    get fun intMap6_6Replace(key: Int, value: Int?): Bool {
-        return self.intMap6_6.replace(key, value);
-    }
-
-    get fun intMap6_6ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap6_6.replaceGet(key, value);
-    }
-
-    // For intMap6_7: map<Int as int257, Int>
-    get fun intMap6_7Replace(key: Int, value: Int?): Bool {
-        return self.intMap6_7.replace(key, value);
-    }
-
-    get fun intMap6_7ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap6_7.replaceGet(key, value);
-    }
-
-    // For intMap7_1: map<Int as uint8, Int>
-    get fun intMap7_1Replace(key: Int, value: Int?): Bool {
-        return self.intMap7_1.replace(key, value);
-    }
-
-    get fun intMap7_1ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap7_1.replaceGet(key, value);
-    }
-
-    // For intMap7_2: map<Int as uint16, Int>
-    get fun intMap7_2Replace(key: Int, value: Int?): Bool {
-        return self.intMap7_2.replace(key, value);
-    }
-
-    get fun intMap7_2ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap7_2.replaceGet(key, value);
-    }
-
-    // For intMap7_3: map<Int as uint32, Int>
-    get fun intMap7_3Replace(key: Int, value: Int?): Bool {
-        return self.intMap7_3.replace(key, value);
-    }
-
-    get fun intMap7_3ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap7_3.replaceGet(key, value);
-    }
-
-    // For intMap7_4: map<Int as uint64, Int>
-    get fun intMap7_4Replace(key: Int, value: Int?): Bool {
-        return self.intMap7_4.replace(key, value);
-    }
-
-    get fun intMap7_4ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap7_4.replaceGet(key, value);
-    }
-
-    // For intMap7_5: map<Int as uint128, Int>
-    get fun intMap7_5Replace(key: Int, value: Int?): Bool {
-        return self.intMap7_5.replace(key, value);
-    }
-
-    get fun intMap7_5ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap7_5.replaceGet(key, value);
-    }
-
-    // For intMap7_6: map<Int as uint256, Int>
-    get fun intMap7_6Replace(key: Int, value: Int?): Bool {
-        return self.intMap7_6.replace(key, value);
-    }
-
-    get fun intMap7_6ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap7_6.replaceGet(key, value);
-    }
-
-    // For intMap8_1: map<Int, Int as int8>
-    get fun intMap8_1Replace(key: Int, value: Int?): Bool {
-        return self.intMap8_1.replace(key, value);
-    }
-
-    get fun intMap8_1ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap8_1.replaceGet(key, value);
-    }
-
-    // For intMap8_2: map<Int, Int as int16>
-    get fun intMap8_2Replace(key: Int, value: Int?): Bool {
-        return self.intMap8_2.replace(key, value);
-    }
-
-    get fun intMap8_2ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap8_2.replaceGet(key, value);
-    }
-
-    // For intMap8_3: map<Int, Int as int32>
-    get fun intMap8_3Replace(key: Int, value: Int?): Bool {
-        return self.intMap8_3.replace(key, value);
-    }
-
-    get fun intMap8_3ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap8_3.replaceGet(key, value);
-    }
-
-    // For intMap8_4: map<Int, Int as int64>
-    get fun intMap8_4Replace(key: Int, value: Int?): Bool {
-        return self.intMap8_4.replace(key, value);
-    }
-
-    get fun intMap8_4ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap8_4.replaceGet(key, value);
-    }
-
-    // For intMap8_5: map<Int, Int as int128>
-    get fun intMap8_5Replace(key: Int, value: Int?): Bool {
-        return self.intMap8_5.replace(key, value);
-    }
-
-    // this getter used to collide with intMap6_3 so we specified another method_id manually here to avoid that
-    get(100000) fun intMap8_5ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap8_5.replaceGet(key, value);
-    }
-
-    // For intMap8_6: map<Int, Int as int256>
-    get fun intMap8_6Replace(key: Int, value: Int?): Bool {
-        return self.intMap8_6.replace(key, value);
-    }
-
-    get fun intMap8_6ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap8_6.replaceGet(key, value);
-    }
-
-    // For intMap8_7: map<Int, Int as int257>
-    get fun intMap8_7Replace(key: Int, value: Int?): Bool {
-        return self.intMap8_7.replace(key, value);
-    }
-
-    get fun intMap8_7ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap8_7.replaceGet(key, value);
-    }
-
-    // For intMap9_1: map<Int, Int as uint8>
-    get fun intMap9_1Replace(key: Int, value: Int?): Bool {
-        return self.intMap9_1.replace(key, value);
-    }
-
-    get fun intMap9_1ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap9_1.replaceGet(key, value);
-    }
-
-    // For intMap9_2: map<Int, Int as uint16>
-    get fun intMap9_2Replace(key: Int, value: Int?): Bool {
-        return self.intMap9_2.replace(key, value);
-    }
-
-    get fun intMap9_2ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap9_2.replaceGet(key, value);
-    }
-
-    // For intMap9_3: map<Int, Int as uint32>
-    get fun intMap9_3Replace(key: Int, value: Int?): Bool {
-        return self.intMap9_3.replace(key, value);
-    }
-
-    get fun intMap9_3ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap9_3.replaceGet(key, value);
-    }
-
-    // For intMap9_4: map<Int, Int as uint64>
-    get fun intMap9_4Replace(key: Int, value: Int?): Bool {
-        return self.intMap9_4.replace(key, value);
-    }
-
-    get fun intMap9_4ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap9_4.replaceGet(key, value);
-    }
-
-    // For intMap9_5: map<Int, Int as uint128>
-    get fun intMap9_5Replace(key: Int, value: Int?): Bool {
-        return self.intMap9_5.replace(key, value);
-    }
-
-    get fun intMap9_5ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap9_5.replaceGet(key, value);
-    }
-
-    // For intMap9_6: map<Int, Int as uint256>
-    get fun intMap9_6Replace(key: Int, value: Int?): Bool {
-        return self.intMap9_6.replace(key, value);
-    }
-
-    get fun intMap9_6ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap9_6.replaceGet(key, value);
-    }
-
-    // For intMap10_1: map<Int as int42, Int as int27>
-    get fun intMap10_1Replace(key: Int, value: Int?): Bool {
-        return self.intMap10_1.replace(key, value);
-    }
-
-    get fun intMap10_1ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap10_1.replaceGet(key, value);
-    }
-
-    // For intMap10_2: map<Int as int29, Int as uint31>
-    get fun intMap10_2Replace(key: Int, value: Int?): Bool {
-        return self.intMap10_2.replace(key, value);
-    }
-
-    get fun intMap10_2ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap10_2.replaceGet(key, value);
-    }
-
-    // For intMap10_3: map<Int as uint33, Int as int34>
-    get fun intMap10_3Replace(key: Int, value: Int?): Bool {
-        return self.intMap10_3.replace(key, value);
-    }
-
-    get fun intMap10_3ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap10_3.replaceGet(key, value);
-    }
-
-    // For intMap10_4: map<Int as uint35, Int as uint36>
-    get fun intMap10_4Replace(key: Int, value: Int?): Bool {
-        return self.intMap10_4.replace(key, value);
-    }
-
-    get fun intMap10_4ReplaceGet(key: Int, value: Int?): Int? {
-        return self.intMap10_4.replaceGet(key, value);
-    }
-
-    //
-    // Address Maps Replace and ReplaceGet Functions
-    //
-
-    // For addrMap1: map<Address, Int>
-    get fun addrMap1Replace(key: Address, value: Int?): Bool {
-        return self.addrMap1.replace(key, value);
-    }
-
-    get fun addrMap1ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap1.replaceGet(key, value);
-    }
-
-    // For addrMap2: map<Address, Bool>
-    get fun addrMap2Replace(key: Address, value: Bool?): Bool {
-        return self.addrMap2.replace(key, value);
-    }
-
-    get fun addrMap2ReplaceGet(key: Address, value: Bool?): Bool? {
-        return self.addrMap2.replaceGet(key, value);
-    }
-
-    // For addrMap3: map<Address, Cell>
-    get fun addrMap3Replace(key: Address, value: Cell?): Bool {
-        return self.addrMap3.replace(key, value);
-    }
-
-    get fun addrMap3ReplaceGet(key: Address, value: Cell?): Cell? {
-        return self.addrMap3.replaceGet(key, value);
-    }
-
-    // For addrMap4: map<Address, SomeStruct>
-    get fun addrMap4Replace(key: Address, value: SomeStruct?): Bool {
-        return self.addrMap4.replace(key, value);
-    }
-
-    get fun addrMap4ReplaceGet(key: Address, value: SomeStruct?): SomeStruct? {
-        return self.addrMap4.replaceGet(key, value);
-    }
-
-    // For addrMap5: map<Address, Address>
-    get fun addrMap5Replace(key: Address, value: Address?): Bool {
-        return self.addrMap5.replace(key, value);
-    }
-
-    get fun addrMap5ReplaceGet(key: Address, value: Address?): Address? {
-        return self.addrMap5.replaceGet(key, value);
-    }
-
-    // For addrMap6_1: map<Address, Int as int8>
-    get fun addrMap6_1Replace(key: Address, value: Int?): Bool {
-        return self.addrMap6_1.replace(key, value);
-    }
-
-    get fun addrMap6_1ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap6_1.replaceGet(key, value);
-    }
-
-    // For addrMap6_2: map<Address, Int as int16>
-    get fun addrMap6_2Replace(key: Address, value: Int?): Bool {
-        return self.addrMap6_2.replace(key, value);
-    }
-
-    get fun addrMap6_2ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap6_2.replaceGet(key, value);
-    }
-
-    // For addrMap6_3: map<Address, Int as int32>
-    get fun addrMap6_3Replace(key: Address, value: Int?): Bool {
-        return self.addrMap6_3.replace(key, value);
-    }
-
-    get fun addrMap6_3ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap6_3.replaceGet(key, value);
-    }
-
-    // For addrMap6_4: map<Address, Int as int64>
-    get fun addrMap6_4Replace(key: Address, value: Int?): Bool {
-        return self.addrMap6_4.replace(key, value);
-    }
-
-    get fun addrMap6_4ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap6_4.replaceGet(key, value);
-    }
-
-    // For addrMap6_5: map<Address, Int as int128>
-    get fun addrMap6_5Replace(key: Address, value: Int?): Bool {
-        return self.addrMap6_5.replace(key, value);
-    }
-
-    get fun addrMap6_5ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap6_5.replaceGet(key, value);
-    }
-
-    // For addrMap6_6: map<Address, Int as int256>
-    get fun addrMap6_6Replace(key: Address, value: Int?): Bool {
-        return self.addrMap6_6.replace(key, value);
-    }
-
-    get fun addrMap6_6ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap6_6.replaceGet(key, value);
-    }
-
-    // For addrMap6_7: map<Address, Int as int257>
-    get fun addrMap6_7Replace(key: Address, value: Int?): Bool {
-        return self.addrMap6_7.replace(key, value);
-    }
-
-    get fun addrMap6_7ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap6_7.replaceGet(key, value);
-    }
-
-    // For addrMap7_1: map<Address, Int as uint8>
-    get fun addrMap7_1Replace(key: Address, value: Int?): Bool {
-        return self.addrMap7_1.replace(key, value);
-    }
-
-    get fun addrMap7_1ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap7_1.replaceGet(key, value);
-    }
-
-    // For addrMap7_2: map<Address, Int as uint16>
-    get fun addrMap7_2Replace(key: Address, value: Int?): Bool {
-        return self.addrMap7_2.replace(key, value);
-    }
-
-    get fun addrMap7_2ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap7_2.replaceGet(key, value);
-    }
-
-    // For addrMap7_3: map<Address, Int as uint32>
-    get fun addrMap7_3Replace(key: Address, value: Int?): Bool {
-        return self.addrMap7_3.replace(key, value);
-    }
-
-    get fun addrMap7_3ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap7_3.replaceGet(key, value);
-    }
-
-    // For addrMap7_4: map<Address, Int as uint64>
-    get fun addrMap7_4Replace(key: Address, value: Int?): Bool {
-        return self.addrMap7_4.replace(key, value);
-    }
-
-    get fun addrMap7_4ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap7_4.replaceGet(key, value);
-    }
-
-    // For addrMap7_5: map<Address, Int as uint128>
-    get fun addrMap7_5Replace(key: Address, value: Int?): Bool {
-        return self.addrMap7_5.replace(key, value);
-    }
-
-    get fun addrMap7_5ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap7_5.replaceGet(key, value);
-    }
-
-    // For addrMap7_6: map<Address, Int as uint256>
-    get fun addrMap7_6Replace(key: Address, value: Int?): Bool {
-        return self.addrMap7_6.replace(key, value);
-    }
-
-    get fun addrMap7_6ReplaceGet(key: Address, value: Int?): Int? {
-        return self.addrMap7_6.replaceGet(key, value);
-    }
-
-    get fun checkNullReference(): Int {
-        let m: map<Int, Int> = emptyMap();
-        return m.get(0)!!;
-    }
-
-    receive(msg: CheckNullReference) {
-        let m: map<Int, Int> = emptyMap();
-        m.get(0)!!;
-    }
-    
-    get fun intMap1Exists(key: Int): Bool {
-        return self.intMap1.exists(key);
-    }
-
-    get fun intMap2Exists(key: Int): Bool {
-        return self.intMap2.exists(key);
-    }
-
-    get fun intMap3Exists(key: Int): Bool {
-        return self.intMap3.exists(key);
-    }
-
-    get fun intMap4Exists(key: Int): Bool {
-        return self.intMap4.exists(key);
-    }
-
-    get fun intMap5Exists(key: Int): Bool {
-        return self.intMap5.exists(key);
-    }
-
-    get fun addrMap1Exists(key: Address): Bool {
-        return self.addrMap1.exists(key);
-    }
-
-    get fun addrMap2Exists(key: Address): Bool {
-        return self.addrMap2.exists(key);
-    }
-
-    get fun addrMap3Exists(key: Address): Bool {
-        return self.addrMap3.exists(key);
-    }
-
-    get fun addrMap4Exists(key: Address): Bool {
-        return self.addrMap4.exists(key);
-    }
-
-    get fun addrMap5Exists(key: Address): Bool {
-        return self.addrMap5.exists(key);
+    receive() {}
+
+    // ===============================
+    // Integer (`Int`) Key Maps
+    // ===============================
+
+    int_int: map<Int, Int>;
+    int_int8: map<Int, Int as int8>;
+    int_int42: map<Int, Int as int42>;
+    int_int256: map<Int, Int as int256>;
+    int_uint8: map<Int, Int as uint8>;
+    int_uint42: map<Int, Int as uint42>;
+    int_uint256: map<Int, Int as uint256>;
+    int_bool: map<Int, Bool>;
+    int_cell: map<Int, Cell>;
+    int_address: map<Int, Address>;
+    int_struct: map<Int, SomeStruct>;
+
+    // ===============================
+    // Integer (`Int as int8`) Key Maps
+    // ===============================
+
+    int8_int: map<Int as int8, Int>;
+    int8_int8: map<Int as int8, Int as int8>;
+    int8_int42: map<Int as int8, Int as int42>;
+    int8_int256: map<Int as int8, Int as int256>;
+    int8_uint8: map<Int as int8, Int as uint8>;
+    int8_uint42: map<Int as int8, Int as uint42>;
+    int8_uint256: map<Int as int8, Int as uint256>;
+    int8_bool: map<Int as int8, Bool>;
+    int8_cell: map<Int as int8, Cell>;
+    int8_address: map<Int as int8, Address>;
+    int8_struct: map<Int as int8, SomeStruct>;
+
+    // ===============================
+    // Integer (`Int as int42`) Key Maps
+    // ===============================
+
+    int42_int: map<Int as int42, Int>;
+    int42_int8: map<Int as int42, Int as int8>;
+    int42_int42: map<Int as int42, Int as int42>;
+    int42_int256: map<Int as int42, Int as int256>;
+    int42_uint8: map<Int as int42, Int as uint8>;
+    int42_uint42: map<Int as int42, Int as uint42>;
+    int42_uint256: map<Int as int42, Int as uint256>;
+    int42_bool: map<Int as int42, Bool>;
+    int42_cell: map<Int as int42, Cell>;
+    int42_address: map<Int as int42, Address>;
+    int42_struct: map<Int as int42, SomeStruct>;
+
+    // ===============================
+    // Integer (`Int as int256`) Key Maps
+    // ===============================
+
+    int256_int: map<Int as int256, Int>;
+    int256_int8: map<Int as int256, Int as int8>;
+    int256_int42: map<Int as int256, Int as int42>;
+    int256_int256: map<Int as int256, Int as int256>;
+    int256_uint8: map<Int as int256, Int as uint8>;
+    int256_uint42: map<Int as int256, Int as uint42>;
+    int256_uint256: map<Int as int256, Int as uint256>;
+    int256_bool: map<Int as int256, Bool>;
+    int256_cell: map<Int as int256, Cell>;
+    int256_address: map<Int as int256, Address>;
+    int256_struct: map<Int as int256, SomeStruct>;
+
+    // ===============================
+    // Unsigned Integer (`Int as uint8`) Key Maps
+    // ===============================
+
+    uint8_int: map<Int as uint8, Int>;
+    uint8_int8: map<Int as uint8, Int as int8>;
+    uint8_int42: map<Int as uint8, Int as int42>;
+    uint8_int256: map<Int as uint8, Int as int256>;
+    uint8_uint8: map<Int as uint8, Int as uint8>;
+    uint8_uint42: map<Int as uint8, Int as uint42>;
+    uint8_uint256: map<Int as uint8, Int as uint256>;
+    uint8_bool: map<Int as uint8, Bool>;
+    uint8_cell: map<Int as uint8, Cell>;
+    uint8_address: map<Int as uint8, Address>;
+    uint8_struct: map<Int as uint8, SomeStruct>;
+
+    // ===============================
+    // Unsigned Integer (`Int as uint42`) Key Maps
+    // ===============================
+
+    uint42_int: map<Int as uint42, Int>;
+    uint42_int8: map<Int as uint42, Int as int8>;
+    uint42_int42: map<Int as uint42, Int as int42>;
+    uint42_int256: map<Int as uint42, Int as int256>;
+    uint42_uint8: map<Int as uint42, Int as uint8>;
+    uint42_uint42: map<Int as uint42, Int as uint42>;
+    uint42_uint256: map<Int as uint42, Int as uint256>;
+    uint42_bool: map<Int as uint42, Bool>;
+    uint42_cell: map<Int as uint42, Cell>;
+    uint42_address: map<Int as uint42, Address>;
+    uint42_struct: map<Int as uint42, SomeStruct>;
+
+    // ===============================
+    // Unsigned Integer (`Int as uint256`) Key Maps
+    // ===============================
+
+    uint256_int: map<Int as uint256, Int>;
+    uint256_int8: map<Int as uint256, Int as int8>;
+    uint256_int42: map<Int as uint256, Int as int42>;
+    uint256_int256: map<Int as uint256, Int as int256>;
+    uint256_uint8: map<Int as uint256, Int as uint8>;
+    uint256_uint42: map<Int as uint256, Int as uint42>;
+    uint256_uint256: map<Int as uint256, Int as uint256>;
+    uint256_bool: map<Int as uint256, Bool>;
+    uint256_cell: map<Int as uint256, Cell>;
+    uint256_address: map<Int as uint256, Address>;
+    uint256_struct: map<Int as uint256, SomeStruct>;
+
+    // ===============================
+    // Address Key Maps
+    // ===============================
+
+    address_int: map<Address, Int>;
+    address_int8: map<Address, Int as int8>;
+    address_int42: map<Address, Int as int42>;
+    address_int256: map<Address, Int as int256>;
+    address_uint8: map<Address, Int as uint8>;
+    address_uint42: map<Address, Int as uint42>;
+    address_uint256: map<Address, Int as uint256>;
+    address_bool: map<Address, Bool>;
+    address_cell: map<Address, Cell>;
+    address_address: map<Address, Address>;
+    address_struct: map<Address, SomeStruct>;
+
+    // ===============================
+    // Receivers For Operations
+    // ===============================
+
+    receive(msg: SetAllMaps) {
+        // Integer Key Maps
+        self.int_int.set(msg.keyInt, msg.valueInt);
+        self.int_int8.set(msg.keyInt, msg.valueInt8);
+        self.int_int42.set(msg.keyInt, msg.valueInt42);
+        self.int_int256.set(msg.keyInt, msg.valueInt256);
+        self.int_uint8.set(msg.keyInt, msg.valueUint8);
+        self.int_uint42.set(msg.keyInt, msg.valueUint42);
+        self.int_uint256.set(msg.keyInt, msg.valueUint256);
+        self.int_bool.set(msg.keyInt, msg.valueBool);
+        self.int_cell.set(msg.keyInt, msg.valueCell);
+        self.int_address.set(msg.keyInt, msg.valueAddress);
+        self.int_struct.set(msg.keyInt, msg.valueStruct);
+
+        self.int8_int.set(msg.keyInt8, msg.valueInt);
+        self.int8_int8.set(msg.keyInt8, msg.valueInt8);
+        self.int8_int42.set(msg.keyInt8, msg.valueInt42);
+        self.int8_int256.set(msg.keyInt8, msg.valueInt256);
+        self.int8_uint8.set(msg.keyInt8, msg.valueUint8);
+        self.int8_uint42.set(msg.keyInt8, msg.valueUint42);
+        self.int8_uint256.set(msg.keyInt8, msg.valueUint256);
+        self.int8_bool.set(msg.keyInt8, msg.valueBool);
+        self.int8_cell.set(msg.keyInt8, msg.valueCell);
+        self.int8_address.set(msg.keyInt8, msg.valueAddress);
+        self.int8_struct.set(msg.keyInt8, msg.valueStruct);
+
+        self.int42_int.set(msg.keyInt42, msg.valueInt);
+        self.int42_int8.set(msg.keyInt42, msg.valueInt8);
+        self.int42_int42.set(msg.keyInt42, msg.valueInt42);
+        self.int42_int256.set(msg.keyInt42, msg.valueInt256);
+        self.int42_uint8.set(msg.keyInt42, msg.valueUint8);
+        self.int42_uint42.set(msg.keyInt42, msg.valueUint42);
+        self.int42_uint256.set(msg.keyInt42, msg.valueUint256);
+        self.int42_bool.set(msg.keyInt42, msg.valueBool);
+        self.int42_cell.set(msg.keyInt42, msg.valueCell);
+        self.int42_address.set(msg.keyInt42, msg.valueAddress);
+        self.int42_struct.set(msg.keyInt42, msg.valueStruct);
+
+        self.int256_int.set(msg.keyInt256, msg.valueInt);
+        self.int256_int8.set(msg.keyInt256, msg.valueInt8);
+        self.int256_int42.set(msg.keyInt256, msg.valueInt42);
+        self.int256_int256.set(msg.keyInt256, msg.valueInt256);
+        self.int256_uint8.set(msg.keyInt256, msg.valueUint8);
+        self.int256_uint42.set(msg.keyInt256, msg.valueUint42);
+        self.int256_uint256.set(msg.keyInt256, msg.valueUint256);
+        self.int256_bool.set(msg.keyInt256, msg.valueBool);
+        self.int256_cell.set(msg.keyInt256, msg.valueCell);
+        self.int256_address.set(msg.keyInt256, msg.valueAddress);
+        self.int256_struct.set(msg.keyInt256, msg.valueStruct);
+
+        self.uint8_int.set(msg.keyUint8, msg.valueInt);
+        self.uint8_int8.set(msg.keyUint8, msg.valueInt8);
+        self.uint8_int42.set(msg.keyUint8, msg.valueInt42);
+        self.uint8_int256.set(msg.keyUint8, msg.valueInt256);
+        self.uint8_uint8.set(msg.keyUint8, msg.valueUint8);
+        self.uint8_uint42.set(msg.keyUint8, msg.valueUint42);
+        self.uint8_uint256.set(msg.keyUint8, msg.valueUint256);
+        self.uint8_bool.set(msg.keyUint8, msg.valueBool);
+        self.uint8_cell.set(msg.keyUint8, msg.valueCell);
+        self.uint8_address.set(msg.keyUint8, msg.valueAddress);
+        self.uint8_struct.set(msg.keyUint8, msg.valueStruct);
+
+        self.uint42_int.set(msg.keyUint42, msg.valueInt);
+        self.uint42_int8.set(msg.keyUint42, msg.valueInt8);
+        self.uint42_int42.set(msg.keyUint42, msg.valueInt42);
+        self.uint42_int256.set(msg.keyUint42, msg.valueInt256);
+        self.uint42_uint8.set(msg.keyUint42, msg.valueUint8);
+        self.uint42_uint42.set(msg.keyUint42, msg.valueUint42);
+        self.uint42_uint256.set(msg.keyUint42, msg.valueUint256);
+        self.uint42_bool.set(msg.keyUint42, msg.valueBool);
+        self.uint42_cell.set(msg.keyUint42, msg.valueCell);
+        self.uint42_address.set(msg.keyUint42, msg.valueAddress);
+        self.uint42_struct.set(msg.keyUint42, msg.valueStruct);
+
+        self.uint256_int.set(msg.keyUint256, msg.valueInt);
+        self.uint256_int8.set(msg.keyUint256, msg.valueInt8);
+        self.uint256_int42.set(msg.keyUint256, msg.valueInt42);
+        self.uint256_int256.set(msg.keyUint256, msg.valueInt256);
+        self.uint256_uint8.set(msg.keyUint256, msg.valueUint8);
+        self.uint256_uint42.set(msg.keyUint256, msg.valueUint42);
+        self.uint256_uint256.set(msg.keyUint256, msg.valueUint256);
+        self.uint256_bool.set(msg.keyUint256, msg.valueBool);
+        self.uint256_cell.set(msg.keyUint256, msg.valueCell);
+        self.uint256_address.set(msg.keyUint256, msg.valueAddress);
+        self.uint256_struct.set(msg.keyUint256, msg.valueStruct);
+
+        // Address Key Maps
+        self.address_int.set(msg.keyAddress, msg.valueInt);
+        self.address_int8.set(msg.keyAddress, msg.valueInt8);
+        self.address_int42.set(msg.keyAddress, msg.valueInt42);
+        self.address_int256.set(msg.keyAddress, msg.valueInt256);
+        self.address_uint8.set(msg.keyAddress, msg.valueUint8);
+        self.address_uint42.set(msg.keyAddress, msg.valueUint42);
+        self.address_uint256.set(msg.keyAddress, msg.valueUint256);
+        self.address_bool.set(msg.keyAddress, msg.valueBool);
+        self.address_cell.set(msg.keyAddress, msg.valueCell);
+        self.address_address.set(msg.keyAddress, msg.valueAddress);
+        self.address_struct.set(msg.keyAddress, msg.valueStruct);
+    }
+
+    receive(msg: DelAllMaps) {
+        // Integer Key Maps
+        self.int_int.del(msg.keyInt);
+        self.int_int8.del(msg.keyInt8);
+        self.int_int42.del(msg.keyInt42);
+        self.int_int256.del(msg.keyInt256);
+        self.int_uint8.del(msg.keyUint8);
+        self.int_uint42.del(msg.keyUint42);
+        self.int_uint256.del(msg.keyUint256);
+        self.int_bool.del(msg.keyInt);
+        self.int_cell.del(msg.keyInt);
+        self.int_address.del(msg.keyInt);
+        self.int_struct.del(msg.keyInt);
+
+        self.int8_int.del(msg.keyInt8);
+        self.int8_int8.del(msg.keyInt8);
+        self.int8_int42.del(msg.keyInt8);
+        self.int8_int256.del(msg.keyInt8);
+        self.int8_uint8.del(msg.keyInt8);
+        self.int8_uint42.del(msg.keyInt8);
+        self.int8_uint256.del(msg.keyInt8);
+        self.int8_bool.del(msg.keyInt8);
+        self.int8_cell.del(msg.keyInt8);
+        self.int8_address.del(msg.keyInt8);
+        self.int8_struct.del(msg.keyInt8);
+
+        self.int42_int.del(msg.keyInt42);
+        self.int42_int8.del(msg.keyInt42);
+        self.int42_int42.del(msg.keyInt42);
+        self.int42_int256.del(msg.keyInt42);
+        self.int42_uint8.del(msg.keyInt42);
+        self.int42_uint42.del(msg.keyInt42);
+        self.int42_uint256.del(msg.keyInt42);
+        self.int42_bool.del(msg.keyInt42);
+        self.int42_cell.del(msg.keyInt42);
+        self.int42_address.del(msg.keyInt42);
+        self.int42_struct.del(msg.keyInt42);
+
+        self.int256_int.del(msg.keyInt256);
+        self.int256_int8.del(msg.keyInt256);
+        self.int256_int42.del(msg.keyInt256);
+        self.int256_int256.del(msg.keyInt256);
+        self.int256_uint8.del(msg.keyInt256);
+        self.int256_uint42.del(msg.keyInt256);
+        self.int256_uint256.del(msg.keyInt256);
+        self.int256_bool.del(msg.keyInt256);
+        self.int256_cell.del(msg.keyInt256);
+        self.int256_address.del(msg.keyInt256);
+        self.int256_struct.del(msg.keyInt256);
+
+        self.uint8_int.del(msg.keyUint8);
+        self.uint8_int8.del(msg.keyUint8);
+        self.uint8_int42.del(msg.keyUint8);
+        self.uint8_int256.del(msg.keyUint8);
+        self.uint8_uint8.del(msg.keyUint8);
+        self.uint8_uint42.del(msg.keyUint8);
+        self.uint8_uint256.del(msg.keyUint8);
+        self.uint8_bool.del(msg.keyUint8);
+        self.uint8_cell.del(msg.keyUint8);
+        self.uint8_address.del(msg.keyUint8);
+        self.uint8_struct.del(msg.keyUint8);
+
+        self.uint42_int.del(msg.keyUint42);
+        self.uint42_int8.del(msg.keyUint42);
+        self.uint42_int42.del(msg.keyUint42);
+        self.uint42_int256.del(msg.keyUint42);
+        self.uint42_uint8.del(msg.keyUint42);
+        self.uint42_uint42.del(msg.keyUint42);
+        self.uint42_uint256.del(msg.keyUint42);
+        self.uint42_bool.del(msg.keyUint42);
+        self.uint42_cell.del(msg.keyUint42);
+        self.uint42_address.del(msg.keyUint42);
+        self.uint42_struct.del(msg.keyUint42);
+
+        self.uint256_int.del(msg.keyUint256);
+        self.uint256_int8.del(msg.keyUint256);
+        self.uint256_int42.del(msg.keyUint256);
+        self.uint256_int256.del(msg.keyUint256);
+        self.uint256_uint8.del(msg.keyUint256);
+        self.uint256_uint42.del(msg.keyUint256);
+        self.uint256_uint256.del(msg.keyUint256);
+        self.uint256_bool.del(msg.keyUint256);
+        self.uint256_cell.del(msg.keyUint256);
+        self.uint256_address.del(msg.keyUint256);
+        self.uint256_struct.del(msg.keyUint256);
+
+        // Address Key Maps
+        self.address_int.del(msg.keyAddress);
+        self.address_int8.del(msg.keyAddress);
+        self.address_int42.del(msg.keyAddress);
+        self.address_int256.del(msg.keyAddress);
+        self.address_uint8.del(msg.keyAddress);
+        self.address_uint42.del(msg.keyAddress);
+        self.address_uint256.del(msg.keyAddress);
+        self.address_bool.del(msg.keyAddress);
+        self.address_cell.del(msg.keyAddress);
+        self.address_address.del(msg.keyAddress);
+        self.address_struct.del(msg.keyAddress);
+    }
+
+    receive(msg: ReplaceAllMaps) {
+        // Integer Key Maps
+        self.int_int.replace(msg.keyInt, msg.valueInt);
+        self.int_int8.replace(msg.keyInt, msg.valueInt8);
+        self.int_int42.replace(msg.keyInt, msg.valueInt42);
+        self.int_int256.replace(msg.keyInt, msg.valueInt256);
+        self.int_uint8.replace(msg.keyInt, msg.valueUint8);
+        self.int_uint42.replace(msg.keyInt, msg.valueUint42);
+        self.int_uint256.replace(msg.keyInt, msg.valueUint256);
+        self.int_bool.replace(msg.keyInt, msg.valueBool);
+        self.int_cell.replace(msg.keyInt, msg.valueCell);
+        self.int_address.replace(msg.keyInt, msg.valueAddress);
+        self.int_struct.replace(msg.keyInt, msg.valueStruct);
+
+        self.int8_int.replace(msg.keyInt8, msg.valueInt);
+        self.int8_int8.replace(msg.keyInt8, msg.valueInt8);
+        self.int8_int42.replace(msg.keyInt8, msg.valueInt42);
+        self.int8_int256.replace(msg.keyInt8, msg.valueInt256);
+        self.int8_uint8.replace(msg.keyInt8, msg.valueUint8);
+        self.int8_uint42.replace(msg.keyInt8, msg.valueUint42);
+        self.int8_uint256.replace(msg.keyInt8, msg.valueUint256);
+        self.int8_bool.replace(msg.keyInt8, msg.valueBool);
+        self.int8_cell.replace(msg.keyInt8, msg.valueCell);
+        self.int8_address.replace(msg.keyInt8, msg.valueAddress);
+        self.int8_struct.replace(msg.keyInt8, msg.valueStruct);
+
+        self.int42_int.replace(msg.keyInt42, msg.valueInt);
+        self.int42_int8.replace(msg.keyInt42, msg.valueInt8);
+        self.int42_int42.replace(msg.keyInt42, msg.valueInt42);
+        self.int42_int256.replace(msg.keyInt42, msg.valueInt256);
+        self.int42_uint8.replace(msg.keyInt42, msg.valueUint8);
+        self.int42_uint42.replace(msg.keyInt42, msg.valueUint42);
+        self.int42_uint256.replace(msg.keyInt42, msg.valueUint256);
+        self.int42_bool.replace(msg.keyInt42, msg.valueBool);
+        self.int42_cell.replace(msg.keyInt42, msg.valueCell);
+        self.int42_address.replace(msg.keyInt42, msg.valueAddress);
+        self.int42_struct.replace(msg.keyInt42, msg.valueStruct);
+
+        self.int256_int.replace(msg.keyInt256, msg.valueInt);
+        self.int256_int8.replace(msg.keyInt256, msg.valueInt8);
+        self.int256_int42.replace(msg.keyInt256, msg.valueInt42);
+        self.int256_int256.replace(msg.keyInt256, msg.valueInt256);
+        self.int256_uint8.replace(msg.keyInt256, msg.valueUint8);
+        self.int256_uint42.replace(msg.keyInt256, msg.valueUint42);
+        self.int256_uint256.replace(msg.keyInt256, msg.valueUint256);
+        self.int256_bool.replace(msg.keyInt256, msg.valueBool);
+        self.int256_cell.replace(msg.keyInt256, msg.valueCell);
+        self.int256_address.replace(msg.keyInt256, msg.valueAddress);
+        self.int256_struct.replace(msg.keyInt256, msg.valueStruct);
+
+        self.uint8_int.replace(msg.keyUint8, msg.valueInt);
+        self.uint8_int8.replace(msg.keyUint8, msg.valueInt8);
+        self.uint8_int42.replace(msg.keyUint8, msg.valueInt42);
+        self.uint8_int256.replace(msg.keyUint8, msg.valueInt256);
+        self.uint8_uint8.replace(msg.keyUint8, msg.valueUint8);
+        self.uint8_uint42.replace(msg.keyUint8, msg.valueUint42);
+        self.uint8_uint256.replace(msg.keyUint8, msg.valueUint256);
+        self.uint8_bool.replace(msg.keyUint8, msg.valueBool);
+        self.uint8_cell.replace(msg.keyUint8, msg.valueCell);
+        self.uint8_address.replace(msg.keyUint8, msg.valueAddress);
+        self.uint8_struct.replace(msg.keyUint8, msg.valueStruct);
+
+        self.uint42_int.replace(msg.keyUint42, msg.valueInt);
+        self.uint42_int8.replace(msg.keyUint42, msg.valueInt8);
+        self.uint42_int42.replace(msg.keyUint42, msg.valueInt42);
+        self.uint42_int256.replace(msg.keyUint42, msg.valueInt256);
+        self.uint42_uint8.replace(msg.keyUint42, msg.valueUint8);
+        self.uint42_uint42.replace(msg.keyUint42, msg.valueUint42);
+        self.uint42_uint256.replace(msg.keyUint42, msg.valueUint256);
+        self.uint42_bool.replace(msg.keyUint42, msg.valueBool);
+        self.uint42_cell.replace(msg.keyUint42, msg.valueCell);
+        self.uint42_address.replace(msg.keyUint42, msg.valueAddress);
+        self.uint42_struct.replace(msg.keyUint42, msg.valueStruct);
+
+        self.uint256_int.replace(msg.keyUint256, msg.valueInt);
+        self.uint256_int8.replace(msg.keyUint256, msg.valueInt8);
+        self.uint256_int42.replace(msg.keyUint256, msg.valueInt42);
+        self.uint256_int256.replace(msg.keyUint256, msg.valueInt256);
+        self.uint256_uint8.replace(msg.keyUint256, msg.valueUint8);
+        self.uint256_uint42.replace(msg.keyUint256, msg.valueUint42);
+        self.uint256_uint256.replace(msg.keyUint256, msg.valueUint256);
+        self.uint256_bool.replace(msg.keyUint256, msg.valueBool);
+        self.uint256_cell.replace(msg.keyUint256, msg.valueCell);
+        self.uint256_address.replace(msg.keyUint256, msg.valueAddress);
+        self.uint256_struct.replace(msg.keyUint256, msg.valueStruct);
+
+        // Address Key Maps
+        self.address_int.replace(msg.keyAddress, msg.valueInt);
+        self.address_int8.replace(msg.keyAddress, msg.valueInt8);
+        self.address_int42.replace(msg.keyAddress, msg.valueInt42);
+        self.address_int256.replace(msg.keyAddress, msg.valueInt256);
+        self.address_uint8.replace(msg.keyAddress, msg.valueUint8);
+        self.address_uint42.replace(msg.keyAddress, msg.valueUint42);
+        self.address_uint256.replace(msg.keyAddress, msg.valueUint256);
+        self.address_bool.replace(msg.keyAddress, msg.valueBool);
+        self.address_cell.replace(msg.keyAddress, msg.valueCell);
+        self.address_address.replace(msg.keyAddress, msg.valueAddress);
+        self.address_struct.replace(msg.keyAddress, msg.valueStruct);
+    }
+
+    receive(msg: ReplaceGetAllMaps) {
+        // Integer Key Maps
+        self.int_int.replaceGet(msg.keyInt, msg.valueInt);
+        self.int_int8.replaceGet(msg.keyInt, msg.valueInt8);
+        self.int_int42.replaceGet(msg.keyInt, msg.valueInt42);
+        self.int_int256.replaceGet(msg.keyInt, msg.valueInt256);
+        self.int_uint8.replaceGet(msg.keyInt, msg.valueUint8);
+        self.int_uint42.replaceGet(msg.keyInt, msg.valueUint42);
+        self.int_uint256.replaceGet(msg.keyInt, msg.valueUint256);
+        self.int_bool.replaceGet(msg.keyInt, msg.valueBool);
+        self.int_cell.replaceGet(msg.keyInt, msg.valueCell);
+        self.int_address.replaceGet(msg.keyInt, msg.valueAddress);
+        self.int_struct.replaceGet(msg.keyInt, msg.valueStruct);
+
+        self.int8_int.replaceGet(msg.keyInt8, msg.valueInt);
+        self.int8_int8.replaceGet(msg.keyInt8, msg.valueInt8);
+        self.int8_int42.replaceGet(msg.keyInt8, msg.valueInt42);
+        self.int8_int256.replaceGet(msg.keyInt8, msg.valueInt256);
+        self.int8_uint8.replaceGet(msg.keyInt8, msg.valueUint8);
+        self.int8_uint42.replaceGet(msg.keyInt8, msg.valueUint42);
+        self.int8_uint256.replaceGet(msg.keyInt8, msg.valueUint256);
+        self.int8_bool.replaceGet(msg.keyInt8, msg.valueBool);
+        self.int8_cell.replaceGet(msg.keyInt8, msg.valueCell);
+        self.int8_address.replaceGet(msg.keyInt8, msg.valueAddress);
+        self.int8_struct.replaceGet(msg.keyInt8, msg.valueStruct);
+
+        self.int42_int.replaceGet(msg.keyInt42, msg.valueInt);
+        self.int42_int8.replaceGet(msg.keyInt42, msg.valueInt8);
+        self.int42_int42.replaceGet(msg.keyInt42, msg.valueInt42);
+        self.int42_int256.replaceGet(msg.keyInt42, msg.valueInt256);
+        self.int42_uint8.replaceGet(msg.keyInt42, msg.valueUint8);
+        self.int42_uint42.replaceGet(msg.keyInt42, msg.valueUint42);
+        self.int42_uint256.replaceGet(msg.keyInt42, msg.valueUint256);
+        self.int42_bool.replaceGet(msg.keyInt42, msg.valueBool);
+        self.int42_cell.replaceGet(msg.keyInt42, msg.valueCell);
+        self.int42_address.replaceGet(msg.keyInt42, msg.valueAddress);
+        self.int42_struct.replaceGet(msg.keyInt42, msg.valueStruct);
+
+        self.int256_int.replaceGet(msg.keyInt256, msg.valueInt);
+        self.int256_int8.replaceGet(msg.keyInt256, msg.valueInt8);
+        self.int256_int42.replaceGet(msg.keyInt256, msg.valueInt42);
+        self.int256_int256.replaceGet(msg.keyInt256, msg.valueInt256);
+        self.int256_uint8.replaceGet(msg.keyInt256, msg.valueUint8);
+        self.int256_uint42.replaceGet(msg.keyInt256, msg.valueUint42);
+        self.int256_uint256.replaceGet(msg.keyInt256, msg.valueUint256);
+        self.int256_bool.replaceGet(msg.keyInt256, msg.valueBool);
+        self.int256_cell.replaceGet(msg.keyInt256, msg.valueCell);
+        self.int256_address.replaceGet(msg.keyInt256, msg.valueAddress);
+        self.int256_struct.replaceGet(msg.keyInt256, msg.valueStruct);
+
+        self.uint8_int.replaceGet(msg.keyUint8, msg.valueInt);
+        self.uint8_int8.replaceGet(msg.keyUint8, msg.valueInt8);
+        self.uint8_int42.replaceGet(msg.keyUint8, msg.valueInt42);
+        self.uint8_int256.replaceGet(msg.keyUint8, msg.valueInt256);
+        self.uint8_uint8.replaceGet(msg.keyUint8, msg.valueUint8);
+        self.uint8_uint42.replaceGet(msg.keyUint8, msg.valueUint42);
+        self.uint8_uint256.replaceGet(msg.keyUint8, msg.valueUint256);
+        self.uint8_bool.replaceGet(msg.keyUint8, msg.valueBool);
+        self.uint8_cell.replaceGet(msg.keyUint8, msg.valueCell);
+        self.uint8_address.replaceGet(msg.keyUint8, msg.valueAddress);
+        self.uint8_struct.replaceGet(msg.keyUint8, msg.valueStruct);
+
+        self.uint42_int.replaceGet(msg.keyUint42, msg.valueInt);
+        self.uint42_int8.replaceGet(msg.keyUint42, msg.valueInt8);
+        self.uint42_int42.replaceGet(msg.keyUint42, msg.valueInt42);
+        self.uint42_int256.replaceGet(msg.keyUint42, msg.valueInt256);
+        self.uint42_uint8.replaceGet(msg.keyUint42, msg.valueUint8);
+        self.uint42_uint42.replaceGet(msg.keyUint42, msg.valueUint42);
+        self.uint42_uint256.replaceGet(msg.keyUint42, msg.valueUint256);
+        self.uint42_bool.replaceGet(msg.keyUint42, msg.valueBool);
+        self.uint42_cell.replaceGet(msg.keyUint42, msg.valueCell);
+        self.uint42_address.replaceGet(msg.keyUint42, msg.valueAddress);
+        self.uint42_struct.replaceGet(msg.keyUint42, msg.valueStruct);
+
+        self.uint256_int.replaceGet(msg.keyUint256, msg.valueInt);
+        self.uint256_int8.replaceGet(msg.keyUint256, msg.valueInt8);
+        self.uint256_int42.replaceGet(msg.keyUint256, msg.valueInt42);
+        self.uint256_int256.replaceGet(msg.keyUint256, msg.valueInt256);
+        self.uint256_uint8.replaceGet(msg.keyUint256, msg.valueUint8);
+        self.uint256_uint42.replaceGet(msg.keyUint256, msg.valueUint42);
+        self.uint256_uint256.replaceGet(msg.keyUint256, msg.valueUint256);
+        self.uint256_bool.replaceGet(msg.keyUint256, msg.valueBool);
+        self.uint256_cell.replaceGet(msg.keyUint256, msg.valueCell);
+        self.uint256_address.replaceGet(msg.keyUint256, msg.valueAddress);
+        self.uint256_struct.replaceGet(msg.keyUint256, msg.valueStruct);
+
+        // Address Key Maps
+        self.address_int.replaceGet(msg.keyAddress, msg.valueInt);
+        self.address_int8.replaceGet(msg.keyAddress, msg.valueInt8);
+        self.address_int42.replaceGet(msg.keyAddress, msg.valueInt42);
+        self.address_int256.replaceGet(msg.keyAddress, msg.valueInt256);
+        self.address_uint8.replaceGet(msg.keyAddress, msg.valueUint8);
+        self.address_uint42.replaceGet(msg.keyAddress, msg.valueUint42);
+        self.address_uint256.replaceGet(msg.keyAddress, msg.valueUint256);
+        self.address_bool.replaceGet(msg.keyAddress, msg.valueBool);
+        self.address_cell.replaceGet(msg.keyAddress, msg.valueCell);
+        self.address_address.replaceGet(msg.keyAddress, msg.valueAddress);
+        self.address_struct.replaceGet(msg.keyAddress, msg.valueStruct);
+    }
+
+    // ===============================
+    // Getters
+    // ===============================
+
+    get fun allMaps(): MapTestContract {
+        return self;
+    }
+
+    get fun getAllMaps(
+        keyInt: Int,
+        keyInt8: Int,
+        keyInt42: Int,
+        keyInt256: Int,
+        keyUint8: Int,
+        keyUint42: Int,
+        keyUint256: Int,
+        keyAddress: Address
+    ): GetAllMapsResult {
+        return GetAllMapsResult {
+            // Integer Key Maps
+            int_int: self.int_int.get(keyInt),
+            int_int8: self.int_int8.get(keyInt),
+            int_int42: self.int_int42.get(keyInt),
+            int_int256: self.int_int256.get(keyInt),
+            int_uint8: self.int_uint8.get(keyInt),
+            int_uint42: self.int_uint42.get(keyInt),
+            int_uint256: self.int_uint256.get(keyInt),
+            int_bool: self.int_bool.get(keyInt),
+            int_cell: self.int_cell.get(keyInt),
+            int_address: self.int_address.get(keyInt),
+            int_struct: self.int_struct.get(keyInt),
+
+            int8_int: self.int8_int.get(keyInt8),
+            int8_int8: self.int8_int8.get(keyInt8),
+            int8_int42: self.int8_int42.get(keyInt8),
+            int8_int256: self.int8_int256.get(keyInt8),
+            int8_uint8: self.int8_uint8.get(keyInt8),
+            int8_uint42: self.int8_uint42.get(keyInt8),
+            int8_uint256: self.int8_uint256.get(keyInt8),
+            int8_bool: self.int8_bool.get(keyInt8),
+            int8_cell: self.int8_cell.get(keyInt8),
+            int8_address: self.int8_address.get(keyInt8),
+            int8_struct: self.int8_struct.get(keyInt8),
+
+            int42_int: self.int42_int.get(keyInt42),
+            int42_int8: self.int42_int8.get(keyInt42),
+            int42_int42: self.int42_int42.get(keyInt42),
+            int42_int256: self.int42_int256.get(keyInt42),
+            int42_uint8: self.int42_uint8.get(keyInt42),
+            int42_uint42: self.int42_uint42.get(keyInt42),
+            int42_uint256: self.int42_uint256.get(keyInt42),
+            int42_bool: self.int42_bool.get(keyInt42),
+            int42_cell: self.int42_cell.get(keyInt42),
+            int42_address: self.int42_address.get(keyInt42),
+            int42_struct: self.int42_struct.get(keyInt42),
+
+            int256_int: self.int256_int.get(keyInt256),
+            int256_int8: self.int256_int8.get(keyInt256),
+            int256_int42: self.int256_int42.get(keyInt256),
+            int256_int256: self.int256_int256.get(keyInt256),
+            int256_uint8: self.int256_uint8.get(keyInt256),
+            int256_uint42: self.int256_uint42.get(keyInt256),
+            int256_uint256: self.int256_uint256.get(keyInt256),
+            int256_bool: self.int256_bool.get(keyInt256),
+            int256_cell: self.int256_cell.get(keyInt256),
+            int256_address: self.int256_address.get(keyInt256),
+            int256_struct: self.int256_struct.get(keyInt256),
+
+            uint8_int: self.uint8_int.get(keyUint8),
+            uint8_int8: self.uint8_int8.get(keyUint8),
+            uint8_int42: self.uint8_int42.get(keyUint8),
+            uint8_int256: self.uint8_int256.get(keyUint8),
+            uint8_uint8: self.uint8_uint8.get(keyUint8),
+            uint8_uint42: self.uint8_uint42.get(keyUint8),
+            uint8_uint256: self.uint8_uint256.get(keyUint8),
+            uint8_bool: self.uint8_bool.get(keyUint8),
+            uint8_cell: self.uint8_cell.get(keyUint8),
+            uint8_address: self.uint8_address.get(keyUint8),
+            uint8_struct: self.uint8_struct.get(keyUint8),
+
+            uint42_int: self.uint42_int.get(keyUint42),
+            uint42_int8: self.uint42_int8.get(keyUint42),
+            uint42_int42: self.uint42_int42.get(keyUint42),
+            uint42_int256: self.uint42_int256.get(keyUint42),
+            uint42_uint8: self.uint42_uint8.get(keyUint42),
+            uint42_uint42: self.uint42_uint42.get(keyUint42),
+            uint42_uint256: self.uint42_uint256.get(keyUint42),
+            uint42_bool: self.uint42_bool.get(keyUint42),
+            uint42_cell: self.uint42_cell.get(keyUint42),
+            uint42_address: self.uint42_address.get(keyUint42),
+            uint42_struct: self.uint42_struct.get(keyUint42),
+
+            uint256_int: self.uint256_int.get(keyUint256),
+            uint256_int8: self.uint256_int8.get(keyUint256),
+            uint256_int42: self.uint256_int42.get(keyUint256),
+            uint256_int256: self.uint256_int256.get(keyUint256),
+            uint256_uint8: self.uint256_uint8.get(keyUint256),
+            uint256_uint42: self.uint256_uint42.get(keyUint256),
+            uint256_uint256: self.uint256_uint256.get(keyUint256),
+            uint256_bool: self.uint256_bool.get(keyUint256),
+            uint256_cell: self.uint256_cell.get(keyUint256),
+            uint256_address: self.uint256_address.get(keyUint256),
+            uint256_struct: self.uint256_struct.get(keyUint256),
+
+            // Address Key Maps
+            address_int: self.address_int.get(keyAddress),
+            address_int8: self.address_int8.get(keyAddress),
+            address_int42: self.address_int42.get(keyAddress),
+            address_int256: self.address_int256.get(keyAddress),
+            address_uint8: self.address_uint8.get(keyAddress),
+            address_uint42: self.address_uint42.get(keyAddress),
+            address_uint256: self.address_uint256.get(keyAddress),
+            address_bool: self.address_bool.get(keyAddress),
+            address_cell: self.address_cell.get(keyAddress),
+            address_address: self.address_address.get(keyAddress),
+            address_struct: self.address_struct.get(keyAddress)
+        };
+    }
+
+    get fun replaceAllMaps(
+        keyInt: Int,
+        keyInt8: Int,
+        keyInt42: Int,
+        keyInt256: Int,
+        keyUint8: Int,
+        keyUint42: Int,
+        keyUint256: Int,
+        keyAddress: Address,
+        valueInt: Int,
+        valueInt8: Int,
+        valueInt42: Int,
+        valueInt256: Int,
+        valueUint8: Int,
+        valueUint42: Int,
+        valueUint256: Int,
+        valueBool: Bool,
+        valueCell: Cell,
+        valueAddress: Address,
+        valueStruct: SomeStruct
+    ): ReplaceAllMapsResult {
+        return ReplaceAllMapsResult {
+            // Integer Key Maps
+            int_int: self.int_int.replace(keyInt, valueInt),
+            int_int8: self.int_int8.replace(keyInt, valueInt8),
+            int_int42: self.int_int42.replace(keyInt, valueInt42),
+            int_int256: self.int_int256.replace(keyInt, valueInt256),
+            int_uint8: self.int_uint8.replace(keyInt, valueUint8),
+            int_uint42: self.int_uint42.replace(keyInt, valueUint42),
+            int_uint256: self.int_uint256.replace(keyInt, valueUint256),
+            int_bool: self.int_bool.replace(keyInt, valueBool),
+            int_cell: self.int_cell.replace(keyInt, valueCell),
+            int_address: self.int_address.replace(keyInt, valueAddress),
+            int_struct: self.int_struct.replace(keyInt, valueStruct),
+
+            int8_int: self.int8_int.replace(keyInt8, valueInt),
+            int8_int8: self.int8_int8.replace(keyInt8, valueInt8),
+            int8_int42: self.int8_int42.replace(keyInt8, valueInt42),
+            int8_int256: self.int8_int256.replace(keyInt8, valueInt256),
+            int8_uint8: self.int8_uint8.replace(keyInt8, valueUint8),
+            int8_uint42: self.int8_uint42.replace(keyInt8, valueUint42),
+            int8_uint256: self.int8_uint256.replace(keyInt8, valueUint256),
+            int8_bool: self.int8_bool.replace(keyInt8, valueBool),
+            int8_cell: self.int8_cell.replace(keyInt8, valueCell),
+            int8_address: self.int8_address.replace(keyInt8, valueAddress),
+            int8_struct: self.int8_struct.replace(keyInt8, valueStruct),
+
+            int42_int: self.int42_int.replace(keyInt42, valueInt),
+            int42_int8: self.int42_int8.replace(keyInt42, valueInt8),
+            int42_int42: self.int42_int42.replace(keyInt42, valueInt42),
+            int42_int256: self.int42_int256.replace(keyInt42, valueInt256),
+            int42_uint8: self.int42_uint8.replace(keyInt42, valueUint8),
+            int42_uint42: self.int42_uint42.replace(keyInt42, valueUint42),
+            int42_uint256: self.int42_uint256.replace(keyInt42, valueUint256),
+            int42_bool: self.int42_bool.replace(keyInt42, valueBool),
+            int42_cell: self.int42_cell.replace(keyInt42, valueCell),
+            int42_address: self.int42_address.replace(keyInt42, valueAddress),
+            int42_struct: self.int42_struct.replace(keyInt42, valueStruct),
+
+            int256_int: self.int256_int.replace(keyInt256, valueInt),
+            int256_int8: self.int256_int8.replace(keyInt256, valueInt8),
+            int256_int42: self.int256_int42.replace(keyInt256, valueInt42),
+            int256_int256: self.int256_int256.replace(keyInt256, valueInt256),
+            int256_uint8: self.int256_uint8.replace(keyInt256, valueUint8),
+            int256_uint42: self.int256_uint42.replace(keyInt256, valueUint42),
+            int256_uint256: self.int256_uint256.replace(keyInt256, valueUint256),
+            int256_bool: self.int256_bool.replace(keyInt256, valueBool),
+            int256_cell: self.int256_cell.replace(keyInt256, valueCell),
+            int256_address: self.int256_address.replace(keyInt256, valueAddress),
+            int256_struct: self.int256_struct.replace(keyInt256, valueStruct),
+
+            uint8_int: self.uint8_int.replace(keyUint8, valueInt),
+            uint8_int8: self.uint8_int8.replace(keyUint8, valueInt8),
+            uint8_int42: self.uint8_int42.replace(keyUint8, valueInt42),
+            uint8_int256: self.uint8_int256.replace(keyUint8, valueInt256),
+            uint8_uint8: self.uint8_uint8.replace(keyUint8, valueUint8),
+            uint8_uint42: self.uint8_uint42.replace(keyUint8, valueUint42),
+            uint8_uint256: self.uint8_uint256.replace(keyUint8, valueUint256),
+            uint8_bool: self.uint8_bool.replace(keyUint8, valueBool),
+            uint8_cell: self.uint8_cell.replace(keyUint8, valueCell),
+            uint8_address: self.uint8_address.replace(keyUint8, valueAddress),
+            uint8_struct: self.uint8_struct.replace(keyUint8, valueStruct),
+
+            uint42_int: self.uint42_int.replace(keyUint42, valueInt),
+            uint42_int8: self.uint42_int8.replace(keyUint42, valueInt8),
+            uint42_int42: self.uint42_int42.replace(keyUint42, valueInt42),
+            uint42_int256: self.uint42_int256.replace(keyUint42, valueInt256),
+            uint42_uint8: self.uint42_uint8.replace(keyUint42, valueUint8),
+            uint42_uint42: self.uint42_uint42.replace(keyUint42, valueUint42),
+            uint42_uint256: self.uint42_uint256.replace(keyUint42, valueUint256),
+            uint42_bool: self.uint42_bool.replace(keyUint42, valueBool),
+            uint42_cell: self.uint42_cell.replace(keyUint42, valueCell),
+            uint42_address: self.uint42_address.replace(keyUint42, valueAddress),
+            uint42_struct: self.uint42_struct.replace(keyUint42, valueStruct),
+
+            uint256_int: self.uint256_int.replace(keyUint256, valueInt),
+            uint256_int8: self.uint256_int8.replace(keyUint256, valueInt8),
+            uint256_int42: self.uint256_int42.replace(keyUint256, valueInt42),
+            uint256_int256: self.uint256_int256.replace(keyUint256, valueInt256),
+            uint256_uint8: self.uint256_uint8.replace(keyUint256, valueUint8),
+            uint256_uint42: self.uint256_uint42.replace(keyUint256, valueUint42),
+            uint256_uint256: self.uint256_uint256.replace(keyUint256, valueUint256),
+            uint256_bool: self.uint256_bool.replace(keyUint256, valueBool),
+            uint256_cell: self.uint256_cell.replace(keyUint256, valueCell),
+            uint256_address: self.uint256_address.replace(keyUint256, valueAddress),
+            uint256_struct: self.uint256_struct.replace(keyUint256, valueStruct),
+
+            // Address Key Maps
+            address_int: self.address_int.replace(keyAddress, valueInt),
+            address_int8: self.address_int8.replace(keyAddress, valueInt8),
+            address_int42: self.address_int42.replace(keyAddress, valueInt42),
+            address_int256: self.address_int256.replace(keyAddress, valueInt256),
+            address_uint8: self.address_uint8.replace(keyAddress, valueUint8),
+            address_uint42: self.address_uint42.replace(keyAddress, valueUint42),
+            address_uint256: self.address_uint256.replace(keyAddress, valueUint256),
+            address_bool: self.address_bool.replace(keyAddress, valueBool),
+            address_cell: self.address_cell.replace(keyAddress, valueCell),
+            address_address: self.address_address.replace(keyAddress, valueAddress),
+            address_struct: self.address_struct.replace(keyAddress, valueStruct)
+        };
+    }
+
+    get fun replaceGetAllMaps(
+        keyInt: Int,
+        keyInt8: Int,
+        keyInt42: Int,
+        keyInt256: Int,
+        keyUint8: Int,
+        keyUint42: Int,
+        keyUint256: Int,
+        keyAddress: Address,
+        valueInt: Int,
+        valueInt8: Int,
+        valueInt42: Int,
+        valueInt256: Int,
+        valueUint8: Int,
+        valueUint42: Int,
+        valueUint256: Int,
+        valueBool: Bool,
+        valueCell: Cell,
+        valueAddress: Address,
+        valueStruct: SomeStruct
+    ): ReplaceGetAllMapsResult {
+        return ReplaceGetAllMapsResult {
+            // Integer Key Maps
+            int_int: self.int_int.replaceGet(keyInt, valueInt),
+            int_int8: self.int_int8.replaceGet(keyInt, valueInt8),
+            int_int42: self.int_int42.replaceGet(keyInt, valueInt42),
+            int_int256: self.int_int256.replaceGet(keyInt, valueInt256),
+            int_uint8: self.int_uint8.replaceGet(keyInt, valueUint8),
+            int_uint42: self.int_uint42.replaceGet(keyInt, valueUint42),
+            int_uint256: self.int_uint256.replaceGet(keyInt, valueUint256),
+            int_bool: self.int_bool.replaceGet(keyInt, valueBool),
+            int_cell: self.int_cell.replaceGet(keyInt, valueCell),
+            int_address: self.int_address.replaceGet(keyInt, valueAddress),
+            int_struct: self.int_struct.replaceGet(keyInt, valueStruct),
+
+            int8_int: self.int8_int.replaceGet(keyInt8, valueInt),
+            int8_int8: self.int8_int8.replaceGet(keyInt8, valueInt8),
+            int8_int42: self.int8_int42.replaceGet(keyInt8, valueInt42),
+            int8_int256: self.int8_int256.replaceGet(keyInt8, valueInt256),
+            int8_uint8: self.int8_uint8.replaceGet(keyInt8, valueUint8),
+            int8_uint42: self.int8_uint42.replaceGet(keyInt8, valueUint42),
+            int8_uint256: self.int8_uint256.replaceGet(keyInt8, valueUint256),
+            int8_bool: self.int8_bool.replaceGet(keyInt8, valueBool),
+            int8_cell: self.int8_cell.replaceGet(keyInt8, valueCell),
+            int8_address: self.int8_address.replaceGet(keyInt8, valueAddress),
+            int8_struct: self.int8_struct.replaceGet(keyInt8, valueStruct),
+
+            int42_int: self.int42_int.replaceGet(keyInt42, valueInt),
+            int42_int8: self.int42_int8.replaceGet(keyInt42, valueInt8),
+            int42_int42: self.int42_int42.replaceGet(keyInt42, valueInt42),
+            int42_int256: self.int42_int256.replaceGet(keyInt42, valueInt256),
+            int42_uint8: self.int42_uint8.replaceGet(keyInt42, valueUint8),
+            int42_uint42: self.int42_uint42.replaceGet(keyInt42, valueUint42),
+            int42_uint256: self.int42_uint256.replaceGet(keyInt42, valueUint256),
+            int42_bool: self.int42_bool.replaceGet(keyInt42, valueBool),
+            int42_cell: self.int42_cell.replaceGet(keyInt42, valueCell),
+            int42_address: self.int42_address.replaceGet(keyInt42, valueAddress),
+            int42_struct: self.int42_struct.replaceGet(keyInt42, valueStruct),
+
+            int256_int: self.int256_int.replaceGet(keyInt256, valueInt),
+            int256_int8: self.int256_int8.replaceGet(keyInt256, valueInt8),
+            int256_int42: self.int256_int42.replaceGet(keyInt256, valueInt42),
+            int256_int256: self.int256_int256.replaceGet(keyInt256, valueInt256),
+            int256_uint8: self.int256_uint8.replaceGet(keyInt256, valueUint8),
+            int256_uint42: self.int256_uint42.replaceGet(keyInt256, valueUint42),
+            int256_uint256: self.int256_uint256.replaceGet(keyInt256, valueUint256),
+            int256_bool: self.int256_bool.replaceGet(keyInt256, valueBool),
+            int256_cell: self.int256_cell.replaceGet(keyInt256, valueCell),
+            int256_address: self.int256_address.replaceGet(keyInt256, valueAddress),
+            int256_struct: self.int256_struct.replaceGet(keyInt256, valueStruct),
+
+            uint8_int: self.uint8_int.replaceGet(keyUint8, valueInt),
+            uint8_int8: self.uint8_int8.replaceGet(keyUint8, valueInt8),
+            uint8_int42: self.uint8_int42.replaceGet(keyUint8, valueInt42),
+            uint8_int256: self.uint8_int256.replaceGet(keyUint8, valueInt256),
+            uint8_uint8: self.uint8_uint8.replaceGet(keyUint8, valueUint8),
+            uint8_uint42: self.uint8_uint42.replaceGet(keyUint8, valueUint42),
+            uint8_uint256: self.uint8_uint256.replaceGet(keyUint8, valueUint256),
+            uint8_bool: self.uint8_bool.replaceGet(keyUint8, valueBool),
+            uint8_cell: self.uint8_cell.replaceGet(keyUint8, valueCell),
+            uint8_address: self.uint8_address.replaceGet(keyUint8, valueAddress),
+            uint8_struct: self.uint8_struct.replaceGet(keyUint8, valueStruct),
+
+            uint42_int: self.uint42_int.replaceGet(keyUint42, valueInt),
+            uint42_int8: self.uint42_int8.replaceGet(keyUint42, valueInt8),
+            uint42_int42: self.uint42_int42.replaceGet(keyUint42, valueInt42),
+            uint42_int256: self.uint42_int256.replaceGet(keyUint42, valueInt256),
+            uint42_uint8: self.uint42_uint8.replaceGet(keyUint42, valueUint8),
+            uint42_uint42: self.uint42_uint42.replaceGet(keyUint42, valueUint42),
+            uint42_uint256: self.uint42_uint256.replaceGet(keyUint42, valueUint256),
+            uint42_bool: self.uint42_bool.replaceGet(keyUint42, valueBool),
+            uint42_cell: self.uint42_cell.replaceGet(keyUint42, valueCell),
+            uint42_address: self.uint42_address.replaceGet(keyUint42, valueAddress),
+            uint42_struct: self.uint42_struct.replaceGet(keyUint42, valueStruct),
+
+            uint256_int: self.uint256_int.replaceGet(keyUint256, valueInt),
+            uint256_int8: self.uint256_int8.replaceGet(keyUint256, valueInt8),
+            uint256_int42: self.uint256_int42.replaceGet(keyUint256, valueInt42),
+            uint256_int256: self.uint256_int256.replaceGet(keyUint256, valueInt256),
+            uint256_uint8: self.uint256_uint8.replaceGet(keyUint256, valueUint8),
+            uint256_uint42: self.uint256_uint42.replaceGet(keyUint256, valueUint42),
+            uint256_uint256: self.uint256_uint256.replaceGet(keyUint256, valueUint256),
+            uint256_bool: self.uint256_bool.replaceGet(keyUint256, valueBool),
+            uint256_cell: self.uint256_cell.replaceGet(keyUint256, valueCell),
+            uint256_address: self.uint256_address.replaceGet(keyUint256, valueAddress),
+            uint256_struct: self.uint256_struct.replaceGet(keyUint256, valueStruct),
+
+            // Address Key Maps
+            address_int: self.address_int.replaceGet(keyAddress, valueInt),
+            address_int8: self.address_int8.replaceGet(keyAddress, valueInt8),
+            address_int42: self.address_int42.replaceGet(keyAddress, valueInt42),
+            address_int256: self.address_int256.replaceGet(keyAddress, valueInt256),
+            address_uint8: self.address_uint8.replaceGet(keyAddress, valueUint8),
+            address_uint42: self.address_uint42.replaceGet(keyAddress, valueUint42),
+            address_uint256: self.address_uint256.replaceGet(keyAddress, valueUint256),
+            address_bool: self.address_bool.replaceGet(keyAddress, valueBool),
+            address_cell: self.address_cell.replaceGet(keyAddress, valueCell),
+            address_address: self.address_address.replaceGet(keyAddress, valueAddress),
+            address_struct: self.address_struct.replaceGet(keyAddress, valueStruct)
+        };
+    }
+
+    get fun existsAllMaps(
+        keyInt: Int,
+        keyInt8: Int,
+        keyInt42: Int,
+        keyInt256: Int,
+        keyUint8: Int,
+        keyUint42: Int,
+        keyUint256: Int,
+        keyAddress: Address
+    ): ExistsAllMapsResult {
+        return ExistsAllMapsResult {
+            // Integer Key Maps
+            int_int: self.int_int.exists(keyInt),
+            int_int8: self.int_int8.exists(keyInt),
+            int_int42: self.int_int42.exists(keyInt),
+            int_int256: self.int_int256.exists(keyInt),
+            int_uint8: self.int_uint8.exists(keyInt),
+            int_uint42: self.int_uint42.exists(keyInt),
+            int_uint256: self.int_uint256.exists(keyInt),
+            int_bool: self.int_bool.exists(keyInt),
+            int_cell: self.int_cell.exists(keyInt),
+            int_address: self.int_address.exists(keyInt),
+            int_struct: self.int_struct.exists(keyInt),
+
+            int8_int: self.int8_int.exists(keyInt8),
+            int8_int8: self.int8_int8.exists(keyInt8),
+            int8_int42: self.int8_int42.exists(keyInt8),
+            int8_int256: self.int8_int256.exists(keyInt8),
+            int8_uint8: self.int8_uint8.exists(keyInt8),
+            int8_uint42: self.int8_uint42.exists(keyInt8),
+            int8_uint256: self.int8_uint256.exists(keyInt8),
+            int8_bool: self.int8_bool.exists(keyInt8),
+            int8_cell: self.int8_cell.exists(keyInt8),
+            int8_address: self.int8_address.exists(keyInt8),
+            int8_struct: self.int8_struct.exists(keyInt8),
+
+            int42_int: self.int42_int.exists(keyInt42),
+            int42_int8: self.int42_int8.exists(keyInt42),
+            int42_int42: self.int42_int42.exists(keyInt42),
+            int42_int256: self.int42_int256.exists(keyInt42),
+            int42_uint8: self.int42_uint8.exists(keyInt42),
+            int42_uint42: self.int42_uint42.exists(keyInt42),
+            int42_uint256: self.int42_uint256.exists(keyInt42),
+            int42_bool: self.int42_bool.exists(keyInt42),
+            int42_cell: self.int42_cell.exists(keyInt42),
+            int42_address: self.int42_address.exists(keyInt42),
+            int42_struct: self.int42_struct.exists(keyInt42),
+
+            int256_int: self.int256_int.exists(keyInt256),
+            int256_int8: self.int256_int8.exists(keyInt256),
+            int256_int42: self.int256_int42.exists(keyInt256),
+            int256_int256: self.int256_int256.exists(keyInt256),
+            int256_uint8: self.int256_uint8.exists(keyInt256),
+            int256_uint42: self.int256_uint42.exists(keyInt256),
+            int256_uint256: self.int256_uint256.exists(keyInt256),
+            int256_bool: self.int256_bool.exists(keyInt256),
+            int256_cell: self.int256_cell.exists(keyInt256),
+            int256_address: self.int256_address.exists(keyInt256),
+            int256_struct: self.int256_struct.exists(keyInt256),
+
+            uint8_int: self.uint8_int.exists(keyUint8),
+            uint8_int8: self.uint8_int8.exists(keyUint8),
+            uint8_int42: self.uint8_int42.exists(keyUint8),
+            uint8_int256: self.uint8_int256.exists(keyUint8),
+            uint8_uint8: self.uint8_uint8.exists(keyUint8),
+            uint8_uint42: self.uint8_uint42.exists(keyUint8),
+            uint8_uint256: self.uint8_uint256.exists(keyUint8),
+            uint8_bool: self.uint8_bool.exists(keyUint8),
+            uint8_cell: self.uint8_cell.exists(keyUint8),
+            uint8_address: self.uint8_address.exists(keyUint8),
+            uint8_struct: self.uint8_struct.exists(keyUint8),
+
+            uint42_int: self.uint42_int.exists(keyUint42),
+            uint42_int8: self.uint42_int8.exists(keyUint42),
+            uint42_int42: self.uint42_int42.exists(keyUint42),
+            uint42_int256: self.uint42_int256.exists(keyUint42),
+            uint42_uint8: self.uint42_uint8.exists(keyUint42),
+            uint42_uint42: self.uint42_uint42.exists(keyUint42),
+            uint42_uint256: self.uint42_uint256.exists(keyUint42),
+            uint42_bool: self.uint42_bool.exists(keyUint42),
+            uint42_cell: self.uint42_cell.exists(keyUint42),
+            uint42_address: self.uint42_address.exists(keyUint42),
+            uint42_struct: self.uint42_struct.exists(keyUint42),
+
+            uint256_int: self.uint256_int.exists(keyUint256),
+            uint256_int8: self.uint256_int8.exists(keyUint256),
+            uint256_int42: self.uint256_int42.exists(keyUint256),
+            uint256_int256: self.uint256_int256.exists(keyUint256),
+            uint256_uint8: self.uint256_uint8.exists(keyUint256),
+            uint256_uint42: self.uint256_uint42.exists(keyUint256),
+            uint256_uint256: self.uint256_uint256.exists(keyUint256),
+            uint256_bool: self.uint256_bool.exists(keyUint256),
+            uint256_cell: self.uint256_cell.exists(keyUint256),
+            uint256_address: self.uint256_address.exists(keyUint256),
+            uint256_struct: self.uint256_struct.exists(keyUint256),
+
+            // Address Key Maps
+            address_int: self.address_int.exists(keyAddress),
+            address_int8: self.address_int8.exists(keyAddress),
+            address_int42: self.address_int42.exists(keyAddress),
+            address_int256: self.address_int256.exists(keyAddress),
+            address_uint8: self.address_uint8.exists(keyAddress),
+            address_uint42: self.address_uint42.exists(keyAddress),
+            address_uint256: self.address_uint256.exists(keyAddress),
+            address_bool: self.address_bool.exists(keyAddress),
+            address_cell: self.address_cell.exists(keyAddress),
+            address_address: self.address_address.exists(keyAddress),
+            address_struct: self.address_struct.exists(keyAddress)
+        };
+    }
+
+    get fun isEmptyAllMaps(): IsEmptyAllMapsResult {
+        return IsEmptyAllMapsResult {
+            // Integer Key Maps
+            int_int: self.int_int.isEmpty(),
+            int_int8: self.int_int8.isEmpty(),
+            int_int42: self.int_int42.isEmpty(),
+            int_int256: self.int_int256.isEmpty(),
+            int_uint8: self.int_uint8.isEmpty(),
+            int_uint42: self.int_uint42.isEmpty(),
+            int_uint256: self.int_uint256.isEmpty(),
+            int_bool: self.int_bool.isEmpty(),
+            int_cell: self.int_cell.isEmpty(),
+            int_address: self.int_address.isEmpty(),
+            int_struct: self.int_struct.isEmpty(),
+
+            int8_int: self.int8_int.isEmpty(),
+            int8_int8: self.int8_int8.isEmpty(),
+            int8_int42: self.int8_int42.isEmpty(),
+            int8_int256: self.int8_int256.isEmpty(),
+            int8_uint8: self.int8_uint8.isEmpty(),
+            int8_uint42: self.int8_uint42.isEmpty(),
+            int8_uint256: self.int8_uint256.isEmpty(),
+            int8_bool: self.int8_bool.isEmpty(),
+            int8_cell: self.int8_cell.isEmpty(),
+            int8_address: self.int8_address.isEmpty(),
+            int8_struct: self.int8_struct.isEmpty(),
+
+            int42_int: self.int42_int.isEmpty(),
+            int42_int8: self.int42_int8.isEmpty(),
+            int42_int42: self.int42_int42.isEmpty(),
+            int42_int256: self.int42_int256.isEmpty(),
+            int42_uint8: self.int42_uint8.isEmpty(),
+            int42_uint42: self.int42_uint42.isEmpty(),
+            int42_uint256: self.int42_uint256.isEmpty(),
+            int42_bool: self.int42_bool.isEmpty(),
+            int42_cell: self.int42_cell.isEmpty(),
+            int42_address: self.int42_address.isEmpty(),
+            int42_struct: self.int42_struct.isEmpty(),
+
+            int256_int: self.int256_int.isEmpty(),
+            int256_int8: self.int256_int8.isEmpty(),
+            int256_int42: self.int256_int42.isEmpty(),
+            int256_int256: self.int256_int256.isEmpty(),
+            int256_uint8: self.int256_uint8.isEmpty(),
+            int256_uint42: self.int256_uint42.isEmpty(),
+            int256_uint256: self.int256_uint256.isEmpty(),
+            int256_bool: self.int256_bool.isEmpty(),
+            int256_cell: self.int256_cell.isEmpty(),
+            int256_address: self.int256_address.isEmpty(),
+            int256_struct: self.int256_struct.isEmpty(),
+
+            uint8_int: self.uint8_int.isEmpty(),
+            uint8_int8: self.uint8_int8.isEmpty(),
+            uint8_int42: self.uint8_int42.isEmpty(),
+            uint8_int256: self.uint8_int256.isEmpty(),
+            uint8_uint8: self.uint8_uint8.isEmpty(),
+            uint8_uint42: self.uint8_uint42.isEmpty(),
+            uint8_uint256: self.uint8_uint256.isEmpty(),
+            uint8_bool: self.uint8_bool.isEmpty(),
+            uint8_cell: self.uint8_cell.isEmpty(),
+            uint8_address: self.uint8_address.isEmpty(),
+            uint8_struct: self.uint8_struct.isEmpty(),
+
+            uint42_int: self.uint42_int.isEmpty(),
+            uint42_int8: self.uint42_int8.isEmpty(),
+            uint42_int42: self.uint42_int42.isEmpty(),
+            uint42_int256: self.uint42_int256.isEmpty(),
+            uint42_uint8: self.uint42_uint8.isEmpty(),
+            uint42_uint42: self.uint42_uint42.isEmpty(),
+            uint42_uint256: self.uint42_uint256.isEmpty(),
+            uint42_bool: self.uint42_bool.isEmpty(),
+            uint42_cell: self.uint42_cell.isEmpty(),
+            uint42_address: self.uint42_address.isEmpty(),
+            uint42_struct: self.uint42_struct.isEmpty(),
+
+            uint256_int: self.uint256_int.isEmpty(),
+            uint256_int8: self.uint256_int8.isEmpty(),
+            uint256_int42: self.uint256_int42.isEmpty(),
+            uint256_int256: self.uint256_int256.isEmpty(),
+            uint256_uint8: self.uint256_uint8.isEmpty(),
+            uint256_uint42: self.uint256_uint42.isEmpty(),
+            uint256_uint256: self.uint256_uint256.isEmpty(),
+            uint256_bool: self.uint256_bool.isEmpty(),
+            uint256_cell: self.uint256_cell.isEmpty(),
+            uint256_address: self.uint256_address.isEmpty(),
+            uint256_struct: self.uint256_struct.isEmpty(),
+
+            // Address Key Maps
+            address_int: self.address_int.isEmpty(),
+            address_int8: self.address_int8.isEmpty(),
+            address_int42: self.address_int42.isEmpty(),
+            address_int256: self.address_int256.isEmpty(),
+            address_uint8: self.address_uint8.isEmpty(),
+            address_uint42: self.address_uint42.isEmpty(),
+            address_uint256: self.address_uint256.isEmpty(),
+            address_bool: self.address_bool.isEmpty(),
+            address_cell: self.address_cell.isEmpty(),
+            address_address: self.address_address.isEmpty(),
+            address_struct: self.address_struct.isEmpty()
+        };
+    }
+
+    get fun asCellAllMaps(): AsCellAllMapsResult {
+        return AsCellAllMapsResult {
+            // Integer Key Maps
+            int_int: self.int_int.asCell(),
+            int_int8: self.int_int8.asCell(),
+            int_int42: self.int_int42.asCell(),
+            int_int256: self.int_int256.asCell(),
+            int_uint8: self.int_uint8.asCell(),
+            int_uint42: self.int_uint42.asCell(),
+            int_uint256: self.int_uint256.asCell(),
+            int_bool: self.int_bool.asCell(),
+            int_cell: self.int_cell.asCell(),
+            int_address: self.int_address.asCell(),
+            int_struct: self.int_struct.asCell(),
+
+            int8_int: self.int8_int.asCell(),
+            int8_int8: self.int8_int8.asCell(),
+            int8_int42: self.int8_int42.asCell(),
+            int8_int256: self.int8_int256.asCell(),
+            int8_uint8: self.int8_uint8.asCell(),
+            int8_uint42: self.int8_uint42.asCell(),
+            int8_uint256: self.int8_uint256.asCell(),
+            int8_bool: self.int8_bool.asCell(),
+            int8_cell: self.int8_cell.asCell(),
+            int8_address: self.int8_address.asCell(),
+            int8_struct: self.int8_struct.asCell(),
+
+            int42_int: self.int42_int.asCell(),
+            int42_int8: self.int42_int8.asCell(),
+            int42_int42: self.int42_int42.asCell(),
+            int42_int256: self.int42_int256.asCell(),
+            int42_uint8: self.int42_uint8.asCell(),
+            int42_uint42: self.int42_uint42.asCell(),
+            int42_uint256: self.int42_uint256.asCell(),
+            int42_bool: self.int42_bool.asCell(),
+            int42_cell: self.int42_cell.asCell(),
+            int42_address: self.int42_address.asCell(),
+            int42_struct: self.int42_struct.asCell(),
+
+            int256_int: self.int256_int.asCell(),
+            int256_int8: self.int256_int8.asCell(),
+            int256_int42: self.int256_int42.asCell(),
+            int256_int256: self.int256_int256.asCell(),
+            int256_uint8: self.int256_uint8.asCell(),
+            int256_uint42: self.int256_uint42.asCell(),
+            int256_uint256: self.int256_uint256.asCell(),
+            int256_bool: self.int256_bool.asCell(),
+            int256_cell: self.int256_cell.asCell(),
+            int256_address: self.int256_address.asCell(),
+            int256_struct: self.int256_struct.asCell(),
+
+            uint8_int: self.uint8_int.asCell(),
+            uint8_int8: self.uint8_int8.asCell(),
+            uint8_int42: self.uint8_int42.asCell(),
+            uint8_int256: self.uint8_int256.asCell(),
+            uint8_uint8: self.uint8_uint8.asCell(),
+            uint8_uint42: self.uint8_uint42.asCell(),
+            uint8_uint256: self.uint8_uint256.asCell(),
+            uint8_bool: self.uint8_bool.asCell(),
+            uint8_cell: self.uint8_cell.asCell(),
+            uint8_address: self.uint8_address.asCell(),
+            uint8_struct: self.uint8_struct.asCell(),
+
+            uint42_int: self.uint42_int.asCell(),
+            uint42_int8: self.uint42_int8.asCell(),
+            uint42_int42: self.uint42_int42.asCell(),
+            uint42_int256: self.uint42_int256.asCell(),
+            uint42_uint8: self.uint42_uint8.asCell(),
+            uint42_uint42: self.uint42_uint42.asCell(),
+            uint42_uint256: self.uint42_uint256.asCell(),
+            uint42_bool: self.uint42_bool.asCell(),
+            uint42_cell: self.uint42_cell.asCell(),
+            uint42_address: self.uint42_address.asCell(),
+            uint42_struct: self.uint42_struct.asCell(),
+
+            uint256_int: self.uint256_int.asCell(),
+            uint256_int8: self.uint256_int8.asCell(),
+            uint256_int42: self.uint256_int42.asCell(),
+            uint256_int256: self.uint256_int256.asCell(),
+            uint256_uint8: self.uint256_uint8.asCell(),
+            uint256_uint42: self.uint256_uint42.asCell(),
+            uint256_uint256: self.uint256_uint256.asCell(),
+            uint256_bool: self.uint256_bool.asCell(),
+            uint256_cell: self.uint256_cell.asCell(),
+            uint256_address: self.uint256_address.asCell(),
+            uint256_struct: self.uint256_struct.asCell(),
+
+            // Address Key Maps
+            address_int: self.address_int.asCell(),
+            address_int8: self.address_int8.asCell(),
+            address_int42: self.address_int42.asCell(),
+            address_int256: self.address_int256.asCell(),
+            address_uint8: self.address_uint8.asCell(),
+            address_uint42: self.address_uint42.asCell(),
+            address_uint256: self.address_uint256.asCell(),
+            address_bool: self.address_bool.asCell(),
+            address_cell: self.address_cell.asCell(),
+            address_address: self.address_address.asCell(),
+            address_struct: self.address_struct.asCell()
+        };
     }
 }
