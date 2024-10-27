@@ -16,6 +16,7 @@ import {
     AstOpBinary,
     AstOpUnary,
     AstStatementAugmentedAssign,
+    AstStatementDestruct,
     AstStaticCall,
     AstString,
     AstStructInstance,
@@ -79,6 +80,10 @@ export type InterpreterConfig = {
     // If a loop takes more than such number of iterations, the interpreter will fail evaluation.
     // This option applies to: do...until, while and repeat loops.
     maxLoopIterations: bigint;
+
+    // Whenever a field or id does not exist, throw a fatal error if true;
+    // throw non fatal error otherwise.
+    missingFieldsAndIdsAreAlwaysFatal: boolean;
 };
 
 const WILDCARD_NAME: string = "_";
@@ -295,6 +300,8 @@ export const defaultInterpreterConfig: InterpreterConfig = {
     // I think maxLoopIterations should be a command line option in case a user wants to wait more
     // during evaluation.
     maxLoopIterations: 2n ** 12n,
+
+    missingFieldsAndIdsAreAlwaysFatal: false,
 };
 
 /*
@@ -356,13 +363,21 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
         this.envStack = envStack;
     }
 
+    protected emitFieldOrIdError(message: string, src: SrcInfo): never {
+        if (this.config.missingFieldsAndIdsAreAlwaysFatal) {
+            throwErrorConstEval(message, src);
+        } else {
+            throwNonFatalErrorConstEval(message, src);
+        }
+    }
+
     public lookupBinding(name: AstId): Value {
         if (hasStaticConstant(this.context, idText(name))) {
             const constant = getStaticConstant(this.context, idText(name));
             if (constant.value !== undefined) {
                 return constant.value;
             } else {
-                throwNonFatalErrorConstEval(
+                this.emitFieldOrIdError(
                     `cannot evaluate declared constant ${idText(name)} as it does not have a body`,
                     name.loc,
                 );
@@ -372,7 +387,7 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
         if (variableBinding !== undefined) {
             return variableBinding;
         }
-        throwNonFatalErrorConstEval("cannot evaluate a variable", name.loc);
+        this.emitFieldOrIdError("cannot evaluate a variable", name.loc);
     }
 
     public evalBuiltinOnSelf(
@@ -530,7 +545,7 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
                     );
                 if (foundContractConst === undefined) {
                     // not a constant, e.g. `self.storageVariable`
-                    throwNonFatalErrorConstEval(
+                    this.emitFieldOrIdError(
                         "cannot evaluate non-constant self field access",
                         ast.aggregate.loc,
                     );
@@ -538,7 +553,7 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
                 if (foundContractConst.value !== undefined) {
                     return foundContractConst.value;
                 } else {
-                    throwNonFatalErrorConstEval(
+                    this.emitFieldOrIdError(
                         `cannot evaluate declared contract/trait constant ${idTextErr(ast.field)} as it does not have a body`,
                         ast.field.loc,
                     );
@@ -571,7 +586,7 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
         if (idText(field) in struct) {
             return struct[idText(field)]!;
         } else {
-            throwNonFatalErrorConstEval(
+            this.emitFieldOrIdError(
                 `struct field ${idTextErr(field)} is missing`,
                 src,
             );
@@ -911,6 +926,59 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
         );
     }
 
+    public evalDestructStatement(
+        ast: AstStatementDestruct,
+        exprEvaluator: () => Value,
+    ) {
+        for (const [_, name] of ast.identifiers.values()) {
+            if (hasStaticConstant(this.context, idText(name))) {
+                // Attempt of shadowing a constant in a destructuring declaration
+                throwInternalCompilerError(
+                    `declaration of ${idText(name)} shadows a constant with the same name`,
+                    ast.loc,
+                );
+            }
+        }
+        const val = exprEvaluator();
+        if (
+            val === null ||
+            typeof val !== "object" ||
+            !("$tactStruct" in val)
+        ) {
+            throwInternalCompilerError(
+                `destructuring assignment expected a struct, but got ${showValue(
+                    val,
+                )}`,
+                ast.expression.loc,
+            );
+        }
+        if (ast.identifiers.size !== Object.keys(val).length - 1) {
+            this.emitFieldOrIdError(
+                `destructuring assignment expected ${Object.keys(val).length - 1} fields, but got ${
+                    ast.identifiers.size
+                }`,
+                ast.loc,
+            );
+        }
+
+        for (const [field, name] of ast.identifiers.values()) {
+            if (name.text === "_") {
+                continue;
+            }
+            const v = val[idText(field)];
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (v === undefined) {
+                this.emitFieldOrIdError(
+                    `destructuring assignment expected field ${idTextErr(
+                        field,
+                    )}`,
+                    ast.loc,
+                );
+            }
+            this.envStack.setNewBinding(idText(name), v);
+        }
+    }
+
     public storeNewBinding(id: AstId, exprValue: Value) {
         if (hasStaticConstant(this.context, idText(id))) {
             // Attempt of shadowing a constant in a let declaration
@@ -958,7 +1026,7 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
                     // (because we are not accessing the last id in the path)
                     innerValue = tempValue as StructValue;
                 } else {
-                    throwNonFatalErrorConstEval(
+                    this.emitFieldOrIdError(
                         `cannot find field ${fieldName}`,
                         path[i]!.loc,
                     );
@@ -970,7 +1038,7 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
             innerValue[idText(path[path.length - 1]!)] =
                 this.copyValue(exprValue);
         } else {
-            throwNonFatalErrorConstEval(
+            this.emitFieldOrIdError(
                 `cannot find identifier ${idText(path[0]!)}`,
                 path[0]!.loc,
             );

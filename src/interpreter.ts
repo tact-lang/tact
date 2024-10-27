@@ -230,6 +230,8 @@ export abstract class InterpreterInterface<T> {
 
     public abstract interpretLetStatement(ast: AstStatementLet): void;
 
+    public abstract interpretDestructStatement(ast: AstStatementDestruct): void;
+
     public abstract interpretAssignStatement(ast: AstStatementAssign): void;
 
     public abstract interpretAugmentedAssignStatement(
@@ -464,53 +466,8 @@ export abstract class AbstractInterpreter<T> extends InterpreterInterface<T> {
     }
 
     public interpretDestructStatement(ast: AstStatementDestruct) {
-        for (const [_, name] of ast.identifiers.values()) {
-            if (hasStaticConstant(this.context, idText(name))) {
-                // Attempt of shadowing a constant in a destructuring declaration
-                throwInternalCompilerError(
-                    `declaration of ${idText(name)} shadows a constant with the same name`,
-                    ast.loc,
-                );
-            }
-        }
-        const val = this.interpretExpression(ast.expression);
-        if (
-            val === null ||
-            typeof val !== "object" ||
-            !("$tactStruct" in val)
-        ) {
-            throwErrorConstEval(
-                `destructuring assignment expected a struct, but got ${showValue(
-                    val,
-                )}`,
-                ast.expression.loc,
-            );
-        }
-        if (ast.identifiers.size !== Object.keys(val).length - 1) {
-            throwErrorConstEval(
-                `destructuring assignment expected ${Object.keys(val).length - 1} fields, but got ${
-                    ast.identifiers.size
-                }`,
-                ast.loc,
-            );
-        }
-
-        for (const [field, name] of ast.identifiers.values()) {
-            if (name.text === "_") {
-                continue;
-            }
-            const v = val[idText(field)];
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            if (v === undefined) {
-                throwErrorConstEval(
-                    `destructuring assignment expected field ${idTextErr(
-                        field,
-                    )}`,
-                    ast.loc,
-                );
-            }
-            this.envStack.setNewBinding(idText(name), v);
-        }
+        const exprEvaluator = () => this.interpretExpression(ast.expression);
+        this.evalDestructStatement(ast, exprEvaluator);
     }
 
     public interpretAssignStatement(ast: AstStatementAssign) {
@@ -782,6 +739,11 @@ export abstract class AbstractInterpreter<T> extends InterpreterInterface<T> {
         leftValue: T,
         rightEvaluator: () => T,
     ): T;
+
+    public abstract evalDestructStatement(
+        ast: AstStatementDestruct,
+        exprEvaluator: () => T,
+    ): void;
 
     public abstract lookupBinding(path: AstId): T;
 

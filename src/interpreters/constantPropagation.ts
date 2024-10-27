@@ -48,6 +48,7 @@ import {
     AstInitOf,
     isValue,
     AstValue,
+    AstStatementDestruct,
 } from "../grammar/ast";
 import { InterpreterInterface } from "../interpreter";
 import { extractValue } from "../optimizer/util";
@@ -505,9 +506,6 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
     }
 
     public interpretLetStatement(ast: AstStatementLet) {
-        // Need to try evaluation of expression. If this fails,
-        // "undefined" is the final value
-
         const val = this.analyzeTopLevelExpression(ast.expression);
         // In case the cancel_assignments flag is active, treat the expression
         // as failed, since the assigned variable will be treated as undetermined.
@@ -515,6 +513,32 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
             ast.name,
             this.cancel_assignments ? undefined : val,
         );
+    }
+
+    public interpretDestructStatement(ast: AstStatementDestruct): void {
+        const rawVal = this.analyzeTopLevelExpression(ast.expression);
+
+        if (rawVal !== undefined) {
+            // Typechecker ensures val is a struct-like object (contracts and traits treated as structs by analyzer).
+            const valStruct = rawVal as StructValue;
+            // There is no need to do further checks because the analyzer works with partial structs
+            for (const [field, name] of ast.identifiers.values()) {
+                const val = valStruct[idText(field)];
+                // No need to check for wildcard name "_" because the environment stack handles it
+
+                // In case the cancel_assignments flag is active, treat the expression
+                // as failed, since the assigned variable will be treated as undetermined.
+                this.storeNewBinding(
+                    name,
+                    this.cancel_assignments ? undefined : val,
+                );
+            }
+        } else {
+            // All the names in the destruct statement are undetermined
+            for (const [_, name] of ast.identifiers.values()) {
+                this.storeNewBinding(name, undefined);
+            }
+        }
     }
 
     public interpretAssignStatement(ast: AstStatementAssign) {
