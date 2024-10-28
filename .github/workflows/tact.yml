@@ -232,9 +232,13 @@ jobs:
         if: ${{ matrix.package-manager == 'pnpm' }}
         run: |
           npm i -g pnpm@9.12.2
+          # To help pnpm recognize the shell (they cannot do it themselves sometimes...)
           ${{ matrix.os != 'windows-latest' && 'export SHELL=bash' || 'echo windows_noop' }}
           pnpm setup -f
-          ${{ matrix.os != 'windows-latest' && 'source ~/.bashrc' || 'echo windows_noop' }}
+          # To source .bashrc on Linux:
+          ${{ matrix.os == 'ubuntu-latest' && 'source ~/.bashrc' || 'echo noop' }}
+          # To expose stuff for pnpm directly on macOS (because otherwise the pre-installed Node.js version gets used):
+          ${{ matrix.os == 'macos-latest' && 'export PNPM_HOME=~/Library/pnpm; export PATH=$PNPM_PATH:$PATH' || 'echo noop' }}
           pnpm link -g
           cd ..
           pnpm create ton@latest test-project --type tact-counter --contractName Counter
