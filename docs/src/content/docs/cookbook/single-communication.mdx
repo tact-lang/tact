@@ -1,6 +1,9 @@
 ---
-title: Single-contract Communication
+title: Single-contract communication
 description: "Common examples of communication of a single deployed contract with other contracts on blockchain"
+prev:
+  link: /cookbook
+  label: Cookbook overview
 ---
 
 This page lists examples of communication of a single deployed contract with other contracts on blockchain.
@@ -10,20 +13,26 @@ For examples of communication between multiple deployed contracts see: [Multi-co
 ## How to make a basic reply
 
 ```tact
-receive() {
-    self.reply("Hello, World!".asComment()); // asComment converts a String to a Cell with a comment
+contract Example {
+    receive() {
+        self.reply("Hello, World!".asComment()); // asComment converts a String to a Cell with a comment
+    }
 }
 ```
 
 ## How to send a simple message
 
 ```tact
-send(SendParameters{
-    bounce: true, // default
-    to: destinationAddress,
-    value: ton("0.01"), // attached amount of Tons to send
-    body: "Hello from Tact!".asComment(), // comment (optional)
-});
+contract Example {
+    receive() {
+        send(SendParameters{
+            bounce: true, // default
+            to: sender(), // or another destination address
+            value: ton("0.01"), // attached amount of Tons to send
+            body: "Hello from Tact!".asComment(), // comment (optional)
+        });
+    }
+}
 ```
 
 ## How to send a message with the entire balance
@@ -31,13 +40,17 @@ send(SendParameters{
 If we need to send the whole balance of the smart contract, then we should use the `SendRemainingBalance{:tact}` send mode. Alternatively, we can use `mode: 128{:tact}`, which has the same meaning.
 
 ```tact
-send(SendParameters{
-    // bounce = true by default
-    to: sender(), // send the message back to the original sender
-    value: 0,
-    mode: SendRemainingBalance, // or mode: 128
-    body: "Hello from Tact!".asComment(), // comment (optional)
-});
+contract Example {
+    receive() {
+        send(SendParameters{
+            // bounce = true by default
+            to: sender(), // send the message back to the original sender
+            value: 0,
+            mode: SendRemainingBalance, // or mode: 128
+            body: "Hello from Tact!".asComment(), // comment (optional)
+        });
+    }
+}
 ```
 
 ## How to send a message with the remaining value
@@ -45,25 +58,33 @@ send(SendParameters{
 If we want to make a reply to the same sender, we can use the mode `SendRemainingValue{:tact}` (i.e. `mode: 64{:tact}`), which carries all the remaining value of the inbound message in addition to the value initially indicated in the new message.
 
 ```tact
-send(SendParameters{
-    // bounce = true by default
-    to: sender(), // send the message back to the original sender
-    value: 0,
-    mode: SendRemainingValue,
-    body: "Hello from Tact!".asComment(), // comment (optional)
-});
+contract Example {
+    receive() {
+        send(SendParameters{
+            // bounce = true by default
+            to: sender(), // send the message back to the original sender
+            value: 0,
+            mode: SendRemainingValue,
+            body: "Hello from Tact!".asComment(), // comment (optional)
+        });
+    }
+}
 ```
 
 It's often useful to add the `SendIgnoreErrors{:tact}` flag too, in order to ignore any errors arising while processing this message during the action phaseL
 
 ```tact
-send(SendParameters{
-    // bounce = true by default
-    to: sender(), // send the message back to the original sender
-    value: 0,
-    mode: SendRemainingValue | SendIgnoreErrors, // prefer using | over + for the mode
-    body: "Hello from Tact!".asComment(), // comment (optional)
-});
+contract Example {
+    receive() {
+        send(SendParameters{
+            // bounce = true by default
+            to: sender(), // send the message back to the original sender
+            value: 0,
+            mode: SendRemainingValue | SendIgnoreErrors, // prefer using | over + for the mode
+            body: "Hello from Tact!".asComment(), // comment (optional)
+        });
+    }
+}
 ```
 
 The latter example is identical to using a [`.reply(){:tact}` function](#how-to-make-a-basic-reply).
@@ -73,17 +94,21 @@ The latter example is identical to using a [`.reply(){:tact}` function](#how-to-
 If we need to send a message with a lengthy text comment, we should create a [`String{:tact}`](/book/types#primitive-types) that consists of more than $127$ characters. To do this, we can utilize the [`StringBuilder{:tact}`](/book/types#primitive-types) primitive type and its methods called `beginComment(){:tact}` and `append(){:tact}`. Prior to sending, we should convert this string into a cell using the `toCell(){:tact}` method.
 
 ```tact
-let comment: StringBuilder = beginComment();
-let longString = "..."; // Some string with more than 127 characters.
-comment.append(longString);
+contract Example {
+    receive() {
+        let comment: StringBuilder = beginComment();
+        let longString = "..."; // Some string with more than 127 characters.
+        comment.append(longString);
 
-send(SendParameters{
-    // bounce = true by default
-    to: sender(),
-    value: 0,
-    mode: SendIgnoreErrors,
-    body: comment.toCell(),
-});
+        send(SendParameters{
+            // bounce = true by default
+            to: sender(),
+            value: 0,
+            mode: SendIgnoreErrors,
+            body: comment.toCell(),
+        });
+    }
+}
 ```
 
 :::note[Useful links:]
