@@ -22,14 +22,21 @@ Use [receiver](/book/receive) function to accept notification message.
 
   Sender of notification must be validated!
 
-:::caution
+:::
 
 Validation can be done in two ways:
 
 1. Directly store the NFT item address and validate against it.
 
 ```tact
-contract Example with Deployable {
+import "@stdlib/deploy";
+
+message(0x05138d91) NFTOwnershipAssigned {
+    previousOwner: Address;
+    forwardPayload: Slice as remaining;
+}
+
+contract SingleNft with Deployable {
     nftItemAddress: Address;
 
     init(nftItemAddress: Address) {
@@ -37,7 +44,7 @@ contract Example with Deployable {
     }
 
     receive(msg: NFTOwnershipAssigned) {
-        require(nftItemAddress == sender(), "NFT contract is not the sender");
+        require(self.nftItemAddress == sender(), "NFT contract is not the sender");
 
         // your logic of processing nft ownership assign notification
     }
@@ -47,6 +54,13 @@ contract Example with Deployable {
 2. Use [`StateInit{:tact}`](/book/expressions#initof) and derived address of the NFT item.
 
 ```tact
+import "@stdlib/deploy";
+
+message(0x05138d91) NFTOwnershipAssigned {
+    previousOwner: Address;
+    forwardPayload: Slice as remaining;
+}
+
 struct NFTItemInitData {
     index: Int as uint64;
     collectionAddress: Address;
@@ -61,7 +75,7 @@ inline fun calculateNFTAddress(index: Int, collectionAddress: Address, nftCode: 
     return contractAddress(StateInit{code: nftCode, data: initData.toCell()});
 }
 
-contract Example with Deployable {
+contract NftInCollection with Deployable {
     nftCollectionAddress: Address;
     nftItemIndex: Int as uint64;
     nftCode: Cell;
@@ -88,6 +102,8 @@ Since the initial data layout of the NFT item can vary, the first approach is of
 To send NFT item transfer use [`send(){:tact}`](/book/send) function.
 
 ```tact
+import "@stdlib/deploy";
+
 message(0x5fcc3d14) NFTTransfer {
     queryId: Int as uint64;
     newOwner: Address; // address of the new owner of the NFT item.
@@ -97,19 +113,30 @@ message(0x5fcc3d14) NFTTransfer {
     forwardPayload: Slice as remaining; // optional custom data that should be sent to the new owner.
 }
 
-receive("transfer") {
-    send(SendParameters{
-        to: self.nftItemAddress,
-        value: ton("0.1"),
-        body: NFTTransfer{
-            queryId: 42,
-            newOwner: address("NEW_OWNER_ADDRESS"), // NOTE: Modify it to your liking
-            responseDestination: myAddress(),
-            customPayload: null,
-            forwardAmount: 1,
-            forwardPayload: rawSlice("F"), // precomputed beginCell().storeUint(0xF, 4).endCell().beginParse()
-        }.toCell(),
-    });
+contract Example {
+    nftItemAddress: Address;
+
+    init(nftItemAddress: Address) {
+        self.nftItemAddress = nftItemAddress;
+    }
+
+    // ... add more code from previous examples ...
+
+    receive("transfer") {
+        send(SendParameters{
+            to: self.nftItemAddress,
+            value: ton("0.1"),
+            body: NFTTransfer{
+                queryId: 42,
+                // FIXME: Change this according to your needs
+                newOwner: sender(),
+                responseDestination: myAddress(),
+                customPayload: null,
+                forwardAmount: 1,
+                forwardPayload: rawSlice("F"), // precomputed beginCell().storeUint(0xF, 4).endCell().beginParse()
+            }.toCell(),
+        });
+    }
 }
 ```
 
@@ -129,22 +156,51 @@ message(0x8b771735) NFTReportStaticData {
     collection: Address;
 }
 
-receive("get static data") {
-    let nftAddress = address("[NFT_ADDRESS]");
-    send(SendParameters{
-        to: nftAddress,
-        value: ton("0.1"),
-        body: NFTGetStaticData{
-            queryId: 42,
-        }.toCell(),
-    });
+struct NFTItemInitData {
+    index: Int as uint64;
+    collectionAddress: Address;
 }
 
-receive(msg: NFTReportStaticData) {
-    let expectedNftAddress = calculateNFTAddress(msg.index, msg.collection, self.nftCode);
-    require(self.nftItemAddress == sender(), "NFT contract is not the sender");
+inline fun calculateNFTAddress(index: Int, collectionAddress: Address, nftCode: Cell): Address {
+    let initData = NFTItemInitData{
+        index,
+        collectionAddress,
+    };
 
-    // Save nft static data or do something
+    return contractAddress(StateInit{code: nftCode, data: initData.toCell()});
+}
+
+contract Example {
+    nftCollectionAddress: Address;
+    nftItemIndex: Int as uint64;
+    nftCode: Cell;
+
+    init(nftCollectionAddress: Address, nftItemIndex: Int, nftCode: Cell) {
+        self.nftCollectionAddress = nftCollectionAddress;
+        self.nftItemIndex = nftItemIndex;
+        self.nftCode = nftCode;
+    }
+
+    // ... add more code from previous examples ...
+
+    receive("get static data") {
+        // FIXME: Put proper address("[NFT_ADDRESS]") here
+        let nftAddress = sender();
+        send(SendParameters{
+            to: nftAddress,
+            value: ton("0.1"),
+            body: NFTGetStaticData{
+                queryId: 42,
+            }.toCell(),
+        });
+    }
+
+    receive(msg: NFTReportStaticData) {
+        let expectedNftAddress = calculateNFTAddress(msg.index, msg.collection, self.nftCode);
+        require(expectedNftAddress == sender(), "NFT contract is not the sender");
+
+        // Save nft static data or do something
+    }
 }
 ```
 
@@ -164,20 +220,30 @@ message(0xa8cb00ad) NFTReportRoyaltyParams {
     destination: Address;
 }
 
-receive("get royalty params") {
-    send(SendParameters{
-        to: self.nftCollectionAddress,
-        value: ton("0.1"),
-        body: NFTGetRoyaltyParams{
-            queryId: 42,
-        }.toCell(),
-    });
-}
+contract Example {
+    nftCollectionAddress: Address;
 
-receive(msg: NFTReportRoyaltyParams) {
-    require(self.nftCollectionAddress == sender(), "NFT collection contract is not the sender");
+    init(nftCollectionAddress: Address) {
+        self.nftCollectionAddress = nftCollectionAddress;
+    }
 
-    // Do something with msg
+    // ... add more code from previous examples ...
+
+    receive("get royalty params") {
+        send(SendParameters{
+            to: self.nftCollectionAddress,
+            value: ton("0.1"),
+            body: NFTGetRoyaltyParams{
+                queryId: 42,
+            }.toCell(),
+        });
+    }
+
+    receive(msg: NFTReportRoyaltyParams) {
+        require(self.nftCollectionAddress == sender(), "NFT collection contract is not the sender");
+
+        // Do something with msg
+    }
 }
 ```
 
@@ -202,17 +268,27 @@ message(0x1) NFTDeploy {
     nftContent: Cell;
 }
 
-receive("deploy") {
-    send(SendParameters{
-        to: self.nftCollectionAddress,
-        value: ton("0.14"),
-        body: NFTDeploy{
-            queryId: 42,
-            itemIndex: 42,
-            amount: ton("0.1"),
-            content: beginCell().endCell() // Should be your content, mostly generated offchain
-        }.toCell(),
-    });
+contract Example {
+    nftCollectionAddress: Address;
+
+    init(nftCollectionAddress: Address) {
+        self.nftCollectionAddress = nftCollectionAddress;
+    }
+
+    // ... add more code from previous examples ...
+
+    receive("deploy") {
+        send(SendParameters{
+            to: self.nftCollectionAddress,
+            value: ton("0.14"),
+            body: NFTDeploy{
+                queryId: 42,
+                itemIndex: 42,
+                amount: ton("0.1"),
+                nftContent: beginCell().endCell() // FIXME: Should be your content, mostly generated offchain
+            }.toCell(),
+        });
+    }
 }
 ```
 
@@ -224,15 +300,26 @@ message(0x3) NFTChangeOwner {
     newOwner: Address;
 }
 
-receive("change owner") {
-    send(SendParameters{
-        to: self.nftCollectionAddress,
-        value: ton("0.05"),
-        body: NFTChangeOwner{
-            queryId: 42,
-            newOwner: address("NEW_OWNER_ADDRESS"), // NOTE: Modify it to your liking
-        }.toCell(),
-    });
+contract Example {
+    nftCollectionAddress: Address;
+
+    init(nftCollectionAddress: Address) {
+        self.nftCollectionAddress = nftCollectionAddress;
+    }
+
+    // ... add more code from previous examples ...
+
+    receive("change owner") {
+        send(SendParameters{
+            to: self.nftCollectionAddress,
+            value: ton("0.05"),
+            body: NFTChangeOwner{
+                queryId: 42,
+                // FIXME: Put proper address("NEW_OWNER_ADDRESS") here
+                newOwner: sender(),
+            }.toCell(),
+        });
+    }
 }
 ```
 

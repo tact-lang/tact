@@ -42,6 +42,10 @@ jobs:
           cache: "yarn"
           cache-dependency-path: "docs/yarn.lock"
 
+      - name: Perform syntax and type checking of the Cookbook
+        working-directory: docs
+        run: node scripts/check-cookbook-examples.js
+
       - name: Install dependencies
         working-directory: docs
         run: yarn deps
