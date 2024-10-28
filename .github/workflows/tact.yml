@@ -238,7 +238,7 @@ jobs:
           # To source .bashrc on Linux:
           ${{ matrix.os == 'ubuntu-latest' && 'source ~/.bashrc' || 'echo noop' }}
           # To expose stuff for pnpm directly on macOS (because otherwise the pre-installed Node.js version gets used):
-          ${{ matrix.os == 'macos-latest' && 'export PNPM_HOME=~/Library/pnpm; export PATH=$PNPM_PATH:$PATH' || 'echo noop' }}
+          ${{ matrix.os == 'macos-latest' && 'export PNPM_HOME=~/Library/pnpm; export PATH=$PNPM_HOME:$PATH' || 'echo noop' }}
           pnpm link -g
           cd ..
           pnpm create ton@latest test-project --type tact-counter --contractName Counter
