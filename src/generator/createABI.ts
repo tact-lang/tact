@@ -158,8 +158,8 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     errors["36"] = {
         message: "Invalid destination address in outbound message",
     };
-    errors["37"] = { message: "Not enough TON" };
-    errors["38"] = { message: "Not enough extra-currencies" };
+    errors["37"] = { message: "Not enough Toncoin" };
+    errors["38"] = { message: "Not enough extra currencies" };
     errors["39"] = {
         message: "Outbound message does not fit into a cell after rewriting",
     };
