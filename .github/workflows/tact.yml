@@ -232,7 +232,9 @@ jobs:
         if: ${{ matrix.package-manager == 'pnpm' }}
         run: |
           npm i -g pnpm@9.12.2
+          ${{ matrix.os != 'windows-latest' && 'export SHELL=bash' || 'echo windows_noop' }}
           pnpm setup -f
+          ${{ matrix.os != 'windows-latest' && 'source ~/.bashrc' || 'echo windows_noop' }}
           pnpm link -g
           cd ..
           pnpm create ton@latest test-project --type tact-counter --contractName Counter
