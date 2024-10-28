@@ -1,12 +1,6 @@
----
-title: DeDust.io
-description: "This page list examples of working with DeDust, a decentralized exchange and automated market maker built natively on TON Blockchain and DeDust Protocol"
-sidebar:
-  order: 1
----
-
 # DeDust.io
 
+import { Callout } from 'nextra-theme-docs';
 
 [DeDust](https://dedust.io) is a decentralized exchange (DEX) and automated market maker (AMM) built natively on [TON Blockchain](https://ton.org) and [DeDust Protocol 2.0](https://docs.dedust.io/reference/tlb-schemes). DeDust is designed with a meticulous attention to user experience (UX), gas efficiency, and extensibility.
 
@@ -14,12 +8,12 @@ sidebar:
 
 You can read more about swaps on [DeDust documentation](https://docs.dedust.io/docs/swaps).
 
-:::caution
+<Callout type="warning" emoji="⚠️">
 
   It's important to ensure that contracts are deployed.
   Sending funds to an inactive contract could result in irretrievable loss.
 
-:::
+</Callout>
 
 All kinds of swaps shares same structures:
 
@@ -154,5 +148,200 @@ fun makeJettonSwap() {
             }.toCell()
         }.toCell()
     });
+}
+```
+
+
+## Liquidity Provisioning
+
+To provide liquidity to a specific DeDust pool, you must supply both assets. After doing so, the pool issues LP tokens to the depositor's address.
+
+You can read more about liquidity provisioning on [DeDust documentation](https://docs.dedust.io/docs/liquidity-provisioning).
+
+```tact
+const PoolTypeVolatile: Int = 0;
+const PoolTypeStable: Int = 1;
+
+const AssetTypeNative: Int = 0b0000;
+const AssetTypeJetton: Int = 0b0001;
+
+const JettonProvideLpGas: Int = ton("0.5");
+const JettonProvideLpGasFwd: Int = ton("0.4");
+const TonProvideLpGas: Int = ton("0.15");
+
+const JettonMaster: Address = address("kQDkRHlWaibL7Tww48T6xAUFevPflca7i8TIiQTacBmnDOrb");
+//const JettonMasterRaw: RawAddress = JettonMaster.toRaw(); TODO: maybe there is constant evaluation in tact? Did not find anything
+const JettonVault: Address = address("kQDcUuH4xhKejjilZAIeGuBh5JRWpzbVDcO9Qfh_Q_K4q9vk");
+const TonVault: Address = address("EQDa4VOnTYlLvDJ0gZjNYm5PXfSmmtL6Vs6A_CZEtXCNICq_");
+
+struct RawAddress {
+    workchain: Int as uint8;
+    hash: Int as uint256;
+}
+
+extends fun toRaw(self: Address): RawAddress {
+    let addressSlice: Slice = self.asSlice();
+
+    addressSlice.skipBits(3);
+    return RawAddress {
+    workchain: addressSlice.loadUint(8),
+    hash: addressSlice.loadUint(256),
+    }
+}
+
+message(0xf8a7ea5) JettonTransfer {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    destination: Address;
+    responseDestination: Address?;
+    customPayload: Cell? = null;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Cell?;
+}
+
+struct Asset {
+    type: Int as uint4;
+    workchain: Int? as uint8 = null;
+    hash: Int? as uint256 = null;
+}
+
+extends fun build(self: Asset): Cell {
+    let assetBuilder = beginCell()
+        .storeUint(self.type, 4);
+
+    if (self.type == AssetTypeNative) {
+        return assetBuilder.endCell();
+    }
+    if (self.type == AssetTypeJetton) {
+        return assetBuilder
+            .storeUint(self.workchain!!, 8)
+            .storeUint(self.hash!!, 256)
+            .endCell();
+    }
+
+    require(false, "Unknown asset type");
+    return beginCell().endCell();
+}
+
+message(0x40e108d6) JettonDepositLiquidity {
+    poolType: Int as uint1; // PoolType
+    asset0: Asset;
+    asset1: Asset;
+    minimalLpAmount: Int as coins = 0;
+    targetBalances0: Int as coins;
+    targetBalances1: Int as coins;
+    fulfillPayload: Cell? = null;
+    rejectPayload: Cell? = null;
+}
+
+extends fun build(self: JettonDepositLiquidity): Cell {
+    return beginCell()
+        .storeUint(0x40e108d6, 32)
+        .storeUint(self.poolType, 1)
+        .storeSlice(self.asset0.build().asSlice())
+        .storeSlice(self.asset1.build().asSlice())
+        .storeCoins(self.minimalLpAmount)
+        .storeCoins(self.targetBalances0)
+        .storeCoins(self.targetBalances1)
+        .storeMaybeRef(self.fulfillPayload)
+        .storeMaybeRef(self.rejectPayload)
+        .endCell();
+}
+
+message(0xd55e4686) NativeDepositLiquidity {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    poolType: Int as uint1;
+    asset0: Asset;
+    asset1: Asset;
+    minimalLpAmount: Int as coins = 0;
+    targetBalances0: Int as coins;
+    targetBalances1: Int as coins;
+    fulfillPayload: Cell? = null;
+    rejectPayload: Cell? = null;
+}
+
+extends fun build(self: NativeDepositLiquidity): Cell {
+    return beginCell()
+        .storeUint(0xd55e4686, 32)
+        .storeUint(self.queryId, 64)
+        .storeCoins(self.amount)
+        .storeUint(self.poolType, 1)
+        .storeSlice(self.asset0.build().asSlice())
+        .storeSlice(self.asset1.build().asSlice())
+        .storeRef(
+            beginCell()
+                .storeCoins(self.minimalLpAmount)
+                .storeCoins(self.targetBalances0)
+                .storeCoins(self.targetBalances1)
+                .endCell()
+        )
+        .storeMaybeRef(self.fulfillPayload)
+        .storeMaybeRef(self.rejectPayload)
+        .endCell();
+}
+
+
+message ProvideLp {
+    myJettonWalletAddress: Address; // calculated offchain for ease of example, in real world scenarios should be calculated onchain
+}
+
+contract Example {
+    receive() {}
+    receive(msg: ProvideLp) {
+        let jettonMasterRaw: RawAddress = JettonMaster.toRaw();
+
+        // Step 1. Prepare input
+        let jettonAmount = ton("1");
+        let tonAmount = ton("1");
+
+        let asset0 = Asset{
+            type: AssetTypeNative,
+        };
+        let asset1 = Asset{
+            type: AssetTypeJetton,
+            workchain: jettonMasterRaw.workchain,
+            hash: jettonMasterRaw.hash,
+        };
+
+        // Step 2. Deposit Jetton to Vault
+        let jettonDepositBody = JettonDepositLiquidity{
+            poolType: PoolTypeVolatile,
+            asset0,
+            asset1,
+            targetBalances0: tonAmount,
+            targetBalances1: jettonAmount,
+        }.build();
+
+        send(SendParameters{
+            to: msg.myJettonWalletAddress,
+            value: JettonProvideLpGas,
+            body: JettonTransfer{
+                queryId: 42,
+                amount: jettonAmount,
+                destination: JettonVault,
+                responseDestination: myAddress(),
+                forwardTonAmount: JettonProvideLpGasFwd,
+                forwardPayload: jettonDepositBody,
+            }.toCell()
+        });
+
+        // Step 3. Deposit TON to Vault
+        let nativeDepositBody = NativeDepositLiquidity{
+            queryId: 42,
+            amount: tonAmount,
+            poolType: PoolTypeVolatile,
+            asset0,
+            asset1,
+            targetBalances0: tonAmount,
+            targetBalances1: jettonAmount,
+        }.build();
+
+        send(SendParameters{
+            to: TonVault,
+            value: tonAmount + TonProvideLpGas,
+            body: nativeDepositBody,
+        });
+    }
 }
 ```
