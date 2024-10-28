@@ -67,7 +67,7 @@ export default defineConfig({
 					// Per-page Google tag setup
 					tag: "script",
 					content: "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-ZJ3GZHJ0Z5');",
-				}
+				},
 			],
 			social: {
 				github: 'https://github.com/tact-lang/tact',

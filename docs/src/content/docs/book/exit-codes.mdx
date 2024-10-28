@@ -1,6 +1,6 @@
 ---
 title: Exit codes
-description: "An exit code is a 32-bit signed integer, which indicates whether the compute or action phase of the transaction was successful, and if not — signals the code of the exception occurred"
+description: "An exit code is a 32-bit signed integer, which indicates whether the compute or action phase of the transaction was successful, and if not — holds the code of the exception occurred"
 ---
 
 Each transaction on TON Blockchain consists of [multiple phases](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases). An _exit code_ is a $32$-bit signed integer, which indicates whether the [compute](#compute) or [action](#action) phase of the transaction was successful, and if not — holds the code of the exception occurred. Each exit code represents its own exception or resulting state of the transaction.
@@ -19,9 +19,7 @@ The range from $256$ to $65535$ is free for developer-defined exit codes.
 
 ## Table of exit codes {#table}
 
-The following table lists exit codes with an origin (where it can occur) and a short description for each.
-
-The table doesn't list the exit code of the [`require()`](/ref/core-debug#require), as it generates it depending on the concrete `error` message [String][p].
+The following table lists exit codes with an origin (where it can occur) and a short description for each. The table doesn't list the exit code of the [`require()`](/ref/core-debug#require), as it generates it depending on the concrete `error` message [String][p].
 
 Exit code     | Origin                              | Brief description
 :------------ | :---------------------------------- | :----------------
@@ -51,7 +49,7 @@ Exit code     | Origin                              | Brief description
 [$39$](#39)   | [Action phase][a]                   | Outbound message does not fit into a cell after rewriting.
 [$40$](#40)   | [Action phase][a]                   | Cannot process a message — not enough funds, the message is too large or its Merkle depth is too big.
 [$41$](#41)   | [Action phase][a]                   | Library reference is null during library change action.
-[$42$](#42)   | [Action phase][a]                   | Library change action error — error during an attempt of the library change action.
+[$42$](#42)   | [Action phase][a]                   | Library change action error.
 [$43$](#43)   | [Action phase][a]                   | Exceeded maximum number of cells in the library or the maximum depth of the Merkle tree.
 [$50$](#50)   | [Action phase][a]                   | Account state size exceeded limits.
 [$128$](#128) | Tact compiler ([Compute phase][c])  | Null reference exception.
@@ -667,7 +665,7 @@ try {
 [message]: /book/structs-and-messages#messages
 
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
-[tvm]: https://docs.ton.org/develop/func/statements#function-application
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [bp]: https://github.com/ton-org/blueprint
 [sb]: https://github.com/ton-org/sandbox
 [jest]: https://jestjs.io
