@@ -229,25 +229,10 @@ jobs:
           yarn test
 
       - name: (pnpm) Test creation of new Blueprint projects
-        if: ${{ matrix.package-manager == 'pnpm' && matrix.os == 'windows-latest' }}
+        if: ${{ matrix.package-manager == 'pnpm' }}
         run: |
-          npm i -g pnpm
+          npm i -g pnpm@9.12.2
           pnpm setup -f
-          pnpm link -g
-          cd ..
-          pnpm create ton@latest test-project --type tact-counter --contractName Counter
-          cd test-project
-          pnpm link -g @tact-lang/compiler
-          pnpm build
-          pnpm test
-
-      - name: (pnpm) Test creation of new Blueprint projects
-        if: ${{ matrix.package-manager == 'pnpm' && matrix.os != 'windows-latest' }}
-        env:
-          SHELL: "bash"
-        run: |
-          npm i -g pnpm
-          pnpm setup -f && source "$HOME/.bashrc"
           pnpm link -g
           cd ..
           pnpm create ton@latest test-project --type tact-counter --contractName Counter
