@@ -231,7 +231,7 @@ jobs:
       - name: (pnpm) Test creation of new Blueprint projects
         if: ${{ matrix.package-manager == 'pnpm' }}
         env:
-          SHELL: "{{ matrix.os == 'windows-latest' && 'pwsh' || 'bash' }}"
+          SHELL: "${{ matrix.os == 'windows-latest' && 'pwsh' || 'bash' }}"
         run: |
           npm i -g pnpm
           pnpm setup -f
