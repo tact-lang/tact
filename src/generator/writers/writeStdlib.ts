@@ -1,7 +1,7 @@
 import { contractErrors } from "../../abi/errors";
 import { maxTupleSize } from "../../bindings/typescript/writeStruct";
 import { enabledMasterchain } from "../../config/features";
-import { throwInternalCompilerError } from "../../errors";
+import { match } from "../../utils/tricks";
 import { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext): void {
@@ -1279,44 +1279,24 @@ function genTactDictSet(
                 return "idict_delete?";
         }
     };
-    const returnExpr = () => {
-        switch (`${key}:${value}`) {
-            case "int:int":
-                return "(idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ())";
-            case "int:uint":
-                return "(idict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ())";
-            case "int:coins":
-                return "(idict_set_builder(d, kl, k, begin_cell().store_coins(v)), ())";
-            case "uint:int":
-                return "(udict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ())";
-            case "uint:uint":
-                return "(udict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ())";
-            case "uint:coins":
-                return "(udict_set_builder(d, kl, k, begin_cell().store_coins(v)), ())";
-            case "slice:int":
-                return "(dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ())";
-            case "slice:uint":
-                return "(dict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ())";
-            case "slice:coins":
-                return "(dict_set_builder(d, kl, k, begin_cell().store_coins(v)), ())";
-            case "int:cell":
-                return "(idict_set_ref(d, kl, k, v), ())";
-            case "uint:cell":
-                return "(udict_set_ref(d, kl, k, v), ())";
-            case "int:slice":
-                return "(idict_set(d, kl, k, v), ())";
-            case "uint:slice":
-                return "(udict_set(d, kl, k, v), ())";
-            case "slice:cell":
-                return `${ctx.used("__tact_dict_set_ref")}(d, kl, k, v)`;
-            case "slice:slice":
-                return "(dict_set_builder(d, kl, k, begin_cell().store_slice(v)), ())";
-            default:
-                throwInternalCompilerError(
-                    `Unprocessed combination of key/value types ${key}/${value} in dict set operation`,
-                );
-        }
-    };
+    // prettier-ignore
+    const returnExpr = () => match(key, value)
+        .on("int", "int")(() => "(idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ())")
+        .on("int", "uint")(() => "(idict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ())")
+        .on("int", "coins")(() => "(idict_set_builder(d, kl, k, begin_cell().store_coins(v)), ())")
+        .on("uint", "int")(() => "(udict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ())")
+        .on("uint", "uint")(() => "(udict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ())")
+        .on("uint", "coins")(() => "(udict_set_builder(d, kl, k, begin_cell().store_coins(v)), ())")
+        .on("slice", "int")(() => "(dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ())")
+        .on("slice", "uint")(() => "(dict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ())")
+        .on("slice", "coins")(() => "(dict_set_builder(d, kl, k, begin_cell().store_coins(v)), ())")
+        .on("int", "cell")(() => "(idict_set_ref(d, kl, k, v), ())")
+        .on("uint", "cell")(() => "(udict_set_ref(d, kl, k, v), ())")
+        .on("int", "slice")(() => "(idict_set(d, kl, k, v), ())")
+        .on("uint", "slice")(() => "(udict_set(d, kl, k, v), ())")
+        .on("slice", "cell")(() => `${ctx.used("__tact_dict_set_ref")}(d, kl, k, v)`)
+        .on("slice", "slice")(() => "(dict_set_builder(d, kl, k, begin_cell().store_slice(v)), ())")
+        .end();
     ctx.fun(`__tact_dict_set_${key}_${value}`, () => {
         ctx.signature(
             `(cell, ()) __tact_dict_set_${key}_${value}(cell d, int kl, ${signatureKeyType} k, ${signatureValueType} v${valBitsArg()})`,
@@ -1354,35 +1334,24 @@ function genTactDictGetMin(
                 return ", int vl";
         }
     };
-    const dictGetMin = () => {
-        switch (`${key}:${value}`) {
-            case "int:int":
-            case "int:uint":
-            case "int:coins":
-            case "int:slice":
-                return "idict_get_min?";
-            case "uint:int":
-            case "uint:uint":
-            case "uint:coins":
-            case "uint:slice":
-                return "udict_get_min?";
-            case "slice:int":
-            case "slice:uint":
-            case "slice:coins":
-            case "slice:slice":
-                return ctx.used("__tact_dict_min");
-            case "int:cell":
-                return "idict_get_min_ref?";
-            case "uint:cell":
-                return "udict_get_min_ref?";
-            case "slice:cell":
-                return ctx.used("__tact_dict_min_ref");
-            default:
-                throwInternalCompilerError(
-                    `Unprocessed combination of key/value types ${key}/${value} in dict get min operation`,
-                );
-        }
-    };
+    // prettier-ignore
+    const dictGetMin = () => match(key, value)
+        .on("int", "int")(() => "idict_get_min?")
+        .on("int", "uint")(() => "idict_get_min?")
+        .on("int", "coins")(() => "idict_get_min?")
+        .on("int", "slice")(() => "idict_get_min?")
+        .on("uint", "int")(() => "udict_get_min?")
+        .on("uint", "uint")(() => "udict_get_min?")
+        .on("uint", "coins")(() => "udict_get_min?")
+        .on("uint", "slice")(() => "udict_get_min?")
+        .on("slice", "int")(() => ctx.used("__tact_dict_min"))
+        .on("slice", "uint")(() => ctx.used("__tact_dict_min"))
+        .on("slice", "coins")(() => ctx.used("__tact_dict_min"))
+        .on("slice", "slice")(() => ctx.used("__tact_dict_min"))
+        .on("int", "cell")(() => "idict_get_min_ref?")
+        .on("uint", "cell")(() => "udict_get_min_ref?")
+        .on("slice", "cell")(() => ctx.used("__tact_dict_min_ref"))
+        .end();
     const returnValExpr = () => {
         switch (value) {
             case "int":
@@ -1510,44 +1479,24 @@ function genTactDictReplace(
                 return "idict_delete?";
         }
     };
-    const returnExpr = () => {
-        switch (`${key}:${value}`) {
-            case "int:int":
-                return "idict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))";
-            case "int:uint":
-                return "idict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))";
-            case "int:coins":
-                return "idict_replace_builder?(d, kl, k, begin_cell().store_coins(v))";
-            case "uint:int":
-                return "udict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))";
-            case "uint:uint":
-                return "udict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))";
-            case "uint:coins":
-                return "udict_replace_builder?(d, kl, k, begin_cell().store_coins(v))";
-            case "slice:int":
-                return "dict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))";
-            case "slice:uint":
-                return "dict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))";
-            case "slice:coins":
-                return "dict_replace_builder?(d, kl, k, begin_cell().store_coins(v))";
-            case "int:cell":
-                return "idict_replace_ref?(d, kl, k, v)";
-            case "uint:cell":
-                return "udict_replace_ref?(d, kl, k, v)";
-            case "int:slice":
-                return "idict_replace?(d, kl, k, v)";
-            case "uint:slice":
-                return "udict_replace?(d, kl, k, v)";
-            case "slice:cell":
-                return `${ctx.used("__tact_dict_replace_ref")}(d, kl, k, v)`;
-            case "slice:slice":
-                return "dict_replace_builder?(d, kl, k, begin_cell().store_slice(v))";
-            default:
-                throwInternalCompilerError(
-                    `Unprocessed combination of key/value types ${key}/${value} in dict replace operation`,
-                );
-        }
-    };
+    // prettier-ignore
+    const returnExpr = () => match(key, value)
+        .on("int", "int")(() => "idict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))")
+        .on("int", "uint")(() => "idict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))")
+        .on("int", "coins")(() => "idict_replace_builder?(d, kl, k, begin_cell().store_coins(v))")
+        .on("uint", "int")(() => "udict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))")
+        .on("uint", "uint")(() => "udict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))")
+        .on("uint", "coins")(() => "udict_replace_builder?(d, kl, k, begin_cell().store_coins(v))")
+        .on("slice", "int")(() => "dict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))")
+        .on("slice", "uint")(() => "dict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))")
+        .on("slice", "coins")(() => "dict_replace_builder?(d, kl, k, begin_cell().store_coins(v))")
+        .on("int", "cell")(() => "idict_replace_ref?(d, kl, k, v)")
+        .on("uint", "cell")(() => "udict_replace_ref?(d, kl, k, v)")
+        .on("int", "slice")(() => "idict_replace?(d, kl, k, v)")
+        .on("uint", "slice")(() => "udict_replace?(d, kl, k, v)")
+        .on("slice", "cell")(() => `${ctx.used("__tact_dict_replace_ref")}(d, kl, k, v)`)
+        .on("slice", "slice")(() => "dict_replace_builder?(d, kl, k, begin_cell().store_slice(v))")
+        .end();
     ctx.fun(`__tact_dict_replace_${key}_${value}`, () => {
         ctx.signature(
             `(cell, (int)) __tact_dict_replace_${key}_${value}(cell d, int kl, ${signatureKeyType} k, ${signatureValueType} v${valBitsArg()})`,
@@ -1596,44 +1545,24 @@ function genTactDictReplaceGet(
                 return `idict_delete_get${cellSuffix}?`;
         }
     };
-    const returnExpr = () => {
-        switch (`${key}:${value}`) {
-            case "int:int":
-                return "d~idict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())";
-            case "int:uint":
-                return "d~idict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())";
-            case "int:coins":
-                return "d~idict_replaceget?(kl, k, begin_cell().store_coins(v).end_cell().begin_parse())";
-            case "uint:int":
-                return "d~udict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())";
-            case "uint:uint":
-                return "d~udict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())";
-            case "uint:coins":
-                return "d~udict_replaceget?(kl, k, begin_cell().store_coins(v).end_cell().begin_parse())";
-            case "slice:int":
-                return "d~dict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())";
-            case "slice:uint":
-                return "d~dict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())";
-            case "slice:coins":
-                return "d~dict_replaceget?(kl, k, begin_cell().store_coins(v).end_cell().begin_parse())";
-            case "int:cell":
-                return "d~idict_replaceget_ref?(kl, k, v)";
-            case "uint:cell":
-                return "d~udict_replaceget_ref?(kl, k, v)";
-            case "int:slice":
-                return "d~idict_replaceget?(kl, k, v)";
-            case "uint:slice":
-                return "d~udict_replaceget?(kl, k, v)";
-            case "slice:cell":
-                return `d~${ctx.used("__tact_dict_replaceget_ref")}(kl, k, v)`;
-            case "slice:slice":
-                return "d~dict_replaceget?(kl, k, begin_cell().store_slice(v).end_cell().begin_parse())";
-            default:
-                throwInternalCompilerError(
-                    `Unprocessed combination of key/value types ${key}/${value} in dict replaceGet operation`,
-                );
-        }
-    };
+    // prettier-ignore
+    const returnExpr = () => match(key, value)
+        .on("int", "int")(() => "d~idict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())")
+        .on("int", "uint")(() => "d~idict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())")
+        .on("int", "coins")(() => "d~idict_replaceget?(kl, k, begin_cell().store_coins(v).end_cell().begin_parse())")
+        .on("uint", "int")(() => "d~udict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())")
+        .on("uint", "uint")(() => "d~udict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())")
+        .on("uint", "coins")(() => "d~udict_replaceget?(kl, k, begin_cell().store_coins(v).end_cell().begin_parse())")
+        .on("slice", "int")(() => "d~dict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())")
+        .on("slice", "uint")(() => "d~dict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())")
+        .on("slice", "coins")(() => "d~dict_replaceget?(kl, k, begin_cell().store_coins(v).end_cell().begin_parse())")
+        .on("int", "cell")(() => "d~idict_replaceget_ref?(kl, k, v)")
+        .on("uint", "cell")(() => "d~udict_replaceget_ref?(kl, k, v)")
+        .on("int", "slice")(() => "d~idict_replaceget?(kl, k, v)")
+        .on("uint", "slice")(() => "d~udict_replaceget?(kl, k, v)")
+        .on("slice", "cell")(() => `d~${ctx.used("__tact_dict_replaceget_ref")}(kl, k, v)`)
+        .on("slice", "slice")(() => "d~dict_replaceget?(kl, k, begin_cell().store_slice(v).end_cell().begin_parse())")
+        .end();
     const parseExpr = () => {
         switch (value) {
             case "slice":
