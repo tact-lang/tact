@@ -120,7 +120,7 @@ fun basic() {
     //  ↑         ↑          ↑
     //  |         |          gives the Example Struct
     //  |         definition of "number" variable, derived
-    //  |         from the field "number" on Example Struct
+    //  |         from the field "number" in Example Struct
     //  target structure type "Example"
     //  to destructure fields from
 
@@ -182,7 +182,7 @@ fun naming(s: Example) {
     //                   |                instance of Example Struct, received
     //                   |                as a parameter of the function "naming"
     //                   definition of "varFromField" variable, derived
-    //                   from the field "field" on Example Struct
+    //                   from the field "field" in Example Struct
 }
 ```
 
@@ -199,11 +199,11 @@ fun order(s: Two) {
     //        |       this variable will be of type Int,
     //        |       same as the "first" field on Struct Two
     //        this variable will be of type String,
-    //        same as the "second" field on Struct Two
+    //        same as the "second" field in Struct Two
 }
 ```
 
-Destructuring assignment is exhaustive and requires specifying all the fields as variables. To deliberately ignore some of the fields, use an underscore `_{:tact}`, which would make fields value considered unused and discarded. Note, that such wildcard variable name `_{:tact}` cannot be accessed:
+Destructuring assignment is exhaustive and requires specifying all the fields as variables. To deliberately ignore some of the fields, use an underscore `_{:tact}`, which discards the considered field's value. Note, that such wildcard variable name `_{:tact}` cannot be accessed:
 
 ```tact
 // "first" goes first, then goes "second"
