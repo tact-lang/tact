@@ -232,6 +232,7 @@ jobs:
         if: ${{ matrix.package-manager == 'pnpm' }}
         run: |
           npm i -g pnpm
+          pnpm setup -f
           pnpm link -g
           cd ..
           pnpm create ton@latest test-project --type tact-counter --contractName Counter
