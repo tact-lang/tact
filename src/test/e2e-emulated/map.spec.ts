@@ -788,7 +788,7 @@ describe("MapTestContract", () => {
         }
     });
 
-    it("should implement .get operation correctly", async () => {
+    it("get: should get values after setting them and nulls after clearing", async () => {
         for (const { keys, values } of testCases) {
             // Send the set operation
             const setMessage: SetAllMaps = {
@@ -803,28 +803,16 @@ describe("MapTestContract", () => {
                 setMessage,
             );
 
-            // Prepare the get message with all keys
-            const getMessage = {
-                keyInt: keys.keyInt,
-                keyInt8: keys.keyInt8,
-                keyInt42: keys.keyInt42,
-                keyInt256: keys.keyInt256,
-                keyUint8: keys.keyUint8,
-                keyUint42: keys.keyUint42,
-                keyUint256: keys.keyUint256,
-                keyAddress: keys.keyAddress,
-            };
-
             // Call the .get operation on all maps
             const getResponse = await contract.getGetAllMaps(
-                getMessage.keyInt,
-                getMessage.keyInt8,
-                getMessage.keyInt42,
-                getMessage.keyInt256,
-                getMessage.keyUint8,
-                getMessage.keyUint42,
-                getMessage.keyUint256,
-                getMessage.keyAddress,
+                keys.keyInt,
+                keys.keyInt8,
+                keys.keyInt42,
+                keys.keyInt256,
+                keys.keyUint8,
+                keys.keyUint42,
+                keys.keyUint256,
+                keys.keyAddress,
             );
 
             // Iterate over mapConfigs and perform assertions
@@ -886,14 +874,14 @@ describe("MapTestContract", () => {
 
             // Call the .get operation on all maps again
             const clearedGetResponse = await contract.getGetAllMaps(
-                getMessage.keyInt,
-                getMessage.keyInt8,
-                getMessage.keyInt42,
-                getMessage.keyInt256,
-                getMessage.keyUint8,
-                getMessage.keyUint42,
-                getMessage.keyUint256,
-                getMessage.keyAddress,
+                keys.keyInt,
+                keys.keyInt8,
+                keys.keyInt42,
+                keys.keyInt256,
+                keys.keyUint8,
+                keys.keyUint42,
+                keys.keyUint256,
+                keys.keyAddress,
             );
 
             // Iterate over mapConfigs and assert maps are empty
@@ -902,6 +890,196 @@ describe("MapTestContract", () => {
                 expect(actualValue).toBeNull();
             });
         }
+    });
+
+    it("get: should return null for all maps when no values are set", async () => {
+        for (const { keys } of testCases) {
+            // Call the .get operation on all maps
+            const getResponse = await contract.getGetAllMaps(
+                keys.keyInt,
+                keys.keyInt8,
+                keys.keyInt42,
+                keys.keyInt256,
+                keys.keyUint8,
+                keys.keyUint42,
+                keys.keyUint256,
+                keys.keyAddress,
+            );
+
+            // Iterate over mapConfigs and assert that all values are null
+            mapConfigs.forEach(({ mapName }) => {
+                const actualValue = getResponse[mapName];
+                expect(actualValue).toBeNull();
+            });
+        }
+    });
+
+    it("get: should retrieve multiple values after setting them", async () => {
+        // Set multiple values
+        for (const { keys, values } of testCases) {
+            const setMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                ...values,
+            };
+
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                setMessage,
+            );
+        }
+
+        // Now retrieve values for each test case
+        for (const { keys, values } of testCases) {
+            // Call the .get operation on all maps
+            const getResponse = await contract.getGetAllMaps(
+                keys.keyInt,
+                keys.keyInt8,
+                keys.keyInt42,
+                keys.keyInt256,
+                keys.keyUint8,
+                keys.keyUint42,
+                keys.keyUint256,
+                keys.keyAddress,
+            );
+
+            // Iterate over mapConfigs and perform assertions
+            mapConfigs.forEach(
+                ({
+                    mapName,
+                    key: _key,
+                    value,
+                    keyTransform: _keyTransform,
+                    valueTransform,
+                }) => {
+                    let expectedValue = values[value];
+                    let actualValue = getResponse[mapName];
+
+                    if (valueTransform) {
+                        expectedValue = valueTransform(expectedValue);
+                        actualValue = valueTransform(actualValue);
+                    }
+
+                    if (expectedValue instanceof Cell) {
+                        expect(actualValue).toEqualCell(expectedValue);
+                    } else if (expectedValue instanceof Address) {
+                        expect(actualValue).toEqualAddress(expectedValue);
+                    } else if (isSomeStruct(expectedValue)) {
+                        expect(
+                            compareStructs(
+                                actualValue as SomeStruct,
+                                expectedValue,
+                            ),
+                        ).toBe(true);
+                    } else {
+                        expect(actualValue).toEqual(expectedValue);
+                    }
+                },
+            );
+        }
+    });
+
+    it("get: should retrieve updated values after overwriting", async () => {
+        for (const { keys } of testCases) {
+            for (const { values } of testCases) {
+                // Send the set operation
+                const setMessage: SetAllMaps = {
+                    $$type: "SetAllMaps",
+                    ...keys,
+                    ...values,
+                };
+
+                await contract.send(
+                    treasury.getSender(),
+                    { value: toNano("1") },
+                    setMessage,
+                );
+
+                // Call the .get operation on all maps
+                const getResponse = await contract.getGetAllMaps(
+                    keys.keyInt,
+                    keys.keyInt8,
+                    keys.keyInt42,
+                    keys.keyInt256,
+                    keys.keyUint8,
+                    keys.keyUint42,
+                    keys.keyUint256,
+                    keys.keyAddress,
+                );
+
+                // Iterate over mapConfigs and perform assertions
+                mapConfigs.forEach(
+                    ({
+                        mapName,
+                        key: _key,
+                        value,
+                        keyTransform: _keyTransform,
+                        valueTransform,
+                    }) => {
+                        let expectedValue = values[value];
+                        let actualValue = getResponse[mapName];
+
+                        if (valueTransform) {
+                            expectedValue = valueTransform(expectedValue);
+                            actualValue = valueTransform(actualValue);
+                        }
+
+                        if (expectedValue instanceof Cell) {
+                            expect(actualValue).toEqualCell(expectedValue);
+                        } else if (expectedValue instanceof Address) {
+                            expect(actualValue).toEqualAddress(expectedValue);
+                        } else if (isSomeStruct(expectedValue)) {
+                            expect(
+                                compareStructs(
+                                    actualValue as SomeStruct,
+                                    expectedValue,
+                                ),
+                            ).toBe(true);
+                        } else {
+                            expect(actualValue).toEqual(expectedValue);
+                        }
+                    },
+                );
+            }
+        }
+    });
+
+    it("get: should return null for non-existent keys", async () => {
+        // First, set some keys
+        for (const { keys, values } of testCases.slice(0, -1)) {
+            const setMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                ...values,
+            };
+
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                setMessage,
+            );
+        }
+
+        // Now, attempt to get values for keys that have not been set
+        const nonExistentKeys = testCases[testCases.length - 1]!.keys;
+
+        const getResponse = await contract.getGetAllMaps(
+            nonExistentKeys.keyInt,
+            nonExistentKeys.keyInt8,
+            nonExistentKeys.keyInt42,
+            nonExistentKeys.keyInt256,
+            nonExistentKeys.keyUint8,
+            nonExistentKeys.keyUint42,
+            nonExistentKeys.keyUint256,
+            nonExistentKeys.keyAddress,
+        );
+
+        // Iterate over mapConfigs and assert that values are null
+        mapConfigs.forEach(({ mapName }) => {
+            const actualValue = getResponse[mapName];
+            expect(actualValue).toBeNull();
+        });
     });
 
     it("should implement .del operation correctly", async () => {
