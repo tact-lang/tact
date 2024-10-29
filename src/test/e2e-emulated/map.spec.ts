@@ -1082,7 +1082,7 @@ describe("MapTestContract", () => {
         });
     });
 
-    it("should implement .del operation correctly", async () => {
+    it("del: should delete values", async () => {
         for (const { keys, values } of testCases) {
             // Send the set operation
             const setMessage: SetAllMaps = {
@@ -1156,6 +1156,232 @@ describe("MapTestContract", () => {
                 const map = allMapsAfterDel[mapName] as Dictionary<any, any>;
                 expect(map.size).toBe(0);
             });
+        }
+    });
+
+    it("del: should delete multiple values", async () => {
+        // Set multiple values
+        for (const { keys, values } of testCases) {
+            const setMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                ...values,
+            };
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                setMessage,
+            );
+        }
+
+        // Check that all maps are set
+        const allMapsBeforeDel = await contract.getAllMaps();
+        mapConfigs.forEach(({ mapName }) => {
+            const map = allMapsBeforeDel[mapName] as Dictionary<any, any>;
+            expect(map.size).toBe(testCases.length);
+        });
+
+        // Delete them
+        for (const { keys } of testCases) {
+            const delMessage: DelAllMaps = { $$type: "DelAllMaps", ...keys };
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                delMessage,
+            );
+        }
+
+        // Ensure maps are empty
+        const allMapsAfterDel = await contract.getAllMaps();
+        mapConfigs.forEach(({ mapName }) => {
+            const map = allMapsAfterDel[mapName] as Dictionary<any, any>;
+            expect(map.size).toBe(0);
+        });
+    });
+
+    it("del: should not affect other keys when deleting", async () => {
+        // Set multiple values
+        for (const { keys, values } of testCases) {
+            const setMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                ...values,
+            };
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                setMessage,
+            );
+        }
+
+        // Delete only the first test case's keys
+        const keysToDelete = testCases[0]!.keys;
+        const delMessage: DelAllMaps = {
+            $$type: "DelAllMaps",
+            ...keysToDelete,
+        };
+        await contract.send(
+            treasury.getSender(),
+            { value: toNano("1") },
+            delMessage,
+        );
+
+        // Check that only the deleted keys are removed
+        const allMapsAfterDel = await contract.getAllMaps();
+        mapConfigs.forEach(({ mapName }) => {
+            const map = allMapsAfterDel[mapName] as Dictionary<any, any>;
+            expect(map.size).toBe(testCases.length - 1);
+        });
+
+        // Verify other keys are unaffected
+        for (const { keys, values } of testCases.slice(1)) {
+            const getResponse = await contract.getAllMaps();
+
+            mapConfigs.forEach(
+                ({ mapName, key, value, keyTransform, valueTransform }) => {
+                    const map = getResponse[mapName] as Dictionary<any, any>;
+
+                    let mapKey = keys[key];
+                    if (keyTransform) {
+                        mapKey = keyTransform(mapKey);
+                    }
+
+                    let expectedValue = values[value];
+                    if (valueTransform) {
+                        expectedValue = valueTransform(expectedValue);
+                    }
+
+                    const actualValue = map.get(mapKey);
+
+                    if (expectedValue instanceof Cell) {
+                        expect(actualValue).toEqualCell(expectedValue);
+                    } else if (expectedValue instanceof Address) {
+                        expect(actualValue).toEqualAddress(expectedValue);
+                    } else if (isSomeStruct(expectedValue)) {
+                        expect(compareStructs(actualValue, expectedValue)).toBe(
+                            true,
+                        );
+                    } else {
+                        expect(actualValue).toEqual(expectedValue);
+                    }
+                },
+            );
+        }
+    });
+
+    it("del: should do nothing when deleting non-existent keys", async () => {
+        // Set values except for the last test case
+        for (const { keys, values } of testCases.slice(0, -1)) {
+            const setMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                ...values,
+            };
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                setMessage,
+            );
+        }
+
+        // Ensure existing data is unaffected
+        const allMapsBeforeDel = await contract.getAllMaps();
+        mapConfigs.forEach(({ mapName }) => {
+            const map = allMapsBeforeDel[mapName] as Dictionary<any, any>;
+            expect(map.size).toBe(testCases.length - 1);
+        });
+
+        // Attempt to delete non-existent keys
+        const nonExistentKeys = testCases[testCases.length - 1]!.keys;
+        const delMessage: DelAllMaps = {
+            $$type: "DelAllMaps",
+            ...nonExistentKeys,
+        };
+        await contract.send(
+            treasury.getSender(),
+            { value: toNano("1") },
+            delMessage,
+        );
+
+        // Ensure existing data is unaffected
+        const allMapsAfterDel = await contract.getAllMaps();
+        mapConfigs.forEach(({ mapName }) => {
+            const map = allMapsAfterDel[mapName] as Dictionary<any, any>;
+            expect(map.size).toBe(testCases.length - 1);
+        });
+
+        // Verify that the existing values are still there
+        for (const { keys, values } of testCases.slice(0, -1)) {
+            const allMaps = await contract.getAllMaps();
+
+            mapConfigs.forEach(
+                ({ mapName, key, value, keyTransform, valueTransform }) => {
+                    const map = allMaps[mapName] as Dictionary<any, any>;
+
+                    let mapKey = keys[key];
+                    if (keyTransform) {
+                        mapKey = keyTransform(mapKey);
+                    }
+
+                    let expectedValue = values[value];
+                    if (valueTransform) {
+                        expectedValue = valueTransform(expectedValue);
+                    }
+
+                    const actualValue = map.get(mapKey);
+
+                    if (expectedValue instanceof Cell) {
+                        expect(actualValue).toEqualCell(expectedValue);
+                    } else if (expectedValue instanceof Address) {
+                        expect(actualValue).toEqualAddress(expectedValue);
+                    } else if (isSomeStruct(expectedValue)) {
+                        expect(compareStructs(actualValue, expectedValue)).toBe(
+                            true,
+                        );
+                    } else {
+                        expect(actualValue).toEqual(expectedValue);
+                    }
+                },
+            );
+        }
+    });
+
+    it("del: should handle delete after overwriting", async () => {
+        for (const { keys } of testCases) {
+            for (const { values } of testCases) {
+                // Set values
+                const setMessage: SetAllMaps = {
+                    $$type: "SetAllMaps",
+                    ...keys,
+                    ...values,
+                };
+                await contract.send(
+                    treasury.getSender(),
+                    { value: toNano("1") },
+                    setMessage,
+                );
+
+                // Delete values
+                const delMessage: DelAllMaps = {
+                    $$type: "DelAllMaps",
+                    ...keys,
+                };
+                await contract.send(
+                    treasury.getSender(),
+                    { value: toNano("1") },
+                    delMessage,
+                );
+
+                // Ensure maps are empty
+                const allMapsAfterDel = await contract.getAllMaps();
+                mapConfigs.forEach(({ mapName }) => {
+                    const map = allMapsAfterDel[mapName] as Dictionary<
+                        any,
+                        any
+                    >;
+                    expect(map.size).toBe(0);
+                });
+            }
         }
     });
 });
