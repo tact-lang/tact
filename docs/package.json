@@ -10,7 +10,7 @@
     "build": "yarn clean && yarn lint:all && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "spell": "cspell --no-progress src/content/docs",
+    "spell": "yarn cspell --no-progress src/content/docs",
     "lint:all": "yarn spell"
   },
   "dependencies": {
