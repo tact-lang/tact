@@ -107,9 +107,9 @@ code:not(pre *) {
 .web-ide-link {
 	display: flex;
 	justify-content: right;
+	text-decoration: none;
 	margin-top: 0.25rem;
 	margin-bottom: 1rem;
-	text-decoration: none;
 }
 
 /* Stylizing <span> tags inside <a> links to Web IDE */

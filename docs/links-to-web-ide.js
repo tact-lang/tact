@@ -1,5 +1,6 @@
 /**
  * @import {Root} from 'mdast'
+ * @import {VFile} from 'vfile'
  */
 import { visit } from 'unist-util-visit';
 
@@ -17,9 +18,10 @@ const maxAllowedCharacters = 32779;
 export default function remarkLinksToWebIDE() {
   /**
    * @param tree {Root}
+   * @param file {VFile}
    * @return {undefined}
    */
-  return function(tree) {
+  return function(tree, file) {
     // Specifying 'code' items guarantees non-inline code blocks
     visit(tree, 'code', function(node, index, parent) {
       // Only allow Tact code blocks
@@ -29,9 +31,16 @@ export default function remarkLinksToWebIDE() {
       let src = node.value.trim();
       if (src.length > maxAllowedCharacters) { return undefined; }
 
+      // Disallow single-line code blocks as they pose very little value and they're often represent function signatures in the Reference section
+      const lines = src.split('\n');
+      if (lines.length <= 1) { return undefined; }
+
+      // Only allow pages in the Cookbook
+      // NOTE: This limitation can be lifted in the future if there's popular demand
+      if (file.path.indexOf('docs/cookbook') === -1) { return undefined; }
+
       // Detect module-level items
       let hasModuleItems = false;
-      const lines = src.split('\n');
       for (let i = 0; i < lines.length; i += 1) {
         // Same regex as in scripts/check-cookbook-examples.js
         const matchRes = lines[i].match(/^\s*(?:import|primitive|const|asm|fun|extends|mutates|virtual|override|inline|abstract|@name|@interface|contract|trait|struct|message)\b/);
