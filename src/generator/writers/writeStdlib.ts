@@ -1285,7 +1285,7 @@ function genTactDictGetMin(
             case "int:cell":
                 return "idict_get_min_ref?";
             case "uint:cell":
-                return "udict_get_min_ref";
+                return "udict_get_min_ref?";
             case "slice:cell":
                 return ctx.used("__tact_dict_min_ref");
             default:
@@ -1346,7 +1346,7 @@ function genTactDictGetNext(
             case "int":
                 return "idict_get_next?";
             case "uint":
-                return "udict_get_min?";
+                return "udict_get_next?";
             case "slice":
                 return ctx.used("__tact_dict_next");
         }
