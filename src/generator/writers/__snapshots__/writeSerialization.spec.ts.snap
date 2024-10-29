@@ -2074,7 +2074,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min?(d, kl, pivot);
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
 if (flag) {
     return (key, value, flag);
 } else {
@@ -2150,7 +2150,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min?(d, kl, pivot);
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
 if (flag) {
     return (key, value~load_int(vl), flag);
 } else {
@@ -2226,7 +2226,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min?(d, kl, pivot);
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
 if (flag) {
     return (key, value~load_uint(vl), flag);
 } else {
@@ -2283,7 +2283,7 @@ if (ok) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min_ref(d, kl);
+      "code": "var (key, value, flag) = udict_get_min_ref?(d, kl);
 if (flag) {
     return (key, value, flag);
 } else {
@@ -2302,7 +2302,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min?(d, kl, pivot);
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
 if (flag) {
     return (key, value~load_ref(), flag);
 } else {
@@ -5633,7 +5633,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min?(d, kl, pivot);
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
 if (flag) {
     return (key, value, flag);
 } else {
@@ -5709,7 +5709,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min?(d, kl, pivot);
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
 if (flag) {
     return (key, value~load_int(vl), flag);
 } else {
@@ -5785,7 +5785,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min?(d, kl, pivot);
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
 if (flag) {
     return (key, value~load_uint(vl), flag);
 } else {
@@ -5842,7 +5842,7 @@ if (ok) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min_ref(d, kl);
+      "code": "var (key, value, flag) = udict_get_min_ref?(d, kl);
 if (flag) {
     return (key, value, flag);
 } else {
@@ -5861,7 +5861,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min?(d, kl, pivot);
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
 if (flag) {
     return (key, value~load_ref(), flag);
 } else {
@@ -9192,7 +9192,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min?(d, kl, pivot);
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
 if (flag) {
     return (key, value, flag);
 } else {
@@ -9268,7 +9268,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min?(d, kl, pivot);
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
 if (flag) {
     return (key, value~load_int(vl), flag);
 } else {
@@ -9344,7 +9344,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min?(d, kl, pivot);
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
 if (flag) {
     return (key, value~load_uint(vl), flag);
 } else {
@@ -9401,7 +9401,7 @@ if (ok) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min_ref(d, kl);
+      "code": "var (key, value, flag) = udict_get_min_ref?(d, kl);
 if (flag) {
     return (key, value, flag);
 } else {
@@ -9420,7 +9420,7 @@ if (flag) {
   },
   {
     "code": {
-      "code": "var (key, value, flag) = udict_get_min?(d, kl, pivot);
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
 if (flag) {
     return (key, value~load_ref(), flag);
 } else {
