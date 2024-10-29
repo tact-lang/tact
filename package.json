@@ -16,7 +16,7 @@
     "gen": "yarn gen:grammar && yarn gen:pack && yarn gen:compiler",
     "clean": "rm -fr dist",
     "cleanall": "rm -fr dist node_modules",
-    "build": "tsc && ts-node ./scripts/copy-files",
+    "build": "tsc && node --no-warnings=ExperimentalWarning -r ts-node/register ./scripts/copy-files",
     "test": "jest",
     "coverage": "cross-env COVERAGE=true jest",
     "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1",
