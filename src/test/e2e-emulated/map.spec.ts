@@ -2012,4 +2012,107 @@ describe("MapTestContract", () => {
             });
         }
     });
+
+    it("should return old values when replaced and null when keys do not exist", async () => {
+        for (const { keys, values } of testCases) {
+            // Call the .replace operation on all maps
+            const replaceGetResult = await contract.getReplaceGetAllMaps(
+                keys.keyInt,
+                keys.keyInt8,
+                keys.keyInt42,
+                keys.keyInt256,
+                keys.keyUint8,
+                keys.keyUint42,
+                keys.keyUint256,
+                keys.keyAddress,
+                values.valueInt,
+                values.valueInt8,
+                values.valueInt42,
+                values.valueInt256,
+                values.valueUint8,
+                values.valueUint42,
+                values.valueUint256,
+                values.valueBool,
+                values.valueCell,
+                values.valueAddress,
+                values.valueStruct,
+            );
+
+            // Check that all return values are 'null'
+            Object.values(replaceGetResult).forEach((result) => {
+                if (result !== "ReplaceGetAllMapsResult") {
+                    expect(result).toBeNull();
+                }
+            });
+
+            // Send the set operation
+            const setMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                ...values,
+            };
+
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                setMessage,
+            );
+
+            // Call the .replace operation on all maps
+            const replaceGetResultAfterSet =
+                await contract.getReplaceGetAllMaps(
+                    keys.keyInt,
+                    keys.keyInt8,
+                    keys.keyInt42,
+                    keys.keyInt256,
+                    keys.keyUint8,
+                    keys.keyUint42,
+                    keys.keyUint256,
+                    keys.keyAddress,
+                    values.valueInt,
+                    values.valueInt8,
+                    values.valueInt42,
+                    values.valueInt256,
+                    values.valueUint8,
+                    values.valueUint42,
+                    values.valueUint256,
+                    values.valueBool,
+                    values.valueCell,
+                    values.valueAddress,
+                    values.valueStruct,
+                );
+
+            // Check that all return values are equal to the old values
+            mapConfigs.forEach(
+                ({ mapName, key, value, keyTransform, valueTransform }) => {
+                    let mapKey = keys[key];
+                    if (keyTransform) {
+                        mapKey = keyTransform(mapKey);
+                    }
+
+                    let expectedValue = values[value];
+                    let actualValue = replaceGetResultAfterSet[mapName];
+                    if (valueTransform) {
+                        expectedValue = valueTransform(expectedValue);
+                        actualValue = valueTransform(actualValue);
+                    }
+
+                    if (expectedValue instanceof Cell) {
+                        expect(actualValue).toEqualCell(expectedValue);
+                    } else if (expectedValue instanceof Address) {
+                        expect(actualValue).toEqualAddress(expectedValue);
+                    } else if (isSomeStruct(expectedValue)) {
+                        expect(
+                            compareStructs(
+                                actualValue as SomeStruct,
+                                expectedValue,
+                            ),
+                        ).toBe(true);
+                    } else {
+                        expect(actualValue).toEqual(expectedValue);
+                    }
+                },
+            );
+        }
+    });
 });
