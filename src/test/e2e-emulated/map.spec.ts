@@ -1384,4 +1384,153 @@ describe("MapTestContract", () => {
             }
         }
     });
+
+    it("exists: should return 'true' for existing keys and 'false' for non-existent keys", async () => {
+        // Set values for all test cases
+        for (const { keys, values } of testCases.slice(0, -1)) {
+            const setMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                ...values,
+            };
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                setMessage,
+            );
+        }
+
+        // Check that all keys exist
+        for (const { keys } of testCases.slice(0, -1)) {
+            const existsResponse = await contract.getExistsAllMaps(
+                keys.keyInt,
+                keys.keyInt8,
+                keys.keyInt42,
+                keys.keyInt256,
+                keys.keyUint8,
+                keys.keyUint42,
+                keys.keyUint256,
+                keys.keyAddress,
+            );
+
+            Object.values(existsResponse).forEach((exists) => {
+                if (typeof exists === "boolean") {
+                    expect(exists).toBe(true);
+                }
+            });
+        }
+
+        // Check that non-existent keys do not exist
+        const nonExistentKeys = testCases[testCases.length - 1]!.keys;
+        const nonExistentResponse = await contract.getExistsAllMaps(
+            nonExistentKeys.keyInt,
+            nonExistentKeys.keyInt8,
+            nonExistentKeys.keyInt42,
+            nonExistentKeys.keyInt256,
+            nonExistentKeys.keyUint8,
+            nonExistentKeys.keyUint42,
+            nonExistentKeys.keyUint256,
+            nonExistentKeys.keyAddress,
+        );
+
+        Object.values(nonExistentResponse).forEach((exists) => {
+            if (typeof exists === "boolean") {
+                expect(exists).toBe(false);
+            }
+        });
+    });
+
+    it("exists: should still return 'true' after overwriting", async () => {
+        for (const { keys } of testCases) {
+            for (const { values } of testCases) {
+                // Send the set operation
+                const setMessage: SetAllMaps = {
+                    $$type: "SetAllMaps",
+                    ...keys,
+                    ...values,
+                };
+
+                await contract.send(
+                    treasury.getSender(),
+                    { value: toNano("1") },
+                    setMessage,
+                );
+
+                // Call the .exists operation on all maps
+                const existsResponse = await contract.getExistsAllMaps(
+                    keys.keyInt,
+                    keys.keyInt8,
+                    keys.keyInt42,
+                    keys.keyInt256,
+                    keys.keyUint8,
+                    keys.keyUint42,
+                    keys.keyUint256,
+                    keys.keyAddress,
+                );
+
+                Object.values(existsResponse).forEach((exists) => {
+                    if (typeof exists === "boolean") {
+                        expect(exists).toBe(true);
+                    }
+                });
+            }
+        }
+    });
+
+    it("exists: should return 'false' for all keys after clearing all maps", async () => {
+        for (const { keys, values } of testCases) {
+            const setMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                ...values,
+            };
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                setMessage,
+            );
+        }
+
+        for (const { keys } of testCases) {
+            const clearMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                valueInt: null,
+                valueInt8: null,
+                valueInt42: null,
+                valueInt256: null,
+                valueUint8: null,
+                valueUint42: null,
+                valueUint256: null,
+                valueBool: null,
+                valueCell: null,
+                valueAddress: null,
+                valueStruct: null,
+            };
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                clearMessage,
+            );
+        }
+
+        for (const { keys } of testCases) {
+            const existsResponse = await contract.getExistsAllMaps(
+                keys.keyInt,
+                keys.keyInt8,
+                keys.keyInt42,
+                keys.keyInt256,
+                keys.keyUint8,
+                keys.keyUint42,
+                keys.keyUint256,
+                keys.keyAddress,
+            );
+
+            Object.values(existsResponse).forEach((exists) => {
+                if (typeof exists === "boolean") {
+                    expect(exists).toBe(false);
+                }
+            });
+        }
+    });
 });
