@@ -88,12 +88,12 @@ const testCases: TestCase[] = [
         keys: {
             keyInt: 123n,
             keyInt8: -10n,
-            keyInt42: 0n,
+            keyInt42: 42n,
             keyInt256: 456n,
             keyUint8: 200n,
             keyUint42: 500_000n,
             keyUint256: 1_000_000_000_000n,
-            keyAddress: randomAddress(0, "address"),
+            keyAddress: randomAddress(0, "address0"),
         },
         values: {
             valueInt: 999n,
@@ -125,7 +125,7 @@ const testCases: TestCase[] = [
             keyUint8: 255n, // Max 8-bit unsigned int
             keyUint42: 2n ** 42n - 1n, // Max 42-bit unsigned int
             keyUint256: 2n ** 256n - 1n, // Max 256-bit unsigned int
-            keyAddress: randomAddress(0, "address"),
+            keyAddress: randomAddress(0, "address1"),
         },
         values: {
             valueInt: 2n ** 31n - 1n, // Max 32-bit signed int
@@ -159,7 +159,7 @@ const testCases: TestCase[] = [
             keyUint8: 0n,
             keyUint42: 0n,
             keyUint256: 0n,
-            keyAddress: randomAddress(0, "address"),
+            keyAddress: randomAddress(0, "address2"),
         },
         values: {
             valueInt: 1n,
@@ -186,12 +186,12 @@ const testCases: TestCase[] = [
         keys: {
             keyInt: 1n,
             keyInt8: -1n,
-            keyInt42: 42n,
+            keyInt42: 424n,
             keyInt256: 2n ** 128n, // Large but not maximum value
             keyUint8: 128n, // Middle value
             keyUint42: 2n ** 41n, // Large power of 2
             keyUint256: 2n ** 128n, // Large power of 2
-            keyAddress: randomAddress(0, "address"),
+            keyAddress: randomAddress(0, "address3"),
         },
         values: {
             valueInt: -1n,
@@ -518,21 +518,18 @@ describe("MapTestContract", () => {
             null,
         );
 
-        // Step 1: Check that all maps are empty initially
+        // Check that all maps are empty initially
         const maps = await contract.getAllMaps();
         for (const [_mapName, map] of Object.entries(maps)) {
             if (map instanceof Dictionary) {
                 expect(map.size).toBe(0);
-            } else {
-                // Handle other types if necessary
-                // For example, default values for boolean, etc.
             }
         }
     });
 
-    it("should implement .set operation correctly", async () => {
+    it("set: should set and clear values", async () => {
         for (const { keys, values } of testCases) {
-            // Step 2: Send the set operation
+            // Send the set operation
             const setMessage: SetAllMaps = {
                 $$type: "SetAllMaps",
                 ...keys,
@@ -545,10 +542,10 @@ describe("MapTestContract", () => {
                 setMessage,
             );
 
-            // Step 3: Retrieve all maps using `allMaps` getter
+            // Retrieve all maps using `allMaps` getter
             const allMaps = await contract.getAllMaps();
 
-            // Step 4: Iterate over mapConfigs and perform assertions
+            // Iterate over mapConfigs and perform assertions
             mapConfigs.forEach(
                 ({ mapName, key, value, keyTransform, valueTransform }) => {
                     const map = allMaps[mapName] as Dictionary<any, any>;
@@ -581,7 +578,7 @@ describe("MapTestContract", () => {
                 },
             );
 
-            // Step 5: Clear all maps by setting values to null
+            // Clear all maps by setting values to null
             const clearMessage: SetAllMaps = {
                 $$type: "SetAllMaps",
                 ...keys,
@@ -604,10 +601,186 @@ describe("MapTestContract", () => {
                 clearMessage,
             );
 
-            // Step 6: Retrieve all maps again to ensure they are empty
+            // Retrieve all maps again to ensure they are empty
             const clearedMaps = await contract.getAllMaps();
 
-            // Step 7: Iterate over mapConfigs and assert maps are empty
+            // Iterate over mapConfigs and assert maps are empty
+            mapConfigs.forEach(({ mapName }) => {
+                const map = clearedMaps[mapName] as Dictionary<any, any>;
+                expect(map.size).toBe(0);
+            });
+        }
+    });
+
+    it("set: should set multiple values", async () => {
+        for (const { keys, values } of testCases) {
+            // Send the set operation
+            const setMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                ...values,
+            };
+
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                setMessage,
+            );
+        }
+
+        // Retrieve all maps using `allMaps` getter
+        const allMaps = await contract.getAllMaps();
+
+        for (const { keys, values } of testCases) {
+            // Iterate over mapConfigs and perform assertions
+            mapConfigs.forEach(
+                ({ mapName, key, value, keyTransform, valueTransform }) => {
+                    const map = allMaps[mapName] as Dictionary<any, any>;
+
+                    expect(map.size).toBe(testCases.length);
+
+                    let mapKey = keys[key];
+                    if (keyTransform) {
+                        mapKey = keyTransform(mapKey);
+                    }
+
+                    let expectedValue = values[value];
+                    if (valueTransform) {
+                        expectedValue = valueTransform(expectedValue);
+                    }
+
+                    const actualValue = map.get(mapKey);
+
+                    if (expectedValue instanceof Cell) {
+                        expect(actualValue).toEqualCell(expectedValue);
+                    } else if (expectedValue instanceof Address) {
+                        expect(actualValue).toEqualAddress(expectedValue);
+                    } else if (isSomeStruct(expectedValue)) {
+                        expect(compareStructs(actualValue, expectedValue)).toBe(
+                            true,
+                        );
+                    } else {
+                        expect(actualValue).toEqual(expectedValue);
+                    }
+                },
+            );
+        }
+
+        for (const { keys } of testCases) {
+            // Clear all maps by setting values to null
+            const clearMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                valueInt: null,
+                valueInt8: null,
+                valueInt42: null,
+                valueInt256: null,
+                valueUint8: null,
+                valueUint42: null,
+                valueUint256: null,
+                valueBool: null,
+                valueCell: null,
+                valueAddress: null,
+                valueStruct: null,
+            };
+
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                clearMessage,
+            );
+        }
+
+        // Retrieve all maps again to ensure they are empty
+        const clearedMaps = await contract.getAllMaps();
+
+        // Iterate over mapConfigs and assert maps are empty
+        mapConfigs.forEach(({ mapName }) => {
+            const map = clearedMaps[mapName] as Dictionary<any, any>;
+            expect(map.size).toBe(0);
+        });
+    });
+
+    it("set: should overwrite values", async () => {
+        for (const { keys } of testCases) {
+            for (const { values } of testCases) {
+                // Send the set operation
+                const setMessage: SetAllMaps = {
+                    $$type: "SetAllMaps",
+                    ...keys,
+                    ...values,
+                };
+
+                await contract.send(
+                    treasury.getSender(),
+                    { value: toNano("1") },
+                    setMessage,
+                );
+
+                // Retrieve all maps using `allMaps` getter
+                const allMaps = await contract.getAllMaps();
+
+                // Iterate over mapConfigs and perform assertions
+                mapConfigs.forEach(
+                    ({ mapName, key, value, keyTransform, valueTransform }) => {
+                        const map = allMaps[mapName] as Dictionary<any, any>;
+
+                        expect(map.size).toBe(1);
+
+                        let mapKey = keys[key];
+                        if (keyTransform) {
+                            mapKey = keyTransform(mapKey);
+                        }
+
+                        let expectedValue = values[value];
+                        if (valueTransform) {
+                            expectedValue = valueTransform(expectedValue);
+                        }
+
+                        const actualValue = map.get(mapKey);
+
+                        if (expectedValue instanceof Cell) {
+                            expect(actualValue).toEqualCell(expectedValue);
+                        } else if (expectedValue instanceof Address) {
+                            expect(actualValue).toEqualAddress(expectedValue);
+                        } else if (isSomeStruct(expectedValue)) {
+                            expect(
+                                compareStructs(actualValue, expectedValue),
+                            ).toBe(true);
+                        } else {
+                            expect(actualValue).toEqual(expectedValue);
+                        }
+                    },
+                );
+            }
+
+            // Clear all maps by setting values to null
+            const clearMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                valueInt: null,
+                valueInt8: null,
+                valueInt42: null,
+                valueInt256: null,
+                valueUint8: null,
+                valueUint42: null,
+                valueUint256: null,
+                valueBool: null,
+                valueCell: null,
+                valueAddress: null,
+                valueStruct: null,
+            };
+
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                clearMessage,
+            );
+
+            // Retrieve all maps again to ensure they are empty
+            const clearedMaps = await contract.getAllMaps();
+
+            // Iterate over mapConfigs and assert maps are empty
             mapConfigs.forEach(({ mapName }) => {
                 const map = clearedMaps[mapName] as Dictionary<any, any>;
                 expect(map.size).toBe(0);
@@ -617,7 +790,7 @@ describe("MapTestContract", () => {
 
     it("should implement .get operation correctly", async () => {
         for (const { keys, values } of testCases) {
-            // Step 2: Send the set operation
+            // Send the set operation
             const setMessage: SetAllMaps = {
                 $$type: "SetAllMaps",
                 ...keys,
@@ -630,8 +803,7 @@ describe("MapTestContract", () => {
                 setMessage,
             );
 
-            // Step 3: Prepare the get message with all keys
-            // Assuming getGetAllMaps method requires all keys as separate arguments
+            // Prepare the get message with all keys
             const getMessage = {
                 keyInt: keys.keyInt,
                 keyInt8: keys.keyInt8,
@@ -643,7 +815,7 @@ describe("MapTestContract", () => {
                 keyAddress: keys.keyAddress,
             };
 
-            // Step 4: Retrieve all maps using `getGetAllMaps` method
+            // Call the .get operation on all maps
             const getResponse = await contract.getGetAllMaps(
                 getMessage.keyInt,
                 getMessage.keyInt8,
@@ -655,7 +827,7 @@ describe("MapTestContract", () => {
                 getMessage.keyAddress,
             );
 
-            // Step 5: Iterate over mapConfigs and perform assertions
+            // Iterate over mapConfigs and perform assertions
             mapConfigs.forEach(
                 ({
                     mapName,
@@ -689,7 +861,7 @@ describe("MapTestContract", () => {
                 },
             );
 
-            // Step 6: Clear all maps by setting values to null
+            // Clear all maps by setting values to null
             const clearMessage: SetAllMaps = {
                 $$type: "SetAllMaps",
                 ...keys,
@@ -712,7 +884,7 @@ describe("MapTestContract", () => {
                 clearMessage,
             );
 
-            // Step 7: Retrieve all maps again to ensure they are empty using `getGetAllMaps`
+            // Call the .get operation on all maps again
             const clearedGetResponse = await contract.getGetAllMaps(
                 getMessage.keyInt,
                 getMessage.keyInt8,
@@ -724,7 +896,7 @@ describe("MapTestContract", () => {
                 getMessage.keyAddress,
             );
 
-            // Step 8: Iterate over mapConfigs and assert maps are empty
+            // Iterate over mapConfigs and assert maps are empty
             mapConfigs.forEach(({ mapName }) => {
                 const actualValue = clearedGetResponse[mapName];
                 expect(actualValue).toBeNull();
@@ -734,7 +906,7 @@ describe("MapTestContract", () => {
 
     it("should implement .del operation correctly", async () => {
         for (const { keys, values } of testCases) {
-            // Step 2: Send the set operation
+            // Send the set operation
             const setMessage: SetAllMaps = {
                 $$type: "SetAllMaps",
                 ...keys,
@@ -747,10 +919,10 @@ describe("MapTestContract", () => {
                 setMessage,
             );
 
-            // Step 3: Retrieve all maps using `allMaps` getter to ensure they are set
+            // Retrieve all maps using `allMaps` getter to ensure they are set
             const allMapsBeforeDel = await contract.getAllMaps();
 
-            // Step 4: Iterate over mapConfigs and verify all maps have one entry
+            // Iterate over mapConfigs and verify all maps have one entry
             mapConfigs.forEach(
                 ({ mapName, key, value, keyTransform, valueTransform }) => {
                     const map = allMapsBeforeDel[mapName] as Dictionary<
@@ -786,8 +958,7 @@ describe("MapTestContract", () => {
                 },
             );
 
-            // Step 5: Send the del operation
-            // Assuming DelAllMaps is similar to SetAllMaps but deletes entries
+            // Send the del operation
             const delMessage: DelAllMaps = {
                 $$type: "DelAllMaps",
                 ...keys,
@@ -799,10 +970,10 @@ describe("MapTestContract", () => {
                 delMessage,
             );
 
-            // Step 6: Retrieve all maps using `allMaps` getter to ensure they are deleted
+            // Retrieve all maps using `allMaps` getter to ensure they are deleted
             const allMapsAfterDel = await contract.getAllMaps();
 
-            // Step 7: Iterate over mapConfigs and assert maps are empty
+            // Iterate over mapConfigs and assert maps are empty
             mapConfigs.forEach(({ mapName }) => {
                 const map = allMapsAfterDel[mapName] as Dictionary<any, any>;
                 expect(map.size).toBe(0);
