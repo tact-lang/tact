@@ -43,6 +43,7 @@ import {
 import { getRawAST } from "../grammar/store";
 import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
+import "../utils/isSubsetOfPolyfill";
 import { evalConstantExpression } from "../constEval";
 import { resolveABIType, intMapFormats } from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
