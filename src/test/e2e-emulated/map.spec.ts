@@ -1533,4 +1533,154 @@ describe("MapTestContract", () => {
             });
         }
     });
+
+    it("isEmpty: should return 'true' for empty maps and 'false' for non-empty maps", async () => {
+        for (const { keys, values } of testCases) {
+            // Check that all maps are empty initially
+            const initialIsEmptyResponse = await contract.getIsEmptyAllMaps();
+            Object.values(initialIsEmptyResponse).forEach((isEmpty) => {
+                if (typeof isEmpty === "boolean") {
+                    expect(isEmpty).toBe(true);
+                }
+            });
+
+            // Set values for the current test case
+            const setMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                ...values,
+            };
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                setMessage,
+            );
+
+            // Check that all maps are non-empty
+            const nonEmptyIsEmptyResponse = await contract.getIsEmptyAllMaps();
+            Object.values(nonEmptyIsEmptyResponse).forEach((isEmpty) => {
+                if (typeof isEmpty === "boolean") {
+                    expect(isEmpty).toBe(false);
+                }
+            });
+
+            // Clear all maps
+            for (const { keys } of testCases) {
+                const clearMessage: SetAllMaps = {
+                    $$type: "SetAllMaps",
+                    ...keys,
+                    valueInt: null,
+                    valueInt8: null,
+                    valueInt42: null,
+                    valueInt256: null,
+                    valueUint8: null,
+                    valueUint42: null,
+                    valueUint256: null,
+                    valueBool: null,
+                    valueCell: null,
+                    valueAddress: null,
+                    valueStruct: null,
+                };
+                await contract.send(
+                    treasury.getSender(),
+                    { value: toNano("1") },
+                    clearMessage,
+                );
+            }
+
+            // Check that all maps are empty again
+            const emptyIsEmptyResponse = await contract.getIsEmptyAllMaps();
+            Object.values(emptyIsEmptyResponse).forEach((isEmpty) => {
+                if (typeof isEmpty === "boolean") {
+                    expect(isEmpty).toBe(true);
+                }
+            });
+        }
+    });
+
+    it("asCell: should correctly serialize and deserialize maps", async () => {
+        for (const { keys, values } of testCases) {
+            // Set values for the current test case
+            const setMessage: SetAllMaps = {
+                $$type: "SetAllMaps",
+                ...keys,
+                ...values,
+            };
+            await contract.send(
+                treasury.getSender(),
+                { value: toNano("1") },
+                setMessage,
+            );
+
+            // Serialize all maps to a Cell
+            const cellResponse = await contract.getAsCellAllMaps();
+
+            // Retrieve all maps using `allMaps` getter
+            const allMaps = await contract.getAllMaps();
+
+            // Iterate over mapConfigs and perform assertions
+            mapConfigs.forEach(
+                ({ mapName, key, value, keyTransform, valueTransform }) => {
+                    const map = allMaps[mapName] as Dictionary<any, any>;
+
+                    expect(map.size).toBe(1);
+
+                    let mapKey = keys[key];
+                    if (keyTransform) {
+                        mapKey = keyTransform(mapKey);
+                    }
+
+                    let expectedValue = values[value];
+                    if (valueTransform) {
+                        expectedValue = valueTransform(expectedValue);
+                    }
+
+                    const actualValue = map.get(mapKey);
+
+                    if (expectedValue instanceof Cell) {
+                        expect(actualValue).toEqualCell(expectedValue);
+                    } else if (expectedValue instanceof Address) {
+                        expect(actualValue).toEqualAddress(expectedValue);
+                    } else if (isSomeStruct(expectedValue)) {
+                        expect(compareStructs(actualValue, expectedValue)).toBe(
+                            true,
+                        );
+                    } else {
+                        expect(actualValue).toEqual(expectedValue);
+                    }
+
+                    // Serialize the map from allMaps to a Cell to compare with the response
+                    const serializedMap = beginCell()
+                        .storeDictDirect(map)
+                        .endCell();
+
+                    expect(cellResponse[mapName]).toEqualCell(serializedMap);
+                },
+            );
+
+            // Clear all maps
+            for (const { keys } of testCases) {
+                const clearMessage: SetAllMaps = {
+                    $$type: "SetAllMaps",
+                    ...keys,
+                    valueInt: null,
+                    valueInt8: null,
+                    valueInt42: null,
+                    valueInt256: null,
+                    valueUint8: null,
+                    valueUint42: null,
+                    valueUint256: null,
+                    valueBool: null,
+                    valueCell: null,
+                    valueAddress: null,
+                    valueStruct: null,
+                };
+                await contract.send(
+                    treasury.getSender(),
+                    { value: toNano("1") },
+                    clearMessage,
+                );
+            }
+        }
+    });
 });
