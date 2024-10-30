@@ -1,0 +1,73 @@
+---
+title: 编译时
+---
+
+本页列出了所有内置 [全局静态函数](/book/functions#global-static-functions)，这些函数在构建 Tact 项目时进行评估，无法处理非恒定的运行时数据。 这些函数通常被称为 "编译时函数"。
+
+## 地址
+
+```tact
+fun address(s: String)：地址；
+```
+
+编译时函数，用于将带有地址的 [`字符串{:tact}`][p]转换为 [`地址{:tact}`][p]类型。
+
+使用示例
+
+```tact
+contract Example {
+    // Persistent state variables
+    addr: Address =
+        address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"); // works at compile-time！
+}
+```
+
+## 电池
+
+```tact
+fun cell(bocBase64: String)：单元格；
+```
+
+编译时函数，将 base64 编码的 [BoC](https://docs.ton.org/develop/data-formats/cell-boc#bag-of-cells)`bocBase64`作为 [`单元格{:tact}`][单元格] 嵌入到合约中。
+
+使用示例
+
+```tact
+contract Example {
+    // 持久状态变量
+    storedCell：Cell =
+        // 钱包 V3R1 的初始包为 base64-编码的 BoC
+        cell("te6cckEBAQEAYgAAwP8AIN0gggFMl7qXMO1E0NcLH+Ck8mCDCNcYINMf0x/TH/gjE7vyY+1E0NMf0x/T/9FRMrryoVFEuvKiBPkBVBBV+RDyo/gAkyDXSpbTB9QC+wDo0QGkyMsfyx/L/8ntVD++buA=")；// 编译时有效！
+}
+```
+
+:::note[Useful links:]
+
+  [TON文档中的细胞袋](https://docs.ton.org/develop/data-formats/cell-boc#bag-of-cells)
+
+:::
+
+## ton 
+
+```tact
+fun ton(value: String)：Int；
+```
+
+编译时函数，将给定的通币`值`从人类可读格式[`String{:tact}`][p]转换为[nanoToncoin](/book/integers#nanotoncoin)[`Int{:tact}`][int]格式。
+
+使用示例
+
+```tact
+contract Example {
+    // 持久状态变量
+    one：Int = ton("1"); // 10^9 枚纳米通币，等于 1 枚通币
+    pointOne: Int = ton("0.1"); // 10^8 枚纳米通币，等于 0.1 枚通币
+    nano: Int = ton("0.000000001"); // 1 枚纳米通币，等于 10^9 枚通币
+                                    // 在编译时有效！
+}
+```
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[电池]: /book/cells#cells

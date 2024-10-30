@@ -1,0 +1,324 @@
+---
+title: 退出代码
+---
+
+:::caution
+  根据 [#106] (https://github.com/tact-lang/tact-docs/issues/106)，本页正在重建中。 所有锚链接 (`#`) 今后都可能发生变化！
+:::
+
+退出代码是一个 $16$-bit 无符号整数，范围在 $0$ 到 $65535$ 之间（或 2_{16} - 1$）。
+
+$0$ 至 $127$ 的代码分配给 FunC (TVM)， $128$ 至 $255$ 的代码分配给 Tact。 从 $256$ 到 $65535$ 的范围内，开发人员可自由定义退出代码。
+
+预先分配的退出代码列表：
+
+| 退出代码 | 相位 | 说明 |
+| :--- | :--- | :--- |
+| $0$ | [计算阶段][c] | 标准成功执行退出代码 |
+| $2$ | [计算阶段][c] | 堆栈下溢。最后一个操作码消耗的元素多于堆栈中的元素数量 |
+| $3$ | [计算阶段][c] | 堆栈溢出。堆栈中存储的值超过了该版本 TVM 的允许值 |
+| $4$ | [计算阶段][c] | 整数溢出。整数不适合 $-2^{256} \leq x < 2^{256}$ 或发生了零除法 |
+| $5$ | [计算阶段][c] | 整数超出预期范围 |
+| $6$ | [计算阶段][c] | 操作码无效。在当前的 TVM 版本中，指令不详 |
+| $7$ | [计算阶段][c] | 类型检查错误。基元参数的值类型不正确 |
+| $8$ | [计算阶段][c] | 电池溢出。不可能将数据写入生成器，因为操作后将有超过 1023 位或 4 个引用 |
+| $9$ | [计算阶段][c] | 单元下溢。从片原始码读取数据时，试图读取的比特或引用数多于现有比特或引用数 |
+| $10$ | [计算阶段][c] | 词典错误。处理字典（哈希图）时出错 |
+| $13$ | [计算阶段][c] |  gas 耗尽错误。当剩余 gas 变为负值时，由 TVM 抛出 |
+| $-14$ | [计算阶段][c] | 这意味着 gas 耗尽错误，与 $13$ 相同。否定，因为无法伪造 |
+| $32$ | [行动阶段][a] | 操作列表无效。如果执行后的 c5 寄存器包含不可解析对象，则在操作阶段设置该寄存器 |
+| $34$ | [行动阶段][a] | 操作无效或不支持。如果无法执行当前操作，则在操作阶段设置 |
+| $37$ | [行动阶段][a] | 不够吨。信息发送的吨数过多（或扣除费用后吨数不足） |
+| $38$ | [行动阶段][a] | 额外货币不足 |
+| $128$ | 塔克（编译） | 空引用异常--编译器预期是一个整数或单元格，但传递了一个空值 |
+| $129$ | 塔克（编译） | 无效序列化前缀--如果与之前的操作码检查有任何不一致，将抛出此退出代码 |
+| $130$ | 塔克（编译） | 收到的报文无效 - 未找到合适的操作 |
+| $131$ | 塔克（编译） | 制约因素错误 |
+| $132$ | 塔克（编译） | 拒绝访问 - 所有者以外的其他人向合同发送了信息 |
+| $133$ | 塔克（编译） | 合同已停止 - 已向停止的合同发送信息 |
+| $134$ | 塔克（编译） | 无效参数 - 无效 Base64 字符串 |
+| $135$ | 塔克（编译） | 未找到合同代码 - 字典调用的假标记 |
+| $136$ | 塔克（编译） | 无效地址 - 非 $267$- 位地址或无效链 id（非 0 或 -1） |
+| $137$ | 塔克（编译） | 此合约未启用主链支持 |
+
+[c]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase
+[a]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases
+
+问：**在哪里可以看到项目中所有自动生成的退出代码列表？**
+答：Tact 编译器会在 \*.md 文件末尾收集所有退出代码，您可以在
+路径"./ProjectFolder/build/ProjectName/tact_ProjectName.md "下的目录中跟踪它们。
+
+问：** 如何观察抛出的退出代码？**
+答：在 Tact 中，打印交易来查看结果是不明智的，因为它们不容易读取。 如果想查看事务的退出代码，
+，在 Typescript 本地测试中使用下面的模板：
+
+```typescript
+const sender = await blockchain.treasury('sender');
+const result = await contractName.send(sender.getSender(), { value: toNano('0.05'), }, { transactionData });
+
+expect(result.transactions).toHaveTransaction(
+    { from: sender.address, to: contractName.address, exitCode: YOUR_DESIRED_EXIT_CODE }
+)；
+```
+
+- 第一行定义发件人。
+- 第二行发送交易。
+- 在第三行中，您要检查结果中是否有从发送方到您的合约的交易，以及您所需的退出代码。
+
+## 计算阶段
+
+### $0$：成功执行 {#0}
+
+该退出代码表示事务的计算阶段已成功完成。
+
+### $4$：整数溢出 {#4}
+
+在 TVM 中，整数的范围可以是 $-2^{256} < x < 2^{256}$。
+如果计算过程中的值超出了这个范围，就会抛出 4 个退出代码。
+
+例如
+
+```tact
+self.id = 1; // 使用存储变量强制不忽略它
+repeat(256) {
+    self.id = 2 * self.id;
+}
+```
+
+### $5$：超出预期范围的整数 {#5}
+
+如果整数值超出预期范围，则抛出 5 个退出代码。
+例如，如果在 .store_uint() 函数中使用了负值。 在 Tact 中，还有其他一些新情况，例如：
+1- 如你所知，你可以在 Tact 中定义更多有限的整数（小于 257 位的整数）。2- 根据 ````storeUint(self: Builder, value: Int, bits: Int)```函数，不能使用 ````storeUint(0, 257)``` 因为 ``0 ≤ bits ≤ 256```。
+
+例如
+
+```tact
+// 选项 1 -> id: Int as uint32
+self.id = 1; // 强制使用存储变量不忽略它
+repeat(32) {
+    self.id = 2 * self.id;
+}
+
+// 选项 2 -> 根据 storeUint(self: Builder, value: Int, bits: Int) 函数，不可能使用 storeUint(0, 1024) 因为 0 ≤ bits ≤ 256
+let s：Slice = beginCell().storeUint(0, 257).asSlice()；
+```
+
+### $8$：单元格溢出 {#8}
+
+一个单元可存储 1023 位数据和 4 个指向其他单元的引用。
+如果尝试写入超过 1023 位或超过 4 个引用，则会抛出 8 个退出代码。
+
+例如
+
+```tact
+// 根据 storeUint(self: Builder, value: Int, bits: Int) 函数，无法使用 storeUint(0, 1024) 因为 0 ≤ bits ≤ 256
+let s：Slice = beginCell().storeUint(0, 256).storeUint(0, 256).storeUint(0, 256).storeUint(0, 256).asSlice()；
+```
+
+### $9$：单元下溢 {#9}
+
+如果尝试从片段中读取的数据多于其包含的数据，则会抛出 9 个退出代码。
+
+例如
+
+```tact
+让 s：Slice = emptySlice();
+self.id = s.loadUint(1); // 使用存储变量强制不忽略它
+```
+
+### $13$: 气用尽错误 {#13}
+
+如果没有足够的 TON 来处理计算阶段，则会抛出此错误。
+
+在处理过程中，将对该值执行 NOT 操作，从而将该值更改为 -14。 这样做是为了防止使用 throw 函数伪造退出代码，因为所有此类函数都只接受正值的退出代码，这一点在前面已经讨论过。
+
+例如
+
+```tact
+repeat(10000) {
+    self.id += 1;
+}
+```
+
+## 行动阶段
+
+### $34$行动无效或不支持 {#34}
+
+在处理操作时，该退出代码会导致大部分错误：无效信息、不正确操作等。
+
+例如
+
+```tact
+nativeSendMessage(emptyCell(), 0)；
+```
+
+### $37$TON {#37}
+
+这意味着没有足够的 TON 来发送指定的数量。
+
+例如
+
+```tact
+send(SendParameters{to: context().sender, value: ton("10")})；
+```
+
+## 塔克（编译）
+
+### 128：空引用异常 {#128}
+
+如果有一个非空断言，例如 [`!!{:tact}`](/book/operators#unary-non-null-assert)操作符，而检查值是 [`null{:tact}`](/book/optionals)，则会抛出一个退出代码为 $128$ 的错误："空引用异常"。
+
+```tact
+let gotcha: String? = null;
+
+try {
+    // Asserting that the value isn't null, which isn't the case!
+    dump(gotcha!!);
+} catch (exitCode) {
+    exitCode; // 128
+}
+```
+
+### $130$来信无效 {#130}
+
+向合约发送信息时，信息体的前 32 位是操作码。 它决定了必须进行的操作。
+在 FunC 中，如果找不到操作码，就会抛出 0xffff。 在 Tact 中，将抛出 130 个退出代码。
+
+例如
+
+1. 首先，像下面这样定义一个空合约：
+
+```tact
+合同烟花 {}
+```
+
+2. 然后，给这份合同发送信息。 由于没有找到合适的操作，您将得到此退出代码。
+
+### $132$: 拒绝访问 {#132}
+
+首先，你应该导入并继承 Ownable Trait。 之后，您的合同就有了所有者。
+您可以在函数中调用 ```self.requireOwner();``` 要求检查。 这将确保只有所有者才能向您的合同发送信息。
+
+例如
+
+```tact
+import "@stdlib/deploy";
+import "@stdlib/ownable";
+
+message FakeLaunch {
+
+}
+
+contract Fireworks with
+    Deployable,
+    Ownable,
+{
+    owner: Address;
+
+    init(){
+        self.owner = sender();
+    }
+
+    receive(msg: FakeLaunch){
+        self.requireOwner();
+    }
+}
+
+fun requireOwner() {
+        nativeThrowUnless(132, sender() == self.owner);
+}
+```
+
+### $133$: 合同停止 {#133}
+
+stoppable 特性允许停止合约。
+如果向已停止的合约发送信息，而合约通过运行 \`\`self.requireNotStopped();\`\`\`\` 要求检查，则会抛出此退出代码。
+在当前版本的 Tact 中，将抛出 40368 而不是 133 的退出代码。
+
+例如
+
+```tact
+import "@stdlib/deploy";
+import "@stdlib/ownable";
+import "@stdlib/stoppable";
+
+message FakeLaunch {}
+
+contract Fireworks with
+    Deployable,
+    Ownable,
+    Stoppable,
+{
+    owner: Address;
+    stopped：Bool;
+
+    init() {
+        self.owner = sender();
+        self.stopped = false;
+    }
+
+    receive(msg: FakeLaunch) {
+        self.stopped = true;
+        self.requireNotStopped();
+    }
+}
+
+fun requireNotStopped() {
+    require(!self.stopped, "Contract stopped");
+}
+```
+
+### $134$参数无效 {#134}
+
+下面的 FunC 函数（在一堆 if 条件的最后一部分）将抛出这个问题。 该函数从 Base64 中读取内容。
+
+如果输入字符不符合 base64 字符，就会出现此退出代码。
+
+例如
+
+```tact
+让代码Slice = beginCell().storeUint(0, 8).asSlice().fromBase64();
+// 0 不是有效的 ASCII 码，因此无法转换为 Base64 码。
+```
+
+### $135$：未找到合同代码 {#135}
+
+它将检查字典键搜索的返回标志。
+
+例如
+
+```tact
+// copy & paste the below line in wrapper file(../build/ContractName/tact_ContractName.ts) instead of the second line of ContractName_init() function - this is a dictionary containing another smart contract code which leads to 135 exit code
+// const __system = Cell.fromBase64('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');
+let ctx: Context = context();
+let fireworks_init: StateInit = initOf Fireworks(0);
+```
+
+### $136$: 无效地址 {#136}
+
+在 TON 中，所有地址都是 267 位。 如果您违反了这一规则，您将面临这个退出代码。
+
+目前，TON 只支持两个链 id。0 代表基础链，-1 代表主链。 如果地址不是来自 basechain，则会抛出 136 个退出代码。
+
+例如
+
+```tact
+// fun newAddress(chain: Int, hash: Int)：Address;
+// 从链和哈希值创建一个新地址。
+let zeroAddress：Address = newAddress(1, 0); // 无效的链零地址
+```
+
+### $137$：该合约未启用主链支持 {#137}
+
+目前，TON 只支持两个链 id。0 代表基础链，-1 代表主链。
+
+Tact 仅支持 basechain，如果您的地址来自 masterchain，则会抛出 137 个退出代码。
+
+例如
+
+```tact
+// fun newAddress(chain: Int, hash: Int)：Address;
+// 根据链和哈希值创建新地址。
+let zeroAddress：Address = newAddress(-1, 0); // 主链零地址
+```

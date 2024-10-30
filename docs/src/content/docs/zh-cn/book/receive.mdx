@@ -1,0 +1,54 @@
+---
+title: 接收信息
+---
+
+TON 是一个分布式区块链，这意味着合约之间的通信是通过发送和接收信息完成的。 最常见的信息类型是内部信息--从一个合约（或钱包）发送到另一个合约（或钱包）的信息。
+
+## 接收内部信息
+
+要接收所需类型的信息，您需要声明一个接收函数，例如`receive(“increment”){:tact}`。这个符号表示声明一个接收函数，当向合约发送值为 `“increment”{:tact}`的文本时，该函数将被调用。函数体可以修改合约的状态，并向其他合约发送信息。不可能直接调用接收器。如果需要重用某些逻辑，可以声明一个函数，然后从接收器中调用。
+
+有多个接收器函数。所有接收器函数的处理顺序如下：
+
+* `receive(){:tact}` - 向合约发送空信息时调用。
+* `receive("message"){:tact}` - 向合约发送带有特定注释的文本信息时调用。
+* `receive(str: String){:tact}` - 向合约发送任意文本信息时调用。
+* `receive(msg: MyMessage){:tact}`-当向合约发送 “MyMessage ”类型的二进制信息时调用。
+* `receive(msg: Slice){:tact}` - 向合约发送未知类型的二进制信息时调用。
+
+```tact
+
+message MyMessage {
+    value: Int;
+}
+
+contract MyContract {
+    receive() {
+        // ...
+    }
+    receive("message") {
+        // ...
+    }
+    receive(str: String) {
+        // ...
+    }
+    receive(msg: MyMessage) {
+        // ...
+    }
+    receive(msg: Slice) {
+        // ...
+    }
+}
+```
+
+用下划线`_{:tact}`命名接收函数的参数时，其值将被视为未使用的值并被丢弃。 当您不需要检查接收到的信息，而只想让它传达特定的操作码时，这就很有用了：
+
+```tact
+message(42) UniverseCalls {}
+
+contract Example {
+    receive(_: UniverseCalls) {
+        // Got a Message with opcode 42
+    }
+}
+```
