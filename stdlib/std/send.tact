@@ -4,6 +4,7 @@ asm fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
 
 const SendRemainingBalance: Int = 128;
 const SendRemainingValue: Int = 64;
+const SendDefaultMode: Int = 0;
 const SendIgnoreErrors: Int = 2;
 const SendPayGasSeparately: Int = 1;
 const SendDestroyIfZero: Int = 32;
