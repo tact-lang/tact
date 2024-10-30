@@ -35,11 +35,11 @@ virtual fun reply(body: Cell?)；
 
 ```tact
 self.forward(sender(), body, true, null);
-// ↑ ↑ ↑
-// | | | init：StateInit?
-// | | bounce：Bool
-// | body：Cell?
-// to：地址
+//           ↑         ↑     ↑     ↑
+//           |         |     |     init: StateInit?
+//           |         |     bounce: Bool
+//           |         body: Cell?
+//           to: Address
 ```
 
 使用示例
@@ -59,18 +59,18 @@ virtual fun notify(body: Cell?)；
 
 ```tact
 self.forward(sender(), body, false, null);
-// ↑ ↑ ↑
-// | | | init：StateInit?
-// | | bounce：Bool
-// | body：Cell?
-// to：地址
+//           ↑         ↑     ↑      ↑
+//           |         |     |      init: StateInit?
+//           |         |     bounce: Bool
+//           |         body: Cell?
+//           to: Address
 ```
 
 使用示例
 
 ```tact
 // 此消息不会跳转！
-self.notify（"小心，这是我给你的回复！".asComment()）；
+self.notify("Beware, this is my reply to you!".asComment());
 ```
 
 ### self.forward {#self-forward}
@@ -124,4 +124,4 @@ message PayoutOk {
 }
 ```
 
-[纳米]: /book/integers#nanotoncoin
+[nano]: /book/integers#nanotoncoin

@@ -7,7 +7,7 @@ title: "@stdlib/ownable"
 要使用该库，请导入 `@stdlib/ownable`：
 
 ```tact
-导入"@stdlib/ownable"；
+import "@stdlib/ownable";
 ```
 
 ## 信息
@@ -60,7 +60,7 @@ trait Ownable {
 ```tact /Ownable/
 import "@stdlib/ownable";
 
-合同 ExampleContract with Ownable {
+contract ExampleContract with Ownable {
     owner: Address;
 
     init(owner: Address) {
@@ -100,7 +100,7 @@ trait OwnableTransferable with Ownable {
 ```tact /OwnableTransferable/
 import "@stdlib/ownable";
 
-合同 ExampleContract with OwnableTransferable {
+contract ExampleContract with OwnableTransferable {
     owner: Address;
 
     init(owner: Address) {

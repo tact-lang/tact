@@ -16,9 +16,9 @@ title: 高级
 extends fun readForwardFee(self: Context)：Int
 ```
 
-[`语境{:tact}`]（/ref/core-common#context）的扩展函数。
+[`Context{:tact}`](/ref/core-common#context) 的扩展函数。
 
-读取 [forward fee](https://docs.ton.org/develop/smart-contracts/guidelines/processing)，并以 [`Int{:tact}`][int]的形式返回 [nanoToncoins](/book/integers#nanotoncoin) 的金额。
+读取 [forward fee](https://docs.ton.org/develop/smart-contracts/guidelines/processing)，并以 [`Int{:tact}`][int] 的形式返回 [nanoToncoins](/book/integers#nanotoncoin) 的金额。
 
 使用示例
 
@@ -41,7 +41,7 @@ fun getConfigParam(id: Int)：Cell?
 let configAddrAsCell: Cell = getConfigParam(0)!!;
 
 // 参数 18，用于确定数据存储价格的配置
-let dataStorageFeeConfig：Cell = getConfigParam(18)!
+let dataStorageFeeConfig: Cell = getConfigParam(18)!!;
 ```
 
 :::note
@@ -60,7 +60,7 @@ let dataStorageFeeConfig：Cell = getConfigParam(18)!
 fun acceptMessage()；
 ```
 
-同意购买一些汽油来完成当前交易。 处理外部信息时需要这一操作，因为外部信息本身没有价值（因此没有气体）。
+同意购买一些汽油来完成当前交易。 处理外部信息时需要这一操作，因为外部信息本身没有价值（因此没有 gas ）。
 
 使用示例
 
@@ -206,7 +206,7 @@ raw_reserve(int amount, int mode) impure asm "RAWRESERVE"；
 
 该函数有两个参数：
 
-- 金额：要储备的 [纳米通币](/book/integers#nanotoncoin)的数量。
+- 金额：要储备的 [nanoToncoins](/book/integers#nanotoncoin)的数量。
 - 模式决定预订行为。
 
 函数 "raw_reserve "大致等同于创建一个向外发送的消息，将指定的 "金额"[nanoToncoins](/book/integers#nanotoncoin)（或 "b " $-$ "金额"[nanoToncoins](/book/integers#nanotoncoin)，其中 "b "为余额）发送给自己。 这就确保了后续产出行动所花费的资金不会超过剩余资金。

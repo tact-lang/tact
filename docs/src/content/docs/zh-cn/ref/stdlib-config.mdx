@@ -7,7 +7,7 @@ title: "@stdlib/config"
 要使用该库，请导入 `@stdlib/config`：
 
 ```tact
-导入"@stdlib/config"；
+import "@stdlib/config";
 ```
 
 ## 功能
@@ -15,7 +15,7 @@ title: "@stdlib/config"
 ### 获取配置地址
 
 ```tact
-fun getConfigAddress()：地址；
+fun getConfigAddress(): Address;
 ```
 
 读取配置参数 $0$ 作为 [`地址{:tact}`][p]。
@@ -33,7 +33,7 @@ fun getConfigAddress()：Address {
 ### getElectorAddress
 
 ```tact
-fun getElectorAddress()：地址；
+fun getElectorAddress(): Address;
 ```
 
 读取配置参数 $1$ 作为 [`地址{:tact}`][p]。
@@ -41,9 +41,9 @@ fun getElectorAddress()：地址；
 源代码
 
 ```tact
-fun getElectorAddress()：Address {
-    let cell：Cell = getConfigParam(1)!!;
-    let sc：Slice = cell.beginParse();
+fun getElectorAddress(): Address {
+    let cell: Cell = getConfigParam(1)!!;
+    let sc: Slice = cell.beginParse();
     return newAddress(-1, sc.loadUint(256));
 }
 ```

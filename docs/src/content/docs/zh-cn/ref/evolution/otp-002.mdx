@@ -20,51 +20,51 @@ ABI 是一个 JSON 文件：
 
 ```json
 {
-  "name"："MyContract",
-  "types"：[
+  "name": "MyContract",
+  "types": [
     {
-      "name"："MyRequest",
-      "header"：12315123,
-      "fields"：[
+      "name": "MyRequest",
+      "header": 12315123,
+      "fields": [
         {
-          "name"："queryId",
-          "type"：{
-            "kind"："simple",
-            "type"："int",
+          "name": "queryId",
+          "type": {
+            "kind": "simple",
+            "type": "int",
             "optional": false,
-            "format"："uint256
+            "format": "uint256"
           }
         }
       ]
     }
   ],
-  "接收器"：[
-    { "type"："二进制"，"类型"："内部"，"名称"："MyRequest" },
-    { "type"："binary", "kind"："internal" },
-    { "type"："comment", "kind"："内部"，"评论"："投票！"},
-    { "type"："comment", "kind"："internal" },
-    { "type"："empty", "kind"："内部" }
+  "receivers": [
+    { "type": "binary", "kind": "internal", "name": "MyRequest" },
+    { "type": "binary", "kind": "internal" },
+    { "type": "comment", "kind": "internal", "comment": "Vote!" },
+    { "type": "comment", "kind": "internal" },
+    { "type": "empty", "kind": "internal" }
   ],
-  "getters"：[
-    { "name"："getOwner", "type"："address", "args"：[] },
+  "getters": [
+    { "name": "getOwner", "type": "address", "args": [] },
     {
-      "name"："getBalance",
-      "type"："coins",
-      "args"：[
+      "name": "getBalance",
+      "type": "coins",
+      "args": [
         {
-          "name"："invested",
-          "type"：{
-            "kind"："simple",
-            "type"："uint",
-            "format"："coins"
+          "name": "invested",
+          "type": {
+            "kind": "simple",
+            "type": "uint",
+            "format": "coins"
           }
         }
       ]
     }
   ],
-  "errors"：{
-    "123"："错误描述",
-    "124"："除以零"
+  "errors": {
+    "123": "Error description",
+    "124": "Division by zero"
   }
 }
 ```

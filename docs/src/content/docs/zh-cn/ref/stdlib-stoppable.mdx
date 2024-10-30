@@ -51,9 +51,9 @@ trait Stoppable with Ownable {
 import "@stdlib/ownable";
 import "@stdlib/stoppable";
 
-合同 MyContract with Stoppable {
+contract MyContract with Stoppable {
     owner: Address;
-    stopped：Bool;
+    stopped: Bool;
 
     init(owner: Address) {
         self.owner = owner;
@@ -89,9 +89,9 @@ trait Resumable with Stoppable {
 import "@stdlib/ownable";
 import "@stdlib/stoppable";
 
-合同 MyContract with Resumable {
+contract MyContract with Resumable {
     owner: Address;
-    stopped：Bool;
+    stopped: Bool;
 
     init(owner: Address) {
         self.owner = owner;

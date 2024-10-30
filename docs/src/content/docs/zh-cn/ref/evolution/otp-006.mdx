@@ -16,31 +16,31 @@ sidebar:
 
 ```json
 {
-  "name"："我的合同",
-  "code"："......代码的 boc ...",
-  "abi"："要原样上传到 IPFS 或 Ton Storage 的 ABI 字符串"，
-  "init"：{
-    "kind"："direct", // 表示此合约可以原样部署
-    "args"：{
-      // ...ABI 格式的参数
+  "name": "My Contract",
+  "code": "... boc of code ...",
+  "abi": "ABI string to be uploaded as is to IPFS or Ton Storage",
+  "init": {
+    "kind": "direct", // Means that this contract can be deployed as is
+    "args": {
+      // ... Arguments in ABI format
     },
-    "prefix"：{
-      // 合同初始状态的可选前缀
-      "bits"：0, // 前缀的位数
-      "value": 0 // 前缀的值
+    "prefix": {
+      // Optional prefix for contract init state
+      "bits": 0, // Number of bits in prefix
+      "value": 0 // Value of prefix
     },
-    "deployment"：{
-      "kind"："system-cell", // 表示此合约可按原样部署
-      "system"："......系统单元的 boc ..."
+    "deployment": {
+      "kind": "system-cell", // Means that this contract can be deployed as is
+      "system": "... boc of system cell ..."
     }
   },
-  "sources"：{
-    "file.ton"："... base64 编码的源文件......"
+  "sources": {
+    "file.ton": "... base64 encoded source file ..."
   },
-  "compiler"：{
-    "name"："func",
-    "version"："0.4.1",
-    "parameters"："..." // 可选字符串参数
+  "compiler": {
+    "name": "func",
+    "version": "0.4.1",
+    "parameters": "..." // Optional string parameters
   }
 }
 ```

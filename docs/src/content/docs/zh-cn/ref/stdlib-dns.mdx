@@ -7,7 +7,7 @@ title: "@stdlib/dns"
 要使用该库，请导入 `@stdlib/dns`：
 
 ```tact
-导入"@stdlib/dns"；
+import "@stdlib/dns";
 ```
 
 ## 结构
@@ -41,7 +41,7 @@ native dnsStringToInternal(str: String)：Slice?
 native dnsInternalNormalize(src: Slice)：Slice；
 ```
 
-将 [`片{:tact}`][片] 的内部 DNS 表示规范化。 传递的 [`Slice{:tact}`][slice]必须没有任何引用，否则将产生[退出代码 134](/book/exit-codes#134)异常："无效参数"。
+将 [`Slice{:tact}`][片] 的内部 DNS 表示规范化。 传递的 [`Slice{:tact}`][slice]必须没有任何引用，否则将产生[退出代码 134](/book/exit-codes#134)异常："无效参数"。
 
 源代码 (FunC)：[dns.fc#L125](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc#L125)
 
@@ -52,7 +52,7 @@ native dnsInternalNormalize(src: Slice)：Slice；
 native dnsInternalVerify(subdomain: Slice)：Bool；
 ```
 
-验证子域 [`片{:tact}`][片] 的内部 DNS 表示。
+验证子域 [`Slice{:tact}`][片] 的内部 DNS 表示。
 
 源代码 (FunC)：[dns.fc#L81](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc#L81)
 
@@ -177,10 +177,10 @@ trait DNSResolver {
 ```tact
 import "@stdlib/dns";
 
-合同 ExampleContract with DNSResolver {
-    // 现在，这个合同有一个：
-    // 1. dnsresolve getter 函数
-    // 2. doResolveDNS 虚拟函数
+contract ExampleContract with DNSResolver {
+    // Now, this contract has a:
+    // 1. dnsresolve getter function
+    // 2. doResolveDNS virtual function
 }
 ```
 
