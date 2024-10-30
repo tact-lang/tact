@@ -35,7 +35,7 @@ Alternatively, if you want to send the whole contract balance and destroy it imm
 Here's how the latter example would look in code:
 
 ```tact
-let to: Address = ...;
+let to: Address = address("...");
 let value: Int = ton("1");
 send(SendParameters{
     to: to,

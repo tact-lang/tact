@@ -24,9 +24,7 @@ Fields `code` and `data` are what's called an [init package](/book/expressions#i
 The simplest message is a reply to the incoming message returning all excess value of a message:
 
 ```tact
-receive() {
-    self.reply("Hello, World!".asComment()); // asComment converts a String to a Cell with a comment
-}
+self.reply("Hello, World!".asComment()); // asComment converts a String to a Cell with a comment
 ```
 
 ## Send message
@@ -36,21 +34,19 @@ If you need more advanced logic you can use the `send(){:tact}` function and `Se
 In fact, the previous example with [`.reply(){:tact}`](#send-simple-reply) can be made using the following call to `send(){:tact}` function:
 
 ```tact
-receive() {
-    send(SendParameters{
-        // bounce is set to true by default
-        to: sender(), // sending message back to the sender
-        value: 0, // don't add Toncoins to the message...
-        mode: SendRemainingValue | SendIgnoreErrors, // ...except for ones received from the sender due to SendRemainingValue
-        body: "Hello, World".asComment(), // asComment converts a String to a Cell with a comment
-    });
-}
+send(SendParameters{
+    // bounce is set to true by default
+    to: sender(), // sending message back to the sender
+    value: 0, // don't add Toncoins to the message...
+    mode: SendRemainingValue | SendIgnoreErrors, // ...except for ones received from the sender due to SendRemainingValue
+    body: "Hello, World".asComment(), // asComment converts a String to a Cell with a comment
+});
 ```
 
 Another example sends a message to the specified [`Address{:tact}`][p] with a `value` of $1$ TON and the `body` of a comment with a [`String{:tact}`][p] `"Hello, World!"{:tact}`:
 
 ```tact
-let recipient: Address = ...;
+let recipient: Address = address("...");
 let value: Int = ton("1");
 send(SendParameters{
     // bounce is set to true by default
@@ -68,7 +64,7 @@ The [optional flag](/book/message-mode#optional-flags) `SendIgnoreErrors{:tact}`
 To send a binary typed message you can use the following code:
 
 ```tact
-let recipient: Address = ...;
+let recipient: Address = address("...");
 let value: Int = ton("1");
 send(SendParameters{
     // bounce is set to true by default

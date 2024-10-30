@@ -1,6 +1,9 @@
 ---
 title: Operators
 description: "This page lists all the operators in Tact in decreasing order of their precedence, with examples of usage"
+prev:
+  link: /book/exit-codes
+  label: Exit codes
 ---
 
 Almost every contract operates on data: transforms some values into another. Scope may vary, but operators lay in core of such modifications.
@@ -382,8 +385,8 @@ Both operators can be applied to the following list of types and values:
 * [`Int{:tact}`][int]
 * [`Bool{:tact}`][bool]
 * [`Address{:tact}`][p]
-* [`Cell{:tact}`][cell], implicitly compares via `.hash(){:tact}`
-* [`Slice{:tact}`][slice], implicitly compares via `.hash(){:tact}`
+* [`Cell{:tact}`][cell], implicitly compares via [`.hash(){:tact}`](/ref/core-cells#cellhash)
+* [`Slice{:tact}`][slice], implicitly compares via [`.hash(){:tact}`](/ref/core-cells#slicehash)
 * [`String{:tact}`][p]
 * [`map<K, V>{:tact}`](/book/maps), but only if their key and value types are identical
 * [Optionals and `null{:tact}` value](/book/optionals)
@@ -430,6 +433,14 @@ let anotherNullable: Int? = 5;
 nullable == anotherNullable; // false
 nullable != anotherNullable; // true
 ```
+
+:::note
+
+  Binary equality `=={:tact}` and inequality `!={:tact}` operators implicitly compare [maps](/book/maps) by the hashes of their respective [cells][cell] via [`.hash(){:tact}`](/ref/core-cells#cellhash) function. While this is ok for the majority of cases because most map serializers work identically to the one from TON Blockchain sources, it's still possible to get false negative results by serializing a map manually or by changing the logic of the serializer in some library.
+
+  If you need to guarantee that maps you're comparing are equal, and you're willing to pay a lot more gas for it, use the [`map.deepEquals(){:tact}`](/book/maps#deepequals) function.
+
+:::
 
 ### Bitwise AND, `&` {#binary-bitwise-and}
 

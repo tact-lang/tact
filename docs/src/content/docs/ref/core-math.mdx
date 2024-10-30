@@ -243,9 +243,9 @@ Returns `true{:tact}` if the signature is valid, `false{:tact}` otherwise.
 Usage example:
 
 ```tact
-let data: Slice = ...;
-let signature: Slice = ...;
-let publicKey: Int = ...;
+let data: Slice = some_data;
+let signature: Slice = some_signature;
+let publicKey: Int = 42;
 
 let check: Bool = checkSignature(data, signature, publicKey);
 ```
