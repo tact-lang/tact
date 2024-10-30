@@ -1,5 +1,5 @@
 ---
-title: Deploy
+title: 部署
 ---
 
 Tact Deployer 是一个与 [TON Verifier](https://verifier.ton.org) 集成的小型库，可让您使用自己喜欢的钱包安全地部署合约，而无需管理密钥或手动部署合约。 Tact Deployer 还能自动验证合同的源代码，确保编译器不受损害。
@@ -18,7 +18,7 @@ yarn add @tact-lang/deployer
 
 ## 如何使用
 
-When you build your smart contracts using Tact, it produces a package (\*.pkg) file that has all the required information about the built smart contract. To deploy a smart contract in TON you need to send a message with `init` data attached to it.
+当你使用 Tact 构建智能合约时，它会生成一个包（\*.pkg）文件，其中包含所构建智能合约的所有必要信息。要在 TON 中部署智能合约，你需要发送一条附有`init`数据的消息。
 
 ```typescript
 import * as fs from 'fs';

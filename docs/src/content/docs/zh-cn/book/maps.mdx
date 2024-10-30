@@ -2,13 +2,15 @@
 title: 地图
 ---
 
-复合类型](/book/types#composite-types) `map<K, V>{:tact}` 用于将 `K{:tact}` 类型的键与 `V{:tact}` 类型的相应值关联起来。
+import { Badge } from '@astrojs/starlight/components';
+
+[复合类型](/book/types#composite-types) `map<K, V>{:tact}` 用于将 `K{:tact}` 类型的键与 `V{:tact}` 类型的相应值关联起来。
 
 例如，`map<Int, Int>{:tact}` 的键和值使用 [`英特{:tact}`][英特] 类型：
 
 ```tact
-结构 IntToInt {
-    计数器：映射<Int, Int>;
+struct IntToInt {
+    counters: map<Int, Int>;
 }
 ```
 
@@ -57,7 +59,7 @@ contract Example {
 要设置或替换键下的值，请调用 `.set(){:tact}` [方法](/book/functions#extension-function)，所有地图都可以使用该方法。
 
 ```tact
-// 空地图
+// 空 map
 let fizz: map<Int, Int> = emptyMap();
 
 // 在不同的键下设置几个值
@@ -118,7 +120,7 @@ fizz.set(42, null); // 键 42 下的条目现在被删除了
 要删除映射表中的所有条目，请使用 `emptyMap(){:tact}` 函数重新分配映射表：
 
 ```tact
-// 空地图
+// 空 map
 let fizz: map<Int, Int> = emptyMap();
 
 // 在不同的键下设置几个值
@@ -131,6 +133,35 @@ fizz = null; // 与上一行相同，但描述性较弱
 ```
 
 采用这种方法后，即使已将映射声明为持久状态变量，映射之前的所有条目也会从合约中完全删除。 因此，将地图分配给 `emptyMap(){:tact}` **不会**产生任何隐藏或突然的[存储费用](https://docs.ton.org/develop/smart-contracts/fees#storage-fee)。
+
+### 检查条目是否存在, `.exists()` {#exists}
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+映射上的 `.exists(){:tact}` [方法](/book/functions#extension-function)，如果给定键下的值在映射中存在，则返回 `true{:tact}`，否则返回 `false{:tact}`。
+
+```tact
+let fizz: map<Int, Int> = emptyMap();
+fizz.set(0, 0);
+
+if (fizz.exists(2 + 2)) { // false
+    dump("Something doesn't add up!");
+}
+
+if (fizz.exists(1 / 2)) { // true
+    dump("I told a fraction joke once. It was half funny.");
+}
+
+if (fizz.get(1 / 2) != null) { // also true, but consumes more gas
+    dump("Gotta pump more!");
+}
+```
+
+:::note
+
+  调用`m.exists(key){:tact}`比执行`m.get(key) != null{:tact}` 更省 gas，尽管两种方法产生的结果是一样的。
+
+:::
 
 ### 检查是否为空，`.isEmpty()` {#isempty}
 
@@ -157,29 +188,29 @@ if (fizz == null) {
 例如，这种方法适用于在回复正文中直接发送小地图：
 
 ```tact
-合约示例 {
-    // 持久状态变量
-    fizz: map<Int, Int>; // 我们的 map
+contract Example {
+    // Persistent state variables
+    fizz: map<Int, Int>; // our map
 
-    // 合约的构造函数（初始化）函数
+    // Constructor (initialization) function of the contract
     init() {
-        // 设置一系列值
-        self.fizz.set(0, 3); self.fizz.set(1, 14); self.fizz.set(2, 15); self.fizz.set(3, 926).fizz.set(0, 3);
+        // Setting a bunch of values
+        self.fizz.set(0, 3);
         self.fizz.set(1, 14);
         self.fizz.set(2, 15);
         self.fizz.set(3, 926);
         self.fizz.set(4, 5_358_979_323_846);
     }
 
-    // 内部信息接收器，用于响应空信息
+    // Internal message receiver, which responds to empty messages
     receive() {
-        // 这里我们将 map 转换为 Cell，并用它进行回复
+        // Here we're converting the map to a Cell and making a reply with it
         self.reply(self.fizz.asCell());
     }
 }
 ```
 
-### 穿越条目 {#traverse}
+### 遍历条目 {#traverse}
 
 要遍历地图条目，有一个 [`foreach{:tact}`](/book/statements#foreach-loop)循环语句：
 
@@ -270,7 +301,7 @@ contract Iteration {
 
 ## 序列化
 
-可以对映射键、值或两者进行[整数序列化](/book/integers#serialization-types)，以[保留空间并降低存储成本](/book/integers#serialization)：
+可以对映射键、值或两者进行[整数序列化](/zh-cn/book/integers#serialization-types)，以[保留空间并降低存储成本](/book/integers#serialization)：
 
 ```tact
 struct SerializedMapInside {

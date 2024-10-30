@@ -2,6 +2,8 @@
 title: 函数及其类型
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Tact 中的功能可以用不同的方式定义：
 
 - 全局静态函数
@@ -45,21 +47,21 @@ fun pow(a: Int, c: Int): Int {
 
 ```tact
 trait FilterTrait with Ownable {
-    // 此 trait 的用户可以重写虚拟函数
-    virtual fun filterMessage()：Bool {
+    // Virtual functions can be overridden by users of this trait
+    virtual fun filterMessage(): Bool {
         return sender() != self.owner;
     }
 
-    abstract fun specialFilter()：Bool;
+    abstract fun specialFilter(): Bool;
 }
 
-带有 FilterTrait 的契约 Filter {
-    // 覆盖 FilterTrait 的默认行为
-    override fun filterMessage()：Bool {
+contract Filter with FilterTrait {
+    // Overriding default behavior of the FilterTrait
+    override fun filterMessage(): Bool {
         return true;
     }
 
-    override fun specialFilter()：Bool {
+    override fun specialFilter(): Bool {
         return true;
     }
 }
@@ -73,12 +75,12 @@ trait FilterTrait with Ownable {
 > 第一个参数的名称必须名为 `self`，该参数的类型必须是你要扩展的类型。
 
 ```tact
-extends fun pow(self: Int, c: Int) {
-  let res: Int = 1;
-  repeat(c) {
-    res = res * self;
-  }
-  return res;
+extends fun customPow(self: Int, c: Int): Int {
+    let res: Int = 1;
+    repeat(c) {
+        res *= self;
+    }
+    return res;
 }
 ```
 
@@ -87,28 +89,28 @@ extends fun pow(self: Int, c: Int) {
 可变函数是对数值进行变异，用执行结果代替数值。 要执行突变，函数必须改变 `self` 值。
 
 ```tact
-extends mutates fun pow(self: Int, c: Int) {
-  let res: Int = 1;
-  repeat(c) {
-    res = res * self;
-  }
-  self = res;
+extends mutates fun customPow(self: Int, c: Int) {
+    let res: Int = 1;
+    repeat(c) {
+        res *= self;
+    }
+    self = res;
 }
 ```
 
 ## 本地功能
 
-Native functions are direct bindings of func functions:
+本地函数是 FunC 函数的直接绑定：
 
 > **注**
 > 本地函数也可以是可变函数和扩展函数。
 
 ```tact
 @name(store_uint)
-native storeUint(s: Builder, value: Int, bits: Int)：Builder;
+native storeUint(s: Builder, value: Int, bits: Int): Builder;
 
 @name(load_int)
-扩展 mutates native loadInt(self: Slice, l: Int)：Int；
+extends mutates native loadInt(self: Slice, l: Int): Int;
 ```
 
 ## Receiver functions
@@ -117,13 +119,10 @@ native storeUint(s: Builder, value: Int, bits: Int)：Builder;
 
 ```tact
 contract Treasure {
-
-  // ...
-  
-  // This means that this contract can receive the comment "Increment" and this function would be called for such messages
-  receive("Increment") {
-    self.counter = self.counter + 1;
-  }
+    // This means that this contract can receive the comment "Increment" and this function would be called for such messages
+    receive("Increment") {
+        self.counter += 1;
+    }
 }
 ```
 
@@ -133,11 +132,41 @@ contract Treasure {
 
 ```tact
 contract Treasure {
-
-  // ...
-  
-  get fun counter(): Int {
-    return self.counter;
-  }
+    get fun counter(): Int {
+        return self.counter;
+    }
 }
 ```
+### 明确解决方法 ID 碰撞问题
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+与 TVM 合约中的其他函数一样，getters 也有其*独特*的相关函数选择器，即一些整数 ID（称为*方法 ID*）。
+其中一些整数是为内部目的保留的，例如 -4, -3, -2, -1, 0 是保留 ID，而 
+常规函数（合约内部函数，不可从外部调用）通常由从 1 开始的后续（小）整数编号。
+默认情况下，获取器有相关的方法 ID，这些 ID 是使用 [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) 算法从名称中导出的，具体如下：
+`crc16(<function_name>) & 0xffff) | 0x10000`。
+有时，这可能会使名称不同的获取器获得相同的方法 ID。
+如果出现这种情况，您可以重命名合约中的某些获取器，或
+以编译时表达式的形式手动指定获取器的方法 ID：
+
+```tact
+contract ManualMethodId {
+    const methodId: Int = 16384 + 42;
+
+    get(self.methodId) fun methodId1(): Int {
+        return self.methodId;
+    }
+
+    get(crc32("crc32") + 42 & 0x3ffff | 0x4000)
+    fun methodId2(): Int {
+        return 0;
+    }
+}
+```
+
+请注意，*不能*使用 TVM 保留的方法 ID，也不能使用某些初始正整数，因为编译器会将其用作函数选择器。
+
+用户指定的方法 ID 是 19 位有符号整数，因此可以使用从 $-2^{18}$ 到 $-5$ 以及从 $2^{14}$ 到 $2^{18}$ 的整数。- 1$.
+
+此外，还有一些方法 ID 是为 Tact 编译器在编译过程中插入的获取器保留的，它们是 113617、115390 和 121275。

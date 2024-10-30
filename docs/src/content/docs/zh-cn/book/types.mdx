@@ -34,7 +34,7 @@ Tact 中没有隐式类型转换，因此两个布尔值的加法（[`+{:tact}`]
 - `=={:tact}` 和 `!={:tact}` 用于检查[相等](/book/operators#binary-equality)
 - `!{:tact}` 表示[非空断言](/book/optionals)
 
-将 bools 持久化为状态非常节省空间，因为它们只占用 1 位。 每年在州[花费](https://ton.org/docs/develop/smart-contracts/fees#how-to-calculate-fees)存储 1000 个布尔约需 $0.00072$ 吨。
+将 bools 持久化为状态非常节省空间，因为它们只占用 1 位。 每年在州[花费](https://ton.org/docs/develop/smart-contracts/fees#how-to-calculate-fees)存储 1000 个布尔约需 $0.00072$ ton 。
 
 ## 复合类型
 
@@ -99,7 +99,7 @@ message(0x11111111) SetValue {
 [可选项][可选项]示例：
 
 ```tact
-let opt：= null; // Int or null, with explicitly assigned null
+let opt: Int? = null; // Int or null, with explicitly assigned null
 ```
 
 Learn more about them on a dedicated page: [Optionals][optionals].
@@ -114,16 +114,20 @@ Contracts are the main entry of a smart contract on the TON blockchain. It holds
 
 ```tact
 contract HelloWorld {
+    // Persistent state variable
     counter: Int;
 
+    // Constructor function init(), where all the variables are initialized
     init() {
         self.counter = 0;
     }
 
+    // Internal message receiver, which responds to a string message "increment"
     receive("increment") {
-        self.counter = self.counter + 1;
+        self.counter += 1;
     }
 
+    // Getter function with return type Int
     get fun counter(): Int {
         return self.counter;
     }
@@ -142,27 +146,31 @@ Tact 不支持经典的类继承，而是引入了**特质**（traits）的概�
 
 ```tact
 trait Ownable {
+    // Persistent state variable, which cannot be initialized in the trait
     owner: Address;
 
+    // Internal function
     fun requireOwner() {
         nativeThrowUnless(132, context().sender == self.owner);
     }
 
+    // Getter function with return type Address
     get fun owner(): Address {
         return self.owner;
     }
 }
 ```
 
-And the contract that uses trait:
+而 [contract](#contracts) 使用了 trait [`Ownable{:tact}`](/ref/stdlib-ownable#ownable)：
 
 ```tact
 contract Treasure with Ownable {
-  owner: Address; // Field from trait MUST be defined in contract itself
+    // Persistent state variable, which MUST be defined in the contract
+    owner: Address;
 
-  // Here we init the way we need, trait can't specify how you must init owner field
-  init(owner: Address) {
-    self.owner = owner;
-  }
+    // Constructor function init(), where all the variables are initialized
+    init(owner: Address) {
+        self.owner = owner;
+    }
 }
 ```

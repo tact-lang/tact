@@ -6,9 +6,9 @@ title: 发言
 
 ## `let`语句 {#let}
 
-`let{:tact}` 语句允许本地变量和 [block](#block)-scoped 变量声明。
+`let{:tact}` 语句允许声明局部变量和 [block](#block)-scoped 变量。
 
-Declaring variable always requires an initial value and an explicit type: 不过，也可以省略类型标注，Tact 会尝试从初始值中推断出类型：
+在 Tact 中，声明一个局部变量总是需要一个初始值。但是，也可以省略类型标注，Tact 会尝试从初始值推断类型：
 
 ```tact
 let value：Int = 123; // 包含类型和值的完整声明
@@ -38,12 +38,15 @@ let _: map<Int, Int> = emptyMap(); // with explicit type
 dump(_); // COMPILATION ERROR！无法访问 _
 ```
 
-## 返回 "语句 {#return}
+## `return` 语句 {#return}
 
 `return{:tact}` 语句结束 [function](/book/functions) 的执行，并指定要返回给 [function](/book/functions) 调用者的值。
 
 ```tact
-let expiration: Int = now() + 1000; // now() is stdlib static function
+// Simple wrapper over stdlib function now()
+fun getTimeFromNow(offset: Int): Int {
+    return now() + offset;
+}
 ```
 
 ## block
@@ -96,7 +99,7 @@ value += 5; // 增强赋值（众多赋值之一，见下文）
 
 控制代码流
 
-### `!=`, `==` - equality operations
+### `if...else` {#if-else}
 
 :::caution
 
@@ -109,30 +112,43 @@ value += 5; // 增强赋值（众多赋值之一，见下文）
 常规 `if{:tact}` 语句：
 
 ```tact
-if (condition) {
-  doSomething();
+// condition
+// ↓
+if (true) { // consequence, when condition is true
+    dump(2 + 2);
 }
 ```
 
 `else{:tact}` 块：
 
 ```tact
-if (condition) {
-  doSomething();
+// condition
+// ↓
+if (2 + 2 == 4) {
+    // consequence, when condition is true
+    dump(true);
 } else {
-  doSomething2();
+    // alternative, when condition is false
+    dump(false);
 }
 ```
 
 使用嵌套的 `if...else{:tact}`：
 
 ```tact
-if (condition) {
-  doSomething();
-} else if (condition2) {
-  doSomething2();
+// condition
+// ↓
+if (2 + 2 == 3) {
+    // consequence, when condition is true
+    dump("3?");
+//        condition2
+//        ↓
+} else if (2 + 2 == 4) {
+    // another consequence, when condition2 is true
+    dump(true);
 } else {
-  doSomething3();
+    // alternative, when both condition and condition2 are false
+    dump(false);
 }
 ```
 
@@ -148,7 +164,7 @@ if (condition) {
 
 :::note
 
-  请注意，某些 TVM 状态参数（如编码页和气体计数器）不会回滚。 也就是说，`try{:tact}`程序块中的所有气体使用量都将被考虑在内，而改变气体限值的操作码的效果也将被保留。
+  请注意，某些 TVM 状态参数（如编码页和 gas 计数器）不会回滚。 也就是说，`try{:tact}`程序块中的所有 gas 使用量都将被考虑在内，而改变 gas 限值的操作码的效果也将被保留。
 
 :::
 
@@ -183,21 +199,21 @@ fun niceCatch() {
 
 ```tact
 try {
-    // 准备一个等于 0 的 x，以一种 Tact 编译器不会意识到的方式（还没有！）
+    // Preparing an x equal to 0, in such a way that Tact compiler won't realize it (yet!)
     let xs: Slice = beginCell().storeUint(0, 1).endCell().beginParse();
-    let x：
+    let x: Int = xs.loadUint(1); // 0
 
+    try {
+        throw(101);     // 1. throws with exit code 101
+    } catch (err) {     // 2. catches the error and captures its exit code (101) as err
+        return err / x; // 3. divides err by x, which is zero, throwing with exit code 4
+    }
 
+} catch (err) {         // 4. catches the new error and captures its exit code (4) as err
+    //   ^^^ this works without name collisions because the previous err
+    //       has a different scope and is only visible inside the previous catch block
 
-    catch (err) { // 2. 捕获错误并捕获其退出代码（101）作为 err
-        return err / x; // 3. Err 除以 x，x 为零，抛出退出代码 4
-    } } catch (err) { // 4.
-
-catch (err) { // 4. 捕获新的错误并捕获其退出代码 (4) 作为 err
-    // ^^^^ 这样做不会发生名称冲突，因为之前的 err
-    // 具有不同的作用域，只有在之前的 catch 块中才可见
-
-    dump(err); // 5. 转储最后捕获的退出代码 (4)
+    dump(err);          // 5. dumps the last caught exit code (4)
 }
 ```
 
@@ -221,24 +237,33 @@ try {
 
 有条件地多次重复某些代码块。
 
-### Repeat loop
+### `repeat` {#repeat-loop}
 
-The Repeat Loop executes a block of code a specified number of times. 重复次数应以正 $32$-bit [`Int{:tact}`][int]的形式给出，范围从 $1$ 到 2^{31} - 1$。 如果数值更大，则会出现[退出代码 5](/book/exit-codes#5)，"整数超出预期范围 "的错误。
+`repeat复{:tact}`循环执行指定次数的代码块。重复次数应该是一个正的 $32$ 位 [`Int{:tact}`][int]，范围从 $1$ 到 $2^{31} - 1$。如果数值大于这个范围，将出现 [exit code 5](/book/exit-codes#5)，“Integer out of the expected range ”的错误。
 
-如果指定的重复次数等于 $0$ 或包含范围 $-2^{256}$ 至 $-1$中的任何负数，则该数字将被忽略，代码块根本不会被执行。
+如果指定的重复次数等于 $0$ 或包含范围 $-2^{256}$ 至 $-1$ 中的任何负数，则忽略该值，不执行代码块。
 
 ```tact
-let a: Int = 1;
-repeat(10) {
-  a = a * a;
+let twoPow: Int = 1;
+
+// Repeat exactly 10 times
+repeat (10) {
+    twoPow *= 2;
 }
+
+// Skipped
+repeat (-1) {
+    twoPow *= 3333;
+}
+
+twoPow; // 1024
 ```
 
-### While loop
+### `while` {#while-loop}
 
-The While Loop continues executing the block of code as long as the given condition is true.
+只要给定条件为 `true{:tact}`，`while{:tact}` 循环就会继续执行代码块。
 
-In the example, the value of \( x \) is decremented by 1 in each iteration, so the loop will run 10 times.
+在下面的示例中，每次迭代时，`x` 的值都会递减 $1$，因此循环将运行 $10$ 次：
 
 ```tact
 let x: Int = 10;
@@ -247,11 +272,11 @@ while(x > 0) {
 }
 ```
 
-### `做......直到` {#do-until-loop}
+### `do...until` {#do-until-loop}
 
-The Until Loop is a post-test loop that executes the block of code at least once and then continues to execute it until the given condition becomes true.
+`do...until{:tact}`循环是一个后测试循环，它至少执行一次代码块，然后继续执行，直到给定条件变为 `true{:tact}`。
 
-In the example, the value of � x is decremented by 1 in each iteration, so the loop will run 10 times.
+在下面的示例中，每次迭代时，`x` 的值都会递减 $1$，因此循环将运行 $10$ 次：
 
 ```tact
 let x: Int = 10;

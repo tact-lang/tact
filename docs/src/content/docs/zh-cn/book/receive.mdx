@@ -6,15 +6,15 @@ TON 是一个分布式区块链，这意味着合约之间的通信是通过发�
 
 ## 接收内部信息
 
-To receive a message of the required type, you need to declare a receiver function, for example, `receive("increment")`. This notation means the declaration of a `receiver` function that will be called when a text with the value `"increment"` is sent to the contract. 函数体可以修改合约的状态，并向其他合约发送信息。 It is impossible to call `receiver` directly. If you need to reuse some logic you can declare a function and call it from `receiver`.
+要接收所需类型的信息，您需要声明一个接收函数，例如`receive(“increment”){:tact}`。这个符号表示声明一个接收函数，当向合约发送值为 `“increment”{:tact}`的文本时，该函数将被调用。函数体可以修改合约的状态，并向其他合约发送信息。不可能直接调用接收器。如果需要重用某些逻辑，可以声明一个函数，然后从接收器中调用。
 
-接收器有多种功能。 所有接收器功能的处理顺序如下：
+有多个接收器函数。所有接收器函数的处理顺序如下：
 
-- `receive()` - called when an empty message is sent to the contract
-- `receive("message")` - called when a text message with a specific comment is sent to the contract
-- `receive(str: String)` - called when an arbitrary text message is sent to the contract
-- `receive(msg: MyMessage)` - called when a binary message of type `MyMessage` is sent to the contract
-- `receive(msg: Slice)` - called when binary message of unknown type is sent to the contract
+* `receive(){:tact}` - 向合约发送空信息时调用。
+* `receive("message"){:tact}` - 向合约发送带有特定注释的文本信息时调用。
+* `receive(str: String){:tact}` - 向合约发送任意文本信息时调用。
+* `receive(msg: MyMessage){:tact}`-当向合约发送 “MyMessage ”类型的二进制信息时调用。
+* `receive(msg: Slice){:tact}` - 向合约发送未知类型的二进制信息时调用。
 
 ```tact
 

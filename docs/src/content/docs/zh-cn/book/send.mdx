@@ -2,9 +2,9 @@
 title: 发送信息
 ---
 
-TON blockchain is a message-based one to communicate with other contracts you need to send messages.
+TON 区块链是基于消息的--要与其他合约通信和部署新合约，您需要发送消息。
 
-Tact 中的信息通常使用内置的 [Struct](/book/structs-and-messages#structs) `SendParameters{:tact}`组成，其中包括
+Tact 中的消息通常使用内置[Struct](/book/structs-and-messages#structs) `SendParameters{:tact}`组成，它由以下部分组成：
 
 | 现场    | 类型                      | 说明                                                                                                                                                                      |
 | :---- | :---------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -18,72 +18,82 @@ Tact 中的信息通常使用内置的 [Struct](/book/structs-and-messages#struc
 
 字段 `code` 和 `data` 被称为 [初始包](/book/expressions#initof)，用于部署新合约。
 
-## 发送简单回复
+## 发送简单回复 {#send-simple-reply}
 
 最简单的信息是对接收信息的回复，返回信息的所有多余值：
 
 ```tact
-self.reply("Hello, World!".asComment()); // asComment converts string to a Cell with a comment
+receive() {
+    self.reply("Hello, World!".asComment()); // asComment converts a String to a Cell with a comment
+}
 ```
 
 ## 发送信息
 
-If you need more advanced logic you can use the `send` function directly.
+如果需要更高级的逻辑，可以直接使用 `send(){:tact}` 函数和 `SendParameters{:tact}` [Struct](/book/structs-and-messages#structs) 。
 
-In fact, the previous example with [`.reply(){:tact}`](#发送简单回复) can be made using the following call to `send(){:tact}` function:
+事实上，前面使用 [`.reply(){:tact}`](#send-simple-reply)的示例可以通过调用下面的`send(){:tact}`函数来实现：
 
 ```tact
-let to: Address = ...;
+receive() {
+    send(SendParameters{
+        // bounce is set to true by default
+        to: sender(), // sending message back to the sender
+        value: 0, // don't add Toncoins to the message...
+        mode: SendRemainingValue | SendIgnoreErrors, // ...except for ones received from the sender due to SendRemainingValue
+        body: "Hello, World".asComment(), // asComment converts a String to a Cell with a comment
+    });
+}
+```
+
+另一个示例是向指定的 [`Address{:tact}`][p]发送一条信息，信息的`值`为 $1$ TON，`body`为带有 [`String{:tact}`][p] `"Hello, World!"{:tact}`的注释：
+
+```tact
+let recipient: Address = ...;
 let value: Int = ton("1");
 send(SendParameters{
-    to: to,
-    value: value, 
-    mode: SendIgnoreErrors, 
-    bounce: true, 
-    body: "Hello, World!".asComment()
+    // bounce is set to true by default
+    to: recipient,
+    value: value,
+    mode: SendIgnoreErrors, // will send the message despite any errors
+    body: "Hello, World!".asComment(),
 });
 ```
 
-This example sends a message to the `to` address with a `value` of 1 TON and the `body` of a comment with a string "Hello, World!".
-
-```tact
-`mode` - an 8-bit flag that configures how to send a message
-```
-
-`SendIgnoreErrors` means that even when an error occurs during message sending next messages would be sent anyway. \*\*在发送阶段出现的任何错误都不会使交易逆转。
+[可选标记](/book/message-mode#optional-flags) `SendIgnoreErrors{:tact}`表示即使在发送信息过程中发生错误，也会继续发送下一条信息。**发送阶段的任何错误都不会导致事务逆转**。
 
 ## 发送打字信息
 
 要发送二进制键入信息，可以使用以下代码：
 
 ```tact
+let recipient: Address = ...;
+let value: Int = ton("1");
+send(SendParameters{
+    // bounce is set to true by default
+    to: recipient,
+    value: value,
+    mode: SendIgnoreErrors, // don't stop in case of errors
+    body: SomeMessage{arg1: 123, arg2: 1234}.toCell(),
+});
+```
+
+## 部署合约
+
+要部署一个合约，你需要用 [`initOf{:tact}`](/book/expressions#initof)计算它的地址和初始状态，然后在初始化信息中发送它们：
+
+```tact
 let init: StateInit = initOf SecondContract(arg1, arg2);
 let address: Address = contractAddress(init);
 let value: Int = ton("1");
 send(SendParameters{
+    // bounce is set to true by default
     to: address,
-    value: value, 
-    mode: SendIgnoreErrors, 
-    bounce: true, 
+    value: value,
+    mode: SendIgnoreErrors, // don't stop in case of errors
     code: init.code,
     data: init.data,
-    body: "Hello, World!".asComment()
-});
-```
-
-## 部署合同
-
-To deploy a contract you need to calculate its address and init package, then send it with an initial message.
-
-```tact
-let to: Address = ...;
-let value: Int = ton("1");
-send(SendParameters{
-    to: to,
-    value: value, 
-    mode: SendIgnoreErrors, 
-    bounce: true, 
-    body: SomeMessage{arg1: 123, arg2: 1234}.toCell()
+    body: "Hello, World!".asComment(), // not necessary, can be omitted
 });
 ```
 
@@ -96,22 +106,22 @@ TON 区块链上的每笔交易都由 [多个阶段][阶段] 组成。 出站报
 请看下面的例子：
 
 ```tact
-// 该合约最初的余额为 0 纳吨（nanoToncoins）
-合约 FailureIsNothingButAnotherStep {
-    // 它所获得的所有资金都来自内部入站消息
+// This contract initially has 0 nanoToncoins on the balance
+contract FailureIsNothingButAnotherStep {
+    // And all the funds it gets are obtained from inbound internal messages
     receive() {
-        // 第一条出站消息已评估并排队（但尚未发送）
+        // 1st outbound message evaluated and queued (but not sent yet)
         send(SendParameters{
             to: sender(),
             value: ton("0.042"), // plus forward fee due to SendPayGasSeparately
-            mode：SendIgnoreErrors | SendPayGasSeparately,
+            mode: SendIgnoreErrors | SendPayGasSeparately,
         });
 
-        // 第 2 条外发信息已评估并排队（但尚未发送，也永远不会发送！）
+        // 2nd outbound message evaluated and queued (but not sent yet, and never will be!)
         send(SendParameters{
             to: sender(),
             value: 0,
-            mode：SendRemainingValue | SendIgnoreErrors,
+            mode: SendRemainingValue | SendIgnoreErrors,
         });
     }
 }
@@ -119,7 +129,7 @@ TON 区块链上的每笔交易都由 [多个阶段][阶段] 组成。 出站报
 
 在那里，第二条信息实际上不会被发送：
 
-- 计算阶段][计算]结束后，计算合约的剩余价值 $\mathrm{R}$。
+- [计算阶段][计算]结束后，计算合约的剩余价值 $\mathrm{R}$。
 
 - 在出站信息处理过程中，假设入站信息中提供了足够的价值，第一条信息会在余额上留下 $\mathrm{R} - (0.042 + \mathrm{forward\_fees})$ [nanoToncoins](/book/integers#nanotoncoin) 。
 
@@ -142,6 +152,7 @@ TON 区块链上的每笔交易都由 [多个阶段][阶段] 组成。 出站报
 [int]: /book/integers
 [电池]: /book/cells#cells
 [选择]: /book/optionals
+
 [阶段]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases
 [算]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase
 [纳米]: /book/integers#nanotoncoin

@@ -85,10 +85,10 @@ message MsgSerialization {
 
 动机很简单：
 
-- 在州[成本](https://docs.ton.org/develop/smart-contracts/fees#how-to-calculate-fees)中存储 $1000$ $257$- 位整数每年约需 $0.184$ 吨。
-- 相比之下，存储 $1000$ $32$-bit 整数每年只需花费 $0.023$ 吨。
+- 在州[成本](https://docs.ton.org/develop/smart-contracts/fees#how-to-calculate-fees)中存储 $1000$ $257$- 位整数每年约需 $0.184$ ton 。
+- 相比之下，存储 $1000$ $32$-bit 整数每年只需花费 $0.023$ ton 。
 
-### 序列化类型
+### 序列化类型 {#serialization-types}
 
 |  名称              |         [TL-B][TLB]                        |      包容性范围                 |              占用空间              |
 | :--------------: | :----------------------------------------: | :------------------------: | :----------------------------: |
@@ -123,9 +123,9 @@ message MsgSerialization {
 ```tact
 struct Scrooge {
     // len: 0000, 4 bits (always)
-    // value: none！
-    // 总共：4 位
-    a. Int as coins = 0; // 0000 // len: 0001, 4 bits // value: 00000001：Int as coins = 0; // 0000
+    // value: none!
+    // in total: 4 bits
+    a: Int as coins = 0; // 0000
 
     // len: 0001, 4 bits
     // value: 00000001, 8 bits
@@ -135,7 +135,7 @@ struct Scrooge {
     // len: 0010, 4 bits
     // value: 00000001 00000010, 16 bits
     // in total: 20 bits
-    c. Int as coins = 258; // 0010 00000001 00000010 // value: 00000001 00000010, 16 bits // in total: 20 bits Int as coins = 258; // 0010 00000001 00000010
+    c: Int as coins = 258; // 0010 00000001 00000010
 
     // len: 1111, 4 bits
     // value: hundred twenty 1's in binary
@@ -175,7 +175,7 @@ contract ComputeErrorsOhNo with Deployable {
 }
 ```
 
-这里，"oneByte" 被序列化为 [`uint8`](#序列化类型)，只占用一个字节，范围从 $0$ 到 $2^8 - 1$，即 $255$。在运行时计算中使用时，不会发生溢出，所有计算结果都是 $257$ 位有符号整数。但是，就在我们决定将 `tmp` 的值存储回 `oneByte` 的那一刻，我们收到了一个错误，[退出代码 5](/book/exit-codes#5)，错误信息如下：整数超出预期范围。
+这里，"oneByte" 被序列化为 [`uint8`](#serialization-types)，只占用一个字节，范围从 $0$ 到 $2^8 - 1$，即 $255$。在运行时计算中使用时，不会发生溢出，所有计算结果都是 $257$ 位有符号整数。但是，就在我们决定将 `tmp` 的值存储回 `oneByte` 的那一刻，我们收到了一个错误，[退出代码 5](/book/exit-codes#5)，错误信息如下：整数超出预期范围。
 
 :::caution
   因此，在使用序列化时，对数字要**非常**小心，并始终仔细检查计算结果。

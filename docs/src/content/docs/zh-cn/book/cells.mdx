@@ -25,7 +25,7 @@ title: 细胞、建造者和切片
 - [梅克尔证明单元][c-mproof]，子类型编码为 $3$ - 它们用于验证其他单元的树数据的某些部分是否属于完整树。
 - [梅克尔更新单元][c-mupdate]，子类型编码为 $4$ - 它们总是有两个引用，对这两个引用的行为类似于[梅克尔证明][mproof]。
 
-:::note[Useful 链接：]
+:::note[Useful links:]
 
   [TON Docs 中的剪枝单元][c-pruned]  
   [TON Docs 中的 Merkle 证明单元][c-mproof]  
@@ -84,9 +84,9 @@ title: 细胞、建造者和切片
 - 单元格创建（或序列化）指令，用于根据先前保存的值和单元格构建新单元格；
 - 单元格解析（或反序列化）指令，用于提取或加载之前通过序列化指令存储到单元格中的数据。
 
-On top of that, there are instructions specific to [exotic](#cells-kinds) cells to create them and expect their values. However, [ordinary](#cells-kinds) cell parsing instructions can still be used on [exotic](#cells-kinds) ones, in which case they are automatically replaced by [ordinary](#cells-kinds) cells during such deserialization attempts.
+此外，[exotic](#cells-kinds)单元格有专门的指令来创建它们并预期它们的值。不过，[普通](#cells-kinds) 单元格解析指令仍可用于[奇异](#cells-kinds) 单元格，在这种情况下，它们会在反序列化尝试中被自动替换为[普通](#cells-kinds) 单元格。
 
-All cell manipulation instructions require transforming values of [`Cell{:tact}`](#cells) type to either [`Builder{:tact}`](#builders) or [`Slice{:tact}`](#slices) types before such cells can be modified or inspected.
+所有单元操作指令都需要将 [`Cell{:tact}`](#cells) 类型的值转换为 [`Builder{:tact}`](#builders)或 [`Slice{:tact}`](#slices)类型，然后才能修改或检查这些单元。
 
 ## Builders
 
@@ -422,7 +422,7 @@ let areSlicesEqual = aSlice.hash() == bSlice.hash(); // true
 let areSlicesNotEqual = aSlice.hash() != bSlice.hash(); // false
 ```
 
-:::note[Useful 链接：]
+:::note[Useful links:]
 
   [核心库中的 `Cell.hash(){:tact}`](/ref/core-cells#cellhash)/
   [核心库中的 `Slice.hash(){:tact}`](/ref/core-cells#slicehash)/

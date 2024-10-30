@@ -6,19 +6,19 @@ Tact 支持许多专为智能合约使用而定制的 [原始数据类型](/book
 
 :::caution
 
-  **警告**：目前无法**\*循环类型。 这意味着结构/消息 **A** 的字段不能与结构/消息 **B\*\* 的字段相同。
+  **警告**：目前无法**循环**类型。 这意味着结构/消息 **A** 的字段不能与结构/消息 **B** 的字段相同。
 
-  因此，以下代码\*\*\*无法编译：
+  因此，以下代码**无法**编译：
 
-```tact
-struct A {
-    circularFieldA: B;
-}
+  ```tact
+  struct A {
+      circularFieldA: B;
+  }
 
-struct B {
-    impossibleFieldB：A;
-}
-```
+  struct B {
+      impossibleFieldB：A;
+  }
+  ```
 
 :::
 
