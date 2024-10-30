@@ -72,29 +72,29 @@ send(SendParameters{
 如果我们需要发送一条带有冗长文本注释的信息，我们应该创建一个 [`String{:tact}`](/book/types#primitive-types)，由超过 $127$ 个字符组成。 为此，我们可以利用 [`StringBuilder{:tact}`](/book/types#primitive-types)原始类型及其名为 `beginComment(){:tact}` 和 `append(){:tact}` 的方法。 在发送之前，我们应该使用 `toCell(){:tact}` 方法将字符串转换为单元格。
 
 ```tact
-让 comment：
-let longString = "......"; // Some string with more than 127 characters.
+let comment: StringBuilder = beginComment();
+let longString = "..."; // Some string with more than 127 characters.
 comment.append(longString);
 
 send(SendParameters{
     // bounce = true by default
     to: sender(),
     value: 0,
-    mode：SendIgnoreErrors,
+    mode: SendIgnoreErrors,
     body: comment.toCell(),
-})；
+});
 ```
 
-:::note[Useful 链接：]
+:::note[Useful links:]
 
-  [
+  ["Sending messages" in the Book](/book/send#send-message)\
   ["Message `mode`" in the Book](/book/message-mode)
   [`StringBuilder{:tact}` in the Book](/book/types#primitive-types)
   [`Cell{:tact}` in Core library](/ref/core-cells)
 
 :::
 
-:::tip[Hey 那里！]
+:::tip[Hey there!]
 
   没有找到您最喜欢的单一合同通信案例？ 您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
 
