@@ -2083,36 +2083,29 @@ describe("MapTestContract", () => {
                 );
 
             // Check that all return values are equal to the old values
-            mapConfigs.forEach(
-                ({ mapName, key, value, keyTransform, valueTransform }) => {
-                    let mapKey = keys[key];
-                    if (keyTransform) {
-                        mapKey = keyTransform(mapKey);
-                    }
+            mapConfigs.forEach(({ mapName, value, valueTransform }) => {
+                let expectedValue = values[value];
+                let actualValue = replaceGetResultAfterSet[mapName];
+                if (valueTransform) {
+                    expectedValue = valueTransform(expectedValue);
+                    actualValue = valueTransform(actualValue);
+                }
 
-                    let expectedValue = values[value];
-                    let actualValue = replaceGetResultAfterSet[mapName];
-                    if (valueTransform) {
-                        expectedValue = valueTransform(expectedValue);
-                        actualValue = valueTransform(actualValue);
-                    }
-
-                    if (expectedValue instanceof Cell) {
-                        expect(actualValue).toEqualCell(expectedValue);
-                    } else if (expectedValue instanceof Address) {
-                        expect(actualValue).toEqualAddress(expectedValue);
-                    } else if (isSomeStruct(expectedValue)) {
-                        expect(
-                            compareStructs(
-                                actualValue as SomeStruct,
-                                expectedValue,
-                            ),
-                        ).toBe(true);
-                    } else {
-                        expect(actualValue).toEqual(expectedValue);
-                    }
-                },
-            );
+                if (expectedValue instanceof Cell) {
+                    expect(actualValue).toEqualCell(expectedValue);
+                } else if (expectedValue instanceof Address) {
+                    expect(actualValue).toEqualAddress(expectedValue);
+                } else if (isSomeStruct(expectedValue)) {
+                    expect(
+                        compareStructs(
+                            actualValue as SomeStruct,
+                            expectedValue,
+                        ),
+                    ).toBe(true);
+                } else {
+                    expect(actualValue).toEqual(expectedValue);
+                }
+            });
         }
     });
 
