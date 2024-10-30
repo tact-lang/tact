@@ -2013,7 +2013,7 @@ describe("MapTestContract", () => {
         }
     });
 
-    it("should return old values when replaced and null when keys do not exist", async () => {
+    it("replaceGet: should return old values when replaced and null when keys do not exist", async () => {
         for (const { keys, values } of testCases) {
             // Call the .replace operation on all maps
             const replaceGetResult = await contract.getReplaceGetAllMaps(
@@ -2114,5 +2114,26 @@ describe("MapTestContract", () => {
                 },
             );
         }
+    });
+
+    it("checkNullReference: should throw an error in getter when accessing a null reference", async () => {
+        await expect(contract.getCheckNullReference()).rejects.toThrow();
+    });
+
+    it("checkNullReference: should throw an error in receiver when accessing a null reference", async () => {
+        const result = await contract.send(
+            treasury.getSender(),
+            { value: toNano("1") },
+            {
+                $$type: "CheckNullReference",
+            },
+        );
+
+        expect(result.transactions).toHaveLength(3);
+        expect(result.transactions).toHaveTransaction({
+            on: contract.address,
+            success: false,
+            exitCode: 128,
+        });
     });
 });

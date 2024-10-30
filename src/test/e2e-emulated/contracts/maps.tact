@@ -702,6 +702,10 @@ message ReplaceGetAllMaps {
     valueStruct: SomeStruct?;
 }
 
+message CheckNullReference {
+    
+}
+
 // ===============================
 // Test Contract
 // ===============================
@@ -1917,5 +1921,19 @@ contract MapTestContract {
             address_address: self.address_address.asCell(),
             address_struct: self.address_struct.asCell()
         };
+    }
+
+    //
+    // Edge Cases
+    //
+
+    get fun checkNullReference(): Int {
+        let m: map<Int, Int> = emptyMap();
+        return m.get(0)!!;
+    }
+
+    receive(msg: CheckNullReference) {
+        let m: map<Int, Int> = emptyMap();
+        m.get(0)!!;
     }
 }
