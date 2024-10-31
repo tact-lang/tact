@@ -43,7 +43,7 @@ import {
 import { getRawAST } from "../grammar/store";
 import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
-import "../utils/isSubsetOfPolyfill";
+import { isSubsetOf } from "../utils/isSubsetOf";
 import { evalConstantExpression } from "../constEval";
 import { resolveABIType, intMapFormats } from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
@@ -910,13 +910,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 const paramSet = new Set(
                     a.params.map((typedId) => idText(typedId.name)),
                 );
-                if (!paramSet.isSubsetOf(shuffleArgSet)) {
+                if (!isSubsetOf(paramSet, shuffleArgSet)) {
                     throwCompilationError(
                         "asm argument rearrangement must mention all function parameters",
                         a.loc,
                     );
                 }
-                if (!shuffleArgSet.isSubsetOf(paramSet)) {
+                if (!isSubsetOf(shuffleArgSet, paramSet)) {
                     throwCompilationError(
                         "asm argument rearrangement must mention only function parameters",
                         a.loc,
@@ -974,13 +974,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // mutating functions also return `self` arg (implicitly in Tact, but explicitly in FunC)
                 retTupleSize += isMutating ? 1 : 0;
                 const returnValueSet = new Set([...Array(retTupleSize).keys()]);
-                if (!returnValueSet.isSubsetOf(shuffleRetSet)) {
+                if (!isSubsetOf(returnValueSet, shuffleRetSet)) {
                     throwCompilationError(
                         `asm return rearrangement must mention all return position numbers: [0..${retTupleSize - 1}]`,
                         a.loc,
                     );
                 }
-                if (!shuffleRetSet.isSubsetOf(returnValueSet)) {
+                if (!isSubsetOf(shuffleRetSet, returnValueSet)) {
                     throwCompilationError(
                         `asm return rearrangement must mention only valid return position numbers: [0..${retTupleSize - 1}]`,
                         a.loc,
