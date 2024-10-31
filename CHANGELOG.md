@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Destructuring of structs and messages: PR [#856](https://github.com/tact-lang/tact/pull/856)
 - Docs: automatic links to Web IDE from all code blocks: PR [#994](https://github.com/tact-lang/tact/pull/994)
 - The `SendDefaultMode` send mode constant to the standard library: PR [#1010](https://github.com/tact-lang/tact/pull/1010)
+- Docs: initial semi-automated Chinese translation of the documentation: PR [#942](https://github.com/tact-lang/tact/pull/942)
 
 ### Changed
 

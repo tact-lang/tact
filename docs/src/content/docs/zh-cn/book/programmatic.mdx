@@ -1,0 +1,47 @@
+---
+title: 程序化 API
+---
+
+您可以在节点和浏览器环境中从代码中调用 Tact 编译器。
+
+:::caution
+
+  该应用程序接口尚未发布。 它将在 1.0.0 版本中发布。
+
+:::
+
+## 在浏览器中运行编译器
+
+```ts
+import { run } from "@tact-lang/compiler";
+
+// Virtual FS
+const fs = {
+  ["main.tact"]：Buffer.from("...").toString("base64"),
+};
+
+const config = {
+  projects：[
+    {
+      name: "Sample",
+      path："main.tact",
+      output："./output",
+    },
+  ],
+};
+
+// Run compiler
+let successful = await run({ config, fs });
+
+// NOTE: Output from is written to the same fs object.
+```
+
+## 合同核查
+
+您可以使用 `verify` 函数验证编译后的软件包。
+
+```ts
+import { verify } from "@tact-lang/compiler";
+const pkg: string = '...';
+const res = await verify(pkg)；
+```

@@ -1,0 +1,414 @@
+---
+title: 配置
+---
+
+`tact.config.json` 是 Tact 项目的入口点。它是一个 JSON 文件，包含所有项目和编译器参数的列表。
+
+本页列出了 [模式](#schema)中的所有配置选项。 请查看右侧的目录，以方便浏览。
+
+:::note
+
+  对该文件的唯一要求是它是一个有效的 JSON 文件，包含 [适当的字段](#schema)，因此可以任意命名。 不过，将配置文件命名为 `tact.config.json` 是所有使用 Tact 的工具都鼓励和支持的通用约定。
+
+:::
+
+## `$schema` {#schema}
+
+编辑器可使用[JSON 模式](https://json-schema.org/) 文件提供自动完成和悬停提示：[configSchema.json](http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json)。
+
+只需在配置文件顶部添加 `$schema` 字段即可：
+
+```json filename="tact.config.json" {2}
+{
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
+  "projects"：[]
+}
+```
+
+## 项目 {#projects}
+
+带有相应编译选项的 Tact 项目列表。 每个 `.tact` 文件都代表自己的 Tact 项目。
+
+```json filename="tact.config.json" {3,4}
+{
+  "projects"：[
+    { },
+    { }
+  ]
+}
+```
+
+### `name` {#projects-name}
+
+`name` 是项目名称。所有生成的文件都以此为前缀。
+
+在 [Blueprint][bp] 中，"name "指合同本身的名称。
+
+```json filename="tact.config.json" {4,7}
+{
+  "projects"：[
+    {
+      "name"："some_prefix"
+    },
+    {
+      "name"："ContractUnderBlueprint"
+    }
+  ]
+}
+```
+
+### `path` {#projects-path}
+
+项目 Tact 文件的路径。 每个项目只能指定一个 Tact 文件。
+
+在 [Blueprint][bp] 中，`path` 被 `wrappers/ContractName.compile.ts` 中的 `target` 字段取代。
+
+```json filename="tact.config.json" {5}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact"
+    }
+  ]
+}
+```
+
+### `output` {#projects-output}
+
+`output` 是放置所有生成文件的目录路径。
+
+在 [蓝图][bp] 中，不使用 `output` ，所有生成的文件始终放在 `build/ProjectName/` 中。
+
+```json filename="tact.config.json" {6}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output"
+    }
+  ]
+}
+```
+
+### `options` {#projects-options}
+
+项目的编译选项。
+
+在 [Blueprint][bp] 中，除非在`wrappers/ContractName.compile.ts`中进行修改，否则它们将作为默认设置运行。
+
+```json filename="tact.config.json" {7,11}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "options": {}
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {}
+    }
+  ]
+}
+```
+
+#### `debug` {#options-debug}
+
+默认为 `false{:json}`。
+
+`debug: true`. 启用合约的调试输出。这对调试非常有用。启用此合约将报告它是在调试模式下使用 `supported_interfaces` 方法编译的。
+
+```json filename="tact.config.json" {8,14}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "debug": true
+      }
+    }
+  ]
+}
+```
+
+:::note
+
+  更多信息，请访问专用页面：[调试](/book/debug)。
+
+:::
+
+#### `masterchain` {#options-masterchain}
+
+默认为 `false{:json}`。
+
+如果设置为 `true{:json}`，则启用 [masterchain](/book/masterchain) 支持。
+
+```json filename="tact.config.json" {8,14}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "options": {
+        "masterchain": true
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "masterchain": true
+      }
+    }
+  ]
+}
+```
+
+:::note
+
+  更多信息，请访问专用页面：[大师链](/book/masterchain)。
+
+:::
+
+#### `external` {#options-external}
+
+默认为 `false{:json}`。
+
+如果设置为 `true{:json}`，则启用对 [external](/book/external) 消息接收器的支持。
+
+```json filename="tact.config.json" {8,14}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "options": {
+        "external": true
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "external": true
+      }
+    }
+  ]
+}
+```
+
+:::note
+
+  更多信息，请访问专用页面：[外部信息](/book/external)。
+
+:::
+
+#### `ipfsAbiGetter` {#options-ipfsabigetter}
+
+默认为 `false{:json}`。
+
+如果设置为 `true{:json}`，则可生成带有描述合同 ABI 的 IPFS 链接的[getter](/book/contracts#getter-functions)。
+
+```json filename="tact.config.json" {8,14}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "options": {
+        "ipfsAbiGetter": true
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "ipfsAbiGetter": true
+      }
+    }
+  ]
+}
+```
+
+:::note
+
+  在专用网页上阅读更多信息：[OTP-003：自我 ABI 报告](/ref/evolution/otp-003)。
+
+:::
+
+#### `interfacesGetter` {#options-interfacesgetter}
+
+默认为 `false{:json}`。
+
+如果设置为 `true{:json}`，则可生成包含合约所提供接口列表的 [getter]（/book/contracts#getter-functions）。
+
+```json filename="tact.config.json" {8,14}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "options": {
+        "interfacesGetter": true
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "interfacesGetter": true
+      }
+    }
+  ]
+}
+```
+
+:::note
+
+  了解更多信息：[支持的接口](/book/contracts#interfaces)。
+
+:::
+
+#### Experimental
+
+将来可能会取消的试验性选项。 谨慎使用！
+
+```json filename="tact.config.json" {8,14}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "options": {
+        "experimental": {}
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "experimental": {}
+      }
+    }
+  ]
+}
+```
+
+##### `inline` {#experimental-inline}
+
+默认为 `false{:json}`。
+
+`inline: true`. 启用合同中所有函数的内联。这可以减少gas的使用，但代价是需要更大的合约。
+
+```json filename="tact.config.json" {9,17}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "options": {
+        "experimental": {
+          "inline": true
+        }
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "experimental": {
+          "inline": true
+        }
+      }
+    }
+  ]
+}
+```
+
+### `mode` {#projects-mode}
+
+项目的编译模式。 有效值为
+
+Value                            | Description
+:------------------------------- | :----------
+`"full"{:json}`                  | (默认) 运行整个编译流水线，并生成 FunC 代码、BoC 和各种实用程序文件，包括 TypeScript 的封装器。
+`"fullWithDecompilation"{:json}` | 运行整个编译管道，如 `“full”{:json}`，并以 BoC 格式反编译生成的二进制代码。
+`"funcOnly"{:json}`              | 只输出中间 FunC 代码，阻止进一步编译。
+`"checkOnly"{:json}`             | 仅执行语法和类型检查，阻止进一步编译。
+
+在 [Blueprint][bp] 中，"mode "始终设置为`"full"{:json}`，且不可覆盖。
+
+```json filename="tact.config.json" {7,13}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "mode": "full"
+    },
+    {
+      "name": "func_only",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "mode": "funcOnly"
+    }
+  ]
+}
+```
+
+## Full example
+
+```json filename="tact.config.json" copy=false
+{
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
+  "projects": [
+    {
+      "name": "basic",
+      "path": "./basic.tact",
+      "output": "./basic_output",
+      "mode": "full"
+    },
+    {
+      "name": "func_only",
+      "path": "./basic.tact",
+      "output": "./basic_output",
+      "mode": "funcOnly"
+    },
+    {
+      "name": "debugPrefix",
+      "path": "./contracts/contract.tact",
+      "output": "./contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "debug": false,
+        "masterchain": false,
+        "external": false,
+        "ipfsAbiGetter": true,
+        "interfacesGetter": true,
+        "experimental": {
+          "inline": false
+        }
+      }
+    }
+  ]
+}
+```
+
+[bp]: https://github.com/ton-org/blueprint
