@@ -31,14 +31,14 @@ jobs:
       - name: Backwards compat tests
         run: |
           # Install dependencies, gen and build the compiler
-          yarn install
-          yarn clean
-          yarn gen
-          yarn build
+          yarn --ignore-engines install
+          yarn --ignore-engines clean
+          yarn --ignore-engines gen
+          yarn --ignore-engines build
           # Test some specific things for backwards compatibility
-          yarn jest -t 'isSubsetOf'
+          yarn --ignore-engines jest -t 'isSubsetOf'
           # Clean-up
-          yarn cleanall
+          yarn --ignore-engines cleanall
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
