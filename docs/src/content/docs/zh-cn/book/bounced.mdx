@@ -1,0 +1,37 @@
+---
+title: 退信
+---
+
+当一个合约发送的信息的反弹标志设置为 true 时，如果信息没有被正确处理，它就会反弹回发送者。当你想确认信息是否被正确处理，如果没有，就可以恢复更改，这个功能非常有用。
+
+## 注意事项
+
+目前，在 TON 中，被退回的报文只有 224 个可用数据位，没有引用。 这意味着您无法从被退回的邮件中恢复大部分数据。 这是 TON 区块链的局限性，将来会得到修复。 Tact helps you to check if your message fits the limit and if not - it will suggest to use a special type modifier `bounced<T>` for the receiver that would construct a partial representation that fits into the required limits.
+
+## 退信接收器
+
+:::caution
+
+  目前暂不支持文本消息回退
+
+:::
+
+要接收退回的信息，您需要在合同或特性中定义一个 “退回 ”接收器:
+
+```tact {2-4}
+contract MyContract {
+    bounced(src: bounced<MyMessage>) {
+        // ...
+    }
+}
+```
+
+要手动处理被退回的信息，您可以使用回退定义，直接处理原始的 [`Slice{:tact}`](/book/cells#slices)。请注意，这样的接收器将获得由您的合约产生的**所有**被退回的信息：
+
+```tact /rawMsg: Slice/
+contract MyContract {
+    bounced(src: Slice) {
+        // ...
+    }
+}
+```

@@ -46,7 +46,7 @@ send(SendParameters{
 Another example sends a message to the specified [`Address{:tact}`][p] with a `value` of $1$ TON and the `body` of a comment with a [`String{:tact}`][p] `"Hello, World!"{:tact}`:
 
 ```tact
-let recipient: Address = ...;
+let recipient: Address = address("...");
 let value: Int = ton("1");
 send(SendParameters{
     // bounce is set to true by default
@@ -64,7 +64,7 @@ The [optional flag](/book/message-mode#optional-flags) `SendIgnoreErrors{:tact}`
 To send a binary typed message you can use the following code:
 
 ```tact
-let recipient: Address = ...;
+let recipient: Address = address("...");
 let value: Int = ton("1");
 send(SendParameters{
     // bounce is set to true by default

@@ -102,3 +102,34 @@ td>a>code {
 code:not(pre *) {
 	background-color: var(--sl-color-bg-inline-code) !important;
 }
+
+/* Stylizing <a> links to Web IDE */
+.web-ide-link {
+	display: flex;
+	justify-content: right;
+	text-decoration: none;
+	margin-top: 0.25rem;
+	margin-bottom: 1rem;
+}
+
+/* Stylizing <span> tags inside <a> links to Web IDE */
+.web-ide-link-span {
+	/* from .sl-badge */
+	display: inline-block;
+	border: 1px solid var(--sl-color-border-badge);
+	border-radius: 0.25rem;
+	font-family: var(--sl-font-system-mono);
+	line-height: normal;
+	color: var(--sl-color-text-badge);
+	background-color: var(--sl-color-bg-badge);
+	overflow-wrap: anywhere;
+
+	/* from .default */
+	--sl-color-bg-badge: var(--sl-badge-default-bg);
+	--sl-color-border-badge: var(--sl-badge-default-border);
+	--sl-color-text-badge: var(--sl-badge-default-text);
+
+	/* from .small */
+	font-size: var(--sl-text-xs);
+	padding: 0.125rem 0.25rem;
+}

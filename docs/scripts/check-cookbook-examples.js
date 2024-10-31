@@ -16,7 +16,6 @@ import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import {
   mkdtempSync,
-  mkdtemp,
   readFileSync,
   readdirSync,
   statSync,

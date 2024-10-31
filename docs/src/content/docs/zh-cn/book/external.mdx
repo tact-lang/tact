@@ -1,0 +1,75 @@
+---
+title: 外部信息
+---
+
+:::caution
+  必须在项目配置中明确启用外部信息支持。
+  如果不启用它，编译工作就会失败。
+:::
+
+外部信息是没有发件人的信息，世界上任何人都可以发送。 外部信息是与链外系统集成或对合同进行一般维护的良好工具。 处理外部信息与处理内部信息不同。 本节将介绍如何处理外部信息。
+
+## 外部信息有何不同
+
+外部报文与内部报文有以下不同：
+
+### 合同自行支付天然气使用费
+
+在处理内部信息时，发件人通常会支付燃气使用费。 处理外部报文时，合同支付燃气使用费。 这意味着您需要谨慎使用外部信息中的 gas 。 您应该经常测试合同的燃气使用情况，并确认一切正常。
+
+### 信息必须手动接收
+
+外部信息不会自动接收。 您需要手动接受它们。 这是通过调用 `acceptMessage` 函数实现的。 如果不调用 `acceptMessage` 函数，信息将被拒绝。 这样做是为了防止外部信息垃圾邮件。
+
+### 接受信息前的 10k  gas 限值
+
+10k  gas 是一个非常小的限制，而 Tact 本身在到达你的代码之前就已经消耗了相当数量的 gas 。 您应该经常测试合同的燃气使用情况，并确认一切正常。
+
+:::tip[Hey there!]
+  The 10k gas limit for external messages is based on the parameter we set by the
+  validator for the whole blockchain of the `gas_limit` field. 您可以在此查阅
+  ：
+    - https://docs.ton.org/develop/smart-contracts/guidelines/accept#external-messages
+    - https://docs.ton.org/develop/howto/blockchain-configs#param-20-and-21
+
+  :::
+
+### 接受信息后的无约束 gas 使用量
+
+您接受 gas 后，合同可以随意使用 gas 。 这样做是为了允许合同进行任何类型的处理。 您应该经常测试合同的 gas 使用情况，并验证一切正常，避免出现可能耗尽合同余额的漏洞。
+
+### 无背景资料
+
+处理外部报文时，"上下文 "和 "发件人 "函数不可用。 这是因为外部信息没有上下文。 这意味着您不能在外部信息中使用 `context` 和 `sender` 函数。 您需要仔细测试您的合约，确保它没有使用 `context` 和 `sender` 函数。
+
+## 启用外部信息支持
+
+要启用外部信息支持，请在项目配置文件中启用：
+
+```json
+{
+  "options": {
+    "external": true
+  }
+}
+```
+
+## 外部接收器
+
+外部接收器的定义方法与内部接收器相同，但使用的是 "外部 "关键字，而不是 "接收"：
+
+```tact
+contract SampleContract {
+    external("Check Timeout") {
+
+        // Check for contract timeout
+        require(self.timeout > now(), "Not timeouted");
+
+        // Accept message
+        acceptMessage();
+
+        // Timeout processing
+        self.onTimeouted();
+    }
+}
+```
