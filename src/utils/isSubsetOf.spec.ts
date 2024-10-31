@@ -75,15 +75,12 @@ function includes<T>(target: T[], wanted: T) {
     return false;
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-function createIterator<T>(
-    elements: T[],
-    methods?: Record<string, any>,
-): Iterator<T> {
+function createIterator<T>(elements: T[]): Iterator<T> {
     let index = 0;
     const iterator = {
         called: false,
-        next() {
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+        next(): IteratorResult<any> {
             iterator.called = true;
             return {
                 value: elements[index++],
@@ -91,6 +88,5 @@ function createIterator<T>(
             };
         },
     };
-    if (methods) for (const key in methods) iterator[key] = methods[key];
     return iterator;
 }
