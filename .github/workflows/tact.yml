@@ -22,6 +22,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Setup Node.js 16 for backwards compat tests
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          # without caching
+
+      - name: Backwards compat tests
+        run: |
+          # Install dependencies, gen and build the compiler
+          yarn install
+          yarn clean
+          yarn gen
+          yarn build
+          # Test some specific things for backwards compatibility
+          yarn jest -t 'isSubsetOf'
+          # Clean-up
+          yarn cleanall
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
