@@ -30,15 +30,18 @@ jobs:
 
       - name: Backwards compat tests
         run: |
+          # Temporarily ignore engines
+          yarn config set ignore-engines true
           # Install dependencies, gen and build the compiler
-          yarn --ignore-engines install
-          yarn --ignore-engines clean
-          yarn --ignore-engines gen
-          yarn --ignore-engines build
+          yarn install
+          yarn clean
+          yarn gen
+          yarn build
           # Test some specific things for backwards compatibility
-          yarn --ignore-engines jest -t 'isSubsetOf'
+          yarn jest -t 'isSubsetOf'
           # Clean-up
-          yarn --ignore-engines cleanall
+          yarn cleanall
+          yarn config delete ignore-engines
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
