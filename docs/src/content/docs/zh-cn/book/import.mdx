@@ -1,0 +1,54 @@
+---
+title: 导入代码
+---
+
+Tact 允许您导入 Tact 和 [FunC](https://docs.ton.org/develop/func/overview) 代码--任何给定的 `.tact` 或 `.fc`/`.func` 文件都可以使用 `import{:tact}` 关键字导入到您的项目中。
+
+此外，Tact 编译器还拥有一套通用的标准库，这些标准库捆绑在 Tact 编译器中，但并不立即包含在 Tact 编译器中，请参阅 [标准库概述](/ref/standard-libraries)。
+
+:::caution
+
+ 注意：所有导入的代码都会与您的代码合并在一起，因此必须避免名称冲突，并始终仔细检查源代码！
+
+:::
+
+## 导入 Tact 代码
+
+使用 `import{:tact}` 语句并提供目标 `.tact` 文件的相对路径，可以导入任何 Tact 代码：
+
+```tact
+import "./relative/path/to/the/target/tact/file.tact";
+```
+
+也可以指定父目录 (`../`)：
+
+```tact
+import "../subfolder/imported/file.tact";
+```
+
+## 导入 FunC 代码
+
+可以直接导入用 FunC 代码编写的代码，就像 Tact 代码导入一样：
+
+```tact
+// Relative import
+import "./relative/path/to/the/target/func/file.fc";
+
+// Specifying parent directories
+import "../subfolder/imported/func/file.fc";
+```
+
+但要使用此类文件中的函数，必须先将它们声明为 "本地 "函数。 For example, when standard library [@stdlib/dns](/ref/stdlib-dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
+
+```tact
+// FunC 代码位于当前 Tact 代码旁边的文件中：
+import "./dns.fc";
+
+// 从 FunC 到 Tact 的函数签名映射：
+@name(dns_string_too_internal)
+native dnsStringToInternal(str: String)：Slice?
+```
+
+## 标准图书馆
+
+See [Standard libraries overview](/ref/standard-libraries).

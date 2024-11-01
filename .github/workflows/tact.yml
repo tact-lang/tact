@@ -4,10 +4,8 @@ env:
   HUSKY: 0
 
 on:
-  push:
-    branches: ["main"]
   pull_request:
-    branches: ["main"]
+    branches: ["**"]
   workflow_dispatch:
 
 jobs:
@@ -231,7 +229,17 @@ jobs:
       - name: (pnpm) Test creation of new Blueprint projects
         if: ${{ matrix.package-manager == 'pnpm' }}
         run: |
-          npm i -g pnpm
+          # Installing the specific pnpm version to work around https://github.com/pnpm/pnpm/issues/5000
+          # and not fail suddenly when a release comes that fixes this
+          # NOTE: revisit and simplify this step if/when those bugs with pnpm are resolved
+          npm i -g pnpm@9.12.2
+          # To help pnpm recognize the shell (they cannot do it themselves sometimes...)
+          ${{ matrix.os != 'windows-latest' && 'export SHELL=bash' || 'echo windows_noop' }}
+          pnpm setup -f
+          # To source .bashrc on Linux:
+          ${{ matrix.os == 'ubuntu-latest' && 'source ~/.bashrc' || 'echo noop' }}
+          # To expose stuff for pnpm directly on macOS (because otherwise the pre-installed Node.js version gets used):
+          ${{ matrix.os == 'macos-latest' && 'export PNPM_HOME=~/Library/pnpm; export PATH=$PNPM_HOME:$PATH' || 'echo noop' }}
           pnpm link -g
           cd ..
           pnpm create ton@latest test-project --type tact-counter --contractName Counter

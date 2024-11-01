@@ -14,6 +14,9 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
+// Adds links to Web IDE from code blocks
+import remarkLinksToWebIDE from './links-to-web-ide';
+
 // Adds syntax highlighting for inline code blocks
 import rehypeInlineCodeHighlighting from './inline-code-highlighting';
 
@@ -26,14 +29,15 @@ export default defineConfig({
 	outDir: './dist', // default, just to be sure
 	site: 'https://docs.tact-lang.org',
 	markdown: {
-		remarkPlugins: [remarkHeadingId, remarkMath],
+		remarkPlugins: [remarkHeadingId, remarkMath, remarkLinksToWebIDE],
 		rehypePlugins: [
 			rehypeHeadingIds,
 			[rehypeAutolinkHeadings, {
 				behavior: "append",
 				properties: {
 					class: "autolink-header",
-					ariaHidden: true,
+					ariaHidden: "true",
+					ariaLabel: "Link to this header",
 					tabIndex: -1,
 				},
 			}],
@@ -66,7 +70,7 @@ export default defineConfig({
 					// Per-page Google tag setup
 					tag: "script",
 					content: "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-ZJ3GZHJ0Z5');",
-				}
+				},
 			],
 			social: {
 				github: 'https://github.com/tact-lang/tact',
@@ -137,7 +141,8 @@ export default defineConfig({
 						{
 							label: 'Fundamentals of Tact',
 							translations: { 'zh-CN': 'Tact 语言基础' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'book/types#',
 						},
 						{ slug: 'book/types' },
 						{ slug: 'book/integers' },
@@ -150,7 +155,8 @@ export default defineConfig({
 						{
 							label: 'Expressiveness',
 							translations: { 'zh-CN': '表现力' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'book/operators#',
 						},
 						{ slug: 'book/operators' },
 						{ slug: 'book/expressions' },
@@ -160,7 +166,8 @@ export default defineConfig({
 						{
 							label: 'Communication',
 							translations: { 'zh-CN': '交流' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'book/receive#',
 						},
 						{ slug: 'book/receive' },
 						{ slug: 'book/bounced' },
@@ -171,7 +178,8 @@ export default defineConfig({
 						{
 							label: 'Going places',
 							translations: { 'zh-CN': '前往各地' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'book/deploy#',
 						},
 						{ slug: 'book/deploy' },
 						{ slug: 'book/debug' },
@@ -193,7 +201,8 @@ export default defineConfig({
 						{
 							label: 'Single contract',
 							translations: { 'zh-CN': '单一合同' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'cookbook/single-communication#',
 						},
 						{ slug: 'cookbook/single-communication' },
 						{ slug: 'cookbook/type-conversion' },
@@ -206,7 +215,8 @@ export default defineConfig({
 						{
 							label: 'Multiple contracts',
 							translations: { 'zh-CN': '多重合同' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'cookbook/multi-communication#',
 						},
 						{ slug: 'cookbook/multi-communication' },
 						{ slug: 'cookbook/jettons' },
@@ -240,7 +250,8 @@ export default defineConfig({
 						{
 							label: 'Core library',
 							translations: { 'zh-CN': '核心图书馆' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'ref/core-base#',
 						},
 						{ slug: 'ref/core-base' },
 						{ slug: 'ref/core-common' },
@@ -254,7 +265,8 @@ export default defineConfig({
 						{
 							label: 'Standard libraries',
 							translations: { 'zh-CN': '标准图书馆' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'ref/standard-libraries#',
 						},
 						{ slug: 'ref/standard-libraries' },
 						{ slug: 'ref/stdlib-config' },
@@ -275,7 +287,8 @@ export default defineConfig({
 						{
 							label: 'Tools',
 							translations: { 'zh-CN': '工具' },
-							link: '#', attrs: { class: 'sidebar-separator' }
+							attrs: { class: 'sidebar-separator' },
+							link: 'ecosystem/typescript#',
 						},
 						{ slug: 'ecosystem/typescript' },
 						{ slug: 'ecosystem/vscode' },

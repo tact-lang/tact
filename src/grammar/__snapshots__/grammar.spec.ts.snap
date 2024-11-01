@@ -183,6 +183,16 @@ Line 6, col 1:
 "
 `;
 
+exports[`grammar should fail destructuring-duplicate-source-id 1`] = `
+"Syntax error: <unknown>:15:19: Duplicate destructuring field: 'a'
+Line 15, col 19:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S { a: x, a: y } = s;
+                         ^~~~
+  16 |     return x + y;
+"
+`;
+
 exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
 "Syntax error: <unknown>:6:14: Empty argument list should not have a dangling comma.
 Line 6, col 14:
@@ -454,7 +464,7 @@ Line 1, col 9:
 `;
 
 exports[`grammar should fail ident-cannot-be-if-reserved-word 1`] = `
-"<unknown>:2:9: Parse error: expected not a reservedWord
+"<unknown>:2:9: Parse error: expected "A".."Z" or not a reservedWord
 
 Line 2, col 9:
   1 | fun hello(): Int {
@@ -8055,6 +8065,835 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 34,
           "kind": "statement_return",
           "loc": return a;,
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse stmt-destructuring 1`] = `
+{
+  "id": 140,
+  "imports": [],
+  "items": [
+    {
+      "fields": [
+        {
+          "as": null,
+          "id": 4,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": a: Int,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 3,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": null,
+          "id": 7,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": b: Int,
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 6,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": null,
+          "id": 10,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": c: Int,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": c,
+            "text": "c",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 11,
+      "kind": "struct_decl",
+      "loc": struct S {
+    a: Int;
+    b: Int;
+    c: Int;
+},
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": S,
+        "text": "S",
+      },
+    },
+    {
+      "fields": [
+        {
+          "as": null,
+          "id": 15,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": a: Int,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 14,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": null,
+          "id": 18,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": b: Int,
+          "name": {
+            "id": 16,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 17,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 19,
+      "kind": "message_decl",
+      "loc": message M {
+    a: Int;
+    b: Int;
+},
+      "name": {
+        "id": 12,
+        "kind": "type_id",
+        "loc": M,
+        "text": "M",
+      },
+      "opcode": null,
+    },
+    {
+      "attributes": [],
+      "id": 139,
+      "kind": "function_def",
+      "loc": fun testFunc(): Int {
+    let s = S{ a: 1, b: 2, c: 3 };
+    let S { a, b, c } = s;
+    let S { a: a1 } = s;
+    let S { b: b1 } = s;
+    let S { c: c1 } = s;
+    let S { a: a2, b: b2 } = s;
+    let S { a: a3, c: c3 } = s;
+    let S { b: b4, c: c4 } = s;
+
+    let m = M{ a: 1, b: 2 };
+    let M { a: a_m, b: b_m } = m;
+
+    return a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m + b_m;
+},
+      "name": {
+        "id": 20,
+        "kind": "id",
+        "loc": testFunc,
+        "text": "testFunc",
+      },
+      "params": [],
+      "return": {
+        "id": 21,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "statements": [
+        {
+          "expression": {
+            "args": [
+              {
+                "field": {
+                  "id": 24,
+                  "kind": "id",
+                  "loc": a,
+                  "text": "a",
+                },
+                "id": 26,
+                "initializer": {
+                  "base": 10,
+                  "id": 25,
+                  "kind": "number",
+                  "loc": 1,
+                  "value": 1n,
+                },
+                "kind": "struct_field_initializer",
+                "loc": a: 1,
+              },
+              {
+                "field": {
+                  "id": 27,
+                  "kind": "id",
+                  "loc": b,
+                  "text": "b",
+                },
+                "id": 29,
+                "initializer": {
+                  "base": 10,
+                  "id": 28,
+                  "kind": "number",
+                  "loc": 2,
+                  "value": 2n,
+                },
+                "kind": "struct_field_initializer",
+                "loc": b: 2,
+              },
+              {
+                "field": {
+                  "id": 30,
+                  "kind": "id",
+                  "loc": c,
+                  "text": "c",
+                },
+                "id": 32,
+                "initializer": {
+                  "base": 10,
+                  "id": 31,
+                  "kind": "number",
+                  "loc": 3,
+                  "value": 3n,
+                },
+                "kind": "struct_field_initializer",
+                "loc": c: 3,
+              },
+            ],
+            "id": 33,
+            "kind": "struct_instance",
+            "loc": S{ a: 1, b: 2, c: 3 },
+            "type": {
+              "id": 23,
+              "kind": "type_id",
+              "loc": S,
+              "text": "S",
+            },
+          },
+          "id": 34,
+          "kind": "statement_let",
+          "loc": let s = S{ a: 1, b: 2, c: 3 };,
+          "name": {
+            "id": 22,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": null,
+        },
+        {
+          "expression": {
+            "id": 45,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 46,
+          "identifiers": Map {
+            "a" => [
+              {
+                "id": 36,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              {
+                "id": 37,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+            ],
+            "b" => [
+              {
+                "id": 39,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              {
+                "id": 40,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+            ],
+            "c" => [
+              {
+                "id": 42,
+                "kind": "id",
+                "loc": c,
+                "text": "c",
+              },
+              {
+                "id": 43,
+                "kind": "id",
+                "loc": c,
+                "text": "c",
+              },
+            ],
+          },
+          "kind": "statement_destruct",
+          "loc": let S { a, b, c } = s;,
+          "type": {
+            "id": 35,
+            "kind": "type_id",
+            "loc": S,
+            "text": "S",
+          },
+        },
+        {
+          "expression": {
+            "id": 51,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 52,
+          "identifiers": Map {
+            "a" => [
+              {
+                "id": 48,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              {
+                "id": 49,
+                "kind": "id",
+                "loc": a1,
+                "text": "a1",
+              },
+            ],
+          },
+          "kind": "statement_destruct",
+          "loc": let S { a: a1 } = s;,
+          "type": {
+            "id": 47,
+            "kind": "type_id",
+            "loc": S,
+            "text": "S",
+          },
+        },
+        {
+          "expression": {
+            "id": 57,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 58,
+          "identifiers": Map {
+            "b" => [
+              {
+                "id": 54,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              {
+                "id": 55,
+                "kind": "id",
+                "loc": b1,
+                "text": "b1",
+              },
+            ],
+          },
+          "kind": "statement_destruct",
+          "loc": let S { b: b1 } = s;,
+          "type": {
+            "id": 53,
+            "kind": "type_id",
+            "loc": S,
+            "text": "S",
+          },
+        },
+        {
+          "expression": {
+            "id": 63,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 64,
+          "identifiers": Map {
+            "c" => [
+              {
+                "id": 60,
+                "kind": "id",
+                "loc": c,
+                "text": "c",
+              },
+              {
+                "id": 61,
+                "kind": "id",
+                "loc": c1,
+                "text": "c1",
+              },
+            ],
+          },
+          "kind": "statement_destruct",
+          "loc": let S { c: c1 } = s;,
+          "type": {
+            "id": 59,
+            "kind": "type_id",
+            "loc": S,
+            "text": "S",
+          },
+        },
+        {
+          "expression": {
+            "id": 72,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 73,
+          "identifiers": Map {
+            "a" => [
+              {
+                "id": 66,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              {
+                "id": 67,
+                "kind": "id",
+                "loc": a2,
+                "text": "a2",
+              },
+            ],
+            "b" => [
+              {
+                "id": 69,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              {
+                "id": 70,
+                "kind": "id",
+                "loc": b2,
+                "text": "b2",
+              },
+            ],
+          },
+          "kind": "statement_destruct",
+          "loc": let S { a: a2, b: b2 } = s;,
+          "type": {
+            "id": 65,
+            "kind": "type_id",
+            "loc": S,
+            "text": "S",
+          },
+        },
+        {
+          "expression": {
+            "id": 81,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 82,
+          "identifiers": Map {
+            "a" => [
+              {
+                "id": 75,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              {
+                "id": 76,
+                "kind": "id",
+                "loc": a3,
+                "text": "a3",
+              },
+            ],
+            "c" => [
+              {
+                "id": 78,
+                "kind": "id",
+                "loc": c,
+                "text": "c",
+              },
+              {
+                "id": 79,
+                "kind": "id",
+                "loc": c3,
+                "text": "c3",
+              },
+            ],
+          },
+          "kind": "statement_destruct",
+          "loc": let S { a: a3, c: c3 } = s;,
+          "type": {
+            "id": 74,
+            "kind": "type_id",
+            "loc": S,
+            "text": "S",
+          },
+        },
+        {
+          "expression": {
+            "id": 90,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "id": 91,
+          "identifiers": Map {
+            "b" => [
+              {
+                "id": 84,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              {
+                "id": 85,
+                "kind": "id",
+                "loc": b4,
+                "text": "b4",
+              },
+            ],
+            "c" => [
+              {
+                "id": 87,
+                "kind": "id",
+                "loc": c,
+                "text": "c",
+              },
+              {
+                "id": 88,
+                "kind": "id",
+                "loc": c4,
+                "text": "c4",
+              },
+            ],
+          },
+          "kind": "statement_destruct",
+          "loc": let S { b: b4, c: c4 } = s;,
+          "type": {
+            "id": 83,
+            "kind": "type_id",
+            "loc": S,
+            "text": "S",
+          },
+        },
+        {
+          "expression": {
+            "args": [
+              {
+                "field": {
+                  "id": 94,
+                  "kind": "id",
+                  "loc": a,
+                  "text": "a",
+                },
+                "id": 96,
+                "initializer": {
+                  "base": 10,
+                  "id": 95,
+                  "kind": "number",
+                  "loc": 1,
+                  "value": 1n,
+                },
+                "kind": "struct_field_initializer",
+                "loc": a: 1,
+              },
+              {
+                "field": {
+                  "id": 97,
+                  "kind": "id",
+                  "loc": b,
+                  "text": "b",
+                },
+                "id": 99,
+                "initializer": {
+                  "base": 10,
+                  "id": 98,
+                  "kind": "number",
+                  "loc": 2,
+                  "value": 2n,
+                },
+                "kind": "struct_field_initializer",
+                "loc": b: 2,
+              },
+            ],
+            "id": 100,
+            "kind": "struct_instance",
+            "loc": M{ a: 1, b: 2 },
+            "type": {
+              "id": 93,
+              "kind": "type_id",
+              "loc": M,
+              "text": "M",
+            },
+          },
+          "id": 101,
+          "kind": "statement_let",
+          "loc": let m = M{ a: 1, b: 2 };,
+          "name": {
+            "id": 92,
+            "kind": "id",
+            "loc": m,
+            "text": "m",
+          },
+          "type": null,
+        },
+        {
+          "expression": {
+            "id": 109,
+            "kind": "id",
+            "loc": m,
+            "text": "m",
+          },
+          "id": 110,
+          "identifiers": Map {
+            "a" => [
+              {
+                "id": 103,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              {
+                "id": 104,
+                "kind": "id",
+                "loc": a_m,
+                "text": "a_m",
+              },
+            ],
+            "b" => [
+              {
+                "id": 106,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              {
+                "id": 107,
+                "kind": "id",
+                "loc": b_m,
+                "text": "b_m",
+              },
+            ],
+          },
+          "kind": "statement_destruct",
+          "loc": let M { a: a_m, b: b_m } = m;,
+          "type": {
+            "id": 102,
+            "kind": "type_id",
+            "loc": M,
+            "text": "M",
+          },
+        },
+        {
+          "expression": {
+            "id": 137,
+            "kind": "op_binary",
+            "left": {
+              "id": 135,
+              "kind": "op_binary",
+              "left": {
+                "id": 133,
+                "kind": "op_binary",
+                "left": {
+                  "id": 131,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 129,
+                    "kind": "op_binary",
+                    "left": {
+                      "id": 127,
+                      "kind": "op_binary",
+                      "left": {
+                        "id": 125,
+                        "kind": "op_binary",
+                        "left": {
+                          "id": 123,
+                          "kind": "op_binary",
+                          "left": {
+                            "id": 121,
+                            "kind": "op_binary",
+                            "left": {
+                              "id": 119,
+                              "kind": "op_binary",
+                              "left": {
+                                "id": 117,
+                                "kind": "op_binary",
+                                "left": {
+                                  "id": 115,
+                                  "kind": "op_binary",
+                                  "left": {
+                                    "id": 113,
+                                    "kind": "op_binary",
+                                    "left": {
+                                      "id": 111,
+                                      "kind": "id",
+                                      "loc": a,
+                                      "text": "a",
+                                    },
+                                    "loc": a + b,
+                                    "op": "+",
+                                    "right": {
+                                      "id": 112,
+                                      "kind": "id",
+                                      "loc": b,
+                                      "text": "b",
+                                    },
+                                  },
+                                  "loc": a + b + c,
+                                  "op": "+",
+                                  "right": {
+                                    "id": 114,
+                                    "kind": "id",
+                                    "loc": c,
+                                    "text": "c",
+                                  },
+                                },
+                                "loc": a + b + c + a1,
+                                "op": "+",
+                                "right": {
+                                  "id": 116,
+                                  "kind": "id",
+                                  "loc": a1,
+                                  "text": "a1",
+                                },
+                              },
+                              "loc": a + b + c + a1 + b1,
+                              "op": "+",
+                              "right": {
+                                "id": 118,
+                                "kind": "id",
+                                "loc": b1,
+                                "text": "b1",
+                              },
+                            },
+                            "loc": a + b + c + a1 + b1 + c1,
+                            "op": "+",
+                            "right": {
+                              "id": 120,
+                              "kind": "id",
+                              "loc": c1,
+                              "text": "c1",
+                            },
+                          },
+                          "loc": a + b + c + a1 + b1 + c1 + a2,
+                          "op": "+",
+                          "right": {
+                            "id": 122,
+                            "kind": "id",
+                            "loc": a2,
+                            "text": "a2",
+                          },
+                        },
+                        "loc": a + b + c + a1 + b1 + c1 + a2 + b2,
+                        "op": "+",
+                        "right": {
+                          "id": 124,
+                          "kind": "id",
+                          "loc": b2,
+                          "text": "b2",
+                        },
+                      },
+                      "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3,
+                      "op": "+",
+                      "right": {
+                        "id": 126,
+                        "kind": "id",
+                        "loc": a3,
+                        "text": "a3",
+                      },
+                    },
+                    "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3,
+                    "op": "+",
+                    "right": {
+                      "id": 128,
+                      "kind": "id",
+                      "loc": c3,
+                      "text": "c3",
+                    },
+                  },
+                  "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4,
+                  "op": "+",
+                  "right": {
+                    "id": 130,
+                    "kind": "id",
+                    "loc": b4,
+                    "text": "b4",
+                  },
+                },
+                "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4,
+                "op": "+",
+                "right": {
+                  "id": 132,
+                  "kind": "id",
+                  "loc": c4,
+                  "text": "c4",
+                },
+              },
+              "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m,
+              "op": "+",
+              "right": {
+                "id": 134,
+                "kind": "id",
+                "loc": a_m,
+                "text": "a_m",
+              },
+            },
+            "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m + b_m,
+            "op": "+",
+            "right": {
+              "id": 136,
+              "kind": "id",
+              "loc": b_m,
+              "text": "b_m",
+            },
+          },
+          "id": 138,
+          "kind": "statement_return",
+          "loc": return a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m + b_m;,
         },
       ],
     },

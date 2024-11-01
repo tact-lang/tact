@@ -66,14 +66,16 @@ Returns the [`Address{:tact}`][p] of the sender of the current message.
 Usage example:
 
 ```tact
-receive() {
-    let whoSentMeMessage: Address = sender();
+contract MeSee {
+    receive() {
+        let whoSentMeMessage: Address = sender();
+    }
 }
 ```
 
 :::caution
 
-  Behavior is undefined for [getter functions](/book/contracts#getter-functions), as they cannot have a sender nor they can send messages.
+  Behavior is undefined for [getter functions](/book/contracts#getter-functions), because they cannot have a sender nor can they send messages.
 
 :::
 

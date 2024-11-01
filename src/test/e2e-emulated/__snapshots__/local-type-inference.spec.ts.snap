@@ -70,10 +70,10 @@ exports[`local-type-inference should automatically set types for let statements 
       "message": "Invalid destination address in outbound message",
     },
     "37": {
-      "message": "Not enough TON",
+      "message": "Not enough Toncoin",
     },
     "38": {
-      "message": "Not enough extra-currencies",
+      "message": "Not enough extra currencies",
     },
     "39": {
       "message": "Outbound message does not fit into a cell after rewriting",

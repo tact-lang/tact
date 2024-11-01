@@ -1,0 +1,84 @@
+---
+title: 食谱概览
+---
+
+import { LinkCard, Card, CardGrid, Steps } from '@astrojs/starlight/components';
+
+制作 Tact Cookbook 的主要目的是将 Tact 开发人员的所有经验汇集到一个地方，以便未来的开发人员可以使用。 这部分文档更侧重于每个 Tact 开发人员在开发智能合约过程中需要解决的日常任务。
+
+将其作为在 TON 区块链上制作令人愉悦的智能合约的食谱，而无需在此过程中重新发明轮子。
+
+<Steps>
+
+1. #### 单一合同 {#single-contract}
+
+   以下页面以单个合同实例为重点，涵盖了广泛的主题：
+
+   <CardGrid>
+    <LinkCard
+      title=" 1️⃣ Single-contract communication"
+      href="/cookbook/single-communication"
+    />
+    <LinkCard
+      title="⚙️ Type conversion"
+      href="/cookbook/type-conversion"
+    />
+    <LinkCard
+      title="📦 Data structures"
+      href="/cookbook/data-structures"
+    />
+    <LinkCard
+      title="🤖算法"
+      href="/cookbook/algo"
+    />
+    <LinkCard
+      title="📆时间和日期"
+      href="/cookbook/time"
+    />
+    <LinkCard
+      title="⚠️访问控制"
+      href="/cookbook/access"
+    />
+    <LinkCard
+      title="✨ 随机性"
+      href="/cookbook/random"
+    />
+    <LinkCard
+      title="🤔 杂项"
+      href="/cookbook/misc"
+    />
+   </CardGrid>
+
+2. #### 多重合同 {#multiple-contracts}
+
+   下文将重点介绍多合约示例，探讨 TON 区块链的可扩展性：
+
+   <CardGrid>
+     <LinkCard
+       title="🧮多合约通信"
+       href="/cookbook/multi-communication"
+     />
+     <LinkCard
+       title="💎 Fungible Tokens (Jettons)"
+       href="/cookbook/jettons"
+     />
+     <LinkCard
+       title="🖼️ Non-Fungible Tokens (NFTs)"
+       href="/cookbook/nfts"
+     />
+   </CardGrid>
+
+   此外，还有与流行的 TON DEX（去中心化交易所）合作的例子，这些交易所通常需要许多合约和复杂的逻辑：
+
+   <CardGrid>
+     <LinkCard
+       title="DeDust.io"
+       href="/cookbook/dexes/dedust"
+     />
+     <LinkCard
+       title="STON.fi"
+       href="/cookbook/dexes/stonfi"
+     />
+   </CardGrid>
+
+</Steps>

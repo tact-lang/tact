@@ -15,13 +15,13 @@ It allows intentional exception or error handling, which leads to the terminatio
 let number: Int = 198;
 
 // the error will be triggered anyway
-throw(36);
+try { throw(36); } catch (exitCode) {}
 
 // the error will be triggered only if the number is greater than 50
-nativeThrowIf(35, number > 50);
+try { nativeThrowIf(35, number > 50); } catch (exitCode) {}
 
 // the error will be triggered only if the number is NOT EQUAL to 198
-nativeThrowUnless(39, number == 198);
+try { nativeThrowUnless(39, number == 198); } catch (exitCode) {}
 ```
 
 :::note[Useful links:]

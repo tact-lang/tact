@@ -3,6 +3,8 @@ title: Cells, Builders and Slices
 description: "Various Cell, Builder and Slice functions from the Core library of Tact"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 [`Cell{:tact}`][cell] is a low-level [primitive][p] that represents data in TON Blockchain. Cells consist of $1023$ bits of data with up to $4$ references to another cells. They are read-only and immutable, and cannot have cyclic references.
 
 [`Builder{:tact}`][builder] is an immutable [primitive][p] to construct cells, and [`Slice{:tact}`][slice] is a mutable [primitive][p] to parse them.
@@ -20,7 +22,7 @@ description: "Various Cell, Builder and Slice functions from the Core library of
 ## beginCell
 
 ```tact
-fun beginCell(): Builder
+fun beginCell(): Builder;
 ```
 
 Creates a new empty [`Builder{:tact}`][builder].
@@ -191,6 +193,8 @@ let buzz: Builder = b.storeBool(false); // writes 0
 
 ## Builder.storeBit
 
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
 ```tact
 extends fun storeBit(self: Builder, value: Bool): Builder;
 ```
@@ -284,6 +288,31 @@ Usage example:
 ```tact
 let b: Builder = beginCell();
 let fizz: Builder = b.storeRef(emptyCell());
+```
+
+## Builder.storeMaybeRef
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun storeMaybeRef(self: Builder, cell: Cell?): Builder;
+```
+
+Extension function for the [`Builder{:tact}`][builder].
+
+If the `cell` is not `null{:tact}`, stores $1$ as a single bit and then reference `cell` into the copy of the [`Builder{:tact}`][builder]. Returns that copy.
+
+If the `cell` is `null{:tact}`, only stores $0$ as a single bit into the copy of the [`Builder{:tact}`][builder]. Returns that copy.
+
+As a single [`Cell{:tact}`][cell] can store up to $4$ references, attempts to store more throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Usage example:
+
+```tact
+let b: Builder = beginCell();
+let fizz: Builder = b
+    .storeMaybeRef(emptyCell()) // stores a single 1 bit, then an empty cell
+    .storeMaybeRef(null);       // stores only a single 0 bit
 ```
 
 ## Builder.refs
@@ -524,6 +553,8 @@ let fizz: Bool = s.loadBool(); // true
 ```
 
 ## Slice.loadBit
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
 ```tact
 extends mutates fun loadBit(self: Slice): Bool;
@@ -817,6 +848,8 @@ fun coinCell(): Cell {
 
 ## Struct.toSlice
 
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
 ```tact
 extends fun toSlice(self: Struct): Slice;
 ```
@@ -938,6 +971,8 @@ fun coinCell(): Cell {
 ```
 
 ## Message.toSlice
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
 ```tact
 extends fun toSlice(self: Message): Slice;

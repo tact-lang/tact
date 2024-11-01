@@ -465,6 +465,26 @@ export function writeStatement(
 
             return;
         }
+        case "statement_destruct": {
+            const t = getExpType(ctx.ctx, f.expression);
+            if (t.kind !== "ref") {
+                throwInternalCompilerError(
+                    `invalid destruct expression kind: ${t.kind}`,
+                    f.expression.loc,
+                );
+            }
+            const ty = getType(ctx.ctx, t.name);
+            const ids = ty.fields.map((field) => {
+                const id = f.identifiers.get(field.name);
+                return id === undefined || isWildcard(id[1])
+                    ? "_"
+                    : funcIdOf(id[1]);
+            });
+            ctx.append(
+                `var (${ids.join(", ")}) = ${writeCastedExpression(f.expression, t, ctx)};`,
+            );
+            return;
+        }
     }
 
     throw Error("Unknown statement kind");

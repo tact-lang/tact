@@ -96,6 +96,90 @@ if (gotButUnsure != null) {
 }
 ```
 
+### Replace values, `.replace()` {#replace}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+To replace the value under a key, if such a key exists, use the `.replace(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` on successful replacement and `false{:tact}` otherwise.
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Setting a couple of values under different keys
+fizz.set(7, 70);
+fizz.set(42, 42);
+
+// Overriding one of the existing key-value pairs
+let replaced1 = fizz.replace(7, 68); // key 7 now points to value 68
+replaced1; // true
+
+// Trying to replace the value in a non-existing key-value pair will do nothing
+let replaced2 = fizz.replace(8, 68); // no key 8, so nothing was altered
+replaced2; // false
+```
+
+If the given value is [`null{:tact}`](/book/optionals) and the key exists, the entry will be deleted from the map.
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Setting a couple of values under different keys
+fizz.set(7, 70);
+fizz.set(42, 42);
+
+// Overriding one of the existing key-value pairs
+let replaced1 = fizz.replace(7, null); // the entry under key 7 is now deleted
+replaced1; // true
+
+// Trying to replace the value in a non-existing key-value pair will do nothing
+let replaced2 = fizz.replace(8, null); // no key 8, so nothing was altered
+replaced2; // false
+```
+
+### Replace and get old value, `.replaceGet()` {#replaceget}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+Like [`.replace()`](#replace), but instead of returning a [`Bool{:tact}`](/book/types#booleans) it returns the old (pre-replacement) value on successful replacement and [`null{:tact}`](/book/optionals) otherwise.
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Setting a couple of values under different keys
+fizz.set(7, 70);
+fizz.set(42, 42);
+
+// Overriding one of the existing key-value pairs
+let oldVal1 = fizz.replaceGet(7, 68); // key 7 now points to value 68
+oldVal1; // 70
+
+// Trying to replace the value in a non-existing key-value pair will do nothing
+let oldVal2 = fizz.replaceGet(8, 68); // no key 8, so nothing was altered
+oldVal2; // null
+```
+
+If the given value is [`null{:tact}`](/book/optionals) and the key exists, the entry will be deleted from the map.
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Setting a couple of values under different keys
+fizz.set(7, 70);
+fizz.set(42, 42);
+
+// Overriding one of the existing key-value pairs
+let oldVal1 = fizz.replaceGet(7, null); // the entry under key 7 is now deleted
+oldVal1; // 70
+
+// Trying to replace the value in a non-existing key-value pair will do nothing
+let oldVal2 = fizz.replaceGet(8, null); // no key 8, so nothing was altered
+oldVal2; // null
+```
+
 ### Delete entries, `.del()` {#del}
 
 To delete a single key-value pair (single entry), use the `.del(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` in the case of successful deletion and `false{:tact}` otherwise.
@@ -181,6 +265,51 @@ if (fizz == null) {
     dump("Empty maps are null, which isn't obvious");
 }
 ```
+
+### Compare with `.deepEquals()` {#deepequals}
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+The `.deepEquals(){:tact}` [method](/book/functions#extension-function) on maps returns `true{:tact}` if all entries of the map match corresponding entries of another map, ignoring possible differences in the [underlying serialization logic][hashmap]. Returns `false{:tact}` otherwise.
+
+```tact
+let fizz: map<Int, Int> = emptyMap();
+let buzz: map<Int, Int> = emptyMap();
+
+fizz.set(1, 2);
+buzz.set(1, 2);
+
+fizz.deepEquals(buzz); // true
+fizz == buzz;          // true, and uses much less gas to compute
+```
+
+Using `.deepEquals(){:tact}` is very important in cases where a map comes from the third-party source that doesn't provide any guarantees about the [serialization layout][hashmap]. For one such example, consider the following code:
+
+```typescript title="some-typescript-code.ts"
+// First map, with long labels
+const m1 = beginCell()
+    .storeUint(2, 2) // long label
+    .storeUint(8, 4) // key length
+    .storeUint(1, 8) // key
+    .storeBit(true)  // value
+    .endCell();
+
+// Second map, with short labels
+const m2 = beginCell()
+    .storeUint(0, 1)           // short label
+    .storeUint(0b111111110, 9) // key length
+    .storeUint(1, 8)           // key
+    .storeBit(true)            // value
+    .endCell();
+```
+
+There, both maps are formed manually and both contain the same key-value pair. If you were to send both of those maps in a message to the Tact contract, and then compare them with `.deepEquals(){:tact}` and [equality operator `=={:tact}`](/book/operators#binary-equality), the former would produce `true{:tact}` because both maps have the same entry, while the latter would produce `false{:tact}`, because it only does the shallow comparison of map hashes. And those differ since the maps are serialized differently.
+
+:::note
+
+  This function is very gas expensive, and for the majority of cases it'll be enough to use the shallow comparison via the [equality `=={:tact}`](/book/operators#binary-equality) or [inequality `!={:tact}`](/book/operators#binary-equality) operators.
+
+:::
 
 ### Convert to a `Cell`, `.asCell()` {#ascell}
 
@@ -361,3 +490,5 @@ If you still need a large map or an unbound (infinitely large) map, it's better 
 [p]: /book/types#primitive-types
 [int]: /book/integers
 [cell]: /book/cells#cells
+
+[hashmap]: https://docs.ton.org/develop/data-formats/tl-b-types#hashmap
