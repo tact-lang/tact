@@ -15,6 +15,14 @@ sidebar:
 
 :::
 
+## Recommended Reading
+
+Before proceeding further, you may find it helpful to explore the following articles:
+
+* [Receive messages](/book/receive/)
+* [Sending messages](/book/send/)
+* [Fungible Tokens (Jettons)](/cookbook/jettons/)
+
 ## Swaps
 
 More about swaps [here](https://docs.ston.fi/docs/developer-section/api-reference-v2/example_swap).
@@ -29,7 +37,7 @@ message(0x6664de2a) StonfiSwap {
     refundAddress: Address; // Address where refund will be sent if swap fails
     excessesAddress: Address; // Address where TON excesses will be sent
     deadline: Int as uint64; // Timestamp of execution deadline for this tx
-    additionalData: SwapAdditionalData;
+    additionalData: SwapAdditionalData; // Defined below
 }
 
 struct SwapAdditionalData {
@@ -67,22 +75,24 @@ const GasSwapTonToJettonFwd: Int = ton("0.3");
 const GasSwapTonToJetton: Int = ton("0.01");
 ```
 
-### Jetton to jetton
+### Jetton to Jetton
 
 ```tact
 const RouterAddress: Address = address("kQALh-JBBIKK7gr0o4AVf9JZnEsFndqO0qTCyT-D-yBsWk0v"); // CPI Router v2.1.0
 const RouterJettonWallet: Address = address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK"); // Router Jetton Wallet Address
 
 message SwapJettonJetton {
-    myJettonWalletAddress: Address; // calculated offchain for ease of example, in real world scenarios should be calculated onchain
+    myJettonWalletAddress: Address;
 }
 
 contract JettonToJetton {
     receive() {}
     receive(msg: SwapJettonJetton) {
+        // This example directly uses the `myJettonWalletAddress` provided in the received message.
+        // In real-world scenarios, it's more reliable to calculate this address on-chain or save it during initialization to ensure accuracy and trustworthiness.
         let myJettonWalletAddress: Address = msg.myJettonWalletAddress;
 
-        let offerAmount: Int = 100000;
+        let offerAmount: Int = 100000; // the quantity of jettons being swapped
 
         let forwardPayload = StonfiSwap{
             otherTokenWallet: RouterJettonWallet,
@@ -120,15 +130,17 @@ const RouterAddress: Address = address("kQALh-JBBIKK7gr0o4AVf9JZnEsFndqO0qTCyT-D
 const RouterProxyTonWallet: Address = address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7"); // Router's pTON Address
 
 message SwapJettonTon {
-    myJettonWalletAddress: Address; // calculated offchain for ease of example, in real world scenarios should be calculated onchain
+    myJettonWalletAddress: Address;
 }
 
 contract JettonToTon {
     receive() {}
     receive(msg: SwapJettonTon) {
+        // This example directly uses the `myJettonWalletAddress` provided in the received message.
+        // In real-world scenarios, it's more reliable to calculate this address on-chain or save it during initialization to ensure accuracy and trustworthiness.
         let myJettonWalletAddress: Address = msg.myJettonWalletAddress;
 
-        let offerAmount: Int = 100000;
+        let offerAmount: Int = 100000; // the quantity of jettons being swapped
 
         let forwardPayload = StonfiSwap{
             otherTokenWallet: RouterProxyTonWallet,
@@ -157,7 +169,7 @@ contract JettonToTon {
 }
 ```
 
-### TON to jetton
+### TON to Jetton
 
 TON to jetton swap introduces `ProxyTonTransfer` cause all interaction is done with pTON contract.
 
@@ -175,7 +187,7 @@ const RouterJettonWallet: Address = address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM
 contract TonToJetton {
     receive() {}
     receive("ton-jetton") {
-        let offerAmount: Int = 100000;
+        let offerAmount: Int = 100000; // the quantity of TON being swapped
 
         let forwardPayload = StonfiSwap{
             otherTokenWallet: RouterJettonWallet,
@@ -239,6 +251,7 @@ const TonTransferGas: Int = ton("0.01");
 
 ### Jetton deposit
 
+
 ```tact
 message(0xf8a7ea5) JettonTransfer {
     queryId: Int as uint64;
@@ -251,7 +264,7 @@ message(0xf8a7ea5) JettonTransfer {
 }
 
 message SampleProvideLP {
-    myJettonWalletAddress: Address; // calculated offchain for ease of example, in real world scenarios should be calculated onchain
+    myJettonWalletAddress: Address;
 }
 
 const RouterAddress: Address = address("kQALh-JBBIKK7gr0o4AVf9JZnEsFndqO0qTCyT-D-yBsWk0v"); // CPI Router v2.1.0
@@ -261,9 +274,11 @@ const RouterJettonWallet: Address = address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM
 contract Sample {
     receive() {}
     receive(msg: SampleProvideLP) {
+        // This example directly uses the `myJettonWalletAddress` provided in the received message.
+        // In real-world scenarios, it's more reliable to calculate this address on-chain or save it during initialization to ensure accuracy and trustworthiness.
         let myJettonWalletAddress = msg.myJettonWalletAddress;
 
-        let offerAmount = 1000000;
+        let offerAmount = 1000000; // the quantity of jettons being transferred for liquidity provisioning
 
         let forwardPayload = ProvideLP{
             otherTokenWallet: RouterProxyTonWallet,
@@ -309,7 +324,7 @@ const RouterJettonWallet: Address = address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM
 contract Sample {
     receive() {}
     receive("provide-lp-ton") {
-        let offerAmount = 1000000;
+        let offerAmount = 1000000; // the quantity of TON being transferred for liquidity provisioning
 
         let forwardPayload = ProvideLP{
             otherTokenWallet: RouterJettonWallet,
@@ -336,3 +351,14 @@ contract Sample {
     }
 }
 ```
+
+### Withdraw liquidly
+
+Liquidly is withdrawn from a pool by burning lp tokens, a user then receives both pool tokens based on the current exchange rate.
+You can refer to examples of jetton burning [here](/cookbook/jettons#burning-jetton).
+
+:::tip[Hey there!]
+
+Didn't find your favorite example of STON.fi interaction? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
+
+:::
