@@ -7,6 +7,14 @@ sidebar:
 
 [DeDust](https://dedust.io) is a decentralized exchange (DEX) and automated market maker (AMM) built natively on [TON Blockchain](https://ton.org) and [DeDust Protocol 2.0](https://docs.dedust.io/reference/tlb-schemes). DeDust is designed with a meticulous attention to user experience (UX), gas efficiency, and extensibility.
 
+## Recommended Reading
+
+Before proceeding further, you may find it helpful to explore the following articles:
+
+* [Receive messages](/book/receive/)
+* [Sending messages](/book/send/)
+* [Fungible Tokens (Jettons)](/cookbook/jettons/)
+
 ## Swaps
 
 You can read more about swaps on [DeDust documentation](https://docs.dedust.io/docs/swaps).
@@ -29,7 +37,7 @@ struct SwapStep {
 }
 
 struct SwapParams {
-    deadline: Int as uint32 = 0;
+    deadline: Int as uint32 = 0; // Specifies a deadline for the swap. If the swap reaches the Pool after this time, it will be rejected. 0 means disabled.
     recipientAddress: Address? = null; // Specifies an address where funds will be sent after the swap. Default: sender's address.
     referralAddress: Address? = null; // Referral address. Required for the Referral Program.
     fulfillPayload: Cell? = null; // Custom payload that will be attached to the fund transfer upon a successful swap.
@@ -46,7 +54,7 @@ message(0xea06185d) NativeSwap {
     poolAddress: Address; // The pool is responsible for swapping assets at this step.
     kind: Int as uint1 = 0; // Swap Kind. 0 always
     limit: Int as coins = 0; // Minimum output of the swap. If the actual value is less than specified, the swap will be rejected.
-    nextStep: SwapStep? = null;
+    nextStep: SwapStep? = null; // Reference to the next step. Can be used for multi-hop swaps.
     swapParams: SwapParams; // Set of parameters relevant for the entire swap
 }
 
@@ -98,11 +106,11 @@ message(0xf8a7ea5) TokenTransfer {
 }
 
 message(0xe3a0d482) JettonSwapPayload {
-    poolAddress: Address;
+    poolAddress: Address; // address of pool to swap. Pool is assets pair like TON/USDT
     kind: Int as uint1 = 0; // Swap Kind. 0 always
     limit: Int as coins = 0; // Minimum output of the swap. If the actual value is less than specified, the swap will be rejected.
     nextStep: SwapStep? = null; // Reference to the next step. Can be used for multi-hop swaps.
-    swapParams: SwapParams;
+    swapParams: SwapParams; // Defined above
 }
 
 // address of jetton master you want to swap
@@ -183,7 +191,7 @@ message(0xf8a7ea5) JettonTransfer {
 }
 
 struct Asset {
-    type: Int as uint4;
+    type: Int as uint4; // 0 for TON, 1 for Jetton
     workchain: Int? as uint8 = null;
     address: Int? as uint256 = null;
 }
@@ -207,7 +215,7 @@ extends fun build(self: Asset): Cell {
 }
 
 message(0x40e108d6) JettonDepositLiquidity {
-    poolType: Int as uint1; // PoolType
+    poolType: Int as uint1; // Pool type. Maybe `Volatile` (0) - operates based on the formula: `x * y = k` or `Stable-Swap` which optimized for assets of near-equal value
     asset0: Asset;
     asset1: Asset;
     minimalLpAmount: Int as coins = 0; // Minimal received LP token. If less liquidity provision will be rejected.
@@ -234,7 +242,7 @@ extends fun build(self: JettonDepositLiquidity): Cell {
 message(0xd55e4686) NativeDepositLiquidity {
     queryId: Int as uint64;
     amount: Int as coins; // TON amount to deposit.
-    poolType: Int as uint1;
+    poolType: Int as uint1; // Pool type. Maybe `Volatile` (0) - operates based on the formula: `x * y = k` or `Stable-Swap` which optimized for assets of near-equal value
     asset0: Asset;
     asset1: Asset;
     minimalLpAmount: Int as coins = 0; // Minimal received LP token. If less liquidity provision will be rejected.
