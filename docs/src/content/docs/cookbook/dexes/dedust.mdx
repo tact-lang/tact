@@ -22,18 +22,18 @@ All kinds of swaps shares same structures:
 
 ```tact
 struct SwapStep {
-    poolAddress: Address;
-    reserved: Cell? = null; // NULL always, reserved.
-    limit: Int as coins = 0;
-    nextStep: Cell?; // should be `SwapStep`, but recursive types not supported in tact
+    poolAddress: Address; // The pool is responsible for swapping assets at this step.
+    kind: Int as uint1 = 0; // Swap Kind. 0 always
+    limit: Int as coins = 0; // Minimum output of the swap. If the actual value is less than specified, the swap will be rejected.
+    nextStep: Cell?; // Reference to the next step. Can be used for multi-hop swaps. Should be `SwapStep`, but recursive types not supported in tact.
 }
 
 struct SwapParams {
     deadline: Int as uint32 = 0;
-    recipientAddress: Address? = null;
-    referralAddress: Address? = null;
-    fulfillPayload: Cell? = null;
-    rejectPayload: Cell? = null;
+    recipientAddress: Address? = null; // Specifies an address where funds will be sent after the swap. Default: sender's address.
+    referralAddress: Address? = null; // Referral address. Required for the Referral Program.
+    fulfillPayload: Cell? = null; // Custom payload that will be attached to the fund transfer upon a successful swap.
+    rejectPayload: Cell? = null; // Custom payload that will be attached to the fund transfer upon a rejected swap.
 }
 ```
 
@@ -43,11 +43,11 @@ struct SwapParams {
 message(0xea06185d) NativeSwap {
     queryId: Int as uint64 = 0;
     amount: Int as coins; // TON amount for the swap
-    poolAddress: Address;
-    reserved: Cell? = null; // NULL always, reserved.
-    limit: Int as coins = 0;
+    poolAddress: Address; // The pool is responsible for swapping assets at this step.
+    kind: Int as uint1 = 0; // Swap Kind. 0 always
+    limit: Int as coins = 0; // Minimum output of the swap. If the actual value is less than specified, the swap will be rejected.
     nextStep: SwapStep? = null;
-    swapParams: SwapParams;
+    swapParams: SwapParams; // Set of parameters relevant for the entire swap
 }
 
 // address of ton vault to send message
@@ -161,6 +161,8 @@ To provide liquidity to a specific DeDust pool, you must supply both assets. Aft
 
 You can read more about liquidity provisioning on [DeDust documentation](https://docs.dedust.io/docs/liquidity-provisioning).
 
+### Deposit liquidity
+
 ```tact
 const PoolTypeVolatile: Int = 0;
 const PoolTypeStable: Int = 1;
@@ -173,24 +175,9 @@ const JettonProvideLpGasFwd: Int = ton("0.4");
 const TonProvideLpGas: Int = ton("0.15");
 
 const JettonMaster: Address = address("kQDkRHlWaibL7Tww48T6xAUFevPflca7i8TIiQTacBmnDOrb");
-//const JettonMasterRaw: RawAddress = JettonMaster.toRaw(); TODO: maybe there is constant evaluation in tact? Did not find anything
+
 const JettonVault: Address = address("kQDcUuH4xhKejjilZAIeGuBh5JRWpzbVDcO9Qfh_Q_K4q9vk");
 const TonVault: Address = address("EQDa4VOnTYlLvDJ0gZjNYm5PXfSmmtL6Vs6A_CZEtXCNICq_");
-
-struct RawAddress {
-    workchain: Int as uint8;
-    hash: Int as uint256;
-}
-
-extends fun toRaw(self: Address): RawAddress {
-    let addressSlice: Slice = self.asSlice();
-
-    addressSlice.skipBits(3);
-    return RawAddress {
-    workchain: addressSlice.loadUint(8),
-    hash: addressSlice.loadUint(256),
-    }
-}
 
 message(0xf8a7ea5) JettonTransfer {
     queryId: Int as uint64;
@@ -205,7 +192,7 @@ message(0xf8a7ea5) JettonTransfer {
 struct Asset {
     type: Int as uint4;
     workchain: Int? as uint8 = null;
-    hash: Int? as uint256 = null;
+    address: Int? as uint256 = null;
 }
 
 extends fun build(self: Asset): Cell {
@@ -218,7 +205,7 @@ extends fun build(self: Asset): Cell {
     if (self.type == AssetTypeJetton) {
         return assetBuilder
             .storeUint(self.workchain!!, 8)
-            .storeUint(self.hash!!, 256)
+            .storeUint(self.address!!, 256)
             .endCell();
     }
 
@@ -230,11 +217,11 @@ message(0x40e108d6) JettonDepositLiquidity {
     poolType: Int as uint1; // PoolType
     asset0: Asset;
     asset1: Asset;
-    minimalLpAmount: Int as coins = 0;
-    targetBalances0: Int as coins;
-    targetBalances1: Int as coins;
-    fulfillPayload: Cell? = null;
-    rejectPayload: Cell? = null;
+    minimalLpAmount: Int as coins = 0; // Minimal received LP token. If less liquidity provision will be rejected.
+    targetBalances0: Int as coins; // Target balance of first asset
+    targetBalances1: Int as coins; // Target balance of second asset
+    fulfillPayload: Cell? = null; // Custom payload that will be attached to the transaction after a successful swap LP.
+    rejectPayload: Cell? = null; // Custom payload that will be attached to the transaction after a successful rejected LP.
 }
 
 extends fun build(self: JettonDepositLiquidity): Cell {
@@ -253,15 +240,15 @@ extends fun build(self: JettonDepositLiquidity): Cell {
 
 message(0xd55e4686) NativeDepositLiquidity {
     queryId: Int as uint64;
-    amount: Int as coins;
+    amount: Int as coins; // TON amount to deposit.
     poolType: Int as uint1;
     asset0: Asset;
     asset1: Asset;
-    minimalLpAmount: Int as coins = 0;
-    targetBalances0: Int as coins;
-    targetBalances1: Int as coins;
-    fulfillPayload: Cell? = null;
-    rejectPayload: Cell? = null;
+    minimalLpAmount: Int as coins = 0; // Minimal received LP token. If less liquidity provision will be rejected.
+    targetBalances0: Int as coins; // Target balance of first asset
+    targetBalances1: Int as coins; // Target balance of second asset
+    fulfillPayload: Cell? = null; // Custom payload that will be attached to the transaction after a successful swap LP.
+    rejectPayload: Cell? = null; // Custom payload that will be attached to the transaction after a successful rejected LP.
 }
 
 extends fun build(self: NativeDepositLiquidity): Cell {
@@ -292,7 +279,11 @@ message ProvideLp {
 contract Example {
     receive() {}
     receive(msg: ProvideLp) {
-        let jettonMasterRaw: RawAddress = JettonMaster.toRaw();
+        let jettonMasterRaw = parseStdAddress(JettonMaster.asSlice());
+
+        // This example directly uses the `myJettonWalletAddress` provided in the received message.
+        // In real-world scenarios, it's more reliable to calculate this address on-chain or save it during initialization to ensure accuracy and trustworthiness.
+        let myJettonWalletAddress = msg.myJettonWalletAddress;
 
         // Step 1. Prepare input
         let jettonAmount = ton("1");
@@ -304,7 +295,7 @@ contract Example {
         let asset1 = Asset{
             type: AssetTypeJetton,
             workchain: jettonMasterRaw.workchain,
-            hash: jettonMasterRaw.hash,
+            address: jettonMasterRaw.address,
         };
 
         // Step 2. Deposit Jetton to Vault
@@ -317,7 +308,7 @@ contract Example {
         }.build();
 
         send(SendParameters{
-            to: msg.myJettonWalletAddress,
+            to: myJettonWalletAddress,
             value: JettonProvideLpGas,
             body: JettonTransfer{
                 queryId: 42,
@@ -348,3 +339,13 @@ contract Example {
     }
 }
 ```
+
+### Withdraw liquidity
+
+To withdraw liquidity, burning LP tokens is required. You can refer to examples of jetton burning [here](/cookbook/jettons#burning-jetton).
+
+:::tip[Hey there!]
+
+Didn't find your favorite example of DeDust interaction? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
+
+:::
