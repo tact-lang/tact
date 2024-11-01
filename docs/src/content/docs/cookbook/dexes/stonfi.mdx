@@ -173,6 +173,8 @@ contract JettonToTon {
 
 TON to jetton swap introduces `ProxyTonTransfer` cause all interaction is done with pTON contract.
 
+Jetton `pTON` is a specialized asset within the STON.fi ecosystem on the TON blockchain. It functions as an intermediary within the STON.fi ecosystem to manage and facilitate efficient TON transfers.
+
 ```tact
 message(0x01f3835d) ProxyTonTransfer {
     queryId: Int as uint64 = 0;
