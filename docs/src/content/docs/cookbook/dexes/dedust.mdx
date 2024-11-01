@@ -77,9 +77,6 @@ fun makeTonSwap() {
             queryId: 0,
             amount: swapAmount,
             poolAddress: POOL_ADDRESS,
-            reserved: null,
-            limit: 0,
-            nextStep: null,
             swapParams,
         }.toCell()
     });
@@ -102,9 +99,9 @@ message(0xf8a7ea5) TokenTransfer {
 
 message(0xe3a0d482) JettonSwapPayload {
     poolAddress: Address;
-    reserved: Cell? = null; // NULL always, reserved.
-    limit: Int as coins = 0;
-    nextStep: SwapStep? = null;
+    kind: Int as uint1 = 0; // Swap Kind. 0 always
+    limit: Int as coins = 0; // Minimum output of the swap. If the actual value is less than specified, the swap will be rejected.
+    nextStep: SwapStep? = null; // Reference to the next step. Can be used for multi-hop swaps.
     swapParams: SwapParams;
 }
 
@@ -140,13 +137,9 @@ fun makeJettonSwap() {
             amount: swapAmount,
             destination: JETTON_VAULT_ADDRESS,
             responseDestination: myAddress(),
-            customPayload: null,
             forwardTonAmount: JETTON_SWAP_FWD_AMOUNT,
             forwardPayload: JettonSwapPayload{
                 poolAddress: POOL_ADDRESS,
-                reserved: null,
-                limit: 0,
-                nextStep: null,
                 swapParams,
             }.toCell()
         }.toCell()
