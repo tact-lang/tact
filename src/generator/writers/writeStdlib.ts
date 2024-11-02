@@ -1155,14 +1155,21 @@ type KeyType = (typeof keyTypes)[number];
 const valTypes = ["slice", "int", "uint", "cell", "coins"] as const;
 type ValType = (typeof valTypes)[number];
 
+function getSignatureKeyType(key: KeyType): KeyType {
+    return key === "uint" ? "int" : key;
+}
+
+function getSignatureValueType(value: ValType): ValType {
+    return value === "uint" || value === "coins" ? "int" : value;
+}
+
 function genTactDictGet(
     ctx: WriterContext,
     key: KeyType,
     value: ValType,
 ): void {
-    const signatureKeyType = key === "uint" ? "int" : key;
-    const signatureRetType =
-        value === "uint" || value === "coins" ? "int" : value;
+    const signatureKeyType = getSignatureKeyType(key);
+    const signatureValueType = getSignatureValueType(value);
     const dictGet = () => {
         const cellSuffix = value === "cell" ? "_ref" : "";
         switch (key) {
@@ -1200,7 +1207,7 @@ function genTactDictGet(
     };
     ctx.fun(`__tact_dict_get_${key}_${value}`, () => {
         ctx.signature(
-            `${signatureRetType} __tact_dict_get_${key}_${value}(cell d, int kl, ${signatureKeyType} k${valBitsArg()})`,
+            `${signatureValueType} __tact_dict_get_${key}_${value}(cell d, int kl, ${signatureKeyType} k${valBitsArg()})`,
         );
         ctx.flag("inline");
         ctx.context("stdlib");
@@ -1218,7 +1225,7 @@ function genTactDictGet(
 }
 
 function genTactDictExists(ctx: WriterContext, key: KeyType): void {
-    const signatureKeyType = key === "uint" ? "int" : key;
+    const signatureKeyType = getSignatureKeyType(key);
     const dictGet = () => {
         switch (key) {
             case "slice":
@@ -1249,9 +1256,8 @@ function genTactDictSet(
     key: KeyType,
     value: ValType,
 ): void {
-    const signatureKeyType = key === "uint" ? "int" : key;
-    const signatureValueType =
-        value === "uint" || value === "coins" ? "int" : value;
+    const signatureKeyType = getSignatureKeyType(key);
+    const signatureValueType = getSignatureValueType(value);
     const valBitsArg = () => {
         switch (value) {
             case "slice":
@@ -1335,9 +1341,8 @@ function genTactDictGetMin(
     key: KeyType,
     value: ValType,
 ): void {
-    const signatureKeyType = key === "uint" ? "int" : key;
-    const signatureValType =
-        value === "uint" || value === "coins" ? "int" : value;
+    const signatureKeyType = getSignatureKeyType(key);
+    const signatureValueType = getSignatureValueType(value);
     const valBitsArg = () => {
         switch (value) {
             case "slice":
@@ -1393,7 +1398,7 @@ function genTactDictGetMin(
     };
     ctx.fun(`__tact_dict_min_${key}_${value}`, () => {
         ctx.signature(
-            `(${signatureKeyType}, ${signatureValType}, int) __tact_dict_min_${key}_${value}(cell d, int kl${valBitsArg()})`,
+            `(${signatureKeyType}, ${signatureValueType}, int) __tact_dict_min_${key}_${value}(cell d, int kl${valBitsArg()})`,
         );
         ctx.flag("inline");
         ctx.context("stdlib");
@@ -1415,9 +1420,8 @@ function genTactDictGetNext(
     key: KeyType,
     value: ValType,
 ): void {
-    const signatureKeyType = key === "uint" ? "int" : key;
-    const signatureValType =
-        value === "uint" || value === "coins" ? "int" : value;
+    const signatureKeyType = getSignatureKeyType(key);
+    const signatureValueType = getSignatureValueType(value);
     const valBitsArg = () => {
         switch (value) {
             case "slice":
@@ -1455,7 +1459,7 @@ function genTactDictGetNext(
     };
     ctx.fun(`__tact_dict_next_${key}_${value}`, () => {
         ctx.signature(
-            `(${signatureKeyType}, ${signatureValType}, int) __tact_dict_next_${key}_${value}(cell d, int kl, ${signatureKeyType} pivot${valBitsArg()})`,
+            `(${signatureKeyType}, ${signatureValueType}, int) __tact_dict_next_${key}_${value}(cell d, int kl, ${signatureKeyType} pivot${valBitsArg()})`,
         );
         ctx.flag("inline");
         ctx.context("stdlib");
@@ -1483,9 +1487,8 @@ function genTactDictReplace(
     key: KeyType,
     value: ValType,
 ): void {
-    const signatureKeyType = key === "uint" ? "int" : key;
-    const signatureValueType =
-        value === "uint" || value === "coins" ? "int" : value;
+    const signatureKeyType = getSignatureKeyType(key);
+    const signatureValueType = getSignatureValueType(value);
     const valBitsArg = () => {
         switch (value) {
             case "slice":
@@ -1569,9 +1572,8 @@ function genTactDictReplaceGet(
     key: KeyType,
     value: ValType,
 ): void {
-    const signatureKeyType = key === "uint" ? "int" : key;
-    const signatureValueType =
-        value === "uint" || value === "coins" ? "int" : value;
+    const signatureKeyType = getSignatureKeyType(key);
+    const signatureValueType = getSignatureValueType(value);
     const valBitsArg = () => {
         switch (value) {
             case "slice":
