@@ -1152,7 +1152,7 @@ export function writeStdlib(ctx: WriterContext): void {
 const keyTypes = ["slice", "uint", "int"] as const;
 type KeyType = (typeof keyTypes)[number];
 
-const valTypes = ["slice", "int", "uint", "cell"] as const;
+const valTypes = ["slice", "int", "uint", "cell", "coins"] as const;
 type ValType = (typeof valTypes)[number];
 
 function genTactDictGet(
@@ -1161,7 +1161,8 @@ function genTactDictGet(
     value: ValType,
 ): void {
     const signatureKeyType = key === "uint" ? "int" : key;
-    const signatureRetType = value === "uint" ? "int" : value;
+    const signatureRetType =
+        value === "uint" || value === "coins" ? "int" : value;
     const dictGet = () => {
         const cellSuffix = value === "cell" ? "_ref" : "";
         switch (key) {
@@ -1182,12 +1183,15 @@ function genTactDictGet(
                 return "r~load_uint(vl)";
             case "int":
                 return "r~load_int(vl)";
+            case "coins":
+                return "r~load_coins()";
         }
     };
     const valBitsArg = () => {
         switch (value) {
             case "slice":
             case "cell":
+            case "coins":
                 return "";
             case "uint":
             case "int":
@@ -1246,11 +1250,13 @@ function genTactDictSet(
     value: ValType,
 ): void {
     const signatureKeyType = key === "uint" ? "int" : key;
-    const signatureValueType = value === "uint" ? "int" : value;
+    const signatureValueType =
+        value === "uint" || value === "coins" ? "int" : value;
     const valBitsArg = () => {
         switch (value) {
             case "slice":
             case "cell":
+            case "coins":
                 return "";
             case "uint":
             case "int":
@@ -1273,14 +1279,20 @@ function genTactDictSet(
                 return "(idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ())";
             case "int:uint":
                 return "(idict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ())";
+            case "int:coins":
+                return "(idict_set_builder(d, kl, k, begin_cell().store_coins(v)), ())";
             case "uint:int":
                 return "(udict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ())";
             case "uint:uint":
                 return "(udict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ())";
+            case "uint:coins":
+                return "(udict_set_builder(d, kl, k, begin_cell().store_coins(v)), ())";
             case "slice:int":
                 return "(dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ())";
             case "slice:uint":
                 return "(dict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ())";
+            case "slice:coins":
+                return "(dict_set_builder(d, kl, k, begin_cell().store_coins(v)), ())";
             case "int:cell":
                 return "(idict_set_ref(d, kl, k, v), ())";
             case "uint:cell":
@@ -1324,11 +1336,13 @@ function genTactDictGetMin(
     value: ValType,
 ): void {
     const signatureKeyType = key === "uint" ? "int" : key;
-    const signatureValType = value === "uint" ? "int" : value;
+    const signatureValType =
+        value === "uint" || value === "coins" ? "int" : value;
     const valBitsArg = () => {
         switch (value) {
             case "slice":
             case "cell":
+            case "coins":
                 return "";
             case "uint":
             case "int":
@@ -1339,14 +1353,17 @@ function genTactDictGetMin(
         switch (`${key}:${value}`) {
             case "int:int":
             case "int:uint":
+            case "int:coins":
             case "int:slice":
                 return "idict_get_min?";
             case "uint:int":
             case "uint:uint":
+            case "uint:coins":
             case "uint:slice":
                 return "udict_get_min?";
             case "slice:int":
             case "slice:uint":
+            case "slice:coins":
             case "slice:slice":
                 return ctx.used("__tact_dict_min");
             case "int:cell":
@@ -1367,6 +1384,8 @@ function genTactDictGetMin(
                 return "value~load_int(vl)";
             case "uint":
                 return "value~load_uint(vl)";
+            case "coins":
+                return "value~load_coins()";
             case "slice":
             case "cell":
                 return "value";
@@ -1397,11 +1416,13 @@ function genTactDictGetNext(
     value: ValType,
 ): void {
     const signatureKeyType = key === "uint" ? "int" : key;
-    const signatureValType = value === "uint" ? "int" : value;
+    const signatureValType =
+        value === "uint" || value === "coins" ? "int" : value;
     const valBitsArg = () => {
         switch (value) {
             case "slice":
             case "cell":
+            case "coins":
                 return "";
             case "uint":
             case "int":
@@ -1424,6 +1445,8 @@ function genTactDictGetNext(
                 return "value~load_int(vl)";
             case "uint":
                 return "value~load_uint(vl)";
+            case "coins":
+                return "value~load_coins()";
             case "slice":
                 return "value";
             case "cell":
@@ -1461,11 +1484,13 @@ function genTactDictReplace(
     value: ValType,
 ): void {
     const signatureKeyType = key === "uint" ? "int" : key;
-    const signatureValueType = value === "uint" ? "int" : value;
+    const signatureValueType =
+        value === "uint" || value === "coins" ? "int" : value;
     const valBitsArg = () => {
         switch (value) {
             case "slice":
             case "cell":
+            case "coins":
                 return "";
             case "uint":
             case "int":
@@ -1488,14 +1513,20 @@ function genTactDictReplace(
                 return "idict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))";
             case "int:uint":
                 return "idict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))";
+            case "int:coins":
+                return "idict_replace_builder?(d, kl, k, begin_cell().store_coins(v))";
             case "uint:int":
                 return "udict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))";
             case "uint:uint":
                 return "udict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))";
+            case "uint:coins":
+                return "udict_replace_builder?(d, kl, k, begin_cell().store_coins(v))";
             case "slice:int":
                 return "dict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))";
             case "slice:uint":
                 return "dict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))";
+            case "slice:coins":
+                return "dict_replace_builder?(d, kl, k, begin_cell().store_coins(v))";
             case "int:cell":
                 return "idict_replace_ref?(d, kl, k, v)";
             case "uint:cell":
@@ -1539,11 +1570,13 @@ function genTactDictReplaceGet(
     value: ValType,
 ): void {
     const signatureKeyType = key === "uint" ? "int" : key;
-    const signatureValueType = value === "uint" ? "int" : value;
+    const signatureValueType =
+        value === "uint" || value === "coins" ? "int" : value;
     const valBitsArg = () => {
         switch (value) {
             case "slice":
             case "cell":
+            case "coins":
                 return "";
             case "uint":
             case "int":
@@ -1567,14 +1600,20 @@ function genTactDictReplaceGet(
                 return "d~idict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())";
             case "int:uint":
                 return "d~idict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())";
+            case "int:coins":
+                return "d~idict_replaceget?(kl, k, begin_cell().store_coins(v).end_cell().begin_parse())";
             case "uint:int":
                 return "d~udict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())";
             case "uint:uint":
                 return "d~udict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())";
+            case "uint:coins":
+                return "d~udict_replaceget?(kl, k, begin_cell().store_coins(v).end_cell().begin_parse())";
             case "slice:int":
                 return "d~dict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())";
             case "slice:uint":
                 return "d~dict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())";
+            case "slice:coins":
+                return "d~dict_replaceget?(kl, k, begin_cell().store_coins(v).end_cell().begin_parse())";
             case "int:cell":
                 return "d~idict_replaceget_ref?(kl, k, v)";
             case "uint:cell":
@@ -1602,6 +1641,8 @@ function genTactDictReplaceGet(
                 return "old~load_uint(vl)";
             case "int":
                 return "old~load_int(vl)";
+            case "coins":
+                return "old~load_coins()";
         }
     };
     ctx.fun(`__tact_dict_replaceget_${key}_${value}`, () => {
