@@ -698,7 +698,6 @@ export class PrettyPrinter {
                 return acc;
             }, []);
         const restPattern = statement.ignoreUnspecifiedFields ? ", .." : "";
-        console.log(restPattern);
         return `${this.indent()}let ${this.ppAstTypeId(statement.type)} {${ids.join(", ")}${restPattern}} = ${this.ppAstExpression(statement.expression)};`;
     }
 }
