@@ -593,6 +593,13 @@ export type AstDestructMapping = {
     loc: SrcInfo;
 };
 
+export type AstDestructEnd = {
+    kind: "destruct_end";
+    ignoreUnspecifiedFields: boolean;
+    id: number;
+    loc: SrcInfo;
+};
+
 export type AstNumber = {
     kind: "number";
     base: AstNumberBase;
@@ -705,6 +712,7 @@ export type AstReceiverKind =
 export type AstNode =
     | AstFuncId
     | AstDestructMapping
+    | AstDestructEnd
     | AstExpression
     | AstStatement
     | AstTypeDecl

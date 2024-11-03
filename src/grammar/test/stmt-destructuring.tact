@@ -14,9 +14,9 @@ fun testFunc(): Int {
     let S { a, b, c } = s;
     let S { a: a1, .. } = s;
     let S { b: b1, .. } = s;
-    let S { c: c1, .., } = s;
+    let S { c: c1, .. } = s;
     let S { a: a2, b: b2, .. } = s;
-    let S { a: a3, c: c3, .., } = s;
+    let S { a: a3, c: c3, .. } = s;
     let S { b: b4, c: c4, .. } = s;
 
     let m = M{ a: 1, b: 2 };

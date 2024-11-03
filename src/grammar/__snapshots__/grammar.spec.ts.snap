@@ -8075,7 +8075,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
 
 exports[`grammar should parse stmt-destructuring 1`] = `
 {
-  "id": 140,
+  "id": 148,
   "imports": [],
   "items": [
     {
@@ -8209,16 +8209,16 @@ exports[`grammar should parse stmt-destructuring 1`] = `
     },
     {
       "attributes": [],
-      "id": 139,
+      "id": 147,
       "kind": "function_def",
       "loc": fun testFunc(): Int {
     let s = S{ a: 1, b: 2, c: 3 };
     let S { a, b, c } = s;
     let S { a: a1, .. } = s;
     let S { b: b1, .. } = s;
-    let S { c: c1, .., } = s;
+    let S { c: c1, .. } = s;
     let S { a: a2, b: b2, .. } = s;
-    let S { a: a3, c: c3, .., } = s;
+    let S { a: a3, c: c3, .. } = s;
     let S { b: b4, c: c4, .. } = s;
 
     let m = M{ a: 1, b: 2 };
@@ -8321,12 +8321,12 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 45,
+            "id": 46,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 46,
+          "id": 47,
           "identifiers": Map {
             "a" => [
               {
@@ -8371,9 +8371,9 @@ exports[`grammar should parse stmt-destructuring 1`] = `
               },
             ],
           },
+          "ignoreUnspecifiedFields": false,
           "kind": "statement_destruct",
           "loc": let S { a, b, c } = s;,
-          "rest": false,
           "type": {
             "id": 35,
             "kind": "type_id",
@@ -8383,33 +8383,33 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 51,
+            "id": 53,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 52,
+          "id": 54,
           "identifiers": Map {
             "a" => [
               {
-                "id": 48,
+                "id": 49,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               {
-                "id": 49,
+                "id": 50,
                 "kind": "id",
                 "loc": a1,
                 "text": "a1",
               },
             ],
           },
+          "ignoreUnspecifiedFields": true,
           "kind": "statement_destruct",
           "loc": let S { a: a1, .. } = s;,
-          "rest": true,
           "type": {
-            "id": 47,
+            "id": 48,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8417,33 +8417,33 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 57,
+            "id": 60,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 58,
+          "id": 61,
           "identifiers": Map {
             "b" => [
               {
-                "id": 54,
+                "id": 56,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
               {
-                "id": 55,
+                "id": 57,
                 "kind": "id",
                 "loc": b1,
                 "text": "b1",
               },
             ],
           },
+          "ignoreUnspecifiedFields": true,
           "kind": "statement_destruct",
           "loc": let S { b: b1, .. } = s;,
-          "rest": true,
           "type": {
-            "id": 53,
+            "id": 55,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8451,33 +8451,33 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 63,
+            "id": 67,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 64,
+          "id": 68,
           "identifiers": Map {
             "c" => [
               {
-                "id": 60,
+                "id": 63,
                 "kind": "id",
                 "loc": c,
                 "text": "c",
               },
               {
-                "id": 61,
+                "id": 64,
                 "kind": "id",
                 "loc": c1,
                 "text": "c1",
               },
             ],
           },
+          "ignoreUnspecifiedFields": true,
           "kind": "statement_destruct",
-          "loc": let S { c: c1, .., } = s;,
-          "rest": true,
+          "loc": let S { c: c1, .. } = s;,
           "type": {
-            "id": 59,
+            "id": 62,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8485,22 +8485,22 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 72,
+            "id": 77,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 73,
+          "id": 78,
           "identifiers": Map {
             "a" => [
               {
-                "id": 66,
+                "id": 70,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               {
-                "id": 67,
+                "id": 71,
                 "kind": "id",
                 "loc": a2,
                 "text": "a2",
@@ -8508,24 +8508,24 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
             "b" => [
               {
-                "id": 69,
+                "id": 73,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
               {
-                "id": 70,
+                "id": 74,
                 "kind": "id",
                 "loc": b2,
                 "text": "b2",
               },
             ],
           },
+          "ignoreUnspecifiedFields": true,
           "kind": "statement_destruct",
           "loc": let S { a: a2, b: b2, .. } = s;,
-          "rest": true,
           "type": {
-            "id": 65,
+            "id": 69,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8533,22 +8533,22 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 81,
+            "id": 87,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 82,
+          "id": 88,
           "identifiers": Map {
             "a" => [
               {
-                "id": 75,
+                "id": 80,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               {
-                "id": 76,
+                "id": 81,
                 "kind": "id",
                 "loc": a3,
                 "text": "a3",
@@ -8556,24 +8556,24 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
             "c" => [
               {
-                "id": 78,
+                "id": 83,
                 "kind": "id",
                 "loc": c,
                 "text": "c",
               },
               {
-                "id": 79,
+                "id": 84,
                 "kind": "id",
                 "loc": c3,
                 "text": "c3",
               },
             ],
           },
+          "ignoreUnspecifiedFields": true,
           "kind": "statement_destruct",
-          "loc": let S { a: a3, c: c3, .., } = s;,
-          "rest": true,
+          "loc": let S { a: a3, c: c3, .. } = s;,
           "type": {
-            "id": 74,
+            "id": 79,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8581,22 +8581,22 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 90,
+            "id": 97,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 91,
+          "id": 98,
           "identifiers": Map {
             "b" => [
               {
-                "id": 84,
+                "id": 90,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
               {
-                "id": 85,
+                "id": 91,
                 "kind": "id",
                 "loc": b4,
                 "text": "b4",
@@ -8604,24 +8604,24 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
             "c" => [
               {
-                "id": 87,
+                "id": 93,
                 "kind": "id",
                 "loc": c,
                 "text": "c",
               },
               {
-                "id": 88,
+                "id": 94,
                 "kind": "id",
                 "loc": c4,
                 "text": "c4",
               },
             ],
           },
+          "ignoreUnspecifiedFields": true,
           "kind": "statement_destruct",
           "loc": let S { b: b4, c: c4, .. } = s;,
-          "rest": true,
           "type": {
-            "id": 83,
+            "id": 89,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8632,15 +8632,15 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             "args": [
               {
                 "field": {
-                  "id": 94,
+                  "id": 101,
                   "kind": "id",
                   "loc": a,
                   "text": "a",
                 },
-                "id": 96,
+                "id": 103,
                 "initializer": {
                   "base": 10,
-                  "id": 95,
+                  "id": 102,
                   "kind": "number",
                   "loc": 1,
                   "value": 1n,
@@ -8650,15 +8650,15 @@ exports[`grammar should parse stmt-destructuring 1`] = `
               },
               {
                 "field": {
-                  "id": 97,
+                  "id": 104,
                   "kind": "id",
                   "loc": b,
                   "text": "b",
                 },
-                "id": 99,
+                "id": 106,
                 "initializer": {
                   "base": 10,
-                  "id": 98,
+                  "id": 105,
                   "kind": "number",
                   "loc": 2,
                   "value": 2n,
@@ -8667,21 +8667,21 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                 "loc": b: 2,
               },
             ],
-            "id": 100,
+            "id": 107,
             "kind": "struct_instance",
             "loc": M{ a: 1, b: 2 },
             "type": {
-              "id": 93,
+              "id": 100,
               "kind": "type_id",
               "loc": M,
               "text": "M",
             },
           },
-          "id": 101,
+          "id": 108,
           "kind": "statement_let",
           "loc": let m = M{ a: 1, b: 2 };,
           "name": {
-            "id": 92,
+            "id": 99,
             "kind": "id",
             "loc": m,
             "text": "m",
@@ -8690,22 +8690,22 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 109,
+            "id": 117,
             "kind": "id",
             "loc": m,
             "text": "m",
           },
-          "id": 110,
+          "id": 118,
           "identifiers": Map {
             "a" => [
               {
-                "id": 103,
+                "id": 110,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               {
-                "id": 104,
+                "id": 111,
                 "kind": "id",
                 "loc": a_m,
                 "text": "a_m",
@@ -8713,24 +8713,24 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
             "b" => [
               {
-                "id": 106,
+                "id": 113,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
               {
-                "id": 107,
+                "id": 114,
                 "kind": "id",
                 "loc": b_m,
                 "text": "b_m",
               },
             ],
           },
+          "ignoreUnspecifiedFields": false,
           "kind": "statement_destruct",
           "loc": let M { a: a_m, b: b_m } = m;,
-          "rest": false,
           "type": {
-            "id": 102,
+            "id": 109,
             "kind": "type_id",
             "loc": M,
             "text": "M",
@@ -8738,46 +8738,46 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 137,
+            "id": 145,
             "kind": "op_binary",
             "left": {
-              "id": 135,
+              "id": 143,
               "kind": "op_binary",
               "left": {
-                "id": 133,
+                "id": 141,
                 "kind": "op_binary",
                 "left": {
-                  "id": 131,
+                  "id": 139,
                   "kind": "op_binary",
                   "left": {
-                    "id": 129,
+                    "id": 137,
                     "kind": "op_binary",
                     "left": {
-                      "id": 127,
+                      "id": 135,
                       "kind": "op_binary",
                       "left": {
-                        "id": 125,
+                        "id": 133,
                         "kind": "op_binary",
                         "left": {
-                          "id": 123,
+                          "id": 131,
                           "kind": "op_binary",
                           "left": {
-                            "id": 121,
+                            "id": 129,
                             "kind": "op_binary",
                             "left": {
-                              "id": 119,
+                              "id": 127,
                               "kind": "op_binary",
                               "left": {
-                                "id": 117,
+                                "id": 125,
                                 "kind": "op_binary",
                                 "left": {
-                                  "id": 115,
+                                  "id": 123,
                                   "kind": "op_binary",
                                   "left": {
-                                    "id": 113,
+                                    "id": 121,
                                     "kind": "op_binary",
                                     "left": {
-                                      "id": 111,
+                                      "id": 119,
                                       "kind": "id",
                                       "loc": a,
                                       "text": "a",
@@ -8785,7 +8785,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                                     "loc": a + b,
                                     "op": "+",
                                     "right": {
-                                      "id": 112,
+                                      "id": 120,
                                       "kind": "id",
                                       "loc": b,
                                       "text": "b",
@@ -8794,7 +8794,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                                   "loc": a + b + c,
                                   "op": "+",
                                   "right": {
-                                    "id": 114,
+                                    "id": 122,
                                     "kind": "id",
                                     "loc": c,
                                     "text": "c",
@@ -8803,7 +8803,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                                 "loc": a + b + c + a1,
                                 "op": "+",
                                 "right": {
-                                  "id": 116,
+                                  "id": 124,
                                   "kind": "id",
                                   "loc": a1,
                                   "text": "a1",
@@ -8812,7 +8812,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                               "loc": a + b + c + a1 + b1,
                               "op": "+",
                               "right": {
-                                "id": 118,
+                                "id": 126,
                                 "kind": "id",
                                 "loc": b1,
                                 "text": "b1",
@@ -8821,7 +8821,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                             "loc": a + b + c + a1 + b1 + c1,
                             "op": "+",
                             "right": {
-                              "id": 120,
+                              "id": 128,
                               "kind": "id",
                               "loc": c1,
                               "text": "c1",
@@ -8830,7 +8830,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                           "loc": a + b + c + a1 + b1 + c1 + a2,
                           "op": "+",
                           "right": {
-                            "id": 122,
+                            "id": 130,
                             "kind": "id",
                             "loc": a2,
                             "text": "a2",
@@ -8839,7 +8839,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                         "loc": a + b + c + a1 + b1 + c1 + a2 + b2,
                         "op": "+",
                         "right": {
-                          "id": 124,
+                          "id": 132,
                           "kind": "id",
                           "loc": b2,
                           "text": "b2",
@@ -8848,7 +8848,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                       "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3,
                       "op": "+",
                       "right": {
-                        "id": 126,
+                        "id": 134,
                         "kind": "id",
                         "loc": a3,
                         "text": "a3",
@@ -8857,7 +8857,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                     "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3,
                     "op": "+",
                     "right": {
-                      "id": 128,
+                      "id": 136,
                       "kind": "id",
                       "loc": c3,
                       "text": "c3",
@@ -8866,7 +8866,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                   "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4,
                   "op": "+",
                   "right": {
-                    "id": 130,
+                    "id": 138,
                     "kind": "id",
                     "loc": b4,
                     "text": "b4",
@@ -8875,7 +8875,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                 "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4,
                 "op": "+",
                 "right": {
-                  "id": 132,
+                  "id": 140,
                   "kind": "id",
                   "loc": c4,
                   "text": "c4",
@@ -8884,7 +8884,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
               "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m,
               "op": "+",
               "right": {
-                "id": 134,
+                "id": 142,
                 "kind": "id",
                 "loc": a_m,
                 "text": "a_m",
@@ -8893,13 +8893,13 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m + b_m,
             "op": "+",
             "right": {
-              "id": 136,
+              "id": 144,
               "kind": "id",
               "loc": b_m,
               "text": "b_m",
             },
           },
-          "id": 138,
+          "id": 146,
           "kind": "statement_return",
           "loc": return a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m + b_m;,
         },

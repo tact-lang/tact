@@ -1013,14 +1013,12 @@ semantics.addOperation<AstNode>("astOfStatement", {
             loc: createRef(this),
         });
     },
-    StatementDestruct_withRest(
+    StatementDestruct(
         _letKwd,
         typeId,
         _lparen,
         identifiers,
-        _comma,
-        _rest,
-        _optTrailingComma,
+        endOfIdentifiers,
         _rparen,
         _equals,
         expression,
@@ -1045,42 +1043,8 @@ semantics.addOperation<AstNode>("astOfStatement", {
                     ]);
                     return map;
                 }, new Map<string, [AstId, AstId]>()),
-            rest: true,
-            expression: expression.astOfExpression(),
-            loc: createRef(this),
-        });
-    },
-    StatementDestruct_noRest(
-        _letKwd,
-        typeId,
-        _lparen,
-        identifiers,
-        _optTrailingComma,
-        _rparen,
-        _equals,
-        expression,
-        _semicolon,
-    ) {
-        return createAstNode({
-            kind: "statement_destruct",
-            type: typeId.astOfType(),
-            identifiers: identifiers
-                .asIteration()
-                .children.reduce((map, item) => {
-                    const destructItem = item.astOfExpression();
-                    if (map.has(destructItem.field.text)) {
-                        throwSyntaxError(
-                            `Duplicate destructuring field: '${destructItem.field.text}'`,
-                            destructItem.loc,
-                        );
-                    }
-                    map.set(destructItem.field.text, [
-                        destructItem.field,
-                        destructItem.name,
-                    ]);
-                    return map;
-                }, new Map<string, [AstId, AstId]>()),
-            rest: false,
+            ignoreUnspecifiedFields:
+                endOfIdentifiers.astOfExpression().ignoreUnspecifiedFields,
             expression: expression.astOfExpression(),
             loc: createRef(this),
         });
@@ -1226,6 +1190,20 @@ semantics.addOperation<AstNode>("astOfExpression", {
             kind: "destruct_mapping",
             field: idFrom.astOfExpression(),
             name: id.astOfExpression(),
+            loc: createRef(this),
+        });
+    },
+    EndOfIdentifiers_regular(_comma) {
+        return createAstNode({
+            kind: "destruct_end",
+            ignoreUnspecifiedFields: false,
+            loc: createRef(this),
+        });
+    },
+    EndOfIdentifiers_ignoreUnspecifiedFields(_comma, _dotDot) {
+        return createAstNode({
+            kind: "destruct_end",
+            ignoreUnspecifiedFields: true,
             loc: createRef(this),
         });
     },

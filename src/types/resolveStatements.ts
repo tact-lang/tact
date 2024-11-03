@@ -718,7 +718,10 @@ function processStatements(
                 }
 
                 // Check variables count
-                if (!s.rest && s.identifiers.size !== ty.fields.length) {
+                if (
+                    !s.ignoreUnspecifiedFields &&
+                    s.identifiers.size !== ty.fields.length
+                ) {
                     throwCompilationError(
                         `Expected ${ty.fields.length} fields, but got ${s.identifiers.size}`,
                         s.loc,
