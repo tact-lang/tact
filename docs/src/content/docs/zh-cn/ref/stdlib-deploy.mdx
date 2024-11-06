@@ -1,0 +1,96 @@
+---
+title: "@stdlib/deploy"
+---
+
+提供统一的部署机制。
+
+要使用该库，请导入 `@stdlib/deploy`：
+
+```tact
+import "@stdlib/deploy";
+```
+
+## 信息
+
+### Deploy
+
+```tact
+message Deploy {
+    queryId：Int as uint64;
+}
+```
+
+### DeployOk
+
+```tact
+message DeployOk {
+    queryId：Int as uint64;
+}
+```
+
+### 工厂部署
+
+```tact
+message FactoryDeploy {
+    queryId：Int as uint64;
+    cashback：Address;
+}
+```
+
+## 特质
+
+### 可部署
+
+最简单的特质 `可部署{:tact}`，通过为[Deploy](#deploy)消息实现一个简单的接收器，为部署提供了一个方便的统一机制。
+
+所有合同都是通过发送信息来部署的。 虽然任何信息都可用于此目的，但最佳做法是使用特殊的 [部署](#deploy) 信息。
+
+该信息只有一个字段 `queryId` ，由部署者提供（通常设置为零）。 如果部署成功，合约将回复一条 [DeployOk](#deployok) 消息，并在回复中呼应相同的 `queryId` 。
+
+源代码
+
+```tact
+trait Deployable {
+    receive(deploy: Deploy) {
+        self.notify(DeployOk{queryId: deploy.queryId}.toCell());
+    }
+}
+```
+
+使用示例
+
+```tact /Deployable/
+import "@stdlib/deploy";
+
+contract ExampleContract with Deployable {
+    // Now, this contract has a receiver for Deploy message
+}
+```
+
+### 工厂可部署
+
+Trait `FactoryDeployable{:tact}` 为连锁部署提供了方便的统一机制。
+
+源代码
+
+```tact
+trait FactoryDeployable {
+    receive(deploy: FactoryDeploy) {
+        self.forward(deploy.cashback, DeployOk{queryId: deploy.queryId}.toCell(), false, null);
+    }
+}
+```
+
+使用示例
+
+```tact /FactoryDeployable/
+import "@stdlib/deploy";
+
+contract ExampleContract with FactoryDeployable {
+    // Now, this contract has a receiver for FactoryDeploy message
+}
+```
+
+## 资料来源
+
+- [deploy.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/deploy.tact)

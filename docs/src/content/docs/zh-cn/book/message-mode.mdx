@@ -1,0 +1,59 @@
+---
+title: Message `mode`
+---
+
+如前所述，信息是通过结构体 `SendParameters{:tact}` 的 `mode` 参数发送的。这是一个[`Int{:tact}`][int]值，由基本模式和可选标志（也是[`Int{:tact}`][int]值）组合而成。
+
+您可以使用原始的 [`Int{:tact}`][int]值，并手动为 `mode` 提供这些值，但为了方便起见，您可以使用一组常量来轻松构建复合 `mode`。有关基本模式和可选标记的更多信息，请参阅下表。
+
+## 基本模式 {#base-modes}
+
+|        模式值 | 恒定名称                 | 说明                           |
+| ---------: | :------------------- | ---------------------------- |
+| $0$        | -                    | 普通信息（默认）。                    |
+| $64$       | SendRemainingValue   | 除了新报文中最初显示的值外，还携带入站报文的所有剩余值。 |
+| $128$      | SendRemainingBalance | 携带当前智能合约的所有余额，而不是信息中最初显示的值。  |
+
+## 可选标记 {#optional-flags}
+
+|        标志值 | 恒定名称                   | 说明                                                                                                                     |
+| ---------: | :--------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| $+1$       | SendPayGasSeparately   | 将转发费用与信息价值分开支付。                                                                                                        |
+| $+2$       | SendIgnoreErrors       | 忽略行动阶段处理该信息时出现的任何错误。                                                                                                   |
+| $+16$      | SendBounceIfActionFail | 如果在操作阶段出现任何错误，则退回交易。 Has no effect if flag $+2$, SendIgnoreErrors is used.                                             |
+| $+32$      | SendDestroyIfZero      | Current account must be destroyed if its resulting balance is zero (often used with mode $128$, SendRemainingBalance). |
+
+## 将模式与标志相结合
+
+要为 `SendParameters{:tact}` 的 `mode` 字段创建 [`Int{:tact}`][int] 值，只需通过 [bitwise OR](/book/operators#binary-bitwise-or) 运算将基本模式与可选标记结合起来。
+
+例如，如果您想分别发送普通信息和支付转账费用，请使用模式 $0$（默认）和标志 $+1$，以获得 `mode` $= 1$，这等同于使用 `SendPayGasSeparately{:tact}` 常量。
+
+或者，如果要发送全部合约余额并立即销毁，使用模式 $128$ 和标志 $+32$，得到 `mode` $= 160$，相当于 `SendRemainingBalance | SendDestroyIfZero{:tact}` 常量。
+
+下面是后一个示例的代码：
+
+```tact
+let to: Address = ...;
+let value: Int = ton("1");
+send(SendParameters{
+    to: to,
+    value: value,
+    mode: SendRemainingBalance | SendDestroyIfZero,
+    body: "Hello, World!".asComment(),
+});
+```
+
+:::caution
+
+  请注意，虽然可以将（[`+{:tact}`](/book/operators#binary-add)）基本模式与可选标志一起添加，但由于可能会出现多余的值，因此不鼓励这样做。 请使用位wise OR ([`|{:tact}`](/book/operators#binary-bitwise-or))，因为它是为处理此类标志和对 `mode` 的位操作而设计的。
+
+:::
+
+:::note
+
+  还要注意的是，[基本模式](#base-modes) 只能有一种，但[可选标记](#optional-flags) 的数量可以不同：可以全部使用，也可以不使用或只使用其中一些。
+
+:::
+
+[int]: /book/integers
