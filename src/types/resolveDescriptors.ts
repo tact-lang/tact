@@ -2007,6 +2007,13 @@ export function getStaticFunction(
     return r;
 }
 
+export function replaceStaticFunctions(ctx: CompilerContext, newFunctions: Map<string, FunctionDescription>): CompilerContext {
+    for (const [name, funcDesc] of newFunctions) {
+        ctx = staticFunctionsStore.set(ctx, name, funcDesc)
+    }
+    return ctx;
+}
+
 export function hasStaticFunction(ctx: CompilerContext, name: string) {
     return !!staticFunctionsStore.get(ctx, name);
 }

@@ -52,7 +52,7 @@ export function getExpType(ctx: CompilerContext, exp: AstExpression) {
     return t.description;
 }
 
-function registerExpType(
+export function registerExpType(
     ctx: CompilerContext,
     exp: AstExpression,
     description: TypeRef,

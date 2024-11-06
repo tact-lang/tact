@@ -21,6 +21,7 @@ import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
 import { idText } from "../grammar/ast";
 import { TactErrorCollection } from "../errors";
+import { optimize_tact } from "../optimizer/optimization_phase";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -84,6 +85,15 @@ export async function build(args: {
     if (config.mode === "checkOnly") {
         logger.info("✔️ Syntax and type checking succeeded.");
         return { ok: true, error: [] };
+    }
+
+    // Run high level optimization phase
+    try {
+        // TODO: Add configuration option to dump optimized code and also activate/deactivate optimization phase
+        ctx = optimize_tact(ctx);
+    } catch (e) {
+        logger.error(e as Error);
+        return { ok: false, error: [e as Error] };
     }
 
     // Compile contracts
