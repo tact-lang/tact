@@ -71,8 +71,7 @@ function createSetLike<T>(elements: T[]): ReadonlySetLike<T> {
 }
 
 function includes<T>(target: T[], wanted: T) {
-    for (const element of target) if (wanted === element) return true;
-    return false;
+    return target.some((element) => element === wanted);
 }
 
 function createIterator<T>(elements: T[]): Iterator<T> {

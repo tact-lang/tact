@@ -37,7 +37,9 @@ jobs:
           yarn clean
           yarn gen
           yarn build
-          # Test some specific things for backwards compatibility
+          # Test some specific things for backwards compatibility.
+          # It's important to restrain from using too much of Node.js 22+ features
+          # until it goes into maintenance LTS state and majority of users catches up
           yarn jest -t 'isSubsetOf'
           # Clean-up
           yarn cleanall

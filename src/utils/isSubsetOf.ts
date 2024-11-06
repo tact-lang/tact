@@ -22,8 +22,7 @@ export function isSubsetOf<T>(
     other: ReadonlySetLike<unknown>,
 ): boolean {
     // If the builtin method exists, just call it
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    if ((Set.prototype as any).isSubsetOf) {
+    if ("isSubsetOf" in Set.prototype) {
         return one.isSubsetOf(other);
     }
     // If not, provide the implementation

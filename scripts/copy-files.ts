@@ -4,7 +4,7 @@ import * as glob from "glob";
 
 const cp = async (fromGlob: string, toPath: string) => {
     const files = glob.sync(fromGlob);
-    for await (const file of files) {
+    for (const file of files) {
         await fs.copyFile(file, path.join(toPath, path.basename(file)));
     }
 };
