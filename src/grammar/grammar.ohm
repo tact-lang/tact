@@ -158,7 +158,9 @@ Tact {
 
     StatementForEach = foreach "(" id "," id "in" Expression ")" "{" Statement* "}"
 
-    StatementDestruct = let typeId "{" ListOf<DestructItem, ","> ","? "}" "=" Expression (";" | &"}")
+    StatementDestruct = let typeId "{" ListOf<DestructItem, ","> EndOfIdentifiers "}" "=" Expression (";" | &"}")
+    EndOfIdentifiers = "," ".." --ignoreUnspecifiedFields
+                     | ","? --regular
 
     DestructItem = id ":" id --regular
                  | id --punned

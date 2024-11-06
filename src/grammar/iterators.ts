@@ -141,6 +141,8 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             });
             traverse(node.expression, callback);
             break;
+        case "destruct_end":
+            break;
         case "statement_return":
             if (node.expression) traverse(node.expression, callback);
             break;

@@ -717,6 +717,17 @@ function processStatements(
                     );
                 }
 
+                // Check variables count
+                if (
+                    !s.ignoreUnspecifiedFields &&
+                    s.identifiers.size !== ty.fields.length
+                ) {
+                    throwCompilationError(
+                        `Expected ${ty.fields.length} fields, but got ${s.identifiers.size}`,
+                        s.loc,
+                    );
+                }
+
                 // Compare type with the specified one
                 const typeRef = resolveTypeRef(ctx, s.type);
                 if (typeRef.kind !== "ref") {
