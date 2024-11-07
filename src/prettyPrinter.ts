@@ -29,13 +29,10 @@ export const ppAstMapType = ({
 
 export const ppAstBouncedMessageType = ({
     messageType,
-}: A.AstBouncedMessageType): string => {
-    return `bounced<${ppAstTypeId(messageType)}>`;
-};
+}: A.AstBouncedMessageType): string => `bounced<${ppAstTypeId(messageType)}>`;
 
-export const ppAstOptionalType = ({ typeArg }: A.AstOptionalType): string => {
-    return `${ppAstType(typeArg)}?`;
-};
+export const ppAstOptionalType = ({ typeArg }: A.AstOptionalType): string =>
+    `${ppAstType(typeArg)}?`;
 
 export const ppAstType = makeVisitor<A.AstType>()({
     type_id: ppAstTypeId,
@@ -94,53 +91,45 @@ export const ppAstStructFieldInit = (
 ): string => `${ppAstId(param.field)}: ${ppAstExpression(param.initializer)}`;
 
 export const ppExprArgs: ExprPrinter<A.AstExpression[]> =
-    (args) => (currPrecedence) => {
-        return args.map((arg) => ppAstExpression(arg, currPrecedence)).join(", ");
-    };
+    (args) => (currPrecedence) =>
+        args.map((arg) => ppAstExpression(arg, currPrecedence)).join(", ");
 
 type ExprPrinter<T> = (expr: T) => (currPrecedence: number) => string;
 
 export const ppAstOpBinary: ExprPrinter<A.AstOpBinary> =
     ({ left, op, right }) =>
-    (currPrecedence) => {
-        return `${ppAstExpression(left, currPrecedence)} ${op} ${ppAstExpression(right, currPrecedence)}`;
-    };
+    (currPrecedence) =>
+        `${ppAstExpression(left, currPrecedence)} ${op} ${ppAstExpression(right, currPrecedence)}`;
 
 export const ppAstOpUnary: ExprPrinter<A.AstOpUnary> =
     ({ op, operand }) =>
-    (currPrecedence) => {
-        return `${op}${ppAstExpression(operand, currPrecedence)}`;
-    };
+    (currPrecedence) =>
+        `${op}${ppAstExpression(operand, currPrecedence)}`;
 
 export const ppAstFieldAccess: ExprPrinter<A.AstFieldAccess> =
     ({ aggregate, field }) =>
-    (currPrecedence) => {
-        return `${ppAstExpression(aggregate, currPrecedence)}.${ppAstId(field)}`;
-    };
+    (currPrecedence) =>
+        `${ppAstExpression(aggregate, currPrecedence)}.${ppAstId(field)}`;
 
 export const ppAstMethodCall: ExprPrinter<A.AstMethodCall> =
     ({ self, method, args }) =>
-    (currPrecedence) => {
-        return `${ppAstExpression(self, currPrecedence)}.${ppAstId(method)}(${ppExprArgs(args)(currPrecedence)})`;
-    };
+    (currPrecedence) =>
+        `${ppAstExpression(self, currPrecedence)}.${ppAstId(method)}(${ppExprArgs(args)(currPrecedence)})`;
 
 export const ppAstStaticCall: ExprPrinter<A.AstStaticCall> =
     ({ function: func, args }) =>
-    (currPrecedence) => {
-        return `${ppAstId(func)}(${ppExprArgs(args)(currPrecedence)})`;
-    };
+    (currPrecedence) =>
+        `${ppAstId(func)}(${ppExprArgs(args)(currPrecedence)})`;
 
 export const ppAstInitOf: ExprPrinter<A.AstInitOf> =
     ({ contract, args }) =>
-    (currPrecedence) => {
-        return `initOf ${ppAstId(contract)}(${ppExprArgs(args)(currPrecedence)})`;
-    };
+    (currPrecedence) =>
+        `initOf ${ppAstId(contract)}(${ppExprArgs(args)(currPrecedence)})`;
 
 export const ppAstConditional: ExprPrinter<A.AstConditional> =
     ({ condition, thenBranch, elseBranch }) =>
-    (currPrecedence) => {
-        return `${ppAstExpression(condition, currPrecedence)} ? ${ppAstExpression(thenBranch, currPrecedence)} : ${ppAstExpression(elseBranch, currPrecedence)}`;
-    };
+    (currPrecedence) =>
+        `${ppAstExpression(condition, currPrecedence)} ? ${ppAstExpression(thenBranch, currPrecedence)} : ${ppAstExpression(elseBranch, currPrecedence)}`;
 
 export const ppAstStructInstance = ({ type, args }: A.AstStructInstance) =>
     `${ppAstId(type)}{${args.map((x) => ppAstStructFieldInit(x)).join(", ")}}`;
@@ -180,7 +169,10 @@ export const ppAstExpression = (
 
     const result = ppAstExpressionVisitor(expr)(currPrecedence);
 
-    const needParens = parentPrecedence > 0 && currPrecedence > 0 && currPrecedence < parentPrecedence;
+    const needParens =
+        parentPrecedence > 0 &&
+        currPrecedence > 0 &&
+        currPrecedence < parentPrecedence;
 
     return needParens ? `(${result})` : result;
 };
@@ -301,15 +293,14 @@ export const ppAstModule: Printer<A.AstModule> =
         ]);
     };
 
+// BUG with }
 export const ppAstStruct: Printer<A.AstStructDecl> =
     ({ name, fields }) =>
-    (c) => {
-        // BUG with }
-        return c.concat([
+    (c) =>
+        c.concat([
             c.row(`struct ${ppAstId(name)} `),
             c.braced(c.list(fields, ppAstFieldDecl)),
         ]);
-    };
 
 export const ppAstContract: Printer<A.AstContract> =
     ({ name, traits, declarations, attributes }) =>
@@ -340,16 +331,14 @@ export const ppAstContract: Printer<A.AstContract> =
 
 export const ppAstPrimitiveTypeDecl: Printer<A.AstPrimitiveTypeDecl> =
     ({ name }) =>
-    (c) => {
-        return c.row(`primitive ${ppAstId(name)};`);
-    };
+    (c) =>
+        c.row(`primitive ${ppAstId(name)};`);
 
-export const ppAstFunctionDef: Printer<A.AstFunctionDef> = (node) => (c) => {
-    return c.concat([
+export const ppAstFunctionDef: Printer<A.AstFunctionDef> = (node) => (c) =>
+    c.concat([
         c.row(ppAstFunctionSignature(node)),
         ppStatementBlock(node.statements)(c),
     ]);
-};
 
 export const ppAsmShuffle = ({ args, ret }: A.AstAsmShuffle): string => {
     if (args.length === 0 && ret.length === 0) {
@@ -364,14 +353,13 @@ export const ppAsmShuffle = ({ args, ret }: A.AstAsmShuffle): string => {
 };
 
 export const ppAstAsmFunctionDef: Printer<A.AstAsmFunctionDef> =
-    (node) => (c) => {
-        return c.concat([
+    (node) => (c) =>
+        c.concat([
             c.row(
                 `asm${ppAsmShuffle(node.shuffle)} ${ppAstFunctionSignature(node)} `,
             ),
             ppAsmInstructionsBlock(node.instructions)(c),
         ]);
-    };
 
 export const ppAstNativeFunction: Printer<A.AstNativeFunctionDecl> =
     ({ name, nativeName, params, return: retTy, attributes }) =>
@@ -462,16 +450,14 @@ export const ppAstFieldDecl: Printer<A.AstFieldDecl> =
 
 export const ppAstReceiver: Printer<A.AstReceiver> =
     ({ selector, statements }) =>
-    (c) => {
-        return c.concat([
+    (c) =>
+        c.concat([
             c.row(`${ppAstReceiverHeader(selector)} `),
             ppStatementBlock(statements)(c),
         ]);
-    };
 
-export const ppAstFunctionDecl: Printer<A.AstFunctionDecl> = (f) => (c) => {
-    return c.row(`${ppAstFunctionSignature(f)};`);
-};
+export const ppAstFunctionDecl: Printer<A.AstFunctionDecl> = (f) => (c) =>
+    c.row(`${ppAstFunctionSignature(f)};`);
 
 export const ppAstConstDecl: Printer<A.AstConstantDecl> =
     ({ attributes, name, type }) =>
@@ -518,9 +504,8 @@ export const ppContractBody: Printer<A.AstContractDeclaration> =
 
 export const ppAstImport: Printer<A.AstImport> =
     ({ path }) =>
-    (c) => {
-        return c.row(`import "${path.value}";`);
-    };
+    (c) =>
+        c.row(`import "${path.value}";`);
 
 export const ppAstFunctionSignature = ({
     name,
@@ -567,14 +552,12 @@ export const ppAstFuncId = (func: A.AstFuncId): string => func.text;
 // Statements
 //
 
-export const ppStatementBlock: Printer<A.AstStatement[]> = (stmts) => (c) => {
-    return c.braced(c.list(stmts, ppAstStatement));
-};
+export const ppStatementBlock: Printer<A.AstStatement[]> = (stmts) => (c) =>
+    c.braced(c.list(stmts, ppAstStatement));
 
 export const ppAsmInstructionsBlock: Printer<A.AstAsmInstruction[]> =
-    (instructions) => (c) => {
-        return c.braced(instructions.map(c.row));
-    };
+    (instructions) => (c) =>
+        c.braced(instructions.map(c.row));
 
 export const ppAstStatementLet: Printer<A.AstStatementLet> =
     ({ type, name, expression }) =>
@@ -587,35 +570,27 @@ export const ppAstStatementLet: Printer<A.AstStatementLet> =
 
 export const ppAstStatementReturn: Printer<A.AstStatementReturn> =
     ({ expression }) =>
-    (c) => {
-        return c.row(
-            `return ${expression ? ppAstExpression(expression) : ""};`,
-        );
-    };
+    (c) =>
+        c.row(`return ${expression ? ppAstExpression(expression) : ""};`);
 
 export const ppAstStatementExpression: Printer<A.AstStatementExpression> =
     ({ expression }) =>
-    (c) => {
-        return c.row(`${ppAstExpression(expression)};`);
-    };
+    (c) =>
+        c.row(`${ppAstExpression(expression)};`);
 
 export const ppAstStatementAssign: Printer<A.AstStatementAssign> =
     ({ path, expression }) =>
-    (c) => {
-        return c.row(
-            `${ppAstExpression(path)} = ${ppAstExpression(expression)};`,
-        );
-    };
+    (c) =>
+        c.row(`${ppAstExpression(path)} = ${ppAstExpression(expression)};`);
 
 export const ppAstStatementAugmentedAssign: Printer<
     A.AstStatementAugmentedAssign
 > =
     ({ path, op, expression }) =>
-    (c) => {
-        return c.row(
+    (c) =>
+        c.row(
             `${ppAstExpression(path)} ${op}= ${ppAstExpression(expression)};`,
         );
-    };
 
 export const ppAstCondition: Printer<A.AstCondition> =
     ({ condition, trueStatements, falseStatements }) =>
@@ -637,59 +612,53 @@ export const ppAstCondition: Printer<A.AstCondition> =
 
 export const ppAstStatementWhile: Printer<A.AstStatementWhile> =
     ({ condition, statements }) =>
-    (c) => {
-        return c.concat([
+    (c) =>
+        c.concat([
             c.row(`while (${ppAstExpression(condition)}) `),
             ppStatementBlock(statements)(c),
         ]);
-    };
 
 export const ppAstStatementRepeat: Printer<A.AstStatementRepeat> =
     ({ iterations, statements }) =>
-    (c) => {
-        return c.concat([
+    (c) =>
+        c.concat([
             c.row(`repeat (${ppAstExpression(iterations)}) `),
             ppStatementBlock(statements)(c),
         ]);
-    };
 
 export const ppAstStatementUntil: Printer<A.AstStatementUntil> =
     ({ condition, statements }) =>
-    (c) => {
-        return c.concat([
+    (c) =>
+        c.concat([
             c.row(`do `),
             ppStatementBlock(statements)(c),
             c.row(` until (${ppAstExpression(condition)});`),
         ]);
-    };
 
 export const ppAstStatementForEach: Printer<A.AstStatementForEach> =
     ({ keyName, valueName, map, statements }) =>
-    (c) => {
-        return c.concat([
+    (c) =>
+        c.concat([
             c.row(
                 `foreach (${ppAstId(keyName)}, ${ppAstId(valueName)} in ${ppAstExpression(map)}) `,
             ),
             ppStatementBlock(statements)(c),
         ]);
-    };
 
 export const ppAstStatementTry: Printer<A.AstStatementTry> =
     ({ statements }) =>
-    (c) => {
-        return c.concat([c.row(`try `), ppStatementBlock(statements)(c)]);
-    };
+    (c) =>
+        c.concat([c.row(`try `), ppStatementBlock(statements)(c)]);
 
 export const ppAstStatementTryCatch: Printer<A.AstStatementTryCatch> =
     ({ statements, catchName, catchStatements }) =>
-    (c) => {
-        return c.concat([
+    (c) =>
+        c.concat([
             c.row(`try `),
             ppStatementBlock(statements)(c),
             c.row(` catch (${ppAstId(catchName)}) `),
             ppStatementBlock(catchStatements)(c),
         ]);
-    };
 
 export const ppAstStatementDestruct: Printer<A.AstStatementDestruct> =
     ({ type, identifiers, ignoreUnspecifiedFields, expression }) =>
@@ -728,9 +697,8 @@ export const ppAstStatement: Printer<A.AstStatement> =
 export const exprNode =
     <T>(exprPrinter: (expr: T) => string): Printer<T> =>
     (node) =>
-    (c) => {
-        return c.row(exprPrinter(node));
-    };
+    (c) =>
+        c.row(exprPrinter(node));
 
 export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     op_binary: exprNode(ppAstExpression),
@@ -796,13 +764,9 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
  * @param node The AST node to format.
  * @returns A string that represents the formatted AST node.
  */
-export const prettyPrint = (node: A.AstNode): string => {
-    // Default number of spaces per indentation level is 4
-    return (
-        ppAstNode(node)(createContext(4))
-            // Initial level of indentation is 0
-            .map((f) => f(0))
-            // Lines are terminated with \n
-            .join("\n")
-    );
-};
+export const prettyPrint = (node: A.AstNode): string =>
+    ppAstNode(node)(createContext(4))
+        // Initial level of indentation is 0
+        .map((f) => f(0))
+        // Lines are terminated with \n
+        .join("\n");
