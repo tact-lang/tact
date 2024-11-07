@@ -1,8 +1,10 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import * as glob from "glob";
 
 const cp = async (fromGlob: string, toPath: string) => {
-    for await (const file of fs.glob(fromGlob)) {
+    const files = glob.sync(fromGlob);
+    for (const file of files) {
         await fs.copyFile(file, path.join(toPath, path.basename(file)));
     }
 };
